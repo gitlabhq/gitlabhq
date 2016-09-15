@@ -24,30 +24,37 @@ class Gitlab::Seeder::CycleAnalytics
   def seed!
     Sidekiq::Testing.inline! do
       issues = create_issues(@project)
+      print '.'
 
       # Stage 1
       Timecop.travel 5.days.from_now
       add_milestones_and_list_labels(issues)
+      print '.'
 
       # Stage 2
       Timecop.travel 5.days.from_now
       branches = mention_in_commits(issues)
+      print '.'
 
       # Stage 3
       Timecop.travel 5.days.from_now
       merge_requests = create_merge_requests_closing_issues(issues, branches)
+      print '.'
 
       # Stage 4
       Timecop.travel 5.days.from_now
       run_builds(merge_requests)
+      print '.'
 
       # Stage 5
       Timecop.travel 5.days.from_now
       merge_merge_requests(merge_requests)
+      print '.'
 
       # Stage 6 / 7
       Timecop.travel 5.days.from_now
       deploy_to_production(merge_requests)
+      print '.'
     end
 
     print '.'
@@ -101,8 +108,14 @@ class Gitlab::Seeder::CycleAnalytics
       }
 
       commit_sha = Gitlab::Git::Blob.commit(issue.project.repository, options)
-      commit = issue.project.repository.commit(commit_sha)
-      commit.create_cross_references!
+      issue.project.repository.commit(commit_sha)
+
+
+      GitPushService.new(issue.project,
+                         @user,
+                         oldrev: issue.project.repository.commit("master").sha,
+                         newrev: commit_sha,
+                         ref: 'refs/heads/master').execute
 
       branch_name
     end
@@ -162,10 +175,12 @@ end
 
 Gitlab::Seeder.quiet do
   if ENV['SEED_CYCLE_ANALYTICS']
-      seeder = Gitlab::Seeder::CycleAnalytics.new(Project.find(1))
+    Project.all.each do |project|
+      seeder = Gitlab::Seeder::CycleAnalytics.new(project)
       seeder.seed!
+    end
   elsif ENV['CYCLE_ANALYTICS_PERF_TEST']
-    seeder = Gitlab::Seeder::CycleAnalytics.new(Project.first, perf: true)
+    seeder = Gitlab::Seeder::CycleAnalytics.new(Project.order(:id).first, perf: true)
     seeder.seed!
   else
     puts "Not running the cycle analytics seed file. Use the `SEED_CYCLE_ANALYTICS` environment variable to enable it."

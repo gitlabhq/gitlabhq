@@ -25,6 +25,9 @@ class Issue < ActiveRecord::Base
 
   has_one :metrics, dependent: :destroy
 
+  has_many :merge_requests_closing_issues, class_name: MergeRequestsClosingIssues
+  has_many :closed_by_merge_requests, through: :merge_requests_closing_issues, source: :merge_request
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }

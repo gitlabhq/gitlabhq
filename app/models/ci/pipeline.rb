@@ -55,6 +55,18 @@ module Ci
         pipeline.finished_at = Time.now
       end
 
+      after_transition [:created, :pending] => :running do |pipeline|
+        pipeline.merge_requests.each do |merge_request|
+          merge_request.metrics.record_latest_build_start_time!(pipeline.started_at) if merge_request.metrics.present?
+        end
+      end
+
+      after_transition any => [:success] do |pipeline|
+        pipeline.merge_requests.each do |merge_request|
+          merge_request.metrics.record_latest_build_finish_time!(pipeline.finished_at) if merge_request.metrics.present?
+        end
+      end
+
       before_transition do |pipeline|
         pipeline.update_duration
       end
@@ -265,6 +277,13 @@ module Ci
       data = pipeline_data
       project.execute_hooks(data, :pipeline_hooks)
       project.execute_services(data, :pipeline_hooks)
+    end
+
+    # Merge requests for which the current pipeline is running against
+    # the merge request's latest commit.
+    def merge_requests
+      project.merge_requests.where(source_branch: self.ref).
+        select { |merge_request| merge_request.pipeline.id == self.id }
     end
 
     private

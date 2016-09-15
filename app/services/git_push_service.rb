@@ -134,6 +134,7 @@ class GitPushService < BaseService
       end
 
       commit.create_cross_references!(authors[commit], closed_issues)
+      update_issue_metrics(commit, authors)
     end
   end
 
@@ -185,5 +186,11 @@ class GitPushService < BaseService
 
   def branch_name
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
+  end
+
+  # TODO: What about commits created using the Web UI? Cross references are not created there.
+  def update_issue_metrics(commit, authors)
+    mentioned_issues = commit.all_references(authors[commit]).issues
+    mentioned_issues.each { |issue| issue.metrics.record_commit_mention!(commit.committed_date) if issue.metrics.present? }
   end
 end

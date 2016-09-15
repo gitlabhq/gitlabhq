@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160901141443) do
+ActiveRecord::Schema.define(version: 20160915081353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -442,6 +442,7 @@ ActiveRecord::Schema.define(version: 20160901141443) do
     t.datetime "first_added_to_board_at"
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.datetime "first_mentioned_in_commit_at"
   end
 
   add_index "issue_metrics", ["issue_id"], name: "index_issue_metrics", using: :btree
@@ -596,6 +597,9 @@ ActiveRecord::Schema.define(version: 20160901141443) do
     t.datetime "first_closed_at"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
+    t.datetime "first_deployed_to_production_at"
+    t.datetime "latest_build_started_at"
+    t.datetime "latest_build_finished_at"
   end
 
   add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
@@ -640,6 +644,13 @@ ActiveRecord::Schema.define(version: 20160901141443) do
   add_index "merge_requests", ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true, using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+
+  create_table "merge_requests_closing_issues", force: :cascade do |t|
+    t.integer  "merge_request_id", null: false
+    t.integer  "issue_id",         null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
 
   create_table "milestones", force: :cascade do |t|
     t.string   "title",       null: false
@@ -1170,6 +1181,8 @@ ActiveRecord::Schema.define(version: 20160901141443) do
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
   add_foreign_key "merge_request_metrics", "merge_requests"
+  add_foreign_key "merge_requests_closing_issues", "issues"
+  add_foreign_key "merge_requests_closing_issues", "merge_requests"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"

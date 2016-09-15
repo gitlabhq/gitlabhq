@@ -17,6 +17,9 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_many :merge_requests_closing_issues, class_name: MergeRequestsClosingIssues
+  has_many :issues_closed, through: :merge_requests_closing_issues, source: :issue
+
   serialize :merge_params, Hash
 
   after_create :ensure_merge_request_diff, unless: :importing?
@@ -492,6 +495,18 @@ class MergeRequest < ActiveRecord::Base
 
   def project
     target_project
+  end
+
+  # If the merge request closes any issues, save this information in the
+  # `MergeRequestsClosingIssues` model. This is a performance optimization.
+  # Calculating this information for a number of merge requests requires
+  # running `ReferenceExtractor` on each of them separately.
+  def cache_merge_request_closes_issues!(current_user = self.author)
+    transaction do
+      closes_issues(current_user).each do |issue|
+        MergeRequestsClosingIssues.create!(merge_request: self, issue: issue)
+      end
+    end
   end
 
   def closes_issue?(issue)

@@ -2,8 +2,8 @@ class CycleAnalytics
   attr_reader :from
 
   def initialize(project, from:)
-    @project = project
     @from = from
+    @queries = Queries.new(project)
   end
 
   def as_json(options = {})
@@ -14,45 +14,45 @@ class CycleAnalytics
   end
 
   def issue
-    calculate_metric(Queries::issues(@project, created_after: @from),
+    calculate_metric(@queries.issues(created_after: @from),
                      -> (data_point) { data_point[:issue].created_at },
-                     [Queries::issue_first_associated_with_milestone_at, Queries::issue_first_added_to_list_label_at])
+                     [@queries.issue_first_associated_with_milestone_at, @queries.issue_first_added_to_list_label_at])
   end
 
   def plan
-    calculate_metric(Queries::issues(@project, created_after: @from),
-                     [Queries::issue_first_associated_with_milestone_at, Queries::issue_first_added_to_list_label_at],
-                     Queries::issue_first_mentioned_in_commit_at)
+    calculate_metric(@queries.issues(created_after: @from),
+                     [@queries.issue_first_associated_with_milestone_at, @queries.issue_first_added_to_list_label_at],
+                     @queries.issue_first_mentioned_in_commit_at)
   end
 
   def code
-    calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
-                     Queries::issue_first_mentioned_in_commit_at,
+    calculate_metric(@queries.merge_requests_closing_issues(created_after: @from),
+                     @queries.issue_first_mentioned_in_commit_at,
                      -> (data_point) { data_point[:merge_request].created_at })
   end
 
   def test
-    calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
-                     Queries::merge_request_build_started_at,
-                     Queries::merge_request_build_finished_at)
+    calculate_metric(@queries.merge_requests_closing_issues(created_after: @from),
+                     @queries.merge_request_build_started_at,
+                     @queries.merge_request_build_finished_at)
   end
 
   def review
-    calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
+    calculate_metric(@queries.merge_requests_closing_issues(created_after: @from),
                      -> (data_point) { data_point[:merge_request].created_at },
-                     Queries::merge_request_merged_at)
+                     @queries.merge_request_merged_at)
   end
 
   def staging
-    calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
-                     Queries::merge_request_merged_at,
-                     Queries::merge_request_deployed_to_production_at)
+    calculate_metric(@queries.merge_requests_closing_issues(created_after: @from),
+                     @queries.merge_request_merged_at,
+                     @queries.merge_request_deployed_to_production_at)
   end
 
   def production
-    calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
+    calculate_metric(@queries.merge_requests_closing_issues(created_after: @from),
                      -> (data_point) { data_point[:issue].created_at },
-                     Queries::merge_request_deployed_to_production_at)
+                     @queries.merge_request_deployed_to_production_at)
   end
 
   private
