@@ -19,6 +19,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
     it 'displays that the environment is deployed' do
       wait_for_ajax
       expect(page).to have_content("Deployed to #{environment.name}")
+      expect(find('.ci_widget > span > span')['data-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
     end
   end
 end

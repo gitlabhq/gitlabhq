@@ -383,6 +383,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         deployment = {
           environment_name: deployment.environment.name,
           environment_id: deployment.environment.id,
+          environment_url: namespace_project_environment_path(@project.namespace, @project, deployment.environment),
           external_url: deployment.environment.external_url,
           created_at: deployment.created_at,
           created_at_formatted: deployment.created_at.to_time.in_time_zone.to_s(:medium)
@@ -391,7 +392,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         if deployment[:external_url]
           deployment[:external_url_formatted] = deployment[:external_url].gsub(/\A.*?:\/\//, '')
         end
-        
+
         deployment
       end
     end

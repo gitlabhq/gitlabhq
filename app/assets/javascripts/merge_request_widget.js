@@ -168,9 +168,7 @@
         var $template = $(DEPLOYMENT_TEMPLATE);
         if (!deployment.external_url) $('.js-deployment-link', $template).remove();
         deployment.created_at = $.timeago(deployment.created_at);
-        var templateString = $template[0].outerHTML
-          .replace(/{{/g, '<%-')
-          .replace(/}}/g, '%>');
+        var templateString = _.unescape($template[0].outerHTML);
         var template = _.template(templateString)(deployment)
         this.$widgetBody.before(template);
       }

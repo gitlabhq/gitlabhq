@@ -45,14 +45,14 @@
 
 -# JavaScript template
 .js-deployment-status.hidden
-  .mr-widget-heading{id: '{{ environment_id }}'}
+  .mr-widget-heading{id: '<%- environment_id %>'}
     .ci_widget.ci-success
       = ci_icon_for_status('success')
       %span
         Deployed to
-        = link_to '{{ environment_name }}', "#{@project.namespace.path}/#{@project.path}/environments/{{ environment_id }}", class: 'environment'
-        %span{ data: { toggle: 'tooltip', placement: 'top', title: '{{ created_at_formatted }}' } }
-          {{ created_at }}.
+        = link_to '<%- environment_name %>', '<%- environment_url %>', class: 'environment'
+        %span{ data: { toggle: 'tooltip', placement: 'top', title: '<%- created_at_formatted %>' } }
+          <%- created_at %>.
         .js-deployment-link
-          = link_to '{{ external_url }}', target: '_blank' do
-            = icon('external-link', text: 'View on {{ external_url_formatted }}', right: true)
+          = link_to '<%- external_url %>', target: '_blank' do
+            = icon('external-link', text: 'View on <%- external_url_formatted %>', right: true)
