@@ -2,7 +2,7 @@
 
 .top-area.adjust
   .nav-text
-    Labels can be applied to issues and merge requests. Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
+    Labels can be applied to issues and merge requests.
 
   .nav-controls
     - if can?(current_user, :admin_label, @group)
@@ -10,10 +10,7 @@
         New label
 
 .labels
-  - hide = @group.labels.empty? || (params[:page].present? && params[:page] != '1')
   .other-labels
-    - if can?(current_user, :admin_label, @group)
-      %h5{ class: ('hide' if hide) } Other Labels
     - if @labels.present?
       %ul.content-list.manage-labels-list.js-other-labels
         = render @labels

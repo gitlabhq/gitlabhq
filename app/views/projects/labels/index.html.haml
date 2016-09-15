@@ -24,8 +24,14 @@
           - if @prioritized_labels.present?
             = render @prioritized_labels
     .other-labels
+      %h5{ class: ('hide' if hide) } Group Labels
+      - if @group_labels.present?
+        %ul.content-list.manage-labels-list.js-other-labels
+          = render @group_labels
+      - else
+        %p.empty-message No group labels yet
       - if can?(current_user, :admin_label, @project)
-        %h5{ class: ('hide' if hide) } Other Labels
+        %h5{ class: ('hide' if hide) } Project Labels
       - if @labels.present?
         %ul.content-list.manage-labels-list.js-other-labels
           = render @labels

@@ -103,15 +103,20 @@ class Label < ActiveRecord::Base
   end
 
   def open_issues_count(user = nil)
-    issues.visible_to_user(user).opened.count
+    issues_count(user, 'opened')
   end
 
   def closed_issues_count(user = nil)
-    issues.visible_to_user(user).closed.count
+    issues_count(user, 'closed')
   end
 
-  def open_merge_requests_count
-    merge_requests.opened.count
+  def open_merge_requests_count(user = nil)
+    params = { label_name: title, scope: 'all', state: 'opened' }
+
+    params[:group_id]   = subject_id if subject.is_a?(Group)
+    params[:project_id] = subject_id if subject.is_a?(Project)
+
+    MergeRequestsFinder.new(user, params).execute.count
   end
 
   def template?
@@ -127,6 +132,15 @@ class Label < ActiveRecord::Base
   end
 
   private
+
+  def issues_count(user, state)
+    params = { label_name: title, scope: 'all', state: state }
+
+    params[:group_id]   = subject_id if subject.is_a?(Group)
+    params[:project_id] = subject_id if subject.is_a?(Project)
+
+    IssuesFinder.new(user, params).execute.count
+  end
 
   def cross_project_reference?(from_project)
     if self.is_a?(Project)

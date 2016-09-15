@@ -10,7 +10,7 @@
       %ul
         %li
           = link_to_label(label, type: :merge_request) do
-            = pluralize label.open_merge_requests_count, 'merge request'
+            = pluralize label.open_merge_requests_count(current_user), 'merge request'
         %li
           = link_to_label(label) do
             = pluralize label.open_issues_count(current_user), 'open issue'
