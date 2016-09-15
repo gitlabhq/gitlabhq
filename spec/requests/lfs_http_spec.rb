@@ -586,8 +586,8 @@ describe 'Git LFS API and storage' do
         context 'when CI is authorized' do
           let(:authorization) { authorize_ci_project }
 
-          it 'responds with 403' do
-            expect(response).to have_http_status(403)
+          it 'responds with 401' do
+            expect(response).to have_http_status(401)
           end
         end
       end
@@ -613,8 +613,8 @@ describe 'Git LFS API and storage' do
       context 'when CI is authorized' do
         let(:authorization) { authorize_ci_project }
 
-        it 'responds with status 403' do
-          expect(response).to have_http_status(403)
+        it 'responds with status 401' do
+          expect(response).to have_http_status(401)
         end
       end
     end
