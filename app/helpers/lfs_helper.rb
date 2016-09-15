@@ -39,10 +39,6 @@ module LfsHelper
   def lfs_upload_access?
     return false unless project.lfs_enabled?
 
-    privileged_user_can_push_code?
-  end
-
-  def privileged_user_can_push_code?
     has_capability?(:push_code) && user && user.can?(:push_code, project)
   end
 
