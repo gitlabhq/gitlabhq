@@ -76,9 +76,9 @@ module Auth
 
       case requested_action
       when 'pull'
-        restricted_user_can_pull?(requested_project) || privileged_user_can_pull?(requested_project)
+        build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
-        restricted_user_can_push?(requested_project) || privileged_user_can_push?(requested_project)
+        build_can_push?(requested_project) || user_can_push?(requested_project)
       else
         false
       end
@@ -90,29 +90,28 @@ module Auth
 
     private
 
-    def restricted_user_can_pull?(requested_project)
-      # Restricted can:
+    def build_can_pull?(requested_project)
+      # Build can:
       # 1. pull from it's own project (for ex. a build)
-      # 2. read images from dependent projects if he is a team member
-      requested_project == project ||
-        has_ability?(:restricted_read_container_image, requested_project)
+      # 2. read images from dependent projects if creator of build is a team member
+      @capabilities.include?(:build_read_container_image) &&
+        (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
     end
 
-    def privileged_user_can_pull?(requested_project)
-      has_ability?(:read_container_image, requested_project)
+    def user_can_pull?(requested_project)
+      @capabilities.include?(:read_container_image) &&
+        can?(current_user, :read_container_image, requested_project)
     end
 
-    def restricted_user_can_push?(requested_project)
-      # Restricted can push only to project to from which he originates
-      requested_project == project
+    def build_can_push?(requested_project)
+      # Build can push only to project to from which he originates
+      @capabilities.include?(:build_create_container_image) &&
+        requested_project == project
     end
 
-    def privileged_user_can_push?(requested_project)
-      has_ability?(:create_container_image, requested_project)
-    end
-
-    def has_ability?(ability, requested_project)
-      @capabilities.include?(ability) && can?(current_user, ability, requested_project)
+    def user_can_push?(requested_project)
+      @capabilities.include?(:create_container_image) &&
+        can?(current_user, :create_container_image, requested_project)
     end
   end
 end

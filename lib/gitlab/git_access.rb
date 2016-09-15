@@ -61,19 +61,19 @@ module Gitlab
     end
 
     def user_download_access_check
-      unless privileged_user_can_download_code? || restricted_user_can_download_code?
+      unless user_can_download_code? || build_can_download_code?
         return build_status_object(false, "You are not allowed to download code from this project.")
       end
 
       build_status_object(true)
     end
 
-    def privileged_user_can_download_code?
+    def user_can_download_code?
       capabilities.include?(:download_code) && user_access.can_do_action?(:download_code)
     end
 
-    def restricted_user_can_download_code?
-      capabilities.include?(:restricted_download_code) && user_access.can_do_action?(:restricted_download_code)
+    def build_can_download_code?
+      capabilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
     end
 
     def user_push_access_check(changes)

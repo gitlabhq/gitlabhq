@@ -78,7 +78,7 @@ module Gitlab
           service = project.public_send("#{underscored_service}_service")
 
           if service && service.activated? && service.valid_token?(password)
-            Result.new(nil, project, :ci, restricted_capabilities)
+            Result.new(nil, project, :ci, build_capabilities)
           end
         end
       end
@@ -124,25 +124,27 @@ module Gitlab
 
         if build.user
           # If user is assigned to build, use restricted credentials of user
-          Result.new(build.user, build.project, :build, restricted_capabilities)
+          Result.new(build.user, build.project, :build, build_capabilities)
         else
           # Otherwise use generic CI credentials (backward compatibility)
-          Result.new(nil, build.project, :ci, restricted_capabilities)
+          Result.new(nil, build.project, :ci, build_capabilities)
         end
       end
 
       private
 
-      def restricted_capabilities
+      def build_capabilities
         [
           :read_project,
-          :restricted_download_code,
-          :restricted_read_container_image
+          :build_download_code,
+          :build_read_container_image,
+          :build_create_container_image
         ]
       end
 
       def read_capabilities
-        restricted_capabilities + [
+        [
+          :read_project,
           :download_code,
           :read_container_image
         ]

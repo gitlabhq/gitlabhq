@@ -25,15 +25,15 @@ module LfsHelper
   def lfs_download_access?
     return false unless project.lfs_enabled?
 
-    project.public? || ci? || privileged_user_can_download_code? || restricted_user_can_download_code?
+    project.public? || ci? || user_can_download_code? || build_can_download_code?
   end
 
-  def privileged_user_can_download_code?
+  def user_can_download_code?
     has_capability?(:download_code) && user && user.can?(:download_code, project)
   end
 
-  def restricted_user_can_download_code?
-    has_capability?(:restricted_download_code) && user && user.can?(:restricted_download_code, project)
+  def build_can_download_code?
+    has_capability?(:build_download_code) && user && user.can?(:build_download_code, project)
   end
 
   def lfs_upload_access?

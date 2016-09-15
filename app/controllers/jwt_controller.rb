@@ -11,7 +11,10 @@ class JwtController < ApplicationController
     service = SERVICES[params[:service]]
     return head :not_found unless service
 
-    result = service.new(@project, @user, auth_params).execute(capabilities: @capabilities)
+    @@authentication_result ||= Gitlab::Auth.Result.new
+
+    result = service.new(@authentication_result.project, @authentication_result.user, auth_params).
+      execute(capabilities: @authentication_result.capabilities || [])
 
     render json: result, status: result[:http_status]
   end
@@ -20,18 +23,9 @@ class JwtController < ApplicationController
 
   def authenticate_project_or_user
     authenticate_with_http_basic do |login, password|
-      @auth_result = Gitlab::Auth.find_for_git_client(login, password, ip: request.ip)
+      @authentication_result = Gitlab::Auth.find_for_git_client(login, password, ip: request.ip)
 
-      @user = auth_result.user
-      @project = auth_result.project
-      @type = auth_result.type
-      @capabilities = auth_result.capabilities || []
-
-      if @user || @project
-        return # Allow access
-      end
-
-      render_403
+      render_403 unless @authentication_result.success?
     end
   end
 
