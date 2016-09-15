@@ -65,7 +65,7 @@ describe Gitlab::Auth, lib: true do
       token = Gitlab::LfsToken.new(user).generate
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: user.username)
-      expect(gl_auth.find_for_git_client(user.username, token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, :lfs_token))
+      expect(gl_auth.find_for_git_client(user.username, token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :lfs_token, read_capabilities))
     end
 
     it 'recognizes deploy key lfs tokens' do
@@ -74,7 +74,7 @@ describe Gitlab::Auth, lib: true do
       token = Gitlab::LfsToken.new(key).generate
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: "lfs+deploy-key-#{key.id}")
-      expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, :lfs_deploy_token))
+      expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, nil, :lfs_deploy_token, read_capabilities))
     end
 
     it 'recognizes OAuth tokens' do
@@ -91,7 +91,7 @@ describe Gitlab::Auth, lib: true do
       login = 'foo'
       ip = 'ip'
 
-      expect(gl_auth).to receive(:rate_limit!).with(ip, success: nil, login: login)
+      expect(gl_auth).to receive(:rate_limit!).with(ip, success: false, login: login)
       expect(gl_auth.find_for_git_client(login, 'bar', project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new)
     end
   end
