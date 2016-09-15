@@ -25,7 +25,7 @@ class JwtController < ApplicationController
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, ip: request.ip)
 
-      render_403 unless @authentication_result.success?
+      render_403 unless @authentication_result.succeeded?
     end
   end
 

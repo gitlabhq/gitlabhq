@@ -1,14 +1,8 @@
 module Gitlab
   module Auth
-    class Result
-      attr_reader :user, :project, :type, :capabilities
-
-      def initialize?(user = nil, project = nil, type = nil, capabilities = nil)
-        @user, @project, @type, @capabilities = user, project, type, capabilities
-      end
-
-      def success?
-        user.present? || [:ci, :missing_personal_token].include?(type)
+    Result = Struct.new(:user, :project, :type, :capabilities) do
+      def succeeded?
+        user.present? || [:ci].include?(type)
       end
     end
 
@@ -23,7 +17,7 @@ module Gitlab
           personal_access_token_check(login, password) ||
           Result.new
 
-        rate_limit!(ip, success: result.success?, login: login)
+        rate_limit!(ip, success: result.succeeded?, login: login)
         result
       end
 
@@ -94,7 +88,7 @@ module Gitlab
             :gitlab_or_ldap
           end
 
-        Result.new(user, type, nil, full_capabilities)
+        Result.new(user, nil, type, full_capabilities)
       end
 
       def oauth_access_token_check(login, password)
@@ -111,7 +105,9 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          Result.new(user, nil, :personal_token, full_capabilities) if user == validation
+          if user && user == validation
+            Result.new(user, nil, :personal_token, full_capabilities)
+          end
         end
       end
 

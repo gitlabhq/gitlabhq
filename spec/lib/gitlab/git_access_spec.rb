@@ -1,10 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
-  let(:access) { Gitlab::GitAccess.new(actor, project, 'web') }
+  let(:access) { Gitlab::GitAccess.new(actor, project, 'web', capabilities: capabilities) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:actor) { user }
+  let(:capabilities) do
+    [
+      :read_project,
+      :download_code,
+      :push_code
+    ]
+  end
 
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
@@ -106,6 +113,36 @@ describe Gitlab::GitAccess, lib: true do
           context 'from private project' do
             let(:project) { create(:project, :internal) }
 
+            it { expect(subject).not_to be_allowed }
+          end
+        end
+      end
+    end
+
+    describe 'build capabilities permissions' do
+      let(:capabilities) { build_capabilities }
+
+      describe 'reporter user' do
+        before { project.team << [user, :reporter] }
+
+        context 'pull code' do
+          it { expect(subject).to be_allowed }
+        end
+      end
+
+      describe 'admin user' do
+        let(:user) { create(:admin) }
+
+        context 'when member of the project' do
+          before { project.team << [user, :reporter] }
+
+          context 'pull code' do
+            it { expect(subject).to be_allowed }
+          end
+        end
+
+        context 'when is not member of the project' do
+          context 'pull code' do
             it { expect(subject).not_to be_allowed }
           end
         end
@@ -281,40 +318,58 @@ describe Gitlab::GitAccess, lib: true do
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
+
+  end
+
+  shared_examples 'can not push code' do
+    subject { access.check('git-receive-pack', '_any') }
+
+    context 'when project is authorized' do
+      before { key.projects << project }
+
+      it { expect(subject).not_to be_allowed }
+    end
+
+    context 'when unauthorized' do
+      context 'to public project' do
+        let(:project) { create(:project, :public) }
+
+        it { expect(subject).not_to be_allowed }
+      end
+
+      context 'to internal project' do
+        let(:project) { create(:project, :internal) }
+
+        it { expect(subject).not_to be_allowed }
+      end
+
+      context 'to private project' do
+        let(:project) { create(:project, :internal) }
+
+        it { expect(subject).not_to be_allowed }
+      end
+    end
+  end
+
+  describe 'build capabilities permissions' do
+    let(:capabilities) { build_capabilities }
+
+    it_behaves_like 'cannot push code'
   end
 
   describe 'deploy key permissions' do
     let(:key) { create(:deploy_key) }
     let(:actor) { key }
 
-    context 'push code' do
-      subject { access.check('git-receive-pack', '_any') }
+    it_behaves_like 'cannot push code'
+  end
 
-      context 'when project is authorized' do
-        before { key.projects << project }
+  private
 
-        it { expect(subject).not_to be_allowed }
-      end
-
-      context 'when unauthorized' do
-        context 'to public project' do
-          let(:project) { create(:project, :public) }
-
-          it { expect(subject).not_to be_allowed }
-        end
-
-        context 'to internal project' do
-          let(:project) { create(:project, :internal) }
-
-          it { expect(subject).not_to be_allowed }
-        end
-
-        context 'to private project' do
-          let(:project) { create(:project, :internal) }
-
-          it { expect(subject).not_to be_allowed }
-        end
-      end
-    end
+  def build_capabilities
+    [
+      :read_project,
+      :build_download_code
+    ]
   end
 end
