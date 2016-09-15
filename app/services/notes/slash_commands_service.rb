@@ -5,9 +5,17 @@ module Notes
       'MergeRequest' => MergeRequests::UpdateService
     }
 
-    def supported?(note)
+    def self.noteable_update_service(note)
+      UPDATE_SERVICES[note.noteable_type]
+    end
+
+    def self.supported?(note, current_user)
       noteable_update_service(note) &&
-        can?(current_user, :"update_#{note.noteable_type.underscore}", note.noteable)
+        current_user.can?(:"update_#{note.noteable_type.underscore}", note.noteable)
+    end
+
+    def supported?(note)
+      self.class.supported?(note, current_user)
     end
 
     def extract_commands(note)
@@ -21,13 +29,7 @@ module Notes
       return if command_params.empty?
       return unless supported?(note)
 
-      noteable_update_service(note).new(project, current_user, command_params).execute(note.noteable)
-    end
-
-    private
-
-    def noteable_update_service(note)
-      UPDATE_SERVICES[note.noteable_type]
+      self.class.noteable_update_service(note).new(project, current_user, command_params).execute(note.noteable)
     end
   end
 end
