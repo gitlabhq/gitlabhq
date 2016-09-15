@@ -195,8 +195,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     end
   end
 
-  context 'project authorization' do
+  context 'build authorized as user' do
     let(:current_project) { create(:empty_project) }
+    let(:current_user) { create(:user) }
     let(:capabilities) do
       [
         :build_read_container_image,
@@ -204,9 +205,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       ]
     end
 
-    context 'allow to use scope-less authentication' do
-      it_behaves_like 'a valid token'
+    before do
+      current_project.team << [current_user, :developer]
     end
+
+    it_behaves_like 'a valid token'
 
     context 'allow to pull and push images' do
       let(:current_params) do
@@ -226,12 +229,34 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'allow for public' do
           let(:project) { create(:empty_project, :public) }
+
           it_behaves_like 'a pullable'
         end
 
-        context 'disallow for private' do
+        shared_examples 'pullable for being team member' do
+          context 'when you are not member' do
+            it_behaves_like 'an inaccessible'
+          end
+
+          context 'when you are member' do
+            before do
+              project.team << [current_user, :developer]
+            end
+
+            it_behaves_like 'a pullable'
+          end
+        end
+
+        context 'for private' do
           let(:project) { create(:empty_project, :private) }
-          it_behaves_like 'an inaccessible'
+
+          it_behaves_like 'pullable for being team member'
+
+          context 'when you are admin' do
+            let(:current_user) { create(:admin) }
+
+            it_behaves_like 'pullable for being team member'
+          end
         end
       end
 
@@ -242,6 +267,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow for all' do
           let(:project) { create(:empty_project, :public) }
+
+          before do
+            project.team << [current_user, :developer]
+          end
+
           it_behaves_like 'an inaccessible'
         end
       end

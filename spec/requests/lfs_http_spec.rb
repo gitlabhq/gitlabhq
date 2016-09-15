@@ -14,6 +14,8 @@ describe 'Git LFS API and storage' do
   end
   let(:authorization) { }
   let(:sendfile) { }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
   let(:sample_oid) { lfs_object.oid }
   let(:sample_size) { lfs_object.size }
@@ -244,7 +246,7 @@ describe 'Git LFS API and storage' do
           end
         end
 
-        context 'when CI is authorized' do
+        context 'when build is authorized' do
           let(:authorization) { authorize_ci_project }
 
           let(:update_permissions) do
@@ -897,8 +899,6 @@ describe 'Git LFS API and storage' do
   end
 
   def authorize_ci_project
-    pipeline = create(:ci_empty_pipeline, project: project)
-    build = create(:ci_build, :running, pipeline: pipeline)
     ActionController::HttpAuthentication::Basic.encode_credentials('gitlab-ci-token', build.token)
   end
 
