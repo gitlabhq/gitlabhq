@@ -43,16 +43,5 @@
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
 
--# JavaScript template
-.js-deployment-status.hidden
-  .mr-widget-heading{id: '<%- environment_id %>'}
-    .ci_widget.ci-success
-      = ci_icon_for_status('success')
-      %span
-        Deployed to
-        = link_to '<%- environment_name %>', '<%- environment_url %>', class: 'environment'
-        %span{ data: { toggle: 'tooltip', placement: 'top', title: '<%- created_at_formatted %>' } }
-          <%- created_at %>.
-        .js-deployment-link
-          = link_to '<%- external_url %>', target: '_blank' do
-            = icon('external-link', text: 'View on <%- external_url_formatted %>', right: true)
+.js-success-icon.hidden
+  = ci_icon_for_status('success')

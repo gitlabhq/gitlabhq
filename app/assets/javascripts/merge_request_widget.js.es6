@@ -1,7 +1,26 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  var DEPLOYMENT_TEMPLATE;
+  const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- environment_id %>">
+      <div class="ci_widget ci-success">
+        <%= ci_success_icon %>
+        <span>
+          Deployed to
+          <a href="<%- environment_url %>" target="_blank" class="environment">
+            <%- environment_name %>
+          </a>
+          <span data-toggle="tooltip" data-placement="top" data-title="<%- created_at_formatted %>">
+            <%- created_at %>.
+          </span>
+          <div class="js-deployment-link">
+            <a href="<%- external_url %>" target="_blank">
+              <i class="fa fa-external-link"></i>
+              View on <%- external_url_formatted %>
+            </a>
+          </div>
+        </span>
+      </div>
+    </div>`;
 
   this.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
@@ -12,6 +31,7 @@
       //   ci_status_url        - String, URL to use to check CI status
       //
       this.opts = opts;
+      this.$widgetBody = $('.mr-widget-body');
       $('#modal_merge_info').modal({
         show: false
       });
@@ -21,7 +41,7 @@
       clearInterval(this.fetchBuildStatusInterval);
       this.clearEventListeners();
       this.addEventListeners();
-      this.initDeploymentStatus();
+      this.retrieveSuccessIcon();
       this.getCIStatus(false);
       this.pollCIStatus();
       notifyPermissions();
@@ -51,12 +71,11 @@
       })(this));
     };
 
-    MergeRequestWidget.prototype.initDeploymentStatus = function() {
-      var $deploymentStatus = $('.js-deployment-status');
-      DEPLOYMENT_TEMPLATE = $deploymentStatus.html();
-      $deploymentStatus.remove();
-      this.$widgetBody = $('.mr-widget-body');
-    };
+    MergeRequestWidget.prototype.retrieveSuccessIcon = function() {
+      const $ciSuccessIcon = $('.js-success-icon');
+      this.$ciSuccessIcon = $ciSuccessIcon.html();
+      $ciSuccessIcon.remove();
+    }
 
     MergeRequestWidget.prototype.mergeInProgress = function(deleteSourceBranch) {
       if (deleteSourceBranch == null) {
@@ -162,14 +181,15 @@
     };
 
     MergeRequestWidget.prototype.renderDeployments = function(deployments) {
-      for (var i = 0; i < deployments.length; i++) {
-        var deployment = deployments[i];
-        if ($('.mr-state-widget #' + deployment.environment_id).length) return;
-        var $template = $(DEPLOYMENT_TEMPLATE);
+      for (let i = 0; i < deployments.length; i++) {
+        const deployment = deployments[i];
+        if ($(`.mr-state-widget #${ deployment.environment_id }`).length) return;
+        const $template = $(DEPLOYMENT_TEMPLATE);
         if (!deployment.external_url) $('.js-deployment-link', $template).remove();
         deployment.created_at = $.timeago(deployment.created_at);
-        var templateString = _.unescape($template[0].outerHTML);
-        var template = _.template(templateString)(deployment)
+        deployment.ci_success_icon = this.$ciSuccessIcon;
+        const templateString = _.unescape($template[0].outerHTML);
+        const template = _.template(templateString)(deployment)
         this.$widgetBody.before(template);
       }
     };
