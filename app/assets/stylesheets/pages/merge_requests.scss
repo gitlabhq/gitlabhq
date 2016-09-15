@@ -377,14 +377,27 @@
 
 .mr-version-controls {
   background: $background-color;
-  border: 1px solid $border-color;
-  border-top: 0;
-  padding: 0 16px;
-  color: $gl-placeholder-color;
+  border-bottom: 1px solid $border-color;
+  color: $gl-text-color;
+
+  .mr-version-menus-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .comments-disabled-notif {
+    padding: 10px 16px;
+    .btn {
+      margin-left: 5px;
+    }
+  }
 
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
-    margin: 0 10px;
+    margin: 0 7px;
   }
 
   .comments-disabled-notif {
@@ -396,7 +409,8 @@
   }
 
   .fa-info-circle {
-    color: $red-normal;
+    color: $orange-normal;
+    padding-right: 5px;
   }
 }
 
