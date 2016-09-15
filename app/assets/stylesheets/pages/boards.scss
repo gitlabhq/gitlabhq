@@ -63,6 +63,7 @@
   white-space: nowrap;
 
   @media (min-width: $screen-sm-min) {
+    height: 475px; // Needed for PhantomJS
     height: calc(100vh - 220px);
     min-height: 475px;
   }
@@ -86,7 +87,6 @@
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
-  width: 100%;
   height: 100%;
   font-size: $issue-boards-font-size;
   background: $background-color;
