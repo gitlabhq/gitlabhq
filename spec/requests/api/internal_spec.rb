@@ -107,7 +107,7 @@ describe API::API, api: true  do
 
     context 'user key' do
       it 'returns the correct information about the key' do
-        lfs_auth(key, project)
+        lfs_auth(key.id, project)
 
         expect(response).to have_http_status(200)
         expect(json_response['username']).to eq(user.username)
@@ -115,13 +115,19 @@ describe API::API, api: true  do
 
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
+
+      it 'returns a 404 when the wrong key is provided' do
+        lfs_auth(nil, project)
+
+        expect(response).to have_http_status(404)
+      end
     end
 
     context 'deploy key' do
       let(:key) { create(:deploy_key) }
 
       it 'returns the correct information about the key' do
-        lfs_auth(key, project)
+        lfs_auth(key.id, project)
 
         expect(response).to have_http_status(200)
         expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
@@ -421,10 +427,10 @@ describe API::API, api: true  do
     )
   end
 
-  def lfs_auth(key, project)
+  def lfs_auth(key_id, project)
     post(
       api("/internal/lfs_authenticate"),
-      key_id: key.id,
+      key_id: key_id,
       secret_token: secret_token,
       project: project.path_with_namespace
     )
