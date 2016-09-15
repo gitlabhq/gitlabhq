@@ -45,7 +45,7 @@ describe JwtController do
 
     context 'using User login' do
       let(:user) { create(:user) }
-      let(:headers) { { authorization: credentials(user.username  , user.password) } }
+      let(:headers) { { authorization: credentials(user.username, user.password) } }
 
       subject! { get '/jwt/auth', parameters, headers }
 

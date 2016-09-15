@@ -302,22 +302,77 @@ describe 'Git HTTP requests', lib: true do
       context "when a gitlab ci token is provided" do
         let(:build) { create(:ci_build, :running) }
         let(:project) { build.project }
+        let(:other_project) { create(:empty_project) }
 
         before do
           project.project_feature.update_attributes(builds_access_level: ProjectFeature::ENABLED)
         end
 
-        it "downloads get status 200" do
-          clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+        context 'when build created by system is authenticated' do
+          it "downloads get status 200" do
+            clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
-          expect(response).to have_http_status(200)
-          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          end
+
+          it "uploads get status 401 (no project existence information leak)" do
+            push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+            expect(response).to have_http_status(401)
+          end
+
+          it "downloads from other project get status 401" do
+            clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+            expect(response).to have_http_status(401)
+          end
         end
 
-        it "uploads get status 401 (no project existence information leak)" do
-          push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+        context 'and build created by' do
+          before do
+            build.update(user: user)
+            project.team << [user, :reporter]
+          end
 
-          expect(response).to have_http_status(401)
+          shared_examples 'can download code only from own projects' do
+            it 'downloads get status 200' do
+              clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(200)
+              expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            end
+
+            it 'uploads get status 403' do
+              push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(403)
+            end
+          end
+
+          context 'administrator' do
+            let(:user) { create(:admin) }
+
+            it_behaves_like 'can download code only from own projects'
+
+            it 'downloads from other project get status 403' do
+              clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(403)
+            end
+          end
+
+          context 'regular user' do
+            let(:user) { create(:user) }
+
+            it_behaves_like 'can download code only from own projects'
+
+            it 'downloads from other project get status 404' do
+              clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(404)
+            end
+          end
         end
       end
     end

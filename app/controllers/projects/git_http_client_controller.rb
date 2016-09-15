@@ -117,7 +117,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     case auth_result.type
     when :ci
-      if download_request?
+      if auth_result.project == project && download_request?
         @ci = true
       else
         return false
