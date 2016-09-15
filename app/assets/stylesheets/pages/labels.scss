@@ -125,8 +125,6 @@
 }
 
 .prioritized-labels {
-  margin-bottom: 30px;
-
   .add-priority {
     display: none;
     color: $gray-light;
@@ -140,7 +138,9 @@
   }
 }
 
-.other-labels {
+.group-labels, .project-labels {
+  margin-top: 30px;
+
   .remove-priority {
     display: none;
   }

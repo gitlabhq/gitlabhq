@@ -23,20 +23,23 @@
           %p.empty-message{ class: ('hidden' unless @prioritized_labels.empty?) } No prioritized labels yet
           - if @prioritized_labels.present?
             = render @prioritized_labels
-    .other-labels
+
+    .group-labels
       %h5{ class: ('hide' if hide) } Group Labels
-      - if @group_labels.present?
-        %ul.content-list.manage-labels-list.js-other-labels
+      %ul.content-list.manage-labels-list.js-group-labels
+        %p.empty-message{ class: ('hidden' unless @group_labels.empty?) } No group labels yet
+        - if @group_labels.present?
           = render @group_labels
-      - else
-        %p.empty-message No group labels yet
+
+    .project-labels
       - if can?(current_user, :admin_label, @project)
         %h5{ class: ('hide' if hide) } Project Labels
-      - if @labels.present?
-        %ul.content-list.manage-labels-list.js-other-labels
-          = render @labels
+        %ul.content-list.manage-labels-list.js-project-labels
+          %p.empty-message{ class: ('hidden' unless @labels.empty?) } No labels yet
+          - if @labels.present?
+            = render @labels
         = paginate @labels, theme: 'gitlab'
-      - else
+      - if @project.labels.empty?
         .nothing-here-block
           - if can?(current_user, :admin_label, @project)
             Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.

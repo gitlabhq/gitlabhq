@@ -4,17 +4,24 @@
 
     function LabelManager(opts) {
       // Defaults
-      var ref, ref1, ref2;
+      var ref, ref1, ref2, ref3;
+
       if (opts == null) {
         opts = {};
       }
-      this.togglePriorityButton = (ref = opts.togglePriorityButton) != null ? ref : $('.js-toggle-priority'), this.prioritizedLabels = (ref1 = opts.prioritizedLabels) != null ? ref1 : $('.js-prioritized-labels'), this.otherLabels = (ref2 = opts.otherLabels) != null ? ref2 : $('.js-other-labels');
+
+      this.togglePriorityButton = (ref = opts.togglePriorityButton) != null ? ref : $('.js-toggle-priority');
+      this.prioritizedLabels = (ref1 = opts.prioritizedLabels) != null ? ref1 : $('.js-prioritized-labels');
+      this.groupLabels = (ref2 = opts.groupLabels) != null ? ref2 : $('.js-group-labels');
+      this.projectLabels = (ref3 = opts.projectLabels) != null ? ref3 : $('.js-project-labels');
+
       this.prioritizedLabels.sortable({
         items: 'li',
         placeholder: 'list-placeholder',
         axis: 'y',
         update: this.onPrioritySortUpdate.bind(this)
       });
+
       this.bindEvents();
     }
 
@@ -36,35 +43,50 @@
     };
 
     LabelManager.prototype.toggleLabelPriority = function($label, action, persistState) {
-      var $from, $target, _this, url, xhr;
+      var $from, $target, $togglePriority, _this, url, type, xhr;
+
       if (persistState == null) {
         persistState = true;
       }
+
       _this = this;
-      url = $label.find('.js-toggle-priority').data('url');
+
+      $togglePriority = $label.find('.js-toggle-priority');
+      url = $togglePriority.data('url');
+      type = $togglePriority.data('type');
+
       $target = this.prioritizedLabels;
-      $from = this.otherLabels;
-      // Optimistic update
-      if (action === 'remove') {
-        $target = this.otherLabels;
-        $from = this.prioritizedLabels;
+      $from = this.projectLabels;
+
+      if (type === 'group_label') {
+        $from = this.groupLabels;
       }
-      if ($from.find('li').length === 1) {
+
+      if (action === 'remove') {
+        $from = [$target, $target = $from][0];
+      }
+
+      if ($from.children('li').length === 1) {
         $from.find('.empty-message').removeClass('hidden');
       }
+
       if (!$target.find('li').length) {
         $target.find('.empty-message').addClass('hidden');
       }
+
       $label.detach().appendTo($target);
+
       // Return if we are not persisting state
       if (!persistState) {
         return;
       }
+
       if (action === 'remove') {
         xhr = $.ajax({
           url: url,
           type: 'DELETE'
         });
+
         // Restore empty message
         if (!$from.find('li').length) {
           $from.find('.empty-message').removeClass('hidden');
@@ -72,6 +94,7 @@
       } else {
         xhr = this.savePrioritySort($label, action);
       }
+
       return xhr.fail(this.rollbackLabelPosition.bind(this, $label, action));
     };
 

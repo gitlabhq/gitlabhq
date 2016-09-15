@@ -10,12 +10,12 @@
         New label
 
 .labels
-  .other-labels
-    - if @labels.present?
-      %ul.content-list.manage-labels-list.js-other-labels
+  .group-labels
+    %ul.content-list.manage-labels-list.js-group-labels
+      - if @labels.present?
         = render @labels
-      = paginate @labels, theme: 'gitlab'
-    - else
+    = paginate @labels, theme: 'gitlab'
+    - if @labels.blank?
       .nothing-here-block
         - if can?(current_user, :admin_label, @group)
           Create a label or #{link_to 'generate a default set of labels', generate_group_labels_path(@group), method: :post}.

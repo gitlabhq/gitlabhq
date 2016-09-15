@@ -3,7 +3,7 @@
     .draggable-handler
       = icon('bars')
     .js-toggle-priority.toggle-priority{ data: { url: remove_priority_namespace_project_label_path(@project.namespace, @project, label),
-      dom_id: dom_id(label) } }
+      dom_id: dom_id(label), type: label.label_type } }
       %button.add-priority.btn.has-tooltip{ title: 'Prioritize', :'data-placement' => 'top' }
         = icon('star-o')
       %button.remove-priority.btn.has-tooltip{ title: 'Remove priority', :'data-placement' => 'top' }

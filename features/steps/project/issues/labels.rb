@@ -60,25 +60,25 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see label \'feature\'' do
-    page.within '.other-labels .manage-labels-list' do
+    page.within '.project-labels .manage-labels-list' do
       expect(page).to have_content 'feature'
     end
   end
 
   step 'I should see label \'bug\'' do
-    page.within '.other-labels .manage-labels-list' do
+    page.within '.project-labels .manage-labels-list' do
       expect(page).to have_content 'bug'
     end
   end
 
   step 'I should not see label \'bug\'' do
-    page.within '.other-labels .manage-labels-list' do
+    page.within '.project-labels .manage-labels-list' do
       expect(page).not_to have_content 'bug'
     end
   end
 
   step 'I should see label \'support\'' do
-    page.within '.other-labels .manage-labels-list' do
+    page.within '.project-labels .manage-labels-list' do
       expect(page).to have_content 'support'
     end
   end
@@ -90,7 +90,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see label \'fix\'' do
-    page.within '.other-labels .manage-labels-list' do
+    page.within '.project-labels .manage-labels-list' do
       expect(page).to have_content 'fix'
     end
   end
