@@ -69,15 +69,13 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    # We use around_transition to process pipeline on next stages as soon as possible, before the `after_*` is executed
-    around_transition any => [:success, :failed, :canceled] do |commit_status, block|
-      block.call
-
-      commit_status.pipeline.try(:process!)
-    end
-
     after_transition do |commit_status, transition|
       commit_status.pipeline.try(:build_updated) unless transition.loopback?
+    end
+
+    after_transition any => [:success, :failed, :canceled] do |commit_status|
+      commit_status.pipeline.try(:process!)
+      true
     end
 
     after_transition [:created, :pending, :running] => :success do |commit_status|
