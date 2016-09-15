@@ -1,4 +1,5 @@
 require 'sidekiq/testing'
+require './spec/support/test_env'
 
 class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)
@@ -21,10 +22,64 @@ class Gitlab::Seeder::CycleAnalytics
     end
   end
 
+  def seed_metrics!
+    @issue_count.times do |index|
+      # Issue
+      Timecop.travel 5.days.from_now
+      title = "#{FFaker::Product.brand}-#{FFaker::Product.brand}-#{rand(1000)}"
+      issue = Issue.create(project: @project, title: title, author: @user)
+      issue_metrics = issue.metrics
+
+      # Milestones / Labels
+      Timecop.travel 5.days.from_now
+      if index.even?
+        issue_metrics.first_associated_with_milestone_at = rand(6..12).hours.from_now
+      else
+        issue_metrics.first_added_to_board_at = rand(6..12).hours.from_now
+      end
+
+      # Commit
+      Timecop.travel 5.days.from_now
+      issue_metrics.first_mentioned_in_commit_at = rand(6..12).hours.from_now
+
+      # MR
+      Timecop.travel 5.days.from_now
+      branch_name = "#{FFaker::Product.brand}-#{FFaker::Product.brand}-#{rand(1000)}"
+      @project.repository.add_branch(@user, branch_name, 'master')
+      merge_request = MergeRequest.create(target_project: @project, source_project: @project, source_branch: branch_name, target_branch: 'master', title: branch_name, author: @user)
+      merge_request_metrics = merge_request.metrics
+
+      # MR closing issues
+      Timecop.travel 5.days.from_now
+      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
+
+      # Merge
+      Timecop.travel 5.days.from_now
+      merge_request_metrics.merged_at = rand(6..12).hours.from_now
+
+      # Start build
+      Timecop.travel 5.days.from_now
+      merge_request_metrics.latest_build_started_at = rand(6..12).hours.from_now
+
+      # Finish build
+      Timecop.travel 5.days.from_now
+      merge_request_metrics.latest_build_finished_at = rand(6..12).hours.from_now
+
+      # Deploy to production
+      Timecop.travel 5.days.from_now
+      merge_request_metrics.first_deployed_to_production_at = rand(6..12).hours.from_now
+
+      issue_metrics.save!
+      merge_request_metrics.save!
+
+      print '.'
+    end
+  end
+
   def seed!
     Sidekiq::Testing.inline! do
-      issues = create_issues(@project)
-      print '.'
+      issues = create_issues
+      puts '.'
 
       # Stage 1
       Timecop.travel 5.days.from_now
@@ -62,7 +117,7 @@ class Gitlab::Seeder::CycleAnalytics
 
   private
 
-  def create_issues(project)
+  def create_issues
     Array.new(@issue_count) do
       issue_params = {
         title: "Cycle Analytics: #{FFaker::Lorem.sentence(6)}",
@@ -182,6 +237,9 @@ Gitlab::Seeder.quiet do
   elsif ENV['CYCLE_ANALYTICS_PERF_TEST']
     seeder = Gitlab::Seeder::CycleAnalytics.new(Project.order(:id).first, perf: true)
     seeder.seed!
+  elsif ENV['CYCLE_ANALYTICS_POPULATE_METRICS_DIRECTLY']
+    seeder = Gitlab::Seeder::CycleAnalytics.new(Project.order(:id).first, perf: true)
+    seeder.seed_metrics!
   else
     puts "Not running the cycle analytics seed file. Use the `SEED_CYCLE_ANALYTICS` environment variable to enable it."
   end
