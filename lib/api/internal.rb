@@ -35,6 +35,14 @@ module API
             Project.find_with_namespace(project_path)
           end
         end
+
+        def ssh_capabilities
+          [
+            :read_project,
+            :download_code,
+            :push_code
+          ]
+        end
       end
 
       post "/allowed" do
@@ -129,16 +137,6 @@ module API
         user.save!
 
         { success: true, recovery_codes: codes }
-      end
-
-      private
-
-      def ssh_capabilities
-        [
-          :read_project,
-          :download_code,
-          :push_code
-        ]
       end
     end
   end

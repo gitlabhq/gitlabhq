@@ -22,11 +22,13 @@ describe JwtController do
 
   context 'when using authorized request' do
     context 'using CI token' do
-      let(:project) { create(:empty_project, runners_token: 'token') }
-      let(:headers) { { authorization: credentials('gitlab-ci-token', project.runners_token) } }
+      let(:build) { create(:ci_build, :running) }
+      let(:project) { build.project }
+      let(:headers) { { authorization: credentials('gitlab-ci-token', build.token) } }
 
       context 'project with enabled CI' do
         subject! { get '/jwt/auth', parameters, headers }
+
         it { expect(service_class).to have_received(:new).with(project, nil, parameters) }
       end
 

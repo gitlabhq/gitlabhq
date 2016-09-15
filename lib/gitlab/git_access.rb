@@ -7,7 +7,7 @@ module Gitlab
 
     attr_reader :actor, :project, :protocol, :user_access, :capabilities
 
-    def initialize(actor, project, protocol, capabilities: capabilities)
+    def initialize(actor, project, protocol, capabilities:)
       @actor    = actor
       @project  = project
       @protocol = protocol

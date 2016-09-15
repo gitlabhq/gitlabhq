@@ -4,8 +4,8 @@ module Auth
 
     AUDIENCE = 'container_registry'
 
-    def execute(capabilities: capabilities)
-      @capabilities = capabilities
+    def execute(capabilities:)
+      @capabilities = capabilities || []
 
       return error('not found', 404) unless registry.enabled
 
@@ -76,7 +76,7 @@ module Auth
 
       case requested_action
       when 'pull'
-        build_can_pull?(requested_project) || user_can_pull?(requested_project)
+        requested_project.public? || build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
       else
@@ -87,8 +87,6 @@ module Auth
     def registry
       Gitlab.config.registry
     end
-
-    private
 
     def build_can_pull?(requested_project)
       # Build can:

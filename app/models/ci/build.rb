@@ -43,6 +43,7 @@ module Ci
         new_build.status = 'pending'
         new_build.runner_id = nil
         new_build.trigger_request_id = nil
+        new_build.token = nil
         new_build.save
       end
 

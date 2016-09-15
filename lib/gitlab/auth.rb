@@ -115,7 +115,7 @@ module Gitlab
         return unless login == 'gitlab-ci-token'
         return unless password
 
-        build = Ci::Build.running.find_by_token(password)
+        build = ::Ci::Build.running.find_by_token(password)
         return unless build
 
         if build.user

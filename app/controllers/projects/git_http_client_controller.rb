@@ -36,7 +36,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
       @capabilities = auth_result.capabilities || []
 
-      if ci? || user
+      if auth_result.succeeded?
         return # Allow access
       end
     elsif allow_kerberos_spnego_auth? && spnego_provided?

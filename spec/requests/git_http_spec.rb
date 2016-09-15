@@ -300,23 +300,22 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "when a gitlab ci token is provided" do
-        let(:token) { 123 }
-        let(:project) { FactoryGirl.create :empty_project }
+        let(:build) { create(:ci_build, :running) }
+        let(:project) { build.project }
 
         before do
-          project.update_attributes(runners_token: token)
           project.project_feature.update_attributes(builds_access_level: ProjectFeature::ENABLED)
         end
 
         it "downloads get status 200" do
-          clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
+          clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
           expect(response).to have_http_status(200)
           expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
         end
 
         it "uploads get status 401 (no project existence information leak)" do
-          push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
+          push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
           expect(response).to have_http_status(401)
         end

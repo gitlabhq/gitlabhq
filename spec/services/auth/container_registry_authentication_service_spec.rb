@@ -6,8 +6,14 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
+  let(:capabilities) do
+    [
+      :read_container_image,
+      :create_container_image
+    ]
+  end
 
-  subject { described_class.new(current_project, current_user, current_params).execute }
+  subject { described_class.new(current_project, current_user, current_params).execute(capabilities: capabilities) }
 
   before do
     allow(Gitlab.config.registry).to receive_messages(enabled: true, issuer: 'rspec', key: nil)
@@ -41,6 +47,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
          'name' => project.path_with_namespace,
          'actions' => actions,
        }]
+    end
+    let(:capabilities) do
+      [
+        :build_read_container_image,
+        :build_create_container_image
+      ]
     end
 
     it_behaves_like 'a valid token'

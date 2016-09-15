@@ -22,7 +22,7 @@ describe Gitlab::GitAccess, lib: true do
     context 'ssh disabled' do
       before do
         disable_protocol('ssh')
-        @acc = Gitlab::GitAccess.new(actor, project, 'ssh')
+        @acc = Gitlab::GitAccess.new(actor, project, 'ssh', capabilities: capabilities)
       end
 
       it 'blocks ssh git push' do
@@ -37,7 +37,7 @@ describe Gitlab::GitAccess, lib: true do
     context 'http disabled' do
       before do
         disable_protocol('http')
-        @acc = Gitlab::GitAccess.new(actor, project, 'http')
+        @acc = Gitlab::GitAccess.new(actor, project, 'http', capabilities: capabilities)
       end
 
       it 'blocks http push' do
@@ -318,7 +318,6 @@ describe Gitlab::GitAccess, lib: true do
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
-
   end
 
   shared_examples 'can not push code' do
@@ -354,14 +353,14 @@ describe Gitlab::GitAccess, lib: true do
   describe 'build capabilities permissions' do
     let(:capabilities) { build_capabilities }
 
-    it_behaves_like 'cannot push code'
+    it_behaves_like 'can not push code'
   end
 
   describe 'deploy key permissions' do
     let(:key) { create(:deploy_key) }
     let(:actor) { key }
 
-    it_behaves_like 'cannot push code'
+    it_behaves_like 'can not push code'
   end
 
   private
@@ -370,6 +369,14 @@ describe Gitlab::GitAccess, lib: true do
     [
       :read_project,
       :build_download_code
+    ]
+  end
+
+  def full_capabilities
+    [
+      :read_project,
+      :download_code,
+      :push_code
     ]
   end
 end
