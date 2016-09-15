@@ -48,12 +48,6 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
          'actions' => actions,
        }]
     end
-    let(:capabilities) do
-      [
-        :build_read_container_image,
-        :build_create_container_image
-      ]
-    end
 
     it_behaves_like 'a valid token'
     it { expect(payload).to include('access' => access) }
@@ -203,6 +197,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
+    let(:capabilities) do
+      [
+        :build_read_container_image,
+        :build_create_container_image
+      ]
+    end
 
     context 'allow to use scope-less authentication' do
       it_behaves_like 'a valid token'

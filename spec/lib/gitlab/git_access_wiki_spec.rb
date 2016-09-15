@@ -1,9 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccessWiki, lib: true do
-  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web') }
+  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', capabilities: capabilities) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:capabilities) do
+    [
+      :read_project,
+      :download_code,
+      :push_code
+    ]
+  end
 
   describe 'push_allowed?' do
     before do

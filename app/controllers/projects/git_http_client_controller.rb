@@ -23,10 +23,12 @@ class Projects::GitHttpClientController < Projects::ApplicationController
       login, password = user_name_and_password(request)
       auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
-      if auth_result.type == :ci && download_request?
-        @ci = true
+      if auth_result.type == :ci && !download_request?
+        # Not allowed
+        auth_result = Gitlab::Auth::Result.new
       elsif auth_result.type == :oauth && !download_request?
         # Not allowed
+        auth_result = Gitlab::Auth::Result.new
       elsif auth_result.type == :missing_personal_token
         render_missing_personal_token
         return # Render above denied access, nothing left to do
@@ -35,6 +37,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
       end
 
       @capabilities = auth_result.capabilities || []
+      @ci = auth_result.type == :ci
 
       if auth_result.succeeded?
         return # Allow access

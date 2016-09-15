@@ -586,8 +586,8 @@ describe 'Git LFS API and storage' do
         context 'when CI is authorized' do
           let(:authorization) { authorize_ci_project }
 
-          it 'responds with 401' do
-            expect(response).to have_http_status(401)
+          it 'responds with 403' do
+            expect(response).to have_http_status(403)
           end
         end
       end
@@ -614,7 +614,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_ci_project }
 
         it 'responds with status 403' do
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(403)
         end
       end
     end
@@ -897,7 +897,9 @@ describe 'Git LFS API and storage' do
   end
 
   def authorize_ci_project
-    ActionController::HttpAuthentication::Basic.encode_credentials('gitlab-ci-token', project.runners_token)
+    pipeline = create(:ci_empty_pipeline, project: project)
+    build = create(:ci_build, :running, pipeline: pipeline)
+    ActionController::HttpAuthentication::Basic.encode_credentials('gitlab-ci-token', build.token)
   end
 
   def authorize_user

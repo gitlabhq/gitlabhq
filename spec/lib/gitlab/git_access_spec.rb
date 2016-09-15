@@ -324,7 +324,7 @@ describe Gitlab::GitAccess, lib: true do
     subject { access.check('git-receive-pack', '_any') }
 
     context 'when project is authorized' do
-      before { key.projects << project }
+      before { authorize }
 
       it { expect(subject).not_to be_allowed }
     end
@@ -353,14 +353,22 @@ describe Gitlab::GitAccess, lib: true do
   describe 'build capabilities permissions' do
     let(:capabilities) { build_capabilities }
 
-    it_behaves_like 'can not push code'
+    it_behaves_like 'can not push code' do
+      def authorize
+        project.team << [user, :reporter]
+      end
+    end
   end
 
   describe 'deploy key permissions' do
     let(:key) { create(:deploy_key) }
     let(:actor) { key }
 
-    it_behaves_like 'can not push code'
+    it_behaves_like 'can not push code' do
+      def authorize
+        key.projects << project
+      end
+    end
   end
 
   private

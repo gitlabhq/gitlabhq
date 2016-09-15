@@ -117,6 +117,7 @@ module Gitlab
 
         build = ::Ci::Build.running.find_by_token(password)
         return unless build
+        return unless build.project.builds_enabled?
 
         if build.user
           # If user is assigned to build, use restricted credentials of user
@@ -126,8 +127,6 @@ module Gitlab
           Result.new(nil, build.project, :ci, build_capabilities)
         end
       end
-
-      private
 
       def build_capabilities
         [

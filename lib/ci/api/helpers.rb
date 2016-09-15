@@ -14,7 +14,7 @@ module Ci
       end
 
       def authenticate_build_token!(build)
-        forbidden! unless build_token_valid?
+        forbidden! unless build_token_valid?(build)
       end
 
       def runner_registration_token_valid?
@@ -23,7 +23,7 @@ module Ci
           current_application_settings.runners_registration_token)
       end
 
-      def build_token_valid?
+      def build_token_valid?(build)
         token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
 
         # We require to also check `runners_token` to maintain compatibility with old version of runners
