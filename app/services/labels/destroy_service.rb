@@ -20,9 +20,7 @@ module Labels
     private
 
     def destroy_labels(subject, title)
-      Label.with_type(:group_label)
-           .where(subject: subject, title: title)
-           .each(&:destroy)
+      find_labels(subject, title).each(&:destroy)
     end
   end
 end

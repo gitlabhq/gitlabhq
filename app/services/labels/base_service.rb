@@ -7,5 +7,9 @@ module Labels
     private
 
     attr_reader :subject, :user, :params
+
+    def find_labels(subject, title)
+      Label.with_type(:group_label).where(subject: subject, title: title)
+    end
   end
 end

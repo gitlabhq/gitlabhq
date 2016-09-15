@@ -23,9 +23,7 @@ module Labels
     private
 
     def update_labels(subject, title)
-      Label.with_type(:group_label)
-           .where(subject: subject, title: title)
-           .update_all(params)
+      find_labels(subject, title).update_all(params)
     end
   end
 end

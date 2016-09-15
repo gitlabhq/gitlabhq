@@ -1,7 +1,5 @@
 class Groups::LabelsController < Groups::ApplicationController
-  include ToggleSubscriptionAction
-
-  before_action :label, only: [:edit, :update, :destroy]
+  before_action :label, only: [:edit, :update, :destroy, :toggle_subscription]
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update, :generate, :destroy]
 
   respond_to :html
@@ -54,6 +52,14 @@ class Groups::LabelsController < Groups::ApplicationController
     end
   end
 
+  def toggle_subscription
+    return unless current_user
+
+    Labels::ToggleSubscriptionService.new(@group, current_user).execute(@label)
+
+    head :ok
+  end
+
   protected
 
   def authorize_admin_labels!
@@ -67,7 +73,6 @@ class Groups::LabelsController < Groups::ApplicationController
   def label
     @label ||= @group.labels.find(params[:id])
   end
-  alias_method :subscribable_resource, :label
 
   def label_params
     params.require(:label).permit(:title, :description, :color)
