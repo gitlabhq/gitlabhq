@@ -6,6 +6,7 @@ describe Project, models: true do
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:users) }
+    it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
@@ -24,6 +25,30 @@ describe Project, models: true do
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
+    it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
+    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:builds_email_service).dependent(:destroy) }
+    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:irker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
+    it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
+    it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
+    it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
+    it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
+    it { is_expected.to have_one(:teamcity_service).dependent(:destroy) }
+    it { is_expected.to have_one(:jira_service).dependent(:destroy) }
+    it { is_expected.to have_one(:redmine_service).dependent(:destroy) }
+    it { is_expected.to have_one(:custom_issue_tracker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:bugzilla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
+    it { is_expected.to have_one(:project_feature).dependent(:destroy) }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
+    it { is_expected.to have_one(:last_event).class_name('Event') }
+    it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -31,9 +56,16 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:labels).dependent(:destroy) }
+    it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:releases).dependent(:destroy) }
+    it { is_expected.to have_many(:lfs_objects_projects).dependent(:destroy) }
+    it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
+    it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
     describe '#members & #requesters' do
       let(:project) { create(:project) }
@@ -178,7 +210,7 @@ describe Project, models: true do
       expect(project.runners_token).not_to eq('')
     end
 
-    it 'does not set an random toke if one provided' do
+    it 'does not set an random token if one provided' do
       project = FactoryGirl.create :empty_project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
@@ -1495,6 +1527,58 @@ describe Project, models: true do
     it 'reloads the default branch' do
       expect(project).to receive(:reload_default_branch)
       project.change_head(project.default_branch)
+    end
+  end
+
+  describe '#pushes_since_gc' do
+    let(:project) { create(:project) }
+
+    after do
+      project.reset_pushes_since_gc
+    end
+
+    context 'without any pushes' do
+      it 'returns 0' do
+        expect(project.pushes_since_gc).to eq(0)
+      end
+    end
+
+    context 'with a number of pushes' do
+      it 'returns the number of pushes' do
+        3.times { project.increment_pushes_since_gc }
+
+        expect(project.pushes_since_gc).to eq(3)
+      end
+    end
+  end
+
+  describe '#increment_pushes_since_gc' do
+    let(:project) { create(:project) }
+
+    after do
+      project.reset_pushes_since_gc
+    end
+
+    it 'increments the number of pushes since the last GC' do
+      3.times { project.increment_pushes_since_gc }
+
+      expect(project.pushes_since_gc).to eq(3)
+    end
+  end
+
+  describe '#reset_pushes_since_gc' do
+    let(:project) { create(:project) }
+
+    after do
+      project.reset_pushes_since_gc
+    end
+
+    it 'resets the number of pushes since the last GC' do
+      3.times { project.increment_pushes_since_gc }
+
+      project.reset_pushes_since_gc
+
+      expect(project.pushes_since_gc).to eq(0)
     end
   end
 end

@@ -20,6 +20,11 @@ module Gitlab
           find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s).
           try(:id)
       end
+
+      def gitlab_author_id
+        return @gitlab_author_id if defined?(@gitlab_author_id)
+        @gitlab_author_id = gitlab_user_id(raw_data.user.id)
+      end
     end
   end
 end

@@ -153,6 +153,7 @@ module Ci
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += yaml_variables
+      variables += user_variables
       variables += project.secret_variables
       variables += trigger_request.user_variables if trigger_request
       variables
@@ -435,6 +436,15 @@ module Ci
       read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
     end
 
+    def user_variables
+      return [] if user.blank?
+
+      [
+        { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
+        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
+      ]
+    end
+
     private
 
     def update_artifacts_size
@@ -470,6 +480,7 @@ module Ci
       ]
       variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
       variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
+      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
       variables
     end
 

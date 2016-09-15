@@ -813,7 +813,7 @@ class Repository
         update: true
       }
 
-      if previous_path
+      if previous_path && previous_path != path
         options[:file][:previous_path] = previous_path
         Gitlab::Git::Blob.rename(raw_repository, options)
       else
@@ -990,37 +990,6 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def parse_search_result(result)
-    ref = nil
-    filename = nil
-    basename = nil
-    startline = 0
-
-    result.each_line.each_with_index do |line, index|
-      if line =~ /^.*:.*:\d+:/
-        ref, filename, startline = line.split(':')
-        startline = startline.to_i - index
-        extname = Regexp.escape(File.extname(filename))
-        basename = filename.sub(/#{extname}$/, '')
-        break
-      end
-    end
-
-    data = ""
-
-    result.each_line do |line|
-      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: startline,
-      data: data
-    )
-  end
-
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
@@ -1048,7 +1017,7 @@ class Repository
 
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
       update_ref!(ref, newrev, oldrev)
-      
+
       if was_empty || !target_branch
         # If repo was empty expire cache
         after_create if was_empty
