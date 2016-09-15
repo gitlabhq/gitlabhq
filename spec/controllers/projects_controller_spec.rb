@@ -181,6 +181,25 @@ describe ProjectsController do
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(dashboard_projects_path)
     end
+
+    context "when the project is forked" do
+      let(:project)      { create(:project) }
+      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "closes all related merge requests" do
+        project.merge_requests << merge_request
+        sign_in(admin)
+
+        delete :destroy, namespace_id: fork_project.namespace.path, id: fork_project.path
+
+        expect(merge_request.reload.state).to eq('closed')
+      end
+    end
   end
 
   describe "POST #toggle_star" do

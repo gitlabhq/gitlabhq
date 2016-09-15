@@ -109,6 +109,12 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
 
         expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
       end
+
+      it 'returns description without created at tag line' do
+        create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(issue.attributes.fetch(:description)).to eq("I'm having a problem with this.")
+      end
     end
   end
 

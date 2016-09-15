@@ -52,7 +52,7 @@ class Project < ActiveRecord::Base
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
-  belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
   belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
@@ -1526,7 +1526,23 @@ class Project < ActiveRecord::Base
     self.repository_read_only = true
   end
 
+  def pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+  end
+
+  def increment_pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+  end
+
+  def reset_pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+  end
+
   private
+
+  def pushes_since_gc_redis_key
+    "projects/#{id}/pushes_since_gc"
+  end
 
   # Prevents the creation of project_feature record for every project
   def setup_project_feature

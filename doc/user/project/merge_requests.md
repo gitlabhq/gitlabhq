@@ -102,6 +102,9 @@ A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few
 tricks to checkout a merge request locally.
 
+Please note that you can checkout a merge request locally even if the source
+project is a fork (even a private fork) of the target project.
+
 #### Checkout locally by adding a git alias
 
 Add the following alias to your `~/.gitconfig`:

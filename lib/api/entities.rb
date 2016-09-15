@@ -407,7 +407,7 @@ module API
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
-          NotificationSetting.levels[member.notification_setting.level]
+          ::NotificationSetting.levels[member.notification_setting.level]
         end
       end
     end
@@ -416,6 +416,21 @@ module API
     end
 
     class GroupAccess < MemberAccess
+    end
+
+    class NotificationSetting < Grape::Entity
+      expose :level
+      expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
+        ::NotificationSetting::EMAIL_EVENTS.each do |event|
+          expose event
+        end
+      end
+    end
+
+    class GlobalNotificationSetting < NotificationSetting
+      expose :notification_email do |notification_setting, options|
+        notification_setting.user.notification_email
+      end
     end
 
     class ProjectService < Grape::Entity

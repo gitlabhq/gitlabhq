@@ -280,6 +280,10 @@ module API
       render_api_error!('304 Not Modified', 304)
     end
 
+    def no_content!
+      render_api_error!('204 No Content', 204)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)

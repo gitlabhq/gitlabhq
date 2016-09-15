@@ -137,3 +137,18 @@ end
 ```
 
 Here the final value of `sleep_real_time` will be `3`, _not_ `1`.
+
+## Tracking Custom Events
+
+Besides instrumenting code GitLab Performance Monitoring also supports tracking
+of custom events. This is primarily intended to be used for tracking business
+metrics such as the number of Git pushes, repository imports, and so on.
+
+To track a custom event simply call `Gitlab::Metrics.add_event` passing it an
+event name and a custom set of (optional) tags. For example:
+
+```ruby
+Gitlab::Metrics.add_event(:user_login, email: current_user.email)
+```
+
+Event names should be verbs such as `push_repository` and `remove_branch`.
