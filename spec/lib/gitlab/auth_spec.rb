@@ -55,7 +55,7 @@ describe Gitlab::Auth, lib: true do
       login = 'foo'
       ip = 'ip'
 
-      expect(gl_auth).to receive(:rate_limit!).with(ip, success: false, login: login)
+      expect(gl_auth).to receive(:rate_limit!).with(ip, success: nil, login: login)
       expect(gl_auth.find_for_git_client(login, 'bar', project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new)
     end
   end

@@ -13,7 +13,7 @@ module Gitlab
         when Key
           actor.user
         else
-          #
+          raise 'Bad Actor'
         end
     end
 

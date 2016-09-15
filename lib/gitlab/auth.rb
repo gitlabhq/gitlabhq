@@ -1,6 +1,10 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:actor, :type)
+    Result = Struct.new(:actor, :type) do
+      def success?
+        actor.present? || type == :ci
+      end
+    end
 
     class MissingPersonalTokenError < StandardError; end
 
@@ -8,7 +12,16 @@ module Gitlab
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
-        populate_result(login, password, project, ip)
+        result =
+          ci_request_check(login, password, project) ||
+          user_with_password_for_git(login, password) ||
+          oauth_access_token_check(login, password) ||
+          lfs_token_check(login, password) ||
+          personal_access_token_check(login, password)
+
+        rate_limit!(ip, success: result && result.success?, login: login)
+
+        result || Result.new
       end
 
       def find_with_user_password(login, password)
@@ -48,24 +61,6 @@ module Gitlab
       end
 
       private
-
-      def populate_result(login, password, project, ip)
-        result =
-          ci_request_check(login, password, project) ||
-          user_with_password_for_git(login, password) ||
-          oauth_access_token_check(login, password) ||
-          lfs_token_check(login, password) ||
-          personal_access_token_check(login, password)
-
-        if result && result.type != :ci
-          result.type = nil unless result.actor
-        end
-
-        success = result ? result.actor.present? || result.type == :ci : false
-        rate_limit!(ip, success: success, login: login)
-
-        result || Result.new
-      end
 
       def valid_ci_request?(login, password, project)
         matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
@@ -110,7 +105,7 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          Result.new(user, :personal_token) if user == validation
+          Result.new(user, :personal_token) if user.present? && user == validation
         end
       end
 
@@ -124,9 +119,11 @@ module Gitlab
             User.by_login(login)
           end
 
-        token_handler = Gitlab::LfsToken.new(actor)
+        if actor
+          token_handler = Gitlab::LfsToken.new(actor)
 
-        Result.new(actor, token_handler.type) if actor && Devise.secure_compare(token_handler.value, password)
+          Result.new(actor, token_handler.type) if Devise.secure_compare(token_handler.value, password)
+        end
       end
     end
   end
