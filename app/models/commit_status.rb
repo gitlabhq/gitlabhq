@@ -93,6 +93,10 @@ class CommitStatus < ActiveRecord::Base
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
 
+  def group_name
+    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
+  end
+
   def self.stages
     # We group by stage name, but order stages by theirs' index
     unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
@@ -109,6 +113,10 @@ class CommitStatus < ActiveRecord::Base
 
   def ignored?
     allow_failure? && (failed? || canceled?)
+  end
+
+  def playable?
+    false
   end
 
   def duration
