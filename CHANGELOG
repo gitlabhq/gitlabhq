@@ -10,6 +10,7 @@ v 8.13.0 (unreleased)
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
   - Speed-up group milestones show page
+  - Fix inconsistent options dropdown caret on mobile viewports (ClemMakesApps)
   - Don't include archived projects when creating group milestones. !4940 (Jeroen Jacobs)
   - Add tag shortcut from the Commit page. !6543
   - Keep refs for each deployment
