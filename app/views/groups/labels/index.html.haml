@@ -11,6 +11,9 @@
 
 .labels
   .group-labels
+    %h5
+      = icon('folder-open')
+      Group Labels
     %ul.content-list.manage-labels-list.js-group-labels
       - if @labels.present?
         = render @labels

@@ -25,7 +25,9 @@
             = render @prioritized_labels
 
     .group-labels
-      %h5{ class: ('hide' if hide) } Group Labels
+      %h5{ class: ('hide' if hide) }
+        = icon('folder-open')
+        Group Labels
       %ul.content-list.manage-labels-list.js-group-labels
         %p.empty-message{ class: ('hidden' unless @group_labels.empty?) } No group labels yet
         - if @group_labels.present?
@@ -33,7 +35,9 @@
 
     .project-labels
       - if can?(current_user, :admin_label, @project)
-        %h5{ class: ('hide' if hide) } Project Labels
+        %h5
+          = icon('bookmark')
+          Project Labels
         %ul.content-list.manage-labels-list.js-project-labels
           %p.empty-message{ class: ('hidden' unless @labels.empty?) } No labels yet
           - if @labels.present?

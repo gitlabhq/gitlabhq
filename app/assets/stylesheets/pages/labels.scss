@@ -130,6 +130,10 @@
     color: $gray-light;
   }
 
+  .label-type {
+    opacity: 0.3;
+  }
+
   li:hover {
     .draggable-handler {
       display: inline-block;

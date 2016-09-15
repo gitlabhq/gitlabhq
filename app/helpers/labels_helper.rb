@@ -56,6 +56,22 @@ module LabelsHelper
     end
   end
 
+  def label_type_icon(label)
+    name =
+      case label.label_type.to_sym
+      when :group_label then 'folder-open'
+      when :project_label then 'bookmark'
+      end
+
+    content_tag :span,
+      class: 'has-tooltip',
+      data: { 'placement' => 'top' },
+      title: label.label_type.titleize,
+      aria: { label: label.label_type.titleize } do
+      icon(name, base: true, class: 'label-type')
+    end
+  end
+
   def project_label_names
     @project.labels.pluck(:title)
   end
