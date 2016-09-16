@@ -2,12 +2,15 @@ class SentNotificationsController < ApplicationController
   skip_before_action :authenticate_user!
 
   def unsubscribe
-    return redirect_to new_user_session_path unless current_user || params[:force]
-
     @sent_notification = SentNotification.for(params[:id])
 
     return render_404 unless @sent_notification && @sent_notification.unsubscribable?
+    return unsubscribe_and_redirect if current_user || params[:force]
+  end
 
+  private
+
+  def unsubscribe_and_redirect
     noteable = @sent_notification.noteable
     noteable.unsubscribe(@sent_notification.recipient)
 

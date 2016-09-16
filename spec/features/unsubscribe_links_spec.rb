@@ -19,11 +19,32 @@ describe 'Unsubscribe links', feature: true do
   end
 
   context 'when logged out' do
-    it 'redirects to the login page when visiting the link from the body' do
-      visit body_link
+    context 'when visiting the link from the body' do
+      it 'shows the unsubscribe confirmation page and redirects to root path when confirming' do
+        visit body_link
 
-      expect(current_path).to eq new_user_session_path
-      expect(issue.subscribed?(recipient)).to be_truthy
+        expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
+        expect(page).to have_text(%(Unsubscribe from issue "#{issue.title}" (#{issue.to_reference})))
+        expect(page).to have_text(%(Are you sure you want to unsubscribe from issue "#{issue.title}" (#{issue.to_reference})?))
+        expect(issue.subscribed?(recipient)).to be_truthy
+
+        click_link 'Unsubscribe'
+
+        expect(issue.subscribed?(recipient)).to be_falsey
+        expect(current_path).to eq new_user_session_path
+      end
+
+      it 'shows the unsubscribe confirmation page and redirects to root path when canceling' do
+        visit body_link
+
+        expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
+        expect(issue.subscribed?(recipient)).to be_truthy
+
+        click_link 'Cancel'
+
+        expect(issue.subscribed?(recipient)).to be_truthy
+        expect(current_path).to eq new_user_session_path
+      end
     end
 
     it 'unsubscribes from the issue when visiting the link from the header' do

@@ -1,4 +1,15 @@
-%h3.page-title
-  Are you sure you want to unsubscribe from this thread?
+- noteable = @sent_notification.noteable
+- noteable_type = @sent_notification.noteable_type.humanize(capitalize: false)
+- noteable_text = %(#{noteable_type} "#{noteable.title}" (#{noteable.to_reference}))
+- title = "Unsubscribe from #{noteable_text}"
 
-  = link_to "Unsubscribe", unsubscribe_sent_notification_path(@sent_notification, force: true), class: 'btn btn-primary wide'
+- page_title title
+
+%h3.page-title= title
+
+%p= "Are you sure you want to unsubscribe from #{noteable_text}?"
+
+%p
+  = link_to 'Unsubscribe', unsubscribe_sent_notification_path(@sent_notification, force: true),
+            class: 'btn btn-primary append-right-10'
+  = link_to 'Cancel', new_user_session_path, class: 'btn append-right-10'
