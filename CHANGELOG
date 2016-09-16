@@ -45,6 +45,7 @@ v 8.12.0 (unreleased)
   - Shorten task status phrase (ClemMakesApps)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
+  - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
