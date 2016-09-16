@@ -33,7 +33,7 @@
         - if @global_labels.present?
           = render @global_labels
 
-    .group-labels{ class: ('hide' if hide) }
+    .group-labels{ class: ('hide' if hide || @project.group.blank?) }
       %h5
         = icon('folder-open')
         Group Labels

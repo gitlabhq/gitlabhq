@@ -10,8 +10,7 @@
         = icon('star')
   %span.label-name
     = link_to_label(label, tooltip: false)
-    - if label.priority.present?
-      = label_type_icon(label)
+    = label_type_icon(label, class: "#{'hidden' if label.priority.blank?}" )
   - if label.description
     %span.label-description
       = markdown(label.description, pipeline: :single_line)

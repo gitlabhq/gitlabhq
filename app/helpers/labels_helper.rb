@@ -60,7 +60,7 @@ module LabelsHelper
     end
   end
 
-  def label_type_icon(label)
+  def label_type_icon(label, options = {})
     name =
       case label.label_type.to_sym
       when :global_label then 'globe'
@@ -68,12 +68,14 @@ module LabelsHelper
       when :project_label then 'bookmark'
       end
 
+    options[:class].to_s << ' has-tooltip js-label-type'
+
     content_tag :span,
-      class: 'has-tooltip',
+      class: options[:class],
       data: { 'placement' => 'top' },
       title: label.label_type.titleize,
       aria: { label: label.label_type.titleize } do
-      icon(name, base: true, class: 'label-type')
+      icon(name, base: true)
     end
   end
 
