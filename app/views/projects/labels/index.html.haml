@@ -24,8 +24,17 @@
           - if @prioritized_labels.present?
             = render @prioritized_labels
 
-    .group-labels
-      %h5{ class: ('hide' if hide) }
+    .global-labels{ class: ('hide' if hide) }
+      %h5
+        = icon('globe')
+        Global Labels
+      %ul.content-list.manage-labels-list.js-global-labels
+        %p.empty-message{ class: ('hidden' unless @global_labels.empty?) } No global labels yet
+        - if @global_labels.present?
+          = render @global_labels
+
+    .group-labels{ class: ('hide' if hide) }
+      %h5
         = icon('folder-open')
         Group Labels
       %ul.content-list.manage-labels-list.js-group-labels

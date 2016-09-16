@@ -1,4 +1,7 @@
 - label_css_id = dom_id(label)
+- open_issues_count = label.open_issues_count(current_user)
+- open_merge_requests_count = label.open_merge_requests_count(current_user)
+
 %li{id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
 
@@ -10,10 +13,10 @@
       %ul
         %li
           = link_to_label(label, type: :merge_request) do
-            = pluralize label.open_merge_requests_count, 'merge request'
+            = pluralize open_merge_requests_count, 'merge request'
         %li
           = link_to_label(label) do
-            = pluralize label.open_issues_count(current_user), 'open issue'
+            = pluralize open_issues_count, 'open issue'
         - if current_user
           %li.label-subscription{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
             %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
@@ -26,9 +29,9 @@
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
     = link_to_label(label, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
-      = pluralize label.open_merge_requests_count, 'merge request'
+      = pluralize open_merge_requests_count, 'merge request'
     = link_to_label(label, css_class: 'btn btn-transparent btn-action') do
-      = pluralize label.open_issues_count(current_user), 'open issue'
+      = pluralize open_issues_count, 'open issue'
 
     - if current_user
       .label-subscription.inline{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }

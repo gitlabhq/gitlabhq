@@ -9,8 +9,10 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @group_labels = @project.labels.unprioritized.with_type(:group_label).page(params[:page])
-    @labels = @project.labels.unprioritized.with_type(:project_label).page(params[:page])
+    unprioritized_labels = @project.labels.unprioritized
+    @global_labels = unprioritized_labels.with_type(:global_label).page(params[:page])
+    @group_labels = unprioritized_labels.with_type(:group_label).page(params[:page])
+    @labels = unprioritized_labels.with_type(:project_label).page(params[:page])
     @prioritized_labels = @project.labels.prioritized
 
     respond_to do |format|
@@ -26,7 +28,9 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def create
-    @label = Labels::CreateService.new(@project, current_user, label_params).execute
+    service = Labels::CreateService.new(@project, current_user, label_params.merge(label_type: :project_label))
+
+    @label = service.execute
 
     if @label.valid?
       redirect_to namespace_project_labels_path(@project.namespace, @project)
@@ -49,7 +53,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def generate
-    Labels::GenerateService.new(@project, current_user).execute
+    Labels::GenerateService.new(@project, current_user, label_type: :project_label).execute
 
     if params[:redirect] == 'issues'
       redirect_to namespace_project_issues_path(@project.namespace, @project)
@@ -62,7 +66,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def destroy
-    Labels::DestroyService.new(@project, current_user).execute(@label)
+    Labels::DestroyService.new(@project, current_user, label_type: :project_label).execute(@label)
 
     respond_to do |format|
       format.html do
@@ -76,7 +80,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def toggle_subscription
     return unless current_user
 
-    Labels::ToggleSubscriptionService.new(@project, current_user).execute(@label)
+    Labels::ToggleSubscriptionService.new(@project, current_user, label_type: :project_label).execute(@label)
 
     head :ok
   end
