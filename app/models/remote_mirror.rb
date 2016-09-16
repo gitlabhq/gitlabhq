@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: remote_mirrors
-#
-#  id                         :integer          not null, primary key
-#  project_id                 :integer
-#  url                        :string
-#  enabled                    :boolean          default(TRUE)
-#  update_status              :string
-#  last_update_at             :datetime
-#  last_successful_update_at  :datetime
-#  last_error                 :string
-#  encrypted_credentials      :text
-#  encrypted_credentials_iv   :string
-#  encrypted_credentials_salt :string
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#
-
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 

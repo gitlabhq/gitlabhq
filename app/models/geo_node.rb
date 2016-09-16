@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: geo_nodes
-#
-#  id                :integer          not null, primary key
-#  schema            :string
-#  host              :string
-#  port              :integer
-#  relative_url_root :string
-#  primary           :boolean
-#
-
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key, dependent: :destroy
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
