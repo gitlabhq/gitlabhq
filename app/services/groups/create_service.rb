@@ -15,6 +15,9 @@ module Groups
       @group.name ||= @group.path.dup
       @group.save
       @group.add_owner(current_user)
+
+      Labels::ReplicateService.new(@group, current_user).execute
+
       @group
     end
   end

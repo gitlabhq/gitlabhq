@@ -135,6 +135,12 @@ describe Projects::CreateService, services: true do
         expect(project.namespace).to eq(@user.namespace)
       end
     end
+
+    it 'delegates the label replication to Labels::ReplicateService' do
+      expect_any_instance_of(Labels::ReplicateService).to receive(:execute).once
+
+      create_project(@user, @opts)
+    end
   end
 
   def create_project(user, opts)

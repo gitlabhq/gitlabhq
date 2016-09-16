@@ -1,8 +1,8 @@
 module Labels
   class ReplicateService < Labels::BaseService
     def execute
-      global_labels.each { |label| replicate_label(label, :global_label) }
-      group_labels.each  { |label| replicate_label(label, :group_label) }
+      replicate_global_labels
+      replicate_group_labels unless subject.is_a?(Group)
     end
 
     private
@@ -13,6 +13,14 @@ module Labels
 
     def group_labels
       subject.group.present? ? subject.group.labels : []
+    end
+
+    def replicate_global_labels
+      global_labels.each { |label| replicate_label(label, :global_label) }
+    end
+
+    def replicate_group_labels
+      group_labels.each  { |label| replicate_label(label, :group_label) }
     end
 
     def replicate_label(label, label_type)
