@@ -38,17 +38,19 @@ describe API::Members, api: true  do
 
             expect(response).to have_http_status(200)
             expect(json_response.size).to eq(2)
+            expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
           end
         end
       end
 
       it 'does not return invitees' do
-        invitee = create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
+        create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
 
         get api("/#{source_type.pluralize}/#{source.id}/members", developer)
 
         expect(response).to have_http_status(200)
         expect(json_response.size).to eq(2)
+        expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
       end
 
       it 'finds members with query string' do
