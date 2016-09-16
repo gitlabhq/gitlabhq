@@ -29,17 +29,17 @@ module LfsHelper
   end
 
   def user_can_download_code?
-    has_capability?(:download_code) && user && user.can?(:download_code, project)
+    has_authentication_ability?(:download_code) && can?(user, :download_code, project)
   end
 
   def build_can_download_code?
-    has_capability?(:build_download_code) && user && user.can?(:build_download_code, project)
+    has_authentication_ability?(:build_download_code) && can?(user, :build_download_code, project)
   end
 
   def lfs_upload_access?
     return false unless project.lfs_enabled?
 
-    has_capability?(:push_code) && user && user.can?(:push_code, project)
+    has_authentication_ability?(:push_code) && can?(user, :push_code, project)
   end
 
   def render_lfs_forbidden

@@ -26,16 +26,18 @@ describe Gitlab::Auth, lib: true do
         end
       end
 
-      context 'for non-running build' do
-        let!(:build) { create(:ci_build, :pending) }
-        let(:project) { build.project }
+      (HasStatus::AVAILABLE_STATUSES - [:running]).each do |build_status|
+        context "for #{build_status} build" do
+          let!(:build) { create(:ci_build, status: build_status) }
+          let(:project) { build.project }
 
-        before do
-          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'gitlab-ci-token')
-        end
+          before do
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'gitlab-ci-token')
+          end
 
-        it 'denies authentication' do
-          expect(subject).to eq(Gitlab::Auth::Result.new)
+          it 'denies authentication' do
+            expect(subject).not_to eq(Gitlab::Auth::Result.new)
+          end
         end
       end
     end
