@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccessWiki, lib: true do
-  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', capabilities: capabilities) }
+  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', authentication_abilities) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:capabilities) do
+  let(:authentication_abilities) do
     [
       :read_project,
       :download_code,

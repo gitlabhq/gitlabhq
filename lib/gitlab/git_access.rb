@@ -5,13 +5,13 @@ module Gitlab
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
 
-    attr_reader :actor, :project, :protocol, :user_access, :capabilities
+    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 
-    def initialize(actor, project, protocol, capabilities:)
+    def initialize(actor, project, protocol, authentication_abilities:)
       @actor    = actor
       @project  = project
       @protocol = protocol
-      @capabilities = capabilities
+      @authentication_abilities = authentication_abilities
       @user_access = UserAccess.new(user, project: project)
     end
 
@@ -69,15 +69,15 @@ module Gitlab
     end
 
     def user_can_download_code?
-      capabilities.include?(:download_code) && user_access.can_do_action?(:download_code)
+      authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_code)
     end
 
     def build_can_download_code?
-      capabilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
+      authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
     end
 
     def user_push_access_check(changes)
-      unless capabilities.include?(:push_code)
+      unless authentication_abilities.include?(:push_code)
         return build_status_object(false, "You are not allowed to upload code for this project.")
       end
 

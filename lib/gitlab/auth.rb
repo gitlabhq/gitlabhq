@@ -1,6 +1,6 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:actor, :project, :type, :capabilities) do
+    Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
       def success?
         actor.present? || type == :ci
       end
@@ -77,7 +77,7 @@ module Gitlab
           service = project.public_send("#{underscored_service}_service")
 
           if service && service.activated? && service.valid_token?(password)
-            Result.new(nil, project, :ci, build_capabilities)
+            Result.new(nil, project, :ci, build_authentication_abilities)
           end
         end
       end
@@ -88,7 +88,7 @@ module Gitlab
 
         raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
 
-        Result.new(user, nil, :gitlab_or_ldap, full_capabilities)
+        Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
       def oauth_access_token_check(login, password)
@@ -96,7 +96,7 @@ module Gitlab
           token = Doorkeeper::AccessToken.by_token(password)
           if token && token.accessible?
             user = User.find_by(id: token.resource_owner_id)
-            Result.new(user, nil, :oauth, read_capabilities)
+            Result.new(user, nil, :oauth, read_authentication_abilities)
           end
         end
       end
@@ -105,7 +105,7 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          Result.new(user, nil, :personal_token, full_capabilities) if user.present? && user == validation
+          Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
         end
       end
 
@@ -122,7 +122,7 @@ module Gitlab
         if actor
           token_handler = Gitlab::LfsToken.new(actor)
 
-          Result.new(actor, nil, token_handler.type, read_capabilities) if Devise.secure_compare(token_handler.value, password)
+          Result.new(actor, nil, token_handler.type, read_authentication_abilities) if Devise.secure_compare(token_handler.value, password)
         end
       end
 
@@ -136,14 +136,14 @@ module Gitlab
 
         if build.user
           # If user is assigned to build, use restricted credentials of user
-          Result.new(build.user, build.project, :build, build_capabilities)
+          Result.new(build.user, build.project, :build, build_authentication_abilities)
         else
           # Otherwise use generic CI credentials (backward compatibility)
-          Result.new(nil, build.project, :ci, build_capabilities)
+          Result.new(nil, build.project, :ci, build_authentication_abilities)
         end
       end
 
-      def build_capabilities
+      def build_authentication_abilities
         [
           :read_project,
           :build_download_code,
@@ -152,7 +152,7 @@ module Gitlab
         ]
       end
 
-      def read_capabilities
+      def read_authentication_abilities
         [
           :read_project,
           :download_code,
@@ -160,8 +160,8 @@ module Gitlab
         ]
       end
 
-      def full_capabilities
-        read_capabilities + [
+      def full_authentication_abilities
+        read_authentication_abilities + [
           :push_code,
           :update_container_image
         ]

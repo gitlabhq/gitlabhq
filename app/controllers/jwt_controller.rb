@@ -14,7 +14,7 @@ class JwtController < ApplicationController
     @authentication_result ||= Gitlab::Auth::Result.new
 
     result = service.new(@authentication_result.project, @authentication_result.actor, auth_params).
-      execute(capabilities: @authentication_result.capabilities)
+      execute(authentication_abilities: @authentication_result.authentication_abilities)
 
     render json: result, status: result[:http_status]
   end

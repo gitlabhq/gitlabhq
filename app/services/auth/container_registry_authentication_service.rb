@@ -4,8 +4,8 @@ module Auth
 
     AUDIENCE = 'container_registry'
 
-    def execute(capabilities:)
-      @capabilities = capabilities || []
+    def execute(authentication_abilities:)
+      @authentication_abilities = authentication_abilities || []
 
       return error('not found', 404) unless registry.enabled
 
@@ -92,23 +92,23 @@ module Auth
       # Build can:
       # 1. pull from it's own project (for ex. a build)
       # 2. read images from dependent projects if creator of build is a team member
-      @capabilities.include?(:build_read_container_image) &&
+      @authentication_abilities.include?(:build_read_container_image) &&
         (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
     end
 
     def user_can_pull?(requested_project)
-      @capabilities.include?(:read_container_image) &&
+      @authentication_abilities.include?(:read_container_image) &&
         can?(current_user, :read_container_image, requested_project)
     end
 
     def build_can_push?(requested_project)
       # Build can push only to project to from which he originates
-      @capabilities.include?(:build_create_container_image) &&
+      @authentication_abilities.include?(:build_create_container_image) &&
         requested_project == project
     end
 
     def user_can_push?(requested_project)
-      @capabilities.include?(:create_container_image) &&
+      @authentication_abilities.include?(:create_container_image) &&
         can?(current_user, :create_container_image, requested_project)
     end
   end

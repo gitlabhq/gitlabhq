@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
-  let(:access) { Gitlab::GitAccess.new(actor, project, 'web', capabilities: capabilities) }
+  let(:access) { Gitlab::GitAccess.new(actor, project, 'web', authentication_abilities: authentication_abilities) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:actor) { user }
-  let(:capabilities) do
+  let(:authentication_abilities) do
     [
       :read_project,
       :download_code,
@@ -22,7 +22,7 @@ describe Gitlab::GitAccess, lib: true do
     context 'ssh disabled' do
       before do
         disable_protocol('ssh')
-        @acc = Gitlab::GitAccess.new(actor, project, 'ssh', capabilities: capabilities)
+        @acc = Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks ssh git push' do
@@ -37,7 +37,7 @@ describe Gitlab::GitAccess, lib: true do
     context 'http disabled' do
       before do
         disable_protocol('http')
-        @acc = Gitlab::GitAccess.new(actor, project, 'http', capabilities: capabilities)
+        @acc = Gitlab::GitAccess.new(actor, project, 'http', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks http push' do
@@ -119,8 +119,8 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
-    describe 'build capabilities permissions' do
-      let(:capabilities) { build_capabilities }
+    describe 'build authentication_abilities permissions' do
+      let(:authentication_abilities) { build_authentication_abilities }
 
       describe 'reporter user' do
         before { project.team << [user, :reporter] }
@@ -350,8 +350,8 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'build capabilities permissions' do
-    let(:capabilities) { build_capabilities }
+  describe 'build authentication abilities' do
+    let(:authentication_abilities) { build_authentication_abilities }
 
     it_behaves_like 'can not push code' do
       def authorize
@@ -373,14 +373,14 @@ describe Gitlab::GitAccess, lib: true do
 
   private
 
-  def build_capabilities
+  def build_authentication_abilities
     [
       :read_project,
       :build_download_code
     ]
   end
 
-  def full_capabilities
+  def full_authentication_abilities
     [
       :read_project,
       :download_code,

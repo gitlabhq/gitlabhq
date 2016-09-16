@@ -36,7 +36,7 @@ module API
           end
         end
 
-        def ssh_capabilities
+        def ssh_authentication_abilities
           [
             :read_project,
             :download_code,
@@ -59,9 +59,9 @@ module API
 
         access =
           if wiki?
-            Gitlab::GitAccessWiki.new(actor, project, protocol, capabilities: ssh_capabilities)
+            Gitlab::GitAccessWiki.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           else
-            Gitlab::GitAccess.new(actor, project, protocol, capabilities: ssh_capabilities)
+            Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           end
 
         access_status = access.check(params[:action], params[:changes])

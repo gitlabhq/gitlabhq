@@ -4,7 +4,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
-  attr_reader :actor, :capabilities
+  attr_reader :actor, :authentication_abilities
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
@@ -125,7 +125,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     when :oauth
       if download_request?
         @actor = auth_result.actor
-        @capabilities = auth_result.capabilities
+        @authentication_abilities = auth_result.authentication_abilities
       else
         return false
       end
@@ -133,11 +133,13 @@ class Projects::GitHttpClientController < Projects::ApplicationController
       if download_request?
         @lfs_deploy_key = true
         @actor = auth_result.actor
-        @capabilities = auth_result.capabilities
+        @authentication_abilities = auth_result.authentication_abilities
+      else
+        return false
       end
     when :lfs_token, :personal_token, :gitlab_or_ldap, :build
       @actor = auth_result.actor
-      @capabilities = auth_result.capabilities
+      @authentication_abilities = auth_result.authentication_abilities
     else
       # Not allowed
       return false
@@ -150,8 +152,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     @lfs_deploy_key && actor && actor.projects.include?(project)
   end
 
-  def has_capability?(capability)
-    @capabilities.include?(capability)
+  def has_authentication_ability?(capability)
+    @authentication_abilities.include?(capability)
   end
 
   def verify_workhorse_api!

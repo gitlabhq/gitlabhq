@@ -16,13 +16,13 @@ describe Gitlab::Auth, lib: true do
         end
 
         it 'recognises user-less build' do
-          expect(subject).to eq(Gitlab::Auth::Result.new(nil, build.project, :ci, build_capabilities))
+          expect(subject).to eq(Gitlab::Auth::Result.new(nil, build.project, :ci, build_authentication_abilities))
         end
 
         it 'recognises user token' do
           build.update(user: create(:user))
 
-          expect(subject).to eq(Gitlab::Auth::Result.new(build.user, build.project, :build, build_capabilities))
+          expect(subject).to eq(Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities))
         end
       end
 
@@ -48,7 +48,7 @@ describe Gitlab::Auth, lib: true do
       ip = 'ip'
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: 'drone-ci-token')
-      expect(gl_auth.find_for_git_client('drone-ci-token', 'token', project: project, ip: ip)).to eq(Gitlab::Auth::Result.new(nil, project, :ci, build_capabilities))
+      expect(gl_auth.find_for_git_client('drone-ci-token', 'token', project: project, ip: ip)).to eq(Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities))
     end
 
     it 'recognizes master passwords' do
@@ -56,7 +56,7 @@ describe Gitlab::Auth, lib: true do
       ip = 'ip'
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: user.username)
-      expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_capabilities))
+      expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
     end
 
     it 'recognizes user lfs tokens' do
@@ -65,7 +65,7 @@ describe Gitlab::Auth, lib: true do
       token = Gitlab::LfsToken.new(user).generate
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: user.username)
-      expect(gl_auth.find_for_git_client(user.username, token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :lfs_token, read_capabilities))
+      expect(gl_auth.find_for_git_client(user.username, token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :lfs_token, read_authentication_abilities))
     end
 
     it 'recognizes deploy key lfs tokens' do
@@ -74,7 +74,7 @@ describe Gitlab::Auth, lib: true do
       token = Gitlab::LfsToken.new(key).generate
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: "lfs+deploy-key-#{key.id}")
-      expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, nil, :lfs_deploy_token, read_capabilities))
+      expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, nil, :lfs_deploy_token, read_authentication_abilities))
     end
 
     it 'recognizes OAuth tokens' do
@@ -84,7 +84,7 @@ describe Gitlab::Auth, lib: true do
       ip = 'ip'
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: 'oauth2')
-      expect(gl_auth.find_for_git_client("oauth2", token.token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :oauth, read_capabilities))
+      expect(gl_auth.find_for_git_client("oauth2", token.token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities))
     end
 
     it 'returns double nil for invalid credentials' do
@@ -149,7 +149,7 @@ describe Gitlab::Auth, lib: true do
 
   private
 
-  def build_capabilities
+  def build_authentication_abilities
     [
       :read_project,
       :build_download_code,
@@ -158,7 +158,7 @@ describe Gitlab::Auth, lib: true do
     ]
   end
 
-  def read_capabilities
+  def read_authentication_abilities
     [
       :read_project,
       :download_code,
@@ -166,8 +166,8 @@ describe Gitlab::Auth, lib: true do
     ]
   end
 
-  def full_capabilities
-    read_capabilities + [
+  def full_authentication_abilities
+    read_authentication_abilities + [
       :push_code,
       :update_container_image
     ]
