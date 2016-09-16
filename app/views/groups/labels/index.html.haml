@@ -10,6 +10,17 @@
         New label
 
 .labels
+  -# Only show it in the first page
+  - hide = @group.labels.empty? || (params[:page].present? && params[:page] != '1')
+  .global-labels{ class: ('hide' if hide) }
+    %h5
+      = icon('globe')
+      Global Labels
+    %ul.content-list.manage-labels-list.js-global-labels
+      %p.empty-message{ class: ('hidden' unless @global_labels.empty?) } No global labels yet
+      - if @global_labels.present?
+        = render @global_labels
+
   .group-labels
     %h5
       = icon('folder-open')
@@ -21,6 +32,6 @@
     - if @labels.blank?
       .nothing-here-block
         - if can?(current_user, :admin_label, @group)
-          Create a label or #{link_to 'generate a default set of labels', generate_group_labels_path(@group), method: :post}.
+          Create a group label or #{link_to 'generate a default set of group labels', generate_group_labels_path(@group), method: :post}.
         - else
           No labels created

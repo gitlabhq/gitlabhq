@@ -5,7 +5,8 @@ class Groups::LabelsController < Groups::ApplicationController
   respond_to :html
 
   def index
-    @labels = @group.labels.unprioritized.page(params[:page])
+    @global_labels = @group.labels.unprioritized.with_type(:global_label).page(params[:page])
+    @labels = @group.labels.unprioritized.with_type(:group_label).page(params[:page])
   end
 
   def new
@@ -13,7 +14,9 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def create
-    @label = Labels::CreateService.new(@group, current_user, label_params).execute
+    service = Labels::CreateService.new(@group, current_user, label_params.merge(label_type: :group_label))
+
+    @label = service.execute
 
     if @label.valid?
       redirect_to group_labels_path(@group)
@@ -36,13 +39,13 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def generate
-    Labels::GenerateService.new(@group, current_user).execute
+    Labels::GenerateService.new(@group, current_user, label_type: :group_label).execute
 
     redirect_to group_labels_path(@group)
   end
 
   def destroy
-    Labels::DestroyService.new(@group, current_user).execute(@label)
+    Labels::DestroyService.new(@group, current_user, label_type: :group_label).execute(@label)
 
     respond_to do |format|
       format.html do

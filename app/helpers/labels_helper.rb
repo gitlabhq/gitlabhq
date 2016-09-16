@@ -63,6 +63,7 @@ module LabelsHelper
   def label_type_icon(label)
     name =
       case label.label_type.to_sym
+      when :global_label then 'globe'
       when :group_label then 'folder-open'
       when :project_label then 'bookmark'
       end
