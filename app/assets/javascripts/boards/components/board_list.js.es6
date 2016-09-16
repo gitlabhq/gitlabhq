@@ -34,6 +34,11 @@
       },
       issues () {
         this.$nextTick(() => {
+          if (this.scrollHeight() <= this.listHeight() && this.list.issuesSize > this.list.issues.length) {
+            this.list.page++;
+            this.list.getIssues(false);
+          }
+
           if (this.scrollHeight() > this.listHeight()) {
             this.showCount = true;
           } else {

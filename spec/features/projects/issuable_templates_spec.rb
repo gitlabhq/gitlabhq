@@ -13,10 +13,12 @@ feature 'issuable templates', feature: true, js: true do
 
   context 'user creates an issue using templates' do
     let(:template_content) { 'this is a test "bug" template' }
+    let(:longtemplate_content) { %Q(this\n\n\n\n\nis\n\n\n\n\na\n\n\n\n\nbug\n\n\n\n\ntemplate) }
     let(:issue) { create(:issue, author: user, assignee: user, project: project) }
 
     background do
       project.repository.commit_file(user, '.gitlab/issue_templates/bug.md', template_content, 'added issue template', 'master', false)
+      project.repository.commit_file(user, '.gitlab/issue_templates/test.md', longtemplate_content, 'added issue template', 'master', false)
       visit edit_namespace_project_issue_path project.namespace, project, issue
       fill_in :'issue[title]', with: 'test issue title'
     end
@@ -26,6 +28,17 @@ feature 'issuable templates', feature: true, js: true do
       wait_for_ajax
       preview_template
       save_changes
+    end
+
+    it 'updates height of markdown textarea' do
+      start_height = page.evaluate_script('$(".markdown-area").outerHeight()')
+
+      select_template 'test'
+      wait_for_ajax
+
+      end_height = page.evaluate_script('$(".markdown-area").outerHeight()')
+      
+      expect(end_height).not_to eq(start_height)
     end
   end
 
@@ -51,7 +64,7 @@ feature 'issuable templates', feature: true, js: true do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:fork_user) { create(:user) }
     let(:fork_project) { create(:project, :public) }
-    let(:merge_request) { create(:merge_request, :with_diffs, source_project: fork_project) }
+    let(:merge_request) { create(:merge_request, :with_diffs, source_project: fork_project, target_project: project) }
 
     background do
       logout
@@ -59,16 +72,20 @@ feature 'issuable templates', feature: true, js: true do
       fork_project.team << [fork_user, :master]
       create(:forked_project_link, forked_to_project: fork_project, forked_from_project: project)
       login_as fork_user
-      fork_project.repository.commit_file(fork_user, '.gitlab/merge_request_templates/feature-proposal.md', template_content, 'added merge request template', 'master', false)
-      visit edit_namespace_project_merge_request_path fork_project.namespace, fork_project, merge_request
+      project.repository.commit_file(fork_user, '.gitlab/merge_request_templates/feature-proposal.md', template_content, 'added merge request template', 'master', false)
+      visit edit_namespace_project_merge_request_path project.namespace, project, merge_request
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 
-    scenario 'user selects "feature-proposal" template' do
-      select_template 'feature-proposal'
-      wait_for_ajax
-      preview_template
-      save_changes
+    context 'feature proposal template' do
+      context 'template exists in target project' do
+        scenario 'user selects template' do
+          select_template 'feature-proposal'
+          wait_for_ajax
+          preview_template
+          save_changes
+        end
+      end
     end
   end
 

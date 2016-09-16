@@ -31,6 +31,7 @@ module Banzai
         def apply_relative_link_rules!
           if @uri.relative? && @uri.path.present?
             link = ::File.join(@wiki_base_path, @uri.path)
+            link = "#{link}##{@uri.fragment}" if @uri.fragment
             @uri = Addressable::URI.parse(link)
           end
         end
