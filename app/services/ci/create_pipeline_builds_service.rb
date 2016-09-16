@@ -13,24 +13,19 @@ module Ci
     private
 
     def create_build(build_attributes)
-      build_attributes = {
-        stage_idx: build_attributes[:stage_idx],
-        stage: build_attributes[:stage],
-        commands: build_attributes[:commands],
-        tag_list: build_attributes[:tag_list],
-        name: build_attributes[:name],
-        when: build_attributes[:when],
-        allow_failure: build_attributes[:allow_failure],
-        environment: build_attributes[:environment],
-        yaml_variables: build_attributes[:yaml_variables],
-        options: build_attributes[:options],
+      build_attributes = build_attributes.slice(
+        :stage_idx, :stage, :commands, :tag_list, :name, :when, :allow_failure,
+        :environment, :yaml_variables, :options
+      )
+
+      build_attributes = build_attributes.merge(
         pipeline: pipeline,
         project: pipeline.project,
         ref: pipeline.ref,
         tag: pipeline.tag,
         user: current_user,
         trigger_request: trigger_request
-      }
+      )
 
       pipeline.builds.create(build_attributes)
     end

@@ -254,9 +254,6 @@ v 8.11.6
   - Exclude some pending or inactivated rows in Member scopes.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
 
-v 8.11.6 (unreleased)
-  - Fix an error where we were unable to create a CommitStatus for running state
-
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
   - Fix member expiration date picker after update. !6184
