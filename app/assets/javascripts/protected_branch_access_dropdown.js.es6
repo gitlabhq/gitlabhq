@@ -1,18 +1,31 @@
 (global => {
   global.gl = global.gl || {};
 
+  const LEVEL_TYPES = {
+    ROLE: 'role',
+    USER: 'user'
+  };
+
   gl.ProtectedBranchAccessDropdown = class {
     constructor(options) {
-      const { $dropdown, onSelect, onHide, accessLevel, accessLevelsData } = options;
       const self = this;
+      const {
+        $dropdown,
+        onSelect,
+        onHide,
+        accessLevel,
+        accessLevelsData
+      } = options;
 
       this.accessLevel = accessLevel;
       this.accessLevelsData = accessLevelsData;
       this.$dropdown = $dropdown;
       this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
       this.usersPath = '/autocomplete/users.json';
-      this.inputCount = 0;
       this.defaultLabel = this.$dropdown.data('defaultLabel');
+
+      this.setSelectedItems([]);
+      this.persistPreselectedItems();
 
       $dropdown.glDropdown({
         selectable: true,
@@ -22,22 +35,19 @@
         multiSelect: $dropdown.hasClass('js-multiselect'),
         renderRow: this.renderRow.bind(this),
         toggleLabel: this.toggleLabel.bind(this),
-        fieldName: this.fieldName.bind(this),
         hidden() {
-          // Here because last selected item is not considered after first close
-          this.activeIds = self.getActiveIds();
-
           if (onHide) {
             onHide();
           }
         },
-        setActiveIds() {
-          // Needed for pre select options
-          this.activeIds = self.getActiveIds();
-        },
         clicked(item, $el, e) {
           e.preventDefault();
-          self.inputCount++;
+
+          if ($el.is('.is-active')) {
+            self.addSelectedItem(item);
+          } else {
+            self.removeSelectedItem(item);
+          }
 
           if (onSelect) {
             onSelect(item, $el, self);
@@ -46,17 +56,128 @@
       });
     }
 
+    persistPreselectedItems() {
+      let itemsToPreselect = this.$dropdown.data('preselectedItems');
+
+      if (typeof itemsToPreselect === 'undefined' || !itemsToPreselect.length) {
+        return;
+      }
+
+      itemsToPreselect.forEach((item) => {
+        item.persisted = true;
+      });
+
+      this.setSelectedItems(itemsToPreselect);
+    }
+
+    setSelectedItems(items) {
+      this.items = items.length ? items : [];
+    }
+
+    getSelectedItems() {
+      return this.items.filter((item) => {
+        return !item._destroy;
+      });
+    }
+
+    getAllSelectedItems() {
+      return this.items;
+    }
+
+    // Return dropdown as input data ready to submit
+    getInputData() {
+      let accessLevels = [];
+      let selectedItems = this.getAllSelectedItems();
+
+      selectedItems.map((item) => {
+        let obj = {};
+
+        if (typeof item.id !== 'undefined') {
+          obj.id = item.id;
+        }
+
+        if (typeof item._destroy !== 'undefined') {
+          obj._destroy = item._destroy;
+        }
+
+        if (item.type === LEVEL_TYPES.ROLE) {
+          obj.access_level = item.access_level
+        } else if (item.type === LEVEL_TYPES.USER) {
+          obj.user_id = item.user_id;
+        }
+
+        accessLevels.push(obj);
+      });
+
+      return accessLevels;
+    }
+
+    addSelectedItem(selectedItem) {
+      var itemToAdd = {};
+
+      itemToAdd.type = selectedItem.type;
+
+      if (selectedItem.type === 'user') {
+        itemToAdd = {
+          user_id: selectedItem.id,
+          name: selectedItem.name || '_name1',
+          username: selectedItem.username || '_username1',
+          avatar_url: selectedItem.avatar_url || '_avatar_url1',
+          type: 'user'
+        };
+      } else if (selectedItem.type === 'role') {
+        itemToAdd = {
+          access_level: selectedItem.id,
+          type: 'role'
+        }
+      }
+      this.items.push(itemToAdd);
+    }
+
+    removeSelectedItem(itemToDelete) {
+      let index;
+      let selectedItems = this.getAllSelectedItems();
+
+      // To find itemToDelete on selectedItems, first we need the index
+      for (let i = 0; i < selectedItems.length; i++) {
+        let currentItem = selectedItems[i];
+
+        if (currentItem.type === 'user' &&
+          (currentItem.user_id === itemToDelete.id && currentItem.type === itemToDelete.type)) {
+          index = i;
+        } else if (currentItem.type === 'role' &&
+          (currentItem.access_level === itemToDelete.id && currentItem.type === itemToDelete.type)) {
+          index = i;
+        }
+
+        if (index) { break; }
+      }
+
+      if (selectedItems[index].persisted) {
+        // If we toggle an item that has been already marked with _destroy
+        if (selectedItems[index]._destroy) {
+          delete selectedItems[index]._destroy;
+        } else {
+          selectedItems[index]._destroy = '1';
+        }
+      } else {
+        selectedItems.splice(index, 1);
+      }
+    }
+
     toggleLabel(selectedItem, el) {
-      let currentItems = this.$dropdown.siblings('.dropdown-menu').find('.is-active');
-      let types = _.groupBy(currentItems, (item) => { return item.dataset.type; });
+      let currentItems = this.getSelectedItems();
+      let types = _.groupBy(currentItems, (item) => { return item.type; });
       let label = [];
 
       if (currentItems.length) {
-        Object.keys(types).map((type) => {
-          let numberOfTypes = types[type].length;
-          let text = numberOfTypes === 1 ? type : `${type}s`;
+        for (let LEVEL_TYPE in LEVEL_TYPES) {
+          let typeName = LEVEL_TYPES[LEVEL_TYPE];
+          let numberOfTypes = types[typeName] ? types[typeName].length : 0;
+          let text = numberOfTypes === 1 ? typeName : `${typeName}s`;
+
           label.push(`${numberOfTypes} ${text}`);
-        });
+        }
       } else {
         label.push(this.defaultLabel);
       }
@@ -67,6 +188,7 @@
     getData(query, callback) {
       this.getUsers(query).done((response) => {
         let data = this.consolidateData(response);
+
         callback(data);
       }).error(() => {
         new Flash('Failed to load users.');
@@ -74,20 +196,49 @@
     }
 
     consolidateData(response, callback) {
+      let users;
+      let mergeAccessLevels;
       let consolidatedData;
-      let users = response.map((user) => {
-        user.type = 'user';
-        return user;
-      });
-      let mergeAccessLevels = this.accessLevelsData.map((level) => {
+      let selectedItems = this.getSelectedItems();
+
+      mergeAccessLevels = this.accessLevelsData.map((level) => {
         level.type = 'role';
         return level;
       });
 
+      let aggregate = [];
+      let map = [];
+
+      for (let x = 0; x < selectedItems.length; x++) {
+        let current = selectedItems[x];
+
+        if (current.type !== 'user') { continue; }
+
+        map.push(current.user_id);
+
+        aggregate.push({
+          id: current.user_id,
+          name: current.name,
+          username: current.username,
+          avatar_url: current.avatar_url,
+          type: 'user'
+        });
+      }
+
+      for (let i = 0; i < response.length; i++) {
+        let x = response[i];
+
+        // Add is it has not been added
+        if (map.indexOf(x.id) === -1){
+          x.type = 'user';
+          aggregate.push(x);
+        }
+      }
+
       consolidatedData = mergeAccessLevels;
 
-      if (users.length) {
-        consolidatedData = mergeAccessLevels.concat(['divider'], users);
+      if (aggregate.length) {
+        consolidatedData = mergeAccessLevels.concat(['divider'], aggregate);
       }
 
       return consolidatedData;
@@ -115,9 +266,19 @@
     }
 
     renderRow(item, instance) {
+      let isActive;
+      let criteria = {};
+
       // Dectect if the current item is already saved so we can add
       // the `is-active` class so the item looks as marked
-      const isActive = _.findWhere(instance.activeIds, { id: item.id, type: item.type }) ? 'is-active' : '';
+      if (item.type === 'user') {
+        criteria = { user_id: item.id };
+      } else if (item.type === 'role') {
+        criteria = { access_level: item.id };
+      }
+
+      isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
+
       if (item.type === 'user') {
         return this.userRowHtml(item, isActive);
       } else if (item.type === 'role') {
@@ -129,50 +290,11 @@
       const  avatarHtml = `<img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>`;
       const  nameHtml = `<strong class='dropdown-menu-user-full-name'>${user.name}</strong>`;
       const  usernameHtml = `<span class='dropdown-menu-user-username'>${user.username}</span>`;
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''}' data-type='${user.type}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
     }
 
     roleRowHtml(role, isActive) {
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''}' data-type='${role.type}'>${role.text}</a></li>`;
-    }
-
-    fieldName(selectedItem) {
-      let fieldName = '';
-      let typeToName = {
-        role: 'access_level',
-        user: 'user_id',
-      };
-      let $input = this.$wrap.find(`input[data-type][value="${selectedItem.id}"]`);
-
-      if ($input.length) {
-        // If input exists return actual name
-        fieldName = $input.attr('name');
-      } else {
-        // If not suggest a name
-        fieldName = `protected_branch[${this.accessLevel}_attributes][${this.inputCount}][access_level]`; // Role by default
-
-        if (selectedItem.type === 'user') {
-          fieldName = `protected_branch[${this.accessLevel}_attributes][${this.inputCount}][user_id]`;
-        }
-      }
-
-      return fieldName;
-    }
-
-    getActiveIds() {
-      let selected = [];
-      
-      this.$wrap
-          .find('input[data-type]')
-          .map((i, el) => {
-            const $el = $(el);
-            selected.push({
-              id: parseInt($el.val()),
-              type: $el.data('type')
-            });
-          });
-
-      return selected;
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${role.text}</a></li>`;
     }
   }
 

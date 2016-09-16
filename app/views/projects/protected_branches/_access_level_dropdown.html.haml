@@ -3,17 +3,7 @@
 
 %div{ class: "#{input_basic_name}-container" }
   - if access_levels.present?
-    - access_levels.map.with_index do |level, i|
-      - if level.type == :user
-        - field_key = 'user_id' 
-        - value = level.user_id
-      - else
-        - field_key = 'access_level'
-        - value = level.access_level
-      %input{ type: 'hidden', name: "protected_branch[#{input_basic_name}_attributes][#{i}][#{field_key}]",
-                              value: value, data: { type: level.type, id: level.id } }
-    
     - dropdown_label = [pluralize(level_frequencies[:role], 'role'), pluralize(level_frequencies[:user], 'user')].to_sentence
 
   = dropdown_tag(dropdown_label, options: { toggle_class: "#{toggle_class} js-multiselect", dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
-                                      data: { default_label: default_label } })
+                                 data: { default_label: default_label, preselected_items: access_levels_data(access_levels) } })
