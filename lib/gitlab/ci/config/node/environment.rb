@@ -11,19 +11,21 @@ module Gitlab
           ALLOWED_KEYS = %i[name url]
 
           validations do
-            validates :config, allowed_keys: ALLOWED_KEYS, if: :hash?
-
             validates :name, presence: true
-
-            validates :url,
-                      length: { maximum: 255 },
-                      allow_nil: true,
-                      addressable_url: true
 
             validate do
               unless hash? || string?
                 errors.add(:config, 'should be a hash or a string')
               end
+            end
+
+            with_options if: :hash? do
+              validates :config, allowed_keys: ALLOWED_KEYS
+
+              validates :url,
+                        length: { maximum: 255 },
+                        addressable_url: true,
+                        allow_nil: true
             end
           end
 
@@ -44,9 +46,10 @@ module Gitlab
           end
 
           def value
-            case @config.type
+            case @config
             when String then { name: @config }
             when Hash then @config
+            else {}
             end
           end
         end
