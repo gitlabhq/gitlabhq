@@ -10,5 +10,4 @@
     = render "layouts/header/default", title: header_title
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
-    = render "layouts/init_auto_complete" if current_user && @load_gfm
     = yield :scripts_body

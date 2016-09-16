@@ -1,4 +1,3 @@
-- @load_gfm = !(@target_project || @project).nil?
 - supports_slash_commands = local_assigns.fetch(:supports_slash_commands, false)
 .zen-backdrop
   - classes << ' js-gfm-input js-autosize markdown-area'
@@ -8,3 +7,6 @@
     = text_area_tag attr, nil, class: classes, placeholder: placeholder
   %a.zen-control.zen-control-leave.js-zen-leave{ href: "#" }
     = icon('compress')
+
+- content_for :scripts_body do
+  = render "layouts/init_auto_complete" if current_user && (@target_project || @project)
