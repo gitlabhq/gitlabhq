@@ -4,7 +4,7 @@
 
     function LabelManager(opts) {
       // Defaults
-      var ref, ref1, ref2, ref3;
+      var ref, ref1, ref2, ref3, ref4;
 
       if (opts == null) {
         opts = {};
@@ -12,8 +12,9 @@
 
       this.togglePriorityButton = (ref = opts.togglePriorityButton) != null ? ref : $('.js-toggle-priority');
       this.prioritizedLabels = (ref1 = opts.prioritizedLabels) != null ? ref1 : $('.js-prioritized-labels');
-      this.groupLabels = (ref2 = opts.groupLabels) != null ? ref2 : $('.js-group-labels');
-      this.projectLabels = (ref3 = opts.projectLabels) != null ? ref3 : $('.js-project-labels');
+      this.globalLabels = (ref2 = opts.globalLabels) != null ? ref2 : $('.js-global-labels');
+      this.groupLabels = (ref3 = opts.groupLabels) != null ? ref3 : $('.js-group-labels');
+      this.projectLabels = (ref4 = opts.projectLabels) != null ? ref4 : $('.js-project-labels');
 
       this.prioritizedLabels.sortable({
         items: 'li',
@@ -52,11 +53,16 @@
       _this = this;
 
       $togglePriority = $label.find('.js-toggle-priority');
+      $labelType = $label.find('.js-label-type');
       url = $togglePriority.data('url');
       type = $togglePriority.data('type');
 
       $target = this.prioritizedLabels;
       $from = this.projectLabels;
+
+      if (type === 'global_label') {
+        $from = this.globalLabels;
+      }
 
       if (type === 'group_label') {
         $from = this.groupLabels;
@@ -64,6 +70,9 @@
 
       if (action === 'remove') {
         $from = [$target, $target = $from][0];
+        $labelType.addClass('hidden');
+      } else {
+        $labelType.removeClass('hidden');
       }
 
       if ($from.children('li').length === 1) {
