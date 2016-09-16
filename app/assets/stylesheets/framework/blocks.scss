@@ -129,8 +129,6 @@
   position: relative;
 
   .avatar-holder {
-    margin-bottom: 16px;
-
     .avatar, .identicon {
       margin: 0 auto;
       float: none;
@@ -143,9 +141,6 @@
 
   .cover-title {
     color: $gl-header-color;
-    margin: 0;
-    font-weight: normal;
-    margin-bottom: 10px;
     font-size: 23px;
 
     h1 {
