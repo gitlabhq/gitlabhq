@@ -225,13 +225,16 @@ class Commit
     )
   end
 
-  def pipelines
-    @pipeline ||= project.pipelines.where(sha: sha)
+  def pipelines(ref = nil)
+    return @pipelines if @pipelines
+
+    @pipelines = project.pipelines.where(sha: sha)
+    @pipelines = @pipelines.where(ref: ref) if ref
+    @pipelines
   end
 
-  def status
-    return @status if defined?(@status)
-    @status ||= pipelines.status
+  def status(ref = nil)
+    pipelines(ref).last.try(:status)
   end
 
   def revert_branch_name

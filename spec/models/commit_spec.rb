@@ -210,7 +210,22 @@ eos
   end
 
   describe '#status' do
-    # TODO: kamil
+    let(:commit) { project.commit }
+
+    context 'when the pipeline is available' do
+      it 'only uses the last pipeline' do
+        create(:ci_pipeline_without_jobs, project: project, status: 'failed', sha: commit.id)
+        create(:ci_pipeline_without_jobs, project: project, status: 'success', sha: commit.id)
+
+        expect(commit.status).to eq('success')
+      end
+    end
+
+    context 'when there is no pipeline' do
+      it 'returns nil' do
+        expect(commit.status).to be nil
+      end
+    end
   end
 
   describe '#participants' do
