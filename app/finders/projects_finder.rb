@@ -1,5 +1,7 @@
 class ProjectsFinder < UnionFinder
   def execute(current_user = nil, project_ids_relation = nil)
+    return Project.unscoped if current_user && current_user.admin?
+
     segments = all_projects(current_user)
     segments.map! { |s| s.where(id: project_ids_relation) } if project_ids_relation
 

@@ -27,7 +27,7 @@
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
     = link_to_label(label, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
-      = pluralize label.open_merge_requests_count, 'merge request'
+      = pluralize open_merge_requests_count, 'merge request'
     = link_to_label(label, css_class: 'btn btn-transparent btn-action') do
       = pluralize open_issues_count, 'open issue'
 

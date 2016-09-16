@@ -26,14 +26,14 @@ describe ProjectsFinder do
     describe 'without a user' do
       subject { finder.execute }
 
-      it { is_expected.to eq([public_project]) }
+      it { is_expected.to contain_exactly(public_project) }
     end
 
     describe 'with a user' do
       subject { finder.execute(user) }
 
       describe 'without private projects' do
-        it { is_expected.to eq([public_project, internal_project]) }
+        it { is_expected.to contain_exactly(public_project, internal_project) }
       end
 
       describe 'with private projects' do
@@ -41,10 +41,14 @@ describe ProjectsFinder do
           private_project.team.add_user(user, Gitlab::Access::MASTER)
         end
 
-        it do
-          is_expected.to eq([public_project, internal_project, private_project])
-        end
+        it { is_expected.to contain_exactly(public_project, internal_project, private_project) }
       end
+    end
+
+    describe 'with an admin' do
+      subject { finder.execute(create(:admin)) }
+
+      it { is_expected.to contain_exactly(public_project, internal_project, private_project, shared_project) }
     end
 
     describe 'with project_ids_relation' do
@@ -52,7 +56,7 @@ describe ProjectsFinder do
 
       subject { finder.execute(user, project_ids_relation) }
 
-      it { is_expected.to eq([internal_project]) }
+      it { is_expected.to contain_exactly(internal_project) }
     end
   end
 end
