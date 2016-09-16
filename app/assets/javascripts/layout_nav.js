@@ -29,13 +29,16 @@
       var $this = $(this),
           scrollingTabWidth = $this.width(),
           $active = $this.find('.active'),
-          activeWidth = $active.width(),
-          offset = $active.offset().left + activeWidth;
+          activeWidth = $active.width();
 
-      if (offset > scrollingTabWidth - 30) {
-        var scrollLeft = scrollingTabWidth / 2;
-        scrollLeft = (offset - scrollLeft) - (activeWidth / 2);
-        $this.scrollLeft(scrollLeft);
+      if ($active.length) {
+        var offset = $active.offset().left + activeWidth;
+
+        if (offset > scrollingTabWidth - 30) {
+          var scrollLeft = scrollingTabWidth / 2;
+          scrollLeft = (offset - scrollLeft) - (activeWidth / 2);
+          $this.scrollLeft(scrollLeft);
+        }
       }
     });
   });
