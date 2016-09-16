@@ -17,7 +17,7 @@ module Members
 
       member = find_member!(scope)
 
-      raise Gitlab::Access::AccessDeniedError if cannot_destroy_member?(member)
+      raise Gitlab::Access::AccessDeniedError unless can_destroy_member?(member)
 
       AuthorizedDestroyService.new(member, current_user).execute
     end
@@ -35,8 +35,8 @@ module Members
       end
     end
 
-    def cannot_destroy_member?(member)
-      !member || !can?(current_user, action_member_permission(:destroy, member), member)
+    def can_destroy_member?(member)
+      member && can?(current_user, action_member_permission(:destroy, member), member)
     end
   end
 end

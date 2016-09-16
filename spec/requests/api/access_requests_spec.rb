@@ -213,7 +213,7 @@ describe API::AccessRequests, api: true  do
           end.to change { source.requesters.count }.by(-1)
         end
 
-        context 'user_id matches a member' do
+        context 'user_id matches a member, not an access requester' do
           it 'returns 404' do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{developer.id}", master)
