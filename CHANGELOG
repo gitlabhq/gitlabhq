@@ -41,6 +41,7 @@ v 8.12.0 (unreleased)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
   - Add textarea autoresize after comment (ClemMakesApps)
+  - Do not write SSH public key 'comments' to authorized_keys !6381
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Hides merge request button on branches page is user doesn't have permissions
