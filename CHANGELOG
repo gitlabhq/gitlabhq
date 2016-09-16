@@ -168,6 +168,7 @@ v 8.11.5
   - Scope webhooks/services that will run for confidential issues
   - Remove gitorious from import_sources
   - Fix confidential issues being exposed as public using gitlab.com export
+  - Use oj gem for faster JSON processing
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
