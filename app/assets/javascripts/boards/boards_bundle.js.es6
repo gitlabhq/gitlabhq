@@ -68,15 +68,15 @@ $(() => {
 
       e.preventDefault();
 
-      if (!$this.parent().hasClass('active')) {
+      if (!$this.closest('li').hasClass('active')) {
         gl.issueBoards.BoardsStore.state.filters.state = $this.data('state');
         gl.issueBoards.BoardsStore.updateFiltersUrl();
 
         $this.closest('.nav-links')
           .find('.active')
-          .removeClass('active')
-          .end().end()
-          .parent()
+          .removeClass('active');
+
+        $this.closest('li')
           .addClass('active');
       }
     });
