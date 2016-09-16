@@ -18,6 +18,15 @@ module Gitlab
             end
 
             validates :name, presence: true
+            validates :name,
+              type: {
+                with: String,
+                message: Gitlab::Regex.environment_name_regex_message }
+
+            validates :name,
+              format: {
+                with: Gitlab::Regex.environment_name_regex,
+                message: Gitlab::Regex.environment_name_regex_message }
 
             with_options if: :hash? do
               validates :config, allowed_keys: ALLOWED_KEYS
