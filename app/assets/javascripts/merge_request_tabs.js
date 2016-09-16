@@ -369,18 +369,21 @@
     };
 
     MergeRequestTabs.prototype.initAffix = function () {
+      var $tabs = $('.js-tabs-affix');
+
       // Screen space on small screens is usually very sparse
       // So we dont affix the tabs on these
-      if (Breakpoints.get().getBreakpointSize() === 'xs') return;
+      if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
-      var $tabs = $('.js-tabs-affix'),
-          tabsWidth = $tabs.outerWidth(),
-          $diffTabs = $('#diff-notes-app'),
-          offsetTop = $tabs.offset().top - ($('.navbar-fixed-top').height() + $('.layout-nav').height());
+      var tabsWidth = $tabs.outerWidth(),
+        $diffTabs = $('#diff-notes-app'),
+        offsetTop = $tabs.offset().top - ($('.navbar-fixed-top').height() + $('.layout-nav').height());
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
-          offset: offsetTop
+          offset: {
+            top: offsetTop
+          }
         }).on('affix.bs.affix', function () {
           $tabs.css({
             left: $tabs.offset().left,
