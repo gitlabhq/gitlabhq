@@ -3,12 +3,12 @@
     = link_to namespace_project_commit_path(@project.namespace, @project, @commit.id) do
       Changes
       %span.badge= @diffs.size
-  = nav_link(path: 'commit#builds') do
-    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
-      Builds
-      %span.badge= @statuses.count
   - if can?(current_user, :read_pipeline, @project)
     = nav_link(path: 'commit#pipelines') do
       = link_to pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
         Pipelines
         %span.badge= @ci_pipelines.count
+  = nav_link(path: 'commit#builds') do
+    = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
+      Builds
+      %span.badge= @statuses.count
