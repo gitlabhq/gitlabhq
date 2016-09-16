@@ -164,7 +164,7 @@
       text-decoration: none;
 
       &:after {
-        content: url('icon_anchor.svg');
+        content: image-url('icon_anchor.svg');
         visibility: hidden;
       }
     }
