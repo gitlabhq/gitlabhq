@@ -8,49 +8,51 @@
     .content-block
       = icon("spinner spin", "v-if" => "isLoading")
 
-      .row
-        %template{"v-for" => "info in analytics.summary"}
-          .col-md-3.column
-            %span.header {{info.value}}
-            %br
-            %span.text {{info.desc}}
+      .container-fluid
+        .row
+          %template{"v-for" => "info in analytics.summary"}
+            .col-xs-3.column
+              %span.header {{info.value}}
+              %br
+              %span.text {{info.desc}}
 
-        .col-md-3.column
-          .dropdown.inline.js-ca-dropdown
-            %button.dropdown-menu-toggle{"aria-expanded" => "false", "data-toggle" => "dropdown", :type => "button"}
-              %span.dropdown-label Last 30 days
-              %i.fa.fa-chevron-down
-            %ul.dropdown-menu.dropdown-menu-align-right
-              %li
-                %a{'href' => "#", 'data-value' => '30days'}
-                  Last 30 days
-              %li
-                %a{'href' => "#", 'data-value' => '90days'}
-                  Last 90 days
+          .col-xs-3.column
+            .dropdown.inline.js-ca-dropdown
+              %button.dropdown-menu-toggle{"aria-expanded" => "false", "data-toggle" => "dropdown", :type => "button"}
+                %span.dropdown-label Last 30 days
+                %i.fa.fa-chevron-down
+              %ul.dropdown-menu.dropdown-menu-align-right
+                %li
+                  %a{'href' => "#", 'data-value' => '30days'}
+                    Last 30 days
+                %li
+                  %a{'href' => "#", 'data-value' => '90days'}
+                    Last 90 days
 
   .bordered-box
     = icon("spinner spin", "v-if" => "isLoading")
 
     %ul.content-list{{"v-if" => "!notAvailable"}}
       %li{"v-for" => "info in analytics.data"}
-        .row
-          .col-md-10
-            %span
-              {{info.title}}
-            %br
-            %span
-              {{info.desc}}
-          .col-md-2
-            %span
-              {{info.value}}
+        .container-fluid
+          .row
+            .col-xs-10
+              %span
+                {{info.title}}
+              %br
+              %span
+                {{info.desc}}
+            .col-xs-2
+              %span
+                {{info.value}}
 
 
-    .content-block{{"v-if" => "notAvailable"}}
-      .inner-content
-        = custom_icon('icon_cycle_analytics_splash')
-        %h4
-          Set up your deploys to environment!
-        %p
-          Cycle Analytics will give an overview on how much time it takes to go from an idea to production in your project.
+      .content-block{{"v-if" => "notAvailable"}}
+        .inner-content
+          = custom_icon('icon_cycle_analytics_splash')
+          %h4
+            Set up your deploys to environment!
+          %p
+            Cycle Analytics will give an overview on how much time it takes to go from an idea to production in your project.
 
         = button_tag 'Set up', class: 'btn btn-create btn-block'
