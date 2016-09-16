@@ -129,6 +129,7 @@ module Gitlab
               except: except,
               variables: variables_defined? ? variables : nil,
               environment: environment_defined? ? environment : nil,
+              environment_name: environment_defined? ? environment[:name] : nil,
               artifacts: artifacts,
               after_script: after_script }
           end

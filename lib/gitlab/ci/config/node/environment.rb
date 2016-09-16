@@ -11,13 +11,13 @@ module Gitlab
           ALLOWED_KEYS = %i[name url]
 
           validations do
-            validates :name, presence: true
-
             validate do
               unless hash? || string?
                 errors.add(:config, 'should be a hash or a string')
               end
             end
+
+            validates :name, presence: true
 
             with_options if: :hash? do
               validates :config, allowed_keys: ALLOWED_KEYS

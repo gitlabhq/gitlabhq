@@ -767,7 +767,7 @@ module Ci
         it 'does return production and URL' do
           expect(builds.size).to eq(1)
           expect(builds.first[:environment]).to eq(environment[:name])
-          expect(builds.first[:options]).to include(environment)
+          expect(builds.first[:options]).to include(environment: environment)
         end
       end
 
@@ -784,7 +784,8 @@ module Ci
         let(:environment) { 1 }
 
         it 'raises error' do
-          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error(
+            'jobs:deploy_to_production:environment config should be a hash or a string')
         end
       end
 

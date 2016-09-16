@@ -60,7 +60,7 @@ module Ci
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
-        environment: job.fetch(:environment, {})[:name],
+        environment: job[:environment_name],
         yaml_variables: yaml_variables(name),
         options: {
           image: job[:image],
