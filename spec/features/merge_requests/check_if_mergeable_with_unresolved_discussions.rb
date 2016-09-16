@@ -1,0 +1,53 @@
+require 'spec_helper'
+
+feature 'Check if mergeable with unresolved discussions', js: true, feature: true do
+  let!(:user)          { create(:user) }
+  let!(:project)       { create(:project, :public, only_allow_merge_if_all_discussions_are_resolved: allowed) }
+  let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user, title: "Bug NS-04" ) }
+
+  before do
+    login_as user
+    project.team << [user, :master]
+  end
+
+  context 'when only_allow_merge_if_all_discussions_are_resolved is false' do
+    let(:allowed) { false }
+
+    it 'allows MR to be merged' do
+      visit_merge_request(merge_request)
+
+      expect(page).to have_button 'Accept Merge Request'
+    end
+  end
+
+  context 'when only_allow_merge_if_all_discussions_are_resolved is true' do
+    let(:allowed) { true }
+
+    context "when discussions are resolved" do
+
+      before do
+        merge_request.discussions.each { |d| d.resolve!(user) }
+      end
+
+      it 'allows MR to be merged' do
+        visit_merge_request(merge_request)
+
+        expect(page).to have_button 'Accept Merge Request'
+      end
+    end
+
+    context "when discussions are unresolved" do
+
+      it 'does not allow to merge' do
+        visit_merge_request(merge_request)
+
+        expect(page).not_to have_button 'Accept Merge Request'
+        expect(page).to have_content('This merge request has unresolved discussions')
+      end
+    end
+  end
+
+  def visit_merge_request(merge_request)
+    visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+  end
+end

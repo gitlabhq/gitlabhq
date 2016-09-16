@@ -100,6 +100,7 @@ module API
       end
       expose :only_allow_merge_if_build_succeeds
       expose :request_access_enabled
+      expose :only_allow_merge_if_all_discussions_are_resolved
     end
 
     class Member < UserBasic

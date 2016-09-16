@@ -297,6 +297,32 @@ describe Projects::MergeRequestsController do
           end
         end
       end
+
+      context 'when project project has unresolved discussion' do
+        before do
+          project.update_column(:only_allow_merge_if_all_discussions_are_resolved, allowed)
+        end
+
+        context "when the only_allow_merge_if_all_discussions_are_resolved? is true" do
+          let(:allowed) { true }
+
+          it 'returns :failed' do
+            merge_with_sha
+
+            expect(assigns(:status)).to eq(:failed)
+          end
+        end
+
+        context "when the only_allow_merge_if_all_discussions_are_resolved? is false" do
+          let(:allowed) { false }
+
+          it 'returns :failed' do
+            merge_with_sha
+
+            expect(assigns(:status)).to eq(:success)
+          end
+        end
+      end
     end
   end
 

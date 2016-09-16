@@ -837,6 +837,17 @@ describe MergeRequest, models: true do
           expect(subject.mergeable_state?).to be_falsey
         end
       end
+
+      context "when project settings restrict to merge only when all the discussions are resolved" do
+        before do
+          project.only_allow_merge_if_all_discussions_are_resolved = true
+          allow(subject).to receive(:mergeable_discussions_state?) { false }
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+      end
     end
   end
 
@@ -887,7 +898,52 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#environments' do
+  describe '#mergeable_discussions_state?' do
+    let!(:user)    { create(:user) }
+    let!(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: allowed) }
+
+    subject { create(:merge_request_with_diff_notes, source_project: project) }
+
+    context 'when is true' do
+      let(:allowed) { true }
+
+      context 'when discussions are resolved' do
+        before do
+          subject.discussions.each { |d| d.resolve!(user) }
+        end
+
+        it 'returns true' do
+          expect(subject.mergeable_discussions_state?).to be_truthy
+        end
+      end
+
+      context 'when discussions are unresolved' do
+        before do
+          subject.discussions.map(&:unresolve!)
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_discussions_state?).to be_falsey
+        end
+      end
+    end
+
+    context 'when is false' do
+      let(:allowed) { false }
+
+      context 'when discussions are unresolved' do
+        before do
+          subject.discussions.map(&:unresolve!)
+        end
+
+        it 'returns true' do
+          expect(subject.mergeable_discussions_state?).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe "#environments" do
     let(:project)       { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 

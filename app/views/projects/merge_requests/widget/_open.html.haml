@@ -23,8 +23,10 @@
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
       = render 'projects/merge_requests/widget/open/not_allowed'
-    - elsif !@merge_request.mergeable_ci_state? && @pipeline && @pipeline.failed?
+    - elsif !@merge_request.mergeable_ci_state?
       = render 'projects/merge_requests/widget/open/build_failed'
+    - elsif !@merge_request.mergeable_discussions_state?
+      = render 'projects/merge_requests/widget/open/unresolved_discussions'
     - elsif @merge_request.can_be_merged? || resolved_conflicts
       = render 'projects/merge_requests/widget/open/accept'
 
