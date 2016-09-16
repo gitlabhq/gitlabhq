@@ -47,7 +47,7 @@
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
     - if @commits_count.nonzero?
-      %ul.merge-request-tabs.nav-links.no-top.no-bottom
+      %ul.merge-request-tabs.nav-links.no-top.no-bottom.js-tabs-affix
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
             Discussion
