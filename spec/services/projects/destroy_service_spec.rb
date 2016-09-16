@@ -5,6 +5,7 @@ describe Projects::DestroyService, services: true do
   let!(:project) { create(:project, namespace: user.namespace) }
   let!(:path) { project.repository.path_to_repo }
   let!(:remove_path) { path.sub(/\.git\Z/, "+#{project.id}+deleted.git") }
+  let!(:async) { false } # execute or async_execute
 
   context 'Sidekiq inline' do
     before do
@@ -15,6 +16,19 @@ describe Projects::DestroyService, services: true do
     it { expect(Project.all).not_to include(project) }
     it { expect(Dir.exist?(path)).to be_falsey }
     it { expect(Dir.exist?(remove_path)).to be_falsey }
+
+    context 'when has remote mirrors' do
+      let!(:project) do
+        create(:project, namespace: user.namespace).tap do |project|
+          project.remote_mirrors.create(url: 'http://test.com')
+        end
+      end
+      let!(:async) { true }
+
+      it 'destroys them' do
+        expect(RemoteMirror.count).to eq(0)
+      end
+    end
   end
 
   context 'Sidekiq fake' do
@@ -52,6 +66,10 @@ describe Projects::DestroyService, services: true do
   end
 
   def destroy_project(project, user, params)
-    Projects::DestroyService.new(project, user, params).execute
+    if async
+      Projects::DestroyService.new(project, user, params).async_execute
+    else
+      Projects::DestroyService.new(project, user, params).execute
+    end
   end
 end
