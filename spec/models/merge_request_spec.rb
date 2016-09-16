@@ -797,16 +797,24 @@ describe MergeRequest, models: true do
 
   describe "#environments" do
     let(:project)       { create(:project) }
-    let!(:environment)  { create(:environment, project: project) }
-    let!(:environment1) { create(:environment, project: project) }
-    let!(:environment2) { create(:environment, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'selects deployed environments' do
-      create(:deployment, environment: environment, sha: project.commit('master').id)
-      create(:deployment, environment: environment1, sha: project.commit('feature').id)
+      environments = create_list(:environment, 3, project: project)
+      create(:deployment, environment: environments.first, sha: project.commit('master').id)
+      create(:deployment, environment: environments.second, sha: project.commit('feature').id)
 
-      expect(merge_request.environments).to eq [environment]
+      expect(merge_request.environments).to eq [environments.first]
+    end
+
+    context 'without a diff_head_commit' do
+      before do
+        expect(merge_request).to receive(:diff_head_commit).and_return(nil)
+      end
+
+      it 'returns an empty array' do
+        expect(merge_request.environments).to be_empty
+      end
     end
   end
 

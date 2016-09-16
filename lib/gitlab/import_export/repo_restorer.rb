@@ -22,10 +22,6 @@ module Gitlab
 
       private
 
-      def repos_path
-        Gitlab.config.gitlab_shell.repos_path
-      end
-
       def path_to_repo
         @project.repository.path_to_repo
       end

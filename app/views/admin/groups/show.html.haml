@@ -37,6 +37,12 @@
           %strong
             = @group.created_at.to_s(:medium)
 
+        %li
+          %span.light Group Git LFS status:
+          %strong
+            = group_lfs_status(@group)
+            = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+
     .panel.panel-default
       .panel-heading Linked LDAP groups
       %ul.well-list

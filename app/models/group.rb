@@ -107,6 +107,13 @@ class Group < Namespace
     end
   end
 
+  def lfs_enabled?
+    return false unless Gitlab.config.lfs.enabled
+    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+
+    self[:lfs_enabled]
+  end
+
   def add_users(user_ids, access_level, current_user: nil, skip_notification: false, expires_at: nil, ldap: false)
     user_ids.each do |user_id|
       Member.add_user(

@@ -1568,6 +1568,68 @@ describe Project, models: true do
     end
   end
 
+  describe '#lfs_enabled?' do
+    let(:project) { create(:project) }
+
+    shared_examples 'project overrides group' do
+      it 'returns true when enabled in project' do
+        project.update_attribute(:lfs_enabled, true)
+
+        expect(project.lfs_enabled?).to be_truthy
+      end
+
+      it 'returns false when disabled in project' do
+        project.update_attribute(:lfs_enabled, false)
+
+        expect(project.lfs_enabled?).to be_falsey
+      end
+
+      it 'returns the value from the namespace, when no value is set in project' do
+        expect(project.lfs_enabled?).to eq(project.namespace.lfs_enabled?)
+      end
+    end
+
+    context 'LFS disabled in group' do
+      before do
+        project.namespace.update_attribute(:lfs_enabled, false)
+        enable_lfs
+      end
+
+      it_behaves_like 'project overrides group'
+    end
+
+    context 'LFS enabled in group' do
+      before do
+        project.namespace.update_attribute(:lfs_enabled, true)
+        enable_lfs
+      end
+
+      it_behaves_like 'project overrides group'
+    end
+
+    describe 'LFS disabled globally' do
+      shared_examples 'it always returns false' do
+        it do
+          expect(project.lfs_enabled?).to be_falsey
+          expect(project.namespace.lfs_enabled?).to be_falsey
+        end
+      end
+
+      context 'when no values are set' do
+        it_behaves_like 'it always returns false'
+      end
+
+      context 'when all values are set to true' do
+        before do
+          project.namespace.update_attribute(:lfs_enabled, true)
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        it_behaves_like 'it always returns false'
+      end
+    end
+  end
+
   describe '.where_paths_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
@@ -1792,5 +1854,9 @@ describe Project, models: true do
 
       expect(project.pushes_since_gc).to eq(0)
     end
+  end
+
+  def enable_lfs
+    allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end
 end

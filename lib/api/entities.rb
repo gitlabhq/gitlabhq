@@ -91,7 +91,8 @@ module API
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:user]) }
 
       expose :created_at, :last_activity_at
-      expose :shared_runners_enabled, :lfs_enabled
+      expose :shared_runners_enabled
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
@@ -131,6 +132,7 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
+      expose :lfs_enabled?, as: :lfs_enabled
 
       expose :ldap_cn, :ldap_access
       expose :ldap_group_links,
