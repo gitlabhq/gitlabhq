@@ -52,8 +52,8 @@ describe Labels::DestroyService, services: true do
 
         service.execute(label)
 
-        expect(project1.labels.where(title: 'Bug')).to be_empty
-        expect(project2.labels.where(title: 'Bug')).to be_empty
+        expect(project1.reload.labels).to be_empty
+        expect(project2.reload.labels).to be_empty
       end
 
       context 'inherited from a global label' do
