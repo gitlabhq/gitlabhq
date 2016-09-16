@@ -331,9 +331,9 @@
   }
 
   .stage-name {
-    margin-bottom: 15px;
+    margin: 0 0 15px 10px;
     font-weight: bold;
-    width: 150px;
+    width: 176px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -364,12 +364,17 @@
 
     .build-content {
       width: 164px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+
+      .ci-status-icon {
+
+        svg {
+          height: 20px;
+          width: 20px;
+        }
+      }
 
       .ci-status-text {
-        width: 110px;
+        width: 135px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -397,27 +402,37 @@
         color: $layout-link-gray;
 
         .ci-status-text {
-          width: 80px;
+          width: 112px;
         }
       }
 
       .grouped-pipeline-dropdown {
         padding: 8px 0;
-        width: 200px;
+        width: 168px;
         left: auto;
-        right: -214px;
+        right: -180px;
         top: -9px;
         max-height: 245px;
         overflow-y: scroll;
 
-        a:hover {
-          .ci-status-text {
-            text-decoration: none;
+        a {
+          padding: 7px 8px;
+          margin: 0 8px;
+
+          &:hover {
+            .ci-status-text {
+              text-decoration: none;
+            }
           }
         }
 
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+
         .ci-status-text {
-          width: 145px;
+          width: 112px;
         }
 
         .arrow {
@@ -482,7 +497,7 @@
         position: absolute;
         border-bottom: 2px solid $border-color;
         width: 25px;
-        height: 65px;
+        height: 69px;
       }
 
       // Right connecting curves
@@ -504,7 +519,7 @@
     &:nth-child(2) {
       &::after, &::before {
         height: 29px;
-        top: -10px;
+        top: -7px;
       }
       .curve {
         display: block;
@@ -562,7 +577,7 @@
       width: 21px;
       height: 25px;
       position: absolute;
-      top: -30px;
+      top: -31.5px;
       border-top: 2px solid $border-color;
     }
 
