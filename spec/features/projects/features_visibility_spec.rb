@@ -2,8 +2,11 @@ require 'spec_helper'
 include WaitForAjax
 
 describe 'Edit Project Settings', feature: true do
+  include WaitForAjax
+
   let(:member) { create(:user) }
   let!(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
+  let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
   describe 'project features visibility selectors', js: true do
@@ -117,6 +120,33 @@ describe 'Edit Project Settings', feature: true do
           expect(page.status_code).to eq(200)
         end
       end
+    end
+  end
+
+  describe 'repository visibility', js: true do
+    before do
+      project.team << [member, :master]
+      login_as(member)
+      visit edit_namespace_project_path(project.namespace, project)
+    end
+
+    it "disables repository related features" do
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+
+      expect(find(".edit-project")).to have_selector("select.disabled", count: 2)
+    end
+
+    it "shows empty features project homepage" do
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+      select "Disabled", from: "project_project_feature_attributes_issues_access_level"
+      select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
+
+      click_button "Save changes"
+      wait_for_ajax
+
+      visit namespace_project_path(project.namespace, project)
+
+      expect(page).to have_content "Customize your workflow!"
     end
   end
 end

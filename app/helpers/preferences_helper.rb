@@ -50,6 +50,20 @@ module PreferencesHelper
   end
 
   def default_project_view
-    current_user ? current_user.project_view : 'readme'
+    return 'readme' unless current_user
+
+    user_view = current_user.project_view
+
+    if @project.feature_available?(:repository, current_user)
+      user_view
+    elsif user_view == "activity"
+      "activity"
+    elsif @project.wiki_enabled?
+      "wiki"
+    elsif @project.feature_available?(:issues, current_user)
+      "projects/issues/issues"
+    else
+      "customize_workflow"
+    end
   end
 end

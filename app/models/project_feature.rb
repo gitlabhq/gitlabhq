@@ -13,23 +13,26 @@ class ProjectFeature < ActiveRecord::Base
   # Enabled:  enabled for everyone able to access the project
   #
 
-  # Permision levels
+  # Permission levels
   DISABLED = 0
   PRIVATE  = 10
   ENABLED  = 20
 
-  FEATURES = %i(issues merge_requests wiki snippets builds)
+  FEATURES = %i(issues merge_requests wiki snippets builds repository)
 
   # Default scopes force us to unscope here since a service may need to check
   # permissions for a project in pending_delete
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
   belongs_to :project, -> { unscope(where: :pending_delete) }
 
+  validate :repository_children_level
+
   default_value_for :builds_access_level,         value: ENABLED, allows_nil: false
   default_value_for :issues_access_level,         value: ENABLED, allows_nil: false
   default_value_for :merge_requests_access_level, value: ENABLED, allows_nil: false
   default_value_for :snippets_access_level,       value: ENABLED, allows_nil: false
   default_value_for :wiki_access_level,           value: ENABLED, allows_nil: false
+  default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
     raise ArgumentError, 'invalid project feature' unless FEATURES.include?(feature)
@@ -56,6 +59,18 @@ class ProjectFeature < ActiveRecord::Base
   end
 
   private
+
+  # Validates builds and merge requests access level
+  # which cannot be higher than repository access level
+  def repository_children_level
+    validator = lambda do |field|
+      level = public_send(field) || ProjectFeature::ENABLED
+      not_allowed = level > repository_access_level
+      self.errors.add(field, "cannot have higher visibility level than repository access level") if not_allowed
+    end
+
+    %i(merge_requests_access_level builds_access_level).each(&validator)
+  end
 
   def get_permission(user, level)
     case level
