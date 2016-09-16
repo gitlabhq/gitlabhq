@@ -13,10 +13,54 @@ describe Labels::CreateService, services: true do
       }
     end
 
-    context 'with a group as subject' do
-      subject(:service) { described_class.new(group, double, params) }
+    context 'with a global label' do
+      subject(:service) { described_class.new(nil, double, params.merge(label_type: :global_label)) }
 
-      it 'creates a label' do
+      it 'creates the global label' do
+        expect { service.execute }.to change(Label.where(subject: nil, label_type: Label.label_types[:global_label]), :count).by(1)
+      end
+
+      it 'sets label_type to global_label' do
+        service.execute
+
+        expect(Label.last).to have_attributes(label_type: 'global_label')
+      end
+
+      it 'becames available to all already existing groups' do
+        service.execute
+
+        expect(Label.where(params.merge(subject: group, label_type: Label.label_types[:global_label]))).not_to be_empty
+      end
+
+      it 'becames available to all already existing projects' do
+        service.execute
+
+        expect(project.labels.where(params.merge(label_type: Label.label_types[:global_label]))).not_to be_empty
+      end
+
+      it 'does not overwrite label that already exists in a group' do
+        params = { title: 'Security', color: '#FF0000', description: 'Sample', label_type: Label.label_types[:group_label] }
+        group.labels.create(params)
+
+        service.execute
+
+        expect(group.labels.where(params)).not_to be_empty
+      end
+
+      it 'does not overwrite label that already exists in a project' do
+        params = { title: 'Security', color: '#FF0000', description: 'Sample', label_type: Label.label_types[:project_label] }
+        project.labels.create(params)
+
+        service.execute
+
+        expect(project.labels.where(params)).not_to be_empty
+      end
+    end
+
+    context 'with a group label' do
+      subject(:service) { described_class.new(group, double, params.merge(label_type: :group_label)) }
+
+      it 'creates the group label' do
         expect { service.execute }.to change(group.labels, :count).by(1)
       end
 
@@ -32,8 +76,14 @@ describe Labels::CreateService, services: true do
         expect(project.labels.where(params.merge(label_type: Label.label_types[:group_label]))).not_to be_empty
       end
 
+      it 'does not create a label that already exists on the global level' do
+        Label.create(params.merge(label_type: Label.label_types[:global_label]))
+
+        expect { service.execute }.not_to change(group.labels, :count)
+      end
+
       it 'does not overwrite label that already exists in the project' do
-        params = { title: 'Security', color: '#FF0000', description: 'Sample' }
+        params = { title: 'Security', color: '#FF0000', description: 'Sample', label_type: Label.label_types[:project_label] }
         project.labels.create(params)
 
         service.execute
@@ -42,10 +92,10 @@ describe Labels::CreateService, services: true do
       end
     end
 
-    context 'with a project as subject' do
-      subject(:service) { described_class.new(project, double, params) }
+    context 'with a project label' do
+      subject(:service) { described_class.new(project, double, params.merge(label_type: :project_label)) }
 
-      it 'creates a label' do
+      it 'creates the project label' do
         expect { service.execute }.to change(project.labels, :count).by(1)
       end
 
@@ -53,6 +103,12 @@ describe Labels::CreateService, services: true do
         service.execute
 
         expect(Label.last).to have_attributes(label_type: 'project_label')
+      end
+
+      it 'does not create a label that already exists on the global level' do
+        Label.create(params.merge(label_type: Label.label_types[:global_label]))
+
+        expect { service.execute }.not_to change(project.labels, :count)
       end
 
       it 'does not create a label that already exists on the group level' do

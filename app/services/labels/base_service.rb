@@ -8,8 +8,8 @@ module Labels
 
     attr_reader :subject, :user, :params
 
-    def find_labels(subject, title)
-      Label.with_type(:group_label).where(subject: subject, title: title)
+    def find_labels(subject, label_type, title)
+      Label.with_type(label_type).where(subject: subject, title: title)
     end
   end
 end

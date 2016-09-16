@@ -1,0 +1,6 @@
+%span.label-row
+  %span.label-name
+    = render_colored_label(label, tooltip: false)
+  - if label.description
+    %span.label-description
+      = markdown(label.description, pipeline: :single_line)

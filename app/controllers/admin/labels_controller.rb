@@ -1,11 +1,8 @@
 class Admin::LabelsController < Admin::ApplicationController
-  before_action :set_label, only: [:show, :edit, :update, :destroy]
+  before_action :label, only: [:edit, :update, :destroy, :toggle_subscription]
 
   def index
-    @labels = Label.templates.page(params[:page])
-  end
-
-  def show
+    @labels = Label.global_labels.page(params[:page])
   end
 
   def new
@@ -16,40 +13,52 @@ class Admin::LabelsController < Admin::ApplicationController
   end
 
   def create
-    @label = Label.new(label_params)
-    @label.template = true
+    service = Labels::CreateService.new(nil, current_user, label_params.merge(label_type: :global_label))
 
-    if @label.save
-      redirect_to admin_labels_url, notice: "Label was created"
+    @label = service.execute
+
+    if @label.valid?
+      redirect_to admin_labels_url, notice: 'Label was created.'
     else
       render :new
     end
   end
 
   def update
-    if @label.update(label_params)
-      redirect_to admin_labels_path, notice: 'label was successfully updated.'
+    service = Labels::UpdateService.new(nil, current_user, label_params)
+
+    if service.execute(@label)
+      redirect_to admin_labels_path, notice: 'Label was successfully updated.'
     else
       render :edit
     end
   end
 
   def destroy
-    @label.destroy
-    @labels = Label.templates
+    Labels::DestroyService.new(nil, current_user).execute(@label)
+
+    @labels = Label.global_labels
 
     respond_to do |format|
       format.html do
-        redirect_to(admin_labels_path, notice: 'Label was removed')
+        redirect_to admin_labels_path, notice: 'Label was removed.'
       end
       format.js
     end
   end
 
+  def toggle_subscription
+    return unless current_user
+
+    Labels::ToggleSubscriptionService.new(nil, current_user).execute(@label)
+
+    head :ok
+  end
+
   private
 
-  def set_label
-    @label = Label.find(params[:id])
+  def label
+    @label = Label.with_type(:global_label).find(params[:id])
   end
 
   def label_params

@@ -44,14 +44,18 @@ module LabelsHelper
   end
 
   def label_filter_path(subject, label, type: issue)
-    if subject.is_a?(Project)
+    case subject
+    when Project
       send("namespace_project_#{type.to_s.pluralize}_path",
                   subject.namespace,
                   subject,
                   label_name: [label.name])
-    else
+    when Group
       send("#{type.to_s.pluralize}_group_path",
                   subject,
+                  label_name: [label.name])
+    else
+      send("#{type.to_s.pluralize}_dashboard_path",
                   label_name: [label.name])
     end
   end

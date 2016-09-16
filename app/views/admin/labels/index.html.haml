@@ -1,18 +1,22 @@
-- page_title "Labels"
+- page_title 'Labels'
 
-%div
-  = link_to new_admin_label_path, class: "pull-right btn btn-nr btn-new" do
-    New label
-  %h3.page-title
-    Labels
-%hr
+.top-area.adjust
+  .nav-text
+    Labels can be applied to issues and merge requests.
+
+  .nav-controls
+    = link_to new_admin_label_path, class: 'btn btn-new' do
+      New label
 
 .labels
-  - if @labels.present?
-    %ul.bordered-list.manage-labels-list
-      = render @labels
+  .global-labels
+    %h5
+      = icon('globe')
+      Global Labels
+    %ul.content-list.manage-labels-list.js-global-labels
+      - if @labels.present?
+        = render @labels
     = paginate @labels, theme: 'gitlab'
-  - else
-    .light-well
-      .nothing-here-block There are no labels yet
-
+    - if @labels.blank?
+      .nothing-here-block
+        There are no labels yet

@@ -4,7 +4,7 @@ describe Labels::GenerateService, services: true do
   describe '#execute' do
     let(:project) { create(:empty_project) }
 
-    subject(:service) { described_class.new(project, double) }
+    subject(:service) { described_class.new(project, double, label_type: :project_label) }
 
     context 'when project labels is empty' do
       it 'creates the default labels' do

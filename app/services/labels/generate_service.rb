@@ -15,14 +15,14 @@ module Labels
       green = '#5cb85c'
 
       [
-        { title: 'bug', color: red },
-        { title: 'critical', color: red },
-        { title: 'confirmed', color: red },
-        { title: 'documentation', color: yellow },
-        { title: 'support', color: yellow },
-        { title: 'discussion', color: blue },
-        { title: 'suggestion', color: blue },
-        { title: 'enhancement', color: green }
+        { title: 'bug', color: red, label_type: params[:label_type] },
+        { title: 'critical', color: red, label_type: params[:label_type] },
+        { title: 'confirmed', color: red, label_type: params[:label_type] },
+        { title: 'documentation', color: yellow, label_type: params[:label_type] },
+        { title: 'support', color: yellow, label_type: params[:label_type] },
+        { title: 'discussion', color: blue, label_type: params[:label_type] },
+        { title: 'suggestion', color: blue, label_type: params[:label_type] },
+        { title: 'enhancement', color: green, label_type: params[:label_type] }
       ]
     end
   end

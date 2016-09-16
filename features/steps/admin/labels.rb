@@ -23,13 +23,13 @@ class Spinach::Features::AdminIssuesLabels < Spinach::FeatureSteps
 
   step 'I have labels: "bug", "feature", "enhancement"' do
     ["bug", "feature", "enhancement"].each do |title|
-      Label.create(title: title, template: true)
+      Label.create(title: title, label_type: Label.label_types[:global_label])
     end
   end
 
   step 'I delete all labels' do
-    page.within '.labels' do
-      page.all('.btn-remove').each do |remove|
+    page.within '.global-labels' do
+      page.all('.fa-trash-o').each do |remove|
         remove.click
         sleep 0.05
       end
@@ -112,6 +112,6 @@ class Spinach::Features::AdminIssuesLabels < Spinach::FeatureSteps
   end
 
   def bug_label
-    Label.templates.find_or_create_by(title: 'bug')
+    Label.global_labels.find_or_create_by(title: 'bug')
   end
 end

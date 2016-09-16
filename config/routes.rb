@@ -314,7 +314,11 @@ Rails.application.routes.draw do
       put :clear_repository_check_states
     end
 
-    resources :labels
+    resources :labels, except: [:show], constraints: { id: /\d+/ } do
+      member do
+        post :toggle_subscription
+      end
+    end
 
     resources :runners, only: [:index, :show, :update, :destroy] do
       member do

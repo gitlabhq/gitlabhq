@@ -1,7 +1,48 @@
-%li{id: dom_id(label)}
-  .label-row
-    = render_colored_label(label, tooltip: false)
-    = markdown(label.description, pipeline: :single_line)
-    .pull-right
-      = link_to 'Edit', edit_admin_label_path(label), class: 'btn btn-sm'
-      = link_to 'Delete', admin_label_path(label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Delete this label? Are you sure?"}
+- label_css_id = dom_id(label)
+- open_issues_count = label.open_issues_count(current_user)
+- open_merge_requests_count = label.open_merge_requests_count(current_user)
+
+%li{id: label_css_id, data: { id: label.id } }
+  = render 'label_row', label: label
+
+  .visible-xs.visible-sm-inline-block.visible-md-inline-block.dropdown
+    %button.btn.btn-default.label-options-toggle{ data: { toggle: 'dropdown' } }
+      Options
+      %span.caret
+    .dropdown-menu.dropdown-menu-align-right
+      %ul
+        %li
+          = link_to_label(label, type: :merge_request) do
+            = pluralize open_merge_requests_count, 'merge request'
+        %li
+          = link_to_label(label) do
+            = pluralize open_issues_count, 'open issue'
+        %li.label-subscription{ data: { url: toggle_subscription_admin_label_path(label) } }
+          %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
+            %span= label_subscription_toggle_button_text(label)
+        %li
+          = link_to 'Edit', edit_admin_label_path(label)
+        %li
+          = link_to 'Delete', admin_label_path(label), title: 'Delete', method: :delete, remote: true, data: { confirm: 'Remove this label? Are you sure?' }
+
+  .pull-right.hidden-xs.hidden-sm.hidden-md
+    = link_to_label(label, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
+      = pluralize label.open_merge_requests_count, 'merge request'
+    = link_to_label(label, css_class: 'btn btn-transparent btn-action') do
+      = pluralize open_issues_count, 'open issue'
+
+    .label-subscription.inline{ data: { url: toggle_subscription_admin_label_path(label) } }
+      %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label), data: { toggle: "tooltip", status: label_subscription_status(label) } }
+        %span.sr-only= label_subscription_toggle_button_text(label)
+        = icon('eye', class: 'label-subscribe-button-icon')
+        = icon('spinner spin', class: 'label-subscribe-button-loading')
+
+    = link_to edit_admin_label_path(label), title: 'Edit', class: 'btn btn-transparent btn-action', data: { toggle: 'tooltip' } do
+      %span.sr-only Edit
+      = icon('pencil-square-o')
+    = link_to admin_label_path(label), title: 'Delete', class: 'btn btn-transparent btn-action remove-row', method: :delete, remote: true, data: { confirm: 'Remove this label? Are you sure?', toggle: 'tooltip' } do
+      %span.sr-only Delete
+      = icon('trash-o')
+
+  :javascript
+    new Subscription('##{dom_id(label)} .label-subscription');

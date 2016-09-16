@@ -1,20 +1,15 @@
 module Labels
   class UpdateService < Labels::BaseService
     def execute(label)
+      previous_title = label.title.dup
+
       Label.transaction do
-        previous_title = label.title.dup
         label.update(params)
 
-        return label unless label.valid? && label.group_label?
+        return label unless label.valid?
 
-        if subject.is_a?(Group)
-          update_labels(subject.projects, previous_title)
-        end
-
-        if subject.is_a?(Project)
-          update_labels(subject.group, previous_title)
-          update_labels(subject.group.projects - [subject], previous_title)
-        end
+        replicate_global_label(label.label_type, previous_title) if label.global_label?
+        replicate_group_label(label.label_type, previous_title) if label.group_label?
 
         label
       end
@@ -22,8 +17,38 @@ module Labels
 
     private
 
-    def update_labels(subject, title)
-      find_labels(subject, title).update_all(params)
+    def replicate_global_label(label_type, title)
+      if subject.nil?
+        replicate_label(Group.all, label_type, title)
+        replicate_label(Project.all, label_type, title)
+      end
+
+      if subject.is_a?(Group)
+        replicate_label(nil, label_type, title)
+        replicate_label(Group.where.not(id: subject), label_type, title)
+        replicate_label(Project.all, label_type, title)
+      end
+
+      if subject.is_a?(Project)
+        replicate_label(nil, label_type, title)
+        replicate_label(Group.all, label_type, title)
+        replicate_label(Project.where.not(id: subject), label_type, title)
+      end
+    end
+
+    def replicate_group_label(label_type, title)
+      if subject.is_a?(Group)
+        replicate_label(subject.projects, label_type, title)
+      end
+
+      if subject.is_a?(Project)
+        replicate_label(subject.group, label_type, title)
+        replicate_label(subject.group.projects.where.not(id: subject), label_type, title)
+      end
+    end
+
+    def replicate_label(subject, label_type, title)
+      find_labels(subject, label_type, title).update_all(params)
     end
   end
 end

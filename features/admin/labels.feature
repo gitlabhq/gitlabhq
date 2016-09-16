@@ -25,6 +25,7 @@ Feature: Admin Issues Labels
   @javascript
   Scenario: I delete all labels
     When I delete all labels
+     And I visit admin labels page
     Then I should see labels help message
 
   Scenario: I create a label with invalid color
