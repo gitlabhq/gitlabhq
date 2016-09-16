@@ -8,6 +8,7 @@ v 8.12.0 (Unreleased)
   - [ES] Fix: Elasticsearch does not find partial matches in project names
   - [ES] Global code search
   - [ES] Improve logging
+  - Fix projects with remote mirrors asynchronously destruction
 
 v 8.11.6
   - Exclude blocked users from potential MR approvers.

@@ -158,7 +158,9 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def remove_remote
-    project.repository.remove_remote(ref_name)
+    if project # could be pending to delete so don't need to touch the git repository
+      project.repository.remove_remote(ref_name)
+    end
   end
 
   def mirror_url_changed?
