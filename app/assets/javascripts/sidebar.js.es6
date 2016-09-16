@@ -38,6 +38,20 @@
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
         .on('click', 'html, body', (e) => this.handleClickEvent(e))
         .on('page:change', () => this.renderState());
+      $(window)
+        .off('resize.sidebar')
+        .on('resize.sidebar', () => {
+          clearTimeout(this.widnowResizeTimout);
+          this.widnowResizeTimout = setTimeout(() => {
+            if (!this.isPinned) return;
+
+            if (this.isExpanded && window.innerWidth < sidebarBreakpoint) {
+              this.toggleSidebar();
+            } else if (!this.isExpanded && window.innerWidth >= sidebarBreakpoint) {
+              this.toggleSidebar();
+            }
+          }, 250);
+        });
       this.renderState();
     }
 
