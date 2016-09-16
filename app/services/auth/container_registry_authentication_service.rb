@@ -90,7 +90,7 @@ module Auth
 
     def build_can_pull?(requested_project)
       # Build can:
-      # 1. pull from it's own project (for ex. a build)
+      # 1. pull from its own project (for ex. a build)
       # 2. read images from dependent projects if creator of build is a team member
       @authentication_abilities.include?(:build_read_container_image) &&
         (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
@@ -102,7 +102,7 @@ module Auth
     end
 
     def build_can_push?(requested_project)
-      # Build can push only to project to from which he originates
+      # Build can push only to the project from which it originates
       @authentication_abilities.include?(:build_create_container_image) &&
         requested_project == project
     end

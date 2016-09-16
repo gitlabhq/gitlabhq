@@ -64,7 +64,7 @@ class ProjectPolicy < BasePolicy
     can! :read_deployment
   end
 
-  # Permissions given when an user is direct member of a group
+  # Permissions given when an user is team member of a project
   def team_member_reporter_access!
     can! :build_download_code
     can! :build_read_container_image
