@@ -650,6 +650,7 @@ ActiveRecord::Schema.define(version: 20160913162434) do
     t.integer  "visibility_level",       default: 20,    null: false
     t.boolean  "request_access_enabled", default: true,  null: false
     t.datetime "deleted_at"
+    t.boolean  "lfs_enabled"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
