@@ -1,7 +1,7 @@
 .hidden-xs
   - if current_user
-    = link_to new_snippet_path, class: "btn btn-grouped btn-create new-snippet-link", title: "New Snippet" do
-      New Snippet
+    = link_to new_snippet_path, class: "btn btn-grouped btn-create new-snippet-link", title: "New snippet" do
+      New snippet
   - if can?(current_user, :admin_personal_snippet, @snippet)
     = link_to snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-danger", title: 'Delete Snippet' do
       Delete
@@ -16,8 +16,8 @@
     .dropdown-menu.dropdown-menu-full-width
       %ul
         %li
-          = link_to new_snippet_path, title: "New Snippet" do
-            New Snippet
+          = link_to new_snippet_path, title: "New snippet" do
+            New snippet
         - if can?(current_user, :admin_personal_snippet, @snippet)
           %li
             = link_to snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, title: 'Delete Snippet' do
