@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe API::API do
   include ApiHelpers
+  include LdapHelpers
+
   let(:user) { create(:user) }
+  let(:adapter) { ldap_adapter }
 
   before do
     groups = [
@@ -10,7 +13,8 @@ describe API::API do
       OpenStruct.new(cn: 'students')
     ]
 
-    allow_any_instance_of(Gitlab::LDAP::Adapter).to receive_messages(groups: groups)
+    allow(Gitlab::LDAP::Adapter).to receive(:new).and_return(adapter)
+    allow(adapter).to receive_messages(groups: groups)
   end
 
   describe "GET /ldap/groups" do
