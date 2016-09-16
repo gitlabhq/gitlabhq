@@ -5,6 +5,11 @@ FactoryGirl.define do
     subject factory: :project
   end
 
+  factory :global_label, parent: :label do
+    subject nil
+    label_type Label.label_types[:global_label]
+  end
+
   factory :group_label, parent: :label do
     label_type Label.label_types[:group_label]
   end

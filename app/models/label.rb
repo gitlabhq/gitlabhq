@@ -22,7 +22,7 @@ class Label < ActiveRecord::Base
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
-  validates :subject_id, :subject_type, presence: true, unless: Proc.new { |service| service.template? }
+  validates :subject_id, :subject_type, presence: true, unless: Proc.new { |label| label.global_label? }
   validates :label_type, presence: true
 
   # Don't allow ',' for label titles
@@ -35,8 +35,8 @@ class Label < ActiveRecord::Base
 
   default_scope { order(title: :asc) }
 
-  scope :templates, -> { where(template: true) }
   scope :with_type, ->(label_type) { where(label_type: Label.label_types[label_type]) }
+  scope :global_labels, -> { with_type(:global_label).where(subject: nil) }
 
   def self.prioritized
     where.not(priority: nil).reorder(:priority, :title)
@@ -117,10 +117,6 @@ class Label < ActiveRecord::Base
     params[:project_id] = subject_id if subject.is_a?(Project)
 
     MergeRequestsFinder.new(user, params).execute.count
-  end
-
-  def template?
-    template
   end
 
   def text_color

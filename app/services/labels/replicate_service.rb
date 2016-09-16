@@ -8,7 +8,7 @@ module Labels
     private
 
     def global_labels
-      Label.templates
+      Label.global_labels
     end
 
     def group_labels
