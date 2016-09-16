@@ -147,13 +147,36 @@
   }
 
   .stage-cell {
-    text-align: center;
+    font-size: 0;
 
     svg {
       height: 18px;
       width: 18px;
+      position: relative;
+      z-index: 2;
       vertical-align: middle;
       overflow: visible;
+    }
+
+    .stage-container {
+      display: inline-block;
+      position: relative;
+      margin-right: 6px;
+
+      .tooltip {
+        white-space: nowrap;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          content: '';
+          width: 8px;
+          position: absolute;;
+          right: -7px;
+          bottom: 8px;
+          border-bottom: 2px solid $border-color;
+        }
+      }
     }
   }
 
