@@ -346,7 +346,7 @@ describe 'Git HTTP requests', lib: true do
             it 'uploads get status 403' do
               push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_http_status(401)
             end
           end
 

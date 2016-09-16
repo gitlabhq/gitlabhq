@@ -4,7 +4,11 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
-  attr_reader :actor, :authentication_abilities
+  attr_reader :authentication_result
+
+  delegate :actor, :authentication_abilities, to: :authentication_result, allow_nil: true
+
+  alias_method :user, :actor
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
@@ -26,9 +30,12 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         return # Allow access
       end
     elsif allow_kerberos_spnego_auth? && spnego_provided?
-      @actor = find_kerberos_user
+      user = find_kerberos_user
 
-      if actor
+      if user
+        @authentication_result = Gitlab::Auth::Result.new(
+          user, nil, :kerberos, Gitlab::Auth.full_authentication_abilities)
+
         send_final_spnego_response
         return # Allow access
       end
@@ -104,56 +111,40 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     render plain: 'Not Found', status: :not_found
   end
 
-  def ci?
-    @ci
-  end
-
-  def user
-    @actor
-  end
-
   def handle_basic_authentication(login, password)
-    auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
+    @authentication_result = Gitlab::Auth.find_for_git_client(
+      login, password, project: project, ip: request.ip)
 
-    case auth_result.type
-    when :ci
-      if auth_result.project == project && download_request?
-        @ci = true
-      else
-        return false
-      end
-    when :oauth
-      if download_request?
-        @actor = auth_result.actor
-        @authentication_abilities = auth_result.authentication_abilities
-      else
-        return false
-      end
-    when :lfs_deploy_token
-      if download_request?
-        @lfs_deploy_key = true
-        @actor = auth_result.actor
-        @authentication_abilities = auth_result.authentication_abilities
-      else
-        return false
-      end
-    when :lfs_token, :personal_token, :gitlab_or_ldap, :build
-      @actor = auth_result.actor
-      @authentication_abilities = auth_result.authentication_abilities
+    return false unless @authentication_result.success?
+
+    if download_request?
+      authentication_has_download_access?
     else
-      # Not allowed
-      return false
+      authentication_has_upload_access?
     end
+  end
 
-    true
+  def authentication_has_download_access?
+    has_authentication_ability?(:download_code) || has_authentication_ability?(:build_download_code)
+  end
+
+  def authentication_has_upload_access?
+    has_authentication_ability?(:push_code)
+  end
+
+  def ci?
+    authentication_result && authentication_result.ci? &&
+      authentication_result.project && authentication_result.project == project
   end
 
   def lfs_deploy_key?
-    @lfs_deploy_key && actor && actor.projects.include?(project)
+    authentication_result && authentication_result.lfs_deploy_token? &&
+      actor && actor.projects.include?(project)
   end
 
   def has_authentication_ability?(capability)
-    @authentication_abilities.include?(capability)
+    authentication_abilities &&
+      authentication_abilities.include?(capability)
   end
 
   def verify_workhorse_api!

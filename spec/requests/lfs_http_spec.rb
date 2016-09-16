@@ -310,8 +310,8 @@ describe 'Git LFS API and storage' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
             it_behaves_like 'can download LFS only from own projects' do
-              # We render 401, to prevent data leakage about existence of the project
-              let(:other_project_status) { 401 }
+              # We render 404, to prevent data leakage about existence of the project
+              let(:other_project_status) { 404 }
             end
           end
         end
@@ -545,8 +545,8 @@ describe 'Git LFS API and storage' do
           let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
           it_behaves_like 'can download LFS only from own projects' do
-            # We render 401, to prevent data leakage about existence of the project
-            let(:other_project_status) { 401 }
+            # We render 404, to prevent data leakage about existence of the project
+            let(:other_project_status) { 404 }
           end
         end
       end
@@ -706,8 +706,8 @@ describe 'Git LFS API and storage' do
             context 'tries to push to own project' do
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it 'responds with 403' do
-                expect(response).to have_http_status(403)
+              it 'responds with 401' do
+                expect(response).to have_http_status(401)
               end
             end
 
@@ -716,8 +716,8 @@ describe 'Git LFS API and storage' do
               let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it 'responds with 403' do
-                expect(response).to have_http_status(403)
+              it 'responds with 401' do
+                expect(response).to have_http_status(401)
               end
             end
           end
@@ -925,8 +925,8 @@ describe 'Git LFS API and storage' do
               put_authorize
             end
 
-            it 'responds with 403' do
-              expect(response).to have_http_status(403)
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
             end
           end
 
@@ -939,8 +939,8 @@ describe 'Git LFS API and storage' do
               put_authorize
             end
 
-            it 'responds with 404' do
-              expect(response).to have_http_status(404)
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
             end
           end
         end
@@ -1025,8 +1025,8 @@ describe 'Git LFS API and storage' do
           context 'tries to push to own project' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-            it 'responds with 403' do
-              expect(response).to have_http_status(403)
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
             end
           end
 
@@ -1035,8 +1035,8 @@ describe 'Git LFS API and storage' do
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-            it 'responds with 403' do
-              expect(response).to have_http_status(403)
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
             end
           end
         end
