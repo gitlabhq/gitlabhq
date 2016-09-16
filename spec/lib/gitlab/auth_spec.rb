@@ -26,7 +26,7 @@ describe Gitlab::Auth, lib: true do
         end
       end
 
-      (HasStatus::AVAILABLE_STATUSES - [:running]).each do |build_status|
+      (HasStatus::AVAILABLE_STATUSES - ['running']).each do |build_status|
         context "for #{build_status} build" do
           let!(:build) { create(:ci_build, status: build_status) }
           let(:project) { build.project }
@@ -36,7 +36,7 @@ describe Gitlab::Auth, lib: true do
           end
 
           it 'denies authentication' do
-            expect(subject).not_to eq(Gitlab::Auth::Result.new)
+            expect(subject).to eq(Gitlab::Auth::Result.new)
           end
         end
       end
