@@ -19,6 +19,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   private
 
   def authenticate_user
+    @authentication_result = Gitlab::Auth::Result.new
+
     if project && project.public? && download_request?
       return # Allow access
     end
@@ -124,6 +126,18 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     end
   end
 
+  def ci?
+    authentication_result.ci? &&
+      authentication_project &&
+      authentication_project == project
+  end
+
+  def lfs_deploy_key?
+    authentication_result.lfs_deploy_token? &&
+      actor &&
+      actor.projects.include?(project)
+  end
+
   def authentication_has_download_access?
     has_authentication_ability?(:download_code) || has_authentication_ability?(:build_download_code)
   end
@@ -132,19 +146,12 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     has_authentication_ability?(:push_code)
   end
 
-  def ci?
-    authentication_result && authentication_result.ci? &&
-      authentication_result.project && authentication_result.project == project
-  end
-
-  def lfs_deploy_key?
-    authentication_result && authentication_result.lfs_deploy_token? &&
-      actor && actor.projects.include?(project)
-  end
-
   def has_authentication_ability?(capability)
-    authentication_abilities &&
-      authentication_abilities.include?(capability)
+    (authentication_abilities || []).include?(capability)
+  end
+
+  def authentication_project
+    authentication_result.project
   end
 
   def verify_workhorse_api!

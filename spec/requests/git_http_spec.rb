@@ -322,10 +322,10 @@ describe 'Git HTTP requests', lib: true do
             expect(response).to have_http_status(401)
           end
 
-          it "downloads from other project get status 401" do
+          it "downloads from other project get status 404" do
             clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
-            expect(response).to have_http_status(401)
+            expect(response).to have_http_status(404)
           end
         end
 
