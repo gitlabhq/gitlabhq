@@ -34,36 +34,20 @@ class ProjectMember < Member
     #     :master
     #   )
     #
-    def add_users_to_projects(project_ids, user_ids, access, current_user: nil, expires_at: nil)
-      access_level = if roles_hash.has_key?(access)
-                       roles_hash[access]
-                     elsif roles_hash.values.include?(access.to_i)
-                       access
-                     else
-                       raise "Non valid access"
-                     end
-
-      users = user_ids.map { |user_id| Member.user_for_id(user_id) }
-
-      ProjectMember.transaction do
+    def add_users_to_projects(project_ids, users, access_level, current_user: nil, expires_at: nil)
+      self.transaction do
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          users.each do |user|
-            Member.add_user(
-              project.project_members,
-              user,
-              access_level,
-              current_user: current_user,
-              expires_at: expires_at
-            )
-          end
+          add_users_to_source(
+            project,
+            users,
+            access_level,
+            current_user: current_user,
+            expires_at: expires_at
+          )
         end
       end
-
-      true
-    rescue
-      false
     end
 
     def truncate_teams(project_ids)
@@ -84,12 +68,14 @@ class ProjectMember < Member
       truncate_teams [project.id]
     end
 
-    def roles_hash
-      Gitlab::Access.sym_options
-    end
-
     def access_level_roles
       Gitlab::Access.options
+    end
+
+    private
+
+    def can_update_member?(current_user, member)
+      super || (member.owner? && member.new_record?)
     end
   end
 

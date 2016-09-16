@@ -836,7 +836,7 @@ describe Project, models: true do
 
     describe 'when a user has access to a project' do
       before do
-        project.team.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MASTER)
       end
 
       it { is_expected.to eq([project]) }

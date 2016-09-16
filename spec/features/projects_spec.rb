@@ -82,7 +82,7 @@ feature 'Project', feature: true do
 
     before do
       login_with(user)
-      project.team.add_user(user, Gitlab::Access::MASTER)
+      project.add_user(user, Gitlab::Access::MASTER)
       visit namespace_project_path(project.namespace, project)
     end
 
@@ -101,8 +101,8 @@ feature 'Project', feature: true do
     context 'on issues page', js: true do
       before do
         login_with(user)
-        project.team.add_user(user, Gitlab::Access::MASTER)
-        project2.team.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MASTER)
+        project2.add_user(user, Gitlab::Access::MASTER)
         visit namespace_project_issue_path(project.namespace, project, issue)
       end
 
