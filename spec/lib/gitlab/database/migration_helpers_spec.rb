@@ -156,14 +156,9 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         it 'adds the column with a limit' do
           allow(model).to receive(:transaction_open?).and_return(false)
           allow(model).to receive(:transaction).and_yield
-          expect(model).to receive(:add_column).
-            with(:projects, :foo, :integer, default: nil, limit: 8)
-          allow(model).to receive(:update_column_in_batches).
-            with(:projects, :foo, 10)
-          allow(model).to receive(:change_column_null).
-            with(:projects, :foo, false)
-          allow(model).to receive(:change_column_default).
-            with(:projects, :foo, 10)
+          allow(model).to receive(:update_column_in_batches).with(:projects, :foo, 10)
+          allow(model).to receive(:change_column_null).with(:projects, :foo, false)
+          allow(model).to receive(:change_column_default).with(:projects, :foo, 10)
 
           expect(model).to receive(:add_column).
             with(:projects, :foo, :integer, default: nil, limit: 8)
