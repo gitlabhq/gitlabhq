@@ -652,7 +652,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def environments
-    return unless diff_head_commit
+    return [] unless diff_head_commit
 
     target_project.environments.select do |environment|
       environment.includes_commit?(diff_head_commit)

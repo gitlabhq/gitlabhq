@@ -187,6 +187,52 @@ describe Group, models: true do
     it { expect(group.has_master?(@members[:requester])).to be_falsey }
   end
 
+  describe '#lfs_enabled?' do
+    context 'LFS enabled globally' do
+      before do
+        allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+      end
+
+      it 'returns true when nothing is set' do
+        expect(group.lfs_enabled?).to be_truthy
+      end
+
+      it 'returns false when set to false' do
+        group.update_attribute(:lfs_enabled, false)
+
+        expect(group.lfs_enabled?).to be_falsey
+      end
+
+      it 'returns true when set to true' do
+        group.update_attribute(:lfs_enabled, true)
+
+        expect(group.lfs_enabled?).to be_truthy
+      end
+    end
+
+    context 'LFS disabled globally' do
+      before do
+        allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
+      end
+
+      it 'returns false when nothing is set' do
+        expect(group.lfs_enabled?).to be_falsey
+      end
+
+      it 'returns false when set to false' do
+        group.update_attribute(:lfs_enabled, false)
+
+        expect(group.lfs_enabled?).to be_falsey
+      end
+
+      it 'returns false when set to true' do
+        group.update_attribute(:lfs_enabled, true)
+
+        expect(group.lfs_enabled?).to be_falsey
+      end
+    end
+  end
+
   describe '#owners' do
     let(:owner) { create(:user) }
     let(:developer) { create(:user) }

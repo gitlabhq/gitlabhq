@@ -393,10 +393,9 @@ class Project < ActiveRecord::Base
   end
 
   def lfs_enabled?
-    return false unless Gitlab.config.lfs.enabled
-    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+    return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
-    self[:lfs_enabled]
+    self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
 
   def repository_storage_path

@@ -2,20 +2,6 @@
   padding: 2px;
 }
 
-.snippet-holder {
-  margin-bottom: -$gl-padding;
-
-  .file-holder {
-    border-top: 0;
-  }
-
-  .file-actions {
-    .btn-clipboard {
-      @extend .btn;
-    }
-  }
-}
-
 .markdown-snippet-copy {
   position: fixed;
   top: -10px;
@@ -24,29 +10,18 @@
   max-width: 0;
 }
 
-.file-holder.snippet-file-content {
-  padding-bottom: $gl-padding;
-  border-bottom: 1px solid $border-color;
-
-  .file-title {
-    padding-top: $gl-padding;
-    padding-bottom: $gl-padding;
-  }
-
-  .file-actions {
-    top: 12px;
-  }
-
-  .file-content {
-    border-left: 1px solid $border-color;
-    border-right: 1px solid $border-color;
-    border-bottom: 1px solid $border-color;
+.snippet-file-content {
+  border-radius: 3px;
+  .btn-clipboard {
+    @extend .btn;
   }
 }
 
 .snippet-title {
   font-size: 24px;
-  font-weight: normal;
+  font-weight: 600;
+  padding: $gl-padding;
+  padding-left: 0;
 }
 
 .snippet-actions {

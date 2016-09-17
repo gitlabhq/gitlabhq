@@ -27,13 +27,14 @@ module API
       #   path (required)             - The path of the group
       #   description (optional)      - The description of the group
       #   visibility_level (optional) - The visibility level of the group
+      #   lfs_enabled (optional)      - Enable/disable LFS for the projects in this group
       # Example Request:
       #   POST /groups
       post do
         authorize! :create_group
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :lfs_enabled]
         @group = Group.new(attrs)
 
         if @group.save
@@ -51,13 +52,14 @@ module API
       #   path (optional)             - The path of the group
       #   description (optional)      - The description of the group
       #   visibility_level (optional) - The visibility level of the group
+      #   lfs_enabled (optional)      - Enable/disable LFS for the projects in this group
       # Example Request:
       #   PUT /groups/:id
       put ':id' do
         group = find_group(params[:id])
         authorize! :admin_group, group
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :lfs_enabled]
 
         if ::Groups::UpdateService.new(group, current_user, attrs).execute
           present group, with: Entities::GroupDetail

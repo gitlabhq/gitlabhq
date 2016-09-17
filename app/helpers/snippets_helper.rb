@@ -1,10 +1,10 @@
 module SnippetsHelper
-  def reliable_snippet_path(snippet)
+  def reliable_snippet_path(snippet, opts = nil)
     if snippet.project_id?
       namespace_project_snippet_path(snippet.project.namespace,
-                                     snippet.project, snippet)
+                                     snippet.project, snippet, opts)
     else
-      snippet_path(snippet)
+      snippet_path(snippet, opts)
     end
   end
 
