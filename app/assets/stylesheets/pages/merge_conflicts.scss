@@ -255,6 +255,13 @@ $colors: (
     
     .editor {
       border-top: solid 1px yellow;
+
+      pre {
+        height: 350px;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+      }
     }
 
     .loading-text {

@@ -4,7 +4,7 @@
     template: '#diff-file-editor',
     data() {
       return {
-        originalState: '',
+        originalContent: '',
         saved: false,
         loading: false,
         fileLoaded: false
@@ -23,6 +23,8 @@
       loadFile(val) {
         const self = this;
 
+        this.resetEditorContent();
+
         if (!val || this.fileLoaded || this.loading) {
           return
         }
@@ -31,10 +33,19 @@
 
         $.get(this.file.content_path)
           .done((file) => {
-            $(self.$el).find('textarea').val(file.content);
 
-            self.originalState = file.content;
+            let content = self.$el.querySelector('pre');
+            let fileContent = document.createTextNode(file.content);
+
+            content.textContent = fileContent.textContent;
+
+            self.originalContent = file.content;
             self.fileLoaded = true;
+            self.editor = ace.edit(content);
+            self.editor.$blockScrolling = Infinity; // Turn off annoying warning
+            self.editor.on('change', () => {
+              self.saveDiffResolution();
+            });
             self.saveDiffResolution();
           })
           .fail(() => {
@@ -50,12 +61,14 @@
         this.saved = true;
 
         // This probably be better placed in the data provider
-        this.file.content = this.$el.querySelector('textarea').value;
-        this.file.resolveEditChanged = this.file.content !== this.originalState;
+        this.file.content = this.editor.getValue();
+        this.file.resolveEditChanged = this.file.content !== this.originalContent;
         this.file.promptDiscardConfirmation = false;
       },
-      onInput() {
-        this.saveDiffResolution();
+      resetEditorContent() {
+        if (this.fileLoaded) {
+          this.editor.setValue(this.originalContent, -1);
+        }
       }
     }
   });
