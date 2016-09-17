@@ -1,4 +1,6 @@
 class Projects::CycleAnalyticsController < Projects::ApplicationController
+  include CycleAnalyticsHelper
+
   before_action :authorize_read_cycle_analytics!
 
   def show
@@ -6,7 +8,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @cycle_analytics }
+      format.json { render json: cycle_analytics_json(@cycle_analytics) }
     end
   end
 
