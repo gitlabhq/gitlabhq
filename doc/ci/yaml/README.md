@@ -547,7 +547,7 @@ GitLab.
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
 
-The `environment` name must be a valid [Git reference name][gitref]. Common
+The `environment` name must contain only letters, digits, '-', '_', '/', '$', '{', '}' and spaces. Common
 names are `qa`, `staging`, and `production`, but you can use whatever name works
 with your workflow.
 
@@ -1083,5 +1083,4 @@ CI with various languages.
 
 [examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
-[gitref]: https://git-scm.com/docs/git-check-ref-format
 [environment]: ../environments.md
