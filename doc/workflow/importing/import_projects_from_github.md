@@ -70,10 +70,11 @@ You can now go on and [select which repositories to import](#select-which-reposi
 ### Authorize access to your repositories using a personal access token
 
 >**Note:**
-For a proper author/assignee mapping, the [GitHub integration][gh-integration]
-should be used instead of using a [personal access token][gh-token]. If the
-GitHub integration is enabled by your GitLab administrator, it should be the
-preferred method to import your repositories.
+For a proper author/assignee mapping for issues and pull requests, the
+[GitHub integration][gh-integration] should be used instead of the
+[personal access token][gh-token]. If the GitHub integration is enabled by your
+GitLab administrator, it should be the preferred method to import your repositories.
+Read more in the [How it works](#how-it-works) section.
 
 If you are not using the GitHub integration, you can still perform a one-off
 authorization with GitHub to grant GitLab access your repositories:
