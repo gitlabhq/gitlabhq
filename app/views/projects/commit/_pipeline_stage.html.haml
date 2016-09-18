@@ -5,7 +5,7 @@
     - is_playable = status.playable? && can?(current_user, :update_build, @project)
     %li.build{ class: ("playable" if is_playable) }
       .curve
-      .build-content
+      .build-content{ { data: { toggle: 'tooltip', title: "#{group_name} - #{status.status}", placement: 'bottom' } } }
         = render "projects/#{status.to_partial_path}_pipeline", subject: status
   - else
     %li.build
