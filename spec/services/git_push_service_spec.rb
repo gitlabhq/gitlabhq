@@ -253,6 +253,21 @@ describe GitPushService, services: true do
         expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
       end
 
+      it "when pushing a branch for the first time with an existing branch permission configured" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
+        expect(project).to receive(:execute_hooks)
+        expect(project.default_branch).to eq("master")
+        expect_any_instance_of(ProtectedBranches::CreateService).not_to receive(:execute)
+
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::NO_ACCESS])
+        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
