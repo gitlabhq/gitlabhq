@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.12.0 (unreleased)
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
+  - Bump fog-aws to v0.11.0 to support ap-south-1 region
   - Add ability to fork to a specific namespace using API. (ritave)
   - Cleanup misalignments in Issue list view !6206
   - Prune events older than 12 months. (ritave)
@@ -29,6 +30,7 @@ v 8.12.0 (unreleased)
   - Fix file permissions change when updating a file on the Gitlab UI !5979
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
+  - Replace contributions calendar timezone payload with dates (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
@@ -71,6 +73,7 @@ v 8.12.0 (unreleased)
   - Show queued time when showing a pipeline !6084
   - Remove unused mixins (ClemMakesApps)
   - Add search to all issue board lists
+  - Scroll active tab into view on mobile
   - Fix groups sort dropdown alignment (ClemMakesApps)
   - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Use JavaScript tooltips for mentions !5301 (winniehell)
@@ -167,6 +170,7 @@ v 8.11.5
   - Scope webhooks/services that will run for confidential issues
   - Remove gitorious from import_sources
   - Fix confidential issues being exposed as public using gitlab.com export
+  - Use oj gem for faster JSON processing
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
