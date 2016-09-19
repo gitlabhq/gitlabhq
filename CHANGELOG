@@ -323,6 +323,7 @@ v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
   - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
   - Allow the Rails cookie to be used for API authentication.
+  - Updating verbiage on git basics to be more intuitive
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
