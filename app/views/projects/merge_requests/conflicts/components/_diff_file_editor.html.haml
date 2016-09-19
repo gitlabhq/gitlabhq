@@ -1,6 +1,7 @@
 %template{ id: "diff-file-editor" }
   %div
     .editor-wrap{ ":class" => "classObject" }
-      %p.loading-text Loading...
+      .loading
+        %i.fa.fa-spinner.fa-spin
       .editor
         %pre{ "style" => "height: 350px" }
