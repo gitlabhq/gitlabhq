@@ -67,7 +67,7 @@ describe Gitlab::Auth, lib: true do
       token = Gitlab::LfsToken.new(user).generate
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: user.username)
-      expect(gl_auth.find_for_git_client(user.username, token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :lfs_token, read_authentication_abilities))
+      expect(gl_auth.find_for_git_client(user.username, token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, nil, :lfs_token, full_authentication_abilities))
     end
 
     it 'recognizes deploy key lfs tokens' do
