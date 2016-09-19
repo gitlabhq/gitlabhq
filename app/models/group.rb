@@ -3,6 +3,7 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
+  include AccessRequestable
   include Referable
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'

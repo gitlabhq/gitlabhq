@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
+  include AccessRequestable
   include Referable
   include Sortable
   include AfterCommitQueue
