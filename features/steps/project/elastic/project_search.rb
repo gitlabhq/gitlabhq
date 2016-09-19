@@ -50,7 +50,7 @@ class Spinach::Features::ProjectSearch < Spinach::FeatureSteps
   step 'I find a Commit' do
     select_filter("Commits")
 
-    expect(page.find('.search-result-row')).to have_content("Initial commit")
+    expect(page.find('.commit-row-title')).to have_content("Initial commit")
   end
 
   step 'I find a Code' do
