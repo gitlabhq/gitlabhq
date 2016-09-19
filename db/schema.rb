@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160913162434) do
+ActiveRecord::Schema.define(version: 20160913212128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -203,7 +203,7 @@ ActiveRecord::Schema.define(version: 20160913162434) do
     t.datetime "erased_at"
     t.datetime "artifacts_expire_at"
     t.string   "environment"
-    t.integer  "artifacts_size"
+    t.integer  "artifacts_size",      limit: 8
     t.string   "when"
     t.text     "yaml_variables"
     t.datetime "queued_at"
@@ -735,6 +735,7 @@ ActiveRecord::Schema.define(version: 20160913162434) do
     t.datetime "ldap_sync_last_update_at"
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
+    t.boolean  "lfs_enabled"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree

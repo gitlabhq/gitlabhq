@@ -223,4 +223,33 @@ describe CommitStatus, models: true do
       expect(commit_status.commit).to eq project.commit
     end
   end
+
+  describe '#group_name' do
+    subject { commit_status.group_name }
+
+    tests = {
+      'rspec:windows' => 'rspec:windows',
+      'rspec:windows 0' => 'rspec:windows 0',
+      'rspec:windows 0 test' => 'rspec:windows 0 test',
+      'rspec:windows 0 1' => 'rspec:windows',
+      'rspec:windows 0 1 name' => 'rspec:windows name',
+      'rspec:windows 0/1' => 'rspec:windows',
+      'rspec:windows 0/1 name' => 'rspec:windows name',
+      'rspec:windows 0:1' => 'rspec:windows',
+      'rspec:windows 0:1 name' => 'rspec:windows name',
+      'rspec:windows 10000 20000' => 'rspec:windows',
+      'rspec:windows 0 : / 1' => 'rspec:windows',
+      'rspec:windows 0 : / 1 name' => 'rspec:windows name',
+      '0 1 name ruby' => 'name ruby',
+      '0 :/ 1 name ruby' => 'name ruby'
+    }
+
+    tests.each do |name, group_name|
+      it "'#{name}' puts in '#{group_name}'" do
+        commit_status.name = name
+
+        is_expected.to eq(group_name)
+      end
+    end
+  end
 end

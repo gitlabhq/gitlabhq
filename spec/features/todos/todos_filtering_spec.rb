@@ -29,8 +29,11 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
       fill_in 'Search projects', with: project_1.name_with_namespace
       click_link project_1.name_with_namespace
     end
+
     wait_for_ajax
-    expect('.prepend-top-default').not_to have_content project_2.name_with_namespace
+
+    expect(page).to     have_content project_1.name_with_namespace
+    expect(page).not_to have_content project_2.name_with_namespace
   end
 
   it 'filters by author' do
@@ -39,8 +42,11 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
       fill_in 'Search authors', with: user_1.name
       click_link user_1.name
     end
+
     wait_for_ajax
-    expect('.prepend-top-default').not_to have_content user_2.name
+
+    expect(find('.todos-list')).to     have_content user_1.name
+    expect(find('.todos-list')).not_to have_content user_2.name
   end
 
   it 'filters by type' do
@@ -48,8 +54,11 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
     within '.dropdown-menu-type' do
       click_link 'Issue'
     end
+
     wait_for_ajax
-    expect('.prepend-top-default').not_to have_content ' merge request !'
+
+    expect(find('.todos-list')).to     have_content issue.to_reference
+    expect(find('.todos-list')).not_to have_content merge_request.to_reference
   end
 
   it 'filters by action' do
@@ -57,7 +66,10 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
     within '.dropdown-menu-action' do
       click_link 'Assigned'
     end
+
     wait_for_ajax
-    expect('.prepend-top-default').not_to have_content ' mentioned '
+
+    expect(find('.todos-list')).to     have_content ' assigned you '
+    expect(find('.todos-list')).not_to have_content ' mentioned '
   end
 end

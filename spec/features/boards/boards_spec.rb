@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
+  include WaitForVueResource
 
   let(:project) { create(:empty_project, :public) }
   let(:user)    { create(:user) }
@@ -187,13 +188,13 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_content('Showing 20 of 56 issues')
 
         evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
-        wait_for_vue_resource(spinner: false)
+        wait_for_vue_resource
 
         expect(page).to have_selector('.card', count: 40)
         expect(page).to have_content('Showing 40 of 56 issues')
 
         evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
-        wait_for_vue_resource(spinner: false)
+        wait_for_vue_resource
 
         expect(page).to have_selector('.card', count: 56)
         expect(page).to have_content('Showing all issues')
@@ -372,7 +373,7 @@ describe 'Issue Boards', feature: true, js: true do
           page.within '.dropdown-menu-author' do
             click_link(user2.name)
           end
-          wait_for_vue_resource(spinner: false)
+          wait_for_vue_resource
 
           expect(find('.js-author-search')).to have_content(user2.name)
         end
@@ -398,7 +399,7 @@ describe 'Issue Boards', feature: true, js: true do
           page.within '.dropdown-menu-assignee' do
             click_link(user.name)
           end
-          wait_for_vue_resource(spinner: false)
+          wait_for_vue_resource
 
           expect(find('.js-assignee-search')).to have_content(user.name)
         end
@@ -424,7 +425,7 @@ describe 'Issue Boards', feature: true, js: true do
           page.within '.milestone-filter' do
             click_link(milestone.title)
           end
-          wait_for_vue_resource(spinner: false)
+          wait_for_vue_resource
 
           expect(find('.js-milestone-select')).to have_content(milestone.title)
         end
@@ -449,7 +450,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           page.within '.dropdown-menu-labels' do
             click_link(testing.title)
-            wait_for_vue_resource(spinner: false)
+            wait_for_vue_resource
             find('.dropdown-menu-close').click
           end
         end
@@ -478,7 +479,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           page.within '.dropdown-menu-labels' do
             click_link(testing.title)
-            wait_for_vue_resource(spinner: false)
+            wait_for_vue_resource
             find('.dropdown-menu-close').click
           end
         end
@@ -509,9 +510,9 @@ describe 'Issue Boards', feature: true, js: true do
 
           page.within(find('.dropdown-menu-labels')) do
             click_link(testing.title)
-            wait_for_vue_resource(spinner: false)
+            wait_for_vue_resource
             click_link(bug.title)
-            wait_for_vue_resource(spinner: false)
+            wait_for_vue_resource
             find('.dropdown-menu-close').click
           end
         end
@@ -536,7 +537,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           page.within '.dropdown-menu-labels' do
             click_link("No Label")
-            wait_for_vue_resource(spinner: false)
+            wait_for_vue_resource
             find('.dropdown-menu-close').click
           end
         end
@@ -559,7 +560,7 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 6)
           expect(find('.card', match: :first)).to have_content(bug.title)
           click_button(bug.title)
-          wait_for_vue_resource(spinner: false)
+          wait_for_vue_resource
         end
 
         wait_for_vue_resource
@@ -584,7 +585,7 @@ describe 'Issue Boards', feature: true, js: true do
           page.within(find('.card', match: :first)) do
             click_button(bug.title)
           end
-          wait_for_vue_resource(spinner: false)
+          wait_for_vue_resource
 
           expect(page).to have_selector('.card', count: 1)
         end
@@ -646,15 +647,5 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     wait_for_vue_resource
-  end
-
-  def wait_for_vue_resource(spinner: true)
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until page.evaluate_script('Vue.activeResources').zero?
-    end
-
-    if spinner
-      expect(find('.boards-list')).not_to have_selector('.fa-spinner')
-    end
   end
 end

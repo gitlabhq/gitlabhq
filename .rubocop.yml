@@ -770,26 +770,33 @@ Rails/ScopeArgs:
 RSpec/AnyInstance:
   Enabled: false
 
-# Check that the first argument to the top level describe is the tested class or
-# module.
+# Check for expectations where `be(...)` can replace `eql(...)`.
+RSpec/BeEql:
+  Enabled: false
+
+# Check that the first argument to the top level describe is a constant.
 RSpec/DescribeClass:
   Enabled: false
 
-# Use `described_class` for tested class / module.
-RSpec/DescribeMethod:
-  Enabled: false
-
-# Checks that the second argument to top level describe is the tested method
-# name.
+# Checks that tests use `described_class`.
 RSpec/DescribedClass:
   Enabled: false
 
-# Checks for long example.
+# Checks that the second argument to `describe` specifies a method.
+RSpec/DescribeMethod:
+  Enabled: false
+
+# Checks if an example group does not include any tests.
+RSpec/EmptyExampleGroup:
+  Enabled: false
+  CustomIncludeMethods: []
+
+# Checks for long examples.
 RSpec/ExampleLength:
   Enabled: false
   Max: 5
 
-# Do not use should when describing your tests.
+# Checks that example descriptions do not start with "should".
 RSpec/ExampleWording:
   Enabled: false
   CustomTransform:
@@ -797,6 +804,10 @@ RSpec/ExampleWording:
     have: has
     not: does not
   IgnoredWords: []
+
+# Checks for `expect(...)` calls containing literal values.
+RSpec/ExpectActual:
+  Enabled: false
 
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
@@ -809,18 +820,64 @@ RSpec/FilePath:
 RSpec/Focus:
   Enabled: true
 
+# Checks the arguments passed to `before`, `around`, and `after`.
+RSpec/HookArgument:
+  Enabled: false
+  EnforcedStyle: implicit
+
+# Check that a consistent implict expectation style is used.
+# TODO (rspeicher): Available in rubocop-rspec 1.8.0
+# RSpec/ImplicitExpect:
+#   Enabled: true
+#   EnforcedStyle: is_expected
+
 # Checks for the usage of instance variables.
 RSpec/InstanceVariable:
   Enabled: false
 
-# Checks for multiple top-level describes.
+# Checks for `subject` definitions that come after `let` definitions.
+RSpec/LeadingSubject:
+  Enabled: false
+
+# Checks unreferenced `let!` calls being used for test setup.
+RSpec/LetSetup:
+  Enabled: false
+
+# Check that chains of messages are not being stubbed.
+RSpec/MessageChain:
+  Enabled: false
+
+# Checks for consistent message expectation style.
+RSpec/MessageExpectation:
+  Enabled: false
+  EnforcedStyle: allow
+
+# Checks for multiple top level describes.
 RSpec/MultipleDescribes:
   Enabled: false
 
-# Enforces the usage of the same method on all negative message expectations.
+# Checks if examples contain too many `expect` calls.
+RSpec/MultipleExpectations:
+  Enabled: false
+  Max: 1
+
+# Checks for explicitly referenced test subjects.
+RSpec/NamedSubject:
+  Enabled: false
+
+# Checks for nested example groups.
+RSpec/NestedGroups:
+  Enabled: false
+  MaxNesting: 2
+
+# Checks for consistent method usage for negating expectations.
 RSpec/NotToNot:
   EnforcedStyle: not_to
   Enabled: true
+
+# Checks for stubbed test subjects.
+RSpec/SubjectStub:
+  Enabled: false
 
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:

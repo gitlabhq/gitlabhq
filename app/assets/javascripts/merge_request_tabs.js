@@ -232,10 +232,10 @@
       $('.hll').removeClass('hll');
       locationHash = window.location.hash;
       if (locationHash !== '') {
-        hashClassString = "." + (locationHash.replace('#', ''));
+        dataLineString = '[data-line-code="' + locationHash.replace('#', '') + '"]';
         $diffLine = $(locationHash + ":not(.match)", $('#diffs'));
         if (!$diffLine.is('tr')) {
-          $diffLine = $('#diffs').find("td" + locationHash + ", td" + hashClassString);
+          $diffLine = $('#diffs').find("td" + locationHash + ", td" + dataLineString);
         } else {
           $diffLine = $diffLine.find('td');
         }

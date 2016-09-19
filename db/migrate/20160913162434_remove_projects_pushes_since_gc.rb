@@ -14,6 +14,6 @@ class RemoveProjectsPushesSinceGc < ActiveRecord::Migration
   end
 
   def down
-    add_column_with_default! :projects, :pushes_since_gc, :integer, default: 0
+    add_column_with_default :projects, :pushes_since_gc, :integer, default: 0
   end
 end
