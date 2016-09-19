@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
-    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
+    application_trace = ActionDispatch::ExceptionWrapper.new(env['action_dispatch.backtrace_cleaner'], exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end

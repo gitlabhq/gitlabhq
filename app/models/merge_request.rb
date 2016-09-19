@@ -366,7 +366,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_merge_request_diff
-    merge_request_diff(true)
+    reload.merge_request_diff
   end
 
   def reload_diff_if_branch_changed

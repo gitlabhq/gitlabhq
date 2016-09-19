@@ -179,7 +179,7 @@ class Service < ActiveRecord::Base
     args.each do |arg|
       class_eval %{
         def #{arg}?
-          ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+          [true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON'].include?(#{arg})
         end
       }
     end

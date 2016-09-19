@@ -1,8 +1,10 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 
 require 'rails/all'
 
-Bundler.require(:default, Rails.env)
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
 
 module Gitlab
   class Application < Rails::Application
@@ -143,8 +145,6 @@ module Gitlab
       redis_config_hash[:pool_timeout] = 1
     end
     config.cache_store = :redis_store, redis_config_hash
-
-    config.active_record.raise_in_transactional_callbacks = true
 
     config.active_job.queue_adapter = :sidekiq
 

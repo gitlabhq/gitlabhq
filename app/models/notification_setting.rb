@@ -69,7 +69,7 @@ class NotificationSetting < ActiveRecord::Base
   # It is a text field so it does not cast correct boolean values in JSON
   def events_to_boolean
     EMAIL_EVENTS.each do |event|
-      events[event] = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(events[event])
+      events[event] = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON'].include?(events[event])
     end
   end
 end

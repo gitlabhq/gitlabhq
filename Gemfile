@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.8'
+gem 'rails', '5.0.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+gem 'rails-controller-testing'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -93,7 +94,7 @@ gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 
 # for Google storage
-gem 'google-api-client', '~> 0.8.6'
+gem 'google-api-client', '~> 0.9.28'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -103,7 +104,7 @@ gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
 gem 'html-pipeline',        '~> 1.11.0'
-gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
+gem 'deckar01-task_list', require: 'task_list/railtie', git: 'https://gitlab.com/connorshea/task_list.git'
 gem 'gitlab-markup',        '~> 1.5.1'
 gem 'redcarpet',            '~> 3.3.3'
 gem 'RedCloth',             '~> 4.3.2'
@@ -314,7 +315,7 @@ group :development, :test do
   gem 'license_finder', '~> 2.1.0', require: false
   gem 'knapsack', '~> 1.11.0'
 
-  gem 'activerecord_sane_schema_dumper', '0.2'
+  gem 'activerecord_sane_schema_dumper', '~> 1.0'
 
   gem 'stackprof', '~> 0.2.10'
 end

@@ -406,7 +406,7 @@ module SystemNoteService
 
   def cross_reference_exists?(noteable, mentioner)
     # Initial scope should be system notes of this noteable type
-    notes = Note.system.where(noteable_type: noteable.class)
+    notes = Note.system.where(noteable_type: "#{noteable.class}")
 
     notes =
       if noteable.is_a?(Commit)
