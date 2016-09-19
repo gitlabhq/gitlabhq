@@ -1,8 +1,8 @@
 module NamespacesHelper
-  def namespaces_options(selected = :current_user, extra_groups = [], display_path: false)
+  def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
     groups = current_user.owned_groups + current_user.masters_groups
 
-    groups += process_extra_groups(extra_groups) if extra_groups.any?
+    groups << extra_group if extra_group && !Group.exists?(name: extra_group.name)
 
     users = [current_user.namespace]
 
@@ -26,15 +26,6 @@ module NamespacesHelper
     end
 
     grouped_options_for_select(options, selected)
-  end
-
-  def process_extra_groups(extra_groups)
-    # Remove duplicate groups - we either keep the ones that exist for the user
-    # (already in groups) or ignore those that do not belong to the user.
-    duplicated_groups = extra_groups.map { |name| Namespace.where(name: name).pluck(:name) }
-    extra_groups = extra_groups - duplicated_groups.flatten
-
-    extra_groups.map { |name| Group.new(name: name) }
   end
 
   def namespace_icon(namespace, size = 40)

@@ -48,10 +48,10 @@
             %fieldset.row
             .input-group
               .col-xs-11.col-sm-5.project-path
-                - if current_user.can_select_namespace? && !current_user.can_create_group?
-                  = select_tag :namespace_id, namespaces_options(params[:namespace_id] || :current_user, display_path: true), {class: 'project-path select2 js-select-namespace', tabindex: 1}
-                - elsif current_user.can_create_group?
-                  = select_tag :namespace_id, namespaces_options(params[:namespace_id] || :current_user, [repo.owner.login]), {class: 'project-path select2 js-select-namespace', tabindex: 1}
+                - if current_user.can_select_namespace?
+                  - selected = params[:namespace_id] || :current_user
+                  - opts = current_user.can_create_group? ? { extra_groups: [repo.owner.login] } : { display_path: true }
+                  = select_tag :namespace_id, namespaces_options(selected, opts), {class: 'project-path select2 js-select-namespace', tabindex: 1}
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "form-control", tabindex: 2, autofocus: true, disabled: true
 

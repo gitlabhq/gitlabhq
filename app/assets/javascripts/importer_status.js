@@ -10,24 +10,24 @@
     ImporterStatus.prototype.initStatusPage = function() {
       $('.js-add-to-import').off('click').on('click', (function(_this) {
         return function(e) {
-          var $btn, $namespace_input, $target_field, $tr, id, target_namespace;
+          var $btn, $namespace_input, $target_field, $tr, id, target_namespace, newName;
           $btn = $(e.currentTarget);
           $tr = $btn.closest('tr');
           $target_field = $tr.find('.import-target');
           $namespace_input = $target_field.find('.js-select-namespace option:selected');
           id = $tr.attr('id').replace('repo_', '');
           target_namespace = null;
-          new_name = null;
+          newName = null;
           if ($namespace_input.length > 0) {
             target_namespace = $namespace_input[0].innerHTML;
-            new_name = $target_field.find('#path').prop('value');
-            $target_field.empty().append(target_namespace + "/" + new_name);
+              newName = $target_field.find('#path').prop('value');
+            $target_field.empty().append(target_namespace + "/" + newName);
           }
           $btn.disable().addClass('is-loading');
           return $.post(_this.import_url, {
             repo_id: id,
             target_namespace: target_namespace,
-            new_name: new_name
+            new_name: newName
           }, {
             dataType: 'script'
           });
