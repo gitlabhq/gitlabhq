@@ -56,7 +56,7 @@ module MergeRequests
     end
 
     def each_merge_request(pipeline)
-      merge_request_from(commit_status).each do |merge_request|
+      merge_request_from(pipeline).each do |merge_request|
         next unless pipeline == merge_request.pipeline
 
         yield merge_request

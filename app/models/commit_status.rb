@@ -73,7 +73,7 @@ class CommitStatus < ActiveRecord::Base
       if commit_status.pipeline && !transition.loopback?
         ProcessPipelineWorker.perform_async(
           commit_status.pipeline.id,
-          process: HasStatus.COMPLETED_STATUSES.include?(commit_status.status))
+          process: COMPLETED_STATUSES.include?(commit_status.status))
       end
 
       true
