@@ -34,43 +34,43 @@ module Gitlab
             end
           end
 
-          node :before_script, Script,
+          node :before_script, Node::Script,
             description: 'Global before script overridden in this job.'
 
-          node :script, Commands,
+          node :script, Node::Commands,
             description: 'Commands that will be executed in this job.'
 
-          node :stage, Stage,
+          node :stage, Node::Stage,
             description: 'Pipeline stage this job will be executed into.'
 
-          node :type, Stage,
+          node :type, Node::Stage,
             description: 'Deprecated: stage this job will be executed into.'
 
-          node :after_script, Script,
+          node :after_script, Node::Script,
             description: 'Commands that will be executed when finishing job.'
 
-          node :cache, Cache,
+          node :cache, Node::Cache,
             description: 'Cache definition for this job.'
 
-          node :image, Image,
+          node :image, Node::Image,
             description: 'Image that will be used to execute this job.'
 
-          node :services, Services,
+          node :services, Node::Services,
             description: 'Services that will be used to execute this job.'
 
-          node :only, Trigger,
+          node :only, Node::Trigger,
             description: 'Refs policy this job will be executed for.'
 
-          node :except, Trigger,
+          node :except, Node::Trigger,
             description: 'Refs policy this job will be executed for.'
 
-          node :variables, Variables,
+          node :variables, Node::Variables,
             description: 'Environment variables available for this job.'
 
-          node :artifacts, Artifacts,
+          node :artifacts, Node::Artifacts,
             description: 'Artifacts configuration for this job.'
 
-          node :environment, Environment,
+          node :environment, Node::Environment,
                description: 'Environment configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,
