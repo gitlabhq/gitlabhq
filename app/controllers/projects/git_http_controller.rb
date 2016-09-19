@@ -86,7 +86,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= Gitlab::GitAccess.new(user, project, 'http')
+    @access ||= Gitlab::GitAccess.new(user, project, 'http', authentication_abilities: authentication_abilities)
   end
 
   def access_check

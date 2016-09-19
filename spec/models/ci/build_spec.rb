@@ -8,7 +8,7 @@ describe Ci::Build, models: true do
     it 'obfuscates project runners token' do
       allow(build).to receive(:raw_trace).and_return("Test: #{build.project.runners_token}")
 
-      expect(build.trace).to eq("Test: xxxxxx")
+      expect(build.trace).to eq("Test: xxxxxxxxxxxxxxxxxxxx")
     end
 
     it 'empty project runners token' do

@@ -88,9 +88,7 @@ describe Ci::Build, models: true do
   end
 
   describe '#trace' do
-    subject { build.trace_html }
-
-    it { is_expected.to be_empty }
+    it { expect(build.trace).to be_nil }
 
     context 'when build.trace contains text' do
       let(:text) { 'example output' }
@@ -98,16 +96,80 @@ describe Ci::Build, models: true do
         build.trace = text
       end
 
-      it { is_expected.to include(text) }
-      it { expect(subject.length).to be >= text.length }
+      it { expect(build.trace).to eq(text) }
     end
 
-    context 'when build.trace hides token' do
+    context 'when build.trace hides runners token' do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update_attributes(runners_token: token)
-        build.update_attributes(trace: token)
+        build.update(trace: token)
+        build.project.update(runners_token: token)
+      end
+
+      it { expect(build.trace).not_to include(token) }
+      it { expect(build.raw_trace).to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(trace: token)
+        build.update(token: token)
+      end
+
+      it { expect(build.trace).not_to include(token) }
+      it { expect(build.raw_trace).to include(token) }
+    end
+  end
+
+  describe '#raw_trace' do
+    subject { build.raw_trace }
+
+    context 'when build.trace hides runners token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update(runners_token: token)
+        build.update(trace: token)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(token: token)
+        build.update(trace: token)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+  end
+
+  context '#append_trace' do
+    subject { build.trace_html }
+
+    context 'when build.trace hides runners token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update(runners_token: token)
+        build.append_trace(token, 0)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(token: token)
+        build.append_trace(token, 0)
       end
 
       it { is_expected.not_to include(token) }
