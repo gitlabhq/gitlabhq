@@ -529,8 +529,11 @@ ActiveRecord::Schema.define(version: 20161017095000) do
     t.string "description"
     t.integer "priority"
     t.text "description_html"
+    t.string "type"
+    t.integer "group_id"
   end
 
+  add_index "labels", ["group_id"], name: "index_labels_on_group_id", using: :btree
   add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
@@ -1213,6 +1216,7 @@ ActiveRecord::Schema.define(version: 20161017095000) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
+  add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
