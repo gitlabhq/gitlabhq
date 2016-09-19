@@ -3,10 +3,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.12.0 (unreleased)
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
+  - Bump fog-aws to v0.11.0 to support ap-south-1 region
   - Add ability to fork to a specific namespace using API. (ritave)
   - Cleanup misalignments in Issue list view !6206
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
+  - Fix issues/merge-request templates dropdown for forked projects
   - Filter tags by name !6121
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
@@ -21,26 +23,32 @@ v 8.12.0 (unreleased)
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix pagination on user snippets page
   - Fix sorting of issues in API
+  - Sort project variables by key. !6275 (Diego Souza)
   - Ensure specs on sorting of issues in API are deterministic on MySQL
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
+  - Replace contributions calendar timezone payload with dates (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
+  - Added go to issue boards keyboard shortcut
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Request only the LDAP attributes we need !6187
   - Center build stage columns in pipeline overview (ClemMakesApps)
+  - Fix bug with tooltip not hiding on discussion toggle button
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
+  - Fix bug stopping issue description being scrollable after selecting issue template
   - Remove suggested colors hover underline (ClemMakesApps)
   - Shorten task status phrase (ClemMakesApps)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
+  - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
@@ -60,10 +68,12 @@ v 8.12.0 (unreleased)
   - Use 'git update-ref' for safer web commits !6130
   - Sort pipelines requested through the API
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Fix issue boards loading on large screens
   - Change pipeline duration to be jobs running time instead of simple wall time from start to end !6084
   - Show queued time when showing a pipeline !6084
   - Remove unused mixins (ClemMakesApps)
   - Add search to all issue board lists
+  - Scroll active tab into view on mobile
   - Fix groups sort dropdown alignment (ClemMakesApps)
   - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Use JavaScript tooltips for mentions !5301 (winniehell)
@@ -74,7 +84,8 @@ v 8.12.0 (unreleased)
   - Add last commit time to repo view (ClemMakesApps)
   - Fix accessibility and visibility of project list dropdown button !6140
   - Fix missing flash messages on service edit page (airatshigapov)
-  - Added project specific enable/disable setting for LFS !5997
+  - Added project-specific enable/disable setting for LFS !5997
+  - Added group-specific enable/disable setting for LFS !6164
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
@@ -130,14 +141,23 @@ v 8.12.0 (unreleased)
   - Allow bulk update merge requests from merge requests index page
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
+  - Fix URLs with anchors in wiki !6300 (houqp)
   - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
+  - Clean environment variables when running git hooks
+  - Fix non-master branch readme display in tree view
 
-v 8.11.6 (unreleased)
-  - Fix an error where we were unable to create a CommitStatus for running state
+v 8.11.6
+  - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
+  - Make merge conflict file size limit 200 KB, to match the docs. !6052
+  - Fix an error where we were unable to create a CommitStatus for running state. !6107
+  - Optimize discussion notes resolving and unresolving. !6141
+  - Fix GitLab import button. !6167
   - Restore SSH Key title auto-population behavior. !6186
+  - Fix DB schema to match latest migration. !6256
+  - Exclude some pending or inactivated rows in Member scopes.
 
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
@@ -150,6 +170,7 @@ v 8.11.5
   - Scope webhooks/services that will run for confidential issues
   - Remove gitorious from import_sources
   - Fix confidential issues being exposed as public using gitlab.com export
+  - Use oj gem for faster JSON processing
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
@@ -341,6 +362,13 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.9
+  - Exclude some pending or inactivated rows in Member scopes
+
+v 8.10.8
+  - Fix information disclosure in issue boards.
+  - Fix privilege escalation in project import.
 
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
@@ -566,6 +594,9 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.9
+  - Exclude some pending or inactivated rows in Member scopes
 
 v 8.9.8
   - Upgrade Doorkeeper to 4.2.0. !5881

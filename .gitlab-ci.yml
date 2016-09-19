@@ -209,8 +209,12 @@ rubocop: *exec
 rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flog: *exec
-rake flay: *exec
+rake flog:
+  <<: *exec
+  allow_failure: yes
+rake flay:
+  <<: *exec
+  allow_failure: yes
 license_finder: *exec
 rake downtime_check: *exec
 

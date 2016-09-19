@@ -16,4 +16,4 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - [Repo's with examples for various languages](https://gitlab.com/groups/gitlab-examples)
 - [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-[gitlab-ci-templates][https://gitlab.com/gitlab-org/gitlab-ci-yml]
+[gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml

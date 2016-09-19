@@ -206,6 +206,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
+# Faster JSON
+gem 'oj', '~> 2.17.4'
+
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
@@ -295,8 +298,8 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.41.2', require: false
-  gem 'rubocop-rspec', '~> 1.5.0', require: false
+  gem 'rubocop', '~> 0.42.0', require: false
+  gem 'rubocop-rspec', '~> 1.7.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false

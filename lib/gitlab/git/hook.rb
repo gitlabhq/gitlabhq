@@ -17,11 +17,13 @@ module Gitlab
       def trigger(gl_id, oldrev, newrev, ref)
         return [true, nil] unless exists?
 
-        case name
-        when "pre-receive", "post-receive"
-          call_receive_hook(gl_id, oldrev, newrev, ref)
-        when "update"
-          call_update_hook(gl_id, oldrev, newrev, ref)
+        Bundler.with_clean_env do
+          case name
+          when "pre-receive", "post-receive"
+            call_receive_hook(gl_id, oldrev, newrev, ref)
+          when "update"
+            call_update_hook(gl_id, oldrev, newrev, ref)
+          end
         end
       end
 
