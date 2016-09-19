@@ -22,6 +22,7 @@ v 8.12.0 (unreleased)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix pagination on user snippets page
+  - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
   - Sort project variables by key. !6275 (Diego Souza)
   - Ensure specs on sorting of issues in API are deterministic on MySQL
