@@ -790,10 +790,10 @@ module Ci
       end
 
       context 'is not a valid string' do
-        let(:environment) { 'production staging' }
+        let(:environment) { 'production:staging' }
 
         it 'raises error' do
-          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error("jobs:deploy_to_production:environment name #{Gitlab::Regex.environment_name_regex_message}")
         end
       end
     end

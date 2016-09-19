@@ -96,11 +96,11 @@ module Gitlab
     end
 
     def environment_name_regex
-      @environment_name_regex ||= /\A[a-zA-Z0-9_\\\/\${} -]+\z/.freeze
+      @environment_name_regex ||= /\A[a-zA-Z0-9_\\\/\${}. -]+\z/.freeze
     end
 
     def environment_name_regex_message
-      "can contain only letters, digits, '-', '_', '/', '$', '{', '}' and spaces"
+      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.' and spaces"
     end
   end
 end

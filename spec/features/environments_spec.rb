@@ -150,7 +150,7 @@ feature 'Environments', feature: true do
 
       context 'for invalid name' do
         before do
-          fill_in('Name', with: 'name with spaces')
+          fill_in('Name', with: 'name,with,commas')
           click_on 'Save'
         end
 
