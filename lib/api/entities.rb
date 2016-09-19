@@ -100,6 +100,7 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_build_succeeds
+      expose :request_access_enabled
     end
 
     class Member < UserBasic
@@ -125,6 +126,7 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
+      expose :request_access_enabled
     end
 
     class GroupDetail < Group
