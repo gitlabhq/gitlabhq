@@ -163,14 +163,14 @@ module Gitlab
       [
         "This repository's size (#{project.aggregated_repository_size}MB) exceeds the limit of #{project.repo_size_limit}MB",
         "GitLab: by #{project.size_to_remove}MB and as a result you are unable to push to it.",
-        "GitLab: Please contact your Gitlab administrator for more information.",
+        "GitLab: Please contact your GitLab administrator for more information.",
       ].join("\n") + "\n"
     end
 
     def will_go_over_limit_message
       [
         "Your push to this repository would cause it to exceed the limit of #{project.repo_size_limit}MB.",
-        "GitLab: As a result it has been rejected. Please contact your Gitlab administrator for more information.",
+        "GitLab: As a result it has been rejected. Please contact your GitLab administrator for more information.",
       ].join("\n") + "\n"
     end
 

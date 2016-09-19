@@ -231,8 +231,12 @@ module ProjectsHelper
   end
 
   def repository_size(project = @project)
-    size_in_bytes = project.repository_size * 1.megabyte
-    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
+    size_in_bytes = project.aggregated_repository_size * 1.megabyte
+    limit_in_bytes = project.repo_size_limit * 1.megabyte
+
+    limit_text = limit_in_bytes.zero? ? 'Unlimited' : number_to_human_size(limit_in_bytes, delimiter: ',', precision: 2)
+
+    "#{number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)}/#{limit_text}"
   end
 
   def default_url_to_repo(project = @project)

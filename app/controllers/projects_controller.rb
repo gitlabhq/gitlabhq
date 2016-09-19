@@ -331,6 +331,7 @@ class ProjectsController < Projects::ApplicationController
       :mirror,
       :mirror_user_id,
       :mirror_trigger_builds,
+      :repository_size_limit,
       :reset_approvals_on_push
     )
   end

@@ -68,6 +68,7 @@
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
 - [Multiple mountpoints for the repositories storage](administration/repository_storages.md) Define multiple repository storage paths to distribute the storage load.
+- [Repository restrictions](administration/repository_restrictions.md) Define size restrictions for your repositories to limit the space they occupy in your storage device. Includes LFS objects.
 
 ## Contributor documentation
 
