@@ -249,13 +249,11 @@ $colors: (
 
     &.saved {
       .editor {
-        border-top: solid 1px green;
+        border-top: solid 2px $border-green-extra-light;
       }
     }
     
     .editor {
-      border-top: solid 1px yellow;
-
       pre {
         height: 350px;
         border: none;
@@ -266,6 +264,18 @@ $colors: (
 
     .loading-text {
       display: none;
+    }
+  }
+
+  .discard-changes-alert {
+    background-color: $background-color;
+    text-align: right;
+    padding: $gl-padding-top $gl-padding;
+    color: $gl-text-color;
+
+    .discard-actions {
+      display: inline-block;
+      margin-left: 10px;
     }
   }
 }
