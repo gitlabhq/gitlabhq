@@ -27,10 +27,10 @@ class AddTableMergeRequestMetrics < ActiveRecord::Migration
     create_table :merge_request_metrics do |t|
       t.references :merge_request, index: { name: "index_merge_request_metrics" }, foreign_key: true, null: false
 
-      t.datetime 'wip_flag_first_removed_at'
-      t.datetime 'first_assigned_to_user_other_than_author'
+      t.datetime 'latest_build_started_at'
+      t.datetime 'latest_build_finished_at'
+      t.datetime 'first_deployed_to_production_at'
       t.datetime 'merged_at'
-      t.datetime 'first_closed_at'
 
       t.timestamps null: false
     end
