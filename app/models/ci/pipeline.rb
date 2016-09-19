@@ -242,7 +242,8 @@ module Ci
 
     def build_updated
       with_lock do
-        case reload.latest_builds_status
+        reload
+        case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
