@@ -120,10 +120,11 @@ describe API::API, api: true  do
 
     context 'when authenticated as the group owner' do
       it 'updates the group' do
-        put api("/groups/#{group1.id}", user1), name: new_group_name
+        put api("/groups/#{group1.id}", user1), name: new_group_name, request_access_enabled: true
 
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
+        expect(json_response['request_access_enabled']).to eq(true)
       end
 
       it 'returns 404 for a non existing group' do
@@ -238,8 +239,14 @@ describe API::API, api: true  do
 
     context "when authenticated as user with group permissions" do
       it "creates group" do
-        post api("/groups", user3), attributes_for(:group)
+        group = attributes_for(:group, { request_access_enabled: false })
+
+        post api("/groups", user3), group
         expect(response).to have_http_status(201)
+
+        expect(json_response["name"]).to eq(group[:name])
+        expect(json_response["path"]).to eq(group[:path])
+        expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
       end
 
       it "does not create group, duplicate" do

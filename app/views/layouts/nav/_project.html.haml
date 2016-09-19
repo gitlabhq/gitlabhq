@@ -113,3 +113,7 @@
       %li.hidden
         = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
           Commits
+
+    -# Shortcut to issue boards
+    %li.hidden
+      = link_to 'Issue Boards', namespace_project_board_path(@project.namespace, @project), title: 'Issue Boards', class: 'shortcuts-issue-boards'

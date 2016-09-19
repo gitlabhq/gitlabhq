@@ -29,7 +29,7 @@
         date.setDate(date.getDate() + i);
 
         var day = date.getDay();
-        var count = timestamps[date.getTime() * 0.001];
+        var count = timestamps[dateFormat(date, 'yyyy-mm-dd')];
 
         // Create a new group array if this is the first day of the week
         // or if is first object

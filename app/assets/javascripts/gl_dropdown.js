@@ -352,7 +352,13 @@
           if (self.options.clicked) {
             self.options.clicked(selected, $el, e);
           }
-          return $el.trigger('blur');
+
+          // Update label right after all modifications in dropdown has been done
+          if (self.options.toggleLabel) {
+            self.updateLabel(selected, $el, self);
+          }
+
+          $el.trigger('blur');
         });
       }
     }
@@ -529,7 +535,7 @@
       } else {
         if (!selected) {
           value = this.options.id ? this.options.id(data) : data.id;
-          fieldName = typeof this.options.fieldName === 'function' ? this.options.fieldName() : this.options.fieldName;
+          fieldName = this.options.fieldName;
 
           field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
           if (field.length) {
@@ -589,6 +595,7 @@
 
     GitLabDropdown.prototype.rowClicked = function(el) {
       var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value;
+      fieldName = this.options.fieldName;
       isInput = $(this.el).is('input');
       if (this.renderedData) {
         groupName = el.data('group');
@@ -645,11 +652,6 @@
         }
       }
 
-      // Update label right after input has been added
-      if (this.options.toggleLabel) {
-        this.updateLabel(selectedObject, el, this);
-      }
-
       return selectedObject;
     };
 
@@ -659,9 +661,6 @@
       $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
       if (this.options.inputId != null) {
         $input.attr('id', this.options.inputId);
-      }
-      if (selectedObject && selectedObject.type) {
-        $input.attr('data-type', selectedObject.type);
       }
       return this.dropdown.before($input);
     };

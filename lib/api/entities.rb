@@ -86,7 +86,8 @@ module API
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:user]) }
 
       expose :created_at, :last_activity_at
-      expose :shared_runners_enabled, :lfs_enabled
+      expose :shared_runners_enabled
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
@@ -99,6 +100,7 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_build_succeeds
+      expose :request_access_enabled
     end
 
     class Member < UserBasic
@@ -121,8 +123,10 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
+      expose :request_access_enabled
     end
 
     class GroupDetail < Group

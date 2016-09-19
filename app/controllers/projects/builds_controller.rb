@@ -35,7 +35,11 @@ class Projects::BuildsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @build.to_json(methods: :trace_html)
+        render json: {
+          id: @build.id,
+          status: @build.status,
+          trace_html: @build.trace_html
+        }
       end
     end
   end
@@ -74,7 +78,7 @@ class Projects::BuildsController < Projects::ApplicationController
   def erase
     @build.erase(erased_by: current_user)
     redirect_to namespace_project_build_path(project.namespace, project, @build),
-                notice: "Build has been sucessfully erased!"
+                notice: "Build has been successfully erased!"
   end
 
   def raw
