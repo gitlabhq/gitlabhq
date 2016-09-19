@@ -23,6 +23,7 @@
 
       .text {
         color: $layout-link-gray;
+        margin: 0;
       }
 
       &:last-child {
@@ -52,13 +53,15 @@
     }
 
     .title-col {
-      span {
-        &:first-child {
+      p {
+        margin: 0;
+
+        &.title {
           line-height: 19px;
           font-size: 15px;
           font-weight: 600;
         }
-        &:last-child {
+        &:text {
           color: #8C8C8C;
         }
       }

@@ -23,11 +23,9 @@
       .content-block
         .container-fluid
           .row
-            %template{"v-for" => "item in summary"}
-              .col-xs-3.column
-                %span.header {{item.value}}
-                %br
-                %span.text {{item.title}}
+            .col-xs-3.column{"v-for" => "item in summary"}
+              %h3.header {{item.value}}
+              %p.text {{item.title}}
 
             .col-xs-3.column
               .dropdown.inline.js-ca-dropdown
@@ -48,10 +46,9 @@
           .container-fluid
             .row
               .col-xs-10.title-col
-                %span
+                %p.title
                   {{item.title}}
-                %br
-                %span
+                %p.text
                   {{item.description}}
               .col-xs-2.value-col
                 %span
