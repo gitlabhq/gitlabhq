@@ -173,7 +173,7 @@ module Gitlab
       def full_authentication_abilities
         read_authentication_abilities + [
           :push_code,
-          :update_container_image
+          :create_container_image
         ]
       end
     end
