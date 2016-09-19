@@ -36,13 +36,10 @@
     };
 
     MergeRequest.prototype.initTabs = function() {
-      if (this.opts.action !== 'new') {
-        // `MergeRequests#new` has no tab-persisting or lazy-loading behavior
-        window.mrTabs = new MergeRequestTabs(this.opts);
-      } else {
-        // Show the first tab (Commits)
-        return $('.merge-request-tabs a[data-toggle="tab"]:first').tab('show');
+      if (window.mrTabs) {
+        window.mrTabs.unbindEvents();
       }
+      window.mrTabs = new MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {
