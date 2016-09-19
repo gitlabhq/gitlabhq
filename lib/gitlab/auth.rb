@@ -12,7 +12,7 @@ module Gitlab
           user_with_password_for_git(login, password) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(login, password) ||
-          Result.new
+          Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
 
@@ -70,7 +70,7 @@ module Gitlab
           service = project.public_send("#{underscored_service}_service")
 
           if service && service.activated? && service.valid_token?(password)
-            Result.new(nil, project, :ci, build_authentication_abilities)
+            Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
           end
         end
       end
@@ -81,7 +81,7 @@ module Gitlab
 
         raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
 
-        Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
+        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
       def oauth_access_token_check(login, password)
@@ -89,7 +89,7 @@ module Gitlab
           token = Doorkeeper::AccessToken.by_token(password)
           if token && token.accessible?
             user = User.find_by(id: token.resource_owner_id)
-            Result.new(user, nil, :oauth, read_authentication_abilities)
+            Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities)
           end
         end
       end
@@ -98,7 +98,7 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
+          Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
         end
       end
 
@@ -112,10 +112,10 @@ module Gitlab
 
         if build.user
           # If user is assigned to build, use restricted credentials of user
-          Result.new(build.user, build.project, :build, build_authentication_abilities)
+          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
         else
           # Otherwise use generic CI credentials (backward compatibility)
-          Result.new(nil, build.project, :ci, build_authentication_abilities)
+          Gitlab::Auth::Result.new(nil, build.project, :ci, build_authentication_abilities)
         end
       end
 
