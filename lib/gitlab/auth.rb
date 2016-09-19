@@ -130,7 +130,14 @@ module Gitlab
         if actor
           token_handler = Gitlab::LfsToken.new(actor)
 
-          Result.new(actor, nil, token_handler.type, read_authentication_abilities) if Devise.secure_compare(token_handler.value, password)
+          authentication_abilities =
+            if token_handler.user?
+              full_authentication_abilities
+            else
+              read_authentication_abilities
+            end
+
+          Result.new(actor, nil, token_handler.type, authentication_abilities) if Devise.secure_compare(token_handler.value, password)
         end
       end
 
