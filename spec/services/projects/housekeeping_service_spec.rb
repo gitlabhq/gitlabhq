@@ -4,6 +4,10 @@ describe Projects::HousekeepingService do
   subject { Projects::HousekeepingService.new(project) }
   let(:project) { create :project }
 
+  before do
+    project.reset_pushes_since_gc
+  end
+
   after do
     project.reset_pushes_since_gc
   end
