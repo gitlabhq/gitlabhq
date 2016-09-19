@@ -99,6 +99,11 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
+      = f.label :repository_size_limit, 'Per repository size limit (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :repository_size_limit, class: 'form-control', min: 0
+        %span.help-block#repository_size_limit_help_block Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited
+    .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :session_expire_delay, class: 'form-control'

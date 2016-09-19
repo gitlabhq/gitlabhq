@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(version: 20160915201649) do
     t.boolean  "usage_ping_enabled",                    default: true,        null: false
     t.boolean  "koding_enabled"
     t.string   "koding_url"
+    t.integer  "repository_size_limit",                 default: 0
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -736,6 +737,7 @@ ActiveRecord::Schema.define(version: 20160915201649) do
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
     t.boolean  "lfs_enabled"
+    t.integer  "repository_size_limit"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -956,6 +958,7 @@ ActiveRecord::Schema.define(version: 20160915201649) do
     t.boolean  "has_external_wiki"
     t.boolean  "repository_read_only"
     t.boolean  "lfs_enabled"
+    t.integer  "repository_size_limit"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

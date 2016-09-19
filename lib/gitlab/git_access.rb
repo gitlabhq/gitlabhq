@@ -70,6 +70,8 @@ module Gitlab
       return build_status_object(true) if git_annex_branch_sync?(changes)
 
       if user
+        return build_status_object(false, above_size_limit_message) if project.above_size_limit?
+
         user_push_access_check(changes)
       elsif deploy_key
         build_status_object(false, "Deploy keys are not allowed to push code.")
@@ -102,6 +104,8 @@ module Gitlab
 
       changes_list = Gitlab::ChangesList.new(changes)
 
+      push_size_in_bytes = 0
+
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
         status = change_access_check(change)
@@ -109,9 +113,42 @@ module Gitlab
           # If user does not have access to make at least one change - cancel all push
           return status
         end
+
+        if project.size_limit_enabled?
+          push_size_in_bytes += delta_size_check(change, project.repository)
+        end
+      end
+
+      if project.size_limit_enabled? && changes_above_limit(push_size_in_bytes.to_mb)
+        return build_status_object(false, will_go_over_limit_message)
       end
 
       build_status_object(true)
+    end
+
+    def delta_size_check(change, repo)
+      oldrev, newrev = change.values_at(:oldrev, :newrev)
+      size_of_deltas = 0
+
+      begin
+        tree_a = repo.lookup(oldrev)
+        tree_b = repo.lookup(newrev)
+        diff = tree_a.diff(tree_b)
+
+        diff.each_delta do |d|
+          new_file_size = d.deleted? ? 0 : Gitlab::Git::Blob.raw(repo, d.new_file[:oid]).size
+
+          size_of_deltas += new_file_size
+        end
+
+        size_of_deltas
+      rescue Rugged::OdbError, Rugged::ReferenceError, Rugged::InvalidError
+        size_of_deltas
+      end
+    end
+
+    def changes_above_limit(size_mb)
+      size_mb > project.repo_size_limit || size_mb + project.aggregated_repository_size > project.repo_size_limit
     end
 
     def change_access_check(change)
@@ -120,6 +157,21 @@ module Gitlab
 
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
+    end
+
+    def above_size_limit_message
+      [
+        "This repository's size (#{project.aggregated_repository_size}MB) exceeds the limit of #{project.repo_size_limit}MB",
+        "GitLab: by #{project.size_to_remove}MB and as a result you are unable to push to it.",
+        "GitLab: Please contact your Gitlab administrator for more information.",
+      ].join("\n") + "\n"
+    end
+
+    def will_go_over_limit_message
+      [
+        "Your push to this repository would cause it to exceed the limit of #{project.repo_size_limit}MB.",
+        "GitLab: As a result it has been rejected. Please contact your Gitlab administrator for more information.",
+      ].join("\n") + "\n"
     end
 
     def matching_merge_request?(newrev, branch_name)

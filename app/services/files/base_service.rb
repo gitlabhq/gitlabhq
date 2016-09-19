@@ -34,6 +34,10 @@ module Files
       error(ex.message)
     end
 
+    def size_limit_error_message
+      "Your changes could not be committed, because this repository has exceeded its size limit of #{project.repo_size_limit}MB by #{project.size_to_remove}MB"
+    end
+
     private
 
     def different_branch?

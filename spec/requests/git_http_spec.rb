@@ -222,6 +222,22 @@ describe 'Git HTTP requests', lib: true do
         end
       end
 
+      context "when repository is above size limit" do
+        let(:env) { { user: user.username, password: user.password } }
+
+        before do
+          project.team << [user, :master]
+        end
+
+        it 'responds with status 403' do
+          allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+
+          upload(path, env) do |response|
+            expect(response).to have_http_status(403)
+          end
+        end
+      end
+
       context "when username and password are provided" do
         let(:env) { { user: user.username, password: 'nope' } }
 

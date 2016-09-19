@@ -355,6 +355,18 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'when the repository is above size limit' do
+      before do
+        allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+
+        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
+      end
+
+      it 'returns :size_limit_reached' do
+        expect(assigns(:status)).to eq(:size_limit_reached)
+      end
+    end
+
     context 'when the merge request is not mergeable' do
       before do
         merge_request.update_attributes(title: "WIP: #{merge_request.title}")

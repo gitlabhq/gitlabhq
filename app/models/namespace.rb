@@ -147,6 +147,10 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
+  def repo_size_limit
+    current_application_settings.repository_size_limit
+  end
+
   private
 
   def repository_storage_paths

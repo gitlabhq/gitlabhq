@@ -131,12 +131,13 @@ class GroupsController < Groups::ApplicationController
       :avatar,
       :description,
       :lfs_enabled,
+      :membership_lock,
       :name,
       :path,
       :public,
+      :repository_size_limit,
       :request_access_enabled,
       :share_with_group_lock,
-      :membership_lock,
       :visibility_level
     )
   end

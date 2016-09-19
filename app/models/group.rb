@@ -33,6 +33,9 @@ class Group < Namespace
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
+  validates :repository_size_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
+
   mount_uploader :avatar, AvatarUploader
 
   after_create :post_create_hook
@@ -197,6 +200,12 @@ class Group < Namespace
     Gitlab::AppLogger.info("Group \"#{name}\" was removed")
 
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def repo_size_limit
+    return current_application_settings.repository_size_limit if repository_size_limit.nil?
+
+    repository_size_limit
   end
 
   def system_hook_service

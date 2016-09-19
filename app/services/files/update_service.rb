@@ -16,6 +16,10 @@ module Files
     def validate
       super
 
+      if project.above_size_limit?
+        raise_error(size_limit_error_message)
+      end
+
       if file_has_changed?
         raise FileChangedError.new("You are attempting to update a file that has changed since you started editing it.")
       end

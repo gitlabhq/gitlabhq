@@ -289,6 +289,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def is_valid?
+    !(target_project.above_size_limit? || target_project.blank? || source_branch.blank?)
+  end
+
   def branch_merge_base_sha
     branch_merge_base_commit.try(:sha)
   end
