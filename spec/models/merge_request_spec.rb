@@ -495,15 +495,34 @@ describe MergeRequest, models: true do
   end
 
   describe '#all_pipelines' do
-    let!(:pipelines) do
-      subject.merge_request_diff.commits.map do |commit|
-        create(:ci_empty_pipeline, project: subject.source_project, sha: commit.id, ref: subject.source_branch)
+    shared_examples 'returning pipelines with proper ordering' do
+      let!(:pipelines) do
+        subject.merge_request_diffs.flat_map do |diff|
+          diff.commits.map do |commit|
+            create(:ci_empty_pipeline,
+                   project: subject.source_project,
+                   sha: commit.id,
+                   ref: subject.source_branch)
+          end
+        end
+      end
+
+      it 'returns all pipelines' do
+        expect(subject.all_pipelines).not_to be_empty
+        expect(subject.all_pipelines).to eq(pipelines.reverse)
       end
     end
 
-    it 'returns a pipelines from source projects with proper ordering' do
-      expect(subject.all_pipelines).not_to be_empty
-      expect(subject.all_pipelines).to eq(pipelines.reverse)
+    context 'with single merge_request_diffs' do
+      it_behaves_like 'returning pipelines with proper ordering'
+    end
+
+    context 'with multiple irrelevant merge_request_diffs' do
+      before do
+        subject.update(target_branch: 'markdown')
+      end
+
+      it_behaves_like 'returning pipelines with proper ordering'
     end
   end
 
