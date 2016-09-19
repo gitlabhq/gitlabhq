@@ -11,6 +11,7 @@ module Gitlab
           build_access_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
           oauth_access_token_check(login, password) ||
+          lfs_token_check(login, password) ||
           personal_access_token_check(login, password) ||
           Gitlab::Auth::Result.new
 
@@ -99,6 +100,30 @@ module Gitlab
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
           Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
+        end
+      end
+
+      def lfs_token_check(login, password)
+        deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
+
+        actor =
+          if deploy_key_matches
+            DeployKey.find(deploy_key_matches[1])
+          else
+            User.by_login(login)
+          end
+
+        if actor
+          token_handler = Gitlab::LfsToken.new(actor)
+
+          authentication_abilities =
+            if token_handler.user?
+              full_authentication_abilities
+            else
+              read_authentication_abilities
+            end
+
+          Result.new(actor, nil, token_handler.type, authentication_abilities) if Devise.secure_compare(token_handler.value, password)
         end
       end
 

@@ -5,6 +5,10 @@ module Gitlab
         type == :ci
       end
 
+      def lfs_deploy_token?
+        type == :lfs_deploy_token
+      end
+
       def success?
         actor.present? || type == :ci
       end
