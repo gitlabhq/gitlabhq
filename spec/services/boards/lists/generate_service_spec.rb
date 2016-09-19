@@ -8,6 +8,10 @@ describe Boards::Lists::GenerateService, services: true do
 
     subject(:service) { described_class.new(project, user) }
 
+    before do
+      project.team << [user, :developer]
+    end
+
     context 'when board lists is empty' do
       it 'creates the default lists' do
         expect { service.execute(board) }.to change(board.lists, :count).by(2)
