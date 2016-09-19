@@ -7,7 +7,9 @@ module Gitlab
                     variables: 'Ci::Variable',
                     triggers: 'Ci::Trigger',
                     builds: 'Ci::Build',
-                    hooks: 'ProjectHook' }.freeze
+                    hooks: 'ProjectHook',
+                    merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
+                    push_access_levels: 'ProtectedBranch::PushAccessLevel' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
 
@@ -16,6 +18,8 @@ module Gitlab
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
       EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
+
+      FINDER_ATTRIBUTES = %w[title project_id].freeze
 
       def self.create(*args)
         new(*args).create
@@ -149,7 +153,7 @@ module Gitlab
       end
 
       def parsed_relation_hash
-        @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
+        @parsed_relation_hash ||= @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
       end
 
       def set_st_diffs
@@ -161,13 +165,29 @@ module Gitlab
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
           if EXISTING_OBJECT_CHECK.include?(@relation_name)
-            existing_object = relation_class.find_or_initialize_by(parsed_relation_hash.slice('title', 'project_id'))
-            existing_object.assign_attributes(parsed_relation_hash)
+            events = parsed_relation_hash.delete('events')
+
+            unless events.blank?
+              existing_object.assign_attributes(events: events)
+            end
+
             existing_object
           else
             relation_class.new(parsed_relation_hash)
           end
         end
+      end
+
+      def existing_object
+        @existing_object ||=
+          begin
+            finder_hash = parsed_relation_hash.slice(*FINDER_ATTRIBUTES)
+            existing_object = relation_class.find_or_create_by(finder_hash)
+            # Done in two steps, as MySQL behaves differently than PostgreSQL using
+            # the +find_or_create_by+ method and does not return the ID the second time.
+            existing_object.update(parsed_relation_hash)
+            existing_object
+          end
       end
     end
   end
