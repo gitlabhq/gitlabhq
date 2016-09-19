@@ -132,13 +132,13 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
-      expose :lfs_enabled?, as: :lfs_enabled
 
       expose :ldap_cn, :ldap_access
       expose :ldap_group_links,
         using: Entities::LdapGroupLink,
         if: lambda { |group, options| group.ldap_group_links.any? }
 
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
     end
