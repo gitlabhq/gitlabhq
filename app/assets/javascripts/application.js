@@ -251,6 +251,7 @@
       } else {
         notesHolders.hide();
       }
+      $this.trigger('blur');
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');

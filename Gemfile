@@ -26,7 +26,7 @@ gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
-gem 'omniauth-facebook',      '~> 3.0.0'
+gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
@@ -53,7 +53,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.6.3'
+gem 'gitlab_git', '~> 10.6.6'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -206,6 +206,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
+# Faster JSON
+gem 'oj', '~> 2.17.4'
+
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
@@ -295,8 +298,8 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.41.2', require: false
-  gem 'rubocop-rspec', '~> 1.5.0', require: false
+  gem 'rubocop', '~> 0.42.0', require: false
+  gem 'rubocop-rspec', '~> 1.7.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false

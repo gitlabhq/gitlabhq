@@ -6,6 +6,7 @@ describe Project, models: true do
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:users) }
+    it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
@@ -24,6 +25,30 @@ describe Project, models: true do
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
+    it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
+    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:builds_email_service).dependent(:destroy) }
+    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:irker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
+    it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
+    it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
+    it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
+    it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
+    it { is_expected.to have_one(:teamcity_service).dependent(:destroy) }
+    it { is_expected.to have_one(:jira_service).dependent(:destroy) }
+    it { is_expected.to have_one(:redmine_service).dependent(:destroy) }
+    it { is_expected.to have_one(:custom_issue_tracker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:bugzilla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
+    it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
+    it { is_expected.to have_one(:project_feature).dependent(:destroy) }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
+    it { is_expected.to have_one(:last_event).class_name('Event') }
+    it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -31,9 +56,16 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:labels).dependent(:destroy) }
+    it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:releases).dependent(:destroy) }
+    it { is_expected.to have_many(:lfs_objects_projects).dependent(:destroy) }
+    it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
+    it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
     describe '#members & #requesters' do
       let(:project) { create(:project) }
@@ -178,7 +210,7 @@ describe Project, models: true do
       expect(project.runners_token).not_to eq('')
     end
 
-    it 'does not set an random toke if one provided' do
+    it 'does not set an random token if one provided' do
       project = FactoryGirl.create :empty_project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
@@ -1385,6 +1417,68 @@ describe Project, models: true do
     end
   end
 
+  describe '#lfs_enabled?' do
+    let(:project) { create(:project) }
+
+    shared_examples 'project overrides group' do
+      it 'returns true when enabled in project' do
+        project.update_attribute(:lfs_enabled, true)
+
+        expect(project.lfs_enabled?).to be_truthy
+      end
+
+      it 'returns false when disabled in project' do
+        project.update_attribute(:lfs_enabled, false)
+
+        expect(project.lfs_enabled?).to be_falsey
+      end
+
+      it 'returns the value from the namespace, when no value is set in project' do
+        expect(project.lfs_enabled?).to eq(project.namespace.lfs_enabled?)
+      end
+    end
+
+    context 'LFS disabled in group' do
+      before do
+        project.namespace.update_attribute(:lfs_enabled, false)
+        enable_lfs
+      end
+
+      it_behaves_like 'project overrides group'
+    end
+
+    context 'LFS enabled in group' do
+      before do
+        project.namespace.update_attribute(:lfs_enabled, true)
+        enable_lfs
+      end
+
+      it_behaves_like 'project overrides group'
+    end
+
+    describe 'LFS disabled globally' do
+      shared_examples 'it always returns false' do
+        it do
+          expect(project.lfs_enabled?).to be_falsey
+          expect(project.namespace.lfs_enabled?).to be_falsey
+        end
+      end
+
+      context 'when no values are set' do
+        it_behaves_like 'it always returns false'
+      end
+
+      context 'when all values are set to true' do
+        before do
+          project.namespace.update_attribute(:lfs_enabled, true)
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        it_behaves_like 'it always returns false'
+      end
+    end
+  end
+
   describe '.where_paths_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
@@ -1548,5 +1642,9 @@ describe Project, models: true do
 
       expect(project.pushes_since_gc).to eq(0)
     end
+  end
+
+  def enable_lfs
+    allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end
 end
