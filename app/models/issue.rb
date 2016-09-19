@@ -201,8 +201,8 @@ class Issue < ActiveRecord::Base
 
   # From all notes on this issue, we'll select the system notes about linked
   # merge requests. Of those, the MRs closing `self` are returned.
-  def closed_by_merge_requests(current_user = nil, check_if_open: true)
-    return [] if !open? && check_if_open
+  def closed_by_merge_requests(current_user = nil)
+    return [] if !open?
 
     ext = all_references(current_user)
 
