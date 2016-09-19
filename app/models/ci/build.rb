@@ -241,12 +241,7 @@ module Ci
     end
 
     def trace
-      trace = raw_trace
-      if project && trace.present? && project.runners_token.present?
-        trace.gsub(project.runners_token, 'xxxxxx')
-      else
-        trace
-      end
+      hide_secrets(raw_trace)
     end
 
     def trace_length
@@ -259,6 +254,7 @@ module Ci
 
     def trace=(trace)
       recreate_trace_dir
+      trace = hide_secrets(trace)
       File.write(path_to_trace, trace)
     end
 
@@ -271,6 +267,8 @@ module Ci
 
     def append_trace(trace_part, offset)
       recreate_trace_dir
+
+      trace_part = hide_secrets(trace_part)
 
       File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
       File.open(path_to_trace, 'ab') do |f|
@@ -489,6 +487,12 @@ module Ci
       return {} unless pipeline.config_processor
 
       pipeline.config_processor.build_attributes(name)
+    end
+
+    def hide_secrets(trace)
+      trace = Ci::MaskSecret.mask(trace, project.runners_token) if project
+      trace = Ci::MaskSecret.mask(trace, token)
+      trace
     end
   end
 end
