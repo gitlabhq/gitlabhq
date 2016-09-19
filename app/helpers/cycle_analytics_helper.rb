@@ -10,15 +10,28 @@ module CycleAnalyticsHelper
                                  [:staging, "Staging", "From MR merge until deploy to production"],
                                  [:production, "Production", "From issue creation until deploy to production"]]
 
-    stats = cycle_analytics_view_data.reduce({}) do |hash, (stage_method, stage_text, stage_description)|
-      hash[stage_method] = {
+    stats = cycle_analytics_view_data.reduce([]) do |stats, (stage_method, stage_text, stage_description)|
+      value = cycle_analytics.send(stage_method).presence
+
+      stats << {
         title: stage_text,
         description: stage_description,
-        value: distance_of_time_in_words(cycle_analytics.send(stage_method))
+        value: value ? distance_of_time_in_words(value) : nil
       }
-      hash
+      stats
     end
 
-    { stats: stats }
+    stats = nil if stats.all? { |stat| stat[:value].nil?  }
+
+    summary = [
+      { title: "New Issues", value: cycle_analytics.summary.new_issues },
+      { title: "Commits", value: cycle_analytics.summary.commits },
+      { title: "Deploys", value: cycle_analytics.summary.deploys }
+    ]
+
+    {
+      summary: summary,
+      stats: stats
+    }
   end
 end

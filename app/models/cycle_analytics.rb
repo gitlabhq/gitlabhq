@@ -4,6 +4,11 @@ class CycleAnalytics
   def initialize(project, from:)
     @project = project
     @from = from
+    @summary = Summary.new(project, from: from)
+  end
+
+  def summary
+    @summary
   end
 
   def issue
