@@ -1,6 +1,6 @@
 # Start using Git on the command line
 
-If you want to start using Git and GitLab, make sure that you have created and/or signed into an [account on GitLab](https://gitlab.com/users/sign_in).
+If you want to start using Git and GitLab, make sure that you have created and/or signed into an account on GitLab.
 
 ## Open a shell
 
@@ -29,11 +29,11 @@ After you are finished installing, open a new shell and type "git --version" aga
 
 ## Add your Git username and set your email
 
-It is important to configure your Git username and email address as every Git commit that you create will use this information to identify who has submitted the commit.
+It is important to configure your Git username and email address as every Git commit will use this information to identify you as the author.
 
 On your shell, type the following command to add your username:
 ```
-git config --global user.name "your_username_as_you_want_it_to_appear"
+git config --global user.name "YOUR_USERNAME"
 ```
 
 Then verify that you have the correct username:
@@ -43,7 +43,7 @@ git config --global user.name
 
 To set your email address, type the following command:
 ```
-git config --global user.email "your_email_address@domain"
+git config --global user.email "your_email_address@example.com"
 ```
 
 To verify that you entered your email correctly, type:
@@ -51,7 +51,7 @@ To verify that you entered your email correctly, type:
 git config --global user.email
 ```
 
-You'll need to do this only once as you are using the "--global" option. It tells Git to always use this information for anything you do on that system. If you want to override this with a different username or email address for specific projects, you can run the command without the "--global" option when you’re in that project.
+You'll need to do this only once as you are using the `--global` option. It tells Git to always use this information for anything you do on that system. If you want to override this with a different username or email address for specific projects, you can run the command without the `--global` option when you’re in that project.
 
 ## Check your information
 
