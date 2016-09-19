@@ -1,10 +1,17 @@
-.content-block
-  .commit-message-container.form-group
-    .max-width-marker
-    %textarea.form-control.js-commit-message{"v-model" => "conflictsData.commitMessage"}
-      {{{conflictsData.commitMessage}}}
-
-  %button{type: "button", class: "btn btn-success js-submit-button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
-    %span {{commitButtonText}}
-
-  = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"
+.form-horizontal.resolve-conflicts-form
+  .form-group
+    %label.col-sm-2.control-label{ "for" => "commit-message" }
+      Commit message
+    .col-sm-10
+      .commit-message-container
+        .max-width-marker
+        %textarea.form-control.js-commit-message#commit-message{ "v-model" => "conflictsData.commitMessage", "rows" => "5" }
+          {{{conflictsData.commitMessage}}}
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .row
+        .col-xs-6
+          %button{ type: "button", class: "btn btn-success js-submit-button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
+            %span {{commitButtonText}}
+        .col-xs-6.text-right
+          = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"
