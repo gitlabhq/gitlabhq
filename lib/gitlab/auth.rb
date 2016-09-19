@@ -1,21 +1,21 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:user, :type)
+    class MissingPersonalTokenError < StandardError; end
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
-        result = Result.new
+        result =
+          service_request_check(login, password, project) ||
+          build_access_token_check(login, password) ||
+          user_with_password_for_git(login, password) ||
+          oauth_access_token_check(login, password) ||
+          personal_access_token_check(login, password) ||
+          Gitlab::Auth::Result.new
 
-        if valid_ci_request?(login, password, project)
-          result.type = :ci
-        else
-          result = populate_result(login, password)
-        end
+        rate_limit!(ip, success: result.success?, login: login)
 
-        success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
-        rate_limit!(ip, success: success, login: login)
         result
       end
 
@@ -62,44 +62,31 @@ module Gitlab
 
       private
 
-      def valid_ci_request?(login, password, project)
+      def service_request_check(login, password, project)
         matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
 
-        return false unless project && matched_login.present?
+        return unless project && matched_login.present?
 
         underscored_service = matched_login['service'].underscore
 
-        if underscored_service == 'gitlab_ci'
-          project && project.valid_build_token?(password)
-        elsif Service.available_services_names.include?(underscored_service)
+        if Service.available_services_names.include?(underscored_service)
           # We treat underscored_service as a trusted input because it is included
           # in the Service.available_services_names whitelist.
           service = project.public_send("#{underscored_service}_service")
 
-          service && service.activated? && service.valid_token?(password)
-        end
-      end
-
-      def populate_result(login, password)
-        result =
-          user_with_password_for_git(login, password) ||
-          oauth_access_token_check(login, password) ||
-          personal_access_token_check(login, password)
-
-        if result
-          result.type = nil unless result.user
-
-          if result.user && result.user.two_factor_enabled? && result.type == :gitlab_or_ldap
-            result.type = :missing_personal_token
+          if service && service.activated? && service.valid_token?(password)
+            Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
           end
         end
-
-        result || Result.new
       end
 
       def user_with_password_for_git(login, password)
         user = find_with_user_password(login, password)
-        Result.new(user, :gitlab_or_ldap) if user
+        return unless user
+
+        raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
+
+        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
       def oauth_access_token_check(login, password)
@@ -107,7 +94,7 @@ module Gitlab
           token = Doorkeeper::AccessToken.by_token(password)
           if token && token.accessible?
             user = User.find_by(id: token.resource_owner_id)
-            Result.new(user, :oauth)
+            Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities)
           end
         end
       end
@@ -116,8 +103,51 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          Result.new(user, :personal_token) if user == validation
+          Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
         end
+      end
+
+      def build_access_token_check(login, password)
+        return unless login == 'gitlab-ci-token'
+        return unless password
+
+        build = ::Ci::Build.running.find_by_token(password)
+        return unless build
+        return unless build.project.builds_enabled?
+
+        if build.user
+          # If user is assigned to build, use restricted credentials of user
+          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
+        else
+          # Otherwise use generic CI credentials (backward compatibility)
+          Gitlab::Auth::Result.new(nil, build.project, :ci, build_authentication_abilities)
+        end
+      end
+
+      public
+
+      def build_authentication_abilities
+        [
+          :read_project,
+          :build_download_code,
+          :build_read_container_image,
+          :build_create_container_image
+        ]
+      end
+
+      def read_authentication_abilities
+        [
+          :read_project,
+          :download_code,
+          :read_container_image
+        ]
+      end
+
+      def full_authentication_abilities
+        read_authentication_abilities + [
+          :push_code,
+          :create_container_image
+        ]
       end
     end
   end

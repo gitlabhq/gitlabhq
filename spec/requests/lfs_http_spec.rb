@@ -14,6 +14,7 @@ describe 'Git LFS API and storage' do
   end
   let(:authorization) { }
   let(:sendfile) { }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:sample_oid) { lfs_object.oid }
   let(:sample_size) { lfs_object.size }
@@ -244,14 +245,63 @@ describe 'Git LFS API and storage' do
           end
         end
 
-        context 'when CI is authorized' do
+        context 'when build is authorized as' do
           let(:authorization) { authorize_ci_project }
 
-          let(:update_permissions) do
-            project.lfs_objects << lfs_object
+          shared_examples 'can download LFS only from own projects' do
+            context 'for own project' do
+              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+              let(:update_permissions) do
+                project.team << [user, :reporter]
+                project.lfs_objects << lfs_object
+              end
+
+              it_behaves_like 'responds with a file'
+            end
+
+            context 'for other project' do
+              let(:other_project) { create(:empty_project) }
+              let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+
+              let(:update_permissions) do
+                project.lfs_objects << lfs_object
+              end
+
+              it 'rejects downloading code' do
+                expect(response).to have_http_status(other_project_status)
+              end
+            end
           end
 
-          it_behaves_like 'responds with a file'
+          context 'administrator' do
+            let(:user) { create(:admin) }
+            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+            it_behaves_like 'can download LFS only from own projects' do
+              # We render 403, because administrator does have normally access
+              let(:other_project_status) { 403 }
+            end
+          end
+
+          context 'regular user' do
+            let(:user) { create(:user) }
+            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+            it_behaves_like 'can download LFS only from own projects' do
+              # We render 404, to prevent data leakage about existence of the project
+              let(:other_project_status) { 404 }
+            end
+          end
+
+          context 'does not have user' do
+            let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+            it_behaves_like 'can download LFS only from own projects' do
+              # We render 404, to prevent data leakage about existence of the project
+              let(:other_project_status) { 404 }
+            end
+          end
         end
       end
 
@@ -431,10 +481,62 @@ describe 'Git LFS API and storage' do
         end
       end
 
-      context 'when CI is authorized' do
+      context 'when build is authorized as' do
         let(:authorization) { authorize_ci_project }
 
-        it_behaves_like 'an authorized requests'
+        let(:update_lfs_permissions) do
+          project.lfs_objects << lfs_object
+        end
+
+        shared_examples 'can download LFS only from own projects' do
+          context 'for own project' do
+            let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+            let(:update_user_permissions) do
+              project.team << [user, :reporter]
+            end
+
+            it_behaves_like 'an authorized requests'
+          end
+
+          context 'for other project' do
+            let(:other_project) { create(:empty_project) }
+            let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+
+            it 'rejects downloading code' do
+              expect(response).to have_http_status(other_project_status)
+            end
+          end
+        end
+
+        context 'administrator' do
+          let(:user) { create(:admin) }
+          let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+          it_behaves_like 'can download LFS only from own projects' do
+            # We render 403, because administrator does have normally access
+            let(:other_project_status) { 403 }
+          end
+        end
+
+        context 'regular user' do
+          let(:user) { create(:user) }
+          let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+          it_behaves_like 'can download LFS only from own projects' do
+            # We render 404, to prevent data leakage about existence of the project
+            let(:other_project_status) { 404 }
+          end
+        end
+
+        context 'does not have user' do
+          let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+          it_behaves_like 'can download LFS only from own projects' do
+            # We render 404, to prevent data leakage about existence of the project
+            let(:other_project_status) { 404 }
+          end
+        end
       end
 
       context 'when user is not authenticated' do
@@ -583,11 +685,37 @@ describe 'Git LFS API and storage' do
           end
         end
 
-        context 'when CI is authorized' do
+        context 'when build is authorized' do
           let(:authorization) { authorize_ci_project }
 
-          it 'responds with 401' do
-            expect(response).to have_http_status(401)
+          context 'build has an user' do
+            let(:user) { create(:user) }
+
+            context 'tries to push to own project' do
+              let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+              it 'responds with 401' do
+                expect(response).to have_http_status(401)
+              end
+            end
+
+            context 'tries to push to other project' do
+              let(:other_project) { create(:empty_project) }
+              let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+              let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+              it 'responds with 401' do
+                expect(response).to have_http_status(401)
+              end
+            end
+          end
+
+          context 'does not have user' do
+            let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
+            end
           end
         end
       end
@@ -607,14 +735,6 @@ describe 'Git LFS API and storage' do
           it 'responds with status 401' do
             expect(response).to have_http_status(401)
           end
-        end
-      end
-
-      context 'when CI is authorized' do
-        let(:authorization) { authorize_ci_project }
-
-        it 'responds with status 403' do
-          expect(response).to have_http_status(401)
         end
       end
     end
@@ -779,10 +899,51 @@ describe 'Git LFS API and storage' do
         end
       end
 
-      context 'when CI is authenticated' do
+      context 'when build is authorized' do
         let(:authorization) { authorize_ci_project }
 
-        it_behaves_like 'unauthorized'
+        context 'build has an user' do
+          let(:user) { create(:user) }
+
+          context 'tries to push to own project' do
+            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+            before do
+              project.team << [user, :developer]
+              put_authorize
+            end
+
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
+            end
+          end
+
+          context 'tries to push to other project' do
+            let(:other_project) { create(:empty_project) }
+            let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+            before do
+              put_authorize
+            end
+
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
+            end
+          end
+        end
+
+        context 'does not have user' do
+          let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+          before do
+            put_authorize
+          end
+
+          it 'responds with 401' do
+            expect(response).to have_http_status(401)
+          end
+        end
       end
 
       context 'for unauthenticated' do
@@ -839,10 +1000,42 @@ describe 'Git LFS API and storage' do
         end
       end
 
-      context 'when CI is authenticated' do
+      context 'when build is authorized' do
         let(:authorization) { authorize_ci_project }
 
-        it_behaves_like 'unauthorized'
+        before do
+          put_authorize
+        end
+
+        context 'build has an user' do
+          let(:user) { create(:user) }
+
+          context 'tries to push to own project' do
+            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
+            end
+          end
+
+          context 'tries to push to other project' do
+            let(:other_project) { create(:empty_project) }
+            let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+            it 'responds with 401' do
+              expect(response).to have_http_status(401)
+            end
+          end
+        end
+
+        context 'does not have user' do
+          let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+          it 'responds with 401' do
+            expect(response).to have_http_status(401)
+          end
+        end
       end
 
       context 'for unauthenticated' do
@@ -897,7 +1090,7 @@ describe 'Git LFS API and storage' do
   end
 
   def authorize_ci_project
-    ActionController::HttpAuthentication::Basic.encode_credentials('gitlab-ci-token', project.runners_token)
+    ActionController::HttpAuthentication::Basic.encode_credentials('gitlab-ci-token', build.token)
   end
 
   def authorize_user

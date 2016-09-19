@@ -35,6 +35,14 @@ module API
             Project.find_with_namespace(project_path)
           end
         end
+
+        def ssh_authentication_abilities
+          [
+            :read_project,
+            :download_code,
+            :push_code
+          ]
+        end
       end
 
       post "/allowed" do
@@ -51,9 +59,9 @@ module API
 
         access =
           if wiki?
-            Gitlab::GitAccessWiki.new(actor, project, protocol)
+            Gitlab::GitAccessWiki.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           else
-            Gitlab::GitAccess.new(actor, project, protocol)
+            Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           end
 
         access_status = access.check(params[:action], params[:changes])

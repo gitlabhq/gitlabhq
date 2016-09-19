@@ -35,7 +35,11 @@ class Projects::BuildsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @build.to_json(methods: :trace_html)
+        render json: {
+          id: @build.id,
+          status: @build.status,
+          trace_html: @build.trace_html
+        }
       end
     end
   end
