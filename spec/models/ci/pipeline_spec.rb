@@ -535,14 +535,13 @@ describe Ci::Pipeline, models: true do
 
     shared_examples 'sending a notification' do
       it 'sends an email' do
-        sent_to = ActionMailer::Base.deliveries.flat_map(&:to)
-        expect(sent_to).to contain_exactly(pipeline.user.email)
+        should_only_email(pipeline.user)
       end
     end
 
     shared_examples 'not sending any notification' do
       it 'does not send any email' do
-        expect(ActionMailer::Base.deliveries).to be_empty
+        should_email_no_one
       end
     end
 

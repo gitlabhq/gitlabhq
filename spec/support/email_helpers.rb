@@ -1,6 +1,6 @@
 module EmailHelpers
   def sent_to_user?(user)
-    ActionMailer::Base.deliveries.map(&:to).flatten.count(user.email) == 1
+    ActionMailer::Base.deliveries.flat_map(&:to).count(user.email) == 1
   end
 
   def reset_delivered_emails!
@@ -19,5 +19,9 @@ module EmailHelpers
 
   def should_not_email(user)
     expect(sent_to_user?(user)).to be_falsey
+  end
+
+  def should_email_no_one
+    expect(ActionMailer::Base.deliveries).to be_empty
   end
 end
