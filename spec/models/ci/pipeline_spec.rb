@@ -526,7 +526,7 @@ describe Ci::Pipeline, models: true do
 
   describe 'notifications when pipeline success or failed' do
     before do
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
 
       pipeline.update(user: create(:user))
       pipeline.enqueue
