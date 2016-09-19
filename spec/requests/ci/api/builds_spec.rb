@@ -263,6 +263,7 @@ describe Ci::API::API do
         context "should authorize posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
+
             expect(response).to have_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
@@ -270,6 +271,7 @@ describe Ci::API::API do
 
           it "using token as header" do
             post authorize_url, {}, headers_with_token
+
             expect(response).to have_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
@@ -277,6 +279,7 @@ describe Ci::API::API do
 
           it "using runners token" do
             post authorize_url, { token: build.project.runners_token }, headers
+
             expect(response).to have_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
@@ -284,7 +287,9 @@ describe Ci::API::API do
 
           it "reject requests that did not go through gitlab-workhorse" do
             headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+
             post authorize_url, { token: build.token }, headers
+
             expect(response).to have_http_status(500)
           end
         end
@@ -292,13 +297,17 @@ describe Ci::API::API do
         context "should fail to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
+
             post authorize_url, { token: build.token, filesize: 100 }, headers
+
             expect(response).to have_http_status(413)
           end
 
           it "using token as header" do
             stub_application_setting(max_artifacts_size: 0)
+
             post authorize_url, { filesize: 100 }, headers_with_token
+
             expect(response).to have_http_status(413)
           end
         end
