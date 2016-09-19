@@ -169,6 +169,37 @@ describe Ci::Pipeline, models: true do
         expect(pipeline.reload.finished_at).to be_nil
       end
     end
+
+    describe "merge request metrics" do
+      let(:project) { FactoryGirl.create :project }
+      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
+
+      context 'when transitioning to running' do
+        it 'records the build start time' do
+          time = Time.now
+          Timecop.freeze(time) { build.run }
+
+          expect(merge_request.metrics.latest_build_started_at).to eq(time)
+        end
+
+        it 'clears the build end time' do
+          build.run
+
+          expect(merge_request.metrics.latest_build_finished_at).to be_nil
+        end
+      end
+
+      context 'when transitioning to success' do
+        it 'records the build end time' do
+          build.run
+          time = Time.now
+          Timecop.freeze(time) { build.success }
+
+          expect(merge_request.metrics.latest_build_finished_at).to eq(time)
+        end
+      end
+    end
   end
 
   describe '#branch?' do
@@ -427,6 +458,30 @@ describe Ci::Pipeline, models: true do
 
     def create_build(name)
       create(:ci_build, :created, pipeline: pipeline, name: name)
+    end
+  end
+
+  describe "#merge_requests" do
+    let(:project) { FactoryGirl.create :project }
+    let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+
+    it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
+      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+
+      expect(pipeline.merge_requests).to eq([merge_request])
+    end
+
+    it "doesn't return merge requests whose source branch doesn't match the pipeline's ref" do
+      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
+
+      expect(pipeline.merge_requests).to be_empty
+    end
+
+    it "doesn't return merge requests whose `diff_head_sha` doesn't match the pipeline's SHA" do
+      create(:merge_request, source_project: project, source_branch: pipeline.ref)
+      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
+
+      expect(pipeline.merge_requests).to be_empty
     end
   end
 end

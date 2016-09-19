@@ -174,6 +174,36 @@ describe MergeRequests::RefreshService, services: true do
       end
     end
 
+    context 'push commits closing issues' do
+      let(:issue) { create :issue, project: @project }
+      let(:commit_author) { create :user }
+      let(:commit) { project.commit }
+      let!(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: @project) }
+
+      before do
+        project.team << [commit_author, :developer]
+        project.team << [user, :developer]
+
+        allow(commit).to receive_messages(
+          safe_message: "Closes #{issue.to_reference}",
+          references: [issue],
+          author_name: commit_author.name,
+          author_email: commit_author.email,
+          committed_date: Time.now
+        )
+
+        allow_any_instance_of(MergeRequest).to receive(:commits).and_return([commit])
+      end
+
+      it 'creates a `MergeRequestsClosingIssues` record for each closed issue' do
+        refresh_service = service.new(@project, @user)
+        allow(refresh_service).to receive(:execute_hooks)
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
+
+        expect(merge_request.reload.issues_closed).to eq([issue])
+      end
+    end
+
     def reload_mrs
       @merge_request.reload
       @fork_merge_request.reload

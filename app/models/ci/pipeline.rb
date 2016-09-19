@@ -283,7 +283,7 @@ module Ci
     # the merge request's latest commit.
     def merge_requests
       project.merge_requests.where(source_branch: self.ref).
-        select { |merge_request| merge_request.pipeline.id == self.id }
+        select { |merge_request| merge_request.pipeline.try(:id) == self.id }
     end
 
     private

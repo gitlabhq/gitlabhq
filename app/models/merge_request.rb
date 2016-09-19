@@ -503,6 +503,7 @@ class MergeRequest < ActiveRecord::Base
   # running `ReferenceExtractor` on each of them separately.
   def cache_merge_request_closes_issues!(current_user = self.author)
     transaction do
+      self.merge_requests_closing_issues.destroy_all
       closes_issues(current_user).each do |issue|
         MergeRequestsClosingIssues.create!(merge_request: self, issue: issue)
       end
