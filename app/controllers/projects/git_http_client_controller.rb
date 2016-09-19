@@ -132,12 +132,6 @@ class Projects::GitHttpClientController < Projects::ApplicationController
       authentication_project == project
   end
 
-  def lfs_deploy_key?
-    authentication_result.lfs_deploy_token? &&
-      actor &&
-      actor.projects.include?(project)
-  end
-
   def authentication_has_download_access?
     has_authentication_ability?(:download_code) || has_authentication_ability?(:build_download_code)
   end

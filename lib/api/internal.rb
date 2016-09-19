@@ -82,19 +82,6 @@ module API
         response
       end
 
-      post "/lfs_authenticate" do
-        status 200
-
-        key = Key.find(params[:key_id])
-        token_handler = Gitlab::LfsToken.new(key)
-
-        {
-          username: token_handler.actor_name,
-          lfs_token: token_handler.generate,
-          repository_http_path: project.http_url_to_repo
-        }
-      end
-
       get "/merge_request_urls" do
         ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
       end
