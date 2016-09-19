@@ -85,11 +85,14 @@ module Ci
 
       after_transition any => [:success] do |build|
         if build.environment.present?
-          service = CreateDeploymentService.new(build.project, build.user,
-                                                environment: build.environment,
-                                                sha: build.sha,
-                                                ref: build.ref,
-                                                tag: build.tag)
+          service = CreateDeploymentService.new(
+            build.project, build.user,
+            environment: build.environment,
+            sha: build.sha,
+            ref: build.ref,
+            tag: build.tag,
+            options: build.options[:environment],
+            variables: build.variables)
           service.execute(build)
         end
       end

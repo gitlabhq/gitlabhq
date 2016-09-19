@@ -277,6 +277,8 @@ request is as follows:
 1. For more complex migrations, write tests.
 1. Merge requests **must** adhere to the [merge request performance
    guidelines](doc/development/merge_request_performance_guidelines.md).
+1. For tests that use Capybara or PhantomJS, see this [article on how
+   to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get

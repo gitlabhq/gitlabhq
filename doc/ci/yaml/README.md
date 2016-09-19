@@ -90,8 +90,7 @@ builds, including deploy builds. This can be an array or a multi-line string.
 
 ### after_script
 
->**Note:**
-Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
+> Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
 builds. This has to be an array or a multi-line string.
@@ -135,8 +134,7 @@ Alias for [stages](#stages).
 
 ### variables
 
->**Note:**
-Introduced in GitLab Runner v0.5.0.
+> Introduced in GitLab Runner v0.5.0.
 
 GitLab CI allows you to add variables to `.gitlab-ci.yml` that are set in the
 build environment. The variables are stored in the Git repository and are meant
@@ -158,8 +156,7 @@ Variables can be also defined on [job level](#job-variables).
 
 ### cache
 
->**Note:**
-Introduced in GitLab Runner v0.7.0.
+> Introduced in GitLab Runner v0.7.0.
 
 `cache` is used to specify a list of files and directories which should be
 cached between builds.
@@ -220,8 +217,7 @@ will be always present. For implementation details, please check GitLab Runner.
 
 #### cache:key
 
->**Note:**
-Introduced in GitLab Runner v1.0.0.
+> Introduced in GitLab Runner v1.0.0.
 
 The `key` directive allows you to define the affinity of caching
 between jobs, allowing to have a single cache for all jobs,
@@ -531,8 +527,7 @@ The above script will:
 
 #### Manual actions
 
->**Note:**
-Introduced in GitLab 8.10.
+> Introduced in GitLab 8.10.
 
 Manual actions are a special type of job that are not executed automatically;
 they need to be explicitly started by a user. Manual actions can be started
@@ -543,17 +538,16 @@ An example usage of manual actions is deployment to production.
 
 ### environment
 
->**Note:**
-Introduced in GitLab 8.9.
+> Introduced in GitLab 8.9.
 
-`environment` is used to define that a job deploys to a specific environment.
+`environment` is used to define that a job deploys to a specific [environment].
 This allows easy tracking of all deployments to your environments straight from
 GitLab.
 
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
 
-The `environment` name must contain only letters, digits, '-' and '_'. Common
+The `environment` name must contain only letters, digits, '-', '_', '/', '$', '{', '}' and spaces. Common
 names are `qa`, `staging`, and `production`, but you can use whatever name works
 with your workflow.
 
@@ -570,6 +564,35 @@ deploy to production:
 
 The `deploy to production` job will be marked as doing deployment to
 `production` environment.
+
+#### dynamic environments
+
+> [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
+
+`environment` can also represent a configuration hash with `name` and `url`.
+These parameters can use any of the defined CI [variables](#variables)
+(including predefined, secure variables and `.gitlab-ci.yml` variables).
+
+The common use case is to create dynamic environments for branches and use them
+as review apps.
+
+---
+
+**Example configurations**
+
+```
+deploy as review app:
+  stage: deploy
+  script: ...
+  environment:
+    name: review-apps/$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_NAME.review.example.com/
+```
+
+The `deploy as review app` job will be marked as deployment to dynamically
+create the `review-apps/branch-name` environment.
+
+This environment should be accessible under `https://branch-name.review.example.com/`.
 
 ### artifacts
 
@@ -638,8 +661,7 @@ be available for download in the GitLab UI.
 
 #### artifacts:name
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
 The `name` directive allows you to define the name of the created artifacts
 archive. That way, you can have a unique name for every archive which could be
@@ -702,8 +724,7 @@ job:
 
 #### artifacts:when
 
->**Note:**
-Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+> Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
 `artifacts:when` is used to upload artifacts on build failure or despite the
 failure.
@@ -728,8 +749,7 @@ job:
 
 #### artifacts:expire_in
 
->**Note:**
-Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+> Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
 `artifacts:expire_in` is used to delete uploaded artifacts after the specified
 time. By default, artifacts are stored on GitLab forever. `expire_in` allows you
@@ -764,8 +784,7 @@ job:
 
 ### dependencies
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 This feature should be used in conjunction with [`artifacts`](#artifacts) and
 allows you to define the artifacts to pass between different builds.
@@ -839,9 +858,8 @@ job:
 
 ## Git Strategy
 
->**Note:**
-Introduced in GitLab 8.9 as an experimental feature. May change in future
-releases or be removed completely.
+> Introduced in GitLab 8.9 as an experimental feature. May change in future
+  releases or be removed completely.
 
 You can set the `GIT_STRATEGY` used for getting recent application code. `clone`
 is slower, but makes sure you have a clean directory before every build. `fetch`
@@ -863,8 +881,7 @@ variables:
 
 ## Shallow cloning
 
->**Note:**
-Introduced in GitLab 8.9 as an experimental feature. May change in future
+> Introduced in GitLab 8.9 as an experimental feature. May change in future
 releases or be removed completely.
 
 You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
@@ -894,8 +911,7 @@ variables:
 
 ## Hidden keys
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 Keys that start with a dot (`.`) will be not processed by GitLab CI. You can
 use this feature to ignore jobs, or use the
@@ -923,8 +939,7 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 
 ### Anchors
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 YAML also has a handy feature called 'anchors', which let you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
@@ -1067,3 +1082,5 @@ Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
 [examples]: ../examples/README.md
+[ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
+[environment]: ../environments.md

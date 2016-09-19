@@ -4,6 +4,7 @@ class Environment < ActiveRecord::Base
   has_many :deployments
 
   before_validation :nullify_external_url
+  before_save :set_environment_type
 
   validates :name,
             presence: true,
@@ -24,6 +25,17 @@ class Environment < ActiveRecord::Base
 
   def nullify_external_url
     self.external_url = nil if self.external_url.blank?
+  end
+
+  def set_environment_type
+    names = name.split('/')
+
+    self.environment_type =
+      if names.many?
+        names.first
+      else
+        nil
+      end
   end
 
   def includes_commit?(commit)
