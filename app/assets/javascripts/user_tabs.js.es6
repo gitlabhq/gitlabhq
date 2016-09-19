@@ -156,7 +156,7 @@ content on the Users#show page.
         url: new_state
       }, document.title, new_state);
       return new_state;
-    };
+    }
   }
   global.UserTabs = UserTabs;
 })(window.gl || (window.gl = {}));
