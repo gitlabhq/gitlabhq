@@ -13,6 +13,8 @@ class Event < ActiveRecord::Base
   LEFT      = 9 # User left project
   DESTROYED = 10
 
+  RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
+
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
@@ -324,8 +326,17 @@ class Event < ActiveRecord::Base
   end
 
   def reset_project_activity
-    if project && Gitlab::ExclusiveLease.new("project:update_last_activity_at:#{project.id}", timeout: 60).try_obtain
-      project.update_column(:last_activity_at, self.created_at)
-    end
+    return unless project
+
+    # Don't even bother obtaining a lock if the last update happened less than
+    # 60 minutes ago.
+    return if project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
+
+    return unless Gitlab::ExclusiveLease.
+      new("project:update_last_activity_at:#{project.id}",
+          timeout: RESET_PROJECT_ACTIVITY_INTERVAL.to_i).
+      try_obtain
+
+    project.update_column(:last_activity_at, created_at)
   end
 end
