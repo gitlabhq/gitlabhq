@@ -1012,10 +1012,6 @@ class Project < ActiveRecord::Base
       update_all(updated_at: Time.now)
   end
 
-  def request_access(user)
-    Members::RequestAccessService.new(self, user).execute
-  end
-
   def project_member(user)
     project_members.find_by(user_id: user)
   end

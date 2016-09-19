@@ -102,10 +102,6 @@ class Group < Namespace
     self[:lfs_enabled]
   end
 
-  def request_access(user)
-    Members::RequestAccessService.new(self, user).execute
-  end
-
   def add_users(user_ids, access_level, current_user: nil, expires_at: nil)
     user_ids.each do |user_id|
       Member.add_user(
