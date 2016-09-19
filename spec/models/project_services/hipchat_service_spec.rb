@@ -304,7 +304,7 @@ describe HipchatService, models: true do
           duration = pipeline.duration
 
           expect(message).to eq("<a href=\"#{project_url}\">#{project_name}</a>: " \
-            "Commit <a href=\"#{project_url}/pipelines/#{pipelines.id}\">#{Commit.truncate_sha(sha)}</a> " \
+            "Pipeline <a href=\"#{project_url}/pipelines/#{pipeline.id}\">#{Commit.truncate_sha(sha)}</a> " \
             "of <a href=\"#{project_url}/commits/#{ref}\">#{ref}</a> #{ref_type} " \
             "by Unknown failed in #{duration} second(s)")
         end
@@ -312,7 +312,7 @@ describe HipchatService, models: true do
 
       context 'for succeeded' do
         before do
-          pipeline.success
+          pipeline.succeed
         end
 
         it "calls Hipchat API" do
@@ -348,17 +348,21 @@ describe HipchatService, models: true do
 
       context 'with a successful build' do
         it 'uses the green color' do
-          build_data = { object_kind: 'build', commit: { status: 'success' } }
+          data = { object_kind: 'pipeline',
+                   object_attributes: { status: 'success' } }
+          options = hipchat.__send__(:message_options, data)
 
-          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'green' })
+          expect(options).to eq({ notify: false, color: 'green' })
         end
       end
 
       context 'with a failed build' do
         it 'uses the red color' do
-          build_data = { object_kind: 'build', commit: { status: 'failed' } }
+          data = { object_kind: 'pipeline',
+                   object_attributes: { status: 'failed' } }
+          options = hipchat.__send__(:message_options, data)
 
-          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'red' })
+          expect(options).to eq({ notify: false, color: 'red' })
         end
       end
     end
