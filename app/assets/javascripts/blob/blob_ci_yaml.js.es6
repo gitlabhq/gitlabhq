@@ -2,10 +2,6 @@
 ((global) => {
 
   class BlobCiYamlSelector extends TemplateSelector {
-    constructor(...args) {
-      super(...args);
-    }
-
     requestFile(query) {
       return Api.gitlabCiYml(query.name, this.requestFileSuccess.bind(this));
     }

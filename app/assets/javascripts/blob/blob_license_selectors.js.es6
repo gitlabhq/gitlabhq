@@ -1,5 +1,5 @@
 ((global) => {
-  class BlobLicenseSelectors() {
+  class BlobLicenseSelectors {
     constructor({ $dropdowns, editor }) {
       this.$dropdowns = $('.js-license-selector');
       this.editor = editor;
