@@ -70,6 +70,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'There is an existent fork of the "Shop" project' do
     user = create(:user, name: 'Mike')
+    @project.team << [user, :reporter]
     @forked_project = Projects::ForkService.new(@project, user).execute
   end
 
