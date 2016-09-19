@@ -1,0 +1,8 @@
+- page_title 'Edit', @label.name, 'Labels'
+
+%h3.page-title
+  = icon('folder-open')
+  Edit Group Label
+%hr
+
+= render 'form', url: group_label_path(@group, @label)

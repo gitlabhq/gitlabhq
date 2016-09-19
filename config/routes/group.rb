@@ -28,5 +28,11 @@ resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
 
     resource :avatar, only: [:destroy]
     resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+
+    resources :labels, except: [:show], constraints: { id: /\d+/ } do
+      member do
+        post :toggle_subscription
+      end
+    end
   end
 end

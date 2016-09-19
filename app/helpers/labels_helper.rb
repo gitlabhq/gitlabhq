@@ -43,11 +43,29 @@ module LabelsHelper
     end
   end
 
-  def label_filter_path(project, label, type: issue)
-    send("namespace_project_#{type.to_s.pluralize}_path",
-                project.namespace,
-                project,
-                label_name: [label.name])
+  def link_to_group_label(label, group: nil, type: :issue, tooltip: true, css_class: nil, &block)
+    group ||= @group || label.group
+    link = label_filter_path(group, label, type: type)
+
+    if block_given?
+      link_to link, class: css_class, &block
+    else
+      link_to render_colored_label(label, tooltip: tooltip), link, class: css_class
+    end
+  end
+
+  def label_filter_path(subject, label, type: issue)
+    case subject
+    when Project
+      send("namespace_project_#{type.to_s.pluralize}_path",
+                  subject.namespace,
+                  subject,
+                  label_name: [label.name])
+    when Group
+      send("#{type.to_s.pluralize}_group_path",
+                  subject,
+                  label_name: [label.name])
+    end
   end
 
   def project_label_names

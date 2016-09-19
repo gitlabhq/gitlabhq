@@ -1,0 +1,9 @@
+- page_title 'New Group Label'
+- header_title group_title(@group, 'Labels', group_labels_path(@group))
+
+%h3.page-title
+  = icon('folder-open')
+  New Group Label
+%hr
+
+= render 'form', url: group_labels_path

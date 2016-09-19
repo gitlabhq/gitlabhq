@@ -1,0 +1,33 @@
+= form_for @label, as: :label, url: url, html: { class: 'form-horizontal label-form js-quick-submit js-requires-input' } do |f|
+  = form_errors(@label)
+
+  .form-group
+    = f.label :title, class: 'control-label'
+    .col-sm-10
+      = f.text_field :title, class: "form-control", required: true, autofocus: true
+  .form-group
+    = f.label :description, class: 'control-label'
+    .col-sm-10
+      = f.text_field :description, class: "form-control js-quick-submit"
+  .form-group
+    = f.label :color, "Background color", class: 'control-label'
+    .col-sm-10
+      .input-group
+        .input-group-addon.label-color-preview &nbsp;
+        = f.color_field :color, class: "form-control"
+      .help-block
+        Choose any color.
+        %br
+        Or you can choose one of suggested colors below
+
+      .suggest-colors
+        - suggested_colors.each do |color|
+          = link_to '#', style: "background-color: #{color}", data: { color: color } do
+            &nbsp;
+
+  .form-actions
+    - if @label.persisted?
+      = f.submit 'Save changes', class: 'btn btn-save js-save-button'
+    - else
+      = f.submit 'Create Label', class: 'btn btn-create js-save-button'
+    = link_to "Cancel", group_labels_path(@group), class: 'btn btn-cancel'

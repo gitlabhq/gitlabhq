@@ -1,0 +1,24 @@
+- page_title 'Labels'
+
+.top-area.adjust
+  .nav-text
+    Labels can be applied to issues and merge requests.
+
+  .nav-controls
+    - if can?(current_user, :admin_label, @group)
+      = link_to new_group_label_path(@group), class: "btn btn-new" do
+        New label
+
+.labels
+  - hide = @group.labels.empty? || (params[:page].present? && params[:page] != '1')
+  .group-labels
+    %h5{ class: ('hide' if hide) }
+      = icon('folder-open')
+      Group Labels
+    - if @labels.present?
+      %ul.content-list.manage-labels-list.js-group-labels
+        = render partial: 'label', collection: @labels, as: :label
+        = paginate @labels, theme: 'gitlab'
+    - else
+      .nothing-here-block
+        No labels created yet.
