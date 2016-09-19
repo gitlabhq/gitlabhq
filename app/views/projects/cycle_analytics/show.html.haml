@@ -1,58 +1,58 @@
 = render 'projects/pipelines/head'
 
-#cycle-analytics{"v-cloak" => "true", ":class" => "{ 'waiting': isLoading }"}
-  .panel.panel-default
-    .panel-heading
-      Pipeline Health
+#cycle-analytics{"v-cloak" => "true", data: { request_path: "#{project_cycle_analytics_path(@project)}"}}
 
-    .content-block
-      = icon("spinner spin", "v-if" => "isLoading")
+  .bordered-box.landing.content-block{"v-if" => "!isHelpDismissed"}
+    = icon('times', class: 'dismiss-icon', "@click": "dismissLanding()")
+    = custom_icon('icon_cycle_analytics_splash')
+    .inner-content
+      %h4
+        Introducing Cycle Analytics
+      %p
+        Cycle Analytics gives an overview on how much time it takes to go from idea to production in your project.
 
-      .container-fluid
-        .row
-          %template{"v-for" => "info in analytics.summary"}
-            .col-xs-3.column
-              %span.header {{info.value}}
-              %br
-              %span.text {{info.desc}}
+      = button_tag 'Read more', class: 'btn'
 
-          .col-xs-3.column
-            .dropdown.inline.js-ca-dropdown
-              %button.dropdown-menu-toggle{"aria-expanded" => "false", "data-toggle" => "dropdown", :type => "button"}
-                %span.dropdown-label Last 30 days
-                %i.fa.fa-chevron-down
-              %ul.dropdown-menu.dropdown-menu-align-right
-                %li
-                  %a{'href' => "#", 'data-value' => '30days'}
-                    Last 30 days
-                %li
-                  %a{'href' => "#", 'data-value' => '90days'}
-                    Last 90 days
+  = icon("spinner spin", "v-show" => "isLoading")
 
-  .bordered-box
-    = icon("spinner spin", "v-if" => "isLoading")
+  .wrapper{"v-show" => "!isLoading && !hasError"}
+    .panel.panel-default
+      .panel-heading
+        Pipeline Health
 
-    %ul.content-list{{"v-if" => "!notAvailable"}}
-      %li{"v-for" => "info in analytics.data"}
+      .content-block
         .container-fluid
           .row
-            .col-xs-10
-              %span
-                {{info.title}}
-              %br
-              %span
-                {{info.desc}}
-            .col-xs-2
-              %span
-                {{info.value}}
+            %template{"v-for" => "item in summary"}
+              .col-xs-3.column
+                %span.header {{item.value}}
+                %br
+                %span.text {{item.title}}
 
+            .col-xs-3.column
+              .dropdown.inline.js-ca-dropdown
+                %button.dropdown-menu-toggle{"data-toggle" => "dropdown", :type => "button"}
+                  %span.dropdown-label Last 30 days
+                  %i.fa.fa-chevron-down
+                %ul.dropdown-menu.dropdown-menu-align-right
+                  %li
+                    %a{'href' => "#", 'data-value' => '30'}
+                      Last 30 days
+                  %li
+                    %a{'href' => "#", 'data-value' => '90'}
+                      Last 90 days
 
-      .content-block{{"v-if" => "notAvailable"}}
-        .inner-content
-          = custom_icon('icon_cycle_analytics_splash')
-          %h4
-            Set up your deploys to environment!
-          %p
-            Cycle Analytics will give an overview on how much time it takes to go from an idea to production in your project.
-
-        = button_tag 'Set up', class: 'btn btn-create btn-block'
+    .bordered-box
+      %ul.content-list
+        %li{"v-for" => "item in stats"}
+          .container-fluid
+            .row
+              .col-xs-10.title-col
+                %span
+                  {{item.title}}
+                %br
+                %span
+                  {{item.description}}
+              .col-xs-2.value-col
+                %span
+                  {{item.value}}

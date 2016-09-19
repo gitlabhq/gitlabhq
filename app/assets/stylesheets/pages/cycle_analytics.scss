@@ -1,5 +1,7 @@
 #cycle-analytics {
-  margin-top: 24px;
+  margin: 24px auto 0;
+  width: 800px;
+  position: relative;
 
   .panel {
 
@@ -22,6 +24,10 @@
       .text {
         color: $layout-link-gray;
       }
+
+      &:last-child {
+        text-align: right;
+      }
     }
 
     .dropdown {
@@ -39,9 +45,13 @@
   .content-list {
     li {
       padding: 18px $gl-padding $gl-padding;
+
+      .container-fluid {
+        padding: 0;
+      }
     }
 
-    .col-md-10 {
+    .title-col {
       span {
         &:first-child {
           line-height: 19px;
@@ -54,62 +64,54 @@
       }
     }
 
-    .col-md-2 span {
-      line-height: 42px;
+    .value-col {
+      text-align: right;
+
+      span {
+        line-height: 42px;
+      }
     }
   }
 
-  .inner-content {
-    width: 450px;
-    text-align: center;
-    margin: 0 auto;
-    padding: 62px 0;
+  .landing {
+    margin-bottom: $gl-padding;
+    overflow: hidden;
 
-    .btn-block {
-      max-width: 130px;
-      margin: 0 auto;
-    }
-
-    h4 {
-      color: $gl-text-color;
-      font-size: 17px;
-    }
-
-    p {
-      color: #8C8C8C;
-      margin-bottom: $gl-padding;
-    }
-  }
-
-  &.waiting {
-    .panel .header {
-      width: 35px;
-      height: 35px;
-      margin-bottom: 3px;
-    }
-
-    span {
-      background-color: #F8F8F8;
-      color: #F8F8F8 !important;
-      display: inline-block;
-      line-height: 13px !important;
-    }
-
-    .dropdown {
-      opacity: .33;
-    }
-
-    .col-md-2 span {
-      position: relative;
-      top: 11px;
-    }
-
-    .fa-spinner {
-      font-size: 32px;
+    .dismiss-icon {
       position: absolute;
-      left: 50%;
-      top: 50%;
-      margin: -16px 0 0 -16px;
+      right: $gl-padding;
+      cursor: pointer;
+    }
+
+    svg {
+      margin: 0 20px;
+      float: left;
+      width: 136px;
+      height: 136px;
+    }
+
+    .inner-content {
+      width: 480px;
+      float: left;
+
+      h4 {
+        color: $gl-text-color;
+        font-size: 17px;
+      }
+
+      p {
+        color: #8C8C8C;
+        margin-bottom: $gl-padding;
+      }
     }
   }
+
+  .fa-spinner {
+    font-size: 28px;
+    position: relative;
+    margin-left: -20px;
+    left: 50%;
+    margin-top: 36px;
+  }
+
 }

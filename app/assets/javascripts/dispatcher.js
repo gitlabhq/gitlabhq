@@ -92,7 +92,7 @@
           new MergedButtons();
           break;
         case "projects:merge_requests:conflicts":
-          window.mcui = new MergeConflictResolver()
+          new MergeConflictResolver()
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();
           Issuable.init();
@@ -187,7 +187,7 @@
           new gl.ProtectedBranchEditList();
           break;
         case 'projects:cycle_analytics:show':
-          window.ca = new gl.CycleAnalytics();
+          new gl.CycleAnalytics();
           break;
       }
       switch (path.first()) {

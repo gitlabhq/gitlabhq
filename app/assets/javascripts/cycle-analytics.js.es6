@@ -1,69 +1,92 @@
 ((global) => {
 
+  const COOKIE_NAME = 'cycle_analytics_help_dismissed';
+
   gl.CycleAnalytics = class CycleAnalytics {
     constructor() {
+      const that = this;
+
+      this.isHelpDismissed = $.cookie(COOKIE_NAME);
       this.vue = new Vue({
         el: '#cycle-analytics',
         name: 'CycleAnalytics',
         created: this.fetchData(),
-        data: this.getData({ isLoading: true })
+        data: this.decorateData({ isLoading: true }),
+        methods: {
+          dismissLanding() {
+            that.dismissLanding();
+          }
+        }
       });
     }
 
-    fetchData() {
-      $.get('cycle_analytics.json')
-        .done((data) => {
-          this.vue.$data = this.getData(data);
-          this.initDropdown();
-        })
-        .error((data) => {
-          this.handleError(data);
-        })
-        .always(() => {
-          this.vue.isLoading = false;
-        })
+    fetchData(options) {
+      options = options || { startDate: 30 };
+
+      $.ajax({
+        url: $('#cycle-analytics').data('request-path'),
+        method: 'GET',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: { start_date: options.startDate }
+      }).done((data) => {
+        this.vue.$data = this.decorateData(data);
+        this.initDropdown();
+      })
+      .error((data) => {
+        this.handleError(data);
+      })
+      .always(() => {
+        this.vue.isLoading = false;
+      })
     }
 
-    getData(data) {
-      return {
-        notAvailable: data.notAvailable || false,
-        isLoading: data.isLoading || false,
-        analytics: {
-          summary: [
-            { desc: 'New Issues', value: data.issues  || '-' },
-            { desc: 'Commits', value: data.commits || '-' },
-            { desc: 'Deploys', value: data.deploys || '-' }
-          ],
-          data: [
-            { title: 'Issue', desc: 'Time before an issue get scheduled', value: data.issue || '-' },
-            { title: 'Plan', desc: 'Time before an issue starts implementation', value: data.plan || '-' },
-            { title: 'Code', desc: 'Time until first merge request', value: data.code || '-' },
-            { title: 'Test', desc: 'CI test time of the default branch', value: data.test || '-' },
-            { title: 'Review', desc: 'Time between MR creation and merge/close', value: data.review || '-' },
-            { title: 'Deploy', desc: 'Time for a new commit to land in one of the environments', value: data.deploy || '-' }
-          ]
-        }
-      }
+    decorateData(data) {
+      data.summary = data.summary || [];
+      data.stats = data.stats || [];
+      data.isHelpDismissed = this.isHelpDismissed;
+      data.isLoading = data.isLoading || false;
+
+      data.summary.forEach((item) => {
+        item.value = item.value || '-';
+      });
+
+      data.stats.forEach((item) => {
+        item.value = item.value || '-';
+      })
+
+      return data;
     }
 
     handleError(data) {
-      // TODO: Make sure that this is the proper error handling
-      new Flash('There was an error while fetching cycyle analytics data.', 'alert');
+      this.vue.$data = {
+        hasError: true,
+        isHelpDismissed: this.isHelpDismissed
+      };
+
+      new Flash('There was an error while fetching cycle analytics data.', 'alert');
+    }
+
+    dismissLanding() {
+      this.vue.isHelpDismissed = true;
+      $.cookie(COOKIE_NAME, true);
     }
 
     initDropdown() {
       const $dropdown = $('.js-ca-dropdown');
       const $label = $dropdown.find('.dropdown-label');
 
-      $dropdown.find('li a').on('click', (e) => {
+      $dropdown.find('li a').off('click').on('click', (e) => {
         e.preventDefault();
         const $target = $(e.currentTarget);
         const value = $target.data('value');
 
         $label.text($target.text().trim());
         this.vue.isLoading = true;
+        this.fetchData({ startDate: value });
       })
     }
+
   }
 
 })(window.gl || (window.gl = {}));
