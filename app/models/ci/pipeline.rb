@@ -73,6 +73,14 @@ module Ci
       after_transition do |pipeline, transition|
         pipeline.execute_hooks unless transition.loopback?
       end
+
+      after_transition [:created, :pending, :running] => :success do |pipeline|
+        MergeRequests::MergeWhenBuildSucceedsService.new(pipeline.project, nil).trigger(pipeline)
+      end
+
+      after_transition any => :failed do |pipeline|
+        MergeRequests::AddTodoWhenBuildFailsService.new(pipeline.project, nil).execute(pipeline)
+      end
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
@@ -251,9 +259,8 @@ module Ci
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
-    def build_updated
+    def update_status
       with_lock do
-        reload
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run
