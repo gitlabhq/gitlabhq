@@ -58,6 +58,10 @@ creating or editing a merge request.
 When someone is marked as a required approver for a merge request, an email is
 sent to them and a todo is added to their list of todos.
 
+## Groups
+
+You can also assign one or more groups that can be assigned as approvers, it works in the same way like regular approvers, the only difference is that you assign several users with one action. It's also possible to assign group at the project level and you can always change them later by editing the merge request.
+
 ## Using approvals
 
 After configuring approvals, you will be able to change the default set of

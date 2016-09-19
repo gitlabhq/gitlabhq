@@ -588,7 +588,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, :force_remove_source_branch,
-      :approvals_before_merge, :lock_version, label_ids: []
+      :approvals_before_merge, :lock_version, :approver_group_ids, label_ids: []
     )
   end
 

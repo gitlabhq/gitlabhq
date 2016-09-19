@@ -303,6 +303,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
 
         ## EE-specific
         resources :approvers, only: :destroy
+        resources :approver_groups, only: :destroy
         ## EE-specific
 
         resources :discussions, only: [], constraints: { id: /\h{40}/ } do
@@ -491,6 +492,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
 
       ## EE-specific
       resources :approvers, only: :destroy
+      resources :approver_groups, only: :destroy
       ## EE-specific
 
       resources :runner_projects, only: [:create, :destroy]

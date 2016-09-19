@@ -1,0 +1,67 @@
+- return unless issuable.is_a?(MergeRequest)
+- return unless issuable.requires_approve?
+- approvals_required = issuable.target_project.approvals_before_merge
+.form-group
+  = f.label :approvals_before_merge, class: 'control-label' do
+    Approvals required
+  .col-sm-10
+    = f.number_field :approvals_before_merge, class: 'form-control', value: approvals_required
+    .help-block
+      Number of users who need to approve this merge request before it can be accepted.
+      If this isn't greater than the project default (#{pluralize(approvals_required, 'user')}),
+      then it will be ignored and the project default will be used.
+.form-group
+  = f.label :approver_ids, class: 'control-label' do
+    Approvers
+  .col-sm-10
+    - author = issuable.author || current_user
+    - skip_users = issuable.all_approvers_including_groups + [author]
+    = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true, skip_users: skip_users)
+    .help-block
+      This merge request must be approved by these users.
+      You can override the project settings by setting your own list of approvers.
+
+    - approver_group_ids = issuable.overall_approver_groups.includes(:group).map { |ag| ag.group.id }
+    = groups_select_tag('merge_request[approver_group_ids]', multiple: true, skip_groups: approver_group_ids, class: 'input-large')
+    .help-block
+      This merge request must be approved by members of these groups.
+      You can override the project settings by setting your own list of approvers.
+
+    .panel.panel-default.prepend-top-10
+      .panel-heading
+        Approvers
+      %ul.well-list.approver-list
+        - if issuable.all_approvers_including_groups.empty?
+          %li.no-approvers There are no approvers
+        - else
+          - unsaved_approvers = !issuable.approvers_overwritten?
+          - item_classes = unsaved_approvers ? ['unsaved-approvers'] : []
+          - issuable.overall_approvers.each do |approver|
+            %li{id: dom_id(approver.user), class: item_classes + ['approver']}
+              = link_to approver.user.name, approver.user
+              .pull-right
+                - if unsaved_approvers
+                  = link_to "#", data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                    = icon("sign-out")
+                    Remove
+                - else
+                  = link_to namespace_project_merge_request_approver_path(@project.namespace, @project, issuable, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                    = icon("sign-out")
+                    Remove
+          - issuable.overall_approver_groups.each do |approver_group|
+            %li{id: dom_id(approver_group.group), class: item_classes + ['approver-group']}
+              Group:
+              = link_to approver_group.group.name, approver_group.group
+              .pull-right
+                - if unsaved_approvers
+                  = link_to "#", data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, class: "btn-xs btn btn-remove", title: 'Remove group' do
+                    = icon("sign-out")
+                    Remove
+                - else
+                  = link_to namespace_project_merge_request_approver_group_path(@project.namespace, @project, issuable, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
+                    = icon("sign-out")
+                    Remove
+    .help-block.suggested-approvers
+      - if @suggested_approvers.any?
+        Suggested approvers:
+        = raw @suggested_approvers.map { |approver| link_to sanitize(approver.name), "#", id: dom_id(approver) }.join(", ")

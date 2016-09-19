@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Projects::ApproversController do
+describe Projects::ApproverGroupsController do
   describe '#destroy' do
     before do
       # Allow redirect_back_or_default to work
@@ -18,36 +18,36 @@ describe Projects::ApproversController do
         go_delete(project, merge_request_id: merge.to_param, id: approver.id)
       end
 
-      it 'destroys the provided approver' do
-        merge    = create(:merge_request)
-        project  = stub_project(merge.target_project)
-        approver = create(:approver, target: merge)
+      it 'destroys the provided approver group' do
+        merge          = create(:merge_request)
+        project        = stub_project(merge.target_project)
+        approver_group = create(:approver_group, target: merge)
 
         allow(controller).to receive(:authorize_create_merge_request!)
 
-        expect { go_delete(project, merge_request_id: merge.to_param, id: approver.id) }.
-          to change { merge.reload.approvers.count }.by(-1)
+        expect { go_delete(project, merge_request_id: merge.to_param, id: approver_group.id) }.
+          to change { merge.reload.approver_groups.count }.by(-1)
       end
     end
 
     context 'on a project' do
       it 'authorizes admin_project' do
-        project  = stub_project
-        approver = create(:approver, target: project)
+        project        = stub_project
+        approver_group = create(:approver_group, target: project)
 
         expect(controller).to receive(:authorize_admin_project!)
 
-        go_delete(project, id: approver.id)
+        go_delete(project, id: approver_group.id)
       end
 
       it 'destroys the provided approver' do
-        project  = stub_project
-        approver = create(:approver, target: project)
+        project        = stub_project
+        approver_group = create(:approver_group, target: project)
 
         allow(controller).to receive(:authorize_admin_project!).and_return(true)
 
-        expect { go_delete(project, id: approver.id) }.
-          to change { project.approvers.count }.by(-1)
+        expect { go_delete(project, id: approver_group.id) }.
+          to change { project.approver_groups.count }.by(-1)
       end
     end
 

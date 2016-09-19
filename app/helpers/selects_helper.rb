@@ -34,6 +34,7 @@ module SelectsHelper
   def groups_select_tag(id, opts = {})
     opts[:class] ||= ''
     opts[:class] << ' ajax-groups-select'
+    opts[:class] << ' multiselect' if opts[:multiple]
     select2_tag(id, opts)
   end
 
@@ -61,7 +62,7 @@ module SelectsHelper
     value = opts[:selected] || ''
     css_class = opts[:class]
 
-    hidden_field_tag(id, value, class: css_class, data: { skip_group: opts[:skip_group], url: autocomplete_groups_path })
+    hidden_field_tag(id, value, class: css_class, data: { skip_groups: opts[:skip_groups], url: autocomplete_groups_path })
   end
 
   def admin_email_select_tag(id, opts = {})

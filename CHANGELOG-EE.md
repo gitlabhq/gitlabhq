@@ -8,6 +8,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
 
 ## 8.12.5
+  - User groups (that can be assigned as approvers)
 
   - No EE-specific changes
 

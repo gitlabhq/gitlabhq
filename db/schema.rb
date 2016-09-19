@@ -116,6 +116,17 @@ ActiveRecord::Schema.define(version: 20161007133303) do
     t.datetime "updated_at"
   end
 
+  create_table "approver_groups", force: :cascade do |t|
+    t.integer  "target_id",   null: false
+    t.string   "target_type", null: false
+    t.integer  "group_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
+  add_index "approver_groups", ["target_id", "target_type"], name: "index_approver_groups_on_target_id_and_target_type", using: :btree
+
   create_table "approvers", force: :cascade do |t|
     t.integer "target_id", null: false
     t.string "target_type"
@@ -1375,6 +1386,7 @@ ActiveRecord::Schema.define(version: 20161007133303) do
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "lists", "boards"

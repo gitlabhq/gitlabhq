@@ -10,6 +10,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
+    it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -363,6 +364,31 @@ describe MergeRequest, models: true do
 
       expect(merge_request.approvers_left).to eq [user]
     end
+
+    it "returns correct value when there is a group approver" do
+      user = create(:user)
+      user1 = create(:user)
+      user2 = create(:user)
+      group = create(:group)
+
+      group.add_developer(user2)
+      merge_request.approver_groups.create(group: group)
+      merge_request.approvers.create(user_id: user.id)
+      merge_request.approvers.create(user_id: user1.id)
+      merge_request.approvals.create(user_id: user1.id)
+
+      expect(merge_request.approvers_left).to match_array [user, user2]
+    end
+
+    it "returns correct value when there is only a group approver" do
+      user = create(:user)
+      group = create(:group)
+      group.add_developer(user)
+
+      merge_request.approver_groups.create(group: group)
+
+      expect(merge_request.approvers_left).to eq [user]
+    end
   end
 
   describe "#number_of_potential_approvers" do
@@ -373,6 +399,14 @@ describe MergeRequest, models: true do
     it "includes approvers set on the MR" do
       expect do
         create(:approver, user: create(:user), target: merge_request)
+      end.to change { merge_request.number_of_potential_approvers }.by(1)
+    end
+
+    it "includes approvers from group" do
+      group = create(:group_with_members)
+
+      expect do
+        create(:approver_group, group: group, target: merge_request)
       end.to change { merge_request.number_of_potential_approvers }.by(1)
     end
 
@@ -423,6 +457,73 @@ describe MergeRequest, models: true do
           group.add_developer(blocked_developer)
         end.to change { merge_request.number_of_potential_approvers }.by(2)
       end
+    end
+  end
+
+  describe "#overall_approver_groups" do
+    it 'returns a merge request group approver' do
+      project = create :empty_project
+      create :approver_group, target: project
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+      approver_group2 = create :approver_group, target: merge_request
+
+      expect(merge_request.overall_approver_groups).to eq([approver_group2])
+    end
+
+    it 'returns a project group approver' do
+      project = create :empty_project
+      approver_group1 = create :approver_group, target: project
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+
+      expect(merge_request.overall_approver_groups).to eq([approver_group1])
+    end
+
+    it 'returns a merge request approver if there is no project group approver' do
+      project = create :empty_project
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+      approver_group1 = create :approver_group, target: merge_request
+
+      expect(merge_request.overall_approver_groups).to eq([approver_group1])
+    end
+  end
+
+  describe '#all_approvers_including_groups' do
+    it 'returns correct set of users' do
+      user = create :user
+      user1 = create :user
+      user2 = create :user
+      create :user
+
+      project = create :empty_project
+      group = create :group
+      group.add_master user
+      create :approver_group, target: project, group: group
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+      group1 = create :group
+      group1.add_master user1
+      create :approver_group, target: merge_request, group: group1
+
+      create(:approver, user: user2, target: merge_request)
+
+      expect(merge_request.all_approvers_including_groups).to match_array([user1, user2])
+    end
+  end
+
+  describe '#approver_group_ids=' do
+    it 'create approver_groups' do
+      group = create :group
+      group1 = create :group
+
+      merge_request = create :merge_request
+
+      merge_request.approver_group_ids = "#{group.id}, #{group1.id}"
+      merge_request.save!
+
+      expect(merge_request.approver_groups.map(&:group)).to match_array([group, group1])
     end
   end
 

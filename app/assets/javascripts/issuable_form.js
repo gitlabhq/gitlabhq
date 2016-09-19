@@ -15,6 +15,7 @@
       this.handleSubmit = bind(this.handleSubmit, this);
       GitLab.GfmAutoComplete.setup();
       new UsersSelect();
+      new GroupsSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");
       this.descriptionField = this.form.find("textarea[name*='[description]']");
