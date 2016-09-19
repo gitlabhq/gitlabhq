@@ -35,11 +35,36 @@ describe API::Helpers, api: true do
     params.delete(API::Helpers::SUDO_PARAM)
   end
 
+  def warden_authenticate_returns(value)
+    warden = double("warden", authenticate: value)
+    env['warden'] = warden
+  end
+
+  def doorkeeper_guard_returns(value)
+    allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ value }
+  end
+
   def error!(message, status)
     raise Exception
   end
 
   describe ".current_user" do
+    subject { current_user }
+
+    describe "when authenticating via Warden" do
+      before { doorkeeper_guard_returns false }
+
+      context "fails" do
+        it { is_expected.to be_nil }
+      end
+
+      context "succeeds" do
+        before { warden_authenticate_returns user }
+
+        it { is_expected.to eq(user) }
+      end
+    end
+
     describe "when authenticating using a user's private token" do
       it "returns nil for an invalid token" do
         env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'

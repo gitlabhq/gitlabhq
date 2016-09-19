@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.11.7
+  - Allow the Rails cookie to be used for API authentication.
+
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
   - Make merge conflict file size limit 200 KB, to match the docs. !6052

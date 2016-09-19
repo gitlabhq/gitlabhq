@@ -16,9 +16,6 @@
         .replace(':id', group_id);
       return $.ajax({
         url: url,
-        data: {
-          private_token: gon.api_token
-        },
         dataType: "json"
       }).done(function(group) {
         return callback(group);
@@ -29,7 +26,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -43,7 +39,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -57,7 +52,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           order_by: order,
           per_page: 20
@@ -70,7 +64,6 @@
     newLabel: function(project_id, data, callback) {
       var url = Api.buildUrl(Api.labelsPath)
         .replace(':id', project_id);
-      data.private_token = gon.api_token;
       return $.ajax({
         url: url,
         type: "POST",
@@ -88,7 +81,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
