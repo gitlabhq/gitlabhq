@@ -84,15 +84,14 @@
                     = project_feature_access_select(:snippets_access_level)
 
             - if Gitlab.config.lfs.enabled && current_user.admin?
-              .form-group
-                .checkbox
-                  = f.label :lfs_enabled do
-                    = f.check_box :lfs_enabled, checked: @project.lfs_enabled?
-                    %strong LFS
-                    %br
-                    %span.descr
-                      Git Large File Storage
-                      = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+              .row
+                .col-md-9
+                  = f.label :lfs_enabled, 'LFS', class: 'label-light'
+                  %span.help-block
+                    Git Large File Storage
+                    = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+                .col-md-3
+                  = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control'
 
           - if Gitlab.config.registry.enabled
             .form-group

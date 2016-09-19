@@ -29,13 +29,14 @@ module API
       #   visibility_level (optional)               - The visibility level of the group
       #   membership_lock       (optional, boolean) - Prevent adding new members to project membership within this group
       #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
+      #   lfs_enabled (optional)      - Enable/disable LFS for the projects in this group
       # Example Request:
       #   POST /groups
       post do
         authorize! :create_group
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock, :lfs_enabled]
         @group = Group.new(attrs)
 
         if @group.save
@@ -71,7 +72,7 @@ module API
         group = find_group(params[:id])
         authorize! :admin_group, group
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock, :lfs_enabled]
 
         if ::Groups::UpdateService.new(group, current_user, attrs).execute
           present group, with: Entities::GroupDetail

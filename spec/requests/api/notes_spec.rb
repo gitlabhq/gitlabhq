@@ -220,6 +220,15 @@ describe API::API, api: true  do
           expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
         end
       end
+
+      context 'when the user is posting an award emoji' do
+        it 'returns an award emoji' do
+          post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: ':+1:'
+
+          expect(response).to have_http_status(201)
+          expect(json_response['awardable_id']).to eq issue.id
+        end
+      end
     end
 
     context "when noteable is a Snippet" do

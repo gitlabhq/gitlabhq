@@ -1,13 +1,12 @@
 - page_title @snippet.title, "Snippets"
 
-.snippet-holder
-  = render 'shared/snippets/header'
+= render 'shared/snippets/header'
 
-  %article.file-holder.file-holder-no-border.snippet-file-content
-    .file-title.file-title-clear
-      = blob_icon 0, @snippet.file_name
-      = @snippet.file_name
-      .file-actions.hidden-xs
-        = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']")
-        = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
-    = render 'shared/snippets/blob'
+%article.file-holder.snippet-file-content
+  .file-title
+    = blob_icon 0, @snippet.file_name
+    = @snippet.file_name
+    .file-actions
+      = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']")
+      = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
+  = render 'shared/snippets/blob'

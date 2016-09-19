@@ -144,7 +144,7 @@ describe 'Issues', feature: true do
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
       expect(page).to have_content 'foobar'
-      expect(page.all('.issue-no-comments').first.text).to eq "0"
+      expect(page.all('.no-comments').first.text).to eq "0"
     end
   end
 
