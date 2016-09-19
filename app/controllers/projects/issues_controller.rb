@@ -25,8 +25,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def index
     @issues = issues_collection
     @issues = @issues.page(params[:page])
-
-    @labels = @project.labels.where(title: params[:label_name])
+    @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute if params[:label_name].presence
 
     respond_to do |format|
       format.html
@@ -45,11 +44,15 @@ class Projects::IssuesController < Projects::ApplicationController
       assignee_id: ""
     )
 
-    @issue = @noteable = @project.issues.new(issue_params)
+    @issue  = @noteable = @project.issues.new(issue_params)
+    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+
     respond_with(@issue)
   end
 
   def edit
+    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+
     respond_with(@issue)
   end
 

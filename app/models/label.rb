@@ -23,7 +23,7 @@ class Label < ActiveRecord::Base
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
-  validates :project, presence: true, unless: Proc.new { |service| service.template? }
+  validates :project, presence: true, if: :project_label?
 
   # Don't allow ',' for label titles
   validates :title,
@@ -126,6 +126,10 @@ class Label < ActiveRecord::Base
   end
 
   private
+
+  def project_label?
+    type.blank? && !template?
+  end
 
   def label_format_reference(format = :id)
     raise StandardError, 'Unknown format' unless [:id, :name].include?(format)

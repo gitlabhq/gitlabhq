@@ -17,7 +17,7 @@ class Projects::LabelsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @project.labels
+        render json: LabelsFinder.new(current_user, project_id: @project.id).execute
       end
     end
   end

@@ -40,7 +40,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @labels = @project.labels.where(title: params[:label_name])
+    @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute if params[:label_name].presence
 
     respond_to do |format|
       format.html
@@ -263,6 +263,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
   def update
@@ -574,6 +575,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
+
+    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     define_pipelines_vars
   end
