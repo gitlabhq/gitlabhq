@@ -9,13 +9,30 @@ module API
       [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
     end
 
+    def private_token
+      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+    end
+
+    def warden
+      env['warden']
+    end
+
+    # Check the Rails session for valid authentication details
+    def find_user_from_warden
+      warden ? warden.authenticate : nil
+    end
+
     def find_user_by_private_token
-      token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+      token = private_token
+      return nil unless token.present?
+
+      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
     end
 
     def current_user
-      @current_user ||= (find_user_by_private_token || doorkeeper_guard)
+      @current_user ||= find_user_by_private_token
+      @current_user ||= doorkeeper_guard
+      @current_user ||= find_user_from_warden
 
       unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
         return nil

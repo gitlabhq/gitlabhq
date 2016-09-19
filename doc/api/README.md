@@ -46,11 +46,12 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 ## Authentication
 
-All API requests require authentication via a token. There are three types of tokens
-available: private tokens, OAuth 2 tokens, and personal access tokens.
+All API requests require authentication via a session cookie or token. There are
+three types of tokens available: private tokens, OAuth 2 tokens, and personal
+access tokens.
 
-If a token is invalid or omitted, an error message will be returned with
-status code `401`:
+If authentication information is invalid or omitted, an error message will be
+returned with status code `401`:
 
 ```json
 {
@@ -88,6 +89,13 @@ that needs access to the GitLab API.
 
 Once you have your token, pass it to the API using either the `private_token`
 parameter or the `PRIVATE-TOKEN` header.
+
+
+### Session cookie
+
+When signing in to GitLab as an ordinary user, a `_gitlab_session` cookie is
+set. The API will use this cookie for authentication if it is present, but using
+the API to generate a new session cookie is currently not supported.
 
 ## Basic Usage
 

@@ -12,7 +12,6 @@ module Gitlab
 
       if current_user
         gon.current_user_id = current_user.id
-        gon.api_token = current_user.private_token
       end
     end
   end
