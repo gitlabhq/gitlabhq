@@ -1,6 +1,6 @@
 module Gitlab
   module Auth
-    class Result < Struct.new(:actor, :project, :type, :authentication_abilities)
+    Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
       def ci?
         type == :ci
       end
