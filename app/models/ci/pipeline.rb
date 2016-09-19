@@ -241,13 +241,15 @@ module Ci
     end
 
     def build_updated
-      case latest_builds_status
-      when 'pending' then enqueue
-      when 'running' then run
-      when 'success' then succeed
-      when 'failed' then drop
-      when 'canceled' then cancel
-      when 'skipped' then skip
+      with_lock do
+        case reload.latest_builds_status
+        when 'pending' then enqueue
+        when 'running' then run
+        when 'success' then succeed
+        when 'failed' then drop
+        when 'canceled' then cancel
+        when 'skipped' then skip
+        end
       end
     end
 
