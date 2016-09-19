@@ -13,7 +13,7 @@ describe PipelinesEmailService do
   end
 
   before do
-    ActionMailer::Base.deliveries.clear
+    reset_delivered_emails!
   end
 
   describe 'Validations' do

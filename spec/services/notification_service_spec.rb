@@ -17,7 +17,7 @@ describe NotificationService, services: true do
 
     it 'sends no emails when no new mentions are present' do
       send_notifications
-      expect(ActionMailer::Base.deliveries).to be_empty
+      should_email_no_one
     end
 
     it 'emails new mentions with a watch level higher than participant' do
@@ -27,7 +27,7 @@ describe NotificationService, services: true do
 
     it 'does not email new mentions with a watch level equal to or less than participant' do
       send_notifications(@u_participating, @u_mentioned)
-      expect(ActionMailer::Base.deliveries).to be_empty
+      should_email_no_one
     end
   end
 
@@ -79,7 +79,7 @@ describe NotificationService, services: true do
           # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
 
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
 
           notification.new_note(note)
 
@@ -111,7 +111,7 @@ describe NotificationService, services: true do
         context 'participating' do
           context 'by note' do
             before do
-              ActionMailer::Base.deliveries.clear
+              reset_delivered_emails!
               note.author = @u_lazy_participant
               note.save
               notification.new_note(note)
@@ -134,7 +134,7 @@ describe NotificationService, services: true do
           @u_watcher.notification_settings_for(note.project).participating!
           @u_watcher.notification_settings_for(note.project.group).global!
           update_custom_notification(:new_note, @u_custom_global)
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
         end
 
         it do
@@ -173,7 +173,7 @@ describe NotificationService, services: true do
 
         expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
 
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
 
         notification.new_note(note)
 
@@ -196,7 +196,7 @@ describe NotificationService, services: true do
       before do
         build_team(note.project)
         note.project.team << [note.author, :master]
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
       end
 
       describe '#new_note' do
@@ -238,7 +238,7 @@ describe NotificationService, services: true do
       before do
         build_team(note.project)
         note.project.team << [note.author, :master]
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
       end
 
       describe '#new_note' do
@@ -273,7 +273,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
         allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
         update_custom_notification(:new_note, @u_guest_custom, project)
         update_custom_notification(:new_note, @u_custom_global)
@@ -348,7 +348,7 @@ describe NotificationService, services: true do
     before do
       build_team(issue.project)
       add_users_with_subscription(issue.project, issue)
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, project)
       update_custom_notification(:new_issue, @u_custom_global)
     end
@@ -408,7 +408,7 @@ describe NotificationService, services: true do
           label.toggle_subscription(guest)
           label.toggle_subscription(admin)
 
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
 
           notification.new_issue(confidential_issue, @u_disabled)
 
@@ -604,7 +604,7 @@ describe NotificationService, services: true do
           label_2.toggle_subscription(guest)
           label_2.toggle_subscription(admin)
 
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
 
           notification.relabeled_issue(confidential_issue, [label_2], @u_disabled)
 
@@ -733,7 +733,7 @@ describe NotificationService, services: true do
       add_users_with_subscription(merge_request.target_project, merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, project)
       update_custom_notification(:new_merge_request, @u_custom_global)
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
     end
 
     describe '#new_merge_request' do
@@ -1111,7 +1111,7 @@ describe NotificationService, services: true do
 
     before do
       build_team(project)
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
     end
 
     describe '#project_was_moved' do
