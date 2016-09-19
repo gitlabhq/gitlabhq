@@ -41,7 +41,7 @@ describe CreateDeploymentService, services: true do
 
     context 'for environment with invalid name' do
       let(:params) do
-        { environment: '..',
+        { environment: 'name,with,commas',
           ref: 'master',
           tag: false,
           sha: '97de212e80737a608d939f648d959671fb0a0142',
