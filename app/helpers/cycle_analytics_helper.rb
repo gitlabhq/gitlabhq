@@ -21,8 +21,6 @@ module CycleAnalyticsHelper
       stats
     end
 
-    stats = nil if stats.all? { |stat| stat[:value].nil?  }
-
     summary = [
       { title: "New Issues", value: cycle_analytics.summary.new_issues },
       { title: "Commits", value: cycle_analytics.summary.commits },
