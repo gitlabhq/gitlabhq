@@ -4,7 +4,7 @@ module Ci
 
     include Gitlab::Ci::Config::Node::LegacyValidationHelpers
 
-    attr_reader :path, :cache, :stages
+    attr_reader :path, :cache, :stages, :jobs
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -59,8 +59,6 @@ module Ci
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
-        only: job[:only],
-        except: job[:except],
         when: job[:when] || 'on_success',
         environment: job[:environment_name],
         yaml_variables: yaml_variables(name),

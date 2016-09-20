@@ -21,13 +21,13 @@
 
                 %br
                 %b Tag list:
-                = build[:tag_list] && build[:tag_list].join(", ")
+                = build[:tag_list] && build[:tag_list].to_a.join(", ")
                 %br
                 %b Refs only:
-                = build[:only] && build[:only].join(", ")
+                = @jobs[build[:name].to_sym][:only] && @jobs[build[:name].to_sym][:only].to_a.join(", ")
                 %br
                 %b Refs except:
-                = build[:except] && build[:except].join(", ")
+                = @jobs[build[:name].to_sym][:except] && @jobs[build[:name].to_sym][:except].to_a.join(", ")
                 %br
                 %b Environment:
                 = build[:environment]

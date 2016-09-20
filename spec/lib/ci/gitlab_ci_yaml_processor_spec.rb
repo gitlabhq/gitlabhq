@@ -26,9 +26,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
-          yaml_variables: [],
-          only: nil,
-          except: nil
+          yaml_variables: []
         })
       end
 
@@ -445,9 +443,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
-          yaml_variables: [],
-          only: nil,
-          except: nil
+          yaml_variables: []
         })
       end
 
@@ -475,9 +471,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
-          yaml_variables: [],
-          only: nil,
-          except: nil
+          yaml_variables: []
         })
       end
     end
@@ -722,9 +716,7 @@ module Ci
           when: "on_success",
           allow_failure: false,
           environment: nil,
-          yaml_variables: [],
-          only: nil,
-          except: nil
+          yaml_variables: []
         })
       end
 
@@ -867,9 +859,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
-            yaml_variables: [],
-            only: nil,
-            except: nil
+            yaml_variables: []
           })
         end
       end
@@ -914,9 +904,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
-            yaml_variables: [],
-            only: nil,
-            except: nil
+            yaml_variables: []
           })
           expect(subject.second).to eq({
             stage: "build",
@@ -928,9 +916,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
-            yaml_variables: [],
-            only: nil,
-            except: nil
+            yaml_variables: []
           })
         end
       end
