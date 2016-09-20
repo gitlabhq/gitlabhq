@@ -24,8 +24,8 @@ describe 'Unsubscribe links', feature: true do
         visit body_link
 
         expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
-        expect(page).to have_text(%(Unsubscribe from issue "#{issue.title}" (#{issue.to_reference})))
-        expect(page).to have_text(%(Are you sure you want to unsubscribe from issue "#{issue.title}" (#{issue.to_reference})?))
+        expect(page).to have_text(%(Unsubscribe from issue #{issue.title} (#{issue.to_reference})))
+        expect(page).to have_text(%(Are you sure you want to unsubscribe from issue #{issue.title} (#{issue.to_reference})?))
         expect(issue.subscribed?(recipient)).to be_truthy
 
         click_link 'Unsubscribe'
