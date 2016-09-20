@@ -43,7 +43,6 @@ class Deployment < ActiveRecord::Base
     project.repository.is_ancestor?(commit.id, sha)
   end
 
-
   def update_merge_request_metrics
     if environment.update_merge_request_metrics?
       merge_requests = project.merge_requests.

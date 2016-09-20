@@ -7,8 +7,12 @@ describe 'CycleAnalytics#plan', feature: true do
   subject { CycleAnalytics.new(project, from: from_date) }
 
   generate_cycle_analytics_spec(phase: :plan,
-                                data_fn: -> (context) { { issue: context.create(:issue, project: context.project),
-                                                          branch_name: context.random_git_name } },
+                                data_fn: -> (context) do
+                                  {
+                                    issue: context.create(:issue, project: context.project),
+                                    branch_name: context.random_git_name
+                                  }
+                                end,
                                 start_time_conditions: [["issue associated with a milestone", -> (context, data) { data[:issue].update(milestone: context.create(:milestone, project: context.project)) }],
                                                         ["list label added to issue", -> (context, data) { data[:issue].update(label_ids: [context.create(:label, lists: [context.create(:list)]).id]) }]],
                                 end_time_conditions:   [["issue mentioned in a commit", -> (context, data) { context.create_commit_referencing_issue(data[:issue], branch_name: data[:branch_name]) }]],

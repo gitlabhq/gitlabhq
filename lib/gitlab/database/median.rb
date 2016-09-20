@@ -27,12 +27,11 @@ module Gitlab
                 from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name)).
                 project(average([arel_table[column_sym]], 'median')).
                 where(Arel::Nodes::Between.new(
-                       Arel.sql("(select @row_id := @row_id + 1)"),
-                       Arel::Nodes::And.new(
-                         [Arel.sql('@ct/2.0'),
-                          Arel.sql('@ct/2.0 + 1')]
-                       )
-                     )).
+                        Arel.sql("(select @row_id := @row_id + 1)"),
+                        Arel::Nodes::And.new(
+                          [Arel.sql('@ct/2.0'),
+                           Arel.sql('@ct/2.0 + 1')]
+                        ))).
                 # Disallow negative values
                 where(arel_table[column_sym].gteq(0))
 

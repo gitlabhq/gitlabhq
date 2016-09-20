@@ -276,7 +276,6 @@ describe MergeRequests::UpdateService, services: true do
 
         expect(merge_request.reload.issues_closed).to match_array([first_issue, second_issue])
       end
-    end
 
       it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
         opts = {
@@ -297,5 +296,6 @@ describe MergeRequests::UpdateService, services: true do
 
         expect(merge_request.reload.issues_closed).to be_empty
       end
+    end
   end
 end
