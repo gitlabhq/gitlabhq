@@ -274,7 +274,8 @@ describe MergeRequests::UpdateService, services: true do
         allow(service).to receive(:execute_hooks)
         service.execute(merge_request)
 
-        expect(merge_request.reload.closes_issues(user)).to match_array([first_issue, second_issue])
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
       end
 
       it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
@@ -288,13 +289,15 @@ describe MergeRequests::UpdateService, services: true do
 
         merge_request = MergeRequests::CreateService.new(project, user, opts).execute
 
-        expect(merge_request.reload.closes_issues(user)).to match_array([first_issue, second_issue])
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
 
         service = described_class.new(project, user, description: "not closing any issues")
         allow(service).to receive(:execute_hooks)
         service.execute(merge_request.reload)
 
-        expect(merge_request.reload.closes_issues(user)).to be_empty
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to be_empty
       end
     end
   end

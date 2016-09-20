@@ -108,7 +108,8 @@ describe MergeRequests::CreateService, services: true do
         allow(service).to receive(:execute_hooks)
         merge_request = service.execute
 
-        expect(merge_request.reload.closes_issues(user)).to match_array([first_issue, second_issue])
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
       end
     end
   end

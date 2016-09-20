@@ -174,11 +174,10 @@ describe MergeRequests::RefreshService, services: true do
       end
     end
 
-    context 'push commits closing issues' do
+    context 'merge request metrics' do
       let(:issue) { create :issue, project: @project }
       let(:commit_author) { create :user }
       let(:commit) { project.commit }
-      let!(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: @project) }
 
       before do
         project.team << [commit_author, :developer]
@@ -195,12 +194,35 @@ describe MergeRequests::RefreshService, services: true do
         allow_any_instance_of(MergeRequest).to receive(:commits).and_return([commit])
       end
 
-      it 'creates a `MergeRequestsClosingIssues` record for each closed issue' do
-        refresh_service = service.new(@project, @user)
-        allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
+      context 'when the merge request is sourced from the same project' do
+        it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
+          merge_request = create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: @project)
+          refresh_service = service.new(@project, @user)
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
 
-        expect(merge_request.reload.closes_issues(@user)).to eq([issue])
+          issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+          expect(issue_ids).to eq([issue.id])
+        end
+      end
+
+      context 'when the merge request is sourced from a different project' do
+        it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
+          forked_project = create(:project)
+          create(:forked_project_link, forked_to_project: forked_project, forked_from_project: @project)
+
+          merge_request = create(:merge_request,
+                                 target_branch: 'master',
+                                 source_branch: 'feature',
+                                 target_project: @project,
+                                 source_project: forked_project)
+          refresh_service = service.new(@project, @user)
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
+
+          issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+          expect(issue_ids).to eq([issue.id])
+        end
       end
     end
 

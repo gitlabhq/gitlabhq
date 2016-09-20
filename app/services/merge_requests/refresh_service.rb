@@ -145,7 +145,7 @@ module MergeRequests
     # If the merge requests closes any issues, save this information in the
     # `MergeRequestsClosingIssues` model (as a performance optimization).
     def cache_merge_requests_closing_issues
-      merge_requests_for_source_branch.each do |merge_request|
+      @project.merge_requests.where(source_branch: @branch_name).each do |merge_request|
         merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end
