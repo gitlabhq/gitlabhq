@@ -15,15 +15,12 @@ class Label < ActiveRecord::Base
 
   default_value_for :color, DEFAULT_COLOR
 
-  belongs_to :project
-
   has_many :lists, dependent: :destroy
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
-  validates :project, presence: true, if: :project_label?
 
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
@@ -135,10 +132,6 @@ class Label < ActiveRecord::Base
     MergeRequestsFinder.new(user, { label_name: title, scope: 'all' }.merge(params))
                        .execute
                        .count
-  end
-
-  def project_label?
-    type.blank? && !template?
   end
 
   def label_format_reference(format = :id)

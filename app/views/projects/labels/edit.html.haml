@@ -7,4 +7,4 @@
     = icon('bookmark')
     Edit Project Label
   %hr
-  = render 'form'
+  = render 'form', url: namespace_project_label_path(@project.namespace.becomes(Namespace), @project, @label)

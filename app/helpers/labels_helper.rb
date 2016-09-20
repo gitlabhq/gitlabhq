@@ -57,21 +57,21 @@ module LabelsHelper
   def edit_label_path(label)
     case label
     when GroupLabel then edit_group_label_path(label.group, label)
-    else edit_namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then edit_namespace_project_label_path(label.project.namespace, label.project, label)
     end
   end
 
   def destroy_label_path(label)
     case label
     when GroupLabel then group_label_path(label.group, label)
-    else namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then namespace_project_label_path(label.project.namespace, label.project, label)
     end
   end
 
   def toggle_subscription_label_path(label)
     case label
     when GroupLabel then toggle_subscription_group_label_path(label.group, label)
-    else toggle_subscription_namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then toggle_subscription_namespace_project_label_path(label.project.namespace, label.project, label)
     end
   end
 
@@ -79,7 +79,7 @@ module LabelsHelper
     title, icon =
       case label
       when GroupLabel then ['Group', 'folder-open']
-      else ['Project', 'bookmark']
+      when ProjectLabel then ['Project', 'bookmark']
       end
 
     options[:class] ||= ''

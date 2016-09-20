@@ -128,7 +128,8 @@ class IssuableFinder
       @labels = Label.where(title: label_names)
 
       if projects
-        @labels = @labels.where(project: projects)
+        label_ids = LabelsFinder.new(current_user, project_id: projects).execute.select(:id)
+        @labels = @labels.where(labels: { id: label_ids })
       end
     else
       @labels = Label.none

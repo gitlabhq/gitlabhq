@@ -1,47 +1,41 @@
 require 'spec_helper'
 
 describe Label, models: true do
-  let(:label) { create(:label) }
+  describe 'modules' do
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Subscribable) }
+  end
 
   describe 'associations' do
-    it { is_expected.to belong_to(:project) }
-
-    it { is_expected.to have_many(:label_links).dependent(:destroy) }
     it { is_expected.to have_many(:issues).through(:label_links).source(:target) }
+    it { is_expected.to have_many(:label_links).dependent(:destroy) }
     it { is_expected.to have_many(:lists).dependent(:destroy) }
   end
 
-  describe 'modules' do
-    subject { described_class }
-
-    it { is_expected.to include_module(Referable) }
-  end
-
   describe 'validation' do
-    it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_uniqueness_of(:title) }
 
     it 'validates color code' do
-      expect(label).not_to allow_value('G-ITLAB').for(:color)
-      expect(label).not_to allow_value('AABBCC').for(:color)
-      expect(label).not_to allow_value('#AABBCCEE').for(:color)
-      expect(label).not_to allow_value('GGHHII').for(:color)
-      expect(label).not_to allow_value('#').for(:color)
-      expect(label).not_to allow_value('').for(:color)
+      is_expected.not_to allow_value('G-ITLAB').for(:color)
+      is_expected.not_to allow_value('AABBCC').for(:color)
+      is_expected.not_to allow_value('#AABBCCEE').for(:color)
+      is_expected.not_to allow_value('GGHHII').for(:color)
+      is_expected.not_to allow_value('#').for(:color)
+      is_expected.not_to allow_value('').for(:color)
 
-      expect(label).to allow_value('#AABBCC').for(:color)
-      expect(label).to allow_value('#abcdef').for(:color)
+      is_expected.to allow_value('#AABBCC').for(:color)
+      is_expected.to allow_value('#abcdef').for(:color)
     end
 
     it 'validates title' do
-      expect(label).not_to allow_value('G,ITLAB').for(:title)
-      expect(label).not_to allow_value('').for(:title)
+      is_expected.not_to allow_value('G,ITLAB').for(:title)
+      is_expected.not_to allow_value('').for(:title)
 
-      expect(label).to allow_value('GITLAB').for(:title)
-      expect(label).to allow_value('gitlab').for(:title)
-      expect(label).to allow_value('G?ITLAB').for(:title)
-      expect(label).to allow_value('G&ITLAB').for(:title)
-      expect(label).to allow_value("customer's request").for(:title)
+      is_expected.to allow_value('GITLAB').for(:title)
+      is_expected.to allow_value('gitlab').for(:title)
+      is_expected.to allow_value('G?ITLAB').for(:title)
+      is_expected.to allow_value('G&ITLAB').for(:title)
+      is_expected.to allow_value("customer's request").for(:title)
     end
   end
 
@@ -53,6 +47,8 @@ describe Label, models: true do
   end
 
   describe '#to_reference' do
+    let(:label) { create(:label) }
+
     context 'using id' do
       it 'returns a String reference to the object' do
         expect(label.to_reference).to eq "~#{label.id}"
