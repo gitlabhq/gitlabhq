@@ -522,6 +522,28 @@ describe MergeRequest, models: true do
 
       it_behaves_like 'returning pipelines with proper ordering'
     end
+
+    context 'with unsaved merge request' do
+      let(:project) { create(:project) }
+
+      subject do
+        MergeRequest.new(source_project: project,
+                         target_project: project,
+                         source_branch: 'master',
+                         target_branch: 'feature')
+      end
+
+      let!(:pipeline) do
+        create(:ci_empty_pipeline,
+               project: project,
+               sha: subject.diff_head_sha,
+               ref: subject.source_branch)
+      end
+
+      it 'returns pipelines from diff_head_sha' do
+        expect(subject.all_pipelines).to contain_exactly(pipeline)
+      end
+    end
   end
 
   describe '#all_commits_sha' do
