@@ -747,15 +747,16 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines
     return unless source_project
 
-    @all_pipelines ||= begin
-      if persisted?
-        sha = merge_request_diffs.flat_map(&:commits_sha).uniq
-      else
-        sha = diff_head_sha
-      end
+    @all_pipelines ||= source_project.pipelines.order(id: :desc).
+      where(sha: all_commits_sha, ref: source_branch)
+  end
 
-      source_project.pipelines.order(id: :desc).
-        where(sha: sha, ref: source_branch)
+  # Note that this would also return SHA from dangling commits
+  def all_commits_sha
+    if persisted?
+      merge_request_diffs.flat_map(&:commits_sha).uniq
+    else
+      [diff_head_sha]
     end
   end
 
