@@ -19,6 +19,7 @@ describe Label, models: true do
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_uniqueness_of(:title) }
 
     it 'validates color code' do
       expect(label).not_to allow_value('G-ITLAB').for(:color)

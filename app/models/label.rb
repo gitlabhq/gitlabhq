@@ -26,10 +26,8 @@ class Label < ActiveRecord::Base
   validates :project, presence: true, if: :project_label?
 
   # Don't allow ',' for label titles
-  validates :title,
-            presence: true,
-            format: { with: /\A[^,]+\z/ },
-            uniqueness: { scope: :project_id }
+  validates :title, presence: true, format: { with: /\A[^,]+\z/ }
+  validates :title, uniqueness: true, unless: :template?
 
   before_save :nullify_priority
 
