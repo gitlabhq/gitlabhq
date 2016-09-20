@@ -64,10 +64,9 @@ lex
   white-space: nowrap;
 
   @media (min-width: $screen-sm-min) {
-<<<<<<< 89d63793e209773f70ff620d404c997041a11d02
-    height: 475px; // Needed for PhantomJS
-    height: calc(100vh - 220px);
-    min-height: 475px;
+    height: 400px; // Needed for PhantomJS
+    height: calc(100vh - 280px);
+    min-height: 400px;
   }
 }
 
@@ -234,7 +233,9 @@ lex
 }
 
 .issue-state-closed {
-  margin-top: 4px;
+  position: absolute;
+  right: 0;
+  top: 4px;
   width: 7px;
   height: 7px;
   background-color: $gl-danger;
