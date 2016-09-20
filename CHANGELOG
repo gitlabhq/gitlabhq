@@ -15,6 +15,7 @@ v 8.12.0 (unreleased)
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
   - Make push events have equal vertical spacing.
+  - API: Ensure invitees are not returned in Members API.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Only update projects.last_activity_at once per hour when creating a new event
