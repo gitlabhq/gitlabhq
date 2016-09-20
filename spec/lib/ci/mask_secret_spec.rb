@@ -5,15 +5,21 @@ describe Ci::MaskSecret, lib: true do
 
   describe '#mask' do
     it 'masks exact number of characters' do
-      expect(subject.mask('token', 'oke')).to eq('txxxn')
+      expect(mask('token', 'oke')).to eq('txxxn')
     end
 
     it 'masks multiple occurrences' do
-      expect(subject.mask('token token token', 'oke')).to eq('txxxn txxxn txxxn')
+      expect(mask('token token token', 'oke')).to eq('txxxn txxxn txxxn')
     end
 
     it 'does not mask if not found' do
-      expect(subject.mask('token', 'not')).to eq('token')
+      expect(mask('token', 'not')).to eq('token')
+    end
+
+    def mask(value, token)
+      value = value.dup
+      subject.mask!(value, token)
+      value
     end
   end
 end
