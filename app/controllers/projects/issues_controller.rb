@@ -47,15 +47,11 @@ class Projects::IssuesController < Projects::ApplicationController
       assignee_id: ""
     )
 
-    @issue  = @noteable = @project.issues.new(issue_params)
-    @labels = project_labels
-
+    @issue = @noteable = @project.issues.new(issue_params)
     respond_with(@issue)
   end
 
   def edit
-    @labels = project_labels
-
     respond_with(@issue)
   end
 

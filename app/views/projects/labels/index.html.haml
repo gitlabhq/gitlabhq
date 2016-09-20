@@ -14,7 +14,7 @@
           New label
 
   .labels
-    - unless @project_labels.empty?
+    - unless @labels.empty?
       -# Only show it in the first page
       - hide = params[:page].present? && params[:page] != '1'
       - if can?(current_user, :admin_label, @project)
@@ -39,10 +39,10 @@
           = icon('bookmark')
           Project Labels
         %ul.content-list.manage-labels-list.js-project-labels
-          %p.empty-message{ class: ('hidden' unless @labels.empty?) } No project labels
-          - if @labels.present?
-            = render @labels
-            = paginate @labels, theme: 'gitlab'
+          %p.empty-message{ class: ('hidden' unless @project_labels.empty?) } No project labels
+          - if @project_labels.present?
+            = render @project_labels
+            = paginate @project_labels, theme: 'gitlab'
     - else
       .nothing-here-block
         - if can?(current_user, :admin_label, @project)

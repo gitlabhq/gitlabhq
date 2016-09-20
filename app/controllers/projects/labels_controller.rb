@@ -3,23 +3,23 @@ class Projects::LabelsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :label, only: [:edit, :update, :destroy]
+  before_action :labels, only: [:index]
   before_action :authorize_read_label!
-  before_action :authorize_admin_labels!, only: [
-    :new, :create, :edit, :update, :generate, :destroy, :remove_priority, :set_priorities
-  ]
+  before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
+                                                 :generate, :destroy, :remove_priority,
+                                                 :set_priorities]
 
   respond_to :js, :html
 
   def index
-    @project_labels = project_labels
-    @prioritized_labels = project_labels.prioritized
+    @prioritized_labels = @labels.prioritized
     @group_labels = @project.group.labels.unprioritized if @project.group.present?
-    @labels = @project.labels.unprioritized.page(params[:page])
+    @project_labels = @project.labels.unprioritized.page(params[:page])
 
     respond_to do |format|
       format.html
       format.json do
-        render json: @project_labels
+        render json: @labels
       end
     end
   end
@@ -38,7 +38,7 @@ class Projects::LabelsController < Projects::ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render 'new' }
+        format.html { render :new }
         format.json { render json: { message: @label.errors.messages }, status: 400 }
       end
     end
@@ -51,7 +51,7 @@ class Projects::LabelsController < Projects::ApplicationController
     if @label.update_attributes(label_params)
       redirect_to namespace_project_labels_path(@project.namespace, @project)
     else
-      render 'edit'
+      render :edit
     end
   end
 
@@ -70,7 +70,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def destroy
     @label.destroy
-    @project_labels = project_labels
+    @labels = labels
 
     respond_to do |format|
       format.html do
@@ -83,7 +83,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def remove_priority
     respond_to do |format|
-      label = project_labels.find(params[:id])
+      label = labels.find(params[:id])
 
       if label.update_attribute(:priority, nil)
         format.json { render json: label }
@@ -97,7 +97,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def set_priorities
     Label.transaction do
       params[:label_ids].each_with_index do |label_id, index|
-        label = project_labels.find_by_id(label_id)
+        label = labels.find_by_id(label_id)
         label.update_attribute(:priority, index) if label
       end
     end
@@ -123,6 +123,10 @@ class Projects::LabelsController < Projects::ApplicationController
     @label ||= @project.labels.find(params[:id])
   end
   alias_method :subscribable_resource, :label
+
+  def labels
+    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+  end
 
   def authorize_admin_labels!
     return render_404 unless can?(current_user, :admin_label, @project)
