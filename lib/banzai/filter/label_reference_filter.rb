@@ -9,7 +9,7 @@ module Banzai
       end
 
       def find_object(project, id)
-        project.labels.find(id)
+        find_labels(project).find(id)
       end
 
       def self.references_in(text, pattern = Label.reference_pattern)
@@ -35,7 +35,17 @@ module Banzai
         return unless project
 
         label_params = label_params(label_id, label_name)
-        project.labels.find_by(label_params)
+        find_labels(project).find_by(label_params)
+      end
+
+      def find_labels(project)
+        label_ids = []
+        label_ids << project.group.labels.select(:id) if project.group.present?
+        label_ids << project.labels.select(:id)
+
+        union = Gitlab::SQL::Union.new(label_ids)
+
+        object_class.where("labels.id IN (#{union.to_sql})")
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
@@ -60,7 +70,7 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        if context[:project] == object.project
+        if object.project.nil? || object.project == context[:project]
           LabelsHelper.render_colored_label(object)
         else
           LabelsHelper.render_colored_cross_project_label(object)
