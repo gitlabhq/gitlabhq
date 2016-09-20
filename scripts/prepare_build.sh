@@ -37,6 +37,8 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     add-apt-repository ppa:git-core/ppa
     retry 'apt-get update -yqqq; apt-get -o dif::cache::archives="vendor/apt" install -yqq --force-yes git'
 
+    git --version
+
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
     sed -i 's/password:.*/password:/g' config/database.yml
