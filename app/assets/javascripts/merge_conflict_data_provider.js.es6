@@ -201,7 +201,9 @@ class MergeConflictDataProvider {
 
     vi.diffViewType = newType;
     vi.isParallel   = newType === 'parallel';
-    $.cookie('diff_view', newType); // TODO: Make sure that cookie path added.
+    $.cookie('diff_view', newType, {
+      path: (gon && gon.relative_url_root) || '/'
+    });
     $('.content-wrapper .container-fluid')
       .toggleClass('container-limited', !vi.isParallel && vi.fixedLayout);
   }
