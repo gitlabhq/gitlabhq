@@ -670,9 +670,12 @@ class MergeRequest < ActiveRecord::Base
   def environments
     return [] unless diff_head_commit
 
-    target_project.environments.select do |environment|
-      environment.includes_commit?(diff_head_commit)
-    end
+    environments = source_project.environments_for(
+      source_branch, diff_head_commit)
+    environments <<= target_project.environments_for(
+      source_branch, diff_head_commit, with_tags: true)
+
+    environments
   end
 
   def state_human_name

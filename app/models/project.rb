@@ -1293,6 +1293,22 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
+  def environments_for(ref, commit, with_tags: false)
+    environment_ids = deployments.group(:environment_id).
+      select(:environment_id)
+
+    environment_ids =
+      if with_tags
+        environment_ids.where('ref=? OR tag IS TRUE', ref)
+      else
+        environment_ids.where(ref: ref)
+      end
+
+    Environment.where(id: environment_ids).map do |environment|
+      environment.includes_commit?(commit)
+    end
+  end
+
   private
 
   def pushes_since_gc_redis_key
