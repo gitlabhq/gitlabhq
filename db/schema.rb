@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160913212128) do
+ActiveRecord::Schema.define(version: 20160915201649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1017,6 +1017,7 @@ ActiveRecord::Schema.define(version: 20160913212128) do
     t.string   "file_name_regex"
     t.boolean  "is_sample",            default: false
     t.integer  "max_file_size",        default: 0,     null: false
+    t.boolean  "prevent_secrets",      default: false, null: false
   end
 
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
