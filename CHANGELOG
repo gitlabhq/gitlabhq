@@ -94,6 +94,7 @@ v 8.12.0 (unreleased)
   - Add hover state to todos !5361 (winniehell)
   - Fix icon alignment of star and fork buttons !5451 (winniehell)
   - Fix alignment of icon buttons !5887 (winniehell)
+  - Added Ubuntu 16.04 support for packager.io (JonTheNiceGuy)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
   - Fix accessibility and visibility of project list dropdown button !6140
