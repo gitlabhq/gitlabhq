@@ -13,4 +13,9 @@ module WorkhorseHelpers
       ]
     end
   end
+
+  def workhorse_internal_api_request_header
+    jwt_token = JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256')
+    { 'HTTP_' + Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER.upcase.tr('-', '_') => jwt_token }
+  end
 end

@@ -152,6 +152,10 @@ class MergeRequestDiff < ActiveRecord::Base
     self == merge_request.merge_request_diff
   end
 
+  def compare_with(sha)
+    CompareService.new.execute(project, head_commit_sha, project, sha)
+  end
+
   private
 
   def dump_commits(commits)

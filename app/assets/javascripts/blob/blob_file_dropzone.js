@@ -8,6 +8,8 @@
         autoDiscover: false,
         autoProcessQueue: false,
         url: form.attr('action'),
+        // Rails uses a hidden input field for PUT
+        // http://stackoverflow.com/questions/21056482/how-to-set-method-put-in-form-tag-in-rails
         method: method,
         clickable: true,
         uploadMultiple: false,
@@ -36,6 +38,7 @@
             formData.append('commit_message', form.find('.js-commit-message').val());
           });
         },
+        // Override behavior of adding error underneath preview
         error: function(file, errorMessage) {
           var stripped;
           stripped = $("<div/>").html(errorMessage).text();

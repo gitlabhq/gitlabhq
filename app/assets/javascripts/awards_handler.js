@@ -86,6 +86,8 @@
     AwardsHandler.prototype.positionMenu = function($menu, $addBtn) {
       var css, position;
       position = $addBtn.data('position');
+      // The menu could potentially be off-screen or in a hidden overflow element
+      // So we position the element absolute in the body
       css = {
         top: ($addBtn.offset().top + $addBtn.outerHeight()) + "px"
       };
@@ -255,12 +257,12 @@
     };
 
     AwardsHandler.prototype.animateEmoji = function($emoji) {
-      var className;
-      className = 'pulse animated';
+      var className = 'pulse animated once short';
       $emoji.addClass(className);
-      return setTimeout((function() {
-        return $emoji.removeClass(className);
-      }), 321);
+
+      $emoji.on('webkitAnimationEnd animationEnd', function() {
+        $(this).removeClass(className);
+      });
     };
 
     AwardsHandler.prototype.createEmoji = function(votesBlock, emoji) {
@@ -284,6 +286,7 @@
       if (emojiIcon.length > 0) {
         unicodeName = emojiIcon.data('unicode-name');
       } else {
+        // Find by alias
         unicodeName = $(".emoji-menu-content [data-aliases*=':" + emoji + ":']").data('unicode-name');
       }
       return "emoji-" + unicodeName;
@@ -350,8 +353,10 @@
         return function(ev) {
           var found_emojis, h5, term, ul;
           term = $(ev.target).val();
+          // Clean previous search results
           $('ul.emoji-menu-search, h5.emoji-search').remove();
           if (term) {
+            // Generate a search result block
             h5 = $('<h5>').text('Search results');
             found_emojis = _this.searchEmojis(term).show();
             ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis);

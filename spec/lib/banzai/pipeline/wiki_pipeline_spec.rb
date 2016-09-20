@@ -127,6 +127,13 @@ describe Banzai::Pipeline::WikiPipeline do
 
               expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page.md\"")
             end
+
+            it 'rewrites links with anchor' do
+              markdown = '[Link to Header](start-page#title)'
+              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start-page#title\"")
+            end
           end
 
           describe "when creating root links" do

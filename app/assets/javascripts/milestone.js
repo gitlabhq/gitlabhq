@@ -110,6 +110,7 @@
         },
         update: function(event, ui) {
           var data;
+          // Prevents sorting from container which element has been removed.
           if ($(this).find(ui.item).length > 0) {
             data = $(this).sortable("serialize");
             return Milestone.sortIssues(data);

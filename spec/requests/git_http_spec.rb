@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe 'Git HTTP requests', lib: true do
+  include WorkhorseHelpers
+
   let(:user)    { create(:user) }
   let(:project) { create(:project, path: 'project.git-project') }
 
@@ -48,6 +50,7 @@ describe 'Git HTTP requests', lib: true do
 
         expect(response).to have_http_status(200)
         expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
+        expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
       end
     end
   end
@@ -63,6 +66,7 @@ describe 'Git HTTP requests', lib: true do
       it "downloads get status 200" do
         download(path, {}) do |response|
           expect(response).to have_http_status(200)
+          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
         end
       end
 
@@ -99,6 +103,14 @@ describe 'Git HTTP requests', lib: true do
           download(path, {}) do |response|
             expect(response).to have_http_status(404)
           end
+        end
+      end
+      
+      context 'when the request is not from gitlab-workhorse' do
+        it 'raises an exception' do
+          expect do
+            get("/#{project.path_with_namespace}.git/info/refs?service=git-upload-pack")
+          end.to raise_error(JWT::DecodeError)
         end
       end
     end
@@ -170,11 +182,13 @@ describe 'Git HTTP requests', lib: true do
                 clone_get(path, env)
 
                 expect(response).to have_http_status(200)
+                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
               end
 
               it "uploads get status 200" do
                 upload(path, env) do |response|
                   expect(response).to have_http_status(200)
+                  expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 end
               end
             end
@@ -189,6 +203,7 @@ describe 'Git HTTP requests', lib: true do
                 clone_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
 
                 expect(response).to have_http_status(200)
+                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
               end
 
               it "uploads get status 401 (no project existence information leak)" do
@@ -285,24 +300,79 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "when a gitlab ci token is provided" do
-        let(:token) { 123 }
-        let(:project) { FactoryGirl.create :empty_project }
+        let(:build) { create(:ci_build, :running) }
+        let(:project) { build.project }
+        let(:other_project) { create(:empty_project) }
 
         before do
-          project.update_attributes(runners_token: token)
           project.project_feature.update_attributes(builds_access_level: ProjectFeature::ENABLED)
         end
 
-        it "downloads get status 200" do
-          clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
+        context 'when build created by system is authenticated' do
+          it "downloads get status 200" do
+            clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
-          expect(response).to have_http_status(200)
+            expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          end
+
+          it "uploads get status 401 (no project existence information leak)" do
+            push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+            expect(response).to have_http_status(401)
+          end
+
+          it "downloads from other project get status 404" do
+            clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+            expect(response).to have_http_status(404)
+          end
         end
 
-        it "uploads get status 401 (no project existence information leak)" do
-          push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
+        context 'and build created by' do
+          before do
+            build.update(user: user)
+            project.team << [user, :reporter]
+          end
 
-          expect(response).to have_http_status(401)
+          shared_examples 'can download code only from own projects' do
+            it 'downloads get status 200' do
+              clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(200)
+              expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            end
+
+            it 'uploads get status 403' do
+              push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(401)
+            end
+          end
+
+          context 'administrator' do
+            let(:user) { create(:admin) }
+
+            it_behaves_like 'can download code only from own projects'
+
+            it 'downloads from other project get status 403' do
+              clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(403)
+            end
+          end
+
+          context 'regular user' do
+            let(:user) { create(:user) }
+
+            it_behaves_like 'can download code only from own projects'
+
+            it 'downloads from other project get status 404' do
+              clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+
+              expect(response).to have_http_status(404)
+            end
+          end
         end
       end
     end
@@ -426,7 +496,7 @@ describe 'Git HTTP requests', lib: true do
   end
 
   def auth_env(user, password, spnego_request_token)
-    env = {}
+    env = workhorse_internal_api_request_header
     if user && password
       env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user, password)
     elsif spnego_request_token

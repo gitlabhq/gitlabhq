@@ -1,10 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
-  let(:access) { Gitlab::GitAccess.new(actor, project, 'web') }
+  let(:access) { Gitlab::GitAccess.new(actor, project, 'web', authentication_abilities: authentication_abilities) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:actor) { user }
+  let(:authentication_abilities) do
+    [
+      :read_project,
+      :download_code,
+      :push_code
+    ]
+  end
 
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
@@ -15,7 +22,7 @@ describe Gitlab::GitAccess, lib: true do
     context 'ssh disabled' do
       before do
         disable_protocol('ssh')
-        @acc = Gitlab::GitAccess.new(actor, project, 'ssh')
+        @acc = Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks ssh git push' do
@@ -30,7 +37,7 @@ describe Gitlab::GitAccess, lib: true do
     context 'http disabled' do
       before do
         disable_protocol('http')
-        @acc = Gitlab::GitAccess.new(actor, project, 'http')
+        @acc = Gitlab::GitAccess.new(actor, project, 'http', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks http push' do
@@ -106,6 +113,36 @@ describe Gitlab::GitAccess, lib: true do
           context 'from private project' do
             let(:project) { create(:project, :internal) }
 
+            it { expect(subject).not_to be_allowed }
+          end
+        end
+      end
+    end
+
+    describe 'build authentication_abilities permissions' do
+      let(:authentication_abilities) { build_authentication_abilities }
+
+      describe 'reporter user' do
+        before { project.team << [user, :reporter] }
+
+        context 'pull code' do
+          it { expect(subject).to be_allowed }
+        end
+      end
+
+      describe 'admin user' do
+        let(:user) { create(:admin) }
+
+        context 'when member of the project' do
+          before { project.team << [user, :reporter] }
+
+          context 'pull code' do
+            it { expect(subject).to be_allowed }
+          end
+        end
+
+        context 'when is not member of the project' do
+          context 'pull code' do
             it { expect(subject).not_to be_allowed }
           end
         end
@@ -283,38 +320,71 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'deploy key permissions' do
-    let(:key) { create(:deploy_key) }
-    let(:actor) { key }
+  shared_examples 'can not push code' do
+    subject { access.check('git-receive-pack', '_any') }
 
-    context 'push code' do
-      subject { access.check('git-receive-pack', '_any') }
+    context 'when project is authorized' do
+      before { authorize }
 
-      context 'when project is authorized' do
-        before { key.projects << project }
+      it { expect(subject).not_to be_allowed }
+    end
+
+    context 'when unauthorized' do
+      context 'to public project' do
+        let(:project) { create(:project, :public) }
 
         it { expect(subject).not_to be_allowed }
       end
 
-      context 'when unauthorized' do
-        context 'to public project' do
-          let(:project) { create(:project, :public) }
+      context 'to internal project' do
+        let(:project) { create(:project, :internal) }
 
-          it { expect(subject).not_to be_allowed }
-        end
+        it { expect(subject).not_to be_allowed }
+      end
 
-        context 'to internal project' do
-          let(:project) { create(:project, :internal) }
+      context 'to private project' do
+        let(:project) { create(:project, :internal) }
 
-          it { expect(subject).not_to be_allowed }
-        end
-
-        context 'to private project' do
-          let(:project) { create(:project, :internal) }
-
-          it { expect(subject).not_to be_allowed }
-        end
+        it { expect(subject).not_to be_allowed }
       end
     end
+  end
+
+  describe 'build authentication abilities' do
+    let(:authentication_abilities) { build_authentication_abilities }
+
+    it_behaves_like 'can not push code' do
+      def authorize
+        project.team << [user, :reporter]
+      end
+    end
+  end
+
+  describe 'deploy key permissions' do
+    let(:key) { create(:deploy_key) }
+    let(:actor) { key }
+
+    it_behaves_like 'can not push code' do
+      def authorize
+        key.projects << project
+      end
+    end
+  end
+
+  private
+
+  def build_authentication_abilities
+    [
+      :read_project,
+      :build_download_code
+    ]
+  end
+
+  def full_authentication_abilities
+    [
+      :read_project,
+      :download_code,
+      :push_code
+    ]
   end
 end

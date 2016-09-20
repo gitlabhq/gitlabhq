@@ -757,7 +757,7 @@ class Repository
   end
 
   def commit_dir(user, path, message, branch)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -774,7 +774,7 @@ class Repository
   end
 
   def commit_file(user, path, content, message, branch, update)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -796,7 +796,7 @@ class Repository
   end
 
   def update_file(user, path, content, branch:, previous_path:, message:)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -813,7 +813,7 @@ class Repository
         update: true
       }
 
-      if previous_path
+      if previous_path && previous_path != path
         options[:file][:previous_path] = previous_path
         Gitlab::Git::Blob.rename(raw_repository, options)
       else
@@ -823,7 +823,7 @@ class Repository
   end
 
   def remove_file(user, path, message, branch)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -871,7 +871,7 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    commit_with_hooks(user, merge_request.target_branch) do
+    update_branch_with_hooks(user, merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
@@ -889,7 +889,7 @@ class Repository
 
     return false unless revert_tree_id
 
-    commit_with_hooks(user, base_branch) do
+    update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.revert_message,
@@ -906,7 +906,7 @@ class Repository
 
     return false unless cherry_pick_tree_id
 
-    commit_with_hooks(user, base_branch) do
+    update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.message,
@@ -922,7 +922,7 @@ class Repository
   end
 
   def resolve_conflicts(user, branch, params)
-    commit_with_hooks(user, branch) do
+    update_branch_with_hooks(user, branch) do
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
@@ -990,43 +990,12 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def parse_search_result(result)
-    ref = nil
-    filename = nil
-    basename = nil
-    startline = 0
-
-    result.each_line.each_with_index do |line, index|
-      if line =~ /^.*:.*:\d+:/
-        ref, filename, startline = line.split(':')
-        startline = startline.to_i - index
-        extname = Regexp.escape(File.extname(filename))
-        basename = filename.sub(/#{extname}$/, '')
-        break
-      end
-    end
-
-    data = ""
-
-    result.each_line do |line|
-      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: startline,
-      data: data
-    )
-  end
-
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
-  def commit_with_hooks(current_user, branch)
+  def update_branch_with_hooks(current_user, branch)
     update_autocrlf_option
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
@@ -1040,11 +1009,15 @@ class Repository
       raise CommitError.new('Failed to create commit')
     end
 
-    oldrev = rugged.lookup(newrev).parent_ids.first || Gitlab::Git::BLANK_SHA
+    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
+      oldrev = Gitlab::Git::BLANK_SHA
+    else
+      oldrev = rugged.merge_base(newrev, target_branch.target.sha)
+    end
 
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
       update_ref!(ref, newrev, oldrev)
-      
+
       if was_empty || !target_branch
         # If repo was empty expire cache
         after_create if was_empty

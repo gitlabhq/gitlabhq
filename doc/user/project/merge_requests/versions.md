@@ -12,6 +12,12 @@ can select an older one from version dropdown.
 
 ![Merge Request Versions](img/versions.png)
 
+You can also compare the merge request version with older one to see what is
+changed since then.
+
+Please note that comments are disabled while viewing outdated merge versions
+or comparing to versions other than base.
+
 ---
 
 >**Note:**

@@ -124,21 +124,38 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline }
+    let(:build) { create_build('build1', current, 10) }
+    let(:build_b) { create_build('build2', current, 20) }
+    let(:build_c) { create_build('build3', current + 50, 10) }
 
     describe '#duration' do
       before do
-        travel_to(current - 120) do
+        pipeline.update(created_at: current)
+
+        travel_to(current + 5) do
           pipeline.run
+          pipeline.save
         end
 
-        travel_to(current) do
-          pipeline.succeed
+        travel_to(current + 30) do
+          build.success
         end
+
+        travel_to(current + 40) do
+          build_b.drop
+        end
+
+        travel_to(current + 70) do
+          build_c.success
+        end
+
+        pipeline.drop
       end
 
       it 'matches sum of builds duration' do
-        expect(pipeline.reload.duration).to eq(120)
+        pipeline.reload
+
+        expect(pipeline.duration).to eq(40)
       end
     end
 
@@ -199,6 +216,14 @@ describe Ci::Pipeline, models: true do
           expect(merge_request.metrics.latest_build_finished_at).to eq(time)
         end
       end
+    end
+
+    def create_build(name, queued_at = current, started_from = 0)
+      create(:ci_build,
+             name: name,
+             pipeline: pipeline,
+             queued_at: queued_at,
+             started_at: queued_at + started_from)
     end
   end
 
@@ -379,8 +404,8 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#execute_hooks' do
-    let!(:build_a) { create_build('a') }
-    let!(:build_b) { create_build('b') }
+    let!(:build_a) { create_build('a', 0) }
+    let!(:build_b) { create_build('b', 1) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -404,7 +429,7 @@ describe Ci::Pipeline, models: true do
             build_b.enqueue
           end
 
-          it 'receive a pending event once' do
+          it 'receives a pending event once' do
             expect(WebMock).to have_requested_pipeline_hook('pending').once
           end
         end
@@ -417,7 +442,7 @@ describe Ci::Pipeline, models: true do
             build_b.run
           end
 
-          it 'receive a running event once' do
+          it 'receives a running event once' do
             expect(WebMock).to have_requested_pipeline_hook('running').once
           end
         end
@@ -428,8 +453,18 @@ describe Ci::Pipeline, models: true do
             build_b.success
           end
 
-          it 'receive a success event once' do
+          it 'receives a success event once' do
             expect(WebMock).to have_requested_pipeline_hook('success').once
+          end
+        end
+
+        context 'when stage one failed' do
+          before do
+            build_a.drop
+          end
+
+          it 'receives a failed event once' do
+            expect(WebMock).to have_requested_pipeline_hook('failed').once
           end
         end
 
@@ -456,8 +491,12 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    def create_build(name)
-      create(:ci_build, :created, pipeline: pipeline, name: name)
+    def create_build(name, stage_idx)
+      create(:ci_build,
+             :created,
+             pipeline: pipeline,
+             name: name,
+             stage_idx: stage_idx)
     end
   end
 

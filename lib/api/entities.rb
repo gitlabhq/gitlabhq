@@ -86,7 +86,8 @@ module API
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:user]) }
 
       expose :created_at, :last_activity_at
-      expose :shared_runners_enabled, :lfs_enabled
+      expose :shared_runners_enabled
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
@@ -99,30 +100,33 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_build_succeeds
+      expose :request_access_enabled
     end
 
     class Member < UserBasic
       expose :access_level do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.access_level
       end
       expose :expires_at do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.expires_at
       end
     end
 
     class AccessRequester < UserBasic
       expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester = options[:access_requester] || options[:source].requesters.find_by(user_id: user.id)
         access_requester.requested_at
       end
     end
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
+      expose :request_access_enabled
     end
 
     class GroupDetail < Group
@@ -375,7 +379,7 @@ module API
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
-          NotificationSetting.levels[member.notification_setting.level]
+          ::NotificationSetting.levels[member.notification_setting.level]
         end
       end
     end
@@ -384,6 +388,21 @@ module API
     end
 
     class GroupAccess < MemberAccess
+    end
+
+    class NotificationSetting < Grape::Entity
+      expose :level
+      expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
+        ::NotificationSetting::EMAIL_EVENTS.each do |event|
+          expose event
+        end
+      end
+    end
+
+    class GlobalNotificationSetting < NotificationSetting
+      expose :notification_email do |notification_setting, options|
+        notification_setting.user.notification_email
+      end
     end
 
     class ProjectService < Grape::Entity

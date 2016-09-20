@@ -1,3 +1,7 @@
+// Register U2F (universal 2nd factor) devices for users to authenticate with.
+//
+// State Flow #1: setup -> in_progress -> registered -> POST to server
+// State Flow #2: setup -> in_progress -> error -> setup
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -39,6 +43,7 @@
       })(this), 10);
     };
 
+    // Rendering #
     U2FRegister.prototype.templates = {
       "notSupported": "#js-register-u2f-not-supported",
       "setup": '#js-register-u2f-setup',
@@ -73,6 +78,8 @@
 
     U2FRegister.prototype.renderRegistered = function(deviceResponse) {
       this.renderTemplate('registered');
+      // Prefer to do this instead of interpolating using Underscore templates
+      // because of JSON escaping issues.
       return this.container.find("#js-device-response").val(deviceResponse);
     };
 

@@ -87,7 +87,7 @@ class GitPushService < BaseService
     project.change_head(branch_name)
 
     # Set protection on the default branch if configured
-    if current_application_settings.default_branch_protection != PROTECTION_NONE
+    if current_application_settings.default_branch_protection != PROTECTION_NONE && !@project.protected_branch?(@project.default_branch)
 
       params = {
         name: @project.default_branch,

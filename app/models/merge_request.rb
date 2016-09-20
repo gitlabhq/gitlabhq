@@ -322,11 +322,21 @@ class MergeRequest < ActiveRecord::Base
     closed? && forked_source_project_missing?
   end
 
+  def closed_without_source_project?
+    closed? && !source_project
+  end
+
   def forked_source_project_missing?
     return false unless for_fork?
     return true unless source_project
 
     !source_project.forked_from?(target_project)
+  end
+
+  def reopenable?
+    return false if closed_without_fork? || closed_without_source_project? || merged?
+
+    closed?
   end
 
   def ensure_merge_request_diff
@@ -661,7 +671,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def environments
-    return unless diff_head_commit
+    return [] unless diff_head_commit
 
     target_project.environments.select do |environment|
       environment.includes_commit?(diff_head_commit)

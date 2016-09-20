@@ -20,9 +20,6 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow modify issue
   before_action :authorize_update_issue!, only: [:edit, :update]
 
-  # Allow issues bulk update
-  before_action :authorize_admin_issues!, only: [:bulk_update]
-
   respond_to :html
 
   def index
@@ -168,16 +165,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def bulk_update
-    result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
-
-    respond_to do |format|
-      format.json do
-        render json: { notice: "#{result[:count]} issues updated" }
-      end
-    end
-  end
-
   protected
 
   def issue
@@ -235,19 +222,6 @@ class Projects::IssuesController < Projects::ApplicationController
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
-    )
-  end
-
-  def bulk_update_params
-    params.require(:update).permit(
-      :issues_ids,
-      :assignee_id,
-      :milestone_id,
-      :state_event,
-      :subscription_event,
-      label_ids: [],
-      add_label_ids: [],
-      remove_label_ids: []
     )
   end
 end

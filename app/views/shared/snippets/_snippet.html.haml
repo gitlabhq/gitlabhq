@@ -3,19 +3,30 @@
 
   .title
     = link_to reliable_snippet_path(snippet) do
-      = truncate(snippet.title, length: 60)
+      = snippet.title
       - if snippet.private?
-        %span.label.label-gray
+        %span.label.label-gray.hidden-xs
           = icon('lock')
           private
-    %span.monospace.pull-right
+    %span.monospace.pull-right.hidden-xs
       = snippet.file_name
 
-  %small.pull-right.cgray
+    %ul.controls.visible-xs
+      %li
+        - note_count = snippet.notes.user.count
+        = link_to reliable_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
+          = icon('comments')
+          = note_count
+      %li
+        %span.sr-only
+          = visibility_level_label(snippet.visibility_level)
+        = visibility_level_icon(snippet.visibility_level, fw: false)
+
+  %small.pull-right.cgray.hidden-xs
     - if snippet.project_id?
       = link_to snippet.project.name_with_namespace, namespace_project_path(snippet.project.namespace, snippet.project)
 
-  .snippet-info
+  .snippet-info.hidden-xs
     = link_to user_snippets_path(snippet.author) do
       = snippet.author_name
     authored #{time_ago_with_tooltip(snippet.created_at)}

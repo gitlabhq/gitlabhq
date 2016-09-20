@@ -16,6 +16,7 @@
       this.toggleSidebar = bind(this.toggleSidebar, this);
       this.updateDropdown = bind(this.updateDropdown, this);
       clearInterval(Build.interval);
+      // Init breakpoint checker
       this.bp = Breakpoints.get();
       $('.js-build-sidebar').niceScroll();
 
@@ -26,10 +27,11 @@
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      $('#js-build-scroll > a').off('click').on('click', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
-        this.initScrollButtonAffix();
+        this.initScrollButtons();
       }
       if (this.build_status === "running" || this.build_status === "pending") {
         $('#autoscroll-button').on('click', function() {
@@ -42,6 +44,9 @@
             $(this).data("state", "enabled");
             return $(this).text("disable autoscroll");
           }
+        //
+        // Bind autoscroll button to follow build output
+        //
         });
         Build.interval = setInterval((function(_this) {
           return function() {
@@ -49,6 +54,10 @@
               return _this.getBuildTrace();
             }
           };
+        //
+        // Check for new build output if user still watching build page
+        // Only valid for runnig build when output changes during time
+        //
         })(this), 4000);
       }
     }
@@ -98,7 +107,7 @@
       }
     };
 
-    Build.prototype.initScrollButtonAffix = function() {
+    Build.prototype.initScrollButtons = function() {
       var $body, $buildScroll, $buildTrace;
       $buildScroll = $('#js-build-scroll');
       $body = $('body');
@@ -155,6 +164,14 @@
       var stage = e.currentTarget.text;
       this.updateStageDropdownText(stage);
       this.populateJobs(stage);
+    };
+
+    Build.prototype.stepTrace = function(e) {
+      e.preventDefault();
+      $currentTarget = $(e.currentTarget);
+      $.scrollTo($currentTarget.attr('href'), {
+        offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+      });
     };
 
     return Build;

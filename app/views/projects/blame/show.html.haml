@@ -11,7 +11,7 @@
       %small= number_to_human_size @blob.size
       .file-actions
         = render "projects/blob/actions"
-    .file-content.blame.code.js-syntax-highlight
+    .table-responsive.file-content.blame.code.js-syntax-highlight
       %table
         - current_line = 1
         - @blame_groups.each do |blame_group|
@@ -19,6 +19,7 @@
             %td.blame-commit
               .commit
                 - commit = blame_group[:commit]
+                = author_avatar(commit, size: 36)
                 .commit-row-title
                   %strong
                     = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"

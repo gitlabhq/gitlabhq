@@ -13,11 +13,14 @@ module API
       params do
         optional :page,     type: Integer, desc: 'Page number of the current request'
         optional :per_page, type: Integer, desc: 'Number of items per page'
+        optional :scope,    type: String, values: ['running', 'branches', 'tags'],
+                            desc: 'Either running, branches, or tags'
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
 
-        present paginate(user_project.pipelines), with: Entities::Pipeline
+        pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
+        present paginate(pipelines), with: Entities::Pipeline
       end
 
       desc 'Gets a specific pipeline for the project' do

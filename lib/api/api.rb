@@ -45,11 +45,13 @@ module API
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::LicenseTemplates
+    mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequests
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::NotificationSettings
     mount ::API::Pipelines
     mount ::API::ProjectHooks
     mount ::API::ProjectSnippets

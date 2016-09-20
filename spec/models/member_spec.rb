@@ -57,13 +57,22 @@ describe Member, models: true do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:project)
+      project = create(:empty_project)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
 
       @master_user = create(:user).tap { |u| project.team << [u, :master] }
       @master = project.members.find_by(user_id: @master_user.id)
+
+      @blocked_user = create(:user).tap do |u|
+        project.team << [u, :master]
+        project.team << [u, :developer]
+
+        u.block!
+      end
+      @blocked_master = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::MASTER)
+      @blocked_developer = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::DEVELOPER)
 
       Member.add_user(
         project.members,
@@ -73,7 +82,7 @@ describe Member, models: true do
       )
       @invited_member = project.members.invite.find_by_invite_email('toto1@example.com')
 
-      accepted_invite_user = build(:user)
+      accepted_invite_user = build(:user, state: :active)
       Member.add_user(
         project.members,
         'toto2@example.com',
@@ -91,7 +100,7 @@ describe Member, models: true do
 
     describe '.access_for_user_ids' do
       it 'returns the right access levels' do
-        users = [@owner_user.id, @master_user.id]
+        users = [@owner_user.id, @master_user.id, @blocked_user.id]
         expected = {
           @owner_user.id => Gitlab::Access::OWNER,
           @master_user.id => Gitlab::Access::MASTER
@@ -125,6 +134,19 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_request_member }
     end
 
+    describe '.developers' do
+      subject { described_class.developers.to_a }
+
+      it { is_expected.not_to include @owner }
+      it { is_expected.not_to include @master }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.not_to include @blocked_master }
+      it { is_expected.not_to include @blocked_developer }
+    end
+
     describe '.owners_and_masters' do
       it { expect(described_class.owners_and_masters).to include @owner }
       it { expect(described_class.owners_and_masters).to include @master }
@@ -132,6 +154,20 @@ describe Member, models: true do
       it { expect(described_class.owners_and_masters).not_to include @accepted_invite_member }
       it { expect(described_class.owners_and_masters).not_to include @requested_member }
       it { expect(described_class.owners_and_masters).not_to include @accepted_request_member }
+      it { expect(described_class.owners_and_masters).not_to include @blocked_master }
+    end
+
+    describe '.has_access' do
+      subject { described_class.has_access.to_a }
+
+      it { is_expected.to include @owner }
+      it { is_expected.to include @master }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.not_to include @blocked_master }
+      it { is_expected.not_to include @blocked_developer }
     end
   end
 

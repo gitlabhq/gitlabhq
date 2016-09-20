@@ -58,7 +58,7 @@ class Project < ActiveRecord::Base
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
-  belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
@@ -393,10 +393,9 @@ class Project < ActiveRecord::Base
   end
 
   def lfs_enabled?
-    return false unless Gitlab.config.lfs.enabled
-    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+    return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
-    self[:lfs_enabled]
+    self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
 
   def repository_storage_path
@@ -1138,12 +1137,6 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  # TODO (ayufan): For now we use runners_token (backward compatibility)
-  # In 8.4 every build will have its own individual token valid for time of build
-  def valid_build_token?(token)
-    self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
-  end
-
   def build_coverage_enabled?
     build_coverage_regex.present?
   end
@@ -1288,7 +1281,23 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+  end
+
+  def increment_pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+  end
+
+  def reset_pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+  end
+
   private
+
+  def pushes_since_gc_redis_key
+    "projects/#{id}/pushes_since_gc"
+  end
 
   # Prevents the creation of project_feature record for every project
   def setup_project_feature

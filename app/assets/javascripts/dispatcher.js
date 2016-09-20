@@ -23,6 +23,7 @@
         case 'projects:boards:show':
           shortcut_handler = new ShortcutsNavigation();
           break;
+        case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
           new IssuableBulkActions();
@@ -92,7 +93,8 @@
           new MergedButtons();
           break;
         case "projects:merge_requests:conflicts":
-          new MergeConflictResolver()
+          window.mcui = new MergeConflictResolver()
+          break;
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();
           Issuable.init();
@@ -167,6 +169,8 @@
           }
           break;
         case 'projects:network:show':
+          // Ensure we don't create a particular shortcut handler here. This is
+          // already created, where the network graph is created.
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
@@ -266,12 +270,14 @@
               shortcut_handler = new ShortcutsNavigation();
           }
       }
+      // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
         return new Shortcuts();
       }
     };
 
     Dispatcher.prototype.initSearch = function() {
+      // Only when search form is present
       if ($('.search').length) {
         return new SearchAutocomplete();
       }

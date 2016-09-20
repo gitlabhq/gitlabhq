@@ -1,6 +1,10 @@
 .filter-item {
   margin-right: 6px;
   vertical-align: top;
+
+  &.reset-filters {
+    padding: 7px;
+  }
 }
 
 @media (min-width: $screen-sm-min) {

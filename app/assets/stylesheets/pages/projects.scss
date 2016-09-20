@@ -334,6 +334,10 @@ a.deploy-project-label {
   a {
     color: $gl-dark-link-color;
   }
+
+  .dropdown-menu {
+    width: 240px;
+  }
 }
 
 .last-push-widget {
@@ -723,9 +727,15 @@ pre.light-well {
   }
 }
 
-.project-refs-form {
-  .dropdown-menu {
-    width: 300px;
+.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+  width: 300px;
+
+  @media (min-width: $screen-sm-min) {
+    width: 500px;
+  }
+
+  a {
+    white-space: normal;
   }
 }
 

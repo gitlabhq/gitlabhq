@@ -6,7 +6,12 @@ module Gitlab
 
     KeyAdder = Struct.new(:io) do
       def add_key(id, key)
-        key.gsub!(/[[:space:]]+/, ' ').strip!
+        key = Gitlab::Shell.strip_key(key)
+        # Newline and tab are part of the 'protocol' used to transmit id+key to the other end
+        if key.include?("\t") || key.include?("\n")
+          raise Error.new("Invalid key: #{key.inspect}")
+        end
+
         io.puts("#{id}\t#{key}")
       end
     end
@@ -15,6 +20,10 @@ module Gitlab
       def version_required
         @version_required ||= File.read(Rails.root.
                                         join('GITLAB_SHELL_VERSION')).strip
+      end
+
+      def strip_key(key)
+        key.split(/ /)[0, 2].join(' ')
       end
     end
 
@@ -107,7 +116,7 @@ module Gitlab
     #
     def add_key(key_id, key_content)
       Gitlab::Utils.system_silent([gitlab_shell_keys_path,
-                                   'add-key', key_id, key_content])
+                                   'add-key', key_id, self.class.strip_key(key_content)])
     end
 
     # Batch-add keys to authorized_keys
@@ -195,7 +204,7 @@ module Gitlab
     # Create (if necessary) and link the secret token file
     def generate_and_link_secret_token
       secret_file = Gitlab.config.gitlab_shell.secret_file
-      unless File.exist? secret_file
+      unless File.size?(secret_file)
         # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
         token = SecureRandom.hex(16)
         File.write(secret_file, token)

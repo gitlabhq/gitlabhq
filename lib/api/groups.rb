@@ -23,17 +23,19 @@ module API
       # Create group. Available only for users who can create groups.
       #
       # Parameters:
-      #   name (required)             - The name of the group
-      #   path (required)             - The path of the group
-      #   description (optional)      - The description of the group
-      #   visibility_level (optional) - The visibility level of the group
+      #   name (required)                   - The name of the group
+      #   path (required)                   - The path of the group
+      #   description (optional)            - The description of the group
+      #   visibility_level (optional)       - The visibility level of the group
+      #   lfs_enabled (optional)            - Enable/disable LFS for the projects in this group
+      #   request_access_enabled (optional) - Allow users to request member access
       # Example Request:
       #   POST /groups
       post do
         authorize! :create_group
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :lfs_enabled, :request_access_enabled]
         @group = Group.new(attrs)
 
         if @group.save
@@ -47,17 +49,19 @@ module API
       # Update group. Available only for users who can administrate groups.
       #
       # Parameters:
-      #   id (required)               - The ID of a group
-      #   path (optional)             - The path of the group
-      #   description (optional)      - The description of the group
-      #   visibility_level (optional) - The visibility level of the group
+      #   id (required)                     - The ID of a group
+      #   path (optional)                   - The path of the group
+      #   description (optional)            - The description of the group
+      #   visibility_level (optional)       - The visibility level of the group
+      #   lfs_enabled (optional)            - Enable/disable LFS for the projects in this group
+      #   request_access_enabled (optional) - Allow users to request member access
       # Example Request:
       #   PUT /groups/:id
       put ':id' do
         group = find_group(params[:id])
         authorize! :admin_group, group
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :lfs_enabled, :request_access_enabled]
 
         if ::Groups::UpdateService.new(group, current_user, attrs).execute
           present group, with: Entities::GroupDetail

@@ -78,9 +78,9 @@ delete them.
 > **Note:**
 This feature requires GitLab 8.8 and GitLab Runner 1.2.
 
-Make sure that your GitLab Runner is configured to allow building docker images.
-You have to check the [Using Docker Build documentation](../ci/docker/using_docker_build.md).
-Then see the CI documentation on [Using the GitLab Container Registry](../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
+Make sure that your GitLab Runner is configured to allow building Docker images by
+following the [Using Docker Build](../ci/docker/using_docker_build.md)
+and [Using the GitLab Container Registry documentation](../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
 
 ## Limitations
 

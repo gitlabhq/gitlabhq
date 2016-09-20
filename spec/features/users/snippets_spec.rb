@@ -19,7 +19,10 @@ describe 'Snippets tab on a user profile', feature: true, js: true do
     end
 
     context 'clicking on the link to the second page' do
-      before { click_link('2') }
+      before do
+        click_link('2')
+        wait_for_ajax
+      end
 
       it 'shows the remaining snippets' do
         expect(page.all('.snippets-list-holder .snippet-row').count).to eq(5)

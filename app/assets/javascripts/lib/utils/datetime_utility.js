@@ -29,6 +29,7 @@
       if (setTimeago) {
         $timeagoEls.timeago();
         $timeagoEls.tooltip('destroy');
+        // Recreate with custom template
         return $timeagoEls.tooltip({
           template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
         });

@@ -1,9 +1,11 @@
+- boards_page = controller.controller_name == 'boards'
+
 .issues-filters
   .issues-details-filters.row-content-block.second-block
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:issue_search].present?
         = hidden_field_tag :issue_search, params[:issue_search]
-      - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
+      - if @bulk_edit
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
             class: "check_all_issues left"
@@ -26,8 +28,11 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
 
+        .filter-item.inline.reset-filters
+          %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search])} Reset filters
+
         .pull-right
-          - if controller.controller_name == 'boards'
+          - if boards_page
             #js-boards-seach.issue-boards-search
               %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
               - if can?(current_user, :admin_list, @project)
@@ -42,9 +47,9 @@
           - else
             = render 'shared/sort_dropdown'
 
-    - if controller.controller_name == 'issues'
+    - if @bulk_edit
       .issues_bulk_update.hide
-        = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post, class: 'bulk-update'  do
+        = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: 'bulk-update'  do
           .filter-item.inline
             = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
@@ -67,10 +72,10 @@
                 %li
                   %a{href: "#", data: {id: "unsubscribe"}} Unsubscribe
 
-          = hidden_field_tag 'update[issues_ids]', []
+          = hidden_field_tag 'update[issuable_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
-            = button_tag "Update issues", class: "btn update_selected_issues btn-save"
+            = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
 
   - if !@labels.nil?
     .row-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }

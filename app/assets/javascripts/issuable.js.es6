@@ -8,6 +8,7 @@
       Issuable.initTemplates();
       Issuable.initSearch();
       Issuable.initChecks();
+      Issuable.initResetFilters();
       return Issuable.initLabelFilterRemove();
     },
     initTemplates: function() {
@@ -37,9 +38,11 @@
       return $(document).off('click', '.js-label-filter-remove').on('click', '.js-label-filter-remove', function(e) {
         var $button;
         $button = $(this);
+        // Remove the label input box
         $('input[name="label_name[]"]').filter(function() {
           return this.value === $button.data('label');
         }).remove();
+        // Submit the form to get new data
         Issuable.filterResults($('.filter-form'));
         return $('.js-label-select').trigger('update.label');
       });
@@ -55,6 +58,17 @@
         return Turbolinks.visit(issuesUrl);
       };
     })(this),
+    initResetFilters: function() {
+      $('.reset-filters').on('click', function(e) {
+        e.preventDefault();
+        const target = e.target;
+        const $form = $(target).parents('.js-filter-form');
+        const baseIssuesUrl = target.href;
+
+        $form.attr('action', baseIssuesUrl);
+        Turbolinks.visit(baseIssuesUrl);
+      });
+    },
     initChecks: function() {
       this.issuableBulkActions = $('.bulk-update').data('bulkActions');
       $('.check_all_issues').off('click').on('click', function() {
@@ -64,19 +78,22 @@
       return $('.selected_issue').off('change').on('change', Issuable.checkChanged.bind(this));
     },
     checkChanged: function() {
-      var checked_issues, ids;
-      checked_issues = $('.selected_issue:checked');
-      if (checked_issues.length > 0) {
-        ids = $.map(checked_issues, function(value) {
+      const $checkedIssues = $('.selected_issue:checked');
+      const $updateIssuesIds = $('#update_issuable_ids');
+      const $issuesOtherFilters = $('.issues-other-filters');
+      const $issuesBulkUpdate = $('.issues_bulk_update');
+
+      if ($checkedIssues.length > 0) {
+        let ids = $.map($checkedIssues, function(value) {
           return $(value).data('id');
         });
-        $('#update_issues_ids').val(ids);
-        $('.issues-other-filters').hide();
-        $('.issues_bulk_update').show();
+        $updateIssuesIds.val(ids);
+        $issuesOtherFilters.hide();
+        $issuesBulkUpdate.show();
       } else {
-        $('#update_issues_ids').val([]);
-        $('.issues_bulk_update').hide();
-        $('.issues-other-filters').show();
+        $updateIssuesIds.val([]);
+        $issuesBulkUpdate.hide();
+        $issuesOtherFilters.show();
         this.issuableBulkActions.willUpdateLabels = false;
       }
       return true;

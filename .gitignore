@@ -48,3 +48,4 @@
 /vendor/bundle/*
 /builds/*
 /shared/*
+/.gitlab_workhorse_secret

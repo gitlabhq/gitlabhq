@@ -1,22 +1,10 @@
 
 /*= require autosave */
-
-
 /*= require autosize */
-
-
 /*= require dropzone */
-
-
 /*= require dropzone_input */
-
-
 /*= require gfm_auto_complete */
-
-
 /*= require jquery.atwho */
-
-
 /*= require task_list */
 
 (function() {
@@ -60,26 +48,43 @@
     }
 
     Notes.prototype.addBinding = function() {
+      // add note to UI after creation
       $(document).on("ajax:success", ".js-main-target-form", this.addNote);
       $(document).on("ajax:success", ".js-discussion-note-form", this.addDiscussionNote);
+      // catch note ajax errors
       $(document).on("ajax:error", ".js-main-target-form", this.addNoteError);
+      // change note in UI after update
       $(document).on("ajax:success", "form.edit-note", this.updateNote);
+      // Edit note link
       $(document).on("click", ".js-note-edit", this.showEditForm);
       $(document).on("click", ".note-edit-cancel", this.cancelEdit);
+      // Reopen and close actions for Issue/MR combined with note form submit
       $(document).on("click", ".js-comment-button", this.updateCloseButton);
       $(document).on("keyup input", ".js-note-text", this.updateTargetButtons);
+      // resolve a discussion
       $(document).on('click', '.js-comment-resolve-button', this.resolveDiscussion);
+      // remove a note (in general)
       $(document).on("click", ".js-note-delete", this.removeNote);
+      // delete note attachment
       $(document).on("click", ".js-note-attachment-delete", this.removeAttachment);
+      // reset main target form after submit
       $(document).on("ajax:complete", ".js-main-target-form", this.reenableTargetFormSubmitButton);
       $(document).on("ajax:success", ".js-main-target-form", this.resetMainTargetForm);
+      // reset main target form when clicking discard
       $(document).on("click", ".js-note-discard", this.resetMainTargetForm);
+      // update the file name when an attachment is selected
       $(document).on("change", ".js-note-attachment-input", this.updateFormAttachment);
+      // reply to diff/discussion notes
       $(document).on("click", ".js-discussion-reply-button", this.replyToDiscussionNote);
+      // add diff note
       $(document).on("click", ".js-add-diff-note-button", this.addDiffNote);
+      // hide diff note form
       $(document).on("click", ".js-close-discussion-note-form", this.cancelDiscussionForm);
+      // fetch notes when tab becomes visible
       $(document).on("visibilitychange", this.visibilityChange);
+      // when issue status changes, we need to refresh data
       $(document).on("issuable:change", this.refresh);
+      // when a key is clicked on the notes
       return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
     };
 
@@ -112,6 +117,7 @@
         return;
       }
       $textarea = $(e.target);
+      // Edit previous note when UP arrow is hit
       switch (e.which) {
         case 38:
           if ($textarea.val() !== '') {
@@ -123,6 +129,7 @@
             return myLastNoteEditBtn.trigger('click', [true, myLastNote]);
           }
           break;
+        // Cancel creating diff note or editing any note when ESCAPE is hit
         case 27:
           discussionNoteForm = $textarea.closest('.js-discussion-note-form');
           if (discussionNoteForm.length) {
@@ -247,10 +254,13 @@
         votesBlock = $('.js-awards-block').eq(0);
         gl.awardsHandler.addAwardToEmojiBar(votesBlock, note.name);
         return gl.awardsHandler.scrollToAwards();
+      // render note if it not present in loaded list
+      // or skip if rendered
       } else if (this.isNewNote(note)) {
         this.note_ids.push(note.id);
         $notesList = $('ul.main-notes-list');
         $notesList.append(note.html).syntaxHighlight();
+        // Update datetime format on the recent note
         gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
         this.initTaskList();
         this.refresh();
@@ -291,19 +301,26 @@
       row = form.closest("tr");
       note_html = $(note.html);
       note_html.syntaxHighlight();
+      // is this the first note of discussion?
       discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
       if ((note.original_discussion_id != null) && discussionContainer.length === 0) {
         discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']");
       }
       if (discussionContainer.length === 0) {
+        // insert the note and the reply button after the temp row
         row.after(note.diff_discussion_html);
+        // remove the note (will be added again below)
         row.next().find(".note").remove();
+        // Before that, the container didn't exist
         discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
+        // Add note to 'Changes' page discussions
         discussionContainer.append(note_html);
+        // Init discussion on 'Discussion' page if it is merge request page
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
           $('ul.main-notes-list').append(note.discussion_html).syntaxHighlight();
         }
       } else {
+        // append new note to all matching discussions
         discussionContainer.append(note_html);
       }
 
@@ -327,11 +344,18 @@
     Notes.prototype.resetMainTargetForm = function(e) {
       var form;
       form = $(".js-main-target-form");
+      // remove validation errors
       form.find(".js-errors").remove();
+      // reset text and preview
       form.find(".js-md-write-button").click();
       form.find(".js-note-text").val("").trigger("input");
       form.find(".js-note-text").data("autosave").reset();
-      return this.updateTargetButtons(e);
+
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      form.find('.js-autosize')[0].dispatchEvent(event);
+
+      this.updateTargetButtons(e);
     };
 
     Notes.prototype.reenableTargetFormSubmitButton = function() {
@@ -349,9 +373,13 @@
 
     Notes.prototype.setupMainTargetNoteForm = function() {
       var form;
+      // find the form
       form = $(".js-new-note-form");
+      // Set a global clone of the form for later cloning
       this.formClone = form.clone();
+      // show the form
       this.setupNoteForm(form);
+      // fix classes
       form.removeClass("js-new-note-form");
       form.addClass("js-main-target-form");
       form.find("#note_line_code").remove();
@@ -416,6 +444,7 @@
       }
 
       this.renderDiscussionNote(note);
+      // cleanup after successfully creating a diff/discussion note
       this.removeDiscussionNoteForm($form);
     };
 
@@ -428,10 +457,12 @@
 
     Notes.prototype.updateNote = function(_xhr, note, _status) {
       var $html, $note_li;
+      // Convert returned HTML to a jQuery object so we can modify it further
       $html = $(note.html);
       gl.utils.localTimeAgo($('.js-timeago', $html));
       $html.syntaxHighlight();
       $html.find('.js-task-list-container').taskList('enable');
+      // Find the note's `li` element by ID and replace it with the updated HTML
       $note_li = $('.note-row-' + note.id);
 
       $note_li.replaceWith($html);
@@ -456,15 +487,20 @@
       note.addClass("is-editting");
       form = note.find(".note-edit-form");
       form.addClass('current-note-edit-form');
+      // Show the attachment delete link
       note.find(".js-note-attachment-delete").show();
       done = function($noteText) {
         var noteTextVal;
+        // Neat little trick to put the cursor at the end
         noteTextVal = $noteText.val();
+        // Store the original note text in a data attribute to retrieve if a user cancels edit.
         form.find('form.edit-note').data('original-note', noteTextVal);
         return $noteText.val('').val(noteTextVal);
       };
       new GLForm(form);
       if ((scrollTo != null) && (myLastNote != null)) {
+        // scroll to the bottom
+        // so the open of the last element doesn't make a jump
         $('html, body').scrollTop($(document).height());
         return $('html, body').animate({
           scrollTop: myLastNote.offset().top - 150
@@ -500,6 +536,7 @@
       form = note.find(".current-note-edit-form");
       note.removeClass("is-editting");
       form.removeClass("current-note-edit-form");
+      // Replace markdown textarea text with original note text.
       return form.find(".js-note-text").val(form.find('form.edit-note').data('original-note'));
     };
 
@@ -515,6 +552,9 @@
       var noteId;
       noteId = $(e.currentTarget).closest(".note").attr("id");
       $(".note[id='" + noteId + "']").each((function(_this) {
+        // A same note appears in the "Discussion" and in the "Changes" tab, we have
+        // to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
+        // where $("#noteId") would return only one.
         return function(i, el) {
           var note, notes;
           note = $(el);
@@ -528,13 +568,17 @@
             }
           }
 
+          // check if this is the last note for this line
           if (notes.find(".note").length === 1) {
+            // "Discussions" tab
             notes.closest(".timeline-entry").remove();
+            // "Changes" tab / commit view
             notes.closest("tr").remove();
           }
           return note.remove();
         };
       })(this));
+      // Decrement the "Discussions" counter only once
       return this.updateNotesCount(-1);
     };
 
@@ -566,10 +610,12 @@
       var form, replyLink;
       form = this.formClone.clone();
       replyLink = $(e.target).closest(".js-discussion-reply-button");
+      // insert the form after the button
       replyLink
         .closest('.discussion-reply-holder')
         .hide()
         .after(form);
+      // show the form
       return this.setupDiscussionNoteForm(replyLink, form);
     };
 
@@ -584,6 +630,7 @@
      */
 
     Notes.prototype.setupDiscussionNoteForm = function(dataHolder, form) {
+      // setup note target
       form.attr('id', "new-discussion-note-form-" + (dataHolder.data("discussionId")));
       form.attr("data-line-code", dataHolder.data("lineCode"));
       form.find("#note_type").val(dataHolder.data("noteType"));
@@ -631,6 +678,7 @@
       addForm = false;
       notesContentSelector = ".notes_content";
       rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"><div class=\"content\"></div></td></tr>";
+      // In parallel view, look inside the correct left/right pane
       if (this.isParallelView()) {
         lineType = $link.data("lineType");
         notesContentSelector += "." + lineType;
@@ -647,6 +695,7 @@
             e.target = replyButton[0];
             $.proxy(this.replyToDiscussionNote, replyButton[0], e).call();
           } else {
+            // In parallel view, the form may not be present in one of the panes
             noteForm = notesContent.find(".js-discussion-note-form");
             if (noteForm.length === 0) {
               addForm = true;
@@ -654,6 +703,7 @@
           }
         }
       } else {
+        // add a notes row and insert the form
         row.after(rowCssToAdd);
         nextRow = row.next();
         notesContent = nextRow.find(notesContentSelector);
@@ -662,6 +712,7 @@
       if (addForm) {
         newForm = this.formClone.clone();
         newForm.appendTo(notesContent);
+        // show the form
         return this.setupDiscussionNoteForm($link, newForm);
       }
     };
@@ -680,12 +731,15 @@
       glForm = form.data('gl-form');
       glForm.destroy();
       form.find(".js-note-text").data("autosave").reset();
+      // show the reply button (will only work for replies)
       form
         .prev('.discussion-reply-holder')
         .show();
       if (row.is(".js-temp-notes-holder")) {
+        // remove temporary row for diff lines
         return row.remove();
       } else {
+        // only remove the form
         return form.remove();
       }
     };
@@ -707,6 +761,7 @@
     Notes.prototype.updateFormAttachment = function() {
       var filename, form;
       form = $(this).closest("form");
+      // get only the basename
       filename = $(this).val().replace(/^.*[\\\/]/, "");
       return form.find(".js-attachment-filename").text(filename);
     };

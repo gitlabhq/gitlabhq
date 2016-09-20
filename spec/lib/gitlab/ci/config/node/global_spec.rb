@@ -14,7 +14,7 @@ describe Gitlab::Ci::Config::Node::Global do
   end
 
   context 'when hash is valid' do
-    context 'when all entries defined' do
+    context 'when some entries defined' do
       let(:hash) do
         { before_script: ['ls', 'pwd'],
           image: 'ruby:2.2',
@@ -24,11 +24,11 @@ describe Gitlab::Ci::Config::Node::Global do
           stages: ['build', 'pages'],
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
-          spinach: { script: 'spinach' } }
+          spinach: { before_script: [], variables: {}, script: 'spinach' } }
       end
 
-      describe '#process!' do
-        before { global.process! }
+      describe '#compose!' do
+        before { global.compose! }
 
         it 'creates nodes hash' do
           expect(global.descendants).to be_an Array
@@ -59,7 +59,7 @@ describe Gitlab::Ci::Config::Node::Global do
         end
       end
 
-      context 'when not processed' do
+      context 'when not composed' do
         describe '#before_script' do
           it 'returns nil' do
             expect(global.before_script).to be nil
@@ -73,8 +73,14 @@ describe Gitlab::Ci::Config::Node::Global do
         end
       end
 
-      context 'when processed' do
-        before { global.process! }
+      context 'when composed' do
+        before { global.compose! }
+
+        describe '#errors' do
+          it 'has no errors' do
+            expect(global.errors).to be_empty
+          end
+        end
 
         describe '#before_script' do
           it 'returns correct script' do
@@ -137,10 +143,24 @@ describe Gitlab::Ci::Config::Node::Global do
             expect(global.jobs).to eq(
               rspec: { name: :rspec,
                        script: %w[rspec ls],
-                       stage: 'test' },
+                       before_script: ['ls', 'pwd'],
+                       commands: "ls\npwd\nrspec\nls",
+                       image: 'ruby:2.2',
+                       services: ['postgres:9.1', 'mysql:5.5'],
+                       stage: 'test',
+                       cache: { key: 'k', untracked: true, paths: ['public/'] },
+                       variables: { VAR: 'value' },
+                       after_script: ['make clean'] },
               spinach: { name: :spinach,
+                         before_script: [],
                          script: %w[spinach],
-                         stage: 'test' }
+                         commands: 'spinach',
+                         image: 'ruby:2.2',
+                         services: ['postgres:9.1', 'mysql:5.5'],
+                         stage: 'test',
+                         cache: { key: 'k', untracked: true, paths: ['public/'] },
+                         variables: {},
+                         after_script: ['make clean'] },
             )
           end
         end
@@ -148,17 +168,20 @@ describe Gitlab::Ci::Config::Node::Global do
     end
 
     context 'when most of entires not defined' do
-      let(:hash) { { cache: { key: 'a' }, rspec: { script: %w[ls] } } }
-      before { global.process! }
+      before { global.compose! }
+
+      let(:hash) do
+        { cache: { key: 'a' }, rspec: { script: %w[ls] } }
+      end
 
       describe '#nodes' do
         it 'instantizes all nodes' do
           expect(global.descendants.count).to eq 8
         end
 
-        it 'contains undefined nodes' do
+        it 'contains unspecified nodes' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
+            .to be_an_instance_of Gitlab::Ci::Config::Node::Unspecified
         end
       end
 
@@ -188,8 +211,11 @@ describe Gitlab::Ci::Config::Node::Global do
     # details.
     #
     context 'when entires specified but not defined' do
-      let(:hash) { { variables: nil, rspec: { script: 'rspec' } } }
-      before { global.process! }
+      before { global.compose! }
+
+      let(:hash) do
+        { variables: nil, rspec: { script: 'rspec' } }
+      end
 
       describe '#variables' do
         it 'undefined entry returns a default value' do
@@ -200,7 +226,7 @@ describe Gitlab::Ci::Config::Node::Global do
   end
 
   context 'when hash is not valid' do
-    before { global.process! }
+    before { global.compose! }
 
     let(:hash) do
       { before_script: 'ls' }
@@ -245,6 +271,29 @@ describe Gitlab::Ci::Config::Node::Global do
   describe '#specified?' do
     it 'is concrete entry that is defined' do
       expect(global.specified?).to be true
+    end
+  end
+
+  describe '#[]' do
+    before { global.compose! }
+
+    let(:hash) do
+      { cache: { key: 'a' }, rspec: { script: 'ls' } }
+    end
+
+    context 'when node exists' do
+      it 'returns correct entry' do
+        expect(global[:cache])
+          .to be_an_instance_of Gitlab::Ci::Config::Node::Cache
+        expect(global[:jobs][:rspec][:script].value).to eq ['ls']
+      end
+    end
+
+    context 'when node does not exist' do
+      it 'always return unspecified node' do
+        expect(global[:some][:unknown][:node])
+          .not_to be_specified
+      end
     end
   end
 end

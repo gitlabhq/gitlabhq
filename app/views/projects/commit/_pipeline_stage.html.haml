@@ -1,0 +1,14 @@
+- status_groups = statuses.group_by(&:group_name)
+- status_groups.each do |group_name, grouped_statuses|
+  - if grouped_statuses.one?
+    - status = grouped_statuses.first
+    - is_playable = status.playable? && can?(current_user, :update_build, @project)
+    %li.build{ class: ("playable" if is_playable) }
+      .curve
+      .build-content
+        = render "projects/#{status.to_partial_path}_pipeline", subject: status
+  - else
+    %li.build
+      .curve
+      .build-content
+        = render "projects/commit/pipeline_status_group", name: group_name, subject: grouped_statuses

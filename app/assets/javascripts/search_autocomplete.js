@@ -24,6 +24,7 @@
       this.onSearchInputKeyUp = bind(this.onSearchInputKeyUp, this);
       this.onSearchInputKeyDown = bind(this.onSearchInputKeyDown, this);
       this.wrap = (ref = opts.wrap) != null ? ref : $('.search'), this.optsEl = (ref1 = opts.optsEl) != null ? ref1 : this.wrap.find('.search-autocomplete-opts'), this.autocompletePath = (ref2 = opts.autocompletePath) != null ? ref2 : this.optsEl.data('autocomplete-path'), this.projectId = (ref3 = opts.projectId) != null ? ref3 : this.optsEl.data('autocomplete-project-id') || '', this.projectRef = (ref4 = opts.projectRef) != null ? ref4 : this.optsEl.data('autocomplete-project-ref') || '';
+      // Dropdown Element
       this.dropdown = this.wrap.find('.dropdown');
       this.dropdownContent = this.dropdown.find('.dropdown-content');
       this.locationBadgeEl = this.getElement('.location-badge');
@@ -35,6 +36,7 @@
       this.repositoryInputEl = this.getElement('#repository_ref');
       this.clearInput = this.getElement('.js-clear-input');
       this.saveOriginalState();
+      // Only when user is logged in
       if (gon.current_user_id) {
         this.createAutocomplete();
       }
@@ -43,6 +45,7 @@
       this.bindEvents();
     }
 
+    // Finds an element inside wrapper element
     SearchAutocomplete.prototype.getElement = function(selector) {
       return this.wrap.find(selector);
     };
@@ -82,6 +85,7 @@
         }
         return;
       }
+      // Prevent multiple ajax calls
       if (this.loadingSuggestions) {
         return;
       }
@@ -92,14 +96,17 @@
         term: term
       }, function(response) {
         var data, firstCategory, i, lastCategory, len, suggestion;
+        // Hide dropdown menu if no suggestions returns
         if (!response.length) {
           _this.disableAutocomplete();
           return;
         }
         data = [];
+        // List results
         firstCategory = true;
         for (i = 0, len = response.length; i < len; i++) {
           suggestion = response[i];
+          // Add group header before list each group
           if (lastCategory !== suggestion.category) {
             if (!firstCategory) {
               data.push('separator');
@@ -119,6 +126,7 @@
             url: suggestion.url
           });
         }
+        // Add option to proceed with the search
         if (data.length) {
           data.push('separator');
           data.push({
@@ -169,11 +177,13 @@
 
     SearchAutocomplete.prototype.serializeState = function() {
       return {
+        // Search Criteria
         search_project_id: this.projectInputEl.val(),
         group_id: this.groupInputEl.val(),
         search_code: this.searchCodeInputEl.val(),
         repository_ref: this.repositoryInputEl.val(),
         scope: this.scopeInputEl.val(),
+        // Location badge
         _location: this.locationBadgeEl.text()
       };
     };
@@ -194,6 +204,7 @@
 
     SearchAutocomplete.prototype.enableAutocomplete = function() {
       var _this;
+      // No need to enable anything if user is not logged in
       if (!gon.current_user_id) {
         return;
       }
@@ -206,18 +217,22 @@
     };
 
     SearchAutocomplete.prototype.onSearchInputKeyDown = function() {
+      // Saves last length of the entered text
       return this.saveTextLength();
     };
 
     SearchAutocomplete.prototype.onSearchInputKeyUp = function(e) {
       switch (e.keyCode) {
         case KEYCODE.BACKSPACE:
+          // when trying to remove the location badge
           if (this.lastTextLength === 0 && this.badgePresent()) {
             this.removeLocationBadge();
           }
+          // When removing the last character and no badge is present
           if (this.lastTextLength === 1) {
             this.disableAutocomplete();
           }
+          // When removing any character from existin value
           if (this.lastTextLength > 1) {
             this.enableAutocomplete();
           }
@@ -232,9 +247,12 @@
         case KEYCODE.DOWN:
           return;
         default:
+          // Handle the case when deleting the input value other than backspace
+          // e.g. Pressing ctrl + backspace or ctrl + x
           if (this.searchInput.val() === '') {
             this.disableAutocomplete();
           } else {
+            // We should display the menu only when input is not empty
             if (e.keyCode !== KEYCODE.ENTER) {
               this.enableAutocomplete();
             }
@@ -243,7 +261,9 @@
       this.wrap.toggleClass('has-value', !!e.target.value);
     };
 
+    // Avoid falsy value to be returned
     SearchAutocomplete.prototype.onSearchInputClick = function(e) {
+      // Prevents closing the dropdown menu
       return e.stopImmediatePropagation();
     };
 
@@ -267,6 +287,7 @@
     SearchAutocomplete.prototype.onSearchInputBlur = function(e) {
       this.isFocused = false;
       this.wrap.removeClass('search-active');
+      // If input is blank then restore state
       if (this.searchInput.val() === '') {
         return this.restoreOriginalState();
       }
@@ -311,6 +332,7 @@
       results = [];
       for (i = 0, len = inputs.length; i < len; i++) {
         input = inputs[i];
+        // _location isnt a input
         if (input === '_location') {
           break;
         }

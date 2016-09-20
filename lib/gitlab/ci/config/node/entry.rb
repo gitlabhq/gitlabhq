@@ -20,11 +20,14 @@ module Gitlab
             @validator.validate(:new)
           end
 
-          def process!
+          def [](key)
+            @entries[key] || Node::Undefined.new
+          end
+
+          def compose!(deps = nil)
             return unless valid?
 
-            compose!
-            descendants.each(&:process!)
+            yield if block_given?
           end
 
           def leaf?
@@ -72,11 +75,6 @@ module Gitlab
 
           def self.validator
             Validator
-          end
-
-          private
-
-          def compose!
           end
         end
       end

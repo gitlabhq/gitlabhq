@@ -7,23 +7,8 @@
       margin-bottom: 2px;
     }
 
-    .issue-check {
-      float: left;
-      padding-right: 16px;
-      margin-bottom: 10px;
-      min-width: 15px;
-
-      .selected_issue {
-        vertical-align: text-top;
-      }
-    }
-
     .issue-labels {
       display: inline-block;
-    }
-
-    .issue-no-comments {
-      opacity: 0.5;
     }
   }
 }
@@ -46,6 +31,15 @@
 
 form.edit-issue {
   margin: 0;
+}
+
+ul.related-merge-requests > li {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  .merge-request-id {
+    flex-shrink: 0;
+  }
 }
 
 .merge-requests-title, .related-branches-title {

@@ -177,10 +177,11 @@ ActiveRecord::Schema.define(version: 20160915081353) do
     t.datetime "erased_at"
     t.datetime "artifacts_expire_at"
     t.string   "environment"
-    t.integer  "artifacts_size"
+    t.integer  "artifacts_size",      limit: 8
     t.string   "when"
     t.text     "yaml_variables"
     t.datetime "queued_at"
+    t.string   "token"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -192,6 +193,7 @@ ActiveRecord::Schema.define(version: 20160915081353) do
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
+  add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
 
   create_table "ci_commits", force: :cascade do |t|
     t.integer  "project_id"
@@ -390,10 +392,11 @@ ActiveRecord::Schema.define(version: 20160915081353) do
 
   create_table "environments", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "name",         null: false
+    t.string   "name",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "external_url"
+    t.string   "environment_type"
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
@@ -683,6 +686,7 @@ ActiveRecord::Schema.define(version: 20160915081353) do
     t.integer  "visibility_level",       default: 20,    null: false
     t.boolean  "request_access_enabled", default: true,  null: false
     t.datetime "deleted_at"
+    t.boolean  "lfs_enabled"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -857,7 +861,6 @@ ActiveRecord::Schema.define(version: 20160915081353) do
     t.integer  "build_timeout",                      default: 3600,      null: false
     t.boolean  "pending_delete",                     default: false
     t.boolean  "public_builds",                      default: true,      null: false
-    t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"

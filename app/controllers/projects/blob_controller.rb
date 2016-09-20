@@ -38,12 +38,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    if params[:file_path].present?
-      @previous_path = @path
-      @path = params[:file_path]
-      @commit_params[:file_path] = @path
-    end
-
+    @path = params[:file_path] if params[:file_path].present?
     after_edit_path =
       if from_merge_request && @target_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
@@ -143,6 +138,8 @@ class Projects::BlobController < Projects::ApplicationController
           params[:file_name] = params[:file].original_filename
         end
         File.join(@path, params[:file_name])
+      elsif params[:file_path].present?
+        params[:file_path]
       else
         @path
       end
@@ -155,6 +152,7 @@ class Projects::BlobController < Projects::ApplicationController
     @commit_params = {
       file_path: @file_path,
       commit_message: params[:commit_message],
+      previous_path: @path,
       file_content: params[:content],
       file_content_encoding: params[:encoding],
       last_commit_sha: params[:last_commit_sha]

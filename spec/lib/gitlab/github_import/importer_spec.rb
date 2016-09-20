@@ -13,9 +13,17 @@ describe Gitlab::GithubImport::Importer, lib: true do
       let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
       let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha) }
 
-      let(:label) do
+      let(:label1) do
         double(
           name: 'Bug',
+          color: 'ff0000',
+          url: 'https://api.github.com/repos/octocat/Hello-World/labels/bug'
+        )
+      end
+
+      let(:label2) do
+        double(
+          name: nil,
           color: 'ff0000',
           url: 'https://api.github.com/repos/octocat/Hello-World/labels/bug'
         )
@@ -90,14 +98,39 @@ describe Gitlab::GithubImport::Importer, lib: true do
         )
       end
 
+      let(:release1) do
+        double(
+          tag_name: 'v1.0.0',
+          name: 'First release',
+          body: 'Release v1.0.0',
+          draft: false,
+          created_at: created_at,
+          updated_at: updated_at,
+          url: 'https://api.github.com/repos/octocat/Hello-World/releases/1'
+        )
+      end
+
+      let(:release2) do
+        double(
+          tag_name: 'v2.0.0',
+          name: 'Second release',
+          body: nil,
+          draft: false,
+          created_at: created_at,
+          updated_at: updated_at,
+          url: 'https://api.github.com/repos/octocat/Hello-World/releases/2'
+        )
+      end
+
       before do
         allow(project).to receive(:import_data).and_return(double.as_null_object)
         allow_any_instance_of(Octokit::Client).to receive(:rate_limit!).and_raise(Octokit::NotFound)
-        allow_any_instance_of(Octokit::Client).to receive(:labels).and_return([label, label])
+        allow_any_instance_of(Octokit::Client).to receive(:labels).and_return([label1, label2])
         allow_any_instance_of(Octokit::Client).to receive(:milestones).and_return([milestone, milestone])
         allow_any_instance_of(Octokit::Client).to receive(:issues).and_return([issue1, issue2])
         allow_any_instance_of(Octokit::Client).to receive(:pull_requests).and_return([pull_request, pull_request])
         allow_any_instance_of(Octokit::Client).to receive(:last_response).and_return(double(rels: { next: nil }))
+        allow_any_instance_of(Octokit::Client).to receive(:releases).and_return([release1, release2])
         allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error)
       end
 
@@ -113,14 +146,15 @@ describe Gitlab::GithubImport::Importer, lib: true do
         error = {
           message: 'The remote data could not be fully imported.',
           errors: [
-            { type: :label, url: "https://api.github.com/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title has already been taken" },
+            { type: :label, url: "https://api.github.com/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title can't be blank, Title is invalid" },
             { type: :milestone, url: "https://api.github.com/repos/octocat/Hello-World/milestones/1", errors: "Validation failed: Title has already been taken" },
             { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1347", errors: "Invalid Repository. Use user/repo format." },
             { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank, Title is too short (minimum is 0 characters)" },
             { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
             { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Validation failed: Validate branches Cannot Create: This merge request already exists: [\"New feature\"]" },
-            { type: :wiki, errors: "Gitlab::Shell::Error" }
-          ]
+            { type: :wiki, errors: "Gitlab::Shell::Error" },
+            { type: :release, url: 'https://api.github.com/repos/octocat/Hello-World/releases/2', errors: "Validation failed: Description can't be blank" }
+        ]
         }
 
         described_class.new(project).execute

@@ -27,7 +27,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
@@ -127,6 +127,19 @@ module ProjectsHelper
     end
 
     current_user.recent_push(project_ids)
+  end
+
+  def project_feature_access_select(field)
+    # Don't show option "everyone with access" if project is private
+    options = project_feature_options
+
+    if @project.private?
+      options.delete('Everyone with access')
+      highest_available_option = options.values.max if @project.project_feature.send(field) == ProjectFeature::ENABLED
+    end
+
+    options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
+    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control", data: { field: field }).html_safe
   end
 
   private
@@ -421,16 +434,5 @@ module ProjectsHelper
       'Only team members' => ProjectFeature::PRIVATE,
       'Everyone with access' => ProjectFeature::ENABLED
     }
-  end
-
-  def project_feature_access_select(field)
-    # Don't show option "everyone with access" if project is private
-    options = project_feature_options
-    level = @project.project_feature.public_send(field)
-
-    options.delete('Everyone with access') if @project.private? && level != ProjectFeature::ENABLED
-
-    options = options_for_select(options, selected: @project.project_feature.public_send(field) || ProjectFeature::ENABLED)
-    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control", data: { field: field }).html_safe
   end
 end

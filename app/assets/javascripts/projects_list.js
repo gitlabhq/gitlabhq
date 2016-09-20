@@ -33,6 +33,7 @@
           $('.projects-list-holder').replaceWith(data.html);
           return history.replaceState({
             page: project_filter_url
+          // Change url so if user reload a page - search results are saved
           }, document.title, project_filter_url);
         },
         dataType: "json"
