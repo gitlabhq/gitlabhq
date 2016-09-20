@@ -780,7 +780,7 @@ Rails.application.routes.draw do
 
         resources :environments
 
-        resource :cycle_analytics
+        resource :cycle_analytics, only: [:show]
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do

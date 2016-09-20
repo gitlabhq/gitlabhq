@@ -1,5 +1,6 @@
 class CycleAnalytics
   include Gitlab::Database::Median
+  include Gitlab::Database::DateTime
 
   def initialize(project, from:)
     @project = project
@@ -12,58 +13,64 @@ class CycleAnalytics
   end
 
   def issue
-    calculate_metric!(:issue,
-                      TableReferences.issues[:created_at],
-                      [TableReferences.issue_metrics[:first_associated_with_milestone_at],
-                       TableReferences.issue_metrics[:first_added_to_board_at]])
+    calculate_metric(:issue,
+                     TableReferences.issues[:created_at],
+                     [TableReferences.issue_metrics[:first_associated_with_milestone_at],
+                      TableReferences.issue_metrics[:first_added_to_board_at]])
   end
 
   def plan
-    calculate_metric!(:plan,
-                      [TableReferences.issue_metrics[:first_associated_with_milestone_at],
-                       TableReferences.issue_metrics[:first_added_to_board_at]],
-                      TableReferences.issue_metrics[:first_mentioned_in_commit_at])
+    calculate_metric(:plan,
+                     [TableReferences.issue_metrics[:first_associated_with_milestone_at],
+                      TableReferences.issue_metrics[:first_added_to_board_at]],
+                     TableReferences.issue_metrics[:first_mentioned_in_commit_at])
   end
 
   def code
-    calculate_metric!(:code,
-                      TableReferences.issue_metrics[:first_mentioned_in_commit_at],
-                      TableReferences.merge_requests[:created_at])
+    calculate_metric(:code,
+                     TableReferences.issue_metrics[:first_mentioned_in_commit_at],
+                     TableReferences.merge_requests[:created_at])
   end
 
   def test
-    calculate_metric!(:test,
-                      TableReferences.merge_request_metrics[:latest_build_started_at],
-                      TableReferences.merge_request_metrics[:latest_build_finished_at])
+    calculate_metric(:test,
+                     TableReferences.merge_request_metrics[:latest_build_started_at],
+                     TableReferences.merge_request_metrics[:latest_build_finished_at])
   end
 
   def review
-    calculate_metric!(:review,
-                      TableReferences.merge_requests[:created_at],
-                      TableReferences.merge_request_metrics[:merged_at])
+    calculate_metric(:review,
+                     TableReferences.merge_requests[:created_at],
+                     TableReferences.merge_request_metrics[:merged_at])
   end
 
   def staging
-    calculate_metric!(:staging,
-                      TableReferences.merge_request_metrics[:merged_at],
-                      TableReferences.merge_request_metrics[:first_deployed_to_production_at])
+    calculate_metric(:staging,
+                     TableReferences.merge_request_metrics[:merged_at],
+                     TableReferences.merge_request_metrics[:first_deployed_to_production_at])
   end
 
   def production
-    calculate_metric!(:production,
-                      TableReferences.issues[:created_at],
-                      TableReferences.merge_request_metrics[:first_deployed_to_production_at])
+    calculate_metric(:production,
+                     TableReferences.issues[:created_at],
+                     TableReferences.merge_request_metrics[:first_deployed_to_production_at])
   end
 
   private
 
-  def calculate_metric!(name, start_time_attrs, end_time_attrs)
+  def calculate_metric(name, start_time_attrs, end_time_attrs)
     cte_table = Arel::Table.new("cte_table_for_#{name}")
 
-    # Add a `SELECT` for (end_time - start-time), and add an alias for it.
-    query = Arel::Nodes::As.new(cte_table, subtract_datetimes(base_query, end_time_attrs, start_time_attrs, name.to_s))
-    queries = Array.wrap(median_datetime(cte_table, query, name))
-    results = queries.map { |query| run_query(query) }
+    # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
+    # Next, we find the first of the start_time_attrs that isn't `NULL` (call this start_time).
+    # We compute the (end_time - start_time) interval, and give it an alias based on the current
+    # cycle analytics stage.
+    interval_query = Arel::Nodes::As.new(
+      cte_table,
+      subtract_datetimes(base_query, end_time_attrs, start_time_attrs, name.to_s))
+
+    median_queries = Array.wrap(median_datetime(cte_table, interval_query, name))
+    results = median_queries.map { |query| run_query(query) }
     extract_median(results).presence
   end
 
@@ -82,51 +89,17 @@ class CycleAnalytics
             where(TableReferences.issues[:created_at].gteq(@from))
 
     # Load merge_requests
-    query = query.join(TableReferences.merge_requests, Arel::Nodes::OuterJoin).on(TableReferences.merge_requests[:id].eq(arel_table[:merge_request_id])).
-            join(TableReferences.merge_request_metrics).on(TableReferences.merge_requests[:id].eq(TableReferences.merge_request_metrics[:merge_request_id]))
+    query = query.join(TableReferences.merge_requests, Arel::Nodes::OuterJoin).
+            on(TableReferences.merge_requests[:id].eq(arel_table[:merge_request_id])).
+            join(TableReferences.merge_request_metrics).
+            on(TableReferences.merge_requests[:id].eq(TableReferences.merge_request_metrics[:merge_request_id]))
 
     # Limit to merge requests that have been deployed to production after `@from`
     query.where(TableReferences.merge_request_metrics[:first_deployed_to_production_at].gteq(@from))
   end
 
-  # Note: We use COALESCE to pick up the first non-null column for end_time / start_time.
-  def subtract_datetimes(query_so_far, end_time_attrs, start_time_attrs, as)
-    diff_fn = case ActiveRecord::Base.connection.adapter_name
-              when 'PostgreSQL'
-                Arel::Nodes::Subtraction.new(
-                  Arel::Nodes::NamedFunction.new("COALESCE", Array.wrap(end_time_attrs)),
-                  Arel::Nodes::NamedFunction.new("COALESCE", Array.wrap(start_time_attrs)))
-              when 'Mysql2'
-                Arel::Nodes::NamedFunction.new(
-                  "TIMESTAMPDIFF",
-                  [Arel.sql('second'),
-                   Arel::Nodes::NamedFunction.new("COALESCE", Array.wrap(start_time_attrs)),
-                   Arel::Nodes::NamedFunction.new("COALESCE", Array.wrap(end_time_attrs))])
-              else
-                raise NotImplementedError, "Cycle analytics doesn't support your database type."
-              end
-
-    query_so_far.project(diff_fn.as(as))
-  end
-
   def run_query(query)
-    if query.is_a? String
-      ActiveRecord::Base.connection.execute query
-    else
-      ActiveRecord::Base.connection.execute query.to_sql
-    end
-  end
-
-  def extract_median(results)
-    result = results.compact.first
-
-    case ActiveRecord::Base.connection.adapter_name
-    when 'PostgreSQL'
-      result = result.first.presence
-      median = result['median'] if result
-      median.to_f if median
-    when 'Mysql2'
-      result.to_a.flatten.first
-    end
+    query = query.to_sql unless query.is_a?(String)
+    ActiveRecord::Base.connection.execute(query)
   end
 end

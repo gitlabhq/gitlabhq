@@ -10,7 +10,7 @@ class Issue::Metrics < ActiveRecord::Base
       self.first_added_to_board_at = Time.now
     end
 
-    self.save if self.changed?
+    self.save
   end
 
   private

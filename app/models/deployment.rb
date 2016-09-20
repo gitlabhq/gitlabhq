@@ -46,22 +46,19 @@ class Deployment < ActiveRecord::Base
 
   def update_merge_request_metrics
     if environment.update_merge_request_metrics?
-      query = project.merge_requests.
-              joins(:metrics).
-              where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil })
+      merge_requests = project.merge_requests.
+                       joins(:metrics).
+                       where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil }).
+                       where("merge_request_metrics.merged_at <= ?", self.created_at)
 
-      merge_requests =
-        if previous_deployment
-          query.where("merge_request_metrics.merged_at <= ? AND merge_request_metrics.merged_at >= ?",
-                      self.created_at,
-                      previous_deployment.created_at)
-        else
-          query.where("merge_request_metrics.merged_at <= ?", self.created_at)
-        end
+      if previous_deployment
+        merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.created_at)
+      end
 
       # Need to use `map` instead of `select` because MySQL doesn't allow `SELECT`ing from the same table
       # that we're updating.
-      MergeRequest::Metrics.where(merge_request_id: merge_requests.map(&:id), first_deployed_to_production_at: nil).
+      MergeRequest::Metrics.
+        where(merge_request_id: merge_requests.map(&:id), first_deployed_to_production_at: nil).
         update_all(first_deployed_to_production_at: self.created_at)
     end
   end

@@ -3,13 +3,22 @@ module Gitlab
   module Database
     module Median
       def median_datetime(arel_table, query_so_far, column_sym)
-        case ActiveRecord::Base.connection.adapter_name
-        when 'PostgreSQL'
+        if Gitlab::Database.postgresql?
           pg_median_datetime(arel_table, query_so_far, column_sym)
-        when 'Mysql2'
+        elsif Gitlab::Database.mysql?
           mysql_median_datetime(arel_table, query_so_far, column_sym)
-        else
-          raise NotImplementedError, "We haven't implemented a database median strategy for your database type."
+        end
+      end
+
+      def extract_median(results)
+        result = results.compact.first
+
+        if Gitlab::Database.postgresql?
+          result = result.first.presence
+          median = result['median'] if result
+          median.to_f if median
+        elsif Gitlab::Database.mysql?
+          result.to_a.flatten.first
         end
       end
 
@@ -17,17 +26,23 @@ module Gitlab
         query = arel_table.
                 from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name)).
                 project(average([arel_table[column_sym]], 'median')).
-                where(Arel::Nodes::Between.new(Arel.sql("(select @row_id := @row_id + 1)"),
-                                               Arel::Nodes::And.new([Arel.sql('@ct/2.0'),
-                                                                     Arel.sql('@ct/2.0 + 1')]))).
+                where(Arel::Nodes::Between.new(
+                       Arel.sql("(select @row_id := @row_id + 1)"),
+                       Arel::Nodes::And.new(
+                         [Arel.sql('@ct/2.0'),
+                          Arel.sql('@ct/2.0 + 1')]
+                       )
+                     )).
                 # Disallow negative values
                 where(arel_table[column_sym].gteq(0))
 
-        [Arel.sql("CREATE TEMPORARY TABLE IF NOT EXISTS #{query_so_far.to_sql}"),
-         Arel.sql("set @ct := (select count(1) from #{arel_table.table_name});"),
-         Arel.sql("set @row_id := 0;"),
-         query,
-         Arel.sql("DROP TEMPORARY TABLE IF EXISTS #{arel_table.table_name};")]
+        [
+          Arel.sql("CREATE TEMPORARY TABLE IF NOT EXISTS #{query_so_far.to_sql}"),
+          Arel.sql("set @ct := (select count(1) from #{arel_table.table_name});"),
+          Arel.sql("set @row_id := 0;"),
+          query,
+          Arel.sql("DROP TEMPORARY TABLE IF EXISTS #{arel_table.table_name};")
+        ]
       end
 
       def pg_median_datetime(arel_table, query_so_far, column_sym)
@@ -42,14 +57,15 @@ module Gitlab
         #           9 |      2 |  3
         #          15 |      3 |  3
         cte_table = Arel::Table.new("ordered_records")
-        cte = Arel::Nodes::As.new(cte_table,
-                                  arel_table.
-                                    project(arel_table[column_sym].as(column_sym.to_s),
-                                            Arel::Nodes::Over.new(Arel::Nodes::NamedFunction.new("row_number", []),
-                                                                  Arel::Nodes::Window.new.order(arel_table[column_sym])).as('row_id'),
-                                            arel_table.project("COUNT(1)").as('ct')).
-                                    # Disallow negative values
-                                    where(arel_table[column_sym].gteq(zero_interval)))
+        cte = Arel::Nodes::As.new(
+          cte_table,
+          arel_table.
+            project(arel_table[column_sym].as(column_sym.to_s),
+                    Arel::Nodes::Over.new(Arel::Nodes::NamedFunction.new("row_number", []),
+                                          Arel::Nodes::Window.new.order(arel_table[column_sym])).as('row_id'),
+                    arel_table.project("COUNT(1)").as('ct')).
+            # Disallow negative values
+            where(arel_table[column_sym].gteq(zero_interval)))
 
         # From the CTE, select either the middle row or the middle two rows (this is accomplished
         # by 'where cte.row_id between cte.ct / 2.0 AND cte.ct / 2.0 + 1'). Find the average of the

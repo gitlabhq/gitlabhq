@@ -6,6 +6,6 @@ class MergeRequest::Metrics < ActiveRecord::Base
       self.merged_at = Time.now
     end
 
-    self.save if self.changed?
+    self.save
   end
 end
