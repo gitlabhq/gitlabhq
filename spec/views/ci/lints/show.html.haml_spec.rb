@@ -43,7 +43,7 @@ describe 'ci/lints/show' do
     it 'shows error message' do
       render
 
-      expect(rendered).to have_content('Status: syntax is incorrec')
+      expect(rendered).to have_content('Status: syntax is incorrect')
       expect(rendered).to have_content('Error: Undefined error')
       expect(rendered).not_to have_content('Tag list:')
     end
