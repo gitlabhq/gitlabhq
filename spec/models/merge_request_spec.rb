@@ -496,20 +496,18 @@ describe MergeRequest, models: true do
 
   describe '#all_pipelines' do
     shared_examples 'returning pipelines with proper ordering' do
-      let!(:pipelines) do
-        subject.merge_request_diffs.flat_map do |diff|
-          diff.commits.map do |commit|
-            create(:ci_empty_pipeline,
-                   project: subject.source_project,
-                   sha: commit.id,
-                   ref: subject.source_branch)
-          end
+      let!(:all_pipelines) do
+        subject.all_commits_sha.map do |sha|
+          create(:ci_empty_pipeline,
+                 project: subject.source_project,
+                 sha: sha,
+                 ref: subject.source_branch)
         end
       end
 
       it 'returns all pipelines' do
         expect(subject.all_pipelines).not_to be_empty
-        expect(subject.all_pipelines).to eq(pipelines.reverse)
+        expect(subject.all_pipelines).to eq(all_pipelines.reverse)
       end
     end
 
@@ -523,6 +521,21 @@ describe MergeRequest, models: true do
       end
 
       it_behaves_like 'returning pipelines with proper ordering'
+    end
+  end
+
+  describe '#all_commits_sha' do
+    let(:all_commits_sha) do
+      subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
+    end
+
+    before do
+      subject.update(target_branch: 'markdown')
+    end
+
+    it 'returns all SHA from all merge_request_diffs' do
+      expect(subject.merge_request_diffs.size).to eq(2)
+      expect(subject.all_commits_sha).to eq(all_commits_sha)
     end
   end
 
