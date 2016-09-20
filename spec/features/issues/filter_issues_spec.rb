@@ -206,7 +206,7 @@ describe 'Filter issues', feature: true do
 
     context 'only text', js: true do
       it 'filters issues by searched text' do
-        fill_in 'issue_search', with: 'Bug'
+        fill_in 'issuable_search', with: 'Bug'
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
@@ -214,7 +214,7 @@ describe 'Filter issues', feature: true do
       end
 
       it 'does not show any issues' do
-        fill_in 'issue_search', with: 'testing'
+        fill_in 'issuable_search', with: 'testing'
 
         page.within '.issues-list' do
           expect(page).not_to have_selector('.issue')
@@ -224,10 +224,14 @@ describe 'Filter issues', feature: true do
 
     context 'text and dropdown options', js: true do
       it 'filters by text and label' do
-        fill_in 'issue_search', with: 'Bug'
+        fill_in 'issuable_search', with: 'Bug'
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
+        end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Label'
@@ -239,13 +243,21 @@ describe 'Filter issues', feature: true do
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '1')
+        end
       end
 
       it 'filters by text and milestone' do
-        fill_in 'issue_search', with: 'Bug'
+        fill_in 'issuable_search', with: 'Bug'
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
+        end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Milestone'
@@ -256,13 +268,21 @@ describe 'Filter issues', feature: true do
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '1')
+        end
       end
 
       it 'filters by text and assignee' do
-        fill_in 'issue_search', with: 'Bug'
+        fill_in 'issuable_search', with: 'Bug'
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
+        end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Assignee'
@@ -273,13 +293,21 @@ describe 'Filter issues', feature: true do
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '1')
+        end
       end
 
       it 'filters by text and author' do
-        fill_in 'issue_search', with: 'Bug'
+        fill_in 'issuable_search', with: 'Bug'
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
+        end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Author'
@@ -289,6 +317,10 @@ describe 'Filter issues', feature: true do
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
+        end
+
+        page.within '.issues-state-filters' do
+          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
     end
