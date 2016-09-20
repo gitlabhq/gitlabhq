@@ -56,6 +56,34 @@ describe CreateDeploymentService, services: true do
         expect(subject).not_to be_persisted
       end
     end
+
+    context 'when variables are used' do
+      let(:params) do
+        { environment: 'review-apps/$CI_BUILD_REF_NAME',
+          ref: 'master',
+          tag: false,
+          sha: '97de212e80737a608d939f648d959671fb0a0142',
+          options: {
+            name: 'review-apps/$CI_BUILD_REF_NAME',
+            url: 'http://$CI_BUILD_REF_NAME.review-apps.gitlab.com'
+          },
+          variables: [
+            { key: 'CI_BUILD_REF_NAME', value: 'feature-review-apps' }
+          ]
+        }
+      end
+
+      it 'does create a new environment' do
+        expect { subject }.to change { Environment.count }.by(1)
+
+        expect(subject.environment.name).to eq('review-apps/feature-review-apps')
+        expect(subject.environment.external_url).to eq('http://feature-review-apps.review-apps.gitlab.com')
+      end
+
+      it 'does create a new deployment' do
+        expect(subject).to be_persisted
+      end
+    end
   end
 
   describe 'processing of builds' do
