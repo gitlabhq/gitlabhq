@@ -197,6 +197,9 @@
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'application_settings':
+              new gl.ApplicationSettings();
+              break;
             case 'groups':
               new UsersSelect();
               break;

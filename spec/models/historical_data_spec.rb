@@ -38,4 +38,16 @@ describe HistoricalData do
       expect(data.active_user_count).to eq(5)
     end
   end
+
+  describe ".max_historical_user_count" do
+    before do
+      (1..3).each do |i|
+        HistoricalData.create!(date: Time.now - i.days, active_user_count: i * 100)
+      end
+    end
+
+    it "returns max user count for the past year" do
+      expect(HistoricalData.max_historical_user_count).to eq(300)
+    end
+  end
 end
