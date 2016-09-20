@@ -20,13 +20,17 @@ class LabelsFinder < UnionFinder
     label_ids << Label.where(project_id: projects.select(:id)).select(:id)
   end
 
+  def sort(items)
+    items.reorder(title: :asc, type: :desc)
+  end
+
   def with_title(items)
     items = items.where(title: title) if title.present?
     items
   end
 
-  def sort(items)
-    items.reorder(title: :asc)
+  def group_id
+    params[:group_id].presence
   end
 
   def project_id
@@ -40,13 +44,10 @@ class LabelsFinder < UnionFinder
   def projects
     return @projects if defined?(@projects)
 
-    if project_id
-      @projects = ProjectsFinder.new.execute(current_user)
-                                    .where(id: project_id)
-                                    .reorder(nil)
-    else
-      @projects = Project.none
-    end
+    @projects = ProjectsFinder.new.execute(current_user)
+    @projects = @projects.joins(:namespace).where(namespaces: { id: group_id, type: 'Group' }) if group_id
+    @projects = @projects.where(id: project_id) if project_id
+    @projects = @projects.reorder(nil)
 
     @projects
   end

@@ -8,7 +8,15 @@ class Groups::LabelsController < Groups::ApplicationController
   respond_to :html
 
   def index
-    @labels = @group.labels.page(params[:page])
+    respond_to do |format|
+      format.html do
+        @labels = @group.labels.page(params[:page])
+      end
+
+      format.json do
+        render json: LabelsFinder.new(current_user, group_id: @group.id).execute
+      end
+    end
   end
 
   def new

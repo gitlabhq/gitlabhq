@@ -172,7 +172,10 @@ module LabelsHelper
   end
 
   def labels_filter_path
+    return group_labels_path(@group, :json) if @group
+
     project = @target_project || @project
+
     if project
       namespace_project_labels_path(project.namespace, project, :json)
     else
