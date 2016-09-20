@@ -30,12 +30,15 @@ module Gitlab
         query = arel_table.
                 from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name)).
                 project(average([arel_table[column_sym]], 'median')).
-                where(Arel::Nodes::Between.new(
-                        Arel.sql("(select @row_id := @row_id + 1)"),
-                        Arel::Nodes::And.new(
-                          [Arel.sql('@ct/2.0'),
-                           Arel.sql('@ct/2.0 + 1')]
-                        ))).
+                where(
+                  Arel::Nodes::Between.new(
+                    Arel.sql("(select @row_id := @row_id + 1)"),
+                    Arel::Nodes::And.new(
+                      [Arel.sql('@ct/2.0'),
+                       Arel.sql('@ct/2.0 + 1')]
+                    )
+                  )
+                ).
                 # Disallow negative values
                 where(arel_table[column_sym].gteq(0))
 
@@ -75,11 +78,15 @@ module Gitlab
         # by 'where cte.row_id between cte.ct / 2.0 AND cte.ct / 2.0 + 1'). Find the average of the
         # selected rows, and this is the median value.
         cte_table.project(average([extract_epoch(cte_table[column_sym])], "median")).
-          where(Arel::Nodes::Between.new(
-                  cte_table[:row_id],
-                  Arel::Nodes::And.new(
-                    [(cte_table[:ct] / Arel.sql('2.0')),
-                     (cte_table[:ct] / Arel.sql('2.0') + 1)]))).
+          where(
+            Arel::Nodes::Between.new(
+              cte_table[:row_id],
+              Arel::Nodes::And.new(
+                [(cte_table[:ct] / Arel.sql('2.0')),
+                 (cte_table[:ct] / Arel.sql('2.0') + 1)]
+              )
+            )
+          ).
           with(query_so_far, cte)
       end
 
