@@ -61,11 +61,11 @@ class GlobalMilestone
   end
 
   def participants
-    @participants ||= milestones.map(&:participants).flatten.compact.uniq
+    @participants ||= milestones_relation.includes(:participants).map(&:participants).flatten.compact.uniq
   end
 
   def labels
-    @labels ||= GlobalLabel.build_collection(milestones.map(&:labels).flatten)
+    @labels ||= GlobalLabel.build_collection(milestones_relation.includes(:labels).map(&:labels).flatten)
                            .sort_by!(&:title)
   end
 
@@ -88,5 +88,15 @@ class GlobalMilestone
         "expires on #{due_date.to_s(:medium)}"
       end
     end
+  end
+
+  private
+
+  def milestones_relation
+    @milestones_relation ||= if milestones.is_a?(ActiveRecord::Relation)
+                               milestones
+                             else
+                               Milestone.where(id: milestones.map(&:id))
+                             end
   end
 end

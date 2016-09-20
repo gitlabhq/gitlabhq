@@ -180,6 +180,7 @@ v 8.12.0 (unreleased)
   - Clean environment variables when running git hooks
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
+  - Speed-up group milestones show page
   - Add UX improvements for merge request version diffs
 
 v 8.11.7
