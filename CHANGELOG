@@ -14,6 +14,7 @@ v 8.12.0 (unreleased)
   - Give project selection dropdowns responsive width, make non-wrapping.
   - Fix note form hint showing slash commands supported for commits.
   - Make push events have equal vertical spacing.
+  - API: Ensure invitees are not returned in Members API.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Display stages in valid order in stages dropdown on build page
