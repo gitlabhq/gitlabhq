@@ -39,12 +39,12 @@ describe Environment, models: true do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    it 'selects deployment id for the environment' do
+    it 'returns deployment id for the environment' do
       expect(environment.deployment_id_for(commit)).to eq deployment1.id
     end
 
-    it 'return 0 when no deployment is found' do
-      expect(environment.deployment_id_for(head_commit)).to eq 0
+    it 'return nil when no deployment is found' do
+      expect(environment.deployment_id_for(head_commit)).to eq nil
     end
   end
 

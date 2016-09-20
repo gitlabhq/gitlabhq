@@ -722,10 +722,7 @@ class Repository
 
     # Not found -> ["", 0]
     # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-    ref = Gitlab::Popen.popen(args, path_to_repo).first
-
-    # Parse "<sha> commit\trefs/environments/<environment_name>/<id>\n" to ID
-    ref.rstrip.split('/').last.to_i
+    Gitlab::Popen.popen(args, path_to_repo).first.split.last
   end
 
   def refs_contains_sha(ref_type, sha)
