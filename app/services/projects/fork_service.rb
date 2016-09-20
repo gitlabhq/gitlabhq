@@ -8,7 +8,6 @@ module Projects
         name:                   @project.name,
         path:                   @project.path,
         shared_runners_enabled: @project.shared_runners_enabled,
-        builds_enabled:         @project.builds_enabled,
         namespace_id:           @params[:namespace].try(:id) || current_user.namespace.id
       }
 
@@ -17,6 +16,9 @@ module Projects
       end
 
       new_project = CreateService.new(current_user, new_params).execute
+      builds_access_level = @project.project_feature.builds_access_level
+      new_project.project_feature.update_attributes(builds_access_level: builds_access_level)
+
       new_project
     end
 

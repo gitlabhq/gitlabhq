@@ -206,7 +206,7 @@
     padding-top: 0;
 
     .block {
-      width: $sidebar_collapsed_width - 1px;
+      width: $sidebar_collapsed_width - 2px;
       margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
@@ -402,5 +402,20 @@
   }
   @media (max-width: $screen-sm-max) {
     margin-bottom: $gl-padding;
+  }
+}
+
+.issuable-list {
+  li {
+    .issue-check {
+      float: left;
+      padding-right: $gl-padding;
+      margin-bottom: 10px;
+      min-width: 15px;
+
+      .selected_issue {
+        vertical-align: text-top;
+      }
+    }
   }
 }

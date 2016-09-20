@@ -370,6 +370,12 @@ describe Projects::IssuesController do
         expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
       end
+
+      it 'delegates the update of the todos count cache to TodoService' do
+        expect_any_instance_of(TodoService).to receive(:destroy_issue).with(issue, owner).once
+
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+      end
     end
   end
 

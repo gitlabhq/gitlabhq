@@ -82,7 +82,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack rspec
+    - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
     paths:
@@ -206,10 +206,15 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
     - bundle exec $CI_BUILD_NAME
 
 rubocop: *exec
+rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flog: *exec
-rake flay: *exec
+rake flog:
+  <<: *exec
+  allow_failure: yes
+rake flay:
+  <<: *exec
+  allow_failure: yes
 license_finder: *exec
 rake downtime_check: *exec
 
@@ -248,6 +253,21 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+migration paths:
+  stage: test
+  <<: *use-db
+  only:
+    - master@gitlab-org/gitlab-ce
+  script:
+    - git checkout HEAD .
+    - git fetch --tags
+    - git checkout v8.5.9
+    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
+    - rake db:drop db:create db:schema:load db:seed_fu
+    - git checkout $CI_BUILD_REF
+    - rake db:migrate
+
 coverage:
   stage: post-test
   services: []
@@ -262,7 +282,6 @@ coverage:
     paths:
     - coverage/index.html
     - coverage/assets/
-
 
 # Notify slack in the end
 

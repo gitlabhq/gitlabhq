@@ -156,6 +156,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
 
     describe "when 2FA via OTP is disabled" do
       it "allows logging in with the U2F device" do
+        user.update_attribute(:otp_required_for_login, false)
         login_with(user)
 
         @u2f_device.respond_to_u2f_authentication
@@ -178,6 +179,19 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
         click_on "Authenticate via U2F Device"
 
         expect(page.body).to match('Signed in successfully')
+      end
+    end
+
+    it 'persists remember_me value via hidden field' do
+      login_with(user, remember: true)
+
+      @u2f_device.respond_to_u2f_authentication
+      click_on "Login Via U2F Device"
+      expect(page.body).to match('We heard back from your U2F device')
+
+      within 'div#js-authenticate-u2f' do
+        field = first('input#user_remember_me', visible: false)
+        expect(field.value).to eq '1'
       end
     end
 

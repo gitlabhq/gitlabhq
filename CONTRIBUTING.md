@@ -91,19 +91,7 @@ This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
 
 ## Implement design & UI elements
 
-### Design reference
-
-The GitLab design reference can be found in the [gitlab-design] project.
-The designs are made using Antetype (`.atype` files). You can use the
-[free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
-(the PNG is 1:1).
-
-The current designs can be found in the [`gitlab8.atype` file].
-
-### UI development kit
-
-Implemented UI elements can also be found at https://gitlab.com/help/ui. Please
-note that this page isn't comprehensive at this time.
+Please see the [UI Guide for building GitLab].
 
 ## Issue tracker
 
@@ -289,6 +277,8 @@ request is as follows:
 1. For more complex migrations, write tests.
 1. Merge requests **must** adhere to the [merge request performance
    guidelines](doc/development/merge_request_performance_guidelines.md).
+1. For tests that use Capybara or PhantomJS, see this [article on how
+   to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
@@ -489,7 +479,5 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
-[gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
-[free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
-[`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/
+[UI Guide for building GitLab]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/ui_guide.md
 [license-finder-doc]: doc/development/licensing.md

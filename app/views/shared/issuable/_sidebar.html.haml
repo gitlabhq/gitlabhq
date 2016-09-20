@@ -118,7 +118,7 @@
             = icon('spinner spin', class: 'block-loading')
             - if can_edit_issuable
               = link_to 'Edit', '#', class: 'edit-link pull-right'
-          .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels_array.any?) }
+          .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels_array.any?) }
             - if issuable.labels_array.any?
               - issuable.labels_array.each do |label|
                 = link_to_label(label, type: issuable.to_ability_name)

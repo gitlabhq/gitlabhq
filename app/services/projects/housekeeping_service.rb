@@ -30,10 +30,8 @@ module Projects
     end
 
     def increment!
-      if Gitlab::ExclusiveLease.new("project_housekeeping:increment!:#{@project.id}", timeout: 60).try_obtain
-        Gitlab::Metrics.measure(:increment_pushes_since_gc) do
-          update_pushes_since_gc(@project.pushes_since_gc + 1)
-        end
+      Gitlab::Metrics.measure(:increment_pushes_since_gc) do
+        @project.increment_pushes_since_gc
       end
     end
 
@@ -43,12 +41,8 @@ module Projects
       GitGarbageCollectWorker.perform_async(@project.id)
     ensure
       Gitlab::Metrics.measure(:reset_pushes_since_gc) do
-        update_pushes_since_gc(0)
+        @project.reset_pushes_since_gc
       end
-    end
-
-    def update_pushes_since_gc(new_value)
-      @project.update_column(:pushes_since_gc, new_value)
     end
 
     def try_obtain_lease

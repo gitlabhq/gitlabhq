@@ -10,6 +10,8 @@
   - if @pipeline.duration
     in
     = time_interval_in_words(@pipeline.duration)
+  - if @pipeline.queued_duration
+    = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
 
   .pull-right
     = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do

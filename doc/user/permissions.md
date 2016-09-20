@@ -63,7 +63,7 @@ The following table depicts the various user permission levels in a project.
 | Force push to protected branches [^2] |         |            |             |          |        |
 | Remove protected branches [^2]        |         |            |             |          |        |
 
-[^1]: If **Allow guest to access builds** is enabled in CI settings
+[^1]: If **Public pipelines** is enabled in **Project Settings > CI/CD Pipelines**
 [^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 
 ## Group
@@ -103,6 +103,15 @@ will find the option to flag the user as external.
 
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
+
+## Project features
+
+Project features like wiki and issues can be hidden from users depending on
+which visibility level you select on project settings.
+
+- Disabled: disabled for everyone
+- Only team members: only team members will see even if your project is public or internal
+- Everyone with access: everyone can see depending on your project visibility level
 
 ## GitLab CI
 

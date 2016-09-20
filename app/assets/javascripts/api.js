@@ -24,6 +24,8 @@
         return callback(group);
       });
     },
+    // Return groups list. Filtered by query
+    // Only active groups retrieved
     groups: function(query, skip_ldap, callback) {
       var url = Api.buildUrl(Api.groupsPath);
       return $.ajax({
@@ -38,6 +40,7 @@
         return callback(groups);
       });
     },
+    // Return namespaces list. Filtered by query
     namespaces: function(query, callback) {
       var url = Api.buildUrl(Api.namespacesPath);
       return $.ajax({
@@ -52,6 +55,7 @@
         return callback(namespaces);
       });
     },
+    // Return projects list. Filtered by query
     projects: function(query, order, callback) {
       var url = Api.buildUrl(Api.projectsPath);
       return $.ajax({
@@ -82,6 +86,7 @@
         return callback(message.responseJSON);
       });
     },
+    // Return group projects list. Filtered by query
     groupProjects: function(group_id, query, callback) {
       var url = Api.buildUrl(Api.groupProjectsPath)
         .replace(':id', group_id);
@@ -97,6 +102,7 @@
         return callback(projects);
       });
     },
+    // Return text for a specific license
     licenseText: function(key, data, callback) {
       var url = Api.buildUrl(Api.licensePath)
         .replace(':key', key);

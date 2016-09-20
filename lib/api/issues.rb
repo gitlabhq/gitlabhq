@@ -41,7 +41,8 @@ module API
         issues = current_user.issues.inc_notes_with_associations
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues.reorder(issuable_order_by => issuable_sort)
+        issues = issues.reorder(issuable_order_by => issuable_sort)
+
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
@@ -73,7 +74,11 @@ module API
         params[:group_id] = group.id
         params[:milestone_title] = params.delete(:milestone)
         params[:label_name] = params.delete(:labels)
-        params[:sort] = "#{params.delete(:order_by)}_#{params.delete(:sort)}" if params[:order_by] && params[:sort]
+
+        if params[:order_by] || params[:sort]
+          # The Sortable concern takes 'created_desc', not 'created_at_desc' (for example)
+          params[:sort] = "#{issuable_order_by.sub('_at', '')}_#{issuable_sort}"
+        end
 
         issues = IssuesFinder.new(current_user, params).execute
 
@@ -113,7 +118,8 @@ module API
           issues = filter_issues_milestone(issues, params[:milestone])
         end
 
-        issues.reorder(issuable_order_by => issuable_sort)
+        issues = issues.reorder(issuable_order_by => issuable_sort)
+
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
 
@@ -140,12 +146,13 @@ module API
       #   labels (optional)       - The labels of an issue
       #   created_at (optional)   - Date time string, ISO 8601 formatted
       #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
+      #   confidential (optional) - Boolean parameter if the issue should be confidential
       # Example Request:
       #   POST /projects/:id/issues
       post ':id/issues' do
         required_attributes! [:title]
 
-        keys = [:title, :description, :assignee_id, :milestone_id, :due_date]
+        keys = [:title, :description, :assignee_id, :milestone_id, :due_date, :confidential]
         keys << :created_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 
@@ -155,6 +162,10 @@ module API
         end
 
         attrs[:labels] = params[:labels] if params[:labels]
+
+        # Convert and filter out invalid confidential flags
+        attrs['confidential'] = to_boolean(attrs['confidential'])
+        attrs.delete('confidential') if attrs['confidential'].nil?
 
         issue = ::Issues::CreateService.new(user_project, current_user, attrs.merge(request: request, api: true)).execute
 
@@ -182,12 +193,13 @@ module API
       #   state_event (optional) - The state event of an issue (close|reopen)
       #   updated_at (optional) - Date time string, ISO 8601 formatted
       #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
+      #   confidential (optional) - Boolean parameter if the issue should be confidential
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ':id/issues/:issue_id' do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        keys = [:title, :description, :assignee_id, :milestone_id, :state_event, :due_date]
+        keys = [:title, :description, :assignee_id, :milestone_id, :state_event, :due_date, :confidential]
         keys << :updated_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 
@@ -197,6 +209,10 @@ module API
         end
 
         attrs[:labels] = params[:labels] if params[:labels]
+
+        # Convert and filter out invalid confidential flags
+        attrs['confidential'] = to_boolean(attrs['confidential'])
+        attrs.delete('confidential') if attrs['confidential'].nil?
 
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 

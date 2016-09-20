@@ -703,16 +703,24 @@ describe MergeRequest, models: true do
 
   describe "#environments" do
     let(:project)       { create(:project) }
-    let!(:environment)  { create(:environment, project: project) }
-    let!(:environment1) { create(:environment, project: project) }
-    let!(:environment2) { create(:environment, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'selects deployed environments' do
-      create(:deployment, environment: environment, sha: project.commit('master').id)
-      create(:deployment, environment: environment1, sha: project.commit('feature').id)
+      environments = create_list(:environment, 3, project: project)
+      create(:deployment, environment: environments.first, sha: project.commit('master').id)
+      create(:deployment, environment: environments.second, sha: project.commit('feature').id)
 
-      expect(merge_request.environments).to eq [environment]
+      expect(merge_request.environments).to eq [environments.first]
+    end
+
+    context 'without a diff_head_commit' do
+      before do
+        expect(merge_request).to receive(:diff_head_commit).and_return(nil)
+      end
+
+      it 'returns an empty array' do
+        expect(merge_request.environments).to be_empty
+      end
     end
   end
 
@@ -1035,6 +1043,83 @@ describe MergeRequest, models: true do
 
       it "returns false" do
         expect(open_merge_request.closed_without_fork?).to be_falsey
+      end
+    end
+  end
+
+  describe '#closed_without_source_project?' do
+    let(:project)      { create(:project) }
+    let(:user)         { create(:user) }
+    let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+    let(:destroy_service) { Projects::DestroyService.new(fork_project, user) }
+
+    context 'when the merge request is closed' do
+      let(:closed_merge_request) do
+        create(:closed_merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it 'returns false if the source project exists' do
+        expect(closed_merge_request.closed_without_source_project?).to be_falsey
+      end
+
+      it 'returns true if the source project does not exist' do
+        destroy_service.execute
+        closed_merge_request.reload
+
+        expect(closed_merge_request.closed_without_source_project?).to be_truthy
+      end
+    end
+
+    context 'when the merge request is open' do
+      it 'returns false' do
+        expect(subject.closed_without_source_project?).to be_falsey
+      end
+    end
+  end
+
+  describe '#reopenable?' do
+    context 'when the merge request is closed' do
+      it 'returns true' do
+        subject.close
+
+        expect(subject.reopenable?).to be_truthy
+      end
+
+      context 'forked project' do
+        let(:project)      { create(:project) }
+        let(:user)         { create(:user) }
+        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+        let(:merge_request) do
+          create(:closed_merge_request,
+            source_project: fork_project,
+            target_project: project)
+        end
+
+        it 'returns false if unforked' do
+          Projects::UnlinkForkService.new(fork_project, user).execute
+
+          expect(merge_request.reload.reopenable?).to be_falsey
+        end
+
+        it 'returns false if the source project is deleted' do
+          Projects::DestroyService.new(fork_project, user).execute
+
+          expect(merge_request.reload.reopenable?).to be_falsey
+        end
+
+        it 'returns false if the merge request is merged' do
+          merge_request.update_attributes(state: 'merged')
+
+          expect(merge_request.reload.reopenable?).to be_falsey
+        end
+      end
+    end
+
+    context 'when the merge request is opened' do
+      it 'returns false' do
+        expect(subject.reopenable?).to be_falsey
       end
     end
   end

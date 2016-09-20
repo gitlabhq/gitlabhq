@@ -11,7 +11,10 @@ class JwtController < ApplicationController
     service = SERVICES[params[:service]]
     return head :not_found unless service
 
-    result = service.new(@project, @user, auth_params).execute
+    @authentication_result ||= Gitlab::Auth::Result.new
+
+    result = service.new(@authentication_result.project, @authentication_result.actor, auth_params).
+      execute(authentication_abilities: @authentication_result.authentication_abilities)
 
     render json: result, status: result[:http_status]
   end
@@ -20,30 +23,23 @@ class JwtController < ApplicationController
 
   def authenticate_project_or_user
     authenticate_with_http_basic do |login, password|
-      # if it's possible we first try to authenticate project with login and password
-      @project = authenticate_project(login, password)
-      return if @project
+      @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
-      @user = authenticate_user(login, password)
-      return if @user
-
-      render_403
+      render_403 unless @authentication_result.success? &&
+        (@authentication_result.actor.nil? || @authentication_result.actor.is_a?(User))
     end
+  rescue Gitlab::Auth::MissingPersonalTokenError
+    render_missing_personal_token
+  end
+
+  def render_missing_personal_token
+    render plain: "HTTP Basic: Access denied\n" \
+                  "You have 2FA enabled, please use a personal access token for Git over HTTP.\n" \
+                  "You can generate one at #{profile_personal_access_tokens_url}",
+           status: 401
   end
 
   def auth_params
     params.permit(:service, :scope, :account, :client_id)
-  end
-
-  def authenticate_project(login, password)
-    if login == 'gitlab-ci-token'
-      Project.find_by(builds_enabled: true, runners_token: password)
-    end
-  end
-
-  def authenticate_user(login, password)
-    user = Gitlab::Auth.find_with_user_password(login, password)
-    Gitlab::Auth.rate_limit!(request.ip, success: user.present?, login: login)
-    user
   end
 end

@@ -1,3 +1,4 @@
+// Creates the variables for setting up GFM auto-completion
 (function() {
   if (window.GitLab == null) {
     window.GitLab = {};
@@ -8,18 +9,22 @@
     dataLoaded: false,
     cachedData: {},
     dataSource: '',
+    // Emoji
     Emoji: {
       template: '<li>${name} <img alt="${name}" height="20" src="${path}" width="20" /></li>'
     },
+    // Team Members
     Members: {
       template: '<li>${username} <small>${title}</small></li>'
     },
     Labels: {
       template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
     },
+    // Issues and MergeRequests
     Issues: {
       template: '<li><small>${id}</small> ${title}</li>'
     },
+    // Milestones
     Milestones: {
       template: '<li>${title}</li>'
     },
@@ -48,8 +53,11 @@
       }
     },
     setup: function(input) {
+      // Add GFM auto-completion to all input fields, that accept GFM input.
       this.input = input || $('.js-gfm-input');
+      // destroy previous instances
       this.destroyAtWho();
+      // set up instances
       this.setupAtWho();
       if (this.dataSource) {
         if (!this.dataLoading && !this.cachedData) {
@@ -63,6 +71,11 @@
                 return _this.loadData(data);
               });
             };
+          // We should wait until initializations are done
+          // and only trigger the last .setup since
+          // The previous .dataSource belongs to the previous issuable
+          // and the last one will have the **proper** .dataSource property
+          // TODO: Make this a singleton and turn off events when moving to another page
           })(this), 1000);
         }
         if (this.cachedData != null) {
@@ -71,6 +84,7 @@
       }
     },
     setupAtWho: function() {
+      // Emoji
       this.input.atwho({
         at: ':',
         displayTpl: (function(_this) {
@@ -90,6 +104,7 @@
           beforeInsert: this.DefaultOptions.beforeInsert
         }
       });
+      // Team Members
       this.input.atwho({
         at: '@',
         displayTpl: (function(_this) {
@@ -321,13 +336,22 @@
     loadData: function(data) {
       this.cachedData = data;
       this.dataLoaded = true;
+      // load members
       this.input.atwho('load', '@', data.members);
+      // load issues
       this.input.atwho('load', 'issues', data.issues);
+      // load milestones
       this.input.atwho('load', 'milestones', data.milestones);
+      // load merge requests
       this.input.atwho('load', 'mergerequests', data.mergerequests);
+      // load emojis
       this.input.atwho('load', ':', data.emojis);
+      // load labels
       this.input.atwho('load', '~', data.labels);
+      // load commands
       this.input.atwho('load', '/', data.commands);
+      // This trigger at.js again
+      // otherwise we would be stuck with loading until the user types
       return $(':focus').trigger('keyup');
     }
   };

@@ -18,8 +18,7 @@
 }
 
 .commit-row-title {
-  line-height: 1;
-  margin-bottom: 7px;
+  line-height: 1.35;
 
   .notes_count {
     float: right;
@@ -43,6 +42,7 @@
     border: 1px solid $border-gray-dark;
     border-radius: $border-radius-default;
     margin-left: 5px;
+    line-height: 1;
 
     &:hover {
       background-color: darken($gray-light, 10%);
@@ -113,11 +113,13 @@
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid #eee;
+    border-left: 1px solid $btn-gray-hover;
     padding: 10px 15px;
     margin: 10px 0;
-    background: #f9f9f9;
+    background: $gray-light;
     display: none;
+    white-space: pre-line;
+    word-break: normal;
 
     pre {
       border: none;
@@ -134,7 +136,7 @@
 
   .commit-row-info {
     color: $gl-gray;
-    line-height: 1;
+    line-height: 1.35;
 
     a {
       color: $gl-gray;

@@ -37,8 +37,8 @@ module Gitlab
             # See issue #18775.
             #
             if @value.nil?
-              Node::Undefined.new(
-                fabricate_undefined
+              Node::Unspecified.new(
+                fabricate_unspecified
               )
             else
               fabricate(@node, @value)
@@ -47,13 +47,13 @@ module Gitlab
 
           private
 
-          def fabricate_undefined
+          def fabricate_unspecified
             ##
             # If node has a default value we fabricate concrete node
             # with default value.
             #
             if @node.default.nil?
-              fabricate(Node::Null)
+              fabricate(Node::Undefined)
             else
               fabricate(@node, @node.default)
             end

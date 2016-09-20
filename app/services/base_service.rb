@@ -7,12 +7,8 @@ class BaseService
     @project, @current_user, @params = project, user, params.dup
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can?(object, action, subject)
-    abilities.allowed?(object, action, subject)
+    Ability.allowed?(object, action, subject)
   end
 
   def notification_service

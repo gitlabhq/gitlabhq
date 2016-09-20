@@ -11,24 +11,23 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include ProjectFeaturesCompatibility
 
   extend Gitlab::ConfigHelper
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
-  default_value_for :issues_enabled, gitlab_config_features.issues
-  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
-  default_value_for :builds_enabled, gitlab_config_features.builds
-  default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   after_create :ensure_dir_exist
   after_save :ensure_dir_exist, if: :namespace_id_changed?
+  after_initialize :setup_project_feature
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -59,12 +58,12 @@ class Project < ActiveRecord::Base
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
-  belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
-  has_one :board, dependent: :destroy
-
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
+
+  has_one :board, dependent: :destroy
 
   # Project services
   has_many :services
@@ -130,6 +129,7 @@ class Project < ActiveRecord::Base
   has_many :notification_settings, dependent: :destroy, as: :source
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
+  has_one :project_feature, dependent: :destroy
 
   has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
@@ -142,6 +142,7 @@ class Project < ActiveRecord::Base
   has_many :deployments, dependent: :destroy
 
   accepts_nested_attributes_for :variables, allow_destroy: true
+  accepts_nested_attributes_for :project_feature
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -159,8 +160,6 @@ class Project < ActiveRecord::Base
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
-  validates :issues_enabled, :merge_requests_enabled,
-            :wiki_enabled, inclusion: { in: [true, false] }
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -195,6 +194,9 @@ class Project < ActiveRecord::Base
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
+
+  scope :with_builds_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0') }
+  scope :with_issues_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.issues_access_level IS NULL or project_features.issues_access_level > 0') }
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
@@ -391,10 +393,9 @@ class Project < ActiveRecord::Base
   end
 
   def lfs_enabled?
-    return false unless Gitlab.config.lfs.enabled
-    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+    return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
-    self[:lfs_enabled]
+    self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
 
   def repository_storage_path
@@ -1121,7 +1122,7 @@ class Project < ActiveRecord::Base
   end
 
   def enable_ci
-    self.builds_enabled = true
+    project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end
 
   def any_runners?(&block)
@@ -1134,12 +1135,6 @@ class Project < ActiveRecord::Base
 
   def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
-  end
-
-  # TODO (ayufan): For now we use runners_token (backward compatibility)
-  # In 8.4 every build will have its own individual token valid for time of build
-  def valid_build_token?(token)
-    self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   def build_coverage_enabled?
@@ -1286,7 +1281,28 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+  end
+
+  def increment_pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+  end
+
+  def reset_pushes_since_gc
+    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+  end
+
   private
+
+  def pushes_since_gc_redis_key
+    "projects/#{id}/pushes_since_gc"
+  end
+
+  # Prevents the creation of project_feature record for every project
+  def setup_project_feature
+    build_project_feature unless project_feature
+  end
 
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||

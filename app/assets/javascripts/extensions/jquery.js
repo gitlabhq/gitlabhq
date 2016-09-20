@@ -1,3 +1,4 @@
+// Disable an element and add the 'disabled' Bootstrap class
 (function() {
   $.fn.extend({
     disable: function() {
@@ -5,6 +6,7 @@
     }
   });
 
+  // Enable an element and remove the 'disabled' Bootstrap class
   $.fn.extend({
     enable: function() {
       return $(this).removeAttr('disabled').removeClass('disabled');

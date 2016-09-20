@@ -1,6 +1,5 @@
 .page-with-sidebar {
-  padding-top: $header-height;
-  padding-bottom: 25px;
+  padding: $header-height 0 25px;
   transition: padding $sidebar-transition-duration;
 
   &.page-sidebar-pinned {
@@ -15,6 +14,7 @@
     bottom: 0;
     left: 0;
     height: 100%;
+    width: 0;
     overflow: hidden;
     transition: width $sidebar-transition-duration;
     @include box-shadow(2px 0 16px 0 $black-transparent);
@@ -128,10 +128,8 @@
 
     .fa {
       transition: transform .15s;
-    }
 
-    &.is-active {
-      .fa {
+      .page-sidebar-pinned & {
         transform: rotate(90deg);
       }
     }
@@ -152,14 +150,6 @@
   }
 }
 
-.page-sidebar-collapsed {
-  padding-left: 0;
-
-  .sidebar-wrapper {
-    width: 0;
-  }
-}
-
 .page-sidebar-expanded {
   .sidebar-wrapper {
     width: $sidebar_width;
@@ -175,7 +165,7 @@
   }
 }
 
-header.header-pinned-nav {
+header.header-sidebar-pinned {
   @media (min-width: $sidebar-breakpoint) {
     padding-left: ($sidebar_width + $gl-padding);
 

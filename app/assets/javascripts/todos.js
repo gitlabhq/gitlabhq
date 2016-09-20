@@ -13,6 +13,7 @@
       this.perPage = this.el.data('perPage');
       this.clearListeners();
       this.initBtnListeners();
+      this.initFilters();
     }
 
     Todos.prototype.clearListeners = function() {
@@ -25,6 +26,31 @@
       $('.done-todo').on('click', this.doneClicked);
       $('.js-todos-mark-all').on('click', this.allDoneClicked);
       return $('.todo').on('click', this.goToTodoUrl);
+    };
+
+    Todos.prototype.initFilters = function() {
+      new UsersSelect();
+      this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
+      this.initFilterDropdown($('.js-type-search'), 'type');
+      this.initFilterDropdown($('.js-action-search'), 'action_id');
+
+      $('form.filter-form').on('submit', function (event) {
+        event.preventDefault();
+        Turbolinks.visit(this.action + '&' + $(this).serialize());
+      });
+    };
+
+    Todos.prototype.initFilterDropdown = function($dropdown, fieldName, searchFields) {
+      $dropdown.glDropdown({
+        selectable: true,
+        filterable: searchFields ? true : false,
+        fieldName: fieldName,
+        search: { fields: searchFields },
+        data: $dropdown.data('data'),
+        clicked: function() {
+          return $dropdown.closest('form.filter-form').submit();
+        }
+      })
     };
 
     Todos.prototype.doneClicked = function(e) {
@@ -66,7 +92,7 @@
         success: (function(_this) {
           return function(data) {
             $this.remove();
-            $('.js-todos-list').remove();
+            $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
             return _this.updateBadges(data);
           };
         })(this)
@@ -103,16 +129,21 @@
       var currPage, currPages, newPages, pageParams, url;
       currPages = this.getTotalPages();
       currPage = this.getCurrentPage();
+      // Refresh if no remaining Todos
       if (!total) {
         location.reload();
         return;
       }
+      // Do nothing if no pagination
       if (!currPages) {
         return;
       }
       newPages = Math.ceil(total / this.getTodosPerPage());
+      // Includes query strings
       url = location.href;
+      // If new total of pages is different than we have now
       if (newPages !== currPages) {
+        // Redirect to previous page if there's one available
         if (currPages > 1 && currPage === currPages) {
           pageParams = {
             page: currPages - 1
@@ -129,6 +160,7 @@
       if (!todoLink) {
         return;
       }
+      // Allow Meta-Click or Mouse3-click to open in a new tab
       if (e.metaKey || e.which === 2) {
         e.preventDefault();
         return window.open(todoLink, '_blank');

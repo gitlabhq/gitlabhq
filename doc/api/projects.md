@@ -85,7 +85,8 @@ Parameters:
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
     "shared_with_groups": [],
-    "only_allow_merge_if_build_succeeds": false
+    "only_allow_merge_if_build_succeeds": false,
+    "request_access_enabled": false
   },
   {
     "id": 6,
@@ -146,7 +147,8 @@ Parameters:
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
     "shared_with_groups": [],
-    "only_allow_merge_if_build_succeeds": false
+    "only_allow_merge_if_build_succeeds": false,
+    "request_access_enabled": false
   }
 ]
 ```
@@ -283,7 +285,8 @@ Parameters:
       "group_access_level": 10
     }
   ],
-  "only_allow_merge_if_build_succeeds": false
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -453,6 +456,7 @@ Parameters:
 - `public_builds` (optional)
 - `only_allow_merge_if_build_succeeds` (optional)
 - `lfs_enabled` (optional)
+- `request_access_enabled` (optional) - Allow users to request member access.
 
 ### Create project for user
 
@@ -480,6 +484,7 @@ Parameters:
 - `public_builds` (optional)
 - `only_allow_merge_if_build_succeeds` (optional)
 - `lfs_enabled` (optional)
+- `request_access_enabled` (optional) - Allow users to request member access.
 
 ### Edit project
 
@@ -508,13 +513,14 @@ Parameters:
 - `public_builds` (optional)
 - `only_allow_merge_if_build_succeeds` (optional)
 - `lfs_enabled` (optional)
+- `request_access_enabled` (optional) - Allow users to request member access.
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
 
 ### Fork project
 
-Forks a project into the user namespace of the authenticated user.
+Forks a project into the user namespace of the authenticated user or the one provided.
 
 ```
 POST /projects/fork/:id
@@ -523,6 +529,7 @@ POST /projects/fork/:id
 Parameters:
 
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
+- `namespace` (optional) - The ID or path of the namespace that the project will be forked to
 
 ### Star a project
 
@@ -535,7 +542,7 @@ POST /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -587,7 +594,8 @@ Example response:
   "star_count": 1,
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -602,7 +610,7 @@ DELETE /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -654,7 +662,8 @@ Example response:
   "star_count": 0,
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -673,7 +682,7 @@ POST /projects/:id/archive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
@@ -741,7 +750,8 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -760,7 +770,7 @@ POST /projects/:id/unarchive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
@@ -828,7 +838,8 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 

@@ -129,7 +129,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize!(action, subject)
+    def authorize!(action, subject = nil)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -148,7 +148,7 @@ module API
     end
 
     def can?(object, action, subject)
-      abilities.allowed?(object, action, subject)
+      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash
@@ -267,6 +267,10 @@ module API
 
     def not_modified!
       render_api_error!('304 Not Modified', 304)
+    end
+
+    def no_content!
+      render_api_error!('204 No Content', 204)
     end
 
     def render_validation_error!(model)
@@ -406,14 +410,6 @@ module API
       links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
 
       links.join(', ')
-    end
-
-    def abilities
-      @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
     end
 
     def secret_token

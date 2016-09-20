@@ -145,6 +145,14 @@ describe TodoService, services: true do
       end
     end
 
+    describe '#destroy_issue' do
+      it 'refresh the todos count cache for the user' do
+        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+        service.destroy_issue(issue, john_doe)
+      end
+    end
+
     describe '#reassigned_issue' do
       it 'creates a pending todo for new assignee' do
         unassigned_issue.update_attribute(:assignee, john_doe)
@@ -391,6 +399,14 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
+      end
+    end
+
+    describe '#destroy_merge_request' do
+      it 'refresh the todos count cache for the user' do
+        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+        service.destroy_merge_request(mr_assigned, john_doe)
       end
     end
 

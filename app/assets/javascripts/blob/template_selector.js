@@ -13,6 +13,9 @@
       this.buildDropdown();
       this.bindEvents();
       this.onFilenameUpdate();
+
+      this.autosizeUpdateEvent = document.createEvent('Event');
+      this.autosizeUpdateEvent.initEvent('autosize:update', true, false);
     }
 
     TemplateSelector.prototype.buildDropdown = function() {
@@ -66,9 +69,16 @@
       // be added by all subclasses.
     };
 
+    // To be implemented on the extending class
+    // e.g.
+    // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
     TemplateSelector.prototype.requestFileSuccess = function(file, skipFocus) {
       this.editor.setValue(file.content, 1);
       if (!skipFocus) this.editor.focus();
+
+      if (this.editor instanceof jQuery) {
+        this.editor.get(0).dispatchEvent(this.autosizeUpdateEvent);
+      }
     };
 
     TemplateSelector.prototype.startLoadingSpinner = function() {

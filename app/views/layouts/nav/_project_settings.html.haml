@@ -26,7 +26,7 @@
       %span
         Protected Branches
 
-  - if @project.builds_enabled?
+  - if @project.feature_available?(:builds, current_user)
     = nav_link(controller: :runners) do
       = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners' do
         %span
