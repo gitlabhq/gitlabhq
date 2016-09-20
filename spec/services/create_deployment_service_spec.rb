@@ -190,7 +190,7 @@ describe CreateDeploymentService, services: true do
           time = Time.now
           Timecop.freeze(time) { service.execute }
 
-          expect(merge_request.metrics.first_deployed_to_production_at).to eq(time)
+          expect(merge_request.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
         end
 
         it "doesn't set the time if the deploy's environment is not 'production'" do
@@ -216,13 +216,13 @@ describe CreateDeploymentService, services: true do
             time = Time.now
             Timecop.freeze(time) { service.execute }
 
-            expect(merge_request.reload.metrics.first_deployed_to_production_at).to eq(time)
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
 
             # Current deploy
             service = described_class.new(project, user, params)
             Timecop.freeze(time + 12.hours) { service.execute }
 
-            expect(merge_request.reload.metrics.first_deployed_to_production_at).to eq(time)
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
           end
         end
 

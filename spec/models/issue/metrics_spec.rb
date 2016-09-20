@@ -13,7 +13,7 @@ describe Issue::Metrics, models: true do
         metrics = subject.metrics
 
         expect(metrics).to be_present
-        expect(metrics.first_associated_with_milestone_at).to eq(time)
+        expect(metrics.first_associated_with_milestone_at).to be_within(1.second).of(time)
       end
 
       it "does not record the second time an issue is associated with a milestone" do
@@ -24,7 +24,7 @@ describe Issue::Metrics, models: true do
         metrics = subject.metrics
 
         expect(metrics).to be_present
-        expect(metrics.first_associated_with_milestone_at).to eq(time)
+        expect(metrics.first_associated_with_milestone_at).to be_within(1.second).of(time)
       end
     end
 
@@ -36,7 +36,7 @@ describe Issue::Metrics, models: true do
         metrics = subject.metrics
 
         expect(metrics).to be_present
-        expect(metrics.first_added_to_board_at).to eq(time)
+        expect(metrics.first_added_to_board_at).to be_within(1.second).of(time)
       end
 
       it "does not record the second time an issue is associated with a list label" do
@@ -48,7 +48,7 @@ describe Issue::Metrics, models: true do
         metrics = subject.metrics
 
         expect(metrics).to be_present
-        expect(metrics.first_added_to_board_at).to eq(time)
+        expect(metrics.first_added_to_board_at).to be_within(1.second).of(time)
       end
     end
   end

@@ -197,7 +197,7 @@ describe Ci::Pipeline, models: true do
           time = Time.now
           Timecop.freeze(time) { build.run }
 
-          expect(merge_request.metrics.latest_build_started_at).to eq(time)
+          expect(merge_request.metrics.latest_build_started_at).to be_within(1.second).of(time)
         end
 
         it 'clears the build end time' do
@@ -213,7 +213,7 @@ describe Ci::Pipeline, models: true do
           time = Time.now
           Timecop.freeze(time) { build.success }
 
-          expect(merge_request.metrics.latest_build_finished_at).to eq(time)
+          expect(merge_request.metrics.latest_build_finished_at).to be_within(1.second).of(time)
         end
       end
     end
