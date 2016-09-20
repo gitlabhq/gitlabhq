@@ -603,6 +603,7 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+  - Fix import_data wrongly saved as a result of an invalid import_url !5206
 
 v 8.9.9
   - Exclude some pending or inactivated rows in Member scopes
@@ -622,12 +623,6 @@ v 8.9.6
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
   - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
-
-v 8.9.7 (unreleased)
-  - Fix import_data wrongly saved as a result of an invalid import_url
-
-v 8.9.6
-  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
@@ -1894,7 +1889,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.1
+v 8.1.2
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility
