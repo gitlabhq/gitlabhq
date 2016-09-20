@@ -54,16 +54,6 @@ module LabelsHelper
     end
   end
 
-  def can_admin_label(label)
-    subject =
-      case label
-      when GroupLabel then label.group
-      else label.project
-      end
-
-    can?(current_user, :admin_label, subject)
-  end
-
   def edit_label_path(label)
     case label
     when GroupLabel then edit_group_label_path(label.group, label)

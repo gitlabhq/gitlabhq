@@ -21,7 +21,7 @@
           %li.label-subscription{ data: { url: toggle_subscription_label_path(label) } }
             %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
               %span= label_subscription_toggle_button_text(label)
-        - if can_admin_label(label)
+        - if can?(current_user, :admin_label, label)
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
@@ -40,7 +40,7 @@
           = icon('eye', class: 'label-subscribe-button-icon')
           = icon('spinner spin', class: 'label-subscribe-button-loading')
 
-    - if can_admin_label(label)
+    - if can?(current_user, :admin_label, label)
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = icon('pencil-square-o')
