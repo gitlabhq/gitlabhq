@@ -56,6 +56,7 @@ v 8.12.0 (unreleased)
   - Emoji can be awarded on Snippets !4456
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
+  - Spec testing if issue authors can read issues on private projects
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Request only the LDAP attributes we need !6187
   - Center build stage columns in pipeline overview (ClemMakesApps)
