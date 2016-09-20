@@ -1,4 +1,4 @@
-(function() {
+((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- environment_id %>">
@@ -22,7 +22,7 @@
       </div>
     </div>`;
 
-  this.MergeRequestWidget = (function() {
+  global.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
       //
@@ -234,4 +234,4 @@
 
   })();
 
-}).call(this);
+})(window.gl || (window.gl = {}));

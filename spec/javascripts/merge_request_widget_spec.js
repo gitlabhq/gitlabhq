@@ -21,7 +21,7 @@
         gitlab_icon: "gitlab_logo.png",
         builds_path: "http://sampledomain.local/sampleBuildsPath"
       };
-      this["class"] = new MergeRequestWidget(this.opts);
+      this["class"] = new window.gl.MergeRequestWidget(this.opts);
       return this.ciStatusData = {
         "title": "Sample MR title",
         "sha": "12a34bc5",
@@ -65,7 +65,7 @@
       it('should not display a notification on the first check after the widget has been created', function() {
         var spy;
         spy = spyOn(window, 'notify');
-        this["class"] = new MergeRequestWidget(this.opts);
+        this["class"] = new window.gl.MergeRequestWidget(this.opts);
         this["class"].getCIStatus(true);
         return expect(spy).not.toHaveBeenCalled();
       });
