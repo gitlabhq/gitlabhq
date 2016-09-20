@@ -20,7 +20,7 @@
             %span
               Environments
 
-      - if current_user
+      - if can?(current_user, :read_cycle_analytics, @project)
         = nav_link(controller: %w(cycle_analytics)) do
           = link_to project_cycle_analytics_path(@project), title: 'Cycle Analytics' do
             %span
