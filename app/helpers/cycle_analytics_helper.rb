@@ -16,7 +16,7 @@ module CycleAnalyticsHelper
       stats << {
         title: stage_text,
         description: stage_description,
-        value: value ? distance_of_time_in_words(value) : nil
+        value: value && !value.zero? ? distance_of_time_in_words(value) : nil
       }
       stats
     end
