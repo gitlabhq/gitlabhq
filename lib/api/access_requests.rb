@@ -20,7 +20,7 @@ module API
 
           access_requesters = paginate(source.requesters.includes(:user))
 
-          present access_requesters.map(&:user), with: Entities::AccessRequester, access_requesters: access_requesters
+          present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
         end
 
         # Request access to the group/project

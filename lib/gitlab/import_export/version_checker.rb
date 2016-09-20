@@ -24,8 +24,8 @@ module Gitlab
       end
 
       def verify_version!(version)
-        if Gem::Version.new(version) > Gem::Version.new(Gitlab::ImportExport.version)
-          raise Gitlab::ImportExport::Error.new("Import version mismatch: Required <= #{Gitlab::ImportExport.version} but was #{version}")
+        if Gem::Version.new(version) != Gem::Version.new(Gitlab::ImportExport.version)
+          raise Gitlab::ImportExport::Error.new("Import version mismatch: Required #{Gitlab::ImportExport.version} but was #{version}")
         else
           true
         end

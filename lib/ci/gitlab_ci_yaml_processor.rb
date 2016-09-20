@@ -60,7 +60,7 @@ module Ci
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
-        environment: job[:environment],
+        environment: job[:environment_name],
         yaml_variables: yaml_variables(name),
         options: {
           image: job[:image],
@@ -69,6 +69,7 @@ module Ci
           cache: job[:cache],
           dependencies: job[:dependencies],
           after_script: job[:after_script],
+          environment: job[:environment],
         }.compact
       }
     end

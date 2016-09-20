@@ -68,6 +68,11 @@
       border-collapse: separate;
       margin: 0;
       padding: 0;
+      table-layout: fixed;
+
+      .diff-line-num {
+        width: 50px;
+      }
 
       .line_holder td {
         line-height: $code_line_height;
@@ -98,10 +103,6 @@
     }
 
     tr.line_holder.parallel {
-      .old_line, .new_line {
-        min-width: 50px;
-      }
-
       td.line_content.parallel {
         width: 46%;
       }

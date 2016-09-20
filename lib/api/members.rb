@@ -18,11 +18,11 @@ module API
         get ":id/members" do
           source = find_source(source_type, params[:id])
 
-          members = source.members.includes(:user)
-          members = members.joins(:user).merge(User.search(params[:query])) if params[:query]
-          members = paginate(members)
+          users = source.users
+          users = users.merge(User.search(params[:query])) if params[:query]
+          users = paginate(users)
 
-          present members.map(&:user), with: Entities::Member, members: members
+          present users, with: Entities::Member, source: source
         end
 
         # Get a group/project member
