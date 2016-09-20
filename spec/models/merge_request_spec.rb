@@ -524,18 +524,11 @@ describe MergeRequest, models: true do
     end
 
     context 'with unsaved merge request' do
-      let(:project) { create(:project) }
-
-      subject do
-        MergeRequest.new(source_project: project,
-                         target_project: project,
-                         source_branch: 'master',
-                         target_branch: 'feature')
-      end
+      subject { build(:merge_request) }
 
       let!(:pipeline) do
         create(:ci_empty_pipeline,
-               project: project,
+               project: subject.project,
                sha: subject.diff_head_sha,
                ref: subject.source_branch)
       end
