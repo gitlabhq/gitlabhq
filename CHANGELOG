@@ -27,6 +27,7 @@ v 8.12.0 (unreleased)
   - Fix pagination on user snippets page
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
+  - Fix download artifacts button links !6407
   - Sort project variables by key. !6275 (Diego Souza)
   - Ensure specs on sorting of issues in API are deterministic on MySQL
   - Added ability to use predefined CI variables for environment name
