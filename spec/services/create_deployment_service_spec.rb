@@ -190,7 +190,7 @@ describe CreateDeploymentService, services: true do
           time = Time.now
           Timecop.freeze(time) { service.execute }
 
-          expect(merge_request.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
         end
 
         it "doesn't set the time if the deploy's environment is not 'production'" do
@@ -198,7 +198,7 @@ describe CreateDeploymentService, services: true do
           service = described_class.new(project, user, staging_params)
           service.execute
 
-          expect(merge_request.metrics.first_deployed_to_production_at).to be_nil
+          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
         end
 
         it 'does not raise errors if the merge request does not have a metrics record' do
@@ -231,7 +231,7 @@ describe CreateDeploymentService, services: true do
             # Previous deploy
             time = Time.now
             Timecop.freeze(time) { service.execute }
-            merge_request.metrics.update(first_deployed_to_production_at: nil)
+            merge_request.reload.metrics.update(first_deployed_to_production_at: nil)
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
 
