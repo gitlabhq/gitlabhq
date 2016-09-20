@@ -252,7 +252,7 @@ module ApplicationHelper
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
-      issue_search: params[:issue_search],
+      search: params[:search],
       label_name: params[:label_name]
     }
 
@@ -283,23 +283,14 @@ module ApplicationHelper
     end
   end
 
-  def state_filters_text_for(entity, project)
+  def state_filters_text_for(state, records)
     titles = {
       opened: "Open"
     }
 
-    entity_title = titles[entity] || entity.to_s.humanize
-
-    count =
-      if project.nil?
-        nil
-      elsif current_controller?(:issues)
-        project.issues.visible_to_user(current_user).send(entity).count
-      elsif current_controller?(:merge_requests)
-        project.merge_requests.send(entity).count
-      end
-
-    html = content_tag :span, entity_title
+    state_title = titles[state] || state.to_s.humanize
+    count       = records.public_send(state).size
+    html        = content_tag :span, state_title
 
     if count.present?
       html += " "

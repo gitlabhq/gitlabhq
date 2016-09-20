@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace ) }
+  let!(:project) { create(:empty_project, namespace: user.namespace ) }
   let!(:closed_milestone) { create(:closed_milestone, project: project) }
   let!(:milestone) { create(:milestone, project: project) }
 
@@ -12,6 +12,7 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/milestones' do
     it 'returns project milestones' do
       get api("/projects/#{project.id}/milestones", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(milestone.title)
@@ -19,6 +20,7 @@ describe API::API, api: true  do
 
     it 'returns a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones")
+
       expect(response).to have_http_status(401)
     end
 
@@ -44,6 +46,7 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/milestones/:milestone_id' do
     it 'returns a project milestone by id' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
+
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(milestone.title)
       expect(json_response['iid']).to eq(milestone.iid)
@@ -60,11 +63,13 @@ describe API::API, api: true  do
 
     it 'returns 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}")
+
       expect(response).to have_http_status(401)
     end
 
     it 'returns a 404 error if milestone id not found' do
       get api("/projects/#{project.id}/milestones/1234", user)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -72,6 +77,7 @@ describe API::API, api: true  do
   describe 'POST /projects/:id/milestones' do
     it 'creates a new project milestone' do
       post api("/projects/#{project.id}/milestones", user), title: 'new milestone'
+
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new milestone')
       expect(json_response['description']).to be_nil
@@ -80,6 +86,7 @@ describe API::API, api: true  do
     it 'creates a new project milestone with description and due date' do
       post api("/projects/#{project.id}/milestones", user),
         title: 'new milestone', description: 'release', due_date: '2013-03-02'
+
       expect(response).to have_http_status(201)
       expect(json_response['description']).to eq('release')
       expect(json_response['due_date']).to eq('2013-03-02')
@@ -87,6 +94,14 @@ describe API::API, api: true  do
 
     it 'returns a 400 error if title is missing' do
       post api("/projects/#{project.id}/milestones", user)
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'returns a 400 error if params are invalid (duplicate title)' do
+      post api("/projects/#{project.id}/milestones", user),
+        title: milestone.title, description: 'release', due_date: '2013-03-02'
+
       expect(response).to have_http_status(400)
     end
   end
@@ -95,6 +110,7 @@ describe API::API, api: true  do
     it 'updates a project milestone' do
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
         title: 'updated title'
+
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('updated title')
     end
@@ -102,6 +118,7 @@ describe API::API, api: true  do
     it 'returns a 404 error if milestone id not found' do
       put api("/projects/#{project.id}/milestones/1234", user),
         title: 'updated title'
+
       expect(response).to have_http_status(404)
     end
   end
@@ -131,6 +148,7 @@ describe API::API, api: true  do
     end
     it 'returns project issues for a particular milestone' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
@@ -138,11 +156,12 @@ describe API::API, api: true  do
 
     it 'returns a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
+
       expect(response).to have_http_status(401)
     end
 
     describe 'confidential issues' do
-      let(:public_project) { create(:project, :public) }
+      let(:public_project) { create(:empty_project, :public) }
       let(:milestone) { create(:milestone, project: public_project) }
       let(:issue) { create(:issue, project: public_project) }
       let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }

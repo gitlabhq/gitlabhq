@@ -2,6 +2,7 @@ module Ci
   class Pipeline < ActiveRecord::Base
     extend Ci::Model
     include HasStatus
+    include Importable
 
     self.table_name = 'ci_commits'
 
@@ -12,12 +13,12 @@ module Ci
     has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
 
-    validates_presence_of :sha
-    validates_presence_of :ref
-    validates_presence_of :status
-    validate :valid_commit_sha
+    validates_presence_of :sha, unless: :importing?
+    validates_presence_of :ref, unless: :importing?
+    validates_presence_of :status, unless: :importing?
+    validate :valid_commit_sha, unless: :importing?
 
-    after_save :keep_around_commits
+    after_save :keep_around_commits, unless: :importing?
 
     delegate :stages, to: :statuses
 
@@ -241,13 +242,16 @@ module Ci
     end
 
     def build_updated
-      case latest_builds_status
-      when 'pending' then enqueue
-      when 'running' then run
-      when 'success' then succeed
-      when 'failed' then drop
-      when 'canceled' then cancel
-      when 'skipped' then skip
+      with_lock do
+        reload
+        case latest_builds_status
+        when 'pending' then enqueue
+        when 'running' then run
+        when 'success' then succeed
+        when 'failed' then drop
+        when 'canceled' then cancel
+        when 'skipped' then skip
+        end
       end
     end
 

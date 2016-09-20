@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'stringio'
 
 describe Gitlab::Shell, lib: true do
   let(:project) { double('Project', id: 7, path: 'diaspora') }
@@ -68,15 +69,38 @@ describe Gitlab::Shell, lib: true do
     end
   end
 
+  describe '#add_key' do
+    it 'removes trailing garbage' do
+      allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+      expect(Gitlab::Utils).to receive(:system_silent).with(
+        [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
+      )
+
+      gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+    end
+  end
+
   describe Gitlab::Shell::KeyAdder, lib: true do
     describe '#add_key' do
-      it 'normalizes space characters in the key' do
-        io = spy
+      it 'removes trailing garbage' do
+        io = spy(:io)
         adder = described_class.new(io)
 
-        adder.add_key('key-42', "sha-rsa foo\tbar\tbaz")
+        adder.add_key('key-42', "ssh-rsa foo bar\tbaz")
 
-        expect(io).to have_received(:puts).with("key-42\tsha-rsa foo bar baz")
+        expect(io).to have_received(:puts).with("key-42\tssh-rsa foo")
+      end
+
+      it 'raises an exception if the key contains a tab' do
+        expect do
+          described_class.new(StringIO.new).add_key('key-42', "ssh-rsa\tfoobar")
+        end.to raise_error(Gitlab::Shell::Error)
+      end
+
+      it 'raises an exception if the key contains a newline' do
+        expect do
+          described_class.new(StringIO.new).add_key('key-42', "ssh-rsa foobar\nssh-rsa pawned")
+        end.to raise_error(Gitlab::Shell::Error)
       end
     end
   end

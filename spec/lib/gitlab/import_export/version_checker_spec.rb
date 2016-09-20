@@ -23,7 +23,7 @@ describe Gitlab::ImportExport::VersionChecker, services: true do
       it 'shows the correct error message' do
         described_class.check!(shared: shared)
 
-        expect(shared.errors.first).to eq("Import version mismatch: Required <= #{Gitlab::ImportExport.version} but was #{version}")
+        expect(shared.errors.first).to eq("Import version mismatch: Required #{Gitlab::ImportExport.version} but was #{version}")
       end
     end
   end

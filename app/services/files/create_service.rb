@@ -3,7 +3,7 @@ require_relative "base_service"
 module Files
   class CreateService < Files::BaseService
     def commit
-      repository.commit_file(current_user, @file_path, @file_content, @commit_message, @target_branch, false)
+      repository.commit_file(current_user, @file_path, @file_content, @commit_message, @target_branch, false, author_email: @author_email, author_name: @author_name)
     end
 
     def validate
