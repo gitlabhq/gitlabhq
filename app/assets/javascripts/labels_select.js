@@ -166,7 +166,7 @@
                 instance.addInput(this.fieldName, label.id);
               }
             }
-            if ($form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + escape(this.id(label)) + "']").length) {
+            if (this.id(label) && $form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + this.id(label).toString().replace(/'/g, '\\\'') + "']").length) {
               selectedClass.push('is-active');
             }
             if ($dropdown.hasClass('js-multiselect') && removesAll) {
