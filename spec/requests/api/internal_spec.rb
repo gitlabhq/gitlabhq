@@ -100,6 +100,43 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /internal/lfs_authenticate" do
+    before do
+      project.team << [user, :developer]
+    end
+
+    context 'user key' do
+      it 'returns the correct information about the key' do
+        lfs_auth(key.id, project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+      end
+
+      it 'returns a 404 when the wrong key is provided' do
+        lfs_auth(nil, project)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'deploy key' do
+      let(:key) { create(:deploy_key) }
+
+      it 'returns the correct information about the key' do
+        lfs_auth(key.id, project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+      end
+    end
+  end
+
   describe "GET /internal/discover" do
     it do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
@@ -387,6 +424,15 @@ describe API::API, api: true  do
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
+    )
+  end
+
+  def lfs_auth(key_id, project)
+    post(
+      api("/internal/lfs_authenticate"),
+      key_id: key_id,
+      secret_token: secret_token,
+      project: project.path_with_namespace
     )
   end
 end
