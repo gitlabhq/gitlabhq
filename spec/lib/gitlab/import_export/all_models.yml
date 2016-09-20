@@ -1,0 +1,175 @@
+---
+issues:
+- subscriptions
+- award_emoji
+- author
+- assignee
+- updated_by
+- milestone
+- notes
+- label_links
+- labels
+- todos
+- user_agent_detail
+- moved_to
+- events
+events:
+- author
+- project
+- target
+notes:
+- award_emoji
+- project
+- noteable
+- author
+- updated_by
+- resolved_by
+- todos
+- events
+label_links:
+- target
+- label
+label:
+- subscriptions
+- project
+- lists
+- label_links
+- issues
+- merge_requests
+milestone:
+- project
+- issues
+- labels
+- merge_requests
+- participants
+- events
+snippets:
+- author
+- project
+- notes
+releases:
+- project
+project_members:
+- created_by
+- user
+- source
+- project
+merge_requests:
+- subscriptions
+- award_emoji
+- author
+- assignee
+- updated_by
+- milestone
+- notes
+- label_links
+- labels
+- todos
+- target_project
+- source_project
+- merge_user
+- merge_request_diffs
+- merge_request_diff
+- events
+merge_request_diff:
+- merge_request
+pipelines:
+- project
+- user
+- statuses
+- builds
+- trigger_requests
+statuses:
+- project
+- pipeline
+- user
+variables:
+- project
+triggers:
+- project
+- trigger_requests
+deploy_keys:
+- user
+- deploy_keys_projects
+- projects
+services:
+- project
+- service_hook
+hooks:
+- project
+protected_branches:
+- project
+- merge_access_levels
+- push_access_levels
+project:
+- taggings
+- base_tags
+- tag_taggings
+- tags
+- creator
+- group
+- namespace
+- board
+- last_event
+- services
+- campfire_service
+- drone_ci_service
+- emails_on_push_service
+- builds_email_service
+- irker_service
+- pivotaltracker_service
+- hipchat_service
+- flowdock_service
+- assembla_service
+- asana_service
+- gemnasium_service
+- slack_service
+- buildkite_service
+- bamboo_service
+- teamcity_service
+- pushover_service
+- jira_service
+- redmine_service
+- custom_issue_tracker_service
+- bugzilla_service
+- gitlab_issue_tracker_service
+- external_wiki_service
+- forked_project_link
+- forked_from_project
+- forked_project_links
+- forks
+- merge_requests
+- fork_merge_requests
+- issues
+- labels
+- events
+- milestones
+- notes
+- snippets
+- hooks
+- protected_branches
+- project_members
+- users
+- requesters
+- deploy_keys_projects
+- deploy_keys
+- users_star_projects
+- starrers
+- releases
+- lfs_objects_projects
+- lfs_objects
+- project_group_links
+- invited_groups
+- todos
+- notification_settings
+- import_data
+- commit_statuses
+- pipelines
+- builds
+- runner_projects
+- runners
+- variables
+- triggers
+- environments
+- deployments
+- project_feature
