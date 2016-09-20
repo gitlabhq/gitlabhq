@@ -111,6 +111,7 @@ v 8.12.0 (unreleased)
   - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Fix repo title alignment (ClemMakesApps)
   - Change update interval of contacted_at
+  - Add LFS support to SSH !6043
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Don't include 'Created By' tag line when importing from GitHub if there is a linked GitLab account (EspadaV8)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
