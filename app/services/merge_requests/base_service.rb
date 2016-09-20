@@ -35,18 +35,6 @@ module MergeRequests
       end
     end
 
-    def create(merge_request)
-      merge_request = super(merge_request)
-      merge_request.cache_merge_request_closes_issues!(current_user)
-      merge_request
-    end
-
-    def update(merge_request)
-      merge_request = super(merge_request)
-      merge_request.cache_merge_request_closes_issues!(current_user)
-      merge_request
-    end
-
     private
 
     def filter_params
