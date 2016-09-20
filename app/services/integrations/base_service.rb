@@ -5,7 +5,7 @@ module Integrations
         if resource_id
           find_resource
         else
-          collection.search(params[:text]).limit(10)
+          collection.search(params[:text]).limit(5)
         end
 
       generate_response(resource)
@@ -13,32 +13,22 @@ module Integrations
 
     private
 
-    def klass
-      raise NotImplementedError
-    end
-
     def find_resource
       collection.find_by(iid: resource_id)
     end
 
-    def title(*args)
-      raise NotImplementedError
+    def title(resource)
+      format("#{resource.title}")
     end
 
-    def link(*args)
+    def link(resource)
       raise NotImplementedError
     end
 
     def resource_id
-      if params[:text].is_a?(Integer) || params[:text].match(/\A\d+\z/)
-        params[:text].to_i
-      else
-        nil
-      end
-    end
+      data = params[:text].to_s.match(/\A(\$|#|!)?(\d+)\z/)
 
-    def fallback(*args)
-      raise NotImplementedError
+      data ? data[2].to_i : nil
     end
 
     def collection
@@ -46,22 +36,15 @@ module Integrations
     end
 
     def generate_response(resource)
-      if resource.nil?
-        respond_404
-      elsif resource.respond_to?(:count)
-        return generate_response(resource.first) if resource.count == 1
-        return no_search_results if resource.empty?
+      return respond_404 if resource.nil?
+      return single_resource(resource) unless resource.respond_to?(:count)
 
-        {
-          response_type: :ephemeral,
-          text: "Search results for #{params[:text]}",
-          attachments: resource.map { |item| small_attachment(item) }
-        }
+      if resource.empty?
+        no_search_results
+      elsif resource.count == 1
+        single_resource(resource.first)
       else
-        {
-          response_type: :in_channel,
-          attachments: [ large_attachment(resource) ]
-        }
+        multiple_resources(resource)
       end
     end
 
@@ -71,8 +54,23 @@ module Integrations
 
     def no_search_results
       {
-        text: "No search results for #{params[:text]}. :(",
+        text: "No search results for \"#{params[:text]}\". :disappointed:",
         response_type: :ephemeral
+      }
+    end
+
+    def single_resource(resource)
+      {
+        response_type: :in_channel,
+        attachments: [ large_attachment(resource) ]
+      }
+    end
+
+    def multiple_resources(resources)
+      {
+        response_type: :ephemeral,
+        text: "Search results for \"#{params[:text]}\"",
+        attachments: resources.map { |item| small_attachment(item) }
       }
     end
 
@@ -93,17 +91,16 @@ module Integrations
         title: title(issuable),
         title_link: link(issuable),
         text: issuable.description || "", # Slack doesn't like null
-        color: "#C95823"
       }
     end
 
     def fields(issuable)
       result = [
-          {
-              title: 'Author',
-              value: issuable.author.name,
-              short: true
-          }
+        {
+          title: 'Author',
+          value: issuable.author.name,
+          short: true
+        }
       ]
 
       if issuable.assignee

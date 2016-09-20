@@ -17,7 +17,9 @@ class Project < ActiveRecord::Base
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?,
+                                :issues_enabled?, :snippets_enabled?, 
+                                to: :project_feature, allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -141,7 +143,6 @@ class Project < ActiveRecord::Base
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
   has_many :integrations, dependent: :destroy
-
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature

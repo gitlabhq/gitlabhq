@@ -3,11 +3,20 @@
     %h4.prepend-top-0
       Slack Integration (Experimental)
     %p
-      -# TODO
-      In Slack, create a new custom integration, and add a slash commands for each: `/issue`, `/merge-request`, `/pipeline`, and `/snippet`. Enter each token in a new integration here.
+      In Slack, create a new custom integration, and add a slash command for each:
+      = succeed ',' do
+        %code /issue
+      = succeed ',' do
+        %code /merge-request
+      = succeed ',' do
+        %code /pipeline
+      = succeed '.' do
+        %code /snippet
+
+      Enter each token in a new integration here.
 
     %p
-      The URL for slack to POST to is:
+      The URL for Slack to POST to is:
       = integrations_trigger_url
 
     = succeed "." do

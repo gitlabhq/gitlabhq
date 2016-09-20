@@ -1,30 +1,19 @@
 module Integrations
-  class ProjectSnippetService < BaseService
-
+  class ProjectSnippetService < Integrations::BaseService
     private
 
-    def klass
-      ProjectSnippet
+    def collection
+      project.snippets
     end
 
     def find_resource
-      collection.find_by(id: params[:text])
-    end
-
-    def title(snippet)
-      format("$#{snippet.id} #{snippet.title}")
+      collection.find_by(id: resource_id)
     end
 
     def link(snippet)
-      Gitlab::Routing.url_helpers.namespace_project_snippet_url(project.namespace,
-                                                                project, snippet)
-    end
-
-    def attachment(snippet)
-      {
-        text: slack_format(snippet.content),
-        color: '#C95823',
-      }
+      Gitlab::Routing.
+        url_helpers.
+        namespace_project_snippet_url(project.namespace, project, snippet)
     end
 
     def small_attachment(snippet)
@@ -32,8 +21,7 @@ module Integrations
         fallback: snippet.title,
         title: title(snippet),
         title_link: link(snippet),
-        text: snippet.description || "", # Slack doesn't like null
-        color: '#345'
+        text: snippet.content || "", # Slack doesn't like null
       }
     end
 
@@ -41,7 +29,7 @@ module Integrations
       [
         {
           title: 'Author',
-          value: snippet.author,
+          value: snippet.author.name,
           short: true
         }
       ]

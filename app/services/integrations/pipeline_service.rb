@@ -1,6 +1,5 @@
 module Integrations
-  class PipelineService < BaseService
-
+  class PipelineService < Integrations::BaseService
     def execute
       resource =
         if resource_id
@@ -15,19 +14,15 @@ module Integrations
     private
 
     def merge_request_pipeline(iid)
-      project.merge_requests.find_by(iid: iid).pipeline
+      project.merge_requests.find_by(iid: iid).try(:pipeline)
     end
 
     def pipeline_by_ref(ref)
       project.pipelines.where(ref: ref).last
     end
 
-    def klass
-      Pipeline
-    end
-
     def title(pipeline)
-      "##{pipeline.id} Pipeline for #{pipeline.ref}: #{pipeline.status}"
+      "Pipeline for #{pipeline.ref}: #{pipeline.status}"
     end
 
     def link(pipeline)
@@ -41,8 +36,29 @@ module Integrations
         fallback: title(pipeline),
         title: title(pipeline),
         title_link: link(pipeline),
-        color: "#C95823"
+        fields: [
+          fields(pipeline)
+        ]
       }
+    end
+
+    def fields(pipeline)
+      commit = pipeline.commit
+
+      return [] unless commit
+
+      [
+        {
+          title: 'Author',
+          value: commit.author.name,
+          short: true
+        },
+        {
+          title: 'Commit Title',
+          value: commit.title,
+          short: true
+        }
+      ]
     end
   end
 end

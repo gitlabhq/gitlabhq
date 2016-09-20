@@ -6,16 +6,16 @@ RSpec.describe IntegrationsController, type: :controller do
       let(:slack_params) do
         {
           format: :json,
-          "token"=>"24randomcharacters",
-          "team_id"=>"T123456T9",
-          "team_domain"=>"mepmep",
-          "channel_id"=>"C12345678",
-          "channel_name"=>"general",
-          "user_id"=>"U12345678",
-          "user_name"=>"mep",
-          "command"=>"/issue",
-          "text"=>"3",
-          "response_url"=>"https://hooks.slack.com/commands/T123456T9/79958163905/siWqY7Qtx8z0zWFsXBod9VEy"
+          "token" => "24randomcharacters",
+          "team_id" => "T123456T9",
+          "team_domain" => "mepmep",
+          "channel_id" => "C12345678",
+          "channel_name" => "general",
+          "user_id" => "U12345678",
+          "user_name" => "mep",
+          "command" => "/issue",
+          "text" => "3",
+          "response_url" => "https://hooks.slack.com/commands/T123456T9/79958163905/siWqY7Qtx8z0zWFsXBod9VEy"
         }
       end
 

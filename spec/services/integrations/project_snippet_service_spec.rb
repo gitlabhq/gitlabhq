@@ -9,10 +9,10 @@ describe Integrations::ProjectSnippetService, services: true do
   describe '#execute' do
     context 'looking up by ID' do
       let(:snippet) { create(:project_snippet, project: project) }
-      let(:params) { { text: snippet.id } }
+      let(:params) { { text: "$#{snippet.id}" } }
 
-      it 'returns the issue by ID' do
-        expect(subject[:text]).to match /\$\d+\s#{Regexp.quote(snippet.title)}/
+      it 'returns the snippet by ID' do
+        expect(subject[:attachments].first[:fallback]).to eq snippet.title
       end
     end
   end

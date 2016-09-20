@@ -52,6 +52,18 @@ class ProjectFeature < ActiveRecord::Base
     merge_requests_access_level > DISABLED
   end
 
+  def issues_enabled?
+    return true unless issues_access_level
+
+    issues_access_level > DISABLED
+  end
+
+  def snippets_enabled?
+    return true unless snippets_access_level
+
+    snippets_access_level > DISABLED
+  end
+
   private
 
   def get_permission(user, level)

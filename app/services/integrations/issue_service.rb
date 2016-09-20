@@ -1,14 +1,9 @@
 module Integrations
-  class IssueService < BaseService
-
+  class IssueService < Integrations::BaseService
     private
 
-    def klass
-      Issue
-    end
-
-    def title(issue)
-      format("##{issue.iid} #{issue.title}")
+    def collection
+      project.issues
     end
 
     def link(issue)

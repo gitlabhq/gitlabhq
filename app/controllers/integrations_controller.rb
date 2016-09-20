@@ -1,16 +1,14 @@
 class IntegrationsController < ApplicationController
   respond_to :json
 
-  skip_before_filter :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
   skip_before_action :authenticate_user!
 
-  before_action :integration
-
   def trigger
-    service = service(params[:command])
+    triggered_service = service(integration, params[:command])
 
-    if integration && service
-      render json: service.new(project, nil, params).execute
+    if triggered_service
+      render json: triggered_service.new(project, nil, params).execute
     else
       render json: no_integration_found
     end
@@ -33,15 +31,16 @@ class IntegrationsController < ApplicationController
     integration.project
   end
 
-  def service(command)
-    case command
-    when '/issue'
+  def service(integration, command)
+    return nil unless integration
+
+    if command == '/issue' && project.issues_enabled? && project.default_issues_tracker?
       Integrations::IssueService
-    when '/merge-request'
+    elsif command == '/merge-request' && project.merge_requests_enabled?
       Integrations::MergeRequestService
-    when '/pipeline'
+    elsif command == '/pipeline' && project.builds_enabled?
       Integrations::PipelineService
-    when '/snippet'
+    elsif command == '/snippet' && project.snippets_enabled?
       Integrations::ProjectSnippetService
     end
   end

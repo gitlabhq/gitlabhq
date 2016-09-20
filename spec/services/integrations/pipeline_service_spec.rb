@@ -12,7 +12,7 @@ describe Integrations::PipelineService, services: true do
       let(:params) { { text: pipeline.ref } }
 
       it 'returns the pipeline by ID' do
-        expect(subject[:text]).to match /#\d+\ Pipeline\ for\ #{pipeline.ref}: #{pipeline.status}/
+        expect(subject[:attachments].first[:fallback]).to match /Pipeline\ for\ #{pipeline.ref}: #{pipeline.status}/
       end
     end
   end

@@ -1,4 +1,6 @@
 class CreateIntegrations < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :integrations do |t|
       t.references :project, index: true, foreign_key: true

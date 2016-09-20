@@ -12,19 +12,16 @@ describe Integrations::MergeRequestService, services: true do
       let(:mr)     { create(:merge_request, source_project: project) }
 
       it 'returns the issue by ID' do
-        expect(subject[:text]).to match /!\d+\s#{Regexp.quote(mr.title)}/
+        expect(subject[:attachments].first[:fallback]).to eq mr.title
       end
     end
 
     context 'when searching with only one result' do
-      let(:title)  { 'Aint this a String?' }
-      let(:params) { { text: title[2..7] } }
+      let(:params)          { { text: merge_request.title[2..7] } }
+      let!(:merge_request)  { create(:merge_request, source_project: project) }
 
       it 'returns the search results' do
-        create(:merge_request, source_project: project, title: title)
-        create(:merge_request, source_project: project)
-
-        expect(subject[:text]).to match /!\d+\sAint\sthis/
+        expect(subject[:attachments].first[:fallback]).to eq merge_request.title
       end
     end
   end
