@@ -29,7 +29,7 @@ class AddTableMergeRequestMetrics < ActiveRecord::Migration
 
       t.datetime 'latest_build_started_at'
       t.datetime 'latest_build_finished_at'
-      t.datetime 'first_deployed_to_production_at'
+      t.datetime 'first_deployed_to_production_at', index: true
       t.datetime 'merged_at'
 
       t.timestamps null: false

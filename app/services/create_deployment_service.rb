@@ -13,7 +13,7 @@ class CreateDeploymentService < BaseService
       deployable: deployable
     )
 
-    deployment.update_merge_request_metrics
+    deployment.update_merge_request_metrics!
 
     deployment
   end

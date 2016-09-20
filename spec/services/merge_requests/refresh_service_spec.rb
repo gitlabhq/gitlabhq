@@ -200,7 +200,7 @@ describe MergeRequests::RefreshService, services: true do
         allow(refresh_service).to receive(:execute_hooks)
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
 
-        expect(merge_request.reload.issues_closed).to eq([issue])
+        expect(merge_request.reload.closes_issues).to eq([issue])
       end
     end
 

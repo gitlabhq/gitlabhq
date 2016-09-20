@@ -2,8 +2,6 @@ class MergeRequestsClosingIssues < ActiveRecord::Base
   belongs_to :merge_request
   belongs_to :issue
 
-  validates_uniqueness_of :merge_request_id, scope: :issue_id
-
-  validates_presence_of :merge_request
-  validates_presence_of :issue
+  validates :merge_request_id, uniqueness: { scope: :issue_id }, presence: true
+  validates :issue_id, presence: true
 end

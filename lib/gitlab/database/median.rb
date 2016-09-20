@@ -3,11 +3,15 @@ module Gitlab
   module Database
     module Median
       def median_datetime(arel_table, query_so_far, column_sym)
-        if Gitlab::Database.postgresql?
-          pg_median_datetime(arel_table, query_so_far, column_sym)
-        elsif Gitlab::Database.mysql?
-          mysql_median_datetime(arel_table, query_so_far, column_sym)
-        end
+        median_queries =
+          if Gitlab::Database.postgresql?
+            pg_median_datetime_sql(arel_table, query_so_far, column_sym)
+          elsif Gitlab::Database.mysql?
+            mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
+          end
+
+        results = Array.wrap(median_queries).map { |query| Util.run_query(query) }
+        extract_median(results).presence
       end
 
       def extract_median(results)
@@ -22,7 +26,7 @@ module Gitlab
         end
       end
 
-      def mysql_median_datetime(arel_table, query_so_far, column_sym)
+      def mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
         query = arel_table.
                 from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name)).
                 project(average([arel_table[column_sym]], 'median')).
@@ -44,7 +48,7 @@ module Gitlab
         ]
       end
 
-      def pg_median_datetime(arel_table, query_so_far, column_sym)
+      def pg_median_datetime_sql(arel_table, query_so_far, column_sym)
         # Create a CTE with the column we're operating on, row number (after sorting by the column
         # we're operating on), and count of the table we're operating on (duplicated across) all rows
         # of the CTE. For example, if we're looking to find the median of the `projects.star_count`
@@ -59,10 +63,11 @@ module Gitlab
         cte = Arel::Nodes::As.new(
           cte_table,
           arel_table.
-            project(arel_table[column_sym].as(column_sym.to_s),
-                    Arel::Nodes::Over.new(Arel::Nodes::NamedFunction.new("row_number", []),
-                                          Arel::Nodes::Window.new.order(arel_table[column_sym])).as('row_id'),
-                    arel_table.project("COUNT(1)").as('ct')).
+            project(
+              arel_table[column_sym].as(column_sym.to_s),
+              Arel::Nodes::Over.new(Arel::Nodes::NamedFunction.new("row_number", []),
+                                    Arel::Nodes::Window.new.order(arel_table[column_sym])).as('row_id'),
+              arel_table.project("COUNT(1)").as('ct')).
             # Disallow negative values
             where(arel_table[column_sym].gteq(zero_interval)))
 
@@ -70,9 +75,11 @@ module Gitlab
         # by 'where cte.row_id between cte.ct / 2.0 AND cte.ct / 2.0 + 1'). Find the average of the
         # selected rows, and this is the median value.
         cte_table.project(average([extract_epoch(cte_table[column_sym])], "median")).
-          where(Arel::Nodes::Between.new(cte_table[:row_id],
-                                         Arel::Nodes::And.new([(cte_table[:ct] / Arel.sql('2.0')),
-                                                               (cte_table[:ct] / Arel.sql('2.0') + 1)]))).
+          where(Arel::Nodes::Between.new(
+                  cte_table[:row_id],
+                  Arel::Nodes::And.new(
+                    [(cte_table[:ct] / Arel.sql('2.0')),
+                     (cte_table[:ct] / Arel.sql('2.0') + 1)]))).
           with(query_so_far, cte)
       end
 

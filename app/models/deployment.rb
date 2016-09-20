@@ -43,23 +43,30 @@ class Deployment < ActiveRecord::Base
     project.repository.is_ancestor?(commit.id, sha)
   end
 
-  def update_merge_request_metrics
-    if environment.update_merge_request_metrics?
-      merge_requests = project.merge_requests.
-                       joins(:metrics).
-                       where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil }).
-                       where("merge_request_metrics.merged_at <= ?", self.created_at)
+  def update_merge_request_metrics!
+    return unless environment.update_merge_request_metrics?
 
-      if previous_deployment
-        merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.created_at)
+    merge_requests = project.merge_requests.
+                     joins(:metrics).
+                     where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil }).
+                     where("merge_request_metrics.merged_at <= ?", self.created_at)
+
+    if previous_deployment
+      merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.created_at)
+    end
+
+    # Need to use `map` instead of `select` because MySQL doesn't allow `SELECT`ing from the same table
+    # that we're updating.
+    merge_request_ids =
+      if Gitlab::Database.postgresql?
+        merge_requests.select(:id)
+      elsif Gitlab::Database.mysql?
+        merge_requests.map(&:id)
       end
 
-      # Need to use `map` instead of `select` because MySQL doesn't allow `SELECT`ing from the same table
-      # that we're updating.
-      MergeRequest::Metrics.
-        where(merge_request_id: merge_requests.map(&:id), first_deployed_to_production_at: nil).
-        update_all(first_deployed_to_production_at: self.created_at)
-    end
+    MergeRequest::Metrics.
+      where(merge_request_id: merge_request_ids, first_deployed_to_production_at: nil).
+      update_all(first_deployed_to_production_at: self.created_at)
   end
 
   def previous_deployment

@@ -1,26 +1,38 @@
 require 'spec_helper'
 
 describe 'CycleAnalytics#plan', feature: true do
+  extend CycleAnalyticsHelpers::TestGeneration
+
   let(:project) { create(:project) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
   subject { CycleAnalytics.new(project, from: from_date) }
 
-  generate_cycle_analytics_spec(phase: :plan,
-                                data_fn: -> (context) do
-                                  {
-                                    issue: context.create(:issue, project: context.project),
-                                    branch_name: context.random_git_name
-                                  }
-                                end,
-                                start_time_conditions: [["issue associated with a milestone", -> (context, data) { data[:issue].update(milestone: context.create(:milestone, project: context.project)) }],
-                                                        ["list label added to issue", -> (context, data) { data[:issue].update(label_ids: [context.create(:label, lists: [context.create(:list)]).id]) }]],
-                                end_time_conditions:   [["issue mentioned in a commit", -> (context, data) { context.create_commit_referencing_issue(data[:issue], branch_name: data[:branch_name]) }]],
-                                post_fn: -> (context, data) do
-                                  context.create_merge_request_closing_issue(data[:issue], source_branch: data[:branch_name])
-                                  context.merge_merge_requests_closing_issue(data[:issue])
-                                  context.deploy_master
-                                end)
+  generate_cycle_analytics_spec(
+    phase: :plan,
+    data_fn: -> (context) do
+      {
+        issue: context.create(:issue, project: context.project),
+        branch_name: context.random_git_name
+      }
+    end,
+    start_time_conditions: [["issue associated with a milestone",
+                             -> (context, data) do
+                               data[:issue].update(milestone: context.create(:milestone, project: context.project))
+                             end],
+                            ["list label added to issue",
+                             -> (context, data) do
+                               data[:issue].update(label_ids: [context.create(:label, lists: [context.create(:list)]).id])
+                             end]],
+    end_time_conditions:   [["issue mentioned in a commit",
+                             -> (context, data) do
+                               context.create_commit_referencing_issue(data[:issue], branch_name: data[:branch_name])
+                             end]],
+    post_fn: -> (context, data) do
+      context.create_merge_request_closing_issue(data[:issue], source_branch: data[:branch_name])
+      context.merge_merge_requests_closing_issue(data[:issue])
+      context.deploy_master
+    end)
 
   context "when a regular label (instead of a list label) is added to the issue" do
     it "returns nil" do

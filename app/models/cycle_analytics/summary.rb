@@ -6,7 +6,7 @@ class CycleAnalytics
     end
 
     def new_issues
-      @project.issues.where("created_at > ?", @from).count
+      @project.issues.created_after(@from).count
     end
 
     def commits

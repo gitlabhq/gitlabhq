@@ -159,7 +159,3 @@ module CycleAnalyticsHelpers
     end
   end
 end
-
-RSpec.configure do |config|
-  config.extend CycleAnalyticsHelpers::TestGeneration
-end

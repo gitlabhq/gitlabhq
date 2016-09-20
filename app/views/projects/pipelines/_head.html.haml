@@ -20,7 +20,8 @@
             %span
               Environments
 
-      = nav_link(controller: %w(cycle_analytics)) do
-        = link_to project_cycle_analytics_path(@project), title: 'Cycle Analytics' do
-          %span
-            Cycle Analytics
+      - if current_user
+        = nav_link(controller: %w(cycle_analytics)) do
+          = link_to project_cycle_analytics_path(@project), title: 'Cycle Analytics' do
+            %span
+              Cycle Analytics
