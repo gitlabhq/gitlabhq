@@ -44,7 +44,7 @@ POST /projects/:id/repository/files
 ```
 
 ```bash
-curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&content=some%20content&commit_message=create%20a%20new%20file'
+curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20content&commit_message=create%20a%20new%20file'
 ```
 
 Example response:
@@ -61,6 +61,8 @@ Parameters:
 - `file_path` (required) - Full path to new file. Ex. lib/class.rb
 - `branch_name` (required) - The name of branch
 - `encoding` (optional) - 'text' or 'base64'. Text is default.
+- `author_email` (optional) - Specify the commit author's email address
+- `author_name` (optional) - Specify the commit author's name
 - `content` (required) - File content
 - `commit_message` (required) - Commit message
 
@@ -71,7 +73,7 @@ PUT /projects/:id/repository/files
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&content=some%20other%20content&commit_message=update%20file'
+curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20other%20content&commit_message=update%20file'
 ```
 
 Example response:
@@ -88,6 +90,8 @@ Parameters:
 - `file_path` (required) - Full path to file. Ex. lib/class.rb
 - `branch_name` (required) - The name of branch
 - `encoding` (optional) - 'text' or 'base64'. Text is default.
+- `author_email` (optional) - Specify the commit author's email address
+- `author_name` (optional) - Specify the commit author's name
 - `content` (required) - New file content
 - `commit_message` (required) - Commit message
 
@@ -107,7 +111,7 @@ DELETE /projects/:id/repository/files
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&commit_message=delete%20file'
+curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
 ```
 
 Example response:
@@ -123,4 +127,6 @@ Parameters:
 
 - `file_path` (required) - Full path to file. Ex. lib/class.rb
 - `branch_name` (required) - The name of branch
+- `author_email` (optional) - Specify the commit author's email address
+- `author_name` (optional) - Specify the commit author's name
 - `commit_message` (required) - Commit message

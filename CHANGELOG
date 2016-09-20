@@ -5,25 +5,33 @@ v 8.12.0 (unreleased)
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
   - Add ability to fork to a specific namespace using API. (ritave)
+  - Allow to set request_access_enabled for groups and projects
   - Cleanup misalignments in Issue list view !6206
+  - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
   - Filter tags by name !6121
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
+  - Fix note form hint showing slash commands supported for commits.
   - Make push events have equal vertical spacing.
+  - API: Ensure invitees are not returned in Members API.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
+  - Display stages in valid order in stages dropdown on build page
+  - Only update projects.last_activity_at once per hour when creating a new event
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
+  - Fix long comments in diffs messing with table width
   - Fix pagination on user snippets page
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
+  - Fix download artifacts button links !6407
   - Sort project variables by key. !6275 (Diego Souza)
   - Ensure specs on sorting of issues in API are deterministic on MySQL
   - Added ability to use predefined CI variables for environment name
@@ -48,11 +56,13 @@ v 8.12.0 (unreleased)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
   - Fix bug stopping issue description being scrollable after selecting issue template
   - Remove suggested colors hover underline (ClemMakesApps)
+  - Fix jump to discussion button being displayed on commit notes
   - Shorten task status phrase (ClemMakesApps)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
   - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
+  - Do not write SSH public key 'comments' to authorized_keys !6381
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Hides merge request button on branches page is user doesn't have permissions
@@ -62,6 +72,7 @@ v 8.12.0 (unreleased)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
+  - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
   - Fix inconsistent background color for filter input field (ClemMakesApps)
@@ -89,6 +100,7 @@ v 8.12.0 (unreleased)
   - Fix missing flash messages on service edit page (airatshigapov)
   - Added project-specific enable/disable setting for LFS !5997
   - Added group-specific enable/disable setting for LFS !6164
+  - Add optional 'author' param when making commits. !5822 (dandunckelman)
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
@@ -106,6 +118,7 @@ v 8.12.0 (unreleased)
   - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Fix repo title alignment (ClemMakesApps)
   - Change update interval of contacted_at
+  - Add LFS support to SSH !6043
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Don't include 'Created By' tag line when importing from GitHub if there is a linked GitLab account (EspadaV8)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
@@ -140,19 +153,23 @@ v 8.12.0 (unreleased)
   - Refactor the triggers page and documentation !6217
   - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
+  - Let the user choose a namespace and name on GitHub imports
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
   - Ensure validation messages are shown within the milestone form
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
   - Fix URLs with anchors in wiki !6300 (houqp)
+  - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
   - Clean environment variables when running git hooks
+  - Add UX improvements for merge request version diffs
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
+  - Add UX improvements for merge request version diffs
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
@@ -224,6 +241,7 @@ v 8.11.0
   - Add Koding (online IDE) integration
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
+  - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix adding line comments on the initial commit to a repo !5900
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
@@ -277,6 +295,7 @@ v 8.11.0
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
+  - Fix branch title trailing space on hover (ClemMakesApps)
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - API: Add enpoints for pipelines

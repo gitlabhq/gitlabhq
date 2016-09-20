@@ -37,7 +37,7 @@ feature 'Issues filter reset button', feature: true, js: true do
 
   context 'when a text search has been conducted' do
     it 'resets the text search filter' do
-      visit_issues(project, issue_search: 'Bug')
+      visit_issues(project, search: 'Bug')
       expect(page).to have_css('.issue', count: 1)
 
       reset_filters
@@ -67,7 +67,7 @@ feature 'Issues filter reset button', feature: true, js: true do
 
   context 'when all filters have been applied' do
     it 'resets all filters' do
-      visit_issues(project, assignee_id: user.id, author_id: user.id, milestone_title: milestone.title, label_name: bug.name, issue_search: 'Bug')
+      visit_issues(project, assignee_id: user.id, author_id: user.id, milestone_title: milestone.title, label_name: bug.name, search: 'Bug')
       expect(page).to have_css('.issue', count: 0)
 
       reset_filters

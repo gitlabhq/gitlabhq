@@ -16,6 +16,21 @@ describe Repository, models: true do
     merge_commit_id = repository.merge(user, merge_request, commit_options)
     repository.commit(merge_commit_id)
   end
+  let(:author_email) { FFaker::Internet.email }
+
+  # I have to remove periods from the end of the name
+  # This happened when the user's name had a suffix (i.e. "Sr.")
+  # This seems to be what git does under the hood. For example, this commit:
+  #
+  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
+  #
+  # results in this:
+  #
+  # $ git show --pretty
+  # ...
+  # Author: Foo Sr <foo@example.com>
+  # ...
+  let(:author_name) { FFaker::Name.name.chomp("\.") }
 
   describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -132,7 +147,31 @@ describe Repository, models: true do
     end
   end
 
-  describe 'commit_file' do
+  describe "#commit_dir" do
+    it "commits a change that creates a new directory" do
+      expect do
+        repository.commit_dir(user, 'newdir', 'Create newdir', 'master')
+      end.to change { repository.commits('master').count }.by(1)
+
+      newdir = repository.tree('master', 'newdir')
+      expect(newdir.path).to eq('newdir')
+    end
+
+    context "when an author is specified" do
+      it "uses the given email/name to set the commit's author" do
+        expect do
+          repository.commit_dir(user, "newdir", "Add newdir", 'master', author_email: author_email, author_name: author_name)
+        end.to change { repository.commits('master').count }.by(1)
+
+        last_commit = repository.commit
+
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
+    end
+  end
+
+  describe "#commit_file" do
     it 'commits change to a file successfully' do
       expect do
         repository.commit_file(user, 'CHANGELOG', 'Changelog!',
@@ -144,9 +183,23 @@ describe Repository, models: true do
 
       expect(blob.data).to eq('Changelog!')
     end
+
+    context "when an author is specified" do
+      it "uses the given email/name to set the commit's author" do
+        expect do
+          repository.commit_file(user, "README", 'README!', 'Add README',
+                                'master', true, author_email: author_email, author_name: author_name)
+        end.to change { repository.commits('master').count }.by(1)
+
+        last_commit = repository.commit
+
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
+    end
   end
 
-  describe 'update_file' do
+  describe "#update_file" do
     it 'updates filename successfully' do
       expect do
         repository.update_file(user, 'NEWLICENSE', 'Copyright!',
@@ -159,6 +212,85 @@ describe Repository, models: true do
 
       expect(files).not_to include('LICENSE')
       expect(files).to include('NEWLICENSE')
+    end
+
+    context "when an author is specified" do
+      it "uses the given email/name to set the commit's author" do
+        repository.commit_file(user, "README", 'README!', 'Add README', 'master', true)
+
+        expect do
+          repository.update_file(user, 'README', "Updated README!",
+                                branch: 'master',
+                                previous_path: 'README',
+                                message: 'Update README',
+                                author_email: author_email,
+                                author_name: author_name)
+        end.to change { repository.commits('master').count }.by(1)
+
+        last_commit = repository.commit
+
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
+    end
+  end
+
+  describe "#remove_file" do
+    it 'removes file successfully' do
+      repository.commit_file(user, "README", 'README!', 'Add README', 'master', true)
+
+      expect do
+        repository.remove_file(user, "README", "Remove README", 'master')
+      end.to change { repository.commits('master').count }.by(1)
+
+      expect(repository.blob_at('master', 'README')).to be_nil
+    end
+
+    context "when an author is specified" do
+      it "uses the given email/name to set the commit's author" do
+        repository.commit_file(user, "README", 'README!', 'Add README', 'master', true)
+
+        expect do
+          repository.remove_file(user, "README", "Remove README", 'master', author_email: author_email, author_name: author_name)
+        end.to change { repository.commits('master').count }.by(1)
+
+        last_commit = repository.commit
+
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
+    end
+  end
+
+  describe '#get_committer_and_author' do
+    it 'returns the committer and author data' do
+      options = repository.get_committer_and_author(user)
+      expect(options[:committer][:email]).to eq(user.email)
+      expect(options[:author][:email]).to eq(user.email)
+    end
+
+    context 'when the email/name are given' do
+      it 'returns an object containing the email/name' do
+        options = repository.get_committer_and_author(user, email: author_email, name: author_name)
+        expect(options[:author][:email]).to eq(author_email)
+        expect(options[:author][:name]).to eq(author_name)
+      end
+    end
+
+    context 'when the email is given but the name is not' do
+      it 'returns the committer as the author' do
+        options = repository.get_committer_and_author(user, email: author_email)
+        expect(options[:author][:email]).to eq(user.email)
+        expect(options[:author][:name]).to eq(user.name)
+      end
+    end
+
+    context 'when the name is given but the email is not' do
+      it 'returns nil' do
+        options = repository.get_committer_and_author(user, name: author_name)
+        expect(options[:author][:email]).to eq(user.email)
+        expect(options[:author][:name]).to eq(user.name)
+      end
     end
   end
 

@@ -16,11 +16,11 @@
     },
     initSearch: function() {
       this.timer = null;
-      return $('#issue_search').off('keyup').on('keyup', function() {
+      return $('#issuable_search').off('keyup').on('keyup', function() {
         clearTimeout(this.timer);
         return this.timer = setTimeout(function() {
           var $form, $input, $search;
-          $search = $('#issue_search');
+          $search = $('#issuable_search');
           $form = $('.js-filter-form');
           $input = $("input[name='" + ($search.attr('name')) + "']", $form);
           if ($input.length === 0) {
