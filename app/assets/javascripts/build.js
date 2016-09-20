@@ -27,10 +27,11 @@
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      $('#js-build-scroll > a').off('click').on('click', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
-        this.initScrollButtonAffix();
+        this.initScrollButtons();
       }
       if (this.build_status === "running" || this.build_status === "pending") {
         $('#autoscroll-button').on('click', function() {
@@ -106,7 +107,7 @@
       }
     };
 
-    Build.prototype.initScrollButtonAffix = function() {
+    Build.prototype.initScrollButtons = function() {
       var $body, $buildScroll, $buildTrace;
       $buildScroll = $('#js-build-scroll');
       $body = $('body');
@@ -163,6 +164,14 @@
       var stage = e.currentTarget.text;
       this.updateStageDropdownText(stage);
       this.populateJobs(stage);
+    };
+
+    Build.prototype.stepTrace = function(e) {
+      e.preventDefault();
+      $currentTarget = $(e.currentTarget);
+      $.scrollTo($currentTarget.attr('href'), {
+        offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+      });
     };
 
     return Build;
