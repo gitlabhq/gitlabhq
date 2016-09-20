@@ -14,25 +14,38 @@
           New label
 
   .labels
-    - if can?(current_user, :admin_label, @project)
+    - unless @project_labels.empty?
       -# Only show it in the first page
-      - hide = @project.labels.empty? || (params[:page].present? && params[:page] != '1')
-      .prioritized-labels{ class: ('hide' if hide) }
-        %h5 Prioritized Labels
-        %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
-          %p.empty-message{ class: ('hidden' unless @prioritized_labels.empty?) } No prioritized labels yet
-          - if @prioritized_labels.present?
-            = render @prioritized_labels
-    .other-labels
+      - hide = params[:page].present? && params[:page] != '1'
       - if can?(current_user, :admin_label, @project)
-        %h5{ class: ('hide' if hide) } Other Labels
-      - if @labels.present?
-        %ul.content-list.manage-labels-list.js-other-labels
-          = render @labels
-        = paginate @labels, theme: 'gitlab'
-      - else
-        .nothing-here-block
-          - if can?(current_user, :admin_label, @project)
-            Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
-          - else
-            No labels created
+        .prioritized-labels{ class: ('hide' if hide) }
+          %h5 Prioritized Labels
+          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
+            %p.empty-message{ class: ('hidden' unless @prioritized_labels.empty?) } No prioritized labels yet
+            - if @prioritized_labels.present?
+              = render partial: 'label', collection: @prioritized_labels, as: :label
+
+      .group-labels{ class: ('hide' if hide || @project.group.blank?) }
+        %h5
+          = icon('folder-open')
+          Group Labels
+        %ul.content-list.manage-labels-list.js-group-labels
+          %p.empty-message{ class: ('hidden' unless @group_labels.empty?) } No group labels
+          - if @group_labels.present?
+            = render partial: 'label', collection: @group_labels, as: :label
+
+      .project-labels
+        %h5{ class: ('hide' if hide) }
+          = icon('bookmark')
+          Project Labels
+        %ul.content-list.manage-labels-list.js-project-labels
+          %p.empty-message{ class: ('hidden' unless @labels.empty?) } No project labels
+          - if @labels.present?
+            = render @labels
+            = paginate @labels, theme: 'gitlab'
+    - else
+      .nothing-here-block
+        - if can?(current_user, :admin_label, @project)
+          Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
+        - else
+          No labels created yet.

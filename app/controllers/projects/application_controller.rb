@@ -44,6 +44,10 @@ class Projects::ApplicationController < ApplicationController
     @project
   end
 
+  def project_labels
+    @project_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+  end
+
   def repository
     @repository ||= project.repository
   end

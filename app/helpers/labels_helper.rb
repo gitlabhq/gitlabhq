@@ -68,6 +68,49 @@ module LabelsHelper
     end
   end
 
+  def can_admin_label(label)
+    subject =
+      case label
+      when GroupLabel then label.group
+      else label.project
+      end
+
+    can?(current_user, :admin_label, subject)
+  end
+
+  def edit_label_path(label)
+    case label
+    when GroupLabel then edit_group_label_path(label.group, label)
+    else edit_namespace_project_label_path(label.project.namespace, label.project, label)
+    end
+  end
+
+  def destroy_label_path(label)
+    case label
+    when GroupLabel then group_label_path(label.group, label)
+    else namespace_project_label_path(label.project.namespace, label.project, label)
+    end
+  end
+
+  def label_type_icon(label, options = {})
+    title, icon =
+      case label
+      when GroupLabel then ['Group', 'folder-open']
+      else ['Project', 'bookmark']
+      end
+
+    options[:class] ||= ''
+    options[:class] << ' has-tooltip js-label-type'
+
+    content_tag :span,
+      class: options[:class],
+      data: { 'placement' => 'top' },
+      title: title,
+      aria: { label: title } do
+      icon(icon, base: true)
+    end
+  end
+
   def project_label_names
     @project.labels.pluck(:title)
   end

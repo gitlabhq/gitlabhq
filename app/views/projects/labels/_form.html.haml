@@ -30,4 +30,4 @@
       = f.submit 'Save changes', class: 'btn btn-save js-save-button'
     - else
       = f.submit 'Create Label', class: 'btn btn-create js-save-button'
-    = link_to "Cancel", namespace_project_labels_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = link_to 'Cancel', namespace_project_labels_path(@project.namespace, @project), class: 'btn btn-cancel'

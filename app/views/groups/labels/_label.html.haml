@@ -1,6 +1,6 @@
 - label_css_id = dom_id(label)
 - open_issues_count = label.open_issues_count(current_user)
-- open_merge_requests_count = label.open_merge_requests_count
+- open_merge_requests_count = label.open_merge_requests_count(current_user)
 
 %li{id: label_css_id, data: { id: label.id } }
   = render 'label_row', label: label

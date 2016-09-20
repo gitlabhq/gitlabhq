@@ -101,16 +101,16 @@ class Label < ActiveRecord::Base
     end
   end
 
-  def open_issues_count(user = nil)
-    issues.visible_to_user(user).opened.count
+  def open_issues_count(user = nil, project = nil)
+    issues_count(user, project_id: project.try(:id) || project_id, state: 'opened')
   end
 
-  def closed_issues_count(user = nil)
-    issues.visible_to_user(user).closed.count
+  def closed_issues_count(user = nil, project = nil)
+    issues_count(user, project_id: project.try(:id) || project_id, state: 'closed')
   end
 
-  def open_merge_requests_count
-    merge_requests.opened.count
+  def open_merge_requests_count(user = nil, project = nil)
+    merge_requests_count(user, project_id: project.try(:id) || project_id, state: 'opened')
   end
 
   def template?
@@ -126,6 +126,18 @@ class Label < ActiveRecord::Base
   end
 
   private
+
+  def issues_count(user, params = {})
+    IssuesFinder.new(user, { label_name: title, scope: 'all' }.merge(params))
+                .execute
+                .count
+  end
+
+  def merge_requests_count(user, params = {})
+    MergeRequestsFinder.new(user, { label_name: title, scope: 'all' }.merge(params))
+                       .execute
+                       .count
+  end
 
   def project_label?
     type.blank? && !template?

@@ -48,13 +48,13 @@ class Projects::IssuesController < Projects::ApplicationController
     )
 
     @issue  = @noteable = @project.issues.new(issue_params)
-    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+    @labels = project_labels
 
     respond_with(@issue)
   end
 
   def edit
-    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+    @labels = project_labels
 
     respond_with(@issue)
   end

@@ -263,7 +263,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
-    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+    @labels = project_labels
   end
 
   def update

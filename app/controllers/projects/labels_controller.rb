@@ -11,13 +11,15 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
+    @project_labels = project_labels
+    @prioritized_labels = project_labels.prioritized
+    @group_labels = @project.group.labels.unprioritized if @project.group.present?
     @labels = @project.labels.unprioritized.page(params[:page])
-    @prioritized_labels = @project.labels.prioritized
 
     respond_to do |format|
       format.html
       format.json do
-        render json: LabelsFinder.new(current_user, project_id: @project.id).execute
+        render json: @project_labels
       end
     end
   end
@@ -68,6 +70,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def destroy
     @label.destroy
+    @project_labels = project_labels
 
     respond_to do |format|
       format.html do
@@ -80,6 +83,8 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def remove_priority
     respond_to do |format|
+      label = project_labels.find(params[:id])
+
       if label.update_attribute(:priority, nil)
         format.json { render json: label }
       else
@@ -92,7 +97,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def set_priorities
     Label.transaction do
       params[:label_ids].each_with_index do |label_id, index|
-        label = @project.labels.find_by_id(label_id)
+        label = project_labels.find_by_id(label_id)
         label.update_attribute(:priority, index) if label
       end
     end
