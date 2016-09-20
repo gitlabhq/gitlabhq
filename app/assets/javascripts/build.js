@@ -37,6 +37,7 @@
         this.initScrollButtonAffix();
       }
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
+        // Bind autoscroll button to follow build output
         $('#autoscroll-button').on('click', function() {
           var state;
           state = $(this).data("state");
@@ -47,20 +48,15 @@
             $(this).data("state", "enabled");
             return $(this).text("Disable autoscroll");
           }
-        //
-        // Bind autoscroll button to follow build output
-        //
         });
         Build.interval = setInterval((function(_this) {
+          // Check for new build output if user still watching build page
+          // Only valid for runnig build when output changes during time
           return function() {
-            if (window.location.href.split("#").first() === _this.pageUrl) {
+            if (_this.location() === _this.pageUrl) {
               return _this.getBuildTrace();
             }
           };
-        //
-        // Check for new build output if user still watching build page
-        // Only valid for runnig build when output changes during time
-        //
         })(this), 4000);
       }
     }
@@ -77,6 +73,10 @@
       this.$sidebar.niceScroll();
       this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       this.$document.off('scroll.translateSidebar').on('scroll.translateSidebar', this.translateSidebar.bind(this));
+    };
+
+    Build.prototype.location = function() {
+      return window.location.href.split("#")[0];
     };
 
     Build.prototype.getInitialBuildTrace = function() {
