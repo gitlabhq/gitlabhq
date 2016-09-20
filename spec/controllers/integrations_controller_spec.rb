@@ -42,7 +42,7 @@ RSpec.describe IntegrationsController, type: :controller do
 
             expect(response).to have_http_status(200)
             expect(json_response['response_type']).to eq 'in_channel'
-            expect(json_response['text']).to match /#\d+\s#{Regexp.quote(issue.title)}/
+            expect(json_response['attachments']).not_to eq nil
           end
         end
       end

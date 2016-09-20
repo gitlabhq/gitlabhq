@@ -37,10 +37,10 @@ class IntegrationsController < ApplicationController
     case command
     when '/issue'
       Integrations::IssueService
-    when '/merge_request'
+    when '/merge-request'
       Integrations::MergeRequestService
-    when '/environment'
-      Integrations::EnvironmentService
+    when '/pipeline'
+      Integrations::PipelineService
     when '/snippet'
       Integrations::ProjectSnippetService
     end

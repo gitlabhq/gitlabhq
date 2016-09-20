@@ -27,7 +27,7 @@ module Integrations
     end
 
     def title(pipeline)
-      "[##{pipeline.id} Pipeline for #{pipeline.ref}: #{pipeline.status}](#{link(pipeline)})"
+      "##{pipeline.id} Pipeline for #{pipeline.ref}: #{pipeline.status}"
     end
 
     def link(pipeline)
@@ -36,9 +36,11 @@ module Integrations
                                                                  pipeline)
     end
 
-    def attachment(pipeline)
+    def large_attachment(pipeline)
       {
-        text: "Status: #{pipeline.status}",
+        fallback: title(pipeline),
+        title: title(pipeline),
+        title_link: link(pipeline),
         color: "#C95823"
       }
     end

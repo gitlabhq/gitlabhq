@@ -12,14 +12,15 @@ describe Integrations::IssueService, services: true do
       let(:params) { { text: issue.iid } }
 
       it 'returns the issue by IID' do
-        expect(subject[:text]).to match /#\d+\s#{Regexp.quote(issue.title)}/
+        expect(subject[:response_type]).to be :in_channel
+        expect(subject[:attachments].count).to be 1
       end
 
       context 'the IID is passed as string' do
         let(:params) { { text: issue.iid.to_s } }
 
         it 'returns the issue by IID' do
-          expect(subject[:text]).to match /#\d+\s#{Regexp.quote(issue.title)}/
+          expect(subject[:attachments].first[:fallback]).to match /#{Regexp.quote(issue.title)}/
         end
       end
     end

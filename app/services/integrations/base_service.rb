@@ -13,6 +13,22 @@ module Integrations
 
     private
 
+    def klass
+      raise NotImplementedError
+    end
+
+    def find_resource
+      collection.find_by(iid: resource_id)
+    end
+
+    def title(*args)
+      raise NotImplementedError
+    end
+
+    def link(*args)
+      raise NotImplementedError
+    end
+
     def resource_id
       if params[:text].is_a?(Integer) || params[:text].match(/\A\d+\z/)
         params[:text].to_i
@@ -21,32 +37,8 @@ module Integrations
       end
     end
 
-    def klass
+    def fallback(*args)
       raise NotImplementedError
-    end
-
-    def find_resource
-      raise NotImplementedError
-    end
-
-    def title
-      raise NotImplementedError
-    end
-
-    def link(*args)
-      raise NotImplementedError
-    end
-
-    # Used when returning a collection
-    def to_attachment(resource)
-      {
-          "title": "Title",
-          "text": "Testing *right now!*",
-          "mrkdwn_in": [
-              "text",
-              "pretext"
-          ]
-      }
     end
 
     def collection
@@ -61,18 +53,14 @@ module Integrations
         return no_search_results if resource.empty?
 
         {
-          text: "Search results for #{params[:text]}",
           response_type: :ephemeral,
-          attachments: resource.map { |item| to_attachment(item) }
+          text: "Search results for #{params[:text]}",
+          attachments: resource.map { |item| small_attachment(item) }
         }
       else
         {
-          text: slack_format(title(resource)),
           response_type: :in_channel,
-          mrkdwn_in: [
-              :text,
-              :pretext
-          ]
+          attachments: [ large_attachment(resource) ]
         }
       end
     end
@@ -84,8 +72,7 @@ module Integrations
     def no_search_results
       {
         text: "No search results for #{params[:text]}. :(",
-        response_type: :ephemeral,
-        attachments: []
+        response_type: :ephemeral
       }
     end
 
@@ -94,6 +81,40 @@ module Integrations
         text: "404 not found! Please make you use the right identifier. :boom:",
         response_type: :ephemeral
       }
+    end
+
+    def large_attachment(issuable)
+      small_attachment(issuable).merge(fields: fields(issuable))
+    end
+
+    def small_attachment(issuable)
+      {
+        fallback: issuable.title,
+        title: title(issuable),
+        title_link: link(issuable),
+        text: issuable.description || "", # Slack doesn't like null
+        color: "#C95823"
+      }
+    end
+
+    def fields(issuable)
+      result = [
+          {
+              title: 'Author',
+              value: issuable.author.name,
+              short: true
+          }
+      ]
+
+      if issuable.assignee
+        result << {
+          title: 'Assignee',
+          value: issuable.assignee.name,
+          short: true
+        }
+      end
+
+      result
     end
   end
 end

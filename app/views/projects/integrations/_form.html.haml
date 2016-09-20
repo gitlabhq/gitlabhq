@@ -1,18 +1,24 @@
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
     %h4.prepend-top-0
-      Integrations
+      Slack Integration (Experimental)
     %p
-      Integrations allow services to communicate with GitLab to enrich the experience.
-      = succeed "." do
-        = link_to "Read more about integrations", help_page_path("integrations")
+      -# TODO
+      In Slack, create a new custom integration, and add a slash commands for each: `/issue`, `/merge-request`, `/pipeline`, and `/snippet`. Enter each token in a new integration here.
+
+    %p
+      The URL for slack to POST to is:
+      = integrations_trigger_url
+
+    = succeed "." do
+      = link_to "Read more about Slack integration", help_page_path("integrations")
 
   = form_for [@project.namespace.becomes(Namespace), @project, @integration], html: { class: 'col-lg-9' } do |f|
     = form_errors(@integration)
 
     .form-group
       = f.label :name, 'Name', class: 'label-light'
-      = f.text_field :name, required: true, class: 'form-control'
+      = f.text_field :name, required: true, class: 'form-control',  placeholder: 'Slack issue command'
     .form-group
       = f.label :external_token, 'External token', class: 'label-light'
       = f.text_field :external_token, class: 'form-control'

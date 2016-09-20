@@ -1,6 +1,11 @@
 - page_title "Integrations"
 %h3.page-title Integrations
-%p.light Integrations allow other services to request data on this project.
+
+%p
+  Project integrations allow GitLab to respond to inbound webhooks from other applications. Currently GitLab has experimental support for Slack slash commands.
+
+= succeed "." do
+  = link_to "Read more about integrations", help_page_path("integrations")
 
 %div
   - if can?(current_user, :create_integration, @project)
@@ -15,7 +20,7 @@
           %tr
             %th Name
             %th Enabled since
-        - @integrations.sort_by(&:type).each do |integration|
+        - @integrations.sort_by(&:name).each do |integration|
           %tr
             %td
               = link_to edit_namespace_project_integration_path(@project.namespace, @project, integration.id) do
