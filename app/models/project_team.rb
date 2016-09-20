@@ -233,28 +233,26 @@ class ProjectTeam
 
     return invited_members unless project_shared_with_group?
 
-    project.project_group_links.includes(group: [:group_members]).each do |group_link|
-      invited_group = group_link.group
-      im = invited_group.members
+    project.project_group_links.includes(group: [:group_members]).each do |link|
+      invited_group_members = link.group.members
 
       if level
-        int_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
+        numeric_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
 
-        # Skip group members if we ask for masters
-        # but max group access is developers
-        next if int_level > group_link.group_access
+        # If we're asked for a level that's higher than the group's access,
+        # there's nothing left to do
+        next if numeric_level > link.group_access
 
-        # If we ask for developers and max
-        # group access is developers we need to provide
-        # both group master, developers as devs
-        if int_level == group_link.group_access
-          im = im.where("access_level >= ?", group_link.group_access)
+        # Make sure we include everyone _above_ the requested level as well
+        if numeric_level == link.group_access
+          invited_group_members = invited_group_members
+            .where("access_level >= ?", link.group_access)
         else
-          im = im.send(level)
+          invited_group_members = invited_group_members.send(level)
         end
       end
 
-      invited_members << im
+      invited_members << invited_group_members
     end
 
     invited_members.flatten.compact
