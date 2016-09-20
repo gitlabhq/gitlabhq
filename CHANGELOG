@@ -66,6 +66,7 @@ v 8.12.0 (unreleased)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
+  - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
   - Fix inconsistent background color for filter input field (ClemMakesApps)
