@@ -1,6 +1,7 @@
 # Workflow
 
 - [Change your time zone](timezone.md)
+- [Cycle Analytics](../user/project/cycle_analytics.md)
 - [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
