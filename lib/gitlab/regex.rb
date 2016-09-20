@@ -44,7 +44,7 @@ module Gitlab
     end
 
     def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'. "
+      "can contain only letters, digits, '_', '-', '@' and '.'."
     end
 
     def file_path_regex
@@ -52,7 +52,7 @@ module Gitlab
     end
 
     def file_path_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'. Separate directories with a '/'. "
+      "can contain only letters, digits, '_', '-', '@' and '.'. Separate directories with a '/'."
     end
 
     def directory_traversal_regex
@@ -60,7 +60,7 @@ module Gitlab
     end
 
     def directory_traversal_regex_message
-      "cannot include directory traversal. "
+      "cannot include directory traversal."
     end
 
     def archive_formats_regex
