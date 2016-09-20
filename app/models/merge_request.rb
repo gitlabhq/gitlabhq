@@ -751,7 +751,7 @@ class MergeRequest < ActiveRecord::Base
       where(sha: all_commits_sha, ref: source_branch)
   end
 
-  # Note that this would also return SHA from dangling commits
+  # Note that this could also return SHA from now dangling commits
   def all_commits_sha
     if persisted?
       merge_request_diffs.flat_map(&:commits_sha).uniq
