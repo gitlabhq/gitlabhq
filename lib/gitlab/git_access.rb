@@ -8,12 +8,13 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }
     GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
 
-    attr_reader :actor, :project, :protocol, :user_access
+    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 
-    def initialize(actor, project, protocol)
+    def initialize(actor, project, protocol, authentication_abilities:)
       @actor    = actor
       @project  = project
       @protocol = protocol
+      @authentication_abilities = authentication_abilities
       @user_access = UserAccess.new(user, project: project)
     end
 
@@ -79,15 +80,29 @@ module Gitlab
     end
 
     def user_download_access_check
-      unless user_access.can_do_action?(:download_code)
+      unless user_can_download_code? || build_can_download_code?
         return build_status_object(false, "You are not allowed to download code from this project.")
       end
 
       build_status_object(true)
     end
 
+    def user_can_download_code?
+      authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_code)
+    end
+
+    def build_can_download_code?
+      authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
+    end
+
     def user_push_access_check(changes)
-      return build_status_object(true) if changes.blank?
+      unless authentication_abilities.include?(:push_code)
+        return build_status_object(false, "You are not allowed to upload code for this project.")
+      end
+
+      if changes.blank?
+        return build_status_object(true)
+      end
 
       return build_status_object(false, "A repository for this project does not exist yet.") unless project.repository.exists?
 

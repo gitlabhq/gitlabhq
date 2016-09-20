@@ -18,5 +18,9 @@ class HistoricalData < ActiveRecord::Base
     def at(date)
       find_by(date: date)
     end
+
+    def max_historical_user_count
+      HistoricalData.during(1.year.ago..Date.today).maximum(:active_user_count) || 0
+    end
   end
 end

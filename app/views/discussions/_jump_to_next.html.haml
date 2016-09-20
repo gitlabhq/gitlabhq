@@ -1,3 +1,4 @@
+- diff_notes_disabled = (@merge_request_diff.latest? && !!@start_sha) if @merge_request_diff
 - discussion = local_assigns.fetch(:discussion, nil)
 - if current_user
   %jump-to-discussion{ "inline-template" => true, ":discussion-id" => "'#{discussion.try(:id)}'" }
@@ -5,5 +6,6 @@
       %button.btn.btn-default.discussion-next-btn.has-tooltip{ "@click" => "jumpToNextUnresolvedDiscussion",
         title: "Jump to next unresolved discussion",
         "aria-label" => "Jump to next unresolved discussion",
-        data: { container: "body" } }
+        data: { container: "body" },
+        disabled: diff_notes_disabled }
         = custom_icon("next_discussion")

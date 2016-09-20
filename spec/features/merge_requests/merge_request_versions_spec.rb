@@ -21,7 +21,7 @@ feature 'Merge Request versions', js: true, feature: true do
   describe 'switch between versions' do
     before do
       page.within '.mr-version-dropdown' do
-        find('.btn-link').click
+        find('.btn-default').click
         click_link 'version 1'
       end
     end
@@ -42,12 +42,12 @@ feature 'Merge Request versions', js: true, feature: true do
   describe 'compare with older version' do
     before do
       page.within '.mr-version-compare-dropdown' do
-        find('.btn-link').click
+        find('.btn-default').click
         click_link 'version 1'
       end
     end
 
-    it 'should has correct value in the compare dropdown' do
+    it 'should have correct value in the compare dropdown' do
       page.within '.mr-version-compare-dropdown' do
         expect(page).to have_content 'version 1'
       end
@@ -63,6 +63,14 @@ feature 'Merge Request versions', js: true, feature: true do
 
     it 'show diff between new and old version' do
       expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
+    end
+
+    it 'should return to latest version when "Show latest version" button is clicked' do
+      click_link 'Show latest version'
+      page.within '.mr-version-dropdown' do
+        expect(page).to have_content 'latest version'
+      end
+      expect(page).to have_content '8 changed files'
     end
   end
 end

@@ -53,11 +53,6 @@
       this.$protectedBranch.on('click', this.onClickCreateWildcard.bind(this));
     }
 
-    onClickCreateWildcard() {
-      this.$dropdown.data('glDropdown').remote.execute();
-      this.$dropdown.data('glDropdown').selectRowAtIndex(0);
-    }
-
     getProtectedBranches(term, callback) {
       if (this.selectedBranch) {
         callback(gon.open_branches.concat(this.selectedBranch));

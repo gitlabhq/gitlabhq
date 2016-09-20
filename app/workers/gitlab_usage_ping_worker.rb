@@ -1,7 +1,6 @@
 class GitlabUsagePingWorker
   LEASE_TIMEOUT = 86400
 
-  include LicenseHelper
   include Sidekiq::Worker
   include HTTParty
 
@@ -16,7 +15,7 @@ class GitlabUsagePingWorker
 
     begin
       HTTParty.post(url,
-                    body: license_usage_data.to_json,
+                    body: Gitlab::UsageData.to_json,
                     headers: { 'Content-type' => 'application/json' }
                    )
     rescue HTTParty::Error => e

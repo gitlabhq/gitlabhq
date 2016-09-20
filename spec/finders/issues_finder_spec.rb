@@ -7,8 +7,8 @@ describe IssuesFinder do
   let(:project2) { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project1) }
   let(:label) { create(:label, project: project2) }
-  let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone) }
-  let(:issue2) { create(:issue, author: user, assignee: user, project: project2) }
+  let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
+  let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
   let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
   let!(:label_link) { create(:label_link, label: label, target: issue2) }
 
@@ -140,6 +140,22 @@ describe IssuesFinder do
 
         it 'returns issues with no labels' do
           expect(issues).to contain_exactly(issue1, issue3)
+        end
+      end
+
+      context 'filtering by issue term' do
+        let(:params) { { search: 'git' } }
+
+        it 'returns issues with title and description match for search term' do
+          expect(issues).to contain_exactly(issue1, issue2)
+        end
+      end
+
+      context 'filtering by issue iid' do
+        let(:params) { { search: issue3.to_reference } }
+
+        it 'returns issue with iid match' do
+          expect(issues).to contain_exactly(issue3)
         end
       end
 

@@ -16,6 +16,8 @@ module Files
                           params[:file_content]
                         end
       @last_commit_sha = params[:last_commit_sha]
+      @author_email    = params[:author_email]
+      @author_name     = params[:author_name]
 
       # Validate parameters
       validate

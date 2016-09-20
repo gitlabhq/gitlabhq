@@ -14,12 +14,20 @@ module Ci
       end
 
       def authenticate_build_token!(build)
-        token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
-        forbidden! unless token && build.valid_token?(token)
+        forbidden! unless build_token_valid?(build)
       end
 
       def runner_registration_token_valid?
-        params[:token] == current_application_settings.runners_registration_token
+        ActiveSupport::SecurityUtils.variable_size_secure_compare(
+          params[:token],
+          current_application_settings.runners_registration_token)
+      end
+
+      def build_token_valid?(build)
+        token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
+
+        # We require to also check `runners_token` to maintain compatibility with old version of runners
+        token && (build.valid_token?(token) || build.project.valid_runners_token?(token))
       end
 
       def update_runner_last_contact(save: true)
