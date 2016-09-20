@@ -10,19 +10,30 @@ describe 'CycleAnalytics#test', feature: true do
                                 data_fn: lambda do |context|
                                   issue = context.create(:issue, project: context.project)
                                   merge_request = context.create_merge_request_closing_issue(issue)
-                                  { pipeline: context.create(:ci_pipeline, ref: "refs/heads/#{merge_request.source_branch}", sha: merge_request.diff_head_sha) }
+                                  {
+                                    pipeline: context.create(:ci_pipeline, ref: merge_request.source_branch, sha: merge_request.diff_head_sha, project: context.project),
+                                    issue: issue
+                                  }
                                 end,
                                 start_time_conditions: [["pipeline is started", -> (context, data) { data[:pipeline].run! }]],
-                                end_time_conditions:   [["pipeline is finished", -> (context, data) { data[:pipeline].succeed! }]])
+                                end_time_conditions:   [["pipeline is finished", -> (context, data) { data[:pipeline].succeed! }]],
+                                post_fn: -> (context, data) do
+                                  context.merge_merge_requests_closing_issue(data[:issue])
+                                  context.deploy_master
+                                end)
 
   context "when the pipeline is for a regular merge request (that doesn't close an issue)" do
     it "returns nil" do
       5.times do
-        merge_request = create(:merge_request)
+        issue = create(:issue, project: project)
+        merge_request = create_merge_request_closing_issue(issue)
         pipeline = create(:ci_pipeline, ref: "refs/heads/#{merge_request.source_branch}", sha: merge_request.diff_head_sha)
 
         pipeline.run!
         pipeline.succeed!
+
+        merge_merge_requests_closing_issue(issue)
+        deploy_master
       end
 
       expect(subject.test).to be_nil
@@ -36,6 +47,8 @@ describe 'CycleAnalytics#test', feature: true do
 
         pipeline.run!
         pipeline.succeed!
+
+        deploy_master
       end
 
       expect(subject.test).to be_nil
@@ -51,6 +64,9 @@ describe 'CycleAnalytics#test', feature: true do
 
         pipeline.run!
         pipeline.drop!
+
+        merge_merge_requests_closing_issue(issue)
+        deploy_master
       end
 
       expect(subject.test).to be_nil
@@ -66,6 +82,9 @@ describe 'CycleAnalytics#test', feature: true do
 
         pipeline.run!
         pipeline.cancel!
+
+        merge_merge_requests_closing_issue(issue)
+        deploy_master
       end
 
       expect(subject.test).to be_nil

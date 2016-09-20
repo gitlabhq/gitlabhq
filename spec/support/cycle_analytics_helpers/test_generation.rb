@@ -18,8 +18,9 @@ module CycleAnalyticsHelpers
     #                         `context` (no lexical scope, so need to do `context.create` for factories, for example) and `data` (from the `data_fn`).
     #                         Each `condition_fn` is expected to implement a case which consitutes the end of the given cycle analytics phase.
     #          before_end_fn: This function is run before calling the end time conditions. Used for setup that needs to be run between the start and end conditions.
+    #                post_fn: Code that needs to be run after running the end time conditions.
 
-    def generate_cycle_analytics_spec(phase:, data_fn:, start_time_conditions:, end_time_conditions:, before_end_fn: nil)
+    def generate_cycle_analytics_spec(phase:, data_fn:, start_time_conditions:, end_time_conditions:, before_end_fn: nil, post_fn: nil)
       combinations_of_start_time_conditions = (1..start_time_conditions.size).flat_map { |size| start_time_conditions.combination(size).to_a }
       combinations_of_end_time_conditions = (1..end_time_conditions.size).flat_map { |size| end_time_conditions.combination(size).to_a }
 
@@ -43,6 +44,8 @@ module CycleAnalyticsHelpers
                 end_time_conditions.each do |condition_name, condition_fn|
                   Timecop.freeze(end_time) { condition_fn[self, data] }
                 end
+
+                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
 
                 end_time - start_time
               end
@@ -73,6 +76,8 @@ module CycleAnalyticsHelpers
                   end_time_conditions.each do |condition_name, condition_fn|
                     Timecop.freeze(end_time) { condition_fn[self, data] }
                   end
+
+                  Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
                 end
 
                 # Turn off the stub before checking assertions
@@ -99,6 +104,8 @@ module CycleAnalyticsHelpers
                   Timecop.freeze(end_time) { condition_fn[self, data] }
                 end
 
+                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+
                 expect(subject.send(phase)).to be_nil
               end
             end
@@ -115,6 +122,8 @@ module CycleAnalyticsHelpers
                 end_time_conditions.each_with_index do |(condition_name, condition_fn), index|
                   Timecop.freeze(end_time + index.days) { condition_fn[self, data] }
                 end
+
+                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
               end
 
               expect(subject.send(phase)).to be_nil
@@ -132,6 +141,8 @@ module CycleAnalyticsHelpers
                 start_time_conditions.each do |condition_name, condition_fn|
                   Timecop.freeze(start_time) { condition_fn[self, data] }
                 end
+
+                post_fn[self, data] if post_fn
               end
 
               expect(subject.send(phase)).to be_nil

@@ -1,12 +1,12 @@
 module CycleAnalyticsHelpers
-  def create_commit_referencing_issue(issue)
-    branch_name = random_git_name
+  def create_commit_referencing_issue(issue, branch_name: random_git_name)
     project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
 
   def create_commit(message, project, user, branch_name)
     filename = random_git_name
+    oldrev = project.repository.commit(branch_name).sha
 
     options = {
       committer: project.repository.user_to_committer(user),
@@ -20,14 +20,17 @@ module CycleAnalyticsHelpers
 
     GitPushService.new(project,
                        user,
-                       oldrev: project.repository.commit(branch_name).sha,
+                       oldrev: oldrev,
                        newrev: commit_sha,
                        ref: 'refs/heads/master').execute
   end
 
-  def create_merge_request_closing_issue(issue, message: nil)
-    source_branch = random_git_name
-    project.repository.add_branch(user, source_branch, 'master')
+  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil)
+    if !source_branch || project.repository.commit(source_branch).blank?
+      source_branch = random_git_name
+      project.repository.add_branch(user, source_branch, 'master')
+    end
+
     sha = project.repository.commit_file(user, random_git_name, "content", "commit message", source_branch, false)
     project.repository.commit(sha)
 
