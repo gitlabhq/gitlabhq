@@ -1,0 +1,19 @@
+- noteable = @sent_notification.noteable
+- noteable_type = @sent_notification.noteable_type.humanize(capitalize: false)
+- noteable_text = %(#{noteable.title} (#{noteable.to_reference}))
+
+- page_title "Unsubscribe", noteable_text, @sent_notification.noteable_type.humanize.pluralize, @sent_notification.project.name_with_namespace
+
+
+%h3.page-title
+  Unsubscribe from #{noteable_type} #{noteable_text}
+
+%p
+  = succeed '?' do
+    Are you sure you want to unsubscribe from #{noteable_type}
+    = link_to noteable_text, url_for([@sent_notification.project.namespace.becomes(Namespace), @sent_notification.project, noteable])
+
+%p
+  = link_to 'Unsubscribe', unsubscribe_sent_notification_path(@sent_notification, force: true),
+            class: 'btn btn-primary append-right-10'
+  = link_to 'Cancel', new_user_session_path, class: 'btn append-right-10'

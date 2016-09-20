@@ -108,6 +108,12 @@ class Notify < BaseMailer
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
     headers['X-GitLab-Reply-Key'] = reply_key
 
+    if !@labels_url && @sent_notification && @sent_notification.unsubscribable?
+      headers['List-Unsubscribe'] = unsubscribe_sent_notification_url(@sent_notification, force: true)
+
+      @sent_notification_url = unsubscribe_sent_notification_url(@sent_notification)
+    end
+
     if Gitlab::IncomingEmail.enabled?
       address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
       address.display_name = @project.name_with_namespace
