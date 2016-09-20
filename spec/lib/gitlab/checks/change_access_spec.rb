@@ -171,11 +171,66 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
       context 'file name rules' do
         # Notice that the commit used creates a file named 'README'
-        let(:push_rule) { create(:push_rule, file_name_regex: 'READ*') }
+        context 'file name regex check' do
+          let(:push_rule) { create(:push_rule, file_name_regex: 'READ*') }
 
-        it "returns an error if a new or renamed filed doesn't match the file name regex" do
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq("File name \"README\" is prohibited by the pattern 'READ*'")
+          it "returns an error if a new or renamed filed doesn't match the file name regex" do
+            expect(subject.status).to be(false)
+            expect(subject.message).to eq("File name README was blacklisted by the pattern READ*.")
+          end
+        end
+
+        context 'blacklisted files check' do
+          let(:push_rule) { create(:push_rule, prevent_secrets: true) }
+          let(:checker) { described_class.new(changes, project: project, user_access: user_access) }
+
+          it "returns status true if there is no blacklisted files" do
+            new_rev = nil
+
+            white_listed =
+              [
+                'readme.txt', 'any/ida_rsa.pub', 'any/id_dsa.pub', 'any_2/id_ed25519.pub',
+                'random_file.pdf', 'folder/id_ecdsa.pub', 'docs/aws/credentials.md', 'ending_withhistory'
+              ]
+
+            white_listed.each do |file_path|
+              old_rev = 'be93687618e4b132087f430a4d8fc3a609c9b77c'
+              old_rev = new_rev if new_rev
+              new_rev = project.repository.commit_file(user, file_path, "commit #{file_path}", "commit #{file_path}", "master", false)
+
+              allow(project.repository).to receive(:new_commits).and_return(
+                project.repository.commits_between(old_rev, new_rev)
+              )
+
+              expect(checker.exec.status).to be(true)
+            end
+          end
+
+          it "returns an error if a new or renamed filed doesn't match the file name regex" do
+            new_rev = nil
+
+            black_listed =
+              [
+                'aws/credentials', '.ssh/personal_rsa', 'config/server_rsa', '.ssh/id_rsa', '.ssh/id_dsa',
+                '.ssh/personal_dsa', 'config/server_ed25519', 'any/id_ed25519', '.ssh/personal_ecdsa', 'config/server_ecdsa',
+                'any_place/id_ecdsa', 'some_pLace/file.key', 'other_PlAcE/other_file.pem', 'bye_bug.history, pg_sql_history'
+              ]
+
+            black_listed.each do |file_path|
+              old_rev = 'be93687618e4b132087f430a4d8fc3a609c9b77c'
+              old_rev = new_rev if new_rev
+              new_rev = project.repository.commit_file(user, file_path, "commit #{file_path}", "commit #{file_path}", "master", false)
+
+              allow(project.repository).to receive(:new_commits).and_return(
+                project.repository.commits_between(old_rev, new_rev)
+              )
+
+              result = checker.exec
+
+              expect(result.status).to be(false)
+              expect(result.message).to include("File name #{file_path} was blacklisted by the pattern")
+            end
+          end
         end
       end
 

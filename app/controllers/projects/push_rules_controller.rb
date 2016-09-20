@@ -28,6 +28,6 @@ class Projects::PushRulesController < Projects::ApplicationController
   # Only allow a trusted parameter "white list" through.
   def push_rule_params
     params.require(:push_rule).permit(:deny_delete_tag, :delete_branch_regex,
-      :commit_message_regex, :force_push_regex, :author_email_regex, :member_check, :file_name_regex, :max_file_size)
+      :commit_message_regex, :force_push_regex, :author_email_regex, :member_check, :file_name_regex, :max_file_size, :prevent_secrets)
   end
 end
