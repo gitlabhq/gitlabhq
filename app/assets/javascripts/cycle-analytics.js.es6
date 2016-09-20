@@ -52,7 +52,7 @@
       });
 
       data.stats.forEach((item) => {
-        item.value = item.value || '-';
+        item.value = item.value || '- - -';
       })
 
       return data;
