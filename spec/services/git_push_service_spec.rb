@@ -278,7 +278,9 @@ describe GitPushService, services: true do
       it "when pushing a branch for the first time with an existing branch permission configured" do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
-        create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
+        create(:protected_branch, :no_one_can_push, :developers_can_merge,
+               :remove_default_access_levels,
+               project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
         expect_any_instance_of(ProtectedBranches::CreateService).not_to receive(:execute)
