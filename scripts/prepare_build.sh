@@ -27,9 +27,15 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     cp "$PHANTOMJS_FILE/bin/phantomjs" "/usr/bin/"
     popd
 
+
     # Try to install packages
     retry 'apt-get update -yqqq; apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
-      libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
+	   libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
+
+    apt-get install -qqy software-properties-common
+    # Add PPA for updating git, we need software-properties-common
+    add-apt-repository ppa:git-core/ppa
+    retry 'apt-get update -yqqq; apt-get -o dif::cache::archives="vendor/apt" install -yqq --force-yes git'
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
