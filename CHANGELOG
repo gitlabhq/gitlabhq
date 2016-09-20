@@ -146,6 +146,7 @@ v 8.12.0 (unreleased)
   - Refactor the triggers page and documentation !6217
   - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
+  - Let the user choose a namespace and name on GitHub imports
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
   - Ensure validation messages are shown within the milestone form
