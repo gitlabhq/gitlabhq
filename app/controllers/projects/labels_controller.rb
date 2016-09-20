@@ -97,8 +97,9 @@ class Projects::LabelsController < Projects::ApplicationController
   def set_priorities
     Label.transaction do
       params[:label_ids].each_with_index do |label_id, index|
-        label = labels.find_by_id(label_id)
-        label.update_attribute(:priority, index) if label
+        next unless labels.where(id: label_id).any?
+
+        Label.where(id: label_id).update_all(priority: index)
       end
     end
 
