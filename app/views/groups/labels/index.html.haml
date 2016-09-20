@@ -17,7 +17,7 @@
       Group Labels
     - if @labels.present?
       %ul.content-list.manage-labels-list.js-group-labels
-        = render partial: 'label', collection: @labels, as: :label
+        = render partial: 'shared/label', collection: @labels, as: :label
         = paginate @labels, theme: 'gitlab'
     - else
       .nothing-here-block

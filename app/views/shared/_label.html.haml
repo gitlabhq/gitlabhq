@@ -18,7 +18,7 @@
           = link_to_label(label) do
             = pluralize open_issues_count, 'open issue'
         - if current_user
-          %li.label-subscription{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+          %li.label-subscription{ data: { url: toggle_subscription_label_path(label) } }
             %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
               %span= label_subscription_toggle_button_text(label)
         - if can_admin_label(label)
@@ -34,7 +34,7 @@
       = pluralize open_issues_count, 'open issue'
 
     - if current_user
-      .label-subscription.inline{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+      .label-subscription.inline{ data: { url: toggle_subscription_label_path(label) } }
         %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label), data: { toggle: "tooltip", status: label_subscription_status(label) } }
           %span.sr-only= label_subscription_toggle_button_text(label)
           = icon('eye', class: 'label-subscribe-button-icon')

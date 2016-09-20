@@ -23,7 +23,7 @@
           %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
             %p.empty-message{ class: ('hidden' unless @prioritized_labels.empty?) } No prioritized labels yet
             - if @prioritized_labels.present?
-              = render partial: 'label', collection: @prioritized_labels, as: :label
+              = render partial: 'shared/label', collection: @prioritized_labels, as: :label
 
       .group-labels{ class: ('hide' if hide || @project.group.blank?) }
         %h5
@@ -32,7 +32,7 @@
         %ul.content-list.manage-labels-list.js-group-labels
           %p.empty-message{ class: ('hidden' unless @group_labels.empty?) } No group labels
           - if @group_labels.present?
-            = render partial: 'label', collection: @group_labels, as: :label
+            = render partial: 'shared/label', collection: @group_labels, as: :label
 
       .project-labels
         %h5{ class: ('hide' if hide) }
@@ -41,7 +41,7 @@
         %ul.content-list.manage-labels-list.js-project-labels
           %p.empty-message{ class: ('hidden' unless @project_labels.empty?) } No project labels
           - if @project_labels.present?
-            = render @project_labels
+            = render partial: 'shared/label', collection: @project_labels, as: :label
             = paginate @project_labels, theme: 'gitlab'
     - else
       .nothing-here-block
