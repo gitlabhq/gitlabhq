@@ -9,10 +9,6 @@ module Files
     def validate
       super
 
-      if project.above_size_limit?
-        raise_error(size_limit_error_message)
-      end
-
       if @file_path =~ Gitlab::Regex.directory_traversal_regex
         raise_error(
           'Your changes could not be committed, because the file name ' +

@@ -1,4 +1,6 @@
 module LfsHelper
+  include Gitlab::Routing.url_helpers
+
   def require_lfs_enabled!
     return if Gitlab.config.lfs.enabled
 
@@ -16,7 +18,7 @@ module LfsHelper
     return if upload_request? && lfs_upload_access?
 
     if project.public? || (user && user.can?(:read_project, project))
-      if project.above_size_limit? || objects_exceeded_limit?
+      if project.above_size_limit? || objects_exceed_repo_limit?
         render_size_error
       else
         render_lfs_forbidden
@@ -41,25 +43,18 @@ module LfsHelper
 
   def objects_exceed_repo_limit?
     return false unless project.size_limit_enabled?
+    return @limit_exceeded if defined?(@limit_exceeded)
 
-    objects_size = 0
+    size_of_objects = objects.sum { |o| o[:size] }
 
-    objects.each do |object|
-      objects_size += object[:size]
-    end
-
-    @limit_exceeded = true if (project.aggregated_repository_size + objects_size.to_mb) > project.repo_size_limit
-  end
-
-  def objects_exceeded_limit?
-    @limit_exceeded ||= false
+    @limit_exceeded = (project.repository_and_lfs_size + size_of_objects.to_mb) > project.actual_size_limit
   end
 
   def render_lfs_forbidden
     render(
       json: {
         message: 'Access forbidden. Check your access level.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: help_url,
       },
       content_type: "application/vnd.git-lfs+json",
       status: 403
@@ -70,7 +65,7 @@ module LfsHelper
     render(
       json: {
         message: 'Not found.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: help_url,
       },
       content_type: "application/vnd.git-lfs+json",
       status: 404
@@ -80,8 +75,8 @@ module LfsHelper
   def render_size_error
     render(
       json: {
-        message: 'This repository has exceeded its storage limit. Please contact your GitLab admin.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        message: Gitlab::RepositorySizeError.new(project).push_error,
+        documentation_url: help_url,
       },
       content_type: "application/vnd.git-lfs+json",
       status: 406

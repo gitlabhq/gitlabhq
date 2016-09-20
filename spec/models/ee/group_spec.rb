@@ -86,7 +86,7 @@ describe Group, models: true do
     end
   end
 
-  describe '#repo_size_limit' do
+  describe '#actual_size_limit' do
     let(:group) { build(:group) }
 
     before do
@@ -94,13 +94,13 @@ describe Group, models: true do
     end
 
     it 'returns the value set globally' do
-      expect(group.repo_size_limit).to eq(50)
+      expect(group.actual_size_limit).to eq(50)
     end
 
     it 'returns the value set locally' do
       group.update_attribute(:repository_size_limit, 75)
 
-      expect(group.repo_size_limit).to eq(75)
+      expect(group.actual_size_limit).to eq(75)
     end
   end
 end

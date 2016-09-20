@@ -34,10 +34,6 @@ module Files
       error(ex.message)
     end
 
-    def size_limit_error_message
-      "Your changes could not be committed, because this repository has exceeded its size limit of #{project.repo_size_limit}MB by #{project.size_to_remove}MB"
-    end
-
     private
 
     def different_branch?
@@ -50,6 +46,10 @@ module Files
 
     def validate
       allowed = ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(@target_branch)
+
+      if project.above_size_limit?
+        raise_error(Gitlab::RepositorySizeError.new(project).commit_error)
+      end
 
       unless allowed
         raise_error("You are not allowed to push into this branch")

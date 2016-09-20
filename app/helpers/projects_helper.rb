@@ -214,6 +214,12 @@ module ProjectsHelper
     end
   end
 
+  def size_limit_message(project)
+    show_lfs = project.lfs_enabled? ? 'including files in LFS' : ''
+
+    "The total size of this project's repository #{show_lfs} will be limited to this size. 0 for unlimited."
+  end
+
   def git_user_name
     if current_user
       current_user.name
@@ -231,12 +237,12 @@ module ProjectsHelper
   end
 
   def repository_size(project = @project)
-    size_in_bytes = project.aggregated_repository_size * 1.megabyte
-    limit_in_bytes = project.repo_size_limit * 1.megabyte
+    size_in_bytes = project.repository_and_lfs_size * 1.megabyte
+    limit_in_bytes = project.actual_size_limit * 1.megabyte
 
-    limit_text = limit_in_bytes.zero? ? 'Unlimited' : number_to_human_size(limit_in_bytes, delimiter: ',', precision: 2)
+    limit_text = limit_in_bytes.zero? ? '' : "/#{number_to_human_size(limit_in_bytes, delimiter: ',', precision: 2)}"
 
-    "#{number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)}/#{limit_text}"
+    "#{number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)}#{limit_text}"
   end
 
   def default_url_to_repo(project = @project)

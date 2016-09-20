@@ -202,7 +202,7 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
-  def repo_size_limit
+  def actual_size_limit
     return current_application_settings.repository_size_limit if repository_size_limit.nil?
 
     repository_size_limit

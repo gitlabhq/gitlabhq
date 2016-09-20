@@ -13,22 +13,14 @@ module MergeRequests
       merge_request.target_project ||= (project.forked_from_project || project)
       merge_request.target_branch ||= merge_request.target_project.default_branch
 
-      if merge_request.target_project.above_size_limit?
-        message = render_size_limit_message(merge_request.target_project)
-
-        merge_request.errors.add(:base, message)
-      end
-
       if merge_request.target_branch.blank? || merge_request.source_branch.blank?
         message =
           if params[:source_branch] || params[:target_branch]
             "You must select source and target branch"
           end
 
-        merge_request.errors.add(:base, message) unless message.nil?
+        return build_failed(merge_request, message)
       end
-
-      return build_failed(merge_request) unless merge_request.is_valid?
 
       compare = CompareService.new.execute(
         merge_request.source_project,
@@ -105,7 +97,8 @@ module MergeRequests
       merge_request
     end
 
-    def build_failed(merge_request)
+    def build_failed(merge_request, message)
+      merge_request.errors.add(:base, message) unless message.nil?
       merge_request.compare_commits = []
       merge_request.can_be_created = false
       merge_request

@@ -70,8 +70,6 @@ module Gitlab
       return build_status_object(true) if git_annex_branch_sync?(changes)
 
       if user
-        return build_status_object(false, above_size_limit_message) if project.above_size_limit?
-
         user_push_access_check(changes)
       elsif deploy_key
         build_status_object(false, "Deploy keys are not allowed to push code.")
@@ -89,13 +87,11 @@ module Gitlab
     end
 
     def user_push_access_check(changes)
-      if changes.blank?
-        return build_status_object(true)
-      end
+      return build_status_object(true) if changes.blank?
 
-      unless project.repository.exists?
-        return build_status_object(false, "A repository for this project does not exist yet.")
-      end
+      return build_status_object(false, "A repository for this project does not exist yet.") unless project.repository.exists?
+
+      return build_status_object(false, Gitlab::RepositorySizeError.new(project).push_error) if project.above_size_limit?
 
       if ::License.block_changes?
         message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
@@ -119,20 +115,19 @@ module Gitlab
         end
       end
 
-      if project.size_limit_enabled? && changes_above_limit(push_size_in_bytes.to_mb)
-        return build_status_object(false, will_go_over_limit_message)
+      if project.changes_will_exceed_size_limit?(push_size_in_bytes.to_mb)
+        return build_status_object(false, Gitlab::RepositorySizeError.new(project).new_changes_error)
       end
 
       build_status_object(true)
     end
 
     def delta_size_check(change, repo)
-      oldrev, newrev = change.values_at(:oldrev, :newrev)
       size_of_deltas = 0
 
       begin
-        tree_a = repo.lookup(oldrev)
-        tree_b = repo.lookup(newrev)
+        tree_a = repo.lookup(change[:oldrev])
+        tree_b = repo.lookup(change[:newrev])
         diff = tree_a.diff(tree_b)
 
         diff.each_delta do |d|
@@ -147,31 +142,12 @@ module Gitlab
       end
     end
 
-    def changes_above_limit(size_mb)
-      size_mb > project.repo_size_limit || size_mb + project.aggregated_repository_size > project.repo_size_limit
-    end
-
     def change_access_check(change)
       Checks::ChangeAccess.new(change, user_access: user_access, project: project).exec
     end
 
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
-    end
-
-    def above_size_limit_message
-      [
-        "This repository's size (#{project.aggregated_repository_size}MB) exceeds the limit of #{project.repo_size_limit}MB",
-        "GitLab: by #{project.size_to_remove}MB and as a result you are unable to push to it.",
-        "GitLab: Please contact your GitLab administrator for more information.",
-      ].join("\n") + "\n"
-    end
-
-    def will_go_over_limit_message
-      [
-        "Your push to this repository would cause it to exceed the limit of #{project.repo_size_limit}MB.",
-        "GitLab: As a result it has been rejected. Please contact your GitLab administrator for more information.",
-      ].join("\n") + "\n"
     end
 
     def matching_merge_request?(newrev, branch_name)

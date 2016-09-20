@@ -40,7 +40,7 @@
               Repository size limit (MB)
             = f.number_field :repository_size_limit, class: 'form-control', min: 0
             %span.help-block#repository_size_limit_help_block
-              This project's repository will be restricted to this maximum size (includes LFS objects). 0 for unlimited.
+              = size_limit_message(@project)
 
         .form-group
           = render 'shared/allow_request_access', form: f

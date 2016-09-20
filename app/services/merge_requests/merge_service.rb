@@ -18,6 +18,12 @@ module MergeRequests
 
       return error('Merge request is not mergeable') unless @merge_request.mergeable?
 
+      if @merge_request.target_project.above_size_limit?
+        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
+        @merge_request.update(merge_error: message)
+        return error(message)
+      end
+
       merge_request.in_locked_state do
         if commit
           after_merge

@@ -1540,28 +1540,32 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
-  def aggregated_repository_size
+  def repository_and_lfs_size
     repository_size + lfs_objects.sum(:size).to_i.to_mb
   end
 
   def above_size_limit?
-    return false if repo_size_limit == 0
+    return false unless size_limit_enabled?
 
-    aggregated_repository_size > repo_size_limit
+    repository_and_lfs_size > actual_size_limit
   end
 
   def size_to_remove
-    aggregated_repository_size - repo_size_limit
+    repository_and_lfs_size - actual_size_limit
   end
 
-  def repo_size_limit
-    return namespace.repo_size_limit if repository_size_limit.nil?
+  def actual_size_limit
+    return namespace.actual_size_limit if repository_size_limit.nil?
 
     repository_size_limit
   end
 
   def size_limit_enabled?
-    repo_size_limit != 0
+    actual_size_limit != 0
+  end
+
+  def changes_will_exceed_size_limit?(size_mb)
+    size_limit_enabled? && (size_mb > actual_size_limit || size_mb + repository_and_lfs_size > actual_size_limit)
   end
 
   private

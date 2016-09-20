@@ -11,9 +11,6 @@
 - when :sha_mismatch
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/sha_mismatch'))}");
-- when :size_limit_reached
-  :plain
-    $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/size_limit_reached'))}");
 - else
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/reload'))}");

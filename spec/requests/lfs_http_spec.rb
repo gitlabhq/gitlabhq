@@ -549,11 +549,12 @@ describe 'Git LFS API and storage' do
 
             context 'and project will go over the limit' do
               let(:update_lfs_permissions) do
-                allow_any_instance_of(Project).to receive_messages(repo_size_limit: 145, size_limit_enabled?: true)
+                allow_any_instance_of(Project).to receive_messages(actual_size_limit: 145, size_limit_enabled?: true)
               end
 
               it 'responds with status 406' do
                 expect(response).to have_http_status(406)
+                expect(json_response['documentation_url']).to include('/help')
               end
             end
           end

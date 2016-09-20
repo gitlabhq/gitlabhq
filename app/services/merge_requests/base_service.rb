@@ -35,10 +35,6 @@ module MergeRequests
       end
     end
 
-    def render_size_limit_message(project)
-      "The target's repository size (#{project.aggregated_repository_size}MB) exceeds the limit of #{project.repo_size_limit}MB by #{project.size_to_remove}MB"
-    end
-
     private
 
     def filter_params
