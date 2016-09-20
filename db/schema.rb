@@ -593,16 +593,13 @@ ActiveRecord::Schema.define(version: 20160915081353) do
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
 
   create_table "merge_request_metrics", force: :cascade do |t|
-    t.integer  "merge_request_id",                         null: false
-    t.datetime "wip_flag_first_removed_at"
-    t.datetime "first_assigned_to_user_other_than_author"
-    t.datetime "merged_at"
-    t.datetime "first_closed_at"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.datetime "first_deployed_to_production_at"
+    t.integer  "merge_request_id",                null: false
     t.datetime "latest_build_started_at"
     t.datetime "latest_build_finished_at"
+    t.datetime "first_deployed_to_production_at"
+    t.datetime "merged_at"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
@@ -654,6 +651,9 @@ ActiveRecord::Schema.define(version: 20160915081353) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
   end
+
+  add_index "merge_requests_closing_issues", ["issue_id"], name: "index_merge_requests_closing_issues_on_issue_id", using: :btree
+  add_index "merge_requests_closing_issues", ["merge_request_id"], name: "index_merge_requests_closing_issues_on_merge_request_id", using: :btree
 
   create_table "milestones", force: :cascade do |t|
     t.string   "title",       null: false
@@ -1180,12 +1180,12 @@ ActiveRecord::Schema.define(version: 20160915081353) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
-  add_foreign_key "issue_metrics", "issues"
+  add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
-  add_foreign_key "merge_request_metrics", "merge_requests"
-  add_foreign_key "merge_requests_closing_issues", "issues"
-  add_foreign_key "merge_requests_closing_issues", "merge_requests"
+  add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
+  add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
