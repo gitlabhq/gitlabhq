@@ -11,7 +11,7 @@
       %p
         Cycle Analytics gives an overview on how much time it takes to go from idea to production in your project.
 
-      = button_tag 'Read more', class: 'btn'
+      = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
 
   = icon("spinner spin", "v-show" => "isLoading")
 
