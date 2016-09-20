@@ -248,9 +248,9 @@ class ProjectTeam
         # group access is developers we need to provide
         # both group master, developers as devs
         if int_level == group_link.group_access
-          im.where("access_level >= ?)", group_link.group_access)
+          im = im.where("access_level >= ?", group_link.group_access)
         else
-          im.send(level)
+          im = im.send(level)
         end
       end
 

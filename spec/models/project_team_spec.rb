@@ -111,6 +111,7 @@ describe ProjectTeam, models: true do
           group_access: Gitlab::Access::REPORTER
         )
 
+        expect(project.team.guests).to be_empty
         expect(project.team.reporters).to contain_exactly(group_member.user)
       end
     end
