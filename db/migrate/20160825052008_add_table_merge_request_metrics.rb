@@ -5,12 +5,12 @@ class AddTableMergeRequestMetrics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
-  DOWNTIME = false
+  DOWNTIME = true
 
   # When a migration requires downtime you **must** uncomment the following
   # constant and define a short and easy to understand explanation as to why the
   # migration requires downtime.
-  # DOWNTIME_REASON = ''
+  DOWNTIME_REASON = 'Adding foreign key'
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
   # you must disable the use of transactions as these methods can not run in an
@@ -25,7 +25,7 @@ class AddTableMergeRequestMetrics < ActiveRecord::Migration
 
   def change
     create_table :merge_request_metrics do |t|
-      t.references :merge_request, index: { name: "index_merge_request_metrics" }, foreign_key: true, null: false
+      t.references :merge_request, index: { name: "index_merge_request_metrics" }, foreign_key: true, dependent: :delete, null: false
 
       t.datetime 'latest_build_started_at'
       t.datetime 'latest_build_finished_at'

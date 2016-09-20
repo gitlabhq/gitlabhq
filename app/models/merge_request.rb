@@ -13,11 +13,11 @@ class MergeRequest < ActiveRecord::Base
   has_many :merge_request_diffs, dependent: :destroy
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
-  has_one :metrics, dependent: :destroy
+  has_one :metrics
 
   has_many :events, as: :target, dependent: :destroy
 
-  has_many :merge_requests_closing_issues, class_name: MergeRequestsClosingIssues
+  has_many :merge_requests_closing_issues, class_name:  'MergeRequestsClosingIssues'
   has_many :issues_closed, through: :merge_requests_closing_issues, source: :issue
 
   serialize :merge_params, Hash
@@ -513,7 +513,7 @@ class MergeRequest < ActiveRecord::Base
   # running `ReferenceExtractor` on each of them separately.
   def cache_merge_request_closes_issues!(current_user = self.author)
     transaction do
-      self.merge_requests_closing_issues.destroy_all
+      self.merge_requests_closing_issues.delete_all
       closes_issues(current_user).each do |issue|
         MergeRequestsClosingIssues.create!(merge_request: self, issue: issue)
       end

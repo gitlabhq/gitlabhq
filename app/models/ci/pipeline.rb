@@ -57,15 +57,13 @@ module Ci
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.merge_requests.each do |merge_request|
-          merge_request.metrics.record_latest_build_start_time!(pipeline.started_at) if merge_request.metrics.present?
-        end
+        MergeRequest::Metrics.where(merge_request_id: pipeline.merge_requests.map(&:id)).
+          update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: nil)
       end
 
       after_transition any => [:success] do |pipeline|
-        pipeline.merge_requests.each do |merge_request|
-          merge_request.metrics.record_latest_build_finish_time!(pipeline.finished_at) if merge_request.metrics.present?
-        end
+        MergeRequest::Metrics.where(merge_request_id: pipeline.merge_requests.map(&:id)).
+          update_all(latest_build_finished_at: pipeline.finished_at)
       end
 
       before_transition do |pipeline|
@@ -292,8 +290,11 @@ module Ci
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     def merge_requests
-      project.merge_requests.where(source_branch: self.ref).
-        select { |merge_request| merge_request.pipeline.try(:id) == self.id }
+      @merge_requests ||=
+        begin
+          project.merge_requests.where(source_branch: self.ref).
+            select { |merge_request| merge_request.pipeline.try(:id) == self.id }
+        end
     end
 
     private

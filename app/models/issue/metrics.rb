@@ -13,10 +13,6 @@ class Issue::Metrics < ActiveRecord::Base
     self.save if self.changed?
   end
 
-  def record_commit_mention!(commit_time)
-    self.update(first_mentioned_in_commit_at: commit_time) if self.first_mentioned_in_commit_at.blank?
-  end
-
   private
 
   def issue_assigned_to_list_label?

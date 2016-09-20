@@ -1,5 +1,5 @@
 class CycleAnalytics
-  include DatabaseMedian
+  include Gitlab::Database::Median
 
   def initialize(project, from:)
     @project = project
@@ -122,7 +122,9 @@ class CycleAnalytics
 
     case ActiveRecord::Base.connection.adapter_name
     when 'PostgreSQL'
-      result.first['median'].to_f
+      result = result.first.presence
+      median = result['median'] if result
+      median.to_f if median
     when 'Mysql2'
       result.to_a.flatten.first
     end

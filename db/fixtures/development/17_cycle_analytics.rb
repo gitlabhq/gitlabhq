@@ -4,7 +4,7 @@ require './spec/support/test_env'
 class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)
     @project = project
-    @user = User.find(1)
+    @user = User.order(:id).last
     @issue_count = perf ? 1000 : 5
     stub_git_pre_receive!
   end

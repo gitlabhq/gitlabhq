@@ -190,6 +190,8 @@ class GitPushService < BaseService
 
   def update_issue_metrics(commit, authors)
     mentioned_issues = commit.all_references(authors[commit]).issues
-    mentioned_issues.each { |issue| issue.metrics.record_commit_mention!(commit.committed_date) if issue.metrics.present? }
+
+    Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil).
+      update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
 end

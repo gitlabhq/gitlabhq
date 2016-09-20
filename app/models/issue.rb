@@ -23,9 +23,9 @@ class Issue < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
-  has_one :metrics, dependent: :destroy
+  has_one :metrics
 
-  has_many :merge_requests_closing_issues, class_name: MergeRequestsClosingIssues
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues'
   has_many :closed_by_merge_requests, through: :merge_requests_closing_issues, source: :merge_request
 
   validates :project, presence: true
@@ -202,7 +202,7 @@ class Issue < ActiveRecord::Base
   # From all notes on this issue, we'll select the system notes about linked
   # merge requests. Of those, the MRs closing `self` are returned.
   def closed_by_merge_requests(current_user = nil)
-    return [] if !open?
+    return [] unless open?
 
     ext = all_references(current_user)
 
