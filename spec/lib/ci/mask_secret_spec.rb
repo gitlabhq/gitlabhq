@@ -16,10 +16,12 @@ describe Ci::MaskSecret, lib: true do
       expect(mask('token', 'not')).to eq('token')
     end
 
+    it 'does support null token' do
+      expect(mask('token', nil)).to eq('token')
+    end
+
     def mask(value, token)
-      value = value.dup
-      subject.mask!(value, token)
-      value
+      subject.mask!(value.dup, token)
     end
   end
 end
