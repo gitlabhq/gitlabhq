@@ -152,6 +152,7 @@ v 8.12.0 (unreleased)
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
   - Fix URLs with anchors in wiki !6300 (houqp)
+  - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
   - Fix Gitlab::Popen.popen thread-safety issue
