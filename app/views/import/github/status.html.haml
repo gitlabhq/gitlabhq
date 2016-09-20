@@ -46,17 +46,16 @@
             = github_project_link(repo.full_name)
           %td.import-target
             %fieldset.row
-            .input-group
-              .col-xs-11.col-sm-5.project-path
-                - if current_user.can_select_namespace?
+            .input-group.col-sm-8
+              .project-path.input-group-btn
+                - if false
                   - selected = params[:namespace_id] || :current_user
-                  - opts = current_user.can_create_group? ? { extra_groups: [repo.owner.login] } : { display_path: true }
-                  = select_tag :namespace_id, namespaces_options(selected, opts), {class: 'project-path select2 js-select-namespace', tabindex: 1}
+                  - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner.login) } : { display_path: true }
+                  = select_tag :namespace_id, namespaces_options(selected, opts), { class: 'select2 js-select-namespace', tabindex: 1 }
                 - else
-                  = text_field_tag :path, current_user.namespace_path, class: "form-control", tabindex: 2, autofocus: true, disabled: true
-
-              .col-xs-12.col-sm-6.project-path
-                = text_field_tag :path, repo.name, class: "form-control", tabindex: 2, autofocus: true, required: true
+                  = text_field_tag :path, current_user.namespace_path, class: "form-control", tabindex: 1, autofocus: true, disabled: true
+              %span.input-group-addon /
+              = text_field_tag :path, repo.name, class: "form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
               Import
