@@ -127,15 +127,11 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   end
 
   def ci?
-    authentication_result.ci? &&
-      authentication_project &&
-      authentication_project == project
+    authentication_result.ci?(project)
   end
 
-  def lfs_deploy_key?
-    authentication_result.lfs_deploy_token? &&
-      actor &&
-      actor.projects.include?(project)
+  def lfs_deploy_token?
+    authentication_result.lfs_deploy_token?(project)
   end
 
   def authentication_has_download_access?
