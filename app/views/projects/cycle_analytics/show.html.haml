@@ -1,4 +1,6 @@
-= render 'projects/pipelines/head'
+- @no_container = true
+- page_title "Cycle Analytics"
+= render "projects/pipelines/head"
 
 #cycle-analytics{"v-cloak" => "true", data: { request_path: "#{project_cycle_analytics_path(@project)}"}}
 
