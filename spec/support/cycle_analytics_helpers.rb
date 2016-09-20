@@ -1,8 +1,28 @@
 module CycleAnalyticsHelpers
   def create_commit_referencing_issue(issue)
-    sha = project.repository.commit_file(user, random_git_name, "content", "Commit for ##{issue.iid}", "master", false)
-    commit = project.repository.commit(sha)
-    commit.create_cross_references!(user)
+    branch_name = random_git_name
+    project.repository.add_branch(user, branch_name, 'master')
+    create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
+  end
+
+  def create_commit(message, project, user, branch_name)
+    filename = random_git_name
+
+    options = {
+      committer: project.repository.user_to_committer(user),
+      author: project.repository.user_to_committer(user),
+      commit: { message: message, branch: branch_name, update_ref: true },
+      file: { content: "content", path: filename, update: false }
+    }
+
+    commit_sha = Gitlab::Git::Blob.commit(project.repository, options)
+    project.repository.commit(commit_sha)
+
+    GitPushService.new(project,
+                       user,
+                       oldrev: project.repository.commit(branch_name).sha,
+                       newrev: commit_sha,
+                       ref: 'refs/heads/master').execute
   end
 
   def create_merge_request_closing_issue(issue, message: nil)

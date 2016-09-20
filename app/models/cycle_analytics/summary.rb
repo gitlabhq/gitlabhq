@@ -11,11 +11,14 @@ class CycleAnalytics
 
     def commits
       repository = @project.repository.raw_repository
-      repository.log(ref: @project.default_branch, after: @from).count
+
+      if @project.default_branch
+        repository.log(ref: @project.default_branch, after: @from).count
+      end
     end
 
     def deploys
-      @project.deployments.count
+      @project.deployments.where("created_at > ?", @from).count
     end
   end
 end
