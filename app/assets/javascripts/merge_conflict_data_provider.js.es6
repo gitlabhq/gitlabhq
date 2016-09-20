@@ -268,6 +268,10 @@ class MergeConflictDataProvider {
 
 
   getConflictsCount() {
+    if (!this.vueInstance.conflictsData.files) {
+      return 0;
+    }
+
     const files = this.vueInstance.conflictsData.files;
     let count = 0;
 
