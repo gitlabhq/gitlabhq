@@ -668,7 +668,6 @@ Rails.application.routes.draw do
         resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
           member do
             get 'raw'
-            post :toggle_award_emoji
           end
         end
 
