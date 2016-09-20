@@ -1,11 +1,16 @@
 # Issue closing pattern
 
-When a commit or merge request resolves one or more issues, it is possible to automatically have these issues closed when the commit or merge request lands in the project's default branch.
+When a commit or merge request resolves one or more issues, it is possible to
+automatically have these issues closed when the commit or merge request lands
+in the project's default branch.
 
-If a commit message or merge request description contains a sentence matching the regular expression below, all issues referenced from
-the matched text will be closed. This happens when the commit is pushed to a project's default branch, or when a commit or merge request is merged into there.
+If a commit message or merge request description contains a sentence matching
+the regular expression below, all issues referenced from the matched text will
+be closed. This happens when the commit is pushed to a project's default branch,
+or when a commit or merge request is merged into there.
 
-When not specified, the default `issue_closing_pattern` as shown below will be used:
+When not specified, the default `issue_closing_pattern` as shown below will be
+used:
 
 ```bash
 ((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
