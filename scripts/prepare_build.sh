@@ -32,11 +32,11 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     retry 'apt-get update -yqqq; apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
 	   libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
 
-    apt-get install -qqy software-properties-common
-    # Add PPA for updating git, we need software-properties-common
-    add-apt-repository ppa:git-core/ppa
+    # Install latest Git from stretch packages
+    echo deb http://httpredir.debian.org/debian stretch main > /etc/apt/sources.list
     retry 'apt-get update -yqqq; apt-get -o dif::cache::archives="vendor/apt" install -yqq --force-yes git'
 
+    echo Git version...
     git --version
 
     cp config/database.yml.mysql config/database.yml
