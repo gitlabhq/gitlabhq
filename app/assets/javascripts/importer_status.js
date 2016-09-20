@@ -20,7 +20,7 @@
           newName = null;
           if ($namespace_input.length > 0) {
             target_namespace = $namespace_input[0].innerHTML;
-              newName = $target_field.find('#path').prop('value');
+            newName = $target_field.find('#path').prop('value');
             $target_field.empty().append(target_namespace + "/" + newName);
           }
           $btn.disable().addClass('is-loading');
