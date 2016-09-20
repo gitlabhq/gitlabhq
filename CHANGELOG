@@ -19,6 +19,7 @@ v 8.12.0 (unreleased)
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Only update projects.last_activity_at once per hour when creating a new event
+  - Cycle analytics (first iteration) !5986
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
