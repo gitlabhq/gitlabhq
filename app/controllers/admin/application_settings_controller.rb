@@ -13,6 +13,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     end
   end
 
+  def usage_data
+    respond_to do |format|
+      format.html { render html: Gitlab::Highlight.highlight('payload.json', Gitlab::UsageData.to_json) }
+      format.json { render json: Gitlab::UsageData.to_json }
+    end
+  end
+
   def reset_runners_token
     @application_setting.reset_runners_registration_token!
     flash[:notice] = 'New runners registration token has been generated!'
