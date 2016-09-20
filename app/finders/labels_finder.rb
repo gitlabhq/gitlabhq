@@ -16,7 +16,7 @@ class LabelsFinder < UnionFinder
 
   def label_ids
     label_ids = []
-    label_ids << Label.where(group_id: projects.where.not(group: nil).select(:namespace_id)).select(:id)
+    label_ids << Label.where(group_id: projects.joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)).select(:id)
     label_ids << Label.where(project_id: projects.select(:id)).select(:id)
   end
 
