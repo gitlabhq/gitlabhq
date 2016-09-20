@@ -59,6 +59,7 @@ v 8.13.0 (unreleased)
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Stop using a Redis lease when updating the project activity timestamp whenever a new event is created
+  - Add disabled delete button to protected branches (ClemMakesApps)
   - Add broadcast messages and alerts below sub-nav
   - Better empty state for Groups view
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
