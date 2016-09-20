@@ -210,11 +210,7 @@ class Issue < ActiveRecord::Base
       note.all_references(current_user, extractor: ext)
     end
 
-    if check_if_open
-      ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
-    else
-      ext.merge_requests.select { |mr| mr.closes_issue?(self) }
-    end
+    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
   end
 
   def moved?
