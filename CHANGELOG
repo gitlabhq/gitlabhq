@@ -100,6 +100,7 @@ v 8.12.0 (unreleased)
   - Fix missing flash messages on service edit page (airatshigapov)
   - Added project-specific enable/disable setting for LFS !5997
   - Added group-specific enable/disable setting for LFS !6164
+  - Add optional 'author' param when making commits. !5822 (dandunckelman)
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
