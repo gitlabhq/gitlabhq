@@ -54,6 +54,7 @@ v 8.12.0 (unreleased)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
   - Fix bug stopping issue description being scrollable after selecting issue template
   - Remove suggested colors hover underline (ClemMakesApps)
+  - Fix jump to discussion button being displayed on commit notes
   - Shorten task status phrase (ClemMakesApps)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
