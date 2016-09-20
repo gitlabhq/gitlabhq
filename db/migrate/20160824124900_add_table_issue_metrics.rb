@@ -25,7 +25,7 @@ class AddTableIssueMetrics < ActiveRecord::Migration
 
   def change
     create_table :issue_metrics do |t|
-      t.references :issue, index: { name: "index_issue_metrics" }, foreign_key: true, dependent: :delete, null: false
+      t.references :issue, index: { name: "index_issue_metrics" }, foreign_key: { on_delete: :cascade }, null: false
 
       t.datetime 'first_mentioned_in_commit_at'
       t.datetime 'first_associated_with_milestone_at'

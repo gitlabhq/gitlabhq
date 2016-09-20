@@ -25,8 +25,8 @@ class CreateMergeRequestsClosingIssues < ActiveRecord::Migration
 
   def change
     create_table :merge_requests_closing_issues do |t|
-      t.references :merge_request, foreign_key: true, index: true, dependent: :delete, null: false
-      t.references :issue, foreign_key: true, index: true, dependent: :delete, null: false
+      t.references :merge_request, foreign_key: { on_delete: :cascade }, index: true, null: false
+      t.references :issue, foreign_key: { on_delete: :cascade }, index: true, null: false
 
       t.timestamps null: false
     end

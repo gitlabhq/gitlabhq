@@ -25,7 +25,7 @@ class AddTableMergeRequestMetrics < ActiveRecord::Migration
 
   def change
     create_table :merge_request_metrics do |t|
-      t.references :merge_request, index: { name: "index_merge_request_metrics" }, foreign_key: true, dependent: :delete, null: false
+      t.references :merge_request, index: { name: "index_merge_request_metrics" }, foreign_key: { on_delete: :cascade }, null: false
 
       t.datetime 'latest_build_started_at'
       t.datetime 'latest_build_finished_at'
