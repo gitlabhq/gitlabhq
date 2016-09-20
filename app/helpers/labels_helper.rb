@@ -111,10 +111,6 @@ module LabelsHelper
     end
   end
 
-  def project_label_names
-    @project.labels.pluck(:title)
-  end
-
   def render_colored_label(label, label_suffix = '', tooltip: true)
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
