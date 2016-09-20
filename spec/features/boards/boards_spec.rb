@@ -94,15 +94,8 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'shows issues in lists' do
-      page.within(find('.board:nth-child(2)')) do
-        expect(page.find('.board-header')).to have_content('2')
-        expect(page).to have_selector('.card', count: 2)
-      end
-
-      page.within(find('.board:nth-child(3)')) do
-        expect(page.find('.board-header')).to have_content('2')
-        expect(page).to have_selector('.card', count: 2)
-      end
+      wait_for_board_cards(2, 2)
+      wait_for_board_cards(3, 2)
     end
 
     it 'shows confidential issues with icon' do
@@ -203,37 +196,33 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'backlog' do
       it 'shows issues in backlog with no labels' do
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('6')
-          expect(page).to have_selector('.card', count: 6)
-        end
+        wait_for_board_cards(1, 6)
       end
 
       it 'moves issue from backlog into list' do
         drag_to(list_to_index: 1)
 
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('5')
-          expect(page).to have_selector('.card', count: 5)
-        end
-
         wait_for_vue_resource
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('3')
-          expect(page).to have_selector('.card', count: 3)
-        end
+        wait_for_board_cards(1, 5)
+        wait_for_board_cards(2, 3)
       end
     end
 
     context 'done' do
       it 'shows list of done issues' do
-        expect(find('.board:nth-child(4)')).to have_selector('.card', count: 1)
+        wait_for_board_cards(4, 1)
+        wait_for_ajax
       end
 
       it 'moves issue to done' do
         drag_to(list_from_index: 0, list_to_index: 3)
 
+        wait_for_board_cards(1, 5)
+        wait_for_board_cards(2, 2)
+        wait_for_board_cards(3, 2)
+        wait_for_board_cards(4, 2)
+
+        expect(find('.board:nth-child(1)')).not_to have_content(issue9.title)
         expect(find('.board:nth-child(4)')).to have_selector('.card', count: 2)
         expect(find('.board:nth-child(4)')).to have_content(issue9.title)
         expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
@@ -242,8 +231,12 @@ describe 'Issue Boards', feature: true, js: true do
       it 'removes all of the same issue to done' do
         drag_to(list_from_index: 1, list_to_index: 3)
 
-        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
-        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 1)
+        wait_for_board_cards(1, 6)
+        wait_for_board_cards(2, 1)
+        wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 2)
+
+        expect(find('.board:nth-child(2)')).not_to have_content(issue6.title)
         expect(find('.board:nth-child(4)')).to have_content(issue6.title)
         expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
       end
@@ -253,6 +246,11 @@ describe 'Issue Boards', feature: true, js: true do
       it 'changes position of list' do
         drag_to(list_from_index: 1, list_to_index: 2, selector: '.board-header')
 
+        wait_for_board_cards(1, 6)
+        wait_for_board_cards(2, 2)
+        wait_for_board_cards(3, 2)
+        wait_for_board_cards(4, 1)
+
         expect(find('.board:nth-child(2)')).to have_content(development.title)
         expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
@@ -260,8 +258,11 @@ describe 'Issue Boards', feature: true, js: true do
       it 'issue moves between lists' do
         drag_to(list_from_index: 1, card_index: 1, list_to_index: 2)
 
-        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
-        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 3)
+        wait_for_board_cards(1, 6)
+        wait_for_board_cards(2, 1)
+        wait_for_board_cards(3, 3)
+        wait_for_board_cards(4, 1)
+
         expect(find('.board:nth-child(3)')).to have_content(issue6.title)
         expect(find('.board:nth-child(3)').all('.card').last).not_to have_content(development.title)
       end
@@ -269,8 +270,11 @@ describe 'Issue Boards', feature: true, js: true do
       it 'issue moves between lists' do
         drag_to(list_from_index: 2, list_to_index: 1)
 
-        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 3)
-        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 1)
+        wait_for_board_cards(1, 6)
+        wait_for_board_cards(2, 3)
+        wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 1)
+
         expect(find('.board:nth-child(2)')).to have_content(issue7.title)
         expect(find('.board:nth-child(2)').all('.card').first).not_to have_content(planning.title)
       end
@@ -278,8 +282,12 @@ describe 'Issue Boards', feature: true, js: true do
       it 'issue moves from done' do
         drag_to(list_from_index: 3, list_to_index: 1)
 
-        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 3)
         expect(find('.board:nth-child(2)')).to have_content(issue8.title)
+
+        wait_for_board_cards(1, 6)
+        wait_for_board_cards(2, 3)
+        wait_for_board_cards(3, 2)
+        wait_for_board_cards(4, 0)
       end
 
       context 'issue card' do
@@ -342,10 +350,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'moves issues from backlog into new list' do
-          page.within(find('.board', match: :first)) do
-            expect(page.find('.board-header')).to have_content('6')
-            expect(page).to have_selector('.card', count: 6)
-          end
+          wait_for_board_cards(1, 6)
 
           click_button 'Create new list'
           wait_for_ajax
@@ -356,10 +361,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_vue_resource
 
-          page.within(find('.board', match: :first)) do
-            expect(page.find('.board-header')).to have_content('5')
-            expect(page).to have_selector('.card', count: 5)
-          end
+          wait_for_board_cards(1, 5)
         end
       end
     end
@@ -379,16 +381,8 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         wait_for_vue_resource
-
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
       end
 
       it 'filters by assignee' do
@@ -406,15 +400,8 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
       end
 
       it 'filters by milestone' do
@@ -431,16 +418,10 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         wait_for_vue_resource
-
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
-        end
+        wait_for_board_cards(1, 0)
+        wait_for_board_cards(2, 1)
+        wait_for_board_cards(3, 0)
+        wait_for_board_cards(4, 0)
       end
 
       it 'filters by label' do
@@ -456,16 +437,8 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         wait_for_vue_resource
-
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
       end
 
       it 'infinite scrolls list with label filter' do
@@ -519,15 +492,8 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
       end
 
       it 'filters by no label' do
@@ -544,15 +510,10 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('5')
-          expect(page).to have_selector('.card', count: 5)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
+        wait_for_board_cards(1, 5)
+        wait_for_board_cards(2, 0)
+        wait_for_board_cards(3, 0)
+        wait_for_board_cards(4, 1)
       end
 
       it 'filters by clicking label button on issue' do
@@ -565,15 +526,8 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
-        end
-
-        page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
-        end
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
 
         page.within('.labels-filter') do
           expect(find('.dropdown-toggle-text')).to have_content(bug.title)
@@ -647,5 +601,18 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     wait_for_vue_resource
+  end
+
+  def wait_for_board_cards(board_number, expected_cards)
+    page.within(find(".board:nth-child(#{board_number})")) do
+      expect(page.find('.board-header')).to have_content(expected_cards.to_s)
+      expect(page).to have_selector('.card', count: expected_cards)
+    end
+  end
+
+  def wait_for_empty_boards(board_numbers)
+    board_numbers.each do |board|
+      wait_for_board_cards(board, 0)
+    end
   end
 end

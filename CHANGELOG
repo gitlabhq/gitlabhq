@@ -5,7 +5,9 @@ v 8.12.0 (unreleased)
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
   - Add ability to fork to a specific namespace using API. (ritave)
+  - Allow to set request_access_enabled for groups and projects
   - Cleanup misalignments in Issue list view !6206
+  - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
@@ -15,6 +17,7 @@ v 8.12.0 (unreleased)
   - Make push events have equal vertical spacing.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
+  - Only update projects.last_activity_at once per hour when creating a new event
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
@@ -22,9 +25,12 @@ v 8.12.0 (unreleased)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix pagination on user snippets page
+  - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
   - Sort project variables by key. !6275 (Diego Souza)
   - Ensure specs on sorting of issues in API are deterministic on MySQL
+  - Added ability to use predefined CI variables for environment name
+  - Added ability to specify URL in environment configuration in gitlab-ci.yml
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
@@ -139,6 +145,7 @@ v 8.12.0 (unreleased)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
+  - Ensure validation messages are shown within the milestone form
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
   - Fix URLs with anchors in wiki !6300 (houqp)
@@ -148,7 +155,9 @@ v 8.12.0 (unreleased)
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
   - Clean environment variables when running git hooks
   - Add UX improvements for merge request version diffs
+  - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
+  - Add UX improvements for merge request version diffs
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005

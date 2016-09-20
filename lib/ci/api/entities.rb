@@ -15,6 +15,15 @@ module Ci
         expose :filename, :size
       end
 
+      class BuildOptions < Grape::Entity
+        expose :image
+        expose :services
+        expose :artifacts
+        expose :cache
+        expose :dependencies
+        expose :after_script
+      end
+
       class Build < Grape::Entity
         expose :id, :ref, :tag, :sha, :status
         expose :name, :token, :stage

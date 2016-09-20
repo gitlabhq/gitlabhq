@@ -9,11 +9,13 @@ describe 'projects/pipelines/show' do
   before do
     controller.prepend_view_path('app/views/projects')
 
-    create_build('build', 0, 'build')
-    create_build('test', 1, 'rspec 0:2')
-    create_build('test', 1, 'rspec 1:2')
-    create_build('test', 1, 'audit')
-    create_build('deploy', 2, 'production')
+    create_build('build', 0, 'build', :success)
+    create_build('test', 1, 'rspec 0:2', :pending)
+    create_build('test', 1, 'rspec 1:2', :running)
+    create_build('test', 1, 'spinach 0:2', :created)
+    create_build('test', 1, 'spinach 1:2', :created)
+    create_build('test', 1, 'audit', :created)
+    create_build('deploy', 2, 'production', :created)
 
     create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
 
@@ -37,6 +39,7 @@ describe 'projects/pipelines/show' do
 
     # builds
     expect(rendered).to have_text('rspec')
+    expect(rendered).to have_text('spinach')
     expect(rendered).to have_text('rspec 0:2')
     expect(rendered).to have_text('production')
     expect(rendered).to have_text('jenkins')
@@ -44,7 +47,7 @@ describe 'projects/pipelines/show' do
 
   private
 
-  def create_build(stage, stage_idx, name)
-    create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+  def create_build(stage, stage_idx, name, status)
+    create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status)
   end
 end

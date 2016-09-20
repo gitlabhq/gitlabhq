@@ -29,10 +29,28 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
       end
 
+      it 'has the same label associated to two issues' do
+        restored_project_json
+
+        expect(Label.first.issues.count).to eq(2)
+      end
+
+      it 'has milestones associated to two separate issues' do
+        restored_project_json
+
+        expect(Milestone.find_by_description('test milestone').issues.count).to eq(2)
+      end
+
       it 'creates a valid pipeline note' do
         restored_project_json
 
         expect(Ci::Pipeline.first.notes).not_to be_empty
+      end
+
+      it 'restores pipelines with missing ref' do
+        restored_project_json
+
+        expect(Ci::Pipeline.where(ref: nil)).not_to be_empty
       end
 
       it 'restores the correct event with symbolised data' do
@@ -47,6 +65,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
 
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
+      end
+
+      it 'contains the merge access levels on a protected branch' do
+        restored_project_json
+
+        expect(ProtectedBranch.first.merge_access_levels).not_to be_empty
+      end
+
+      it 'contains the push access levels on a protected branch' do
+        restored_project_json
+
+        expect(ProtectedBranch.first.push_access_levels).not_to be_empty
       end
 
       context 'event at forth level of the tree' do
@@ -75,12 +105,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         restored_project_json
 
         expect(Label.first.label_links.first.target).not_to be_nil
-      end
-
-      it 'has milestones associated to issues' do
-        restored_project_json
-
-        expect(Milestone.find_by_description('test milestone').issues).not_to be_empty
       end
 
       context 'Merge requests' do
