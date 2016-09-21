@@ -142,7 +142,7 @@ module Ci
     end
 
     def trace_with_state(state: nil, last_lines: nil)
-      trace_ansi = trace(last_lines)
+      trace_ansi = trace(last_lines: last_lines)
       if trace_ansi.present?
         Ci::Ansi2html.convert(trace_ansi, state)
       else
