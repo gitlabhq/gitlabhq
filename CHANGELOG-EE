@@ -8,6 +8,7 @@ v 8.12.0 (Unreleased)
   - Add repository size limits and enforce them !740
   - [ES] Instrument other Gitlab::Elastic classes
   - [ES] Fix: Elasticsearch does not find partial matches in project names
+  - Faster Active Directory group membership resolution !719
   - [ES] Global code search
   - [ES] Improve logging
   - Fix projects with remote mirrors asynchronously destruction
