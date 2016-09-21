@@ -49,6 +49,7 @@ snippets:
 - author
 - project
 - notes
+- award_emoji
 releases:
 - project
 project_members:
@@ -181,3 +182,6 @@ project:
 - environments
 - deployments
 - project_feature
+award_emoji:
+- awardable
+- user
