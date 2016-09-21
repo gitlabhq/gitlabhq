@@ -10,7 +10,9 @@ module Gitlab
             mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
           end
 
-        results = Array.wrap(median_queries).map { |query| Util.run_query(query) }
+        results = Array.wrap(median_queries).map do |query|
+          ActiveRecord::Base.connection.execute(query)
+        end
         extract_median(results).presence
       end
 
@@ -46,7 +48,7 @@ module Gitlab
           Arel.sql("CREATE TEMPORARY TABLE IF NOT EXISTS #{query_so_far.to_sql}"),
           Arel.sql("set @ct := (select count(1) from #{arel_table.table_name});"),
           Arel.sql("set @row_id := 0;"),
-          query,
+          query.to_sql,
           Arel.sql("DROP TEMPORARY TABLE IF EXISTS #{arel_table.table_name};")
         ]
       end
@@ -87,7 +89,8 @@ module Gitlab
               )
             )
           ).
-          with(query_so_far, cte)
+          with(query_so_far, cte).
+          to_sql
       end
 
       private

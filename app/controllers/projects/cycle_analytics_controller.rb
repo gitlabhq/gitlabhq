@@ -1,5 +1,6 @@
 class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::TextHelper
 
   before_action :authorize_read_cycle_analytics!
 
@@ -48,10 +49,14 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
       stats
     end
 
+    issues = @cycle_analytics.summary.new_issues
+    commits = @cycle_analytics.summary.commits
+    deploys = @cycle_analytics.summary.deploys
+
     summary = [
-      { title: "New Issues", value: @cycle_analytics.summary.new_issues },
-      { title: "Commits", value: @cycle_analytics.summary.commits },
-      { title: "Deploys", value: @cycle_analytics.summary.deploys }
+      { title: "New Issue".pluralize(issues), value: issues },
+      { title: "Commit".pluralize(commits), value: commits },
+      { title: "Deploy".pluralize(deploys), value: deploys }
     ]
 
     {
