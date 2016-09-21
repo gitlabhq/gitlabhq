@@ -22,6 +22,13 @@ class ProjectFeature < ActiveRecord::Base
 
   belongs_to :project
 
+  default_value_for :builds_access_level,         value: ENABLED, allows_nil: false
+  default_value_for :merge_requests_access_level, value: ENABLED, allows_nil: false
+  default_value_for :issues_access_level,         value: ENABLED, allows_nil: false
+  default_value_for :merge_requests_access_level, value: ENABLED, allows_nil: false
+  default_value_for :snippets_access_level,       value: ENABLED, allows_nil: false
+  default_value_for :wiki_access_level,           value: ENABLED, allows_nil: false
+
   def feature_available?(feature, user)
     raise ArgumentError, 'invalid project feature' unless FEATURES.include?(feature)
 
