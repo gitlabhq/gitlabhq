@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/notes/_form' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
