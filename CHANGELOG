@@ -11,6 +11,7 @@ v 8.12.0 (unreleased)
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
+  - Amends the packager.io configuration file to create a build for Ubuntu 16.04. !6247 (Jon "The Nice Guy" Spriggs)
   - Filter tags by name !6121
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
@@ -21,13 +22,16 @@ v 8.12.0 (unreleased)
   - Pass the "Remember me" value to the U2F authentication form
   - Display stages in valid order in stages dropdown on build page
   - Only update projects.last_activity_at once per hour when creating a new event
+  - Cycle analytics (first iteration) !5986
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
+  - Limit number of shown environments on Merge Request: show only environments for target_branch, source_branch and tags
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix long comments in diffs messing with table width
+  - Add spec covering 'Gitlab::Git::committer_hash' !6433 (dandunckelman)
   - Fix pagination on user snippets page
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
@@ -39,16 +43,20 @@ v 8.12.0 (unreleased)
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
+  - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
+  - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
   - Added go to issue boards keyboard shortcut
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
+  - Emoji can be awarded on Snippets !4456
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
+  - Spec testing if issue authors can read issues on private projects
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Request only the LDAP attributes we need !6187
   - Center build stage columns in pipeline overview (ClemMakesApps)
@@ -75,6 +83,8 @@ v 8.12.0 (unreleased)
   - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
+  - Loads GFM autocomplete source only when required
+  - Fix issue with slash commands not loading on new issue page
   - Fix inconsistent background color for filter input field (ClemMakesApps)
   - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
@@ -94,6 +104,7 @@ v 8.12.0 (unreleased)
   - Add hover state to todos !5361 (winniehell)
   - Fix icon alignment of star and fork buttons !5451 (winniehell)
   - Fix alignment of icon buttons !5887 (winniehell)
+  - Added Ubuntu 16.04 support for packager.io (JonTheNiceGuy)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
   - Fix accessibility and visibility of project list dropdown button !6140

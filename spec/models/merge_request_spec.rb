@@ -589,15 +589,62 @@ describe MergeRequest, models: true do
   end
 
   describe '#all_pipelines' do
-    let!(:pipelines) do
-      subject.merge_request_diff.commits.map do |commit|
-        create(:ci_empty_pipeline, project: subject.source_project, sha: commit.id, ref: subject.source_branch)
+    shared_examples 'returning pipelines with proper ordering' do
+      let!(:all_pipelines) do
+        subject.all_commits_sha.map do |sha|
+          create(:ci_empty_pipeline,
+                 project: subject.source_project,
+                 sha: sha,
+                 ref: subject.source_branch)
+        end
+      end
+
+      it 'returns all pipelines' do
+        expect(subject.all_pipelines).not_to be_empty
+        expect(subject.all_pipelines).to eq(all_pipelines.reverse)
       end
     end
 
-    it 'returns a pipelines from source projects with proper ordering' do
-      expect(subject.all_pipelines).not_to be_empty
-      expect(subject.all_pipelines).to eq(pipelines.reverse)
+    context 'with single merge_request_diffs' do
+      it_behaves_like 'returning pipelines with proper ordering'
+    end
+
+    context 'with multiple irrelevant merge_request_diffs' do
+      before do
+        subject.update(target_branch: 'markdown')
+      end
+
+      it_behaves_like 'returning pipelines with proper ordering'
+    end
+
+    context 'with unsaved merge request' do
+      subject { build(:merge_request) }
+
+      let!(:pipeline) do
+        create(:ci_empty_pipeline,
+               project: subject.project,
+               sha: subject.diff_head_sha,
+               ref: subject.source_branch)
+      end
+
+      it 'returns pipelines from diff_head_sha' do
+        expect(subject.all_pipelines).to contain_exactly(pipeline)
+      end
+    end
+  end
+
+  describe '#all_commits_sha' do
+    let(:all_commits_sha) do
+      subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
+    end
+
+    before do
+      subject.update(target_branch: 'markdown')
+    end
+
+    it 'returns all SHA from all merge_request_diffs' do
+      expect(subject.merge_request_diffs.size).to eq(2)
+      expect(subject.all_commits_sha).to eq(all_commits_sha)
     end
   end
 
@@ -795,16 +842,57 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#environments" do
+  describe '#environments' do
     let(:project)       { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
-    it 'selects deployed environments' do
-      environments = create_list(:environment, 3, project: project)
-      create(:deployment, environment: environments.first, sha: project.commit('master').id)
-      create(:deployment, environment: environments.second, sha: project.commit('feature').id)
+    context 'with multiple environments' do
+      let(:environments) { create_list(:environment, 3, project: project) }
 
-      expect(merge_request.environments).to eq [environments.first]
+      before do
+        create(:deployment, environment: environments.first, ref: 'master', sha: project.commit('master').id)
+        create(:deployment, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
+      end
+
+      it 'selects deployed environments' do
+        expect(merge_request.environments).to contain_exactly(environments.first)
+      end
+    end
+
+    context 'with environments on source project' do
+      let(:source_project) do
+        create(:project) do |fork_project|
+          fork_project.create_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
+        end
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: source_project, source_branch: 'feature',
+               target_project: project)
+      end
+
+      let(:source_environment) { create(:environment, project: source_project) }
+
+      before do
+        create(:deployment, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
+      end
+
+      it 'selects deployed environments' do
+        expect(merge_request.environments).to contain_exactly(source_environment)
+      end
+
+      context 'with environments on target project' do
+        let(:target_environment) { create(:environment, project: project) }
+
+        before do
+          create(:deployment, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
+        end
+
+        it 'selects deployed environments' do
+          expect(merge_request.environments).to contain_exactly(source_environment, target_environment)
+        end
+      end
     end
 
     context 'without a diff_head_commit' do

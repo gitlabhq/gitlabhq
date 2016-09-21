@@ -310,7 +310,7 @@ group :development, :test do
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.42.0', require: false
-  gem 'rubocop-rspec', '~> 1.7.0', require: false
+  gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
@@ -331,6 +331,7 @@ group :test do
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :production do

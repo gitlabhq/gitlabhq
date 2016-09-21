@@ -662,7 +662,7 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context 'to private project' do
-        let(:project) { create(:project, :internal) }
+        let(:project) { create(:project) }
 
         it { expect(subject).not_to be_allowed }
       end

@@ -169,4 +169,83 @@ describe CreateDeploymentService, services: true do
       end
     end
   end
+
+  describe "merge request metrics" do
+    let(:params) do
+      {
+        environment: 'production',
+        ref: 'master',
+        tag: false,
+        sha: '97de212e80737a608d939f648d959671fb0a0142b',
+      }
+    end
+
+    let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
+
+    context "while updating the 'first_deployed_to_production_at' time" do
+      before { merge_request.mark_as_merged }
+
+      context "for merge requests merged before the current deploy" do
+        it "sets the time if the deploy's environment is 'production'" do
+          time = Time.now
+          Timecop.freeze(time) { service.execute }
+
+          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+        end
+
+        it "doesn't set the time if the deploy's environment is not 'production'" do
+          staging_params = params.merge(environment: 'staging')
+          service = described_class.new(project, user, staging_params)
+          service.execute
+
+          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
+        end
+
+        it 'does not raise errors if the merge request does not have a metrics record' do
+          merge_request.metrics.destroy
+
+          expect(merge_request.reload.metrics).to be_nil
+          expect { service.execute }.not_to raise_error
+        end
+      end
+
+      context "for merge requests merged before the previous deploy" do
+        context "if the 'first_deployed_to_production_at' time is already set" do
+          it "does not overwrite the older 'first_deployed_to_production_at' time" do
+            # Previous deploy
+            time = Time.now
+            Timecop.freeze(time) { service.execute }
+
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+
+            # Current deploy
+            service = described_class.new(project, user, params)
+            Timecop.freeze(time + 12.hours) { service.execute }
+
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+          end
+        end
+
+        context "if the 'first_deployed_to_production_at' time is not already set" do
+          it "does not overwrite the older 'first_deployed_to_production_at' time" do
+            # Previous deploy
+            time = 5.minutes.from_now
+            Timecop.freeze(time) { service.execute }
+
+            expect(merge_request.reload.metrics.merged_at).to be < merge_request.reload.metrics.first_deployed_to_production_at
+
+            merge_request.reload.metrics.update(first_deployed_to_production_at: nil)
+
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
+
+            # Current deploy
+            service = described_class.new(project, user, params)
+            Timecop.freeze(time + 12.hours) { service.execute }
+
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
+          end
+        end
+      end
+    end
+  end
 end

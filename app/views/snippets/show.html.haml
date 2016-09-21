@@ -10,3 +10,5 @@
       = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']")
       = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
   = render 'shared/snippets/blob'
+
+= render 'award_emoji/awards_block', awardable: @snippet, inline: true

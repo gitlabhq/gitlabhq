@@ -49,6 +49,7 @@ class ProjectPolicy < BasePolicy
     can! :create_issue
     can! :create_note
     can! :upload_file
+    can! :read_cycle_analytics
   end
 
   def reporter_access!
@@ -224,6 +225,7 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_container_image
     can! :download_code
+    can! :read_cycle_analytics
 
     # NOTE: may be overridden by IssuePolicy
     can! :read_issue

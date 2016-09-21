@@ -1562,6 +1562,22 @@ class Project < ActiveRecord::Base
     size_limit_enabled? && (size_mb > actual_size_limit || size_mb + repository_and_lfs_size > actual_size_limit)
   end
 
+  def environments_for(ref, commit, with_tags: false)
+    environment_ids = deployments.group(:environment_id).
+      select(:environment_id)
+
+    environment_ids =
+      if with_tags
+        environment_ids.where('ref=? OR tag IS TRUE', ref)
+      else
+        environment_ids.where(ref: ref)
+      end
+
+    environments.where(id: environment_ids).select do |environment|
+      environment.includes_commit?(commit)
+    end
+  end
+
   private
 
   def pushes_since_gc_redis_key
