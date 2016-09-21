@@ -87,6 +87,18 @@ describe Namespace, models: true do
     end
   end
 
+  describe '#actual_size_limit' do
+    let(:namespace) { build(:namespace) }
+
+    before do
+      allow_any_instance_of(ApplicationSetting).to receive(:repository_size_limit).and_return(50)
+    end
+
+    it 'returns the correct size limit' do
+      expect(namespace.actual_size_limit).to eq(50)
+    end
+  end
+
   describe :rm_dir do
     let!(:project) { create(:project, namespace: namespace) }
     let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.path) }

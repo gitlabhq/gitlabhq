@@ -486,6 +486,15 @@ describe Project, models: true do
       allow_any_instance_of(ApplicationSetting).to receive(:repository_size_limit).and_return(50)
     end
 
+    describe '#changes_will_exceed_size_limit?' do
+      before do
+        allow(project).to receive(:repository_and_lfs_size).and_return(49)
+      end
+      it 'returns true when changes go over' do
+        expect(project.changes_will_exceed_size_limit?(5)).to be_truthy
+      end
+    end
+
     describe '#actual_size_limit' do
       it 'returns the limit set in the application settings' do
         expect(project.actual_size_limit).to eq(50)

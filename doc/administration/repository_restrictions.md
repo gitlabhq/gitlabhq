@@ -1,6 +1,6 @@
 # Repository size restrictions
 
-> **Note:** Introduced with 8.12 EE
+> Introduced with GitLab Enterprise Edition 8.12
 
 Repositories within your GitLab instance can grow quickly, specially if you are
 using LFS. Their size can grow exponentially and eat up your storage device quite
@@ -23,7 +23,7 @@ new issues, and clone the project.
 
 Uploading LFS objects will also be denied.
 
-In order to lift this restrictions, the administrator of the GitLab instance
+In order to lift these restrictions, the administrator of the GitLab instance
 needs to increase the limit on the particular project that exceeded it.
 
 

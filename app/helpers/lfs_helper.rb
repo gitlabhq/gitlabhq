@@ -7,7 +7,7 @@ module LfsHelper
     render(
       json: {
         message: 'Git LFS is not enabled on this GitLab server, contact your admin.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: help_url,
       },
       status: 501
     )
