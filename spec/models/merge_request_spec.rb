@@ -724,6 +724,7 @@ describe MergeRequest, models: true do
           fork_project.create_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
         end
       end
+
       let(:merge_request) do
         create(:merge_request,
                source_project: source_project, source_branch: 'feature',

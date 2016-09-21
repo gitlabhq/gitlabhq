@@ -1661,11 +1661,11 @@ describe Project, models: true do
       end
 
       it 'does not return environment when no with_tags is set' do
-        expect(project.environments_for('master', project.commit)).not_to contain_exactly(environment)
+        expect(project.environments_for('master', project.commit)).to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', project.commit('feature'))).not_to contain_exactly(environment)
+        expect(project.environments_for('master', project.commit('feature'))).to be_empty
       end
     end
 
@@ -1679,11 +1679,11 @@ describe Project, models: true do
       end
 
       it 'does not environment when ref is different' do
-        expect(project.environments_for('feature', project.commit)).not_to contain_exactly(environment)
+        expect(project.environments_for('feature', project.commit)).to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', project.commit('feature'))).not_to contain_exactly(environment)
+        expect(project.environments_for('master', project.commit('feature'))).to be_empty
       end
     end
   end
