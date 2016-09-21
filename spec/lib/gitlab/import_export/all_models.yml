@@ -13,6 +13,8 @@ issues:
 - user_agent_detail
 - moved_to
 - events
+- merge_requests_closing_issues
+- metrics
 events:
 - author
 - project
@@ -71,6 +73,8 @@ merge_requests:
 - merge_request_diffs
 - merge_request_diff
 - events
+- merge_requests_closing_issues
+- metrics
 merge_request_diff:
 - merge_request
 pipelines:
@@ -101,6 +105,10 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+merge_access_levels:
+- protected_branch
+push_access_levels:
+- protected_branch
 project:
 - taggings
 - base_tags
