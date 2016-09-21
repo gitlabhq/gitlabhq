@@ -15,7 +15,7 @@ feature 'Import/Export - project export integration test', feature: true, js: tr
   let(:sensitive_words) { %w[pass secret token key] }
   let(:safe_list) do
     {
-      token: [ProjectHook, Ci::Trigger],
+      token: [ProjectHook, Ci::Trigger, CommitStatus],
       key: [Project, Ci::Variable, :yaml_variables]
     }
   end
