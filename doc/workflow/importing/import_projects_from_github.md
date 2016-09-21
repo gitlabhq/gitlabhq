@@ -106,6 +106,11 @@ If you want, you can import all your GitHub projects in one go by hitting
 
 ![GitHub importer page](img/import_projects_from_github_importer.png)
 
+---
+
+You can also choose a different name for the project and a different namespace,
+if you have the privileges to do so.
+
 [gh-import]: ../../integration/github.md "GitHub integration"
 [new-project]: ../../gitlab-basics/create-project.md "How to create a new project in GitLab"
 [gh-integration]: #authorize-access-to-your-repositories-using-the-github-integration

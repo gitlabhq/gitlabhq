@@ -10,6 +10,8 @@ module IssuesAction
               .preload(:author, :project)
               .page(params[:page])
 
+    @all_issues = all_issues_collection.non_archived
+
     respond_to do |format|
       format.html
       format.atom { render layout: false }

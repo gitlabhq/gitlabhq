@@ -83,7 +83,8 @@ Parameters:
     "forks_count": 0,
     "open_issues_count": 3,
     "public_builds": true,
-    "shared_with_groups": []
+    "shared_with_groups": [],
+    "request_access_enabled": false
   }
 ]
 ```
@@ -117,6 +118,7 @@ Example response:
   "visibility_level": 20,
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
+  "request_access_enabled": false,
   "projects": [
     {
       "id": 7,
@@ -162,7 +164,8 @@ Example response:
       "forks_count": 0,
       "open_issues_count": 3,
       "public_builds": true,
-      "shared_with_groups": []
+      "shared_with_groups": [],
+      "request_access_enabled": false
     },
     {
       "id": 6,
@@ -208,7 +211,8 @@ Example response:
       "forks_count": 0,
       "open_issues_count": 8,
       "public_builds": true,
-      "shared_with_groups": []
+      "shared_with_groups": [],
+      "request_access_enabled": false
     }
   ],
   "shared_projects": [
@@ -306,6 +310,7 @@ Parameters:
 - `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
 - `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
+- `request_access_enabled` (optional) - Allow users to request member access.
 
 ## Transfer project to group
 
@@ -336,6 +341,7 @@ PUT /groups/:id
 | `description` | string | no | The description of the group |
 | `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
 | `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
+| `request_access_enabled` | boolean | no | Allow users to request member access. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
@@ -353,6 +359,7 @@ Example response:
   "visibility_level": 10,
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
+  "request_access_enabled": false,
   "projects": [
     {
       "id": 9,
@@ -397,7 +404,8 @@ Example response:
       "forks_count": 0,
       "open_issues_count": 3,
       "public_builds": true,
-      "shared_with_groups": []
+      "shared_with_groups": [],
+      "request_access_enabled": false
     }
   ]
 }

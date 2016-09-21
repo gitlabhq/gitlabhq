@@ -356,6 +356,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   def filter_issue(text)
-    fill_in 'issue_search', with: text
+    fill_in 'issuable_search', with: text
   end
 end

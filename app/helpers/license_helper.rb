@@ -4,8 +4,7 @@ module LicenseHelper
   end
 
   def max_historical_user_count
-    date_range = (Date.today - 1.year)..Date.today
-    HistoricalData.during(date_range).maximum(:active_user_count) || 0
+    HistoricalData.max_historical_user_count
   end
 
   def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?))
@@ -15,25 +14,6 @@ module LicenseHelper
       else
         no_license_message(signed_in, is_admin)
       end
-  end
-
-  def license_usage_data
-    usage_data = { version: Gitlab::VERSION,
-                   active_user_count: current_active_user_count }
-    license = License.current
-
-    if license
-      usage_data[:license_md5] = Digest::MD5.hexdigest(license.data)
-      usage_data[:historical_max_users] = max_historical_user_count
-      usage_data[:licensee] = license.licensee
-      usage_data[:license_user_count] = license.user_count
-      usage_data[:license_starts_at] = license.starts_at
-      usage_data[:license_expires_at] = license.expires_at
-      usage_data[:license_add_ons] = license.add_ons
-      usage_data[:recorded_at] = Time.now
-    end
-
-    usage_data
   end
 
   private
