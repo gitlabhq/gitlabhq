@@ -104,9 +104,9 @@ module Gitlab
         return build_status_object(true)
       end
 
-      unless project.repository.exists?
-        return build_status_object(false, "A repository for this project does not exist yet.")
-      end
+      return build_status_object(false, "A repository for this project does not exist yet.") unless project.repository.exists?
+
+      return build_status_object(false, Gitlab::RepositorySizeError.new(project).push_error) if project.above_size_limit?
 
       if ::License.block_changes?
         message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
@@ -115,6 +115,8 @@ module Gitlab
 
       changes_list = Gitlab::ChangesList.new(changes)
 
+      push_size_in_bytes = 0
+
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
         status = change_access_check(change)
@@ -122,6 +124,14 @@ module Gitlab
           # If user does not have access to make at least one change - cancel all push
           return status
         end
+
+        if project.size_limit_enabled?
+          push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
+        end
+      end
+
+      if project.changes_will_exceed_size_limit?(push_size_in_bytes.to_mb)
+        return build_status_object(false, Gitlab::RepositorySizeError.new(project).new_changes_error)
       end
 
       build_status_object(true)

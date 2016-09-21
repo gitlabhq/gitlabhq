@@ -5,6 +5,7 @@ v 8.12.0 (Unreleased)
   - [ES] Instrument Elasticsearch::Git::Repository
   - Request only the LDAP attributes we need
   - Add 'Sync now' to group members page !704
+  - Add repository size limits and enforce them !740
   - [ES] Instrument other Gitlab::Elastic classes
   - [ES] Fix: Elasticsearch does not find partial matches in project names
   - [ES] Global code search

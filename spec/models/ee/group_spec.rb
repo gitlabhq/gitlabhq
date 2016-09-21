@@ -85,4 +85,22 @@ describe Group, models: true do
       expect { group.mark_ldap_sync_as_failed('Error') }.not_to raise_error
     end
   end
+
+  describe '#actual_size_limit' do
+    let(:group) { build(:group) }
+
+    before do
+      allow_any_instance_of(ApplicationSetting).to receive(:repository_size_limit).and_return(50)
+    end
+
+    it 'returns the value set globally' do
+      expect(group.actual_size_limit).to eq(50)
+    end
+
+    it 'returns the value set locally' do
+      group.update_attribute(:repository_size_limit, 75)
+
+      expect(group.actual_size_limit).to eq(75)
+    end
+  end
 end

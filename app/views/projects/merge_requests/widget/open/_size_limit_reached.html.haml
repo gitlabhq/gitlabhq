@@ -1,0 +1,8 @@
+- error_messages = Gitlab::RepositorySizeError.new(@project)
+
+%h4.size-limit-reached
+  = icon("exclamation-triangle")
+  = error_messages.merge_error
+
+%p
+  = error_messages.more_info_message

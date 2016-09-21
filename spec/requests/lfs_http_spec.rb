@@ -634,7 +634,7 @@ describe 'Git LFS API and storage' do
               { 'operation' => 'upload',
                 'objects' => [
                   { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078
+                    'size' => 157507855
                   }]
               }
             end
@@ -646,9 +646,30 @@ describe 'Git LFS API and storage' do
             it 'responds with upload hypermedia link' do
               expect(json_response['objects']).to be_kind_of(Array)
               expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-              expect(json_response['objects'].first['size']).to eq(1575078)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(json_response['objects'].first['size']).to eq(157507855)
+              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/157507855")
               expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+            end
+
+            context 'and project is above the limit' do
+              let(:update_lfs_permissions) do
+                allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+              end
+
+              it 'responds with status 406' do
+                expect(response).to have_http_status(406)
+              end
+            end
+
+            context 'and project will go over the limit' do
+              let(:update_lfs_permissions) do
+                allow_any_instance_of(Project).to receive_messages(actual_size_limit: 145, size_limit_enabled?: true)
+              end
+
+              it 'responds with status 406' do
+                expect(response).to have_http_status(406)
+                expect(json_response['documentation_url']).to include('/help')
+              end
             end
           end
 

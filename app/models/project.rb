@@ -182,6 +182,9 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
+  validates :repository_size_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
+
   with_options if: :mirror? do |project|
     project.validates :import_url, presence: true
     project.validates :mirror_user, presence: true
@@ -1529,6 +1532,34 @@ class Project < ActiveRecord::Base
 
   def reset_pushes_since_gc
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+  end
+
+  def repository_and_lfs_size
+    repository_size + lfs_objects.sum(:size).to_i.to_mb
+  end
+
+  def above_size_limit?
+    return false unless size_limit_enabled?
+
+    repository_and_lfs_size > actual_size_limit
+  end
+
+  def size_to_remove
+    repository_and_lfs_size - actual_size_limit
+  end
+
+  def actual_size_limit
+    return namespace.actual_size_limit if repository_size_limit.nil?
+
+    repository_size_limit
+  end
+
+  def size_limit_enabled?
+    actual_size_limit != 0
+  end
+
+  def changes_will_exceed_size_limit?(size_mb)
+    size_limit_enabled? && (size_mb > actual_size_limit || size_mb + repository_and_lfs_size > actual_size_limit)
   end
 
   private
