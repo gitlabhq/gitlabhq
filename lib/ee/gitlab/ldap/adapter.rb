@@ -1,7 +1,7 @@
 # LDAP connection adapter EE mixin
 #
 # This module is intended to encapsulate EE-specific adapter methods
-# and be included in the `Gitlab::LDAP::Adapter` class.
+# and be **prepended** in the `Gitlab::LDAP::Adapter` class.
 module EE
   module Gitlab
     module LDAP
@@ -51,6 +51,12 @@ module EE
           ldap_search(options).map do |entry|
             LDAP::Group.new(entry, self)
           end
+        end
+
+        def user_attributes
+          attributes = super
+          attributes << config.sync_ssh_keys if config.sync_ssh_keys
+          attributes
         end
       end
     end
