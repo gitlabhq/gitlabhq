@@ -55,3 +55,16 @@
     }
   }
 }
+
+.groups-header {
+
+  @media (min-width: $screen-sm-min) {
+    .nav-links {
+      width: 35%;
+    }
+
+    .nav-controls {
+      width: 65%;
+    }
+  }
+}
