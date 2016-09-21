@@ -229,8 +229,11 @@ describe CreateDeploymentService, services: true do
         context "if the 'first_deployed_to_production_at' time is not already set" do
           it "does not overwrite the older 'first_deployed_to_production_at' time" do
             # Previous deploy
-            time = Time.now
+            time = 5.minutes.from_now
             Timecop.freeze(time) { service.execute }
+
+            expect(merge_request.reload.metrics.merged_at).to be < merge_request.reload.metrics.first_deployed_to_production_at
+
             merge_request.reload.metrics.update(first_deployed_to_production_at: nil)
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
