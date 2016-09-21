@@ -10,5 +10,5 @@
   - else
     %li.build
       .curve
-      .build-content
+      .dropdown.inline.build-content{ type: 'button', data: { toggle: 'dropdown' } }
         = render "projects/commit/pipeline_status_group", name: group_name, subject: grouped_statuses

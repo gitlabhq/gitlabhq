@@ -342,10 +342,17 @@
   .build {
     border: 1px solid $border-color;
     position: relative;
-    padding: 8px 10px;
+    padding: 7px 10px 8px;
     border-radius: 30px;
     width: 186px;
     margin-bottom: 10px;
+
+    &:hover {
+      background-color: $gray-lighter;
+      .dropdown-menu-toggle {
+        background-color: transparent;
+      }
+    }
 
     &.playable {
       background-color: $gray-light;
@@ -366,7 +373,6 @@
       width: 164px;
 
       .ci-status-icon {
-
         svg {
           height: 20px;
           width: 20px;
@@ -385,41 +391,40 @@
       }
 
       a {
-        color: $layout-link-gray;
+        color: $gl-text-color-light;
         text-decoration: none;
-
-        &:hover {
-          .ci-status-text {
-            text-decoration: underline;
-          }
-        }
       }
 
       .dropdown-menu-toggle {
         border: none;
         width: auto;
         padding: 0;
-        color: $layout-link-gray;
+        color: $gl-text-color-light;
 
         .ci-status-text {
-          width: 112px;
+          max-width: 112px;
+          width: auto;
         }
       }
 
       .grouped-pipeline-dropdown {
         padding: 8px 0;
-        width: 168px;
+        width: 186px;
         left: auto;
-        right: -180px;
+        right: -197px;
         top: -9px;
         max-height: 245px;
         overflow-y: scroll;
 
         a {
-          padding: 7px 8px;
+          color: $gl-text-color;
+          padding: 7px 8px 8px;
           margin: 0 8px;
 
           &:hover {
+            background-color: $blue-light-transparent;
+            border-radius: 3px;
+
             .ci-status-text {
               text-decoration: none;
             }
@@ -465,9 +470,10 @@
       }
 
       .badge {
-        background-color: $gray-dark;
-        color: $layout-link-gray;
+        background-color: $gray-darker;
+        color: $gl-text-color-light;
         font-weight: normal;
+        margin-left: $btn-xs-side-margin;
       }
     }
 
