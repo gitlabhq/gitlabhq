@@ -43,55 +43,57 @@ module Banzai
         whitelist[:protocols].delete('a')
 
         # ...but then remove links with unsafe protocols
-        whitelist[:transformers].push(remove_unsafe_links)
+        whitelist[:transformers].push(self.class.remove_unsafe_links)
 
         # Remove `rel` attribute from `a` elements
-        whitelist[:transformers].push(remove_rel)
+        whitelist[:transformers].push(self.class.remove_rel)
 
         # Remove `class` attribute from non-highlight spans
-        whitelist[:transformers].push(clean_spans)
+        whitelist[:transformers].push(self.class.clean_spans)
 
         whitelist
       end
 
-      def remove_unsafe_links
-        lambda do |env|
-          node = env[:node]
+      class << self
+        def remove_unsafe_links
+          lambda do |env|
+            node = env[:node]
 
-          return unless node.name == 'a'
-          return unless node.has_attribute?('href')
+            return unless node.name == 'a'
+            return unless node.has_attribute?('href')
 
-          begin
-            uri = Addressable::URI.parse(node['href'])
-            uri.scheme = uri.scheme.strip.downcase if uri.scheme
+            begin
+              uri = Addressable::URI.parse(node['href'])
+              uri.scheme = uri.scheme.strip.downcase if uri.scheme
 
-            node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(uri.scheme)
-          rescue Addressable::URI::InvalidURIError
-            node.remove_attribute('href')
+              node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(uri.scheme)
+            rescue Addressable::URI::InvalidURIError
+              node.remove_attribute('href')
+            end
           end
         end
-      end
 
-      def remove_rel
-        lambda do |env|
-          if env[:node_name] == 'a'
-            env[:node].remove_attribute('rel')
+        def remove_rel
+          lambda do |env|
+            if env[:node_name] == 'a'
+              env[:node].remove_attribute('rel')
+            end
           end
         end
-      end
 
-      def clean_spans
-        lambda do |env|
-          node = env[:node]
+        def clean_spans
+          lambda do |env|
+            node = env[:node]
 
-          return unless node.name == 'span'
-          return unless node.has_attribute?('class')
+            return unless node.name == 'span'
+            return unless node.has_attribute?('class')
 
-          unless has_ancestor?(node, 'pre')
-            node.remove_attribute('class')
+            unless node.ancestors.any? { |n| n.name.casecmp('pre').zero? }
+              node.remove_attribute('class')
+            end
+
+            { node_whitelist: [node] }
           end
-
-          { node_whitelist: [node] }
         end
       end
     end
