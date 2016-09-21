@@ -1304,7 +1304,7 @@ class Project < ActiveRecord::Base
         environment_ids.where(ref: ref)
       end
 
-    Environment.where(id: environment_ids).map do |environment|
+    Environment.where(id: environment_ids).select do |environment|
       environment.includes_commit?(commit)
     end
   end

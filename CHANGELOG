@@ -24,6 +24,7 @@ v 8.12.0 (unreleased)
   - Cycle analytics (first iteration) !5986
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
+  - Limit number of shown environments on Merge Request: show only environments for target_branch, source_branch and tags
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104

@@ -43,7 +43,7 @@
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
 
-- @merge_request.environments.each do |environment|
+- @merge_request.environments.sort_by(&:name).each do |environment|
   - if can?(current_user, :read_environment, environment)
     .mr-widget-heading
       .ci_widget.ci-success

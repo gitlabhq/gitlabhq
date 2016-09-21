@@ -672,10 +672,10 @@ class MergeRequest < ActiveRecord::Base
 
     environments = source_project.environments_for(
       source_branch, diff_head_commit)
-    environments <<= target_project.environments_for(
-      source_branch, diff_head_commit, with_tags: true)
+    environments += target_project.environments_for(
+      target_branch, diff_head_commit, with_tags: true)
 
-    environments
+    environments.uniq
   end
 
   def state_human_name
