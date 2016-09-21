@@ -178,6 +178,11 @@ v 8.12.0 (unreleased)
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
 
+v 8.11.7
+  - Avoid conflict with admin labels when importing GitHub labels. !6158
+  - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
+  - Allow the Rails cookie to be used for API authentication.
+
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
   - Make merge conflict file size limit 200 KB, to match the docs. !6052
@@ -391,6 +396,9 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.10
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.10.9
   - Exclude some pending or inactivated rows in Member scopes
@@ -624,6 +632,9 @@ v 8.10.0
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
   - Fix import_data wrongly saved as a result of an invalid import_url !5206
+
+v 8.9.10
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.9.9
   - Exclude some pending or inactivated rows in Member scopes
