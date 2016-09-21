@@ -38,6 +38,22 @@ describe MergeRequests::MergeService, services: true do
       end
     end
 
+    context 'project has exceeded size limit' do
+      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+
+      before do
+        allow(project).to receive(:above_size_limit?).and_return(true)
+
+        perform_enqueued_jobs do
+          service.execute(merge_request)
+        end
+      end
+
+      it 'returns the correct error message' do
+        expect(merge_request.merge_error).to include('This merge request cannot be merged')
+      end
+    end
+
     context 'remove source branch by author' do
       let(:service) do
         merge_request.merge_params['force_remove_source_branch'] = '1'

@@ -66,6 +66,7 @@ class Admin::GroupsController < Admin::ApplicationController
       :lfs_enabled,
       :name,
       :path,
+      :repository_size_limit,
       :request_access_enabled,
       :visibility_level
     )

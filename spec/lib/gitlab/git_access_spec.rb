@@ -618,6 +618,24 @@ describe Gitlab::GitAccess, lib: true do
           expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
         end
       end
+
+      describe 'repository size restrictions' do
+        before do
+          project.update_attribute(:repository_size_limit, 50)
+        end
+
+        it 'returns false when blob is too big' do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(100.megabytes.to_i)
+
+          expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).not_to be_allowed
+        end
+
+        it 'returns true when blob is just right' do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(2.megabytes.to_i)
+
+          expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
+        end
+      end
     end
   end
 

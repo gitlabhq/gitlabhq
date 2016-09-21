@@ -1,0 +1,8 @@
+- if current_user.admin?
+  .form-group
+    = f.label :repository_size_limit, class: 'control-label' do
+      Repository size limit (MB)
+    .col-sm-10
+      = f.number_field :repository_size_limit, class: 'form-control', min: 0
+      %span.help-block#repository_size_limit_help_block
+        = size_limit_message_for_group(@group)

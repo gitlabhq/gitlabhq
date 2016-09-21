@@ -2,6 +2,8 @@
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
+  = render 'groups/repository_size_limit_setting', f: f
+
   .form-group.group-description-holder
     = f.label :avatar, "Group avatar", class: 'control-label'
     .col-sm-10

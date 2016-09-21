@@ -482,6 +482,76 @@ describe Project, models: true do
     end
   end
 
+  describe 'repository size restrictions' do
+    let(:project) { build(:empty_project) }
+
+    before do
+      allow_any_instance_of(ApplicationSetting).to receive(:repository_size_limit).and_return(50)
+    end
+
+    describe '#changes_will_exceed_size_limit?' do
+      before do
+        allow(project).to receive(:repository_and_lfs_size).and_return(49)
+      end
+      it 'returns true when changes go over' do
+        expect(project.changes_will_exceed_size_limit?(5)).to be_truthy
+      end
+    end
+
+    describe '#actual_size_limit' do
+      it 'returns the limit set in the application settings' do
+        expect(project.actual_size_limit).to eq(50)
+      end
+
+      it 'returns the value set in the group' do
+        group = create(:group, repository_size_limit: 100)
+        project.update_attribute(:namespace_id, group.id)
+
+        expect(project.actual_size_limit).to eq(100)
+      end
+
+      it 'returns the value set locally' do
+        project.update_attribute(:repository_size_limit, 75)
+
+        expect(project.actual_size_limit).to eq(75)
+      end
+    end
+
+    describe '#size_limit_enabled?' do
+      it 'returns false when disabled' do
+        project.update_attribute(:repository_size_limit, 0)
+
+        expect(project.size_limit_enabled?).to be_falsey
+      end
+
+      it 'returns true when a limit is set' do
+        project.update_attribute(:repository_size_limit, 75)
+
+        expect(project.size_limit_enabled?).to be_truthy
+      end
+    end
+
+    describe '#above_size_limit?' do
+      it 'returns true when above the limit' do
+        allow(project).to receive(:repository_and_lfs_size).and_return(100)
+
+        expect(project.above_size_limit?).to be_truthy
+      end
+
+      it 'returns false when not over the limit' do
+        expect(project.above_size_limit?).to be_falsey
+      end
+    end
+
+    describe '#size_to_remove' do
+      it 'returns the correct value' do
+        allow(project).to receive(:repository_and_lfs_size).and_return(100)
+
+        expect(project.size_to_remove).to eq(50)
+      end
+    end
+  end
+
   describe '#default_issues_tracker?' do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }

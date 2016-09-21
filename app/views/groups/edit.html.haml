@@ -6,6 +6,8 @@
       = form_errors(@group)
       = render 'shared/group_form', f: f
 
+      = render 'repository_size_limit_setting', f: f
+
       .form-group
         .col-sm-offset-2.col-sm-10
           = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
