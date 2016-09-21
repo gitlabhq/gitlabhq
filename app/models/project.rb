@@ -27,7 +27,6 @@ class Project < ActiveRecord::Base
 
   after_create :ensure_dir_exist
   after_save :ensure_dir_exist, if: :namespace_id_changed?
-  after_initialize :setup_project_feature
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -1306,15 +1305,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Build the association if not exists already when access to it
+  def project_feature
+    super || (build_project_feature and super)
+  end
+
   private
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  # Prevents the creation of project_feature record for every project
-  def setup_project_feature
-    build_project_feature unless project_feature
   end
 
   def default_branch_protected?
