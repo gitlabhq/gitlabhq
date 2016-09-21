@@ -70,6 +70,10 @@ module GitlabRoutingHelper
     namespace_project_runner_path(@project.namespace, @project, runner, *args)
   end
 
+  def environment_path(environment, *args)
+    namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
+  end
+
   def issue_path(entity, *args)
     namespace_project_issue_path(entity.project.namespace, entity.project, entity, *args)
   end

@@ -1647,6 +1647,47 @@ describe Project, models: true do
     end
   end
 
+  describe '#environments_for' do
+    let(:project) { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+
+    context 'tagged deployment' do
+      before do
+        create(:deployment, environment: environment, ref: '1.0', tag: true, sha: project.commit.id)
+      end
+
+      it 'returns environment when with_tags is set' do
+        expect(project.environments_for('master', project.commit, with_tags: true)).to contain_exactly(environment)
+      end
+
+      it 'does not return environment when no with_tags is set' do
+        expect(project.environments_for('master', project.commit)).to be_empty
+      end
+
+      it 'does not return environment when commit is not part of deployment' do
+        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+      end
+    end
+
+    context 'branch deployment' do
+      before do
+        create(:deployment, environment: environment, ref: 'master', sha: project.commit.id)
+      end
+
+      it 'returns environment when ref is set' do
+        expect(project.environments_for('master', project.commit)).to contain_exactly(environment)
+      end
+
+      it 'does not environment when ref is different' do
+        expect(project.environments_for('feature', project.commit)).to be_empty
+      end
+
+      it 'does not return environment when commit is not part of deployment' do
+        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+      end
+    end
+  end
+
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end

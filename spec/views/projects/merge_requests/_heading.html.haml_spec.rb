@@ -15,6 +15,8 @@ describe 'projects/merge_requests/widget/_heading' do
       assign(:merge_request, merge_request)
       assign(:project, project)
 
+      allow(view).to receive(:can?).and_return(true)
+
       render
     end
 
