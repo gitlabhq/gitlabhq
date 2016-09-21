@@ -244,12 +244,12 @@ class ProjectTeam
         next if numeric_level > link.group_access
 
         # Make sure we include everyone _above_ the requested level as well
-        if numeric_level == link.group_access
-          invited_group_members = invited_group_members
-            .where("access_level >= ?", link.group_access)
-        else
-          invited_group_members = invited_group_members.public_send(level)
-        end
+        invited_group_members =
+          if numeric_level == link.group_access
+            invited_group_members.where("access_level >= ?", link.group_access)
+          else
+            invited_group_members.public_send(level)
+          end
       end
 
       invited_members << invited_group_members
