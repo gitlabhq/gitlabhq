@@ -202,8 +202,8 @@ class ProjectTeam
     group_members = group ? group.members : []
 
     if level
-      project_members = project_members.send(level)
-      group_members = group_members.send(level) if group
+      project_members = project_members.public_send(level)
+      group_members = group_members.public_send(level) if group
     end
 
     user_ids = project_members.pluck(:user_id)
@@ -248,7 +248,7 @@ class ProjectTeam
           invited_group_members = invited_group_members
             .where("access_level >= ?", link.group_access)
         else
-          invited_group_members = invited_group_members.send(level)
+          invited_group_members = invited_group_members.public_send(level)
         end
       end
 
