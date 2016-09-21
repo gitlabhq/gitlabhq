@@ -102,6 +102,14 @@ module GitlabRoutingHelper
     end
   end
 
+  def toggle_award_emoji_personal_snippet_path(*args)
+    toggle_award_emoji_snippet_path(*args)
+  end
+
+  def toggle_award_emoji_namespace_project_project_snippet_path(*args)
+    toggle_award_emoji_namespace_project_snippet_path(*args)
+  end
+
   ## Members
   def project_members_url(project, *args)
     namespace_project_project_members_url(project.namespace, project)

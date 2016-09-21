@@ -51,6 +51,7 @@ v 8.12.0 (unreleased)
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
   - Added go to issue boards keyboard shortcut
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
+  - Emoji can be awarded on Snippets !4456
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)

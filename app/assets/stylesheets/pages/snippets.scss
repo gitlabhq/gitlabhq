@@ -12,9 +12,16 @@
 
 .snippet-file-content {
   border-radius: 3px;
+  margin-bottom: $gl-padding;
+
   .btn-clipboard {
     @extend .btn;
   }
+}
+
+.project-snippets .awards {
+  border-bottom: 1px solid $table-border-color;
+  padding-bottom: $gl-padding;
 }
 
 .snippet-title {
