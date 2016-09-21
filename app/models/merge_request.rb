@@ -16,6 +16,8 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+
   serialize :merge_params, Hash
 
   after_create :ensure_merge_request_diff, unless: :importing?
@@ -501,6 +503,19 @@ class MergeRequest < ActiveRecord::Base
     target_project
   end
 
+  # If the merge request closes any issues, save this information in the
+  # `MergeRequestsClosingIssues` model. This is a performance optimization.
+  # Calculating this information for a number of merge requests requires
+  # running `ReferenceExtractor` on each of them separately.
+  def cache_merge_request_closes_issues!(current_user = self.author)
+    transaction do
+      self.merge_requests_closing_issues.delete_all
+      closes_issues(current_user).each do |issue|
+        self.merge_requests_closing_issues.create!(issue: issue)
+      end
+    end
+  end
+
   def closes_issue?(issue)
     closes_issues.include?(issue)
   end
@@ -508,7 +523,8 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
-      messages = commits.map(&:safe_message) << description
+      messages = [description]
+      messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
       Gitlab::ClosingIssueExtractor.new(project, current_user).
         closed_by_message(messages.join("\n"))

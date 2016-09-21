@@ -77,5 +77,9 @@ module MergeRequests
     def close_service
       MergeRequests::CloseService
     end
+
+    def after_update(issuable)
+      issuable.cache_merge_request_closes_issues!(current_user)
+    end
   end
 end

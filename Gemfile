@@ -320,6 +320,7 @@ group :test do
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :production do
