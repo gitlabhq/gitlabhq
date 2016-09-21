@@ -46,6 +46,7 @@ class ProjectPolicy < BasePolicy
     can! :create_issue
     can! :create_note
     can! :upload_file
+    can! :read_cycle_analytics
   end
 
   def reporter_access!
@@ -62,6 +63,12 @@ class ProjectPolicy < BasePolicy
     can! :read_pipeline
     can! :read_environment
     can! :read_deployment
+  end
+
+  # Permissions given when an user is team member of a project
+  def team_member_reporter_access!
+    can! :build_download_code
+    can! :build_read_container_image
   end
 
   def developer_access!
@@ -109,6 +116,8 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_pipeline
     can! :read_container_image
+    can! :build_download_code
+    can! :build_read_container_image
   end
 
   def owner_access!
@@ -130,10 +139,11 @@ class ProjectPolicy < BasePolicy
   def team_access!(user)
     access = project.team.max_member_access(user.id)
 
-    guest_access!     if access >= Gitlab::Access::GUEST
-    reporter_access!  if access >= Gitlab::Access::REPORTER
-    developer_access! if access >= Gitlab::Access::DEVELOPER
-    master_access!    if access >= Gitlab::Access::MASTER
+    guest_access!                if access >= Gitlab::Access::GUEST
+    reporter_access!             if access >= Gitlab::Access::REPORTER
+    team_member_reporter_access! if access >= Gitlab::Access::REPORTER
+    developer_access!            if access >= Gitlab::Access::DEVELOPER
+    master_access!               if access >= Gitlab::Access::MASTER
   end
 
   def archived_access!
@@ -195,6 +205,7 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_container_image
     can! :download_code
+    can! :read_cycle_analytics
 
     # NOTE: may be overridden by IssuePolicy
     can! :read_issue

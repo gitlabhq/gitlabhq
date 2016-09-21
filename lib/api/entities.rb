@@ -100,22 +100,23 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_build_succeeds
+      expose :request_access_enabled
     end
 
     class Member < UserBasic
       expose :access_level do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.access_level
       end
       expose :expires_at do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.expires_at
       end
     end
 
     class AccessRequester < UserBasic
       expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester = options[:access_requester] || options[:source].requesters.find_by(user_id: user.id)
         access_requester.requested_at
       end
     end
@@ -125,6 +126,7 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
+      expose :request_access_enabled
     end
 
     class GroupDetail < Group

@@ -379,6 +379,7 @@ describe NotificationService, services: true do
       it "emails subscribers of the issue's labels" do
         subscriber = create(:user)
         label = create(:label, issues: [issue])
+        issue.reload
         label.toggle_subscription(subscriber)
         notification.new_issue(issue, @u_disabled)
 
@@ -399,6 +400,7 @@ describe NotificationService, services: true do
           project.team << [guest, :guest]
 
           label = create(:label, issues: [confidential_issue])
+          confidential_issue.reload
           label.toggle_subscription(non_member)
           label.toggle_subscription(author)
           label.toggle_subscription(assignee)

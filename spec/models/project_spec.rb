@@ -308,20 +308,23 @@ describe Project, models: true do
   end
 
   describe 'last_activity methods' do
-    let(:project) { create(:project) }
-    let(:last_event) { double(created_at: Time.now) }
+    let(:timestamp) { Time.now - 2.hours }
+    let(:project) { create(:project, created_at: timestamp, updated_at: timestamp) }
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
-        allow(project).to receive(:last_event).and_return(last_event)
+        last_event = create(:event, project: project)
+
         expect(project.last_activity).to eq(last_event)
       end
     end
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        create(:event, project: project)
-        expect(project.last_activity_at.to_i).to eq(last_event.created_at.to_i)
+        expect_any_instance_of(Event).to receive(:try_obtain_lease).and_return(true)
+        new_event = create(:event, project: project, created_at: Time.now)
+
+        expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
       end
 
       it 'returns the project\'s last update date if it has no events' do

@@ -5,26 +5,38 @@ v 8.12.0 (unreleased)
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
   - Add ability to fork to a specific namespace using API. (ritave)
+  - Allow to set request_access_enabled for groups and projects
   - Cleanup misalignments in Issue list view !6206
+  - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
   - Filter tags by name !6121
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
+  - Fix note form hint showing slash commands supported for commits.
   - Make push events have equal vertical spacing.
+  - API: Ensure invitees are not returned in Members API.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
+  - Display stages in valid order in stages dropdown on build page
+  - Only update projects.last_activity_at once per hour when creating a new event
+  - Cycle analytics (first iteration) !5986
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
+  - Fix long comments in diffs messing with table width
   - Fix pagination on user snippets page
+  - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
+  - Fix download artifacts button links !6407
   - Sort project variables by key. !6275 (Diego Souza)
   - Ensure specs on sorting of issues in API are deterministic on MySQL
+  - Added ability to use predefined CI variables for environment name
+  - Added ability to specify URL in environment configuration in gitlab-ci.yml
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
@@ -39,6 +51,7 @@ v 8.12.0 (unreleased)
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
+  - Spec testing if issue authors can read issues on private projects
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Request only the LDAP attributes we need !6187
   - Center build stage columns in pipeline overview (ClemMakesApps)
@@ -46,11 +59,13 @@ v 8.12.0 (unreleased)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
   - Fix bug stopping issue description being scrollable after selecting issue template
   - Remove suggested colors hover underline (ClemMakesApps)
+  - Fix jump to discussion button being displayed on commit notes
   - Shorten task status phrase (ClemMakesApps)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
   - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
+  - Do not write SSH public key 'comments' to authorized_keys !6381
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Hides merge request button on branches page is user doesn't have permissions
@@ -60,8 +75,11 @@ v 8.12.0 (unreleased)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
+  - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
+  - Loads GFM autocomplete source only when required
+  - Fix issue with slash commands not loading on new issue page
   - Fix inconsistent background color for filter input field (ClemMakesApps)
   - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
@@ -81,12 +99,14 @@ v 8.12.0 (unreleased)
   - Add hover state to todos !5361 (winniehell)
   - Fix icon alignment of star and fork buttons !5451 (winniehell)
   - Fix alignment of icon buttons !5887 (winniehell)
+  - Added Ubuntu 16.04 support for packager.io (JonTheNiceGuy)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
   - Fix accessibility and visibility of project list dropdown button !6140
   - Fix missing flash messages on service edit page (airatshigapov)
   - Added project-specific enable/disable setting for LFS !5997
   - Added group-specific enable/disable setting for LFS !6164
+  - Add optional 'author' param when making commits. !5822 (dandunckelman)
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
@@ -104,6 +124,7 @@ v 8.12.0 (unreleased)
   - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Fix repo title alignment (ClemMakesApps)
   - Change update interval of contacted_at
+  - Add LFS support to SSH !6043
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Don't include 'Created By' tag line when importing from GitHub if there is a linked GitLab account (EspadaV8)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
@@ -138,17 +159,23 @@ v 8.12.0 (unreleased)
   - Refactor the triggers page and documentation !6217
   - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
+  - Let the user choose a namespace and name on GitHub imports
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
+  - Ensure validation messages are shown within the milestone form
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
   - Fix URLs with anchors in wiki !6300 (houqp)
+  - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
   - Clean environment variables when running git hooks
+  - Add UX improvements for merge request version diffs
+  - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
+  - Add UX improvements for merge request version diffs
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
@@ -595,6 +622,7 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+  - Fix import_data wrongly saved as a result of an invalid import_url !5206
 
 v 8.9.9
   - Exclude some pending or inactivated rows in Member scopes
@@ -614,12 +642,6 @@ v 8.9.6
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
   - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
-
-v 8.9.7 (unreleased)
-  - Fix import_data wrongly saved as a result of an invalid import_url
-
-v 8.9.6
-  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
@@ -1886,7 +1908,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.1
+v 8.1.2
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility

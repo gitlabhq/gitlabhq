@@ -70,7 +70,7 @@ module Gitlab
       private
 
       def user_options(field, value, limit)
-        options = { attributes: %W(#{config.uid} cn mail dn) }
+        options = { attributes: user_attributes }
         options[:size] = limit if limit
 
         if field.to_sym == :dn
@@ -97,6 +97,10 @@ module Gitlab
         else
           filter
         end
+      end
+
+      def user_attributes
+        %W(#{config.uid} cn mail dn)
       end
     end
   end

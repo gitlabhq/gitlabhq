@@ -4,6 +4,7 @@ class Environment < ActiveRecord::Base
   has_many :deployments
 
   before_validation :nullify_external_url
+  before_save :set_environment_type
 
   validates :name,
             presence: true,
@@ -26,9 +27,24 @@ class Environment < ActiveRecord::Base
     self.external_url = nil if self.external_url.blank?
   end
 
+  def set_environment_type
+    names = name.split('/')
+
+    self.environment_type =
+      if names.many?
+        names.first
+      else
+        nil
+      end
+  end
+
   def includes_commit?(commit)
     return false unless last_deployment
 
     last_deployment.includes_commit?(commit)
+  end
+
+  def update_merge_request_metrics?
+    self.name == "production"
   end
 end
