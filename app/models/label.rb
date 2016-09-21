@@ -24,13 +24,14 @@ class Label < ActiveRecord::Base
 
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
-  validates :title, uniqueness: true, unless: :template?
+  validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   before_save :nullify_priority
 
   default_scope { order(title: :asc) }
 
-  scope :templates, ->  { where(template: true) }
+  scope :templates, -> { where(template: true) }
+  scope :with_title, ->(title) { where(title: title) }
 
   def self.prioritized
     where.not(priority: nil).reorder(:priority, :title)

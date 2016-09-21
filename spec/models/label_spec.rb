@@ -13,7 +13,7 @@ describe Label, models: true do
   end
 
   describe 'validation' do
-    it { is_expected.to validate_uniqueness_of(:title) }
+    it { is_expected.to validate_uniqueness_of(:title).scoped_to([:group_id, :project_id]) }
 
     it 'validates color code' do
       is_expected.not_to allow_value('G-ITLAB').for(:color)
