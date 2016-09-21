@@ -432,9 +432,9 @@
       var $form = $(xhr.target);
 
       if ($form.attr('data-resolve-all') != null) {
-        var projectPath = $form.attr('data-project-path')
-            discussionId = $form.attr('data-discussion-id'),
-            mergeRequestId = $form.attr('data-noteable-iid');
+        var projectPath = $form.data('project-path')
+            discussionId = $form.data('discussion-id'),
+            mergeRequestId = $form.data('noteable-iid');
 
         if (ResolveService != null) {
           ResolveService.toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId);

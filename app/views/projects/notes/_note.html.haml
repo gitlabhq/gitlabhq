@@ -24,12 +24,12 @@
 
             - if note.resolvable?
               - can_resolve = can?(current_user, :resolve_note, note)
-              %resolve-btn{ ":project-path" => "'#{project_path(note.project)}'",
-                  ":discussion-id" => "'#{note.discussion_id}'",
+              %resolve-btn{ "project-path" => "#{project_path(note.project)}",
+                  "discussion-id" => "#{note.discussion_id}",
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
                   ":can-resolve" => can_resolve,
-                  ":resolved-by" => "'#{note.resolved_by.try(:name)}'",
+                  "resolved-by" => "#{note.resolved_by.try(:name)}",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
                   "v-ref:note_#{note.id}" => true }
