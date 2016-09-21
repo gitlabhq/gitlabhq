@@ -6,9 +6,9 @@ describe Label, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
 
-    it { is_expected.to have_many(:label_links).dependent(:destroy) }
+    it { is_expected.to have_many(:label_links) }
     it { is_expected.to have_many(:issues).through(:label_links).source(:target) }
-    it { is_expected.to have_many(:lists).dependent(:destroy) }
+    it { is_expected.to have_many(:lists) }
   end
 
   describe 'modules' do

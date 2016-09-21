@@ -1182,15 +1182,44 @@ ActiveRecord::Schema.define(version: 20160926145521) do
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
-  add_foreign_key "boards", "projects"
+  add_foreign_key "boards", "projects", on_delete: :cascade
+  add_foreign_key "ci_builds", "projects", column: "gl_project_id", on_delete: :cascade
+  add_foreign_key "ci_commits", "projects", column: "gl_project_id", on_delete: :cascade
+  add_foreign_key "ci_runner_projects", "projects", column: "gl_project_id", on_delete: :cascade
+  add_foreign_key "ci_trigger_requests", "ci_commits", column: "commit_id", on_delete: :cascade
+  add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", on_delete: :cascade
+  add_foreign_key "ci_triggers", "projects", column: "gl_project_id", on_delete: :cascade
+  add_foreign_key "ci_variables", "projects", column: "gl_project_id", on_delete: :cascade
+  add_foreign_key "deployments", "projects", on_delete: :cascade
+  add_foreign_key "environments", "projects", on_delete: :cascade
+  add_foreign_key "events", "projects", on_delete: :cascade
+  add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
-  add_foreign_key "lists", "boards"
-  add_foreign_key "lists", "labels"
+  add_foreign_key "issues", "projects", on_delete: :cascade
+  add_foreign_key "label_links", "labels", on_delete: :cascade
+  add_foreign_key "labels", "projects", on_delete: :cascade
+  add_foreign_key "lfs_objects_projects", "projects", on_delete: :cascade
+  add_foreign_key "lists", "boards", on_delete: :cascade
+  add_foreign_key "lists", "labels", on_delete: :cascade
+  add_foreign_key "merge_request_diffs", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests", "projects", column: "target_project_id", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
+  add_foreign_key "milestones", "projects", on_delete: :cascade
+  add_foreign_key "notes", "projects", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
-  add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
-  add_foreign_key "protected_branch_push_access_levels", "protected_branches"
+  add_foreign_key "project_features", "projects", on_delete: :cascade
+  add_foreign_key "project_group_links", "projects", on_delete: :cascade
+  add_foreign_key "project_import_data", "projects", on_delete: :cascade
+  add_foreign_key "protected_branch_merge_access_levels", "protected_branches", on_delete: :cascade
+  add_foreign_key "protected_branch_push_access_levels", "protected_branches", on_delete: :cascade
+  add_foreign_key "releases", "projects", on_delete: :cascade
+  add_foreign_key "services", "projects", on_delete: :cascade
+  add_foreign_key "snippets", "projects", on_delete: :cascade
+  add_foreign_key "todos", "notes", on_delete: :cascade
+  add_foreign_key "todos", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "users_star_projects", "projects", on_delete: :cascade
+  add_foreign_key "web_hooks", "projects", on_delete: :cascade
 end

@@ -11,7 +11,7 @@ module Ci
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
+    has_many :trigger_requests, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
 
     validates_presence_of :sha, unless: :importing?
     validates_presence_of :ref, unless: :importing?

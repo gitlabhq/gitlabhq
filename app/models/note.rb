@@ -28,7 +28,7 @@ class Note < ActiveRecord::Base
   # Only used by DiffNote, but defined here so that it can be used in `Note.includes`
   belongs_to :resolved_by, class_name: "User"
 
-  has_many :todos, dependent: :destroy
+  has_many :todos
   has_many :events, as: :target, dependent: :destroy
 
   delegate :gfm_reference, :local_reference, to: :noteable

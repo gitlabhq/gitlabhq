@@ -14,8 +14,8 @@ class Label < ActiveRecord::Base
 
   belongs_to :project
 
-  has_many :lists, dependent: :destroy
-  has_many :label_links, dependent: :destroy
+  has_many :lists
+  has_many :label_links
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 

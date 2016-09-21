@@ -36,11 +36,6 @@ describe '#forked?' do
   it "project_from is not forked" do
     expect(project_from.forked?).to be_falsey
   end
-
-  it "project_to.destroy destroys fork_link" do
-    expect(forked_project_link).to receive(:destroy)
-    project_to.destroy
-  end
 end
 
 def fork_project(from_project, user)

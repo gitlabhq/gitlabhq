@@ -10,7 +10,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_many :merge_request_diffs, dependent: :destroy
+  has_many :merge_request_diffs
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
 

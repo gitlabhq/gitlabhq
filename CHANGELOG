@@ -31,6 +31,7 @@ v 8.13.0 (unreleased)
   - Enable GitLab Import/Export for non-admin users.
   - Preserve label filters when sorting !6136 (Joseph Frazier)
   - Only update issuable labels if they have been changed
+  - Use foreign keys with cascade delete to optimize project removal
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
   - Prevent flash alert text from being obscured when container is fluid

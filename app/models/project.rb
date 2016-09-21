@@ -63,52 +63,52 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
-  has_one :board, dependent: :destroy
+  has_one :board
 
   # Project services
   has_many :services
-  has_one :campfire_service, dependent: :destroy
-  has_one :drone_ci_service, dependent: :destroy
-  has_one :emails_on_push_service, dependent: :destroy
-  has_one :builds_email_service, dependent: :destroy
-  has_one :irker_service, dependent: :destroy
-  has_one :pivotaltracker_service, dependent: :destroy
-  has_one :hipchat_service, dependent: :destroy
-  has_one :flowdock_service, dependent: :destroy
-  has_one :assembla_service, dependent: :destroy
-  has_one :asana_service, dependent: :destroy
-  has_one :gemnasium_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
-  has_one :buildkite_service, dependent: :destroy
-  has_one :bamboo_service, dependent: :destroy
-  has_one :teamcity_service, dependent: :destroy
-  has_one :pushover_service, dependent: :destroy
-  has_one :jira_service, dependent: :destroy
-  has_one :redmine_service, dependent: :destroy
-  has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :bugzilla_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
-  has_one :external_wiki_service, dependent: :destroy
+  has_one :campfire_service
+  has_one :drone_ci_service
+  has_one :emails_on_push_service
+  has_one :builds_email_service
+  has_one :irker_service
+  has_one :pivotaltracker_service
+  has_one :hipchat_service
+  has_one :flowdock_service
+  has_one :assembla_service
+  has_one :asana_service
+  has_one :gemnasium_service
+  has_one :slack_service
+  has_one :buildkite_service
+  has_one :bamboo_service
+  has_one :teamcity_service
+  has_one :pushover_service
+  has_one :jira_service
+  has_one :redmine_service
+  has_one :custom_issue_tracker_service
+  has_one :bugzilla_service
+  has_one :gitlab_issue_tracker_service, inverse_of: :project
+  has_one :external_wiki_service
 
-  has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_project_link, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
   has_many :forks,                through:     :forked_project_links, source: :forked_to_project
 
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
+  has_many :merge_requests,      foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
-  has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy
-  has_many :services,           dependent: :destroy
-  has_many :events,             dependent: :destroy
-  has_many :milestones,         dependent: :destroy
-  has_many :notes,              dependent: :destroy
-  has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
-  has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
-  has_many :protected_branches, dependent: :destroy
+  has_many :issues
+  has_many :labels
+  has_many :services
+  has_many :events
+  has_many :milestones
+  has_many :notes
+  has_many :snippets, class_name: 'ProjectSnippet'
+  has_many :hooks,    class_name: 'ProjectHook'
+  has_many :protected_branches
 
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'ProjectMember'
   alias_method :members, :project_members
@@ -118,28 +118,28 @@ class Project < ActiveRecord::Base
 
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
-  has_many :users_star_projects, dependent: :destroy
+  has_many :users_star_projects
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :releases, dependent: :destroy
-  has_many :lfs_objects_projects, dependent: :destroy
+  has_many :releases
+  has_many :lfs_objects_projects
   has_many :lfs_objects, through: :lfs_objects_projects
-  has_many :project_group_links, dependent: :destroy
+  has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
-  has_many :todos, dependent: :destroy
-  has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :todos
+  has_many :notification_settings, dependent: :delete_all, as: :source
 
-  has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
-  has_one :project_feature, dependent: :destroy
+  has_one :import_data, class_name: "ProjectImportData"
+  has_one :project_feature
 
-  has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
-  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
+  has_many :commit_statuses, class_name: 'CommitStatus', foreign_key: :gl_project_id
+  has_many :pipelines, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
   has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
-  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
+  has_many :runner_projects, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
+  has_many :variables, class_name: 'Ci::Variable', foreign_key: :gl_project_id
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
-  has_many :environments, dependent: :destroy
-  has_many :deployments, dependent: :destroy
+  has_many :environments
+  has_many :deployments
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature

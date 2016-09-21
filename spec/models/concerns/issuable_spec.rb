@@ -129,7 +129,7 @@ describe Issue, "Issuable" do
   end
 
   describe "#sort" do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { create(:empty_project) }
 
     context "by milestone due date" do
       # Correct order is:
