@@ -51,7 +51,7 @@
         %span.hidden-sm
           Deployed to
           = succeed '.' do
-            = link_to environment.name, namespace_project_environment_path(environment.project.namespace, environment.project, environment), class: 'environment'
+            = link_to environment.name, environment_path(environment), class: 'environment'
           - external_url = environment.external_url
           - if external_url
             = link_to external_url, target: '_blank' do
