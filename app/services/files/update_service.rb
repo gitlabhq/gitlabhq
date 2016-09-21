@@ -8,7 +8,9 @@ module Files
       repository.update_file(current_user, @file_path, @file_content,
                              branch: @target_branch,
                              previous_path: @previous_path,
-                             message: @commit_message)
+                             message: @commit_message,
+                             author_email: @author_email,
+                             author_name: @author_name)
     end
 
     private

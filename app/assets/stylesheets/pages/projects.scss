@@ -770,3 +770,13 @@ pre.light-well {
     }
   }
 }
+
+.project-path {
+  .form-control {
+    min-width: 100px;
+  }
+  .select2-choice {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}

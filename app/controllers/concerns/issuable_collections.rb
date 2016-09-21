@@ -13,8 +13,16 @@ module IssuableCollections
     issues_finder.execute
   end
 
+  def all_issues_collection
+    IssuesFinder.new(current_user, filter_params_all).execute
+  end
+
   def merge_requests_collection
     merge_requests_finder.execute
+  end
+
+  def all_merge_requests_collection
+    MergeRequestsFinder.new(current_user, filter_params_all).execute
   end
 
   def issues_finder
@@ -52,6 +60,10 @@ module IssuableCollections
     end
 
     @filter_params
+  end
+
+  def filter_params_all
+    @filter_params_all ||= filter_params.merge(state: 'all', sort: nil)
   end
 
   def set_default_scope

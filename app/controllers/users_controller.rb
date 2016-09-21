@@ -73,7 +73,7 @@ class UsersController < ApplicationController
 
   def calendar
     calendar = contributions_calendar
-    @timestamps = calendar.timestamps
+    @activity_dates = calendar.activity_dates
 
     render 'calendar', layout: false
   end
