@@ -30,9 +30,10 @@ namespace :gitlab do
       connection.execute('SET FOREIGN_KEY_CHECKS=0') if Gitlab::Database.mysql?
 
       tables = connection.tables
+      # Removes the entry from the array
       tables.delete 'schema_migrations'
-      # Truncate schema_migrations to ensure migrations re-run
-      connection.execute('TRUNCATE schema_migrations')
+      # Truncate schema_migrations to ensure migrations re-run 
+      connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations' 
 
       # Drop tables with cascade to avoid dependent table errors
       # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
