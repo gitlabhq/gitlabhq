@@ -198,13 +198,19 @@ This table shows granted privileges for builds triggered by specific types of us
 |---------------------------------------------|-----------------|-------------|----------|--------|
 | Run CI build                                |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from other projects    |                 | ✓ [^1]      | ✓ [^1]   | ✓ [^1] |
-| Push source and LFS to current project      |                 |             |          |        |
-| Push source and LFS to other projects       |                 |             |          |        |
+| Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
+| Clone source and LFS from internal projects |                 | ✓ [^3]      | ✓ [^3]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^4]      | ✓ [^4]   | ✓ [^4] |
+| Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
-| Pull container images from other projects   |                 | ✓ [^1]      | ✓ [^1]   | ✓ [^1] |
+| Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
+| Pull container images from internal projects|                 | ✓ [^3]      | ✓ [^3]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^4]      | ✓ [^4]   | ✓ [^4] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
+
+[^3]: Only if user is not external one.
+[^4]: Only if user is a member of the project.
 
 ### Build token
 
@@ -226,8 +232,19 @@ your runners in most secure possible way, by avoiding using this configurations:
 1. Using `shell` executor,
 
 By using in-secure GitLab Runner configuration you allow the rogue developers
-to steal the tokens of other builds. However, this problem existed before,
-but
+to steal the tokens of other builds.
+
+### Debugging problems
+
+It can happen that some of the users will complain that CI builds do fail for them.
+
+It is most likely that your project access other projects sources,
+and the user doesn't have the permissions.
+In the build log look for information about 403 or forbidden access.
+
+You then as Administrator can verify that the user is a member of the group or project,
+and you when impersonated as the user can retry a failing build
+on behalf of the user to verify that everything is correct.
 
 ### Before 8.12
 
