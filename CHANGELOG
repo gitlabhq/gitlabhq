@@ -45,6 +45,7 @@ v 8.12.0 (unreleased)
   - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
+  - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
