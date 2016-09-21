@@ -31,13 +31,26 @@ module EE
           groups(*args).first
         end
 
-        def dns_for_filter(filter)
+        def group_members_in_range(dn, range_start)
           ldap_search(
-            base: config.base,
-            filter: filter,
-            scope: Net::LDAP::SearchScope_WholeSubtree,
-            attributes: %w{dn}
-          ).map(&:dn)
+            base: dn,
+            scope: Net::LDAP::SearchScope_BaseObject,
+            attributes: ["member;range=#{range_start}-*"],
+          ).first
+        end
+
+        def nested_groups(parent_dn)
+          options = {
+            base: config.group_base,
+            filter: Net::LDAP::Filter.join(
+              Net::LDAP::Filter.eq('objectClass', 'group'),
+              Net::LDAP::Filter.eq('memberOf', parent_dn)
+            )
+          }
+
+          ldap_search(options).map do |entry|
+            LDAP::Group.new(entry, self)
+          end
         end
       end
     end
