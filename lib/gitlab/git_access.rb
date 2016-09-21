@@ -126,7 +126,7 @@ module Gitlab
         end
 
         if project.size_limit_enabled?
-          push_size_in_bytes += delta_size_check(change, project.repository)
+          push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
         end
       end
 
@@ -135,26 +135,6 @@ module Gitlab
       end
 
       build_status_object(true)
-    end
-
-    def delta_size_check(change, repo)
-      size_of_deltas = 0
-
-      begin
-        tree_a = repo.lookup(change[:oldrev])
-        tree_b = repo.lookup(change[:newrev])
-        diff = tree_a.diff(tree_b)
-
-        diff.each_delta do |d|
-          new_file_size = d.deleted? ? 0 : Gitlab::Git::Blob.raw(repo, d.new_file[:oid]).size
-
-          size_of_deltas += new_file_size
-        end
-
-        size_of_deltas
-      rescue Rugged::OdbError, Rugged::ReferenceError, Rugged::InvalidError
-        size_of_deltas
-      end
     end
 
     def change_access_check(change)
