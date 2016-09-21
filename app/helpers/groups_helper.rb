@@ -44,7 +44,7 @@ module GroupsHelper
   def size_limit_message_for_group(group)
     show_lfs = group.lfs_enabled? ? 'and their respective LFS files' : ''
 
-    "Repositories within this group #{show_lfs} will be restricted to this maximum size. Can be overridden inside each project. 0 for unlimited."
+    "Repositories within this group #{show_lfs} will be restricted to this maximum size. Can be overridden inside each project. 0 for unlimited. Leave empty to inherit the global value."
   end
 
   def group_lfs_status(group)

@@ -217,7 +217,7 @@ module ProjectsHelper
   def size_limit_message(project)
     show_lfs = project.lfs_enabled? ? 'including files in LFS' : ''
 
-    "The total size of this project's repository #{show_lfs} will be limited to this size. 0 for unlimited."
+    "The total size of this project's repository #{show_lfs} will be limited to this size. 0 for unlimited. Leave empty to inherit the group/global value."
   end
 
   def git_user_name
