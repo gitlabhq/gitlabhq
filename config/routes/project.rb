@@ -300,6 +300,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       end
 
       resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      delete :merged_branches, controller: 'branches', action: :destroy_all_merged
       resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
         resource :release, only: [:edit, :update]
       end
