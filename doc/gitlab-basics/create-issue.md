@@ -24,4 +24,4 @@ You may assign the Issue to a user, add a milestone and add labels (they are all
 
 ![Submit new issue](basicsimages/submit_new_issue.png)
 
-Your Issue will now be added to the Issue Tracker and will be ready to be reviewed. You can comment on it and mention the people involved. You can also link Issues to the Merge Requests where the Issues are solved. To do this, you can use an [Issue closing pattern](http://docs.gitlab.com/ce/customization/issue_closing.html).
+Your Issue will now be added to the Issue Tracker and will be ready to be reviewed. You can comment on it and mention the people involved. You can also link Issues to the Merge Requests where the Issues are solved. To do this, you can use an [Issue closing pattern](../administration/issue_closing.md).
