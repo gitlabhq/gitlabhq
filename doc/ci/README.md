@@ -16,5 +16,7 @@
 - [Trigger builds through the API](triggers/README.md)
 - [Build artifacts](../user/project/builds/artifacts.md)
 - [User permissions](../user/permissions.md#gitlab-ci)
+- [Build permissions](../user/permissions.md#builds-permissions)
+- [Access dependent projects](dependent_projects/README.md)
 - [API](../api/ci/README.md)
 - [CI services (linked docker containers)](services/README.md)

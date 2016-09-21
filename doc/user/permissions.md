@@ -138,3 +138,128 @@ instance and project. In addition, all admins can use the admin interface under
 | Add shared runners                    |                 |             |          | ✓      |
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
+
+## Builds permissions
+
+> Changed in GitLab 8.12.
+
+GitLab 8.12 has completely redesigned build permission system.
+You can find all discussion and all our concerns when choosing the current approach:
+https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
+
+We decided that builds permission should be tightly integrated with a permission
+of a user who is triggering a build.
+
+The reason to do it like that:
+
+- We already have permission system in place: group and project membership of users,
+- We already fully know who is triggering a build (using git push, using web, executing triggers),
+- We already know what user is allowed to do,
+- We use the user permission for builds that are triggered by him,
+- This opens us a lot of possibilities to further enforce user permissions, like:
+  allowing only specific users to access runners, secure variables and environments,
+- It is simple and convenient, that your build can access to everything that you have access to,
+- We choose to short living unique tokens, granting access for time of the build,
+
+Currently, any build that is triggered by the user, it's also signed with his permissions.
+When user do `git push` or changes files through web (**the pusher**),
+we will usually create a new Pipeline.
+The Pipeline will be signed as created be the pusher.
+Any build created in this pipeline will have the permissions of **the pusher**.
+
+This allows us to make it really easy to evaluate access for all dependent projects,
+container images that the pusher would have access too.
+The permission is granted only for time that build is running.
+The access is revoked after the build is finished.
+
+It is important to note that we have a few types of Users:
+
+- Administrators: CI builds created by Administrators would not have access to all GitLab projects,
+  but only to projects and container images of projects that the user is a member of or that are either public, or internal,
+
+- External users: CI builds created by external users will have access only to projects to which user has at least reporter access,
+  this rules out accessing all internal projects by default,
+
+This allows us to make the CI and permission system more trustable.
+Let's consider the following scenario:
+
+1. You are an employee of the company. Your company have number of internal tool repositories.
+   You have multiple CI builds that make use of this repositories.
+
+2. You invite a new user, a visitor, the external user. CI builds created by that user do not have access to internal repositories,
+   because user also doesn't have the access from within GitLab. You as an employee have to grant explicit access for this user.
+   This allows us to prevent from accidental data leakage.
+
+### Build privileges
+
+This table shows granted privileges for builds triggered by specific types of users:
+
+| Action                                      | Guest, Reporter | Developer   | Master   | Admin  |
+|---------------------------------------------|-----------------|-------------|----------|--------|
+| Run CI build                                |                 | ✓           | ✓        | ✓      |
+| Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
+| Clone source and LFS from other projects    |                 | ✓ [^1]      | ✓ [^1]   | ✓ [^1] |
+| Push source and LFS to current project      |                 |             |          |        |
+| Push source and LFS to other projects       |                 |             |          |        |
+| Pull container images from current project  |                 | ✓           | ✓        | ✓      |
+| Pull container images from other projects   |                 | ✓ [^1]      | ✓ [^1]   | ✓ [^1] |
+| Push container images to current project    |                 | ✓           | ✓        | ✓      |
+| Push container images to other projects     |                 |             |          |        |
+
+### Build token
+
+The above gives a question about trustability of build token.
+Unique build token is generated for each project.
+This build token allows to access all projects that would be normally accessible
+to the user creating that build.
+
+We try to make sure that this token doesn't leak.
+We do that by:
+1. Securing all API endpoints to not expose the build token,
+1. Masking the build token from build logs,
+1. Allowing to use the build token only when build is running,
+
+However, this brings a question about runners security.
+To make sure that this token doesn't leak you also make sure that you configure
+your runners in most secure possible way, by avoiding using this configurations:
+1. Any usage of `privileged` mode if the machines are re-used is risky,
+1. Using `shell` executor,
+
+By using in-secure GitLab Runner configuration you allow the rogue developers
+to steal the tokens of other builds. However, this problem existed before,
+but
+
+### Before 8.12
+
+In versions before 8.12 all CI builds would use runners token to checkout project sources.
+
+The project runners token was a token that you would find in
+[CI/CD Pipelines](https://gitlab.com/my-group/my-project/pipelines/settings).
+
+The project runners token was used for registering new specific runners assigned to project
+and to checkout project sources.
+
+The project runners token could also be used to use GitLab Container Registry for that project,
+allowing to pull and push Docker images from within CI build.
+
+This token was limited to access only that project.
+
+GitLab would create an special checkout URL:
+```
+https://gitlab-ci-token:<project-runners-token>/gitlab.com/gitlab-org/gitlab-ce.git
+```
+
+User could also use in his CI builds all docker related commands
+to interact with GitLab Container Registry:
+```
+docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+```
+
+Using single token had multiple security implications:
+
+- Token would be readable to anyone who has developer access to project who could run CI builds,
+  allowing to register any specific runner for a project,
+- Token would allow to access only project sources,
+  forbidding to accessing any other projects,
+- Token was not expiring, and multi-purpose: used for checking out sources,
+  for registering specific runners and for accessing project's container registry with read-write permissions
