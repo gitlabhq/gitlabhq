@@ -88,7 +88,7 @@ class Issue < ActiveRecord::Base
     'project_id'
   end
 
-  def self.sort(method, excluded_labels: [])
+  def self.sort2(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc

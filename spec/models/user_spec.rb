@@ -1011,34 +1011,34 @@ describe User, models: true do
 
     context 'when sort by recent_sign_in' do
       it 'sorts users by the recent sign-in time' do
-        expect(User.sort('recent_sign_in').first).to eq(@user)
+        expect(User.sort2('recent_sign_in').first).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort('recent_sign_in').third).to eq(@user2)
+        expect(User.sort2('recent_sign_in').third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
       it 'sorts users by the oldest sign-in time' do
-        expect(User.sort('oldest_sign_in').first).to eq(@user1)
+        expect(User.sort2('oldest_sign_in').first).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort('oldest_sign_in').third).to eq(@user2)
+        expect(User.sort2('oldest_sign_in').third).to eq(@user2)
       end
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(User.sort('created_desc').first).to eq(@user)
+      expect(User.sort2('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(User.sort('created_asc').first).to eq(@user2)
+      expect(User.sort2('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(User.sort(nil).first).to eq(@user2)
+      expect(User.sort2(nil).first).to eq(@user2)
     end
   end
 

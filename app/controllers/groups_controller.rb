@@ -107,7 +107,7 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.includes(:namespace)
     @projects = @projects.sorted_by_activity
     @projects = filter_projects(@projects)
-    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.sort2(@sort = params[:sort])
     @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
   end
 

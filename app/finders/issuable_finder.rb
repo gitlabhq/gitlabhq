@@ -42,7 +42,7 @@ class IssuableFinder
     items = by_due_date(items)
     items = by_non_archived(items)
     items = by_iids(items)
-    sort(items)
+    sort2(items)
   end
 
   def find(*params)
@@ -275,10 +275,10 @@ class IssuableFinder
     params[:iids].present? ? items.where(iid: params[:iids]) : items
   end
 
-  def sort(items)
+  def sort2(items)
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
-    params[:sort] ? items.sort(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
+    params[:sort] ? items.sort2(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
   end
 
   def by_assignee(items)

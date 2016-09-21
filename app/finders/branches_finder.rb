@@ -5,7 +5,7 @@ class BranchesFinder
   end
 
   def execute
-    branches = @repository.branches_sorted_by(sort)
+    branches = @repository.branches_sorted_by(sort2)
     filter_by_name(branches)
   end
 
@@ -17,7 +17,7 @@ class BranchesFinder
     @params[:search].presence
   end
 
-  def sort
+  def sort2
     @params[:sort].presence || 'name'
   end
 

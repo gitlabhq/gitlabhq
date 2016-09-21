@@ -7,7 +7,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = @projects.tagged_with(params[:tag]) if params[:tag].present?
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = filter_projects(@projects)
-    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.sort2(@sort = params[:sort])
     @projects = @projects.includes(:namespace).page(params[:page])
 
     respond_to do |format|

@@ -220,7 +220,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def sort(method)
+    def sort2(method)
       case method.to_s
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in

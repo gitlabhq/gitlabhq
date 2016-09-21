@@ -3,7 +3,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   def index
     @projects = load_projects(current_user.authorized_projects)
-    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.sort2(@sort = params[:sort])
     @projects = @projects.page(params[:page])
 
     respond_to do |format|
@@ -23,7 +23,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   def starred
     @projects = load_projects(current_user.viewable_starred_projects)
     @projects = @projects.includes(:forked_from_project, :tags)
-    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.sort2(@sort = params[:sort])
     @projects = @projects.page(params[:page])
 
     @last_push = current_user.recent_push

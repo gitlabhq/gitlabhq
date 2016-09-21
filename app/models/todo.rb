@@ -48,7 +48,7 @@ class Todo < ActiveRecord::Base
   after_save :keep_around_commit
 
   class << self
-    def sort(method)
+    def sort2(method)
       method == "priority" ? order_by_labels_priority : order_by(method)
     end
 

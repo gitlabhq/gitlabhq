@@ -33,7 +33,7 @@ class TodosFinder
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
 
-    sort(items)
+    sort2(items)
   end
 
   private
@@ -106,8 +106,8 @@ class TodosFinder
     params[:type]
   end
 
-  def sort(items)
-    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
+  def sort2(items)
+    params[:sort] ? items.sort2(params[:sort]) : items.reorder(id: :desc)
   end
 
   def by_action(items)

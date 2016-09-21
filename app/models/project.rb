@@ -349,14 +349,11 @@ class Project < ActiveRecord::Base
       Gitlab::VisibilityLevel.options
     end
 
-    def sort(method)
+    def sort2(method)
       if method == 'storage_size_desc'
         # storage_size is a joined column so we need to
         # pass a string to avoid AR adding the table name
         reorder('project_statistics.storage_size DESC, projects.id DESC')
-      else
-        order_by(method)
-      end
     end
 
     def reference_pattern

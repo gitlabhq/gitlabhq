@@ -148,6 +148,8 @@ module Gitlab
 
     config.active_job.queue_adapter = :sidekiq
 
+    config.action_controller.permit_all_parameters = true
+
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
 
