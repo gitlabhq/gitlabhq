@@ -321,3 +321,10 @@ ProtectedBranch::PushAccessLevel:
 - access_level
 - created_at
 - updated_at
+AwardEmoji:
+- id
+- user_id
+- name
+- awardable_type
+- created_at
+- updated_at
