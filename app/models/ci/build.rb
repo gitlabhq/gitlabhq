@@ -238,11 +238,11 @@ module Ci
     end
 
     def trace
-      trace = raw_trace
-      if project && trace.present? && project.runners_token.present?
-        trace.gsub(project.runners_token, 'xxxxxx')
+      result = raw_trace
+      if project && result.present? && project.runners_token.present?
+        result.gsub(project.runners_token, 'xxxxxx')
       else
-        trace
+        result
       end
     end
 
