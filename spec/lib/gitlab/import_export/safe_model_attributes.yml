@@ -214,6 +214,7 @@ CommitStatus:
 - when
 - yaml_variables
 - queued_at
+- token
 Ci::Variable:
 - id
 - project_id
@@ -306,5 +307,17 @@ ProjectFeature:
 - wiki_access_level
 - snippets_access_level
 - builds_access_level
+- created_at
+- updated_at
+ProtectedBranch::MergeAccessLevel:
+- id
+- protected_branch_id
+- access_level
+- created_at
+- updated_at
+ProtectedBranch::PushAccessLevel:
+- id
+- protected_branch_id
+- access_level
 - created_at
 - updated_at
