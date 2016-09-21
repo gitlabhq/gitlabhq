@@ -456,6 +456,7 @@
           = f.label :usage_ping_enabled do
             = f.check_box :usage_ping_enabled
             Usage ping enabled
+            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-data")
           .container
             .help-block
               Every week GitLab will report license usage back to GitLab, Inc.
