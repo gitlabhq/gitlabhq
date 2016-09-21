@@ -19,7 +19,7 @@ module Banzai
     #
     # Returns the documents passed as the first argument.
     def redact(documents)
-      all_document_nodes = document_nodes(documents)
+      all_document_nodes = ReferenceQuerying.document_nodes(documents)
 
       redact_document_nodes(all_document_nodes)
     end
@@ -28,13 +28,13 @@ module Banzai
     #
     # data - An Array of a Hashes mapping an HTML document to nodes to redact.
     def redact_document_nodes(all_document_nodes)
-      all_nodes = all_document_nodes.map { |x| x[:nodes] }.flatten
+      all_nodes = all_document_nodes.map { |x| x.nodes }.flatten
       visible = nodes_visible_to_user(all_nodes)
       metadata = []
 
       all_document_nodes.each do |entry|
-        nodes_for_document = entry[:nodes]
-        doc_data = { document: entry[:document], visible_reference_count: nodes_for_document.count }
+        nodes_for_document = entry.nodes
+        doc_data = { document: entry.document, visible_reference_count: nodes_for_document.count }
         metadata << doc_data
 
         nodes_for_document.each do |node|
@@ -71,12 +71,6 @@ module Banzai
       end
 
       visible
-    end
-
-    def document_nodes(documents)
-      documents.map do |document|
-        { document: document, nodes: Querying.css(document, 'a.gfm[data-reference-type]') }
-      end
     end
   end
 end

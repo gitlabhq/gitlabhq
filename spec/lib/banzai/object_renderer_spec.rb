@@ -87,6 +87,37 @@ describe Banzai::ObjectRenderer do
         expect(context.key?(:author)).to eq(false)
       end
     end
+
+    context 'when the object has mentionable attributes' do
+      let(:object_klass) do
+        Class.new do
+          include Mentionable
+          attr_mentionable :note, pipeline: :single_line
+          attr_mentionable :message
+
+          attr_reader :note, :message
+        end
+      end
+      let(:object) { object_klass.new }
+
+      it 'includes mentionable attribute options' do
+        context = renderer.context_for(object, :note)
+
+        expect(context[:pipeline]).to eq(:single_line)
+      end
+
+      it 'does not include anything extra when mentionable attribute has no options' do
+        context = renderer.context_for(object, :message)
+
+        expect(context.has_key?(:pipeline)).to eq(false)
+      end
+
+      it 'does not include anything extra when is not a mentionable attribute' do
+        context = renderer.context_for(object, :wadus)
+
+        expect(context.has_key?(:pipeline)).to eq(false)
+      end
+    end
   end
 
   describe '#render_attributes' do
@@ -124,7 +155,7 @@ describe Banzai::ObjectRenderer do
 
   describe '#base_context' do
     let(:context) do
-      described_class.new(project, user, pipeline: :note).base_context
+      described_class.new(project, user, wadus: :foo).base_context
     end
 
     it 'returns a Hash' do
@@ -132,7 +163,7 @@ describe Banzai::ObjectRenderer do
     end
 
     it 'includes the custom attributes' do
-      expect(context[:pipeline]).to eq(:note)
+      expect(context[:wadus]).to eq(:foo)
     end
 
     it 'includes the current user' do

@@ -36,6 +36,8 @@ module Banzai
         attr_accessor :reference_type
       end
 
+      attr_reader :current_user
+
       # Returns the attribute name containing the value for every object to be
       # parsed by the current parser.
       #
@@ -196,9 +198,9 @@ module Banzai
       end
 
       # Gathers the references for the given HTML nodes.
-      def gather_references(nodes)
-        nodes = nodes_user_can_reference(current_user, nodes)
-        nodes = nodes_visible_to_user(current_user, nodes)
+      def gather_references(nodes, user = self.current_user)
+        nodes = nodes_user_can_reference(user, nodes)
+        nodes = nodes_visible_to_user(user, nodes)
 
         referenced_by(nodes)
       end
@@ -224,7 +226,7 @@ module Banzai
 
       private
 
-      attr_reader :current_user, :project
+      attr_reader :project
 
       def lazy(&block)
         Gitlab::Lazy.new(&block)

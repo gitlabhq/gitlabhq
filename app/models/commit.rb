@@ -171,6 +171,8 @@ class Commit
   end
 
   def author
+    return @author if defined?(@author)
+
     if RequestStore.active?
       key = "commit_author:#{author_email.downcase}"
       # nil is a valid value since no author may exist in the system
@@ -181,7 +183,7 @@ class Commit
         RequestStore.store[key] = @author
       end
     else
-      @author ||= find_author_by_any_email
+      @author = find_author_by_any_email
     end
   end
 

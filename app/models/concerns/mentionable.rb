@@ -14,6 +14,10 @@ module Mentionable
       attr = attr.to_s
       mentionable_attrs << [attr, options]
     end
+
+    def mentionable_options_for(attr)
+      mentionable_attrs.detect { |attribute, _options| attribute.to_sym == attr }.try(:last) || {}
+    end
   end
 
   included do
@@ -63,8 +67,8 @@ module Mentionable
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
   def referenced_mentionables(current_user = self.author)
-    refs = all_references(current_user)
-    refs = (refs.issues + refs.merge_requests + refs.commits)
+    extractor = all_references(current_user)
+    refs = (extractor.issues + extractor.merge_requests + extractor.commits)
 
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
@@ -73,8 +77,8 @@ module Mentionable
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in the +mentionable_attrs+.
-  def create_cross_references!(author = self.author, without = [])
-    refs = referenced_mentionables(author)
+  def create_cross_references!(author = self.author, without = [], refs: nil)
+    refs ||= referenced_mentionables(author)
 
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the

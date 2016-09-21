@@ -4,8 +4,9 @@ describe Mentionable do
   class Example
     include Mentionable
 
-    attr_accessor :project, :message
+    attr_accessor :project, :message, :safe_message
     attr_mentionable :message
+    attr_mentionable :safe_message, pipeline: :single_line
 
     def author
       nil
@@ -21,7 +22,24 @@ describe Mentionable do
 
       mentionable.project = project
       mentionable.message = 'JIRA-123'
+      mentionable.safe_message = 'JIRA-123'
       expect(mentionable.referenced_mentionables).to be_empty
+    end
+  end
+
+  describe '::mentionable_options_for' do
+    subject { Example }
+
+    it 'returns the options' do
+      expect(subject.mentionable_options_for(:safe_message)).to eq(pipeline: :single_line)
+    end
+
+    it 'returns empty hash when no options specified' do
+      expect(subject.mentionable_options_for(:message)).to eq({})
+    end
+
+    it 'returns empty hash when no a mentionable attribute' do
+      expect(subject.mentionable_options_for(:unknwon_attr)).to eq({})
     end
   end
 end

@@ -51,9 +51,31 @@ module Banzai
       redactor.redact(documents)
     end
 
+    # Renders the attributes of a set of objects.
+    #
+    # Returns an Array of `Nokogiri::HTML::Document`.
+    def render_attributes(objects, attribute)
+      strings_and_contexts = populate_contexts(objects, attribute)
+
+      Banzai.cache_collection_render(strings_and_contexts).each_with_index.map do |html, index|
+        Banzai::Pipeline[:relative_link].to_document(html, strings_and_contexts[index][:context])
+      end
+    end
+
+    def populate_contexts(objects, attribute)
+      objects.map do |object|
+        context = context_for(object, attribute)
+
+        string = object.__send__(attribute)
+
+        { text: string, context: context }
+      end
+    end
+
     # Returns a Banzai context for the given object and attribute.
     def context_for(object, attribute)
-      context = base_context.merge(cache_key: [object, attribute])
+      context = base_context.merge(base_context_klass_attr(object.class, attribute))
+      context[:cache_key] = [object, attribute]
 
       if object.respond_to?(:author)
         context[:author] = object.author
@@ -62,20 +84,14 @@ module Banzai
       context
     end
 
-    # Renders the attributes of a set of objects.
-    #
-    # Returns an Array of `Nokogiri::HTML::Document`.
-    def render_attributes(objects, attribute)
-      strings_and_contexts = objects.map do |object|
-        context = context_for(object, attribute)
+    def base_context_klass_attr(klass, attribute)
+      @base_context_klass_attr ||= Hash.new { |h, k| h[k] = {} }
+      @base_context_klass_attr[klass][attribute] ||= begin
+        return {} unless klass.respond_to?(:mentionable_attrs)
 
-        string = object.__send__(attribute)
+        _attr, context_klass_options = klass.mentionable_attrs.detect { |attr, _options| attr.to_sym == attribute }
 
-        { text: string, context: context }
-      end
-
-      Banzai.cache_collection_render(strings_and_contexts).each_with_index.map do |html, index|
-        Banzai::Pipeline[:relative_link].to_document(html, strings_and_contexts[index][:context])
+        context_klass_options || {}
       end
     end
 

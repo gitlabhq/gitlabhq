@@ -106,35 +106,43 @@ class GitPushService < BaseService
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
   # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.
   def process_commit_messages
-    is_default_branch = is_default_branch?
+    closed_issues = commits_close_issues!
 
-    authors = Hash.new do |hash, commit|
-      email = commit.author_email
-      next hash[email] if hash.has_key?(email)
+    # Exclude any mentioned Issues to be closed from cross-referencing even if the commits are being pushed to
+    # a different branch.
+    commits_cross_references!(closed_issues)
+  end
 
-      hash[email] = commit_user(commit)
-    end
+  def commits_close_issues!
+    # Keep track of the issues that will be actually closed because they are on a default branch.
+    # Hence, when creating cross-reference notes, the not-closed issues (on non-default branches)
+    # will also have cross-reference.
+    closed_issues = Hash.new { |h, k| h[k] = [] }
+    return closed_issues unless is_default_branch?
 
     @push_commits.each do |commit|
-      # Keep track of the issues that will be actually closed because they are on a default branch.
-      # Hence, when creating cross-reference notes, the not-closed issues (on non-default branches)
-      # will also have cross-reference.
-      closed_issues = []
-
-      if is_default_branch
-        # Close issues if these commits were pushed to the project's default branch and the commit message matches the
-        # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
-        # a different branch.
-        closed_issues = commit.closes_issues(current_user)
-        closed_issues.each do |issue|
-          if can?(current_user, :update_issue, issue)
-            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit: commit)
-          end
+      # Close issues if these commits were pushed to the project's default branch and the commit message matches the
+      # closing regex.
+      closed_issues[commit] = commit.closes_issues(current_user)
+      closed_issues[commit].each do |issue|
+        if can?(current_user, :update_issue, issue)
+          Issues::CloseService.new(project, commit_user(commit), {}).execute(issue, commit: commit)
         end
       end
+    end
 
-      commit.create_cross_references!(authors[commit], closed_issues)
-      update_issue_metrics(commit, authors)
+    closed_issues
+  end
+
+  def commits_cross_references!(without)
+    push_extractor = Gitlab::CrossReferenceExtractor.new(project, current_user)
+    push_extractor.references_with_object(@push_commits, :safe_message) do |commit, refs|
+      next if refs.empty?
+
+      referenced_issues = refs.select { |ref| ref.is_a?(Issue) }
+      update_issue_metrics(referenced_issues, commit.committed_date)
+
+      commit.create_cross_references!(authors[commit], without[commit], refs: refs)
     end
   end
 
@@ -180,6 +188,7 @@ class GitPushService < BaseService
       (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
   end
 
+  # Performance is not affected for long list of commits because by default RequestStore is on
   def commit_user(commit)
     commit.author || current_user
   end
@@ -188,10 +197,8 @@ class GitPushService < BaseService
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
   end
 
-  def update_issue_metrics(commit, authors)
-    mentioned_issues = commit.all_references(authors[commit]).issues
-
-    Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil).
-      update_all(first_mentioned_in_commit_at: commit.committed_date)
+  def update_issue_metrics(referenced_issues, referenced_at)
+    Issue::Metrics.where(issue_id: referenced_issues.map(&:id), first_mentioned_in_commit_at: nil).
+      update_all(first_mentioned_in_commit_at: referenced_at)
   end
 end

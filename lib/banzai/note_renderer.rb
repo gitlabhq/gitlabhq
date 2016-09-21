@@ -13,8 +13,7 @@ module Banzai
                                     user,
                                     requested_path: path,
                                     project_wiki: wiki,
-                                    ref: git_ref,
-                                    pipeline: :note)
+                                    ref: git_ref)
 
       renderer.render(notes, :note)
     end
