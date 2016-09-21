@@ -1,4 +1,5 @@
 Please view this file on the master branch, on stable branches it's out of date.
+
 v 8.12.0 (Unreleased)
   - Include more data in EE usage ping
   - Reduce UPDATE queries when moving between import states on projects
@@ -12,6 +13,10 @@ v 8.12.0 (Unreleased)
   - [ES] Global code search
   - [ES] Improve logging
   - Fix projects with remote mirrors asynchronously destruction
+
+v 8.11.7
+  - Refactor Protected Branches dropdown. !687
+  - Fix mirrored projects allowing empty import urls. !700
 
 v 8.11.6
   - Exclude blocked users from potential MR approvers.
@@ -52,6 +57,9 @@ v 8.11.0
   - [Fix] Push rules check existing commits in some cases
   - [ES] Limit amount of retries for sidekiq jobs
   - Fix Projects::UpdateMirrorService to allow tags pointing to blob objects
+
+v 8.10.10
+  - No EE-specific changes
 
 v 8.10.9
   - Exclude blocked users from potential MR approvers.
@@ -97,6 +105,12 @@ v 8.10.0
   - Fix of removing wiki data from index when project is deleted
   - Ticket-based Kerberos authentication (SPNEGO)
   - [Elastic] Suppress ActiveRecord::RecordNotFound error in ElasticIndexWorker
+
+v 8.9.10
+  - No EE-specific changes
+
+v 8.9.9
+  - No EE-specific changes
 
 v 8.9.8
   - No EE-specific changes
