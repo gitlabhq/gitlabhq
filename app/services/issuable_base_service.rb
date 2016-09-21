@@ -157,6 +157,10 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
+  def after_update(issuable)
+    # To be overridden by subclasses
+  end
+
   def update_issuable(issuable, attributes)
     issuable.with_transaction_returning_status do
       issuable.update(attributes.merge(updated_by: current_user))
@@ -182,6 +186,7 @@ class IssuableBaseService < BaseService
       end
 
       handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
+      after_update(issuable)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
     end

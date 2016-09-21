@@ -339,6 +339,43 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "issue metrics" do
+    let(:issue) { create :issue, project: project }
+    let(:commit_author) { create :user }
+    let(:commit) { project.commit }
+    let(:commit_time) { Time.now }
+
+    before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
+      allow(commit).to receive_messages(
+        safe_message: "this commit \n mentions #{issue.to_reference}",
+        references: [issue],
+        author_name: commit_author.name,
+        author_email: commit_author.email,
+        committed_date: commit_time
+      )
+
+      allow(project.repository).to receive(:commits_between).and_return([commit])
+    end
+
+    context "while saving the 'first_mentioned_in_commit_at' metric for an issue" do
+      it 'sets the metric for referenced issues' do
+        execute_service(project, user, @oldrev, @newrev, @ref)
+
+        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_within(1.second).of(commit_time)
+      end
+
+      it 'does not set the metric for non-referenced issues' do
+        non_referenced_issue = create(:issue, project: project)
+        execute_service(project, user, @oldrev, @newrev, @ref)
+
+        expect(non_referenced_issue.reload.metrics.first_mentioned_in_commit_at).to be_nil
+      end
+    end
+  end
+
   describe "closing issues from pushed commits containing a closing reference" do
     let(:issue) { create :issue, project: project }
     let(:other_issue) { create :issue, project: project }

@@ -4,7 +4,7 @@ class CreateDeploymentService < BaseService
   def execute(deployable = nil)
     environment = find_or_create_environment
 
-    project.deployments.create(
+    deployment = project.deployments.create(
       environment: environment,
       ref: params[:ref],
       tag: params[:tag],
@@ -12,6 +12,10 @@ class CreateDeploymentService < BaseService
       user: current_user,
       deployable: deployable
     )
+
+    deployment.update_merge_request_metrics!
+
+    deployment
   end
 
   private
