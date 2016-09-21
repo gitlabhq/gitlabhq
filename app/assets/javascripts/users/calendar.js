@@ -206,6 +206,7 @@
           }
         });
       } else {
+        this.currentSelectedDate = '';
         return $('.user-calendar-activities').html('');
       }
     };

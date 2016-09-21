@@ -52,6 +52,10 @@ feature 'Contributions Calendar', js: true, feature: true do
     Event.create(push_params)
   end
 
+  def get_first_cell_content
+    find('.user-calendar-activities').text
+  end
+
   before do
     login_as :user
     visit @user.username
@@ -60,6 +64,43 @@ feature 'Contributions Calendar', js: true, feature: true do
 
   it 'displays calendar', js: true do
     expect(page).to have_css('.js-contrib-calendar')
+  end
+
+  describe 'select calendar day', js: true do
+    let(:cells) { page.all('.user-contrib-cell') }
+    let(:first_cell_content_before) { get_first_cell_content }
+
+    before do
+      cells[0].click
+      wait_for_ajax
+      first_cell_content_before
+    end
+
+    it 'displays calendar day activities', js: true do
+      expect(get_first_cell_content).not_to eq('')
+    end
+
+    describe 'select another calendar day', js: true do
+      before do
+        cells[1].click
+        wait_for_ajax
+      end
+
+      it 'displays different calendar day activities', js: true do
+        expect(get_first_cell_content).not_to eq(first_cell_content_before)
+      end
+    end
+
+    describe 'deselect calendar day', js: true do
+      before do
+        cells[0].click
+        wait_for_ajax
+      end
+
+      it 'hides calendar day activities', js: true do
+        expect(get_first_cell_content).to eq('')
+      end
+    end
   end
 
   describe '1 calendar activity' do
