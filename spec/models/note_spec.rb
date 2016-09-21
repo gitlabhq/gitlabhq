@@ -8,7 +8,7 @@ describe Note, models: true do
     it { is_expected.to belong_to(:noteable).touch(true) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:todos) }
   end
 
   describe 'modules' do
