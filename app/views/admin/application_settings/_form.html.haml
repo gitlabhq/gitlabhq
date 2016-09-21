@@ -67,10 +67,13 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
-      = f.label :repository_size_limit, 'Per repository size limit (MB)', class: 'control-label col-sm-2'
+      = f.label :repository_size_limit, class: 'control-label col-sm-2' do
+        Size limit per repository (MB)
       .col-sm-10
         = f.number_field :repository_size_limit, class: 'form-control', min: 0
-        %span.help-block#repository_size_limit_help_block Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited
+        %span.help-block#repository_size_limit_help_block
+          Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited.
+          = link_to icon('question-circle'), help_page_path("user/admin_area/settings/account_and_limit_settings")
     .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10
