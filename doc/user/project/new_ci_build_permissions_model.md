@@ -277,5 +277,13 @@ test:
     - docker run $CI_REGISTRY/group/other-project:latest
 ```
 
+### Build triggers
+
+> **Note:**
+Currently Build triggers do not support the new permission model.
+They continue to use the old authentication mechanism where the CI build
+can access only own sources. We plan to remove that limitation in one of the upcoming releases.
+
+
 [git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [build permissions]: ../permissions.md#builds-permissions
