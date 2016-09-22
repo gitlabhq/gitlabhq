@@ -7,13 +7,17 @@ of merge request diff is created. When you visit a merge request that contains
 more than one pushes, you can select and compare the versions of those merge
 request diffs.
 
+![Merge Request Versions](img/versions.png)
+
 By default, the latest version of changes is shown. However, you
 can select an older one from version dropdown.
 
-![Merge Request Versions](img/versions.png)
+![Merge Request Versions](img/versions-dropdown.png)
 
 You can also compare the merge request version with older one to see what is
 changed since then.
+
+![Merge Request Versions](img/versions-compare.png)
 
 Please note that comments are disabled while viewing outdated merge versions
 or comparing to versions other than base.
