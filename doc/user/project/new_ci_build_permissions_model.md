@@ -163,7 +163,7 @@ the container registry.
 
 >
 It often happens that while working on one project, you need to use another
-project from within it. Perhaps it’s a library that a third party developed or
+project from within it; perhaps it’s a library that a third party developed or
 you’re developing a project separately and are using it in multiple parent
 projects.
 A common issue arises in these scenarios: you want to be able to treat the two
@@ -181,7 +181,7 @@ If dealing with submodules, your project will probably have a file named
 ```
 
 > **Note:**
-If you are not using GitLab 8.12 or higher, you would need to work your way
+If you are **not** using GitLab 8.12 or higher, you would need to work your way
 around this issue in order to access the sources of `gitlab.com/group/tools`
 (e.g., use [SSH keys](../ssh_keys/README.md)).
 >
@@ -189,7 +189,7 @@ With GitLab 8.12 onward, your permissions are used to evaluate what a CI build
 can access. More information about how this system works can be found in the
 [Build permissions model](../../user/permissions.md#builds-permissions).
 
-To make use of the new changes you have to update your `.gitmodules` file to
+To make use of the new changes, you have to update your `.gitmodules` file to
 use a relative URL.
 
 Let's consider the following example:
