@@ -46,6 +46,10 @@ module GitlabRoutingHelper
     namespace_project_environments_path(project.namespace, project, *args)
   end
 
+  def project_cycle_analytics_path(project, *args)
+    namespace_project_cycle_analytics_path(project.namespace, project, *args)
+  end
+
   def project_builds_path(project, *args)
     namespace_project_builds_path(project.namespace, project, *args)
   end
@@ -64,6 +68,10 @@ module GitlabRoutingHelper
 
   def runner_path(runner, *args)
     namespace_project_runner_path(@project.namespace, @project, runner, *args)
+  end
+
+  def environment_path(environment, *args)
+    namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
   end
 
   def issue_path(entity, *args)
@@ -96,6 +104,14 @@ module GitlabRoutingHelper
     else
       toggle_subscription_namespace_project_merge_request_path(entity.project.namespace, entity.project, entity)
     end
+  end
+
+  def toggle_award_emoji_personal_snippet_path(*args)
+    toggle_award_emoji_snippet_path(*args)
+  end
+
+  def toggle_award_emoji_namespace_project_project_snippet_path(*args)
+    toggle_award_emoji_namespace_project_snippet_path(*args)
   end
 
   ## Members

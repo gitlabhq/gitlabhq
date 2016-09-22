@@ -61,8 +61,8 @@ module API
       #
       # Parameters:
       #   id (required)                             - The ID of a group
-      #   name (required)                           - The name of the group
-      #   path (required)                           - The path of the group
+      #   name (optional)                           - The name of the group
+      #   path (optional)                           - The path of the group
       #   description (optional)                    - The details of the group
       #   visibility_level (optional)               - The visibility level of the group
       #   lfs_enabled (optional)      - Enable/disable LFS for the projects in this group

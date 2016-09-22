@@ -99,8 +99,7 @@
 
 .top-area {
   @include clearfix;
-
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $btn-gray-hover;
 
   .nav-text {
     padding-top: 16px;

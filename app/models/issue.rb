@@ -29,6 +29,8 @@ class Issue < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
@@ -43,6 +45,8 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
   scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
   scope :order_weight_asc, -> { reorder('weight ASC') }
+
+  scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
