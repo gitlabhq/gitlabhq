@@ -233,6 +233,11 @@ rake dev:setup:
   script:
     - mkdir -p /home/git/repositories
     - rake dev:setup
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 teaspoon:
   stage: test
