@@ -6,19 +6,20 @@ feature 'Issue filtering by Labels', feature: true do
   let(:project) { create(:project, :public) }
   let!(:user)   { create(:user)}
   let!(:label)  { create(:label, project: project) }
-  let(:bug) { create(:label, project: project, title: 'bug') }
-  let(:feature) { create(:label, project: project, title: 'feature') }
-  let(:enhancement) { create(:label, project: project, title: 'enhancement') }
-  let(:issue1) { create(:issue, title: "Bugfix1", project: project) }
-  let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
-  let(:issue3) { create(:issue, title: "Feature1", project: project) }
 
   before do
+    bug = create(:label, project: project, title: 'bug')
+    feature = create(:label, project: project, title: 'feature')
+    enhancement = create(:label, project: project, title: 'enhancement')
+
+    issue1 = create(:issue, title: "Bugfix1", project: project)
     issue1.labels << bug
 
+    issue2 = create(:issue, title: "Bugfix2", project: project)
     issue2.labels << bug
     issue2.labels << enhancement
 
+    issue3 = create(:issue, title: "Feature1", project: project)
     issue3.labels << feature
 
     project.team << [user, :master]
@@ -156,13 +157,6 @@ feature 'Issue filtering by Labels', feature: true do
       execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
       wait_for_ajax
-    end
-
-    it 'shows a correct "Open" counter' do
-      page.within '.issues-state-filters' do
-        expect(page).not_to have_content "{#{issue2.id} => 1}"
-        expect(page).to have_content "Open 1"
-      end
     end
 
     it 'shows issue "Bugfix2" in issues list' do
