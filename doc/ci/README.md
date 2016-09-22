@@ -20,3 +20,4 @@
 - [Access dependent projects](dependent_projects/README.md)
 - [API](../api/ci/README.md)
 - [CI services (linked docker containers)](services/README.md)
+- [**New CI build permissions model**](../user/project/new_ci_build_permissions_model.md)

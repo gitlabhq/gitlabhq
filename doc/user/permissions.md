@@ -143,13 +143,11 @@ instance and project. In addition, all admins can use the admin interface under
 
 > Changed in GitLab 8.12.
 
-GitLab 8.12 has completely redesigned build permission system.
-You can find all discussion and all our concerns when choosing the current approach:
-https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
+GitLab 8.12 has a completely redesigned build permission system.
+Read all about the [new model and its implications][new-mod].
 
-### Build privileges
-
-This table shows granted privileges for builds triggered by specific types of users:
+This table shows granted privileges for builds triggered by specific types of
+users:
 
 | Action                                      | Guest, Reporter | Developer   | Master   | Admin  |
 |---------------------------------------------|-----------------|-------------|----------|--------|
@@ -168,4 +166,5 @@ This table shows granted privileges for builds triggered by specific types of us
 
 [^3]: Only if user is not external one.
 [^4]: Only if user is a member of the project.
-
+[ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
+[new-mod]: project/new_ci_build_permissions_model.md

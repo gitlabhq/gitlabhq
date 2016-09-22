@@ -1,8 +1,8 @@
-# New CI build permission model
+# New CI build permissions model
 
 > Introduced in GitLab 8.12.
 
-GitLab 8.12 has a completely redesigned build permission system. You can find
+GitLab 8.12 has a completely redesigned [build permissions] system. You can find
 all discussion and all our concerns when choosing the current approach in issue
 [#18994](https://gitlab.com/gitlab-org/gitlab-ce/issues/18994).
 
@@ -107,13 +107,12 @@ to checkout project sources.
 The project's Runner's token was a token that you could find under the
 project's **Settings > CI/CD Pipelines** and was limited to access only that
 project.
+It could be used for registering new specific Runners assigned to the project
+and to checkout project sources.
+It could also be used with the GitLab Container Registry for that project,
+allowing pulling and pushing Docker images from within the CI build.
 
-The project's Runner's token was used for registering new specific Runners
-assigned to project and to checkout project sources.
-
-The project Runners token could also be used with the GitLab Container Registry
-for that project, allowing pulling and pushing Docker images from within the
-CI build.
+---
 
 GitLab would create a special checkout URL like:
 
@@ -128,7 +127,7 @@ commands to interact with GitLab Container Registry. For example:
 docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
 ```
 
-Using single token had multiple security implications
+Using single token had multiple security implications:
 
 - The token would be readable to anyone who had developer access to a project
   that could run CI builds, allowing the developer to register any specific
@@ -279,3 +278,4 @@ test:
 ```
 
 [git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+[build permissions]: ../permissions.md#builds-permissions
