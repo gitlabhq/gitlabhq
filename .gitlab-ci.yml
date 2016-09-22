@@ -12,7 +12,7 @@ variables:
   RSPEC_RETRY_RETRY_COUNT: "3"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
-  USE_DB: "true"
+  SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
@@ -23,7 +23,7 @@ before_script:
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
   - retry gem install knapsack
-  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
+  - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
 - prepare
@@ -35,7 +35,7 @@ stages:
 .knapsack-state: &knapsack-state
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   cache:
     key: "knapsack"
@@ -196,7 +196,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
 .exec: &exec
@@ -223,6 +223,16 @@ rake db:migrate:reset:
   <<: *use-db
   script:
     - rake db:migrate:reset
+
+rake dev:setup:
+  stage: test
+  <<: *use-db
+  variables:
+    SETUP_DB: "false"
+    RAILS_ENV: development
+  script:
+    - mkdir -p /home/git/repositories
+    - rake dev:setup
 
 teaspoon:
   stage: test
@@ -272,7 +282,7 @@ coverage:
   stage: post-test
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
@@ -288,7 +298,7 @@ coverage:
 notify:slack:
   stage: post-test
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
