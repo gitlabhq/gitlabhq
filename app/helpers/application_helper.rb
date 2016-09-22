@@ -286,19 +286,8 @@ module ApplicationHelper
     }
 
     state_title = titles[state] || state.to_s.humanize
-    records_with_state = records.public_send(state)
-
-    # When filtering by multiple labels, the result of query.count is a Hash
-    # of the form { issuable_id1 => N, issuable_id2 => N }, where N is the
-    # number of labels selected. The ugly "trick" is to load the issuables
-    # as an array and get the size of the array...
-    # We should probably try to solve this properly in the future.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/22414
-    label_names = Array(params.fetch(:label_name, []))
-    records_with_state = records_with_state.to_a if label_names.many?
-
-    count = records_with_state.size
-    html  = content_tag :span, state_title
+    count       = records.public_send(state).size
+    html        = content_tag :span, state_title
 
     if count.present?
       html += " "
