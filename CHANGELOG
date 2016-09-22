@@ -6,6 +6,7 @@ v 8.13.0 (unreleased)
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
+  - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
   - Revoke button in Applications Settings underlines on hover.
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
