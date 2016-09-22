@@ -22,7 +22,7 @@ Create merge requests and review code.
 
 - [Fork a project and contribute to it](../workflow/forking_workflow.md)
 - [Create a new merge request](../gitlab-basics/add-merge-request.md)
-- [Automatically close issues from merge requests](../customization/issue_closing.md)
+- [Automatically close issues from merge requests](../user/project/issues/automatic_issue_closing.md)
 - [Automatically merge when your builds succeed](../user/project/merge_requests/merge_when_build_succeeds.md)
 - [Revert any commit](../user/project/merge_requests/revert_changes.md)
 - [Cherry-pick any commit](../user/project/merge_requests/cherry_pick_changes.md)
