@@ -1,9 +1,11 @@
 (global => {
   global.gl = global.gl || {};
 
+  const PUSH_ACCESS_LEVEL = 'push_access_levels';
   const LEVEL_TYPES = {
     ROLE: 'role',
-    USER: 'user'
+    USER: 'user',
+    GROUP: 'group'
   };
 
   gl.ProtectedBranchAccessDropdown = class {
@@ -17,15 +19,23 @@
         accessLevelsData
       } = options;
 
+      this.isAllowedToPushDropdown = false;
+      this.groups = [];
       this.accessLevel = accessLevel;
       this.accessLevelsData = accessLevelsData;
       this.$dropdown = $dropdown;
       this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
       this.usersPath = '/autocomplete/users.json';
+      this.groupsPath = '/autocomplete/project_groups.json';
       this.defaultLabel = this.$dropdown.data('defaultLabel');
 
       this.setSelectedItems([]);
       this.persistPreselectedItems();
+
+      if (PUSH_ACCESS_LEVEL === this.accessLevel) {
+        this.isAllowedToPushDropdown = true;
+        this.noOneObj = this.accessLevelsData[2];
+      }
 
       $dropdown.glDropdown({
         selectable: true,
@@ -44,6 +54,31 @@
           e.preventDefault();
 
           if ($el.is('.is-active')) {
+            if (self.isAllowedToPushDropdown) {
+              if (item.id === self.noOneObj.id) {
+
+                // remove all others selected items
+                self.accessLevelsData.forEach((level) => {
+                  if (level.id !== item.id) {
+                    self.removeSelectedItem(level);
+                  }
+                });
+
+                // remove selected item visually
+                self.$wrap.find(`.item-${item.type}`).removeClass(`is-active`);
+              } else {
+                $noOne = self.$wrap.find(`.is-active.item-${item.type}:contains('No one')`);
+                if ($noOne.length) {
+                  $noOne.removeClass('is-active');
+                  self.removeSelectedItem(self.noOneObj);
+                }
+              }
+
+              // make element active right away
+              $el.addClass(`is-active item-${item.type}`);
+            }
+
+            // Add "No one"
             self.addSelectedItem(item);
           } else {
             self.removeSelectedItem(item);
@@ -104,6 +139,8 @@
           obj.access_level = item.access_level
         } else if (item.type === LEVEL_TYPES.USER) {
           obj.user_id = item.user_id;
+        } else if (item.type === LEVEL_TYPES.GROUP) {
+          obj.group_id = item.group_id;
         }
 
         accessLevels.push(obj);
@@ -115,45 +152,77 @@
     addSelectedItem(selectedItem) {
       var itemToAdd = {};
 
+      // If the item already exists, just use it 
+      let index = -1;
+      let selectedItems = this.getAllSelectedItems();
+
+      for (var i = 0; i < selectedItems.length; i++) {
+        if (selectedItem.id === selectedItems[i].access_level) {
+          index = i;
+          continue;
+        }
+      }
+
+      if (index !== -1 && selectedItems[index]._destroy) {
+        delete selectedItems[index]._destroy;
+        return;
+      }
+
       itemToAdd.type = selectedItem.type;
 
-      if (selectedItem.type === 'user') {
+      if (selectedItem.type === LEVEL_TYPES.USER) {
         itemToAdd = {
           user_id: selectedItem.id,
           name: selectedItem.name || '_name1',
           username: selectedItem.username || '_username1',
           avatar_url: selectedItem.avatar_url || '_avatar_url1',
-          type: 'user'
+          type: LEVEL_TYPES.USER
         };
-      } else if (selectedItem.type === 'role') {
+      } else if (selectedItem.type === LEVEL_TYPES.ROLE) {
         itemToAdd = {
           access_level: selectedItem.id,
-          type: 'role'
+          type: LEVEL_TYPES.ROLE
+        }
+      } else if (selectedItem.type === LEVEL_TYPES.GROUP) {
+        itemToAdd = {
+          group_id: selectedItem.id,
+          type: LEVEL_TYPES.GROUP
         }
       }
+
       this.items.push(itemToAdd);
     }
 
     removeSelectedItem(itemToDelete) {
-      let index;
+      let index = -1;
       let selectedItems = this.getAllSelectedItems();
 
       // To find itemToDelete on selectedItems, first we need the index
       for (let i = 0; i < selectedItems.length; i++) {
         let currentItem = selectedItems[i];
 
-        if (currentItem.type === 'user' &&
-          (currentItem.user_id === itemToDelete.id && currentItem.type === itemToDelete.type)) {
+        if (currentItem.type !== itemToDelete.type) {
+          continue;
+        }
+
+        if (currentItem.type === LEVEL_TYPES.USER && currentItem.user_id === itemToDelete.id) {
           index = i;
-        } else if (currentItem.type === 'role' &&
-          (currentItem.access_level === itemToDelete.id && currentItem.type === itemToDelete.type)) {
+        } else if (currentItem.type === LEVEL_TYPES.ROLE && currentItem.access_level === itemToDelete.id) {
+          index = i;
+        } else if (currentItem.type === LEVEL_TYPES.GROUP && currentItem.group_id === itemToDelete.id) {
           index = i;
         }
 
-        if (index) { break; }
+        if (index > -1) { break; }
+      }
+
+      // if ItemToDelete is not really selected do nothing
+      if (index === -1) {
+        return;
       }
 
       if (selectedItems[index].persisted) {
+
         // If we toggle an item that has been already marked with _destroy
         if (selectedItems[index]._destroy) {
           delete selectedItems[index]._destroy;
@@ -182,63 +251,121 @@
         label.push(this.defaultLabel);
       }
 
-      return label.join(' and ');
+      return label.join(', ');
     }
 
     getData(query, callback) {
-      this.getUsers(query).done((response) => {
-        let data = this.consolidateData(response);
+      this.getUsers(query).done((usersResponse) => {
+        if (this.groups.length) {
+          callback(this.consolidateData(usersResponse, this.groups));
+        } else {
+         this.getGroups(query).done((groupsResponse) => {
 
-        callback(data);
+            // Cache groups to avoid multiple requests
+            this.groups = groupsResponse;
+            callback(this.consolidateData(usersResponse, groupsResponse));
+         });
+        }
+
       }).error(() => {
         new Flash('Failed to load users.');
       });
     }
 
-    consolidateData(response, callback) {
-      let users;
-      let mergeAccessLevels;
-      let consolidatedData;
+    consolidateData(usersResponse, groupsResponse) {
+      let consolidatedData = [];
+      let map = [];
+      let roles = [];
+      let selectedUsers = [];
+      let unselectedUsers = [];
+      let groups = [];
       let selectedItems = this.getSelectedItems();
 
-      mergeAccessLevels = this.accessLevelsData.map((level) => {
-        level.type = 'role';
+      // ID property is handled differently locally from the server
+      // 
+      // For Groups
+      // In dropdown: `id` 
+      // For submit: `group_id`
+      // 
+      // For Roles
+      // In dropdown: `id` 
+      // For submit: `access_level`
+      // 
+      // For Users
+      // In dropdown: `id` 
+      // For submit: `user_id`
+
+      /*
+       * Build groups
+       */
+      groups = groupsResponse.map((group) => {
+        group.type = LEVEL_TYPES.GROUP;
+        return group;
+      });
+
+      /*
+       * Build roles
+       */
+      roles = this.accessLevelsData.map((level) => {
+        level.type = LEVEL_TYPES.ROLE;
         return level;
       });
 
-      let aggregate = [];
-      let map = [];
-
+      /*
+       * Build users
+       */
       for (let x = 0; x < selectedItems.length; x++) {
         let current = selectedItems[x];
 
-        if (current.type !== 'user') { continue; }
+        if (current.type !== LEVEL_TYPES.USER) { continue; }
 
-        map.push(current.user_id);
-
-        aggregate.push({
+        // Collect selected users 
+        selectedUsers.push({
           id: current.user_id,
           name: current.name,
           username: current.username,
           avatar_url: current.avatar_url,
-          type: 'user'
+          type: LEVEL_TYPES.USER
         });
+
+        // Save identifiers for easy-checking more later
+        map.push(LEVEL_TYPES.USER + current.user_id);
       }
 
-      for (let i = 0; i < response.length; i++) {
-        let x = response[i];
+      // Has to be checked against server response
+      // because the selected item can be in filter results
+      for (let i = 0; i < usersResponse.length; i++) {
+        let u = usersResponse[i];
 
         // Add is it has not been added
-        if (map.indexOf(x.id) === -1){
-          x.type = 'user';
-          aggregate.push(x);
+        if (map.indexOf(LEVEL_TYPES.USER + u.id) === -1){
+          u.type = LEVEL_TYPES.USER;
+          unselectedUsers.push(u);
         }
       }
 
-      consolidatedData = mergeAccessLevels;
+      if (groups.length) {
+        consolidatedData =consolidatedData.concat(groups);
+      }
 
-      if (aggregate.length) {
-        consolidatedData = mergeAccessLevels.concat(['divider'], aggregate);
+      if (roles.length) {
+        if (groups.length) {
+          consolidatedData = consolidatedData.concat(['divider']);
+        }
+
+        consolidatedData = consolidatedData.concat(roles);
+      }
+
+      if (selectedUsers.length) {
+        consolidatedData = consolidatedData.concat(['divider'], selectedUsers);
+      }
+
+      if (unselectedUsers.length) {
+        if (!selectedUsers.length) {
+          consolidatedData = consolidatedData.concat(['divider']);
+        }
+
+        consolidatedData = consolidatedData.concat(unselectedUsers);
       }
 
       return consolidatedData;
@@ -258,6 +385,16 @@
       });
     }
 
+    getGroups(query) {
+     return $.ajax({
+       dataType: 'json',
+       url: this.buildUrl(this.groupsPath),
+       data: {
+         project_id: gon.current_project_id
+       }
+     });
+    }
+
     buildUrl(url) {
       if (gon.relative_url_root != null) {
         url = gon.relative_url_root.replace(/\/$/, '') + url;
@@ -271,18 +408,22 @@
 
       // Dectect if the current item is already saved so we can add
       // the `is-active` class so the item looks as marked
-      if (item.type === 'user') {
+      if (item.type === LEVEL_TYPES.USER) {
         criteria = { user_id: item.id };
-      } else if (item.type === 'role') {
+      } else if (item.type === LEVEL_TYPES.ROLE) {
         criteria = { access_level: item.id };
+      } else if (item.type === LEVEL_TYPES.GROUP) {
+        criteria = { group_id: item.id };
       }
 
       isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
 
-      if (item.type === 'user') {
+      if (item.type === LEVEL_TYPES.USER) {
         return this.userRowHtml(item, isActive);
-      } else if (item.type === 'role') {
+      } else if (item.type === LEVEL_TYPES.ROLE) {
         return this.roleRowHtml(item, isActive);
+      } else if (item.type === LEVEL_TYPES.GROUP) {
+        return this.groupRowHtml(item, isActive);
       }
     }
 
@@ -293,8 +434,15 @@
       return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
     }
 
+    groupRowHtml(group, isActive) {
+     const  avatarHtml = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
+     const  nameHtml = `<strong class='dropdown-menu-group-full-name'>${group.name}</strong>`;
+     const  groupnameHtml = `<span class='dropdown-menu-group-groupname'>${group.name}</span>`;
+     return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${groupnameHtml}</a></li>`;
+    }
+
     roleRowHtml(role, isActive) {
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${role.text}</a></li>`;
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''} item-${role.type}'>${role.text}</a></li>`;
     }
   }
 

@@ -6,6 +6,12 @@
     PUSH: 'push_access_levels',
   };
 
+  const LEVEL_TYPES = {
+    ROLE: 'role',
+    USER: 'user',
+    GROUP: 'group'
+  };
+
   gl.ProtectedBranchEdit = class {
     constructor(options) {
       this.$wraps = {};
@@ -21,6 +27,7 @@
     }
 
     buildDropdowns() {
+
       // Allowed to merge dropdown
       this['merge_access_levels_dropdown'] = new gl.ProtectedBranchAccessDropdown({
         accessLevel: ACCESS_LEVELS.MERGE,
@@ -95,25 +102,33 @@
         let currentItem = items[i];
 
         if (currentItem.user_id) {
-          // Solo haciendo esto solo para usuarios por ahora
-          // obtenemos la data más actual de los items seleccionados
+
+          // Do this only for users for now
+          // get the current data for selected items 
           let selectedItems = this[dropdownName].getSelectedItems();
           let currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
 
           itemToAdd = {
             id: currentItem.id,
             user_id: currentItem.user_id,
-            type: 'user',
+            type: LEVEL_TYPES.USER,
             persisted: true,
             name: currentSelectedItem.name,
             username: currentSelectedItem.username,
             avatar_url: currentSelectedItem.avatar_url
           }
+        } else if (currentItem.group_id) {
+          itemToAdd = {
+            id: currentItem.id,
+            group_id: currentItem.group_id,
+            type: LEVEL_TYPES.GROUP,
+            persisted: true
+          };
         } else {
           itemToAdd = {
             id: currentItem.id,
             access_level: currentItem.access_level,
-            type: 'role',
+            type: LEVEL_TYPES.ROLE,
             persisted: true
           }
         }
