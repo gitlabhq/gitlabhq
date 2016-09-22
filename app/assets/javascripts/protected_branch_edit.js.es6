@@ -40,7 +40,6 @@
         dataType: 'json',
         data: {
           _method: 'PATCH',
-          id: this.$wrap.data('banchId'),
           protected_branch: {
             merge_access_levels_attributes: [{
               id: this.$allowedToMergeDropdown.data('access-level-id'),
