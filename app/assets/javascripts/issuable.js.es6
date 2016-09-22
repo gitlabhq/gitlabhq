@@ -15,24 +15,31 @@
       return Issuable.labelRow = _.template('<% _.each(labels, function(label){ %> <span class="label-row btn-group" role="group" aria-label="<%- label.title %>" style="color: <%- label.text_color %>;"> <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%- label.color %>;" title="<%- label.description %>" data-container="body"> <%- label.title %> </a> <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%- label.color %>;" data-label="<%- label.title %>"> <i class="fa fa-times"></i> </button> </span> <% }); %>');
     },
     initSearch: function() {
-      this.timer = null;
-      return $('#issuable_search').off('keyup').on('keyup', function() {
-        clearTimeout(this.timer);
-        return this.timer = setTimeout(function() {
-          var $form, $input, $search;
-          $search = $('#issuable_search');
-          $form = $('.js-filter-form');
-          $input = $("input[name='" + ($search.attr('name')) + "']", $form);
-          if ($input.length === 0) {
-            $form.append("<input type='hidden' name='" + ($search.attr('name')) + "' value='" + (_.escape($search.val())) + "'/>");
-          } else {
-            $input.val($search.val());
-          }
-          if ($search.val() !== '') {
-            return Issuable.filterResults($form);
-          }
-        }, 500);
+      // `immediate` param set to false debounces on the `trailing` edge, lets user finish typing
+      const debouncedExecSearch = _.debounce(Issuable.executeSearch, 500, false);
+
+      $('#issuable_search').off('keyup').on('keyup', debouncedExecSearch);
+
+      // ensures existing filters are preserved when manually submitted
+      $('#issue_search_form').on('submit', (e) => {
+        e.preventDefault();
+        debouncedExecSearch(e);
       });
+    },
+    executeSearch: function(e) {
+      const $search = $('#issuable_search');
+      const $searchName = $search.attr('name');
+      const $searchValue = $search.val();
+      const $filtersForm = $('.js-filter-form');
+      const $input = $(`input[name='${$searchName}']`, $filtersForm);
+
+      if (!$input.length) {
+        $filtersForm.append(`<input type='hidden' name='${$searchName}' value='${_.escape($searchValue)}'/>`);
+      } else {
+        $input.val($searchValue);
+      }
+
+      Issuable.filterResults($filtersForm);
     },
     initLabelFilterRemove: function() {
       return $(document).off('click', '.js-label-filter-remove').on('click', '.js-label-filter-remove', function(e) {
