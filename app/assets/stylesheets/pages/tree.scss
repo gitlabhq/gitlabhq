@@ -55,6 +55,15 @@
   }
 
   .tree-item {
+    .link-container {
+      padding: 0;
+
+      a {
+        padding: 10px $gl-padding;
+        display: block;
+      }
+    }
+
     .tree-item-file-name {
       max-width: 320px;
       vertical-align: middle;
