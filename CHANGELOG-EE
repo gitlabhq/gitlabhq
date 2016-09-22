@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
-v 8.12.0 (Unreleased)
+
+v 8.12.1 (unreleased)
+
+v 8.12.0
   - Include more data in EE usage ping
   - Reduce UPDATE queries when moving between import states on projects
   - [ES] Instrument Elasticsearch::Git::Repository
