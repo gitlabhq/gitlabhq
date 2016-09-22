@@ -1,4 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
+v 8.13.0 (unreleased)
+  - Expose expires_at field when sharing project on API
 
 v 8.12.0 (unreleased)
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
