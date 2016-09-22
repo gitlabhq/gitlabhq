@@ -280,25 +280,23 @@ module ApplicationHelper
     end
   end
 
-  def state_filters_text_for(state, records)
+  def state_filters_text_for(entity, project)
     titles = {
       opened: "Open"
     }
 
-    state_title = titles[state] || state.to_s.humanize
-    records_with_state = records.public_send(state)
+    entity_title = titles[entity] || entity.to_s.humanize
 
-    # When filtering by multiple labels, the result of query.count is a Hash
-    # of the form { issuable_id1 => N, issuable_id2 => N }, where N is the
-    # number of labels selected. The ugly "trick" is to load the issuables
-    # as an array and get the size of the array...
-    # We should probably try to solve this properly in the future.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/22414
-    label_names = Array(params.fetch(:label_name, []))
-    records_with_state = records_with_state.to_a if label_names.many?
+    count =
+      if project.nil?
+        nil
+      elsif current_controller?(:issues)
+        project.issues.visible_to_user(current_user).send(entity).count
+      elsif current_controller?(:merge_requests)
+        project.merge_requests.send(entity).count
+      end
 
-    count = records_with_state.size
-    html  = content_tag :span, state_title
+    html = content_tag :span, entity_title
 
     if count.present?
       html += " "
