@@ -308,8 +308,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
-    TodoService.new.merge_merge_request(merge_request, current_user)
-
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_build_succeeds].present?
