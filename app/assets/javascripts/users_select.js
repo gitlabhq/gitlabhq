@@ -261,10 +261,11 @@
                   }
                 }
                 if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
+                  var trimmed = query.term.trim();
                   emailUser = {
                     name: "Invite \"" + query.term + "\"",
-                    username: query.term,
-                    id: query.term
+                    username: trimmed,
+                    id: trimmed
                   };
                   data.results.unshift(emailUser);
                 }
