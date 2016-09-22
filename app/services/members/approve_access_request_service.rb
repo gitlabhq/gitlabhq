@@ -14,7 +14,7 @@ module Members
       condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
       access_requester = source.requesters.find_by!(condition)
 
-      raise Gitlab::Access::AccessDeniedError if cannot_update_access_requester?(access_requester)
+      raise Gitlab::Access::AccessDeniedError unless can_update_access_requester?(access_requester)
 
       access_requester.access_level = params[:access_level] if params[:access_level]
       access_requester.accept_request
@@ -24,8 +24,8 @@ module Members
 
     private
 
-    def cannot_update_access_requester?(access_requester)
-      !access_requester || !can?(current_user, action_member_permission(:update, access_requester), access_requester)
+    def can_update_access_requester?(access_requester)
+      access_requester && can?(current_user, action_member_permission(:update, access_requester), access_requester)
     end
   end
 end
