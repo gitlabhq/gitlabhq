@@ -608,27 +608,28 @@
         }
       }
       field = [];
-      fieldName = typeof this.options.fieldName === 'function' ? this.options.fieldName(selectedObject) : this.options.fieldName;
       value = this.options.id ? this.options.id(selectedObject, el) : selectedObject.id;
       if (isInput) {
         field = $(this.el);
       } else if(value) {
         field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
       }
-      if (field.length && el.hasClass(ACTIVE_CLASS)) {
+      if (el.hasClass(ACTIVE_CLASS)) {
         el.removeClass(ACTIVE_CLASS);
-        if (isInput) {
-          field.val('');
-        } else {
-          field.remove();
+        if (field && field.length) {
+          if (isInput) {
+            field.val('');
+          } else {
+            field.remove();
+          }
         }
       } else if (el.hasClass(INDETERMINATE_CLASS)) {
         el.addClass(ACTIVE_CLASS);
         el.removeClass(INDETERMINATE_CLASS);
-        if (field.length && value == null) {
+        if (field && field.length && value == null) {
           field.remove();
         }
-        if (!field.length && fieldName) {
+        if ((!field || !field.length) && fieldName) {
           this.addInput(fieldName, value, selectedObject);
         }
       } else {
@@ -638,15 +639,15 @@
             this.dropdown.parent().find("input[name='" + fieldName + "']").remove();
           }
         }
-        if (field.length && value == null) {
+        if (field && field.length && value == null) {
           field.remove();
         }
         // Toggle active class for the tick mark
         el.addClass(ACTIVE_CLASS);
         if (value != null) {
-          if (!field.length && fieldName) {
+          if ((!field || !field.length) && fieldName) {
             this.addInput(fieldName, value, selectedObject);
-          } else if (field.length) {
+          } else if (field && field.length) {
             field.val(value).trigger('change');
           }
         }
