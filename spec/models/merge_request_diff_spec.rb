@@ -64,5 +64,27 @@ describe MergeRequestDiff, models: true do
         end
       end
     end
+
+    describe '#commits_sha' do
+      shared_examples 'returning all commits SHA' do
+        it 'returns all commits SHA' do
+          commits_sha = subject.commits_sha
+
+          expect(commits_sha).to eq(subject.commits.map(&:sha))
+        end
+      end
+
+      context 'when commits were loaded' do
+        before do
+          subject.commits
+        end
+
+        it_behaves_like 'returning all commits SHA'
+      end
+
+      context 'when commits were not loaded' do
+        it_behaves_like 'returning all commits SHA'
+      end
+    end
   end
 end

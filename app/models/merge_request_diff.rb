@@ -30,6 +30,10 @@ class MergeRequestDiff < ActiveRecord::Base
     select(column_names - ['st_diffs'])
   end
 
+  def st_commits
+    super || []
+  end
+
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
@@ -83,7 +87,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits
-    @commits ||= load_commits(st_commits || [])
+    @commits ||= load_commits(st_commits)
   end
 
   def reload_commits
