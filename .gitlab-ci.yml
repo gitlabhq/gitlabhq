@@ -232,6 +232,8 @@ rake dev:setup:
     RAILS_ENV: development
   script:
     - mkdir -p /home/git/repositories
+    - git clone https://gitlab.com/gitlab-org/gitlab-ce.git /home/git/repositories/gitlab-org/gitlab-ce.git
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git /home/git/repositories/gitlab-org/gitlab-test.git
     - rake dev:setup
   artifacts:
     when: on_failure
