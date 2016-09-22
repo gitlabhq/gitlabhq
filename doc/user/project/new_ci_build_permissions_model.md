@@ -49,9 +49,9 @@ It is important to note that we have a few types of users:
   Administrator will have to be a member of it in order to have access to it
   via another project's build.
 
-- **External users**: CI builds created by external users will have access only
-  to projects to which user has at least reporter access. This rules out
-  accessing all internal projects by default,
+- **External users**: CI builds created by [external users][ext] will have
+  access only to projects to which user has at least reporter access. This
+  rules out accessing all internal projects by default,
 
 This allows us to make the CI and permission system more trustworthy.
 Let's consider the following scenario:
@@ -60,11 +60,10 @@ Let's consider the following scenario:
    hosted in private repositories and you have multiple CI builds that make use
    of these repositories.
 
-2. You invite a new user, a visitor, the external user. CI builds created by
-   that user do not have access to internal repositories, because the user also
-   doesn't have the access from within GitLab. You as an employee have to grant
-   explicit access for this user. This allows us to prevent from accidental data
-   leakage.
+2. You invite a new [external user][ext]. CI builds created by that user do not
+   have access to internal repositories, because the user also doesn't have the
+   access from within GitLab. You as an employee have to grant explicit access
+   for this user. This allows us to prevent from accidental data leakage.
 
 ## Build token
 
@@ -98,6 +97,13 @@ for information about 403 or forbidden access messages
 As an Administrator, you can verify that the user is a member of the group or
 project they're trying to have access to, and you can impersonate the user to
 retry the failing build in order to verify that everything is correct.
+
+## Build triggers
+
+[Build triggers][triggers] do not support the new permission model.
+They continue to use the old authentication mechanism where the CI build
+can access only its own sources. We plan to remove that limitation in one of
+the upcoming releases.
 
 ## Before GitLab 8.12
 
@@ -277,13 +283,7 @@ test:
     - docker run $CI_REGISTRY/group/other-project:latest
 ```
 
-### Build triggers
-
-> **Note:**
-Currently Build triggers do not support the new permission model.
-They continue to use the old authentication mechanism where the CI build
-can access only own sources. We plan to remove that limitation in one of the upcoming releases.
-
-
 [git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [build permissions]: ../permissions.md#builds-permissions
+[ext]: ../permissions.md#external-users
+[triggers]: ../../ci/triggers/README.md
