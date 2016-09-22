@@ -1,6 +1,6 @@
 #cycle-analytics {
   margin: 24px auto 0;
-  width: 800px;
+  max-width: 800px;
   position: relative;
 
   .panel {
@@ -32,15 +32,19 @@
     }
 
     .dropdown {
-      position: relative;
       top: 13px;
+      
+      @media (max-width: $screen-sm-min) {
+        right: 15px;
+        top: 30px;
+      }
     }
   }
 
   .bordered-box {
     border: 1px solid $border-color;
     @include border-radius($border-radius-default);
-    position: relative;
+  
   }
 
   .content-list {
@@ -62,7 +66,7 @@
           font-weight: 600;
         }
         &:text {
-          color: #8c8c8c;
+          color: $cycle-analytics-box-text-color;
         }
       }
     }
@@ -77,26 +81,31 @@
   }
 
   .landing {
-    margin-bottom: $gl-padding;
+    margin-bottom: $cycle-analytics-box-margin-bottom;
     overflow: hidden;
 
     .dismiss-icon {
       position: absolute;
-      right: $gl-padding;
+      right: $cycle-analytics-box-padding;
       cursor: pointer;
       color: #b2b2b2;
     }
 
-    svg {
-      margin: 0 20px;
-      float: left;
-      width: 136px;
-      height: 136px;
+    .svg-container {
+      text-align: center;
+      
+      svg {
+        width: 136px;
+        height: 136px;
+      }
     }
-
+    
     .inner-content {
-      width: 480px;
-      float: left;
+      text-align: center;
+      
+      @media (max-width: $screen-sm-min) {
+        padding: 0 28px;
+      }
 
       h4 {
         color: $gl-text-color;
@@ -104,8 +113,8 @@
       }
 
       p {
-        color: #8c8c8c;
-        margin-bottom: $gl-padding;
+        color: $cycle-analytics-box-text-color;
+        margin-bottom: $cycle-analytics-box-margin-bottom;
       }
     }
   }

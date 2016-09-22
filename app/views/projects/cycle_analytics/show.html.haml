@@ -2,18 +2,20 @@
 - page_title "Cycle Analytics"
 = render "projects/pipelines/head"
 
-#cycle-analytics{"v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project)}}
+#cycle-analytics{class: container_class , "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project)}}
 
   .bordered-box.landing.content-block{"v-if" => "!isHelpDismissed"}
     = icon('times', class: 'dismiss-icon', "@click": "dismissLanding()")
-    = custom_icon('icon_cycle_analytics_splash')
-    .inner-content
-      %h4
-        Introducing Cycle Analytics
-      %p
-        Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
+    .row
+      .col-sm-3.col-xs-12.svg-container
+        = custom_icon('icon_cycle_analytics_splash')
+      .col-sm-8.col-xs-12.inner-content
+        %h4
+          Introducing Cycle Analytics
+        %p
+          Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
 
-      = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
+        = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
 
   = icon("spinner spin", "v-show" => "isLoading")
 
@@ -25,11 +27,11 @@
       .content-block
         .container-fluid
           .row
-            .col-xs-3.column{"v-for" => "item in summary"}
+            .col-sm-3.col-xs-6.column{"v-for" => "item in summary"}
               %h3.header {{item.value}}
               %p.text {{item.title}}
 
-            .col-xs-3.column
+            .col-sm-3.col-xs-6.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{"data-toggle" => "dropdown", :type => "button"}
                   %span.dropdown-label Last 30 days
