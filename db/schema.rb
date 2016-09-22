@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160915081353) do
+ActiveRecord::Schema.define(version: 20160915042921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -185,9 +185,9 @@ ActiveRecord::Schema.define(version: 20160915081353) do
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",              default: false
+    t.boolean  "deploy",                        default: false
     t.text     "options"
-    t.boolean  "allow_failure",       default: false, null: false
+    t.boolean  "allow_failure",                 default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "stage_idx"
@@ -501,11 +501,11 @@ ActiveRecord::Schema.define(version: 20160915081353) do
 
   create_table "issue_metrics", force: :cascade do |t|
     t.integer  "issue_id",                           null: false
+    t.datetime "first_mentioned_in_commit_at"
     t.datetime "first_associated_with_milestone_at"
     t.datetime "first_added_to_board_at"
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
-    t.datetime "first_mentioned_in_commit_at"
   end
 
   add_index "issue_metrics", ["issue_id"], name: "index_issue_metrics", using: :btree
@@ -680,6 +680,7 @@ ActiveRecord::Schema.define(version: 20160915081353) do
     t.datetime "updated_at",                      null: false
   end
 
+  add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
   add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|

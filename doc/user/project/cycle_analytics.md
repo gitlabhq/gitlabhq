@@ -6,7 +6,7 @@
 This the first iteration of Cycle Analytics, you can follow the following issue
 to track the changes that are coming to this feature: [#20975][ce-20975].
 
-Cycle Analytics measures the time it takes to go from an idea to production for
+Cycle Analytics measures the time it takes to go from [an idea to production] for
 each project you have. This is achieved by not only indicating the total time it
 takes to reach at that point, but the total time is broken down into the
 multiple stages an idea has to pass through to be shipped.
@@ -32,7 +32,7 @@ You can see that there are seven stages in total:
 - **Code** (IDE)
     - Median time from the first commit until the merge request is created
 - **Test** (CI)
-    - Total test time for all commits/merges
+    - Median total test time for all commits/merges
 - **Review** (Merge Request/MR)
     - Median time from merge request creation until the merge request is merged
       (closed merge requests won't be taken into account)
@@ -57,11 +57,11 @@ Below you can see in more detail what the various stages of Cycle Analytics mean
 | **Stage** | **Description** |
 | --------- | --------------- |
 | Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whatever comes first. The label will be tracked only if it already has an [Issue Board list][board] created for it. |
-| Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the repository. To make this change tracked, the commit needs to be pushed that contains the issue closing pattern `Closes #xxx`, where `xxx` is the number of the issue related to this commit. If the commit does not contain the issue closing pattern, it is not considered to the measure time of the stage. |
-| Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request related to that commit. The key to keep the process tracked is include the issue closing pattern to the description of the merge request. |
+| Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the repository. To make this change tracked, the pushed commit needs to contain the [issue closing pattern], for example `Closes #xxx`, where `xxx` is the number of the issue related to this commit. If the commit does not contain the issue closing pattern, it is not considered to the measurement time of the stage. |
+| Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request related to that commit. The key to keep the process tracked is include the [issue closing pattern] to the description of the merge request. |
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. `master` is not excluded. It does not attempt to track time for any particular stages. |
 | Review    | Measures the median time taken to review the merge request, between its creation and until it's merged. |
-| Staging   | Measures the median time between merging the merge request until the very first deployment of the to production. It's tracked by the [environment] set to `production` in your GitLab CI configuration. If there isn't a `production` environment, this is not tracked. |
+| Staging   | Measures the median time between merging the merge request until the very first deployment to production. It's tracked by the [environment] set to `production` in your GitLab CI configuration. If there isn't a `production` environment, this is not tracked. |
 | Production| The sum of all time taken to run the entire process, from issue creation to deploying the code to production. |
 
 ---
@@ -101,7 +101,7 @@ Learn more about Cycle Analytics in the following resources:
 
 - [Cycle Analytics feature page](https://about.gitlab.com/solutions/cycle-analytics/)
 - [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
-- [Cycle Analytics feature highlight](https://about.gitlab.com/2016-09-19-cycle-analytics-feature-highlight.html)
+- [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 
 
 [ce-5986]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5986
@@ -110,3 +110,5 @@ Learn more about Cycle Analytics in the following resources:
 [permissions]: ../permissions.md
 [environment]: ../../ci/yaml/README.md#environment
 [board]: issue_board.md#creating-a-new-list
+[idea to production]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
+[issue closing pattern]: issues/automatic_issue_closing.md

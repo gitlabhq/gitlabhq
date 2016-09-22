@@ -211,7 +211,9 @@ module API
         if namespace_id.present?
           namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
 
-          not_found!('Target Namespace') unless namespace
+          unless namespace && can?(current_user, :create_projects, namespace)
+            not_found!('Target Namespace')
+          end
 
           attrs[:namespace] = namespace
         end

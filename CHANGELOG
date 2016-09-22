@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.0 (unreleased)
+v 8.12.1 (unreleased)
+
+v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
@@ -18,6 +20,7 @@ v 8.12.0 (unreleased)
   - Fix note form hint showing slash commands supported for commits.
   - Make push events have equal vertical spacing.
   - API: Ensure invitees are not returned in Members API.
+  - Preserve applied filters on issues search.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Display stages in valid order in stages dropdown on build page
@@ -176,7 +179,6 @@ v 8.12.0 (unreleased)
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
   - Clean environment variables when running git hooks
-  - Add UX improvements for merge request version diffs
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
