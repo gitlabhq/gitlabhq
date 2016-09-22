@@ -81,7 +81,7 @@
   }
 
   .landing {
-    margin-bottom: $cycle-analytics-box-margin-bottom;
+    margin-bottom: $gl-padding;
     overflow: hidden;
 
     .dismiss-icon {
@@ -114,7 +114,7 @@
 
       p {
         color: $cycle-analytics-box-text-color;
-        margin-bottom: $cycle-analytics-box-margin-bottom;
+        margin-bottom: $gl-padding;
       }
     }
   }
