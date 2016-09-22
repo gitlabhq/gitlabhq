@@ -120,8 +120,10 @@ class MergeRequestDiff < ActiveRecord::Base
   def commits_sha
     if @commits
       commits.map(&:sha)
-    else
+    elsif st_commits
       st_commits.map { |commit| commit[:id] }
+    else
+      []
     end
   end
 

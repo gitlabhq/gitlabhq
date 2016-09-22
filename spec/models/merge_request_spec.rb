@@ -517,7 +517,7 @@ describe MergeRequest, models: true do
 
     context 'with multiple irrelevant merge_request_diffs' do
       before do
-        subject.update(target_branch: 'markdown')
+        subject.update(target_branch: 'v1.0.0')
       end
 
       it_behaves_like 'returning pipelines with proper ordering'
@@ -544,13 +544,28 @@ describe MergeRequest, models: true do
       subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
     end
 
-    before do
-      subject.update(target_branch: 'markdown')
+    shared_examples 'returning all SHA' do
+      it 'returns all SHA from all merge_request_diffs' do
+        expect(subject.merge_request_diffs.size).to eq(2)
+        expect(subject.all_commits_sha).to eq(all_commits_sha)
+      end
     end
 
-    it 'returns all SHA from all merge_request_diffs' do
-      expect(subject.merge_request_diffs.size).to eq(2)
-      expect(subject.all_commits_sha).to eq(all_commits_sha)
+    context 'with a completely different branch' do
+      before do
+        subject.update(target_branch: 'v1.0.0')
+      end
+
+      it_behaves_like 'returning all SHA'
+    end
+
+    context 'with a branch having no difference' do
+      before do
+        subject.update(target_branch: 'v1.1.0')
+        subject.reload # make sure commits were not cached
+      end
+
+      it_behaves_like 'returning all SHA'
     end
   end
 
