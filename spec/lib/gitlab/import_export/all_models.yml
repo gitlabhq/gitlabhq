@@ -76,6 +76,8 @@ merge_requests:
 - events
 - merge_requests_closing_issues
 - metrics
+- approvals
+- approvers
 merge_request_diff:
 - merge_request
 pipelines:
@@ -107,8 +109,10 @@ protected_branches:
 - merge_access_levels
 - push_access_levels
 merge_access_levels:
+- user
 - protected_branch
 push_access_levels:
+- user
 - protected_branch
 project:
 - taggings
@@ -182,6 +186,16 @@ project:
 - environments
 - deployments
 - project_feature
+- mirror_user
+- push_rule
+- jenkins_service
+- jenkins_deprecated_service
+- index_status
+- approvers
+- pages_domains
+- audit_events
+- remote_mirrors
+- path_locks
 award_emoji:
 - awardable
 - user

@@ -1350,6 +1350,9 @@ ActiveRecord::Schema.define(version: 20160915201649) do
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
+  add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade

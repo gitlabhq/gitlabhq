@@ -114,6 +114,8 @@ ProjectMember:
 - invite_accepted_at
 - requested_at
 - expires_at
+- ldap
+- override
 User:
 - id
 - username
@@ -315,12 +317,14 @@ ProtectedBranch::MergeAccessLevel:
 - access_level
 - created_at
 - updated_at
+- user_id
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
 - access_level
 - created_at
 - updated_at
+- user_id
 AwardEmoji:
 - id
 - user_id
