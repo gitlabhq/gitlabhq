@@ -139,11 +139,11 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-## Builds permissions
+### Build permissions
 
 > Changed in GitLab 8.12.
 
-GitLab 8.12 has a completely redesigned build permission system.
+GitLab 8.12 has a completely redesigned build permissions system.
 Read all about the [new model and its implications][new-mod].
 
 This table shows granted privileges for builds triggered by specific types of
