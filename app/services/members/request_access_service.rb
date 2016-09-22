@@ -8,7 +8,7 @@ module Members
     end
 
     def execute
-      raise Gitlab::Access::AccessDeniedError if cannot_request_access?(source)
+      raise Gitlab::Access::AccessDeniedError unless can_request_access?(source)
 
       source.members.create(
         access_level: Gitlab::Access::DEVELOPER,
@@ -18,8 +18,8 @@ module Members
 
     private
 
-    def cannot_request_access?(source)
-      !source || !can?(current_user, :request_access, source)
+    def can_request_access?(source)
+      source && can?(current_user, :request_access, source)
     end
   end
 end
