@@ -11,17 +11,22 @@ module ProtectedBranches
     end
 
     def execute
-      if @developers_can_push
-        @params.merge!(push_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }])
-      else
-        @params.merge!(push_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }])
-      end
+      push_access_level =
+        if @developers_can_push
+          Gitlab::Access::DEVELOPER
+        else
+          Gitlab::Access::MASTER
+        end
 
-      if @developers_can_merge
-        @params.merge!(merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }])
-      else
-        @params.merge!(merge_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }])
-      end
+      merge_access_level =
+        if @developers_can_merge
+          Gitlab::Access::DEVELOPER
+        else
+          Gitlab::Access::MASTER
+        end
+
+      @params.merge!(push_access_levels_attributes: [{ access_level: push_access_level }],
+                     merge_access_levels_attributes: [{ access_level: merge_access_level }])
 
       service = ProtectedBranches::CreateService.new(@project, @current_user, @params)
       service.execute
