@@ -1,5 +1,6 @@
 # Workflow
 
+- [Automatic issue closing](../user/project/issues/automatic_issue_closing.md)
 - [Change your time zone](timezone.md)
 - [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
