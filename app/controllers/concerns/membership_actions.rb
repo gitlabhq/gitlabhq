@@ -3,7 +3,7 @@ module MembershipActions
   include MembersHelper
 
   def request_access
-    Members::RequestAccessService.new(membershipable, current_user).execute
+    membershipable.request_access(current_user)
 
     redirect_to polymorphic_path(membershipable),
                 notice: 'Your request for access has been queued for review.'
