@@ -68,7 +68,7 @@ Let's consider the following scenario:
 
 ## Build token
 
-A unique build token is generated for each project and it allows the user to
+A unique build token is generated for each build and it allows the user to
 access all projects that would be normally accessible to the user creating that
 build.
 
