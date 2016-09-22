@@ -41,4 +41,17 @@ describe 'projects/merge_requests/show.html.haml' do
       expect(rendered).to have_css('a', visible: false, text: 'Close')
     end
   end
+
+  context 'when the merge request is open' do
+    it 'closes open merge request' do
+      closed_merge_request.update_attributes(state: 'open')
+      fork_project.destroy
+
+      render
+
+      expect(closed_merge_request.reload.state).to eq('closed')
+      expect(rendered).to have_css('a', visible: false, text: 'Reopen')
+      expect(rendered).to have_css('a', visible: false, text: 'Close')
+    end
+  end
 end
