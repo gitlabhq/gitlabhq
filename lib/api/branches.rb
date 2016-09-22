@@ -57,11 +57,11 @@ module API
         developers_can_merge = to_boolean(params[:developers_can_merge])
         developers_can_push = to_boolean(params[:developers_can_push])
 
-        params = {
+        protected_branch_params = {
           name: @branch.name,
         }
 
-        service_args = [user_project, current_user, params,
+        service_args = [user_project, current_user, protected_branch_params,
                         developers_can_push: developers_can_push,
                         developers_can_merge: developers_can_merge]
 
