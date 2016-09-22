@@ -143,6 +143,7 @@ the master, and `masterauth` in slaves.
     redis['port'] = 6379
 
     ## Slave redis instance
+    redis['master'] = false
     redis['master_ip'] = '10.10.10.10' # IP of master Redis server
     redis['master_port'] = 6379 # Port of master Redis server
     redis['master_password'] = "<huge password string here>"
@@ -157,31 +158,19 @@ servers.
 
 ### Sentinel setup
 
-We don't provide yet an automated way to setup and run the Sentinel daemon
-from Omnibus installation method. You must follow the instructions below and
-run it by yourself.
+We provide an automated way to setup and run the Sentinel daemon
+with GitLab EE.
 
-The support for Sentinel in Ruby has some [caveats](https://github.com/redis/redis-rb/issues/531).
-While you can give any name for the `master-group-name` part of the
-configuration, as in this example:
-
-```conf
-sentinel monitor <master-group-name> <ip> <port> <quorum>
-```
-
-,for it to work in Ruby, you have to use the "hostname" of the master Redis
-server, otherwise you will get an error message like:
-`Redis::CannotConnectError: No sentinels available.`. Read
-[Sentinel troubleshooting](#sentinel-troubleshooting) for more information.
+See the instructions below how to setup it by yourself.
 
 Here is an example configuration file (`sentinel.conf`) for a Sentinel node:
 
 ```conf
 port 26379
-sentinel monitor master-redis.example.com 10.10.10.10 6379 1
-sentinel down-after-milliseconds master-redis.example.com 10000
-sentinel config-epoch master-redis.example.com 0
-sentinel leader-epoch master-redis.example.com 0
+sentinel monitor gitlab-redis 10.0.0.1 6379 1
+sentinel down-after-milliseconds gitlab-redis 10000
+sentinel config-epoch gitlab-redis 0
+sentinel leader-epoch gitlab-redis 0
 ```
 
 ---
@@ -213,10 +202,11 @@ The following steps should be performed in the [GitLab application server](gitla
 1. Edit `/etc/gitlab/gitlab.rb` and add/change the following lines:
 
     ```ruby
-    gitlab-rails['redis_host'] = "master-redis.example.com"
-    gitlab-rails['redis_port'] = 6379
-    gitlab-rails['redis_password'] = '<huge password string here>'
-    gitlab-rails['redis_sentinels'] = [
+    redis['master_name'] = "gitlab-redis"
+    redis['master_ip'] = "10.0.0.1"
+    redis['master_port'] = 6379
+    redis['master_password'] = '<huge password string here>'
+    gitlab_rails['redis_sentinels'] = [
       {'host' => '10.10.10.1', 'port' => 26379},
       {'host' => '10.10.10.2', 'port' => 26379},
       {'host' => '10.10.10.3', 'port' => 26379}
@@ -229,33 +219,33 @@ The following steps should be performed in the [GitLab application server](gitla
 
 If you get an error like: `Redis::CannotConnectError: No sentinels available.`,
 there may be something wrong with your configuration files or it can be related
-to [this issue][gh-531] ([pull request][gh-534] that should make things better).
+to [this issue][gh-531].
 
-It's a bit rigid the way you have to config `resque.yml` and `sentinel.conf`,
-otherwise `redis-rb` will not work properly.
+It's a bit non-intuitive the way you have to config `resque.yml` and
+`sentinel.conf`, otherwise `redis-rb` will not work properly.
 
-The hostname ('my-primary-redis') of the primary Redis server (`sentinel.conf`)
-**must** match the one configured in GitLab (`resque.yml` for source installations
-or `gitlab-rails['redis_*']` in Omnibus) and it must be valid ex:
+The `master-group-name` ('gitlab-redis') defined in (`sentinel.conf`)
+**must** be used as the hostname in GitLab (`resque.yml` for source installations
+or `gitlab-rails['redis_*']` in Omnibus):
 
 ```conf
 # sentinel.conf:
-sentinel monitor my-primary-redis 10.10.10.10 6379 1
-sentinel down-after-milliseconds my-primary-redis 10000
-sentinel config-epoch my-primary-redis 0
-sentinel leader-epoch my-primary-redis 0
+sentinel monitor gitlab-redis 10.10.10.10 6379 1
+sentinel down-after-milliseconds gitlab-redis 10000
+sentinel config-epoch gitlab-redis 0
+sentinel leader-epoch gitlab-redis 0
 ```
 
 ```yaml
 # resque.yaml
 production:
-  url: redis://my-primary-redis:6378
+  url: redis://:myredispassword@gitlab-redis/
   sentinels:
     -
-      host: slave1
+      host: slave1.example.com # or use ip
       port: 26380 # point to sentinel, not to redis port
     -
-      host: slave2
+      host: slave2.exampl.com # or use ip
       port: 26381 # point to sentinel, not to redis port
 ```
 
