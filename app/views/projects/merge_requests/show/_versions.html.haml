@@ -12,9 +12,9 @@
           %span.caret
         %ul.dropdown-menu.dropdown-menu-selectable
           .dropdown-title
-            %span Version:
+            %span Version
             %button.dropdown-title-button.dropdown-menu-close
-              %i.fa.fa-times.dropdown-menu-close-icon
+              = icon('times', class: 'dropdown-menu-close-icon')
           - @merge_request_diffs.each do |merge_request_diff|
             %li
               = link_to merge_request_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
@@ -40,9 +40,9 @@
             %span.caret
           %ul.dropdown-menu.dropdown-menu-selectable
             .dropdown-title
-              %span Compared with:
+              %span Compared with
               %button.dropdown-title-button.dropdown-menu-close
-                %i.fa.fa-times.dropdown-menu-close-icon
+                = icon('times', class: 'dropdown-menu-close-icon')
             - @comparable_diffs.each do |merge_request_diff|
               %li
                 = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff == @start_version) do
@@ -67,4 +67,4 @@
           Comments are disabled because you're comparing two versions of this merge request.
         - else
           Comments are disabled because you're viewing an old version of this merge request.
-        = link_to 'Show latest version', merge_request_version_path(@project, @merge_request, @merge_request_diff), class: 'btn btn-sm'
+        = link_to 'Show latest version', diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-sm'

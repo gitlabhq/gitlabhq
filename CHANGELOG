@@ -178,7 +178,6 @@ v 8.12.0
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
   - Clean environment variables when running git hooks
-  - Add UX improvements for merge request version diffs
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
