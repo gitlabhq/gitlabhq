@@ -19,7 +19,7 @@
       };
 
       const debounceTimeout = _.debounce((username) => {
-        this.state.validateUsername(username);
+        this.validateUsername(username);
       }, debounceTimeoutDuration);
 
       this.inputElement.on('keyup.username_check', () => {
@@ -78,7 +78,7 @@
           type: 'GET',
           url: `/u/${username}/exists`,
           dataType: 'json',
-          success: (res) => this.updateValidationState(res.exists)
+          success: (res) => this.setAvailabilityState(res.exists)
         });
       }
     }
@@ -96,10 +96,10 @@
 
     clearFieldValidationState() {
       // TODO: Double check if this is valid chaining
-      const $input = this.inputElement
-        .siblings('p').hide().end()
-        .removeClass(invalidInputClass);
-         removeClass(successInputClass);
+      this.inputElement.siblings('p').hide();
+
+      this.inputElement.removeClass(invalidInputClass)
+        .removeClass(successInputClass);
     }
 
     setUnavailableState() {

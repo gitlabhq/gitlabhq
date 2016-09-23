@@ -17,10 +17,10 @@
   const inputErrorClass = 'gl-field-error-outline';
 
   class GlFieldError {
-    constructor({ input, form }) {
+    constructor({ input, formErrors }) {
       this.inputElement = $(input);
       this.inputDomElement = this.inputElement.get(0);
-      this.form = form;
+      this.form = formErrors;
       this.errorMessage = this.inputElement.attr('title') || 'This field is required.';
       this.fieldErrorElement = $(`<p class='${errorMessageClass} hide'>${ this.errorMessage }</p>`);
 
@@ -34,7 +34,7 @@
 
     initFieldValidation() {
       // hidden when injected into DOM
-      $input.after(this.fieldErrorElement);
+      this.inputElement.after(this.fieldErrorElement);
       this.inputElement.off('invalid').on('invalid', this.handleInvalidInput.bind(this));
     }
 
@@ -42,24 +42,24 @@
       this.setClearState();
 
       if (this.state.valid) {
-        this.setValidState();
+        return this.setValidState();
       }
 
       if (this.state.empty) {
-        this.setEmptyState();
+        return this.setEmptyState();
       }
 
       if (!this.state.valid) {
-        this.setInvalidState();
+        return this.setInvalidState();
       }
 
-      this.form.focusOnFirstInvalid.apply(this);
+      this.form.focusOnFirstInvalid.apply(this.form);
     }
 
     handleInvalidInput(event) {
       event.preventDefault();
 
-      this.state.valid = true;
+      this.state.valid = false;
       this.state.empty = false;
 
       this.renderValidity();
@@ -77,8 +77,7 @@
     updateValidityState() {
       const inputVal = this.inputElement.val();
       this.state.empty = !!inputVal.length;
-      this.state.valid = this.getInputValidity;
-
+      this.state.valid = this.getInputValidity();
       this.renderValidity();
     }
 
@@ -87,17 +86,24 @@
     }
 
     setEmptyState() {
-      return this.setClearState();
+      return this.setInvalidState();
     }
 
     setInvalidState() {
-      $input.addClass(inputErrorClass);
-      return this.$fieldErrorElement.show();
+      this.inputElement.addClass(inputErrorClass);
+      this.inputElement.siblings('p').hide();
+      return this.fieldErrorElement.show();
     }
 
     setClearState() {
-      $input.removeClass(inputErrorClass);
-      return this.fieldErrorElement.hide();
+      const inputVal = this.inputElement.val();
+      if (!inputVal.split(' ').length) {
+        const trimmedInput = this.inputElement.val().trim();
+        this.inputElement.val(trimmedInput);
+      }
+      this.inputElement.removeClass(inputErrorClass);
+      this.inputElement.siblings('p').hide();
+      this.fieldErrorElement.hide();
     }
 
     checkFieldValidity(target) {
@@ -105,19 +111,23 @@
     }
   }
 
+  const customValidationFlag = 'no-gl-field-errors';
+
   class GlFieldErrors {
     constructor(form) {
       this.form = $(form);
+      this.state = {
+        inputs: [],
+        valid: false
+      };
       this.initValidators();
     }
 
     initValidators () {
       // select all non-hidden inputs in form
-      const form = this.form;
-
-      this.inputs = this.form.find(':input:not([type=hidden])')
-        .toArray()
-        .map((input) => new GlFieldError({ input, form }));
+      this.state.inputs = this.form.find(':input:not([type=hidden])').toArray()
+        .filter((input) => !input.classList.contains(customValidationFlag))
+        .map((input) => new GlFieldError({ input, formErrors: this }));
 
       this.form.on('submit', this.catchInvalidFormSubmit);
     }
@@ -134,7 +144,7 @@
     }
 
     focusOnFirstInvalid () {
-      const firstInvalid = this.inputs.find((input) => !input.validity.valid);
+      const firstInvalid = this.state.inputs.find((input) => !input.inputDomElement.validity.valid);
       $(firstInvalid).focus();
     }
   }
