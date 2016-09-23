@@ -33,7 +33,9 @@ module LoginHelpers
     fill_in "user_login", with: user.email
     fill_in "user_password", with: "12345678"
     check 'user_remember_me' if remember
-    click_button "Sign in"
+    page.within '.login-box' do
+      click_button "Sign in"
+    end
     Thread.current[:current_user] = user
   end
 
