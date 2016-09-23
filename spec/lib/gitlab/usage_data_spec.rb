@@ -54,7 +54,7 @@ describe Gitlab::UsageData do
         projects
         pushes
         pages_domains
-        protected_branchess
+        protected_branches
         releases
         remote_mirrors
         services
