@@ -10,6 +10,7 @@ following locations:
 
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
+- [Broadcast Messages](broadcast_messages.md)
 - [Builds](builds.md)
 - [Build Triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
