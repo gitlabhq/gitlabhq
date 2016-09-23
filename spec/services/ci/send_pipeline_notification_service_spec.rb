@@ -10,6 +10,10 @@ describe Ci::SendPipelineNotificationService, services: true do
   subject{ described_class.new(pipeline) }
 
   describe '#execute' do
+    before do
+      reset_delivered_emails!
+    end
+
     shared_examples 'sending emails' do
       it 'sends an email to pipeline user' do
         perform_enqueued_jobs do
