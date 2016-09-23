@@ -59,10 +59,8 @@ module Gitlab
       # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
       active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
-      ENV['SETUP_DB'] != 'false' &&
       active_db_connection &&
-      ActiveRecord::Base.connection.table_exists?('application_settings')
-
+        ActiveRecord::Base.connection.table_exists?('application_settings')
     rescue ActiveRecord::NoDatabaseError
       false
     end
