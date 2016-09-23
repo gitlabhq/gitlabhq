@@ -12,6 +12,7 @@ v 8.13.0 (unreleased)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
+  - Take filters in account in issuable counters. !6496
   - Revoke button in Applications Settings underlines on hover.
   - Fix Long commit messages overflow viewport in file tree
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)

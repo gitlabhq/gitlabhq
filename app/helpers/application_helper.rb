@@ -280,27 +280,24 @@ module ApplicationHelper
     end
   end
 
-  def state_filters_text_for(entity, project)
+  def issuables_state_counter_text(state, issuables)
     titles = {
       opened: "Open"
     }
 
-    entity_title = titles[entity] || entity.to_s.humanize
+    state_title = titles[state] || state.to_s.humanize
 
     count =
-      if project.nil?
-        nil
-      elsif current_controller?(:issues)
-        project.issues.visible_to_user(current_user).send(entity).count
-      elsif current_controller?(:merge_requests)
-        project.merge_requests.send(entity).count
+      if @issues || @merge_requests
+        issuables_finder = @issues ? issues_finder : merge_requests_finder
+        issuables_finder.params[:state] = state
+        issuables_finder.execute.page(1).total_count
       end
 
-    html = content_tag :span, entity_title
+    html = content_tag(:span, state_title)
 
     if count.present?
-      html += " "
-      html += content_tag :span, number_with_delimiter(count), class: 'badge'
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
     end
 
     html.html_safe

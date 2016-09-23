@@ -1,25 +1,25 @@
+- type = local_assigns.fetch(:type, :issues)
+- page_context_word = type.to_s.humanize(capitalize: false)
+- issuables = @issues || @merge_requests
+
 %ul.nav-links.issues-state-filters
-  - if defined?(type) && type == :merge_requests
-    - page_context_word = 'merge requests'
-  - else
-    - page_context_word = 'issues'
   %li{class: ("active" if params[:state] == 'opened')}
     = link_to page_filter_path(state: 'opened', label: true), title: "Filter by #{page_context_word} that are currently opened." do
-      #{state_filters_text_for(:opened, @project)}
+      #{issuables_state_counter_text(:opened, issuables)}
 
-  - if defined?(type) && type == :merge_requests
+  - if type == :merge_requests
     %li{class: ("active" if params[:state] == 'merged')}
       = link_to page_filter_path(state: 'merged', label: true), title: 'Filter by merge requests that are currently merged.' do
-        #{state_filters_text_for(:merged, @project)}
+        #{issuables_state_counter_text(:merged, issuables)}
 
     %li{class: ("active" if params[:state] == 'closed')}
       = link_to page_filter_path(state: 'closed', label: true), title: 'Filter by merge requests that are currently closed and unmerged.' do
-        #{state_filters_text_for(:closed, @project)}
+        #{issuables_state_counter_text(:closed, issuables)}
   - else
     %li{class: ("active" if params[:state] == 'closed')}
       = link_to page_filter_path(state: 'closed', label: true), title: 'Filter by issues that are currently closed.' do
-        #{state_filters_text_for(:closed, @project)}
+        #{issuables_state_counter_text(:closed, issuables)}
 
   %li{class: ("active" if params[:state] == 'all')}
     = link_to page_filter_path(state: 'all', label: true), title: "Show all #{page_context_word}." do
-      #{state_filters_text_for(:all, @project)}
+      #{issuables_state_counter_text(:all, issuables)}
