@@ -92,7 +92,7 @@
                                           %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;"}
                                             %img{:height => "13", :src => image_url('mailers/ci_pipeline_notif_v1/icon-branch-gray.gif'), :style => "display:block;", :width => "13"}/
                                           %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;"}
-                                            %a.muted{:href => namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), :style => "color:#333333;text-decoration:none;"}
+                                            %a.muted{:href => namespace_project_commits_url(@project.namespace, @project, @pipeline.ref), :style => "color:#333333;text-decoration:none;"}
                                               = @pipeline.ref
                                             (
                                             %a{:href => "{{{merge-request-link}}}", :style => "color:#3084bb;text-decoration:none;white-space: nowrap;"}> merge request
