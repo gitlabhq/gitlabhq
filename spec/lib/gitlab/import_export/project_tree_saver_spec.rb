@@ -111,6 +111,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['issues'].first['label_links'].first['label']).not_to be_empty
       end
 
+      it 'saves the correct service type' do
+        expect(saved_project_json['services'].first['type']).not_to be_nil
+      end
+
       it 'has project feature' do
         project_feature = saved_project_json['project_feature']
         expect(project_feature).not_to be_empty
@@ -161,6 +165,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
            commit_id: ci_pipeline.sha)
 
     create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
 
     project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
     project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
