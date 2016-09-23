@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe Ci::SendPipelineNotificationService, services: true do
   let(:pipeline) do
-    create(:ci_pipeline, project: project, sha: project.commit('master').sha)
+    create(:ci_pipeline,
+           project: project,
+           sha: project.commit('master').sha,
+           user: user,
+           status: status)
   end
 
   let(:project) { create(:project) }
