@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe PipelinesEmailService do
-  let(:pipeline) { create(:ci_pipeline) }
+  let(:pipeline) do
+    create(:ci_pipeline, project: project, sha: project.commit('master').sha)
+  end
+
+  let(:project) { create(:project) }
   let(:recipient) { 'test@gitlab.com' }
 
   let(:data) do
