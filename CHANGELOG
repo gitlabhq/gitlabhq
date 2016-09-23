@@ -46,6 +46,7 @@ v 8.12.0 (unreleased)
   - Fix file permissions change when updating a file on the Gitlab UI !5979
   - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
+  - Fix issue with search filter labels not displaying
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
