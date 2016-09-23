@@ -4,6 +4,7 @@ v 8.13.0 (unreleased)
   - Speed-up group milestones show page
 
 v 8.12.1 (unreleased)
+  - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
 
 v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
