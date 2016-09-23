@@ -25,11 +25,7 @@
         - is_overdue = todo.target.try(:overdue?)
         &middot;
         %span{ class: [('text-warning' if is_due_today), ('text-danger' if is_overdue)] }
-          Due
-          - if is_due_today
-            today
-          - else
-            = todo.target.due_date.to_s(:medium)
+          = todo_due_date(todo)
 
     .todo-body
       .todo-note

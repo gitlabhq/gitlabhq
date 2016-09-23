@@ -114,6 +114,12 @@ module TodosHelper
     selected_type ? selected_type[:text] : default_type
   end
 
+  def todo_due_date(todo)
+    is_due_today = todo.target.due_date.try(:today?)
+
+    "Due #{is_due_today ? "today" : todo.target.due_date.to_s(:medium)}"
+  end
+
   private
 
   def show_todo_state?(todo)
