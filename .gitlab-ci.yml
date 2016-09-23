@@ -228,10 +228,10 @@ rake db:seed_fu:
   stage: test
   <<: *use-db
   variables:
+    SIZE: "1"
     SETUP_DB: "false"
-    RAILS_ENV: development
+    RAILS_ENV: "development"
   script:
-    - mkdir -p /home/git/repositories
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
     - bundle exec rake db:setup db:seed_fu
