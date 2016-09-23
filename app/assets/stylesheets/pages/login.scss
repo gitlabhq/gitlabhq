@@ -198,6 +198,11 @@
     font-weight: normal;
   }
 
+  input[type="submit"] {
+    @extend .btn-block;
+    margin-bottom: 0px;
+  }
+
   .devise-errors {
     h2 {
       margin-top: 0;
