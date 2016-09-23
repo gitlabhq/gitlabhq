@@ -43,7 +43,7 @@ describe 'projects/merge_requests/show.html.haml' do
   end
 
   context 'when the merge request is open' do
-    it 'closes open merge request' do
+    it 'closes the merge request if the source project does not exist' do
       closed_merge_request.update_attributes(state: 'open')
       fork_project.destroy
 
