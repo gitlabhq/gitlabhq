@@ -198,6 +198,10 @@
     font-weight: normal;
   }
 
+  .submit-container {
+    margin-top: 16px;
+  }
+
   input[type="submit"] {
     @extend .btn-block;
     margin-bottom: 0px;
