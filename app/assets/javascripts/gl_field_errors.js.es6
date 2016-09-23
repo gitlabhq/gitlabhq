@@ -13,9 +13,97 @@
    *
     * */
 
-  const fieldErrorClass = 'gl-field-error';
-  const fieldErrorSelector = `.${fieldErrorClass}`;
+  const errorMessageClass = 'gl-field-error';
   const inputErrorClass = 'gl-field-error-outline';
+
+  class GlFieldError {
+    constructor({ input, form }) {
+      this.inputElement = $(input);
+      this.inputDomElement = this.inputElement.get(0);
+      this.form = form;
+      this.errorMessage = this.inputElement.attr('title') || 'This field is required.';
+      this.fieldErrorElement = $(`<p class='${errorMessageClass} hide'>${ this.errorMessage }</p>`);
+
+      this.state = {
+        valid: false,
+        empty: true
+      };
+
+      this.initFieldValidation();
+    }
+
+    initFieldValidation() {
+      // hidden when injected into DOM
+      $input.after(this.fieldErrorElement);
+      this.inputElement.off('invalid').on('invalid', this.handleInvalidInput.bind(this));
+    }
+
+    renderValidity() {
+      this.setClearState();
+
+      if (this.state.valid) {
+        this.setValidState();
+      }
+
+      if (this.state.empty) {
+        this.setEmptyState();
+      }
+
+      if (!this.state.valid) {
+        this.setInvalidState();
+      }
+
+      this.form.focusOnFirstInvalid.apply(this);
+    }
+
+    handleInvalidInput(event) {
+      event.preventDefault();
+
+      this.state.valid = true;
+      this.state.empty = false;
+
+      this.renderValidity();
+
+      // For UX, wait til after first invalid submission to check each keyup
+      this.inputElement.off('keyup.field_validator')
+        .on('keyup.field_validator', this.updateValidityState.bind(this));
+
+    }
+
+    getInputValidity() {
+      return this.inputDomElement.validity.valid;
+    }
+
+    updateValidityState() {
+      const inputVal = this.inputElement.val();
+      this.state.empty = !!inputVal.length;
+      this.state.valid = this.getInputValidity;
+
+      this.renderValidity();
+    }
+
+    setValidState() {
+      return this.setClearState();
+    }
+
+    setEmptyState() {
+      return this.setClearState();
+    }
+
+    setInvalidState() {
+      $input.addClass(inputErrorClass);
+      return this.$fieldErrorElement.show();
+    }
+
+    setClearState() {
+      $input.removeClass(inputErrorClass);
+      return this.fieldErrorElement.hide();
+    }
+
+    checkFieldValidity(target) {
+      return target.validity.valid;
+    }
+  }
 
   class GlFieldErrors {
     constructor(form) {
@@ -24,68 +112,24 @@
     }
 
     initValidators () {
-      this.inputs = this.form.find(':input:not([type=hidden])').toArray();
-      this.inputs.forEach((input) => {
-        $(input).off('invalid').on('invalid', this.handleInvalidInput.bind(this));
-      });
+      // select all non-hidden inputs in form
+      const form = this.form;
+
+      this.inputs = this.form.find(':input:not([type=hidden])')
+        .toArray()
+        .map((input) => new GlFieldError({ input, form }));
+
       this.form.on('submit', this.catchInvalidFormSubmit);
     }
 
-    /* Neccessary because Safari & iOS quietly allow form submission when form is invalid */
+    /* Neccessary to prevent intercept and override invalid form submit
+     * because Safari & iOS quietly allow form submission when form is invalid
+     * and prevents disabling of invalid submit button by application.js */
+
     catchInvalidFormSubmit (event) {
       if (!event.currentTarget.checkValidity()) {
         event.preventDefault();
-        // Prevents disabling of invalid submit button by application.js
         event.stopPropagation();
-      }
-    }
-
-    handleInvalidInput (event) {
-      event.preventDefault();
-      this.updateFieldValidityState(event);
-
-      const $input = $(event.currentTarget);
-
-      // For UX, wait til after first invalid submission to check each keyup
-      $input.off('keyup.field_validator')
-        .on('keyup.field_validator', this.updateFieldValidityState.bind(this));
-
-    }
-
-    displayFieldValidity (target, isValid) {
-      const $input = $(target).removeClass(inputErrorClass);
-      const $existingError = $input.siblings(fieldErrorSelector);
-      const alreadyInvalid = !!$existingError.length;
-      const implicitErrorMessage = $input.attr('title');
-      const $errorToDisplay = alreadyInvalid ? $existingError.detach() : $(`<p class="${fieldErrorClass}">${implicitErrorMessage}</p>`);
-
-      if (!isValid) {
-        $input.after($errorToDisplay);
-        $input.addClass(inputErrorClass);
-      }
-
-      this.updateFieldSiblings($errorToDisplay, isValid);
-    }
-
-    updateFieldSiblings($target, isValid) {
-      const siblings = $target.siblings(`p${fieldErrorSelector}`);
-      return isValid ? siblings.show() : siblings.hide();
-    }
-
-    checkFieldValidity(target) {
-      return target.validity.valid;
-    }
-
-    updateFieldValidityState(event) {
-      const target = event.currentTarget;
-      const isKeyup = event.type === 'keyup';
-      const isValid = this.checkFieldValidity(target);
-
-      this.displayFieldValidity(target, isValid);
-
-      // prevent changing focus while user is typing.
-      if (!isKeyup) {
-        this.focusOnFirstInvalid.apply(this);
       }
     }
 
