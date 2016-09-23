@@ -23,6 +23,7 @@ v 8.13.0 (unreleased)
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
+  - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.12.4 (unreleased)
 
@@ -252,7 +253,6 @@ v 8.11.6
   - Restore SSH Key title auto-population behavior. !6186
   - Fix DB schema to match latest migration. !6256
   - Exclude some pending or inactivated rows in Member scopes.
-  - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
