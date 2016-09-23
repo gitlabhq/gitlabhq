@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
+v 8.13.0 (unreleased)
+  - Speed-up group milestones show page
 
-v 8.12.0 (unreleased)
+v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
@@ -180,7 +182,6 @@ v 8.12.0 (unreleased)
   - Clean environment variables when running git hooks
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
-  - Speed-up group milestones show page
   - Add UX improvements for merge request version diffs
 
 v 8.11.7
