@@ -27,11 +27,11 @@
       .content-block
         .container-fluid
           .row
-            .col-sm-3.col-xs-6.column{"v-for" => "item in summary"}
+            .col-sm-3.col-xs-12.column{"v-for" => "item in summary"}
               %h3.header {{item.value}}
               %p.text {{item.title}}
 
-            .col-sm-3.col-xs-6.column
+            .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{"data-toggle" => "dropdown", :type => "button"}
                   %span.dropdown-label Last 30 days
@@ -49,11 +49,11 @@
         %li{"v-for" => "item in stats"}
           .container-fluid
             .row
-              .col-xs-10.title-col
+              .col-xs-8.title-col
                 %p.title
                   {{item.title}}
                 %p.text
                   {{item.description}}
-              .col-xs-2.value-col
+              .col-xs-4.value-col
                 %span
                   {{item.value}}

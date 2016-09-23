@@ -9,10 +9,18 @@
       padding: 24px 0;
       border-bottom: none;
       position: relative;
+      
+      @media (max-width: $screen-sm-min) {
+        padding: 6px 0 24px;
+      } 
     }
 
     .column {
       text-align: center;
+      
+      @media (max-width: $screen-sm-min) {
+        padding: 15px 0;
+      }
 
       .header {
         font-size: 30px;
@@ -28,16 +36,15 @@
 
       &:last-child {
         text-align: right;
+        
+        @media (max-width: $screen-sm-min) {
+          text-align: center;
+        }
       }
     }
 
     .dropdown {
       top: 13px;
-      
-      @media (max-width: $screen-sm-min) {
-        right: 15px;
-        top: 30px;
-      }
     }
   }
 
@@ -64,9 +71,15 @@
           line-height: 19px;
           font-size: 15px;
           font-weight: 600;
+          color: $gl-title-color;
         }
-        &:text {
-          color: $cycle-analytics-box-text-color;
+        
+        &.text {
+          color: $layout-link-gray;
+          
+          &.value-col {
+            color: $gl-title-color;
+          }
         }
       }
     }
@@ -75,7 +88,9 @@
       text-align: right;
 
       span {
-        line-height: 42px;
+        position: relative;
+        vertical-align: middle;
+        top: 3px;
       }
     }
   }
@@ -101,10 +116,9 @@
     }
     
     .inner-content {
-      text-align: center;
-      
       @media (max-width: $screen-sm-min) {
         padding: 0 28px;
+        text-align: center;
       }
 
       h4 {
