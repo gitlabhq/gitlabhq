@@ -1,7 +1,7 @@
 # Push Rules
 
 Sometimes you need additional control over pushes to your repository.
-GitLab already offers [protected branches](https://docs.gitlab.com/ee/user/project/protected_branches.html).
+GitLab already offers [protected branches][protected-branches].
 But there are cases when you need some specific rules like preventing git tag removal or enforcing a special format for commit messages.
 GitLab Enterprise Edition offers a user-friendly interface for such cases.
 
@@ -95,3 +95,5 @@ pry.history
 bash_history
 
 ```
+
+[protected-branches]: https://docs.gitlab.com/ee/user/project/protected_branches.html "Protected Branches documentation"
