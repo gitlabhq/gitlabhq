@@ -10,13 +10,13 @@ class RepositoryUpdateMirrorWorker
 
   def perform(project_id)
     begin
-      @project = Project.find(project_id)
+      project = Project.find(project_id)
 
       return unless project
 
-      @current_user = @project.mirror_user || @project.creator
+      @current_user = project.mirror_user || project.creator
 
-      result = Projects::UpdateMirrorService.new(@project, @current_user).execute
+      result = Projects::UpdateMirrorService.new(project, @current_user).execute
       if result[:status] == :error
         project.mark_import_as_failed(result[:message])
         return
