@@ -32,7 +32,7 @@ class GlobalMilestone
   end
 
   def projects
-    @projects ||= Project.for_milestones(milestones.map(&:id))
+    @projects ||= Project.for_milestones(milestones.select(:id))
   end
 
   def state
@@ -54,11 +54,11 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestones.map(&:id)).includes(:project, :assignee, :labels)
+    @issues ||= Issue.of_milestones(milestones.select(:id)).includes(:project, :assignee, :labels)
   end
 
   def merge_requests
-    @merge_requests ||= MergeRequest.of_milestones(milestones.map(&:id)).includes(:target_project, :assignee, :labels)
+    @merge_requests ||= MergeRequest.of_milestones(milestones.select(:id)).includes(:target_project, :assignee, :labels)
   end
 
   def participants
