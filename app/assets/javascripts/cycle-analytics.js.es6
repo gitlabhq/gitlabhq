@@ -69,7 +69,9 @@
 
     dismissLanding() {
       store.isHelpDismissed = true;
-      $.cookie(COOKIE_NAME, true);
+      $.cookie(COOKIE_NAME, true, {
+        path: gon.relative_url_root || '/'
+      });
     }
 
     initDropdown() {
