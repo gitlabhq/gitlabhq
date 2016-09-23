@@ -250,4 +250,8 @@
     height: 40px;
     background: $white-light;
   }
+
+  .navless-container {
+    padding: 65px; // height of footer + bottom padding of email confirmation link
+  }
 }
