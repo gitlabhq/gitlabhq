@@ -141,3 +141,33 @@ instance and project. In addition, all admins can use the admin interface under
 | Add shared runners                    |                 |             |          | ✓      |
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
+
+### Build permissions
+
+> Changed in GitLab 8.12.
+
+GitLab 8.12 has a completely redesigned build permissions system.
+Read all about the [new model and its implications][new-mod].
+
+This table shows granted privileges for builds triggered by specific types of
+users:
+
+| Action                                      | Guest, Reporter | Developer   | Master   | Admin  |
+|---------------------------------------------|-----------------|-------------|----------|--------|
+| Run CI build                                |                 | ✓           | ✓        | ✓      |
+| Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
+| Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
+| Clone source and LFS from internal projects |                 | ✓ [^3]      | ✓ [^3]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^4]      | ✓ [^4]   | ✓ [^4] |
+| Push source and LFS                         |                 |             |          |        |
+| Pull container images from current project  |                 | ✓           | ✓        | ✓      |
+| Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
+| Pull container images from internal projects|                 | ✓ [^3]      | ✓ [^3]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^4]      | ✓ [^4]   | ✓ [^4] |
+| Push container images to current project    |                 | ✓           | ✓        | ✓      |
+| Push container images to other projects     |                 |             |          |        |
+
+[^3]: Only if user is not external one.
+[^4]: Only if user is a member of the project.
+[ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
+[new-mod]: project/new_ci_build_permissions_model.md

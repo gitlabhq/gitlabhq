@@ -43,4 +43,8 @@ class Environment < ActiveRecord::Base
 
     last_deployment.includes_commit?(commit)
   end
+
+  def update_merge_request_metrics?
+    self.name == "production"
+  end
 end

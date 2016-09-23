@@ -315,5 +315,42 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
     end
+
+    context 'while saving references to issues that the updated merge request closes' do
+      let(:first_issue) { create(:issue, project: project) }
+      let(:second_issue) { create(:issue, project: project) }
+
+      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+        issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
+        service = described_class.new(project, user, issue_closing_opts)
+        allow(service).to receive(:execute_hooks)
+        service.execute(merge_request)
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+      end
+
+      it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
+        opts = {
+          title: 'Awesome merge_request',
+          description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}",
+          source_branch: 'feature',
+          target_branch: 'master',
+          force_remove_source_branch: '1'
+        }
+
+        merge_request = MergeRequests::CreateService.new(project, user, opts).execute
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+
+        service = described_class.new(project, user, description: "not closing any issues")
+        allow(service).to receive(:execute_hooks)
+        service.execute(merge_request.reload)
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to be_empty
+      end
+    end
   end
 end

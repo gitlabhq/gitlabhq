@@ -230,10 +230,6 @@ describe 'Filter issues', feature: true do
           expect(page).to have_selector('.issue', count: 2)
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
-        end
-
         click_button 'Label'
         page.within '.labels-filter' do
           click_link 'bug'
@@ -242,10 +238,6 @@ describe 'Filter issues', feature: true do
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
 
@@ -256,10 +248,6 @@ describe 'Filter issues', feature: true do
           expect(page).to have_selector('.issue', count: 2)
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
-        end
-
         click_button 'Milestone'
         page.within '.milestone-filter' do
           click_link '8'
@@ -267,10 +255,6 @@ describe 'Filter issues', feature: true do
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
 
@@ -281,10 +265,6 @@ describe 'Filter issues', feature: true do
           expect(page).to have_selector('.issue', count: 2)
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
-        end
-
         click_button 'Assignee'
         page.within '.dropdown-menu-assignee' do
           click_link user.name
@@ -292,10 +272,6 @@ describe 'Filter issues', feature: true do
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
 
@@ -306,10 +282,6 @@ describe 'Filter issues', feature: true do
           expect(page).to have_selector('.issue', count: 2)
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
-        end
-
         click_button 'Author'
         page.within '.dropdown-menu-author' do
           click_link user.name
@@ -317,10 +289,6 @@ describe 'Filter issues', feature: true do
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
     end

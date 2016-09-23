@@ -28,8 +28,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @labels = @project.labels.where(title: params[:label_name])
 
-    @all_issues = all_issues_collection
-
     respond_to do |format|
       format.html
       format.atom { render layout: false }

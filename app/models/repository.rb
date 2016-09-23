@@ -924,7 +924,7 @@ class Repository
 
   def get_committer_and_author(user, email: nil, name: nil)
     committer = user_to_committer(user)
-    author = name && email ? Gitlab::Git::committer_hash(email: email, name: name) : committer
+    author = Gitlab::Git::committer_hash(email: email, name: name) || committer
 
     {
       author: author,

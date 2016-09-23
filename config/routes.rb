@@ -35,6 +35,10 @@ Rails.application.routes.draw do
     post :approve_access_request, on: :member
   end
 
+  concern :awardable do
+    post :toggle_award_emoji, on: :member
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -106,7 +110,7 @@ Rails.application.routes.draw do
   #
   # Global snippets
   #
-  resources :snippets do
+  resources :snippets, concerns: :awardable do
     member do
       get 'raw'
     end
@@ -118,7 +122,6 @@ Rails.application.routes.draw do
   #
   # Invites
   #
-
   resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
     member do
       post :accept
@@ -711,7 +714,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :snippets, constraints: { id: /\d+/ } do
+        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
           member do
             get 'raw'
           end
@@ -773,7 +776,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :merge_requests, constraints: { id: /\d+/ } do
+        resources :merge_requests, concerns: :awardable, constraints: { id: /\d+/ } do
           member do
             get :commits
             get :diffs
@@ -787,7 +790,6 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :approve
             post :rebase
-            post :toggle_award_emoji
             post :remove_wip
             get :diff_for_path
             post :resolve_conflicts
@@ -850,6 +852,8 @@ Rails.application.routes.draw do
 
         resources :environments
 
+        resource :cycle_analytics, only: [:show]
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -908,10 +912,9 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :issues, constraints: { id: /\d+/ } do
+        resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
-            post :toggle_award_emoji
             post :mark_as_spam
             get :referenced_merge_requests
             get :related_branches
@@ -939,9 +942,8 @@ Rails.application.routes.draw do
 
         resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
-        resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
+        resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
           member do
-            post :toggle_award_emoji
             delete :delete_attachment
             post :resolve
             delete :resolve, action: :unresolve

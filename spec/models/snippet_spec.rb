@@ -9,12 +9,14 @@ describe Snippet, models: true do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(Awardable) }
   end
 
   describe 'associations' do
     it { is_expected.to belong_to(:author).class_name('User') }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
+    it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
   end
 
   describe 'validation' do

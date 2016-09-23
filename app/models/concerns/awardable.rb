@@ -71,6 +71,12 @@ module Awardable
     end
   end
 
+  def user_authored?(current_user)
+    author = self.respond_to?(:author) ? self.author : self.user
+
+    author == current_user
+  end
+
   def awarded_emoji?(emoji_name, current_user)
     award_emoji.where(name: emoji_name, user: current_user).exists?
   end

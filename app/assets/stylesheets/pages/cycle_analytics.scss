@@ -1,0 +1,121 @@
+#cycle-analytics {
+  margin: 24px auto 0;
+  width: 800px;
+  position: relative;
+
+  .panel {
+
+    .content-block {
+      padding: 24px 0;
+      border-bottom: none;
+      position: relative;
+    }
+
+    .column {
+      text-align: center;
+
+      .header {
+        font-size: 30px;
+        line-height: 38px;
+        font-weight: normal;
+        margin: 0;
+      }
+
+      .text {
+        color: $layout-link-gray;
+        margin: 0;
+      }
+
+      &:last-child {
+        text-align: right;
+      }
+    }
+
+    .dropdown {
+      position: relative;
+      top: 13px;
+    }
+  }
+
+  .bordered-box {
+    border: 1px solid $border-color;
+    @include border-radius($border-radius-default);
+    position: relative;
+  }
+
+  .content-list {
+    li {
+      padding: 18px $gl-padding $gl-padding;
+
+      .container-fluid {
+        padding: 0;
+      }
+    }
+
+    .title-col {
+      p {
+        margin: 0;
+
+        &.title {
+          line-height: 19px;
+          font-size: 15px;
+          font-weight: 600;
+        }
+        &:text {
+          color: #8c8c8c;
+        }
+      }
+    }
+
+    .value-col {
+      text-align: right;
+
+      span {
+        line-height: 42px;
+      }
+    }
+  }
+
+  .landing {
+    margin-bottom: $gl-padding;
+    overflow: hidden;
+
+    .dismiss-icon {
+      position: absolute;
+      right: $gl-padding;
+      cursor: pointer;
+      color: #b2b2b2;
+    }
+
+    svg {
+      margin: 0 20px;
+      float: left;
+      width: 136px;
+      height: 136px;
+    }
+
+    .inner-content {
+      width: 480px;
+      float: left;
+
+      h4 {
+        color: $gl-text-color;
+        font-size: 17px;
+      }
+
+      p {
+        color: #8c8c8c;
+        margin-bottom: $gl-padding;
+      }
+    }
+  }
+
+  .fa-spinner {
+    font-size: 28px;
+    position: relative;
+    margin-left: -20px;
+    left: 50%;
+    margin-top: 36px;
+  }
+
+}

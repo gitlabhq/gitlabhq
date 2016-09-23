@@ -94,6 +94,11 @@
           break;
         case "projects:merge_requests:conflicts":
           window.mcui = new MergeConflictResolver()
+          break;
+        case 'projects:merge_requests:index':
+          shortcut_handler = new ShortcutsNavigation();
+          Issuable.init();
+          break;
         case 'dashboard:activity':
           new Activities();
           break;
@@ -191,6 +196,9 @@
         case 'projects:protected_branches:index':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+          break;
+        case 'projects:cycle_analytics:show':
+          new gl.CycleAnalytics();
           break;
       }
       switch (path.first()) {
