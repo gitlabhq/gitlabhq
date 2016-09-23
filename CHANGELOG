@@ -15,7 +15,6 @@ v 8.12.0
   - Cleanup misalignments in Issue list view !6206
   - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
   - Prune events older than 12 months. (ritave)
-  - Prevent secrets to be pushed to the repository
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
   - Amends the packager.io configuration file to create a build for Ubuntu 16.04. !6247 (Jon "The Nice Guy" Spriggs)
