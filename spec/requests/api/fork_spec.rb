@@ -94,7 +94,7 @@ describe API::API, api: true  do
       it 'fails if trying to fork to another user when not admin' do
         post api("/projects/fork/#{project.id}", user2), namespace: admin.namespace.id
 
-        expect(response).to have_http_status(409)
+        expect(response).to have_http_status(404)
       end
 
       it 'fails if trying to fork to non-existent namespace' do
@@ -114,7 +114,7 @@ describe API::API, api: true  do
       it 'fails to fork to not owned group' do
         post api("/projects/fork/#{project.id}", user2), namespace: group.name
 
-        expect(response).to have_http_status(409)
+        expect(response).to have_http_status(404)
       end
 
       it 'forks to not owned group when admin' do

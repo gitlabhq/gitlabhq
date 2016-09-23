@@ -5,7 +5,7 @@ module Auth
     AUDIENCE = 'container_registry'
 
     def execute(authentication_abilities:)
-      @authentication_abilities = authentication_abilities || []
+      @authentication_abilities = authentication_abilities
 
       return error('not found', 404) unless registry.enabled
 

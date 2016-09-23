@@ -439,7 +439,7 @@ describe 'Git HTTP requests', lib: true do
             project.team << [user, :reporter]
           end
 
-          shared_examples 'can download code only from own projects' do
+          shared_examples 'can download code only' do
             it 'downloads get status 200' do
               clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
@@ -457,7 +457,7 @@ describe 'Git HTTP requests', lib: true do
           context 'administrator' do
             let(:user) { create(:admin) }
 
-            it_behaves_like 'can download code only from own projects'
+            it_behaves_like 'can download code only'
 
             it 'downloads from other project get status 403' do
               clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
@@ -469,7 +469,7 @@ describe 'Git HTTP requests', lib: true do
           context 'regular user' do
             let(:user) { create(:user) }
 
-            it_behaves_like 'can download code only from own projects'
+            it_behaves_like 'can download code only'
 
             it 'downloads from other project get status 404' do
               clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token

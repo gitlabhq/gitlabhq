@@ -494,8 +494,11 @@ module Ci
     end
 
     def hide_secrets(trace)
-      trace = Ci::MaskSecret.mask(trace, project.runners_token) if project
-      trace = Ci::MaskSecret.mask(trace, token)
+      return unless trace
+
+      trace = trace.dup
+      Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Ci::MaskSecret.mask!(trace, token)
       trace
     end
   end

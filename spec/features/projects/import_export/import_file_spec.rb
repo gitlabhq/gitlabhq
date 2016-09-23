@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project import', feature: true, js: true do
+feature 'Import/Export - project import integration test', feature: true, js: true do
   include Select2Helper
 
   let(:admin) { create(:admin) }

@@ -32,11 +32,11 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         return # Allow access
       end
     elsif allow_kerberos_spnego_auth? && spnego_provided?
-      user = find_kerberos_user
+      kerberos_user = find_kerberos_user
 
-      if user
+      if kerberos_user
         @authentication_result = Gitlab::Auth::Result.new(
-          user, nil, :kerberos, Gitlab::Auth.full_authentication_abilities)
+          kerberos_user, nil, :kerberos, Gitlab::Auth.full_authentication_abilities)
 
         send_final_spnego_response
         return # Allow access

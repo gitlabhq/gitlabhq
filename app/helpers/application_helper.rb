@@ -283,14 +283,23 @@ module ApplicationHelper
     end
   end
 
-  def state_filters_text_for(state, records)
+  def state_filters_text_for(entity, project)
     titles = {
       opened: "Open"
     }
 
-    state_title = titles[state] || state.to_s.humanize
-    count       = records.public_send(state).size
-    html        = content_tag :span, state_title
+    entity_title = titles[entity] || entity.to_s.humanize
+
+    count =
+      if project.nil?
+        nil
+      elsif current_controller?(:issues)
+        project.issues.visible_to_user(current_user).send(entity).count
+      elsif current_controller?(:merge_requests)
+        project.merge_requests.send(entity).count
+      end
+
+    html = content_tag :span, entity_title
 
     if count.present?
       html += " "
