@@ -19,5 +19,9 @@ describe RepositoryUpdateMirrorWorker do
       expect { described_class.new.perform(project.id) }
         .to change { project.reload.import_status }.to('failed')
     end
+
+    it 'does nothing if project does not exist' do
+      expect(described_class.new.perform(1000000)).to be_nil
+    end
   end
 end
