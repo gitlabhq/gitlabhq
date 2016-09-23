@@ -27,7 +27,7 @@
       .content-block
         .container-fluid
           .row
-            .col-sm-3.col-xs-12.column{"v-for" => "item in summary"}
+            .col-sm-3.col-xs-12.column{"v-for" => "item in analytics.summary"}
               %h3.header {{item.value}}
               %p.text {{item.title}}
 
@@ -46,7 +46,7 @@
 
     .bordered-box
       %ul.content-list
-        %li{"v-for" => "item in stats"}
+        %li{"v-for" => "item in analytics.stats"}
           .container-fluid
             .row
               .col-xs-8.title-col
