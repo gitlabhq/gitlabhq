@@ -124,6 +124,10 @@ module IssuablesHelper
     end
   end
 
+  def issuable_filters_present
+    params[:search] || params[:author_id] || params[:assignee_id] || params[:milestone_title] || params[:label_name] || params[:weight]
+  end
+
   def issuables_count_for_state(issuable_type, state)
     issuables_finder = public_send("#{issuable_type}_finder")
     issuables_finder.params[:state] = state

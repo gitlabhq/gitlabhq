@@ -41,8 +41,9 @@
                     %a{href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s)}
                       = weight
 
-        .filter-item.inline.reset-filters
-          %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search])} Reset filters
+        - if issuable_filters_present
+          .filter-item.inline.reset-filters
+            %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :weight, :search])} Reset filters
 
         .pull-right
           - if boards_page
