@@ -545,6 +545,10 @@ module API
       expose :filename, :size
     end
 
+    class PipelineBasic < Grape::Entity
+      expose :id, :sha, :ref, :status
+    end
+
     class Build < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
@@ -552,6 +556,7 @@ module API
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
       expose :commit, with: RepoCommit
       expose :runner, with: Runner
+      expose :pipeline, with: PipelineBasic
     end
 
     class Trigger < Grape::Entity
@@ -562,8 +567,8 @@ module API
       expose :key, :value
     end
 
-    class Pipeline < Grape::Entity
-      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+    class Pipeline < PipelineBasic
+      expose :before_sha, :tag, :yaml_errors
 
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
