@@ -1,34 +1,34 @@
 ((global) => {
   const debounceTimeoutDuration = 1000;
-  const inputErrorClass = 'gl-field-error-outline';
-  const inputSuccessClass = 'gl-field-success-outline';
-  const messageErrorSelector = '.username .validation-error';
-  const messageSuccessSelector = '.username .validation-success';
-  const messagePendingSelector = '.username .validation-pending';
+  const invalidInputClass = 'gl-field-error-outline';
+  const successInputClass = 'gl-field-success-outline';
+  const unavailableMessageSelector = '.username .validation-error';
+  const successMessageSelector = '.username .validation-success';
+  const pendingMessageSelector = '.username .validation-pending';
+  const invalidMessageSelector = '.username .gl-field-error';
 
   class UsernameValidator {
     constructor() {
       this.inputElement = $('#new_user_username');
       this.inputDomElement = this.inputElement.get(0);
-
-      this.available = false;
-      this.valid = false;
-      this.pending = false;
-      this.fresh = true;
-      this.empty = true;
+      this.state = {
+        available: false,
+        valid: false,
+        pending: false,
+        empty: true
+      };
 
       const debounceTimeout = _.debounce((username) => {
-        this.validateUsername(username);
+        this.state.validateUsername(username);
       }, debounceTimeoutDuration);
 
       this.inputElement.on('keyup.username_check', () => {
         const username = this.inputElement.val();
 
-        this.valid = this.inputDomElement.validity.valid;
-        this.fresh = false;
-        this.empty = !username.length;
+        this.state.valid = this.inputDomElement.validity.valid;
+        this.state.empty = !username.length;
 
-        if (this.valid) {
+        if (this.state.valid) {
           return debounceTimeout(username);
         }
 
@@ -36,43 +36,43 @@
       });
 
       // Override generic field validation
-      this.inputElement.on('invalid', this.handleInvalidInput.bind(this));
+      this.inputElement.on('invalid', this.interceptInvalid.bind(this));
     }
 
     renderState() {
       // Clear all state
       this.clearFieldValidationState();
 
-      if (this.valid && this.available) {
+      if (this.state.valid && this.state.available) {
         return this.setSuccessState();
       }
 
-      if (this.empty) {
+      if (this.state.empty) {
         return this.clearFieldValidationState();
       }
 
-      if (this.pending) {
+      if (this.state.pending) {
         return this.setPendingState();
       }
 
-      if (!this.available) {
+      if (!this.state.available) {
         return this.setUnavailableState();
       }
 
-      if (!this.valid) {
+      if (!this.state.valid) {
         return this.setInvalidState();
       }
     }
 
-    handleInvalidInput(event) {
+    interceptInvalid(event) {
       event.preventDefault();
       event.stopPropagation();
     }
 
     validateUsername(username) {
-      if (this.valid) {
-        this.pending = true;
-        this.available = false;
+      if (this.state.valid) {
+        this.state.pending = true;
+        this.state.available = false;
         this.renderState();
         return $.ajax({
           type: 'GET',
@@ -83,38 +83,40 @@
       }
     }
 
-    updateValidationState(usernameTaken) {
+    setAvailabilityState(usernameTaken) {
       if (usernameTaken) {
-        this.valid = false;
-        this.available = false;
+        this.state.valid = false;
+        this.state.available = false;
       } else {
-        this.available = true;
+        this.state.available = true;
       }
-      this.pending = false;
+      this.state.pending = false;
       this.renderState();
     }
 
     clearFieldValidationState() {
-      this.inputElement.siblings('p').hide();
-      this.inputElement.removeClass(inputErrorClass);
-      this.inputElement.removeClass(inputSuccessClass);
+      // TODO: Double check if this is valid chaining
+      const $input = this.inputElement
+        .siblings('p').hide().end()
+        .removeClass(invalidInputClass);
+         removeClass(successInputClass);
     }
 
     setUnavailableState() {
-      const $usernameErrorMessage = this.inputElement.siblings(messageErrorSelector);
-      this.inputElement.addClass(inputErrorClass).removeClass(inputSuccessClass);
-      $usernameErrorMessage.show();
+      const $usernameUnavailableMessage = this.inputElement.siblings(unavailableMessageSelector);
+      this.inputElement.addClass(invalidInputClass).removeClass(successInputClass);
+      $usernameUnavailableMessage.show();
     }
 
     setSuccessState() {
-      const $usernameSuccessMessage = this.inputElement.siblings(messageSuccessSelector);
-      this.inputElement.addClass(inputSuccessClass).removeClass(inputErrorClass);
+      const $usernameSuccessMessage = this.inputElement.siblings(successMessageSelector);
+      this.inputElement.addClass(successInputClass).removeClass(invalidInputClass);
       $usernameSuccessMessage.show();
     }
 
-    setPendingState(show) {
-      const $usernamePendingMessage = $(messagePendingSelector);
-      if (this.pending) {
+    setPendingState() {
+      const $usernamePendingMessage = $(pendingMessageSelector);
+      if (this.state.pending) {
         $usernamePendingMessage.show();
       } else {
         $usernamePendingMessage.hide();
@@ -122,8 +124,9 @@
     }
 
     setInvalidState() {
-      this.inputElement.addClass(inputErrorClass).removeClass(inputSuccessClass);
-      $(`.gl-field-error`).show();
+      const $inputErrorMessage = $(invalidMessageSelector);
+      this.inputElement.addClass(invalidInputClass).removeClass(successInputClass);
+      $inputErrorMessage.show();
     }
   }
 
