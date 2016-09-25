@@ -672,7 +672,7 @@ namespace :gitlab do
           "Enable mail_room in the init.d configuration."
         )
         for_more_information(
-          "doc/incoming_email/README.md"
+          "doc/administration/reply_by_email.md"
         )
         fix_and_rerun
       end
@@ -691,7 +691,7 @@ namespace :gitlab do
           "Enable mail_room in your Procfile."
         )
         for_more_information(
-          "doc/incoming_email/README.md"
+          "doc/administration/reply_by_email.md"
         )
         fix_and_rerun
       end
@@ -748,7 +748,7 @@ namespace :gitlab do
           "Check that the information in config/gitlab.yml is correct"
         )
         for_more_information(
-          "doc/incoming_email/README.md"
+          "doc/administration/reply_by_email.md"
         )
         fix_and_rerun
       end
