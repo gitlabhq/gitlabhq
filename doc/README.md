@@ -46,8 +46,8 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
-- [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
-- [Monitoring uptime](monitoring/health_check.md) Check the server status using the health check endpoint.
+- [GitLab Performance Monitoring](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [Monitoring uptime](administration/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
