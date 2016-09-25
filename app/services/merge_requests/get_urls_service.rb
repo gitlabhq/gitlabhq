@@ -31,7 +31,7 @@ module MergeRequests
 
     def get_branches(changes)
       return [] if project.empty_repo?
-      return [] unless project.merge_requests_enabled
+      return [] unless project.merge_requests_enabled?
 
       changes_list = Gitlab::ChangesList.new(changes)
       changes_list.map do |change|

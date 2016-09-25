@@ -10,6 +10,7 @@ project_tree:
     - milestone:
       - :events
   - snippets:
+    - :award_emoji
     - notes:
         :author
   - :releases
@@ -35,19 +36,18 @@ project_tree:
   - :deploy_keys
   - :services
   - :hooks
-  - :protected_branches
+  - protected_branches:
+    - :merge_access_levels
+    - :push_access_levels
   - :labels
   - milestones:
     - :events
+  - :project_feature
 
 # Only include the following attributes for the models specified.
 included_attributes:
   project:
     - :description
-    - :issues_enabled
-    - :merge_requests_enabled
-    - :wiki_enabled
-    - :snippets_enabled
     - :visibility_level
     - :archived
   user:
@@ -67,6 +67,8 @@ excluded_attributes:
     - :milestone_id
   merge_requests:
     - :milestone_id
+  award_emoji:
+    - :awardable_id
 
 methods:
   statuses:

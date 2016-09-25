@@ -477,8 +477,8 @@ describe MergeRequest, models: true do
 
         allow(subject).to receive(:diff_head_sha).and_return('123abc')
 
-        expect(subject.source_project).to receive(:pipeline).
-          with('123abc', 'master').
+        expect(subject.source_project).to receive(:pipeline_for).
+          with('master', '123abc').
           and_return(pipeline)
 
         expect(subject.pipeline).to eq(pipeline)
@@ -495,15 +495,77 @@ describe MergeRequest, models: true do
   end
 
   describe '#all_pipelines' do
-    let!(:pipelines) do
-      subject.merge_request_diff.commits.map do |commit|
-        create(:ci_empty_pipeline, project: subject.source_project, sha: commit.id, ref: subject.source_branch)
+    shared_examples 'returning pipelines with proper ordering' do
+      let!(:all_pipelines) do
+        subject.all_commits_sha.map do |sha|
+          create(:ci_empty_pipeline,
+                 project: subject.source_project,
+                 sha: sha,
+                 ref: subject.source_branch)
+        end
+      end
+
+      it 'returns all pipelines' do
+        expect(subject.all_pipelines).not_to be_empty
+        expect(subject.all_pipelines).to eq(all_pipelines.reverse)
       end
     end
 
-    it 'returns a pipelines from source projects with proper ordering' do
-      expect(subject.all_pipelines).not_to be_empty
-      expect(subject.all_pipelines).to eq(pipelines.reverse)
+    context 'with single merge_request_diffs' do
+      it_behaves_like 'returning pipelines with proper ordering'
+    end
+
+    context 'with multiple irrelevant merge_request_diffs' do
+      before do
+        subject.update(target_branch: 'v1.0.0')
+      end
+
+      it_behaves_like 'returning pipelines with proper ordering'
+    end
+
+    context 'with unsaved merge request' do
+      subject { build(:merge_request) }
+
+      let!(:pipeline) do
+        create(:ci_empty_pipeline,
+               project: subject.project,
+               sha: subject.diff_head_sha,
+               ref: subject.source_branch)
+      end
+
+      it 'returns pipelines from diff_head_sha' do
+        expect(subject.all_pipelines).to contain_exactly(pipeline)
+      end
+    end
+  end
+
+  describe '#all_commits_sha' do
+    let(:all_commits_sha) do
+      subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
+    end
+
+    shared_examples 'returning all SHA' do
+      it 'returns all SHA from all merge_request_diffs' do
+        expect(subject.merge_request_diffs.size).to eq(2)
+        expect(subject.all_commits_sha).to eq(all_commits_sha)
+      end
+    end
+
+    context 'with a completely different branch' do
+      before do
+        subject.update(target_branch: 'v1.0.0')
+      end
+
+      it_behaves_like 'returning all SHA'
+    end
+
+    context 'with a branch having no difference' do
+      before do
+        subject.update(target_branch: 'v1.1.0')
+        subject.reload # make sure commits were not cached
+      end
+
+      it_behaves_like 'returning all SHA'
     end
   end
 
@@ -701,18 +763,67 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#environments" do
+  describe '#environments' do
     let(:project)       { create(:project) }
-    let!(:environment)  { create(:environment, project: project) }
-    let!(:environment1) { create(:environment, project: project) }
-    let!(:environment2) { create(:environment, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
-    it 'selects deployed environments' do
-      create(:deployment, environment: environment, sha: project.commit('master').id)
-      create(:deployment, environment: environment1, sha: project.commit('feature').id)
+    context 'with multiple environments' do
+      let(:environments) { create_list(:environment, 3, project: project) }
 
-      expect(merge_request.environments).to eq [environment]
+      before do
+        create(:deployment, environment: environments.first, ref: 'master', sha: project.commit('master').id)
+        create(:deployment, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
+      end
+
+      it 'selects deployed environments' do
+        expect(merge_request.environments).to contain_exactly(environments.first)
+      end
+    end
+
+    context 'with environments on source project' do
+      let(:source_project) do
+        create(:project) do |fork_project|
+          fork_project.create_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
+        end
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: source_project, source_branch: 'feature',
+               target_project: project)
+      end
+
+      let(:source_environment) { create(:environment, project: source_project) }
+
+      before do
+        create(:deployment, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
+      end
+
+      it 'selects deployed environments' do
+        expect(merge_request.environments).to contain_exactly(source_environment)
+      end
+
+      context 'with environments on target project' do
+        let(:target_environment) { create(:environment, project: project) }
+
+        before do
+          create(:deployment, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
+        end
+
+        it 'selects deployed environments' do
+          expect(merge_request.environments).to contain_exactly(source_environment, target_environment)
+        end
+      end
+    end
+
+    context 'without a diff_head_commit' do
+      before do
+        expect(merge_request).to receive(:diff_head_commit).and_return(nil)
+      end
+
+      it 'returns an empty array' do
+        expect(merge_request.environments).to be_empty
+      end
     end
   end
 
@@ -960,6 +1071,159 @@ describe MergeRequest, models: true do
       merge_request = create_merge_request('conflict-resolvable')
 
       expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
+    end
+  end
+
+  describe "#forked_source_project_missing?" do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:user)         { create(:user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+
+    context "when the fork exists" do
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it { expect(merge_request.forked_source_project_missing?).to be_falsey }
+    end
+
+    context "when the source project is the same as the target project" do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { expect(merge_request.forked_source_project_missing?).to be_falsey }
+    end
+
+    context "when the fork does not exist" do
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "returns true" do
+        unlink_project.execute
+        merge_request.reload
+
+        expect(merge_request.forked_source_project_missing?).to be_truthy
+      end
+    end
+  end
+
+  describe "#closed_without_fork?" do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:user)         { create(:user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+
+    context "when the merge request is closed" do
+      let(:closed_merge_request) do
+        create(:closed_merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "returns false if the fork exist" do
+        expect(closed_merge_request.closed_without_fork?).to be_falsey
+      end
+
+      it "returns true if the fork does not exist" do
+        unlink_project.execute
+        closed_merge_request.reload
+
+        expect(closed_merge_request.closed_without_fork?).to be_truthy
+      end
+    end
+
+    context "when the merge request is open" do
+      let(:open_merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "returns false" do
+        expect(open_merge_request.closed_without_fork?).to be_falsey
+      end
+    end
+  end
+
+  describe '#closed_without_source_project?' do
+    let(:project)      { create(:project) }
+    let(:user)         { create(:user) }
+    let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+    let(:destroy_service) { Projects::DestroyService.new(fork_project, user) }
+
+    context 'when the merge request is closed' do
+      let(:closed_merge_request) do
+        create(:closed_merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it 'returns false if the source project exists' do
+        expect(closed_merge_request.closed_without_source_project?).to be_falsey
+      end
+
+      it 'returns true if the source project does not exist' do
+        destroy_service.execute
+        closed_merge_request.reload
+
+        expect(closed_merge_request.closed_without_source_project?).to be_truthy
+      end
+    end
+
+    context 'when the merge request is open' do
+      it 'returns false' do
+        expect(subject.closed_without_source_project?).to be_falsey
+      end
+    end
+  end
+
+  describe '#reopenable?' do
+    context 'when the merge request is closed' do
+      it 'returns true' do
+        subject.close
+
+        expect(subject.reopenable?).to be_truthy
+      end
+
+      context 'forked project' do
+        let(:project)      { create(:project) }
+        let(:user)         { create(:user) }
+        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+        let(:merge_request) do
+          create(:closed_merge_request,
+            source_project: fork_project,
+            target_project: project)
+        end
+
+        it 'returns false if unforked' do
+          Projects::UnlinkForkService.new(fork_project, user).execute
+
+          expect(merge_request.reload.reopenable?).to be_falsey
+        end
+
+        it 'returns false if the source project is deleted' do
+          Projects::DestroyService.new(fork_project, user).execute
+
+          expect(merge_request.reload.reopenable?).to be_falsey
+        end
+
+        it 'returns false if the merge request is merged' do
+          merge_request.update_attributes(state: 'merged')
+
+          expect(merge_request.reload.reopenable?).to be_falsey
+        end
+      end
+    end
+
+    context 'when the merge request is opened' do
+      it 'returns false' do
+        expect(subject.reopenable?).to be_falsey
+      end
     end
   end
 end

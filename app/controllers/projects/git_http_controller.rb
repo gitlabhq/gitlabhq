@@ -1,6 +1,8 @@
 # This file should be identical in GitLab Community Edition and Enterprise Edition
 
 class Projects::GitHttpController < Projects::GitHttpClientController
+  before_action :verify_workhorse_api!
+
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
   def info_refs
@@ -56,6 +58,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def render_ok
+    set_workhorse_internal_api_content_type
     render json: Gitlab::Workhorse.git_http_ok(repository, user)
   end
 
@@ -83,7 +86,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= Gitlab::GitAccess.new(user, project, 'http')
+    @access ||= Gitlab::GitAccess.new(user, project, 'http', authentication_abilities: authentication_abilities)
   end
 
   def access_check

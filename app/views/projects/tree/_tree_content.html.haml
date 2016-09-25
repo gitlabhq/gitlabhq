@@ -4,7 +4,6 @@
       %thead
         %tr
           %th Name
-          %th Last Update
           %th.hidden-xs
             .pull-left Last Commit
             .last-commit.hidden-sm.pull-left
@@ -14,9 +13,11 @@
               %small.light
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 &ndash;
-                = truncate(@commit.title, length: 50)
-            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
-
+                = time_ago_with_tooltip(@commit.committed_date)
+                = @commit.full_title
+            %small.commit-history-link-spacer &#124;
+            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'commit-history-link'
+          %th.text-right Last Update
       - if @path.present?
         %tr.tree-item
           %td.tree-item-file-name

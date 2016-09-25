@@ -11,14 +11,16 @@ module API
           target_branch: attrs[:branch_name],
           commit_message: attrs[:commit_message],
           file_content: attrs[:content],
-          file_content_encoding: attrs[:encoding]
+          file_content_encoding: attrs[:encoding],
+          author_email: attrs[:author_email],
+          author_name: attrs[:author_name]
         }
       end
 
       def commit_response(attrs)
         {
           file_path: attrs[:file_path],
-          branch_name: attrs[:branch_name],
+          branch_name: attrs[:branch_name]
         }
       end
     end
@@ -96,7 +98,7 @@ module API
         authorize! :push_code, user_project
 
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
-        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
+        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding, :author_email, :author_name]
         result = ::Files::CreateService.new(user_project, current_user, commit_params(attrs)).execute
 
         if result[:status] == :success
@@ -122,7 +124,7 @@ module API
         authorize! :push_code, user_project
 
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
-        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
+        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding, :author_email, :author_name]
         result = ::Files::UpdateService.new(user_project, current_user, commit_params(attrs)).execute
 
         if result[:status] == :success
@@ -149,7 +151,7 @@ module API
         authorize! :push_code, user_project
 
         required_attributes! [:file_path, :branch_name, :commit_message]
-        attrs = attributes_for_keys [:file_path, :branch_name, :commit_message]
+        attrs = attributes_for_keys [:file_path, :branch_name, :commit_message, :author_email, :author_name]
         result = ::Files::DeleteService.new(user_project, current_user, commit_params(attrs)).execute
 
         if result[:status] == :success

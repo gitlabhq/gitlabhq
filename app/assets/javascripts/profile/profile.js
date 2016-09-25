@@ -11,9 +11,11 @@
       this.form = (ref = opts.form) != null ? ref : $('.edit-user');
       $('.js-preferences-form').on('change.preference', 'input[type=radio]', function() {
         return $(this).parents('form').submit();
+      // Automatically submit the Preferences form when any of its radio buttons change
       });
       $('#user_notification_email').on('change', function() {
         return $(this).parents('form').submit();
+      // Automatically submit email form when it changes
       });
       $('.update-username').on('ajax:before', function() {
         $('.loading-username').show();
@@ -76,6 +78,7 @@
         },
         complete: function() {
           window.scrollTo(0, 0);
+          // Enable submit button after requests ends
           return self.form.find(':input[disabled]').enable();
         }
       });
@@ -93,6 +96,7 @@
       if (comment && comment.length > 1 && $title.val() === '') {
         return $title.val(comment[1]).change();
       }
+    // Extract the SSH Key title from its comment
     });
     if (gl.utils.getPagePath() === 'profiles') {
       return new Profile();

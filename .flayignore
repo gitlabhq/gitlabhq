@@ -1,1 +1,2 @@
 *.erb
+lib/gitlab/sanitizers/svg/whitelist.rb

@@ -11,6 +11,8 @@
       this.daySizeWithSpace = this.daySize + (this.daySpace * 2);
       this.monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       this.months = [];
+      // Loop through the timestamps to create a group of objects
+      // The group of objects will be grouped based on the day of the week they are
       this.timestampsTmp = [];
       var group = 0;
 
@@ -27,14 +29,17 @@
         date.setDate(date.getDate() + i);
 
         var day = date.getDay();
-        var count = timestamps[date.getTime() * 0.001];
+        var count = timestamps[dateFormat(date, 'yyyy-mm-dd')];
 
+        // Create a new group array if this is the first day of the week
+        // or if is first object
         if ((day === 0 && i !== 0) || i === 0) {
           this.timestampsTmp.push([]);
           group++;
         }
 
         var innerArray = this.timestampsTmp[group - 1];
+        // Push to the inner array the values that will be used to render map
         innerArray.push({
           count: count || 0,
           date: date,
@@ -42,8 +47,10 @@
         });
       }
 
+      // Init color functions
       this.colorKey = this.initColorKey();
       this.color = this.initColor();
+      // Init the svg element
       this.renderSvg(group);
       this.renderDays();
       this.renderMonths();
@@ -52,8 +59,22 @@
       this.initTooltips();
     }
 
+    // Add extra padding for the last month label if it is also the last column
+    Calendar.prototype.getExtraWidthPadding = function(group) {
+      var extraWidthPadding = 0;
+      var lastColMonth = this.timestampsTmp[group - 1][0].date.getMonth();
+      var secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
+
+      if (lastColMonth != secondLastColMonth) {
+        extraWidthPadding = 3;
+      }
+
+      return extraWidthPadding;
+    }
+
     Calendar.prototype.renderSvg = function(group) {
-      return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', (group + 1) * this.daySizeWithSpace).attr('height', 167).attr('class', 'contrib-calendar');
+      var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
+      return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
     };
 
     Calendar.prototype.renderDays = function() {

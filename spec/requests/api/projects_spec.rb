@@ -73,7 +73,7 @@ describe API::API, api: true  do
       end
 
       it 'does not include open_issues_count' do
-        project.update_attributes( { issues_enabled: false } )
+        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
         get api('/projects', user)
         expect(response.status).to eq 200
@@ -225,14 +225,22 @@ describe API::API, api: true  do
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
-        only_allow_merge_if_build_succeeds: false
+        only_allow_merge_if_build_succeeds: false,
+        request_access_enabled: true
       })
 
       post api('/projects', user), project
 
       project.each_pair do |k, v|
+        next if %i{ issues_enabled merge_requests_enabled wiki_enabled }.include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
+
+      # Check feature permissions attributes
+      project = Project.find_by_path(project[:path])
+      expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
     end
 
     it 'sets a project as public' do
@@ -345,7 +353,8 @@ describe API::API, api: true  do
         description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        request_access_enabled: true
       })
 
       post api("/projects/user/#{user.id}", admin), project
@@ -880,6 +889,15 @@ describe API::API, api: true  do
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
 
+      it 'updates request_access_enabled' do
+        project_param = { request_access_enabled: false }
+
+        put api("/projects/#{project.id}", user), project_param
+
+        expect(response).to have_http_status(200)
+        expect(json_response['request_access_enabled']).to eq(false)
+      end
+
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
         put api("/projects/#{project3.id}", user), project_param
@@ -941,7 +959,8 @@ describe API::API, api: true  do
                           wiki_enabled: true,
                           snippets_enabled: true,
                           merge_requests_enabled: true,
-                          description: 'new description' }
+                          description: 'new description',
+                          request_access_enabled: true }
         put api("/projects/#{project.id}", user3), project_param
         expect(response).to have_http_status(403)
       end

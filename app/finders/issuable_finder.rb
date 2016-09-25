@@ -64,7 +64,7 @@ class IssuableFinder
     if project?
       @project = Project.find(params[:project_id])
 
-      unless Ability.abilities.allowed?(current_user, :read_project, @project)
+      unless Ability.allowed?(current_user, :read_project, @project)
         @project = nil
       end
     else
@@ -216,7 +216,14 @@ class IssuableFinder
   end
 
   def by_search(items)
-    items = items.search(search) if search
+    if search
+      items =
+        if search =~ iid_pattern
+          items.where(iid: $~[:iid])
+        else
+          items.full_search(search)
+        end
+    end
 
     items
   end

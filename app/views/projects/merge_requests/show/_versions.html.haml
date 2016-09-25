@@ -1,31 +1,74 @@
-- merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
+- if @merge_request_diffs.size > 1
+  .mr-version-controls
+    %div.mr-version-menus-container.content-block
+      Changes between
+      %span.dropdown.inline.mr-version-dropdown
+        %a.dropdown-toggle.btn.btn-default{ data: {toggle: :dropdown} }
+          %span
+            - if @merge_request_diff.latest?
+              latest version
+            - else
+              version #{version_index(@merge_request_diff)}
+          %span.caret
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          .dropdown-title
+            %span Version:
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              = icon('times', class: 'dropdown-menu-close-icon')
+          .dropdown-content
+            %ul
+              - @merge_request_diffs.each do |merge_request_diff|
+                %li
+                  = link_to merge_request_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
+                    %strong
+                      - if merge_request_diff.latest?
+                        latest version
+                      - else
+                        version #{version_index(merge_request_diff)}
+                    .monospace #{short_sha(merge_request_diff.head_commit_sha)}
+                    %small
+                      #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
+                      = time_ago_with_tooltip(merge_request_diff.created_at)
 
-- if merge_request_diffs.size > 1
-  .mr-version-switch
-    Version:
-    %span.dropdown.inline
-      %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
-        %strong.monospace<
-          - if @merge_request_diff.latest?
-            #{"latest"}
-          - else
-            #{@merge_request_diff.head_commit.short_id}
-        %span.caret
-      %ul.dropdown-menu.dropdown-menu-selectable
-        - merge_request_diffs.each do |merge_request_diff|
-          %li
-            = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, diff_id: merge_request_diff.id), class: ('is-active' if merge_request_diff == @merge_request_diff) do
-              %strong.monospace
-                #{merge_request_diff.head_commit.short_id}
-              %br
-              %small
-                #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
-                = time_ago_with_tooltip(merge_request_diff.created_at)
+      - if @merge_request_diff.base_commit_sha
+        and
+        %span.dropdown.inline.mr-version-compare-dropdown
+          %a.btn.btn-default.dropdown-toggle{ data: {toggle: :dropdown} }
+            %span
+              - if @start_sha
+                version #{version_index(@start_version)}
+              - else
+                #{@merge_request.target_branch}
+            %span.caret
+          .dropdown-menu.dropdown-select.dropdown-menu-selectable
+            .dropdown-title
+              %span Compared with:
+              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+                = icon('times', class: 'dropdown-menu-close-icon')
+            .dropdown-content
+              %ul
+                - @comparable_diffs.each do |merge_request_diff|
+                  %li
+                    = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff == @start_version) do
+                      %strong
+                        - if merge_request_diff.latest?
+                          latest version
+                        - else
+                          version #{version_index(merge_request_diff)}
+                      .monospace #{short_sha(merge_request_diff.head_commit_sha)}
+                      %small
+                        = time_ago_with_tooltip(merge_request_diff.created_at)
+                  %li
+                    = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
+                      %strong
+                        #{@merge_request.target_branch} (base)
+                      .monospace #{short_sha(@merge_request_diff.base_commit_sha)}
 
-    - unless @merge_request_diff.latest?
-      %span.prepend-left-default
+    - unless @merge_request_diff.latest? && !@start_sha
+      .comments-disabled-notif.content-block
         = icon('info-circle')
-        This version is not the latest one. Comments are disabled
-    .pull-right
-      %span.monospace
-        #{@merge_request_diff.base_commit.short_id}..#{@merge_request_diff.head_commit.short_id}
+        - if @start_sha
+          Comments are disabled because you're comparing two versions of this merge request.
+        - else
+          Comments are disabled because you're viewing an old version of this merge request.
+        = link_to 'Show latest version', diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-sm'

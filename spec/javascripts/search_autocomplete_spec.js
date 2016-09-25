@@ -1,19 +1,9 @@
 
 /*= require gl_dropdown */
-
-
 /*= require search_autocomplete */
-
-
 /*= require jquery */
-
-
 /*= require lib/utils/common_utils */
-
-
 /*= require lib/utils/type_utility */
-
-
 /*= require fuzzaldrin-plus */
 
 (function() {
@@ -43,6 +33,8 @@
 
   groupName = 'Gitlab Org';
 
+  // Add required attributes to body before starting the test.
+  // section would be dashboard|group|project
   addBodyAttributes = function(section) {
     var $body;
     if (section == null) {
@@ -64,6 +56,7 @@
     }
   };
 
+  // Mock `gl` object in window for dashboard specific page. App code will need it.
   mockDashboardOptions = function() {
     window.gl || (window.gl = {});
     return window.gl.dashboardOptions = {
@@ -72,6 +65,7 @@
     };
   };
 
+  // Mock `gl` object in window for project specific page. App code will need it.
   mockProjectOptions = function() {
     window.gl || (window.gl = {});
     return window.gl.projectOptions = {

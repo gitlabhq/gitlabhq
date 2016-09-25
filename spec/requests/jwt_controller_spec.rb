@@ -22,19 +22,22 @@ describe JwtController do
 
   context 'when using authorized request' do
     context 'using CI token' do
-      let(:project) { create(:empty_project, runners_token: 'token', builds_enabled: builds_enabled) }
-      let(:headers) { { authorization: credentials('gitlab-ci-token', project.runners_token) } }
-
-      subject! { get '/jwt/auth', parameters, headers }
+      let(:build) { create(:ci_build, :running) }
+      let(:project) { build.project }
+      let(:headers) { { authorization: credentials('gitlab-ci-token', build.token) } }
 
       context 'project with enabled CI' do
-        let(:builds_enabled) { true }
+        subject! { get '/jwt/auth', parameters, headers }
 
         it { expect(service_class).to have_received(:new).with(project, nil, parameters) }
       end
 
       context 'project with disabled CI' do
-        let(:builds_enabled) { false }
+        before do
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+        end
+
+        subject! { get '/jwt/auth', parameters, headers }
 
         it { expect(response).to have_http_status(403) }
       end
@@ -42,13 +45,31 @@ describe JwtController do
 
     context 'using User login' do
       let(:user) { create(:user) }
-      let(:headers) { { authorization: credentials('user', 'password') } }
-
-      before { expect(Gitlab::Auth).to receive(:find_with_user_password).with('user', 'password').and_return(user) }
+      let(:headers) { { authorization: credentials(user.username, user.password) } }
 
       subject! { get '/jwt/auth', parameters, headers }
 
       it { expect(service_class).to have_received(:new).with(nil, user, parameters) }
+
+      context 'when user has 2FA enabled' do
+        let(:user) { create(:user, :two_factor) }
+
+        context 'without personal token' do
+          it 'rejects the authorization attempt' do
+            expect(response).to have_http_status(401)
+            expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
+          end
+        end
+
+        context 'with personal token' do
+          let(:access_token) { create(:personal_access_token, user: user) }
+          let(:headers) { { authorization: credentials(user.username, access_token.token) } }
+
+          it 'rejects the authorization attempt' do
+            expect(response).to have_http_status(200)
+          end
+        end
+      end
     end
 
     context 'using invalid login' do

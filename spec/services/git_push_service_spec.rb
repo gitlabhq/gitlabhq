@@ -253,6 +253,21 @@ describe GitPushService, services: true do
         expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
       end
 
+      it "when pushing a branch for the first time with an existing branch permission configured" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
+        expect(project).to receive(:execute_hooks)
+        expect(project.default_branch).to eq("master")
+        expect_any_instance_of(ProtectedBranches::CreateService).not_to receive(:execute)
+
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::NO_ACCESS])
+        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
@@ -321,6 +336,43 @@ describe GitPushService, services: true do
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
 
       execute_service(project, user, @blankrev, @newrev, 'refs/heads/other' )
+    end
+  end
+
+  describe "issue metrics" do
+    let(:issue) { create :issue, project: project }
+    let(:commit_author) { create :user }
+    let(:commit) { project.commit }
+    let(:commit_time) { Time.now }
+
+    before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
+      allow(commit).to receive_messages(
+        safe_message: "this commit \n mentions #{issue.to_reference}",
+        references: [issue],
+        author_name: commit_author.name,
+        author_email: commit_author.email,
+        committed_date: commit_time
+      )
+
+      allow(project.repository).to receive(:commits_between).and_return([commit])
+    end
+
+    context "while saving the 'first_mentioned_in_commit_at' metric for an issue" do
+      it 'sets the metric for referenced issues' do
+        execute_service(project, user, @oldrev, @newrev, @ref)
+
+        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_within(1.second).of(commit_time)
+      end
+
+      it 'does not set the metric for non-referenced issues' do
+        non_referenced_issue = create(:issue, project: project)
+        execute_service(project, user, @oldrev, @newrev, @ref)
+
+        expect(non_referenced_issue.reload.metrics.first_mentioned_in_commit_at).to be_nil
+      end
     end
   end
 

@@ -52,6 +52,13 @@
               %p.light
                 This URL will be triggered when an issue is created/updated/merged
           %li
+            = f.check_box :confidential_issues_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :confidential_issues_events, class: 'list-label' do
+                %strong Confidential Issues events
+              %p.light
+                This URL will be triggered when a confidential issue is created/updated/merged
+          %li
             = f.check_box :merge_requests_events, class: 'pull-left'
             .prepend-left-20
               = f.label :merge_requests_events, class: 'list-label' do

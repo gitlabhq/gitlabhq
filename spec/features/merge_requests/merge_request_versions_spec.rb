@@ -11,8 +11,8 @@ feature 'Merge Request versions', js: true, feature: true do
   end
 
   it 'show the latest version of the diff' do
-    page.within '.mr-version-switch' do
-      expect(page).to have_content 'Version: latest'
+    page.within '.mr-version-dropdown' do
+      expect(page).to have_content 'latest version'
     end
 
     expect(page).to have_content '8 changed files'
@@ -20,18 +20,57 @@ feature 'Merge Request versions', js: true, feature: true do
 
   describe 'switch between versions' do
     before do
-      page.within '.mr-version-switch' do
-        find('.btn-link').click
-        click_link '6f6d7e7e'
+      page.within '.mr-version-dropdown' do
+        find('.btn-default').click
+        click_link 'version 1'
       end
     end
 
     it 'should show older version' do
-      page.within '.mr-version-switch' do
-        expect(page).to have_content 'Version: 6f6d7e7e'
+      page.within '.mr-version-dropdown' do
+        expect(page).to have_content 'version 1'
       end
 
       expect(page).to have_content '5 changed files'
+    end
+
+    it 'show the message about disabled comments' do
+      expect(page).to have_content 'Comments are disabled'
+    end
+  end
+
+  describe 'compare with older version' do
+    before do
+      page.within '.mr-version-compare-dropdown' do
+        find('.btn-default').click
+        click_link 'version 1'
+      end
+    end
+
+    it 'should have correct value in the compare dropdown' do
+      page.within '.mr-version-compare-dropdown' do
+        expect(page).to have_content 'version 1'
+      end
+    end
+
+    it 'show the message about disabled comments' do
+      expect(page).to have_content 'Comments are disabled'
+    end
+
+    it 'show diff between new and old version' do
+      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
+    end
+
+    it 'show diff between new and old version' do
+      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
+    end
+
+    it 'should return to latest version when "Show latest version" button is clicked' do
+      click_link 'Show latest version'
+      page.within '.mr-version-dropdown' do
+        expect(page).to have_content 'latest version'
+      end
+      expect(page).to have_content '8 changed files'
     end
   end
 end

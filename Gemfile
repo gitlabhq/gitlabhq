@@ -26,7 +26,7 @@ gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
-gem 'omniauth-facebook',      '~> 3.0.0'
+gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
@@ -53,7 +53,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.4.7'
+gem 'gitlab_git', '~> 10.6.6'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -97,9 +97,6 @@ gem 'fog-rackspace', '~> 0.1.1'
 # for aws storage
 gem 'unf', '~> 0.1.4'
 
-# Authorization
-gem 'six', '~> 0.2.0'
-
 # Seed data
 gem 'seed-fu', '~> 2.3.5'
 
@@ -138,8 +135,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'sinatra', '~> 1.4.4', require: false
-gem 'sidekiq', '~> 4.0'
+gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
 
@@ -208,6 +204,9 @@ gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
+
+# Faster JSON
+gem 'oj', '~> 2.17.4'
 
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
@@ -298,9 +297,10 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.41.2', require: false
+  gem 'rubocop', '~> 0.42.0', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
+  gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
   gem 'flog', '~> 4.3.2', require: false
   gem 'flay', '~> 2.6.1', require: false
@@ -319,6 +319,7 @@ group :test do
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :production do

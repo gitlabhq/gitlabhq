@@ -44,42 +44,55 @@
         %hr
         %fieldset.features.append-bottom-0
           %h5.prepend-top-0
-            Features
-          .form-group
-            .checkbox
-              = f.label :issues_enabled do
-                = f.check_box :issues_enabled
-                %strong Issues
-                %br
-                %span.descr Lightweight issue tracking system for this project
-          .form-group
-            .checkbox
-              = f.label :merge_requests_enabled do
-                = f.check_box :merge_requests_enabled
-                %strong Merge Requests
-                %br
-                %span.descr Submit changes to be merged upstream
-          .form-group
-            .checkbox
-              = f.label :builds_enabled do
-                = f.check_box :builds_enabled
-                %strong Builds
-                %br
-                %span.descr Test and deploy your changes before merge
-          .form-group
-            .checkbox
-              = f.label :wiki_enabled do
-                = f.check_box :wiki_enabled
-                %strong Wiki
-                %br
-                %span.descr Pages for project documentation
-          .form-group
-            .checkbox
-              = f.label :snippets_enabled do
-                = f.check_box :snippets_enabled
-                %strong Snippets
-                %br
-                %span.descr Share code pastes with others out of git repository
+            Feature Visibility
+
+            = f.fields_for :project_feature do |feature_fields|
+              .form_group.prepend-top-20
+                .row
+                  .col-md-9
+                    = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
+                    %span.help-block Lightweight issue tracking system for this project
+                  .col-md-3
+                    = project_feature_access_select(:issues_access_level)
+
+                .row
+                  .col-md-9
+                    = feature_fields.label :merge_requests_access_level, "Merge requests", class: 'label-light'
+                    %span.help-block Submit changes to be merged upstream
+                  .col-md-3
+                    = project_feature_access_select(:merge_requests_access_level)
+
+                .row
+                  .col-md-9
+                    = feature_fields.label :builds_access_level, "Builds", class: 'label-light'
+                    %span.help-block Submit Test and deploy your changes before merge
+                  .col-md-3
+                    = project_feature_access_select(:builds_access_level)
+
+                .row
+                  .col-md-9
+                    = feature_fields.label :wiki_access_level, "Wiki", class: 'label-light'
+                    %span.help-block Pages for project documentation
+                  .col-md-3
+                    = project_feature_access_select(:wiki_access_level)
+
+                .row
+                  .col-md-9
+                    = feature_fields.label :snippets_access_level, "Snippets", class: 'label-light'
+                    %span.help-block Share code pastes with others out of Git repository
+                  .col-md-3
+                    = project_feature_access_select(:snippets_access_level)
+
+            - if Gitlab.config.lfs.enabled && current_user.admin?
+              .row
+                .col-md-9
+                  = f.label :lfs_enabled, 'LFS', class: 'label-light'
+                  %span.help-block
+                    Git Large File Storage
+                    = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+                .col-md-3
+                  = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control'
+
           - if Gitlab.config.registry.enabled
             .form-group
               .checkbox
@@ -88,7 +101,7 @@
                   %strong Container Registry
                   %br
                   %span.descr Enable Container Registry for this repository
-        %hr
+
         = render 'merge_request_settings', f: f
         %hr
         %fieldset.features.append-bottom-default

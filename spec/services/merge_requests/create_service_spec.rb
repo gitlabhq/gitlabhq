@@ -83,5 +83,34 @@ describe MergeRequests::CreateService, services: true do
         }
       end
     end
+
+    context 'while saving references to issues that the created merge request closes' do
+      let(:first_issue) { create(:issue, project: project) }
+      let(:second_issue) { create(:issue, project: project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          force_remove_source_branch: '1'
+        }
+      end
+
+      before do
+        project.team << [user, :master]
+        project.team << [assignee, :developer]
+      end
+
+      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+        issue_closing_opts = opts.merge(description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}")
+        service = described_class.new(project, user, issue_closing_opts)
+        allow(service).to receive(:execute_hooks)
+        merge_request = service.execute
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+      end
+    end
   end
 end

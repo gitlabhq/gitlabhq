@@ -13,17 +13,21 @@
         gl.utils.preventDisabledButtons();
         isClicked = false;
         $button = $('#test-button');
+        expect($button).toExist();
         $button.click(function() {
           return isClicked = true;
         });
         $button.trigger('click');
         return expect(isClicked).toBe(false);
       });
-      return it('should be on the same page if a disabled link clicked', function() {
-        var locationBeforeLinkClick;
+
+      it('should be on the same page if a disabled link clicked', function() {
+        var locationBeforeLinkClick, $link;
         locationBeforeLinkClick = window.location.href;
         gl.utils.preventDisabledButtons();
-        $('#test-link').click();
+        $link = $('#test-link');
+        expect($link).toExist();
+        $link.click();
         return expect(window.location.href).toBe(locationBeforeLinkClick);
       });
     });

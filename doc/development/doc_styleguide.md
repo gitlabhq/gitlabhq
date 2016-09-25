@@ -155,15 +155,30 @@ Inside the document:
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note: `> Introduced in GitLab 8.3.`.
+  note:
+
+    ```
+    > Introduced in GitLab 8.3.
+    ```
+
 - If possible every feature should have a link to the MR that introduced it.
   The above note would be then transformed to:
-  `> [Introduced][ce-1242] in GitLab 8.3.`, where
-  the [link identifier](#links) is named after the repository (CE) and the MR
-  number.
-- If the feature is only in GitLab EE, don't forget to mention it, like:
-  `> Introduced in GitLab EE 8.3.`. Otherwise, leave
-  this mention out.
+
+    ```
+    > [Introduced][ce-1242] in GitLab 8.3.
+    ```
+
+    , where the [link identifier](#links) is named after the repository (CE) and
+    the MR number.
+
+- If the feature is only in GitLab Enterprise Edition, don't forget to mention
+  it, like:
+
+    ```
+    > Introduced in GitLab Enterprise Edition 8.3.
+    ```
+
+    Otherwise, leave this mention out.
 
 ## References
 
@@ -222,18 +237,26 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
     ```
 
 1. Find and replace any occurrences of the old location with the new one.
-   A quick way to find them is to use `grep`:
+   A quick way to find them is to use `git grep`. First go to the root directory
+   where you cloned the `gitlab-ce` repository and then do:
 
     ```
-    grep -nR "lfs_administration.md" doc/
+    git grep -n "workflow/lfs/lfs_administration"
+    git grep -n "lfs/lfs_administration"
     ```
 
-    The above command will search in the `doc/` directory for
-    `lfs_administration.md` recursively and will print the file and the line
-    where this file is mentioned. Note that we used just the filename
-    (`lfs_administration.md`) and not the whole the relative path
-    (`workflow/lfs/lfs_administration.md`).
+Things to note:
 
+- Since we also use inline documentation, except for the documentation itself,
+  the document might also be referenced in the views of GitLab (`app/`) which will
+  render when visiting `/help`, and sometimes in the testing suite (`spec/`).
+- The above `git grep` command will search recursively in the directory you run
+  it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
+  and will print the file and the line where this file is mentioned.
+  You may ask why the two greps. Since we use relative paths to link to
+  documentation, sometimes it might be useful to search a path deeper.
+- The `*.md` extension is not used when a document is linked to GitLab's
+  built-in help page, that's why we omit it in `git grep`.
 
 ## Configuration documentation for source and Omnibus installations
 

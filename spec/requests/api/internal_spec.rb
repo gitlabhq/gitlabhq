@@ -44,8 +44,8 @@ describe API::API, api: true  do
            secret_token: secret_token,
            key_id: 12345
 
-      expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 Not found')
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Could not find the given key')
     end
 
     it 'returns an error message when the key is a deploy key' do
@@ -96,6 +96,43 @@ describe API::API, api: true  do
 
         expect(json_response['success']).to be_falsey
         expect(json_response['recovery_codes']).to be_nil
+      end
+    end
+  end
+
+  describe "POST /internal/lfs_authenticate" do
+    before do
+      project.team << [user, :developer]
+    end
+
+    context 'user key' do
+      it 'returns the correct information about the key' do
+        lfs_auth(key.id, project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+      end
+
+      it 'returns a 404 when the wrong key is provided' do
+        lfs_auth(nil, project)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'deploy key' do
+      let(:key) { create(:deploy_key) }
+
+      it 'returns the correct information about the key' do
+        lfs_auth(key.id, project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
     end
   end
@@ -387,6 +424,15 @@ describe API::API, api: true  do
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
+    )
+  end
+
+  def lfs_auth(key_id, project)
+    post(
+      api("/internal/lfs_authenticate"),
+      key_id: key_id,
+      secret_token: secret_token,
+      project: project.path_with_namespace
     )
   end
 end

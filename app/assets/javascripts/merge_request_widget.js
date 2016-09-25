@@ -3,6 +3,12 @@
 
   this.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
+      // Initialize MergeRequestWidget behavior
+      //
+      //   check_enable           - Boolean, whether to check automerge status
+      //   merge_check_url - String, URL to use to check automerge status
+      //   ci_status_url        - String, URL to use to check CI status
+      //
       this.opts = opts;
       $('#modal_merge_info').modal({
         show: false
@@ -118,6 +124,8 @@
             if (data.coverage) {
               _this.showCICoverage(data.coverage);
             }
+            // The first check should only update the UI, a notification
+            // should only be displayed on status changes
             if (showNotification && !_this.firstCICheck) {
               status = _this.ciLabelForStatus(data.status);
               if (status === "preparing") {

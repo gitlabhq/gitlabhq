@@ -91,19 +91,7 @@ This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
 
 ## Implement design & UI elements
 
-### Design reference
-
-The GitLab design reference can be found in the [gitlab-design] project.
-The designs are made using Antetype (`.atype` files). You can use the
-[free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
-(the PNG is 1:1).
-
-The current designs can be found in the [`gitlab8.atype` file].
-
-### UI development kit
-
-Implemented UI elements can also be found at https://gitlab.com/help/ui. Please
-note that this page isn't comprehensive at this time.
+Please see the [UI Guide for building GitLab].
 
 ## Issue tracker
 
@@ -129,7 +117,7 @@ request that potentially fixes it.
 
 ### Feature proposals
 
-To create a feature proposal for CE and CI, open an issue on the
+To create a feature proposal for CE, open an issue on the
 [issue tracker of CE][ce-tracker].
 
 For feature proposals for EE, open an issue on the
@@ -144,16 +132,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-You are encouraged to use the template below for feature proposals.
-
-```
-## Description
-Include problem, use cases, benefits, and/or goals
-
-## Proposal
-
-## Links / references
-```
+Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -166,54 +145,10 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the following template in the issue description area.
+Please submit bugs using the ['Bug' issue template](.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
-
-```
-## Summary
-
-(Summarize your issue in one sentence - what goes wrong, what did you expect to happen)
-
-## Steps to reproduce
-
-(How one can reproduce the issue - this is very important)
-
-## Expected behavior
-
-(What you should see instead)
-
-## Relevant logs and/or screenshots
-
-(Paste any relevant logs - please use code blocks (```) to format console output,
-logs, and code as it's very hard to read otherwise.)
-
-## Output of checks
-
-### Results of GitLab Application Check
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:check SANITIZE=true)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true)
-
-(we will only investigate if the tests are passing)
-
-### Results of GitLab Environment Info
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:env:info)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production)
-
-## Possible fixes
-
-(If you can, link to the line of code that might be responsible for the problem)
-
-```
 
 ### Issue weight
 
@@ -340,6 +275,10 @@ request is as follows:
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, do this again once the review is complete.
 1. For more complex migrations, write tests.
+1. Merge requests **must** adhere to the [merge request performance
+   guidelines](doc/development/merge_request_performance_guidelines.md).
+1. For tests that use Capybara or PhantomJS, see this [article on how
+   to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
@@ -540,7 +479,5 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
-[gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
-[free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
-[`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/
+[UI Guide for building GitLab]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/ui_guide.md
 [license-finder-doc]: doc/development/licensing.md

@@ -31,7 +31,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    click_link "Closed"
+    page.within('.issues-state-filters') do
+      click_link "Closed"
+    end
   end
 
   step 'I should see merge request "Wiki Feature"' do
@@ -491,7 +493,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill in merge request search with "Fe"' do
-    fill_in 'issue_search', with: "Fe"
+    fill_in 'issuable_search', with: "Fe"
   end
 
   step 'I click the "Target branch" dropdown' do

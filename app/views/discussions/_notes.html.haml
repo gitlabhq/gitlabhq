@@ -10,6 +10,7 @@
         .btn-group{ role: "group" }
           = link_to_reply_discussion(discussion, line_type)
         = render "discussions/resolve_all", discussion: discussion
-        = render "discussions/jump_to_next", discussion: discussion
+        - if discussion.for_merge_request?
+          = render "discussions/jump_to_next", discussion: discussion
     - else
       = link_to_reply_discussion(discussion)

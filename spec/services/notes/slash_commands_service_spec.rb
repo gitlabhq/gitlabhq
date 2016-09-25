@@ -122,6 +122,75 @@ describe Notes::SlashCommandsService, services: true do
     end
   end
 
+  describe '.noteable_update_service' do
+    include_context 'note on noteable'
+
+    it 'returns Issues::UpdateService for a note on an issue' do
+      note = create(:note_on_issue, project: project)
+
+      expect(described_class.noteable_update_service(note)).to eq(Issues::UpdateService)
+    end
+
+    it 'returns Issues::UpdateService for a note on a merge request' do
+      note = create(:note_on_merge_request, project: project)
+
+      expect(described_class.noteable_update_service(note)).to eq(MergeRequests::UpdateService)
+    end
+
+    it 'returns nil for a note on a commit' do
+      note = create(:note_on_commit, project: project)
+
+      expect(described_class.noteable_update_service(note)).to be_nil
+    end
+  end
+
+  describe '.supported?' do
+    include_context 'note on noteable'
+
+    let(:note) { create(:note_on_issue, project: project) }
+
+    context 'with no current_user' do
+      it 'returns false' do
+        expect(described_class.supported?(note, nil)).to be_falsy
+      end
+    end
+
+    context 'when current_user cannot update the noteable' do
+      it 'returns false' do
+        user = create(:user)
+
+        expect(described_class.supported?(note, user)).to be_falsy
+      end
+    end
+
+    context 'when current_user can update the noteable' do
+      it 'returns true' do
+        expect(described_class.supported?(note, master)).to be_truthy
+      end
+
+      context 'with a note on a commit' do
+        let(:note) { create(:note_on_commit, project: project) }
+
+        it 'returns false' do
+          expect(described_class.supported?(note, nil)).to be_falsy
+        end
+      end
+    end
+  end
+
+  describe '#supported?' do
+    include_context 'note on noteable'
+
+    it 'delegates to the class method' do
+      service = described_class.new(project, master)
+      note = create(:note_on_issue, project: project)
+
+      expect(described_class).to receive(:supported?).with(note, master)
+
+      service.supported?(note)
+    end
+  end
+
   describe '#execute' do
     let(:service) { described_class.new(project, master) }
 

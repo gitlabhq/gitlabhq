@@ -1,0 +1,118 @@
+@mixin unique-keyframes {
+  $animation-name: unique-id();
+  @include webkit-prefix(animation-name, $animation-name);
+
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin tanuki-logo-colors($path-color) {
+  fill: $path-color;
+  transition: all 0.8s;
+
+  &:hover {
+    fill: lighten($path-color, 25%);
+    transition: all 0.1s;
+  }
+}
+
+@mixin tanuki-second-highlight-animations($tanuki-color) {
+  @include unique-keyframes {
+    10%, 80% {
+      fill: #{$tanuki-color}
+    }
+    20%, 90% {
+      fill: lighten($tanuki-color, 25%);
+    }
+  }
+}
+
+@mixin tanuki-forth-highlight-animations($tanuki-color) {
+  @include unique-keyframes {
+    30%, 60% {
+      fill: #{$tanuki-color};
+    }
+    40%, 70% {
+      fill: lighten($tanuki-color, 25%);
+    }
+  }
+}
+
+.tanuki-logo {
+
+  .tanuki-left-ear,
+  .tanuki-right-ear,
+  .tanuki-nose {
+    @include tanuki-logo-colors($tanuki-red);
+  }
+
+  .tanuki-left-eye,
+  .tanuki-right-eye {
+    @include tanuki-logo-colors($tanuki-orange);
+  }
+
+  .tanuki-left-cheek,
+  .tanuki-right-cheek {
+    @include tanuki-logo-colors($tanuki-yellow);
+  }
+
+  &.animate {
+    .tanuki-shape {
+      @include webkit-prefix(animation-duration, 1.5s);
+      @include webkit-prefix(animation-iteration-count, infinite);
+    }
+
+    .tanuki-left-cheek {
+      @include unique-keyframes {
+        0%, 10%, 100% {
+          fill: lighten($tanuki-yellow, 25%);
+        }
+        90% {
+          fill: $tanuki-yellow;
+        }
+      }
+    }
+
+    .tanuki-left-eye {
+      @include tanuki-second-highlight-animations($tanuki-orange);
+    }
+
+    .tanuki-left-ear {
+      @include tanuki-second-highlight-animations($tanuki-red);
+    }
+
+    .tanuki-nose {
+      @include unique-keyframes {
+        20%, 70% {
+          fill: $tanuki-red;
+        }
+        30%, 80% {
+          fill: lighten($tanuki-red, 25%);
+        }
+      }
+    }
+
+    .tanuki-right-eye {
+      @include tanuki-forth-highlight-animations($tanuki-orange);
+    }
+
+    .tanuki-right-ear {
+      @include tanuki-forth-highlight-animations($tanuki-red);
+    }
+
+    .tanuki-right-cheek {
+      @include unique-keyframes {
+        40% {
+          fill: $tanuki-yellow;
+        }
+        60% {
+          fill: lighten($tanuki-yellow, 25%);
+        }
+      }
+    }
+  }
+}

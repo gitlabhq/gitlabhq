@@ -7,11 +7,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    all_pipelines = project.pipelines
-    @pipelines_count = all_pipelines.count
-    @running_or_pending_count = all_pipelines.running_or_pending.count
-    @pipelines = PipelinesFinder.new(project).execute(all_pipelines, @scope)
-    @pipelines = @pipelines.order(id: :desc).page(params[:page]).per(30)
+    @pipelines = PipelinesFinder.new(project).execute(scope: @scope).page(params[:page]).per(30)
+
+    @running_or_pending_count = PipelinesFinder.new(project).execute(scope: 'running').count
+    @pipelines_count = PipelinesFinder.new(project).execute.count
   end
 
   def new

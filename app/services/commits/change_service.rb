@@ -16,11 +16,29 @@ module Commits
       error(ex.message)
     end
 
+    private
+
     def commit
       raise NotImplementedError
     end
 
-    private
+    def commit_change(action)
+      raise NotImplementedError unless repository.respond_to?(action)
+
+      into = @create_merge_request ? @commit.public_send("#{action}_branch_name") : @target_branch
+      tree_id = repository.public_send("check_#{action}_content", @commit, @target_branch)
+
+      if tree_id
+        create_target_branch(into) if @create_merge_request
+
+        repository.public_send(action, current_user, @commit, into, tree_id)
+        success
+      else
+        error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title} automatically.
+                     It may have already been #{action.to_s.dasherize}, or a more recent commit may have updated some of its content."
+        raise ChangeError, error_msg
+      end
+    end
 
     def check_push_permissions
       allowed = ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(@target_branch)

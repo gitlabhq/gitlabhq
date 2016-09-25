@@ -75,10 +75,8 @@ class MergeConflictResolver {
         window.location.href = data.redirect_to;
       })
       .error(() => {
-        new Flash('Something went wrong!');
-      })
-      .always(() => {
         this.vue.isSubmitting = false;
+        new Flash('Something went wrong!');
       });
   }
 

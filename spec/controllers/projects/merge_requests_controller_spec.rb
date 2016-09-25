@@ -170,6 +170,35 @@ describe Projects::MergeRequestsController do
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
       end
+
+      it 'allows editing of a closed merge request' do
+        merge_request.close!
+
+        put :update,
+            namespace_id: project.namespace.path,
+            project_id: project.path,
+            id: merge_request.iid,
+            merge_request: {
+              title: 'New title'
+            }
+
+        expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
+        expect(merge_request.reload.title).to eq 'New title'
+      end
+
+      it 'does not allow to update target branch closed merge request' do
+        merge_request.close!
+
+        put :update,
+            namespace_id: project.namespace.path,
+            project_id: project.path,
+            id: merge_request.iid,
+            merge_request: {
+              target_branch: 'new_branch'
+            }
+
+        expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
+      end
     end
   end
 
@@ -290,6 +319,12 @@ describe Projects::MergeRequestsController do
 
         expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
+      end
+
+      it 'delegates the update of the todos count cache to TodoService' do
+        expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
+
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
       end
     end
   end
