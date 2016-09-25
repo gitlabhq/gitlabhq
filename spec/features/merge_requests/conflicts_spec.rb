@@ -36,6 +36,32 @@ feature 'Merge request conflict resolution', js: true, feature: true do
           retry
         end
       end
+
+      context 'when in inline mode' do
+        it 'resolves files manually' do
+          within find('.files-wrapper .diff-file.inline-view', text: 'files/ruby/popen.rb') do
+            click_button 'Edit inline'
+            wait_for_ajax
+            execute_script('ace.edit($(".files-wrapper .diff-file.inline-view pre")[0]).setValue("One morning");');
+          end
+
+          within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
+            click_button 'Edit inline'
+            wait_for_ajax
+            execute_script('ace.edit($(".files-wrapper .diff-file.inline-view pre")[1]).setValue("Gregor Samsa woke from troubled dreams");');
+          end
+
+          click_button 'Commit conflict resolution'
+          wait_for_ajax
+          expect(page).to have_content('All merge conflicts were resolved')
+
+          click_on 'Changes'
+          wait_for_ajax
+
+          expect(page).to have_content('One morning')
+          expect(page).to have_content('Gregor Samsa woke from troubled dreams')
+        end
+      end
     end
   end
 
