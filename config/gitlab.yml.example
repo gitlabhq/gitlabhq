@@ -111,7 +111,7 @@ production: &base
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
   incoming_email:
     enabled: false
 

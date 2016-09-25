@@ -563,7 +563,7 @@ Using a self-signed certificate is discouraged but if you must use it follow the
 
 ### Enable Reply by email
 
-See the ["Reply by email" documentation](../incoming_email/README.md) for more information on how to set this up.
+See the ["Reply by email" documentation](../administration/reply_by_email.md) for more information on how to set this up.
 
 ### LDAP Authentication
 
