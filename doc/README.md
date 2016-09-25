@@ -34,7 +34,7 @@
 - [Libravatar](customization/libravatar.md) Use Libravatar instead of Gravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
-- [Operations](operations/README.md) Keeping GitLab up and running.
+- [Operations](administration/operations.md) Keeping GitLab up and running.
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.
 - [Repository storages](administration/repository_storages.md) Manage the paths used to store repositories.
