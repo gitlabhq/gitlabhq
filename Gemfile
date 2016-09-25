@@ -271,6 +271,7 @@ group :development, :test do
   gem 'fuubar', '~> 2.0.0'
 
   gem 'database_cleaner',   '~> 1.5.0'
+  gem 'database_rewinder',  '~> 0.6.4'
   gem 'factory_girl_rails', '~> 4.6.0'
   gem 'rspec-rails',        '~> 3.5.0'
   gem 'rspec-retry',        '~> 0.4.5'
