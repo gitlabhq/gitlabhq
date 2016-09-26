@@ -357,7 +357,7 @@
           $('ul.emoji-menu-search, h5.emoji-search').remove();
           if (term) {
             // Generate a search result block
-            h5 = $('<h5>').text('Search results');
+            h5 = $('<h5 class="emoji-search" />').text('Search results');
             found_emojis = _this.searchEmojis(term).show();
             ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis);
             $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
