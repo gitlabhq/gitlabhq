@@ -13,6 +13,10 @@ module Emails
     def pipeline_mail(pipeline, to, status)
       @project = pipeline.project
       @pipeline = pipeline
+      @merge_request = @project.merge_requests.opened.
+        find_by(source_project: @project,
+                source_branch: @pipeline.ref,
+                target_branch: @project.default_branch)
       add_headers
 
       mail(to: to, subject: pipeline_subject(status))

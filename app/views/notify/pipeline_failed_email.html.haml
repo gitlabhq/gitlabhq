@@ -94,9 +94,10 @@
                                           %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;"}
                                             %a.muted{:href => namespace_project_commits_url(@project.namespace, @project, @pipeline.ref), :style => "color:#333333;text-decoration:none;"}
                                               = @pipeline.ref
-                                            (
-                                            %a{:href => "{{{merge-request-link}}}", :style => "color:#3084bb;text-decoration:none;white-space: nowrap;"}> merge request
-                                            )
+                                            - if @merge_request
+                                              (
+                                              %a{:href => namespace_project_merge_request_url(@project.namespace, @project, @merge_request), :style => "color:#3084bb;text-decoration:none;white-space: nowrap;"}> merge request
+                                              )
                                 %tr
                                   %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;"} Commit
                                   %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;"}
