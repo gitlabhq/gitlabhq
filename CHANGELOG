@@ -6,6 +6,7 @@ v 8.13.0 (unreleased)
 
 v 8.12.2 (unreleased)
   - Fix Import/Export not recognising correctly the imported services.
+  - Revoke button in Applications Settings underlines on hover.
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
