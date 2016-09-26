@@ -705,7 +705,7 @@ GEM
       spring (>= 0.9.1)
     spring-commands-teaspoon (0.0.2)
       spring (>= 0.9.1)
-    sprockets (3.6.3)
+    sprockets (3.7.0)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-es6 (0.9.0)
@@ -964,7 +964,7 @@ DEPENDENCIES
   spring-commands-rspec (~> 1.0.4)
   spring-commands-spinach (~> 1.1.0)
   spring-commands-teaspoon (~> 0.0.2)
-  sprockets (~> 3.6.0)
+  sprockets (~> 3.7.0)
   sprockets-es6
   state_machines-activerecord (~> 0.4.0)
   sys-filesystem (~> 1.1.6)
