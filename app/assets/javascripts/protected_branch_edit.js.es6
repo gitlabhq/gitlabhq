@@ -67,7 +67,6 @@
         dataType: 'json',
         data: {
           _method: 'PATCH',
-          id: this.$wrap.data('banchId'),
           protected_branch: formData
         },
         success: (response) => {

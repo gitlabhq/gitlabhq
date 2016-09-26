@@ -1,6 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.1 (unreleased)
+v 8.13.0 (unreleased)
+  - Speed-up group milestones show page
+
+v 8.12.2 (unreleased)
+  - Fix Import/Export not recognising correctly the imported services.
+
+v 8.12.1
+  - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
+  - Fix issue with search filter labels not displaying
 
 v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
@@ -11,10 +19,8 @@ v 8.12.0
   - Cleanup misalignments in Issue list view !6206
   - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
   - Prune events older than 12 months. (ritave)
-  - Prevent secrets to be pushed to the repository
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
-  - Amends the packager.io configuration file to create a build for Ubuntu 16.04. !6247 (Jon "The Nice Guy" Spriggs)
   - Filter tags by name !6121
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
@@ -31,6 +37,7 @@ v 8.12.0
   - Move pushes_since_gc from the database to Redis
   - Limit number of shown environments on Merge Request: show only environments for target_branch, source_branch and tags
   - Add font color contrast to external label in admin area (ClemMakesApps)
+  - Fix find file navigation links (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
@@ -49,6 +56,7 @@ v 8.12.0
   - Fix file permissions change when updating a file on the Gitlab UI !5979
   - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
+  - Fix issue with search filter labels not displaying
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
@@ -83,6 +91,7 @@ v 8.12.0
   - Fix markdown anchor icon interaction (ClemMakesApps)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
+  - Show badges in Milestone tabs. !5946 (Dan Rowden)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
@@ -184,6 +193,11 @@ v 8.12.0
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
 
+v 8.11.7
+  - Avoid conflict with admin labels when importing GitHub labels. !6158
+  - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
+  - Allow the Rails cookie to be used for API authentication.
+
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
   - Make merge conflict file size limit 200 KB, to match the docs. !6052
@@ -228,8 +242,6 @@ v 8.11.3
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
-  - Fix "Wiki" link not appearing in navigation for projects with external wiki
-  - Fix IE11 fork button bug !598
   - Fix IE11 fork button bug !5982
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
   - Fix external issue tracker "Issues" link leading to 404s
@@ -254,7 +266,6 @@ v 8.11.0
   - Add Koding (online IDE) integration
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
-  - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix adding line comments on the initial commit to a repo !5900
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
@@ -308,7 +319,6 @@ v 8.11.0
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
-  - Fix branch title trailing space on hover (ClemMakesApps)
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - API: Add enpoints for pipelines
@@ -401,6 +411,9 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.10
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.10.9
   - Exclude some pending or inactivated rows in Member scopes
@@ -513,9 +526,6 @@ v 8.10.0
   - Display tooltip for mentioned users and groups. !5261 (winniehell)
   - Allow build email service to be tested
   - Added day name to contribution calendar tooltips
-  - Make images fit to the size of the viewport !4810
-  - Fixed misplaced mirror repository button on tags page
-  - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Refactor user authorization check for a single project to avoid querying all user projects
   - Make images fit to the size of the viewport. !4810
   - Fix check for New Branch button on Issue page. !4630 (winniehell)
@@ -631,12 +641,15 @@ v 8.10.0
   - Render only commit message title in builds (Katarzyna Kobierska Ula Budziszewska)
   - Allow bulk (un)subscription from issues in issue index
   - Fix MR diff encoding issues exporting GitLab projects
-  - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Move builds settings out of project settings and rename Pipelines
   - Add builds badge to Pipelines settings page
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+  - Fix import_data wrongly saved as a result of an invalid import_url !5206
+
+v 8.9.10
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.9.9
   - Exclude some pending or inactivated rows in Member scopes
@@ -656,12 +669,6 @@ v 8.9.6
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
   - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
-
-v 8.9.7 (unreleased)
-  - Fix import_data wrongly saved as a result of an invalid import_url
-
-v 8.9.6
-  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
@@ -763,9 +770,6 @@ v 8.9.0
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
-v 8.10.0 (unreleased)
-
-v 8.9.0
   - Fix Error 500 when using closes_issues API with an external issue tracker
   - Add more information into RSS feed for issues (Alexander Matyushentsev)
   - Bulk assign/unassign labels to issues.
@@ -1095,7 +1099,6 @@ v 8.7.4
   - Running rake gitlab:db:drop_tables now drops tables with cascade !4020
   - Running rake gitlab:db:drop_tables uses "IF EXISTS" as a precaution !4100
   - Use a case-insensitive comparison in sanitizing URI schemes
-  - Bump GitLab Pages to 0.2.4 to fix Content-Type for predefined 404
 
 v 8.7.3
   - Emails, Gitlab::Email::Message, Gitlab::Diff, and Premailer::Adapter::Nokogiri are now instrumented
@@ -1125,7 +1128,6 @@ v 8.7.0
   - Fix vulnerability that made it possible to gain access to private labels and milestones
   - The number of InfluxDB points stored per UDP packet can now be configured
   - Fix error when cross-project label reference used with non-existent project
-v 8.7.0
   - Transactions for /internal/allowed now have an "action" tag set
   - Method instrumentation now uses Module#prepend instead of aliasing methods
   - Repository.clean_old_archives is now instrumented
@@ -1201,7 +1203,6 @@ v 8.7.0
   - Remove "Congratulations!" tweet button on newly-created project. (Connor Shea)
   - Fix admin/projects when using visibility levels on search (PotHix)
   - Build status notifications
-  - Update GitLab Pages to 0.2.2: fixes content-type of predefined 404 page
   - Update email confirmation interface
   - API: Expose user location (Robert Schilling)
   - API: Do not leak group existence via return code (Robert Schilling)
@@ -1209,7 +1210,6 @@ v 8.7.0
   - Update number of Todos in the sidebar when it's marked as "Done". !3600
   - Sanitize branch names created for confidential issues
   - API: Expose 'updated_at' for issue, snippet, and merge request notes (Robert Schilling)
-  - Add ability to sync to remote mirrors. !249
   - API: User can leave a project through the API when not master or owner. !3613
   - Fix repository cache invalidation issue when project is recreated with an empty repo (Stan Hu)
   - Fix: Allow empty recipients list for builds emails service when pushed is added (Frank Groeneveld)
@@ -1484,24 +1484,6 @@ v 8.5.1
   - Add build coverage in project's builds page (Steffen Köhler)
   - Changed # to ! for merge requests in activity view
 
-v 8.5.1
-  - Fix group projects styles
-  - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
-  - Fix a set of small UI glitches in project, profile, and wiki pages
-  - Restrict permissions on public/uploads
-  - Fix the merge request side-by-side view after loading diff results
-  - Fix the look of tooltip for the "Revert" button
-  - Add when the Builds & Runners API changes got introduced
-  - Fix error 500 on some merged merge requests
-  - Fix an issue causing the content of the issuable sidebar to disappear
-  - Fix error 500 when trying to mark an already done todo as "done"
-  - Fix an issue where MRs weren't sortable
-  - Issues can now be dragged & dropped into empty milestone lists. This is also
-  possible with MRs
-  - Changed padding & background color for highlighted notes
-  - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
-  - Update sentry-raven gem to 0.15.6
-
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance
@@ -1648,8 +1630,6 @@ v 8.4.1
   - Fix diff highlighting for all syntax themes
   - Delete project and associations in a background worker
 
-v 8.4.0 (unreleased)
-  - Hide issues settings when issues are disabled (Hannes Rosenögger)
 v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server
   - Ensure Gravatar host looks like an actual host
@@ -1666,14 +1646,11 @@ v 8.4.0
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
-  - LDAP group sync: Remove user from group when they are removed from LDAP
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
   - Accept 2xx status codes for successful Webhook triggers (Stan Hu)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
-  - Fix error with file size check with submodules (Stan Hu)
-  - Remove gray background from layout in UI
   - Remove gray background from layout in UI
   - Fix signup for OAuth providers that don't provide a name
   - Implement new UI for group page
@@ -1682,7 +1659,6 @@ v 8.4.0
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note
-  - LDAP Group Sync: Allow group role downgradegit
   - Only allow group/project members to mention `@all`
   - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker
@@ -1959,7 +1935,7 @@ v 8.1.3
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
-v 8.1.1
+v 8.1.2
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility

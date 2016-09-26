@@ -91,7 +91,7 @@ module Ci
             sha: build.sha,
             ref: build.ref,
             tag: build.tag,
-            options: build.options[:environment],
+            options: build.options.to_h[:environment],
             variables: build.variables)
           service.execute(build)
         end

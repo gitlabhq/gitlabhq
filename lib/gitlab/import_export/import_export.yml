@@ -73,5 +73,7 @@ excluded_attributes:
 methods:
   statuses:
     - :type
+  services:
+    - :type
   merge_request_diff:
     - :utf8_st_diffs

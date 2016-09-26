@@ -145,8 +145,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'sinatra', '~> 1.4.4', require: false
-gem 'sidekiq', '~> 4.0'
+gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
 
@@ -332,10 +331,6 @@ group :test do
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
-end
-
-group :production do
-  gem 'gitlab_meta', '7.0'
 end
 
 gem 'newrelic_rpm', '~> 3.16'
