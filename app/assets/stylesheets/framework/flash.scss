@@ -3,7 +3,6 @@
   margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
-  z-index: 100;
 
   .flash-notice {
     @extend .alert;
@@ -41,4 +40,3 @@
     }
   }
 }
-

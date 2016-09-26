@@ -1,6 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.1 (unreleased)
+v 8.13.0 (unreleased)
+  - Speed-up group milestones show page
+
+v 8.12.2 (unreleased)
+  - Fix Import/Export not recognising correctly the imported services.
+
+v 8.12.1
+  - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
+  - Fix issue with search filter labels not displaying
 
 v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
@@ -29,6 +38,7 @@ v 8.12.0
   - Move pushes_since_gc from the database to Redis
   - Limit number of shown environments on Merge Request: show only environments for target_branch, source_branch and tags
   - Add font color contrast to external label in admin area (ClemMakesApps)
+  - Fix find file navigation links (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
@@ -47,6 +57,7 @@ v 8.12.0
   - Fix file permissions change when updating a file on the Gitlab UI !5979
   - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
+  - Fix issue with search filter labels not displaying
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
@@ -81,6 +92,7 @@ v 8.12.0
   - Fix markdown anchor icon interaction (ClemMakesApps)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
+  - Show badges in Milestone tabs. !5946 (Dan Rowden)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)

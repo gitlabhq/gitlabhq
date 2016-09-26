@@ -608,14 +608,13 @@
         }
       }
       field = [];
-      fieldName = typeof this.options.fieldName === 'function' ? this.options.fieldName(selectedObject) : this.options.fieldName;
       value = this.options.id ? this.options.id(selectedObject, el) : selectedObject.id;
       if (isInput) {
         field = $(this.el);
       } else if(value) {
         field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
       }
-      if (field.length && el.hasClass(ACTIVE_CLASS)) {
+      if (el.hasClass(ACTIVE_CLASS)) {
         el.removeClass(ACTIVE_CLASS);
         if (field && field.length) {
           if (isInput) {

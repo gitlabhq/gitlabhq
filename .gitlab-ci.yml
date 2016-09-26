@@ -13,7 +13,7 @@ variables:
   ELASTIC_HOST: "registry.gitlab.com-gitlab-org-test-elastic-image"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
-  USE_DB: "true"
+  SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
@@ -24,7 +24,7 @@ before_script:
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
   - retry gem install knapsack
-  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
+  - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
 - prepare
@@ -36,7 +36,7 @@ stages:
 .knapsack-state: &knapsack-state
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   cache:
     key: "knapsack"
@@ -198,7 +198,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
 .exec: &exec
@@ -225,6 +225,23 @@ rake db:migrate:reset:
   <<: *use-db
   script:
     - rake db:migrate:reset
+
+rake db:seed_fu:
+  stage: test
+  <<: *use-db
+  variables:
+    SIZE: "1"
+    SETUP_DB: "false"
+    RAILS_ENV: "development"
+  script:
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - bundle exec rake db:setup db:seed_fu
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 teaspoon:
   stage: test
@@ -274,7 +291,7 @@ coverage:
   stage: post-test
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
@@ -290,7 +307,7 @@ coverage:
 notify:slack:
   stage: post-test
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
