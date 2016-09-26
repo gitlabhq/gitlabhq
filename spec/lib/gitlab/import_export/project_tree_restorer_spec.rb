@@ -107,6 +107,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(Label.first.label_links.first.target).not_to be_nil
       end
 
+      it 'has a project feature' do
+        restored_project_json
+
+        expect(project.project_feature).not_to be_nil
+      end
+
       it 'restores the correct service' do
         restored_project_json
 
