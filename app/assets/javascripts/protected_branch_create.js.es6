@@ -93,7 +93,8 @@
       e.preventDefault();
 
       $.ajax({
-        method: 'POST',
+        url: this.$form.attr('action'),
+        method: this.$form.attr('method'),
         data: this.getFormData()
       })
       .success(() => {
