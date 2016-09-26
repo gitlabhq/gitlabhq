@@ -7,7 +7,7 @@
 
 ## Canonical source
 
-The cannonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
+The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
 
 ## Open source software to collaborate on code
 

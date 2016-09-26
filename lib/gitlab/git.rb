@@ -19,6 +19,8 @@ module Gitlab
       end
 
       def committer_hash(email:, name:)
+        return if email.nil? || name.nil?
+
         {
           email: email,
           name: name,

@@ -135,8 +135,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'sinatra', '~> 1.4.4', require: false
-gem 'sidekiq', '~> 4.0'
+gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
 
@@ -299,7 +298,7 @@ group :development, :test do
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.42.0', require: false
-  gem 'rubocop-rspec', '~> 1.7.0', require: false
+  gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
@@ -320,10 +319,7 @@ group :test do
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
-end
-
-group :production do
-  gem 'gitlab_meta', '7.0'
+  gem 'timecop', '~> 0.8.0'
 end
 
 gem 'newrelic_rpm', '~> 3.16'

@@ -1,4 +1,6 @@
 class SnippetsController < ApplicationController
+  include ToggleAwardEmoji
+
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read snippet
@@ -85,6 +87,7 @@ class SnippetsController < ApplicationController
                    PersonalSnippet.find(params[:id])
                  end
   end
+  alias_method :awardable, :snippet
 
   def authorize_read_snippet!
     authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)

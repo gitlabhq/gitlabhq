@@ -9,19 +9,22 @@ module Gitlab
     SIDEKIQ_NAMESPACE = 'resque:gitlab'
     MAILROOM_NAMESPACE = 'mail_room:gitlab'
     DEFAULT_REDIS_URL = 'redis://localhost:6379'
+    CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
     # To be thread-safe we must be careful when writing the class instance
-    # variables @url and @pool. Because @pool depends on @url we need two
+    # variables @_raw_config and @pool. Because @pool depends on @_raw_config we need two
     # mutexes to prevent deadlock.
-    PARAMS_MUTEX = Mutex.new
+    RAW_CONFIG_MUTEX = Mutex.new
     POOL_MUTEX = Mutex.new
-    private_constant :PARAMS_MUTEX, :POOL_MUTEX
+    private_constant :RAW_CONFIG_MUTEX, :POOL_MUTEX
 
     class << self
+      # Do NOT cache in an instance variable. Result may be mutated by caller.
       def params
-        @params || PARAMS_MUTEX.synchronize { @params = new.params }
+        new.params
       end
 
+      # Do NOT cache in an instance variable. Result may be mutated by caller.
       # @deprecated Use .params instead to get sentinel support
       def url
         new.url
@@ -36,8 +39,17 @@ module Gitlab
         @pool.with { |redis| yield redis }
       end
 
-      def reset_params!
-        @params = nil
+      def _raw_config
+        return @_raw_config if defined?(@_raw_config)
+
+        RAW_CONFIG_MUTEX.synchronize do
+          begin
+            @_raw_config = File.read(CONFIG_FILE).freeze
+          rescue Errno::ENOENT
+            @_raw_config = false
+          end
+        end
+        @_raw_config
       end
     end
 
@@ -83,12 +95,7 @@ module Gitlab
     end
 
     def fetch_config
-      file = config_file
-      File.exist?(file) ? YAML.load_file(file)[@rails_env] : false
-    end
-
-    def config_file
-      File.expand_path('../../../config/resque.yml', __FILE__)
+      self.class._raw_config ? YAML.load(self.class._raw_config)[@rails_env] : false
     end
   end
 end

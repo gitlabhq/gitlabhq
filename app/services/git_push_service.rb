@@ -134,6 +134,7 @@ class GitPushService < BaseService
       end
 
       commit.create_cross_references!(authors[commit], closed_issues)
+      update_issue_metrics(commit, authors)
     end
   end
 
@@ -185,5 +186,12 @@ class GitPushService < BaseService
 
   def branch_name
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
+  end
+
+  def update_issue_metrics(commit, authors)
+    mentioned_issues = commit.all_references(authors[commit]).issues
+
+    Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil).
+      update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
 end

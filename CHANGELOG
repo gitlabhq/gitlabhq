@@ -1,6 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.0 (unreleased)
+v 8.13.0 (unreleased)
+  - Speed-up group milestones show page
+
+v 8.12.2 (unreleased)
+
+v 8.12.1
+  - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
+  - Fix issue with search filter labels not displaying
+
+v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
@@ -17,18 +26,23 @@ v 8.12.0 (unreleased)
   - Fix note form hint showing slash commands supported for commits.
   - Make push events have equal vertical spacing.
   - API: Ensure invitees are not returned in Members API.
+  - Preserve applied filters on issues search.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Display stages in valid order in stages dropdown on build page
   - Only update projects.last_activity_at once per hour when creating a new event
+  - Cycle analytics (first iteration) !5986
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Move pushes_since_gc from the database to Redis
+  - Limit number of shown environments on Merge Request: show only environments for target_branch, source_branch and tags
   - Add font color contrast to external label in admin area (ClemMakesApps)
+  - Fix find file navigation links (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Show how much time ago a merge request was deployed !6273
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix long comments in diffs messing with table width
+  - Add spec covering 'Gitlab::Git::committer_hash' !6433 (dandunckelman)
   - Fix pagination on user snippets page
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
@@ -40,14 +54,18 @@ v 8.12.0 (unreleased)
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
+  - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
+  - Fix issue with search filter labels not displaying
   - Reduce contributions calendar data payload (ClemMakesApps)
+  - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
   - Added go to issue boards keyboard shortcut
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
+  - Emoji can be awarded on Snippets !4456
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
   - Spec testing if issue authors can read issues on private projects
@@ -73,6 +91,7 @@ v 8.12.0 (unreleased)
   - Fix markdown anchor icon interaction (ClemMakesApps)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
+  - Show badges in Milestone tabs. !5946 (Dan Rowden)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
@@ -165,16 +184,19 @@ v 8.12.0 (unreleased)
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
   - Fix URLs with anchors in wiki !6300 (houqp)
-  - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
   - Clean environment variables when running git hooks
-  - Add UX improvements for merge request version diffs
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
+
+v 8.11.7
+  - Avoid conflict with admin labels when importing GitHub labels. !6158
+  - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
@@ -389,6 +411,9 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.10
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.10.9
   - Exclude some pending or inactivated rows in Member scopes
@@ -622,6 +647,9 @@ v 8.10.0
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
   - Fix import_data wrongly saved as a result of an invalid import_url !5206
+
+v 8.9.10
+  - Allow the Rails cookie to be used for API authentication.
 
 v 8.9.9
   - Exclude some pending or inactivated rows in Member scopes

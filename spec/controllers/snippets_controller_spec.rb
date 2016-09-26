@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe SnippetsController do
-  describe 'GET #show' do
-    let(:user) { create(:user) }
+  let(:user) { create(:user) }
 
+  describe 'GET #show' do
     context 'when the personal snippet is private' do
       let(:personal_snippet) { create(:personal_snippet, :private, author: user) }
 
@@ -227,6 +227,35 @@ describe SnippetsController do
 
           expect(response).to have_http_status(404)
         end
+      end
+    end
+  end
+
+  context 'award emoji on snippets' do
+    let(:personal_snippet) { create(:personal_snippet, :public, author: user) }
+    let(:another_user) { create(:user) }
+
+    before do
+      sign_in(another_user)
+    end
+
+    describe 'POST #toggle_award_emoji' do
+      it "toggles the award emoji" do
+        expect do
+          post(:toggle_award_emoji, id: personal_snippet.to_param, name: "thumbsup")
+        end.to change { personal_snippet.award_emoji.count }.from(0).to(1)
+
+        expect(response.status).to eq(200)
+      end
+
+      it "removes the already awarded emoji" do
+        post(:toggle_award_emoji, id: personal_snippet.to_param, name: "thumbsup")
+
+        expect do
+          post(:toggle_award_emoji, id: personal_snippet.to_param, name: "thumbsup")
+        end.to change { personal_snippet.award_emoji.count }.from(1).to(0)
+
+        expect(response.status).to eq(200)
       end
     end
   end

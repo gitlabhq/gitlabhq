@@ -37,8 +37,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @labels = @project.labels.where(title: params[:label_name])
 
-    @all_merge_requests = all_merge_requests_collection
-
     respond_to do |format|
       format.html
       format.json do
