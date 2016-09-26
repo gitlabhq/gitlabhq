@@ -124,7 +124,7 @@
                                               %span
                                                 = commit.author_name
                                             - else
-                                              %a.muted{:href => user_path(commit.author), :style => "color:#333333;text-decoration:none;"}
+                                              %a.muted{:href => user_url(commit.author), :style => "color:#333333;text-decoration:none;"}
                                                 = commit.author.try(:name) || commit.author_name
                         %tr.spacer
                           %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;"}
