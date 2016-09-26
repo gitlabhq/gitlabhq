@@ -13,10 +13,10 @@ describe Boards::Issues::ListService, services: true do
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
 
-    let!(:backlog) { create(:backlog_list, board: board) }
+    let!(:backlog) { project.board.backlog_list }
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
-    let!(:done)    { create(:done_list, board: board) }
+    let!(:done)    { project.board.done_list }
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
