@@ -54,6 +54,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
           click_button 'Commit conflict resolution'
           wait_for_ajax
           expect(page).to have_content('All merge conflicts were resolved')
+          merge_request.reload_diff
 
           click_on 'Changes'
           wait_for_ajax
