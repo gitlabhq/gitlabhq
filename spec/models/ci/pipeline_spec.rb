@@ -525,10 +525,18 @@ describe Ci::Pipeline, models: true do
   end
 
   describe 'notifications when pipeline success or failed' do
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             sha: project.commit('master').sha,
+             user: create(:user))
+    end
+
     before do
       reset_delivered_emails!
 
-      pipeline.update(user: create(:user))
       pipeline.enqueue
       pipeline.run
     end
