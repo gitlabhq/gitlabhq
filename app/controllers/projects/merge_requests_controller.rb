@@ -374,26 +374,31 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
+    environments = @merge_request.environments
     deployments = @merge_request.deployments
 
-    if deployments
-      deployments = deployments.map do |deployment|
-        project = deployment.project
+    if environments
+      environments = environments.select { |e| can?(current_user, :read_environment, e) }.map do |environment|
+        project = environment.project
+        deployment = deployments.find { |d| d.environment == environment }
 
-        deployment = {
-          environment_name: deployment.environment.name,
-          environment_id: deployment.environment.id,
-          environment_url: namespace_project_environment_path(project.namespace, project, deployment.environment),
-          external_url: deployment.environment.external_url,
-          created_at: deployment.created_at,
-          created_at_formatted: deployment.created_at.to_time.in_time_zone.to_s(:medium)
+        environment = {
+          name: environment.name,
+          id: environment.id,
+          url: namespace_project_environment_path(project.namespace, project, environment),
+          external_url: environment.external_url,
+          deployed_at: deployment ? deployment.created_at : nil
         }
 
-        if deployment[:external_url]
-          deployment[:external_url_formatted] = deployment[:external_url].gsub(/\A.*?:\/\//, '')
+        if environment[:external_url]
+          environment[:external_url_formatted] = environment[:external_url].gsub(/\A.*?:\/\//, '')
         end
 
-        deployment
+        if environment[:deployed_at]
+          environment[:deployed_at_formatted] = environment[:deployed_at].to_time.in_time_zone.to_s(:medium)
+        end
+
+        environment
       end
     end
 
@@ -402,7 +407,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       sha: merge_request.diff_head_commit.short_id,
       status: status,
       coverage: coverage,
-      deployments: deployments
+      environments: environments
     }
 
     render json: response

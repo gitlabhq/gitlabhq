@@ -1,23 +1,21 @@
 ((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- environment_id %>">
+  const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- id %>">
       <div class="ci_widget ci-success">
         <%= ci_success_icon %>
         <span>
           Deployed to
-          <a href="<%- environment_url %>" target="_blank" class="environment">
-            <%- environment_name %>
+          <a href="<%- url %>" target="_blank" class="environment">
+            <%- name %>
           </a>
-          <span data-toggle="tooltip" data-placement="top" data-title="<%- created_at_formatted %>">
-            <%- created_at %>.
+          <span class="js-environment-timeago" data-toggle="tooltip" data-placement="top" data-title="<%- deployed_at_formatted %>">
+            <%- deployed_at %>
           </span>
-          <div class="js-deployment-link">
-            <a href="<%- external_url %>" target="_blank">
-              <i class="fa fa-external-link"></i>
-              View on <%- external_url_formatted %>
-            </a>
-          </div>
+          <a class="js-environment-link" href="<%- external_url %>" target="_blank">
+            <i class="fa fa-external-link"></i>
+            View on <%- external_url_formatted %>
+          </a>
         </span>
       </div>
     </div>`;
@@ -147,7 +145,7 @@
           if (data.status === '') {
             return;
           }
-          if (data.deployments && data.deployments.length) _this.renderDeployments(data.deployments);
+          if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
           if (_this.firstCICheck || data.status !== _this.opts.ci_status && (data.status != null)) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
@@ -180,16 +178,21 @@
       })(this));
     };
 
-    MergeRequestWidget.prototype.renderDeployments = function(deployments) {
-      for (let i = 0; i < deployments.length; i++) {
-        const deployment = deployments[i];
-        if ($(`.mr-state-widget #${ deployment.environment_id }`).length) return;
+    MergeRequestWidget.prototype.renderEnvironments = function(environments) {
+      for (let i = 0; i < environments.length; i++) {
+        const environment = environments[i];
+        if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
-        if (!deployment.external_url) $('.js-deployment-link', $template).remove();
-        deployment.created_at = $.timeago(deployment.created_at);
-        deployment.ci_success_icon = this.$ciSuccessIcon;
+        if (!environment.external_url) $('.js-environment-link', $template).remove();
+        if (environment.deployed_at) {
+          environment.deployed_at = $.timeago(environment.deployed_at) + '.';
+        } else {
+          $('.js-environment-timeago', $template).remove();
+          environment.name += '.';
+        }
+        environment.ci_success_icon = this.$ciSuccessIcon;
         const templateString = _.unescape($template[0].outerHTML);
-        const template = _.template(templateString)(deployment)
+        const template = _.template(templateString)(environment)
         this.$widgetBody.before(template);
       }
     };

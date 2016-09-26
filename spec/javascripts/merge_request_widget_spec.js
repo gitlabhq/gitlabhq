@@ -69,20 +69,20 @@
         this["class"].getCIStatus(true);
         return expect(spy).not.toHaveBeenCalled();
       });
-      it('should call renderDeployments when the deployments property is set', function() {
-        this.ciStatusData.deployments = [{
+      it('should call renderEnvironments when the environments property is set', function() {
+        this.ciStatusData.environments = [{
           created_at: '2016-09-12T13:38:30.636Z',
           environment_id: 1,
           environment_name: 'env1',
           external_url: 'https://test-url.com',
           external_url_formatted: 'test-url.com'
         }];
-        var spy = spyOn(this['class'], 'renderDeployments').and.stub();
+        var spy = spyOn(this['class'], 'renderEnvironments').and.stub();
         this['class'].getCIStatus(false);
-        expect(spy).toHaveBeenCalledWith(this.ciStatusData.deployments);
+        expect(spy).toHaveBeenCalledWith(this.ciStatusData.environments);
       });
-      it('should not call renderDeployments when the deployments property is not set', function() {
-        var spy = spyOn(this['class'], 'renderDeployments').and.stub();
+      it('should not call renderEnvironments when the environments property is not set', function() {
+        var spy = spyOn(this['class'], 'renderEnvironments').and.stub();
         this['class'].getCIStatus(false);
         expect(spy).not.toHaveBeenCalled();
       });
