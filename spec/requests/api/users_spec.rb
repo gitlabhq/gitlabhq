@@ -265,6 +265,13 @@ describe API::API, api: true  do
       expect(user.reload.bio).to eq('new test bio')
     end
 
+    it "updates user with organization" do
+      put api("/users/#{user.id}", admin), { organization: 'GitLab' }
+      expect(response).to have_http_status(200)
+      expect(json_response['organization']).to eq('GitLab')
+      expect(user.reload.organization).to eq('GitLab')
+    end
+
     it 'updates user with his own email' do
       put api("/users/#{user.id}", admin), email: user.email
       expect(response).to have_http_status(200)
