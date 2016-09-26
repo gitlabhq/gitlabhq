@@ -59,7 +59,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_ok
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.git_http_ok(repository, user)
+    render json: Gitlab::Workhorse.git_http_ok(repository, actor)
   end
 
   def render_http_not_allowed
@@ -67,7 +67,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def render_denied
-    if user && user.can?(:read_project, project)
+    if actor.is_a?(User) && can?(actor, :read_project, project)
       render plain: 'Access denied', status: :forbidden
     else
       # Do not leak information about project existence
@@ -78,7 +78,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   def upload_pack_allowed?
     return false unless Gitlab.config.gitlab_shell.upload_pack
 
-    if user
+    if actor
       access_check.allowed?
     else
       ci? || project.public?
@@ -86,7 +86,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= Gitlab::GitAccess.new(user, project, 'http', authentication_abilities: authentication_abilities)
+    @access ||= Gitlab::GitAccess.new(actor, project, 'http', authentication_abilities: authentication_abilities)
   end
 
   def access_check

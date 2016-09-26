@@ -213,6 +213,49 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
+            describe 'lfs_token' do
+              context 'when lfs_token is provided' do
+                let(:lfs_token) { Gitlab::LfsToken.new(user).generate }
+                let(:env) { { user: user.username, password: lfs_token } }
+
+                it 'accepts clone attempt' do
+                  clone_get(path, env)
+
+                  expect(response).to have_http_status(200)
+                end
+
+                it 'accepts push attempt' do
+                  upload(path, env) do |response|
+                    expect(response).to have_http_status(200)
+                  end
+                end
+              end
+
+              context 'when lfs_deploy_token provided' do
+                let(:deploy_key) { create(:deploy_key) }
+                let(:env) { { user: "lfs+deploy-key-#{deploy_key.id}", password: Gitlab::LfsToken.new(deploy_key).generate } }
+
+                it 'rejects clone attempt if deploy_key not in project' do
+                  clone_get(path, env)
+
+                  expect(response).to have_http_status(404)
+                end
+
+                it 'accepts clone attempt' do
+                  deploy_key.projects << project
+                  clone_get(path, env)
+
+                  expect(response).to have_http_status(200)
+                end
+
+                it 'rejects push attempt' do
+                  upload(path, env) do |response|
+                    expect(response).to have_http_status(401)
+                  end
+                end
+              end
+            end
+
             context 'when user has 2FA enabled' do
               let(:user) { create(:user, :two_factor) }
               let(:access_token) { create(:personal_access_token, user: user) }

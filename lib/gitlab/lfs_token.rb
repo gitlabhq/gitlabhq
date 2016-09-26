@@ -38,11 +38,11 @@ module Gitlab
     end
 
     def type
-      actor.is_a?(User) ? :lfs_token : :lfs_deploy_token
+      user? ? :lfs_token : :lfs_deploy_token
     end
 
     def actor_name
-      actor.is_a?(User) ? actor.username : "lfs+deploy-key-#{actor.id}"
+      user? ? actor.username : "lfs+deploy-key-#{actor.id}"
     end
 
     private
