@@ -42,6 +42,7 @@ v 8.12.4 (unreleased)
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
+  - Add configurable email subject suffix
 
 v 8.12.2 (unreleased)
   - Fix Import/Export not recognising correctly the imported services.
@@ -271,7 +272,6 @@ v 8.11.6
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
   - Fix member expiration date picker after update. !6184
-  - Add configurable email subject suffix
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
