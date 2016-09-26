@@ -4,24 +4,28 @@ module CycleAnalyticsHelpers
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
 
-  def create_commit(message, project, user, branch_name)
-    filename = random_git_name
+  def create_commit(message, project, user, branch_name, count: 1)
     oldrev = project.repository.commit(branch_name).sha
+    commit_shas = Array.new(count) do |index|
+      filename = random_git_name
 
-    options = {
-      committer: project.repository.user_to_committer(user),
-      author: project.repository.user_to_committer(user),
-      commit: { message: message, branch: branch_name, update_ref: true },
-      file: { content: "content", path: filename, update: false }
-    }
+      options = {
+        committer: project.repository.user_to_committer(user),
+        author: project.repository.user_to_committer(user),
+        commit: { message: message, branch: branch_name, update_ref: true },
+        file: { content: "content", path: filename, update: false }
+      }
 
-    commit_sha = Gitlab::Git::Blob.commit(project.repository, options)
-    project.repository.commit(commit_sha)
+      commit_sha = Gitlab::Git::Blob.commit(project.repository, options)
+      project.repository.commit(commit_sha)
+
+      commit_sha
+    end
 
     GitPushService.new(project,
                        user,
                        oldrev: oldrev,
-                       newrev: commit_sha,
+                       newrev: commit_shas.last,
                        ref: 'refs/heads/master').execute
   end
 
