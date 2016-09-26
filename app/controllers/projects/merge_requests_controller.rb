@@ -378,10 +378,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if deployments
       deployments = deployments.map do |deployment|
+        project = deployment.project
+
         deployment = {
           environment_name: deployment.environment.name,
           environment_id: deployment.environment.id,
-          environment_url: namespace_project_environment_path(@project.namespace, @project, deployment.environment),
+          environment_url: namespace_project_environment_path(project.namespace, project, deployment.environment),
           external_url: deployment.environment.external_url,
           created_at: deployment.created_at,
           created_at_formatted: deployment.created_at.to_time.in_time_zone.to_s(:medium)

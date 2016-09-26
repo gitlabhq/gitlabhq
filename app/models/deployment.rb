@@ -33,6 +33,12 @@ class Deployment < ActiveRecord::Base
     project.repository.fetch_ref(project.repository.path_to_repo, ref, ref_path)
   end
 
+  def includes_commit?(commit)
+    return false unless commit
+
+    project.repository.is_ancestor?(commit.id, sha)
+  end
+
   def manual_actions
     deployable.try(:other_actions)
   end

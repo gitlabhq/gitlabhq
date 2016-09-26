@@ -38,6 +38,12 @@ class Environment < ActiveRecord::Base
       end
   end
 
+  def includes_commit?(commit)
+    return false unless last_deployment
+
+    last_deployment.includes_commit?(commit)
+  end
+
   def deployment_id_for(commit)
     ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
 
