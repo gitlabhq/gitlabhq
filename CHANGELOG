@@ -4,6 +4,7 @@ v 8.13.0 (unreleased)
   - Speed-up group milestones show page
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Revoke button in Applications Settings underlines on hover.
+  - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
 
 v 8.12.2 (unreleased)
   - Fix Import/Export not recognising correctly the imported services.
