@@ -112,7 +112,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'saves the correct service type' do
-        expect(saved_project_json['services'].first['type']).not_to be_nil
+        expect(saved_project_json['services'].first['type']).to eq('CustomIssueTrackerService')
       end
 
       it 'has project feature' do
