@@ -1355,9 +1355,6 @@ ActiveRecord::Schema.define(version: 20160915201649) do
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
-  add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
-  add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
-  add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"
