@@ -24,6 +24,8 @@
             = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
         %li.clearfix
           = cherry_pick_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
+        %li.clearfix
+          = link_to "Tag", new_namespace_project_tag_path(@project.namespace, @project, ref: @commit)
         %li.divider
         %li.dropdown-header
           Download
