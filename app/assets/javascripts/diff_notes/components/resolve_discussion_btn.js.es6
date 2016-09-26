@@ -1,12 +1,8 @@
 ((w) => {
   w.ResolveDiscussionBtn = Vue.extend({
-    mixins: [
-      ButtonMixins
-    ],
     props: {
       discussionId: String,
       mergeRequestId: Number,
-      namespacePath: String,
       projectPath: String,
       canResolve: Boolean,
     },
@@ -50,7 +46,7 @@
     },
     methods: {
       resolve: function () {
-        ResolveService.toggleResolveForDiscussion(this.namespace, this.mergeRequestId, this.discussionId);
+        ResolveService.toggleResolveForDiscussion(this.projectPath, this.mergeRequestId, this.discussionId);
       }
     },
     created: function () {
