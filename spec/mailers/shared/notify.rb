@@ -2,7 +2,6 @@ shared_context 'gitlab email notification' do
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
   let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
-  let(:gitlab_subject_suffix) { Gitlab.config.gitlab.email_subject_suffix }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
   let(:new_user_address) { 'newguy@example.com' }
@@ -32,9 +31,6 @@ shared_examples 'an email sent from GitLab' do
     sender = subject.header[:from].addrs[0]
     expect(sender.display_name).to eq(gitlab_sender_display_name)
     expect(sender.address).to eq(gitlab_sender)
-    if gitlab_subject_suffix.length > 0
-      is_expected.to have_subject gitlab_subject_suffix
-    end
   end
 
   it 'has a Reply-To address' do

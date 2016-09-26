@@ -1094,4 +1094,15 @@ describe Notify do
       is_expected.to have_body_text /#{diff_path}/
     end
   end
+
+  describe 'email has correct subject' do
+    let(:gitlab_subject_suffix) { Gitlab.config.gitlab.email_subject_suffix }
+
+    it 'has correct suffix' do
+      if gitlab_subject_suffix.length > 0
+        is_expected.to have_subject gitlab_subject_suffix
+      end
+    end
+  end
+
 end
