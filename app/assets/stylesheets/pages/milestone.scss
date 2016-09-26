@@ -2,13 +2,17 @@
   max-width: 90%;
 }
 
-li.milestone {
-  h4 {
-    font-weight: bold;
-  }
+.milestones {
+  .milestone {
+    padding: 10px 16px;
 
-  .progress {
-    height: 6px;
+    h4 {
+      font-weight: bold;
+    }
+
+    .progress {
+      height: 6px;
+    }
   }
 }
 
@@ -63,4 +67,15 @@ li.milestone {
 .milestone-detail {
   border-bottom: 1px solid $border-color;
   padding: 20px 0;
+}
+
+@media (max-width: $screen-sm-min) {
+  .milestone-actions {
+    @include clearfix();
+    padding-top: $gl-vert-padding;
+
+    .btn:first-child {
+      margin-left: 0;
+    }
+  }
 }

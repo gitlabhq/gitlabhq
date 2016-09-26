@@ -1,6 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.0 (unreleased)
+v 8.13.0 (unreleased)
+  - Speed-up group milestones show page
+
+v 8.12.2 (unreleased)
+
+v 8.12.1
+  - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
+  - Fix issue with search filter labels not displaying
+
+v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
@@ -81,6 +90,7 @@ v 8.12.0 (unreleased)
   - Fix markdown anchor icon interaction (ClemMakesApps)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
+  - Show badges in Milestone tabs. !5946 (Dan Rowden)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Require confirmation when not logged in for unsubscribe links !6223 (Maximiliano Perez Coto)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
