@@ -1,11 +1,13 @@
 module LfsHelper
+  include Gitlab::Routing.url_helpers
+  
   def require_lfs_enabled!
     return if Gitlab.config.lfs.enabled
 
     render(
       json: {
         message: 'Git LFS is not enabled on this GitLab server, contact your admin.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: help_url,
       },
       status: 501
     )
@@ -46,7 +48,7 @@ module LfsHelper
     render(
       json: {
         message: 'Access forbidden. Check your access level.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: help_url,
       },
       content_type: "application/vnd.git-lfs+json",
       status: 403
@@ -57,7 +59,7 @@ module LfsHelper
     render(
       json: {
         message: 'Not found.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: help_url,
       },
       content_type: "application/vnd.git-lfs+json",
       status: 404
