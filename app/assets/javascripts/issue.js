@@ -95,7 +95,11 @@
       return $.ajax({
         type: 'PATCH',
         url: $('form.js-issuable-update').attr('action'),
-        data: patchData
+        data: patchData,
+        success: function(issue) {
+          document.querySelector('#task_status').innerText = issue.task_status;
+          document.querySelector('#task_status_short').innerText = issue.task_status_short;
+        }
       });
     // TODO (rspeicher): Make the issue description inline-editable like a note so
     // that we can re-use its form here
