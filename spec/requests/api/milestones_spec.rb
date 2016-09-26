@@ -104,6 +104,14 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(400)
     end
+
+    it 'creates a new project with reserved html characters' do
+      post api("/projects/#{project.id}/milestones", user), title: 'foo & bar 1.1 -> 2.2'
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('foo & bar 1.1 -> 2.2')
+      expect(json_response['description']).to be_nil
+    end
   end
 
   describe 'PUT /projects/:id/milestones/:milestone_id' do
