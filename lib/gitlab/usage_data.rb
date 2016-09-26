@@ -39,7 +39,7 @@ module Gitlab
             pushes: Event.code_push.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
-            protected_branchess: ProtectedBranch.count,
+            protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,
             services: Service.where(active: true).count,

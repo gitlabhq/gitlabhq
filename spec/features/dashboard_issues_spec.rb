@@ -21,9 +21,6 @@ describe "Dashboard Issues filtering", feature: true, js: true do
 
       click_link 'No Milestone'
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_selector('.active .badge', text: '1')
-      end
       expect(page).to have_selector('.issue', count: 1)
     end
 
@@ -32,9 +29,6 @@ describe "Dashboard Issues filtering", feature: true, js: true do
 
       click_link 'Any Milestone'
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_selector('.active .badge', text: '2')
-      end
       expect(page).to have_selector('.issue', count: 2)
     end
 
@@ -45,9 +39,6 @@ describe "Dashboard Issues filtering", feature: true, js: true do
         click_link milestone.title
       end
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_selector('.active .badge', text: '1')
-      end
       expect(page).to have_selector('.issue', count: 1)
     end
   end
