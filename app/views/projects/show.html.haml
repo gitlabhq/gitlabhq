@@ -9,6 +9,9 @@
     = render 'shared/no_ssh'
     = render 'shared/no_password'
 
+  - if @project.above_size_limit?
+    = render 'over_limit_message'
+
 = render 'projects/last_push'
 = render "home_panel"
 
