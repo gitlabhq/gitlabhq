@@ -259,7 +259,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :push_rules, only: [:index, :update]
+    resource :push_rule, only: [:show, :update]
 
     resource :impersonation, only: :destroy
 
