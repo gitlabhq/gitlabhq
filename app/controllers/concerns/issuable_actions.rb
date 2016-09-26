@@ -2,7 +2,7 @@ module IssuableActions
   extend ActiveSupport::Concern
 
   included do
-    before_action :labels, only: [:new, :edit]
+    before_action :labels, only: [:show, :new, :edit]
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
   end
