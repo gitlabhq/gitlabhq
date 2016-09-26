@@ -15,6 +15,7 @@ v 8.13.0 (unreleased)
   - Add organization field to user profile
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
+  - Notify the Merger about merge after successful build (Dimitris Karakasilis)
 
 v 8.12.2 (unreleased)
   - Added University content to doc/university
