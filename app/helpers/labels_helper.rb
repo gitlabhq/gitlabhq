@@ -31,7 +31,13 @@ module LabelsHelper
   #
   # Returns a String
   def link_to_label(label, subject: nil, type: :issue, tooltip: true, css_class: nil, &block)
-    link = label_filter_path(label, type: type)
+    subject ||=
+      case label
+      when GroupLabel then label.group
+      when ProjectLabel then label.project
+      end
+
+    link = label_filter_path(subject, label, type: type)
 
     if block_given?
       link_to link, class: css_class, &block
@@ -40,16 +46,16 @@ module LabelsHelper
     end
   end
 
-  def label_filter_path(label, type: issue)
-    case label
-    when GroupLabel
+  def label_filter_path(subject, label, type: issue)
+    case subject
+    when Group
       send("#{type.to_s.pluralize}_group_path",
-                  label.group,
+                  subject,
                   label_name: [label.name])
-    else
+    when Project
       send("namespace_project_#{type.to_s.pluralize}_path",
-                  label.project.namespace,
-                  label.project,
+                  subject.namespace,
+                  subject,
                   label_name: [label.name])
     end
   end
