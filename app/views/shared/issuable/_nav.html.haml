@@ -5,21 +5,21 @@
 %ul.nav-links.issues-state-filters
   %li{class: ("active" if params[:state] == 'opened')}
     = link_to page_filter_path(state: 'opened', label: true), title: "Filter by #{page_context_word} that are currently opened." do
-      #{issuables_state_counter_text(:opened, issuables)}
+      #{issuables_state_counter_text(type, :opened)}
 
   - if type == :merge_requests
     %li{class: ("active" if params[:state] == 'merged')}
       = link_to page_filter_path(state: 'merged', label: true), title: 'Filter by merge requests that are currently merged.' do
-        #{issuables_state_counter_text(:merged, issuables)}
+        #{issuables_state_counter_text(type, :merged)}
 
     %li{class: ("active" if params[:state] == 'closed')}
       = link_to page_filter_path(state: 'closed', label: true), title: 'Filter by merge requests that are currently closed and unmerged.' do
-        #{issuables_state_counter_text(:closed, issuables)}
+        #{issuables_state_counter_text(type, :closed)}
   - else
     %li{class: ("active" if params[:state] == 'closed')}
       = link_to page_filter_path(state: 'closed', label: true), title: 'Filter by issues that are currently closed.' do
-        #{issuables_state_counter_text(:closed, issuables)}
+        #{issuables_state_counter_text(type, :closed)}
 
   %li{class: ("active" if params[:state] == 'all')}
     = link_to page_filter_path(state: 'all', label: true), title: "Show all #{page_context_word}." do
-      #{issuables_state_counter_text(:all, issuables)}
+      #{issuables_state_counter_text(type, :all)}

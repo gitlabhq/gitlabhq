@@ -280,29 +280,6 @@ module ApplicationHelper
     end
   end
 
-  def issuables_state_counter_text(state, issuables)
-    titles = {
-      opened: "Open"
-    }
-
-    state_title = titles[state] || state.to_s.humanize
-
-    count =
-      if @issues || @merge_requests
-        issuables_finder = @issues ? issues_finder : merge_requests_finder
-        issuables_finder.params[:state] = state
-        issuables_finder.execute.page(1).total_count
-      end
-
-    html = content_tag(:span, state_title)
-
-    if count.present?
-      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
-    end
-
-    html.html_safe
-  end
-
   def truncate_first_line(message, length = 50)
     truncate(message.each_line.first.chomp, length: length) if message
   end
