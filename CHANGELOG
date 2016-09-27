@@ -272,9 +272,6 @@ v 8.11.6
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
   - Fix member expiration date picker after update. !6184
-
-v 8.11.5 (unreleased)
-  - Optimize branch lookups and force a repository reload for Repository#find_branch
   - Fix suggested colors options for new labels in the admin area. !6138
   - Optimize discussion notes resolving and unresolving
   - Fix GitLab import button
