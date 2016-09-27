@@ -181,7 +181,7 @@ class Repository
     before_remove_branch
 
     branch = find_branch(branch_name)
-    oldrev = branch.try(:target).try(:id)
+    oldrev = branch.try(:dereferenced_target).try(:id)
     newrev = Gitlab::Git::BLANK_SHA
     ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
 
@@ -297,10 +297,10 @@ class Repository
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
       number_commits_behind = raw_repository.
-        count_commits_between(branch.target.sha, root_ref_hash)
+        count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
 
       number_commits_ahead = raw_repository.
-        count_commits_between(root_ref_hash, branch.target.sha)
+        count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -682,11 +682,11 @@ class Repository
       branches.sort_by(&:name)
     when 'updated_desc'
       branches.sort do |a, b|
-        commit(b.target).committed_date <=> commit(a.target).committed_date
+        commit(b.dereferenced_target).committed_date <=> commit(a.dereferenced_target).committed_date
       end
     when 'updated_asc'
       branches.sort do |a, b|
-        commit(a.target).committed_date <=> commit(b.target).committed_date
+        commit(a.dereferenced_target).committed_date <=> commit(b.dereferenced_target).committed_date
       end
     else
       branches
@@ -861,7 +861,7 @@ class Repository
       branch = find_branch(ref)
 
       if branch
-        last_commit = branch.target
+        last_commit = branch.dereferenced_target
         index.read_tree(last_commit.raw_commit.tree)
         parents = [last_commit.sha]
       end
@@ -948,7 +948,7 @@ class Repository
   end
 
   def revert(user, commit, base_branch, revert_tree_id = nil)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).dereferenced_target.sha
     revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
@@ -965,7 +965,7 @@ class Repository
   end
 
   def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).dereferenced_target.sha
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
 
     return false unless cherry_pick_tree_id
@@ -994,7 +994,7 @@ class Repository
   end
 
   def check_revert_content(commit, base_branch)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).dereferenced_target.sha
     args       = [commit.id, source_sha]
     args << { mainline: 1 } if commit.merge_commit?
 
@@ -1008,7 +1008,7 @@ class Repository
   end
 
   def check_cherry_pick_content(commit, base_branch)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).dereferenced_target.sha
     args       = [commit.id, source_sha]
     args << 1 if commit.merge_commit?
 
@@ -1081,7 +1081,7 @@ class Repository
     if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
       oldrev = Gitlab::Git::BLANK_SHA
     else
-      oldrev = rugged.merge_base(newrev, target_branch.target.sha)
+      oldrev = rugged.merge_base(newrev, target_branch.dereferenced_target.sha)
     end
 
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
@@ -1141,7 +1141,7 @@ class Repository
   end
 
   def tags_sorted_by_committed_date
-    tags.sort_by { |tag| tag.target.committed_date }
+    tags.sort_by { |tag| tag.dereferenced_target.committed_date }
   end
 
   def keep_around_ref_name(sha)

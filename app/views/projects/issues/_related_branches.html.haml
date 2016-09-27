@@ -4,7 +4,7 @@
   %ul.unstyled-list.related-merge-requests
     - @related_branches.each do |branch|
       %li
-        - target = @project.repository.find_branch(branch).target
+        - target = @project.repository.find_branch(branch).dereferenced_target
         - pipeline = @project.pipeline_for(branch, target.sha) if target
         - if pipeline
           %span.related-branch-ci-status
