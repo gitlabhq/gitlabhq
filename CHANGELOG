@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
+  - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Speed-up group milestones show page
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
