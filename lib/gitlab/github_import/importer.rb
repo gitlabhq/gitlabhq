@@ -10,6 +10,7 @@ module Gitlab
         @repo     = project.import_source
         @repo_url = project.import_url
         @errors   = []
+        @labels   = {}
 
         if credentials
           @client = Client.new(credentials[:user])
@@ -49,7 +50,8 @@ module Gitlab
         client.labels(repo, per_page: 100) do |labels|
           labels.each do |raw|
             begin
-              LabelFormatter.new(project, raw).create!
+              label = LabelFormatter.new(project, raw).create!
+              @labels[label.title] = label.id
             rescue => e
               errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
@@ -77,7 +79,7 @@ module Gitlab
             if gh_issue.valid?
               begin
                 issue = gh_issue.create!
-                apply_labels(issue)
+                apply_labels(issue, raw)
                 import_comments(issue) if gh_issue.has_comments?
               rescue => e
                 errors << { type: :issue, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
@@ -98,7 +100,7 @@ module Gitlab
               restore_target_branch(pull_request) unless pull_request.target_branch_exists?
 
               merge_request = pull_request.create!
-              apply_labels(merge_request)
+              apply_labels(merge_request, raw)
               import_comments(merge_request)
               import_comments_on_diff(merge_request)
             rescue => e
@@ -131,12 +133,10 @@ module Gitlab
         project.repository.after_remove_branch
       end
 
-      def apply_labels(issuable)
-        issue = client.issue(repo, issuable.iid)
-
-        if issue.labels.count > 0
-          label_ids = issue.labels
-            .map { |attrs| project.labels.find_by(title: attrs.name).try(:id) }
+      def apply_labels(issuable, raw_issuable)
+        if raw_issuable.labels.count > 0
+          label_ids = raw_issuable.labels
+            .map { |attrs| @labels[attrs.name] }
             .compact
 
           issuable.update_attribute(:label_ids, label_ids)
