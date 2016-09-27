@@ -65,43 +65,15 @@
     };
 
     EditBlob.prototype.initSoftWrap = function() {
-      this.isExplicitySelected = false
-      this.$filePathInput = $('#file_path, #file_name');
+      this.isSoftWrapped = false;
       this.$toggleButton = $('.soft-wrap-toggle');
-      this.$toggleText = $('span', this.$toggleButton);
-      this.$noWrapIcon = $('.no-wrap-icon', this.$toggleButton);
-      this.$softWrapIcon = $('.soft-wrap-icon', this.$toggleButton);
-      this.checkFilePathIsCode();
-      this.$filePathInput.on('keyup', _.debounce(this.checkFilePathIsCode.bind(this), 300));
-      this.$toggleButton.on('click', this.clickSoftWrapButton.bind(this));
+      this.$toggleButton.on('click', this.toggleSoftWrap.bind(this));
     };
 
-    EditBlob.prototype.toggleSoftWrap = function(forceToggle) {
-      if (_.isBoolean(forceToggle)) {
-        this.isSoftWrapped = forceToggle;
-      } else {
-        this.isSoftWrapped = !this.isSoftWrapped;
-      }
-      if(this.isSoftWrapped) {
-        this.$toggleText.text('No wrap');
-        this.$noWrapIcon.removeClass('hidden');
-        this.$softWrapIcon.addClass('hidden');
-      } else {
-        this.$toggleText.text('Soft wrap');
-        this.$softWrapIcon.removeClass('hidden');
-        this.$noWrapIcon.addClass('hidden');
-      }
+    EditBlob.prototype.toggleSoftWrap = function(e) {
+      this.isSoftWrapped = !this.isSoftWrapped;
+      this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
       this.editor.getSession().setUseWrapMode(this.isSoftWrapped);
-    };
-
-    EditBlob.prototype.checkFilePathIsCode = function() {
-      var isNotCode = /^(.*?\.(txt|md)|[^.]*?)$/i.test(this.$filePathInput.val());
-      if (!this.isExplicitySelected) this.toggleSoftWrap(isNotCode);
-    };
-
-    EditBlob.prototype.clickSoftWrapButton = function() {
-      if (!this.isExplicitySelected) this.isExplicitySelected = true;
-      this.toggleSoftWrap();
     };
 
     return EditBlob;
