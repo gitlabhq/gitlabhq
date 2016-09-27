@@ -1,7 +1,7 @@
 .hidden-xs
   - if can?(current_user, :create_project_snippet, @project)
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: 'btn btn-grouped btn-create new-snippet-link', title: "New Snippet" do
-      New Snippet
+    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: 'btn btn-grouped btn-create new-snippet-link', title: "New snippet" do
+      New snippet
   - if can?(current_user, :update_project_snippet, @snippet)
     = link_to namespace_project_snippet_path(@project.namespace, @project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-danger", title: 'Delete Snippet' do
       Delete
@@ -17,8 +17,8 @@
       %ul
         - if can?(current_user, :create_project_snippet, @project)
           %li
-            = link_to new_namespace_project_snippet_path(@project.namespace, @project), title: "New Snippet" do
-              New Snippet
+            = link_to new_namespace_project_snippet_path(@project.namespace, @project), title: "New snippet" do
+              New snippet
         - if can?(current_user, :update_project_snippet, @snippet)
           %li
             = link_to namespace_project_snippet_path(@project.namespace, @project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, title: 'Delete Snippet' do

@@ -328,6 +328,42 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#merge_commit_message' do
+    it 'includes merge information as the title' do
+      request = build(:merge_request, source_branch: 'source', target_branch: 'target')
+
+      expect(request.merge_commit_message)
+        .to match("Merge branch 'source' into 'target'\n\n")
+    end
+
+    it 'includes its title in the body' do
+      request = build(:merge_request, title: 'Remove all technical debt')
+
+      expect(request.merge_commit_message)
+        .to match("Remove all technical debt\n\n")
+    end
+
+    it 'includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message)
+        .to match("By removing all code\n\n")
+    end
+
+    it 'includes its reference in the body' do
+      request = build_stubbed(:merge_request)
+
+      expect(request.merge_commit_message)
+        .to match("See merge request #{request.to_reference}")
+    end
+
+    it 'excludes multiple linebreak runs when description is blank' do
+      request = build(:merge_request, title: 'Title', description: nil)
+
+      expect(request.merge_commit_message).not_to match("Title\n\n\n\n")
+    end
+  end
+
   describe "#reset_merge_when_build_succeeds" do
     let(:merge_if_green) do
       create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),

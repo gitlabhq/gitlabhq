@@ -36,7 +36,7 @@
       .avatar-holder
         = link_to avatar_icon(@user, 400), target: '_blank' do
           = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
-    
+
       .user-info
         .cover-title
           = @user.name
@@ -70,6 +70,10 @@
             .profile-link-holder.middle-dot-divider
               = icon('map-marker')
               = @user.location
+          - unless @user.organization.blank?
+            .profile-link-holder.middle-dot-divider
+              = icon('building')
+              = @user.organization
 
     - if @user.bio.present?
       .cover-desc

@@ -169,8 +169,9 @@ shared_examples 'it should show Gmail Actions View Commit link' do
 end
 
 shared_examples 'an unsubscribeable thread' do
-  it 'has a List-Unsubscribe header' do
+  it 'has a List-Unsubscribe header in the correct format' do
     is_expected.to have_header 'List-Unsubscribe', /unsubscribe/
+    is_expected.to have_header 'List-Unsubscribe', /^<.+>$/
   end
 
   it { is_expected.to have_body_text /unsubscribe/ }

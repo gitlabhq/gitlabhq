@@ -4,15 +4,11 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project_with_board, :public) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
 
   before do
-    project.create_board
-    project.board.lists.create(list_type: :backlog)
-    project.board.lists.create(list_type: :done)
-
     project.team << [user, :master]
     project.team << [user2, :master]
 
@@ -62,6 +58,7 @@ describe 'Issue Boards', feature: true, js: true do
     let(:bug)         { create(:label, project: project, name: 'Bug') }
     let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
     let!(:done)       { create(:label, project: project, name: 'Done') }
+    let!(:accepting)  { create(:label, project: project, name: 'Accepting Merge Requests') }
 
     let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: project.board, label: development, position: 1) }
@@ -75,7 +72,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development]) }
     let!(:issue7) { create(:labeled_issue, project: project, labels: [development]) }
     let!(:issue8) { create(:closed_issue, project: project) }
-    let!(:issue9) { create(:labeled_issue, project: project, labels: [testing, bug]) }
+    let!(:issue9) { create(:labeled_issue, project: project, labels: [testing, bug, accepting]) }
 
     before do
       visit namespace_project_board_path(project.namespace, project)
@@ -439,6 +436,34 @@ describe 'Issue Boards', feature: true, js: true do
         wait_for_vue_resource
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..4))
+      end
+
+      it 'filters by label with space after reload' do
+        page.within '.issues-filters' do
+          click_button('Label')
+          wait_for_ajax
+
+          page.within '.dropdown-menu-labels' do
+            click_link(accepting.title)
+            wait_for_vue_resource(spinner: false)
+            find('.dropdown-menu-close').click
+          end
+        end
+
+        # Test after reload
+        page.evaluate_script 'window.location.reload()'
+
+        wait_for_vue_resource
+
+        page.within(find('.board', match: :first)) do
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        page.within(find('.board:nth-child(2)')) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
       end
 
       it 'infinite scrolls list with label filter' do
