@@ -69,15 +69,17 @@
 
     getUnmarkedIndeterminedLabels() {
       const result = [];
-      const elements = this.getElement('.labels-filter .is-indeterminate');
-      const labelsToKeep = elements.map((el) => labelsToKeep.push($(el).data('labelId')));
-      const selectedLabels = this.getLabelsFromSelection()
-        .forEach(() => {
-          const id = selectedLabels[j];
-          if (labelsToKeep.indexOf(id) === -1) {
-            result.push(id);
-          }
-        });
+      const labelsToKeep = [];
+
+      this.getElement('.labels-filter .is-indeterminate')
+        .each((i, el) => labelsToKeep.push($(el).data('labelId')));
+
+      this.getLabelsFromSelection().forEach((id) => {
+        if (labelsToKeep.indexOf(id) === -1) {
+          result.push(id);
+        }
+      });
+
       return result;
     }
 
