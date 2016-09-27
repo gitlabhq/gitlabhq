@@ -112,7 +112,7 @@
     fixture.preload('search_autocomplete.html');
     beforeEach(function() {
       fixture.load('search_autocomplete.html');
-      return widget = new SearchAutocomplete;
+      return widget = new gl.SearchAutocomplete;
     });
     it('should show Dashboard specific dropdown menu', function() {
       var list;
