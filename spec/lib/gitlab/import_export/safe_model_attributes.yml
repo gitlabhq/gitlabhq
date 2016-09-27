@@ -64,7 +64,9 @@ Label:
 - id
 - title
 - color
+- group_id
 - project_id
+- type
 - created_at
 - updated_at
 - template
