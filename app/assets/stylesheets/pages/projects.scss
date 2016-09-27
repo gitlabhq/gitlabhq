@@ -743,6 +743,19 @@ pre.light-well {
   .dropdown-menu {
     width: 300px;
   }
+
+  > .input-group > .compare-dropdown-toggle {
+    width: 200px;
+
+    .dropdown-toggle-text {
+      display: block;
+      height: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+    }
+  }
 }
 
 .clearable-input {

@@ -5,13 +5,17 @@
     .form-group.dropdown.compare-form-group.js-compare-from-dropdown
       .input-group.inline-input-group
         %span.input-group-addon from
-        = text_field_tag :from, params[:from], class: "form-control js-compare-dropdown", required: true, data: { refs_url: refs_namespace_project_path(@project.namespace, @project), toggle: "dropdown", target: ".js-compare-from-dropdown", selected: params[:from].presence }
+        = hidden_field_tag :from, params[:from]
+        = button_tag type: 'button', class: "form-control compare-dropdown-toggle js-compare-dropdown", required: true, data: { refs_url: refs_namespace_project_path(@project.namespace, @project), toggle: "dropdown", target: ".js-compare-from-dropdown", selected: params[:from], field_name: :from } do
+          .dropdown-toggle-text= params[:from] || 'Select branch/tag'
       = render "ref_dropdown"
     = "..."
     .form-group.dropdown.compare-form-group.js-compare-to-dropdown
       .input-group.inline-input-group
         %span.input-group-addon to
-        = text_field_tag :to, params[:to], class: "form-control js-compare-dropdown", required: true, data: { refs_url: refs_namespace_project_path(@project.namespace, @project), toggle: "dropdown", target: ".js-compare-to-dropdown", selected: params[:to].presence }
+        = hidden_field_tag :to, params[:to]
+        = button_tag type: 'button', class: "form-control compare-dropdown-toggle js-compare-dropdown", required: true, data: { refs_url: refs_namespace_project_path(@project.namespace, @project), toggle: "dropdown", target: ".js-compare-to-dropdown", selected: params[:to], field_name: :to } do
+          .dropdown-toggle-text= params[:to] || 'Select branch/tag'
       = render "ref_dropdown"
     &nbsp;
     = button_tag "Compare", class: "btn btn-create commits-compare-btn"
