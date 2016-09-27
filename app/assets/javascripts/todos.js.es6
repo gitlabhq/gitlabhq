@@ -1,7 +1,7 @@
 ((global) => {
 
   class Todos {
-    constructor({ el }) {
+    constructor({ el } = {}) {
       this.allDoneClicked = this.allDoneClicked.bind(this);
       this.doneClicked = this.doneClicked.bind(this);
       this.el = el || $('.js-todos-options');
