@@ -62,6 +62,7 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include 'email'
+        expect(json_response.first.keys).to include 'organization'
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
         expect(json_response.first.keys).to include 'two_factor_enabled'
