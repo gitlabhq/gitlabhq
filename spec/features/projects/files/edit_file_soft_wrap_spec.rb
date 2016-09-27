@@ -23,42 +23,16 @@ feature 'User uses soft wrap whilst editing file', feature: true, js: true do
 
   let(:toggle_button) { find('.soft-wrap-toggle') }
 
-  scenario 'user clicks the "No wrap" button and then "Soft wrap" button' do
+  scenario 'user clicks the "Soft wrap" button and then "No wrap" button' do
     wrapped_content_width = get_content_width
-    toggle_button.click
-    expect(toggle_button).to have_content 'Soft wrap'
-    unwrapped_content_width = get_content_width
-    expect(unwrapped_content_width).to be > wrapped_content_width
-
     toggle_button.click
     expect(toggle_button).to have_content 'No wrap'
-    expect(get_content_width).to be < unwrapped_content_width
-  end
-
-  scenario 'user adds a ".js" extension and then changes to a ".md" extension' do
-    wrapped_content_width = get_content_width
-
-    fill_in 'file_name', with: 'test_file-name.js'
-    expect(toggle_button).to have_content 'Soft wrap'
     unwrapped_content_width = get_content_width
-    expect(unwrapped_content_width).to be > wrapped_content_width
-
-    fill_in 'file_name', with: 'test_file-name.md'
-    expect(toggle_button).to have_content 'No wrap'
-    expect(get_content_width).to be < unwrapped_content_width
-  end
-
-  scenario 'user clicks "No wrap" and then changes to a ".md" extension' do
-    wrapped_content_width = get_content_width
+    expect(unwrapped_content_width).to be < wrapped_content_width
 
     toggle_button.click
     expect(toggle_button).to have_content 'Soft wrap'
-    unwrapped_content_width = get_content_width
-    expect(unwrapped_content_width).to be > wrapped_content_width
-
-    fill_in 'file_name', with: 'test_file-name.md'
-    expect(toggle_button).to have_content 'Soft wrap'
-    expect(unwrapped_content_width).to be == get_content_width
+    expect(get_content_width).to be > unwrapped_content_width
   end
 
   def get_content_width
