@@ -4,15 +4,11 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project_with_board, :public) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
 
   before do
-    project.create_board
-    project.board.lists.create(list_type: :backlog)
-    project.board.lists.create(list_type: :done)
-
     project.team << [user, :master]
     project.team << [user2, :master]
 
