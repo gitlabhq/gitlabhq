@@ -257,6 +257,29 @@ describe 'Git LFS API and storage' do
           it_behaves_like 'responds with a file'
         end
 
+        describe 'when using a user key' do
+          let(:authorization) { authorize_user_key }
+
+          context 'when user allowed' do
+            let(:update_permissions) do
+              project.team << [user, :master]
+              project.lfs_objects << lfs_object
+            end
+
+            it_behaves_like 'responds with a file'
+          end
+
+          context 'when user not allowed' do
+            let(:update_permissions) do
+              project.lfs_objects << lfs_object
+            end
+
+            it 'responds with status 404' do
+              expect(response).to have_http_status(404)
+            end
+          end
+        end
+
         context 'when build is authorized as' do
           let(:authorization) { authorize_ci_project }
 
@@ -1111,6 +1134,10 @@ describe 'Git LFS API and storage' do
 
   def authorize_deploy_key
     ActionController::HttpAuthentication::Basic.encode_credentials("lfs+deploy-key-#{key.id}", Gitlab::LfsToken.new(key).generate)
+  end
+
+  def authorize_user_key
+    ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).generate)
   end
 
   def fork_project(project, user, object = nil)

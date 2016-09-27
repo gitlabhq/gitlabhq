@@ -18,6 +18,8 @@ module Gitlab
     end
 
     def generate
+      return value if value
+
       token = Devise.friendly_token(TOKEN_LENGTH)
 
       Gitlab::Redis.with do |redis|
