@@ -143,8 +143,8 @@ spinach 9 10: *spinach-knapsack
 .ruby-21: &ruby-21
   image: "ruby:2.1"
   <<: *use-db
-  # only:
-  #   - master
+  only:
+    - master
   cache:
     key: "ruby21"
     paths:
