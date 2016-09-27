@@ -77,14 +77,11 @@ v 8.12.2
   - Only update issuable labels if they have been changed
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
+  - Refactor remnants of CoffeeScript destructured opts and super !6261
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
   - Fix issue with search filter labels not displaying
-
-v 8.12.0
-v 8.12.1 (unreleased)
-  - Refactor remnants of CoffeeScript destructured opts and super !6261
 
 v 8.12.0 (released)
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
