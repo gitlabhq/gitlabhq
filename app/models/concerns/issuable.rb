@@ -235,9 +235,19 @@ module Issuable
   end
 
   def add_labels_by_names(label_names)
+    label_ids = []
+    label_ids << project.group.labels.select(:id) if project.group.present?
+    label_ids << project.labels.select(:id)
+
+    union = Gitlab::SQL::Union.new(label_ids)
+
+    available_labels = Label.where("labels.id IN (#{union.to_sql})")
+
     label_names.each do |label_name|
-      label = project.labels.create_with(color: Label::DEFAULT_COLOR).
-        find_or_create_by(title: label_name.strip)
+      title = label_name.strip
+      label = available_labels.find_by(title: title)
+      label = project.labels.build(title: title, color: Label::DEFAULT_COLOR) if label.nil?
+
       self.labels << label
     end
   end
