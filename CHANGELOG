@@ -8,6 +8,7 @@ v 8.12.2 (unreleased)
   - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
   - Fix errors importing project feature and milestone models using GitLab project import
   - Make JWT messages Docker-compatible
+  - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
