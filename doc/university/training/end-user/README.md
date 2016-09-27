@@ -44,7 +44,7 @@ project.
 ### Getting Help
 
 - Use the tools at your disposal when you get stuck.
-  - Use 'git help <command>' command
+  - Use `git help <command>` command
   - Use Google (i.e. StackOverflow, Google groups)
   - Read documentation at https://git-scm.com
 
@@ -59,30 +59,30 @@ Workshop Time!
 
 - Windows: Install 'Git for Windows'
   - https://git-for-windows.github.io
-- Mac: Type 'git' in the Terminal application.
+- Mac: Type `git` in the Terminal application.
   - If it's not installed, it will prompt you to install it.
 - Linux
-  - Debian: 'sudo apt-get install git-all'
-  - Red Hat 'sudo yum install git-all'
+  - Debian: `sudo apt-get install git-all`
+  - Red Hat `sudo yum install git-all`
 
 ---
 
 ### Configure
 
-- One-time configuration of the Git client
+- One-time configuration of the Git client:
 
-~~~ bash
+```bash
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
-~~~    
+```    
 
 - If you don't use the global flag you can setup a different author for
   each project
-- Check settings with
+- Check settings with:
 
-~~~ bash
+```bash
 git config --global --list
-~~~
+```
 - You might want or be required to use an SSH key.
     - Instructions: [SSH](http://doc.gitlab.com/ce/ssh/README.html)
 
@@ -96,7 +96,7 @@ git config --global --list
 
 ---
 
-~~~ bash
+```bash
 mkdir ~/development
 cd ~/development
 
@@ -104,7 +104,7 @@ cd ~/development
 
 mkdir ~/workspace
 cd ~/workspace  
-~~~
+```
 
 ---
 
@@ -155,7 +155,7 @@ cd ~/workspace
 
 ---
 
-~~~ shell
+```shell
 # Edit `edit_this_file.rb`
 git status
 git diff
@@ -163,7 +163,7 @@ git add <file>
 git commit -m 'My change'
 git push origin master
 git log
-~~~
+```
 
 ---  
 
@@ -176,14 +176,14 @@ git log
 
 ---
 
-~~~ shell
+```shell
 git checkout -b squash_some_bugs
 # Edit `bugs.rb`
 git status
 git add bugs.rb
 git commit -m 'Fix some buggy code'
 git push origin squash_some_bugs
-~~~
+```
 
 ---
 
@@ -314,7 +314,7 @@ Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
 ### Unstage
 
-To remove files from stage use reset HEAD. Where HEAD is the last commit of the current branch.
+To remove files from stage use reset HEAD. Where HEAD is the last commit of the current branch:
 
     git reset HEAD <file>
 
@@ -322,12 +322,12 @@ This will unstage the file but maintain the modifications. To revert the file ba
 
     git checkout -- <file>
 
-To remove a file from disk and repo use 'git rm' and to rm a dir use the '-r' flag.
+To remove a file from disk and repo use 'git rm' and to rm a dir use the '-r' flag:
 
     git rm '*.txt'
     git rm -r <dirname>
 
-If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our .gitignore file then use --cache.
+If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our .gitignore file then use `--cache`:
 
     git rm <filename> --cache
 
@@ -335,7 +335,7 @@ If we want to remove a file from the repository but keep it on disk, say we forg
 
 ### Undo Commits
 
-Undo last commit putting everything back into the staging area.
+Undo last commit putting everything back into the staging area:
 
     git reset --soft HEAD^
 
@@ -347,7 +347,7 @@ Undo last and remove changes
 
     git reset --hard HEAD^
 
-Same as last one but for two commits back
+Same as last one but for two commits back:
 
     git reset --hard HEAD^^
 
