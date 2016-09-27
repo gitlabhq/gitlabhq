@@ -340,7 +340,7 @@ add the following script to the User Data section:
     runcmd:
     - mkdir -p /gitlab-data
     - chown ec2-user:ec2-user /gitlab-data
-    - echo "$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone).file-system-id.aws-region.amazonaws.com:/ /gitlab-data nfs defaults,vers=4.1 0 0" >> /etc/fstab
+    - echo "$(curl --silent http://169.254.169.254/latest/meta-data/placement/availability-zone).file-system-id.aws-region.amazonaws.com:/ /gitlab-data nfs defaults,vers=4.1 0 0" >> /etc/fstab
     - mount -a -t nfs
     - sudo gitlab-ctl reconfigure
 
