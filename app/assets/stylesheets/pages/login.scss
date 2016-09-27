@@ -40,7 +40,7 @@
   p {
     font-size: 13px;
   }
-  .login-box {
+  .login-box, .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
@@ -79,69 +79,57 @@
       background: transparent;
     }
 
-  .form-control {
-    font-size: 14px;
-    padding: 10px 8px;
-    width: 100%;
-    height: auto;
+    // Styles the glowing border of focused input for username async validation
+    .login-body {
+      font-size: 13px;
 
-    &.top {
-      border-radius: 5px 5px 0 0;
-      margin-bottom: 0;
-    }
 
-    &.bottom {
-      border-radius: 0 0 5px 5px;
-      border-top: 0;
-      margin-bottom: 20px;
+      input + p {
+        margin-top: 5px;
+      }
+
+      .gl-field-success-outline {
+        border: 1px solid $green-normal;
+
+        &:focus {
+          box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 $green-normal;
+          border: 0 none;
+        }
+      }
+
+      .gl-field-error-outline {
+        border: 1px solid $red-normal;
+
+        &:focus {
+          box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 rgba(210, 40, 82, 0.6);
+          border: 0 none;
+        }
+      }
+
+      .username .validation-success,
+      .gl-field-success-message {
+        color: $green-normal;
+      }
+
+      .username .validation-error,
+      .gl-field-error-message {
+        color: $red-normal;
+      }
+
+      .gl-field-hint {
+        color: $gl-text-color;
+      }
+
     }
   }
 
-  // Styles the glowing border of focused input for username async validation
-  .login-body {
-    font-size: 13px;
-
-
-    input + p {
-      margin-top: 5px;
+  .omniauth-container {
+    p {
+      margin: 0;
     }
-
-    .gl-field-success-outline {
-      border: 1px solid $green-normal;
-
-      &:focus {
-        box-shadow: 0 0 0 1px $green-normal inset, 0 0 4px 0 $green-normal;
-        border: 0 none;
-      }
-    }
-
-    .gl-field-error-outline {
-      border: 1px solid $red-normal;
-
-      &:focus {
-        opacity: .6;
-        box-shadow: 0 0 0 1px $red-normal inset, 0 0 4px 0 $red-normal;
-        border: 0 none;
-      }
-    }
-
-    .username .validation-success,
-    .gl-field-success-message {
-      color: $green-normal;
-    }
-
-    .username .validation-error,
-    .gl-field-error-message {
-      color: $red-normal;
-    }
-
-    .gl-field-hint {
-      color: $gl-text-color;
-    }
-
   }
-
-  .new-session-tabs { // Are these being applied to other login-related screens? They need to be.
+  .new-session-tabs {
+    display: -webkit-flex;
     display: flex;
     box-shadow: 0 0 0 1px $border-color;
     border-top-right-radius: 2px;
@@ -151,10 +139,6 @@
       flex: 1;
       text-align: center;
 
-    &.middle {
-      border-top: 0;
-      margin-bottom: 0;
-      border-radius: 0;
       &:last-of-type {
         border-left: 1px solid $border-color;
       }
@@ -204,7 +188,7 @@
 
   input[type="submit"] {
     @extend .btn-block;
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 
   .devise-errors {
