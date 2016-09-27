@@ -1104,5 +1104,4 @@ describe Notify do
       end
     end
   end
-
 end
