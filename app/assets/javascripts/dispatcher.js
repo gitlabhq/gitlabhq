@@ -193,6 +193,9 @@
         case 'projects:cycle_analytics:show':
           new gl.CycleAnalytics();
           break;
+        case 'profiles:accounts:show':
+          new gl.PrivateTokenViewer();
+          break;
       }
       switch (path.first()) {
         case 'admin':

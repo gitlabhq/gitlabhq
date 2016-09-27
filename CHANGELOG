@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.13.0 (unreleased)
   - Speed-up group milestones show page
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
+  - Hide API token by default on profile page
   - Revoke button in Applications Settings underlines on hover.
   - Add organization field to user profile
 

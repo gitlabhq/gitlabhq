@@ -12,16 +12,26 @@
     %p
       Your private token is used to access application resources without authentication.
   .col-lg-9
-    = form_for @user, url: reset_private_token_profile_path, method: :put, html: { class: "private-token" } do |f|
-      %p.cgray
-        - if current_user.private_token
+    %p.cgray
+      - if current_user.private_token
+        #private-token-show{class: @private_token.blank? && 'hidden'}
           = label_tag "token", "Private token", class: "label-light"
-          = text_field_tag "token", current_user.private_token, class: "form-control"
-        - else
-          %span You don`t have one yet. Click generate to fix it.
-      %p.help-block
-        It can be used for atom feeds or the API. Keep it secret!
-      .prepend-top-default
+          = text_field_tag "token", @private_token, class: "form-control"
+        #private-token-request{class: @private_token.present? && 'hidden'}
+          = form_tag private_token_profile_account_path, method: 'POST' do
+            .form-group
+              = label_tag :current_password, 'To view your private token, enter your current password', class: 'label-light'
+              = password_field_tag :current_password, nil, required: true, class: 'form-control'
+              #private-token-error.prepend-top-default.error-message{class: @private_token_error.blank? && 'hidden'}
+                = @private_token_error
+              .prepend-top-default
+                = submit_tag 'Show private token', class: 'btn btn-default'
+      - else
+        %span You don't have a private token yet. Click generate to create one.
+    %p.help-block
+      This is used for Atom feeds and the API, and gives full access to your account. Keep it secret!
+    .prepend-top-default
+      = form_for @user, url: reset_private_token_profile_path, method: :put, html: { class: "private-token" } do |f|
         - if current_user.private_token
           = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
         - else

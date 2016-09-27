@@ -351,6 +351,7 @@ Rails.application.routes.draw do
       resource :account, only: [:show] do
         member do
           delete :unlink
+          post :private_token
         end
       end
       resource :notifications, only: [:show, :update]
