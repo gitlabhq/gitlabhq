@@ -7,23 +7,21 @@ class AccessRequestsFinder
     @source = source
   end
 
-  def execute(current_user, raise_error: false)
-    if cannot_see_access_requests?(current_user)
-      raise Gitlab::Access::AccessDeniedError if raise_error
+  def execute(*args)
+    execute!(*args)
+  rescue Gitlab::Access::AccessDeniedError
+    []
+  end
 
-      return []
-    end
+  def execute!(current_user)
+    raise Gitlab::Access::AccessDeniedError unless can_see_access_requests?(current_user)
 
     source.requesters
   end
 
-  def execute!(current_user)
-    execute(current_user, raise_error: true)
-  end
-
   private
 
-  def cannot_see_access_requests?(current_user)
-    !source || !current_user || !current_user.can?(:"admin_#{source.class.to_s.underscore}", source)
+  def can_see_access_requests?(current_user)
+    source && current_user && current_user.can?(:"admin_#{source.class.to_s.underscore}", source)
   end
 end
