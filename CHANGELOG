@@ -118,6 +118,7 @@ v 8.12.0
   - Change pipeline duration to be jobs running time instead of simple wall time from start to end !6084
   - Show queued time when showing a pipeline !6084
   - Remove unused mixins (ClemMakesApps)
+  - Fix issue board label filtering appending already filtered labels
   - Add search to all issue board lists
   - Scroll active tab into view on mobile
   - Fix groups sort dropdown alignment (ClemMakesApps)
