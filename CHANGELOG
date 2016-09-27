@@ -14,6 +14,7 @@ v 8.13.0 (unreleased)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
+  - Use custom Ruby images to test builds (registry.gitlab.com/gitlab-org/gitlab-build-images:*)
   - Revoke button in Applications Settings underlines on hover.
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
@@ -140,7 +141,6 @@ v 8.12.0
   - Fix issue with slash commands not loading on new issue page
   - Fix inconsistent background color for filter input field (ClemMakesApps)
   - Remove prefixes from transition CSS property (ClemMakesApps)
-  - Use custom Ruby images to test builds (registry.gitlab.com/gitlab-org/gitlab-build-images:*)
   - Add Sentry logging to API calls
   - Add BroadcastMessage API
   - Use 'git update-ref' for safer web commits !6130
