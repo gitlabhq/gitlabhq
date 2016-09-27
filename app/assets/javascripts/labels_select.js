@@ -280,12 +280,12 @@
             if (page === 'projects:boards:show') {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              } else if (label.title) {
+              } else if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
               } else {
                 var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
-                filters = filters.filter(function (label) {
-                  return label !== $el.text().trim();
+                filters = filters.filter(function (filteredLabel) {
+                  return filteredLabel !== label.title;
                 });
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = filters;
               }

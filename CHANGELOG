@@ -1,7 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
+  - Use gitlab-shell v3.6.2 (GIT TRACE logging)
   - Speed-up group milestones show page
+  - Add more tests for calendar contribution (ClemMakesApps)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Revoke button in Applications Settings underlines on hover.
   - Add organization field to user profile
@@ -12,6 +14,8 @@ v 8.12.2 (unreleased)
   - Fix snippets pagination
   - Fix List-Unsubscribe header in emails
   - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
+  - Fix errors importing project feature and milestone models using GitLab project import
+  - Make JWT messages Docker-compatible
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
@@ -118,6 +122,7 @@ v 8.12.0
   - Change pipeline duration to be jobs running time instead of simple wall time from start to end !6084
   - Show queued time when showing a pipeline !6084
   - Remove unused mixins (ClemMakesApps)
+  - Fix issue board label filtering appending already filtered labels
   - Add search to all issue board lists
   - Scroll active tab into view on mobile
   - Fix groups sort dropdown alignment (ClemMakesApps)
