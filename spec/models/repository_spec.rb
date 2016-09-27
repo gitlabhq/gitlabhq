@@ -115,9 +115,15 @@ describe Repository, models: true do
 
   describe '#merged_to_root_ref?' do
     context 'merged branch' do
-      subject { repository.merged_to_root_ref?('improve/awesome') }
+      subject { repository.merged_to_root_ref?('branch-merged') }
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'not merged branch' do
+      subject { repository.merged_to_root_ref?('not-merged-branch') }
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -316,7 +322,7 @@ describe Repository, models: true do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -960,10 +966,10 @@ describe Repository, models: true do
 
     context 'cherry-picking a merge commit' do
       it 'cherry-picks the changes' do
-        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).to be_nil
+        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
 
-        repository.cherry_pick(user, pickable_merge, 'master')
-        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).not_to be_nil
+        repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
       end
     end
   end
