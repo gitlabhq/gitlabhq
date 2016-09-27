@@ -11,7 +11,7 @@ describe 'Unsubscribe links', feature: true do
 
   let(:mail) { ActionMailer::Base.deliveries.last }
   let(:body) { Capybara::Node::Simple.new(mail.default_part_body.to_s) }
-  let(:header_link) { mail.header['List-Unsubscribe'] }
+  let(:header_link) { mail.header['List-Unsubscribe'].to_s[1..-2] } # Strip angle brackets
   let(:body_link) { body.find_link('unsubscribe')['href'] }
 
   before do
