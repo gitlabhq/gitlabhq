@@ -24,6 +24,7 @@ module Gitlab
         import_milestones
         import_issues
         import_pull_requests
+        import_comments
         import_wiki
         import_releases
         handle_errors
@@ -80,7 +81,6 @@ module Gitlab
               begin
                 issue = gh_issue.create!
                 apply_labels(issue, raw)
-                import_comments(issue) if gh_issue.has_comments?
               rescue => e
                 errors << { type: :issue, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
               end
@@ -101,8 +101,6 @@ module Gitlab
 
               merge_request = pull_request.create!
               apply_labels(merge_request, raw)
-              import_comments(merge_request)
-              import_comments_on_diff(merge_request)
             rescue => e
               errors << { type: :pull_request, url: Gitlab::UrlSanitizer.sanitize(pull_request.url), errors: e.message }
             ensure
@@ -143,21 +141,26 @@ module Gitlab
         end
       end
 
-      def import_comments(issuable)
-        comments = client.issue_comments(repo, issuable.iid, per_page: 100)
-        create_comments(issuable, comments)
+      def import_comments
+        client.issues_comments(repo, per_page: 100) do |comments|
+          create_comments(comments, :issue)
+        end
+
+        client.pull_requests_comments(repo, per_page: 100) do |comments|
+          create_comments(comments, :pull_request)
+        end
       end
 
-      def import_comments_on_diff(merge_request)
-        comments = client.pull_request_comments(repo, merge_request.iid, per_page: 100)
-        create_comments(merge_request, comments)
-      end
-
-      def create_comments(issuable, comments)
+      def create_comments(comments, issuable_type)
         ActiveRecord::Base.no_touching do
           comments.each do |raw|
             begin
-              comment = CommentFormatter.new(project, raw)
+              comment        = CommentFormatter.new(project, raw)
+              issuable_class = issuable_type == :issue ? Issue : MergeRequest
+              iid            = raw.send("#{issuable_type}_url").split('/').last # GH doesn't return parent ID directly
+              issuable       = issuable_class.find_by_iid(iid)
+              next unless issuable
+
               issuable.notes.create!(comment.attributes)
             rescue => e
               errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }

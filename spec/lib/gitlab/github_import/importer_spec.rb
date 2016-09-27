@@ -132,6 +132,8 @@ describe Gitlab::GithubImport::Importer, lib: true do
         allow_any_instance_of(Octokit::Client).to receive(:milestones).and_return([milestone, milestone])
         allow_any_instance_of(Octokit::Client).to receive(:issues).and_return([issue1, issue2])
         allow_any_instance_of(Octokit::Client).to receive(:pull_requests).and_return([pull_request, pull_request])
+        allow_any_instance_of(Octokit::Client).to receive(:issues_comments).and_return([])
+        allow_any_instance_of(Octokit::Client).to receive(:pull_requests_comments).and_return([])
         allow_any_instance_of(Octokit::Client).to receive(:last_response).and_return(double(rels: { next: nil }))
         allow_any_instance_of(Octokit::Client).to receive(:releases).and_return([release1, release2])
         allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error)
