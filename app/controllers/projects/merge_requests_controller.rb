@@ -377,7 +377,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     environments = @merge_request.environments
     deployments = @merge_request.deployments
 
-    if environments
+    if environments.present?
       environments = environments.select { |e| can?(current_user, :read_environment, e) }.map do |environment|
         project = environment.project
         deployment = deployments.find { |d| d.environment == environment }

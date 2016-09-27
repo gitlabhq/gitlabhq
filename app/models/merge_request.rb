@@ -673,11 +673,11 @@ class MergeRequest < ActiveRecord::Base
         environment.deployment_id_for(diff_head_commit)
       end.compact
 
-    target_project.deployments.find(deployment_ids)
+    Deployments.find(deployment_ids)
   end
 
   def environments
-    return [] unless diff_head_sha
+    return [] unless diff_head_commit
 
     environments = source_project.environments_for(
       source_branch, diff_head_commit)
