@@ -1,11 +1,11 @@
 module Gitlab
   module ImportExport
     class AttributeCleaner
-      IGNORED_REFERENCES = Gitlab::ImportExport::RelationFactory::PROJECT_REFERENCES + Gitlab::ImportExport::RelationFactory::USER_REFERENCES
+      ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES
 
       def self.clean!(relation_hash:)
-        relation_hash.select! do |key, _value|
-          IGNORED_REFERENCES.include?(key) || !key.end_with?('_id')
+        relation_hash.reject! do |key, _value|
+          key.end_with?('_id') && !ALLOWED_REFERENCES.include?(key)
         end
       end
     end
