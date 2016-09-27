@@ -108,6 +108,8 @@ module Gitlab
             end
           end
         end
+
+        project.repository.after_remove_branch
       end
 
       def restore_source_branch(pull_request)
@@ -127,8 +129,6 @@ module Gitlab
       def clean_up_restored_branches(pull_request)
         remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
         remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
-
-        project.repository.after_remove_branch
       end
 
       def apply_labels(issuable, raw_issuable)
