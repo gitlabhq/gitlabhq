@@ -8,13 +8,13 @@ The goal of this boot camp is to have every Service Engineer prepared to help ou
 with whatever needs they might have and to also assist our awesome community with their
 questions.
 
-Always start with the [University Overview](../) and then work
+Always start with the [University Overview](../README.md) and then work
 your way here for more advanced and specific training. Once you feel comfortable
 with the topics of the current stage, move to the next.
 
 ### Stage 1
 
-Follow the topics on the [University Overview](../), concentrate on it
+Follow the topics on the [University Overview](../README.md), concentrate on it
 during your first Stage, but also:
 
 - Perform the [first steps](https://about.gitlab.com/handbook/support/onboarding/#first-steps) of
@@ -26,7 +26,7 @@ Aim to have a good overview of the Product and main features, Git and the Compan
 
 ### Stage 2
 
-Continue to look over remaining portions of the [University Overview](../) and continue on to these topics:
+Continue to look over remaining portions of the [University Overview](../README.md) and continue on to these topics:
 
 #### Set up your development machine
 
