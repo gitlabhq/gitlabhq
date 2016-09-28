@@ -74,8 +74,8 @@ describe UsersController do
     end
 
     context 'forked project' do
-      let!(:project) { create(:project) }
-      let!(:forked_project) { Projects::ForkService.new(project, user).execute }
+      let(:project) { create(:project) }
+      let(:forked_project) { Projects::ForkService.new(project, user).execute }
 
       before do
         sign_in(user)

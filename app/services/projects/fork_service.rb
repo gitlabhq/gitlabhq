@@ -17,6 +17,8 @@ module Projects
       end
 
       new_project = CreateService.new(current_user, new_params).execute
+      return new_project unless new_project.persisted?
+
       new_project
     end
 
