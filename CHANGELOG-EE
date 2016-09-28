@@ -1,9 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.2
+v 8.12.3 (unreleased)
 
-v 8.12.1 (unreleased)
-v 8.12.2 (unreleased)
+v 8.12.2
   - Fix bug when protecting a branch due to missing url paramenter in request !760
   - Ignore unknown project ID in RepositoryUpdateMirrorWorker
 
