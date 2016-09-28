@@ -115,7 +115,7 @@ module Ci
     end
 
     # For now the only user who participates is the user who triggered
-    def participants(current_user = nil)
+    def participants(_current_user = nil)
       [user]
     end
 
