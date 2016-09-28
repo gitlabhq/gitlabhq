@@ -39,7 +39,7 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     cp config/resque.yml.example config/resque.yml
     sed -i 's/localhost/redis/g' config/resque.yml
 
-    export FLAGS=(--path vendor --retry 3)
+    export FLAGS=(--path vendor --retry 3 --quiet)
 else
     export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
     cp config/database.yml.mysql config/database.yml
