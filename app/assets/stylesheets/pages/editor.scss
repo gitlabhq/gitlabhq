@@ -70,12 +70,14 @@
 
   .soft-wrap-toggle {
     margin: 0 $btn-side-margin;
+
     .soft-wrap {
       display: block;
     }
     .no-wrap {
       display: none;
     }
+
     &.soft-wrap-active {
       .soft-wrap {
         display: none;

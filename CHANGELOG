@@ -12,6 +12,7 @@ v 8.13.0 (unreleased)
   - Revoke button in Applications Settings underlines on hover.
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Add organization field to user profile
+  - Added soft wrap option to editor
   - Optimize GitHub importing for speed and memory
 
 v 8.12.2 (unreleased)
