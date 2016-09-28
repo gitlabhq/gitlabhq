@@ -6,17 +6,12 @@
       this.$request = $('#private-token-request');
       this.$requestForm = this.$request.find('form');
 
-      this.initialSetup();
-    }
-
-    initialSetup() {
-      this.$show.addClass('hidden');
-      this.$error.addClass('hidden');
-
       this.$requestForm.on('submit', this.submitPassword.bind(this));
     }
 
-    submitPassword(event) {
+    submitPassword(e) {
+      e.preventDefault();
+
       $.ajax({
         url: this.$requestForm.attr('action'),
         method: 'POST',
@@ -32,6 +27,12 @@
         this.$error.addClass('hidden');
         this.$request.addClass('hidden');
       }).error((request) => {
+        var message = request.responseJSON && request.responseJSON.message;
+
+        if (!message) {
+          message = 'There was an error checking your password. Please try again.';
+        }
+
         this.$error.text(request.responseJSON.message);
 
         this.$show.addClass('hidden');
@@ -39,8 +40,6 @@
         this.$request.removeClass('hidden');
         this.$requestForm.find('[type="submit"]').enable();
       });
-
-      event.preventDefault();
     }
   };
 })(window.gl || (window.gl = {}));

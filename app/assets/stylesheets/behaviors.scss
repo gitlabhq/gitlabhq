@@ -21,10 +21,6 @@
   }
 }
 
-.hidden {
-  display: none;
-}
-
 // Hide element if Vue is still working on rendering it fully.
 [v-cloak="true"] {
   display: none !important;
