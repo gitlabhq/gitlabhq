@@ -537,8 +537,10 @@ describe Ci::Pipeline, models: true do
     before do
       reset_delivered_emails!
 
-      pipeline.enqueue
-      pipeline.run
+      perform_enqueued_jobs do
+        pipeline.enqueue
+        pipeline.run
+      end
     end
 
     shared_examples 'sending a notification' do

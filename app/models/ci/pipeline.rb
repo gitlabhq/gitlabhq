@@ -83,8 +83,8 @@ module Ci
         end
       end
 
-      after_transition any => [:success, :failed] do |pipeline, transition|
-        SendPipelineNotificationService.new(pipeline).execute
+      after_transition any => [:success, :failed] do |pipeline|
+        SendPipelineNotificationWorker.perform_async(pipeline.id)
       end
     end
 

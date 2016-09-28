@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::SendPipelineNotificationService, services: true do
+describe SendPipelineNotificationWorker, services: true do
   let(:pipeline) do
     create(:ci_pipeline,
            project: project,
@@ -23,7 +23,7 @@ describe Ci::SendPipelineNotificationService, services: true do
     shared_examples 'sending emails' do
       it 'sends emails' do
         perform_enqueued_jobs do
-          subject.execute
+          subject.perform(pipeline.id)
         end
 
         expected_receivers = [pusher, watcher].uniq.sort_by(&:email)
