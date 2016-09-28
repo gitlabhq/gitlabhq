@@ -35,6 +35,10 @@ module Banzai
         # Allow span elements
         whitelist[:elements].push('span')
 
+        # Allow html5 details/summary elements
+        whitelist[:elements].push('details')
+        whitelist[:elements].push('summary')
+
         # Allow abbr elements with title attribute
         whitelist[:elements].push('abbr')
         whitelist[:attributes]['abbr'] = %w(title)
