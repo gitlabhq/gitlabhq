@@ -37,6 +37,16 @@ shared_examples 'an email sent from GitLab' do
     reply_to = subject.header[:reply_to].addresses
     expect(reply_to).to eq([gitlab_sender_reply_to])
   end
+
+  context 'when custom suffix for email subject is set' do
+    before do
+      stub_config_setting(email_subject_suffix: 'A Nice Suffix')
+    end
+
+    it 'ends the subject with the suffix' do
+      is_expected.to have_subject (/ \| A Nice Suffix$/)
+    end
+  end
 end
 
 shared_examples 'an email that contains a header with author username' do

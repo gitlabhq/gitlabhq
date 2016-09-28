@@ -1094,11 +1094,4 @@ describe Notify do
       is_expected.to have_body_text /#{diff_path}/
     end
   end
-
-  describe 'email has correct subject' do
-    it 'has correct suffix' do
-      stub_config_setting(email_subject_suffix: 'A Nice Suffix')
-      is_expected.to have_subject /\| A Nice Suffix$/
-    end
-  end
 end
