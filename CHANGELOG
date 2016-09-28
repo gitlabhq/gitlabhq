@@ -4,6 +4,7 @@ v 8.11.8
   - Respect the fork_project permission when forking projects
   - Set a restrictive CORS policy on the API for credentialed requests
   - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
