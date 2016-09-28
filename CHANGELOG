@@ -20,6 +20,7 @@ v 8.12.2 (unreleased)
   - Make JWT messages Docker-compatible
   - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
   - Fix duplicate branch entry in the merge request version compare dropdown
+  - Respect the fork_project permission when forking projects
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
