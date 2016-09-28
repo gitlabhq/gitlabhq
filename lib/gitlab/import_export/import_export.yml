@@ -71,6 +71,8 @@ excluded_attributes:
     - :awardable_id
 
 methods:
+  labels:
+    - :type
   statuses:
     - :type
   services:
