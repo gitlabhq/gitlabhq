@@ -191,8 +191,12 @@ teaspoon: *exec
 rubocop: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flog: *exec
-rake flay: *exec
+rake flog:
+  <<: *exec
+  allow_failure: yes
+rake flay:
+  <<: *exec
+  allow_failure: yes
 rake db:migrate:reset: *exec
 license_finder: *exec
 
