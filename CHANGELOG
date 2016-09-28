@@ -16,6 +16,7 @@ v 8.12.2
   - Only update issuable labels if they have been changed
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
+  - Update Gitlab Shell to support low IO priority for storage moves
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
