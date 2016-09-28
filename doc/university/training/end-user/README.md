@@ -139,13 +139,13 @@ cd ~/workspace
 - Sign in into your gitlab.com account
 - Create a project
 - Choose to import from 'Any Repo by URL' and use https://gitlab.com/gitlab-org/training-examples.git
-- On your machine clone the 'training-examples' project
+- On your machine clone the `training-examples` project
 
 ---
 
 ### Git and GitLab basics
 
-1. Edit 'edit_this_file.rb' in 'training-examples'
+1. Edit `edit_this_file.rb` in `training-examples`
 2. See it listed as a changed file (working area)
 3. View the differences
 4. Stage the file
@@ -169,8 +169,8 @@ git log
 
 ### Feature Branching
 
-1. Create a new feature branch called 'squash_some_bugs'
-2. Edit 'bugs.rb' and remove all the bugs.
+1. Create a new feature branch called `squash_some_bugs`
+2. Edit `bugs.rb` and remove all the bugs.
 3. Commit
 4. Push
 
@@ -196,7 +196,7 @@ git push origin squash_some_bugs
 - When you want feedback create a merge request
 - Target is the ‘default’ branch (usually master)
 - Assign or mention the person you would like to review
-- Add 'WIP' to the title if it's a work in progress
+- Add `WIP` to the title if it's a work in progress
 - When accepting, always delete the branch
 - Anyone can comment, not just the assignee
 - Push corrections to the same branch
