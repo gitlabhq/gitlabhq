@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SendPipelineNotificationWorker, services: true do
+describe SendPipelineNotificationWorker do
   let(:pipeline) do
     create(:ci_pipeline,
            project: project,
