@@ -17,21 +17,18 @@ module Gitlab
         end
     end
 
-    def generate
-      return value if value
-
-      token = Devise.friendly_token(TOKEN_LENGTH)
-
+    def token
       Gitlab::Redis.with do |redis|
-        redis.set(redis_key, token, ex: EXPIRY_TIME)
-      end
+        token = redis.get(redis_key)
 
-      token
-    end
+        if token
+          redis.expire(redis_key, EXPIRY_TIME)
+        else
+          token = Devise.friendly_token(TOKEN_LENGTH)
+          redis.set(redis_key, token, ex: EXPIRY_TIME)
+        end
 
-    def value
-      Gitlab::Redis.with do |redis|
-        redis.get(redis_key)
+        token
       end
     end
 
