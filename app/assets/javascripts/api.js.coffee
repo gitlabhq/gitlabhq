@@ -3,7 +3,7 @@
   groupPath: "/api/:version/groups/:id.json"
   namespacesPath: "/api/:version/namespaces.json"
   groupProjectsPath: "/api/:version/groups/:id/projects.json"
-  projectsPath: "/api/:version/projects.json?simple=true"
+  projectsPath: "/api/:version/projects.json"
   labelsPath: "/:namespace_path/:project_path/labels"
   licensePath: "/api/:version/licenses/:key"
   gitignorePath: "/api/:version/gitignores/:key"
