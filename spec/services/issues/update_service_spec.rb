@@ -32,55 +32,84 @@ describe Issues::UpdateService, services: true do
       described_class.new(project, user, opts).execute(issue)
     end
 
-    context "valid params" do
-      before do
-        opts = {
+    context 'valid params' do
+      let(:opts) do
+        {
           title: 'New title',
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close',
-          label_ids: [label.id]
+          label_ids: [label.id],
+          due_date: Date.tomorrow
         }
+      end
 
-        perform_enqueued_jobs do
-          update_issue(opts)
+      it 'updates the issue with the given params' do
+        update_issue(opts)
+
+        expect(issue).to be_valid
+        expect(issue.title).to eq 'New title'
+        expect(issue.description).to eq 'Also please fix'
+        expect(issue.assignee).to eq user2
+        expect(issue).to be_closed
+        expect(issue.labels).to match_array [label]
+        expect(issue.due_date).to eq Date.tomorrow
+      end
+
+      context 'when current user cannot admin issues in the project' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+        end
+
+        it 'filters out params that cannot be set without the :admin_issue permission' do
+          described_class.new(project, guest, opts).execute(issue)
+
+          expect(issue).to be_valid
+          expect(issue.title).to eq 'New title'
+          expect(issue.description).to eq 'Also please fix'
+          expect(issue.assignee).to eq user3
+          expect(issue.labels).to be_empty
+          expect(issue.milestone).to be_nil
+          expect(issue.due_date).to be_nil
         end
       end
 
-      it { expect(issue).to be_valid }
-      it { expect(issue.title).to eq('New title') }
-      it { expect(issue.assignee).to eq(user2) }
-      it { expect(issue).to be_closed }
-      it { expect(issue.labels.count).to eq(1) }
-      it { expect(issue.labels.first.title).to eq(label.name) }
+      context 'with background jobs processed' do
+        before do
+          perform_enqueued_jobs do
+            update_issue(opts)
+          end
+        end
 
-      it 'sends email to user2 about assign of new issue and email to user3 about issue unassignment' do
-        deliveries = ActionMailer::Base.deliveries
-        email = deliveries.last
-        recipients = deliveries.last(2).map(&:to).flatten
-        expect(recipients).to include(user2.email, user3.email)
-        expect(email.subject).to include(issue.title)
-      end
+        it 'sends email to user2 about assign of new issue and email to user3 about issue unassignment' do
+          deliveries = ActionMailer::Base.deliveries
+          email = deliveries.last
+          recipients = deliveries.last(2).map(&:to).flatten
+          expect(recipients).to include(user2.email, user3.email)
+          expect(email.subject).to include(issue.title)
+        end
 
-      it 'creates system note about issue reassign' do
-        note = find_note('Reassigned to')
+        it 'creates system note about issue reassign' do
+          note = find_note('Reassigned to')
 
-        expect(note).not_to be_nil
-        expect(note.note).to include "Reassigned to \@#{user2.username}"
-      end
+          expect(note).not_to be_nil
+          expect(note.note).to include "Reassigned to \@#{user2.username}"
+        end
 
-      it 'creates system note about issue label edit' do
-        note = find_note('Added ~')
+        it 'creates system note about issue label edit' do
+          note = find_note('Added ~')
 
-        expect(note).not_to be_nil
-        expect(note.note).to include "Added ~#{label.id} label"
-      end
+          expect(note).not_to be_nil
+          expect(note.note).to include "Added ~#{label.id} label"
+        end
 
-      it 'creates system note about title change' do
-        note = find_note('Changed title:')
+        it 'creates system note about title change' do
+          note = find_note('Changed title:')
 
-        expect(note).not_to be_nil
-        expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
+          expect(note).not_to be_nil
+          expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
+        end
       end
     end
 

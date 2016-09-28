@@ -7,6 +7,7 @@ v 8.13.0 (unreleased)
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Fix permission for setting an issue's due date
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Only update issuable labels if they have been changed
   - Revoke button in Applications Settings underlines on hover.
