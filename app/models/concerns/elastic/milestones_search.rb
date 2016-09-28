@@ -31,7 +31,7 @@ module Elastic
 
         query_hash = basic_query_hash(options[:in], query)
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
+        query_hash = project_ids_filter(query_hash, options)
 
         self.__elasticsearch__.search(query_hash)
       end

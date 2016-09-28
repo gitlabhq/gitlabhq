@@ -83,10 +83,10 @@ module Elastic
           }
         end
 
-        if options[:pids]
+        if options[:project_ids]
           filters << {
             bool: {
-              should: project_ids_condition(options[:pids], options[:public_and_internal_projects])
+              should: project_ids_condition(options[:current_user], options[:project_ids], options[:public_and_internal_projects])
             }
           }
         end

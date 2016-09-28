@@ -60,7 +60,7 @@ module Elastic
           query_hash[:track_scores] = true
         end
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
+        query_hash = project_ids_filter(query_hash, options)
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 
         query_hash[:sort] = [
