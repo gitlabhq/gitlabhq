@@ -62,6 +62,9 @@ module Gitlab
             results
           end
         end
+      rescue Net::LDAP::Error => error
+        Rails.logger.warn("LDAP search raised exception #{error.class}: #{error.message}")
+        []
       rescue Timeout::Error
         Rails.logger.warn("LDAP search timed out after #{config.timeout} seconds")
         []
