@@ -53,17 +53,16 @@
         return this.setInvalidState();
       }
 
-      this.form.focusOnFirstInvalid.apply(this.form);
     }
 
     handleInvalidInput(event) {
       event.preventDefault();
-
+      const currentValue = this.inputElement.val();
       this.state.valid = false;
-      this.state.empty = false;
+      this.state.empty = currentValue === '';
 
       this.renderValidity();
-
+      this.form.focusOnFirstInvalid.apply(this.form);
       // For UX, wait til after first invalid submission to check each keyup
       this.inputElement.off('keyup.field_validator')
         .on('keyup.field_validator', this.updateValidityState.bind(this));
@@ -76,7 +75,7 @@
 
     updateValidityState() {
       const inputVal = this.inputElement.val();
-      this.state.empty = !!inputVal.length;
+      this.state.empty = !inputVal.length;
       this.state.valid = this.getInputValidity();
       this.renderValidity();
     }
@@ -104,10 +103,6 @@
       this.inputElement.removeClass(inputErrorClass);
       this.inputElement.siblings('p').hide();
       this.fieldErrorElement.hide();
-    }
-
-    checkFieldValidity(target) {
-      return target.validity.valid;
     }
   }
 
@@ -144,8 +139,8 @@
     }
 
     focusOnFirstInvalid () {
-      const firstInvalid = this.state.inputs.find((input) => !input.inputDomElement.validity.valid);
-      $(firstInvalid).focus();
+      const firstInvalid = this.state.inputs.filter((input) => !input.inputDomElement.validity.valid)[0];
+      firstInvalid.inputElement.focus();
     }
   }
 
