@@ -114,7 +114,7 @@ module Ci
       project.id
     end
 
-    # For now the only user who participants is the user who triggered
+    # For now the only user who participates is the user who triggered
     def participants(current_user = nil)
       [user]
     end
