@@ -5,7 +5,7 @@
       this.allDoneClicked = this.allDoneClicked.bind(this);
       this.doneClicked = this.doneClicked.bind(this);
       this.el = el || $('.js-todos-options');
-      this.perPage = el.data('perPage');
+      this.perPage = this.el.data('perPage');
       this.clearListeners();
       this.initBtnListeners();
       this.initFilters();

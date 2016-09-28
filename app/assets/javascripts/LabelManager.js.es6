@@ -91,10 +91,11 @@
     }
 
     getSortedLabelsIds() {
-    // TODO: Check that this works how you expect
-     return this.prioritizedLabels.find('li').map(function(item) {
-        return $(item).data('id');
+      const sortedIds = [];
+      this.prioritizedLabels.find('li').each(function() {
+        sortedIds.push($(this).data('id'));
       });
+      return sortedIds;
     }
   }
 

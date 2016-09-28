@@ -3,7 +3,7 @@
     constructor({ $dropdowns, editor }) {
       this.$dropdowns = $('.js-license-selector');
       this.editor = editor;
-      this.$dropdowns.each((dropdown) => {
+      this.$dropdowns.each((i, dropdown) => {
         const $dropdown = $(dropdown);
         return new BlobLicenseSelector({
           editor,

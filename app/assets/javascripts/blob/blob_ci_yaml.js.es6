@@ -10,7 +10,7 @@
   global.BlobCiYamlSelector = BlobCiYamlSelector;
 
   class BlobCiYamlSelectors {
-    constructor({ editor, $dropdowns }) {
+    constructor({ editor, $dropdowns } = {}) {
       this.editor = editor;
       this.$dropdowns = $dropdowns || $('.js-gitlab-ci-yml-selector');
       this.initSelectors();

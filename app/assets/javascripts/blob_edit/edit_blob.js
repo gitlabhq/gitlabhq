@@ -26,7 +26,7 @@
       new gl.BlobLicenseSelectors({
         editor: this.editor
       });
-      new gl.BlobGitignoreSelectors({
+      new BlobGitignoreSelectors({
         editor: this.editor
       });
       new gl.BlobCiYamlSelectors({
