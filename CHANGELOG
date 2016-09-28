@@ -4,6 +4,7 @@ v 8.9.11
   - Respect the fork_project permission when forking projects
   - Set a restrictive CORS policy on the API for credentialed requests
   - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.9.10
   - Allow the Rails cookie to be used for API authentication.
