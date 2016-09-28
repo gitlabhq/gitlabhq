@@ -40,6 +40,7 @@ v 8.12.0
   - Allow to set request_access_enabled for groups and projects
   - Cleanup misalignments in Issue list view !6206
   - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
+  - Add Pipelines for Commit
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects

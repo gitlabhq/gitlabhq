@@ -56,7 +56,7 @@ module CiStatusHelper
 
   def render_commit_status(commit, tooltip_placement: 'auto left')
     project = commit.project
-    path = builds_namespace_project_commit_path(project.namespace, project, commit)
+    path = pipelines_namespace_project_commit_path(project.namespace, project, commit)
     render_status_with_link('commit', commit.status, path, tooltip_placement: tooltip_placement)
   end
 
