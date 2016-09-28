@@ -111,7 +111,7 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response['username']).to eq(user.username)
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
 
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
@@ -131,7 +131,7 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
     end

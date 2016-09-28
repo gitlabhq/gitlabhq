@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::LfsToken, lib: true do
-  describe '#generate and #value' do
+  describe '#token' do
     shared_examples 'an LFS token generator' do
       it 'returns a randomly generated token' do
-        token = handler.generate
+        token = handler.token
 
         expect(token).not_to be_nil
         expect(token).to be_a String
@@ -12,9 +12,9 @@ describe Gitlab::LfsToken, lib: true do
       end
 
       it 'returns the correct token based on the key' do
-        token = handler.generate
+        token = handler.token
 
-        expect(handler.value).to eq(token)
+        expect(handler.token).to eq(token)
       end
     end
 
