@@ -100,14 +100,14 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
       expect(project).to receive(:commit).with('123').and_return(commit)
       expect(project).to receive(:valid_repo?).and_return(true)
 
-      expect(subject.find_commits(project, %w{123})).to eq([commit])
+      expect(subject.find_commits(project, %w[123])).to eq([commit])
     end
 
     it 'skips commit IDs for which no commit could be found' do
       expect(project).to receive(:commit).with('123').and_return(nil)
       expect(project).to receive(:valid_repo?).and_return(true)
 
-      expect(subject.find_commits(project, %w{123})).to eq([])
+      expect(subject.find_commits(project, %w[123])).to eq([])
     end
   end
 end

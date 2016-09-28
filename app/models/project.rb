@@ -1219,7 +1219,7 @@ class Project < ActiveRecord::Base
   end
 
   def remove_exports
-    _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+    _, status = Gitlab::Popen.popen(%W[find #{export_path} -not -path #{export_path} -delete])
     status.zero?
   end
 

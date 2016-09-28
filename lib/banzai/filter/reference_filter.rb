@@ -40,7 +40,7 @@ module Banzai
 
       def ignore_ancestor_query
         @ignore_ancestor_query ||= begin
-          parents = %w(pre code a style)
+          parents = %w[pre code a style]
           parents << 'blockquote' if context[:ignore_blockquotes]
 
           parents.map { |n| "ancestor::#{n}" }.join(' or ')

@@ -4,7 +4,7 @@ module Banzai
     #
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
-      UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
+      UNSAFE_PROTOCOLS = %w[data javascript vbscript].freeze
 
       def whitelist
         whitelist = super
@@ -25,19 +25,19 @@ module Banzai
         return if customized?(whitelist[:transformers])
 
         # Allow code highlighting
-        whitelist[:attributes]['pre'] = %w(class)
-        whitelist[:attributes]['span'] = %w(class)
+        whitelist[:attributes]['pre'] = %w[class]
+        whitelist[:attributes]['span'] = %w[class]
 
         # Allow table alignment
-        whitelist[:attributes]['th'] = %w(style)
-        whitelist[:attributes]['td'] = %w(style)
+        whitelist[:attributes]['th'] = %w[style]
+        whitelist[:attributes]['td'] = %w[style]
 
         # Allow span elements
         whitelist[:elements].push('span')
 
         # Allow abbr elements with title attribute
         whitelist[:elements].push('abbr')
-        whitelist[:attributes]['abbr'] = %w(title)
+        whitelist[:attributes]['abbr'] = %w[title]
 
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')

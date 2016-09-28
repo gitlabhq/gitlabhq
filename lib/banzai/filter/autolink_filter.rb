@@ -29,7 +29,7 @@ module Banzai
       LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<!,|\.)}
 
       # Text matching LINK_PATTERN inside these elements will not be linked
-      IGNORE_PARENTS = %w(a code kbd pre script style).to_set
+      IGNORE_PARENTS = %w[a code kbd pre script style].to_set
 
       # The XPath query to use for finding text nodes to parse.
       TEXT_QUERY = %Q(descendant-or-self::text()[

@@ -11,7 +11,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>milestone #{milestone.to_reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -43,7 +43,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     doc = reference_filter("Milestone #{reference}", only_path: true)
     link = doc.css('a').first.attr('href')
 
-    expect(link).not_to match %r(https?://)
+    expect(link).not_to match %r{https?://}
     expect(link).to eq urls.
       namespace_project_milestone_path(project.namespace, project, milestone)
   end
@@ -58,7 +58,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>#{milestone.name}</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>#{milestone.name}</a>\.\)})
     end
 
     it 'ignores invalid milestone IIDs' do
@@ -82,7 +82,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>#{milestone.name}</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>#{milestone.name}</a>\.\)})
     end
 
     it 'ignores invalid milestone names' do
@@ -106,7 +106,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>#{milestone.name}</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>#{milestone.name}</a>\.\)})
     end
 
     it 'ignores invalid milestone names' do
@@ -117,7 +117,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
   end
 
   describe 'referencing a milestone in a link href' do
-    let(:reference) { %Q{<a href="#{milestone.to_reference}">Milestone</a>} }
+    let(:reference) { %Q(<a href="#{milestone.to_reference}">Milestone</a>) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -128,7 +128,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>Milestone</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>Milestone</a>\.\)})
     end
 
     it 'includes a data-project attribute' do
@@ -168,7 +168,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     end
 
     it 'escapes the name attribute' do
-      allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
+      allow_any_instance_of(Milestone).to receive(:title).and_return(%("></a>whatever<a title="))
       doc = reference_filter("See #{reference}")
       expect(doc.css('a').first.text).to eq "#{milestone.name} in #{project_path}"
     end

@@ -42,7 +42,7 @@ module Gitlab
         ldap_search(base: dn,
                     filter: filter,
                     scope: Net::LDAP::SearchScope_BaseObject,
-                    attributes: %w{dn}).any?
+                    attributes: %w[dn]).any?
       end
 
       def ldap_search(*args)
@@ -100,7 +100,7 @@ module Gitlab
       end
 
       def user_attributes
-        %W(#{config.uid} cn mail dn)
+        %W[#{config.uid} cn mail dn]
       end
     end
   end

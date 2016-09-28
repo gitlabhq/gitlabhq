@@ -5,7 +5,7 @@ class Repository
 
   # Files to use as a project avatar in case no avatar was uploaded via the web
   # UI.
-  AVATAR_FILES = %w{logo.png logo.jpg logo.gif}
+  AVATAR_FILES = %w[logo.png logo.jpg logo.gif]
 
   include Gitlab::ShellAdapter
 
@@ -112,8 +112,8 @@ class Repository
     ref ||= root_ref
 
     # Limited to 1000 commits for now, could be parameterized?
-    args = %W(#{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset} --max-count #{limit} --grep=#{query})
-    args = args.concat(%W(-- #{path})) if path.present?
+    args = %W[#{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset} --max-count #{limit} --grep=#{query}]
+    args = args.concat(%W[-- #{path}]) if path.present?
 
     git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
     commits = git_log_results.map { |c| commit(c) }
@@ -303,14 +303,14 @@ class Repository
 
   # Keys for data that can be affected for any commit push.
   def cache_keys
-    %i(size commit_count
+    %i[size commit_count
        readme version contribution_guide changelog
-       license_blob license_key gitignore koding_yml)
+       license_blob license_key gitignore koding_yml]
   end
 
   # Keys for data on branch/tag operations.
   def cache_keys_for_branches_and_tags
-    %i(branch_names tag_names branch_count tag_count)
+    %i[branch_names tag_names branch_count tag_count]
   end
 
   def build_cache
@@ -648,7 +648,7 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
+    args = %W[#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path}]
     sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
     commit(sha)
   end
@@ -718,7 +718,7 @@ class Repository
   end
 
   def refs_contains_sha(ref_type, sha)
-    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
+    args = %W[#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha}]
     names = Gitlab::Popen.popen(args, path_to_repo).first
 
     if names.respond_to?(:split)
@@ -988,12 +988,12 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+    args = %W[#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref}]
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+    args = %W[#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref}]
     Gitlab::Popen.popen(args, path_to_repo)
   end
 

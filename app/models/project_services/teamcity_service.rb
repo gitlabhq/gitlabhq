@@ -46,7 +46,7 @@ class TeamcityService < CiService
   end
 
   def supported_events
-    %w(push)
+    %w[push]
   end
 
   def fields

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ProjectFeaturesCompatibility do
   let(:project) { create(:project) }
-  let(:features) { %w(issues wiki builds merge_requests snippets) }
+  let(:features) { %w[issues wiki builds merge_requests snippets] }
 
   # We had issues_enabled, snippets_enabled, builds_enabled, merge_requests_enabled and issues_enabled fields on projects table
   # All those fields got moved to a new table called project_feature and are now integers instead of booleans

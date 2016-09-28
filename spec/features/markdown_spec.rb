@@ -151,13 +151,13 @@ describe 'GitLab Markdown', feature: true do
       it 'allows markup inside link elements' do
         aggregate_failures do
           expect(doc.at_css('a[href="#link-emphasis"]').to_html).
-            to eq %{<a href="#link-emphasis"><em>text</em></a>}
+            to eq %(<a href="#link-emphasis"><em>text</em></a>)
 
           expect(doc.at_css('a[href="#link-strong"]').to_html).
-            to eq %{<a href="#link-strong"><strong>text</strong></a>}
+            to eq %(<a href="#link-strong"><strong>text</strong></a>)
 
           expect(doc.at_css('a[href="#link-code"]').to_html).
-            to eq %{<a href="#link-code"><code>text</code></a>}
+            to eq %(<a href="#link-code"><code>text</code></a>)
         end
       end
     end

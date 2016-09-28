@@ -78,7 +78,7 @@ describe CommitRange, models: true do
 
   describe '#to_param' do
     it 'includes the correct keys' do
-      expect(range.to_param.keys).to eq %i(from to)
+      expect(range.to_param.keys).to eq %i[from to]
     end
 
     it 'includes the correct values for a three-dot range' do

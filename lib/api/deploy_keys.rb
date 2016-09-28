@@ -19,7 +19,7 @@ module API
       # Routing "projects/:id/keys/..." is DEPRECATED and WILL BE REMOVED in version 9.0
       # Use "projects/:id/deploy_keys/..." instead.
       #
-      %w(keys deploy_keys).each do |path|
+      %w[keys deploy_keys].each do |path|
         desc "Get a specific project's deploy keys" do
           success Entities::SSHKey
         end

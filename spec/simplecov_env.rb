@@ -42,7 +42,7 @@ module SimpleCovEnv
       add_group 'Models', 'app/models'
       add_group 'Mailers', 'app/mailers'
       add_group 'Helpers', 'app/helpers'
-      add_group 'Workers', %w(app/jobs app/workers)
+      add_group 'Workers', %w[app/jobs app/workers]
       add_group 'Libraries', 'lib'
       add_group 'Services', 'app/services'
       add_group 'Finders', 'app/finders'

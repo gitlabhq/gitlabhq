@@ -2,8 +2,8 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
-    PUSH_COMMANDS = %w{ git-receive-pack }
+    DOWNLOAD_COMMANDS = %w[git-upload-pack git-upload-archive]
+    PUSH_COMMANDS = %w[git-receive-pack]
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 

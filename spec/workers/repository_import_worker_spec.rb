@@ -20,7 +20,7 @@ describe RepositoryImportWorker do
 
     context 'when the import has failed' do
       it 'hide the credentials that were used in the import URL' do
-        error = %Q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
+        error = %Q(remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found )
         expect_any_instance_of(Projects::ImportService).to receive(:execute).
           and_return({ status: :error, message: error })
 

@@ -50,7 +50,7 @@ module Gitlab
       end
 
       def version
-        Gitlab::VersionInfo.parse(Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} --version)).first)
+        Gitlab::VersionInfo.parse(Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} --version]).first)
       end
     end
   end

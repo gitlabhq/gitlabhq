@@ -592,7 +592,7 @@ module Ci
     end
 
     describe "When" do
-      %w(on_success on_failure always).each do |when_state|
+      %w[on_success on_failure always].each do |when_state|
         it "returns #{when_state} when defined" do
           config = YAML.dump({
                                rspec: { script: "rspec", when: when_state }

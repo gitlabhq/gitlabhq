@@ -19,7 +19,7 @@ module Gitlab
       end
 
       class << self
-        %i(call to_document to_html).each do |meth|
+        %i[call to_document to_html].each do |meth|
           define_method(meth) do |text, context|
             context = transform_context(context)
 

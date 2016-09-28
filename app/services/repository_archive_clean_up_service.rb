@@ -20,11 +20,11 @@ class RepositoryArchiveCleanUpService
   private
 
   def clean_up_old_archives
-    run(%W(find #{path} -not -path #{path} -type f \( -name \*.tar -o -name \*.bz2 -o -name \*.tar.gz -o -name \*.zip \) -maxdepth 2 -mmin +#{mmin} -delete))
+    run(%W[find #{path} -not -path #{path} -type f \( -name \*.tar -o -name \*.bz2 -o -name \*.tar.gz -o -name \*.zip \) -maxdepth 2 -mmin +#{mmin} -delete])
   end
 
   def clean_up_empty_directories
-    run(%W(find #{path} -not -path #{path} -type d -empty -name \*.git -maxdepth 1 -delete))
+    run(%W[find #{path} -not -path #{path} -type d -empty -name \*.git -maxdepth 1 -delete])
   end
 
   def run(cmd)

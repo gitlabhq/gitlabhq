@@ -110,7 +110,7 @@ describe CaseSensitivity, models: true do
             and_return('`foo`')
 
           expect(model).to receive(:where).
-            with(%q{`foo` = :value}, value: 'bar').
+            with(%q(`foo` = :value), value: 'bar').
             and_return(criteria)
 
           expect(model.iwhere(foo: 'bar')).to eq(criteria)
@@ -124,7 +124,7 @@ describe CaseSensitivity, models: true do
             and_return('`foo`.`bar`')
 
           expect(model).to receive(:where).
-            with(%q{`foo`.`bar` = :value}, value: 'bar').
+            with(%q(`foo`.`bar` = :value), value: 'bar').
             and_return(criteria)
 
           expect(model.iwhere('foo.bar'.to_sym => 'bar')).
@@ -146,11 +146,11 @@ describe CaseSensitivity, models: true do
             and_return('`bar`')
 
           expect(model).to receive(:where).
-            with(%q{`foo` = :value}, value: 'bar').
+            with(%q(`foo` = :value), value: 'bar').
             and_return(initial)
 
           expect(initial).to receive(:where).
-            with(%q{`bar` = :value}, value: 'baz').
+            with(%q(`bar` = :value), value: 'baz').
             and_return(final)
 
           got = model.iwhere(foo: 'bar', bar: 'baz')
@@ -171,11 +171,11 @@ describe CaseSensitivity, models: true do
             and_return('`foo`.`baz`')
 
           expect(model).to receive(:where).
-            with(%q{`foo`.`bar` = :value}, value: 'bar').
+            with(%q(`foo`.`bar` = :value), value: 'bar').
             and_return(initial)
 
           expect(initial).to receive(:where).
-            with(%q{`foo`.`baz` = :value}, value: 'baz').
+            with(%q(`foo`.`baz` = :value), value: 'baz').
             and_return(final)
 
           got = model.iwhere('foo.bar'.to_sym => 'bar',

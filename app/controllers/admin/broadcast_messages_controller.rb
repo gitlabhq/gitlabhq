@@ -47,12 +47,12 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   end
 
   def broadcast_message_params
-    params.require(:broadcast_message).permit(%i(
+    params.require(:broadcast_message).permit(%i[
       color
       ends_at
       font
       message
       starts_at
-    ))
+    ])
   end
 end

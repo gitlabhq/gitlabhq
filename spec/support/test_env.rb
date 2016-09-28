@@ -115,13 +115,13 @@ module TestEnv
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
-      system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))
+      system(*%W[#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}])
     end
 
     set_repo_refs(repo_path, branch_sha)
 
     # We must copy bare repositories because we will push to them.
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    system(git_env, *%W[#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}])
   end
 
   def copy_repo(project)
@@ -162,7 +162,7 @@ module TestEnv
   end
 
   def warm_asset_cache?
-    cache = Rails.root.join(*%w(tmp cache assets test))
+    cache = Rails.root.join(*%w[tmp cache assets test])
     Dir.exist?(cache) && Dir.entries(cache).length > 2
   end
 
@@ -202,9 +202,9 @@ module TestEnv
     Dir.chdir(repo_path) do
       branch_sha.each do |branch, sha|
         # Try to reset without fetching to avoid using the network.
-        reset = %W(#{Gitlab.config.git.bin_path} update-ref refs/heads/#{branch} #{sha})
+        reset = %W[#{Gitlab.config.git.bin_path} update-ref refs/heads/#{branch} #{sha}]
         unless system(*reset)
-          if system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
+          if system(*%W[#{Gitlab.config.git.bin_path} fetch origin])
             unless system(*reset)
               raise 'The fetched test seed '\
               'does not contain the required revision.'

@@ -22,9 +22,9 @@ class AbuseReportsController < ApplicationController
   private
 
   def report_params
-    params.require(:abuse_report).permit(%i(
+    params.require(:abuse_report).permit(%i[
       message
       user_id
-    ))
+    ])
   end
 end

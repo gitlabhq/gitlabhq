@@ -8,7 +8,7 @@ class GitHooksService
     @newrev     = newrev
     @ref        = ref
 
-    %w(pre-receive update).each do |hook_name|
+    %w[pre-receive update].each do |hook_name|
       status, message = run_hook(hook_name)
 
       unless status

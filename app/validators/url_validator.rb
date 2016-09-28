@@ -25,7 +25,7 @@ class UrlValidator < ActiveModel::EachValidator
   private
 
   def default_options
-    @default_options ||= { protocols: %w(http https) }
+    @default_options ||= { protocols: %w[http https] }
   end
 
   def valid_url?(value)

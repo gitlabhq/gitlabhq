@@ -37,7 +37,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
 
   def update
     password_attributes = user_params.select do |key, value|
-      %w(password password_confirmation).include?(key.to_s)
+      %w[password password_confirmation].include?(key.to_s)
     end
     password_attributes[:password_automatically_set] = false
 

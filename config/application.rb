@@ -20,11 +20,11 @@ module Gitlab
     # https://github.com/rails/rails/blob/v4.2.6/railties/lib/rails/engine.rb#L687
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
-    config.eager_load_paths.push(*%W(#{config.root}/lib
+    config.eager_load_paths.push(*%W[#{config.root}/lib
                                      #{config.root}/app/models/ci
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
-                                     #{config.root}/app/models/project_services))
+                                     #{config.root}/app/models/project_services])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -52,7 +52,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
-    config.filter_parameters += %i(
+    config.filter_parameters += %i[
       certificate
       encrypted_key
       hook
@@ -64,7 +64,7 @@ module Gitlab
       private_token
       sentry_dsn
       variables
-    )
+    ]
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -97,7 +97,7 @@ module Gitlab
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.action_view.sanitized_allowed_protocols = %w(smb)
+    config.action_view.sanitized_allowed_protocols = %w[smb]
 
     config.middleware.use Rack::Attack
 

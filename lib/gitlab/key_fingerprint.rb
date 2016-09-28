@@ -39,7 +39,7 @@ module Gitlab
       # OpenSSH 6.8 introduces a new default output format for fingerprints.
       # Check the version and decide which command to use.
 
-      version_output, version_status = popen(%w(ssh -V))
+      version_output, version_status = popen(%w[ssh -V])
       return false unless version_status.zero?
 
       version_matches = version_output.match(/OpenSSH_(?<major>\d+)\.(?<minor>\d+)/)

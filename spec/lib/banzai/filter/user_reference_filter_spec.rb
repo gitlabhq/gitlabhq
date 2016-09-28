@@ -16,7 +16,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     expect(reference_filter(act).to_html).to eq(exp)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Hey #{reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -111,12 +111,12 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     doc = reference_filter("Hey #{reference}", only_path: true)
     link = doc.css('a').first.attr('href')
 
-    expect(link).not_to match %r(https?://)
+    expect(link).not_to match %r{https?://}
     expect(link).to eq urls.user_path(user)
   end
 
   context 'referencing a user in a link href' do
-    let(:reference) { %Q{<a href="#{user.to_reference}">User</a>} }
+    let(:reference) { %Q(<a href="#{user.to_reference}">User</a>) }
 
     it 'links to a User' do
       doc = reference_filter("Hey #{reference}")

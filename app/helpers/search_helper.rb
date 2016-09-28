@@ -155,6 +155,6 @@ module SearchHelper
 
   # Sanitize html generated after parsing markdown from issue description or comment
   def search_md_sanitize(html)
-    sanitize(html, tags: %w(a p ol ul li pre code))
+    sanitize(html, tags: %w[a p ol ul li pre code])
   end
 end

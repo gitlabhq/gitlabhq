@@ -64,7 +64,7 @@ describe Ci::API::API do
         end
 
         it 'validates variables needs to be a map of key-valued strings' do
-          post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: { key: %w(1 2) })
+          post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: { key: %w[1 2] })
           expect(response).to have_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end

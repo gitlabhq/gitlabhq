@@ -5,7 +5,7 @@ describe ProjectFeature do
   let(:user) { create(:user) }
 
   describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets) }
+    let(:features) { %w[issues wiki builds merge_requests snippets] }
 
     context 'when features are disabled' do
       it "returns false" do
@@ -65,7 +65,7 @@ describe ProjectFeature do
   end
 
   describe '#*_enabled?' do
-    let(:features) { %w(wiki builds merge_requests) }
+    let(:features) { %w[wiki builds merge_requests] }
 
     it "returns false when feature is disabled" do
       features.each do |feature|

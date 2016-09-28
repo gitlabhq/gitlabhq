@@ -129,7 +129,7 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context "and at least one LDAP provider is defined" do
-          before { stub_ldap_config(providers: %w(ldapmain)) }
+          before { stub_ldap_config(providers: %w[ldapmain]) }
 
           context "and a corresponding LDAP person" do
             before do

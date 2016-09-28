@@ -103,7 +103,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   def group_milestone
     group = owned_group
 
-    %w(gitlabhq gitlab-ci cookbook-gitlab).each do |path|
+    %w[gitlabhq gitlab-ci cookbook-gitlab].each do |path|
       project = create :project, path: path, group: group
       milestone = create :milestone, title: "Version 7.2", project: project
 

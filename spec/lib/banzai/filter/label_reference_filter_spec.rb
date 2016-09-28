@@ -12,7 +12,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Label #{reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -44,7 +44,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     doc = reference_filter("Label #{reference}", only_path: true)
     link = doc.css('a').first.attr('href')
 
-    expect(link).not_to match %r(https?://)
+    expect(link).not_to match %r{https?://}
     expect(link).to eq urls.namespace_project_issues_path(project.namespace, project, label_name: label.name)
   end
 
@@ -70,7 +70,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>#{label.name}</span></a>\.\)})
     end
 
     it 'ignores invalid label IDs' do
@@ -94,7 +94,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\)\.))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>#{label.name}</span></a>\)\.})
     end
 
     it 'ignores invalid label names' do
@@ -118,7 +118,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\)\.))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>#{label.name}</span></a>\)\.})
     end
 
     it 'ignores invalid label names' do
@@ -142,7 +142,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>\?g\.fm&amp;</span></a>\)\.))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>\?g\.fm&amp;</span></a>\)\.})
     end
 
     it 'ignores invalid label names' do
@@ -167,7 +167,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>#{label.name}</span></a>\.\)})
     end
 
     it 'ignores invalid label names' do
@@ -191,7 +191,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>#{label.name}</span></a>\.\)})
     end
 
     it 'ignores invalid label names' do
@@ -215,7 +215,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>g\.fm &amp; references\?</span></a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+><span.+>g\.fm &amp; references\?</span></a>\.\)})
     end
 
     it 'ignores invalid label names' do
@@ -274,7 +274,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   describe 'referencing a label in a link href' do
-    let(:reference) { %Q{<a href="#{label.to_reference}">Label</a>} }
+    let(:reference) { %Q(<a href="#{label.to_reference}">Label</a>) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -285,7 +285,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>Label</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>Label</a>\.\)})
     end
 
     it 'includes a data-project attribute' do

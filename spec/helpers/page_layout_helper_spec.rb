@@ -45,7 +45,7 @@ describe PageLayoutHelper do
       expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
     end
 
-    %w(project user group).each do |type|
+    %w[project user group].each do |type|
       context "with @#{type} assigned" do
         it "uses #{type.titlecase} avatar if available" do
           object = double(avatar_url: 'http://example.com/uploads/avatar.png')
@@ -100,11 +100,11 @@ describe PageLayoutHelper do
 
     it 'escapes content' do
       allow(helper).to receive(:page_card_attributes)
-        .and_return(foo: %q{foo" http-equiv="refresh}.html_safe)
+        .and_return(foo: %q(foo" http-equiv="refresh).html_safe)
 
       tags = helper.page_card_meta_tags
 
-      expect(tags).to include(%q{content="foo&quot; http-equiv=&quot;refresh"})
+      expect(tags).to include(%q(content="foo&quot; http-equiv=&quot;refresh"))
     end
   end
 end

@@ -1,7 +1,7 @@
 module Banzai
   module Filter
     class InlineDiffFilter < HTML::Pipeline::Filter
-      IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+      IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
       def call
         search_text_nodes(doc).each do |node|

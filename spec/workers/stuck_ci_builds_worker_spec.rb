@@ -9,7 +9,7 @@ describe StuckCiBuildsWorker do
     build.status
   end
 
-  %w(pending running).each do |status|
+  %w[pending running].each do |status|
     context "#{status} build" do
       before do
         build.update!(status: status)
@@ -29,7 +29,7 @@ describe StuckCiBuildsWorker do
     end
   end
 
-  %w(success failed canceled).each do |status|
+  %w[success failed canceled].each do |status|
     context "#{status} build" do
       before do
         build.update!(status: status)

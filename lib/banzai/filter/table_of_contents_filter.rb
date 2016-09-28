@@ -41,7 +41,7 @@ module Banzai
           end
         end
 
-        result[:toc] = %Q{<ul class="section-nav">\n#{result[:toc]}</ul>} unless result[:toc].empty?
+        result[:toc] = %Q(<ul class="section-nav">\n#{result[:toc]}</ul>) unless result[:toc].empty?
 
         doc
       end
@@ -49,11 +49,11 @@ module Banzai
       private
 
       def anchor_tag(href)
-        %Q{<a id="#{href}" class="anchor" href="##{href}" aria-hidden="true"></a>}
+        %Q(<a id="#{href}" class="anchor" href="##{href}" aria-hidden="true"></a>)
       end
 
       def push_toc(href, text)
-        result[:toc] << %Q{<li><a href="##{href}">#{text}</a></li>\n}
+        result[:toc] << %Q(<li><a href="##{href}">#{text}</a></li>\n)
       end
     end
   end

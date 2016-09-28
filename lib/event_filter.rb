@@ -3,7 +3,7 @@ class EventFilter
 
   class << self
     def default_filter
-      %w{ push issues merge_requests team}
+      %w[push issues merge_requests team]
     end
 
     def push

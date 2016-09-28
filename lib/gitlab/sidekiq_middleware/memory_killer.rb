@@ -44,7 +44,7 @@ module Gitlab
       private
 
       def get_rss
-        output, status = Gitlab::Popen.popen(%W(ps -o rss= -p #{Process.pid}))
+        output, status = Gitlab::Popen.popen(%W[ps -o rss= -p #{Process.pid}])
         return 0 unless status.zero?
 
         output.to_i

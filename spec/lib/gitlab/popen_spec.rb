@@ -10,7 +10,7 @@ describe 'Gitlab::Popen', lib: true, no_db: true do
 
   context 'zero status' do
     before do
-      @output, @status = @klass.new.popen(%w(ls), path)
+      @output, @status = @klass.new.popen(%w[ls], path)
     end
 
     it { expect(@status).to be_zero }
@@ -19,7 +19,7 @@ describe 'Gitlab::Popen', lib: true, no_db: true do
 
   context 'non-zero status' do
     before do
-      @output, @status = @klass.new.popen(%w(cat NOTHING), path)
+      @output, @status = @klass.new.popen(%w[cat NOTHING], path)
     end
 
     it { expect(@status).to eq(1) }
@@ -34,7 +34,7 @@ describe 'Gitlab::Popen', lib: true, no_db: true do
 
   context 'without a directory argument' do
     before do
-      @output, @status = @klass.new.popen(%w(ls))
+      @output, @status = @klass.new.popen(%w[ls])
     end
 
     it { expect(@status).to be_zero }

@@ -72,7 +72,7 @@ class ApplicationSetting < ActiveRecord::Base
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
   validates :enabled_git_access_protocol,
-            inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
+            inclusion: { in: %w[ssh http], allow_blank: true, allow_nil: true }
 
   validates :domain_blacklist,
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },

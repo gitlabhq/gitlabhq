@@ -51,7 +51,7 @@ module Gitlab
         nil
       end
 
-      REPLYING_HEADER_LABELS = %w(From Sent To Subject Reply To Cc Bcc Date)
+      REPLYING_HEADER_LABELS = %w[From Sent To Subject Reply To Cc Bcc Date]
       REPLYING_HEADER_REGEX = Regexp.union(REPLYING_HEADER_LABELS.map { |label| "#{label}:" })
 
       def discourse_email_trimmer(body)

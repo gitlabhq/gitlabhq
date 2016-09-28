@@ -45,7 +45,7 @@ http://app.asana.com/-/account_api'
   end
 
   def supported_events
-    %w(push)
+    %w[push]
   end
 
   def client

@@ -34,7 +34,7 @@ module RepositoryCheck
 
     def git_fsck(repository)
       path = repository.path_to_repo
-      cmd = %W(nice git --git-dir=#{path} fsck)
+      cmd = %W[nice git --git-dir=#{path} fsck]
       output, status = Gitlab::Popen.popen(cmd)
 
       if status.zero?

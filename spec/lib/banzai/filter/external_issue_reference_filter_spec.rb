@@ -17,7 +17,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
       expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
-    %w(pre code a style).each do |elem|
+    %w[pre code a style].each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
         exp = act = "<#{elem}>Issue #{reference}</#{elem}>"
         expect(filter(act).to_html).to eq exp
@@ -56,7 +56,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
 
     it 'escapes the title attribute' do
       allow(project.external_issue_tracker).to receive(:title).
-        and_return(%{"></a>whatever<a title="})
+        and_return(%("></a>whatever<a title="))
 
       doc = filter("Issue #{reference}")
       expect(doc.text).to eq "Issue #{reference}"

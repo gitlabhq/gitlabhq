@@ -133,7 +133,7 @@ module Banzai
       end
 
       def url?(path)
-        path.start_with?(*%w(http https))
+        path.start_with?(*%w[http https])
       end
 
       # Attempt to process the tag as a page link tag.

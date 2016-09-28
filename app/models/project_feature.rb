@@ -18,7 +18,7 @@ class ProjectFeature < ActiveRecord::Base
   PRIVATE  = 10
   ENABLED  = 20
 
-  FEATURES = %i(issues merge_requests wiki snippets builds)
+  FEATURES = %i[issues merge_requests wiki snippets builds]
 
   belongs_to :project
 

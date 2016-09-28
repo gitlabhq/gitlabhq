@@ -5,14 +5,14 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
 
   describe 'default whitelist' do
     it 'sanitizes tags that are not whitelisted' do
-      act = %q{<textarea>no inputs</textarea> and <blink>no blinks</blink>}
+      act = %q(<textarea>no inputs</textarea> and <blink>no blinks</blink>)
       exp = 'no inputs and no blinks'
       expect(filter(act).to_html).to eq exp
     end
 
     it 'sanitizes tag attributes' do
-      act = %q{<a href="http://example.com/bar.html" onclick="bar">Text</a>}
-      exp = %q{<a href="http://example.com/bar.html">Text</a>}
+      act = %q(<a href="http://example.com/bar.html" onclick="bar">Text</a>)
+      exp = %q(<a href="http://example.com/bar.html">Text</a>)
       expect(filter(act).to_html).to eq exp
     end
 
@@ -34,13 +34,13 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     end
 
     it 'sanitizes `class` attribute on any element' do
-      act = %q{<strong class="foo">Strong</strong>}
-      expect(filter(act).to_html).to eq %q{<strong>Strong</strong>}
+      act = %q(<strong class="foo">Strong</strong>)
+      expect(filter(act).to_html).to eq %q(<strong>Strong</strong>)
     end
 
     it 'sanitizes `id` attribute on any element' do
-      act = %q{<em id="foo">Emphasis</em>}
-      expect(filter(act).to_html).to eq %q{<em>Emphasis</em>}
+      act = %q(<em id="foo">Emphasis</em>)
+      expect(filter(act).to_html).to eq %q(<em>Emphasis</em>)
     end
   end
 
@@ -53,13 +53,13 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     end
 
     it 'allows syntax highlighting' do
-      exp = act = %q{<pre class="code highlight white c"><code><span class="k">def</span></code></pre>}
+      exp = act = %q(<pre class="code highlight white c"><code><span class="k">def</span></code></pre>)
       expect(filter(act).to_html).to eq exp
     end
 
     it 'sanitizes `class` attribute from non-highlight spans' do
-      act = %q{<span class="k">def</span>}
-      expect(filter(act).to_html).to eq %q{<span>def</span>}
+      act = %q(<span class="k">def</span>)
+      expect(filter(act).to_html).to eq %q(<span>def</span>)
     end
 
     it 'allows `style` attribute on table elements' do
@@ -77,18 +77,18 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     end
 
     it 'allows `span` elements' do
-      exp = act = %q{<span>Hello</span>}
+      exp = act = %q(<span>Hello</span>)
       expect(filter(act).to_html).to eq exp
     end
 
     it 'allows `abbr` elements' do
-      exp = act = %q{<abbr title="HyperText Markup Language">HTML</abbr>}
+      exp = act = %q(<abbr title="HyperText Markup Language">HTML</abbr>)
       expect(filter(act).to_html).to eq exp
     end
 
     it 'removes `rel` attribute from `a` elements' do
-      act = %q{<a href="#" rel="nofollow">Link</a>}
-      exp = %q{<a href="#">Link</a>}
+      act = %q(<a href="#" rel="nofollow">Link</a>)
+      exp = %q(<a href="#">Link</a>)
 
       expect(filter(act).to_html).to eq exp
     end
@@ -204,14 +204,14 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     end
 
     it 'allows non-standard anchor schemes' do
-      exp = %q{<a href="irc://irc.freenode.net/git">IRC</a>}
+      exp = %q(<a href="irc://irc.freenode.net/git">IRC</a>)
       act = filter(exp)
 
       expect(act.to_html).to eq exp
     end
 
     it 'allows relative links' do
-      exp = %q{<a href="foo/bar.md">foo/bar.md</a>}
+      exp = %q(<a href="foo/bar.md">foo/bar.md</a>)
       act = filter(exp)
 
       expect(act.to_html).to eq exp

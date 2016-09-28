@@ -232,7 +232,7 @@ describe API::API, api: true  do
       post api('/projects', user), project
 
       project.each_pair do |k, v|
-        next if %i{ issues_enabled merge_requests_enabled wiki_enabled }.include?(k)
+        next if %i[ issues_enabled merge_requests_enabled wiki_enabled ].include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
 

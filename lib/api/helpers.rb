@@ -338,7 +338,7 @@ module API
     end
 
     def project_order_by
-      order_fields = %w(id name path created_at updated_at last_activity_at)
+      order_fields = %w[id name path created_at updated_at last_activity_at]
 
       if order_fields.include?(params['order_by'])
         params['order_by']
@@ -367,7 +367,7 @@ module API
 
       # sanitize file paths
       # this requires all paths to exist
-      required_attributes! %W(#{field}.path)
+      required_attributes! %W[#{field}.path]
       uploads_path = File.realpath(uploads_path)
       file_path = File.realpath(params["#{field}.path"])
       bad_request!('Bad file path') unless file_path.start_with?(uploads_path)

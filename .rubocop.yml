@@ -338,6 +338,19 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
+Style/PercentLiteralDelimiters:
+  Enabled: true
+  PreferredDelimiters:
+    '%':  '()'
+    '%i': '[]'
+    '%q': '()'
+    '%Q': '()'
+    '%r': '{}'
+    '%s': '()'
+    '%w': '[]'
+    '%W': '[]'
+    '%x': '()'
+
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
   Enabled: true

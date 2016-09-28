@@ -24,7 +24,7 @@ module Auth
       token.expire_time = token_expire_at
 
       token[:access] = names.map do |name|
-        { type: 'repository', name: name, actions: %w(*) }
+        { type: 'repository', name: name, actions: %w[*] }
       end
 
       token.encoded

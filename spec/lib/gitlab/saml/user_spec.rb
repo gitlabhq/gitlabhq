@@ -5,7 +5,7 @@ describe Gitlab::Saml::User, lib: true do
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:provider) { 'saml' }
-  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w(Developers Freelancers Designers) }) }) }
+  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w[Developers Freelancers Designers] }) }) }
   let(:info_hash) do
     {
       name: 'John',
@@ -50,14 +50,14 @@ describe Gitlab::Saml::User, lib: true do
       context 'external groups' do
         context 'are defined' do
           it 'marks the user as external' do
-            stub_saml_group_config(%w(Freelancers))
+            stub_saml_group_config(%w[Freelancers])
             saml_user.save
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
         end
 
-        before { stub_saml_group_config(%w(Interns)) }
+        before { stub_saml_group_config(%w[Interns]) }
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
             saml_user.save
@@ -110,7 +110,7 @@ describe Gitlab::Saml::User, lib: true do
       context 'external groups' do
         context 'are defined' do
           it 'marks the user as external' do
-            stub_saml_group_config(%w(Freelancers))
+            stub_saml_group_config(%w[Freelancers])
             saml_user.save
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
@@ -119,7 +119,7 @@ describe Gitlab::Saml::User, lib: true do
 
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
-            stub_saml_group_config(%w(Interns))
+            stub_saml_group_config(%w[Interns])
             saml_user.save
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
@@ -136,13 +136,13 @@ describe Gitlab::Saml::User, lib: true do
         before { stub_omniauth_config({ auto_link_ldap_user: true, auto_link_saml_user: false }) }
 
         context 'and at least one LDAP provider is defined' do
-          before { stub_ldap_config(providers: %w(ldapmain)) }
+          before { stub_ldap_config(providers: %w[ldapmain]) }
 
           context 'and a corresponding LDAP person' do
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:email) { %w(john@mail.com john2@example.com) }
+              allow(ldap_user).to receive(:email) { %w[john@mail.com john2@example.com] }
               allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
               allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
               allow(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)

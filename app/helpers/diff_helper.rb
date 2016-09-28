@@ -14,7 +14,7 @@ module DiffHelper
 
   def diff_view
     @diff_view ||= begin
-      diff_views = %w(inline parallel)
+      diff_views = %w[inline parallel]
       diff_view = cookies[:diff_view]
       diff_view = diff_views.first unless diff_views.include?(diff_view)
       diff_view.to_sym

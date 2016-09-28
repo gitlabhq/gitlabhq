@@ -52,7 +52,7 @@ module ExportFileHelper
   def in_directory_with_expanded_export(project)
     Dir.mktmpdir do |tmpdir|
       export_file = project.export_project_path
-      _output, exit_status = Gitlab::Popen.popen(%W{tar -zxf #{export_file} -C #{tmpdir}})
+      _output, exit_status = Gitlab::Popen.popen(%W[tar -zxf #{export_file} -C #{tmpdir}])
 
       yield(exit_status, tmpdir)
     end

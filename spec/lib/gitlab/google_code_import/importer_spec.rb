@@ -22,7 +22,7 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
     it "imports status labels" do
       subject.execute
 
-      %w(New NeedInfo Accepted Wishlist Started Fixed Invalid Duplicate WontFix Incomplete).each do |status|
+      %w[New NeedInfo Accepted Wishlist Started Fixed Invalid Duplicate WontFix Incomplete].each do |status|
         expect(project.labels.find_by(name: "Status: #{status}")).not_to be_nil
       end
     end
@@ -30,12 +30,12 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
     it "imports labels" do
       subject.execute
 
-      %w(
+      %w[
         Type-Defect Type-Enhancement Type-Task Type-Review Type-Other Milestone-0.12 Priority-Critical 
         Priority-High Priority-Medium Priority-Low OpSys-All OpSys-Windows OpSys-Linux OpSys-OSX Security 
         Performance Usability Maintainability Component-Panel Component-Taskbar Component-Battery 
         Component-Systray Component-Clock Component-Launcher Component-Tint2conf Component-Docs Component-New
-      ).each do |label|
+      ].each do |label|
         label.sub!("-", ": ")
         expect(project.labels.find_by(name: label)).not_to be_nil
       end

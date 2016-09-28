@@ -19,7 +19,7 @@ describe Banzai::Pipeline::DescriptionPipeline do
     expect(doc.strip).to eq 'Description'
   end
 
-  %w(pre code img ol ul li).each do |elem|
+  %w[pre code img ol ul li].each do |elem|
     it "removes '#{elem}' elements" do
       act = "<#{elem}>Description</#{elem}>"
 
@@ -27,7 +27,7 @@ describe Banzai::Pipeline::DescriptionPipeline do
     end
   end
 
-  %w(b i strong em a ins del sup sub p).each do |elem|
+  %w[b i strong em a ins del sup sub p].each do |elem|
     it "still allows '#{elem}' elements" do
       exp = act = "<#{elem}>Description</#{elem}>"
 

@@ -14,7 +14,7 @@ describe CommitStatus, models: true do
   it { is_expected.to belong_to(:project) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
+  it { is_expected.to validate_inclusion_of(:status).in_array(%w[pending running failed success canceled]) }
 
   it { is_expected.to delegate_method(:sha).to(:pipeline) }
   it { is_expected.to delegate_method(:short_sha).to(:pipeline) }

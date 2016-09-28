@@ -117,7 +117,7 @@ describe Ci::API::API do
         end
       end
 
-      %w(name version revision platform architecture).each do |param|
+      %w[name version revision platform architecture].each do |param|
         context "updates runner #{param}" do
           let(:value) { "#{param}_value" }
 

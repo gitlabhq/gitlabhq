@@ -10,7 +10,7 @@ describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match(%{content="foo&quot; http-equiv=&quot;refresh"})
+    expect(rendered).to match(%(content="foo&quot; http-equiv=&quot;refresh"))
   end
 
   it 'escapes HTML-safe strings in page_description' do
@@ -18,7 +18,7 @@ describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match(%{content="foo&quot; http-equiv=&quot;refresh"})
+    expect(rendered).to match(%(content="foo&quot; http-equiv=&quot;refresh"))
   end
 
   it 'escapes HTML-safe strings in page_image' do
@@ -26,11 +26,11 @@ describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match(%{content="foo&quot; http-equiv=&quot;refresh"})
+    expect(rendered).to match(%(content="foo&quot; http-equiv=&quot;refresh"))
   end
 
   def stub_helper_with_safe_string(method)
     allow_any_instance_of(PageLayoutHelper).to receive(method)
-      .and_return(%q{foo" http-equiv="refresh}.html_safe)
+      .and_return(%q(foo" http-equiv="refresh).html_safe)
   end
 end

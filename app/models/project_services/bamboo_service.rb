@@ -55,7 +55,7 @@ class BambooService < CiService
   end
 
   def supported_events
-    %w(push)
+    %w[push]
   end
 
   def build_info(sha)

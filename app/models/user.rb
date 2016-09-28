@@ -559,7 +559,7 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w(name username skype linkedin twitter).each do |attr|
+    %w[name username skype linkedin twitter].each do |attr|
       value = self.send(attr)
       self.send("#{attr}=", Sanitize.clean(value)) if value.present?
     end

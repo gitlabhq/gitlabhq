@@ -103,7 +103,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue confidential_issue merge_request wiki_page)
+    %w[push tag_push issue confidential_issue merge_request wiki_page]
   end
 
   def execute(data)
@@ -195,7 +195,7 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w(
+    %w[
       asana
       assembla
       bamboo
@@ -217,7 +217,7 @@ class Service < ActiveRecord::Base
       redmine
       slack
       teamcity
-    )
+    ]
   end
 
   def self.create_from_template(project_id, template)

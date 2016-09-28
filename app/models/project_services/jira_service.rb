@@ -182,7 +182,7 @@ class JiraService < IssueTrackerService
     project_name = data[:project][:name]
 
     message = {
-      body: %Q{[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title}'}
+      body: %Q([#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title}')
     }
 
     unless existing_comment?(issue_name, message[:body])

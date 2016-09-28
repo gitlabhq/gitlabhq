@@ -63,7 +63,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_mount
-    upload_mounts = %w(avatar attachment file logo header_logo)
+    upload_mounts = %w[avatar attachment file logo header_logo]
 
     if upload_mounts.include?(params[:mounted_as])
       params[:mounted_as]

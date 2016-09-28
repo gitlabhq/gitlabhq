@@ -27,7 +27,7 @@ describe 'gitlab:app namespace rake task' do
   end
 
   def reenable_backup_sub_tasks
-    %w{db repo uploads builds artifacts lfs registry}.each do |subtask|
+    %w[db repo uploads builds artifacts lfs registry].each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -129,7 +129,7 @@ describe 'gitlab:app namespace rake task' do
 
       it 'sets correct permissions on the tar contents' do
         tar_contents, exit_status = Gitlab::Popen.popen(
-          %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
+          %W[tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz]
         )
         expect(exit_status).to eq(0)
         expect(tar_contents).to match('db/')
@@ -155,7 +155,7 @@ describe 'gitlab:app namespace rake task' do
 
         it 'does not create registry.tar.gz' do
           tar_contents, exit_status = Gitlab::Popen.popen(
-            %W{tar -tvf #{@backup_tar}}
+            %W[tar -tvf #{@backup_tar}]
           )
           expect(exit_status).to eq(0)
           expect(tar_contents).not_to match('registry.tar.gz')
@@ -193,7 +193,7 @@ describe 'gitlab:app namespace rake task' do
 
       it 'includes repositories in all repository storages' do
         tar_contents, exit_status = Gitlab::Popen.popen(
-          %W{tar -tvf #{@backup_tar} repositories}
+          %W[tar -tvf #{@backup_tar} repositories]
         )
         expect(exit_status).to eq(0)
         expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
@@ -231,7 +231,7 @@ describe 'gitlab:app namespace rake task' do
 
     it "does not contain skipped item" do
       tar_contents, _exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
+        %W[tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz]
       )
 
       expect(tar_contents).to match('db/')

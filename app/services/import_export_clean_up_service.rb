@@ -19,6 +19,6 @@ class ImportExportCleanUpService
   private
 
   def clean_up_export_files
-    Gitlab::Popen.popen(%W(find #{path} -not -path #{path} -mmin +#{mmin} -delete))
+    Gitlab::Popen.popen(%W[find #{path} -not -path #{path} -mmin +#{mmin} -delete])
   end
 end

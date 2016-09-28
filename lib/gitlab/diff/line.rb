@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def serialize_keys
-        @serialize_keys ||= %i(text type index old_pos new_pos)
+        @serialize_keys ||= %i[text type index old_pos new_pos]
       end
 
       def to_hash

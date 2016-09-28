@@ -72,7 +72,7 @@ describe API::API do
         end
 
         it 'validates variables needs to be a map of key-valued strings' do
-          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: { key: %w(1 2) }, ref: 'master')
+          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: { key: %w[1 2] }, ref: 'master')
           expect(response).to have_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end

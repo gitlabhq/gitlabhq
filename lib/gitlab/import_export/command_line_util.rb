@@ -10,25 +10,25 @@ module Gitlab
       end
 
       def git_bundle(repo_path:, bundle_path:)
-        execute(%W(#{git_bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all))
+        execute(%W[#{git_bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all])
       end
 
       def git_unbundle(repo_path:, bundle_path:)
-        execute(%W(#{git_bin_path} clone --bare #{bundle_path} #{repo_path}))
+        execute(%W[#{git_bin_path} clone --bare #{bundle_path} #{repo_path}])
       end
 
       def git_restore_hooks
-        execute(%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
+        execute(%W[#{Gitlab.config.gitlab_shell.path}/bin/create-hooks] + repository_storage_paths_args)
       end
 
       private
 
       def tar_with_options(archive:, dir:, options:)
-        execute(%W(tar -#{options} #{archive} -C #{dir} .))
+        execute(%W[tar -#{options} #{archive} -C #{dir} .])
       end
 
       def untar_with_options(archive:, dir:, options:)
-        execute(%W(tar -#{options} #{archive} -C #{dir}))
+        execute(%W[tar -#{options} #{archive} -C #{dir}])
       end
 
       def execute(cmd)

@@ -170,13 +170,13 @@ module Ci
 
         return if css_classes.empty?
 
-        @out << %{<span class="#{css_classes.join(' ')}">}
+        @out << %(<span class="#{css_classes.join(' ')}">)
         @n_open_tags += 1
       end
 
       def close_open_tags
         while @n_open_tags > 0
-          @out << %{</span>}
+          @out << %(</span>)
           @n_open_tags -= 1
         end
       end

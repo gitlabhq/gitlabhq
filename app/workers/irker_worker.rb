@@ -12,7 +12,7 @@ class IrkerWorker
 
     repo_name = push_data['repository']['name']
     committer = push_data['user_name']
-    branch = push_data['ref'].gsub(%r'refs/[^/]*/', '')
+    branch = push_data['ref'].gsub(%r{refs/[^/]*/}, '')
 
     if @colors
       repo_name = "\x0304#{repo_name}\x0f"

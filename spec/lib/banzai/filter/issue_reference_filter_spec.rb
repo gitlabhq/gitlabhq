@@ -14,7 +14,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Issue #{issue.to_reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -58,7 +58,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     end
 
     it 'escapes the title attribute' do
-      issue.update_attribute(:title, %{"></a>whatever<a title="})
+      issue.update_attribute(:title, %("></a>whatever<a title="))
 
       doc = reference_filter("Issue #{reference}")
       expect(doc.text).to eq "Issue #{reference}"
@@ -89,7 +89,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
       doc = reference_filter("Issue #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq helper.url_for_issue(issue.iid, project, only_path: true)
     end
 
@@ -165,7 +165,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { %Q{<a href="#{issue.to_reference(project)}">Reference</a>} }
+    let(:reference) { %Q(<a href="#{issue.to_reference(project)}">Reference</a>) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -184,7 +184,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { %Q{<a href="#{helper.url_for_issue(issue.iid, project2) + "#note_123"}">Reference</a>} }
+    let(:reference) { %Q(<a href="#{helper.url_for_issue(issue.iid, project2) + "#note_123"}">Reference</a>) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

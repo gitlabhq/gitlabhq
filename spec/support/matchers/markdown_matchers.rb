@@ -60,7 +60,7 @@ module MarkdownMatchers
       expect(actual).to have_autolink('irc://irc.freenode.net/git')
       expect(actual).to have_autolink('http://localhost:3000')
 
-      %w(code a kbd).each do |elem|
+      %w[code a kbd].each do |elem|
         expect(body).not_to have_selector("#{elem} a")
       end
     end

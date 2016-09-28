@@ -11,7 +11,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Snippet #{reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -43,7 +43,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     end
 
     it 'escapes the title attribute' do
-      snippet.update_attribute(:title, %{"></a>whatever<a title="})
+      snippet.update_attribute(:title, %("></a>whatever<a title="))
 
       doc = reference_filter("Snippet #{reference}")
       expect(doc.text).to eq "Snippet #{reference}"
@@ -74,7 +74,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       doc = reference_filter("Snippet #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq urls.namespace_project_snippet_url(project.namespace, project, snippet, only_path: true)
     end
   end

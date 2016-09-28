@@ -73,8 +73,8 @@ describe DiffHelper do
   end
 
   describe "#mark_inline_diffs" do
-    let(:old_line) { %{abc 'def'} }
-    let(:new_line) { %{abc "def"} }
+    let(:old_line) { %(abc 'def') }
+    let(:new_line) { %(abc "def") }
 
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)

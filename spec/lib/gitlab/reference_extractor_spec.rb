@@ -25,7 +25,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
     project.team << [@u_foo, :reporter]
     project.team << [@u_bar, :guest]
 
-    subject.analyze(%Q{
+    subject.analyze(%Q(
       Inline code: `@foo`
 
       Code block:
@@ -37,7 +37,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
       Quote:
 
       > @offteam
-    })
+    ))
     expect(subject.users).to match_array([])
   end
 

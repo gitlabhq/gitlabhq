@@ -75,14 +75,14 @@ describe API::API, api: true  do
       it 'returns new recovery codes when the user exists' do
         allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
         allow_any_instance_of(User)
-          .to receive(:generate_otp_backup_codes!).and_return(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+          .to receive(:generate_otp_backup_codes!).and_return(%w[119135e5a3ebce8e 34bd7b74adbc8861])
 
         post api('/internal/two_factor_recovery_codes'),
              secret_token: secret_token,
              key_id: key.id
 
         expect(json_response['success']).to be_truthy
-        expect(json_response['recovery_codes']).to match_array(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+        expect(json_response['recovery_codes']).to match_array(%w[119135e5a3ebce8e 34bd7b74adbc8861])
       end
     end
 

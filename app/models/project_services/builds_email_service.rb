@@ -24,7 +24,7 @@ class BuildsEmailService < Service
   end
 
   def supported_events
-    %w(build)
+    %w[build]
   end
 
   def execute(push_data)

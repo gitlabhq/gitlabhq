@@ -118,7 +118,7 @@ describe Ci::Pipeline, models: true do
     end
 
     it 'return all stages' do
-      is_expected.to eq(%w(build test))
+      is_expected.to eq(%w[build test])
     end
   end
 

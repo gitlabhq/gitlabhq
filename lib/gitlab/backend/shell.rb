@@ -124,7 +124,7 @@ module Gitlab
     # Ex.
     #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
     def batch_add_keys(&block)
-      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
+      IO.popen(%W[#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys], 'w') do |io|
         block.call(KeyAdder.new(io))
       end
     end

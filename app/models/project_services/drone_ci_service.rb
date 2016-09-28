@@ -30,7 +30,7 @@ class DroneCiService < CiService
   end
 
   def supported_events
-    %w(push merge_request tag_push)
+    %w[push merge_request tag_push]
   end
 
   def merge_request_status_path(iid, sha = nil, ref = nil)

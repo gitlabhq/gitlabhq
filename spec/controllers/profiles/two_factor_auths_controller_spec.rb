@@ -48,11 +48,11 @@ describe Profiles::TwoFactorAuthsController do
       end
 
       it 'presents plaintext codes for the user to save' do
-        expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
+        expect(user).to receive(:generate_otp_backup_codes!).and_return(%w[a b c])
 
         go
 
-        expect(assigns[:codes]).to match_array %w(a b c)
+        expect(assigns[:codes]).to match_array %w[a b c]
       end
 
       it 'renders create' do
@@ -90,10 +90,10 @@ describe Profiles::TwoFactorAuthsController do
     let(:user) { create(:user, :two_factor) }
 
     it 'presents plaintext codes for the user to save' do
-      expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
+      expect(user).to receive(:generate_otp_backup_codes!).and_return(%w[a b c])
 
       post :codes
-      expect(assigns[:codes]).to match_array %w(a b c)
+      expect(assigns[:codes]).to match_array %w[a b c]
     end
 
     it 'persists the generated codes' do
