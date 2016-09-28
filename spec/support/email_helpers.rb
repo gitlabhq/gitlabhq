@@ -1,8 +1,6 @@
 module EmailHelpers
-  def sent_to_user?(user, recipients = nil)
-    recipients ||= ActionMailer::Base.deliveries.flat_map(&:to)
-
-    recipients.count(user.email) == 1
+  def sent_to_user?(user, recipients = email_recipients)
+    recipients.include?(user.email)
   end
 
   def reset_delivered_emails!
@@ -10,22 +8,26 @@ module EmailHelpers
   end
 
   def should_only_email(*users)
-    recipients = ActionMailer::Base.deliveries.flat_map(&:to)
+    recipients = email_recipients
 
     users.each { |user| should_email(user, recipients) }
 
     expect(recipients.count).to eq(users.count)
   end
 
-  def should_email(user, recipients = nil)
+  def should_email(user, recipients = email_recipients)
     expect(sent_to_user?(user, recipients)).to be_truthy
   end
 
-  def should_not_email(user, recipients = nil)
+  def should_not_email(user, recipients = email_recipients)
     expect(sent_to_user?(user, recipients)).to be_falsey
   end
 
   def should_email_no_one
     expect(ActionMailer::Base.deliveries).to be_empty
+  end
+
+  def email_recipients
+    ActionMailer::Base.deliveries.flat_map(&:to)
   end
 end
