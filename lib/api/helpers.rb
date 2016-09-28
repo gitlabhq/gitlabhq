@@ -18,8 +18,11 @@ module API
     end
 
     # Check the Rails session for valid authentication details
+    #
+    # Until CSRF protection is added to the API, disallow this method for
+    # state-changing endpoints
     def find_user_from_warden
-      warden ? warden.authenticate : nil
+      warden.try(:authenticate) if request.get? || request.head?
     end
 
     def find_user_by_private_token

@@ -4,7 +4,8 @@ class @LabelsSelect
 
     $('.js-label-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
-      projectId = $dropdown.data('project-id')
+      namespacePath = $dropdown.data('namespace-path')
+      projectPath = $dropdown.data('project-path')
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
@@ -88,7 +89,7 @@ class @LabelsSelect
 
         saveLabel = ->
           # Create new label with API
-          Api.newLabel projectId, {
+          Api.newLabel namespacePath, projectPath, {
             name: newLabelField.val()
             color: newColorField.val()
           }, (label) ->
