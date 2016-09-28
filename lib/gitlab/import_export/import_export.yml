@@ -1,5 +1,8 @@
 # Model relationships to be included in the project import/export
 project_tree:
+  - :labels
+  - milestones:
+    - :events
   - issues:
     - :events
     - notes:
@@ -39,9 +42,6 @@ project_tree:
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
-  - :labels
-  - milestones:
-    - :events
   - :project_feature
 
 # Only include the following attributes for the models specified.
@@ -72,6 +72,8 @@ excluded_attributes:
 
 methods:
   statuses:
+    - :type
+  services:
     - :type
   merge_request_diff:
     - :utf8_st_diffs

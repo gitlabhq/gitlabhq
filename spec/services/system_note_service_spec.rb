@@ -445,7 +445,7 @@ describe SystemNoteService, services: true do
     end
 
     context 'commit with cross-reference from fork' do
-      let(:author2) { create(:user) }
+      let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
       let(:forked_project) do
         fp = Projects::ForkService.new(project, author2).execute
         # The call to project.repository.after_import in RepositoryForkWorker does
