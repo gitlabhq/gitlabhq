@@ -6,6 +6,7 @@ describe ForkedProjectLink, "add link on fork" do
   let(:user) { create(:user, namespace: namespace) }
 
   before do
+    create(:project_member, :reporter, user: user, project: project_from)
     @project_to = fork_project(project_from, user)
   end
 
