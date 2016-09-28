@@ -1,5 +1,8 @@
 ((global) => {
-  global.diffFileEditor = Vue.extend({
+
+  global.mergeConflicts = global.mergeConflicts || {};
+
+  global.mergeConflicts.diffFileEditor = Vue.extend({
     props: ['file', 'loadFile'],
     template: '#diff-file-editor',
     data() {

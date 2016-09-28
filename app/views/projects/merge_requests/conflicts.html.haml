@@ -7,6 +7,7 @@
 
 - page_title "Merge Conflicts", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('merge_conflicts/merge_conflicts_bundle.js')
   = page_specific_javascript_tag('lib/ace.js')
 = render "projects/merge_requests/show/mr_title"
 
@@ -26,8 +27,8 @@
   = render partial: "projects/merge_requests/conflicts/commit_stats"
 
   .files-wrapper{"v-if" => "!isLoading && !hasError"}
-    = render partial: "projects/merge_requests/conflicts/parallel_view", locals: { class_bindings: class_bindings }
     = render partial: "projects/merge_requests/conflicts/inline_view", locals: { class_bindings: class_bindings }
+    = render partial: "projects/merge_requests/conflicts/parallel_view", locals: { class_bindings: class_bindings }
     = render partial: "projects/merge_requests/conflicts/submit_form"
 
 -# Components 
