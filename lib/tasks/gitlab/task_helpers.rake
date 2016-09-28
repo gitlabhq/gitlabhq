@@ -70,7 +70,7 @@ namespace :gitlab do
 
   # Runs the given command
   #
-  # Returns nil if the command was not found
+  # Returns '' if the command was not found
   # Returns the output of the command otherwise
   #
   # see also #run_and_match
@@ -136,5 +136,38 @@ namespace :gitlab do
 
   def repository_storage_paths_args
     Gitlab.config.repositories.storages.values
+  end
+
+  def user_home
+    Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
+  end
+
+  def checkout_or_clone_tag(tag:, repo:, target_dir:)
+    if Dir.exist?(target_dir)
+      Dir.chdir(target_dir) do
+        run_command(%W[#{Gitlab.config.git.bin_path} fetch --tags --quiet])
+        run_command(%W[#{Gitlab.config.git.bin_path} checkout --quiet #{tag}])
+      end
+    else
+      run_command(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{target_dir}])
+    end
+
+    # Make sure we're on the right tag
+    Dir.chdir(target_dir) do
+      # First try to checkout without fetching
+      # to avoid stalling tests if the Internet is down.
+      reset_to_tag(tag)
+    end
+  end
+
+  def reset_to_tag(tag_wanted)
+    tag, status = Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} describe -- #{tag_wanted}])
+
+    unless status.zero?
+      run_command(%W(#{Gitlab.config.git.bin_path} fetch origin))
+      tag = run_command(%W[#{Gitlab.config.git.bin_path} describe -- origin/#{tag_wanted}])
+    end
+
+    run_command(%W[#{Gitlab.config.git.bin_path} reset --hard #{tag.strip}])
   end
 end
