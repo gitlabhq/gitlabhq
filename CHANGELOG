@@ -1,16 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.13.0 (unreleased)
-  - Use gitlab-shell v3.6.2 (GIT TRACE logging)
-  - Speed-up group milestones show page
-  - Add more tests for calendar contribution (ClemMakesApps)
-  - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
-  - Only update issuable labels if they have been changed
-  - Revoke button in Applications Settings underlines on hover.
-  - Add organization field to user profile
-  - Optimize GitHub importing for speed and memory
+v 8.12.3 (unreleased)
 
-v 8.12.2 (unreleased)
+v 8.12.2
   - Fix Import/Export not recognising correctly the imported services.
   - Fix snippets pagination
   - Fix List-Unsubscribe header in emails
@@ -21,11 +13,13 @@ v 8.12.2 (unreleased)
   - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
   - Fix duplicate branch entry in the merge request version compare dropdown
   - Respect the fork_project permission when forking projects
+  - Only update issuable labels if they have been changed
+  - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
+  - Fix resolve discussion buttons endpoint path
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
   - Fix issue with search filter labels not displaying
-  - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
 
 v 8.12.0
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
@@ -42,7 +36,6 @@ v 8.12.0
   - Filter tags by name !6121
   - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
-  - Fix resolve discussion buttons endpoint path
   - Fix note form hint showing slash commands supported for commits.
   - Make push events have equal vertical spacing.
   - API: Ensure invitees are not returned in Members API.
