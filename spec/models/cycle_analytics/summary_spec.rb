@@ -34,6 +34,12 @@ describe CycleAnalytics::Summary, models: true do
 
       expect(subject.commits).to eq(0)
     end
+
+    it "finds a large (> 100) snumber of commits if present" do
+      Timecop.freeze(5.days.from_now) { create_commit("Test message", project, user, 'master', count: 100) }
+
+      expect(subject.commits).to eq(100)
+    end
   end
 
   describe "#deploys" do

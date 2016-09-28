@@ -7,7 +7,7 @@ gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 gem 'responders', '~> 2.0'
 
 gem 'sprockets', '~> 3.7.0'
-gem 'sprockets-es6'
+gem 'sprockets-es6', '~> 0.9.2'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.0.0'
@@ -120,8 +120,8 @@ gem 'diffy', '~> 3.0.3'
 
 # Application server
 group :unicorn do
-  gem 'unicorn', '~> 4.9.0'
-  gem 'unicorn-worker-killer', '~> 0.4.2'
+  gem 'unicorn', '~> 5.1.0'
+  gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
 # State machine
@@ -210,7 +210,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'sass-rails', '~> 5.0.0'
+gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
