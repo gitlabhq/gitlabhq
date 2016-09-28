@@ -9,7 +9,8 @@ describe API::Helpers, api: true do
   let(:key) { create(:key, user: user) }
 
   let(:params) { {} }
-  let(:env) { {} }
+  let(:env) { { 'REQUEST_METHOD' => 'GET' } }
+  let(:request) { Rack::Request.new(env) }
 
   def set_env(token_usr, identifier)
     clear_env
@@ -51,17 +52,43 @@ describe API::Helpers, api: true do
   describe ".current_user" do
     subject { current_user }
 
-    describe "when authenticating via Warden" do
+    describe "Warden authentication" do
       before { doorkeeper_guard_returns false }
 
-      context "fails" do
-        it { is_expected.to be_nil }
+      context "with invalid credentials" do
+        context "GET request" do
+          before { env['REQUEST_METHOD'] = 'GET' }
+          it { is_expected.to be_nil }
+        end
       end
 
-      context "succeeds" do
+      context "with valid credentials" do
         before { warden_authenticate_returns user }
 
-        it { is_expected.to eq(user) }
+        context "GET request" do
+          before { env['REQUEST_METHOD'] = 'GET' }
+          it { is_expected.to eq(user) }
+        end
+
+        context "HEAD request" do
+          before { env['REQUEST_METHOD'] = 'HEAD' }
+          it { is_expected.to eq(user) }
+        end
+
+        context "PUT request" do
+          before { env['REQUEST_METHOD'] = 'PUT' }
+          it { is_expected.to be_nil }
+        end
+
+        context "POST request" do
+          before { env['REQUEST_METHOD'] = 'POST' }
+          it { is_expected.to be_nil }
+        end
+
+        context "DELETE request" do
+          before { env['REQUEST_METHOD'] = 'DELETE' }
+          it { is_expected.to be_nil }
+        end
       end
     end
 

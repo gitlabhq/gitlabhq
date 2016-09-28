@@ -4,7 +4,7 @@
   namespacesPath: "/api/:version/namespaces.json"
   groupProjectsPath: "/api/:version/groups/:id/projects.json"
   projectsPath: "/api/:version/projects.json?simple=true"
-  labelsPath: "/api/:version/projects/:id/labels"
+  labelsPath: "/:namespace_path/:project_path/labels"
   licensePath: "/api/:version/licenses/:key"
   gitignorePath: "/api/:version/gitignores/:key"
   gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key"
@@ -60,14 +60,15 @@
     ).done (projects) ->
       callback(projects)
 
-  newLabel: (project_id, data, callback) ->
+  newLabel: (namespace_path, project_path, data, callback) ->
     url = Api.buildUrl(Api.labelsPath)
-    url = url.replace(':id', project_id)
+    url = url.replace(':namespace_path', namespace_path)
+             .replace(':project_path', project_path)
 
     $.ajax(
       url: url
       type: "POST"
-      data: data
+      data: {'label': data}
       dataType: "json"
     ).done (label) ->
       callback(label)
