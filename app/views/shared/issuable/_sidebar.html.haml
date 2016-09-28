@@ -128,7 +128,7 @@
             - issuable.labels_array.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect{type: "button", data: {toggle: "dropdown", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", project_id: (@project.id if @project), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect{type: "button", data: {toggle: "dropdown", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
                 %span.dropdown-toggle-text
                   Label
                 = icon('chevron-down')

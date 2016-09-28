@@ -4,7 +4,7 @@
 - show_footer = local_assigns.fetch(:show_footer, true)
 - data_options = local_assigns.fetch(:data_options, {})
 - classes = local_assigns.fetch(:classes, [])
-- dropdown_data = {toggle: 'dropdown', field_name: 'label_name[]', show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}
+- dropdown_data = {toggle: 'dropdown', field_name: 'label_name[]', show_no: "true", show_any: "true", selected: params[:label_name], namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), labels: labels_filter_path, default_label: "Label"}
 - dropdown_data.merge!(data_options)
 - classes << 'js-extra-options' if extra_options
 - classes << 'js-filter-submit' if filter_submit
