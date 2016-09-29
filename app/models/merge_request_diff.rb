@@ -169,7 +169,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def compare_with(sha, straight = true)
     # When compare merge request versions we want diff A..B instead of A...B
-    # so we handle cases when user squash and rebase commits in one of versions.
+    # so we handle cases when user does squash and rebase of the commits between versions.
     # For this reason we set straight to true by default.
     CompareService.new.execute(project, head_commit_sha, project, sha, straight)
   end
