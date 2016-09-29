@@ -1,36 +1,40 @@
-(function() {
+((global) => {
 
-  function addMarginToBuild () {
-    const $secondChildBuildNode = $('.build:nth-child(2)');
-    const $firstChildBuildNode = $secondChildBuildNode.prev('.build');
-    // const $previousBuildColumn = $secondChildBuildNode.closest('.stage-column').prev('.stage-column');
-    if ($secondChildBuildNode.length) {
-      $secondChildBuildNode.closest('.stage-column').addClass('left-margin');
-      $firstChildBuildNode.addClass('left-connector');
+  class Pipelines {
+    constructor() {
+      $(document).off('click', '.toggle-pipeline-btn').on('click', '.toggle-pipeline-btn', this.toggleGraph);
+      $(document).off('ready.addMarginToBuildColumns').on('ready.addMarginToBuildColumns', this.addMarginToBuildColumns);
+    }
+
+    toggleGraph() {
+      const $pipelineBtn = $(this).closest('.toggle-pipeline-btn');
+      const $pipelineGraph = $(this).closest('.row-content-block').next('.pipeline-graph');
+      const $btnText = $(this).find('.toggle-btn-text');
+
+      $($pipelineBtn).add($pipelineGraph).toggleClass('graph-collapsed');
+
+      const graphCollapsed = $pipelineGraph.hasClass('graph-collapsed');
+
+      graphCollapsed ? $btnText.text('Expand') : $btnText.text('Hide')
+    }
+
+    addMarginToBuildColumns() {
+      const $secondChildBuildNode = $('.build:nth-child(2)');
+      if ($secondChildBuildNode.length) {
+        const $firstChildBuildNode = $secondChildBuildNode.prev('.build');
+        const $multiBuildColumn = $secondChildBuildNode.closest('.stage-column');
+        const $previousColumn = $multiBuildColumn.prev('.stage-column');
+        $multiBuildColumn.addClass('left-margin');
+        $firstChildBuildNode.addClass('left-connector');
+        $previousColumn.each(function() {
+          $this = $(this);
+          if ($('.build', $this).length === 1) $this.addClass('no-margin');
+        });
+      }
+      $('.pipeline-graph-container').removeClass('hidden');
     }
   }
 
-  function toggleGraph() {
-    const $pipelineBtn = $(this).closest('.toggle-pipeline-btn');
-    const $pipelineGraph = $(this).closest('.row-content-block').next('.pipeline-graph');
-    const $btnText = $(this).find('.toggle-btn-text');
-    const $icon = $(this).find('.fa');
+  global.Pipelines = Pipelines;
 
-    $($pipelineBtn).add($pipelineGraph).toggleClass('graph-collapsed');
-
-    const graphCollapsed = $pipelineGraph.hasClass('graph-collapsed');
-    const expandIcon = 'fa-caret-down';
-    const hideIcon = 'fa-caret-up';
-
-    if(graphCollapsed) {
-      $btnText.text('Expand');
-      $icon.removeClass(hideIcon).addClass(expandIcon);
-    } else {
-      $btnText.text('Hide');
-      $icon.removeClass(expandIcon).addClass(hideIcon);
-    }
-  }
-
-  $(document).on('click', '.toggle-pipeline-btn', toggleGraph);
-  $(document).on('ready', addMarginToBuild);
-})();
+})(window.gl || (window.gl = {}));
