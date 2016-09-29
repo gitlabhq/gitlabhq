@@ -230,6 +230,55 @@ describe Ci::ProcessPipelineService, services: true do
       end
     end
 
+    context 'when there are manual jobs in earlier stages' do
+      before do
+        builds
+        process_pipeline
+        builds.each(&:reload)
+      end
+
+      context 'when first stage has only manual jobs' do
+        let(:builds) do
+          [create_build('build', 0, 'manual'),
+           create_build('check', 1),
+           create_build('test', 2)]
+        end
+
+        it 'starts from the second stage' do
+          expect(builds.map(&:status)).to contain_exactly(
+            'skipped', 'pending', 'created')
+        end
+      end
+
+      context 'when second stage has only manual jobs' do
+        let(:builds) do
+          [create_build('check', 0),
+           create_build('build', 1, 'manual'),
+           create_build('test', 2)]
+        end
+
+        it 'skips second stage and continues on third stage' do
+          expect(builds.map(&:status)).to contain_exactly(
+            'pending', 'created', 'created')
+
+          builds.first.success
+          builds.each(&:reload)
+
+          expect(builds.map(&:status)).to contain_exactly(
+            'success', 'skipped', 'pending')
+        end
+      end
+
+      def create_build(name, stage_idx, when_value = nil)
+        create(:ci_build,
+               :created,
+               pipeline: pipeline,
+               name: name,
+               stage_idx: stage_idx,
+               when: when_value)
+      end
+    end
+
     context 'when failed build in the middle stage is retried' do
       context 'when failed build is the only unsuccessful build in the stage' do
         before do
