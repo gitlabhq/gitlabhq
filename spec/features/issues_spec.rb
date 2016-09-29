@@ -369,6 +369,24 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'update labels from issue#show', js: true do
+    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+    let!(:label) { create(:label, project: project) }
+
+    before do
+      visit namespace_project_issue_path(project.namespace, project, issue)
+    end
+
+    it 'will not send ajax request when no data is changed' do
+      page.within '.labels' do
+        click_link 'Edit'
+        first('.dropdown-menu-close').click
+
+        expect(page).not_to have_selector('.block-loading')
+      end
+    end
+  end
+
   describe 'update assignee from issue#show' do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 

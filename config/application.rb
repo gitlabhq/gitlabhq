@@ -102,13 +102,24 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    config.middleware.use Rack::Attack
+    config.middleware.insert_before Warden::Manager, Rack::Attack
 
     # Allow access to GitLab API from other domains
-    config.middleware.use Rack::Cors do
+    config.middleware.insert_before Warden::Manager, Rack::Cors do
+      allow do
+        origins Gitlab.config.gitlab.url
+        resource '/api/*',
+          credentials: true,
+          headers: :any,
+          methods: :any,
+          expose: ['Link']
+      end
+
+      # Cross-origin requests must not have the session cookie available
       allow do
         origins '*'
         resource '/api/*',
+          credentials: false,
           headers: :any,
           methods: :any,
           expose: ['Link']

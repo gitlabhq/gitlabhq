@@ -39,7 +39,7 @@ describe JwtController do
 
         subject! { get '/jwt/auth', parameters, headers }
 
-        it { expect(response).to have_http_status(403) }
+        it { expect(response).to have_http_status(401) }
       end
     end
 
@@ -77,7 +77,7 @@ describe JwtController do
 
       subject! { get '/jwt/auth', parameters, headers }
 
-      it { expect(response).to have_http_status(403) }
+      it { expect(response).to have_http_status(401) }
     end
   end
 

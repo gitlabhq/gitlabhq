@@ -2232,6 +2232,31 @@
   ],
   "milestones": [
     {
+      "id": 1,
+      "title": "test milestone",
+      "project_id": 8,
+      "description": "test milestone",
+      "due_date": null,
+      "created_at": "2016-06-14T15:02:04.415Z",
+      "updated_at": "2016-06-14T15:02:04.415Z",
+      "state": "active",
+      "iid": 1,
+      "events": [
+        {
+          "id": 487,
+          "target_type": "Milestone",
+          "target_id": 1,
+          "title": null,
+          "data": null,
+          "project_id": 46,
+          "created_at": "2016-06-14T15:02:04.418Z",
+          "updated_at": "2016-06-14T15:02:04.418Z",
+          "action": 1,
+          "author_id": 18
+        }
+      ]
+    },
+    {
       "id": 20,
       "title": "v4.0",
       "project_id": 5,
@@ -7373,5 +7398,16 @@
         }
       ]
     }
-  ]
+  ],
+  "project_feature": {
+    "builds_access_level": 0,
+    "created_at": "2014-12-26T09:26:45.000Z",
+    "id": 2,
+    "issues_access_level": 0,
+    "merge_requests_access_level": 20,
+    "project_id": 4,
+    "snippets_access_level": 20,
+    "updated_at": "2016-09-23T11:58:28.000Z",
+    "wiki_access_level": 20
+  }
 }

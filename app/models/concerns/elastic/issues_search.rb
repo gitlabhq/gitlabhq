@@ -44,7 +44,7 @@ module Elastic
           query_hash = basic_query_hash(%w(title^2 description), query)
         end
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
+        query_hash = project_ids_filter(query_hash, options)
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 
         self.__elasticsearch__.search(query_hash)
