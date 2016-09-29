@@ -70,11 +70,44 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        if object.is_a?(GroupLabel) || object.project == context[:project]
-          LabelsHelper.render_colored_label(object)
+        if same_group?(object) && namespace_match?(matches)
+          render_same_project_label(object)
+        elsif same_project?(object)
+          render_same_project_label(object)
         else
-          LabelsHelper.render_colored_cross_project_label(object)
+          render_cross_project_label(object, matches)
         end
+      end
+
+      def same_group?(object)
+        object.is_a?(GroupLabel) && object.group == project.group
+      end
+
+      def namespace_match?(matches)
+        matches[:project].blank? || matches[:project] == project.path_with_namespace
+      end
+
+      def same_project?(object)
+        object.is_a?(ProjectLabel) && object.project == project
+      end
+
+      def project
+        context[:project]
+      end
+
+      def render_same_project_label(object)
+        LabelsHelper.render_colored_label(object)
+      end
+
+      def render_cross_project_label(object, matches)
+        source_project =
+          if matches[:project]
+            Project.find_with_namespace(matches[:project])
+          else
+            object.project
+          end
+
+        LabelsHelper.render_colored_cross_project_label(object, source_project)
       end
 
       def unescape_html_entities(text)
