@@ -167,8 +167,11 @@ class MergeRequestDiff < ActiveRecord::Base
     self == merge_request.merge_request_diff
   end
 
-  def compare_with(sha)
-    CompareService.new.execute(project, head_commit_sha, project, sha)
+  def compare_with(sha, straight = true)
+    # When compare merge request versions we want diff A..B instead of A...B
+    # so we handle cases when user squash and rebase commits in one of versions.
+    # For this reason we set straight to true by default.
+    CompareService.new.execute(project, head_commit_sha, project, sha, straight)
   end
 
   private

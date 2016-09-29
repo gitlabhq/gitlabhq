@@ -3,7 +3,7 @@ require 'securerandom'
 # Compare 2 branches for one repo or between repositories
 # and return Gitlab::Git::Compare object that responds to commits and diffs
 class CompareService
-  def execute(source_project, source_branch, target_project, target_branch)
+  def execute(source_project, source_branch, target_project, target_branch, straight = false)
     source_commit = source_project.commit(source_branch)
     return unless source_commit
 
@@ -23,9 +23,10 @@ class CompareService
     raw_compare = Gitlab::Git::Compare.new(
       target_project.repository.raw_repository,
       target_branch,
-      source_sha
+      source_sha,
+      straight
     )
 
-    Compare.new(raw_compare, target_project)
+    Compare.new(raw_compare, target_project, straight)
   end
 end

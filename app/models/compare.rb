@@ -11,9 +11,10 @@ class Compare
     end
   end
 
-  def initialize(compare, project)
+  def initialize(compare, project, straight = false)
     @compare = compare
     @project = project
+    @straight = straight
   end
 
   def commits
@@ -36,6 +37,8 @@ class Compare
   alias_method :commit, :head_commit
 
   def base_commit
+    return start_commit if @straight
+
     return @base_commit if defined?(@base_commit)
 
     @base_commit = if start_commit && head_commit
