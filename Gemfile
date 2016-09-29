@@ -17,7 +17,7 @@ gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 4.0'
+gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
