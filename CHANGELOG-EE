@@ -2,12 +2,17 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
 
-v 8.12.2 (unreleased)
+v 8.12.4 (unreleased)
+
+v 8.12.3
+  - Fix prevent_secrets checkbox on admin view
+
+v 8.12.2
   - Fix bug when protecting a branch due to missing url paramenter in request !760
   - Ignore unknown project ID in RepositoryUpdateMirrorWorker
 
 v 8.12.1
-- Prevent secrets to be pushed to the repository
+  - Prevent secrets to be pushed to the repository
 
 v 8.12.0
   - Include more data in EE usage ping
