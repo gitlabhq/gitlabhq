@@ -744,17 +744,60 @@ pre.light-well {
     width: 300px;
   }
 
-  > .input-group > .compare-dropdown-toggle {
-    width: 200px;
+  &.from .compare-dropdown-toggle {
+    width: 237px;
+  }
 
-    .dropdown-toggle-text {
-      display: block;
-      height: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+  &.to .compare-dropdown-toggle {
+    width: 254px;
+  }
+
+  .dropdown-toggle-text {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
+.compare-ellipsis {
+  display: inline;
+}
+
+@media (max-width: $screen-xs-max) {
+  .compare-form-group {
+    .input-group {
+      width: 100%;
+
+      & > .compare-dropdown-toggle {
+        width: 100%;
+      }
+    }
+
+    .dropdown-menu {
       width: 100%;
     }
+  }
+
+  .compare-switch-container {
+    text-align: center;
+    padding: 0 0 $gl-padding;
+
+    .commits-compare-switch {
+      float: none;
+    }
+  }
+
+  .compare-ellipsis {
+    display: block;
+    text-align: center;
+    padding: 0 0 $gl-padding;
+  }
+
+  .commits-compare-btn {
+    width: 100%;
   }
 }
 
