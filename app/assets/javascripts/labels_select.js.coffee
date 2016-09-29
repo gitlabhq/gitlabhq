@@ -90,7 +90,7 @@ class @LabelsSelect
         saveLabel = ->
           # Create new label with API
           Api.newLabel namespacePath, projectPath, {
-            name: newLabelField.val()
+            title: newLabelField.val()
             color: newColorField.val()
           }, (label) ->
             $newLabelCreateButton.enable()
