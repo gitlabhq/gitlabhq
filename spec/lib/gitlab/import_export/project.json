@@ -64,7 +64,29 @@
             "updated_at": "2016-07-22T08:55:44.161Z",
             "template": false,
             "description": "",
-            "priority": null
+            "priority": null,
+            "type": "ProjectLabel"
+          }
+        },
+        {
+          "id": 3,
+          "label_id": 3,
+          "target_id": 40,
+          "target_type": "Issue",
+          "created_at": "2016-07-22T08:57:02.841Z",
+          "updated_at": "2016-07-22T08:57:02.841Z",
+          "label": {
+            "id": 3,
+            "title": "test3",
+            "color": "#428bca",
+            "group_id": 8,
+            "created_at": "2016-07-22T08:55:44.161Z",
+            "updated_at": "2016-07-22T08:55:44.161Z",
+            "template": false,
+            "description": "",
+            "priority": null,
+            "project_id": null,
+            "type": "GroupLabel"
           }
         }
       ],
@@ -536,7 +558,8 @@
             "updated_at": "2016-07-22T08:55:44.161Z",
             "template": false,
             "description": "",
-            "priority": null
+            "priority": null,
+            "type": "ProjectLabel"
           }
         }
       ],

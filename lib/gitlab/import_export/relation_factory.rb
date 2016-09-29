@@ -10,7 +10,8 @@ module Gitlab
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
-                    labels: :project_labels }.freeze
+                    labels: :project_labels,
+                    label: :project_label }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
 
@@ -20,7 +21,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels project_label group_label].freeze
 
       FINDER_ATTRIBUTES = %w[title project_id].freeze
 
@@ -57,6 +58,8 @@ module Gitlab
 
         update_user_references
         update_project_references
+
+        handle_group_label if group_label?
         reset_ci_tokens if @relation_name == 'Ci::Trigger'
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diffs if @relation_name == :merge_request_diff
@@ -122,6 +125,19 @@ module Gitlab
 
       def same_source_and_target?
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
+      end
+
+      def group_label?
+        @relation_hash['type'] == 'GroupLabel'
+      end
+
+      def handle_group_label
+        # If there's no group, move the label to a project label
+        if @relation_hash['group_id']
+          @relation_name = :group_label
+        else
+          @relation_hash['type'] = 'ProjectLabel'
+        end
       end
 
       def reset_ci_tokens

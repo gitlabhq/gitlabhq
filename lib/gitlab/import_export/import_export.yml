@@ -71,7 +71,7 @@ excluded_attributes:
     - :awardable_id
 
 methods:
-  project_labels:
+  labels:
     - :type
   label:
     - :type

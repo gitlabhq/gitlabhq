@@ -32,7 +32,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       it 'has the same label associated to two issues' do
         restored_project_json
 
-        expect(Label.first.issues.count).to eq(2)
+        expect(ProjectLabel.find_by_title('test2').issues.count).to eq(2)
       end
 
       it 'has milestones associated to two separate issues' do
@@ -105,6 +105,33 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         restored_project_json
 
         expect(Label.first.label_links.first.target).not_to be_nil
+      end
+
+      it 'has project labels' do
+        restored_project_json
+
+        expect(ProjectLabel.count).to eq(2)
+      end
+
+      it 'has no group labels' do
+        restored_project_json
+
+        expect(GroupLabel.count).to eq(0)
+      end
+
+      context 'with group' do
+        let!(:project) { create(:empty_project,
+                                name: 'project',
+                                path: 'project',
+                                builds_access_level: ProjectFeature::DISABLED,
+                                issues_access_level: ProjectFeature::DISABLED,
+                                group: create(:group)) }
+
+        it 'has group labels' do
+          restored_project_json
+
+          expect(GroupLabel.count).to eq(1)
+        end
       end
 
       it 'has a project feature' do
