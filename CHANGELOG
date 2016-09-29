@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.3 (unreleased)
+v 8.12.4 (unreleased)
+
+v 8.12.3
+  - Update Gitlab Shell to support low IO priority for storage moves
 
 v 8.12.2
   - Fix Import/Export not recognising correctly the imported services.
@@ -16,7 +19,6 @@ v 8.12.2
   - Only update issuable labels if they have been changed
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
-  - Update Gitlab Shell to support low IO priority for storage moves
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
