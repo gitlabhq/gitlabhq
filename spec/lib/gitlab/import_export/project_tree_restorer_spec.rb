@@ -120,12 +120,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       end
 
       context 'with group' do
-        let!(:project) { create(:empty_project,
+        let!(:project) do 
+          create(:empty_project,
                                 name: 'project',
                                 path: 'project',
                                 builds_access_level: ProjectFeature::DISABLED,
                                 issues_access_level: ProjectFeature::DISABLED,
-                                group: create(:group)) }
+                                group: create(:group)) 
+        end
 
         it 'has group labels' do
           restored_project_json
