@@ -13,6 +13,7 @@ v 8.13.0 (unreleased)
   - Revoke button in Applications Settings underlines on hover.
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Add organization field to user profile
+  - Fix resolved discussion display in side-by-side diff view !6575
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
 
