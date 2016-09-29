@@ -13,6 +13,7 @@ v 8.13.0 (unreleased)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
   - Revoke button in Applications Settings underlines on hover.
+  - Fix Long commit messages overflow viewport in file tree
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Add organization field to user profile
   - Fix resolved discussion display in side-by-side diff view !6575
