@@ -44,7 +44,7 @@ shared_examples 'an email sent from GitLab' do
     end
 
     it 'ends the subject with the suffix' do
-      is_expected.to have_subject (/ \| A Nice Suffix$/)
+      is_expected.to have_subject /\ \| A Nice Suffix$/
     end
   end
 end
