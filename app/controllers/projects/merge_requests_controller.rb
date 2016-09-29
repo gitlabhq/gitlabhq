@@ -18,7 +18,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :pipelines]
-  before_action :close_merge_request_without_source_project, only: [:show]
+  before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
