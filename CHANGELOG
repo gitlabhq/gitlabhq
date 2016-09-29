@@ -223,6 +223,12 @@ v 8.12.0
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
 
+v 8.11.8
+  - Respect the fork_project permission when forking projects
+  - Set a restrictive CORS policy on the API for credentialed requests
+  - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
+
 v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
   - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
@@ -441,6 +447,12 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.11
+  - Respect the fork_project permission when forking projects
+  - Set a restrictive CORS policy on the API for credentialed requests
+  - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.10.10
   - Allow the Rails cookie to be used for API authentication.
@@ -677,6 +689,12 @@ v 8.10.0
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
   - Fix import_data wrongly saved as a result of an invalid import_url !5206
+
+v 8.9.11
+  - Respect the fork_project permission when forking projects
+  - Set a restrictive CORS policy on the API for credentialed requests
+  - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.9.10
   - Allow the Rails cookie to be used for API authentication.
