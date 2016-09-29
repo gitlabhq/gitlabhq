@@ -433,7 +433,7 @@ module API
     end
 
     def secret_token
-      File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+      Gitlab::Shell.secret_token
     end
 
     def send_git_blob(repository, blob)
