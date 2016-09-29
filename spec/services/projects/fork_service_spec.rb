@@ -12,14 +12,14 @@ describe Projects::ForkService, services: true do
                              description: 'wow such project')
       @to_namespace = create(:namespace)
       @to_user = create(:user, namespace: @to_namespace)
-      @from_project.add_user(@to_user, :developer)
+      @from_project.team.add_user(@to_user, :developer)
     end
 
     context 'fork project' do
       context 'when forker is a guest' do
         before do
           @guest = create(:user)
-          @from_project.add_user(@guest, :guest)
+          @from_project.team.add_user(@guest, :guest)
         end
         subject { fork_project(@from_project, @guest) }
 
@@ -97,8 +97,8 @@ describe Projects::ForkService, services: true do
       @group = create(:group)
       @group.add_user(@group_owner, GroupMember::OWNER)
       @group.add_user(@developer,   GroupMember::DEVELOPER)
-      @project.add_user(@developer,   :developer)
-      @project.add_user(@group_owner, :developer)
+      @project.team.add_user(@developer,   :developer)
+      @project.team.add_user(@group_owner, :developer)
       @opts = { namespace: @group }
     end
 
