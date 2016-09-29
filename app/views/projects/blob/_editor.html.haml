@@ -21,13 +21,6 @@
         = dropdown_tag("Choose a .gitignore template", options: { toggle_class: 'js-gitignore-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: gitignore_names } } )
       .gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.hidden
         = dropdown_tag("Choose a GitLab CI Yaml template", options: { toggle_class: 'js-gitlab-ci-yml-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls } } )
-      = button_tag class: 'soft-wrap-toggle btn', type: 'button' do
-        %span.no-wrap
-          = custom_icon('icon_no_wrap')
-          No wrap
-        %span.soft-wrap
-          = custom_icon('icon_soft_wrap')
-          Soft wrap
       .encoding-selector
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
 
