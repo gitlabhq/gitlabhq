@@ -99,12 +99,18 @@ describe MergeRequestDiff, models: true do
   end
 
   describe '#compare_with' do
-    subject { create(:merge_request).merge_request_diff }
+    subject { create(:merge_request, source_branch: 'fix').merge_request_diff }
 
     it 'delegates compare to the service' do
       expect(CompareService).to receive(:new).and_call_original
 
-      subject.compare_with('ae73cb07c9eeaf35924a10f713b364d32b2dd34f')
+      subject.compare_with(nil)
+    end
+
+    it 'uses git diff A..B approach by default' do
+      diffs = subject.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
+
+      expect(diffs.size).to eq(3)
     end
   end
 end
