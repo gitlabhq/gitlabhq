@@ -14,6 +14,7 @@ v 8.13.0 (unreleased)
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Add organization field to user profile
   - Optimize GitHub importing for speed and memory
+  - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
 
 v 8.12.2 (unreleased)
   - Added University content to doc/university
