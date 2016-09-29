@@ -162,7 +162,7 @@ gem 'connection_pool', '~> 2.0'
 gem 'hipchat', '~> 1.5.0'
 
 # JIRA integration
-gem 'jira-ruby', '~> 0.1.17'
+gem 'jira-ruby', '~> 1.1.0'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'

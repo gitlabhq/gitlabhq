@@ -356,6 +356,9 @@ GEM
       cause
       json
     ipaddress (0.8.3)
+    jira-ruby (1.1.0)
+      activesupport
+      oauth (~> 0.5, >= 0.5.0)
     jquery-atwho-rails (1.3.2)
     jquery-rails (4.1.1)
       rails-dom-testing (>= 1, < 3)
@@ -421,7 +424,7 @@ GEM
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
     numerizer (0.1.1)
-    oauth (0.4.7)
+    oauth (0.5.1)
     oauth2 (1.2.0)
       faraday (>= 0.8, < 0.10)
       jwt (~> 1.0)
@@ -881,6 +884,7 @@ DEPENDENCIES
   html-pipeline (~> 1.11.0)
   httparty (~> 0.13.3)
   influxdb (~> 0.2)
+  jira-ruby (~> 1.1.0)
   jquery-atwho-rails (~> 1.3.2)
   jquery-rails (~> 4.1.0)
   jquery-turbolinks (~> 2.1.0)

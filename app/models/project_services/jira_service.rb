@@ -18,24 +18,30 @@
 #  note_events           :boolean          default(TRUE), not null
 #  build_events          :boolean          default(FALSE), not null
 #
-require 'jira'
 
 class JiraService < IssueTrackerService
-  include HTTParty
-  include Gitlab::Application.routes.url_helpers
+  include Gitlab::Routing.url_helpers
 
-  DEFAULT_API_VERSION = 2
+  validates :url, url: true, presence: true, if: :activated?
+  validates :project_key, presence: true, if: :activated?
 
   prop_accessor :username, :password, :url, :project_key,
                 :jira_issue_transition_id, :title, :description
-
-  before_validation :set_jira_issue_transition_id
 
   before_update :reset_password
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
   def reference_pattern
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
+  end
+
+  def initialize_properties
+    super do
+      self.properties = {
+        title: issues_tracker['title'],
+        url: issues_tracker['url']
+      }
+    end
   end
 
   def reset_password
@@ -47,19 +53,20 @@ class JiraService < IssueTrackerService
 
   def options
     url = URI.parse(self.url)
+
     {
-      :username         => self.username,
-      :password         => self.password,
-      :site             => URI.join(url, '/').to_s,
-      :context_path     => url.path,
-      :auth_type        => :basic,
-      :read_timeout     => 120,
-      :use_ssl          => url.scheme == 'https'
+      username: self.username,
+      password: self.password,
+      site: URI.join(url, '/').to_s,
+      context_path: url.path,
+      auth_type: :basic,
+      read_timeout: 120,
+      use_ssl: url.scheme == 'https'
     }
   end
 
   def client
-    @client ||= ::JIRA::Client.new(options)
+    @client ||= JIRA::Client.new(options)
   end
 
   def jira_project
@@ -95,13 +102,14 @@ class JiraService < IssueTrackerService
   def fields
     [
       { type: 'text', name: 'url', title: 'URL', placeholder: 'https://jira.example.com' },
-      { type: 'text', name: 'project_key', placeholder: 'PROJ' },
+      { type: 'text', name: 'project_key', placeholder: 'Project Key' },
       { type: 'text', name: 'username', placeholder: '' },
       { type: 'password', name: 'password', placeholder: '' },
       { type: 'text', name: 'jira_issue_transition_id', placeholder: '2' }
     ]
   end
 
+  # URLs to redirect from Gitlab issues pages to jira issue tracker
   def project_url
     "#{url}/issues/?jql=project=#{project_key}"
   end
@@ -147,7 +155,8 @@ class JiraService < IssueTrackerService
       },
       entity: {
         name: noteable_name.humanize.downcase,
-        url: entity_url
+        url: entity_url,
+        title: noteable.title
       }
     }
 
@@ -155,27 +164,24 @@ class JiraService < IssueTrackerService
   end
 
   def test_settings
-    return unless api_utrl.present?
+    return unless url.present?
     # Test settings by getting the project
     jira_project
 
   rescue Errno::ECONNREFUSED, JIRA::HTTPError => e
-    Rails.logger.info "#{self.class.name} Test ERROR: #{url} - #{e.message}"
+    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. API URL: #{url}."
     false
   end
 
   private
 
-  def set_jira_issue_transition_id
-    self.jira_issue_transition_id ||= "2"
-  end
-
   def close_issue(entity, issue)
     commit_id = if entity.is_a?(Commit)
                   entity.id
                 elsif entity.is_a?(MergeRequest)
-                  entity.last_commit.id
+                  entity.diff_head_sha
                 end
+
     commit_url = build_entity_url(:commit, commit_id)
 
     # Depending on the JIRA project's workflow, a comment during transition
@@ -200,57 +206,34 @@ class JiraService < IssueTrackerService
     user_url = data[:user][:url]
     entity_name = data[:entity][:name]
     entity_url = data[:entity][:url]
+    entity_title = data[:entity][:title]
     project_name = data[:project][:name]
 
-    message = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]."
+    message = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title}'"
 
-    # unless existing_comment?(issue_name, message[:body])
+    unless comment_exists?(issue_key, message)
       send_message(issue_key, message)
-    # end
+    end
+  end
+
+  def comment_exists?(issue_key, message)
+    comments = client.Issue.find(issue_key).comments
+    comments.map { |comment| comment.body.include?(message) }.any?
   end
 
   def send_message(issue_key, message)
-    return unless api_url.present?
+    return unless url.present?
+
     issue = client.Issue.find(issue_key)
-    issue.comments.build.save!(body: message)
 
-    # message = case result.code
-    #           when 201, 200, 204
-    #             "#{self.class.name} SUCCESS #{result.code}: Successfully posted to #{url}."
-    #           when 401
-    #             "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
-    #           else
-    #             "#{self.class.name} ERROR #{result.code}: #{result.parsed_response}"
-    #           end
-
-    Rails.logger.info(message)
-    message
-  rescue URI::InvalidURIError, Errno::ECONNREFUSED => e
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{url} - #{e.message}"
-  end
-
-  def existing_comment?(issue_name, new_comment)
-    return unless api_url.present?
-    result = JiraService.get(
-      comment_url(issue_name),
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
-      }
-    )
-
-    case result.code
-    when 201, 200
-      existing_comments = JSON.parse(result.body)['comments']
-
-      if existing_comments.present?
-        return existing_comments.map { |comment| comment['body'].include?(new_comment) }.any?
-      end
+    if issue.comments.build.save!(body: message)
+      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{url}."
     end
 
-    false
-  rescue JSON::ParserError
-    false
+    Rails.logger.info(result_message)
+    result_message
+  rescue URI::InvalidURIError, Errno::ECONNREFUSED, JIRA::HTTPError => e
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{url} - #{e.message}"
   end
 
   def resource_url(resource)

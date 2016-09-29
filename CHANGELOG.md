@@ -161,6 +161,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Make searching for commits case insensitive
   - Fix resolved discussion display in side-by-side diff view !6575
   - Optimize GitHub importing for speed and memory
+  - Refactor Jira service to use jira-ruby gem
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Reduce queries needed to find users using their SSH keys when pushing commits
