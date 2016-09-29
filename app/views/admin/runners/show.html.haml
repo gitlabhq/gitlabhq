@@ -11,14 +11,14 @@
 
 - if @runner.shared?
   .bs-callout.bs-callout-success
-    %h4 This runner will process builds from ALL UNASSIGNED projects
+    %h4 This Runner will process builds from ALL UNASSIGNED projects
     %p
-      If you want runners to build only specific projects, enable them in the table below.
+      If you want Runners to build only specific projects, enable them in the table below.
       Keep in mind that this is a one way transition.
 - else
   .bs-callout.bs-callout-info
-    %h4 This runner will process builds only from ASSIGNED projects
-    %p You can't make this a shared runner.
+    %h4 This Runner will process builds only from ASSIGNED projects
+    %p You can't make this a shared Runner.
 %hr
 
 .append-bottom-20
@@ -26,7 +26,7 @@
 
 .row
   .col-md-6
-    %h4 Restrict projects for this runner
+    %h4 Restrict projects for this Runner
     - if @runner.projects.any?
       %table.table.assigned-projects
         %thead
@@ -70,7 +70,7 @@
     = paginate @projects
 
   .col-md-6
-    %h4 Recent builds served by this runner
+    %h4 Recent builds served by this Runner
     %table.table.builds.runner-builds
       %thead
         %tr

@@ -60,7 +60,7 @@ describe "Runners" do
 
     it "removes specific runner for project if this is last project for that runners" do
       within ".activated-specific-runners" do
-        click_on "Remove runner"
+        click_on "Remove Runner"
       end
 
       expect(Ci::Runner.exists?(id: @specific_runner)).to be_falsey
@@ -75,7 +75,7 @@ describe "Runners" do
     end
 
     it "enables shared runners" do
-      click_on "Enable shared runners"
+      click_on "Enable shared Runners"
       expect(@project.reload.shared_runners_enabled).to be_truthy
     end
   end
