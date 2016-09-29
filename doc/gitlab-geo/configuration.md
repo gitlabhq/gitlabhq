@@ -10,37 +10,14 @@ complete the process.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Repositories data replication](#repositories-data-replication)
 - [Create SSH key pairs for Geo nodes](#create-ssh-key-pairs-for-geo-nodes)
 - [Primary Node GitLab setup](#primary-node-gitlab-setup)
 - [Secondary Node GitLab setup](#secondary-node-gitlab-setup)
   - [Database Encryptation Key](#database-encryptation-key)
   - [Authorized keys regeneration](#authorized-keys-regeneration)
+  - [Repositories data replication](#repositories-data-replication)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Repositories data replication
-
-Getting a new secondary Geo node up and running, will also require the
-repositories directory to be synced from the primary node. You can use `rsync`
-for that. From the secondary node run:
-
-```bash
-# For Omnibus installations
-rsync -avrP root@1.2.3.4:/var/opt/gitlab/git-data/repositories/ /var/opt/gitlab/git-data/repositories/
-gitlab-ctl reconfigure # to fix directory permissions
-
-# For installations from source
-rsync -avrP root@1.2.3.4:/home/git/repositories/ /home/git/repositories/
-chown -R git:git /home/git/repositories
-chmod ug+rwX,o-rwx /home/git/repositories
-```
-
-where `1.2.3.4` is the IP of the primary node.
-
-If this step is not followed, the secondary node will eventually clone and
-fetch every missing repository as they are updated with new commits on the
-primary node, so syncing the repositories beforehand will buy you some time.
 
 ## Create SSH key pairs for Geo nodes
 
@@ -152,6 +129,32 @@ gitlab-rake gitlab:shell:setup
 # For source installations
 sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
+
+### Repositories data replication
+
+Getting a new secondary Geo node up and running, will also require the
+repositories directory to be synced from the primary node. You can use `rsync`
+for that. From the secondary node run:
+
+```bash
+# For Omnibus installations
+rsync -guavrP root@1.2.3.4:/var/opt/gitlab/git-data/repositories/ /var/opt/gitlab/git-data/repositories/
+gitlab-ctl reconfigure # to fix directory permissions
+
+# For installations from source
+rsync -guavrP root@1.2.3.4:/home/git/repositories/ /home/git/repositories/
+chmod ug+rwX,o-rwx /home/git/repositories
+```
+
+where `1.2.3.4` is the IP of the primary node.
+
+If this step is not followed, the secondary node will eventually clone and
+fetch every missing repository as they are updated with new commits on the
+primary node, so syncing the repositories beforehand will buy you some time.
+
+While active repositories will be eventually replicated, if you don't rsync
+the files, it will not have in the secondary node any archived/inactive
+repository, as Geo doensn't run any routime to look for missing repositories.
 
 ## Troubleshooting
 
