@@ -32,7 +32,7 @@ class PipelinesEmailService < Service
     return unless all_recipients.any?
 
     pipeline_id = data[:object_attributes][:id]
-    SendPipelineNotificationWorker.perform_async(pipeline_id, all_recipients)
+    SendPipelineNotificationWorker.new.perform(pipeline_id, all_recipients)
   end
 
   def can_test?
