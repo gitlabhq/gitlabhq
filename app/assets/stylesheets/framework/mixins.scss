@@ -95,3 +95,10 @@
     @content;
   }
 }
+
+@mixin include-keyframes($animation-name) {
+  @include webkit-prefix(animation-name, $animation-name);
+  @include keyframes($animation-name) {
+    @content;
+  }
+}

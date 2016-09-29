@@ -6,6 +6,7 @@ v 8.13.0 (unreleased)
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Speed-up group milestones show page
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
+  - Replace unique keyframes mixin with keyframe mixin with specific names (ClemMakesApps)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Fix permission for setting an issue's due date
