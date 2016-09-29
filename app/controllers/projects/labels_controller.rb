@@ -3,7 +3,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :label, only: [:edit, :update, :destroy]
-  before_action :labels, only: [:index]
+  before_action :find_labels, only: [:index, :set_priorities, :remove_priority]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
                                                  :generate, :destroy, :remove_priority,
@@ -12,9 +12,8 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @prioritized_labels = @labels.prioritized
-    @group_labels = @project.group.labels.unprioritized if @project.group.present?
-    @project_labels = @project.labels.unprioritized.page(params[:page])
+    @prioritized_labels = @available_labels.prioritized
+    @labels = @available_labels.unprioritized.page(params[:page])
 
     respond_to do |format|
       format.html
@@ -70,7 +69,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def destroy
     @label.destroy
-    @labels = labels
+    @labels = find_labels
 
     respond_to do |format|
       format.html do
@@ -83,7 +82,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def remove_priority
     respond_to do |format|
-      label = labels.find(params[:id])
+      label = @available_labels.find(params[:id])
 
       if label.update_attribute(:priority, nil)
         format.json { render json: label }
@@ -96,8 +95,10 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def set_priorities
     Label.transaction do
+      label_ids = @available_labels.where(id: params[:label_ids]).pluck(:id)
+
       params[:label_ids].each_with_index do |label_id, index|
-        next unless labels.where(id: label_id).any?
+        next unless label_ids.include?(label_id.to_i)
 
         Label.where(id: label_id).update_all(priority: index)
       end
@@ -125,8 +126,8 @@ class Projects::LabelsController < Projects::ApplicationController
   end
   alias_method :subscribable_resource, :label
 
-  def labels
-    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+  def find_labels
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
   def authorize_admin_labels!

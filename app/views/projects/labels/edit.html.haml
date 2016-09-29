@@ -4,7 +4,6 @@
 
 %div{ class: container_class }
   %h3.page-title
-    = icon('bookmark')
-    Edit Project Label
+    Edit Label
   %hr
   = render 'form', url: namespace_project_label_path(@project.namespace.becomes(Namespace), @project, @label)

@@ -22,8 +22,8 @@ feature 'Prioritize labels', feature: true do
 
       expect(page).to have_content('No prioritized labels yet')
 
-      page.within('.group-labels') do
-        first('.js-toggle-priority').click
+      page.within('.other-labels') do
+        all('.js-toggle-priority')[1].click
         wait_for_ajax
         expect(page).not_to have_content('feature')
       end
@@ -47,7 +47,7 @@ feature 'Prioritize labels', feature: true do
         expect(page).not_to have_content('bug')
       end
 
-      page.within('.group-labels') do
+      page.within('.other-labels') do
         expect(page).to have_content('feature')
       end
     end
@@ -57,7 +57,7 @@ feature 'Prioritize labels', feature: true do
 
       expect(page).to have_content('No prioritized labels yet')
 
-      page.within('.project-labels') do
+      page.within('.other-labels') do
         first('.js-toggle-priority').click
         wait_for_ajax
         expect(page).not_to have_content('bug')
@@ -82,7 +82,7 @@ feature 'Prioritize labels', feature: true do
         expect(page).not_to have_content('bug')
       end
 
-      page.within('.project-labels') do
+      page.within('.other-labels') do
         expect(page).to have_content('bug')
         expect(page).to have_content('wontfix')
       end

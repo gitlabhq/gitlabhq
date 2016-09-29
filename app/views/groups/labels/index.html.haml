@@ -10,13 +10,9 @@
         New label
 
 .labels
-  - hide = @group.labels.empty? || (params[:page].present? && params[:page] != '1')
-  .group-labels
-    %h5{ class: ('hide' if hide) }
-      = icon('folder-open')
-      Group Labels
+  .other-labels
     - if @labels.present?
-      %ul.content-list.manage-labels-list.js-group-labels
+      %ul.content-list.manage-labels-list.js-other-labels
         = render partial: 'shared/label', collection: @labels, as: :label
         = paginate @labels, theme: 'gitlab'
     - else

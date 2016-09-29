@@ -140,10 +140,6 @@
     color: $gray-light;
   }
 
-  .label-type {
-    opacity: 0.3;
-  }
-
   li:hover {
     .draggable-handler {
       display: inline-block;
@@ -152,11 +148,7 @@
   }
 }
 
-.group-labels + .project-labels {
-  margin-top: 30px;
-}
-
-.group-labels, .project-labels {
+.other-labels {
   .remove-priority {
     display: none;
   }

@@ -33,55 +33,29 @@ describe Projects::LabelsController do
       end
 
       it 'is sorted by priority, then label title' do
-        expect(assigns(:prioritized_labels)).to match_array [group_label_2, label_1, label_3, group_label_1, label_2]
+        expect(assigns(:prioritized_labels)).to eq [group_label_2, label_1, label_3, group_label_1, label_2]
       end
     end
 
-    context '@group_labels' do
-      it 'contains only group labels' do
-        list_labels
-
-        expect(assigns(:group_labels)).to all(have_attributes(group_id: a_value > 0))
-      end
-
+    context '@labels' do
       it 'contains only unprioritized labels' do
         list_labels
 
-        expect(assigns(:group_labels)).to all(have_attributes(priority: nil))
+        expect(assigns(:labels)).to all(have_attributes(priority: nil))
       end
 
       it 'is sorted by label title' do
         list_labels
 
-        expect(assigns(:group_labels)).to match_array [group_label_3, group_label_4]
+        expect(assigns(:labels)).to eq [group_label_3, group_label_4, label_4, label_5]
       end
 
-      it 'is nil when project does not belong to a group' do
+      it 'does not include group labels when project does not belong to a group' do
         project.update(namespace: create(:namespace))
 
         list_labels
 
-        expect(assigns(:group_labels)).to be_nil
-      end
-    end
-
-    context '@project_labels' do
-      before do
-        list_labels
-      end
-
-      it 'contains only project labels' do
-        list_labels
-
-        expect(assigns(:project_labels)).to all(have_attributes(project_id: a_value > 0))
-      end
-
-      it 'contains only unprioritized labels' do
-        expect(assigns(:project_labels)).to all(have_attributes(priority: nil))
-      end
-
-      it 'is sorted by label title' do
-        expect(assigns(:project_labels)).to match_array [label_4, label_5]
+        expect(assigns(:labels)).not_to include(group_label_3, group_label_4)
       end
     end
 

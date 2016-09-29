@@ -81,26 +81,6 @@ module LabelsHelper
     end
   end
 
-  def label_type_icon(label, options = {})
-    title, icon =
-      case label
-      when GroupLabel then ['Group', 'folder-open']
-      when ProjectLabel then ['Project', 'bookmark']
-      end
-
-    options[:class] ||= ''
-    options[:class] << ' has-tooltip js-label-type'
-    options[:class] << ' hidden' if options.fetch(:hidden, false)
-
-    content_tag :span,
-      class: options[:class],
-      data: { 'placement' => 'top' },
-      title: title,
-      aria: { label: title } do
-      icon(icon, base: true)
-    end
-  end
-
   def render_colored_label(label, label_suffix = '', tooltip: true)
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
