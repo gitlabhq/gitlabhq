@@ -343,7 +343,7 @@ module API
     end
 
     class ProjectGroupLink < Grape::Entity
-      expose :id, :project_id, :group_id, :group_access
+      expose :id, :project_id, :group_id, :group_access, :expires_at
     end
 
     class Todo < Grape::Entity
