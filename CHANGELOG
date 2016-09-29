@@ -1,6 +1,4 @@
 Please view this file on the master branch, on stable branches it's out of date.
-v 8.13.0 (unreleased)
-  - Expose expires_at field when sharing project on API
 
 v 8.13.0 (unreleased)
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
@@ -10,6 +8,7 @@ v 8.13.0 (unreleased)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Fix permission for setting an issue's due date
+  - Expose expires_at field when sharing project on API
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
