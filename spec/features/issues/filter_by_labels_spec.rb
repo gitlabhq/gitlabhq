@@ -83,11 +83,7 @@ feature 'Issue filtering by Labels', feature: true, js: true do
     end
 
     it 'applies the filters' do
-      page.within '.issues-state-filters' do
-        expect(page).to have_content('Open 1')
-        expect(page).to have_content('Closed 0')
-        expect(page).to have_content('All 1')
-      end
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content "Bugfix2"
       expect(page).not_to have_content "Feature1"
       expect(find('.filtered-labels')).to have_content "bug"

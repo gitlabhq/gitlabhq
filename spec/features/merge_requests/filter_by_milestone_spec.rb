@@ -17,11 +17,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
     visit_merge_requests(project)
     filter_by_milestone(Milestone::None.title)
 
-    page.within '.issues-state-filters' do
-      expect(page).to have_content('Open 1')
-      expect(page).to have_content('Closed 0')
-      expect(page).to have_content('All 1')
-    end
+    expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
     expect(page).to have_css('.merge-request', count: 1)
   end
 
@@ -44,11 +40,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
       visit_merge_requests(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_content('Open 1')
-        expect(page).to have_content('Closed 0')
-        expect(page).to have_content('All 1')
-      end
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_css('.merge-request', count: 1)
     end
 
@@ -71,11 +63,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
     visit_merge_requests(project)
     filter_by_milestone(milestone.title)
 
-    page.within '.issues-state-filters' do
-      expect(page).to have_content('Open 1')
-      expect(page).to have_content('Closed 0')
-      expect(page).to have_content('All 1')
-    end
+    expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
     expect(page).to have_css('.merge-request', count: 1)
   end
 

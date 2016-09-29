@@ -137,13 +137,13 @@ module IssuablesHelper
     issuables_finder.execute.page(1).total_count
   end
 
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %w[utf8 sort page]
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
   private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
 
   def issuables_state_counter_cache_key(issuable_type, state)
-    opts = params.dup
-    opts['state'] = state
-    opts.delete_if { |k, v| IRRELEVANT_PARAMS_FOR_CACHE_KEY.include?(k) }
+    opts = params.with_indifferent_access
+    opts[:state] = state
+    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
 
     hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
   end

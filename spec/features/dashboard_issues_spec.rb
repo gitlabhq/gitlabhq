@@ -21,11 +21,7 @@ describe "Dashboard Issues filtering", feature: true, js: true do
 
       click_link 'No Milestone'
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_content('Open 1')
-        expect(page).to have_content('Closed 0')
-        expect(page).to have_content('All 1')
-      end
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
 
@@ -34,11 +30,7 @@ describe "Dashboard Issues filtering", feature: true, js: true do
 
       click_link 'Any Milestone'
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_content('Open 2')
-        expect(page).to have_content('Closed 0')
-        expect(page).to have_content('All 2')
-      end
+      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
       expect(page).to have_selector('.issue', count: 2)
     end
 
@@ -49,11 +41,7 @@ describe "Dashboard Issues filtering", feature: true, js: true do
         click_link milestone.title
       end
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_content('Open 1')
-        expect(page).to have_content('Closed 0')
-        expect(page).to have_content('All 1')
-      end
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
   end

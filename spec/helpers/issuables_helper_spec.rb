@@ -46,18 +46,18 @@ describe IssuablesHelper do
     describe 'counter caching based on issuable type and params', :caching do
       let(:params) do
         {
-          'scope' => 'created-by-me',
-          'state' => 'opened',
-          'utf8' => '✓',
-          'author_id' => '11',
-          'assignee_id' => '18',
-          'label_name' => ['bug', 'discussion', 'documentation'],
-          'milestone_title' => 'v4.0',
-          'sort' => 'due_date_asc',
-          'namespace_id' => 'gitlab-org',
-          'project_id' => 'gitlab-ce',
-          'page' => 2
-        }
+          scope: 'created-by-me',
+          state: 'opened',
+          utf8: '✓',
+          author_id: '11',
+          assignee_id: '18',
+          label_name: ['bug', 'discussion', 'documentation'],
+          milestone_title: 'v4.0',
+          sort: 'due_date_asc',
+          namespace_id: 'gitlab-org',
+          project_id: 'gitlab-ce',
+          page: 2
+        }.with_indifferent_access
       end
 
       it 'returns the cached value when called for the same issuable type & with the same params' do
@@ -73,25 +73,33 @@ describe IssuablesHelper do
           to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
-      describe 'keys not taken in account in the cache key' do
-        %w[state sort utf8 page].each do |param|
-          it "does not take in account params['#{param}'] in the cache key" do
-            expect(helper).to receive(:params).and_return('author_id' => '11', param => 'foo')
-            expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
+      it 'does not take some keys into account in the cache key' do
+        expect(helper).to receive(:params).and_return({
+          author_id: '11',
+          state: 'foo',
+          sort: 'foo',
+          utf8: 'foo',
+          page: 'foo'
+        }.with_indifferent_access)
+        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
 
-            expect(helper.issuables_state_counter_text(:issues, :opened)).
-              to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened)).
+          to eq('<span>Open</span> <span class="badge">42</span>')
 
-            expect(helper).to receive(:params).and_return('author_id' => '11', param => 'bar')
-            expect(helper).not_to receive(:issuables_count_for_state)
+        expect(helper).to receive(:params).and_return({
+          author_id: '11',
+          state: 'bar',
+          sort: 'bar',
+          utf8: 'bar',
+          page: 'bar'
+        }.with_indifferent_access)
+        expect(helper).not_to receive(:issuables_count_for_state)
 
-            expect(helper.issuables_state_counter_text(:issues, :opened)).
-              to eq('<span>Open</span> <span class="badge">42</span>')
-          end
-        end
+        expect(helper.issuables_state_counter_text(:issues, :opened)).
+          to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
-      it 'does not take params order in acount in the cache key' do
+      it 'does not take params order into account in the cache key' do
         expect(helper).to receive(:params).and_return('author_id' => '11', 'state' => 'opened')
         expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
 

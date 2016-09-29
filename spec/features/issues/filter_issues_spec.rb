@@ -227,11 +227,7 @@ describe 'Filter issues', feature: true do
       it 'filters by text and label' do
         fill_in 'issuable_search', with: 'Bug'
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 2')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 2')
-        end
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
         end
@@ -242,11 +238,7 @@ describe 'Filter issues', feature: true do
         end
         find('.dropdown-menu-close-icon').click
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 1')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 1')
-        end
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
@@ -255,11 +247,7 @@ describe 'Filter issues', feature: true do
       it 'filters by text and milestone' do
         fill_in 'issuable_search', with: 'Bug'
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 2')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 2')
-        end
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
         end
@@ -269,11 +257,7 @@ describe 'Filter issues', feature: true do
           click_link '8'
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 1')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 1')
-        end
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
@@ -282,11 +266,7 @@ describe 'Filter issues', feature: true do
       it 'filters by text and assignee' do
         fill_in 'issuable_search', with: 'Bug'
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 2')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 2')
-        end
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
         end
@@ -296,11 +276,7 @@ describe 'Filter issues', feature: true do
           click_link user.name
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 1')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 1')
-        end
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
@@ -309,11 +285,7 @@ describe 'Filter issues', feature: true do
       it 'filters by text and author' do
         fill_in 'issuable_search', with: 'Bug'
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 2')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 2')
-        end
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
         end
@@ -323,11 +295,7 @@ describe 'Filter issues', feature: true do
           click_link user.name
         end
 
-        page.within '.issues-state-filters' do
-          expect(page).to have_content('Open 1')
-          expect(page).to have_content('Closed 0')
-          expect(page).to have_content('All 1')
-        end
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
         end
@@ -356,11 +324,7 @@ describe 'Filter issues', feature: true do
       find('.dropdown-menu-close-icon').click
       wait_for_ajax
 
-      page.within '.issues-state-filters' do
-        expect(page).to have_content('Open 2')
-        expect(page).to have_content('Closed 0')
-        expect(page).to have_content('All 2')
-      end
+      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
       page.within '.issues-list' do
         expect(page).to have_selector('.issue', count: 2)
       end
