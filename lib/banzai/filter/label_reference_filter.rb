@@ -39,13 +39,7 @@ module Banzai
       end
 
       def find_labels(project)
-        label_ids = []
-        label_ids << project.group.labels.select(:id) if project.group.present?
-        label_ids << project.labels.select(:id)
-
-        union = Gitlab::SQL::Union.new(label_ids)
-
-        object_class.where("labels.id IN (#{union.to_sql})")
+        LabelsFinder.new(user, project_id: project.id).execute
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
@@ -89,6 +83,10 @@ module Banzai
 
       def same_project?(object)
         object.is_a?(ProjectLabel) && object.project == project
+      end
+
+      def user
+        context[:current_user] || context[:author]
       end
 
       def project

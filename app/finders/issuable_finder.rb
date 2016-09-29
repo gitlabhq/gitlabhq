@@ -128,8 +128,7 @@ class IssuableFinder
       @labels = Label.where(title: label_names)
 
       if projects
-        label_ids = LabelsFinder.new(current_user, project_id: projects).execute.select(:id)
-        @labels = @labels.where(labels: { id: label_ids })
+        @labels = LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute
       end
     else
       @labels = Label.none
@@ -277,7 +276,7 @@ class IssuableFinder
         items = items.with_label(label_names, params[:sort])
 
         if projects
-          label_ids = LabelsFinder.new(current_user, project_id: projects).execute.select(:id)
+          label_ids = LabelsFinder.new(current_user, project_ids: projects).execute.select(:id)
           items = items.where(labels: { id: label_ids })
         end
       end

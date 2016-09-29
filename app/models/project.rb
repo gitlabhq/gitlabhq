@@ -388,6 +388,10 @@ class Project < ActiveRecord::Base
         Project.count
       end
     end
+
+    def group_ids
+      joins(:namespace).where(namespaces: { type: 'Group' }).pluck(:namespace_id)
+    end
   end
 
   def lfs_enabled?
