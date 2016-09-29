@@ -11,6 +11,7 @@ v 8.13.0 (unreleased)
   - Expose expires_at field when sharing project on API
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
+  - Replace `alias_method_chain` with `Module#prepend`
   - Only update issuable labels if they have been changed
   - Revoke button in Applications Settings underlines on hover.
   - Fix Long commit messages overflow viewport in file tree
@@ -97,7 +98,6 @@ v 8.12.0
   - Fix issue with search filter labels not displaying
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Show all pipelines for merge requests even from discarded commits !6414
-  - Replace `alias_method_chain` with `Module#prepend`
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
