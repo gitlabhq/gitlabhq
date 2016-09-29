@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.12.3 (unreleased)
+v 8.12.4 (unreleased)
+
+v 8.12.3
+  - Update Gitlab Shell to support low IO priority for storage moves
 
 v 8.12.2
   - Fix Import/Export not recognising correctly the imported services.
