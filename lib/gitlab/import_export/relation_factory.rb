@@ -9,7 +9,8 @@ module Gitlab
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
-                    push_access_levels: 'ProtectedBranch::PushAccessLevel' }.freeze
+                    push_access_levels: 'ProtectedBranch::PushAccessLevel',
+                    labels: :project_labels }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
 
@@ -19,7 +20,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels].freeze
 
       FINDER_ATTRIBUTES = %w[title project_id].freeze
 
