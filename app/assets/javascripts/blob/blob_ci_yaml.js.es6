@@ -1,11 +1,15 @@
 /*= require blob/template_selector */
 ((global) => {
 
-  class BlobCiYamlSelector extends TemplateSelector {
+  class BlobCiYamlSelector extends gl.TemplateSelector {
     requestFile(query) {
       return Api.gitlabCiYml(query.name, this.requestFileSuccess.bind(this));
     }
-  };
+
+    requestFileSuccess(file) {
+      return super.requestFileSuccess(file);
+    }
+  }
 
   global.BlobCiYamlSelector = BlobCiYamlSelector;
 
@@ -17,6 +21,7 @@
     }
 
     initSelectors() {
+      const editor = this.editor;
       this.$dropdowns.each((i, dropdown) => {
         const $dropdown = $(dropdown);
         return new BlobCiYamlSelector({

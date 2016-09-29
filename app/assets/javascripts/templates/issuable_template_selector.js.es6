@@ -1,7 +1,7 @@
 /*= require ../blob/template_selector */
 
 ((global) => {
-  class IssuableTemplateSelector extends TemplateSelector {
+  class IssuableTemplateSelector extends gl.TemplateSelector {
     constructor(...args) {
       super(...args);
       this.projectPath = this.dropdown.data('project-path');
