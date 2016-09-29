@@ -3,6 +3,8 @@
   margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
+  position: relative;
+  z-index: 1;
 
   .flash-notice {
     @extend .alert;
@@ -30,6 +32,12 @@
     .flash-notice, .flash-alert {
       border-radius: 0;
     }
+  }
+}
+
+.content-wrapper {
+  .flash-notice .container-fluid {
+    background-color: transparent;
   }
 }
 
