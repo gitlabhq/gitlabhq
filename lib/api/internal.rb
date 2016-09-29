@@ -90,7 +90,7 @@ module API
 
         {
           username: token_handler.actor_name,
-          lfs_token: token_handler.generate,
+          lfs_token: token_handler.token,
           repository_http_path: project.http_url_to_repo
         }
       end

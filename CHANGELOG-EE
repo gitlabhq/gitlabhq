@@ -13,6 +13,7 @@ v 8.12.2
 
 v 8.12.1
   - Prevent secrets to be pushed to the repository
+- Prevent secrets to be pushed to the repository
 
 v 8.12.0
   - Include more data in EE usage ping

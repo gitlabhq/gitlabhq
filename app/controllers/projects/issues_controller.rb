@@ -60,7 +60,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    raw_notes = @issue.notes_with_associations.fresh
+    raw_notes = @issue.notes.inc_relations_for_view.fresh
 
     @notes = Banzai::NoteRenderer.
       render(raw_notes, @project, current_user, @path, @project_wiki, @ref)

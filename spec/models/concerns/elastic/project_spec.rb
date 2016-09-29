@@ -24,9 +24,9 @@ describe Project, elastic: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    expect(described_class.elastic_search('test', options: { pids: project_ids }).total_count).to eq(1)
-    expect(described_class.elastic_search('test1', options: { pids: project_ids }).total_count).to eq(1)
-    expect(described_class.elastic_search('someone_elses_project', options: { pids: project_ids }).total_count).to eq(0)
+    expect(described_class.elastic_search('test', options: { project_ids: project_ids }).total_count).to eq(1)
+    expect(described_class.elastic_search('test1', options: { project_ids: project_ids }).total_count).to eq(1)
+    expect(described_class.elastic_search('someone_elses_project', options: { project_ids: project_ids }).total_count).to eq(0)
   end
 
   it "finds partial matches in project names" do
@@ -40,7 +40,7 @@ describe Project, elastic: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    expect(described_class.elastic_search('tesla', options: { pids: project_ids }).total_count).to eq(2)
+    expect(described_class.elastic_search('tesla', options: { project_ids: project_ids }).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do

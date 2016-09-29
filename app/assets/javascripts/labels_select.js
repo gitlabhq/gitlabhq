@@ -4,9 +4,10 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected;
         $dropdown = $(dropdown);
-        projectId = $dropdown.data('project-id');
+        namespacePath = $dropdown.data('namespace-path');
+        projectPath = $dropdown.data('project-path');
         labelUrl = $dropdown.data('labels');
         issueUpdateURL = $dropdown.data('issueUpdate');
         selectedLabel = $dropdown.data('selected');
@@ -24,6 +25,11 @@
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
+        initialSelected = $selectbox
+          .find('input[name="' + $dropdown.data('field-name') + '"]')
+          .map(function () {
+            return this.value;
+          }).get();
         if (issueUpdateURL != null) {
           issueURLSplit = issueUpdateURL.split('/');
         }
@@ -35,7 +41,7 @@
         $sidebarLabelTooltip.tooltip();
 
         if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
-          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
         }
 
         saveLabelData = function() {
@@ -43,6 +49,10 @@
           selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").map(function() {
             return this.value;
           }).get();
+
+          if (_.isEqual(initialSelected, selected)) return;
+          initialSelected = selected;
+
           data = {};
           data[abilityName] = {};
           data[abilityName].label_ids = selected;

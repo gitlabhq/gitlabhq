@@ -147,9 +147,13 @@ module Elastic
         }
       end
 
-      def project_ids_filter(query_hash, project_ids, public_and_internal_projects = true)
-        if project_ids
-          condition = project_ids_condition(project_ids, public_and_internal_projects)
+      def project_ids_filter(query_hash, options)
+        if options[:project_ids]
+          condition = project_ids_condition(
+            options[:current_user],
+            options[:project_ids],
+            options[:public_and_internal_projects]
+          )
 
           query_hash[:query][:bool][:filter] = {
             has_parent: {
@@ -166,19 +170,17 @@ module Elastic
         query_hash
       end
 
-      def project_ids_condition(project_ids, public_and_internal_projects)
+      def project_ids_condition(current_user, project_ids, public_and_internal_projects)
         conditions = [{
           terms: { id: project_ids }
         }]
 
         if public_and_internal_projects
-          conditions << {
-            term: { visibility_level: Project::PUBLIC }
-          }
+          conditions << { term: { visibility_level: Project::PUBLIC } }
 
-          conditions << {
-            term: { visibility_level: Project::INTERNAL }
-          }
+          if current_user
+            conditions << { term: { visibility_level: Project::INTERNAL } }
+          end
         end
 
         conditions

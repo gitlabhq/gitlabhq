@@ -58,11 +58,11 @@
                       .monospace #{short_sha(merge_request_diff.head_commit_sha)}
                       %small
                         = time_ago_with_tooltip(merge_request_diff.created_at)
-                  %li
-                    = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
-                      %strong
-                        #{@merge_request.target_branch} (base)
-                      .monospace #{short_sha(@merge_request_diff.base_commit_sha)}
+                %li
+                  = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
+                    %strong
+                      #{@merge_request.target_branch} (base)
+                    .monospace #{short_sha(@merge_request_diff.base_commit_sha)}
 
     - unless @merge_request_diff.latest? && !@start_sha
       .comments-disabled-notif.content-block

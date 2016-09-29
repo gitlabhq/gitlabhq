@@ -1,7 +1,7 @@
 module Gitlab
   module Elastic
     class SearchResults
-      attr_reader :current_user, :query
+      attr_reader :current_user, :query, :public_and_internal_projects
 
       # Limit search results by passed project ids
       # It allows us to search only for projects user has access to
@@ -59,41 +59,28 @@ module Gitlab
 
       private
 
-      def projects
-        opt = {
-          pids: limit_project_ids,
-          public_and_internal_projects: @public_and_internal_projects
+      def base_options
+        {
+          current_user: current_user,
+          project_ids: limit_project_ids,
+          public_and_internal_projects: public_and_internal_projects
         }
+      end
 
-        @projects = Project.elastic_search(query, options: opt)
+      def projects
+        Project.elastic_search(query, options: base_options)
       end
 
       def issues
-        opt = {
-          project_ids: limit_project_ids,
-          current_user: current_user,
-          public_and_internal_projects: @public_and_internal_projects
-        }
-
-        Issue.elastic_search(query, options: opt)
+        Issue.elastic_search(query, options: base_options)
       end
 
       def milestones
-        opt = {
-          project_ids: limit_project_ids,
-          public_and_internal_projects: @public_and_internal_projects
-        }
-
-        Milestone.elastic_search(query, options: opt)
+        Milestone.elastic_search(query, options: base_options)
       end
 
       def merge_requests
-        opt = {
-          project_ids: limit_project_ids,
-          public_and_internal_projects: @public_and_internal_projects
-        }
-
-        MergeRequest.elastic_search(query, options: opt)
+        MergeRequest.elastic_search(query, options: base_options)
       end
 
       def blobs
@@ -101,7 +88,7 @@ module Gitlab
           Kaminari.paginate_array([])
         else
           opt = {
-            additional_filter: build_filter_by_project(limit_project_ids, @public_and_internal_projects)
+            additional_filter: build_filter_by_project
           }
 
           Repository.search(
@@ -117,7 +104,7 @@ module Gitlab
           Kaminari.paginate_array([])
         else
           options = {
-            additional_filter: build_filter_by_project(limit_project_ids, @public_and_internal_projects)
+            additional_filter: build_filter_by_project
           }
 
           Repository.find_commits_by_message_with_elastic(
@@ -129,17 +116,15 @@ module Gitlab
         end
       end
 
-      def build_filter_by_project(project_ids, public_and_internal_projects)
-        conditions = [{ terms: { id: project_ids } }]
+      def build_filter_by_project
+        conditions = [{ terms: { id: limit_project_ids } }]
 
         if public_and_internal_projects
-          conditions << {
-            term: { visibility_level: Project::PUBLIC }
-          }
+          conditions << { term: { visibility_level: Project::PUBLIC } }
 
-          conditions << {
-            term: { visibility_level: Project::INTERNAL }
-          }
+          if current_user
+            conditions << { term: { visibility_level: Project::INTERNAL } }
+          end
         end
 
         {

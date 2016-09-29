@@ -9,32 +9,32 @@
       Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
     }
 
-    prepareRequest(namespace) {
+    prepareRequest(root) {
       this.setCSRF();
-      Vue.http.options.root = `/${namespace}`;
+      Vue.http.options.root = root;
     }
 
-    resolve(namespace, noteId) {
-      this.prepareRequest(namespace);
+    resolve(projectPath, noteId) {
+      this.prepareRequest(projectPath);
 
       return this.noteResource.save({ noteId }, {});
     }
 
-    unresolve(namespace, noteId) {
-      this.prepareRequest(namespace);
+    unresolve(projectPath, noteId) {
+      this.prepareRequest(projectPath);
 
       return this.noteResource.delete({ noteId }, {});
     }
 
-    toggleResolveForDiscussion(namespace, mergeRequestId, discussionId) {
+    toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId],
             isResolved = discussion.isResolved();
       let promise;
 
       if (isResolved) {
-        promise = this.unResolveAll(namespace, mergeRequestId, discussionId);
+        promise = this.unResolveAll(projectPath, mergeRequestId, discussionId);
       } else {
-        promise = this.resolveAll(namespace, mergeRequestId, discussionId);
+        promise = this.resolveAll(projectPath, mergeRequestId, discussionId);
       }
 
       promise.then((response) => {
@@ -57,10 +57,10 @@
       })
     }
 
-    resolveAll(namespace, mergeRequestId, discussionId) {
+    resolveAll(projectPath, mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
 
-      this.prepareRequest(namespace);
+      this.prepareRequest(projectPath);
 
       discussion.loading = true;
 
@@ -70,10 +70,10 @@
       }, {});
     }
 
-    unResolveAll(namespace, mergeRequestId, discussionId) {
+    unResolveAll(projectPath, mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
 
-      this.prepareRequest(namespace);
+      this.prepareRequest(projectPath);
 
       discussion.loading = true;
 
