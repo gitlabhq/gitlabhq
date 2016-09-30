@@ -24,7 +24,7 @@
       = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore'), class: 'underlined-link'
       to this project.
     %p
-       You will need to be owner or have the master permission level for the initial push, as the master branch is automatically protected.
+      You will need to be owner or have the master permission level for the initial push, as the master branch is automatically protected.
 
 - if can?(current_user, :push_code, @project)
   %div{ class: container_class }
