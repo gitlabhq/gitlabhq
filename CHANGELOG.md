@@ -7,6 +7,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
 - Prevent award emoji via notes for issues/MRs authored by user (barthc)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
+- Fix Markdown styling inside reference links (Jan Zdráhal)
 - Fix extra space on Build sidebar on Firefox !7060
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
