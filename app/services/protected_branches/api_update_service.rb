@@ -4,10 +4,10 @@
 # lives in this service.
 module ProtectedBranches
   class ApiUpdateService < BaseService
-    def initialize(project, user, params, developers_can_push:, developers_can_merge:)
+    def initialize(project, user, params)
+      @developers_can_merge = params.delete(:developers_can_merge)
+      @developers_can_push = params.delete(:developers_can_push)
       super(project, user, params)
-      @developers_can_merge = developers_can_merge
-      @developers_can_push = developers_can_push
     end
 
     def execute(protected_branch)
@@ -38,11 +38,11 @@ module ProtectedBranches
     private
 
     def delete_redundant_access_levels
-      if @developers_can_merge || @developers_can_merge == false
+      unless @developers_can_merge.nil?
         @protected_branch.merge_access_levels.destroy_all
       end
 
-      if @developers_can_push || @developers_can_push == false
+      unless @developers_can_push.nil?
         @protected_branch.push_access_levels.destroy_all
       end
     end
