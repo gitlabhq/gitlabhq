@@ -10,6 +10,7 @@ v 8.12.4 (unreleased)
   - Skip wiki creation when GitHub project has wiki enabled. !6665
   - Restrict failed login attempts for users with 2FA enabled. !6668
   - Fix failed project deletion when feature visibility set to private. !6688
+  - Prevent claiming associated model IDs via import.
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
