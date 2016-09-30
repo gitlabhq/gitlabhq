@@ -1,10 +1,8 @@
-- if_condition = local_assigns.fetch(:if_condition, '')
-
-.diff-editor-wrap{ "v-show" => if_condition }
+.diff-editor-wrap{ "v-show" => "file.showEditor" }
   .discard-changes-alert-wrap{ "v-if" => "file.promptDiscardConfirmation" }
     .discard-changes-alert
       Are you sure to discard your changes?
       .discard-actions
         %button.btn.btn-sm.btn-close{ "@click" => "acceptDiscardConfirmation(file)" } Discard changes
         %button.btn.btn-sm{ "@click" => "cancelDiscardConfirmation(file)" } Cancel
-  %diff-file-editor{":file" => "file", ":load-file" => if_condition }
+  %diff-file-editor{":file" => "file"}

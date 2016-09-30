@@ -1,5 +1,5 @@
 .file-actions
-  .btn-group
+  .btn-group{"v-if" => "file.type === 'text'"}
     %button.btn{ ":class" => "{ 'active': file.resolveMode == 'interactive' }",
       '@click' => "onClickResolveModeButton(file, 'interactive')",
       type: 'button' }

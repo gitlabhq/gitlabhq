@@ -22,4 +22,4 @@
                   {{line.lineNumber}}
                 %td.line_content.parallel{":class" => class_bindings}
                   {{{line.richText}}}
-      = render partial: 'projects/merge_requests/conflicts/diff_file_editor', locals: { if_condition: "file.resolveMode === 'edit' && isParallel" }
+      = render partial: 'projects/merge_requests/conflicts/diff_file_editor', locals: { if_condition: "file.loadFile && isParallel" }

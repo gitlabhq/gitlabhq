@@ -7,10 +7,10 @@
     template: '#diff-file-editor',
     data() {
       return {
-        originalContent: '',
         saved: false,
         loading: false,
-        fileLoaded: false
+        fileLoaded: false,
+        originalContent: '',
       }
     },
     computed: {
@@ -23,43 +23,48 @@
       }
     },
     watch: {
-      loadFile(val) {
-        const self = this;
-
+      ['file.showEditor'](val) {
         this.resetEditorContent();
 
         if (!val || this.fileLoaded || this.loading) {
-          return
+          return;
         }
 
+        this.loadEditor();
+      }
+    },
+    ready() {
+      if (this.file.loadEditor) {
+        this.loadEditor();
+      }
+    },
+    methods: {
+      loadEditor() {
         this.loading = true;
 
         $.get(this.file.content_path)
           .done((file) => {
-
-            let content = self.$el.querySelector('pre');
+            let content = this.$el.querySelector('pre');
             let fileContent = document.createTextNode(file.content);
 
             content.textContent = fileContent.textContent;
 
-            self.originalContent = file.content;
-            self.fileLoaded = true;
-            self.editor = ace.edit(content);
-            self.editor.$blockScrolling = Infinity; // Turn off annoying warning
-            self.editor.on('change', () => {
-              self.saveDiffResolution();
+            this.originalContent = file.content;
+            this.fileLoaded = true;
+            this.editor = ace.edit(content);
+            this.editor.$blockScrolling = Infinity; // Turn off annoying warning
+            this.editor.on('change', () => {
+              this.saveDiffResolution();
             });
-            self.saveDiffResolution();
+            this.saveDiffResolution();
           })
           .fail(() => {
             console.log('error');
           })
           .always(() => {
-            self.loading = false;
+            this.loading = false;
           });
-      }
-    },
-    methods: {
+      },
       saveDiffResolution() {
         this.saved = true;
 

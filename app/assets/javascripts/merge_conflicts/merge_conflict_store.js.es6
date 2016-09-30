@@ -13,6 +13,10 @@
     INLINE: 'inline',
     PARALLEL: 'parallel'
   };
+  const CONFLICT_TYPES = {
+    TEXT: 'text',
+    TEXT_EDITOR: 'text-editor'
+  };
 
   global.mergeConflicts.mergeConflictsStore = {
     state: {
@@ -26,8 +30,6 @@
 
     setConflictsData(data) {
       this.decorateFiles(data.files);
-      this.setInlineLines(data.files);
-      this.setParallelLines(data.files);
 
       this.state.conflictsData = {
         files: data.files,
@@ -45,90 +47,90 @@
         file.resolutionData = {};
         file.promptDiscardConfirmation = false;
         file.resolveMode = DEFAULT_RESOLVE_MODE;
-      });
-    },
-
-    setInlineLines(files) {
-      files.forEach((file) => {
+        file.filePath = this.getFilePath(file);
         file.iconClass = `fa-${file.blob_icon}`;
         file.blobPath = file.blob_path;
-        file.filePath = this.getFilePath(file);
-        file.inlineLines = [];
 
-        file.sections.forEach((section) => {
-          let currentLineType = 'new';
-          const { conflict, lines, id } = section;
+        if (file.type === CONFLICT_TYPES.TEXT) {
+          file.showEditor = false;
+          file.loadEditor = false;
 
-          if (conflict) {
-            file.inlineLines.push(this.getHeadHeaderLine(id));
-          }
-
-          lines.forEach((line) => {
-            const { type } = line;
-
-            if ((type === 'new' || type === 'old') && currentLineType !== type) {
-              currentLineType = type;
-              file.inlineLines.push({ lineType: 'emptyLine', richText: '' });
-            }
-
-            this.decorateLineForInlineView(line, id, conflict);
-            file.inlineLines.push(line);
-          })
-
-          if (conflict) {
-            file.inlineLines.push(this.getOriginHeaderLine(id));
-          }
-        });
+          this.setInlineLine(file);
+          this.setParallelLine(file);
+        } else if (file.type === CONFLICT_TYPES.TEXT_EDITOR) {
+          file.showEditor = true;
+          file.loadEditor = true;
+        }
       });
     },
 
-    setParallelLines(files) {
-      files.forEach((file) => {
-        file.filePath  = this.getFilePath(file);
-        file.iconClass = `fa-${file.blob_icon}`;
-        file.blobPath  = file.blob_path;
-        file.parallelLines = [];
-        const linesObj = { left: [], right: [] };
+    setInlineLine(file) {
+      file.inlineLines = [];
 
-        file.sections.forEach((section) => {
-          const { conflict, lines, id } = section;
+      file.sections.forEach((section) => {
+        let currentLineType = 'new';
+        const { conflict, lines, id } = section;
 
-          if (conflict) {
-            linesObj.left.push(this.getOriginHeaderLine(id));
-            linesObj.right.push(this.getHeadHeaderLine(id));
-          }
-
-          lines.forEach((line) => {
-            const { type } = line;
-
-            if (conflict) {
-              if (type === 'old') {
-                linesObj.left.push(this.getLineForParallelView(line, id, 'conflict'));
-              }
-              else if (type === 'new') {
-                linesObj.right.push(this.getLineForParallelView(line, id, 'conflict', true));
-              }
-            }
-            else {
-              const lineType = type || 'context';
-
-              linesObj.left.push (this.getLineForParallelView(line, id, lineType));
-              linesObj.right.push(this.getLineForParallelView(line, id, lineType, true));
-            }
-          });
-
-          this.checkLineLengths(linesObj);
-        });
-
-        for (let i = 0, len = linesObj.left.length; i < len; i++) {
-          file.parallelLines.push([
-            linesObj.right[i],
-            linesObj.left[i]
-          ]);
+        if (conflict) {
+          file.inlineLines.push(this.getHeadHeaderLine(id));
         }
 
-        return file;
+        lines.forEach((line) => {
+          const { type } = line;
+
+          if ((type === 'new' || type === 'old') && currentLineType !== type) {
+            currentLineType = type;
+            file.inlineLines.push({ lineType: 'emptyLine', richText: '' });
+          }
+
+          this.decorateLineForInlineView(line, id, conflict);
+          file.inlineLines.push(line);
+        })
+
+        if (conflict) {
+          file.inlineLines.push(this.getOriginHeaderLine(id));
+        }
       });
+    },
+
+    setParallelLine(file) {
+      file.parallelLines = [];
+      const linesObj = { left: [], right: [] };
+
+      file.sections.forEach((section) => {
+        const { conflict, lines, id } = section;
+
+        if (conflict) {
+          linesObj.left.push(this.getOriginHeaderLine(id));
+          linesObj.right.push(this.getHeadHeaderLine(id));
+        }
+
+        lines.forEach((line) => {
+          const { type } = line;
+
+          if (conflict) {
+            if (type === 'old') {
+              linesObj.left.push(this.getLineForParallelView(line, id, 'conflict'));
+            } else if (type === 'new') {
+              linesObj.right.push(this.getLineForParallelView(line, id, 'conflict', true));
+            }
+          } else {
+            const lineType = type || 'context';
+
+            linesObj.left.push (this.getLineForParallelView(line, id, lineType));
+            linesObj.right.push(this.getLineForParallelView(line, id, lineType, true));
+          }
+        });
+
+        this.checkLineLengths(linesObj);
+      });
+
+      for (let i = 0, len = linesObj.left.length; i < len; i++) {
+        file.parallelLines.push([
+          linesObj.right[i],
+          linesObj.left[i]
+        ]);
+      }
     },
 
     setLoadingState(state) {
@@ -140,13 +142,12 @@
     },
 
     setFailedRequest(message) {
-      console.log('setFailedRequest');
       this.state.hasError = true;
       this.state.conflictsData.errorMessage = message;
     },
 
     getConflictsCount() {
-      if (!this.state.conflictsData.files) {
+      if (!this.state.conflictsData.files.length) {
         return 0;
       }
 
@@ -154,11 +155,15 @@
       let count = 0;
 
       files.forEach((file) => {
-        file.sections.forEach((section) => {
-          if (section.conflict) {
-            count++;
-          }
-        });
+        if (file.type === CONFLICT_TYPES.TEXT) {
+          file.sections.forEach((section) => {
+            if (section.conflict) {
+              count++;
+            }
+          });
+        } else {
+          count++;
+        }
       });
 
       return count;
@@ -172,7 +177,7 @@
     },
 
     setViewType(viewType) {
-      this.state.diffView   = viewType;
+      this.state.diffView = viewType;
       this.state.isParallel = viewType === VIEW_TYPES.PARALLEL;
 
       $.cookie('diff_view', viewType, {
@@ -253,8 +258,7 @@
           for (let i = 0; i < diff; i++) {
             right.push({ lineType: 'emptyLine', richText: '' });
           }
-        }
-        else {
+        } else {
           const diff = right.length - left.length;
           for (let i = 0; i < diff; i++) {
             left.push({ lineType: 'emptyLine', richText: '' });
@@ -268,8 +272,12 @@
     },
 
     setFileResolveMode(file, mode) {
-      // Restore Interactive mode when switching to Edit mode
-      if (mode === EDIT_RESOLVE_MODE) {
+      if (mode === INTERACTIVE_RESOLVE_MODE) {
+        file.showEditor = false;
+      } else if (mode === EDIT_RESOLVE_MODE) {
+        // Restore Interactive mode when switching to Edit mode
+        file.showEditor = true;
+        file.loadEditor = true;
         file.resolutionData = {};
 
         this.restoreFileLinesState(file);
@@ -287,9 +295,9 @@
       });
 
       file.parallelLines.forEach((lines) => {
-        const left         = lines[0];
-        const right        = lines[1];
-        const isLeftMatch  = left.hasConflict || left.isHeader;
+        const left = lines[0];
+        const right = lines[1];
+        const isLeftMatch = left.hasConflict || left.isHeader;
         const isRightMatch = right.hasConflict || right.isHeader;
 
         if (isLeftMatch || isRightMatch) {
@@ -313,14 +321,17 @@
           let numberConflicts = 0;
           let resolvedConflicts = Object.keys(file.resolutionData).length
 
-          for (let j = 0, k = file.sections.length; j < k; j++) {
-            if (file.sections[j].conflict) {
-              numberConflicts++;
+          // We only check if
+          if (file.type === CONFLICT_TYPES.TEXT) {
+            for (let j = 0, k = file.sections.length; j < k; j++) {
+              if (file.sections[j].conflict) {
+                numberConflicts++;
+              }
             }
-          }
 
-          if (resolvedConflicts !== numberConflicts) {
-            unresolved++;
+            if (resolvedConflicts !== numberConflicts) {
+              unresolved++;
+            }
           }
         } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
           // Unlikely to happen since switching to Edit mode saves content automatically.
@@ -358,10 +369,15 @@
           new_path: file.new_path
         };
 
-        // Submit only one data for type of editing
-        if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
-          addFile.sections = file.resolutionData;
-        } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
+        if (file.type === CONFLICT_TYPES.TEXT) {
+
+          // Submit only one data for type of editing
+          if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
+            addFile.sections = file.resolutionData;
+          } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
+            addFile.content = file.content;
+          }
+        } else if (file.type === CONFLICT_TYPES.TEXT_EDITOR) {
           addFile.content = file.content;
         }
 
@@ -374,39 +390,35 @@
     handleSelected(file, sectionId, selection) {
       Vue.set(file.resolutionData, sectionId, selection);
 
-      this.state.conflictsData.files.forEach((file) => {
-        file.inlineLines.forEach((line) => {
-          if (line.id === sectionId && (line.hasConflict || line.isHeader)) {
-            this.markLine(line, selection);
-          }
-        });
+      file.inlineLines.forEach((line) => {
+        if (line.id === sectionId && (line.hasConflict || line.isHeader)) {
+          this.markLine(line, selection);
+        }
+      });
 
-        file.parallelLines.forEach((lines) => {
-          const left         = lines[0];
-          const right        = lines[1];
-          const hasSameId    = right.id === sectionId || left.id === sectionId;
-          const isLeftMatch  = left.hasConflict || left.isHeader;
-          const isRightMatch = right.hasConflict || right.isHeader;
+      file.parallelLines.forEach((lines) => {
+        const left = lines[0];
+        const right = lines[1];
+        const hasSameId = right.id === sectionId || left.id === sectionId;
+        const isLeftMatch = left.hasConflict || left.isHeader;
+        const isRightMatch = right.hasConflict || right.isHeader;
 
-          if (hasSameId && (isLeftMatch || isRightMatch)) {
-            this.markLine(left, selection);
-            this.markLine(right, selection);
-          }
-        })
+        if (hasSameId && (isLeftMatch || isRightMatch)) {
+          this.markLine(left, selection);
+          this.markLine(right, selection);
+        }
       });
     },
 
     markLine(line, selection) {
       if (selection === 'head' && line.isHead) {
-        line.isSelected   = true;
+        line.isSelected = true;
         line.isUnselected = false;
-      }
-      else if (selection === 'origin' && line.isOrigin) {
-        line.isSelected   = true;
+      } else if (selection === 'origin' && line.isOrigin) {
+        line.isSelected = true;
         line.isUnselected = false;
-      }
-      else {
-        line.isSelected   = false;
+      } else {
+        line.isSelected = false;
         line.isUnselected = true;
       }
     },

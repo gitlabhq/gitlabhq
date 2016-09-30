@@ -37,7 +37,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
         end
       end
 
-      context 'when in inline mode' do
+      context 'when in inline mode'  do
         it 'resolves files manually' do
           within find('.files-wrapper .diff-file.inline-view', text: 'files/ruby/popen.rb') do
             click_button 'Edit inline'
@@ -62,6 +62,42 @@ feature 'Merge request conflict resolution', js: true, feature: true do
           expect(page).to have_content('One morning')
           expect(page).to have_content('Gregor Samsa woke from troubled dreams')
         end
+      end
+    end
+  end
+
+  context 'when a merge request can be resolved in the UI' do
+    let(:merge_request) { create_merge_request('conflict-contains-conflict-markers') }
+
+    before do
+      project.team << [user, :developer]
+      login_as(user)
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    context 'a conflict contain markers' do
+      before { click_link('conflicts', href: /\/conflicts\Z/) }
+
+      it 'resolves files manually' do
+        within find('.files-wrapper .diff-file.inline-view', text: 'files/markdown/ruby-style-guide.md') do
+          wait_for_ajax
+          execute_script('ace.edit($(".files-wrapper .diff-file.inline-view pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
+        end
+
+        click_button 'Commit conflict resolution'
+        wait_for_ajax
+
+        expect(page).to have_content('All merge conflicts were resolved')
+
+        merge_request.reload_diff
+
+        click_on 'Changes'
+        wait_for_ajax
+        find('.nothing-here-block', visible: true).click
+        wait_for_ajax
+
+        expect(page).to have_content('Gregor Samsa woke from troubled dreams')
       end
     end
   end
