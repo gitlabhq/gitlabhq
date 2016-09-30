@@ -21,7 +21,6 @@ v 8.13.0 (unreleased)
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Fix broken repository 500 errors in project list
-  - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
 
 v 8.12.4 (unreleased)
 
