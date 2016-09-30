@@ -315,3 +315,9 @@ If you are getting 'Connection Refused' errors when trying to connect to the
 LDAP server please double-check the LDAP `port` and `method` settings used by
 GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
 `method: 'ssl'` and `port: 636`.
+
+### Login with valid credentials rejected
+
+If there is an unexpected error while authenticating the user with the LDAP
+backend, the login is rejected and details about the error are logged to
+`production.log`.

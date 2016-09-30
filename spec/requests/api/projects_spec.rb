@@ -761,13 +761,16 @@ describe API::API, api: true  do
     let(:group) { create(:group) }
 
     it "shares project with group" do
+      expires_at = 10.days.from_now.to_date
+
       expect do
-        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at
       end.to change { ProjectGroupLink.count }.by(1)
 
       expect(response.status).to eq 201
-      expect(json_response['group_id']).to eq group.id
-      expect(json_response['group_access']).to eq Gitlab::Access::DEVELOPER
+      expect(json_response['group_id']).to eq(group.id)
+      expect(json_response['group_access']).to eq(Gitlab::Access::DEVELOPER)
+      expect(json_response['expires_at']).to eq(expires_at.to_s)
     end
 
     it "returns a 400 error when group id is not given" do

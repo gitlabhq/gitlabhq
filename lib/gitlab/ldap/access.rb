@@ -55,8 +55,6 @@ module Gitlab
           user.ldap_block
           false
         end
-      rescue
-        false
       end
 
       def adapter

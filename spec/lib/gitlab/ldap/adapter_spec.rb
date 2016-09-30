@@ -73,17 +73,33 @@ describe Gitlab::LDAP::Adapter, lib: true do
   describe '#dn_matches_filter?' do
     subject { adapter.dn_matches_filter?(:dn, :filter) }
 
+    context "when the search result is non-empty" do
+      before { allow(adapter).to receive(:ldap_search).and_return([:foo]) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when the search result is empty" do
+      before { allow(adapter).to receive(:ldap_search).and_return([]) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#ldap_search' do
+    subject { adapter.ldap_search(base: :dn, filter: :filter) }
+
     context "when the search is successful" do
       context "and the result is non-empty" do
         before { allow(ldap).to receive(:search).and_return([:foo]) }
 
-        it { is_expected.to be_truthy }
+        it { is_expected.to eq [:foo] }
       end
 
       context "and the result is empty" do
         before { allow(ldap).to receive(:search).and_return([]) }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to eq [] }
       end
     end
 
@@ -95,7 +111,22 @@ describe Gitlab::LDAP::Adapter, lib: true do
         )
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq [] }
+    end
+
+    context "when the search raises an LDAP exception" do
+      before do
+        allow(ldap).to receive(:search) { raise Net::LDAP::Error, "some error" }
+        allow(Rails.logger).to receive(:warn)
+      end
+
+      it { is_expected.to eq [] }
+
+      it 'logs the error' do
+        subject
+        expect(Rails.logger).to have_received(:warn).with(
+          "LDAP search raised exception Net::LDAP::Error: some error")
+      end
     end
   end
 end

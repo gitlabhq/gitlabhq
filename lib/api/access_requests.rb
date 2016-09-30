@@ -16,9 +16,9 @@ module API
         #  GET /projects/:id/access_requests
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
 
-          access_requesters = paginate(source.requesters.includes(:user))
+          access_requesters = AccessRequestsFinder.new(source).execute!(current_user)
+          access_requesters = paginate(access_requesters.includes(:user))
 
           present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
         end
@@ -55,13 +55,8 @@ module API
         put ':id/access_requests/:user_id/approve' do
           required_attributes! [:user_id]
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
 
-          member = source.requesters.find_by!(user_id: params[:user_id])
-          if params[:access_level]
-            member.update(access_level: params[:access_level])
-          end
-          member.accept_request
+          member = ::Members::ApproveAccessRequestService.new(source, current_user, params).execute
 
           status :created
           present member.user, with: Entities::Member, member: member

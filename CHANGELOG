@@ -1,7 +1,26 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
+  - Use gitlab-shell v3.6.2 (GIT TRACE logging)
+  - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Speed-up group milestones show page
+  - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
+  - Add more tests for calendar contribution (ClemMakesApps)
+  - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Fix permission for setting an issue's due date
+  - Expose expires_at field when sharing project on API
+  - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
+  - Use a ConnectionPool for Rails.cache on Sidekiq servers
+  - Only update issuable labels if they have been changed
+  - Revoke button in Applications Settings underlines on hover.
+  - Fix Long commit messages overflow viewport in file tree
+  - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
+  - Add organization field to user profile
+  - Fix resolved discussion display in side-by-side diff view !6575
+  - Optimize GitHub importing for speed and memory
+  - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
+  - Fix broken repository 500 errors in project list
+  - Close todos when accepting merge requests via the API !6486 (tonygambone)
 
 v 8.12.4 (unreleased)
 
@@ -35,6 +54,7 @@ v 8.12.0
   - Allow to set request_access_enabled for groups and projects
   - Cleanup misalignments in Issue list view !6206
   - Only create a protected branch upon a push to a new branch if a rule for that branch doesn't exist
+  - Add Pipelines for Commit
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
@@ -126,6 +146,7 @@ v 8.12.0
   - Change pipeline duration to be jobs running time instead of simple wall time from start to end !6084
   - Show queued time when showing a pipeline !6084
   - Remove unused mixins (ClemMakesApps)
+  - Fix issue board label filtering appending already filtered labels
   - Add search to all issue board lists
   - Scroll active tab into view on mobile
   - Fix groups sort dropdown alignment (ClemMakesApps)
@@ -209,6 +230,12 @@ v 8.12.0
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
+
+v 8.11.8
+  - Respect the fork_project permission when forking projects
+  - Set a restrictive CORS policy on the API for credentialed requests
+  - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
@@ -428,6 +455,12 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.11
+  - Respect the fork_project permission when forking projects
+  - Set a restrictive CORS policy on the API for credentialed requests
+  - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.10.10
   - Allow the Rails cookie to be used for API authentication.
@@ -664,6 +697,12 @@ v 8.10.0
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
   - Fix import_data wrongly saved as a result of an invalid import_url !5206
+
+v 8.9.11
+  - Respect the fork_project permission when forking projects
+  - Set a restrictive CORS policy on the API for credentialed requests
+  - API: disable rails session auth for non-GET/HEAD requests
+  - Escape HTML nodes in builds commands in CI linter
 
 v 8.9.10
   - Allow the Rails cookie to be used for API authentication.

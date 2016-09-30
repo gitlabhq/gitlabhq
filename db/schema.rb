@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920160832) do
+ActiveRecord::Schema.define(version: 20160926145521) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1298,6 +1298,7 @@ ActiveRecord::Schema.define(version: 20160920160832) do
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
     t.boolean  "external",                    default: false
+    t.string   "organization"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

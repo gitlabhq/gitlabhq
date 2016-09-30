@@ -611,13 +611,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_commit_message
-    message = "Merge branch '#{source_branch}' into '#{target_branch}'"
-    message << "\n\n"
-    message << title.to_s
-    message << "\n\n"
-    message << description.to_s
-    message << "\n\n"
-    message << "See merge request !#{iid}"
+    message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
+    message << "#{title}\n\n"
+    message << "#{description}\n\n" if description.present?
+    message << "See merge request #{to_reference}"
+
     message
   end
 
