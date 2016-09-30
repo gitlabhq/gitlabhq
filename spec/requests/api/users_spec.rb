@@ -62,6 +62,7 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include 'email'
+        expect(json_response.first.keys).to include 'organization'
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
         expect(json_response.first.keys).to include 'two_factor_enabled'
@@ -275,6 +276,14 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
       expect(json_response['bio']).to eq('new test bio')
       expect(user.reload.bio).to eq('new test bio')
+    end
+
+    it "updates user with organization" do
+      put api("/users/#{user.id}", admin), { organization: 'GitLab' }
+
+      expect(response).to have_http_status(200)
+      expect(json_response['organization']).to eq('GitLab')
+      expect(user.reload.organization).to eq('GitLab')
     end
 
     it 'updates user with his own email' do

@@ -4,15 +4,11 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project_with_board, :public) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
 
   before do
-    project.create_board
-    project.board.lists.create(list_type: :backlog)
-    project.board.lists.create(list_type: :done)
-
     project.team << [user, :master]
     project.team << [user2, :master]
 
@@ -467,6 +463,29 @@ describe 'Issue Boards', feature: true, js: true do
         page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
+      it 'removes filtered labels' do
+        wait_for_vue_resource
+        
+        page.within '.labels-filter' do
+          click_button('Label')
+          wait_for_ajax
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+            wait_for_vue_resource(spinner: false)
+          end
+
+          expect(page).to have_css('input[name="label_name[]"]', visible: false)
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+            wait_for_vue_resource(spinner: false)
+          end
+
+          expect(page).not_to have_css('input[name="label_name[]"]', visible: false)
         end
       end
 

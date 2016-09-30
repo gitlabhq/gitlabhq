@@ -680,6 +680,7 @@ Rails.application.routes.draw do
           member do
             get :branches
             get :builds
+            get :pipelines
             post :cancel_builds
             post :retry_builds
             post :revert

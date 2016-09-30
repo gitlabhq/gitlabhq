@@ -20,10 +20,7 @@ describe Projects::Boards::ListsController do
     end
 
     it 'returns a list of board lists' do
-      board = project.create_board
-      create(:backlog_list, board: board)
       create(:list, board: board)
-      create(:done_list, board: board)
 
       read_board_list user: user
 

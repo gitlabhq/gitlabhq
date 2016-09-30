@@ -79,7 +79,11 @@ module Banzai
       def referenced_by(nodes)
         ids = unique_attribute_values(nodes, self.class.data_attribute)
 
-        references_relation.where(id: ids)
+        if ids.empty?
+          references_relation.none
+        else
+          references_relation.where(id: ids)
+        end
       end
 
       # Returns the ActiveRecord::Relation to use for querying references in the

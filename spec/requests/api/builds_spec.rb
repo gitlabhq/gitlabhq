@@ -30,6 +30,15 @@ describe API::API, api: true do
         expect(json_response.first['commit']['id']).to eq project.commit.id
       end
 
+      it 'returns pipeline data' do
+        json_build = json_response.first
+        expect(json_build['pipeline']).not_to be_empty
+        expect(json_build['pipeline']['id']).to eq build.pipeline.id
+        expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+        expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+        expect(json_build['pipeline']['status']).to eq build.pipeline.status
+      end
+
       context 'filter project with one scope element' do
         let(:query) { 'scope=pending' }
 
@@ -91,6 +100,15 @@ describe API::API, api: true do
             expect(json_response).to be_an Array
             expect(json_response.size).to eq 2
           end
+
+          it 'returns pipeline data' do
+            json_build = json_response.first
+            expect(json_build['pipeline']).not_to be_empty
+            expect(json_build['pipeline']['id']).to eq build.pipeline.id
+            expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+            expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+            expect(json_build['pipeline']['status']).to eq build.pipeline.status
+          end
         end
 
         context 'when pipeline has no builds' do
@@ -132,6 +150,15 @@ describe API::API, api: true do
       it 'returns specific build data' do
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq('test')
+      end
+
+      it 'returns pipeline data' do
+        json_build = json_response
+        expect(json_build['pipeline']).not_to be_empty
+        expect(json_build['pipeline']['id']).to eq build.pipeline.id
+        expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+        expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+        expect(json_build['pipeline']['status']).to eq build.pipeline.status
       end
     end
 

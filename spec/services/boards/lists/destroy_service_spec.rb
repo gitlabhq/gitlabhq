@@ -15,11 +15,11 @@ describe Boards::Lists::DestroyService, services: true do
       end
 
       it 'decrements position of higher lists' do
-        backlog     = create(:backlog_list, board: board)
+        backlog     = project.board.backlog_list
         development = create(:list, board: board, position: 0)
         review      = create(:list, board: board, position: 1)
         staging     = create(:list, board: board, position: 2)
-        done        = create(:done_list, board: board)
+        done        = project.board.done_list
 
         described_class.new(project, user).execute(development)
 
@@ -31,14 +31,14 @@ describe Boards::Lists::DestroyService, services: true do
     end
 
     it 'does not remove list from board when list type is backlog' do
-      list = create(:backlog_list, board: board)
+      list = project.board.backlog_list
       service = described_class.new(project, user)
 
       expect { service.execute(list) }.not_to change(board.lists, :count)
     end
 
     it 'does not remove list from board when list type is done' do
-      list = create(:done_list, board: board)
+      list = project.board.done_list
       service = described_class.new(project, user)
 
       expect { service.execute(list) }.not_to change(board.lists, :count)

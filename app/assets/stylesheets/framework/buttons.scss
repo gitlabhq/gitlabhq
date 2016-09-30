@@ -336,3 +336,9 @@
     box-shadow: inset 0 0 0 white;
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  .btn-wide-on-xs {
+    width: 100%;
+  }
+}

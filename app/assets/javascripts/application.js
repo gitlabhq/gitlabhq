@@ -250,7 +250,7 @@
       $this.toggleClass('active');
       var notesHolders = $this.closest('.diff-file').find('.notes_holder');
       if ($this.hasClass('active')) {
-        notesHolders.show();
+        notesHolders.show().find('.hide').show();
       } else {
         notesHolders.hide();
       }

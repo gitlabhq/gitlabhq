@@ -64,7 +64,7 @@ module Banzai
         end
       end
 
-      def project_from_ref_cache(ref)
+      def project_from_ref_cached(ref)
         if RequestStore.active?
           cache = project_refs_cache
 
@@ -146,7 +146,7 @@ module Banzai
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
       def object_link_filter(text, pattern, link_text: nil)
         references_in(text, pattern) do |match, id, project_ref, matches|
-          project = project_from_ref_cache(project_ref)
+          project = project_from_ref_cached(project_ref)
 
           if project && object = find_object_cached(project, id)
             title = object_link_title(object)
@@ -243,9 +243,25 @@ module Banzai
         end
       end
 
-      # Returns the projects for the given paths.
-      def find_projects_for_paths(paths)
+      def projects_relation_for_paths(paths)
         Project.where_paths_in(paths).includes(:namespace)
+      end
+
+      # Returns projects for the given paths.
+      def find_projects_for_paths(paths)
+        if RequestStore.active?
+          to_query = paths - project_refs_cache.keys
+
+          unless to_query.empty?
+            projects_relation_for_paths(to_query).each do |project|
+              get_or_set_cache(project_refs_cache, project.path_with_namespace) { project }
+            end
+          end
+
+          project_refs_cache.slice(*paths).values
+        else
+          projects_relation_for_paths(paths)
+        end
       end
 
       def current_project_path

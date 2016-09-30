@@ -7,8 +7,8 @@
       %table.table.builds
         %tbody
           %th Status
-          %th Commit
+          %th Pipeline
           %th Stages
           %th
           %th
-        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: pipelines.stages, status_icon_only: true, hide_branch: true
+        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: pipelines.stages, status_icon_only: true, show_commit: false

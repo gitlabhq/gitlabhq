@@ -20,16 +20,38 @@ describe Issues::CreateService, services: true do
       let(:opts) do
         { title: 'Awesome issue',
           description: 'please fix',
-          assignee: assignee,
+          assignee_id: assignee.id,
           label_ids: labels.map(&:id),
-          milestone_id: milestone.id }
+          milestone_id: milestone.id,
+          due_date: Date.tomorrow }
       end
 
-      it { expect(issue).to be_valid }
-      it { expect(issue.title).to eq('Awesome issue') }
-      it { expect(issue.assignee).to eq assignee }
-      it { expect(issue.labels).to match_array labels }
-      it { expect(issue.milestone).to eq milestone }
+      it 'creates the issue with the given params' do
+        expect(issue).to be_persisted
+        expect(issue.title).to eq('Awesome issue')
+        expect(issue.assignee).to eq assignee
+        expect(issue.labels).to match_array labels
+        expect(issue.milestone).to eq milestone
+        expect(issue.due_date).to eq Date.tomorrow
+      end
+
+      context 'when current user cannot admin issues in the project' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+        end
+
+        it 'filters out params that cannot be set without the :admin_issue permission' do
+          issue = described_class.new(project, guest, opts).execute
+
+          expect(issue).to be_persisted
+          expect(issue.title).to eq('Awesome issue')
+          expect(issue.assignee).to be_nil
+          expect(issue.labels).to be_empty
+          expect(issue.milestone).to be_nil
+          expect(issue.due_date).to be_nil
+        end
+      end
 
       it 'creates a pending todo for new assignee' do
         attributes = {
