@@ -38,6 +38,42 @@ describe MergeRequests::MergeService, services: true do
       end
     end
 
+    context 'closes related issues' do
+      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+
+      before do
+        allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
+      end
+
+      it 'closes GitLab issue tracker issues' do
+        issue  = create :issue, project: project
+        commit = double('commit', safe_message: "Fixes #{issue.to_reference}")
+        allow(merge_request).to receive(:commits).and_return([commit])
+
+        service.execute(merge_request)
+
+        expect(issue.reload.closed?).to be_truthy
+      end
+
+      context 'with JIRA integration' do
+        include JiraServiceHelper
+
+        let(:jira_tracker) { project.create_jira_service }
+
+        before { jira_service_settings }
+
+        it 'closes issues on JIRA issue tracker' do
+          jira_issue = ExternalIssue.new('JIRA-123', project)
+          commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
+          allow(merge_request).to receive(:commits).and_return([commit])
+
+          expect_any_instance_of(JiraService).to receive(:close_issue).with(merge_request, jira_issue).once
+
+          service.execute(merge_request)
+        end
+      end
+    end
+
     context 'closes related todos' do
       let(:merge_request) { create(:merge_request, assignee: user, author: user) }
       let(:project) { merge_request.project }

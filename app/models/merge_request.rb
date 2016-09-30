@@ -523,9 +523,13 @@ class MergeRequest < ActiveRecord::Base
   # `MergeRequestsClosingIssues` model. This is a performance optimization.
   # Calculating this information for a number of merge requests requires
   # running `ReferenceExtractor` on each of them separately.
+  # This optimization does not apply to issues from external sources.
   def cache_merge_request_closes_issues!(current_user = self.author)
+    return if project.has_external_issue_tracker?
+
     transaction do
       self.merge_requests_closing_issues.delete_all
+
       closes_issues(current_user).each do |issue|
         self.merge_requests_closing_issues.create!(issue: issue)
       end
