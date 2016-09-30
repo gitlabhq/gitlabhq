@@ -18,6 +18,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :pipelines]
+  before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -416,10 +417,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def validates_merge_request
-    # If source project was removed and merge request for some reason
-    # wasn't close (Ex. mr from fork to origin)
-    return invalid_mr if !@merge_request.source_project && @merge_request.open?
-
     # Show git not found page
     # if there is no saved commits between source & target branch
     if @merge_request.commits.blank?
@@ -494,7 +491,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def invalid_mr
-    # Render special view for MR with removed source or target branch
+    # Render special view for MR with removed target branch
     render 'invalid'
   end
 
@@ -535,5 +532,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def original_diff_version
     @diff_notes_disabled = !@merge_request_diff.latest?
     @diffs = @merge_request_diff.diffs(diff_options)
+  end
+
+  def close_merge_request_without_source_project
+    if !@merge_request.source_project && @merge_request.open?
+      @merge_request.close
+    end
   end
 end
