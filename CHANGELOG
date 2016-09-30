@@ -17,6 +17,7 @@ v 8.13.0 (unreleased)
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Revoke button in Applications Settings underlines on hover.
+  - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
