@@ -33,7 +33,7 @@ module Projects
 
       def issue
         @issue ||=
-          IssuesFinder.new(current_user, project_id: project.id, state: 'all')
+          IssuesFinder.new(current_user, project_id: project.id)
                       .execute
                       .where(iid: params[:id])
                       .first!

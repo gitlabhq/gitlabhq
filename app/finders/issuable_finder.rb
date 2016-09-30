@@ -183,17 +183,12 @@ class IssuableFinder
   end
 
   def by_state(items)
-    case params[:state]
-    when 'closed'
-      items.closed
-    when 'merged'
-      items.respond_to?(:merged) ? items.merged : items.closed
-    when 'all'
-      items
-    when 'opened'
-      items.opened
+    params[:state] ||= 'all'
+
+    if items.respond_to?(params[:state])
+      items.public_send(params[:state])
     else
-      raise 'You must specify default state'
+      items
     end
   end
 
