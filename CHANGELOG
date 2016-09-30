@@ -9,6 +9,7 @@ v 8.13.0 (unreleased)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Fix permission for setting an issue's due date
   - Expose expires_at field when sharing project on API
+  - Allow the Koding integration to be configured through the API
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
