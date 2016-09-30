@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'email_spec'
-require 'mailers/shared/notify'
 
 describe Notify do
   include EmailSpec::Matchers
