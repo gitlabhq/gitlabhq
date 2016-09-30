@@ -47,4 +47,8 @@ class Environment < ActiveRecord::Base
   def update_merge_request_metrics?
     self.name == "production"
   end
+
+  def ref_path
+    "refs/environments/#{Shellwords.shellescape(name)}/"
+  end
 end
