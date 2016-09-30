@@ -4,10 +4,10 @@
 # lives in this service.
 module ProtectedBranches
   class ApiCreateService < BaseService
-    def initialize(project, user, params, developers_can_push:, developers_can_merge:)
+    def initialize(project, user, params)
+      @developers_can_merge = params.delete(:developers_can_merge)
+      @developers_can_push = params.delete(:developers_can_push)
       super(project, user, params)
-      @developers_can_merge = developers_can_merge
-      @developers_can_push = developers_can_push
     end
 
     def execute

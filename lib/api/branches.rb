@@ -54,16 +54,13 @@ module API
         not_found!('Branch') unless @branch
         protected_branch = user_project.protected_branches.find_by(name: @branch.name)
 
-        developers_can_merge = to_boolean(params[:developers_can_merge])
-        developers_can_push = to_boolean(params[:developers_can_push])
-
         protected_branch_params = {
           name: @branch.name,
+          developers_can_push: to_boolean(params[:developers_can_push]),
+          developers_can_merge: to_boolean(params[:developers_can_merge])
         }
 
-        service_args = [user_project, current_user, protected_branch_params,
-                        developers_can_push: developers_can_push,
-                        developers_can_merge: developers_can_merge]
+        service_args = [user_project, current_user, protected_branch_params]
 
         protected_branch = if protected_branch
                              ProtectedBranches::ApiUpdateService.new(*service_args).execute(protected_branch)
