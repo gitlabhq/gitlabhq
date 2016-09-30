@@ -99,17 +99,17 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 1.11.0'
-gem 'github-markup', '~> 1.4'
-gem 'redcarpet',     '~> 3.3.3'
-gem 'RedCloth',      '~> 4.3.2'
-gem 'rdoc',          '~>3.6'
-gem 'org-ruby',      '~> 0.9.12'
-gem 'creole',        '~> 0.5.0'
-gem 'wikicloth',     '0.8.1'
-gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 2.0'
+gem 'html-pipeline',      '~> 1.11.0'
 gem 'deckar01-task_list', '1.0.5', require: 'task_list/railtie'
+gem 'github-markup',      '~> 1.4'
+gem 'redcarpet',          '~> 3.3.3'
+gem 'RedCloth',           '~> 4.3.2'
+gem 'rdoc',               '~>3.6'
+gem 'org-ruby',           '~> 0.9.12'
+gem 'creole',             '~> 0.5.0'
+gem 'wikicloth',          '0.8.1'
+gem 'asciidoctor',        '~> 1.5.2'
+gem 'rouge',              '~> 2.0'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
