@@ -22,7 +22,6 @@
       shortcut_handler = null;
       switch (page) {
         case 'sessions:new':
-        case 'sessions:create':
           new UsernameValidator();
           break;
         case 'projects:boards:show':
