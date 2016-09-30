@@ -4,7 +4,7 @@
 
 > **Note**:
 GitLab 8.12 has a completely redesigned build permissions system.
-Read all about the [new model and its implications][../../user/project/new_ci_build_permissions_model.md#build-triggers].
+Read all about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#build-triggers).
 
 Triggers can be used to force a rebuild of a specific branch, tag or commit,
 with an API call.
