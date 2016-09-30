@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.4 (unreleased)
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. !6294 (lukehowell)
+  - Fix padding in build sidebar. !6506
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves

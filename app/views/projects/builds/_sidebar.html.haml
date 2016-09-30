@@ -8,7 +8,7 @@
     %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
       = icon('angle-double-right')
   - if @build.coverage
-    .block.block-first
+    .block.coverage
       .title
         Test coverage
       %p.build-detail-row
@@ -95,7 +95,7 @@
 
           - @build.trigger_request.variables.each do |key, value|
             .hide.js-build
-              .js-build-variable= key 
+              .js-build-variable= key
               .js-build-value= value
 
     .block
