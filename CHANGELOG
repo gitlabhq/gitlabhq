@@ -35,6 +35,7 @@ v 8.13.0 (unreleased)
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
+  - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
 

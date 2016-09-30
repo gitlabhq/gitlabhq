@@ -106,8 +106,8 @@ module Banzai
         project = context[:project]
         author = context[:author]
 
-        if  author && !project.team.member?(author)
-          '@all'
+        if author && !project.team.member?(author)
+          link_text
         else
           url = urls.namespace_project_url(project.namespace, project,
                                            only_path: context[:only_path])
