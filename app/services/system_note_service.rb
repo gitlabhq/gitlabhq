@@ -21,7 +21,8 @@ module SystemNoteService
     total_count  = new_commits.length + existing_commits.length
     commits_text = "#{total_count} commit".pluralize(total_count)
 
-    body = "Added #{commits_text}:\n\n"
+    body = "[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})\n\n"
+    body << "Added #{commits_text}:\n\n"
     body << existing_commit_summary(noteable, existing_commits, oldrev)
     body << new_commit_summary(new_commits).join("\n")
 
@@ -465,5 +466,17 @@ module SystemNoteService
 
   def escape_html(text)
     Rack::Utils.escape_html(text)
+  end
+
+  def diff_comparison_url(merge_request, project, oldrev)
+    diff_id = merge_request.merge_request_diff.id
+
+    Gitlab::Routing.url_helpers.diffs_namespace_project_merge_request_url(
+      project.namespace,
+      project,
+      merge_request.iid,
+      diff_id: diff_id,
+      start_sha: oldrev
+    )
   end
 end

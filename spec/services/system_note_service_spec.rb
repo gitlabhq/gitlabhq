@@ -40,21 +40,35 @@ describe SystemNoteService, services: true do
     describe 'note body' do
       let(:note_lines) { subject.note.split("\n").reject(&:blank?) }
 
+      describe 'comparison diff link line' do
+        it 'adds the comparison link' do
+          link = Gitlab::Routing.url_helpers.diffs_namespace_project_merge_request_url(
+            project.namespace,
+            project,
+            noteable.iid,
+            diff_id: noteable.merge_request_diff.id,
+            start_sha: oldrev
+          )
+
+          expect(note_lines[0]).to eq "[Compare with previous version](#{link})"
+        end
+      end
+
       context 'without existing commits' do
         it 'adds a message header' do
-          expect(note_lines[0]).to eq "Added #{new_commits.size} commits:"
+          expect(note_lines[1]).to eq "Added #{new_commits.size} commits:"
         end
 
         it 'adds a message line for each commit' do
           new_commits.each_with_index do |commit, i|
             # Skip the header
-            expect(note_lines[i + 1]).to eq "* #{commit.short_id} - #{commit.title}"
+            expect(note_lines[i + 2]).to eq "* #{commit.short_id} - #{commit.title}"
           end
         end
       end
 
       describe 'summary line for existing commits' do
-        let(:summary_line) { note_lines[1] }
+        let(:summary_line) { note_lines[2] }
 
         context 'with one existing commit' do
           let(:old_commits) { [noteable.commits.last] }
