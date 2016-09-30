@@ -34,12 +34,10 @@ v 8.12.4 (unreleased)
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
 
-v 8.12.2
-  - Fix "Create project" button layout when visibility options are restricted
-
 v 8.12.2 (unreleased)
   - Fix Import/Export not recognising correctly the imported services.
   - Fix snippets pagination
+  - Fix "Create project" button layout when visibility options are restricted
   - Fix List-Unsubscribe header in emails
   - Fix IssuesController#show degradation including project on loaded notes
   - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
