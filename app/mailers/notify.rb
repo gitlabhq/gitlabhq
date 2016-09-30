@@ -92,7 +92,7 @@ class Notify < BaseMailer
     subject = ""
     subject << "#{@project.name} | " if @project
     subject << extra.join(' | ') if extra.present?
-    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.length > 0
+    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.present?
     subject
   end
 

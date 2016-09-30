@@ -8,7 +8,7 @@ class DeviseMailer < Devise::Mailer
 
   def subject_for(key)
     subject = super
-    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.length > 0
+    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.present?
     subject
   end
 end
