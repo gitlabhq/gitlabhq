@@ -425,6 +425,18 @@
 
     setSubmitState(state) {
       this.state.isSubmitting = state;
+    },
+
+    fileTextTypePresent() {
+      let found = false;
+
+      this.state.conflictsData.files.find((f) => {
+        if (f.type === CONFLICT_TYPES.TEXT) {
+          return found = true;
+        }
+      });
+
+      return found;
     }
   };
 

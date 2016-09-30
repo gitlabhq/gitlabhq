@@ -21,7 +21,8 @@ $(() => {
     computed: {
       conflictsCountText() { return mergeConflictsStore.getConflictsCountText() },
       readyToCommit() { return mergeConflictsStore.isReadyToCommit() },
-      commitButtonText() { return mergeConflictsStore.getCommitButtonText() }
+      commitButtonText() { return mergeConflictsStore.getCommitButtonText() },
+      showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent() }
     },
     created() {
       mergeConflictsService
