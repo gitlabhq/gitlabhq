@@ -95,7 +95,6 @@
     }
 
     clearFieldValidationState() {
-      // TODO: Double check if this is valid chaining
       this.inputElement.siblings('p').hide();
 
       this.inputElement.removeClass(invalidInputClass)
