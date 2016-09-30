@@ -124,7 +124,7 @@ module Gitlab
             read_authentication_abilities
           end
 
-        Result.new(actor, nil, token_handler.type, authentication_abilities) if Devise.secure_compare(token_handler.value, password)
+        Result.new(actor, nil, token_handler.type, authentication_abilities) if Devise.secure_compare(token_handler.token, password)
       end
 
       def build_access_token_check(login, password)

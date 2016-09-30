@@ -27,6 +27,7 @@
 * [Horizontal Rule](#horizontal-rule)
 * [Line Breaks](#line-breaks)
 * [Tables](#tables)
+* [Footnotes](#footnotes)
 
 **[Wiki-Specific Markdown](#wiki-specific-markdown)**
 
@@ -699,6 +700,15 @@ By including colons in the header row, you can align the text within that column
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 
+## Footnotes
+
+You can add footnotes to your text as follows.[^1]
+[^1]: This is my awesome footnote.
+
+```
+You can add footnotes to your text as follows.[^1]
+[^1]: This is my awesome footnote.
+```
 
 ## Wiki-specific Markdown
 

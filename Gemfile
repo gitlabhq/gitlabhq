@@ -17,7 +17,7 @@ gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 4.0'
+gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
@@ -51,7 +51,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.6.6'
+gem 'gitlab_git', '~> 10.6.7'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -300,7 +300,6 @@ group :development, :test do
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
-  gem 'flog', '~> 4.3.2', require: false
   gem 'flay', '~> 2.6.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 

@@ -48,7 +48,7 @@ You should then use the `code` to request an access token.
 >**Important:**
 It is highly recommended that you send a `state` value with the request to `/oauth/authorize` and
 validate that value is returned and matches in the redirect request.
-This is important to prevent [CSFR attacks](http://www.oauthsecurity.com/#user-content-authorization-code-flow),
+This is important to prevent [CSRF attacks](http://www.oauthsecurity.com/#user-content-authorization-code-flow),
 `state` really should have been a requirement in the standard!
 
 ### 3. Requesting the access token

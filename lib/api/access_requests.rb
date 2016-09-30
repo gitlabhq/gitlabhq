@@ -16,9 +16,9 @@ module API
         #  GET /projects/:id/access_requests
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
 
-          access_requesters = paginate(source.requesters.includes(:user))
+          access_requesters = AccessRequestsFinder.new(source).execute!(current_user)
+          access_requesters = paginate(access_requesters.includes(:user))
 
           present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
         end

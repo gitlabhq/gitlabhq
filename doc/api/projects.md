@@ -899,6 +899,7 @@ Parameters:
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 - `group_id` (required) - The ID of a group
 - `group_access` (required) - Level of permissions for sharing
+- `expires_at` - Share expiration date in ISO 8601 format: 2016-09-26
 
 ## Hooks
 

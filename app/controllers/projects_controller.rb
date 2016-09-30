@@ -137,10 +137,10 @@ class ProjectsController < Projects::ApplicationController
     noteable =
       case params[:type]
       when 'Issue'
-        IssuesFinder.new(current_user, project_id: @project.id, state: 'all').
+        IssuesFinder.new(current_user, project_id: @project.id).
           execute.find_by(iid: params[:type_id])
       when 'MergeRequest'
-        MergeRequestsFinder.new(current_user, project_id: @project.id, state: 'all').
+        MergeRequestsFinder.new(current_user, project_id: @project.id).
           execute.find_by(iid: params[:type_id])
       when 'Commit'
         @project.commit(params[:type_id])
@@ -324,7 +324,12 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def repo_exists?
-    project.repository_exists? && !project.empty_repo?
+    project.repository_exists? && !project.empty_repo? && project.repo
+
+  rescue Gitlab::Git::Repository::NoRepository
+    project.repository.expire_exists_cache
+
+    false
   end
 
   def project_view_files?

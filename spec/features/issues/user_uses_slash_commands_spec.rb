@@ -25,32 +25,78 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
 
-      it 'does not create a note, and sets the due date accordingly' do
-        write_note("/due 2016-08-28")
+      context 'when the current user can update the due date' do
+        it 'does not create a note, and sets the due date accordingly' do
+          write_note("/due 2016-08-28")
 
-        expect(page).not_to have_content '/due 2016-08-28'
-        expect(page).to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content '/due 2016-08-28'
+          expect(page).to have_content 'Your commands have been executed!'
 
-        issue.reload
+          issue.reload
 
-        expect(issue.due_date).to eq Date.new(2016, 8, 28)
+          expect(issue.due_date).to eq Date.new(2016, 8, 28)
+        end
+      end
+
+      context 'when the current user cannot update the due date' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          logout
+          login_with(guest)
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it 'does not create a note, and sets the due date accordingly' do
+          write_note("/due 2016-08-28")
+
+          expect(page).to have_content '/due 2016-08-28'
+          expect(page).not_to have_content 'Your commands have been executed!'
+
+          issue.reload
+
+          expect(issue.due_date).to be_nil
+        end
       end
     end
 
     describe 'removing a due date from note' do
       let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
-      it 'does not create a note, and removes the due date accordingly' do
-        expect(issue.due_date).to eq Date.new(2016, 8, 28)
+      context 'when the current user can update the due date' do
+        it 'does not create a note, and removes the due date accordingly' do
+          expect(issue.due_date).to eq Date.new(2016, 8, 28)
 
-        write_note("/remove_due_date")
+          write_note("/remove_due_date")
 
-        expect(page).not_to have_content '/remove_due_date'
-        expect(page).to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content '/remove_due_date'
+          expect(page).to have_content 'Your commands have been executed!'
 
-        issue.reload
+          issue.reload
 
-        expect(issue.due_date).to be_nil
+          expect(issue.due_date).to be_nil
+        end
+      end
+
+      context 'when the current user cannot update the due date' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          logout
+          login_with(guest)
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it 'does not create a note, and sets the due date accordingly' do
+          write_note("/remove_due_date")
+
+          expect(page).to have_content '/remove_due_date'
+          expect(page).not_to have_content 'Your commands have been executed!'
+
+          issue.reload
+
+          expect(issue.due_date).to eq Date.new(2016, 8, 28)
+        end
       end
     end
   end

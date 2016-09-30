@@ -10,19 +10,21 @@ module Banzai
     # task_list gem.
     #
     # See https://github.com/github/task_list/pull/60
-    class TaskListFilter < TaskList::Filter
-      def add_css_class_with_fix(node, *new_class_names)
+    module ClassNamesFilter
+      def add_css_class(node, *new_class_names)
         if new_class_names.include?('task-list')
           # Don't add class to all lists
           return
         elsif new_class_names.include?('task-list-item')
-          add_css_class_without_fix(node.parent, 'task-list')
+          super(node.parent, 'task-list')
         end
 
-        add_css_class_without_fix(node, *new_class_names)
+        super(node, *new_class_names)
       end
+    end
 
-      alias_method_chain :add_css_class, :fix
+    class TaskListFilter < TaskList::Filter
+      prepend ClassNamesFilter
     end
   end
 end

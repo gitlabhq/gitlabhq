@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/merge_requests/widget/_heading' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   context 'when released to an environment' do
     let(:project)       { merge_request.target_project }
