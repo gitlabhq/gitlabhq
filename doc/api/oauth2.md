@@ -1,4 +1,4 @@
-# GitLab as an OAuth2 client
+# GitLab as an OAuth2 provider
 
 This document covers using the OAuth2 protocol to access GitLab.
 
@@ -112,7 +112,7 @@ You can do POST request to `/oauth/token` with parameters:
 {
   "grant_type"    : "password",
   "username"      : "user@example.com",
-  "password"      : "sekret"
+  "password"      : "secret"
 }
 ```
 
@@ -130,7 +130,7 @@ For testing you can use the oauth2 ruby gem:
 
 ```
 client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "http://example.com")
-access_token = client.password.get_token('user@example.com', 'sekret')
+access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 
