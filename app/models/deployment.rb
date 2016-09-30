@@ -29,7 +29,7 @@ class Deployment < ActiveRecord::Base
     self == environment.last_deployment
   end
 
-  def keep_around_commit
+  def create_ref
     project.repository.fetch_ref(project.repository.path_to_repo, ref, ref_path)
   end
 
