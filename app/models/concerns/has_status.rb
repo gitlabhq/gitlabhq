@@ -21,7 +21,7 @@ module HasStatus
 
       deduce_status = "(CASE
         WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{skipped}) THEN 'success'
+        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{created})+(#{pending})+(#{skipped}) THEN 'pending'
         WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored})+(#{skipped}) THEN 'canceled'
