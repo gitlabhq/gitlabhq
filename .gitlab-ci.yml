@@ -1,4 +1,4 @@
-image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
 
 cache:
   key: "ruby-231"
@@ -140,7 +140,7 @@ spinach 9 10: *spinach-knapsack
 
 # Execute all testing suites against Ruby 2.1
 .ruby-21: &ruby-21
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
     - master
