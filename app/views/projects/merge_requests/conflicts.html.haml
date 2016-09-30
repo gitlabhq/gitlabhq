@@ -27,9 +27,22 @@
   = render partial: "projects/merge_requests/conflicts/commit_stats"
 
   .files-wrapper{"v-if" => "!isLoading && !hasError"}
-    = render partial: "projects/merge_requests/conflicts/inline_view", locals: { class_bindings: class_bindings }
-    = render partial: "projects/merge_requests/conflicts/parallel_view", locals: { class_bindings: class_bindings }
+    .files
+      .diff-file.file-holder.conflict{"v-for" => "file in conflictsData.files"}
+        .file-title
+          %i.fa.fa-fw{":class" => "file.iconClass"}
+          %strong {{file.filePath}}
+          = render partial: 'projects/merge_requests/conflicts/file_actions'
+        .diff-content.diff-wrap-lines
+          %div{"v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+            = render partial: "projects/merge_requests/conflicts/resolve_mode_interactive_inline", locals: { class_bindings: class_bindings }
+          %div{"v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+            = render partial: "projects/merge_requests/conflicts/resolve_mode_interactive_parallel", locals: { class_bindings: class_bindings }
+          %div{"v-show" => " file.resolveMode === 'edit' ||  file.type === 'text-editor'"}
+            = render partial: 'projects/merge_requests/conflicts/diff_file_editor', locals: { if_condition: "file.loadFile && isParallel" }
+
     = render partial: "projects/merge_requests/conflicts/submit_form"
 
 -# Components 
 = render partial: 'projects/merge_requests/conflicts/components/diff_file_editor'
+ 

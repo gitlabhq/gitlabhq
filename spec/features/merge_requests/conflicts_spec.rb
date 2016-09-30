@@ -39,16 +39,16 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       context 'when in inline mode'  do
         it 'resolves files manually' do
-          within find('.files-wrapper .diff-file.inline-view', text: 'files/ruby/popen.rb') do
+          within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
             click_button 'Edit inline'
             wait_for_ajax
-            execute_script('ace.edit($(".files-wrapper .diff-file.inline-view pre")[0]).setValue("One morning");')
+            execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
           end
 
           within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
             click_button 'Edit inline'
             wait_for_ajax
-            execute_script('ace.edit($(".files-wrapper .diff-file.inline-view pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
+            execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
           end
 
           click_button 'Commit conflict resolution'
@@ -80,9 +80,9 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       before { click_link('conflicts', href: /\/conflicts\Z/) }
 
       it 'resolves files manually' do
-        within find('.files-wrapper .diff-file.inline-view', text: 'files/markdown/ruby-style-guide.md') do
+        within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
           wait_for_ajax
-          execute_script('ace.edit($(".files-wrapper .diff-file.inline-view pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
+          execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 
         click_button 'Commit conflict resolution'
