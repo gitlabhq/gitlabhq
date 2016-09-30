@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '5.0.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
-gem 'rails-controller-testing'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -318,6 +317,7 @@ group :development, :test do
   gem 'activerecord_sane_schema_dumper', '~> 1.0'
 
   gem 'stackprof', '~> 0.2.10'
+  gem 'rails-controller-testing', git: 'https://github.com/rails/rails-controller-testing.git'
 end
 
 group :test do

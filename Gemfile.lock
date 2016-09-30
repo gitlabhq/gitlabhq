@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/rails/rails-controller-testing.git
+  revision: 0ac4348b9b9b6a14ce1e4526dac8fe7bf4611710
+  specs:
+    rails-controller-testing (1.0.1)
+      actionpack (~> 5.x)
+      actionview (~> 5.x)
+      activesupport (~> 5.x)
+
+GIT
   remote: https://gitlab.com/connorshea/task_list.git
   revision: af7bfc6bd3a3519a556c066da8b737142f5dbfcf
   specs:
@@ -560,10 +569,6 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 5.0.1)
       sprockets-rails (>= 2.0.0)
-    rails-controller-testing (1.0.1)
-      actionpack (~> 5.x)
-      actionview (~> 5.x)
-      activesupport (~> 5.x)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
     rails-dom-testing (2.0.2)
@@ -958,7 +963,7 @@ DEPENDENCIES
   rack-oauth2 (~> 1.2.1)
   rack-proxy (~> 0.6.0)
   rails (= 5.0.1)
-  rails-controller-testing
+  rails-controller-testing!
   rails-deprecated_sanitizer (~> 1.0.3)
   rainbow (~> 2.1.0)
   rblineprof (~> 0.3.6)
