@@ -130,8 +130,12 @@ header {
       }
 
       @media (max-width: $screen-xs-max) {
-        right: 25px;
+        right: 20px;
         left: auto;
+
+        #logo {
+          left: auto;
+        }
       }
     }
 
