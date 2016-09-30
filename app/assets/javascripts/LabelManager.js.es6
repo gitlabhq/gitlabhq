@@ -16,7 +16,6 @@
     }
 
     bindEvents() {
-      // TODO: Check if this is being bound correctly
       return this.togglePriorityButton.on('click', this, this.onTogglePriorityClick);
     }
 
@@ -51,6 +50,7 @@
         $target.find('.empty-message').addClass('hidden');
       }
       $label.detach().appendTo($target);
+      // Return if we are not persisting state
       if (!persistState) {
         return;
       }
@@ -59,6 +59,7 @@
           url,
           type: 'DELETE'
         });
+        // Restore empty message
         if (!$from.find('li').length) {
           $from.find('.empty-message').removeClass('hidden');
         }
