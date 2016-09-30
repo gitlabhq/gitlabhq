@@ -13,6 +13,7 @@ v 8.13.0 (unreleased)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Only update issuable labels if they have been changed
   - Revoke button in Applications Settings underlines on hover.
+  - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
@@ -23,7 +24,6 @@ v 8.13.0 (unreleased)
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
-  - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.12.4 (unreleased)
 
