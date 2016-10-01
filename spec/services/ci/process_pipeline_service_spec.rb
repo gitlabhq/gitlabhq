@@ -245,8 +245,7 @@ describe Ci::ProcessPipelineService, services: true do
         end
 
         it 'starts from the second stage' do
-          expect(builds.map(&:status)).to contain_exactly(
-            'skipped', 'pending', 'created')
+          expect(builds.map(&:status)).to eq(%w[skipped pending created])
         end
       end
 
@@ -258,14 +257,12 @@ describe Ci::ProcessPipelineService, services: true do
         end
 
         it 'skips second stage and continues on third stage' do
-          expect(builds.map(&:status)).to contain_exactly(
-            'pending', 'created', 'created')
+          expect(builds.map(&:status)).to eq(%w[pending created created])
 
           builds.first.success
           builds.each(&:reload)
 
-          expect(builds.map(&:status)).to contain_exactly(
-            'success', 'skipped', 'pending')
+          expect(builds.map(&:status)).to eq(%w[success skipped pending])
         end
       end
 
