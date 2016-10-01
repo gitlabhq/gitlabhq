@@ -52,7 +52,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(doc.css('a').first.has_attribute?('data-author')).to eq(false)
     end
 
-    it 'ignores reference to all when user is not a project member' do
+    it 'ignores reference to all when the user is not a project member' do
       doc = reference_filter("Hey #{reference}", author: user)
 
       expect(doc.css('a').length).to eq 0
