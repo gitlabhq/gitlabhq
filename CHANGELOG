@@ -51,6 +51,7 @@ v 8.13.0 (unreleased)
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
+  - Fix deploy status responsiveness error !6633
   - Fix resolved discussion display in side-by-side diff view !6575
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
