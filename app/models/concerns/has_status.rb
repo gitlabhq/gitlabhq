@@ -8,7 +8,7 @@ module HasStatus
 
   class_methods do
     def status_sql
-      scope = all
+      scope = exclude_ignored_jobs
       builds = scope.select('count(*)').to_sql
       created = scope.created.select('count(*)').to_sql
       success = scope.success.select('count(*)').to_sql
@@ -21,8 +21,8 @@ module HasStatus
 
       deduce_status = "(CASE
         WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
-        WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'success'
+        WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
+        WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{created})+(#{pending})+(#{skipped}) THEN 'pending'
         WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored})+(#{skipped}) THEN 'canceled'
         WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
@@ -68,6 +68,12 @@ module HasStatus
     scope :skipped, -> { where(status: 'skipped')  }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
+    scope :exclude_ignored_jobs, -> do
+      quoted_when = connection.quote_column_name('when')
+      # We want to ignore skipped manual jobs
+      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
+        where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+    end
   end
 
   def started?

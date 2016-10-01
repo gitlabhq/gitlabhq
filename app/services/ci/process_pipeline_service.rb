@@ -61,11 +61,7 @@ module Ci
     end
 
     def status_for_prior_stages(index)
-      quoted_when = pipeline.builds.connection.quote_column_name('when')
-      pipeline.builds.
-        where('stage_idx < ?', index).
-        # We want to ignore skipped manual jobs
-        where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
+      pipeline.builds.exclude_ignored_jobs.where('stage_idx < ?', index).
         latest.status || 'success'
     end
 
