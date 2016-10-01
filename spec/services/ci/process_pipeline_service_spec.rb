@@ -230,7 +230,7 @@ describe Ci::ProcessPipelineService, services: true do
       end
     end
 
-    context 'when there are manual jobs in earlier stages' do
+    context 'when there are manual/on_failure jobs in earlier stages' do
       before do
         builds
         process_pipeline
@@ -253,6 +253,23 @@ describe Ci::ProcessPipelineService, services: true do
         let(:builds) do
           [create_build('check', 0),
            create_build('build', 1, 'manual'),
+           create_build('test', 2)]
+        end
+
+        it 'skips second stage and continues on third stage' do
+          expect(builds.map(&:status)).to eq(%w[pending created created])
+
+          builds.first.success
+          builds.each(&:reload)
+
+          expect(builds.map(&:status)).to eq(%w[success skipped pending])
+        end
+      end
+
+      context 'when second stage has only on_failure jobs' do
+        let(:builds) do
+          [create_build('check', 0),
+           create_build('build', 1, 'on_failure'),
            create_build('test', 2)]
         end
 

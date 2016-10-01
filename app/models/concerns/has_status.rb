@@ -72,6 +72,7 @@ module HasStatus
       quoted_when = connection.quote_column_name('when')
       # We want to ignore skipped manual jobs
       where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
+        # We want to ignore skipped on_failure
         where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
     end
   end
