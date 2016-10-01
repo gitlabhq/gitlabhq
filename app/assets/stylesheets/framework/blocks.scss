@@ -19,10 +19,8 @@
 
   &.diff-collapsed {
     padding: 5px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: $row-hover;
+    .click-to-expand {
+      cursor: pointer;
     }
   }
 }
