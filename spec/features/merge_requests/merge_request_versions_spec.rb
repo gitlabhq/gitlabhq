@@ -72,10 +72,6 @@ feature 'Merge Request versions', js: true, feature: true do
       expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
     end
 
-    it 'show diff between new and old version' do
-      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
-    end
-
     it 'should return to latest version when "Show latest version" button is clicked' do
       click_link 'Show latest version'
       page.within '.mr-version-dropdown' do
