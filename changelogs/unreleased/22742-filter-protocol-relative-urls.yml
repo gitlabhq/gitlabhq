@@ -1,0 +1,4 @@
+---
+title: 'Filter protocol-relative URLs in ExternalLinkFilter. Fixes issue #22742'
+merge_request: 6635
+author: Makoto Scott-Hinkle
