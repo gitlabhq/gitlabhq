@@ -12,6 +12,7 @@ v 8.13.0 (unreleased)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Fix permission for setting an issue's due date
+  - Add support for setting the GitLab Runners Registration Token during initial database seeding
   - Expose expires_at field when sharing project on API
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
   - Allow the Koding integration to be configured through the API
