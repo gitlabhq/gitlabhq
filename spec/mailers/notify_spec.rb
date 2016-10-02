@@ -492,21 +492,22 @@ describe Notify do
       end
     end
 
-    def invite_to_project(project:, email:, inviter:)
-      Member.add_user(
-        project.project_members,
-        'toto@example.com',
-        Gitlab::Access::DEVELOPER,
-        current_user: inviter
+    def invite_to_project(project, inviter:)
+      create(
+        :project_member,
+        :developer,
+        project: project,
+        invite_token: '1234',
+        invite_email: 'toto@example.com',
+        user: nil,
+        created_by: inviter
       )
-
-      project.project_members.invite.last
     end
 
     describe 'project invitation' do
       let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
-      let(:project_member) { invite_to_project(project: project, email: 'toto@example.com', inviter: master) }
+      let(:project_member) { invite_to_project(project, inviter: master) }
 
       subject { Notify.member_invited_email('project', project_member.id, project_member.invite_token) }
 
@@ -525,10 +526,10 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:project) { create(:project) }
-      let(:invited_user) { create(:user) }
+      let(:invited_user) { create(:user, name: 'invited user') }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
-        invitee = invite_to_project(project: project, email: 'toto@example.com', inviter: master)
+        invitee = invite_to_project(project, inviter: master)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -552,7 +553,7 @@ describe Notify do
       let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
-        invitee = invite_to_project(project: project, email: 'toto@example.com', inviter: master)
+        invitee = invite_to_project(project, inviter: master)
         invitee.decline_invite!
         invitee
       end
@@ -744,21 +745,22 @@ describe Notify do
       end
     end
 
-    def invite_to_group(group:, email:, inviter:)
-      Member.add_user(
-        group.group_members,
-        'toto@example.com',
-        Gitlab::Access::DEVELOPER,
-        current_user: inviter
+    def invite_to_group(group, inviter:)
+      create(
+        :group_member,
+        :developer,
+        group: group,
+        invite_token: '1234',
+        invite_email: 'toto@example.com',
+        user: nil,
+        created_by: inviter
       )
-
-      group.group_members.invite.last
     end
 
     describe 'group invitation' do
       let(:group) { create(:group) }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
-      let(:group_member) { invite_to_group(group: group, email: 'toto@example.com', inviter: owner) }
+      let(:group_member) { invite_to_group(group, inviter: owner) }
 
       subject { Notify.member_invited_email('group', group_member.id, group_member.invite_token) }
 
@@ -777,10 +779,10 @@ describe Notify do
 
     describe 'group invitation accepted' do
       let(:group) { create(:group) }
-      let(:invited_user) { create(:user) }
+      let(:invited_user) { create(:user, name: 'invited user') }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
-        invitee = invite_to_group(group: group, email: 'toto@example.com', inviter: owner)
+        invitee = invite_to_group(group, inviter: owner)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -804,7 +806,7 @@ describe Notify do
       let(:group) { create(:group) }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
-        invitee = invite_to_group(group: group, email: 'toto@example.com', inviter: owner)
+        invitee = invite_to_group(group, inviter: owner)
         invitee.decline_invite!
         invitee
       end

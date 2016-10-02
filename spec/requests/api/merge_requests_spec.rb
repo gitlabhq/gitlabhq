@@ -15,7 +15,7 @@ describe API::API, api: true  do
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
 
   before do
-    project.team << [user, :reporters]
+    project.team << [user, :reporter]
   end
 
   describe "GET /projects/:id/merge_requests" do
@@ -299,7 +299,7 @@ describe API::API, api: true  do
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
-        fork_project.team << [user2, :reporters]
+        fork_project.team << [user2, :reporter]
       end
 
       it "returns merge_request" do
