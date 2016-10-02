@@ -13,41 +13,48 @@ Parameters:
 - `id` (required) - The ID of a project
 - `path` (optional) - The path inside repository. Used to get contend of subdirectories
 - `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `recursive=1` (optional) - Used to get a recursive tree
 
 ```json
 [
   {
     "name": "assets",
+    "path": "assets",
     "type": "tree",
     "mode": "040000",
     "id": "6229c43a7e16fcc7e95f923f8ddadb8281d9c6c6"
   },
   {
     "name": "contexts",
+    "path": "contexts",
     "type": "tree",
     "mode": "040000",
     "id": "faf1cdf33feadc7973118ca42d35f1e62977e91f"
   },
   {
     "name": "controllers",
+    "path": "controllers",
     "type": "tree",
     "mode": "040000",
     "id": "95633e8d258bf3dfba3a5268fb8440d263218d74"
   },
   {
     "name": "Rakefile",
+    "path": "Rakefile",
     "type": "blob",
     "mode": "100644",
     "id": "35b2f05cbb4566b71b34554cf184a9d0bd9d46d6"
   },
   {
     "name": "VERSION",
+    "path": "VERSION",
     "type": "blob",
     "mode": "100644",
     "id": "803e4a4f3727286c3093c63870c2b6524d30ec4f"
   },
   {
     "name": "config.ru",
+    "path": "config.ru",
     "type": "blob",
     "mode": "100644",
     "id": "dfd2d862237323aa599be31b473d70a8a817943b"

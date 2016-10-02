@@ -2002,6 +2002,8 @@ v 8.1.3
   - Spread out runner contacted_at updates
   - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
+  - New design for user profile page
+  - API: allow recursive tree request  (Rebeca Méndez)
 
 v 8.1.2
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
