@@ -518,8 +518,13 @@ class NotificationService
   def close_resource_email(target, project, current_user, method, skip_current_user: true)
     action = method == :merged_merge_request_email ? "merge" : "close"
 
-    recipients = build_recipients(target, project, current_user, action: action,
-                                  skip_current_user: skip_current_user)
+    recipients = build_recipients(
+      target,
+      project,
+      current_user,
+      action: action,
+      skip_current_user: skip_current_user
+    )
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
