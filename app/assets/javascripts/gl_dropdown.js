@@ -738,6 +738,7 @@
             return false;
           }
           if (currentKeyCode === 13 && currentIndex !== -1) {
+            e.preventDefault();
             _this.selectRowAtIndex();
           }
         };
