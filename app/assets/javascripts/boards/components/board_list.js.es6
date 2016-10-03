@@ -1,4 +1,5 @@
 //= require ./board_card
+//= require ./board_new_issue
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -8,14 +9,16 @@
 
   gl.issueBoards.BoardList = Vue.extend({
     components: {
-      'board-card': gl.issueBoards.BoardCard
+      'board-card': gl.issueBoards.BoardCard,
+      'board-new-issue': gl.issueBoards.BoardNewIssue
     },
     props: {
       disabled: Boolean,
       list: Object,
       issues: Array,
       loading: Boolean,
-      issueLinkBase: String
+      issueLinkBase: String,
+      showIssueForm: Boolean
     },
     data () {
       return {

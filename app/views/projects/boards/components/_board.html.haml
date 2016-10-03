@@ -12,8 +12,15 @@
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !list.preset) }" }
           {{ list.title }}
-          %span.pull-right{ "v-if" => "list.type !== 'blank'" }
-            {{ list.issuesSize }}
+          .board-issue-count-holder.pull-right.clearfix
+            %span.board-issue-count.pull-left{ "v-if" => "list.type !== 'blank'",
+              ":class" => "{ 'has-btn': list.type !== 'done' }" }
+              {{ list.issuesSize }}
+            - if can? current_user, :create_issue, @project
+              %button.btn.btn-small.btn-default.pull-right{ type: "button",
+                "@click" => "showNewIssueForm",
+                "v-if" => "list.type !== 'done'" }
+                = icon("plus")
           - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
               ":list" => "list",
@@ -26,12 +33,30 @@
         ":issues" => "list.issues",
         ":loading" => "list.loading",
         ":disabled" => "disabled",
+        ":show-issue-form.sync" => "showIssueForm",
         ":issue-link-base" => "issueLinkBase" }
         .board-list-loading.text-center{ "v-if" => "loading" }
           = icon("spinner spin")
         %ul.board-list{ "v-el:list" => true,
           "v-show" => "!loading",
           ":data-board" => "list.id" }
+          - if can? current_user, :create_issue, @project
+            %board-new-issue{ "inline-template" => true,
+              ":show-issue-form.sync" => "showIssueForm",
+              "v-if" => "list.type !== 'done' && showIssueForm" }
+              %li.card
+                %form{ "@submit" => "submit($event)" }
+                  %label.label-light
+                    Title
+                  %input.form-control{ type: "text",
+                    "v-model" => "title" }
+                  .clearfix.prepend-top-10
+                    %button.btn.btn-success.pull-left{ type: "submit",
+                      ":disabled" => "title === ''" }
+                      Submit issue
+                    %button.btn.btn-default.pull-right{ type: "button",
+                      "@click" => "cancel" }
+                      Cancel
           = render "projects/boards/components/card"
           %li.board-list-count.text-center{ "v-if" => "showCount" }
             = icon("spinner spin", "v-show" => "list.loadingMore" )

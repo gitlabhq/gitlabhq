@@ -233,3 +233,29 @@ lex
     margin-right: 5px;
   }
 }
+
+.board-issue-count-holder {
+  margin-top: -3px;
+
+  .btn {
+    line-height: 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.board-issue-count {
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 21px;
+  border-radius: $border-radius-base;
+  border-color: $border-color;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+
+  &.has-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-width: 1px 0 1px 1px;
+  }
+}
