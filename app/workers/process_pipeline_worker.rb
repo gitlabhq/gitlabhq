@@ -10,7 +10,7 @@ class ProcessPipelineWorker
       return
     end
 
-    pipeline.process! if params[:process]
+    pipeline.process! if params['process']
 
     pipeline.update_status
   end

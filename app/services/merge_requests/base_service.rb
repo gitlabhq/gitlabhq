@@ -42,11 +42,11 @@ module MergeRequests
       super(:merge_request)
     end
 
-    def merge_request_from(pipeline)
-      branches = pipeline.ref
+    def merge_request_from(commit_status)
+      branches = commit_status.ref
 
       # This is for ref-less builds
-      branches ||= @project.repository.branch_names_contains(pipeline.sha)
+      branches ||= @project.repository.branch_names_contains(commit_status.sha)
 
       return [] if branches.blank?
 
@@ -56,11 +56,14 @@ module MergeRequests
       merge_requests.uniq.select(&:source_project)
     end
 
-    def each_merge_request(pipeline)
+    def each_merge_request(commit_status)
       merge_request_from(commit_status).each do |merge_request|
-        next unless pipeline == merge_request.pipeline
+        pipeline = merge_request.pipeline
 
-        yield merge_request
+        next unless pipeline
+        next unless pipeline.sha == commit_status.sha
+
+        yield merge_request, pipeline
       end
     end
   end

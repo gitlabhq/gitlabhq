@@ -69,11 +69,6 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.pipeline.try(:process!)
-      true
-    end
-
     after_transition [:created, :pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
     end
@@ -86,7 +81,7 @@ class CommitStatus < ActiveRecord::Base
       if commit_status.pipeline && !transition.loopback?
         ProcessPipelineWorker.perform_async(
           commit_status.pipeline.id,
-          process: HasStatus.COMPLETED_STATUSES.include?(commit_status.status))
+          process: HasStatus::COMPLETED_STATUSES.include?(commit_status.status))
       end
 
       true
