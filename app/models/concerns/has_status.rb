@@ -68,8 +68,6 @@ module HasStatus
     scope :skipped, -> { where(status: 'skipped')  }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
-    scope :exclude_ignored_jobs, -> do
-    end
   end
 
   def started?
