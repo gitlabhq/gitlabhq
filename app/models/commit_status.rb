@@ -29,6 +29,7 @@ class CommitStatus < ActiveRecord::Base
   end
   scope :exclude_ignored, -> do
     quoted_when = connection.quote_column_name('when')
+    # We want to ignore failed_but_allowed jobs
     where("allow_failure = ? OR status NOT IN (?)",
       false, [:failed, :canceled]).
       # We want to ignore skipped manual jobs
