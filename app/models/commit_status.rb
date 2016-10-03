@@ -38,7 +38,6 @@ class CommitStatus < ActiveRecord::Base
       where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
       # We want to ignore skipped on_failure
       where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
-
   end
 
   scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
