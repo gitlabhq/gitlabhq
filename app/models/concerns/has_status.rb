@@ -33,7 +33,7 @@ module HasStatus
     end
 
     def status
-      all.pluck(self.status_sql).first
+      all.pluck(status_sql).first
     end
 
     def started_at
