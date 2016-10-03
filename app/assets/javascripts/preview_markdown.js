@@ -1,9 +1,15 @@
+// MarkdownPreview
+//
+// Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,
+// and showing a warning when more than `x` users are referenced.
+//
 (function() {
   var lastTextareaPreviewed, markdownPreview, previewButtonSelector, writeButtonSelector;
 
   this.MarkdownPreview = (function() {
     function MarkdownPreview() {}
 
+    // Minimum number of users referenced before triggering a warning
     MarkdownPreview.prototype.referenceThreshold = 10;
 
     MarkdownPreview.prototype.ajaxCache = {};
@@ -101,8 +107,10 @@
       return;
     }
     lastTextareaPreviewed = $form.find('textarea.markdown-area');
+    // toggle tabs
     $form.find(writeButtonSelector).parent().removeClass('active');
     $form.find(previewButtonSelector).parent().addClass('active');
+    // toggle content
     $form.find('.md-write-holder').hide();
     $form.find('.md-preview-holder').show();
     return markdownPreview.showPreview($form);
@@ -113,8 +121,10 @@
       return;
     }
     lastTextareaPreviewed = null;
+    // toggle tabs
     $form.find(writeButtonSelector).parent().addClass('active');
     $form.find(previewButtonSelector).parent().removeClass('active');
+    // toggle content
     $form.find('.md-write-holder').show();
     $form.find('textarea.markdown-area').focus();
     return $form.find('.md-preview-holder').hide();

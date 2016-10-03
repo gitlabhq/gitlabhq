@@ -6,50 +6,6 @@ GitLab Runner to manage your project's builds.
 If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [.gitlab-ci.yml](#gitlab-ci-yml)
-    - [image and services](#image-and-services)
-    - [before_script](#before_script)
-    - [after_script](#after_script)
-    - [stages](#stages)
-    - [types](#types)
-    - [variables](#variables)
-    - [cache](#cache)
-        - [cache:key](#cache-key)
-- [Jobs](#jobs)
-    - [script](#script)
-    - [stage](#stage)
-    - [only and except](#only-and-except)
-    - [job variables](#job-variables)
-    - [tags](#tags)
-    - [allow_failure](#allow_failure)
-    - [when](#when)
-        - [Manual actions](#manual-actions)
-    - [environment](#environment)
-    - [artifacts](#artifacts)
-        - [artifacts:name](#artifacts-name)
-        - [artifacts:when](#artifacts-when)
-        - [artifacts:expire_in](#artifacts-expire_in)
-    - [dependencies](#dependencies)
-    - [before_script and after_script](#before_script-and-after_script)
-- [Git Strategy](#git-strategy)
-- [Shallow cloning](#shallow-cloning)
-- [Hidden jobs](#hidden-jobs)
-- [Special YAML features](#special-yaml-features)
-    - [Anchors](#anchors)
-- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
-- [Skipping builds](#skipping-builds)
-- [Examples](#examples)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
----
-
 ## .gitlab-ci.yml
 
 From version 7.12, GitLab CI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
@@ -134,8 +90,7 @@ builds, including deploy builds. This can be an array or a multi-line string.
 
 ### after_script
 
->**Note:**
-Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
+> Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
 builds. This has to be an array or a multi-line string.
@@ -179,11 +134,10 @@ Alias for [stages](#stages).
 
 ### variables
 
->**Note:**
-Introduced in GitLab Runner v0.5.0.
+> Introduced in GitLab Runner v0.5.0.
 
 GitLab CI allows you to add variables to `.gitlab-ci.yml` that are set in the
-build environment. The variables are stored in the git repository and are meant
+build environment. The variables are stored in the Git repository and are meant
 to store non-sensitive project configuration, for example:
 
 ```yaml
@@ -198,10 +152,11 @@ thus allowing to fine tune them.
 
 Variables can be also defined on [job level](#job-variables).
 
+[Learn more about variables.](../variables/README.md)
+
 ### cache
 
->**Note:**
-Introduced in GitLab Runner v0.7.0.
+> Introduced in GitLab Runner v0.7.0.
 
 `cache` is used to specify a list of files and directories which should be
 cached between builds.
@@ -262,8 +217,7 @@ will be always present. For implementation details, please check GitLab Runner.
 
 #### cache:key
 
->**Note:**
-Introduced in GitLab Runner v1.0.0.
+> Introduced in GitLab Runner v1.0.0.
 
 The `key` directive allows you to define the affinity of caching
 between jobs, allowing to have a single cache for all jobs,
@@ -573,8 +527,7 @@ The above script will:
 
 #### Manual actions
 
->**Note:**
-Introduced in GitLab 8.10.
+> Introduced in GitLab 8.10.
 
 Manual actions are a special type of job that are not executed automatically;
 they need to be explicitly started by a user. Manual actions can be started
@@ -585,17 +538,16 @@ An example usage of manual actions is deployment to production.
 
 ### environment
 
->**Note:**
-Introduced in GitLab 8.9.
+> Introduced in GitLab 8.9.
 
-`environment` is used to define that a job deploys to a specific environment.
+`environment` is used to define that a job deploys to a specific [environment].
 This allows easy tracking of all deployments to your environments straight from
 GitLab.
 
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
 
-The `environment` name must contain only letters, digits, '-' and '_'. Common
+The `environment` name must contain only letters, digits, '-', '_', '/', '$', '{', '}' and spaces. Common
 names are `qa`, `staging`, and `production`, but you can use whatever name works
 with your workflow.
 
@@ -612,6 +564,35 @@ deploy to production:
 
 The `deploy to production` job will be marked as doing deployment to
 `production` environment.
+
+#### dynamic environments
+
+> [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
+
+`environment` can also represent a configuration hash with `name` and `url`.
+These parameters can use any of the defined CI [variables](#variables)
+(including predefined, secure variables and `.gitlab-ci.yml` variables).
+
+The common use case is to create dynamic environments for branches and use them
+as review apps.
+
+---
+
+**Example configurations**
+
+```
+deploy as review app:
+  stage: deploy
+  script: ...
+  environment:
+    name: review-apps/$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_NAME.review.example.com/
+```
+
+The `deploy as review app` job will be marked as deployment to dynamically
+create the `review-apps/branch-name` environment.
+
+This environment should be accessible under `https://branch-name.review.example.com/`.
 
 ### artifacts
 
@@ -680,8 +661,7 @@ be available for download in the GitLab UI.
 
 #### artifacts:name
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
 The `name` directive allows you to define the name of the created artifacts
 archive. That way, you can have a unique name for every archive which could be
@@ -744,8 +724,7 @@ job:
 
 #### artifacts:when
 
->**Note:**
-Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+> Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
 `artifacts:when` is used to upload artifacts on build failure or despite the
 failure.
@@ -770,8 +749,7 @@ job:
 
 #### artifacts:expire_in
 
->**Note:**
-Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
+> Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
 `artifacts:expire_in` is used to delete uploaded artifacts after the specified
 time. By default, artifacts are stored on GitLab forever. `expire_in` allows you
@@ -806,8 +784,7 @@ job:
 
 ### dependencies
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 This feature should be used in conjunction with [`artifacts`](#artifacts) and
 allows you to define the artifacts to pass between different builds.
@@ -881,9 +858,8 @@ job:
 
 ## Git Strategy
 
->**Note:**
-Introduced in GitLab 8.9 as an experimental feature. May change in future
-releases or be removed completely.
+> Introduced in GitLab 8.9 as an experimental feature. May change in future
+  releases or be removed completely.
 
 You can set the `GIT_STRATEGY` used for getting recent application code. `clone`
 is slower, but makes sure you have a clean directory before every build. `fetch`
@@ -905,8 +881,7 @@ variables:
 
 ## Shallow cloning
 
->**Note:**
-Introduced in GitLab 8.9 as an experimental feature. May change in future
+> Introduced in GitLab 8.9 as an experimental feature. May change in future
 releases or be removed completely.
 
 You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
@@ -934,23 +909,25 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-## Hidden jobs
+## Hidden keys
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-Jobs that start with a dot (`.`) will be not processed by GitLab CI. You can
+Keys that start with a dot (`.`) will be not processed by GitLab CI. You can
 use this feature to ignore jobs, or use the
-[special YAML features](#special-yaml-features) and transform the hidden jobs
+[special YAML features](#special-yaml-features) and transform the hidden keys
 into templates.
 
-In the following example, `.job_name` will be ignored:
+In the following example, `.key_name` will be ignored:
 
 ```yaml
-.job_name:
+.key_name:
   script:
     - rake spec
 ```
+
+Hidden keys can be hashes like normal CI jobs, but you are also allowed to use
+different types of structures to leverage special YAML features.
 
 ## Special YAML features
 
@@ -962,12 +939,11 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 
 ### Anchors
 
->**Note:**
-Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 YAML also has a handy feature called 'anchors', which let you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden jobs](#hidden-jobs)
+properties, and is a perfect example to be used with [hidden keys](#hidden-keys)
 to provide templates for your jobs.
 
 The following example uses anchors and map merging. It will create two jobs,
@@ -975,7 +951,7 @@ The following example uses anchors and map merging. It will create two jobs,
 having their own custom `script` defined:
 
 ```yaml
-.job_template: &job_definition  # Hidden job that defines an anchor named 'job_definition'
+.job_template: &job_definition  # Hidden key that defines an anchor named 'job_definition'
   image: ruby:2.1
   services:
     - postgres
@@ -1081,7 +1057,14 @@ test:mysql:
     - ruby
 ```
 
-You can see that the hidden jobs are conveniently used as templates.
+You can see that the hidden keys are conveniently used as templates.
+
+## Triggers
+
+Triggers can be used to force a rebuild of a specific branch, tag or commit,
+with an API call.
+
+[Read more in the triggers documentation.](../triggers/README.md)
 
 ## Validate the .gitlab-ci.yml
 
@@ -1099,3 +1082,5 @@ Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
 [examples]: ../examples/README.md
+[ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
+[environment]: ../environments.md

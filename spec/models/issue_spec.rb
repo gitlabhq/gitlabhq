@@ -494,7 +494,7 @@ describe Issue, models: true do
 
     context 'with an admin user' do
       let(:project) { create(:empty_project) }
-      let(:user) { create(:user, admin: true) }
+      let(:user) { create(:admin) }
 
       it 'returns true for a regular issue' do
         issue = build(:issue, project: project)

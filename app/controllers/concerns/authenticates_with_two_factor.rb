@@ -62,6 +62,7 @@ module AuthenticatesWithTwoFactor
       session.delete(:otp_user_id)
       session.delete(:challenges)
 
+      remember_me(user) if user_params[:remember_me] == '1'
       sign_in(user)
     else
       flash.now[:alert] = 'Authentication via U2F device failed.'

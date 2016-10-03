@@ -10,13 +10,15 @@ module Ci
         create_builds!
       end
 
-      new_builds =
-        stage_indexes_of_created_builds.map do |index|
-          process_stage(index)
-        end
+      @pipeline.with_lock do
+        new_builds =
+          stage_indexes_of_created_builds.map do |index|
+            process_stage(index)
+          end
 
-      # Return a flag if a when builds got enqueued
-      new_builds.flatten.any?
+        # Return a flag if a when builds got enqueued
+        new_builds.flatten.any?
+      end
     end
 
     private
@@ -29,13 +31,13 @@ module Ci
       current_status = status_for_prior_stages(index)
 
       created_builds_in_stage(index).select do |build|
-        process_build(build, current_status)
+        if HasStatus::COMPLETED_STATUSES.include?(current_status)
+          process_build(build, current_status)
+        end
       end
     end
 
     def process_build(build, current_status)
-      return false unless HasStatus::COMPLETED_STATUSES.include?(current_status)
-
       if valid_statuses_for_when(build.when).include?(current_status)
         build.enqueue
         true

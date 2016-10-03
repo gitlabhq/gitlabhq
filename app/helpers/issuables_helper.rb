@@ -49,6 +49,19 @@ module IssuablesHelper
     end
   end
 
+  def project_dropdown_label(project_id, default_label)
+    return default_label if project_id.nil?
+    return "Any project" if project_id == "0"
+
+    project = Project.find_by(id: project_id)
+
+    if project
+      project.name_with_namespace
+    else
+      default_label
+    end
+  end
+
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     if milestone_title == Milestone::Upcoming.name
       milestone_title = Milestone::Upcoming.title
@@ -81,6 +94,24 @@ module IssuablesHelper
     label_names.join(', ')
   end
 
+  def issuables_state_counter_text(issuable_type, state)
+    titles = {
+      opened: "Open"
+    }
+
+    state_title = titles[state] || state.to_s.humanize
+
+    count =
+      Rails.cache.fetch(issuables_state_counter_cache_key(issuable_type, state), expires_in: 2.minutes) do
+        issuables_count_for_state(issuable_type, state)
+      end
+
+    html = content_tag(:span, state_title)
+    html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+
+    html.html_safe
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -97,5 +128,23 @@ module IssuablesHelper
     else
       issuable.open? ? :opened : :closed
     end
+  end
+
+  def issuables_count_for_state(issuable_type, state)
+    issuables_finder = public_send("#{issuable_type}_finder")
+    issuables_finder.params[:state] = state
+
+    issuables_finder.execute.page(1).total_count
+  end
+
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
+  private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
+
+  def issuables_state_counter_cache_key(issuable_type, state)
+    opts = params.with_indifferent_access
+    opts[:state] = state
+    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+
+    hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
   end
 end

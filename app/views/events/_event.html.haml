@@ -1,7 +1,7 @@
 - if event.visible_to_user?(current_user)
   .event-item{ class: event_row_class(event) }
     .event-item-timestamp
-      #{time_ago_with_tooltip(event.created_at)}
+      #{time_ago_with_tooltip(event.created_at, skip_js: true)}
 
     = cache [event, current_application_settings, "v2.2"] do
       = author_avatar(event, size: 40)

@@ -16,18 +16,12 @@ describe Event, models: true do
 
   describe 'Callbacks' do
     describe 'after_create :reset_project_activity' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
-      context "project's last activity was less than 5 minutes ago" do
-        it 'does not update project.last_activity_at if it has been touched less than 5 minutes ago' do
-          create_event(project, project.owner)
-          project.update_column(:last_activity_at, 5.minutes.ago)
-          project_last_activity_at = project.last_activity_at
+      it 'calls the reset_project_activity method' do
+        expect_any_instance_of(Event).to receive(:reset_project_activity)
 
-          create_event(project, project.owner)
-
-          expect(project.last_activity_at).to eq(project_last_activity_at)
-        end
+        create_event(project, project.owner)
       end
     end
   end
@@ -158,6 +152,35 @@ describe Event, models: true do
       subject { Event.limit_recent(1) }
 
       it { is_expected.to eq([event2]) }
+    end
+  end
+
+  describe '#reset_project_activity' do
+    let(:project) { create(:empty_project) }
+
+    context 'when a project was updated less than 1 hour ago' do
+      it 'does not update the project' do
+        project.update(last_activity_at: Time.now)
+
+        expect(project).not_to receive(:update_column).
+          with(:last_activity_at, a_kind_of(Time))
+
+        create_event(project, project.owner)
+      end
+    end
+
+    context 'when a project was updated more than 1 hour ago' do
+      it 'updates the project' do
+        project.update(last_activity_at: 1.year.ago)
+
+        expect_any_instance_of(Gitlab::ExclusiveLease).
+          to receive(:try_obtain).and_return(true)
+
+        expect(project).to receive(:update_column).
+          with(:last_activity_at, a_kind_of(Time))
+
+        create_event(project, project.owner)
+      end
     end
   end
 

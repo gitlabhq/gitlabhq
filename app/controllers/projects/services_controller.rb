@@ -20,9 +20,8 @@ class Projects::ServicesController < Projects::ApplicationController
   def update
     if @service.update_attributes(service_params[:service])
       redirect_to(
-        edit_namespace_project_service_path(@project.namespace, @project,
-                                            @service.to_param, notice:
-                                            'Successfully updated.')
+        edit_namespace_project_service_path(@project.namespace, @project, @service.to_param),
+        notice: 'Successfully updated.'
       )
     else
       render 'edit'

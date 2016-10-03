@@ -3,7 +3,7 @@
     .col-md-8.col-lg-7
       %strong.light-header= hook.url
       %div
-        - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events pipeline_events wiki_page_events).each do |trigger|
+        - %w(push_events tag_push_events issues_events confidential_issues_events note_events merge_requests_events build_events pipeline_events wiki_page_events).each do |trigger|
           - if hook.send(trigger)
             %span.label.label-gray.deploy-project-label= trigger.titleize
     .col-md-4.col-lg-5.text-right-lg.prepend-top-5

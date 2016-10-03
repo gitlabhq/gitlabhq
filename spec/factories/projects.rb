@@ -8,7 +8,6 @@ FactoryGirl.define do
     path { name.downcase.gsub(/\s/, '_') }
     namespace
     creator
-    snippets_enabled true
 
     trait :public do
       visibility_level Gitlab::VisibilityLevel::PUBLIC
@@ -27,6 +26,34 @@ FactoryGirl.define do
         project.create_repository
       end
     end
+
+    trait :broken_repo do
+      after(:create) do |project|
+        project.create_repository
+
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+      end
+    end
+
+    # Nest Project Feature attributes
+    transient do
+      wiki_access_level ProjectFeature::ENABLED
+      builds_access_level ProjectFeature::ENABLED
+      snippets_access_level ProjectFeature::ENABLED
+      issues_access_level ProjectFeature::ENABLED
+      merge_requests_access_level ProjectFeature::ENABLED
+    end
+
+    after(:create) do |project, evaluator|
+      project.project_feature.
+        update_attributes(
+          wiki_access_level: evaluator.wiki_access_level,
+          builds_access_level: evaluator.builds_access_level,
+          snippets_access_level: evaluator.snippets_access_level,
+          issues_access_level: evaluator.issues_access_level,
+          merge_requests_access_level: evaluator.merge_requests_access_level,
+        )
+    end
   end
 
   # Project with empty repository
@@ -35,6 +62,13 @@ FactoryGirl.define do
   # but not pushed any code there yet
   factory :project_empty_repo, parent: :empty_project do
     empty_repo
+  end
+
+  # Project with broken repository
+  #
+  # Project with an invalid repository state
+  factory :project_broken_repo, parent: :empty_project do
+    broken_repo
   end
 
   # Project with test repository
@@ -87,6 +121,8 @@ FactoryGirl.define do
   factory :project_with_board, parent: :empty_project do
     after(:create) do |project|
       project.create_board
+      project.board.lists.create(list_type: :backlog)
+      project.board.lists.create(list_type: :done)
     end
   end
 end

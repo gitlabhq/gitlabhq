@@ -12,7 +12,7 @@ variables:
   RSPEC_RETRY_RETRY_COUNT: "3"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
-  USE_DB: "true"
+  SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
@@ -23,7 +23,7 @@ before_script:
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
   - retry gem install knapsack
-  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
+  - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
 - prepare
@@ -35,7 +35,7 @@ stages:
 .knapsack-state: &knapsack-state
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   cache:
     key: "knapsack"
@@ -82,7 +82,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack rspec
+    - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
     paths:
@@ -196,7 +196,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
 .exec: &exec
@@ -206,10 +206,12 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
     - bundle exec $CI_BUILD_NAME
 
 rubocop: *exec
+rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flog: *exec
-rake flay: *exec
+rake flay:
+  <<: *exec
+  allow_failure: yes
 license_finder: *exec
 rake downtime_check: *exec
 
@@ -218,6 +220,23 @@ rake db:migrate:reset:
   <<: *use-db
   script:
     - rake db:migrate:reset
+
+rake db:seed_fu:
+  stage: test
+  <<: *use-db
+  variables:
+    SIZE: "1"
+    SETUP_DB: "false"
+    RAILS_ENV: "development"
+  script:
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - bundle exec rake db:setup db:seed_fu
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 teaspoon:
   stage: test
@@ -248,11 +267,26 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+migration paths:
+  stage: test
+  <<: *use-db
+  only:
+    - master@gitlab-org/gitlab-ce
+  script:
+    - git checkout HEAD .
+    - git fetch --tags
+    - git checkout v8.5.9
+    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
+    - rake db:drop db:create db:schema:load db:seed_fu
+    - git checkout $CI_BUILD_REF
+    - rake db:migrate
+
 coverage:
   stage: post-test
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
@@ -263,13 +297,12 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
-
 # Notify slack in the end
 
 notify:slack:
   stage: post-test
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"

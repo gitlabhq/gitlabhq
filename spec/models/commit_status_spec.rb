@@ -40,7 +40,7 @@ describe CommitStatus, models: true do
       it { is_expected.to be_falsey }
     end
 
-    %w(running success failed).each do |status|
+    %w[running success failed].each do |status|
       context "if commit status is #{status}" do
         before { commit_status.status = status }
 
@@ -48,7 +48,7 @@ describe CommitStatus, models: true do
       end
     end
 
-    %w(pending canceled).each do |status|
+    %w[pending canceled].each do |status|
       context "if commit status is #{status}" do
         before { commit_status.status = status }
 
@@ -60,7 +60,7 @@ describe CommitStatus, models: true do
   describe '#active?' do
     subject { commit_status.active? }
 
-    %w(pending running).each do |state|
+    %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -68,7 +68,7 @@ describe CommitStatus, models: true do
       end
     end
 
-    %w(success failed canceled).each do |state|
+    %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -80,7 +80,7 @@ describe CommitStatus, models: true do
   describe '#complete?' do
     subject { commit_status.complete? }
 
-    %w(success failed canceled).each do |state|
+    %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -88,7 +88,7 @@ describe CommitStatus, models: true do
       end
     end
 
-    %w(pending running).each do |state|
+    %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -187,7 +187,7 @@ describe CommitStatus, models: true do
       subject { CommitStatus.where(pipeline: pipeline).stages }
 
       it 'returns ordered list of stages' do
-        is_expected.to eq(%w(build test deploy))
+        is_expected.to eq(%w[build test deploy])
       end
     end
 
@@ -221,6 +221,35 @@ describe CommitStatus, models: true do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(commit_status.commit).to eq project.commit
+    end
+  end
+
+  describe '#group_name' do
+    subject { commit_status.group_name }
+
+    tests = {
+      'rspec:windows' => 'rspec:windows',
+      'rspec:windows 0' => 'rspec:windows 0',
+      'rspec:windows 0 test' => 'rspec:windows 0 test',
+      'rspec:windows 0 1' => 'rspec:windows',
+      'rspec:windows 0 1 name' => 'rspec:windows name',
+      'rspec:windows 0/1' => 'rspec:windows',
+      'rspec:windows 0/1 name' => 'rspec:windows name',
+      'rspec:windows 0:1' => 'rspec:windows',
+      'rspec:windows 0:1 name' => 'rspec:windows name',
+      'rspec:windows 10000 20000' => 'rspec:windows',
+      'rspec:windows 0 : / 1' => 'rspec:windows',
+      'rspec:windows 0 : / 1 name' => 'rspec:windows name',
+      '0 1 name ruby' => 'name ruby',
+      '0 :/ 1 name ruby' => 'name ruby'
+    }
+
+    tests.each do |name, group_name|
+      it "'#{name}' puts in '#{group_name}'" do
+        commit_status.name = name
+
+        is_expected.to eq(group_name)
+      end
     end
   end
 end

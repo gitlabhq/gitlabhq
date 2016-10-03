@@ -43,6 +43,15 @@
       border-color: $blue-normal;
     }
 
+    &.ci-created {
+      color: $table-text-gray;
+      border-color: $table-text-gray;
+
+      svg {
+        fill: $table-text-gray;
+      }
+    }
+
     svg {
       height: 13px;
       width: 13px;

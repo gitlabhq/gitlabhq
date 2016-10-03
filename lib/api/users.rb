@@ -60,6 +60,7 @@ module API
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
       #   website_url                       - Website url
+      #   organization                      - Organization
       #   projects_limit                    - Number of projects user can create
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
@@ -74,7 +75,7 @@ module API
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :confirm, :external]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :confirm, :external, :organization]
         admin = attrs.delete(:admin)
         confirm = !(attrs.delete(:confirm) =~ /(false|f|no|0)$/i)
         user = User.build_user(attrs)
@@ -111,6 +112,7 @@ module API
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
       #   website_url                       - Website url
+      #   organization                      - Organization
       #   projects_limit                    - Limit projects each user can create
       #   bio                               - Bio
       #   location                          - Location of the user
@@ -122,7 +124,7 @@ module API
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :external]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :location, :can_create_group, :admin, :external, :organization]
         user = User.find(params[:id])
         not_found!('User') unless user
 
@@ -327,7 +329,7 @@ module API
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: Entities::UserLogin
+        present @current_user, with: Entities::UserFull
       end
 
       # Get currently authenticated user's keys

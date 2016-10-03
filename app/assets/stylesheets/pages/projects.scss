@@ -311,6 +311,14 @@ a.deploy-project-label {
   color: $gl-success;
 }
 
+.lfs-enabled {
+  color: $gl-success;
+}
+
+.lfs-disabled {
+  color: $gl-warning;
+}
+
 .breadcrumb.repo-breadcrumb {
   padding: 0;
   background: transparent;
@@ -325,6 +333,10 @@ a.deploy-project-label {
 
   a {
     color: $gl-dark-link-color;
+  }
+
+  .dropdown-menu {
+    width: 240px;
   }
 }
 
@@ -600,18 +612,25 @@ pre.light-well {
   }
 }
 
-.project-show-readme .readme-holder {
-  padding: $gl-padding 0;
-  border-top: 0;
-
-  .edit-project-readme {
-    z-index: 2;
-    position: relative;
+.project-show-readme {
+  .row-content-block {
+    background-color: inherit;
+    border: none;
   }
 
-  .wiki h1 {
-    border-bottom: none;
-    padding: 0;
+  .readme-holder {
+    padding: $gl-padding 0;
+    border-top: 0;
+
+    .edit-project-readme {
+      z-index: 2;
+      position: relative;
+    }
+
+    .wiki h1 {
+      border-bottom: none;
+      padding: 0;
+    }
   }
 }
 
@@ -708,15 +727,77 @@ pre.light-well {
   }
 }
 
-.project-refs-form {
-  .dropdown-menu {
-    width: 300px;
+.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+  width: 300px;
+
+  @media (min-width: $screen-sm-min) {
+    width: 500px;
+  }
+
+  a {
+    white-space: normal;
   }
 }
 
 .compare-form-group {
   .dropdown-menu {
     width: 300px;
+  }
+
+  &.from .compare-dropdown-toggle {
+    width: 237px;
+  }
+
+  &.to .compare-dropdown-toggle {
+    width: 254px;
+  }
+
+  .dropdown-toggle-text {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
+.compare-ellipsis {
+  display: inline;
+}
+
+@media (max-width: $screen-xs-max) {
+  .compare-form-group {
+    .input-group {
+      width: 100%;
+
+      & > .compare-dropdown-toggle {
+        width: 100%;
+      }
+    }
+
+    .dropdown-menu {
+      width: 100%;
+    }
+  }
+
+  .compare-switch-container {
+    text-align: center;
+    padding: 0 0 $gl-padding;
+
+    .commits-compare-switch {
+      float: none;
+    }
+  }
+
+  .compare-ellipsis {
+    display: block;
+    text-align: center;
+    padding: 0 0 $gl-padding;
+  }
+
+  .commits-compare-btn {
+    width: 100%;
   }
 }
 
@@ -743,5 +824,15 @@ pre.light-well {
       cursor: pointer;
       display: block;
     }
+  }
+}
+
+.project-path {
+  .form-control {
+    min-width: 100px;
+  }
+  .select2-choice {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }

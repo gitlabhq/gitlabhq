@@ -13,11 +13,14 @@
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
 - [UI guide](ui_guide.md) for building GitLab with existing CSS styles and elements
+- [Frontend guidelines](frontend.md)
 - [SQL guidelines](sql.md) for SQL guidelines
 
 ## Process
 
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
+- [Merge request performance guidelines](merge_request_performance_guidelines.md)
+  for ensuring merge requests do not negatively impact GitLab performance
 
 ## Backend howtos
 

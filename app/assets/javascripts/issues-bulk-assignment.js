@@ -1,14 +1,17 @@
 (function() {
   this.IssuableBulkActions = (function() {
     function IssuableBulkActions(opts) {
+      // Set defaults
       var ref, ref1, ref2;
       if (opts == null) {
         opts = {};
       }
-      this.container = (ref = opts.container) != null ? ref : $('.content'), this.form = (ref1 = opts.form) != null ? ref1 : this.getElement('.bulk-update'), this.issues = (ref2 = opts.issues) != null ? ref2 : this.getElement('.issues-list .issue');
+      this.container = (ref = opts.container) != null ? ref : $('.content'), this.form = (ref1 = opts.form) != null ? ref1 : this.getElement('.bulk-update'), this.issues = (ref2 = opts.issues) != null ? ref2 : this.getElement('.issuable-list > li');
+      // Save instance
       this.form.data('bulkActions', this);
       this.willUpdateLabels = false;
       this.bindEvents();
+      // Fixes bulk-assign not working when navigating through pages
       Issuable.initChecks();
     }
 
@@ -86,6 +89,7 @@
       ref1 = this.getLabelsFromSelection();
       for (j = 0, len1 = ref1.length; j < len1; j++) {
         id = ref1[j];
+        // Only the ones that we are not going to keep
         if (labelsToKeep.indexOf(id) === -1) {
           result.push(id);
         }
@@ -106,7 +110,7 @@
           state_event: this.form.find('input[name="update[state_event]"]').val(),
           assignee_id: this.form.find('input[name="update[assignee_id]"]').val(),
           milestone_id: this.form.find('input[name="update[milestone_id]"]').val(),
-          issues_ids: this.form.find('input[name="update[issues_ids]"]').val(),
+          issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),
           subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
           add_label_ids: [],
           remove_label_ids: []
@@ -147,6 +151,8 @@
       indeterminatedLabels = this.getUnmarkedIndeterminedLabels();
       labelsToApply = this.getLabelsToApply();
       indeterminatedLabels.map(function(id) {
+        // We need to exclude label IDs that will be applied
+        // By not doing this will cause issues from selection to not add labels at all
         if (labelsToApply.indexOf(id) === -1) {
           return result.push(id);
         }

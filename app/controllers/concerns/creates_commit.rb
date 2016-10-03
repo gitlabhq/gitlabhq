@@ -7,8 +7,7 @@ module CreatesCommit
     commit_params = @commit_params.merge(
       source_project: @project,
       source_branch: @ref,
-      target_branch: @target_branch,
-      previous_path: @previous_path
+      target_branch: @target_branch
     )
 
     result = service.new(@tree_edit_project, current_user, commit_params).execute

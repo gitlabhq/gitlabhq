@@ -155,15 +155,30 @@ Inside the document:
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note: `> Introduced in GitLab 8.3.`.
+  note:
+
+    ```
+    > Introduced in GitLab 8.3.
+    ```
+
 - If possible every feature should have a link to the MR that introduced it.
   The above note would be then transformed to:
-  `> [Introduced][ce-1242] in GitLab 8.3.`, where
-  the [link identifier](#links) is named after the repository (CE) and the MR
-  number.
-- If the feature is only in GitLab EE, don't forget to mention it, like:
-  `> Introduced in GitLab EE 8.3.`. Otherwise, leave
-  this mention out.
+
+    ```
+    > [Introduced][ce-1242] in GitLab 8.3.
+    ```
+
+    , where the [link identifier](#links) is named after the repository (CE) and
+    the MR number.
+
+- If the feature is only in GitLab Enterprise Edition, don't forget to mention
+  it, like:
+
+    ```
+    > Introduced in GitLab Enterprise Edition 8.3.
+    ```
+
+    Otherwise, leave this mention out.
 
 ## References
 

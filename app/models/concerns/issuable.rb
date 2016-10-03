@@ -28,9 +28,12 @@ module Issuable
         loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
       end
     end
+
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy
+
+    has_one :metrics
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -81,6 +84,7 @@ module Issuable
     acts_as_paranoid
 
     after_save :update_assignee_cache_counts, if: :assignee_id_changed?
+    after_save :record_metrics
 
     def update_assignee_cache_counts
       # make sure we flush the cache for both the old *and* new assignee
@@ -281,5 +285,10 @@ module Issuable
   #
   def can_move?(*)
     false
+  end
+
+  def record_metrics
+    metrics = self.metrics || create_metrics
+    metrics.record!
   end
 end

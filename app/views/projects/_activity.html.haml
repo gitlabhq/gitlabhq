@@ -1,13 +1,16 @@
-.nav-block.activity-filter-block
-  - if current_user
-    .controls
-      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "Feed", class: 'btn rss-btn' do
-        %i.fa.fa-rss
+- @no_container = true
 
-  = render 'shared/event_filter'
+%div{ class: container_class }
+  .nav-block.activity-filter-block
+    - if current_user
+      .controls
+        = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "Feed", class: 'btn rss-btn' do
+          = icon('rss')
 
-.content_list.project-activity{:"data-href" => activity_project_path(@project)}
-= spinner
+    = render 'shared/event_filter'
+
+  .content_list.project-activity{:"data-href" => activity_project_path(@project)}
+  = spinner
 
 :javascript
   var activity = new Activities();

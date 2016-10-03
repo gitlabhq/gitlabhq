@@ -9,7 +9,7 @@
       %th Value
       %th
     %tbody
-      - @project.variables.each do |variable|
+      - @project.variables.order_key_asc.each do |variable|
         - if variable.id?
           %tr
             %td= variable.key

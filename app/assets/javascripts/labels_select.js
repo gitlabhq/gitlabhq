@@ -4,7 +4,7 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         labelUrl = $dropdown.data('labels');
@@ -24,6 +24,11 @@
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
+        initialSelected = $selectbox
+          .find('input[name="' + $dropdown.data('field-name') + '"]')
+          .map(function () {
+            return this.value;
+          }).get();
         if (issueUpdateURL != null) {
           issueURLSplit = issueUpdateURL.split('/');
         }
@@ -43,6 +48,10 @@
           selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").map(function() {
             return this.value;
           }).get();
+
+          if (_.isEqual(initialSelected, selected)) return;
+          initialSelected = selected;
+
           data = {};
           data[abilityName] = {};
           data[abilityName].label_ids = selected;
@@ -156,15 +165,17 @@
                 selectedClass.push('is-indeterminate');
               }
               if (active.indexOf(label.id) !== -1) {
+                // Remove is-indeterminate class if the item will be marked as active
                 i = selectedClass.indexOf('is-indeterminate');
                 if (i !== -1) {
                   selectedClass.splice(i, 1);
                 }
                 selectedClass.push('is-active');
+                // Add input manually
                 instance.addInput(this.fieldName, label.id);
               }
             }
-            if ($form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + (this.id(label)) + "']").length) {
+            if (this.id(label) && $form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + this.id(label).toString().replace(/'/g, '\\\'') + "']").length) {
               selectedClass.push('is-active');
             }
             if ($dropdown.hasClass('js-multiselect') && removesAll) {
@@ -172,6 +183,7 @@
             }
             if (label.duplicate) {
               spacing = 100 / label.color.length;
+              // Reduce the colors to 4
               label.color = label.color.filter(function(color, i) {
                 return i < 4;
               });
@@ -192,11 +204,13 @@
             } else {
               colorEl = '';
             }
+            // We need to identify which items are actually labels
             if (label.id) {
               selectedClass.push('label-item');
               $a.attr('data-label-id', label.id);
             }
             $a.addClass(selectedClass.join(' ')).html(colorEl + " " + label.title);
+            // Return generated html
             return $li.html($a).prop('outerHTML');
           },
           persistWhenHide: $dropdown.data('persistWhenHide'),
@@ -238,6 +252,7 @@
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             $selectbox.hide();
+            // display:block overrides the hide-collapse rule
             $value.removeAttr('style');
             if (page === 'projects:boards:show') {
               return;
@@ -255,6 +270,7 @@
               }
             }
             if ($dropdown.hasClass('js-filter-bulk-update')) {
+              // If we are persisting state we need the classes
               if (!this.options.persistWhenHide) {
                 return $dropdown.parent().find('.is-active, .is-indeterminate').removeClass();
               }
@@ -273,12 +289,12 @@
             if (page === 'projects:boards:show') {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              } else if (label.title) {
+              } else if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
               } else {
                 var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
-                filters = filters.filter(function (label) {
-                  return label !== $el.text().trim();
+                filters = filters.filter(function (filteredLabel) {
+                  return filteredLabel !== label.title;
                 });
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = filters;
               }
@@ -324,7 +340,9 @@
       if ($('.selected_issue:checked').length) {
         return;
       }
+      // Remove inputs
       $('.issues_bulk_update .labels-filter input[type="hidden"]').remove();
+      // Also restore button text
       return $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label');
     };
 

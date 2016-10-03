@@ -83,12 +83,12 @@ module API
             opts[:created_at] = params[:created_at]
           end
 
-          @note = ::Notes::CreateService.new(user_project, current_user, opts).execute
+          note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
-          if @note.valid?
-            present @note, with: Entities::Note
+          if note.valid?
+            present note, with: Entities::const_get(note.class.name)
           else
-            not_found!("Note #{@note.errors.messages}")
+            not_found!("Note #{note.errors.messages}")
           end
         end
 

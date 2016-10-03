@@ -137,10 +137,10 @@ class ProjectsController < Projects::ApplicationController
     noteable =
       case params[:type]
       when 'Issue'
-        IssuesFinder.new(current_user, project_id: @project.id, state: 'all').
+        IssuesFinder.new(current_user, project_id: @project.id).
           execute.find_by(iid: params[:type_id])
       when 'MergeRequest'
-        MergeRequestsFinder.new(current_user, project_id: @project.id, state: 'all').
+        MergeRequestsFinder.new(current_user, project_id: @project.id).
           execute.find_by(iid: params[:type_id])
       when 'Commit'
         @project.commit(params[:type_id])
@@ -303,18 +303,33 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params
+    project_feature_attributes =
+      {
+        project_feature_attributes:
+          [
+            :issues_access_level, :builds_access_level,
+            :wiki_access_level, :merge_requests_access_level, :snippets_access_level
+          ]
+      }
+
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :container_registry_enabled,
+      :container_registry_enabled,
       :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
-      :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled
+      :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
+      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled,
+      :lfs_enabled, project_feature_attributes
     )
   end
 
   def repo_exists?
-    project.repository_exists? && !project.empty_repo?
+    project.repository_exists? && !project.empty_repo? && project.repo
+
+  rescue Gitlab::Git::Repository::NoRepository
+    project.repository.expire_exists_cache
+
+    false
   end
 
   def project_view_files?

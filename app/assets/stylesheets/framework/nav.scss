@@ -8,10 +8,7 @@
   height: 30px;
   transition-duration: .3s;
   -webkit-transform: translateZ(0);
-  background: -webkit-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: -o-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: -moz-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
+  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
 
   &.scrolling {
     visibility: visible;
@@ -102,8 +99,7 @@
 
 .top-area {
   @include clearfix;
-
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $btn-gray-hover;
 
   .nav-text {
     padding-top: 16px;
@@ -141,7 +137,7 @@
     }
 
     li a {
-      padding: 16px 10px 11px;
+      padding: 16px 15px 11px;
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
@@ -208,12 +204,6 @@
 
         /* Large devices (large desktops, 1200px and up) */
         @media (min-width: $screen-lg-min) { width: 210px; }
-      }
-    }
-
-    .project-filter-form {
-      input {
-        background-color: $background-color;
       }
     }
 

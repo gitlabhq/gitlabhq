@@ -15,7 +15,7 @@
     .pull-right
       - if @project_runners.include?(runner)
         - if runner.belongs_to_one_project?
-          = link_to 'Remove runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to 'Remove Runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
           = link_to 'Disable for this project', namespace_project_runner_project_path(@project.namespace, @project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'

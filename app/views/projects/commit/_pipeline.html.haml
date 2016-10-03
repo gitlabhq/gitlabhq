@@ -39,8 +39,7 @@
               = stage.titleize
           .builds-container
             %ul
-              - statuses.each do |status|
-                = render "projects/#{status.to_partial_path}_pipeline", subject: status
+              = render "projects/commit/pipeline_stage", statuses: statuses
 
 
 - if pipeline.yaml_errors.present?

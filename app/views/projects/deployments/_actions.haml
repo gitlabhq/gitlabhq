@@ -5,13 +5,13 @@
       .inline
         .dropdown
           %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
-            = icon("play")
+            = custom_icon('icon_play')
             %b.caret
           %ul.dropdown-menu.dropdown-menu-align-right
             - actions.each do |action|
               %li
                 = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
-                  = icon("play")
+                  = custom_icon('icon_play')
                   %span= action.name.humanize
 
     - if local_assigns.fetch(:allow_rollback, false)

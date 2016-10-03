@@ -16,20 +16,18 @@
         .replace(':id', group_id);
       return $.ajax({
         url: url,
-        data: {
-          private_token: gon.api_token
-        },
         dataType: "json"
       }).done(function(group) {
         return callback(group);
       });
     },
+    // Return groups list. Filtered by query
+    // Only active groups retrieved
     groups: function(query, skip_ldap, callback) {
       var url = Api.buildUrl(Api.groupsPath);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -38,12 +36,12 @@
         return callback(groups);
       });
     },
+    // Return namespaces list. Filtered by query
     namespaces: function(query, callback) {
       var url = Api.buildUrl(Api.namespacesPath);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -52,12 +50,12 @@
         return callback(namespaces);
       });
     },
+    // Return projects list. Filtered by query
     projects: function(query, order, callback) {
       var url = Api.buildUrl(Api.projectsPath);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           order_by: order,
           per_page: 20
@@ -70,7 +68,6 @@
     newLabel: function(project_id, data, callback) {
       var url = Api.buildUrl(Api.labelsPath)
         .replace(':id', project_id);
-      data.private_token = gon.api_token;
       return $.ajax({
         url: url,
         type: "POST",
@@ -82,13 +79,13 @@
         return callback(message.responseJSON);
       });
     },
+    // Return group projects list. Filtered by query
     groupProjects: function(group_id, query, callback) {
       var url = Api.buildUrl(Api.groupProjectsPath)
         .replace(':id', group_id);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -97,6 +94,7 @@
         return callback(projects);
       });
     },
+    // Return text for a specific license
     licenseText: function(key, data, callback) {
       var url = Api.buildUrl(Api.licensePath)
         .replace(':key', key);

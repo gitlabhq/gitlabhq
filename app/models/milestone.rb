@@ -158,7 +158,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def title=(value)
-    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
+    write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
   # Sorts the issues for the given IDs.
@@ -203,5 +203,9 @@ class Milestone < ActiveRecord::Base
     else
       iid
     end
+  end
+
+  def sanitize_title(value)
+    CGI.unescape_html(Sanitize.clean(value.to_s))
   end
 end

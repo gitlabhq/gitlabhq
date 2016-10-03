@@ -1,0 +1,11 @@
+- if current_user.admin?
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :lfs_enabled do
+          = f.check_box :lfs_enabled, checked: @group.lfs_enabled?
+          %strong
+            Allow projects within this group to use Git LFS
+            = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+          %br/
+          %span.descr This setting can be overridden in each project.

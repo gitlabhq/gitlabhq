@@ -66,7 +66,7 @@ module Banzai
         end
       end
 
-      def find_projects_for_paths(paths)
+      def projects_relation_for_paths(paths)
         super(paths).includes(:gitlab_issue_tracker_service)
       end
     end

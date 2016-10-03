@@ -1,5 +1,7 @@
 module Ci
   class Build < CommitStatus
+    include TokenAuthenticatable
+
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
     belongs_to :erased_by, class_name: 'User'
@@ -23,7 +25,10 @@ module Ci
 
     acts_as_taggable
 
+    add_authentication_token_field :token
+
     before_save :update_artifacts_size, if: :artifacts_file_changed?
+    before_save :ensure_token
     before_destroy { project }
 
     after_create :execute_hooks
@@ -38,6 +43,7 @@ module Ci
         new_build.status = 'pending'
         new_build.runner_id = nil
         new_build.trigger_request_id = nil
+        new_build.token = nil
         new_build.save
       end
 
@@ -79,11 +85,14 @@ module Ci
 
       after_transition any => [:success] do |build|
         if build.environment.present?
-          service = CreateDeploymentService.new(build.project, build.user,
-                                                environment: build.environment,
-                                                sha: build.sha,
-                                                ref: build.ref,
-                                                tag: build.tag)
+          service = CreateDeploymentService.new(
+            build.project, build.user,
+            environment: build.environment,
+            sha: build.sha,
+            ref: build.ref,
+            tag: build.tag,
+            options: build.options.to_h[:environment],
+            variables: build.variables)
           service.execute(build)
         end
       end
@@ -148,6 +157,7 @@ module Ci
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += yaml_variables
+      variables += user_variables
       variables += project.secret_variables
       variables += trigger_request.user_variables if trigger_request
       variables
@@ -172,7 +182,7 @@ module Ci
     end
 
     def repo_url
-      auth = "gitlab-ci-token:#{token}@"
+      auth = "gitlab-ci-token:#{ensure_token!}@"
       project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
         prefix + auth
       end
@@ -208,29 +218,33 @@ module Ci
       end
     end
 
+    def has_trace_file?
+      File.exist?(path_to_trace) || has_old_trace_file?
+    end
+
     def has_trace?
       raw_trace.present?
     end
 
     def raw_trace
-      if File.file?(path_to_trace)
-        File.read(path_to_trace)
-      elsif project.ci_id && File.file?(old_path_to_trace)
-        # Temporary fix for build trace data integrity
-        File.read(old_path_to_trace)
+      if File.exist?(trace_file_path)
+        File.read(trace_file_path)
       else
         # backward compatibility
         read_attribute :trace
       end
     end
 
+    ##
+    # Deprecated
+    #
+    # This is a hotfix for CI build data integrity, see #4246
+    def has_old_trace_file?
+      project.ci_id && File.exist?(old_path_to_trace)
+    end
+
     def trace
-      trace = raw_trace
-      if project && trace.present? && project.runners_token.present?
-        trace.gsub(project.runners_token, 'xxxxxx')
-      else
-        trace
-      end
+      hide_secrets(raw_trace)
     end
 
     def trace_length
@@ -243,6 +257,7 @@ module Ci
 
     def trace=(trace)
       recreate_trace_dir
+      trace = hide_secrets(trace)
       File.write(path_to_trace, trace)
     end
 
@@ -256,9 +271,19 @@ module Ci
     def append_trace(trace_part, offset)
       recreate_trace_dir
 
+      trace_part = hide_secrets(trace_part)
+
       File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
       File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
+      end
+    end
+
+    def trace_file_path
+      if has_old_trace_file?
+        old_path_to_trace
+      else
+        path_to_trace
       end
     end
 
@@ -323,12 +348,8 @@ module Ci
       )
     end
 
-    def token
-      project.runners_token
-    end
-
     def valid_token?(token)
-      project.valid_runners_token?(token)
+      self.token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
     end
 
     def has_tags?
@@ -352,7 +373,7 @@ module Ci
     end
 
     def artifacts?
-      !artifacts_expired? && self[:artifacts_file].present?
+      !artifacts_expired? && artifacts_file.exists?
     end
 
     def artifacts_metadata?
@@ -417,6 +438,15 @@ module Ci
       read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
     end
 
+    def user_variables
+      return [] if user.blank?
+
+      [
+        { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
+        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
+      ]
+    end
+
     private
 
     def update_artifacts_size
@@ -452,6 +482,7 @@ module Ci
       ]
       variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
       variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
+      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
       variables
     end
 
@@ -459,6 +490,15 @@ module Ci
       return {} unless pipeline.config_processor
 
       pipeline.config_processor.build_attributes(name)
+    end
+
+    def hide_secrets(trace)
+      return unless trace
+
+      trace = trace.dup
+      Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Ci::MaskSecret.mask!(trace, token)
+      trace
     end
   end
 end

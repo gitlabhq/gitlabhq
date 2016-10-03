@@ -20,24 +20,12 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow modify issue
   before_action :authorize_update_issue!, only: [:edit, :update]
 
-  # Allow issues bulk update
-  before_action :authorize_admin_issues!, only: [:bulk_update]
-
   respond_to :html
 
   def index
-    terms = params['issue_search']
     @issues = issues_collection
-
-    if terms.present?
-      if terms =~ /\A#(\d+)\z/
-        @issues = @issues.where(iid: $1)
-      else
-        @issues = @issues.full_search(terms)
-      end
-    end
-
     @issues = @issues.page(params[:page])
+
     @labels = @project.labels.where(title: params[:label_name])
 
     respond_to do |format|
@@ -66,7 +54,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    raw_notes = @issue.notes_with_associations.fresh
+    raw_notes = @issue.notes.inc_relations_for_view.fresh
 
     @notes = Banzai::NoteRenderer.
       render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
@@ -168,16 +156,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def bulk_update
-    result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
-
-    respond_to do |format|
-      format.json do
-        render json: { notice: "#{result[:count]} issues updated" }
-      end
-    end
-  end
-
   protected
 
   def issue
@@ -201,7 +179,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.issues_enabled && @project.default_issues_tracker?
+    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
   end
 
   def redirect_to_external_issue_tracker
@@ -235,19 +213,6 @@ class Projects::IssuesController < Projects::ApplicationController
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
-    )
-  end
-
-  def bulk_update_params
-    params.require(:update).permit(
-      :issues_ids,
-      :assignee_id,
-      :milestone_id,
-      :state_event,
-      :subscription_event,
-      label_ids: [],
-      add_label_ids: [],
-      remove_label_ids: []
     )
   end
 end

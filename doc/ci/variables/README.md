@@ -34,6 +34,7 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_REF_NAME**   | all    | all    | The branch or tag name for which project is built |
 | **CI_BUILD_REPO**       | all    | all    | The URL to clone the Git repository |
 | **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that build was [triggered] |
+| **CI_BUILD_MANUAL**     | 8.12   | all    | The flag to indicate that build was manually started |
 | **CI_BUILD_TOKEN**      | all    | 1.2    | Token used for authenticating with the GitLab Container Registry |
 | **CI_PIPELINE_ID**      | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PROJECT_ID**       | all    | all    | The unique id of the current project that GitLab CI uses internally |
@@ -43,10 +44,12 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
 | **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
-| **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returnes the address of the registry tied to the specific project |
+| **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
 | **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |
 | **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
+| **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the build |
+| **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the build |
 
 **Some of the variables are only available when using runner with at least defined version.**
 
@@ -60,6 +63,7 @@ export CI_BUILD_REPO="https://gitab-ci-token:abcde-1234ABCD5678ef@gitlab.com/git
 export CI_BUILD_TAG="1.0.0"
 export CI_BUILD_NAME="spec:other"
 export CI_BUILD_STAGE="test"
+export CI_BUILD_MANUAL="true"
 export CI_BUILD_TRIGGERED="true"
 export CI_BUILD_TOKEN="abcde-1234ABCD5678ef"
 export CI_PIPELINE_ID="1000"
@@ -76,8 +80,10 @@ export CI_RUNNER_DESCRIPTION="my runner"
 export CI_RUNNER_TAGS="docker, linux"
 export CI_SERVER="yes"
 export CI_SERVER_NAME="GitLab"
-export CI_SERVER_REVISION="8.9.0"
-export CI_SERVER_VERSION="70606bf"
+export CI_SERVER_REVISION="70606bf"
+export CI_SERVER_VERSION="8.9.0"
+export GITLAB_USER_ID="42"
+export GITLAB_USER_EMAIL="alexzander@sporer.com"
 ```
 
 ### YAML-defined variables

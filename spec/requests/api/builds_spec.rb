@@ -15,7 +15,9 @@ describe API::API, api: true do
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 
-    before { get api("/projects/#{project.id}/builds?#{query}", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds?#{query}", api_user)
+    end
 
     context 'authorized user' do
       it 'returns project builds' do
@@ -26,6 +28,15 @@ describe API::API, api: true do
       it 'returns correct values' do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
+      end
+
+      it 'returns pipeline data' do
+        json_build = json_response.first
+        expect(json_build['pipeline']).not_to be_empty
+        expect(json_build['pipeline']['id']).to eq build.pipeline.id
+        expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+        expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+        expect(json_build['pipeline']['status']).to eq build.pipeline.status
       end
 
       context 'filter project with one scope element' do
@@ -89,6 +100,15 @@ describe API::API, api: true do
             expect(json_response).to be_an Array
             expect(json_response.size).to eq 2
           end
+
+          it 'returns pipeline data' do
+            json_build = json_response.first
+            expect(json_build['pipeline']).not_to be_empty
+            expect(json_build['pipeline']['id']).to eq build.pipeline.id
+            expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+            expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+            expect(json_build['pipeline']['status']).to eq build.pipeline.status
+          end
         end
 
         context 'when pipeline has no builds' do
@@ -122,12 +142,23 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/builds/:build_id' do
-    before { get api("/projects/#{project.id}/builds/#{build.id}", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds/#{build.id}", api_user)
+    end
 
     context 'authorized user' do
       it 'returns specific build data' do
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq('test')
+      end
+
+      it 'returns pipeline data' do
+        json_build = json_response
+        expect(json_build['pipeline']).not_to be_empty
+        expect(json_build['pipeline']['id']).to eq build.pipeline.id
+        expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+        expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+        expect(json_build['pipeline']['status']).to eq build.pipeline.status
       end
     end
 
@@ -141,7 +172,9 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
-    before { get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+    end
 
     context 'build with artifacts' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -292,7 +325,9 @@ describe API::API, api: true do
   end
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
-    before { post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user) }
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user)
+    end
 
     context 'authorized user' do
       context 'user with :update_build persmission' do
@@ -323,7 +358,9 @@ describe API::API, api: true do
   describe 'POST /projects/:id/builds/:build_id/retry' do
     let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
 
-    before { post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user) }
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user)
+    end
 
     context 'authorized user' do
       context 'user with :update_build permission' do

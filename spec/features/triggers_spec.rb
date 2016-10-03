@@ -12,7 +12,7 @@ describe 'Triggers' do
 
   context 'create a trigger' do
     before do
-      click_on 'Add Trigger'
+      click_on 'Add trigger'
       expect(@project.triggers.count).to eq(1)
     end
 

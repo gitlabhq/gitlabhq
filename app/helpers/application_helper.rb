@@ -110,7 +110,7 @@ module ApplicationHelper
     project = event.project
 
     # Skip if project repo is empty or MR disabled
-    return false unless project && !project.empty_repo? && project.merge_requests_enabled
+    return false unless project && !project.empty_repo? && project.feature_available?(:merge_requests, current_user)
 
     # Skip if user already created appropriate MR
     return false if project.merge_requests.where(source_branch: event.branch_name).opened.any?
@@ -249,7 +249,7 @@ module ApplicationHelper
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
-      issue_search: params[:issue_search],
+      search: params[:search],
       label_name: params[:label_name]
     }
 
@@ -278,32 +278,6 @@ module ApplicationHelper
     else
       profile_key_path(key)
     end
-  end
-
-  def state_filters_text_for(entity, project)
-    titles = {
-      opened: "Open"
-    }
-
-    entity_title = titles[entity] || entity.to_s.humanize
-
-    count =
-      if project.nil?
-        nil
-      elsif current_controller?(:issues)
-        project.issues.visible_to_user(current_user).send(entity).count
-      elsif current_controller?(:merge_requests)
-        project.merge_requests.send(entity).count
-      end
-
-    html = content_tag :span, entity_title
-
-    if count.present?
-      html += " "
-      html += content_tag :span, number_with_delimiter(count), class: 'badge'
-    end
-
-    html.html_safe
   end
 
   def truncate_first_line(message, length = 50)

@@ -88,9 +88,7 @@ describe Ci::Build, models: true do
   end
 
   describe '#trace' do
-    subject { build.trace_html }
-
-    it { is_expected.to be_empty }
+    it { expect(build.trace).to be_nil }
 
     context 'when build.trace contains text' do
       let(:text) { 'example output' }
@@ -98,16 +96,80 @@ describe Ci::Build, models: true do
         build.trace = text
       end
 
-      it { is_expected.to include(text) }
-      it { expect(subject.length).to be >= text.length }
+      it { expect(build.trace).to eq(text) }
     end
 
-    context 'when build.trace hides token' do
+    context 'when build.trace hides runners token' do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update_attributes(runners_token: token)
-        build.update_attributes(trace: token)
+        build.update(trace: token)
+        build.project.update(runners_token: token)
+      end
+
+      it { expect(build.trace).not_to include(token) }
+      it { expect(build.raw_trace).to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(trace: token)
+        build.update(token: token)
+      end
+
+      it { expect(build.trace).not_to include(token) }
+      it { expect(build.raw_trace).to include(token) }
+    end
+  end
+
+  describe '#raw_trace' do
+    subject { build.raw_trace }
+
+    context 'when build.trace hides runners token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update(runners_token: token)
+        build.update(trace: token)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(token: token)
+        build.update(trace: token)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+  end
+
+  context '#append_trace' do
+    subject { build.trace_html }
+
+    context 'when build.trace hides runners token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update(runners_token: token)
+        build.append_trace(token, 0)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(token: token)
+        build.append_trace(token, 0)
       end
 
       it { is_expected.not_to include(token) }
@@ -229,6 +291,34 @@ describe Ci::Build, models: true do
       end
 
       it { is_expected.to eq(predefined_variables) }
+    end
+
+    context 'when build has user' do
+      let(:user) { create(:user, username: 'starter') }
+      let(:user_variables) do
+        [
+          { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
+          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }
+        ]
+      end
+
+      before do
+        build.update_attributes(user: user)
+      end
+
+      it { user_variables.each { |v| is_expected.to include(v) } }
+    end
+
+    context 'when build started manually' do
+      before do
+        build.update_attributes(when: :manual)
+      end
+
+      let(:manual_variable) do
+        { key: 'CI_BUILD_MANUAL', value: 'true', public: true }
+      end
+
+      it { is_expected.to include(manual_variable) }
     end
 
     context 'when build is for tag' do
@@ -948,15 +1038,17 @@ describe Ci::Build, models: true do
       before { build.run! }
 
       it 'returns false' do
-        expect(build.retryable?).to be false
+        expect(build).not_to be_retryable
       end
     end
 
     context 'when build is finished' do
-      before { build.success! }
+      before do
+        build.success!
+      end
 
       it 'returns true' do
-        expect(build.retryable?).to be true
+        expect(build).to be_retryable
       end
     end
   end

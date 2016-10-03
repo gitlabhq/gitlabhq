@@ -73,7 +73,8 @@ class ProfilesController < Profiles::ApplicationController
       :skype,
       :twitter,
       :username,
-      :website_url
+      :website_url,
+      :organization
     )
   end
 end

@@ -101,4 +101,36 @@ inside GitLab that make that possible.
 
     ![Build artifacts browser](img/build_artifacts_browser.png)
 
+## Downloading the latest build artifacts
+
+It is possible to download the latest artifacts of a build via a well known URL
+so you can use it for scripting purposes.
+
+The structure of the URL is the following:
+
+```
+https://example.com/<namespace>/<project>/builds/artifacts/<ref>/download?job=<job_name>
+```
+
+For example, to download the latest artifacts of the job named `rspec 6 20` of
+the `master` branch of the `gitlab-ce` project that belongs to the `gitlab-org`
+namespace, the URL would be:
+
+```
+https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/download?job=rspec+6+20
+```
+
+The latest builds are also exposed in the UI in various places. Specifically,
+look for the download button in:
+
+- the main project's page
+- the branches page
+- the tags page
+
+If the latest build has failed to upload the artifacts, you can see that
+information in the UI.
+
+![Latest artifacts button](img/build_latest_artifacts_browser.png)
+
+
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"

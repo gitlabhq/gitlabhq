@@ -48,8 +48,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     end
 
     context 'when issue is closed' do
-      let(:closed_at) { DateTime.strptime('2011-01-28T19:01:12Z') }
-      let(:raw_data) { double(base_data.merge(state: 'closed', closed_at: closed_at)) }
+      let(:raw_data) { double(base_data.merge(state: 'closed')) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -62,7 +61,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: closed_at
+          updated_at: updated_at
         }
 
         expect(issue.attributes).to eq(expected)
@@ -109,6 +108,12 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
 
         expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
+      end
+
+      it 'returns description without created at tag line' do
+        create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(issue.attributes.fetch(:description)).to eq("I'm having a problem with this.")
       end
     end
   end

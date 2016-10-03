@@ -25,6 +25,11 @@ module CiStatusHelper
     end
   end
 
+  def ci_status_for_statuseable(subject)
+    status = subject.try(:status) || 'not found'
+    status.humanize
+  end
+
   def ci_icon_for_status(status)
     icon_name =
       case status
@@ -41,7 +46,7 @@ module CiStatusHelper
       when 'play'
         'icon_play'
       when 'created'
-        'icon_status_pending'
+        'icon_status_created'
       else
         'icon_status_cancel'
       end
@@ -51,7 +56,7 @@ module CiStatusHelper
 
   def render_commit_status(commit, tooltip_placement: 'auto left')
     project = commit.project
-    path = builds_namespace_project_commit_path(project.namespace, project, commit)
+    path = pipelines_namespace_project_commit_path(project.namespace, project, commit)
     render_status_with_link('commit', commit.status, path, tooltip_placement: tooltip_placement)
   end
 

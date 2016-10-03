@@ -12,12 +12,6 @@ describe Gitlab::SearchResults do
   let!(:milestone) { create(:milestone, project: project, title: 'foo') }
   let(:results) { described_class.new(user, Project.all, 'foo') }
 
-  describe '#total_count' do
-    it 'returns the total amount of search hits' do
-      expect(results.total_count).to eq(4)
-    end
-  end
-
   describe '#projects_count' do
     it 'returns the total amount of projects' do
       expect(results.projects_count).to eq(1)
@@ -39,18 +33,6 @@ describe Gitlab::SearchResults do
   describe '#milestones_count' do
     it 'returns the total amount of milestones' do
       expect(results.milestones_count).to eq(1)
-    end
-  end
-
-  describe '#empty?' do
-    it 'returns true when there are no search results' do
-      allow(results).to receive(:total_count).and_return(0)
-
-      expect(results.empty?).to eq(true)
-    end
-
-    it 'returns false when there are search results' do
-      expect(results.empty?).to eq(false)
     end
   end
 

@@ -36,14 +36,14 @@ module Gitlab
           helpers :before_script, :image, :services, :after_script,
                   :variables, :stages, :types, :cache, :jobs
 
-          private
-
-          def compose!
-            super
-
-            compose_jobs!
-            compose_deprecated_entries!
+          def compose!(_deps = nil)
+            super(self) do
+              compose_jobs!
+              compose_deprecated_entries!
+            end
           end
+
+          private
 
           def compose_jobs!
             factory = Node::Factory.new(Node::Jobs)

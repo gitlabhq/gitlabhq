@@ -18,11 +18,11 @@ module API
         get ":id/members" do
           source = find_source(source_type, params[:id])
 
-          members = source.members.includes(:user)
-          members = members.joins(:user).merge(User.search(params[:query])) if params[:query]
-          members = paginate(members)
+          users = source.users
+          users = users.merge(User.search(params[:query])) if params[:query]
+          users = paginate(users)
 
-          present members.map(&:user), with: Entities::Member, members: members
+          present users, with: Entities::Member, source: source
         end
 
         # Get a group/project member
@@ -59,13 +59,6 @@ module API
           authorize_admin_source!(source_type, source)
           required_attributes! [:user_id, :access_level]
 
-          access_requester = source.requesters.find_by(user_id: params[:user_id])
-          if access_requester
-            # We pass current_user = access_requester so that the requester doesn't
-            # receive a "access denied" email
-            ::Members::DestroyService.new(access_requester, access_requester.user).execute
-          end
-
           member = source.members.find_by(user_id: params[:user_id])
 
           # This is to ensure back-compatibility but 409 behavior should be used
@@ -73,18 +66,12 @@ module API
           conflict!('Member already exists') if source_type == 'group' && member
 
           unless member
-            source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
-            member = source.members.find_by(user_id: params[:user_id])
+            member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
           end
 
-          if member
+          if member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
-            # Since `source.add_user` doesn't return a member object, we have to
-            # build a new one and populate its errors in order to render them.
-            member = source.members.build(attributes_for_keys([:user_id, :access_level, :expires_at]))
-            member.valid? # populate the errors
-
             # This is to ensure back-compatibility but 400 behavior should be used
             # for all validation errors in 9.0!
             render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)

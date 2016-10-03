@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: members
-#
-#  id                 :integer          not null, primary key
-#  access_level       :integer          not null
-#  source_id          :integer          not null
-#  source_type        :string(255)      not null
-#  user_id            :integer
-#  notification_level :integer          not null
-#  type               :string(255)
-#  created_at         :datetime
-#  updated_at         :datetime
-#  created_by_id      :integer
-#  invite_email       :string(255)
-#  invite_token       :string(255)
-#  invite_accepted_at :datetime
-#
-
 require 'spec_helper'
 
 describe ProjectMember, models: true do
@@ -32,6 +13,26 @@ describe ProjectMember, models: true do
 
   describe 'modules' do
     it { is_expected.to include_module(Gitlab::ShellAdapter) }
+  end
+
+  describe '.access_level_roles' do
+    it 'returns Gitlab::Access.options' do
+      expect(described_class.access_level_roles).to eq(Gitlab::Access.options)
+    end
+  end
+
+  describe '.add_user' do
+    context 'when called with the project owner' do
+      it 'adds the user as a member' do
+        project = create(:empty_project)
+
+        expect(project.users).not_to include(project.owner)
+
+        described_class.add_user(project, project.owner, :master, current_user: project.owner)
+
+        expect(project.users.reload).to include(project.owner)
+      end
+    end
   end
 
   describe '#real_source_type' do
@@ -69,11 +70,8 @@ describe ProjectMember, models: true do
     end
   end
 
-  describe :import_team do
+  describe '.import_team' do
     before do
-      @abilities = Six.new
-      @abilities << Ability
-
       @project_1 = create :project
       @project_2 = create :project
 
@@ -92,8 +90,8 @@ describe ProjectMember, models: true do
       it { expect(@project_2.users).to include(@user_1) }
       it { expect(@project_2.users).to include(@user_2) }
 
-      it { expect(@abilities.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
-      it { expect(@abilities.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
+      it { expect(Ability.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
+      it { expect(Ability.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
     end
 
     describe 'project 1 should not be changed' do
@@ -103,25 +101,21 @@ describe ProjectMember, models: true do
   end
 
   describe '.add_users_to_projects' do
-    before do
-      @project_1 = create :project
-      @project_2 = create :project
+    it 'adds the given users to the given projects' do
+      projects = create_list(:empty_project, 2)
+      users = create_list(:user, 2)
 
-      @user_1 = create :user
-      @user_2 = create :user
+      described_class.add_users_to_projects(
+        [projects.first.id, projects.second],
+        [users.first.id, users.second],
+        described_class::MASTER)
 
-      ProjectMember.add_users_to_projects(
-        [@project_1.id, @project_2.id],
-        [@user_1.id, @user_2.id],
-        ProjectMember::MASTER
-      )
+      expect(projects.first.users).to include(users.first)
+      expect(projects.first.users).to include(users.second)
+
+      expect(projects.second.users).to include(users.first)
+      expect(projects.second.users).to include(users.second)
     end
-
-    it { expect(@project_1.users).to include(@user_1) }
-    it { expect(@project_1.users).to include(@user_2) }
-
-    it { expect(@project_2.users).to include(@user_1) }
-    it { expect(@project_2.users).to include(@user_2) }
   end
 
   describe '.truncate_teams' do

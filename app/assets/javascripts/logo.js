@@ -1,16 +1,12 @@
 (function() {
   Turbolinks.enableProgressBar();
 
-  start = function() {
+  $(document).on('page:fetch', function() {
     $('.tanuki-logo').addClass('animate');
-  };
+  });
 
-  stop = function() {
+  $(document).on('page:change', function() {
     $('.tanuki-logo').removeClass('animate');
-  };
-
-  $(document).on('page:fetch', start);
-
-  $(document).on('page:change', stop);
+  });
 
 }).call(this);

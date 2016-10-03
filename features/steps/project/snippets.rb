@@ -21,8 +21,8 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
            author: project.users.first)
   end
 
-  step 'I click link "New Snippet"' do
-    click_link "New Snippet"
+  step 'I click link "New snippet"' do
+    click_link "New snippet"
   end
 
   step 'I click link "Snippet one"' do

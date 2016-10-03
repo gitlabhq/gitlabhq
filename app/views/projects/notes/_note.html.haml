@@ -1,6 +1,5 @@
 - return unless note.author
 - return if note.cross_reference_not_visible_for?(current_user)
-- can_resolve = can?(current_user, :resolve_note, note)
 
 - note_editable = note_editable?(note)
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
@@ -24,13 +23,13 @@
               %span.note-role.hidden-xs= access
 
             - if note.resolvable?
-              %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
-                  ":project-path" => "'#{note.project.path}'",
-                  ":discussion-id" => "'#{note.discussion_id}'",
+              - can_resolve = can?(current_user, :resolve_note, note)
+              %resolve-btn{ "project-path" => "#{project_path(note.project)}",
+                  "discussion-id" => "#{note.discussion_id}",
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
                   ":can-resolve" => can_resolve,
-                  ":resolved-by" => "'#{note.resolved_by.try(:name)}'",
+                  "resolved-by" => "#{note.resolved_by.try(:name)}",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
                   "v-ref:note_#{note.id}" => true }
