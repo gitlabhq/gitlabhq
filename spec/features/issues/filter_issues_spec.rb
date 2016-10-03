@@ -110,30 +110,37 @@ describe 'Filter issues', feature: true do
     end
 
     it "filters by `won't fix` and another label" do
-      find('.dropdown-menu-labels a', text: label.title).click
       page.within '.labels-filter' do
-        expect(page).to have_content wontfix.title
         click_link wontfix.title
+        expect(page).to have_content wontfix.title
+        click_link label.title
       end
 
-      expect(find('.js-label-select .dropdown-toggle-text')).to have_content(wontfix.title)
+      expect(find('.js-label-select .dropdown-toggle-text')).to have_content("#{wontfix.title} +1 more")
     end
 
     it "filters by `won't fix` label followed by another label after page load" do
-      find('.dropdown-menu-labels a', text: wontfix.title).click
-      # Close label dropdown to load
+      page.within '.labels-filter' do
+        click_link wontfix.title
+        expect(page).to have_content wontfix.title
+      end
+
       find('body').click
+
       expect(find('.filtered-labels')).to have_content(wontfix.title)
 
       find('.js-label-select').click
       wait_for_ajax
       find('.dropdown-menu-labels a', text: label.title).click
-      # Close label dropdown to load
+
       find('body').click
+
+      expect(find('.filtered-labels')).to have_content(wontfix.title)
       expect(find('.filtered-labels')).to have_content(label.title)
 
       find('.js-label-select').click
       wait_for_ajax
+
       expect(find('.dropdown-menu-labels li', text: wontfix.title)).to have_css('.is-active')
       expect(find('.dropdown-menu-labels li', text: label.title)).to have_css('.is-active')
     end
