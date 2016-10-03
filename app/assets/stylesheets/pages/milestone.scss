@@ -39,10 +39,6 @@
 }
 
 .milestone-summary {
-  h4 {
-    margin-bottom: 0;
-  }
-
   .milestone-stat {
     white-space: nowrap;
     margin-right: 10px;
@@ -80,6 +76,7 @@
     .btn {
       float: left;
       margin-right: $btn-side-margin;
+
       &:last-child {
         margin-right: 0;
       }
@@ -91,6 +88,7 @@
     width: 100%;
     padding: 7px 0;
     flex-shrink: 1;
+
     @media (min-width: $screen-xs-min) {
       // when displayed on one line stats go first, buttons second
       order: 1;

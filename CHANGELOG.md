@@ -28,6 +28,7 @@ entry.
 - Fix sidekiq stats in admin area (blackst0ne)
 - Added label description as tooltip to issue board list title
 - Created cycle analytics bundle JavaScript file
+- Make the milestone page more responsive (yury-n)
 - Hides container registry when repository is disabled
 - API: Fix booleans not recognized as such when using the `to_boolean` helper
 - Removed delete branch tooltip !6954
@@ -984,7 +985,6 @@ entry.
   - Add Bugzilla integration. !4930 (iamtjg)
   - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
-  - Make the milestone page more responsive
   - Be explicit to define merge request discussion variables
   - Use cache for todos counter calling TodoService
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
