@@ -19,13 +19,7 @@
           (removed)
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
-
-      - if todo.target.try(:due_date)
-        - is_due_today = todo.target.due_date.try(:today?)
-        - is_overdue = todo.target.try(:overdue?)
-        &middot;
-        %span{ class: [('text-warning' if is_due_today), ('text-danger' if is_overdue)] }
-          = todo_due_date(todo)
+      &middot; #{todo_due_date(todo)}
 
     .todo-body
       .todo-note
