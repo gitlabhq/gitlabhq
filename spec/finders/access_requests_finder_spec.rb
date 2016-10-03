@@ -3,8 +3,8 @@ require 'spec_helper'
 describe AccessRequestsFinder, services: true do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
-  let(:project) { create(:project) }
-  let(:group) { create(:group) }
+  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :public) }
 
   before do
     project.request_access(access_requester)
