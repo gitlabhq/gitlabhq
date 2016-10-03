@@ -129,7 +129,7 @@ module Gitlab
             assignee_id:  assignee_id,
             state:        bug['fOpen'] == 'true' ? 'opened' : 'closed'
           )
-          issue.add_labels_by_names(labels)
+          issue.add_labels_by_names(labels, project.creator)
 
           if issue.iid != bug['ixBug']
             issue.update_attribute(:iid, bug['ixBug'])

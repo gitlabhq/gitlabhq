@@ -91,7 +91,7 @@ module API
         if merge_request.valid?
           # Find or create labels and attach to issue
           if params[:labels].present?
-            merge_request.add_labels_by_names(params[:labels].split(","))
+            merge_request.add_labels_by_names(params[:labels].split(","), current_user)
           end
 
           present merge_request, with: Entities::MergeRequest, current_user: current_user
@@ -201,7 +201,7 @@ module API
             # Find or create labels and attach to issue
             unless params[:labels].nil?
               merge_request.remove_labels
-              merge_request.add_labels_by_names(params[:labels].split(","))
+              merge_request.add_labels_by_names(params[:labels].split(","), current_user)
             end
 
             present merge_request, with: Entities::MergeRequest, current_user: current_user

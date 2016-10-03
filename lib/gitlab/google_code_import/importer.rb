@@ -100,7 +100,7 @@ module Gitlab
             state:        raw_issue["state"] == "closed" ? "closed" : "opened"
           )
 
-          issue.add_labels_by_names(labels)
+          issue.add_labels_by_names(labels, project.creator)
 
           if issue.iid != raw_issue["id"]
             issue.update_attribute(:iid, raw_issue["id"])

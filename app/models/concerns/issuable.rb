@@ -234,19 +234,13 @@ module Issuable
     labels.delete_all
   end
 
-  def add_labels_by_names(label_names)
-    label_ids = []
-    label_ids << project.group.labels.select(:id) if project.group.present?
-    label_ids << project.labels.select(:id)
-
-    union = Gitlab::SQL::Union.new(label_ids)
-
-    available_labels = Label.where("labels.id IN (#{union.to_sql})")
+  def add_labels_by_names(label_names, current_user)
+    available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
 
     label_names.each do |label_name|
       title = label_name.strip
       label = available_labels.find_by(title: title)
-      label = project.labels.build(title: title, color: Label::DEFAULT_COLOR) if label.nil?
+      label ||= project.labels.build(title: title, color: Label::DEFAULT_COLOR)
 
       self.labels << label
     end
