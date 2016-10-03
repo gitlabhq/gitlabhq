@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/brodock/github-markup.git
+  revision: 62ff5993081920ad75016f2b87019dd14e3af137
+  branch: python3-fix
+  specs:
+    github-markup (1.4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -272,7 +279,6 @@ GEM
       escape_utils (~> 1.1.0)
       mime-types (>= 1.19)
       rugged (>= 0.23.0b)
-    github-markup (1.4.0)
     gitlab-flowdock-git-hook (1.0.1)
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
@@ -864,7 +870,7 @@ DEPENDENCIES
   gemnasium-gitlab-service (~> 0.2)
   gemojione (~> 3.0)
   github-linguist (~> 4.7.0)
-  github-markup (~> 1.4)
+  github-markup (~> 1.4)!
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab_git (~> 10.6.8)
   gitlab_omniauth-ldap (~> 1.2.1)

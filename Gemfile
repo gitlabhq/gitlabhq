@@ -101,7 +101,7 @@ gem 'seed-fu', '~> 2.3.5'
 # Markdown and HTML processing
 gem 'html-pipeline',      '~> 1.11.0'
 gem 'deckar01-task_list', '1.0.5', require: 'task_list/railtie'
-gem 'github-markup',      '~> 1.4'
+gem 'github-markup',      '~> 1.4', git: 'https://github.com/brodock/github-markup.git', branch: 'python3-fix'
 gem 'redcarpet',          '~> 3.3.3'
 gem 'RedCloth',           '~> 4.3.2'
 gem 'rdoc',               '~>3.6'
