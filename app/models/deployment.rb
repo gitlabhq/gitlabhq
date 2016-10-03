@@ -30,7 +30,7 @@ class Deployment < ActiveRecord::Base
   end
 
   def create_ref
-    project.repository.fetch_ref(project.repository.path_to_repo, ref, ref_path)
+    project.repository.create_ref(ref, ref_path)
   end
 
   def manual_actions
@@ -80,6 +80,6 @@ class Deployment < ActiveRecord::Base
   private
 
   def ref_path
-    "#{environment.ref_path}#{id}"
+    File.join(environment.ref_path, 'deployments', id.to_s)
   end
 end

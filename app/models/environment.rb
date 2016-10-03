@@ -49,6 +49,6 @@ class Environment < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/environments/#{Shellwords.shellescape(name)}/"
+    "refs/environments/#{Shellwords.shellescape(name)}"
   end
 end

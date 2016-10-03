@@ -20,7 +20,7 @@ Since 8.13, a reference in the git repository is saved for each deployment. So
 knowing what the state is of your current environments is only a `git fetch`
 away.
 
-In your git config, append the `[remote "<your-remote>"] block with an extra
+In your git config, append the `[remote "<your-remote>"]` block with an extra
 fetch line:
 
 ```
