@@ -31,14 +31,21 @@ module Ci
       end
 
       def update_runner_info
-        # Use a random threshold to prevent beating DB updates
-        # it generates a distribution between: [40m, 80m]
-        contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
-        return unless current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= contacted_at_max_age
+        return unless update_runner?
 
         current_runner.contacted_at = Time.now
         current_runner.assign_attributes(get_runner_version_from_params)
         current_runner.save if current_runner.changed?
+      end
+
+      def update_runner?
+        # Use a random threshold to prevent beating DB updates.
+        # It generates a distribution between [40m, 80m].
+        #
+        contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
+
+        current_runner.contacted_at.nil? ||
+          (Time.now - current_runner.contacted_at) >= contacted_at_max_age
       end
 
       def build_not_found!
