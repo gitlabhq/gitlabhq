@@ -164,7 +164,6 @@
           new Labels();
           break;
         case 'projects:labels:index':
-          debugger;
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
