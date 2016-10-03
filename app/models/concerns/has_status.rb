@@ -22,8 +22,8 @@ module HasStatus
       canceled = scope.canceled.select('count(*)').to_sql
 
       "(CASE
-        WHEN (#{builds})=(#{created}) THEN 'created'
         WHEN (#{builds})=(#{success}) THEN 'success'
+        WHEN (#{builds})=(#{created}) THEN 'created'
         WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
