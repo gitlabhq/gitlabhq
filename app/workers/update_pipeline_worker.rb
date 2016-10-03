@@ -1,4 +1,4 @@
-class ProcessPipelineWorker
+class UpdatePipelineWorker
   include Sidekiq::Worker
 
   sidekiq_options queue: :default
@@ -7,6 +7,6 @@ class ProcessPipelineWorker
     pipeline = Ci::Pipeline.find_by(id: pipeline_id)
     return unless pipeline
 
-    pipeline.process!
+    pipeline.update_status
   end
 end

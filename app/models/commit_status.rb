@@ -78,10 +78,14 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition do |commit_status, transition|
-      if commit_status.pipeline && !transition.loopback?
-        ProcessPipelineWorker.perform_async(
-          commit_status.pipeline.id, process: commit_status.complete?
-        )
+      return if transition.loopback?
+
+      commit_status.pipeline.try(:id).try do |pipeline_id|
+        if commit_status.complete?
+          ProcessPipelineWorker.perform_async(pipeline_id)
+        end
+
+        UpdatePipelineWorker.perform_async(pipeline_id)
       end
 
       true
