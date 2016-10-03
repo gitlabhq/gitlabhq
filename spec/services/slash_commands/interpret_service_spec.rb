@@ -165,6 +165,23 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'wip command' do
+      it 'returns wip_event: "wip" if content contains /wip' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(wip_event: 'wip')
+      end
+    end
+
+    shared_examples 'unwip command' do
+      it 'returns wip_event: "unwip" if content contains /wip' do
+        issuable.update(title: issuable.wip_title)
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(wip_event: 'unwip')
+      end
+    end
+
     shared_examples 'empty command' do
       it 'populates {} if content contains an unsupported command' do
         _, updates = service.execute(content, issuable)
@@ -374,6 +391,16 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'remove_due_date command' do
       let(:content) { '/remove_due_date' }
       let(:issuable) { issue }
+    end
+
+    it_behaves_like 'wip command' do
+      let(:content) { '/wip' }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'unwip command' do
+      let(:content) { '/wip' }
+      let(:issuable) { merge_request }
     end
 
     it_behaves_like 'empty command' do
