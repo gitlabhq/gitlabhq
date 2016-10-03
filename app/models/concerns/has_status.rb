@@ -8,28 +8,28 @@ module HasStatus
 
   class_methods do
     def status_sql
-      scope = exclude_ignored_jobs
+      scope = if respond_to?(:exclude_ignored)
+                exclude_ignored
+              else
+                all
+              end
       builds = scope.select('count(*)').to_sql
       created = scope.created.select('count(*)').to_sql
       success = scope.success.select('count(*)').to_sql
-      ignored = scope.ignored.select('count(*)').to_sql if scope.respond_to?(:ignored)
-      ignored ||= '0'
       pending = scope.pending.select('count(*)').to_sql
       running = scope.running.select('count(*)').to_sql
-      canceled = scope.canceled.select('count(*)').to_sql
       skipped = scope.skipped.select('count(*)').to_sql
+      canceled = scope.canceled.select('count(*)').to_sql
 
-      deduce_status = "(CASE
+      "(CASE
         WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
-        WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'skipped'
-        WHEN (#{builds})=(#{created})+(#{pending})+(#{skipped}) THEN 'pending'
-        WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored})+(#{skipped}) THEN 'canceled'
+        WHEN (#{builds})=(#{success}) THEN 'success'
+        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'skipped'
+        WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
+        WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
         WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
-
-      deduce_status
     end
 
     def status
@@ -69,11 +69,6 @@ module HasStatus
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
     scope :exclude_ignored_jobs, -> do
-      quoted_when = connection.quote_column_name('when')
-      # We want to ignore skipped manual jobs
-      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
-        # We want to ignore skipped on_failure
-        where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
     end
   end
 

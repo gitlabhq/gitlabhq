@@ -39,8 +39,8 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe '#ignored?' do
-    subject { build.ignored? }
+  describe '#failed_but_allowed?' do
+    subject { build.failed_but_allowed? }
 
     context 'when build is not allowed to fail' do
       before do

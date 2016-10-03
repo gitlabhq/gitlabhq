@@ -61,7 +61,7 @@ module Ci
     end
 
     def status_for_prior_stages(index)
-      pipeline.builds.exclude_ignored_jobs.where('stage_idx < ?', index).
+      pipeline.builds.exclude_ignored.where('stage_idx < ?', index).
         latest.status || 'success'
     end
 
