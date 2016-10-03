@@ -72,7 +72,7 @@ class SystemHooksService
       return 'user_add_to_group'      if event == :create
       return 'user_remove_from_group' if event == :destroy
     else
-      "#{model.class.name.downcase}_#{event.to_s}"
+      "#{model.class.name.downcase}_#{event}"
     end
   end
 

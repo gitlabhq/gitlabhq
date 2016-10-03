@@ -16,7 +16,7 @@ describe AccessRequestsFinder, services: true do
       access_requesters = described_class.new(source).public_send(method_name, user)
 
       expect(access_requesters.size).to eq(1)
-      expect(access_requesters.first).to be_a "#{source.class.to_s}Member".constantize
+      expect(access_requesters.first).to be_a "#{source.class}Member".constantize
       expect(access_requesters.first.user).to eq(access_requester)
     end
   end
