@@ -94,7 +94,7 @@
 .profile-user-bio {
   // Limits the width of the user bio for readability.
   max-width: 600px;
-  margin: 15px auto 0;
+  margin: 10px auto 0;
   padding: 0 16px;
 }
 
@@ -220,13 +220,9 @@
     margin: 0 auto;
     .avatar-holder {
       width: 90px;
-      display: inline-block;
+      margin: 0 auto 10px;
     }
     .user-info {
-      display: inline-block;
-      text-align: left;
-      vertical-align: middle;
-      margin-left: 15px;
       .handle {
         color: $gl-gray-light;
       }
