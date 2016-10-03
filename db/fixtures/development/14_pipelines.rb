@@ -34,7 +34,7 @@ class Gitlab::Seeder::Pipelines
       rescue ActiveRecord::RecordInvalid
         print 'F'
       ensure
-        pipeline.build_updated
+        pipeline.update_status
       end
     end
   end
