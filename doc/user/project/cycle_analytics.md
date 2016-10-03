@@ -6,7 +6,7 @@
 This the first iteration of Cycle Analytics, you can follow the following issue
 to track the changes that are coming to this feature: [#20975][ce-20975].
 
-Cycle Analytics measures the time it takes to go from [an idea to production] for
+Cycle Analytics measures the time it takes to go from an [idea to production] for
 each project you have. This is achieved by not only indicating the total time it
 takes to reach at that point, but the total time is broken down into the
 multiple stages an idea has to pass through to be shipped.
