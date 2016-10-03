@@ -41,7 +41,10 @@ You can see that there are seven stages in total:
     - Median time from when the merge request got merged until the deploy to
       production (production is last stage/environment)
 - **Production** (Total)
-   - Sum of all the above stages excluding the Test (CI) time
+   - Sum of all the above stages excluding the Test (CI) time. To clarify, it's
+     not so much that CI time is "excluded", but rather CI time is already
+     counted in the review stage since CI is done automatically. Most of the
+     other stages are purely sequential, but **Test** is not.
 
 ## How the data is measured
 
