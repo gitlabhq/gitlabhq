@@ -24,6 +24,7 @@ v 8.13.0 (unreleased)
   - Preserve label filters when sorting !6136 (Joseph Frazier)
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
+  - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
