@@ -45,7 +45,7 @@ module Emails
       @token = token
 
       mail(to: member.invite_email,
-           subject: "Invitation to join the #{member_source.human_name} #{member_source.model_name.singular}")
+           subject: subject("Invitation to join the #{member_source.human_name} #{member_source.model_name.singular}"))
     end
 
     def member_invite_accepted_email(member_source_type, member_id)

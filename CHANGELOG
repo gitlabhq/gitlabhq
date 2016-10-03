@@ -19,6 +19,7 @@ v 8.13.0 (unreleased)
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
+  - Add configurable email subject suffix (Fu Xu)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Replace `alias_method_chain` with `Module#prepend`
   - Enable GitLab Import/Export for non-admin users.
