@@ -1,15 +1,30 @@
-Project: <%= @project.path_with_namespace %>
-Branch: <%= @pipeline.ref %>
-Commit: <%= @pipeline.short_sha %> (<%= @pipeline.sha %>)
-Commit Message: <%= @pipeline.git_commit_message %>
-Commit Author: <%= @pipeline.git_author_name %>
-Pusher: <%= @pipeline.user.try(:name) %>
-<% failed = @pipeline.statuses.latest.failed %>
-Pipeline #<%= @pipeline.id %> had <%= failed.size %> failed <%= 'job'.pluralize(failed.size) %>.
+Uh oh, your CI pipeline has failed.
 
-<% failed.each do |job| %>
-ID: <%= job.id %>
-Stage: <%= job.stage %>
-Name: <%= job.name %>
-Trace: <%= job.trace_with_state[:html] %>
-<% end %>
+Project: <%= @project.name %> ( <%= namespace_project_url(@project.namespace, @project) %> )
+Branch: <%= @pipeline.ref %> ( <%= namespace_project_commits_url(@project.namespace, @project, @pipeline.ref) %> )
+<% if @merge_request -%>
+Merge Request: <%= @merge_request.to_reference %> ( <%= namespace_project_merge_request_url(@project.namespace, @project, @merge_request) %> )
+<% end -%>
+
+Commit: <%= @pipeline.short_sha %> ( <%= namespace_project_commit_url(@project.namespace, @project, @pipeline.sha) %> )
+Commit Message: <%= @pipeline.git_commit_message.truncate(50) %>
+<% commit = @pipeline.commit -%>
+<% if commit.author.nil? -%>
+Commit Author: <%= commit.author_name %>
+<% else -%>
+Commit Author: <%= commit.author.name %> ( <%= user_url(commit.author) %> )
+<% end -%>
+
+<% failed = @pipeline.statuses.latest.failed -%>
+Pipeline #<%= @pipeline.id %> ( <%= namespace_project_pipeline_url(@project.namespace, @project, @pipeline.id) %> ) had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
+
+<% failed.each do |build| -%>
+Build #<%= build.id %> ( <%= namespace_project_build_url(@project.namespace, @project, build.id) %> )
+Stage: <%= build.stage %>
+Name: <%= build.name %>
+Trace: <%= build.trace_with_state(last_lines: 10)[:text] %>
+
+<% end -%>
+
+Manage all notifications: <%= profile_notifications_url %>
+Help: <%= help_url %>
