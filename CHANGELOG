@@ -25,6 +25,7 @@ v 8.13.0 (unreleased)
   - Take filters in account in issuable counters. !6496
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
+  - Added 'all' tab to event filter tabs
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Add broadcast messages and alerts below sub-nav
@@ -600,8 +601,6 @@ v 8.10.0
   - Updated dropdowns in issuable form to use new GitLab dropdown style
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
-  - Fix GFM autocomplete not working on wiki pages
-  - Added 'all' tab to event filter tabs
   - Fix MR-auto-close text added to description. !4836
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags. !5105 (redetection)
