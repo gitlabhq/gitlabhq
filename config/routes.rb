@@ -730,6 +730,7 @@ Rails.application.routes.draw do
 
         resources :merge_requests, concerns: :awardable, constraints: { id: /\d+/ } do
           member do
+            get :terminal
             get :commits
             get :diffs
             get :conflicts

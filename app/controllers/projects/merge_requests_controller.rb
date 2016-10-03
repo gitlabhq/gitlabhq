@@ -185,6 +185,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def terminal
+    return 'TERMINAL'
+  end
+
   def builds
     respond_to do |format|
       format.html do
