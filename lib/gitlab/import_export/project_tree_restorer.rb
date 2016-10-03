@@ -120,8 +120,7 @@ module Gitlab
       end
 
       def parsed_relation_hash(relation_hash)
-        group_id = restored_project.group ? restored_project.group.id : nil
-        relation_hash.merge!('group_id' => group_id, 'project_id' => restored_project.id)
+        relation_hash.merge!('group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id)
       end
     end
   end
