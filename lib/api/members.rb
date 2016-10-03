@@ -65,14 +65,6 @@ module API
           # for both project and group members in 9.0!
           conflict!('Member already exists') if source_type == 'group' && member
 
-          access_requester = source.requesters.find_by(user_id: params[:user_id])
-          if access_requester
-            # We delete a potential access requester before creating the new member.
-            # We pass current_user = access_requester so that the requester doesn't
-            # receive a "access denied" email.
-            ::Members::DestroyService.new(source, access_requester.user, params).execute(:requesters)
-          end
-
           unless member
             member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
           end
