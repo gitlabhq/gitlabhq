@@ -19,7 +19,7 @@
           (removed)
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
-      &middot; #{todo_due_date(todo)}
+      = todo_due_date(todo)
 
     .todo-body
       .todo-note
