@@ -1013,15 +1013,12 @@ class Repository
     branch_commit = commit(branch_name)
     root_ref_commit = commit(root_ref)
 
-    if branch_commit && !same_head?(branch_commit.id, root_ref_commit.id)
-      is_ancestor?(branch_commit.id, root_ref_commit.id)
+    if branch_commit
+      same_head = branch_commit.id == root_ref_commit.id
+      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
-  end
-
-  def same_head?(first_commit_id, second_commit_id)
-    first_commit_id == second_commit_id
   end
 
   def merge_base(first_commit_id, second_commit_id)

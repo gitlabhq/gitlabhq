@@ -114,14 +114,27 @@ describe Repository, models: true do
   end
 
   describe '#merged_to_root_ref?' do
-    context 'merged branch' do
+    context 'merged branch without ff' do
       subject { repository.merged_to_root_ref?('branch-merged') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    # If the HEAD was ff then it will be false
+    context 'merged with ff' do
+      subject { repository.merged_to_root_ref?('improve/awesome') }
 
       it { is_expected.to be_truthy }
     end
 
     context 'not merged branch' do
       subject { repository.merged_to_root_ref?('not-merged-branch') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'default branch' do
+      subject { repository.merged_to_root_ref?('master') }
 
       it { is_expected.to be_falsey }
     end

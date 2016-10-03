@@ -6,9 +6,9 @@ describe MergeRequestDiff, models: true do
 
     it { expect(subject).to be_valid }
     it { expect(subject).to be_persisted }
-    it { expect(subject.commits.count).to eq(5) }
-    it { expect(subject.diffs.count).to eq(8) }
-    it { expect(subject.head_commit_sha).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    it { expect(subject.commits.count).to eq(29) }
+    it { expect(subject.diffs.count).to eq(20) }
+    it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
   end
