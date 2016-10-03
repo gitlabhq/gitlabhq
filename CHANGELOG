@@ -11,6 +11,7 @@ v 8.12.4 (unreleased)
   - Restrict failed login attempts for users with 2FA enabled. !6668
   - Fix failed project deletion when feature visibility set to private. !6688
   - Prevent claiming associated model IDs via import.
+  - Set GitLab project exported file permissions to owner only
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
