@@ -17,14 +17,17 @@ feature 'Merge request tabs', js: true, feature: true do
 
   it 'affixes to top of page when scrolling' do
     page.execute_script "window.scroll(0,10000)"
+
     expect(page).to have_selector('.js-tabs-affix.affix')
   end
 
   it 'removes affix when scrolling to top' do
     page.execute_script "window.scroll(0,10000)"
+
     expect(page).to have_selector('.js-tabs-affix.affix')
 
     page.execute_script "window.scroll(0,-10000)"
+    
     expect(page).to have_selector('.js-tabs-affix.affix-top')
   end
 end
