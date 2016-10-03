@@ -7,19 +7,15 @@ module Ci
 
     def create
       @content = params[:content]
+      @error = Ci::GitlabCiYamlProcessor.validation_message(@content)
+      @status = @error.blank?
 
-      if @content.blank?
-        @status = false
-        @error = "Please provide content of .gitlab-ci.yml"
-      else
+      if @error.blank?
         @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
         @stages = @config_processor.stages
         @builds = @config_processor.builds
-        @status = true
+        @jobs = @config_processor.jobs
       end
-    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-      @error = e.message
-      @status = false
     rescue
       @error = 'Undefined error'
       @status = false

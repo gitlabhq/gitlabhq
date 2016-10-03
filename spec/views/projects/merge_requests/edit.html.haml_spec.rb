@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/merge_requests/edit.html.haml' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project) }

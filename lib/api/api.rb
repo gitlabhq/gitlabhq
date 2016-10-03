@@ -28,6 +28,7 @@ module API
     helpers ::SentryHelper
     helpers ::API::Helpers
 
+    # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
     mount ::API::Branches
@@ -45,11 +46,14 @@ module API
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::LicenseTemplates
+    mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequests
+    mount ::API::MergeRequestDiffs
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::NotificationSettings
     mount ::API::Pipelines
     mount ::API::ProjectHooks
     mount ::API::ProjectSnippets
@@ -68,6 +72,5 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
-    mount ::API::MergeRequestDiffs
   end
 end

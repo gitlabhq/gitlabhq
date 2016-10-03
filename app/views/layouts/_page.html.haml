@@ -1,5 +1,5 @@
 .page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
-  .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
+  .sidebar-wrapper.nicescroll
     .sidebar-action-buttons
       = link_to '#', class: 'nav-header-btn toggle-nav-collapse', title: "Open/Close" do
         %span.sr-only Toggle navigation
@@ -20,6 +20,7 @@
       .container-fluid
         = render "layouts/nav/#{nav}"
   .content-wrapper{ class: "#{layout_nav_class}" }
+    = yield :sub_nav
     = render "layouts/broadcast"
     = render "layouts/flash"
     = yield :flash_message

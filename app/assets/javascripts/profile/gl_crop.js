@@ -5,6 +5,7 @@
   GitLabCrop = (function() {
     var FILENAMEREGEX;
 
+    // Matches everything but the file name
     FILENAMEREGEX = /^.*[\\\/]/;
 
     function GitLabCrop(input, opts) {
@@ -17,11 +18,18 @@
       this.onModalShow = bind(this.onModalShow, this);
       this.onPickImageClick = bind(this.onPickImageClick, this);
       this.fileInput = $(input);
+      // We should rename to avoid spec to fail
+      // Form will submit the proper input filed with a file using FormData
       this.fileInput.attr('name', (this.fileInput.attr('name')) + "-trigger").attr('id', (this.fileInput.attr('id')) + "-trigger");
+      // Set defaults
       this.exportWidth = (ref = opts.exportWidth) != null ? ref : 200, this.exportHeight = (ref1 = opts.exportHeight) != null ? ref1 : 200, this.cropBoxWidth = (ref2 = opts.cropBoxWidth) != null ? ref2 : 200, this.cropBoxHeight = (ref3 = opts.cropBoxHeight) != null ? ref3 : 200, this.form = (ref4 = opts.form) != null ? ref4 : this.fileInput.parents('form'), this.filename = opts.filename, this.previewImage = opts.previewImage, this.modalCrop = opts.modalCrop, this.pickImageEl = opts.pickImageEl, this.uploadImageBtn = opts.uploadImageBtn, this.modalCropImg = opts.modalCropImg;
+      // Required params
+      // Ensure needed elements are jquery objects
+      // If selector is provided we will convert them to a jQuery Object
       this.filename = this.getElement(this.filename);
       this.previewImage = this.getElement(this.previewImage);
       this.pickImageEl = this.getElement(this.pickImageEl);
+      // Modal elements usually are outside the @form element
       this.modalCrop = _.isString(this.modalCrop) ? $(this.modalCrop) : this.modalCrop;
       this.uploadImageBtn = _.isString(this.uploadImageBtn) ? $(this.uploadImageBtn) : this.uploadImageBtn;
       this.modalCropImg = _.isString(this.modalCropImg) ? $(this.modalCropImg) : this.modalCropImg;
@@ -93,8 +101,8 @@
       return this.modalCropImg.attr('src', '').cropper('destroy');
     };
 
-    GitLabCrop.prototype.onUploadImageBtnClick = function(e) {
-      e.preventDefault();
+    GitLabCrop.prototype.onUploadImageBtnClick = function(e) { // Remove attached image
+      e.preventDefault(); // Destroy cropper instance
       this.setBlob();
       this.setPreview();
       this.modalCrop.modal('hide');

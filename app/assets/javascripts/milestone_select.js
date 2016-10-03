@@ -93,6 +93,7 @@
           },
           hidden: function() {
             $selectbox.hide();
+            // display:block overrides the hide-collapse rule
             return $value.css('display', '');
           },
           clicked: function(selected, $el, e) {

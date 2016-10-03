@@ -110,8 +110,8 @@ POST /projects/:id/members
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members/:user_id?access_level=30
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/:id/members/:user_id?access_level=30
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v3/groups/:id/members
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v3/projects/:id/members
 ```
 
 Example response:

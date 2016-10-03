@@ -16,6 +16,7 @@
 - if selected
   - selected.each do |label|
     = hidden_field_tag data_options[:field_name], use_id ? label.try(:id) : u(label.try(:title)), id: nil
+
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.empty?) }

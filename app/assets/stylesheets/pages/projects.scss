@@ -334,6 +334,10 @@ a.deploy-project-label {
   a {
     color: $gl-dark-link-color;
   }
+
+  .dropdown-menu {
+    width: 240px;
+  }
 }
 
 .last-push-widget {
@@ -723,15 +727,77 @@ pre.light-well {
   }
 }
 
-.project-refs-form {
-  .dropdown-menu {
-    width: 300px;
+.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+  width: 300px;
+
+  @media (min-width: $screen-sm-min) {
+    width: 500px;
+  }
+
+  a {
+    white-space: normal;
   }
 }
 
 .compare-form-group {
   .dropdown-menu {
     width: 300px;
+  }
+
+  &.from .compare-dropdown-toggle {
+    width: 237px;
+  }
+
+  &.to .compare-dropdown-toggle {
+    width: 254px;
+  }
+
+  .dropdown-toggle-text {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
+.compare-ellipsis {
+  display: inline;
+}
+
+@media (max-width: $screen-xs-max) {
+  .compare-form-group {
+    .input-group {
+      width: 100%;
+
+      & > .compare-dropdown-toggle {
+        width: 100%;
+      }
+    }
+
+    .dropdown-menu {
+      width: 100%;
+    }
+  }
+
+  .compare-switch-container {
+    text-align: center;
+    padding: 0 0 $gl-padding;
+
+    .commits-compare-switch {
+      float: none;
+    }
+  }
+
+  .compare-ellipsis {
+    display: block;
+    text-align: center;
+    padding: 0 0 $gl-padding;
+  }
+
+  .commits-compare-btn {
+    width: 100%;
   }
 }
 
@@ -758,5 +824,15 @@ pre.light-well {
       cursor: pointer;
       display: block;
     }
+  }
+}
+
+.project-path {
+  .form-control {
+    min-width: 100px;
+  }
+  .select2-choice {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }

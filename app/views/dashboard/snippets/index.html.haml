@@ -4,10 +4,10 @@
 = render 'dashboard/snippets_head'
 
 .nav-block
-  .controls
-    = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
+  .controls.hidden-xs
+    = link_to new_snippet_path, class: "btn btn-new", title: "New snippet" do
       = icon('plus')
-      New Snippet
+      New snippet
 
   .nav-links.snippet-scope-menu
     %li{ class: ("active" unless params[:scope]) }
@@ -34,5 +34,9 @@
         %span.badge
           = current_user.snippets.are_public.count
 
-= render 'snippets/snippets'
+    .visible-xs
+      = link_to new_snippet_path, class: "btn btn-new btn-block", title: "New snippet" do
+        = icon('plus')
+        New snippet
 
+= render 'snippets/snippets'

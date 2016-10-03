@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 feature 'Merge Requests > User uses slash commands', feature: true, js: true do
+  include SlashCommandsHelpers
   include WaitForAjax
 
   let(:user) { create(:user) }
@@ -20,11 +21,12 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
+    after do
+      wait_for_ajax
+    end
+
     it 'does not recognize the command nor create a note' do
-      page.within('.js-main-target-form') do
-        fill_in 'note[note]', with: "/due 2016-08-28"
-        click_button 'Comment'
-      end
+      write_note("/due 2016-08-28")
 
       expect(page).not_to have_content '/due 2016-08-28'
     end

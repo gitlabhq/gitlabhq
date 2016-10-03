@@ -225,7 +225,8 @@ describe API::API, api: true  do
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
-        only_allow_merge_if_build_succeeds: false
+        only_allow_merge_if_build_succeeds: false,
+        request_access_enabled: true
       })
 
       post api('/projects', user), project
@@ -352,7 +353,8 @@ describe API::API, api: true  do
         description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        request_access_enabled: true
       })
 
       post api("/projects/user/#{user.id}", admin), project
@@ -759,13 +761,16 @@ describe API::API, api: true  do
     let(:group) { create(:group) }
 
     it "shares project with group" do
+      expires_at = 10.days.from_now.to_date
+
       expect do
-        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at
       end.to change { ProjectGroupLink.count }.by(1)
 
       expect(response.status).to eq 201
-      expect(json_response['group_id']).to eq group.id
-      expect(json_response['group_access']).to eq Gitlab::Access::DEVELOPER
+      expect(json_response['group_id']).to eq(group.id)
+      expect(json_response['group_access']).to eq(Gitlab::Access::DEVELOPER)
+      expect(json_response['expires_at']).to eq(expires_at.to_s)
     end
 
     it "returns a 400 error when group id is not given" do
@@ -887,6 +892,15 @@ describe API::API, api: true  do
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
 
+      it 'updates request_access_enabled' do
+        project_param = { request_access_enabled: false }
+
+        put api("/projects/#{project.id}", user), project_param
+
+        expect(response).to have_http_status(200)
+        expect(json_response['request_access_enabled']).to eq(false)
+      end
+
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
         put api("/projects/#{project3.id}", user), project_param
@@ -948,7 +962,8 @@ describe API::API, api: true  do
                           wiki_enabled: true,
                           snippets_enabled: true,
                           merge_requests_enabled: true,
-                          description: 'new description' }
+                          description: 'new description',
+                          request_access_enabled: true }
         put api("/projects/#{project.id}", user3), project_param
         expect(response).to have_http_status(403)
       end

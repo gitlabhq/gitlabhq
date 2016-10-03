@@ -78,7 +78,8 @@ Parameters:
 
 ### Create new issue note
 
-Creates a new note to a single project issue.
+Creates a new note to a single project issue. If you create a note where the body
+only contains an Award Emoji, you'll receive this object back.
 
 ```
 POST /projects/:id/issues/:issue_id/notes
@@ -204,6 +205,7 @@ Parameters:
 ### Create new snippet note
 
 Creates a new note for a single snippet. Snippet notes are comments users can post to a snippet.
+If you create a note where the body only contains an Award Emoji, you'll receive this object back.
 
 ```
 POST /projects/:id/snippets/:snippet_id/notes
@@ -332,6 +334,8 @@ Parameters:
 ### Create new merge request note
 
 Creates a new note for a single merge request.
+If you create a note where the body only contains an Award Emoji, you'll receive
+this object back.
 
 ```
 POST /projects/:id/merge_requests/:merge_request_id/notes

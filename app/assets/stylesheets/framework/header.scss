@@ -77,10 +77,6 @@ header {
       }
     }
 
-    &.header-collapsed {
-      padding: 0 16px;
-    }
-
     .side-nav-toggle {
       position: absolute;
       left: -10px;
@@ -116,10 +112,14 @@ header {
     .header-logo {
       position: absolute;
       left: 50%;
-      margin-left: -18px;
       top: 7px;
       transition-duration: .3s;
       z-index: 999;
+
+      #logo {
+        position: relative;
+        left: -50%;
+      }
 
       svg, img {
         height: 36px;
@@ -130,8 +130,12 @@ header {
       }
 
       @media (max-width: $screen-xs-max) {
-        right: 25px;
+        right: 20px;
         left: auto;
+
+        #logo {
+          left: auto;
+        }
       }
     }
 

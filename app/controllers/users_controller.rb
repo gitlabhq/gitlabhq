@@ -65,7 +65,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("snippets/_snippets", collection: @snippets)
+          html: view_to_html_string("snippets/_snippets", collection: @snippets, remote: true)
         }
       end
     end
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
 
   def calendar
     calendar = contributions_calendar
-    @timestamps = calendar.timestamps
+    @activity_dates = calendar.activity_dates
 
     render 'calendar', layout: false
   end

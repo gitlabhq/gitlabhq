@@ -23,8 +23,9 @@
           selectable: true,
           filterable: true,
           filterByText: true,
-          fieldName: $dropdown.attr('name'),
-          filterInput: 'input[type="text"]',
+          toggleLabel: true,
+          fieldName: $dropdown.data('field-name'),
+          filterInput: 'input[type="search"]',
           renderRow: function(ref) {
             var link;
             if (ref.header != null) {

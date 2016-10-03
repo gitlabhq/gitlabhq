@@ -1,23 +1,4 @@
-- if @already_been_taken
-  :plain
-    tr = $("tr#repo_#{@repo_id}")
-    target_field = tr.find(".import-target")
-    import_button = tr.find(".btn-import")
-    origin_target = target_field.text()
-    project_name = "#{@project_name}"
-    origin_namespace = "#{@target_namespace}"
-    target_field.empty()
-    target_field.append("<p class='alert alert-danger'>This namespace already been taken! Please choose another one</p>")
-    target_field.append("<input type='text' name='target_namespace' />")
-    target_field.append("/" + project_name)
-    target_field.data("project_name", project_name)
-    target_field.find('input').prop("value", origin_namespace)
-    import_button.enable().removeClass('is-loading')
-- elsif @access_denied
-  :plain
-    job = $("tr#repo_#{@repo_id}")
-    job.find(".import-actions").html("<p class='alert alert-danger'>Access denied! Please verify you can add deploy keys to this repository.</p>")
-- elsif @project.persisted?
+- if @project.persisted?
   :plain
     job = $("tr#repo_#{@repo_id}")
     job.attr("id", "project_#{@project.id}")

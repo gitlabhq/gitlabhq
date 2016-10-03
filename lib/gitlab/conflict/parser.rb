@@ -18,7 +18,7 @@ module Gitlab
 
       def parse(text, our_path:, their_path:, parent_file: nil)
         raise UnmergeableFile if text.blank? # Typically a binary file
-        raise UnmergeableFile if text.length > 102400
+        raise UnmergeableFile if text.length > 200.kilobytes
 
         begin
           text.to_json

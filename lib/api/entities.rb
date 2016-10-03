@@ -15,7 +15,7 @@ module API
     class User < UserBasic
       expose :created_at
       expose :is_admin?, as: :is_admin
-      expose :bio, :location, :skype, :linkedin, :twitter, :website_url
+      expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
     class Identity < Grape::Entity
@@ -86,7 +86,8 @@ module API
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:user]) }
 
       expose :created_at, :last_activity_at
-      expose :shared_runners_enabled, :lfs_enabled
+      expose :shared_runners_enabled
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
@@ -99,30 +100,33 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_build_succeeds
+      expose :request_access_enabled
     end
 
     class Member < UserBasic
       expose :access_level do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.access_level
       end
       expose :expires_at do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.expires_at
       end
     end
 
     class AccessRequester < UserBasic
       expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester = options[:access_requester] || options[:source].requesters.find_by(user_id: user.id)
         access_requester.requested_at
       end
     end
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
+      expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
+      expose :request_access_enabled
     end
 
     class GroupDetail < Group
@@ -339,7 +343,7 @@ module API
     end
 
     class ProjectGroupLink < Grape::Entity
-      expose :id, :project_id, :group_id, :group_access
+      expose :id, :project_id, :group_id, :group_access, :expires_at
     end
 
     class Todo < Grape::Entity
@@ -375,7 +379,7 @@ module API
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
-          NotificationSetting.levels[member.notification_setting.level]
+          ::NotificationSetting.levels[member.notification_setting.level]
         end
       end
     end
@@ -384,6 +388,21 @@ module API
     end
 
     class GroupAccess < MemberAccess
+    end
+
+    class NotificationSetting < Grape::Entity
+      expose :level
+      expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
+        ::NotificationSetting::EMAIL_EVENTS.each do |event|
+          expose event
+        end
+      end
+    end
+
+    class GlobalNotificationSetting < NotificationSetting
+      expose :notification_email do |notification_setting, options|
+        notification_setting.user.notification_email
+      end
     end
 
     class ProjectService < Grape::Entity
@@ -475,6 +494,8 @@ module API
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
       expose :repository_storage
+      expose :koding_enabled
+      expose :koding_url
     end
 
     class Release < Grape::Entity
@@ -526,6 +547,10 @@ module API
       expose :filename, :size
     end
 
+    class PipelineBasic < Grape::Entity
+      expose :id, :sha, :ref, :status
+    end
+
     class Build < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
@@ -533,6 +558,7 @@ module API
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
       expose :commit, with: RepoCommit
       expose :runner, with: Runner
+      expose :pipeline, with: PipelineBasic
     end
 
     class Trigger < Grape::Entity
@@ -543,8 +569,8 @@ module API
       expose :key, :value
     end
 
-    class Pipeline < Grape::Entity
-      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+    class Pipeline < PipelineBasic
+      expose :before_sha, :tag, :yaml_errors
 
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at

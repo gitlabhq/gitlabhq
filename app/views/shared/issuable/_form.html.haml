@@ -20,7 +20,7 @@
 
         = dropdown_tag(title, options: { toggle_class: 'js-issuable-selector',
           title: title, filter: true, placeholder: 'Filter', footer_content: true,
-          data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: @project.path, namespace_path: @project.namespace.path } } ) do
+          data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: ref_project.path, namespace_path: ref_project.namespace.path } } ) do
           %ul.dropdown-footer-list
             %li
               %a.reset-template

@@ -2,6 +2,8 @@
   this.TreeView = (function() {
     function TreeView() {
       this.initKeyNav();
+      // Code browser tree slider
+      // Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
       $(".tree-content-holder .tree-item").on('click', function(e) {
         var $clickedEl, path;
         $clickedEl = $(e.target);
@@ -15,6 +17,7 @@
           }
         }
       });
+      // Show the "Loading commit data" for only the first element
       $('span.log_loading:first').removeClass('hide');
     }
 

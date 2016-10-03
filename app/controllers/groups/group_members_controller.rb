@@ -15,7 +15,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
 
     @members = @members.order('access_level DESC').page(params[:page]).per(50)
-    @requesters = @group.requesters if can?(current_user, :admin_group, @group)
+    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 
     @group_member = @group.group_members.new
   end

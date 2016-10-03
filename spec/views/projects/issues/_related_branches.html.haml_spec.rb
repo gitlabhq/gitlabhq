@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/issues/_related_branches' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:project) { create(:project) }
   let(:branch) { project.repository.find_branch('feature') }

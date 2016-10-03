@@ -1,0 +1,6 @@
+(function() {
+  gl.emojiAliases = function() {
+    return JSON.parse('<%= Gitlab::AwardEmoji.aliases.to_json %>');
+  };
+
+}).call(this);

@@ -19,6 +19,7 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
+- [University](university/README.md) Learn Git and GitLab through videos and courses.
 
 ## Administrator documentation
 
@@ -29,9 +30,9 @@
 - [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
-- [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
+- [Issue closing pattern](administration/issue_closing_pattern.md) Customize how to close an issue from commit messages.
 - [Koding](administration/integration/koding.md) Set up Koding to use with GitLab.
-- [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
+- [Libravatar](customization/libravatar.md) Use Libravatar instead of Gravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running.

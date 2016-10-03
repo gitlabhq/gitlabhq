@@ -14,9 +14,10 @@ module Issues
     end
 
     def execute_hooks(issue, action = 'open')
-      issue_data = hook_data(issue, action)
-      issue.project.execute_hooks(issue_data, :issue_hooks)
-      issue.project.execute_services(issue_data, :issue_hooks)
+      issue_data  = hook_data(issue, action)
+      hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
+      issue.project.execute_hooks(issue_data, hooks_scope)
+      issue.project.execute_services(issue_data, hooks_scope)
     end
   end
 end

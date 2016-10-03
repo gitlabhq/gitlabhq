@@ -99,14 +99,14 @@ describe MergeRequests::BuildService, services: true do
         let(:source_branch) { "#{issue.iid}-fix-issue" }
 
         it 'appends "Closes #$issue-iid" to the description' do
-          expect(merge_request.description).to eq("#{commit_1.safe_message.split(/\n+/, 2).last}\nCloses ##{issue.iid}")
+          expect(merge_request.description).to eq("#{commit_1.safe_message.split(/\n+/, 2).last}\n\nCloses ##{issue.iid}")
         end
 
         context 'merge request already has a description set' do
           let(:description) { 'Merge request description' }
 
           it 'appends "Closes #$issue-iid" to the description' do
-            expect(merge_request.description).to eq("#{description}\nCloses ##{issue.iid}")
+            expect(merge_request.description).to eq("#{description}\n\nCloses ##{issue.iid}")
           end
         end
 

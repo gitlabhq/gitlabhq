@@ -27,6 +27,14 @@ FactoryGirl.define do
       end
     end
 
+    trait :broken_repo do
+      after(:create) do |project|
+        project.create_repository
+
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+      end
+    end
+
     # Nest Project Feature attributes
     transient do
       wiki_access_level ProjectFeature::ENABLED
@@ -54,6 +62,13 @@ FactoryGirl.define do
   # but not pushed any code there yet
   factory :project_empty_repo, parent: :empty_project do
     empty_repo
+  end
+
+  # Project with broken repository
+  #
+  # Project with an invalid repository state
+  factory :project_broken_repo, parent: :empty_project do
+    broken_repo
   end
 
   # Project with test repository
@@ -106,6 +121,8 @@ FactoryGirl.define do
   factory :project_with_board, parent: :empty_project do
     after(:create) do |project|
       project.create_board
+      project.board.lists.create(list_type: :backlog)
+      project.board.lists.create(list_type: :done)
     end
   end
 end

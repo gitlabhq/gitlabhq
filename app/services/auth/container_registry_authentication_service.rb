@@ -4,11 +4,13 @@ module Auth
 
     AUDIENCE = 'container_registry'
 
-    def execute
-      return error('not found', 404) unless registry.enabled
+    def execute(authentication_abilities:)
+      @authentication_abilities = authentication_abilities
+
+      return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
 
       unless current_user || project
-        return error('forbidden', 403) unless scope
+        return error('DENIED', status: 403, message: 'access forbidden') unless scope
       end
 
       { token: authorized_token(scope).encoded }
@@ -74,9 +76,9 @@ module Auth
 
       case requested_action
       when 'pull'
-        requested_project == project || can?(current_user, :read_container_image, requested_project)
+        requested_project.public? || build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
-        requested_project == project || can?(current_user, :create_container_image, requested_project)
+        build_can_push?(requested_project) || user_can_push?(requested_project)
       else
         false
       end
@@ -84,6 +86,37 @@ module Auth
 
     def registry
       Gitlab.config.registry
+    end
+
+    def build_can_pull?(requested_project)
+      # Build can:
+      # 1. pull from its own project (for ex. a build)
+      # 2. read images from dependent projects if creator of build is a team member
+      @authentication_abilities.include?(:build_read_container_image) &&
+        (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
+    end
+
+    def user_can_pull?(requested_project)
+      @authentication_abilities.include?(:read_container_image) &&
+        can?(current_user, :read_container_image, requested_project)
+    end
+
+    def build_can_push?(requested_project)
+      # Build can push only to the project from which it originates
+      @authentication_abilities.include?(:build_create_container_image) &&
+        requested_project == project
+    end
+
+    def user_can_push?(requested_project)
+      @authentication_abilities.include?(:create_container_image) &&
+        can?(current_user, :create_container_image, requested_project)
+    end
+
+    def error(code, status:, message: '')
+      {
+        errors: [{ code: code, message: message }],
+        http_status: status
+      }
     end
   end
 end

@@ -38,7 +38,7 @@ describe ProjectsFinder do
 
       describe 'with private projects' do
         before do
-          private_project.team.add_user(user, Gitlab::Access::MASTER)
+          private_project.add_user(user, Gitlab::Access::MASTER)
         end
 
         it do

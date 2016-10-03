@@ -16,6 +16,8 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+
   serialize :merge_params, Hash
 
   after_create :ensure_merge_request_diff, unless: :importing?
@@ -316,11 +318,21 @@ class MergeRequest < ActiveRecord::Base
     closed? && forked_source_project_missing?
   end
 
+  def closed_without_source_project?
+    closed? && !source_project
+  end
+
   def forked_source_project_missing?
     return false unless for_fork?
     return true unless source_project
 
     !source_project.forked_from?(target_project)
+  end
+
+  def reopenable?
+    return false if closed_without_fork? || closed_without_source_project? || merged?
+
+    closed?
   end
 
   def ensure_merge_request_diff
@@ -491,6 +503,19 @@ class MergeRequest < ActiveRecord::Base
     target_project
   end
 
+  # If the merge request closes any issues, save this information in the
+  # `MergeRequestsClosingIssues` model. This is a performance optimization.
+  # Calculating this information for a number of merge requests requires
+  # running `ReferenceExtractor` on each of them separately.
+  def cache_merge_request_closes_issues!(current_user = self.author)
+    transaction do
+      self.merge_requests_closing_issues.delete_all
+      closes_issues(current_user).each do |issue|
+        self.merge_requests_closing_issues.create!(issue: issue)
+      end
+    end
+  end
+
   def closes_issue?(issue)
     closes_issues.include?(issue)
   end
@@ -498,7 +523,8 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
-      messages = commits.map(&:safe_message) << description
+      messages = [description]
+      messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
       Gitlab::ClosingIssueExtractor.new(project, current_user).
         closed_by_message(messages.join("\n"))
@@ -564,13 +590,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_commit_message
-    message = "Merge branch '#{source_branch}' into '#{target_branch}'"
-    message << "\n\n"
-    message << title.to_s
-    message << "\n\n"
-    message << description.to_s
-    message << "\n\n"
-    message << "See merge request !#{iid}"
+    message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
+    message << "#{title}\n\n"
+    message << "#{description}\n\n" if description.present?
+    message << "See merge request #{to_reference}"
+
     message
   end
 
@@ -642,11 +666,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def environments
-    return unless diff_head_commit
+    return [] unless diff_head_commit
 
-    target_project.environments.select do |environment|
-      environment.includes_commit?(diff_head_commit)
-    end
+    environments = source_project.environments_for(
+      source_branch, diff_head_commit)
+    environments += target_project.environments_for(
+      target_branch, diff_head_commit, with_tags: true)
+
+    environments.uniq
   end
 
   def state_human_name
@@ -735,10 +762,23 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def all_pipelines
-    @all_pipelines ||=
-      if diff_head_sha && source_project
-        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
-      end
+    return unless source_project
+
+    @all_pipelines ||= begin
+      sha = if persisted?
+              all_commits_sha
+            else
+              diff_head_sha
+            end
+
+      source_project.pipelines.order(id: :desc).
+        where(sha: sha, ref: source_branch)
+    end
+  end
+
+  # Note that this could also return SHA from now dangling commits
+  def all_commits_sha
+    merge_request_diffs.flat_map(&:commits_sha).uniq
   end
 
   def merge_commit

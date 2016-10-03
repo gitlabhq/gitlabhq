@@ -18,8 +18,11 @@
         return function() {
           return $("#file-content").val(_this.editor.getValue());
         };
+      // Before a form submission, move the content from the Ace editor into the
+      // submitted textarea
       })(this));
       this.initModePanesAndLinks();
+      this.initSoftWrap();
       new BlobLicenseSelectors({
         editor: this.editor
       });
@@ -48,6 +51,7 @@
       this.$editModePanes.hide();
       currentPane.fadeIn(200);
       if (paneId === "#preview") {
+        this.$toggleButton.hide();
         return $.post(currentLink.data("preview-url"), {
           content: this.editor.getValue()
         }, function(response) {
@@ -55,8 +59,21 @@
           return currentPane.syntaxHighlight();
         });
       } else {
+        this.$toggleButton.show();
         return this.editor.focus();
       }
+    };
+
+    EditBlob.prototype.initSoftWrap = function() {
+      this.isSoftWrapped = false;
+      this.$toggleButton = $('.soft-wrap-toggle');
+      this.$toggleButton.on('click', this.toggleSoftWrap.bind(this));
+    };
+
+    EditBlob.prototype.toggleSoftWrap = function(e) {
+      this.isSoftWrapped = !this.isSoftWrapped;
+      this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
+      this.editor.getSession().setUseWrapMode(this.isSoftWrapped);
     };
 
     return EditBlob;

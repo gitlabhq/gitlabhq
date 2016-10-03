@@ -13,6 +13,7 @@
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
 - [UI guide](ui_guide.md) for building GitLab with existing CSS styles and elements
+- [Frontend guidelines](frontend.md)
 - [SQL guidelines](sql.md) for SQL guidelines
 
 ## Process

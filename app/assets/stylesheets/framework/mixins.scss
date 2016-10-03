@@ -44,7 +44,7 @@
     }
 
     &.active {
-      background: #f9f9f9;
+      background: $gray-light;
       a {
         font-weight: 600;
       }
@@ -84,4 +84,14 @@
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
+}
+
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+
+  @keyframes #{$animation-name} {
+    @content;
+  }
 }

@@ -63,6 +63,28 @@ describe ProjectsController do
       end
     end
 
+    context "project with broken repo" do
+      let(:empty_project) { create(:project_broken_repo, :public) }
+
+      before { sign_in(user) }
+
+      User.project_views.keys.each do |project_view|
+        context "with #{project_view} view set" do
+          before do
+            user.update_attributes(project_view: project_view)
+
+            get :show, namespace_id: empty_project.namespace.path, id: empty_project.path
+          end
+
+          it "renders the empty project view" do
+            allow(Project).to receive(:repo).and_raise(Gitlab::Git::Repository::NoRepository)
+
+            expect(response).to render_template('projects/no_repo')
+          end
+        end
+      end
+    end
+
     context "rendering default project view" do
       render_views
 
@@ -180,6 +202,25 @@ describe ProjectsController do
       expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(dashboard_projects_path)
+    end
+
+    context "when the project is forked" do
+      let(:project)      { create(:project) }
+      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "closes all related merge requests" do
+        project.merge_requests << merge_request
+        sign_in(admin)
+
+        delete :destroy, namespace_id: fork_project.namespace.path, id: fork_project.path
+
+        expect(merge_request.reload.state).to eq('closed')
+      end
     end
   end
 

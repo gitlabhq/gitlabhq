@@ -24,6 +24,7 @@ module SystemNoteService
     body = "Added #{commits_text}:\n\n"
     body << existing_commit_summary(noteable, existing_commits, oldrev)
     body << new_commit_summary(new_commits).join("\n")
+    body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -254,8 +255,7 @@ module SystemNoteService
   #
   #   "Started branch `201-issue-branch-button`"
   def new_issue_branch(issue, project, author, branch)
-    h = Gitlab::Routing.url_helpers
-    link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
+    link = url_helpers.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
 
     body = "Started branch [`#{branch}`](#{link})"
     create_note(noteable: issue, project: project, author: author, note: body)
@@ -465,5 +465,21 @@ module SystemNoteService
 
   def escape_html(text)
     Rack::Utils.escape_html(text)
+  end
+
+  def url_helpers
+    @url_helpers ||= Gitlab::Routing.url_helpers
+  end
+
+  def diff_comparison_url(merge_request, project, oldrev)
+    diff_id = merge_request.merge_request_diff.id
+
+    url_helpers.diffs_namespace_project_merge_request_url(
+      project.namespace,
+      project,
+      merge_request.iid,
+      diff_id: diff_id,
+      start_sha: oldrev
+    )
   end
 end

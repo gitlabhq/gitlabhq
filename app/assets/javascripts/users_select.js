@@ -81,6 +81,7 @@
                 if (term.length === 0) {
                   showDivider = 0;
                   if (firstUser) {
+                    // Move current user to the front of the list
                     for (index = j = 0, len = users.length; j < len; index = ++j) {
                       obj = users[index];
                       if (obj.username === firstUser) {
@@ -115,6 +116,7 @@
                 if (showDivider) {
                   users.splice(showDivider, 0, "divider");
                 }
+                // Send the data back
                 return callback(users);
               });
             },
@@ -140,6 +142,7 @@
             inputId: 'issue_assignee_id',
             hidden: function(e) {
               $selectbox.hide();
+              // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },
             clicked: function(user, $el, e) {
@@ -183,6 +186,7 @@
                   img = "<img src='" + avatar + "' class='avatar avatar-inline' width='30' />";
                 }
               }
+              // split into three parts so we can remove the username section if nessesary
               listWithName = "<li> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
               listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
               listClosingTags = "</a> </li>";
@@ -221,6 +225,7 @@
                 };
                 if (query.term.length === 0) {
                   if (firstUser) {
+                    // Move current user to the front of the list
                     ref = data.results;
                     for (index = j = 0, len = ref.length; j < len; index = ++j) {
                       obj = ref[index];
@@ -277,6 +282,7 @@
               return _this.formatSelection.apply(_this, args);
             },
             dropdownCssClass: "ajax-users-dropdown",
+            // we do not want to escape markup since we are displaying html in results
             escapeMarkup: function(m) {
               return m;
             }
@@ -324,6 +330,8 @@
       });
     };
 
+    // Return users list. Filtered by query
+    // Only active users retrieved
     UsersSelect.prototype.users = function(query, options, callback) {
       var url;
       url = this.buildUrl(this.usersPath);

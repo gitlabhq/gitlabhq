@@ -57,7 +57,7 @@ describe Member, models: true do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:project)
+      project = create(:empty_project, :public)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
@@ -65,22 +65,26 @@ describe Member, models: true do
       @master_user = create(:user).tap { |u| project.team << [u, :master] }
       @master = project.members.find_by(user_id: @master_user.id)
 
-      Member.add_user(
-        project.members,
-        'toto1@example.com',
-        Gitlab::Access::DEVELOPER,
-        current_user: @master_user
-      )
-      @invited_member = project.members.invite.find_by_invite_email('toto1@example.com')
+      @blocked_user = create(:user).tap do |u|
+        project.team << [u, :master]
+        project.team << [u, :developer]
 
-      accepted_invite_user = build(:user)
-      Member.add_user(
-        project.members,
-        'toto2@example.com',
-        Gitlab::Access::DEVELOPER,
-        current_user: @master_user
-      )
-      @accepted_invite_member = project.members.invite.find_by_invite_email('toto2@example.com').tap { |u| u.accept_invite!(accepted_invite_user) }
+        u.block!
+      end
+      @blocked_master = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::MASTER)
+      @blocked_developer = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::DEVELOPER)
+
+      @invited_member = create(:project_member, :developer,
+                              project: project,
+                              invite_token: '1234',
+                              invite_email: 'toto1@example.com')
+
+      accepted_invite_user = build(:user, state: :active)
+      @accepted_invite_member = create(:project_member, :developer,
+                                      project: project,
+                                      invite_token: '1234',
+                                      invite_email: 'toto2@example.com').
+                                      tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
       @requested_member = project.requesters.find_by(user_id: requested_user.id)
@@ -91,7 +95,7 @@ describe Member, models: true do
 
     describe '.access_for_user_ids' do
       it 'returns the right access levels' do
-        users = [@owner_user.id, @master_user.id]
+        users = [@owner_user.id, @master_user.id, @blocked_user.id]
         expected = {
           @owner_user.id => Gitlab::Access::OWNER,
           @master_user.id => Gitlab::Access::MASTER
@@ -125,6 +129,19 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_request_member }
     end
 
+    describe '.developers' do
+      subject { described_class.developers.to_a }
+
+      it { is_expected.not_to include @owner }
+      it { is_expected.not_to include @master }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.not_to include @blocked_master }
+      it { is_expected.not_to include @blocked_developer }
+    end
+
     describe '.owners_and_masters' do
       it { expect(described_class.owners_and_masters).to include @owner }
       it { expect(described_class.owners_and_masters).to include @master }
@@ -132,6 +149,20 @@ describe Member, models: true do
       it { expect(described_class.owners_and_masters).not_to include @accepted_invite_member }
       it { expect(described_class.owners_and_masters).not_to include @requested_member }
       it { expect(described_class.owners_and_masters).not_to include @accepted_request_member }
+      it { expect(described_class.owners_and_masters).not_to include @blocked_master }
+    end
+
+    describe '.has_access' do
+      subject { described_class.has_access.to_a }
+
+      it { is_expected.to include @owner }
+      it { is_expected.to include @master }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.not_to include @blocked_master }
+      it { is_expected.not_to include @blocked_developer }
     end
   end
 
@@ -140,39 +171,209 @@ describe Member, models: true do
     it { is_expected.to respond_to(:user_email) }
   end
 
-  describe ".add_user" do
-    let!(:user)    { create(:user) }
-    let(:project) { create(:project) }
+  describe '.add_user' do
+    %w[project group].each do |source_type|
+      context "when source is a #{source_type}" do
+        let!(:source) { create(source_type) }
+        let!(:user) { create(:user) }
+        let!(:admin) { create(:admin) }
 
-    context "when called with a user id" do
-      it "adds the user as a member" do
-        Member.add_user(project.project_members, user.id, ProjectMember::MASTER)
+        it 'returns a <Source>Member object' do
+          member = described_class.add_user(source, user, :master)
 
-        expect(project.users).to include(user)
-      end
-    end
+          expect(member).to be_a "#{source_type.classify}Member".constantize
+          expect(member).to be_persisted
+        end
 
-    context "when called with a user object" do
-      it "adds the user as a member" do
-        Member.add_user(project.project_members, user, ProjectMember::MASTER)
+        it 'sets members.created_by to the given current_user' do
+          member = described_class.add_user(source, user, :master, current_user: admin)
 
-        expect(project.users).to include(user)
-      end
-    end
+          expect(member.created_by).to eq(admin)
+        end
 
-    context "when called with a known user email" do
-      it "adds the user as a member" do
-        Member.add_user(project.project_members, user.email, ProjectMember::MASTER)
+        it 'sets members.expires_at to the given expires_at' do
+          member = described_class.add_user(source, user, :master, expires_at: Date.new(2016, 9, 22))
 
-        expect(project.users).to include(user)
-      end
-    end
+          expect(member.expires_at).to eq(Date.new(2016, 9, 22))
+        end
 
-    context "when called with an unknown user email" do
-      it "adds a member invite" do
-        Member.add_user(project.project_members, "user@example.com", ProjectMember::MASTER)
+        described_class.access_levels.each do |sym_key, int_access_level|
+          it "accepts the :#{sym_key} symbol as access level" do
+            expect(source.users).not_to include(user)
 
-        expect(project.project_members.invite.pluck(:invite_email)).to include("user@example.com")
+            member = described_class.add_user(source, user.id, sym_key)
+
+            expect(member.access_level).to eq(int_access_level)
+            expect(source.users.reload).to include(user)
+          end
+
+          it "accepts the #{int_access_level} integer as access level" do
+            expect(source.users).not_to include(user)
+
+            member = described_class.add_user(source, user.id, int_access_level)
+
+            expect(member.access_level).to eq(int_access_level)
+            expect(source.users.reload).to include(user)
+          end
+        end
+
+        context 'with no current_user' do
+          context 'when called with a known user id' do
+            it 'adds the user as a member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, user.id, :master)
+
+              expect(source.users.reload).to include(user)
+            end
+          end
+
+          context 'when called with an unknown user id' do
+            it 'adds the user as a member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, 42, :master)
+
+              expect(source.users.reload).not_to include(user)
+            end
+          end
+
+          context 'when called with a user object' do
+            it 'adds the user as a member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, user, :master)
+
+              expect(source.users.reload).to include(user)
+            end
+          end
+
+          context 'when called with a requester user object' do
+            before do
+              source.request_access(user)
+            end
+
+            it 'adds the requester as a member' do
+              expect(source.users).not_to include(user)
+              expect(source.requesters.exists?(user_id: user)).to be_truthy
+
+              expect { described_class.add_user(source, user, :master) }.
+                to raise_error(Gitlab::Access::AccessDeniedError)
+
+              expect(source.users.reload).not_to include(user)
+              expect(source.requesters.reload.exists?(user_id: user)).to be_truthy
+            end
+          end
+
+          context 'when called with a known user email' do
+            it 'adds the user as a member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, user.email, :master)
+
+              expect(source.users.reload).to include(user)
+            end
+          end
+
+          context 'when called with an unknown user email' do
+            it 'creates an invited member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, 'user@example.com', :master)
+
+              expect(source.members.invite.pluck(:invite_email)).to include('user@example.com')
+            end
+          end
+        end
+
+        context 'when current_user can update member' do
+          it 'creates the member' do
+            expect(source.users).not_to include(user)
+
+            described_class.add_user(source, user, :master, current_user: admin)
+
+            expect(source.users.reload).to include(user)
+          end
+
+          context 'when called with a requester user object' do
+            before do
+              source.request_access(user)
+            end
+
+            it 'adds the requester as a member' do
+              expect(source.users).not_to include(user)
+              expect(source.requesters.exists?(user_id: user)).to be_truthy
+
+              described_class.add_user(source, user, :master, current_user: admin)
+
+              expect(source.users.reload).to include(user)
+              expect(source.requesters.reload.exists?(user_id: user)).to be_falsy
+            end
+          end
+        end
+
+        context 'when current_user cannot update member' do
+          it 'does not create the member' do
+            expect(source.users).not_to include(user)
+
+            member = described_class.add_user(source, user, :master, current_user: user)
+
+            expect(source.users.reload).not_to include(user)
+            expect(member).not_to be_persisted
+          end
+
+          context 'when called with a requester user object' do
+            before do
+              source.request_access(user)
+            end
+
+            it 'does not destroy the requester' do
+              expect(source.users).not_to include(user)
+              expect(source.requesters.exists?(user_id: user)).to be_truthy
+
+              described_class.add_user(source, user, :master, current_user: user)
+
+              expect(source.users.reload).not_to include(user)
+              expect(source.requesters.exists?(user_id: user)).to be_truthy
+            end
+          end
+        end
+
+        context 'when member already exists' do
+          before do
+            source.add_user(user, :developer)
+          end
+
+          context 'with no current_user' do
+            it 'updates the member' do
+              expect(source.users).to include(user)
+
+              described_class.add_user(source, user, :master)
+
+              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MASTER)
+            end
+          end
+
+          context 'when current_user can update member' do
+            it 'updates the member' do
+              expect(source.users).to include(user)
+
+              described_class.add_user(source, user, :master, current_user: admin)
+
+              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MASTER)
+            end
+          end
+
+          context 'when current_user cannot update member' do
+            it 'does not update the member' do
+              expect(source.users).to include(user)
+
+              described_class.add_user(source, user, :master, current_user: user)
+
+              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::DEVELOPER)
+            end
+          end
+        end
       end
     end
   end
