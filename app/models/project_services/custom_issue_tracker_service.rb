@@ -9,6 +9,10 @@ class CustomIssueTrackerService < IssueTrackerService
     end
   end
 
+  def title=(value)
+    self.properties['title'] = value if self.properties
+  end
+
   def description
     if self.properties && self.properties['description'].present?
       self.properties['description']

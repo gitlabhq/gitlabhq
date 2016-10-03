@@ -155,6 +155,20 @@ class MergeRequest < ActiveRecord::Base
     where("merge_requests.id IN (#{union.to_sql})")
   end
 
+  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+
+  def self.work_in_progress?(title)
+    !!(title =~ WIP_REGEX)
+  end
+
+  def self.wipless_title(title)
+    title.sub(WIP_REGEX, "")
+  end
+
+  def self.wip_title(title)
+    work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -389,14 +403,16 @@ class MergeRequest < ActiveRecord::Base
     @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
-
   def work_in_progress?
-    !!(title =~ WIP_REGEX)
+    self.class.work_in_progress?(title)
   end
 
   def wipless_title
-    self.title.sub(WIP_REGEX, "")
+    self.class.wipless_title(self.title)
+  end
+
+  def wip_title
+    self.class.wip_title(self.title)
   end
 
   def mergeable?(skip_ci_check: false)
@@ -590,13 +606,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_commit_message
-    message = "Merge branch '#{source_branch}' into '#{target_branch}'"
-    message << "\n\n"
-    message << title.to_s
-    message << "\n\n"
-    message << description.to_s
-    message << "\n\n"
-    message << "See merge request !#{iid}"
+    message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
+    message << "#{title}\n\n"
+    message << "#{description}\n\n" if description.present?
+    message << "See merge request #{to_reference}"
+
     message
   end
 
@@ -670,9 +684,12 @@ class MergeRequest < ActiveRecord::Base
   def environments
     return [] unless diff_head_commit
 
-    target_project.environments.select do |environment|
-      environment.includes_commit?(diff_head_commit)
-    end
+    environments = source_project.environments_for(
+      source_branch, diff_head_commit)
+    environments += target_project.environments_for(
+      target_branch, diff_head_commit, with_tags: true)
+
+    environments.uniq
   end
 
   def state_human_name
@@ -761,10 +778,23 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def all_pipelines
-    @all_pipelines ||=
-      if diff_head_sha && source_project
-        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
-      end
+    return unless source_project
+
+    @all_pipelines ||= begin
+      sha = if persisted?
+              all_commits_sha
+            else
+              diff_head_sha
+            end
+
+      source_project.pipelines.order(id: :desc).
+        where(sha: sha, ref: source_branch)
+    end
+  end
+
+  # Note that this could also return SHA from now dangling commits
+  def all_commits_sha
+    merge_request_diffs.flat_map(&:commits_sha).uniq
   end
 
   def merge_commit

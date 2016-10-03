@@ -70,6 +70,7 @@ production: &base
     email_from: example@example.com
     email_display_name: GitLab
     email_reply_to: noreply@example.com
+    email_subject_suffix: ''
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 

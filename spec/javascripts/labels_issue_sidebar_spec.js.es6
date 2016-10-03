@@ -48,9 +48,9 @@
       setTimeout(() => {
         expect($('.dropdown-content a').length).toBe(10);
 
-        $('.dropdow-content a').each((i, $link) => {
-          if (i < 5) {
-            $link.get(0).click();
+        $('.dropdown-content a').each(function (i) {
+          if (i < saveLabelCount) {
+            $(this).get(0).click();
           }
         });
 
@@ -70,9 +70,9 @@
       setTimeout(() => {
         expect($('.dropdown-content a').length).toBe(10);
 
-        $('.dropdow-content a').each((i, $link) => {
-          if (i < 5) {
-            $link.get(0).click();
+        $('.dropdown-content a').each(function (i) {
+          if (i < saveLabelCount) {
+            $(this).get(0).click();
           }
         });
 
@@ -86,4 +86,3 @@
     });
   });
 })();
-

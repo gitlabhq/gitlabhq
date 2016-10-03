@@ -5,12 +5,12 @@ module Auth
     AUDIENCE = 'container_registry'
 
     def execute(authentication_abilities:)
-      @authentication_abilities = authentication_abilities || []
+      @authentication_abilities = authentication_abilities
 
-      return error('not found', 404) unless registry.enabled
+      return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
 
       unless current_user || project
-        return error('forbidden', 403) unless scope
+        return error('DENIED', status: 403, message: 'access forbidden') unless scope
       end
 
       { token: authorized_token(scope).encoded }
@@ -110,6 +110,13 @@ module Auth
     def user_can_push?(requested_project)
       @authentication_abilities.include?(:create_container_image) &&
         can?(current_user, :create_container_image, requested_project)
+    end
+
+    def error(code, status:, message: '')
+      {
+        errors: [{ code: code, message: message }],
+        http_status: status
+      }
     end
   end
 end

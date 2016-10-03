@@ -207,7 +207,9 @@ module API
         if namespace_id.present?
           namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
 
-          not_found!('Target Namespace') unless namespace
+          unless namespace && can?(current_user, :create_projects, namespace)
+            not_found!('Target Namespace')
+          end
 
           attrs[:namespace] = namespace
         end
@@ -391,23 +393,24 @@ module API
       # Share project with group
       #
       # Parameters:
-      #   id (required) - The ID of a project
-      #   group_id (required) - The ID of a group
+      #   id (required)           - The ID of a project
+      #   group_id (required)     - The ID of a group
       #   group_access (required) - Level of permissions for sharing
+      #   expires_at (optional)   - Share expiration date
       #
       # Example Request:
       #   POST /projects/:id/share
       post ":id/share" do
         authorize! :admin_project, user_project
         required_attributes! [:group_id, :group_access]
+        attrs = attributes_for_keys [:group_id, :group_access, :expires_at]
 
         unless user_project.allowed_to_share_with_group?
           return render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        link = user_project.project_group_links.new
-        link.group_id = params[:group_id]
-        link.group_access = params[:group_access]
+        link = user_project.project_group_links.new(attrs)
+
         if link.save
           present link, with: Entities::ProjectGroupLink
         else

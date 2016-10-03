@@ -68,7 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
     describe '#members & #requesters' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -836,7 +836,7 @@ describe Project, models: true do
 
     describe 'when a user has access to a project' do
       before do
-        project.team.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MASTER)
       end
 
       it { is_expected.to eq([project]) }
@@ -1644,6 +1644,47 @@ describe Project, models: true do
       project.reset_pushes_since_gc
 
       expect(project.pushes_since_gc).to eq(0)
+    end
+  end
+
+  describe '#environments_for' do
+    let(:project) { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+
+    context 'tagged deployment' do
+      before do
+        create(:deployment, environment: environment, ref: '1.0', tag: true, sha: project.commit.id)
+      end
+
+      it 'returns environment when with_tags is set' do
+        expect(project.environments_for('master', project.commit, with_tags: true)).to contain_exactly(environment)
+      end
+
+      it 'does not return environment when no with_tags is set' do
+        expect(project.environments_for('master', project.commit)).to be_empty
+      end
+
+      it 'does not return environment when commit is not part of deployment' do
+        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+      end
+    end
+
+    context 'branch deployment' do
+      before do
+        create(:deployment, environment: environment, ref: 'master', sha: project.commit.id)
+      end
+
+      it 'returns environment when ref is set' do
+        expect(project.environments_for('master', project.commit)).to contain_exactly(environment)
+      end
+
+      it 'does not environment when ref is different' do
+        expect(project.environments_for('feature', project.commit)).to be_empty
+      end
+
+      it 'does not return environment when commit is not part of deployment' do
+        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+      end
     end
   end
 

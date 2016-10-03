@@ -280,23 +280,6 @@ module ApplicationHelper
     end
   end
 
-  def state_filters_text_for(state, records)
-    titles = {
-      opened: "Open"
-    }
-
-    state_title = titles[state] || state.to_s.humanize
-    count       = records.public_send(state).size
-    html        = content_tag :span, state_title
-
-    if count.present?
-      html += " "
-      html += content_tag :span, number_with_delimiter(count), class: 'badge'
-    end
-
-    html.html_safe
-  end
-
   def truncate_first_line(message, length = 50)
     truncate(message.each_line.first.chomp, length: length) if message
   end

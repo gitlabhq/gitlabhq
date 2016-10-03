@@ -1,11 +1,10 @@
 - if discussion.for_merge_request?
-  %resolve-discussion-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
-      ":project-path" => "'#{discussion.project.path}'",
+  %resolve-discussion-btn{ ":project-path" => "'#{project_path(discussion.project)}'",
       ":discussion-id" => "'#{discussion.id}'",
       ":merge-request-id" => discussion.noteable.iid,
       ":can-resolve" => discussion.can_resolve?(current_user),
       "inline-template" => true }
     .btn-group{ role: "group", "v-if" => "showButton" }
-      %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }
+      %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading", "v-cloak" => "true" }
         = icon("spinner spin", "v-show" => "loading")
         {{ buttonText }}

@@ -79,8 +79,8 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_merged }
       it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
+      it { expect(@build_failed_todo).to be_done }
+      it { expect(@fork_build_failed_todo).to be_done }
     end
 
     context 'manual merge of source branch' do
@@ -99,8 +99,8 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request.diffs.size).to be > 0 }
       it { expect(@fork_merge_request).to be_merged }
       it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
+      it { expect(@build_failed_todo).to be_done }
+      it { expect(@fork_build_failed_todo).to be_done }
     end
 
     context 'push to fork repo source branch' do
@@ -149,8 +149,8 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
+      it { expect(@build_failed_todo).to be_done }
+      it { expect(@fork_build_failed_todo).to be_done }
     end
 
     context 'push new branch that exists in a merge request' do

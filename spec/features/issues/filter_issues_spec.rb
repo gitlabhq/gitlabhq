@@ -7,15 +7,15 @@ describe 'Filter issues', feature: true do
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
-  let!(:issue1)    { create(:issue, project: project) }
   let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
 
   before do
     project.team << [user, :master]
     login_as(user)
+    create(:issue, project: project)
   end
 
-  describe 'Filter issues for assignee from issues#index' do
+  describe 'for assignee from issues#index' do
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -45,7 +45,7 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'Filter issues for milestone from issues#index' do
+  describe 'for milestone from issues#index' do
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -75,7 +75,7 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'Filter issues for label from issues#index', js: true do
+  describe 'for label from issues#index', js: true do
     before do
       visit namespace_project_issues_path(project.namespace, project)
       find('.js-label-select').click
@@ -115,6 +115,7 @@ describe 'Filter issues', feature: true do
         expect(page).to have_content wontfix.title
         click_link wontfix.title
       end
+
       expect(find('.js-label-select .dropdown-toggle-text')).to have_content(wontfix.title)
     end
 
@@ -146,7 +147,7 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'Filter issues for assignee and label from issues#index' do
+  describe 'for assignee and label from issues#index' do
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -226,12 +227,9 @@ describe 'Filter issues', feature: true do
       it 'filters by text and label' do
         fill_in 'issuable_search', with: 'Bug'
 
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Label'
@@ -240,24 +238,18 @@ describe 'Filter issues', feature: true do
         end
         find('.dropdown-menu-close-icon').click
 
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
 
       it 'filters by text and milestone' do
         fill_in 'issuable_search', with: 'Bug'
 
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Milestone'
@@ -265,24 +257,18 @@ describe 'Filter issues', feature: true do
           click_link '8'
         end
 
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
 
       it 'filters by text and assignee' do
         fill_in 'issuable_search', with: 'Bug'
 
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Assignee'
@@ -290,24 +276,18 @@ describe 'Filter issues', feature: true do
           click_link user.name
         end
 
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
 
       it 'filters by text and author' do
         fill_in 'issuable_search', with: 'Bug'
 
+        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 2)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '2')
         end
 
         click_button 'Author'
@@ -315,12 +295,9 @@ describe 'Filter issues', feature: true do
           click_link user.name
         end
 
+        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
-        end
-
-        page.within '.issues-state-filters' do
-          expect(page).to have_selector('.active .badge', text: '1')
         end
       end
     end
@@ -347,6 +324,7 @@ describe 'Filter issues', feature: true do
       find('.dropdown-menu-close-icon').click
       wait_for_ajax
 
+      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
       page.within '.issues-list' do
         expect(page).to have_selector('.issue', count: 2)
       end

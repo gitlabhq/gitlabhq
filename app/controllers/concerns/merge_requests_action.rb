@@ -9,7 +9,5 @@ module MergeRequestsAction
                       .non_archived
                       .preload(:author, :target_project)
                       .page(params[:page])
-
-    @all_merge_requests = all_merge_requests_collection.non_archived
   end
 end

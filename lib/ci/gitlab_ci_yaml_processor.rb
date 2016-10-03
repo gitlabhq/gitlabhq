@@ -4,7 +4,7 @@ module Ci
 
     include Gitlab::Ci::Config::Node::LegacyValidationHelpers
 
-    attr_reader :path, :cache, :stages
+    attr_reader :path, :cache, :stages, :jobs
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)

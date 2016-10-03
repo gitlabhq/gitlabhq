@@ -1,17 +1,22 @@
 ((global) => {
 
   const COOKIE_NAME = 'cycle_analytics_help_dismissed';
+  const store = gl.cycleAnalyticsStore = {
+    isLoading: true,
+    hasError: false,
+    isHelpDismissed: $.cookie(COOKIE_NAME),
+    analytics: {}
+  };
 
   gl.CycleAnalytics = class CycleAnalytics {
     constructor() {
       const that = this;
 
-      this.isHelpDismissed = $.cookie(COOKIE_NAME);
       this.vue = new Vue({
         el: '#cycle-analytics',
         name: 'CycleAnalytics',
         created: this.fetchData(),
-        data: this.decorateData({ isLoading: true }),
+        data: store,
         methods: {
           dismissLanding() {
             that.dismissLanding();
@@ -21,6 +26,7 @@
     }
 
     fetchData(options) {
+      store.isLoading = true;
       options = options || { startDate: 30 };
 
       $.ajax({
@@ -30,22 +36,20 @@
         contentType: 'application/json',
         data: { start_date: options.startDate }
       }).done((data) => {
-        this.vue.$data = this.decorateData(data);
+        this.decorateData(data);
         this.initDropdown();
       })
       .error((data) => {
         this.handleError(data);
       })
       .always(() => {
-        this.vue.isLoading = false;
+        store.isLoading = false;
       })
     }
 
     decorateData(data) {
       data.summary = data.summary || [];
       data.stats = data.stats || [];
-      data.isHelpDismissed = this.isHelpDismissed;
-      data.isLoading = data.isLoading || false;
 
       data.summary.forEach((item) => {
         item.value = item.value || '-';
@@ -53,23 +57,21 @@
 
       data.stats.forEach((item) => {
         item.value = item.value || '- - -';
-      })
+      });
 
-      return data;
+      store.analytics = data;
     }
 
     handleError(data) {
-      this.vue.$data = {
-        hasError: true,
-        isHelpDismissed: this.isHelpDismissed
-      };
-
+      store.hasError = true;
       new Flash('There was an error while fetching cycle analytics data.', 'alert');
     }
 
     dismissLanding() {
-      this.vue.isHelpDismissed = true;
-      $.cookie(COOKIE_NAME, true);
+      store.isHelpDismissed = true;
+      $.cookie(COOKIE_NAME, true, {
+        path: gon.relative_url_root || '/'
+      });
     }
 
     initDropdown() {
@@ -82,7 +84,6 @@
         const value = $target.data('value');
 
         $label.text($target.text().trim());
-        this.vue.isLoading = true;
         this.fetchData({ startDate: value });
       })
     }

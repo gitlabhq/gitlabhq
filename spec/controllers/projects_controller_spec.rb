@@ -63,6 +63,28 @@ describe ProjectsController do
       end
     end
 
+    context "project with broken repo" do
+      let(:empty_project) { create(:project_broken_repo, :public) }
+
+      before { sign_in(user) }
+
+      User.project_views.keys.each do |project_view|
+        context "with #{project_view} view set" do
+          before do
+            user.update_attributes(project_view: project_view)
+
+            get :show, namespace_id: empty_project.namespace.path, id: empty_project.path
+          end
+
+          it "renders the empty project view" do
+            allow(Project).to receive(:repo).and_raise(Gitlab::Git::Repository::NoRepository)
+
+            expect(response).to render_template('projects/no_repo')
+          end
+        end
+      end
+    end
+
     context "rendering default project view" do
       render_views
 

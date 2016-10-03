@@ -91,7 +91,7 @@ module Ci
             sha: build.sha,
             ref: build.ref,
             tag: build.tag,
-            options: build.options[:environment],
+            options: build.options.to_h[:environment],
             variables: build.variables)
           service.execute(build)
         end
@@ -378,7 +378,7 @@ module Ci
     end
 
     def artifacts?
-      !artifacts_expired? && self[:artifacts_file].present?
+      !artifacts_expired? && artifacts_file.exists?
     end
 
     def artifacts_metadata?
@@ -498,8 +498,11 @@ module Ci
     end
 
     def hide_secrets(trace)
-      trace = Ci::MaskSecret.mask(trace, project.runners_token) if project
-      trace = Ci::MaskSecret.mask(trace, token)
+      return unless trace
+
+      trace = trace.dup
+      Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Ci::MaskSecret.mask!(trace, token)
       trace
     end
   end

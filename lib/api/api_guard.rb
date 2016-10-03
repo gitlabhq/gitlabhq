@@ -33,46 +33,29 @@ module API
       #
       # If the token is revoked, then it raises RevokedError.
       #
-      # If the token is not found (nil), then it raises TokenNotFoundError.
+      # If the token is not found (nil), then it returns nil
       #
       # Arguments:
       #
       #   scopes: (optional) scopes required for this guard.
       #           Defaults to empty array.
       #
-      def doorkeeper_guard!(scopes: [])
-        if (access_token = find_access_token).nil?
-          raise TokenNotFoundError
-
-        else
-          case validate_access_token(access_token, scopes)
-          when Oauth2::AccessTokenValidationService::INSUFFICIENT_SCOPE
-            raise InsufficientScopeError.new(scopes)
-          when Oauth2::AccessTokenValidationService::EXPIRED
-            raise ExpiredError
-          when Oauth2::AccessTokenValidationService::REVOKED
-            raise RevokedError
-          when Oauth2::AccessTokenValidationService::VALID
-            @current_user = User.find(access_token.resource_owner_id)
-          end
-        end
-      end
-
       def doorkeeper_guard(scopes: [])
-        if access_token = find_access_token
-          case validate_access_token(access_token, scopes)
-          when Oauth2::AccessTokenValidationService::INSUFFICIENT_SCOPE
-            raise InsufficientScopeError.new(scopes)
+        access_token = find_access_token
+        return nil unless access_token
 
-          when Oauth2::AccessTokenValidationService::EXPIRED
-            raise ExpiredError
+        case validate_access_token(access_token, scopes)
+        when Oauth2::AccessTokenValidationService::INSUFFICIENT_SCOPE
+          raise InsufficientScopeError.new(scopes)
 
-          when Oauth2::AccessTokenValidationService::REVOKED
-            raise RevokedError
+        when Oauth2::AccessTokenValidationService::EXPIRED
+          raise ExpiredError
 
-          when Oauth2::AccessTokenValidationService::VALID
-            @current_user = User.find(access_token.resource_owner_id)
-          end
+        when Oauth2::AccessTokenValidationService::REVOKED
+          raise RevokedError
+
+        when Oauth2::AccessTokenValidationService::VALID
+          @current_user = User.find(access_token.resource_owner_id)
         end
       end
 
@@ -96,19 +79,6 @@ module API
     end
 
     module ClassMethods
-      # Installs the doorkeeper guard on the whole Grape API endpoint.
-      #
-      # Arguments:
-      #
-      #   scopes: (optional) scopes required for this guard.
-      #           Defaults to empty array.
-      #
-      def guard_all!(scopes: [])
-        before do
-          guard! scopes: scopes
-        end
-      end
-
       private
 
       def install_error_responders(base)

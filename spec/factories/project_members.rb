@@ -4,24 +4,9 @@ FactoryGirl.define do
     project
     master
 
-    trait :guest do
-      access_level ProjectMember::GUEST
-    end
-
-    trait :reporter do
-      access_level ProjectMember::REPORTER
-    end
-
-    trait :developer do
-      access_level ProjectMember::DEVELOPER
-    end
-
-    trait :master do
-      access_level ProjectMember::MASTER
-    end
-
-    trait :owner do
-      access_level ProjectMember::OWNER
-    end
+    trait(:guest)     { access_level ProjectMember::GUEST }
+    trait(:reporter)  { access_level ProjectMember::REPORTER }
+    trait(:developer) { access_level ProjectMember::DEVELOPER }
+    trait(:master)    { access_level ProjectMember::MASTER }
   end
 end

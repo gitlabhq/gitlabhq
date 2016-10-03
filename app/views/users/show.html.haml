@@ -10,71 +10,75 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block
+  .cover-block.user-cover-block
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-gray' do
           = icon('pencil')
       - elsif current_user
-        %span.report-abuse
-          - if @user.abuse_report
-            %button.btn.btn-danger{ title: 'Already reported for abuse',
-              data: { toggle: 'tooltip', placement: 'left', container: 'body' }}
-              = icon('exclamation-circle')
-          - else
-            = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
-              title: 'Report abuse', data: {toggle: 'tooltip', placement: 'left', container: 'body'} do
-              = icon('exclamation-circle')
+        - if @user.abuse_report
+          %button.btn.btn-danger{ title: 'Already reported for abuse',
+            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }}
+            = icon('exclamation-circle')
+        - else
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
+            title: 'Report abuse', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            = icon('exclamation-circle')
       - if current_user
-        &nbsp;
         = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
           = icon('rss')
         - if current_user.admin?
-          &nbsp;
           = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
             data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
             = icon('users')
 
-    .avatar-holder
-      = link_to avatar_icon(@user, 400), target: '_blank' do
-        = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
-    .cover-title
-      = @user.name
+    .profile-header
+      .avatar-holder
+        = link_to avatar_icon(@user, 400), target: '_blank' do
+          = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
 
-    .cover-desc
-      %span.middle-dot-divider
-        @#{@user.username}
-      %span.middle-dot-divider
-        Member since #{@user.created_at.to_s(:medium)}
+      .user-info
+        .cover-title
+          = @user.name
+          %span.handle
+            @#{@user.username}
+
+        .cover-desc.member-date
+          %span.middle-dot-divider
+            Member since #{@user.created_at.to_s(:medium)}
+
+        .cover-desc
+          - unless @user.public_email.blank?
+            .profile-link-holder.middle-dot-divider
+              = link_to @user.public_email, "mailto:#{@user.public_email}"
+          - unless @user.skype.blank?
+            .profile-link-holder.middle-dot-divider
+              = link_to "skype:#{@user.skype}", title: "Skype" do
+                = icon('skype')
+          - unless @user.linkedin.blank?
+            .profile-link-holder.middle-dot-divider
+              = link_to "https://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
+                = icon('linkedin-square')
+          - unless @user.twitter.blank?
+            .profile-link-holder.middle-dot-divider
+              = link_to "https://twitter.com/#{@user.twitter}", title: "Twitter" do
+                = icon('twitter-square')
+          - unless @user.website_url.blank?
+            .profile-link-holder.middle-dot-divider
+              = link_to @user.short_website_url, @user.full_website_url
+          - unless @user.location.blank?
+            .profile-link-holder.middle-dot-divider
+              = icon('map-marker')
+              = @user.location
+          - unless @user.organization.blank?
+            .profile-link-holder.middle-dot-divider
+              = icon('building')
+              = @user.organization
 
     - if @user.bio.present?
       .cover-desc
         %p.profile-user-bio
           = @user.bio
-
-    .cover-desc
-      - unless @user.public_email.blank?
-        .profile-link-holder.middle-dot-divider
-          = link_to @user.public_email, "mailto:#{@user.public_email}"
-      - unless @user.skype.blank?
-        .profile-link-holder.middle-dot-divider
-          = link_to "skype:#{@user.skype}", title: "Skype" do
-            = icon('skype')
-      - unless @user.linkedin.blank?
-        .profile-link-holder.middle-dot-divider
-          = link_to "https://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
-            = icon('linkedin-square')
-      - unless @user.twitter.blank?
-        .profile-link-holder.middle-dot-divider
-          = link_to "https://twitter.com/#{@user.twitter}", title: "Twitter" do
-            = icon('twitter-square')
-      - unless @user.website_url.blank?
-        .profile-link-holder.middle-dot-divider
-          = link_to @user.short_website_url, @user.full_website_url
-      - unless @user.location.blank?
-        .profile-link-holder.middle-dot-divider
-          = icon('map-marker')
-          = @user.location
 
     %ul.nav-links.center.user-profile-nav
       %li.js-activity-tab

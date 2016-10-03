@@ -38,6 +38,30 @@ describe MergeRequests::MergeService, services: true do
       end
     end
 
+    context 'closes related todos' do
+      let(:merge_request) { create(:merge_request, assignee: user, author: user) }
+      let(:project) { merge_request.project }
+      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+      let!(:todo) do
+        create(:todo, :assigned,
+          project: project,
+          author: user,
+          user: user,
+          target: merge_request)
+      end
+
+      before do
+        allow(service).to receive(:execute_hooks)
+
+        perform_enqueued_jobs do
+          service.execute(merge_request)
+          todo.reload
+        end
+      end
+
+      it { expect(todo).to be_done }
+    end
+
     context 'remove source branch by author' do
       let(:service) do
         merge_request.merge_params['force_remove_source_branch'] = '1'

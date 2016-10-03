@@ -147,6 +147,7 @@ class Project < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
+  delegate :add_user, to: :team
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -1017,10 +1018,6 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil)
-    team.add_user(user, access_level, current_user: current_user, expires_at: expires_at)
-  end
-
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end
@@ -1292,6 +1289,22 @@ class Project < ActiveRecord::Base
 
   def reset_pushes_since_gc
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+  end
+
+  def environments_for(ref, commit, with_tags: false)
+    environment_ids = deployments.group(:environment_id).
+      select(:environment_id)
+
+    environment_ids =
+      if with_tags
+        environment_ids.where('ref=? OR tag IS TRUE', ref)
+      else
+        environment_ids.where(ref: ref)
+      end
+
+    environments.where(id: environment_ids).select do |environment|
+      environment.includes_commit?(commit)
+    end
   end
 
   private

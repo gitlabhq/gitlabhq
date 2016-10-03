@@ -3,7 +3,8 @@
   margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
-  z-index: 100;
+  position: relative;
+  z-index: 1;
 
   .flash-notice {
     @extend .alert;
@@ -34,6 +35,12 @@
   }
 }
 
+.content-wrapper {
+  .flash-notice .container-fluid {
+    background-color: transparent;
+  }
+}
+
 @media (max-width: $screen-md-min) {
   ul.notes {
     .flash-container.timeline-content {
@@ -41,4 +48,3 @@
     }
   }
 }
-

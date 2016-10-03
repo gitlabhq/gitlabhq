@@ -5,7 +5,8 @@
 # Values are checked for formatting and exclusion from a list of reserved path
 # names.
 class NamespaceValidator < ActiveModel::EachValidator
-  RESERVED = %w(
+  RESERVED = %w[
+    .well-known
     admin
     all
     assets
@@ -31,7 +32,7 @@ class NamespaceValidator < ActiveModel::EachValidator
     u
     unsubscribes
     users
-  ).freeze
+  ].freeze
 
   def validate_each(record, attribute, value)
     unless value =~ Gitlab::Regex.namespace_regex

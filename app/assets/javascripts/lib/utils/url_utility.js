@@ -19,7 +19,7 @@
       while (i < sURLVariables.length) {
         sParameterName = sURLVariables[i].split('=');
         if (sParameterName[0] === sParam) {
-          values.push(sParameterName[1]);
+          values.push(sParameterName[1].replace(/\+/g, ' '));
         }
         i++;
       }
