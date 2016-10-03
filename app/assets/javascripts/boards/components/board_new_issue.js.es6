@@ -19,9 +19,10 @@
     methods: {
       submit(e) {
         e.preventDefault();
+        const labels = this.list.label ? [this.list.label] : [];
         const issue = new ListIssue({
           title: this.title,
-          labels: [this.list.label]
+          labels
         });
 
         this.list.newIssue(issue);

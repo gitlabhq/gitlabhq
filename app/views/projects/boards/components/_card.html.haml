@@ -15,7 +15,7 @@
         ":title" => "issue.title" }
         {{ issue.title }}
     .card-footer
-      %span.card-number
+      %span.card-number{ "v-if" => "issue.id" }
         = precede '#' do
           {{ issue.id }}
       %button.label.color-label.has-tooltip{ "v-for" => "label in issue.labels",

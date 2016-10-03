@@ -23,7 +23,7 @@ module Projects
         list = project.board.lists.find(params[:list_id])
 
         issue = Issues::CreateService.new(project, current_user, issue_params.merge(request: request)).execute
-        issue.labels << list.label
+        issue.labels << list.label if list.label
 
         render json: issue.to_json
       end
