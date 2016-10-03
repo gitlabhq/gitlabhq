@@ -81,25 +81,9 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-<<<<<<< HEAD
-    # This method is used to find users that have been entered into the "Add members" field.
-    # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
-    def user_for_id(user_id)
-      return user_id if user_id.is_a?(User)
-
-      user = User.find_by(id: user_id)
-      user ||= User.find_by(email: user_id)
-      user ||= user_id
-      user
-    end
-
-    def add_user(members, user_id, access_level, current_user: nil, skip_notification: false, expires_at: nil, ldap: false)
-      user = user_for_id(user_id)
-=======
-    def add_user(source, user, access_level, current_user: nil, expires_at: nil)
+    def add_user(source, user, access_level, current_user: nil, expires_at: nil, ldap: false)
       user = retrieve_user(user)
       access_level = retrieve_access_level(access_level)
->>>>>>> ce/master
 
       # `user` can be either a User object or an email to be invited
       member =
@@ -116,26 +100,24 @@ class Member < ActiveRecord::Base
       member.attributes = {
         created_by: member.created_by || current_user,
         access_level: access_level,
-        expires_at: expires_at
+        expires_at: expires_at,
+        skip_notification: ldap,
+        ldap: ldap
       }
 
       if member.request?
-        ::Members::ApproveAccessRequestService.new(source, current_user, id: member.id).execute
+        ::Members::ApproveAccessRequestService.new(
+          source,
+          current_user,
+          id: member.id,
+          access_level: access_level
+        ).execute
       else
         member.save
       end
 
-<<<<<<< HEAD
-      if can_update_member?(current_user, member) || project_creator?(member, access_level)
-        member.created_by ||= current_user
-        member.access_level = access_level
-        member.expires_at = expires_at
-        member.skip_notification = skip_notification
-        member.ldap = ldap
-=======
       member
     end
->>>>>>> ce/master
 
     def access_levels
       Gitlab::Access.sym_options

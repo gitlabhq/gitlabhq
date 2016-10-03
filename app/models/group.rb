@@ -117,28 +117,6 @@ class Group < Namespace
     self[:lfs_enabled]
   end
 
-<<<<<<< HEAD
-  def add_users(user_ids, access_level, current_user: nil, skip_notification: false, expires_at: nil, ldap: false)
-    user_ids.each do |user_id|
-      Member.add_user(
-        self.group_members,
-        user_id,
-        access_level,
-        current_user: current_user,
-        skip_notification: skip_notification,
-        expires_at: expires_at,
-        ldap: ldap
-      )
-    end
-  end
-
-  def add_user(user, access_level, current_user: nil, skip_notification: false, expires_at: nil)
-    add_users([user], access_level, current_user: current_user, skip_notification: skip_notification, expires_at: expires_at)
-  end
-
-  def add_owner(user, current_user = nil, skip_notification: false)
-    add_user(user, Gitlab::Access::OWNER, current_user: current_user, skip_notification: skip_notification)
-=======
   def add_users(users, access_level, current_user: nil, expires_at: nil)
     GroupMember.add_users_to_group(
       self,
@@ -149,15 +127,15 @@ class Group < Namespace
     )
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil)
+  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
     GroupMember.add_user(
       self,
       user,
       access_level,
       current_user: current_user,
-      expires_at: expires_at
+      expires_at: expires_at,
+      ldap: ldap
     )
->>>>>>> ce/master
   end
 
   def add_guest(user, current_user = nil)
@@ -176,13 +154,10 @@ class Group < Namespace
     add_user(user, :master, current_user: current_user)
   end
 
-<<<<<<< HEAD
-=======
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
   end
 
->>>>>>> ce/master
   def has_owner?(user)
     owners.include?(user)
   end

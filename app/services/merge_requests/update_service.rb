@@ -16,12 +16,9 @@ module MergeRequests
       end
 
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
-<<<<<<< HEAD
       old_approvers = merge_request.overall_approvers.to_a
 
-=======
       handle_wip_event(merge_request)
->>>>>>> ce/master
       update(merge_request)
 
       new_approvers = merge_request.overall_approvers.to_a - old_approvers

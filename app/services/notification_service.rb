@@ -578,7 +578,6 @@ class NotificationService
     end
   end
 
-<<<<<<< HEAD
   def approve_mr_email(merge_request, project, current_user)
     recipients = build_recipients(merge_request, project, current_user)
 
@@ -595,10 +594,7 @@ class NotificationService
     end
   end
 
-  def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
-=======
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
->>>>>>> ce/master
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)

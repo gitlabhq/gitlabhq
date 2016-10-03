@@ -59,22 +59,12 @@ module API
           authorize_admin_source!(source_type, source)
           required_attributes! [:user_id, :access_level]
 
-<<<<<<< HEAD
           ## EE specific
           if source_type == 'project' && source.group && source.group.membership_lock
             not_allowed!
           end
           ## EE specific
 
-          access_requester = source.requesters.find_by(user_id: params[:user_id])
-          if access_requester
-            # We pass current_user = access_requester so that the requester doesn't
-            # receive a "access denied" email
-            ::Members::DestroyService.new(access_requester, access_requester.user).execute
-          end
-
-=======
->>>>>>> ce/master
           member = source.members.find_by(user_id: params[:user_id])
 
           # This is to ensure back-compatibility but 409 behavior should be used

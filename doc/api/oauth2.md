@@ -130,12 +130,8 @@ For testing you can use the oauth2 ruby gem:
 
 ```
 client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "http://example.com")
-<<<<<<< HEAD
-access_token = client.password.get_token('user@example.com', 'sekret')
-=======
 access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
->>>>>>> ce/master
 ```
 
 [personal access tokens]: ./README.md#personal-access-tokens
