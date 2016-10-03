@@ -29,6 +29,7 @@ v 8.13.0 (unreleased)
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Add broadcast messages and alerts below sub-nav
+  - Better empty state for Groups view
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
