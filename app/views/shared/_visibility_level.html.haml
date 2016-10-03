@@ -6,7 +6,7 @@
     - if can_change_visibility_level
       = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: visibility_level, form_model: form_model)
     - else
-      .col-sm-10
+      %div
         %span.info
           = visibility_level_icon(visibility_level)
           %strong

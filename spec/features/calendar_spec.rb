@@ -5,7 +5,9 @@ feature 'Contributions Calendar', js: true, feature: true do
 
   let(:contributed_project) { create(:project, :public) }
 
-  date_format = '%A %b %d, %Y'
+  # Ex/ Sunday Jan 1, 2016
+  date_format = '%A %b %-d, %Y'
+
   issue_title = 'Bug in old browser'
   issue_params = { title: issue_title }
 

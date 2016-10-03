@@ -68,7 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
     describe '#members & #requesters' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -836,7 +836,7 @@ describe Project, models: true do
 
     describe 'when a user has access to a project' do
       before do
-        project.team.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MASTER)
       end
 
       it { is_expected.to eq([project]) }

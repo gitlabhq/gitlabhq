@@ -155,6 +155,20 @@ class MergeRequest < ActiveRecord::Base
     where("merge_requests.id IN (#{union.to_sql})")
   end
 
+  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+
+  def self.work_in_progress?(title)
+    !!(title =~ WIP_REGEX)
+  end
+
+  def self.wipless_title(title)
+    title.sub(WIP_REGEX, "")
+  end
+
+  def self.wip_title(title)
+    work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -389,14 +403,16 @@ class MergeRequest < ActiveRecord::Base
     @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
-
   def work_in_progress?
-    !!(title =~ WIP_REGEX)
+    self.class.work_in_progress?(title)
   end
 
   def wipless_title
-    self.title.sub(WIP_REGEX, "")
+    self.class.wipless_title(self.title)
+  end
+
+  def wip_title
+    self.class.wip_title(self.title)
   end
 
   def mergeable?(skip_ci_check: false)

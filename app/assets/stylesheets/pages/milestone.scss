@@ -33,6 +33,7 @@
     // Issue title
     span a {
       color: $gl-text-color;
+      word-wrap: break-word;
     }
   }
 }

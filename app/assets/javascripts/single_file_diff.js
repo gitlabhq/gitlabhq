@@ -10,12 +10,13 @@
 
     ERROR_HTML = '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
 
-    COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. Click to expand it.</div>';
+    COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
 
     function SingleFileDiff(file) {
       this.file = file;
       this.toggleDiff = bind(this.toggleDiff, this);
       this.content = $('.diff-content', this.file);
+      this.$toggleIcon = $('.diff-toggle-caret', this.file);
       this.diffForPath = this.content.find('[data-diff-for-path]').data('diff-for-path');
       this.isOpen = !this.diffForPath;
       if (this.diffForPath) {
@@ -23,18 +24,22 @@
         this.loadingContent = $(WRAPPER).addClass('loading').html(LOADING_HTML).hide();
         this.content = null;
         this.collapsedContent.after(this.loadingContent);
+        this.$toggleIcon.addClass('fa-caret-right');
       } else {
         this.collapsedContent = $(WRAPPER).html(COLLAPSED_HTML).hide();
         this.content.after(this.collapsedContent);
+        this.$toggleIcon.addClass('fa-caret-down');
       }
-      this.collapsedContent.on('click', this.toggleDiff);
-      $('.file-title > a', this.file).on('click', this.toggleDiff);
+      $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
     }
 
     SingleFileDiff.prototype.toggleDiff = function(e) {
+      var $target = $(e.target);
+      if (!$target.hasClass('file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
       this.isOpen = !this.isOpen;
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
+        this.$toggleIcon.addClass('fa-caret-right').removeClass('fa-caret-down');
         this.collapsedContent.show();
         if (typeof DiffNotesApp !== 'undefined') {
           DiffNotesApp.compileComponents();
@@ -42,10 +47,12 @@
       } else if (this.content) {
         this.collapsedContent.hide();
         this.content.show();
+        this.$toggleIcon.addClass('fa-caret-down').removeClass('fa-caret-right');
         if (typeof DiffNotesApp !== 'undefined') {
           DiffNotesApp.compileComponents();
         }
       } else {
+        this.$toggleIcon.addClass('fa-caret-down').removeClass('fa-caret-right');
         return this.getContentHTML();
       }
     };
