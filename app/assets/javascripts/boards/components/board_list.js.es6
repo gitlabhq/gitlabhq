@@ -76,7 +76,7 @@
         group: 'issues',
         sort: false,
         disabled: this.disabled,
-        filter: '.board-list-count',
+        filter: '.board-list-count, .board-new-issue-form',
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 

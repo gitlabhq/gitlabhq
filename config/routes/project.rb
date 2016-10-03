@@ -424,7 +424,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
               post :generate
             end
 
-            resources :issues, only: [:index]
+            resources :issues, only: [:index, :create]
           end
         end
       end

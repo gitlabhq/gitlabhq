@@ -42,14 +42,16 @@
           ":data-board" => "list.id" }
           - if can? current_user, :create_issue, @project
             %board-new-issue{ "inline-template" => true,
+              ":list" => "list",
               ":show-issue-form.sync" => "showIssueForm",
-              "v-if" => "list.type !== 'done' && showIssueForm" }
-              %li.card
+              "v-show" => "list.type !== 'done' && showIssueForm" }
+              %li.card.board-new-issue-form
                 %form{ "@submit" => "submit($event)" }
                   %label.label-light
                     Title
                   %input.form-control{ type: "text",
-                    "v-model" => "title" }
+                    "v-model" => "title",
+                    "v-el:input" => true }
                   .clearfix.prepend-top-10
                     %button.btn.btn-success.pull-left{ type: "submit",
                       ":disabled" => "title === ''" }

@@ -19,6 +19,15 @@ module Projects
         }
       end
 
+      def create
+        list = project.board.lists.find(params[:list_id])
+
+        issue = Issues::CreateService.new(project, current_user, issue_params.merge(request: request)).execute
+        issue.labels << list.label
+
+        render json: issue.to_json
+      end
+
       def update
         service = ::Boards::Issues::MoveService.new(project, current_user, move_params)
 
@@ -53,6 +62,10 @@ module Projects
 
       def move_params
         params.permit(:id, :from_list_id, :to_list_id)
+      end
+
+      def issue_params
+        params.require(:issue).permit(:title)
       end
     end
   end

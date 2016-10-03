@@ -58,4 +58,12 @@ class BoardService {
       to_list_id
     });
   }
+
+  newIssue (id, issue) {
+    return this.issues.save({ id }, {
+      issue: {
+        title: issue.title
+      }
+    });
+  }
 };

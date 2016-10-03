@@ -21,7 +21,7 @@
       fallbackClass: 'is-dragging',
       fallbackOnBody: true,
       ghostClass: 'is-ghost',
-      filter: '.has-tooltip',
+      filter: '.has-tooltip, .btn',
       delay: gl.issueBoards.touchEnabled ? 100 : 0,
       scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,

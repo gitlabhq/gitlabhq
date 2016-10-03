@@ -3,6 +3,7 @@
 
   gl.issueBoards.BoardNewIssue = Vue.extend({
     props: {
+      list: Object,
       showIssueForm: Boolean
     },
     data() {
@@ -10,14 +11,26 @@
         title: ''
       };
     },
+    watch: {
+      showIssueForm () {
+        this.$els.input.focus();
+      }
+    },
     methods: {
       submit(e) {
         e.preventDefault();
+        const issue = new ListIssue({
+          title: this.title,
+          labels: [this.list.label]
+        });
 
-        this.title = '';
+        this.list.newIssue(issue);
+
+        this.cancel();
       },
       cancel() {
         this.showIssueForm = false;
+        this.title = '';
       }
     }
   });
