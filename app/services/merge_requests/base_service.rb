@@ -5,16 +5,17 @@ module MergeRequests
     end
 
     def create_title_change_note(issuable, old_title)
-      removed_wip = old_title =~ MergeRequest::WIP_REGEX && !issuable.work_in_progress?
-      added_wip = old_title !~ MergeRequest::WIP_REGEX && issuable.work_in_progress?
+      removed_wip = MergeRequest.work_in_progress?(old_title) && !issuable.work_in_progress?
+      added_wip = !MergeRequest.work_in_progress?(old_title) && issuable.work_in_progress?
+      changed_title = MergeRequest.wipless_title(old_title) != issuable.wipless_title
 
       if removed_wip
         SystemNoteService.remove_merge_request_wip(issuable, issuable.project, current_user)
       elsif added_wip
         SystemNoteService.add_merge_request_wip(issuable, issuable.project, current_user)
-      else
-        super
       end
+
+      super if changed_title
     end
 
     def hook_data(merge_request, action, oldrev = nil)

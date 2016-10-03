@@ -6,6 +6,7 @@ v 8.13.0 (unreleased)
   - Fix centering of custom header logos (Ashley Dumaine)
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
+  - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
   - Speed-up group milestones show page
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
@@ -20,15 +21,18 @@ v 8.13.0 (unreleased)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Replace `alias_method_chain` with `Module#prepend`
+  - Enable GitLab Import/Export for non-admin users.
   - Preserve label filters when sorting !6136 (Joseph Frazier)
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
+  - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Added 'all' tab to event filter tabs
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Add broadcast messages and alerts below sub-nav
+  - Better empty state for Groups view
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile

@@ -174,7 +174,7 @@ describe Member, models: true do
   describe '.add_user' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
-        let!(:source) { create(source_type) }
+        let!(:source) { create(source_type, :public) }
         let!(:user) { create(:user) }
         let!(:admin) { create(:admin) }
 

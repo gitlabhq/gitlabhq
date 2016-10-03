@@ -214,6 +214,18 @@ module SlashCommands
       @updates[:due_date] = nil
     end
 
+    desc do
+      "Toggle the Work In Progress status"
+    end
+    condition do
+      issuable.persisted? &&
+        issuable.respond_to?(:work_in_progress?) &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :wip do
+      @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
+    end
+
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
