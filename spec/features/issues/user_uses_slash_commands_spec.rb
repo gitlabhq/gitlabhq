@@ -99,5 +99,15 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         end
       end
     end
+
+    describe 'toggling the WIP prefix from the title from note' do
+      let(:issue) { create(:issue, project: project) }
+
+      it 'does not recognize the command nor create a note' do
+        write_note("/wip")
+
+        expect(page).not_to have_content '/wip'
+      end
+    end
   end
 end

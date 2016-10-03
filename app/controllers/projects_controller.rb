@@ -138,10 +138,10 @@ class ProjectsController < Projects::ApplicationController
     noteable =
       case params[:type]
       when 'Issue'
-        IssuesFinder.new(current_user, project_id: @project.id, state: 'all').
+        IssuesFinder.new(current_user, project_id: @project.id).
           execute.find_by(iid: params[:type_id])
       when 'MergeRequest'
-        MergeRequestsFinder.new(current_user, project_id: @project.id, state: 'all').
+        MergeRequestsFinder.new(current_user, project_id: @project.id).
           execute.find_by(iid: params[:type_id])
       when 'Commit'
         @project.commit(params[:type_id])

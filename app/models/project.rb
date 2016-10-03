@@ -151,6 +151,7 @@ class Project < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
+  delegate :add_user, to: :team
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -1125,10 +1126,6 @@ class Project < ActiveRecord::Base
 
   def project_member(user)
     project_members.find_by(user_id: user)
-  end
-
-  def add_user(user, access_level, current_user: nil, expires_at: nil)
-    team.add_user(user, access_level, current_user: current_user, expires_at: expires_at)
   end
 
   def default_branch

@@ -8,16 +8,19 @@ module API
         awardable_string = awardable_type.pluralize
         awardable_id_string = "#{awardable_type}_id"
 
+        params do
+          requires :id, type: String, desc: 'The ID of a project'
+          requires :"#{awardable_id_string}", type: Integer, desc: "The ID of an Issue, Merge Request or Snippet"
+        end
+
         [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
-          # Get a list of project +awardable+ award emoji
-          #
-          # Parameters:
-          #   id (required)           - The ID of a project
-          #   awardable_id (required) - The ID of an issue or MR
-          # Example Request:
-          #   GET /projects/:id/issues/:awardable_id/award_emoji
+
+          desc 'Get a list of project +awardable+ award emoji' do
+            detail 'This feature was introduced in 8.9'
+            success Entities::AwardEmoji
+          end
           get endpoint do
             if can_read_awardable?
               awards = paginate(awardable.award_emoji)
@@ -27,14 +30,13 @@ module API
             end
           end
 
-          # Get a specific award emoji
-          #
-          # Parameters:
-          #   id (required)           - The ID of a project
-          #   awardable_id (required) - The ID of an issue or MR
-          #   award_id (required)     - The ID of the award
-          # Example Request:
-          #   GET /projects/:id/issues/:awardable_id/award_emoji/:award_id
+          desc 'Get a specific award emoji' do
+            detail 'This feature was introduced in 8.9'
+            success Entities::AwardEmoji
+          end
+          params do
+            requires :award_id, type: Integer, desc: 'The ID of the award'
+          end
           get "#{endpoint}/:award_id" do
             if can_read_awardable?
               present awardable.award_emoji.find(params[:award_id]), with: Entities::AwardEmoji
@@ -43,17 +45,14 @@ module API
             end
           end
 
-          # Award a new Emoji
-          #
-          # Parameters:
-          #   id (required) - The ID of a project
-          #   awardable_id (required) - The ID of an issue or mr
-          #   name (required) - The name of a award_emoji (without colons)
-          # Example Request:
-          #   POST /projects/:id/issues/:awardable_id/award_emoji
+          desc 'Award a new Emoji' do
+            detail 'This feature was introduced in 8.9'
+            success Entities::AwardEmoji
+          end
+          params do
+            requires :name, type: String, desc: 'The name of a award_emoji (without colons)'
+          end
           post endpoint do
-            required_attributes! [:name]
-
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
 
             award = awardable.create_award_emoji(params[:name], current_user)
@@ -65,14 +64,13 @@ module API
             end
           end
 
-          # Delete a +awardables+ award emoji
-          #
-          # Parameters:
-          #   id (required) - The ID of a project
-          #   awardable_id (required) - The ID of an issue or MR
-          #   award_emoji_id (required) - The ID of an award emoji
-          # Example Request:
-          #   DELETE /projects/:id/issues/:issue_id/notes/:note_id/award_emoji/:award_id
+          desc 'Delete a +awardables+ award emoji' do
+            detail 'This feature was introduced in 8.9'
+            success Entities::AwardEmoji
+          end
+          params do
+            requires :award_id, type: Integer, desc: 'The ID of an award emoji'
+          end
           delete "#{endpoint}/:award_id" do
             award = awardable.award_emoji.find(params[:award_id])
 

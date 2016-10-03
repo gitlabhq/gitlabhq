@@ -80,7 +80,7 @@ class CommitRange
   end
 
   def inspect
-    %(#<#{self.class}:#{object_id} #{to_s}>)
+    %(#<#{self.class}:#{object_id} #{self}>)
   end
 
   def to_s

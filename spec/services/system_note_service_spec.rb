@@ -40,6 +40,12 @@ describe SystemNoteService, services: true do
     describe 'note body' do
       let(:note_lines) { subject.note.split("\n").reject(&:blank?) }
 
+      describe 'comparison diff link line' do
+        it 'adds the comparison text' do
+          expect(note_lines[2]).to match "[Compare with previous version]"
+        end
+      end
+
       context 'without existing commits' do
         it 'adds a message header' do
           expect(note_lines[0]).to eq "Added #{new_commits.size} commits:"

@@ -639,6 +639,10 @@ Lint/RescueException:
 Lint/ShadowedException:
   Enabled: false
 
+# Checks for Object#to_s usage in string interpolation.
+Lint/StringConversionInInterpolation:
+  Enabled: true
+
 # Do not use prefix `_` for a variable that is used.
 Lint/UnderscorePrefixedVariableName:
   Enabled: true

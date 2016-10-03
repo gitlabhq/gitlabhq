@@ -287,6 +287,7 @@ describe MergeRequest, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe "#approvers_left" do
     let(:merge_request) {create :merge_request}
 
@@ -358,10 +359,27 @@ describe MergeRequest, models: true do
           blocked_developer = create(:user).tap { |u| u.block! }
           group.add_developer(blocked_developer)
         end.to change { merge_request.number_of_potential_approvers }.by(2)
+=======
+  describe "#wipless_title" do
+    ['WIP ', 'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP [WIP] WIP: WIP '].each do |wip_prefix|
+      it "removes the '#{wip_prefix}' prefix" do
+        wipless_title = subject.title
+        subject.title = "#{wip_prefix}#{subject.title}"
+
+        expect(subject.wipless_title).to eq wipless_title
+      end
+
+      it "is satisfies the #work_in_progress? method" do
+        subject.title = "#{wip_prefix}#{subject.title}"
+        subject.title = subject.wipless_title
+
+        expect(subject.work_in_progress?).to eq false
+>>>>>>> ce/master
       end
     end
   end
 
+<<<<<<< HEAD
   describe "#approvals_required" do
     let(:merge_request) { build(:merge_request) }
     before { merge_request.target_project.update_attributes(approvals_before_merge: 3) }
@@ -378,6 +396,27 @@ describe MergeRequest, models: true do
       it "takes approvals_before_merge from the target project" do
         expect(merge_request.approvals_required).to eq(3)
       end
+=======
+  describe "#wip_title" do
+    it "adds the WIP: prefix to the title" do
+      wip_title = "WIP: #{subject.title}"
+
+      expect(subject.wip_title).to eq wip_title
+    end 
+
+    it "does not add the WIP: prefix multiple times" do
+      wip_title = "WIP: #{subject.title}"
+      subject.title = subject.wip_title
+      subject.title = subject.wip_title
+
+      expect(subject.wip_title).to eq wip_title
+    end
+
+    it "is satisfies the #work_in_progress? method" do
+      subject.title = subject.wip_title
+
+      expect(subject.work_in_progress?).to eq true
+>>>>>>> ce/master
     end
   end
 

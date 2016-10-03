@@ -33,20 +33,30 @@ class ProjectTeam
     member
   end
 
+<<<<<<< HEAD
   def add_users(users, access, current_user: nil, expires_at: nil)
     return false if group_member_lock
 
+=======
+  def add_users(users, access_level, current_user: nil, expires_at: nil)
+>>>>>>> ce/master
     ProjectMember.add_users_to_projects(
       [project.id],
       users,
-      access,
+      access_level,
       current_user: current_user,
       expires_at: expires_at
     )
   end
 
-  def add_user(user, access, current_user: nil, expires_at: nil)
-    add_users([user], access, current_user: current_user, expires_at: expires_at)
+  def add_user(user, access_level, current_user: nil, expires_at: nil)
+    ProjectMember.add_user(
+      project,
+      user,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at
+    )
   end
 
   # Remove all users from project team

@@ -16,8 +16,12 @@ module MergeRequests
       end
 
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+<<<<<<< HEAD
       old_approvers = merge_request.overall_approvers.to_a
 
+=======
+      handle_wip_event(merge_request)
+>>>>>>> ce/master
       update(merge_request)
 
       new_approvers = merge_request.overall_approvers.to_a - old_approvers
@@ -90,6 +94,19 @@ module MergeRequests
 
     def after_update(issuable)
       issuable.cache_merge_request_closes_issues!(current_user)
+    end
+
+    private
+
+    def handle_wip_event(merge_request)
+      if wip_event = params.delete(:wip_event)
+        # We update the title that is provided in the params or we use the mr title
+        title = params[:title] || merge_request.title
+        params[:title] = case wip_event
+                         when 'wip' then MergeRequest.wip_title(title)
+                         when 'unwip' then MergeRequest.wipless_title(title)
+                         end
+      end
     end
   end
 end

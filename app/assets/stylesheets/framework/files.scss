@@ -26,6 +26,15 @@
     padding: 10px $gl-padding;
     word-wrap: break-word;
     border-radius: 3px 3px 0 0;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $dark-background-color;
+    }
+
+    .diff-toggle-caret {
+      padding-right: 6px; 
+    }
 
     &.file-title-clear {
       padding-left: 0;

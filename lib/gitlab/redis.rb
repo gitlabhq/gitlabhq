@@ -11,13 +11,6 @@ module Gitlab
     DEFAULT_REDIS_URL = 'redis://localhost:6379'
     CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
-    # To be thread-safe we must be careful when writing the class instance
-    # variables @_raw_config and @pool. Because @pool depends on @_raw_config we need two
-    # mutexes to prevent deadlock.
-    RAW_CONFIG_MUTEX = Mutex.new
-    POOL_MUTEX = Mutex.new
-    private_constant :RAW_CONFIG_MUTEX, :POOL_MUTEX
-
     class << self
       # Do NOT cache in an instance variable. Result may be mutated by caller.
       def params
@@ -31,24 +24,19 @@ module Gitlab
       end
 
       def with
-        if @pool.nil?
-          POOL_MUTEX.synchronize do
-            @pool = ConnectionPool.new { ::Redis.new(params) }
-          end
-        end
+        @pool ||= ConnectionPool.new { ::Redis.new(params) }
         @pool.with { |redis| yield redis }
       end
 
       def _raw_config
         return @_raw_config if defined?(@_raw_config)
 
-        RAW_CONFIG_MUTEX.synchronize do
-          begin
-            @_raw_config = File.read(CONFIG_FILE).freeze
-          rescue Errno::ENOENT
-            @_raw_config = false
-          end
+        begin
+          @_raw_config = File.read(CONFIG_FILE).freeze
+        rescue Errno::ENOENT
+          @_raw_config = false
         end
+
         @_raw_config
       end
     end

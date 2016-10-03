@@ -143,7 +143,8 @@ class NotificationService
       merge_request,
       merge_request.target_project,
       current_user,
-      :merged_merge_request_email
+      :merged_merge_request_email,
+      skip_current_user: !merge_request.merge_when_build_succeeds?
     )
   end
 
@@ -527,9 +528,16 @@ class NotificationService
     end
   end
 
-  def close_resource_email(target, project, current_user, method)
+  def close_resource_email(target, project, current_user, method, skip_current_user: true)
     action = method == :merged_merge_request_email ? "merge" : "close"
-    recipients = build_recipients(target, project, current_user, action: action)
+
+    recipients = build_recipients(
+      target,
+      project,
+      current_user,
+      action: action,
+      skip_current_user: skip_current_user
+    )
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
@@ -570,6 +578,7 @@ class NotificationService
     end
   end
 
+<<<<<<< HEAD
   def approve_mr_email(merge_request, project, current_user)
     recipients = build_recipients(merge_request, project, current_user)
 
@@ -587,6 +596,9 @@ class NotificationService
   end
 
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
+=======
+  def build_recipients(target, project, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
+>>>>>>> ce/master
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)
@@ -615,7 +627,8 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
 
-    recipients.delete(current_user)
+    recipients.delete(current_user) if skip_current_user
+
     recipients.uniq
   end
 

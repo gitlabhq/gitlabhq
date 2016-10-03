@@ -9,10 +9,10 @@ a big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style guide below.
 
 Migrations should not require GitLab installations to be taken offline unless
-_absolutely_ necessary. If a migration requires downtime this should be
-clearly mentioned during the review process as well as being documented in the
-monthly release post. For more information see the "Downtime Tagging" section
-below.
+_absolutely_ necessary - see the ["What Requires Downtime?"](what_requires_downtime.md)
+page. If a migration requires downtime, this should be clearly mentioned during
+the review process, as well as being documented in the monthly release post. For
+more information, see the "Downtime Tagging" section below.
 
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as little assumptions as possible

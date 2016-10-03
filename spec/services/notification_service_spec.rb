@@ -997,6 +997,20 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
+      it "notifies the merger when merge_when_build_succeeds is true" do
+        merge_request.merge_when_build_succeeds = true
+        notification.merge_mr(merge_request, @u_watcher)
+
+        should_email(@u_watcher)
+      end
+
+      it "does not notify the merger when merge_when_build_succeeds is false" do
+        merge_request.merge_when_build_succeeds = false
+        notification.merge_mr(merge_request, @u_watcher)
+
+        should_not_email(@u_watcher)
+      end
+
       context 'participating' do
         context 'by assignee' do
           before do
