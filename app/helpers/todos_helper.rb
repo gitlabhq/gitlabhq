@@ -117,11 +117,19 @@ module TodosHelper
   def todo_due_date(todo)
     return unless todo.target.try(:due_date)
 
-    is_due_today = todo.target.due_date.try(:today?)
-    is_overdue = todo.target.try(:overdue?)
+    is_due_today = todo.target.due_date.today?
+    is_overdue = todo.target.overdue?
+    css_class =
+      if is_due_today
+        'text-warning'
+      elsif is_overdue
+        'text-danger'
+      else
+        ''
+      end
 
     html = "&middot; ".html_safe
-    html << content_tag(:span, class: [('text-warning' if is_due_today), ('text-danger' if is_overdue)]) do
+    html << content_tag(:span, class: css_class) do
       "Due #{is_due_today ? "today" : todo.target.due_date.to_s(:medium)}"
     end
   end
