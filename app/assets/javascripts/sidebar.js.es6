@@ -34,8 +34,8 @@
         $(pageSelector).hasClass(expandedPageClass)
       );
       $(document)
-        .on('click', sidebarToggleSelector, () => this.toggleSidebar())
-        .on('click', pinnedToggleSelector, () => this.togglePinnedState())
+        .on('click', sidebarToggleSelector, (e) => this.toggleSidebar(e))
+        .on('click', pinnedToggleSelector, (e) => this.togglePinnedState(e))
         .on('click', 'html, body', (e) => this.handleClickEvent(e))
         .on('page:change', () => this.renderState());
       this.renderState();
@@ -47,17 +47,19 @@
         const targetIsToggle = $target.closest(sidebarToggleSelector).length > 0;
         const targetIsSidebar = $target.closest(sidebarWrapperSelector).length > 0;
         if (!targetIsToggle && (!targetIsSidebar || $target.closest('a'))) {
-          this.toggleSidebar();
+          this.toggleSidebar(e);
         }
       }
     }
 
-    toggleSidebar() {
+    toggleSidebar(e) {
+      e.preventDefault();
       this.isExpanded = !this.isExpanded;
       this.renderState();
     }
 
-    togglePinnedState() {
+    togglePinnedState(e) {
+      e.preventDefault();
       this.isPinned = !this.isPinned;
       if (!this.isPinned) {
         this.isExpanded = false;
