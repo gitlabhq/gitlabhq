@@ -246,7 +246,7 @@ module SystemNoteService
         'deleted'
       end
 
-    body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
+    body = "#{verb} #{branch_type} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
