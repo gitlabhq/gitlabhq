@@ -130,7 +130,7 @@ gem 'state_machines-activerecord', '~> 0.4.0'
 gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 3.4'
+gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 4.2'
