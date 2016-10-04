@@ -1,4 +1,4 @@
-.pipeline-graph-container.hidden
+.pipeline-graph-container
   .row-content-block.build-content.middle-block.pipeline-actions
     .pull-right
       .btn.btn-grouped.btn-white.toggle-pipeline-btn
@@ -28,7 +28,7 @@
           in
           = time_interval_in_words pipeline.duration
 
-  .row-content-block.build-content.middle-block.pipeline-graph
+  .row-content-block.build-content.middle-block.pipeline-graph.hidden
     .pipeline-visualization
       %ul.stage-column-list
         - stages = pipeline.stages_with_latest_statuses

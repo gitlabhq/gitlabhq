@@ -31,7 +31,7 @@
           if ($('.build', $this).length === 1) $this.addClass('no-margin');
         });
       }
-      $('.pipeline-graph-container').removeClass('hidden');
+      $('.pipeline-graph').removeClass('hidden');
     }
   }
 
