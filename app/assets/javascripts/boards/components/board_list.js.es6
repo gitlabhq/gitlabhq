@@ -78,7 +78,7 @@
         disabled: this.disabled,
         filter: '.board-list-count, .board-new-issue-form',
         onStart: (e) => {
-          const card = this.$refs.issue[e.oldIndex - 1];
+          const card = this.$refs.issue[e.oldIndex];
 
           Store.moving.issue = card.issue;
           Store.moving.list = card.list;
@@ -89,7 +89,7 @@
           gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
         },
         onRemove: (e) => {
-          this.$refs.issue[e.oldIndex - 1].$destroy(true);
+          this.$refs.issue[e.oldIndex].$destroy(true);
         }
       });
 

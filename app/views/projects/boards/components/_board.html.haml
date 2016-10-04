@@ -37,28 +37,29 @@
         ":issue-link-base" => "issueLinkBase" }
         .board-list-loading.text-center{ "v-if" => "loading" }
           = icon("spinner spin")
+        - if can? current_user, :create_issue, @project
+          %board-new-issue{ "inline-template" => true,
+            ":list" => "list",
+            ":show-issue-form.sync" => "showIssueForm",
+            "v-show" => "list.type !== 'done' && showIssueForm" }
+            .card.board-new-issue-form
+              %form{ "@submit" => "submit($event)" }
+                %label.label-light
+                  Title
+                %input.form-control{ type: "text",
+                  "v-model" => "title",
+                  "v-el:input" => true }
+                .clearfix.prepend-top-10
+                  %button.btn.btn-success.pull-left{ type: "submit",
+                    ":disabled" => "title === ''" }
+                    Submit issue
+                  %button.btn.btn-default.pull-right{ type: "button",
+                    "@click" => "cancel" }
+                    Cancel
         %ul.board-list{ "v-el:list" => true,
           "v-show" => "!loading",
-          ":data-board" => "list.id" }
-          - if can? current_user, :create_issue, @project
-            %board-new-issue{ "inline-template" => true,
-              ":list" => "list",
-              ":show-issue-form.sync" => "showIssueForm",
-              "v-show" => "list.type !== 'done' && showIssueForm" }
-              %li.card.board-new-issue-form
-                %form{ "@submit" => "submit($event)" }
-                  %label.label-light
-                    Title
-                  %input.form-control{ type: "text",
-                    "v-model" => "title",
-                    "v-el:input" => true }
-                  .clearfix.prepend-top-10
-                    %button.btn.btn-success.pull-left{ type: "submit",
-                      ":disabled" => "title === ''" }
-                      Submit issue
-                    %button.btn.btn-default.pull-right{ type: "button",
-                      "@click" => "cancel" }
-                      Cancel
+          ":data-board" => "list.id",
+          ":class" => "{ 'is-smaller': showIssueForm }" }
           = render "projects/boards/components/card"
           %li.board-list-count.text-center{ "v-if" => "showCount" }
             = icon("spinner spin", "v-show" => "list.loadingMore" )

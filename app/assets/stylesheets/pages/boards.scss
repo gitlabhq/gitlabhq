@@ -162,6 +162,10 @@ lex
   list-style: none;
   overflow-y: scroll;
   overflow-x: hidden;
+
+  &.is-smaller {
+    height: calc(100% - 185px);    
+  }
 }
 
 .board-list-loading {
@@ -234,6 +238,10 @@ lex
   }
 }
 
+.board-new-issue-form {
+  margin: 5px;
+}
+
 .board-issue-count-holder {
   margin-top: -3px;
 
@@ -251,7 +259,7 @@ lex
   border-radius: $border-radius-base;
   border-color: $border-color;
   border-style: solid;
-  border-width: 1px 1px 1px 1px;
+  border-width: 1px;
 
   &.has-btn {
     border-top-right-radius: 0;
