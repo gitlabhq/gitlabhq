@@ -35,11 +35,7 @@
       }
 
       bindEvents() {
-        return this.$input.on('keyup blur', (function(_this) {
-          return function(e) {
-            return _this.onFilenameUpdate();
-          };
-        })(this));
+        return this.$input.on('keyup blur', (e) => this.onFilenameUpdate());
       }
 
       toggleLabel(item) {
