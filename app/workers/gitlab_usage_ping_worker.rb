@@ -15,7 +15,7 @@ class GitlabUsagePingWorker
 
     begin
       HTTParty.post(url,
-                    body: Gitlab::UsageData.to_json,
+                    body: Gitlab::UsageData.to_json(true),
                     headers: { 'Content-type' => 'application/json' }
                    )
     rescue HTTParty::Error => e
