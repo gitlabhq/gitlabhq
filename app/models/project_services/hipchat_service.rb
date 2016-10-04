@@ -88,6 +88,10 @@ class HipchatService < Service
     end
   end
 
+  def render_line(text)
+    Banzai.render(text.lines.first.chomp, project: project, pipeline: :single_line) if text
+  end
+
   def create_push_message(push)
     ref_type = Gitlab::Git.tag_ref?(push[:ref]) ? 'tag' : 'branch'
     ref = Gitlab::Git.ref_name(push[:ref])
@@ -110,7 +114,7 @@ class HipchatService < Service
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|
-        message << "<br /> - #{commit[:message].lines.first} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
+        message << "<br /> - #{render_line(commit[:message])} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
       end
 
       if push[:commits].count > MAX_COMMITS
@@ -126,7 +130,7 @@ class HipchatService < Service
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
-    title = obj_attr[:title]
+    title = render_line(obj_attr[:title])
     state = obj_attr[:state]
     issue_iid = obj_attr[:iid]
     issue_url = obj_attr[:url]
@@ -150,7 +154,7 @@ class HipchatService < Service
     merge_request_id = obj_attr[:iid]
     state = obj_attr[:state]
     description = obj_attr[:description]
-    title = obj_attr[:title]
+    title = render_line(obj_attr[:title])
 
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
     merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
@@ -165,7 +169,7 @@ class HipchatService < Service
   end
 
   def format_title(title)
-    "<b>" + title.lines.first.chomp + "</b>"
+    "<b>#{render_line(title)}</b>"
   end
 
   def create_note_message(data)
