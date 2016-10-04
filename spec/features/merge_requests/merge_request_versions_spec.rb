@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 feature 'Merge Request versions', js: true, feature: true do
+  let(:merge_request) { create(:merge_request, importing: true) }
+  let(:project) { merge_request.source_project }
+
   before do
     login_as :admin
-    merge_request = create(:merge_request, importing: true)
     merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
     merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-    project = merge_request.source_project
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
@@ -21,7 +22,7 @@ feature 'Merge Request versions', js: true, feature: true do
   describe 'switch between versions' do
     before do
       page.within '.mr-version-dropdown' do
-        find('.btn-link').click
+        find('.btn-default').click
         click_link 'version 1'
       end
     end
@@ -42,12 +43,22 @@ feature 'Merge Request versions', js: true, feature: true do
   describe 'compare with older version' do
     before do
       page.within '.mr-version-compare-dropdown' do
-        find('.btn-link').click
+        find('.btn-default').click
         click_link 'version 1'
       end
     end
 
-    it 'should has correct value in the compare dropdown' do
+    it 'has a path with comparison context' do
+      expect(page).to have_current_path diffs_namespace_project_merge_request_path(
+        project.namespace,
+        project,
+        merge_request.iid,
+        diff_id: 2,
+        start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
+      )
+    end
+
+    it 'should have correct value in the compare dropdown' do
       page.within '.mr-version-compare-dropdown' do
         expect(page).to have_content 'version 1'
       end
@@ -61,8 +72,12 @@ feature 'Merge Request versions', js: true, feature: true do
       expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
     end
 
-    it 'show diff between new and old version' do
-      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
+    it 'should return to latest version when "Show latest version" button is clicked' do
+      click_link 'Show latest version'
+      page.within '.mr-version-dropdown' do
+        expect(page).to have_content 'latest version'
+      end
+      expect(page).to have_content '8 changed files'
     end
   end
 end

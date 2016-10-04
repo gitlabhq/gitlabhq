@@ -1,21 +1,3 @@
-# == Schema Information
-#
-# Table name: web_hooks
-#
-#  id                    :integer          not null, primary key
-#  url                   :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  type                  :string(255)      default("ProjectHook")
-#  service_id            :integer
-#  push_events           :boolean          default(TRUE), not null
-#  issues_events         :boolean          default(FALSE), not null
-#  merge_requests_events :boolean          default(FALSE), not null
-#  tag_push_events       :boolean          default(FALSE)
-#  note_events           :boolean          default(FALSE), not null
-#
-
 require "spec_helper"
 
 describe SystemHook, models: true do
@@ -48,7 +30,7 @@ describe SystemHook, models: true do
 
     it "user_create hook" do
       create(:user)
-      
+
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_create/,
         headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }

@@ -1,8 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::Workhorse, lib: true do
-  let(:project) { create(:project) }
-  let(:subject) { Gitlab::Workhorse }
+  let(:project)    { create(:project) }
+  let(:repository) { project.repository }
+
+  def decode_workhorse_header(array)
+    key, value = array
+    command, encoded_params = value.split(":")
+    params = JSON.parse(Base64.urlsafe_decode64(encoded_params))
+
+    [key, command, params]
+  end
 
   describe ".send_git_archive" do
     context "when the repository doesn't have an archive file path" do
@@ -11,8 +19,34 @@ describe Gitlab::Workhorse, lib: true do
       end
 
       it "raises an error" do
-        expect { subject.send_git_archive(project.repository, ref: "master", format: "zip") }.to raise_error(RuntimeError)
+        expect { described_class.send_git_archive(project.repository, ref: "master", format: "zip") }.to raise_error(RuntimeError)
       end
+    end
+  end
+
+  describe '.send_git_patch' do
+    let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
+    subject { described_class.send_git_patch(repository, diff_refs) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("git-format-patch")
+      expect(params).to eq("RepoPath" => repository.path_to_repo, "ShaFrom" => "base", "ShaTo" => "head")
+    end
+  end
+
+  describe '.send_git_diff' do
+    let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
+    subject { described_class.send_git_patch(repository, diff_refs) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("git-format-patch")
+      expect(params).to eq("RepoPath" => repository.path_to_repo, "ShaFrom" => "base", "ShaTo" => "head")
     end
   end
 
@@ -28,6 +62,11 @@ describe Gitlab::Workhorse, lib: true do
       expect(subject).to be_a(String)
       expect(subject.length).to eq(32)
       expect(subject.encoding).to eq(Encoding::ASCII_8BIT)
+    end
+
+    it 'accepts a trailing newline' do
+      open(described_class.secret_path, 'a') { |f| f.write "\n" }
+      expect(subject.length).to eq(32)
     end
 
     it 'raises an exception if the secret file cannot be read' do

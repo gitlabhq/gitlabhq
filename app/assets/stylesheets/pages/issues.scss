@@ -10,10 +10,6 @@
     .issue-labels {
       display: inline-block;
     }
-
-    .issue-no-comments {
-      opacity: 0.5;
-    }
   }
 }
 
@@ -35,6 +31,15 @@
 
 form.edit-issue {
   margin: 0;
+}
+
+ul.related-merge-requests > li {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  .merge-request-id {
+    flex-shrink: 0;
+  }
 }
 
 .merge-requests-title, .related-branches-title {

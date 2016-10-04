@@ -22,7 +22,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_members = @project_members.order('access_level DESC')
     @project_members = @project_members.page(params[:page])
 
-    @requesters = @project.requesters if can?(current_user, :admin_project, @project)
+    @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 
     @project_member = @project.project_members.new
   end

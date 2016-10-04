@@ -4,7 +4,7 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         labelUrl = $dropdown.data('labels');
@@ -24,6 +24,11 @@
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
+        initialSelected = $selectbox
+          .find('input[name="' + $dropdown.data('field-name') + '"]')
+          .map(function () {
+            return this.value;
+          }).get();
         if (issueUpdateURL != null) {
           issueURLSplit = issueUpdateURL.split('/');
         }
@@ -43,6 +48,10 @@
           selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").map(function() {
             return this.value;
           }).get();
+
+          if (_.isEqual(initialSelected, selected)) return;
+          initialSelected = selected;
+
           data = {};
           data[abilityName] = {};
           data[abilityName].label_ids = selected;
@@ -166,7 +175,7 @@
                 instance.addInput(this.fieldName, label.id);
               }
             }
-            if ($form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + escape(this.id(label)) + "']").length) {
+            if (this.id(label) && $form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + this.id(label).toString().replace(/'/g, '\\\'') + "']").length) {
               selectedClass.push('is-active');
             }
             if ($dropdown.hasClass('js-multiselect') && removesAll) {
@@ -280,12 +289,12 @@
             if (page === 'projects:boards:show') {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              } else if (label.title) {
+              } else if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
               } else {
                 var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
-                filters = filters.filter(function (label) {
-                  return label !== $el.text().trim();
+                filters = filters.filter(function (filteredLabel) {
+                  return filteredLabel !== label.title;
                 });
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = filters;
               }

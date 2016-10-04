@@ -141,6 +141,11 @@ class Namespace < ActiveRecord::Base
     projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
   end
 
+  def lfs_enabled?
+    # User namespace will always default to the global setting
+    Gitlab.config.lfs.enabled
+  end
+
   private
 
   def repository_storage_paths

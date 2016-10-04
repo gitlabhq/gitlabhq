@@ -35,6 +35,14 @@ module API
             Project.find_with_namespace(project_path)
           end
         end
+
+        def ssh_authentication_abilities
+          [
+            :read_project,
+            :download_code,
+            :push_code
+          ]
+        end
       end
 
       post "/allowed" do
@@ -51,9 +59,9 @@ module API
 
         access =
           if wiki?
-            Gitlab::GitAccessWiki.new(actor, project, protocol)
+            Gitlab::GitAccessWiki.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           else
-            Gitlab::GitAccess.new(actor, project, protocol)
+            Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           end
 
         access_status = access.check(params[:action], params[:changes])
@@ -72,6 +80,19 @@ module API
         end
 
         response
+      end
+
+      post "/lfs_authenticate" do
+        status 200
+
+        key = Key.find(params[:key_id])
+        token_handler = Gitlab::LfsToken.new(key)
+
+        {
+          username: token_handler.actor_name,
+          lfs_token: token_handler.token,
+          repository_http_path: project.http_url_to_repo
+        }
       end
 
       get "/merge_request_urls" do

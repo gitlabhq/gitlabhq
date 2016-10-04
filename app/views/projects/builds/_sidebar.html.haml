@@ -8,7 +8,7 @@
     %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
       = icon('angle-double-right')
   - if @build.coverage
-    .block.block-first
+    .block.coverage
       .title
         Test coverage
       %p.build-detail-row
@@ -95,7 +95,7 @@
 
           - @build.trigger_request.variables.each do |key, value|
             .hide.js-build
-              .js-build-variable= key 
+              .js-build-variable= key
               .js-build-value= value
 
     .block
@@ -112,14 +112,14 @@
           %span.label.label-primary
             = tag
 
-    - if builds.size > 1
+    - if @build.pipeline.stages.many?
       .dropdown.build-dropdown
         .title Stage
         %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
           %span.stage-selection More
           = icon('caret-down')
         %ul.dropdown-menu
-          - builds.map(&:stage).uniq.each do |stage|
+          - @build.pipeline.stages.each do |stage|
             %li
               %a.stage-item= stage
 
@@ -128,7 +128,7 @@
       - builds.select{|build| build.status == build_status}.each do |build|
         .build-job{class: ('active' if build == @build), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
-            = icon('check')
+            = icon('right-arrow')
             = ci_icon_for_status(build.status)
             %span
               - if build.name

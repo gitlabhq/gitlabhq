@@ -13,7 +13,7 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - [Test a Scala application](test-scala-application.md)
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [Blog post about using GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
-- [Repo's with examples for various languages](https://gitlab.com/groups/gitlab-examples)
+- [Repositories with examples for various languages](https://gitlab.com/groups/gitlab-examples)
 - [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-[gitlab-ci-templates][https://gitlab.com/gitlab-org/gitlab-ci-yml]
+[gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml

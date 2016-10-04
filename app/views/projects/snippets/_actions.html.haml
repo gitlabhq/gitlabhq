@@ -1,13 +1,13 @@
 .hidden-xs
   - if can?(current_user, :create_project_snippet, @project)
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: 'btn btn-grouped btn-create new-snippet-link', title: "New Snippet" do
-      New Snippet
+    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: 'btn btn-grouped btn-create new-snippet-link', title: "New snippet" do
+      New snippet
+  - if can?(current_user, :update_project_snippet, @snippet)
+    = link_to namespace_project_snippet_path(@project.namespace, @project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-danger", title: 'Delete Snippet' do
+      Delete
   - if can?(current_user, :update_project_snippet, @snippet)
     = link_to edit_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-grouped snippable-edit" do
       Edit
-  - if can?(current_user, :update_project_snippet, @snippet)
-    = link_to namespace_project_snippet_path(@project.namespace, @project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-warning", title: 'Delete Snippet' do
-      Delete
 - if can?(current_user, :create_project_snippet, @project) || can?(current_user, :update_project_snippet, @snippet)
   .visible-xs-block.dropdown
     %button.btn.btn-default.btn-block.append-bottom-0.prepend-top-5{ data: { toggle: "dropdown" } }
@@ -17,13 +17,13 @@
       %ul
         - if can?(current_user, :create_project_snippet, @project)
           %li
-            = link_to new_namespace_project_snippet_path(@project.namespace, @project), title: "New Snippet" do
-              New Snippet
-        - if can?(current_user, :update_project_snippet, @snippet)
-          %li
-            = link_to edit_namespace_project_snippet_path(@project.namespace, @project, @snippet) do
-              Edit
+            = link_to new_namespace_project_snippet_path(@project.namespace, @project), title: "New snippet" do
+              New snippet
         - if can?(current_user, :update_project_snippet, @snippet)
           %li
             = link_to namespace_project_snippet_path(@project.namespace, @project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, title: 'Delete Snippet' do
               Delete
+        - if can?(current_user, :update_project_snippet, @snippet)
+          %li
+            = link_to edit_namespace_project_snippet_path(@project.namespace, @project, @snippet) do
+              Edit

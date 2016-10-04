@@ -60,7 +60,7 @@ module Gitlab
       def send_git_diff(repository, diff_refs)
         params = {
           'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => diff_refs.start_sha,
+          'ShaFrom'   => diff_refs.base_sha,
           'ShaTo'     => diff_refs.head_sha
         }
 
@@ -73,7 +73,7 @@ module Gitlab
       def send_git_patch(repository, diff_refs)
         params = {
           'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => diff_refs.start_sha,
+          'ShaFrom'   => diff_refs.base_sha,
           'ShaTo'     => diff_refs.head_sha
         }
 
@@ -102,20 +102,20 @@ module Gitlab
 
       def secret
         @secret ||= begin
-          bytes = Base64.strict_decode64(File.read(secret_path))
+          bytes = Base64.strict_decode64(File.read(secret_path).chomp)
           raise "#{secret_path} does not contain #{SECRET_LENGTH} bytes" if bytes.length != SECRET_LENGTH
           bytes
         end
       end
-      
+
       def write_secret
         bytes = SecureRandom.random_bytes(SECRET_LENGTH)
-        File.open(secret_path, 'w:BINARY', 0600) do |f| 
+        File.open(secret_path, 'w:BINARY', 0600) do |f|
           f.chmod(0600)
           f.write(Base64.strict_encode64(bytes))
         end
       end
-      
+
       def verify_api_request!(request_headers)
         JWT.decode(
           request_headers[INTERNAL_API_REQUEST_HEADER],
@@ -128,7 +128,7 @@ module Gitlab
       def secret_path
         Rails.root.join('.gitlab_workhorse_secret')
       end
-      
+
       protected
 
       def encode(hash)

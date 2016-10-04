@@ -27,7 +27,7 @@ module Ci
           else
             Gitlab::Metrics.add_event(:build_not_found)
 
-            not_found!
+            build_not_found!
           end
         end
 

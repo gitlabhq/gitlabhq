@@ -107,6 +107,14 @@
 
   .block {
     width: 100%;
+
+    &.coverage {
+      padding: 0 16px 11px;
+    }
+
+    .btn-group-justified {
+      margin-top: 5px;
+    }
   }
 
   .js-build-variable {
@@ -210,6 +218,9 @@
 
 .build-detail-row {
   margin-bottom: 5px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .build-light-text {

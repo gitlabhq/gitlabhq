@@ -33,4 +33,17 @@ describe ProjectPolicy, models: true do
   it 'returns increasing permissions for each level' do
     expect(users_permissions).to eq(users_permissions.sort.uniq)
   end
+
+  it 'does not include the read_issue permission when the issue author is not a member of the private project' do
+    project = create(:project, :private)
+    issue   = create(:issue, project: project)
+    user    = issue.author
+
+    expect(project.team.member?(issue.author)).to eq(false)
+
+    expect(BasePolicy.class_for(project).abilities(user, project).can_set).
+      not_to include(:read_issue)
+
+    expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
+  end
 end

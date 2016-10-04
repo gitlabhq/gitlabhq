@@ -756,62 +756,59 @@ class Repository
     @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
-  def commit_dir(user, path, message, branch)
+  def commit_dir(user, path, message, branch, author_email: nil, author_name: nil)
     update_branch_with_hooks(user, branch) do |ref|
-      committer = user_to_committer(user)
-      options = {}
-      options[:committer] = committer
-      options[:author] = committer
-
-      options[:commit] = {
-        message: message,
-        branch: ref,
-        update_ref: false,
+      options = {
+        commit: {
+          branch: ref,
+          message: message,
+          update_ref: false
+        }
       }
+
+      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
       raw_repository.mkdir(path, options)
     end
   end
 
-  def commit_file(user, path, content, message, branch, update)
+  def commit_file(user, path, content, message, branch, update, author_email: nil, author_name: nil)
     update_branch_with_hooks(user, branch) do |ref|
-      committer = user_to_committer(user)
-      options = {}
-      options[:committer] = committer
-      options[:author] = committer
-      options[:commit] = {
-        message: message,
-        branch: ref,
-        update_ref: false,
+      options = {
+        commit: {
+          branch: ref,
+          message: message,
+          update_ref: false
+        },
+        file: {
+          content: content,
+          path: path,
+          update: update
+        }
       }
 
-      options[:file] = {
-        content: content,
-        path: path,
-        update: update
-      }
+      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
       Gitlab::Git::Blob.commit(raw_repository, options)
     end
   end
 
-  def update_file(user, path, content, branch:, previous_path:, message:)
+  def update_file(user, path, content, branch:, previous_path:, message:, author_email: nil, author_name: nil)
     update_branch_with_hooks(user, branch) do |ref|
-      committer = user_to_committer(user)
-      options = {}
-      options[:committer] = committer
-      options[:author] = committer
-      options[:commit] = {
-        message: message,
-        branch: ref,
-        update_ref: false
+      options = {
+        commit: {
+          branch: ref,
+          message: message,
+          update_ref: false
+        },
+        file: {
+          content: content,
+          path: path,
+          update: true
+        }
       }
 
-      options[:file] = {
-        content: content,
-        path: path,
-        update: true
-      }
+      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
       if previous_path && previous_path != path
         options[:file][:previous_path] = previous_path
@@ -822,32 +819,37 @@ class Repository
     end
   end
 
-  def remove_file(user, path, message, branch)
+  def remove_file(user, path, message, branch, author_email: nil, author_name: nil)
     update_branch_with_hooks(user, branch) do |ref|
-      committer = user_to_committer(user)
-      options = {}
-      options[:committer] = committer
-      options[:author] = committer
-      options[:commit] = {
-        message: message,
-        branch: ref,
-        update_ref: false,
+      options = {
+        commit: {
+          branch: ref,
+          message: message,
+          update_ref: false
+        },
+        file: {
+          path: path
+        }
       }
 
-      options[:file] = {
-        path: path
-      }
+      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
       Gitlab::Git::Blob.remove(raw_repository, options)
     end
   end
 
-  def user_to_committer(user)
+  def get_committer_and_author(user, email: nil, name: nil)
+    committer = user_to_committer(user)
+    author = Gitlab::Git::committer_hash(email: email, name: name) || committer
+
     {
-      email: user.email,
-      name: user.name,
-      time: Time.now
+      author: author,
+      committer: committer
     }
+  end
+
+  def user_to_committer(user)
+    Gitlab::Git::committer_hash(email: user.email, name: user.name)
   end
 
   def can_be_merged?(source_sha, target_branch)
@@ -990,37 +992,6 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def parse_search_result(result)
-    ref = nil
-    filename = nil
-    basename = nil
-    startline = 0
-
-    result.each_line.each_with_index do |line, index|
-      if line =~ /^.*:.*:\d+:/
-        ref, filename, startline = line.split(':')
-        startline = startline.to_i - index
-        extname = Regexp.escape(File.extname(filename))
-        basename = filename.sub(/#{extname}$/, '')
-        break
-      end
-    end
-
-    data = ""
-
-    result.each_line do |line|
-      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: startline,
-      data: data
-    )
-  end
-
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
@@ -1048,7 +1019,7 @@ class Repository
 
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
       update_ref!(ref, newrev, oldrev)
-      
+
       if was_empty || !target_branch
         # If repo was empty expire cache
         after_create if was_empty

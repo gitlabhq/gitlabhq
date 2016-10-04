@@ -93,8 +93,9 @@
 
 .profile-user-bio {
   // Limits the width of the user bio for readability.
-  max-width: 750px;
-  margin: auto;
+  max-width: 600px;
+  margin: 15px auto 0;
+  padding: 0 16px;
 }
 
 .user-avatar-button {
@@ -212,6 +213,28 @@
 }
 
 .user-profile {
+  .cover-controls a {
+    margin-left: 5px;
+  }
+  .profile-header {
+    margin: 0 auto;
+    .avatar-holder {
+      width: 90px;
+      display: inline-block;
+    }
+    .user-info {
+      display: inline-block;
+      text-align: left;
+      vertical-align: middle;
+      margin-left: 15px;
+      .handle {
+        color: $gl-gray-light;
+      }
+      .member-date {
+        margin-bottom: 4px;
+      }
+    }
+  }
   @media (max-width: $screen-xs-max) {
     .cover-block {
       padding-top: 20px;
@@ -219,14 +242,24 @@
 
     .cover-controls {
       position: static;
+      padding: 0 16px;
       margin-bottom: 20px;
+      display: -webkit-flex;
+      display: flex;
 
       .btn {
-        display: inline-block;
-        width: 46%;
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        &:first-child {
+          margin-left: 0;
+        }
       }
     }
   }
+}
+
+.user-profile-nav {
+  margin-top: 15px;
 }
 
 table.u2f-registrations {

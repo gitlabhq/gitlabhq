@@ -29,7 +29,7 @@
 
       - note_count = issue.notes.user.count
       %li
-        = link_to issue_path(issue, anchor: 'notes'), class: ('issue-no-comments' if note_count.zero?) do
+        = link_to issue_path(issue, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
           = icon('comments')
           = note_count
 

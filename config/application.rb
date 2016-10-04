@@ -99,13 +99,24 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    config.middleware.use Rack::Attack
+    config.middleware.insert_before Warden::Manager, Rack::Attack
 
     # Allow access to GitLab API from other domains
-    config.middleware.use Rack::Cors do
+    config.middleware.insert_before Warden::Manager, Rack::Cors do
+      allow do
+        origins Gitlab.config.gitlab.url
+        resource '/api/*',
+          credentials: true,
+          headers: :any,
+          methods: :any,
+          expose: ['Link']
+      end
+
+      # Cross-origin requests must not have the session cookie available
       allow do
         origins '*'
         resource '/api/*',
+          credentials: false,
           headers: :any,
           methods: :any,
           expose: ['Link']
@@ -116,6 +127,10 @@ module Gitlab
     redis_config_hash = Gitlab::Redis.params
     redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
+    if Sidekiq.server? # threaded context
+      redis_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
+      redis_config_hash[:pool_timeout] = 1
+    end
     config.cache_store = :redis_store, redis_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true

@@ -195,7 +195,7 @@ module SlashCommands
     params '<in 2 days | this Friday | December 31st>'
     condition do
       issuable.respond_to?(:due_date) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :due do |due_date_param|
       due_date = Chronic.parse(due_date_param).try(:to_date)
@@ -208,10 +208,22 @@ module SlashCommands
       issuable.persisted? &&
         issuable.respond_to?(:due_date) &&
         issuable.due_date? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_due_date do
       @updates[:due_date] = nil
+    end
+
+    desc do
+      "Toggle the Work In Progress status"
+    end
+    condition do
+      issuable.persisted? &&
+        issuable.respond_to?(:work_in_progress?) &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :wip do
+      @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
     # This is a dummy command, so that it appears in the autocomplete commands

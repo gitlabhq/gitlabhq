@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project import', feature: true, js: true do
+feature 'Import/Export - project import integration test', feature: true, js: true do
   include Select2Helper
 
   let(:admin) { create(:admin) }
@@ -86,14 +86,14 @@ feature 'project import', feature: true, js: true do
       login_as(normal_user)
     end
 
-    scenario 'non-admin user is not allowed to import a project' do
+    scenario 'non-admin user is allowed to import a project' do
       expect(Project.all.count).to be_zero
 
       visit new_project_path
 
       fill_in :project_path, with: 'test-project-path', visible: true
 
-      expect(page).not_to have_content('GitLab export')
+      expect(page).to have_content('GitLab export')
     end
   end
 

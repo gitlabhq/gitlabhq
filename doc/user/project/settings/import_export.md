@@ -3,11 +3,12 @@
 >**Notes:**
 >
 >  - [Introduced][ce-3050] in GitLab 8.9.
->  - Importing will not be possible if the import instance version is lower
->    than that of the exporter.
+>  - Importing will not be possible if the import instance version differs from
+>    that of the exporter.
 >  - For existing installations, the project import option has to be enabled in
 >    application settings (`/admin/application_settings`) under 'Import sources'.
->    You will have to be an administrator to enable and use the import functionality.
+>    Ask your administrator if you don't see the **GitLab export** button when
+>    creating a new project.
 >  - You can find some useful raketasks if you are an administrator in the
 >    [import_export](../../../administration/raketasks/project_import_export.md)
 >    raketask.
@@ -16,6 +17,20 @@
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
+
+## Version history
+
+| GitLab version | Import/Export version |
+| -------- | -------- |
+| 8.12.0 to current  | 0.1.4    |
+| 8.10.3   | 0.1.3    |
+| 8.10.0   | 0.1.2    |
+| 8.9.5    | 0.1.1    |
+| 8.9.0    | 0.1.0    |
+ 
+ > The table reflects what GitLab version we updated the Import/Export version at.
+ > For instance, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)
+ > and the exports between them will be compatible.
 
 ## Exported contents
 

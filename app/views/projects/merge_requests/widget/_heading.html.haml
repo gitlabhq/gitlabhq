@@ -4,14 +4,15 @@
       .ci_widget{ class: "ci-#{status}", style: ("display:none" unless @pipeline.status == status) }
         = ci_icon_for_status(status)
         %span
-          CI build
+          Pipeline
+          = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'pipeline'
           = ci_label_for_status(status)
         for
         - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
         %span.ci-coverage
-        = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+        = link_to "View details", pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'pipelines'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
@@ -43,15 +44,16 @@
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
 
-- @merge_request.environments.each do |environment|
-  .mr-widget-heading
-    .ci_widget.ci-success
-      = ci_icon_for_status("success")
-      %span.hidden-sm
-        Deployed to
-        = succeed '.' do
-          = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment), class: 'environment'
-        - external_url = environment.external_url
-        - if external_url
-          = link_to external_url, target: '_blank' do
-            = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)
+- @merge_request.environments.sort_by(&:name).each do |environment|
+  - if can?(current_user, :read_environment, environment)
+    .mr-widget-heading
+      .ci_widget.ci-success
+        = ci_icon_for_status("success")
+        %span.hidden-sm
+          Deployed to
+          = succeed '.' do
+            = link_to environment.name, environment_path(environment), class: 'environment'
+          - external_url = environment.external_url
+          - if external_url
+            = link_to external_url, target: '_blank' do
+              = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)

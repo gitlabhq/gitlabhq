@@ -4,30 +4,8 @@
 
 %div{ class: container_class }
   .top-area
-    %ul.nav-links
-      %li{class: ('active' if @scope.nil?)}
-        = link_to project_builds_path(@project) do
-          All
-          %span.badge.js-totalbuilds-count
-            = number_with_delimiter(@all_builds.count(:id))
-
-      %li{class: ('active' if @scope == 'pending')}
-        = link_to project_builds_path(@project, scope: :pending) do
-          Pending
-          %span.badge
-            = number_with_delimiter(@all_builds.pending.count(:id))
-
-      %li{class: ('active' if @scope == 'running')}
-        = link_to project_builds_path(@project, scope: :running) do
-          Running
-          %span.badge
-            = number_with_delimiter(@all_builds.running.count(:id))
-
-      %li{class: ('active' if @scope == 'finished')}
-        = link_to project_builds_path(@project, scope: :finished) do
-          Finished
-          %span.badge
-            = number_with_delimiter(@all_builds.finished.count(:id))
+    - build_path_proc = ->(scope) { project_builds_path(@project, scope: scope) }
+    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
     .nav-controls
       - if can?(current_user, :update_build, @project)
@@ -42,23 +20,4 @@
           %span CI Lint
 
   %ul.content-list.builds-content-list
-    - if @builds.blank?
-      %li
-        .nothing-here-block No builds to show
-    - else
-      .table-holder
-        %table.table.builds
-          %thead
-            %tr
-              %th Status
-              %th Commit
-              %th Stage
-              %th Name
-              %th
-              - if @project.build_coverage_enabled?
-                %th Coverage
-              %th
-
-          = render @builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?
-
-      = paginate @builds, theme: 'gitlab'
+    = render "table", builds: @builds, project: @project

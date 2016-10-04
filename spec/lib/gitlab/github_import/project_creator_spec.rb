@@ -13,7 +13,7 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
     )
   end
 
-  subject(:service) { described_class.new(repo, namespace, user, github_access_token: 'asdffg') }
+  subject(:service) { described_class.new(repo, repo.name, namespace, user, github_access_token: 'asdffg') }
 
   before do
     namespace.add_owner(user)

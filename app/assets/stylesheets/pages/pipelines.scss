@@ -147,13 +147,40 @@
   }
 
   .stage-cell {
-    text-align: center;
+    font-size: 0;
 
     svg {
       height: 18px;
       width: 18px;
+      position: relative;
+      z-index: 2;
       vertical-align: middle;
       overflow: visible;
+    }
+
+    .stage-container {
+      display: inline-block;
+      position: relative;
+      margin-right: 6px;
+
+      .tooltip {
+        white-space: nowrap;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          content: '';
+          width: 8px;
+          position: absolute;;
+          right: -7px;
+          bottom: 8px;
+          border-bottom: 2px solid $border-color;
+        }
+      }
+
+      a {
+        display: block;
+      }
     }
   }
 
@@ -318,9 +345,17 @@
 
     .build-content {
       width: 130px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+
+      .ci-status-text {
+        width: 110px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        display: inline-block;
+        position: relative;
+        top: -1px;
+      }
 
       a {
         color: $layout-link-gray;
@@ -331,13 +366,74 @@
             text-decoration: underline;
           }
         }
+      }
 
+      .dropdown-menu-toggle {
+        border: none;
+        width: auto;
+        padding: 0;
+        color: $layout-link-gray;
+
+        .ci-status-text {
+          width: 80px;
+        }
+      }
+
+      .grouped-pipeline-dropdown {
+        padding: 8px 0;
+        width: 200px;
+        left: auto;
+        right: -214px;
+        top: -9px;
+
+        a:hover {
+          .ci-status-text {
+            text-decoration: none;
+          }
+        }
+
+        .ci-status-text {
+          width: 145px;
+        }
+
+        .arrow {
+          &:before,
+          &:after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            top: 18px;
+          }
+
+          &:before {
+            left: -5px;
+            margin-top: -6px;
+            border-width: 7px 5px 7px 0;
+            border-right-color: $border-color;
+          }
+
+          &:after {
+            left: -4px;
+            margin-top: -9px;
+            border-width: 10px 7px 10px 0;
+            border-right-color: $white-light;
+          }
+        }
+      }
+
+      .badge {
+        background-color: $gray-dark;
+        color: $layout-link-gray;
+        font-weight: normal;
       }
     }
 
     svg {
-      position: relative;
-      top: 2px;
+      vertical-align: middle;
       margin-right: 5px;
     }
 
@@ -442,7 +538,7 @@
       width: 21px;
       height: 25px;
       position: absolute;
-      top: -28.5px;
+      top: -29px;
       border-top: 2px solid $border-color;
     }
 

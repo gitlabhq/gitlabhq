@@ -2,9 +2,9 @@
 
 .issues-filters
   .issues-details-filters.row-content-block.second-block
-    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search]), method: :get, class: 'filter-form js-filter-form' do
-      - if params[:issue_search].present?
-        = hidden_field_tag :issue_search, params[:issue_search]
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
+      - if params[:search].present?
+        = hidden_field_tag :search, params[:search]
       - if @bulk_edit
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
@@ -29,7 +29,7 @@
           = render "shared/issuable/label_dropdown"
 
         .filter-item.inline.reset-filters
-          %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search])} Reset filters
+          %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search])} Reset filters
 
         .pull-right
           - if boards_page

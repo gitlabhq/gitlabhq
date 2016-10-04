@@ -3,27 +3,16 @@ require 'spec_helper'
 describe 'Snippets tab on a user profile', feature: true, js: true do
   include WaitForAjax
 
-  let(:user) { create(:user) }
-
   context 'when the user has snippets' do
+    let(:user) { create(:user) }
+    let!(:snippets) { create_list(:snippet, 2, :public, author: user) }
     before do
-      create_list(:snippet, 25, :public, author: user)
-
+      allow(Snippet).to receive(:default_per_page).and_return(1)
       visit user_path(user)
       page.within('.user-profile-nav') { click_link 'Snippets' }
       wait_for_ajax
     end
 
-    it 'is limited to 20 items per page' do
-      expect(page.all('.snippets-list-holder .snippet-row').count).to eq(20)
-    end
-
-    context 'clicking on the link to the second page' do
-      before { click_link('2') }
-
-      it 'shows the remaining snippets' do
-        expect(page.all('.snippets-list-holder .snippet-row').count).to eq(5)
-      end
-    end
+    it_behaves_like 'paginated snippets', remote: true
   end
 end

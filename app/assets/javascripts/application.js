@@ -247,10 +247,11 @@
       $this.toggleClass('active');
       var notesHolders = $this.closest('.diff-file').find('.notes_holder');
       if ($this.hasClass('active')) {
-        notesHolders.show();
+        notesHolders.show().find('.hide').show();
       } else {
         notesHolders.hide();
       }
+      $this.trigger('blur');
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');

@@ -108,8 +108,7 @@ module API
 
         finder_params = {
           project_id: user_project.id,
-          milestone_title: @milestone.title,
-          state: 'all'
+          milestone_title: @milestone.title
         }
 
         issues = IssuesFinder.new(current_user, finder_params).execute

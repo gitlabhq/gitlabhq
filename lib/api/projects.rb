@@ -91,8 +91,8 @@ module API
       # Create new project
       #
       # Parameters:
-      #   name (required) - name for new project
-      #   description (optional) - short project description
+      #   name (required)                   - name for new project
+      #   description (optional)            - short project description
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
       #   builds_enabled (optional)
@@ -100,33 +100,35 @@ module API
       #   snippets_enabled (optional)
       #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
-      #   namespace_id (optional) - defaults to user namespace
-      #   public (optional) - if true same as setting visibility_level = 20
-      #   visibility_level (optional) - 0 by default
+      #   namespace_id (optional)           - defaults to user namespace
+      #   public (optional)                 - if true same as setting visibility_level = 20
+      #   visibility_level (optional)       - 0 by default
       #   import_url (optional)
       #   public_builds (optional)
       #   lfs_enabled (optional)
+      #   request_access_enabled (optional) - Allow users to request member access
       # Example Request
       #   POST /projects
       post do
         required_attributes! [:name]
-        attrs = attributes_for_keys [:name,
-                                     :path,
-                                     :description,
-                                     :issues_enabled,
-                                     :merge_requests_enabled,
-                                     :builds_enabled,
-                                     :wiki_enabled,
-                                     :snippets_enabled,
+        attrs = attributes_for_keys [:builds_enabled,
                                      :container_registry_enabled,
-                                     :shared_runners_enabled,
-                                     :namespace_id,
-                                     :public,
-                                     :visibility_level,
+                                     :description,
                                      :import_url,
-                                     :public_builds,
+                                     :issues_enabled,
+                                     :lfs_enabled,
+                                     :merge_requests_enabled,
+                                     :name,
+                                     :namespace_id,
                                      :only_allow_merge_if_build_succeeds,
-                                     :lfs_enabled]
+                                     :path,
+                                     :public,
+                                     :public_builds,
+                                     :request_access_enabled,
+                                     :shared_runners_enabled,
+                                     :snippets_enabled,
+                                     :visibility_level,
+                                     :wiki_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -143,10 +145,10 @@ module API
       # Create new project for a specified user.  Only available to admin users.
       #
       # Parameters:
-      #   user_id (required) - The ID of a user
-      #   name (required) - name for new project
-      #   description (optional) - short project description
-      #   default_branch (optional) - 'master' by default
+      #   user_id (required)                - The ID of a user
+      #   name (required)                   - name for new project
+      #   description (optional)            - short project description
+      #   default_branch (optional)         - 'master' by default
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
       #   builds_enabled (optional)
@@ -154,31 +156,33 @@ module API
       #   snippets_enabled (optional)
       #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
-      #   public (optional) - if true same as setting visibility_level = 20
+      #   public (optional)                 - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
       #   public_builds (optional)
       #   lfs_enabled (optional)
+      #   request_access_enabled (optional) - Allow users to request member access
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find(params[:user_id])
-        attrs = attributes_for_keys [:name,
-                                     :description,
+        attrs = attributes_for_keys [:builds_enabled,
                                      :default_branch,
-                                     :issues_enabled,
-                                     :merge_requests_enabled,
-                                     :builds_enabled,
-                                     :wiki_enabled,
-                                     :snippets_enabled,
-                                     :shared_runners_enabled,
-                                     :public,
-                                     :visibility_level,
+                                     :description,
                                      :import_url,
-                                     :public_builds,
+                                     :issues_enabled,
+                                     :lfs_enabled,
+                                     :merge_requests_enabled,
+                                     :name,
                                      :only_allow_merge_if_build_succeeds,
-                                     :lfs_enabled]
+                                     :public,
+                                     :public_builds,
+                                     :request_access_enabled,
+                                     :shared_runners_enabled,
+                                     :snippets_enabled,
+                                     :visibility_level,
+                                     :wiki_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -203,7 +207,9 @@ module API
         if namespace_id.present?
           namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
 
-          not_found!('Target Namespace') unless namespace
+          unless namespace && can?(current_user, :create_projects, namespace)
+            not_found!('Target Namespace')
+          end
 
           attrs[:namespace] = namespace
         end
@@ -242,22 +248,23 @@ module API
       # Example Request
       #   PUT /projects/:id
       put ':id' do
-        attrs = attributes_for_keys [:name,
-                                     :path,
-                                     :description,
-                                     :default_branch,
-                                     :issues_enabled,
-                                     :merge_requests_enabled,
-                                     :builds_enabled,
-                                     :wiki_enabled,
-                                     :snippets_enabled,
+        attrs = attributes_for_keys [:builds_enabled,
                                      :container_registry_enabled,
-                                     :shared_runners_enabled,
-                                     :public,
-                                     :visibility_level,
-                                     :public_builds,
+                                     :default_branch,
+                                     :description,
+                                     :issues_enabled,
+                                     :lfs_enabled,
+                                     :merge_requests_enabled,
+                                     :name,
                                      :only_allow_merge_if_build_succeeds,
-                                     :lfs_enabled]
+                                     :path,
+                                     :public,
+                                     :public_builds,
+                                     :request_access_enabled,
+                                     :shared_runners_enabled,
+                                     :snippets_enabled,
+                                     :visibility_level,
+                                     :wiki_enabled]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -386,23 +393,24 @@ module API
       # Share project with group
       #
       # Parameters:
-      #   id (required) - The ID of a project
-      #   group_id (required) - The ID of a group
+      #   id (required)           - The ID of a project
+      #   group_id (required)     - The ID of a group
       #   group_access (required) - Level of permissions for sharing
+      #   expires_at (optional)   - Share expiration date
       #
       # Example Request:
       #   POST /projects/:id/share
       post ":id/share" do
         authorize! :admin_project, user_project
         required_attributes! [:group_id, :group_access]
+        attrs = attributes_for_keys [:group_id, :group_access, :expires_at]
 
         unless user_project.allowed_to_share_with_group?
           return render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        link = user_project.project_group_links.new
-        link.group_id = params[:group_id]
-        link.group_access = params[:group_access]
+        link = user_project.project_group_links.new(attrs)
+
         if link.save
           present link, with: Entities::ProjectGroupLink
         else

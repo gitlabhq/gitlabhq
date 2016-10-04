@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/builds/show' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:project) { create(:project) }
   let(:pipeline) do

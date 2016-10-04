@@ -3,8 +3,9 @@ module Gitlab
     class ProjectCreator
       attr_reader :repo, :namespace, :current_user, :session_data
 
-      def initialize(repo, namespace, current_user, session_data)
+      def initialize(repo, name, namespace, current_user, session_data)
         @repo = repo
+        @name = name
         @namespace = namespace
         @current_user = current_user
         @session_data = session_data
@@ -13,8 +14,8 @@ module Gitlab
       def execute
         project = ::Projects::CreateService.new(
           current_user,
-          name: repo.name,
-          path: repo.name,
+          name: @name,
+          path: @name,
           description: repo.description,
           namespace_id: namespace.id,
           visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : ApplicationSetting.current.default_project_visibility,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160902122721) do
+ActiveRecord::Schema.define(version: 20160926145521) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,9 +158,9 @@ ActiveRecord::Schema.define(version: 20160902122721) do
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",              default: false
+    t.boolean  "deploy",                        default: false
     t.text     "options"
-    t.boolean  "allow_failure",       default: false, null: false
+    t.boolean  "allow_failure",                 default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "stage_idx"
@@ -177,10 +177,11 @@ ActiveRecord::Schema.define(version: 20160902122721) do
     t.datetime "erased_at"
     t.datetime "artifacts_expire_at"
     t.string   "environment"
-    t.integer  "artifacts_size"
+    t.integer  "artifacts_size",      limit: 8
     t.string   "when"
     t.text     "yaml_variables"
     t.datetime "queued_at"
+    t.string   "token"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -192,6 +193,7 @@ ActiveRecord::Schema.define(version: 20160902122721) do
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
+  add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
 
   create_table "ci_commits", force: :cascade do |t|
     t.integer  "project_id"
@@ -390,10 +392,11 @@ ActiveRecord::Schema.define(version: 20160902122721) do
 
   create_table "environments", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "name",         null: false
+    t.string   "name",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "external_url"
+    t.string   "environment_type"
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
@@ -435,6 +438,17 @@ ActiveRecord::Schema.define(version: 20160902122721) do
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "issue_metrics", force: :cascade do |t|
+    t.integer  "issue_id",                           null: false
+    t.datetime "first_mentioned_in_commit_at"
+    t.datetime "first_associated_with_milestone_at"
+    t.datetime "first_added_to_board_at"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "issue_metrics", ["issue_id"], name: "index_issue_metrics", using: :btree
 
   create_table "issues", force: :cascade do |t|
     t.string   "title"
@@ -507,6 +521,7 @@ ActiveRecord::Schema.define(version: 20160902122721) do
 
   add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string   "oid",                  null: false
@@ -578,6 +593,19 @@ ActiveRecord::Schema.define(version: 20160902122721) do
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
 
+  create_table "merge_request_metrics", force: :cascade do |t|
+    t.integer  "merge_request_id",                null: false
+    t.datetime "latest_build_started_at"
+    t.datetime "latest_build_finished_at"
+    t.datetime "first_deployed_to_production_at"
+    t.datetime "merged_at"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
+  add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
+
   create_table "merge_requests", force: :cascade do |t|
     t.string   "target_branch",                                null: false
     t.string   "source_branch",                                null: false
@@ -619,6 +647,16 @@ ActiveRecord::Schema.define(version: 20160902122721) do
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
+  create_table "merge_requests_closing_issues", force: :cascade do |t|
+    t.integer  "merge_request_id", null: false
+    t.integer  "issue_id",         null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "merge_requests_closing_issues", ["issue_id"], name: "index_merge_requests_closing_issues_on_issue_id", using: :btree
+  add_index "merge_requests_closing_issues", ["merge_request_id"], name: "index_merge_requests_closing_issues_on_merge_request_id", using: :btree
+
   create_table "milestones", force: :cascade do |t|
     t.string   "title",       null: false
     t.integer  "project_id",  null: false
@@ -650,6 +688,7 @@ ActiveRecord::Schema.define(version: 20160902122721) do
     t.integer  "visibility_level",       default: 20,    null: false
     t.boolean  "request_access_enabled", default: true,  null: false
     t.datetime "deleted_at"
+    t.boolean  "lfs_enabled"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -824,7 +863,6 @@ ActiveRecord::Schema.define(version: 20160902122721) do
     t.integer  "build_timeout",                      default: 3600,      null: false
     t.boolean  "pending_delete",                     default: false
     t.boolean  "public_builds",                      default: true,      null: false
-    t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
@@ -1094,6 +1132,7 @@ ActiveRecord::Schema.define(version: 20160902122721) do
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
     t.boolean  "external",                    default: false
+    t.string   "organization"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1144,8 +1183,12 @@ ActiveRecord::Schema.define(version: 20160902122721) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
+  add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
+  add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"

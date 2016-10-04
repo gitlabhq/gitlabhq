@@ -22,6 +22,18 @@ class Blob < SimpleDelegator
     new(blob)
   end
 
+  # Returns the data of the blob.
+  #
+  # If the blob is a text based blob the content is converted to UTF-8 and any
+  # invalid byte sequences are replaced.
+  def data
+    if binary?
+      super
+    else
+      @data ||= super.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
+    end
+  end
+
   def no_highlighting?
     size && size > 1.megabyte
   end

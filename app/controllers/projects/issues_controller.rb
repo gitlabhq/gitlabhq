@@ -23,18 +23,9 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    terms = params['issue_search']
     @issues = issues_collection
-
-    if terms.present?
-      if terms =~ /\A#(\d+)\z/
-        @issues = @issues.where(iid: $1)
-      else
-        @issues = @issues.full_search(terms)
-      end
-    end
-
     @issues = @issues.page(params[:page])
+
     @labels = @project.labels.where(title: params[:label_name])
 
     respond_to do |format|
@@ -63,7 +54,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    raw_notes = @issue.notes_with_associations.fresh
+    raw_notes = @issue.notes.inc_relations_for_view.fresh
 
     @notes = Banzai::NoteRenderer.
       render(raw_notes, @project, current_user, @path, @project_wiki, @ref)

@@ -10,7 +10,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def show
     @members = @group.members.order("access_level DESC").page(params[:members_page])
-    @requesters = @group.requesters
+    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
     @projects = @group.projects.page(params[:projects_page])
   end
 
@@ -60,6 +60,14 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :visibility_level, :request_access_enabled)
+    params.require(:group).permit(
+      :avatar,
+      :description,
+      :lfs_enabled,
+      :name,
+      :path,
+      :request_access_enabled,
+      :visibility_level
+    )
   end
 end

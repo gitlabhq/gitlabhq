@@ -33,7 +33,11 @@ feature 'Download buttons in branches page', feature: true do
       end
 
       scenario 'shows download artifacts button' do
-        expect(page).to have_link "Download '#{build.name}'"
+        href = latest_succeeded_namespace_project_artifacts_path(
+          project.namespace, project, 'binary-encoding/download',
+          job: 'build')
+
+        expect(page).to have_link "Download '#{build.name}'", href: href
       end
     end
   end

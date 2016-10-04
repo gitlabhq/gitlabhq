@@ -18,6 +18,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :pipelines]
+  before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -31,17 +32,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_can_resolve_conflicts!, only: [:conflicts, :resolve_conflicts]
 
   def index
-    terms = params['issue_search']
     @merge_requests = merge_requests_collection
-
-    if terms.present?
-      if terms =~ /\A[#!](\d+)\z/
-        @merge_requests = @merge_requests.where(iid: $1)
-      else
-        @merge_requests = @merge_requests.full_search(terms)
-      end
-    end
-
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
@@ -285,7 +276,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def remove_wip
-    MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
+    MergeRequests::UpdateService.new(project, current_user, wip_event: 'unwip').execute(@merge_request)
 
     redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
       notice: "The merge request can now be merged."
@@ -317,8 +308,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @status = :sha_mismatch
       return
     end
-
-    TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
 
@@ -428,17 +417,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def validates_merge_request
-    # If source project was removed (Ex. mr from fork to origin)
-    return invalid_mr unless @merge_request.source_project
-
     # Show git not found page
     # if there is no saved commits between source & target branch
     if @merge_request.commits.blank?
       # and if target branch doesn't exist
       return invalid_mr unless @merge_request.target_branch_exists?
-
-      # or if source branch doesn't exist
-      return invalid_mr unless @merge_request.source_branch_exists?
     end
   end
 
@@ -508,7 +491,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def invalid_mr
-    # Render special view for MR with removed source or target branch
+    # Render special view for MR with removed target branch
     render 'invalid'
   end
 
@@ -549,5 +532,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def original_diff_version
     @diff_notes_disabled = !@merge_request_diff.latest?
     @diffs = @merge_request_diff.diffs(diff_options)
+  end
+
+  def close_merge_request_without_source_project
+    if !@merge_request.source_project && @merge_request.open?
+      @merge_request.close
+    end
   end
 end
