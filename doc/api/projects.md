@@ -33,6 +33,7 @@ Parameters:
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
+- `simple` (optional) - When set, return only the ID, URL, name, and path of each project
 
 ```json
 [
@@ -153,7 +154,7 @@ Parameters:
 ]
 ```
 
-Get a list of projects for which the authenticated user can see.
+Get a list of projects which the authenticated user can see.
 
 ```
 GET /projects/visible
@@ -166,6 +167,7 @@ Parameters:
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
+- `simple` (optional) - When set, return only the ID, URL, name, and path of each project
 
 ```json
 [
