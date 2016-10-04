@@ -826,6 +826,14 @@ describe Project, models: true do
         expect(subject).to eq([project2, project1])
       end
     end
+
+    it 'does not take system notes into account' do
+      10.times do
+        create(:note_on_commit, project: project2, system: true)
+      end
+
+      expect(described_class.trending.to_a).to eq([project1, project2])
+    end
   end
 
   describe '.visible_to_user' do
