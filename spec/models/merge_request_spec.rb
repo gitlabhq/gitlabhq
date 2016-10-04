@@ -522,7 +522,7 @@ describe MergeRequest, models: true do
   end
 
   it_behaves_like 'an editable mentionable' do
-    subject { create(:merge_request) }
+    subject { create(:merge_request, :simple) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
     let(:set_mentionable_text) { ->(txt){ subject.description = txt } }

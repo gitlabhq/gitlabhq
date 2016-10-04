@@ -11,6 +11,7 @@ v 8.13.0 (unreleased)
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
   - Expose expires_at field when sharing project on API
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
