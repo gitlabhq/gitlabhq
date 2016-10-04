@@ -19,7 +19,7 @@
             - if can? current_user, :create_issue, @project
               %button.btn.btn-small.btn-default.pull-right{ type: "button",
                 "@click" => "showNewIssueForm",
-                "v-if" => "list.type !== 'done'" }
+                "v-if" => "list.type !== 'done' && list.type !== 'blank'" }
                 = icon("plus")
           - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
