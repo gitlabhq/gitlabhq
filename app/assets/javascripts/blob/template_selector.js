@@ -72,9 +72,17 @@
     // To be implemented on the extending class
     // e.g.
     // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
-    TemplateSelector.prototype.requestFileSuccess = function(file, skipFocus) {
-      this.editor.setValue(file.content, 1);
-      if (!skipFocus) this.editor.focus();
+    TemplateSelector.prototype.requestFileSuccess = function(file, opts) {
+      var oldValue = this.editor.getValue();
+      var newValue = file.content;
+      if (opts == null) {
+        opts = {};
+      }
+      if (opts.append && oldValue.length && oldValue !== newValue) {
+        newValue = oldValue + '\n\n' + newValue;
+      }
+      this.editor.setValue(newValue, 1);
+      if (!opts.skipFocus) this.editor.focus();
 
       if (this.editor instanceof jQuery) {
         this.editor.get(0).dispatchEvent(this.autosizeUpdateEvent);
