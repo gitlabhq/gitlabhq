@@ -63,6 +63,11 @@
           Reply by email
           %span.light.pull-right
             = boolean_to_icon Gitlab::IncomingEmail.enabled?
+        %p
+          Container Registry
+          %span.light.pull-right
+            = boolean_to_icon Gitlab.config.registry.enabled
+
       .col-md-4
         %h4
           Components

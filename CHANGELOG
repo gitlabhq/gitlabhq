@@ -43,9 +43,12 @@ v 8.13.0 (unreleased)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
+  - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
 
 v 8.12.4 (unreleased)
   - Fix type mismatch bug when closing Jira issue
+  - Fix issues importing services via Import/Export
+  - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
@@ -120,6 +123,7 @@ v 8.12.0
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
+  - Changed MR widget build status to pipeline status !6335
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
