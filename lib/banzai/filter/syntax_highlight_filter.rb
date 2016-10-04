@@ -31,7 +31,6 @@ module Banzai
         end
 
         highlighted = %(<pre class="#{css_classes}" v-pre="true"><code>#{code}</code></pre>)
-        puts highlighted
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
