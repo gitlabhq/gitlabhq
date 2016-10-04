@@ -15,7 +15,7 @@
           .board-issue-count-holder.pull-right.clearfix{ "v-if" => "list.type !== 'blank'" }
             %span.board-issue-count.pull-left{ ":class" => "{ 'has-btn': list.type !== 'done' }" }
               {{ list.issuesSize }}
-            - if can? current_user, :create_issue, @project
+            - if can?(current_user, :admin_issue, @project)
               %button.btn.btn-small.btn-default.pull-right.has-tooltip{ type: "button",
                 "@click" => "showNewIssueForm",
                 "v-if" => "list.type !== 'done'",
