@@ -685,6 +685,15 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
+  def deployments
+    deployment_ids =
+      environments.map do |environment|
+        environment.deployment_id_for(diff_head_commit)
+      end.compact
+
+    Deployments.find(deployment_ids)
+  end
+
   def environments
     return [] unless diff_head_commit
 

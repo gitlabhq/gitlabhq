@@ -1,7 +1,26 @@
-(function() {
+ ((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  this.MergeRequestWidget = (function() {
+  const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- id %>">
+       <div class="ci_widget ci-success">
+         <%= ci_success_icon %>
+         <span>
+           Deployed to
+           <a href="<%- url %>" target="_blank" class="environment">
+             <%- name %>
+           </a>
+           <span class="js-environment-timeago" data-toggle="tooltip" data-placement="top" data-title="<%- deployed_at_formatted %>">
+             <%- deployed_at %>
+           </span>
+           <a class="js-environment-link" href="<%- external_url %>" target="_blank">
+             <i class="fa fa-external-link"></i>
+             View on <%- external_url_formatted %>
+           </a>
+         </span>
+       </div>
+     </div>`;
+
+   global.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
       //
@@ -10,6 +29,7 @@
       //   ci_status_url        - String, URL to use to check CI status
       //
       this.opts = opts;
+      this.$widgetBody = $('.mr-widget-body');
       $('#modal_merge_info').modal({
         show: false
       });
@@ -20,6 +40,7 @@
       this.clearEventListeners();
       this.addEventListeners();
       this.getCIStatus(false);
+      this.retrieveSuccessIcon();
       this.pollCIStatus();
       notifyPermissions();
     }
@@ -48,6 +69,12 @@
       })(this));
     };
 
+    MergeRequestWidget.prototype.retrieveSuccessIcon = function() {
+       const $ciSuccessIcon = $('.js-success-icon');
+       this.$ciSuccessIcon = $ciSuccessIcon.html();
+       $ciSuccessIcon.remove();
+     }
+
     MergeRequestWidget.prototype.mergeInProgress = function(deleteSourceBranch) {
       if (deleteSourceBranch == null) {
         deleteSourceBranch = false;
@@ -62,7 +89,7 @@
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
+              return this.$widgetBody.html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
@@ -118,6 +145,7 @@
           if (data.status === '') {
             return;
           }
+          if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
           if (_this.firstCICheck || data.status !== _this.opts.ci_status && (data.status != null)) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
@@ -149,6 +177,25 @@
         };
       })(this));
     };
+
+    MergeRequestWidget.prototype.renderEnvironments = function(environments) {
+       for (let i = 0; i < environments.length; i++) {
+         const environment = environments[i];
+         if ($(`.mr-state-widget #${ environment.id }`).length) return;
+         const $template = $(DEPLOYMENT_TEMPLATE);
+         if (!environment.external_url) $('.js-environment-link', $template).remove();
+         if (environment.deployed_at) {
+           environment.deployed_at = $.timeago(environment.deployed_at) + '.';
+         } else {
+           $('.js-environment-timeago', $template).remove();
+           environment.name += '.';
+         }
+         environment.ci_success_icon = this.$ciSuccessIcon;
+         const templateString = _.unescape($template[0].outerHTML);
+         const template = _.template(templateString)(environment)
+         this.$widgetBody.before(template);
+       }
+     };
 
     MergeRequestWidget.prototype.showCIStatus = function(state) {
       var allowed_states;
@@ -190,4 +237,4 @@
 
   })();
 
-}).call(this);
+ })(window.gl || (window.gl = {}));

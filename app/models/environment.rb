@@ -48,6 +48,14 @@ class Environment < ActiveRecord::Base
     self.name == "production"
   end
 
+  def deployment_id_for(commit)
+    ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
+
+    return nil unless ref
+
+    ref.split('/').last.to_i
+  end
+
   def ref_path
     "refs/environments/#{Shellwords.shellescape(name)}"
   end

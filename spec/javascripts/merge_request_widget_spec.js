@@ -1,5 +1,5 @@
-
 /*= require merge_request_widget */
+/*= require lib/utils/jquery.timeago.js */
 
 (function() {
   describe('MergeRequestWidget', function() {
@@ -20,7 +20,7 @@
         gitlab_icon: "gitlab_logo.png",
         builds_path: "http://sampledomain.local/sampleBuildsPath"
       };
-      this["class"] = new MergeRequestWidget(this.opts);
+      this["class"] = new window.gl.MergeRequestWidget(this.opts);
       return this.ciStatusData = {
         "title": "Sample MR title",
         "sha": "12a34bc5",
@@ -30,7 +30,7 @@
     });
     return describe('getCIStatus', function() {
       beforeEach(function() {
-        return spyOn(jQuery, 'getJSON').and.callFake((function(_this) {
+        spyOn(jQuery, 'getJSON').and.callFake((function(_this) {
           return function(req, cb) {
             return cb(_this.ciStatusData);
           };
@@ -61,13 +61,30 @@
         this["class"].getCIStatus(false);
         return expect(spy).not.toHaveBeenCalled();
       });
-      return it('should not display a notification on the first check after the widget has been created', function() {
+      it('should not display a notification on the first check after the widget has been created', function() {
         var spy;
         spy = spyOn(window, 'notify');
-        this["class"] = new MergeRequestWidget(this.opts);
+        this["class"] = new window.gl.MergeRequestWidget(this.opts);
         this["class"].getCIStatus(true);
         return expect(spy).not.toHaveBeenCalled();
       });
+      it('should call renderEnvironments when the environments property is set', function() {
+         this.ciStatusData.environments = [{
+           created_at: '2016-09-12T13:38:30.636Z',
+           environment_id: 1,
+           environment_name: 'env1',
+           external_url: 'https://test-url.com',
+           external_url_formatted: 'test-url.com'
+         }];
+         var spy = spyOn(this['class'], 'renderEnvironments').and.stub();
+         this['class'].getCIStatus(false);
+         expect(spy).toHaveBeenCalledWith(this.ciStatusData.environments);
+       });
+       it('should not call renderEnvironments when the environments property is not set', function() {
+         var spy = spyOn(this['class'], 'renderEnvironments').and.stub();
+         this['class'].getCIStatus(false);
+         expect(spy).not.toHaveBeenCalled();
+       });
     });
   });
 

@@ -50,6 +50,7 @@ v 8.13.0 (unreleased)
   - Add new issue button to each list on Issues Board
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
+  - Show the time ago a merge request was deployed to an environment
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)

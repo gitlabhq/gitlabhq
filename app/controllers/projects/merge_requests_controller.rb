@@ -393,11 +393,40 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
+    environments = @merge_request.environments
+    deployments = @merge_request.deployments
+
+    if environments.present?
+      environments = environments.select { |e| can?(current_user, :read_environment, e) }.map do |environment|
+        project = environment.project
+        deployment = deployments.find { |d| d.environment == environment }
+
+        environment = {
+           name: environment.name,
+           id: environment.id,
+           url: namespace_project_environment_path(project.namespace, project, environment),
+           external_url: environment.external_url,
+           deployed_at: deployment ? deployment.created_at : nil
+         }
+
+        if environment[:external_url]
+          environment[:external_url_formatted] = environment[:external_url].gsub(/\A.*?:\/\//, '')
+        end
+
+        if environment[:deployed_at]
+          environment[:deployed_at_formatted] = environment[:deployed_at].to_time.in_time_zone.to_s(:medium)
+        end
+
+        environment
+      end
+    end
+
     response = {
       title: merge_request.title,
       sha: merge_request.diff_head_commit.short_id,
       status: status,
-      coverage: coverage
+      coverage: coverage,
+      environments: environments
     }
 
     render json: response
