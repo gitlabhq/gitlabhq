@@ -31,6 +31,7 @@ v 8.13.0 (unreleased)
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
   - Append issue template to existing description !6149 (Joseph Frazier)
+  - Trending projects now only show public projects and the list of projects is cached for a day
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
