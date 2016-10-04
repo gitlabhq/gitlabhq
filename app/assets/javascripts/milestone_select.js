@@ -35,8 +35,7 @@
             return $.ajax({
               url: milestonesUrl
             }).done(function(data) {
-              var extraOptions;
-              extraOptions = [];
+              var extraOptions = [];
               if (showAny) {
                 extraOptions.push({
                   id: 0,

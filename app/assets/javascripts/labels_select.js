@@ -79,7 +79,8 @@
             if (data.labels.length) {
               template = labelHTMLTemplate(data);
               labelCount = data.labels.length;
-            } else {
+            }
+            else {
               template = labelNoneHTMLTemplate;
             }
             $value.removeAttr('style').html(template);
@@ -96,7 +97,8 @@
               }
 
               labelTooltipTitle = labelTitles.join(', ');
-            } else {
+            }
+            else {
               labelTooltipTitle = '';
               $sidebarLabelTooltip.tooltip('destroy');
             }
@@ -200,14 +202,16 @@
                 return color + " " + percentFirst + "%," + color + " " + percentSecond + "% ";
               }).join(',');
               color = "linear-gradient(" + color + ")";
-            } else {
+            }
+            else {
               if (label.color != null) {
                 color = label.color[0];
               }
             }
             if (color) {
               colorEl = "<span class='dropdown-label-box' style='background: " + color + "'></span>";
-            } else {
+            }
+            else {
               colorEl = '';
             }
             // We need to identify which items are actually labels
@@ -227,23 +231,29 @@
           filterable: true,
           selected: $dropdown.data('selected') || [],
           toggleLabel: function(selected, el) {
-            var isSelected = el !== null ? el.hasClass('is-active') : false,
-                title = selected.title;
+            var isSelected = el !== null ? el.hasClass('is-active') : false;
+            var title = selected.title;
+            var selectedLabels = this.selected;
 
-            if (isSelected) {
+            if (selected.id === 0) {
+              this.selected = [];
+              return 'No Label';
+            }
+            else if (isSelected) {
               this.selected.push(title);
-            } else {
+            }
+            else {
               var index = this.selected.indexOf(title);
               this.selected.splice(index, 1);
             }
 
-            var selectedLabels = this.selected;
-
             if (selectedLabels.length === 1) {
               return selectedLabels;
-            } else if (selectedLabels.length > 1) {
+            }
+            else if (selectedLabels.length) {
               return selectedLabels[0] + " +" + (selectedLabels.length - 1) + " more";
-            } else {
+            }
+            else {
               return defaultLabel;
             }
           },
@@ -257,7 +267,8 @@
 
             if ($dropdown.hasClass("js-filter-submit") && (label.isAny == null)) {
               return label.title;
-            } else {
+            }
+            else {
               return label.id;
             }
           },
@@ -281,9 +292,11 @@
               if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedLabels = $dropdown.closest('form').find("input:hidden[name='" + ($dropdown.data('fieldName')) + "']");
                 Issuable.filterResults($dropdown.closest('form'));
-              } else if ($dropdown.hasClass('js-filter-submit')) {
+              }
+              else if ($dropdown.hasClass('js-filter-submit')) {
                 $dropdown.closest('form').submit();
-              } else {
+              }
+              else {
                 if (!$dropdown.hasClass('js-filter-bulk-update')) {
                   saveLabelData();
                 }
@@ -317,9 +330,11 @@
             if (page === 'projects:boards:show') {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              } else if ($el.hasClass('is-active')) {
+              }
+              else if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
-              } else {
+              }
+              else {
                 var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
                 filters = filters.filter(function (filteredLabel) {
                   return filteredLabel !== label.title;
@@ -330,17 +345,21 @@
               gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
               return;
-            } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+            }
+            else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (!$dropdown.hasClass('js-multiselect')) {
                 selectedLabel = label.title;
                 return Issuable.filterResults($dropdown.closest('form'));
               }
-            } else if ($dropdown.hasClass('js-filter-submit')) {
+            }
+            else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
-            } else {
+            }
+            else {
               if ($dropdown.hasClass('js-multiselect')) {
 
-              } else {
+              }
+              else {
                 return saveLabelData();
               }
             }
