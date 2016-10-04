@@ -10,23 +10,21 @@ module Projects
         issues = issues.page(params[:page])
 
         render json: {
-          issues: issues.as_json(
-            only: [:iid, :title, :confidential],
-            include: {
-              assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
-              labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }
-            }),
+          issues: serialize_as_json(issues),
           size: issues.total_count
         }
       end
 
       def create
         list = project.board.lists.find(params[:list_id])
+        service = ::Boards::Issues::CreateService.new(project, current_user, issue_params)
+        issue = service.execute(list)
 
-        issue = Issues::CreateService.new(project, current_user, issue_params.merge(request: request)).execute
-        issue.labels << list.label if list.label
-
-        render json: issue.to_json
+        if issue.valid?
+          render json: serialize_as_json(issue)
+        else
+          render json: issue.errors, status: :unprocessable_entity
+        end
       end
 
       def update
@@ -70,7 +68,16 @@ module Projects
       end
 
       def issue_params
-        params.require(:issue).permit(:title)
+        params.require(:issue).permit(:title).merge(request: request)
+      end
+
+      def serialize_as_json(resource)
+        resource.as_json(
+          only: [:iid, :title, :confidential],
+          include: {
+            assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
+            labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }
+          })
       end
     end
   end
