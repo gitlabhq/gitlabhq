@@ -19,6 +19,7 @@ v 8.13.0 (unreleased)
   - Fix VueJS template tags being rendered in code comments
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
   - Allow the Koding integration to be configured through the API
+  - Add new issue button to each list on Issues Board
   - Added soft wrap button to repository file/blob editor
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
