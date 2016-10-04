@@ -19,8 +19,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @groups = @project.project_group_links.where(group_id: group_ids)
     end
 
-    @project_members = @project_members.order('access_level DESC')
-    @project_members = @project_members.page(params[:page])
+    @project_members = @project_members.order(access_level: :desc).page(params[:page])
 
     @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 
@@ -40,6 +39,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       groups = Group.where(id: group_ids)
 
       groups.each do |group|
+        next unless can?(current_user, :read_group, group)
+        
         project.project_group_links.create(
           group: group,
           group_access: params[:access_level],
