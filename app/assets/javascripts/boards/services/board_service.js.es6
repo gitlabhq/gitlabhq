@@ -61,9 +61,7 @@ class BoardService {
 
   newIssue (id, issue) {
     return this.issues.save({ id }, {
-      issue: {
-        title: issue.title
-      }
+      issue
     });
   }
 };
