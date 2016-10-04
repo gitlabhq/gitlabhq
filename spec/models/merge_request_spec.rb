@@ -86,6 +86,30 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#cache_merge_request_closes_issues!' do
+    before do
+      subject.project.team << [subject.author, :developer]
+      subject.target_branch = subject.project.default_branch
+    end
+
+    it 'caches closed issues' do
+      issue  = create :issue, project: subject.project
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+
+      expect { subject.cache_merge_request_closes_issues! }.to change(subject.merge_requests_closing_issues, :count).by(1)
+    end
+
+    it 'does not cache issues from external trackers' do
+      subject.project.update_attribute(:has_external_issue_tracker, true)
+      issue  = ExternalIssue.new('JIRA-123', subject.project)
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+
+      expect { subject.cache_merge_request_closes_issues! }.not_to change(subject.merge_requests_closing_issues, :count)
+    end
+  end
+
   describe '#source_branch_sha' do
     let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
 
