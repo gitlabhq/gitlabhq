@@ -24,7 +24,7 @@ class JenkinsService < CiService
   before_update :reset_password
   validates :username,
             presence: true,
-            if: ->(service) { service.activated? && service.password.present? }
+            if: ->(service) { service.activated? && service.password_touched? }
 
   default_value_for :push_events, true
   default_value_for :merge_requests_events, false
@@ -34,7 +34,7 @@ class JenkinsService < CiService
 
   def reset_password
     # don't reset the password if a new one is provided
-    if jenkins_url_changed? && !password_touched?
+    if (jenkins_url_changed? || username.blank?) && !password_touched?
       self.password = nil
     end
   end
