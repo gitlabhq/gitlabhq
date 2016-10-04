@@ -1,20 +1,34 @@
 # Activate all GitLab Enterprise Edition functionality with a license
 
 To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
-a license. The license has the form of a base64 encoded ASCII text with a
-`.gitlab-license` extension and can be obtained when you [purchase one][pricing]
-or when you sign up for a [free trial]. Once you've received your license from
-GitLab Inc., you can upload it by signing into your GitLab instance as an admin.
+a license. Once you've received your license from GitLab Inc., you can upload it
+by **signing into your GitLab instance as an admin**.
+
+The license has the form of a base64 encoded ASCII text with a `.gitlab-license`
+extension and can be obtained when you [purchase one][pricing] or when you sign
+up for a [free trial].
 
 ## Uploading your license
 
 The very first time you visit your GitLab EE installation, you should see a
 notice urging you to upload a license with a link that takes you straight to the
-License admin area. Otherwise, you can  navigate manually to the **Admin Area**
-by clicking the wrench icon in the upper right corner and the going to the
-**License** tab.
+License admin area.
 
-![License admin area](img/license_admin_area.png)
+Otherwise, you can:
+
+1. Navigate manually to the **Admin Area** by clicking the wrench icon in the
+   upper right corner.
+
+    ![Admin area icon](img/admin_wrench.png)
+
+1. And then going to the **License** tab.
+
+    ![License admin area](img/license_admin_area.png)
+
+
+>**Note:**
+If you don't see the banner mentioned above, that means that either you are not
+logged in as admin or a license is already uploaded.
 
 ---
 
