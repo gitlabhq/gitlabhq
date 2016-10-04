@@ -691,7 +691,7 @@ class MergeRequest < ActiveRecord::Base
         environment.deployment_id_for(diff_head_commit)
       end.compact
 
-    Deployments.find(deployment_ids)
+    Deployment.find(deployment_ids)
   end
 
   def environments
