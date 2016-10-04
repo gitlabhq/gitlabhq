@@ -12,14 +12,14 @@
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !list.preset) }" }
           {{ list.title }}
-          .board-issue-count-holder.pull-right.clearfix
-            %span.board-issue-count.pull-left{ "v-if" => "list.type !== 'blank'",
-              ":class" => "{ 'has-btn': list.type !== 'done' }" }
+          .board-issue-count-holder.pull-right.clearfix{ "v-if" => "list.type !== 'blank'" }
+            %span.board-issue-count.pull-left{ ":class" => "{ 'has-btn': list.type !== 'done' }" }
               {{ list.issuesSize }}
             - if can? current_user, :create_issue, @project
               %button.btn.btn-small.btn-default.pull-right{ type: "button",
                 "@click" => "showNewIssueForm",
-                "v-if" => "list.type !== 'done' && list.type !== 'blank'" }
+                "v-if" => "list.type !== 'done'",
+                "aria-label" => "Show new issue form" }
                 = icon("plus")
           - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
@@ -44,11 +44,12 @@
             "v-show" => "list.type !== 'done' && showIssueForm" }
             .card.board-new-issue-form
               %form{ "@submit" => "submit($event)" }
-                %label.label-light
+                %label.label-light{ ":for" => "list.id + '-title'" }
                   Title
                 %input.form-control{ type: "text",
                   "v-model" => "title",
-                  "v-el:input" => true }
+                  "v-el:input" => true,
+                  ":id" => "list.id + '-title'" }
                 .clearfix.prepend-top-10
                   %button.btn.btn-success.pull-left{ type: "submit",
                     ":disabled" => "title === ''" }
