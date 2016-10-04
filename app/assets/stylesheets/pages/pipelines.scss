@@ -22,6 +22,11 @@
 
   .table.builds {
     min-width: 1200px;
+
+    .branch-commit {
+      width: 33%;
+    }
+
   }
 }
 
@@ -37,10 +42,6 @@
 .pipeline-holder {
   width: 100%;
   overflow: auto;
-}
-
-.pipelines .table.builds .branch-commit {
-  width: 33%;
 }
 
 .table.builds {
