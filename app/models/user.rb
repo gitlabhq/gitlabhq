@@ -279,6 +279,11 @@ class User < ActiveRecord::Base
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
+    # Returns a user for the given SSH key.
+    def find_by_ssh_key_id(key_id)
+      find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+    end
+
     def build_user(attrs = {})
       User.new(attrs)
     end
