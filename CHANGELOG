@@ -109,6 +109,7 @@ v 8.12.0
   - Fix long comments in diffs messing with table width
   - Add spec covering 'Gitlab::Git::committer_hash' !6433 (dandunckelman)
   - Fix pagination on user snippets page
+  - Honor "fixed layout" preference in more places !6422
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
   - Fix download artifacts button links !6407
