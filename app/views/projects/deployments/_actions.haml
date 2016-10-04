@@ -14,6 +14,11 @@
                   = custom_icon('icon_play')
                   %span= action.name.humanize
 
+      - if :can_be_stopped?
+        .inline
+          %a.close-env-link.btn
+            = icon('stop', class: 'close-env-icon')
+
     - if local_assigns.fetch(:allow_rollback, false)
       = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
         - if deployment.last?
