@@ -5,6 +5,7 @@ v 8.12.4 (unreleased)
   - Fix padding in build sidebar. !6506
   - Changed compare dropdowns to dropdowns with isolated search input. !6550
   - Fix race condition on LFS Token. !6592
+  - Fix type mismatch bug when closing Jira issue. !6619
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
