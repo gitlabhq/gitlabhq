@@ -6,6 +6,7 @@
 //= require_tree ./services
 //= require_tree ./mixins
 //= require ./components/board
+//= require ./components/board_sidebar
 //= require ./components/new_list_dropdown
 //= require ./vue_resource_interceptor
 
@@ -22,7 +23,8 @@ $(() => {
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
-      'board': gl.issueBoards.Board
+      'board': gl.issueBoards.Board,
+      'board-sidebar': gl.issueBoards.BoardSidebar
     },
     data: {
       state: Store.state,

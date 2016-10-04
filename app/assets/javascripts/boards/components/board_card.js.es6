@@ -37,6 +37,10 @@
         $('.labels-filter .dropdown-toggle-text').text(labelToggleText);
 
         Store.updateFiltersUrl();
+      },
+      showIssue () {
+        Store.state.detailIssue = this.issue;
+        console.log(Store.state.detailIssue);
       }
     }
   });

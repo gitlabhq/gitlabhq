@@ -1,0 +1,40 @@
+%board-sidebar{ "inline-template" => true }
+  %aside.right-sidebar.right-sidebar-expanded{ "v-if" => "showSidebar" }
+    .issuable-sidebar
+      .block.issuable-sidebar-header
+        %span.issuable-header-text.hide-collapsed.pull-left
+          %strong Test
+          %br/
+          %span #13
+        %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", aria: { label: "Toggle sidebar" } }
+          = icon("times")
+      .block.assignee
+        .title.hide-collapsed
+          Assignee
+          = icon("spinner spin", class: "block-loading")
+          = link_to "Edit", "#", class: "edit-link pull-right"
+        .value.hide-collapsed
+          %span.assign-yourself.no-value
+            No assignee
+            \-
+            %a.js-assign-yourself{ href: "#" }
+              assign yourself
+      .block.milestone
+        .title.hide-collapsed
+          Milestone
+          = icon("spinner spin", class: "block-loading")
+        .value.hide-collapsed
+          %span.no-value
+            None
+      .block.due_date
+        .title.hide-collapsed
+          Due date
+          = icon("spinner spin", class: "block-loading")
+        .value.hide-collapsed
+          %span.no-value No due date
+      .block.labels
+        .title.hide-collapsed
+          Labels
+          = icon("spinner spin", class: "block-loading")
+        .value.issuable-show-labels.hide-collapsed
+          %span.no-value None
