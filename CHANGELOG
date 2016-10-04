@@ -14,6 +14,7 @@ v 8.13.0 (unreleased)
   - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
   - Expose expires_at field when sharing project on API
+  - Fix VueJS template tags being rendered in code comments
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
   - Allow the Koding integration to be configured through the API
   - Added soft wrap button to repository file/blob editor
@@ -44,7 +45,7 @@ v 8.13.0 (unreleased)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
-  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
+  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
 
 v 8.12.4 (unreleased)
