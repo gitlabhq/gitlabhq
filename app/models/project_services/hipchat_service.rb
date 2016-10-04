@@ -121,14 +121,6 @@ class HipchatService < Service
     message
   end
 
-  def format_body(body)
-    if body
-      body = body.truncate(200, separator: ' ', omission: '...')
-    end
-
-    "<pre>#{body}</pre>"
-  end
-
   def create_issue_message(data)
     user_name = data[:user][:name]
 
@@ -144,7 +136,7 @@ class HipchatService < Service
     message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
     if description
-      message << format_body(Banzai::Filter::MarkdownFilter.renderer.render(description))
+      message << Banzai.render(note, project: project)
     end
 
     message
@@ -166,7 +158,7 @@ class HipchatService < Service
       "#{project_link}: <b>#{title}</b>"
 
     if description
-      message << format_body(Banzai::Filter::MarkdownFilter.renderer.render(description))
+      message << Banzai.render(note, project: project)
     end
 
     message
@@ -217,7 +209,7 @@ class HipchatService < Service
     message << title
 
     if note
-      message << format_body(Banzai::Filter::MarkdownFilter.renderer.render(note))
+      message << Banzai.render(note, project: project)
     end
 
     message
