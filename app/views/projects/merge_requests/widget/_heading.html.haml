@@ -57,3 +57,6 @@
           - if external_url
             = link_to external_url, target: '_blank' do
               = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)
+        %span.close-env-container
+          = link_to '#', class: 'close-evn-link' do
+            = icon('stop-circle-o', text: 'Stop environment')
