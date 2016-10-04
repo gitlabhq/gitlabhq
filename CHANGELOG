@@ -45,6 +45,7 @@ v 8.13.0 (unreleased)
   - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
 
 v 8.12.4 (unreleased)
+  - Fix issues importing services via Import/Export
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
 
 v 8.12.3
