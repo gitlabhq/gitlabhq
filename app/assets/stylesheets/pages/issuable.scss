@@ -419,31 +419,3 @@
     }
   }
 }
-
-.issue-form {
-
-  .dropdown-menu-labels {
-    top: -391px;
-
-    &.is-loading {
-      top: -166px;
-    }
-  }
-
-  .dropdown-menu-milestone {
-    top: -310px;
-
-    &.is-loading {
-      top: -166px;
-    }
-  }
-
-  .dropdown-menu-assignee {
-    top: -315px;
-
-    &.is-loading {
-      top: -101px;
-    }
-  }
-
-}

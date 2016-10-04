@@ -4,7 +4,7 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove;
         $dropdown = $(dropdown);
         $toggleText = $dropdown.find('.dropdown-toggle-text');
         projectId = $dropdown.data('project-id');
@@ -16,6 +16,7 @@
         }
         showNo = $dropdown.data('show-no');
         showAny = $dropdown.data('show-any');
+        showMenuAbove = $dropdown.data('showMenuAbove');
         defaultLabel = $dropdown.data('default-label');
         abilityName = $dropdown.data('ability-name');
         $selectbox = $dropdown.closest('.selectbox');
@@ -120,6 +121,7 @@
           });
         };
         return $dropdown.glDropdown({
+          showMenuAbove: showMenuAbove,
           data: function(term, callback) {
             return $.ajax({
               url: labelUrl
@@ -157,7 +159,11 @@
                   data = extraData.concat(data);
                 }
               }
-              return callback(data);
+
+              callback(data);
+              if (showMenuAbove) {
+                $dropdown.data('glDropdown').positionMenuAbove();
+              }
             });
           },
           renderRow: function(label, instance) {

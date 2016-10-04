@@ -7,7 +7,7 @@
         this.currentProject = JSON.parse(currentProject);
       }
       $('.js-milestone-select').each(function(i, dropdown) {
-        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId;
+        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         milestonesUrl = $dropdown.data('milestones');
@@ -15,6 +15,7 @@
         selectedMilestone = $dropdown.data('selected');
         showNo = $dropdown.data('show-no');
         showAny = $dropdown.data('show-any');
+        showMenuAbove = $dropdown.data('showMenuAbove');
         showUpcoming = $dropdown.data('show-upcoming');
         useId = $dropdown.data('use-id');
         defaultLabel = $dropdown.data('default-label');
@@ -31,6 +32,7 @@
           collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
         }
         return $dropdown.glDropdown({
+          showMenuAbove: showMenuAbove,
           data: function(term, callback) {
             return $.ajax({
               url: milestonesUrl
@@ -60,7 +62,11 @@
               if (extraOptions.length) {
                 extraOptions.push('divider');
               }
-              return callback(extraOptions.concat(data));
+
+              callback(extraOptions.concat(data));
+              if (showMenuAbove) {
+                $dropdown.data('glDropdown').positionMenuAbove();
+              }
             });
           },
           filterable: true,

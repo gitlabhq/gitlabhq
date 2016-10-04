@@ -14,11 +14,12 @@
       $('.js-user-search').each((function(_this) {
         return function(i, dropdown) {
           var options = {};
-          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser;
+          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
           options.showCurrentUser = $dropdown.data('current-user');
           showNullUser = $dropdown.data('null-user');
+          showMenuAbove = $dropdown.data('showMenuAbove');
           showAnyUser = $dropdown.data('any-user');
           firstUser = $dropdown.data('first-user');
           options.authorId = $dropdown.data('author-id');
@@ -73,6 +74,7 @@
           collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/u/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
           assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/u/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
           return $dropdown.glDropdown({
+            showMenuAbove: showMenuAbove,
             data: function(term, callback) {
               var isAuthorFilter;
               isAuthorFilter = $('.js-author-search');
@@ -116,8 +118,11 @@
                 if (showDivider) {
                   users.splice(showDivider, 0, "divider");
                 }
-                // Send the data back
-                return callback(users);
+
+                callback(users);
+                if (showMenuAbove) {
+                  $dropdown.data('glDropdown').positionMenuAbove();
+                }
               });
             },
             filterable: true,
