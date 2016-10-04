@@ -51,6 +51,7 @@ v 8.13.0 (unreleased)
 
 v 8.12.4 (unreleased)
   - Fix type mismatch bug when closing Jira issue
+  - Skip wiki creation when GitHub project has wiki enabled
   - Fix issues importing services via Import/Export
   - Restrict failed login attempts for users with 2FA enabled
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
