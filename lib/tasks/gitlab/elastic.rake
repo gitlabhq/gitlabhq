@@ -23,7 +23,7 @@ namespace :gitlab do
 
       indexer = Gitlab::Elastic::Indexer.new
 
-      projects.find_each do |project|
+      projects.find_each(batch_size: 300) do |project|
         repository = project.repository
 
         if repository.exists? && !repository.empty?
