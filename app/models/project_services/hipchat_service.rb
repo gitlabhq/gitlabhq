@@ -1,4 +1,6 @@
 class HipchatService < Service
+  include ActionView::Helpers::SanitizeHelper
+
   MAX_COMMITS = 3
 
   prop_accessor :token, :room, :server, :notify, :color, :api_version
@@ -138,6 +140,7 @@ class HipchatService < Service
 
       html = Banzai.render(text, context)
       html = Banzai.post_process(html, context)
+      sanitize html, attributes: %w(href title alt)
     else
       ""
     end
