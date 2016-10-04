@@ -6,7 +6,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :destroy]
 
   def index
+    @scope = params[:scope]
     @environments = project.environments
+    
+    # TODO: fix the values of this vars to show the correct results
+    @available_environments_count = project.environments.count
+    @stopped_environments_count = project.environments.count
   end
 
   def show
