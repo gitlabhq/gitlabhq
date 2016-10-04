@@ -30,7 +30,7 @@ module Banzai
           # users can still access an issue/comment/etc.
         end
 
-        highlighted = %(<pre class="#{css_classes}"><code>#{code}</code></pre>)
+        highlighted = %(<pre class="#{css_classes}" v-pre="true"><code>#{code}</code></pre>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
