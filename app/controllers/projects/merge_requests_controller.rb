@@ -276,7 +276,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def remove_wip
-    MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
+    MergeRequests::UpdateService.new(project, current_user, wip_event: 'unwip').execute(@merge_request)
 
     redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
       notice: "The merge request can now be merged."

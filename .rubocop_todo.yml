@@ -27,11 +27,6 @@ Lint/Loop:
 Lint/ShadowingOuterLocalVariable:
   Enabled: false
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
-  Enabled: false
-
 # Offense count: 49
 # Cop supports --auto-correct.
 # Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.

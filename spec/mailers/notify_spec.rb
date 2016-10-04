@@ -831,6 +831,7 @@ describe Notify do
     let(:user) { create(:user, email: 'old-email@mail.com') }
 
     before do
+      stub_config_setting(email_subject_suffix: 'A Nice Suffix')
       perform_enqueued_jobs do
         user.email = "new-email@mail.com"
         user.save
@@ -847,7 +848,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject "Confirmation instructions"
+      is_expected.to have_subject /^Confirmation instructions/
     end
 
     it 'includes a link to the site' do
