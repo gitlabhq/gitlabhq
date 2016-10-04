@@ -46,6 +46,7 @@ v 8.13.0 (unreleased)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
 
 v 8.12.4 (unreleased)
+  - Fix issues importing services via Import/Export
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
 
 v 8.12.3
