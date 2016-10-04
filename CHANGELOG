@@ -5,6 +5,7 @@ v 8.13.0 (unreleased)
 
 v 8.12.4 (unreleased)
   - Set GitLab project exported file permissions to owner only
+  - Don't send Private-Token (API authentication) headers to Sentry
 
 v 8.12.2 (unreleased)
   - Fix Import/Export not recognising correctly the imported services.
