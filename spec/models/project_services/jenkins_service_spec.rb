@@ -24,7 +24,9 @@ describe JenkinsService do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
   end
+
   let(:project) { create(:project) }
+
   let(:jenkins_params) do
     {
       active: true,
@@ -44,19 +46,36 @@ describe JenkinsService do
         properties: {
           jenkins_url: 'http://jenkins.example.com/',
           password: 'password',
-          username: nil,
+          username: 'username',
         }
       )
     end
+
     subject { @jenkins_service }
 
     context 'when the service is active' do
       let(:active) { true }
-      it { is_expected.to validate_presence_of :username }
+
+      context 'when password was not touched' do
+        before do
+          allow(subject).to receive(:password_touched?).and_return(false)
+        end
+
+        it { is_expected.not_to validate_presence_of :username }
+      end
+
+      context 'when password was touched' do
+        before do
+          allow(subject).to receive(:password_touched?).and_return(true)
+        end
+
+        it { is_expected.to validate_presence_of :username }
+      end
     end
 
     context 'when the service is inactive' do
       let(:active) { false }
+
       it { is_expected.not_to validate_presence_of :username }
     end
   end
@@ -130,8 +149,14 @@ describe JenkinsService do
         )
       end
 
-      it 'reset password if url changed' do
+      it 'resets password if url changed' do
         @jenkins_service.jenkins_url = 'http://jenkins-edited.example.com/'
+        @jenkins_service.save
+        expect(@jenkins_service.password).to be_nil
+      end
+
+      it 'resets password if username is blank' do
+        @jenkins_service.username = ''
         @jenkins_service.save
         expect(@jenkins_service.password).to be_nil
       end
