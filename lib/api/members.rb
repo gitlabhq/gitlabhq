@@ -134,7 +134,7 @@ module API
           if member.nil?
             { message: "Access revoked", id: params[:user_id].to_i }
           else
-            ::Members::DestroyService.new(member, current_user).execute
+            ::Members::DestroyService.new(source, current_user, params).execute
 
             present member.user, with: Entities::Member, member: member
           end

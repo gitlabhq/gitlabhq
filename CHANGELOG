@@ -8,9 +8,11 @@ v 8.13.0 (unreleased)
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
   - Speed-up group milestones show page
+  - Keep refs for each deployment
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
   - Expose expires_at field when sharing project on API
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
@@ -27,6 +29,7 @@ v 8.13.0 (unreleased)
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
+  - Append issue template to existing description !6149 (Joseph Frazier)
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
@@ -42,9 +45,13 @@ v 8.13.0 (unreleased)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
-  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
+  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
+  - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
 
 v 8.12.4 (unreleased)
+  - Fix type mismatch bug when closing Jira issue
+  - Fix issues importing services via Import/Export
+  - Restrict failed login attempts for users with 2FA enabled
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
 
 v 8.12.3
@@ -104,6 +111,7 @@ v 8.12.0
   - Fix long comments in diffs messing with table width
   - Add spec covering 'Gitlab::Git::committer_hash' !6433 (dandunckelman)
   - Fix pagination on user snippets page
+  - Honor "fixed layout" preference in more places !6422
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
   - Fix download artifacts button links !6407
@@ -144,6 +152,7 @@ v 8.12.0
   - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
   - Do not write SSH public key 'comments' to authorized_keys !6381
+  - Add due date to issue todos
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Hides merge request button on branches page is user doesn't have permissions

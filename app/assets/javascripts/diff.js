@@ -7,6 +7,9 @@
     function Diff() {
       $('.files .diff-file').singleFileDiff();
       this.filesCommentButton = $('.files .diff-file').filesCommentButton();
+      if (this.diffViewType() === 'parallel') {
+        $('.content-wrapper .container-fluid').removeClass('container-limited');
+      }
       $(document).off('click', '.js-unfold');
       $(document).on('click', '.js-unfold', (function(_this) {
         return function(event) {
@@ -50,6 +53,10 @@
           });
         };
       })(this));
+    }
+
+    Diff.prototype.diffViewType = function() {
+      return $('.inline-parallel-buttons a.active').data('view-type');
     }
 
     Diff.prototype.lineNumbers = function(line) {
