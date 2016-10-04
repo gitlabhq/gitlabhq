@@ -71,7 +71,7 @@ class CommitStatus < ActiveRecord::Base
 
     after_transition do |commit_status, transition|
       commit_status.pipeline.try do |pipeline|
-        return false if transition.loopback?
+        break if transition.loopback?
 
         if commit_status.complete?
           ProcessPipelineWorker.perform_async(pipeline.id)
