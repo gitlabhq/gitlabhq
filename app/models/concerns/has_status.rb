@@ -43,6 +43,10 @@ module HasStatus
     def finished_at
       all.maximum(:finished_at)
     end
+
+    def all_state_names
+      state_machines.values.flat_map(&:states).flat_map { |s| s.map(&:name) }
+    end
   end
 
   included do
