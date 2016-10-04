@@ -89,7 +89,7 @@ class HipchatService < Service
   end
 
   def render_line(text)
-    Banzai.render(text.lines.first.chomp, project: project, pipeline: :single_line) if text
+    markdown(text.lines.first.chomp, pipeline: :single_line) if text
   end
 
   def create_push_message(push)
@@ -125,6 +125,20 @@ class HipchatService < Service
     message
   end
 
+  def markdown(text, context = {})
+    if text
+      context = ({
+        project: project,
+        pipeline: :email
+      }).merge(context)
+
+      html = Banzai.render(text, context)
+      html = Banzai.post_process(html, context)
+    else
+      ""
+    end
+  end
+
   def create_issue_message(data)
     user_name = data[:user][:name]
 
@@ -139,9 +153,7 @@ class HipchatService < Service
     issue_link = "<a href=\"#{issue_url}\">issue ##{issue_iid}</a>"
     message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
-    if description
-      message << Banzai.render(note, project: project)
-    end
+    message << markdown(description)
 
     message
   end
@@ -161,9 +173,7 @@ class HipchatService < Service
     message = "#{user_name} #{state} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
-    if description
-      message << Banzai.render(note, project: project)
-    end
+    message << markdown(description)
 
     message
   end
@@ -180,11 +190,13 @@ class HipchatService < Service
     note = obj_attr[:note]
     note_url = obj_attr[:url]
     noteable_type = obj_attr[:noteable_type]
+    commit_id = nil
 
     case noteable_type
     when "Commit"
       commit_attr = HashWithIndifferentAccess.new(data[:commit])
-      subject_desc = commit_attr[:id]
+      commit_id = commit_attr[:id]
+      subject_desc = commit_id
       subject_desc = Commit.truncate_sha(subject_desc)
       subject_type = "commit"
       title = format_title(commit_attr[:message])
@@ -212,9 +224,7 @@ class HipchatService < Service
     message = "#{user_name} commented on #{subject_html} in #{project_link}: "
     message << title
 
-    if note
-      message << Banzai.render(note, project: project)
-    end
+    message << markdown(note, ref: commit_id)
 
     message
   end
