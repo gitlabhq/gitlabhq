@@ -2,6 +2,7 @@ module Projects
   module Boards
     class IssuesController < Boards::ApplicationController
       before_action :authorize_read_issue!, only: [:index]
+      before_action :authorize_create_issue!, only: [:create]
       before_action :authorize_update_issue!, only: [:update]
 
       def index
@@ -50,6 +51,10 @@ module Projects
 
       def authorize_read_issue!
         return render_403 unless can?(current_user, :read_issue, project)
+      end
+
+      def authorize_create_issue!
+        return render_403 unless can?(current_user, :admin_issue, project)
       end
 
       def authorize_update_issue!
