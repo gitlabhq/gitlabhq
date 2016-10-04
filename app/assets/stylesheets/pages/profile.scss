@@ -213,25 +213,29 @@
 }
 
 .user-profile {
+
   .cover-controls a {
     margin-left: 5px;
   }
+
   .profile-header {
     margin: 0 auto;
+
     .avatar-holder {
       width: 90px;
       margin: 0 auto 10px;
     }
+
     .user-info {
-      .handle {
-        color: $gl-gray-light;
-      }
+
       .member-date {
         margin-bottom: 4px;
       }
     }
   }
+
   @media (max-width: $screen-xs-max) {
+
     .cover-block {
       padding-top: 20px;
     }
@@ -255,7 +259,7 @@
 }
 
 .user-profile-nav {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 table.u2f-registrations {

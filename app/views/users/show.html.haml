@@ -40,10 +40,10 @@
       .user-info
         .cover-title
           = @user.name
-          %span.handle
-            @#{@user.username}
 
         .cover-desc.member-date
+          %span.middle-dot-divider
+            @#{@user.username}
           %span.middle-dot-divider
             Member since #{@user.created_at.to_s(:medium)}
 
