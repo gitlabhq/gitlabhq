@@ -27,7 +27,7 @@ describe 'Import/Export attribute configuration', lib: true do
     relation_names.each do |relation_name|
       relation_class = relation_class_for_name(relation_name)
 
-      expect(safe_model_attributes[relation_class.to_s]).not_to be_nil, "Expected exported class #{relation_class.to_s} to exist in safe_model_attributes"
+      expect(safe_model_attributes[relation_class.to_s]).not_to be_nil, "Expected exported class #{relation_class} to exist in safe_model_attributes"
 
       current_attributes = parsed_attributes(relation_name, relation_class.attribute_names)
       safe_attributes = safe_model_attributes[relation_class.to_s]

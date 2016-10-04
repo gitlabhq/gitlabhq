@@ -70,7 +70,8 @@
     &.ci-success {
       color: $gl-success;
 
-      a.environment {
+      a.environment,
+      a.pipeline {
         color: inherit;
       }
     }
