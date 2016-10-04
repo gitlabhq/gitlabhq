@@ -4,9 +4,8 @@ class UpdatePipelineWorker
   sidekiq_options queue: :default
 
   def perform(pipeline_id)
-    pipeline = Ci::Pipeline.find_by(id: pipeline_id)
-    return unless pipeline
-
-    pipeline.update_status
+    Ci::Pipeline.find_by(id: pipeline_id).try do |pipeline|
+      pipeline.update_status
+    end
   end
 end

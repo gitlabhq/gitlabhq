@@ -69,26 +69,27 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
+    after_transition do |commit_status, transition|
+      commit_status.pipeline.tap do |pipeline|
+        return if transition.loopback?
+        return unless pipeline
+
+        if commit_status.complete?
+          ProcessPipelineWorker.perform_async(pipeline.id)
+        end
+
+        UpdatePipelineWorker.perform_async(pipeline.id)
+      end
+
+      true
+    end
+
     after_transition [:created, :pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
     end
 
     after_transition any => :failed do |commit_status|
       MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
-    end
-
-    after_transition do |commit_status, transition|
-      return if transition.loopback?
-
-      commit_status.pipeline.try(:id).try do |pipeline_id|
-        if commit_status.complete?
-          ProcessPipelineWorker.perform_async(pipeline_id)
-        end
-
-        UpdatePipelineWorker.perform_async(pipeline_id)
-      end
-
-      true
     end
   end
 

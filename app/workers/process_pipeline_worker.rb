@@ -4,9 +4,8 @@ class ProcessPipelineWorker
   sidekiq_options queue: :default
 
   def perform(pipeline_id)
-    pipeline = Ci::Pipeline.find_by(id: pipeline_id)
-    return unless pipeline
-
-    pipeline.process!
+    Ci::Pipeline.find_by(id: pipeline_id).try do |pipeline|
+      pipeline.process!
+    end
   end
 end
