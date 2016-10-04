@@ -125,12 +125,16 @@ class HipchatService < Service
     message
   end
 
-  def markdown(text, context = {})
+  def markdown(text, options = {})
     if text
-      context = ({
+      context = {
         project: project,
         pipeline: :email
-      }).merge(context)
+      }
+
+      Banzai.render(text, context)
+
+      context.merge!(options)
 
       html = Banzai.render(text, context)
       html = Banzai.post_process(html, context)
