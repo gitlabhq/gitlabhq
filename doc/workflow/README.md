@@ -14,7 +14,7 @@
 - [Notification emails](notifications.md)
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
-- [Project users](add-user/add-user.md)
+- [Project and group membership](../user/membership.md)
 - [Protected branches](../user/project/protected_branches.md)
 - [Slash commands](../user/project/slash_commands.md)
 - [Sharing a project with a group](share_with_group.md)
