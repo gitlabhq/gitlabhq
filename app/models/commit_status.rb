@@ -98,10 +98,6 @@ class CommitStatus < ActiveRecord::Base
       true
     end
 
-    after_transition [:created, :pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
-    end
-
     after_transition any => :failed do |commit_status|
       MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
     end
