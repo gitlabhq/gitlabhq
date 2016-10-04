@@ -3,7 +3,7 @@
 - selected_text = selected.try(:title)
 - if selected.present?
   = hidden_field_tag(name, name == :milestone_title ? selected.title : selected.id)
-= dropdown_tag(milestone_dropdown_label(selected_text), options: { title: "Filter by milestone", toggle_class: "js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "dropdown-menu-selectable",
+= dropdown_tag(milestone_dropdown_label(selected_text), options: { title: "Filter by milestone", toggle_class: "js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone",
   placeholder: "Search milestones", footer_content: project.present?, data: { show_no: true, show_any: show_any, show_upcoming: show_upcoming, field_name: name, selected: selected.try(:title), project_id: project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
   - if project
     %ul.dropdown-footer-list
