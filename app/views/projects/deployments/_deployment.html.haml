@@ -14,5 +14,5 @@
   %td
     #{time_ago_with_tooltip(deployment.created_at)}
 
-  %td
+  %td.hidden-xs
     = render 'projects/deployments/actions', deployment: deployment, allow_rollback: true

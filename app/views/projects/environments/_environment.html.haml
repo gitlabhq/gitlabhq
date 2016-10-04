@@ -1,5 +1,4 @@
 - last_deployment = environment.last_deployment
-- can_be_stopped = true
 
 %tr.environment
   %td
@@ -22,4 +21,4 @@
       #{time_ago_with_tooltip(last_deployment.created_at)}
 
   %td.hidden-xs
-    = render 'projects/deployments/actions', deployment: last_deployment, can_be_stopped: can_be_stopped
+    = render 'projects/deployments/actions', deployment: last_deployment
