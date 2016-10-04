@@ -428,15 +428,7 @@
     },
 
     fileTextTypePresent() {
-      let found = false;
-
-      this.state.conflictsData.files.find((f) => {
-        if (f.type === CONFLICT_TYPES.TEXT) {
-          return found = true;
-        }
-      });
-
-      return found;
+      return this.state.conflictsData.files.some(f => f.type === CONFLICT_TYPES.TEXT);
     }
   };
 
