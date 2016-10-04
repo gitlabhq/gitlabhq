@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.0 (2016-10-22)
+v 8.13.0 (unreleased)
+  - Cache the last usage data to avoid unicorn timeouts
 
   - Add user activity table and service to query for active users
   - Fix 500 error updating mirror URLs for projects

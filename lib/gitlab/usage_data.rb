@@ -1,16 +1,16 @@
 module Gitlab
   class UsageData
     class << self
-      def data
-        Rails.cache.fetch('usage_data', expires_in: 1.hour) { uncached_data }
+      def data(force_refresh = false)
+        Rails.cache.fetch('usage_data', force: force_refresh) { uncached_data }
       end
 
       def uncached_data
         license_usage_data.merge(system_usage_data)
       end
 
-      def to_json
-        data.to_json
+      def to_json(force_refresh = false)
+        data(force_refresh).to_json
       end
 
       def system_usage_data
