@@ -827,6 +827,22 @@ class User < ActiveRecord::Base
     todos_pending_count(force: true)
   end
 
+  # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
+  # flow means we don't call that automatically (and can't conveniently do so).
+  #
+  # See:
+  #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
+  #
+  def increment_failed_attempts!
+    self.failed_attempts ||= 0
+    self.failed_attempts += 1
+    if attempts_exceeded?
+      lock_access! unless access_locked?
+    else
+      save(validate: false)
+    end
+  end
+
   private
 
   def projects_union(min_access_level = nil)
