@@ -4,7 +4,7 @@ describe 'Dashboard Todos', feature: true do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:issue)   { create(:issue) }
+  let(:issue)   { create(:issue, due_date: Date.today) }
 
   describe 'GET /dashboard/todos' do
     context 'User does not have todos' do
@@ -26,6 +26,12 @@ describe 'Dashboard Todos', feature: true do
 
       it 'has todo present' do
         expect(page).to have_selector('.todos-list .todo', count: 1)
+      end
+
+      it 'shows due date as today' do
+        page.within first('.todo') do
+          expect(page).to have_content 'Due today'
+        end
       end
 
       describe 'deleting the todo' do

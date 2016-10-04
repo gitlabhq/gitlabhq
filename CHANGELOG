@@ -146,6 +146,7 @@ v 8.12.0
   - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
   - Do not write SSH public key 'comments' to authorized_keys !6381
+  - Add due date to issue todos
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Hides merge request button on branches page is user doesn't have permissions
