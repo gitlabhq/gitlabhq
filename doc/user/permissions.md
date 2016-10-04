@@ -46,7 +46,8 @@ The following table depicts the various user permission levels in a project.
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
-| Add new team members                  |         |            |             | ✓        | ✓      |
+| Add users as project members          |         |            |             | ✓        | ✓      |
+| Manage project members                |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
 | Turn on/off protected branch push for devs|         |            |             | ✓        | ✓      |
