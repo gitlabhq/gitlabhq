@@ -15,9 +15,11 @@ if Rails.env.production?
     Raven.configure do |config|
       config.dsn = current_application_settings.sentry_dsn
       config.release = Gitlab::REVISION
-      
+
       # Sanitize fields based on those sanitized from Rails.
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+      # Sanitize authentication headers
+      config.sanitize_http_headers = %w[Authorization Private-Token]
     end
   end
 end
