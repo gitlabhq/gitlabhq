@@ -112,8 +112,12 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
   end
 
   describe '#update_permissions' do
-    before { group.start_ldap_sync }
-    after { group.finish_ldap_sync }
+    before do
+      group.start_ldap_sync
+    end
+    after do
+      group.finish_ldap_sync
+    end
 
     let(:group) do
       create(:group_with_ldap_group_link,
@@ -142,17 +146,15 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         end
 
         it 'converts an existing membership access request to a real member' do
-          group.members.create(
-            user: user,
-            access_level: ::Gitlab::Access::MASTER,
-            requested_at: DateTime.now
-          )
+          group.add_owner(create(:user))
+          access_requester = group.request_access(user)
+          access_requester.update(access_level: ::Gitlab::Access::MASTER)
           # Validate that the user is properly created as a requester first.
-          expect(group.requesters.pluck(:user_id)).to include(user.id)
+          expect(group.requesters.pluck(:id)).to include(access_requester.id)
 
           sync_group.update_permissions
 
-          expect(group.members.pluck(:user_id)).to include(user.id)
+          expect(group.members.pluck(:id)).to include(access_requester.id)
           expect(group.members.find_by(user_id: user.id).access_level)
             .to eq(::Gitlab::Access::DEVELOPER)
         end
@@ -160,7 +162,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         it 'downgrades existing member access' do
           # Create user with higher access
           group.add_users([user],
-                          ::Gitlab::Access::MASTER, skip_notification: true)
+                          ::Gitlab::Access::MASTER)
 
           sync_group.update_permissions
 
@@ -171,7 +173,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         it 'upgrades existing member access' do
           # Create user with lower access
           group.add_users([user],
-                          ::Gitlab::Access::GUEST, skip_notification: true)
+                          ::Gitlab::Access::GUEST)
 
           sync_group.update_permissions
 
@@ -182,8 +184,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         it 'sets an existing member ldap attribute to true' do
           group.add_users(
             [user],
-            ::Gitlab::Access::DEVELOPER,
-            skip_notification: true
+            ::Gitlab::Access::DEVELOPER
           )
 
           sync_group.update_permissions
@@ -213,7 +214,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
         it 'removes the user from the group' do
           group.add_users([user],
-                          Gitlab::Access::MASTER, skip_notification: true)
+                          Gitlab::Access::MASTER)
 
           sync_group.update_permissions
 
@@ -222,7 +223,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
         it 'refuses to delete the last owner' do
           group.add_users([user],
-                          Gitlab::Access::OWNER, skip_notification: true)
+                          Gitlab::Access::OWNER)
 
           sync_group.update_permissions
 
@@ -242,7 +243,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
           create(:identity, user: user1, extern_uid: user_dn(user1.username))
           create(:identity, user: user2, extern_uid: user_dn(user2.username))
           group.add_users([user1, user2],
-                          Gitlab::Access::OWNER, skip_notification: true)
+                          Gitlab::Access::OWNER)
 
           sync_group.update_permissions
 
