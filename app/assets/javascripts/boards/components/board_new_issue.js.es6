@@ -8,7 +8,8 @@
     },
     data() {
       return {
-        title: ''
+        title: '',
+        error: false
       };
     },
     watch: {
@@ -19,6 +20,10 @@
     methods: {
       submit(e) {
         e.preventDefault();
+        if (this.title.trim() === '') return;
+
+        this.error = false;
+
         const labels = this.list.label ? [this.list.label] : [];
         const issue = new ListIssue({
           title: this.title,
@@ -26,9 +31,21 @@
         });
 
         this.list.newIssue(issue)
-          .then(() => {
+          .then((data) => {
             // Need this because our jQuery very kindly disables buttons on ALL form submissions
             $(this.$els.submitButton).enable();
+          })
+          .catch(() => {
+            // Need this because our jQuery very kindly disables buttons on ALL form submissions
+            $(this.$els.submitButton).enable();
+
+            // Remove issue with no ID
+            const issue = this.list.findIssue(undefined);
+            this.list.removeIssue(issue);
+
+            // Show error message
+            this.error = true;
+            this.showIssueForm = true;
           });
 
         this.cancel();

@@ -46,6 +46,9 @@
             "v-show" => "list.type !== 'done' && showIssueForm" }
             .card.board-new-issue-form
               %form{ "@submit" => "submit($event)" }
+                .flash-container{ "v-if" => "error" }
+                  .flash-alert
+                    An error occured. Please try again.
                 %label.label-light{ ":for" => "list.id + '-title'" }
                   Title
                 %input.form-control{ type: "text",
