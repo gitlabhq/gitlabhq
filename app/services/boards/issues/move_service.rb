@@ -10,6 +10,10 @@ module Boards
 
       private
 
+      def board
+        @board ||= project.boards.find(params[:board_id])
+      end
+
       def valid_move?
         moving_from_list.present? && moving_to_list.present? &&
           moving_from_list != moving_to_list
