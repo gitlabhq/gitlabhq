@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
+  - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
@@ -90,8 +91,6 @@ v 8.12.1
   - Fix issue with search filter labels not displaying
 
 v 8.12.0
-v 8.12.0 (unreleased)
-  - Respond with 404 Not Found for non-existent tags
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region
