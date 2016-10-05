@@ -35,18 +35,24 @@ describe Ci::API::API do
         end
       end
 
-      it "starts a build" do
-        register_builds info: { platform: :darwin }
+      context 'when there is a pending build' do
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
 
-        expect(response).to have_http_status(201)
-        expect(json_response['sha']).to eq(build.sha)
-        expect(runner.reload.platform).to eq("darwin")
-        expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
-        expect(json_response["variables"]).to include(
-          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-          { "key" => "DB_NAME", "value" => "postgres", "public" => true }
-        )
+          expect(response).to have_http_status(201)
+          expect(json_response['sha']).to eq(build.sha)
+          expect(runner.reload.platform).to eq("darwin")
+          expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
+          expect(json_response["variables"]).to include(
+            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "DB_NAME", "value" => "postgres", "public" => true }
+          )
+        end
+
+        it 'updates runner info' do
+          expect { register_builds }.to change { runner.reload.contacted_at }
+        end
       end
 
       context 'when builds are finished' do
@@ -159,13 +165,18 @@ describe Ci::API::API do
       end
 
       context 'when runner is paused' do
-        let(:inactive_runner) { create(:ci_runner, :inactive, token: "InactiveRunner") }
+        let(:runner) { create(:ci_runner, :inactive, token: 'InactiveRunner') }
 
-        before do
-          register_builds inactive_runner.token
+        it 'responds with 404' do
+          register_builds
+
+          expect(response).to have_http_status 404
         end
 
-        it { expect(response).to have_http_status 404 }
+        it 'does not update runner info' do
+          expect { register_builds }
+            .not_to change { runner.reload.contacted_at }
+        end
       end
 
       def register_builds(token = runner.token, **params)
