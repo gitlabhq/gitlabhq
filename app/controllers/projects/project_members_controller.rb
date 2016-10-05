@@ -25,6 +25,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def create
+    if params[:user_ids].empty?
+      return redirect_to namespace_project_project_members_path(@project.namespace, @project), alert: 'No users specified.'
+    end
+
     @project.team.add_users(
       params[:user_ids].split(','),
       params[:access_level],
@@ -32,7 +36,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       current_user: current_user
     )
 
-    redirect_to namespace_project_project_members_path(@project.namespace, @project)
+    redirect_to namespace_project_project_members_path(@project.namespace, @project), notice: 'Users were successfully added.'
   end
 
   def update

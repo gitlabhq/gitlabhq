@@ -69,6 +69,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Better handle when no users were selected for adding to group or project. (Linus Thiel)
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date

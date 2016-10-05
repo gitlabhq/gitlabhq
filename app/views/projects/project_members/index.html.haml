@@ -26,3 +26,6 @@
 
   = render 'team', members: @project_members
   = paginate @project_members, theme: "gitlab"
+
+:javascript
+  window.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
