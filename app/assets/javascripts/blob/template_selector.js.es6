@@ -68,8 +68,15 @@
       // To be implemented on the extending class
       // e.g.
       // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
-      requestFileSuccess(file, skipFocus) {
-        this.editor.setValue(file.content, 1);
+      requestFileSuccess(file, { skipFocus, append } = {}) {
+        const oldValue = this.editor.getValue();
+        let newValue = file.content;
+
+        if (append && oldValue.length && oldValue !== newValue) {
+          newValue = oldValue + '\n\n' + newValue;
+        }
+
+        this.editor.setValue(newValue, 1);
         if (!skipFocus) this.editor.focus();
 
         if (this.editor instanceof jQuery) {

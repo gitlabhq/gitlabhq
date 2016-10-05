@@ -50,4 +50,4 @@
   }
 
   global.IssuableTemplateSelector = IssuableTemplateSelector;
-})(window);
+})(window.gl || (window.gl = {}));
