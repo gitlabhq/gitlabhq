@@ -145,5 +145,8 @@ Rails.application.routes.draw do
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
+
   root to: "root#index"
 end

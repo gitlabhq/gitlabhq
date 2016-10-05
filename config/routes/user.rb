@@ -21,6 +21,3 @@ devise_scope :user do
   get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   get '/users/almost_there' => 'confirmations#almost_there'
 end
-
-# Get all keys of user
-get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
