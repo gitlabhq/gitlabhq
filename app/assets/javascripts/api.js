@@ -23,12 +23,13 @@
     },
     // Return groups list. Filtered by query
     // Only active groups retrieved
-    groups: function(query, skip_ldap, callback) {
+    groups: function(query, skip_ldap, skip_groups, callback) {
       var url = Api.buildUrl(Api.groupsPath);
       return $.ajax({
         url: url,
         data: {
           search: query,
+          skip_groups: skip_groups,
           per_page: 20
         },
         dataType: "json"

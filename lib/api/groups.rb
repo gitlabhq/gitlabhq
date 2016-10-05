@@ -6,6 +6,8 @@ module API
     resource :groups do
       # Get a groups list
       #
+      # Parameters:
+      #   skip_groups (optional) - Array of group ids to exclude from list
       # Example Request:
       #  GET /groups
       get do
@@ -16,6 +18,7 @@ module API
                   end
 
         @groups = @groups.search(params[:search]) if params[:search].present?
+        @groups = @groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         @groups = paginate @groups
         present @groups, with: Entities::Group
       end
