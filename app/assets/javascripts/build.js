@@ -146,7 +146,7 @@
       $date = $('.js-artifacts-remove');
       if ($date.length) {
         date = $date.text();
-        return $date.text($.timefor(new Date(date.replace(/-/g, '/')), ' '));
+        return $date.text($.timefor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
       }
     };
 
