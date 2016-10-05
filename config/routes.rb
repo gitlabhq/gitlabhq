@@ -143,10 +143,10 @@ Rails.application.routes.draw do
   draw :user
   draw :project
 
-  get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
-
   # Get all keys of user
   get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
+
+  get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 
   root to: "root#index"
 end
