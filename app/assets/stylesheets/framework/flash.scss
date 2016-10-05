@@ -20,7 +20,8 @@
   .flash-notice, .flash-alert {
     border-radius: $border-radius-default;
 
-    .container-fluid.container-limited.flash-text {
+    .container-fluid,
+    .container-fluid.container-limited {
       background: transparent;
     }
   }
