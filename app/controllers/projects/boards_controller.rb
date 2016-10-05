@@ -1,9 +1,18 @@
 class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
-  
-  respond_to :html
 
-  before_action :authorize_read_board!, only: [:show]
+  before_action :authorize_read_board!, only: [:index, :show]
+
+  def index
+    @boards = ::Boards::ListService.new(project, current_user).execute
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @boards.as_json(only: [:id, :name])
+      end
+    end
+  end
 
   def show
     ::Boards::CreateService.new(project, current_user).execute
