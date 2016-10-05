@@ -68,9 +68,13 @@
 
     }
 
+    accessCurrentVal(newVal) {
+      return newVal ? this.inputElement.val(newVal) : this.inputElement.val();
+    }
+
     handleInvalidInput(event) {
       event.preventDefault();
-      const currentValue = this.inputElement.val();
+      const currentValue = this.accessCurrentVal();
       this.state.valid = false;
       this.state.empty = currentValue === '';
 
@@ -87,7 +91,7 @@
     }
 
     updateValidityState() {
-      const inputVal = this.inputElement.val();
+      const inputVal = this.accessCurrentVal();
       this.state.empty = !inputVal.length;
       this.state.valid = this.getInputValidity();
       this.renderValidity();
@@ -108,10 +112,10 @@
     }
 
     setClearState() {
-      const inputVal = this.inputElement.val();
+      const inputVal = this.accessCurrentVal();
       if (!inputVal.split(' ').length) {
-        const trimmedInput = this.inputElement.val().trim();
-        this.inputElement.val(trimmedInput);
+        const trimmedInput = inputVal.trim();
+        this.accessCurrentVal(trimmedInput);
       }
       this.inputElement.removeClass(inputErrorClass);
       this.scopedSiblings.hide();
