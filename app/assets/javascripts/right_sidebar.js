@@ -5,7 +5,16 @@
     function Sidebar(currentUser) {
       this.toggleTodo = bind(this.toggleTodo, this);
       this.sidebar = $('aside');
+      this.removeListeners();
       this.addEventListeners();
+    }
+
+    Sidebar.prototype.removeListeners = function () {
+      this.sidebar.off('click', '.sidebar-collapsed-icon');
+      $('.dropdown').off('hidden.gl.dropdown');
+      $('.dropdown').off('loading.gl.dropdown');
+      $('.dropdown').off('loaded.gl.dropdown');
+      $(document).off('click', '.js-sidebar-toggle');
     }
 
     Sidebar.prototype.addEventListeners = function() {
@@ -13,7 +22,7 @@
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(document).off('click', '.js-sidebar-toggle').on('click', '.js-sidebar-toggle', function(e, triggered) {
+      $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);

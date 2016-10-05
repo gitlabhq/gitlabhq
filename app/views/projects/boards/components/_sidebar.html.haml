@@ -3,38 +3,19 @@
     .issuable-sidebar
       .block.issuable-sidebar-header
         %span.issuable-header-text.hide-collapsed.pull-left
-          %strong Test
+          %strong
+            {{ issue.title }}
           %br/
-          %span #13
-        %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", aria: { label: "Toggle sidebar" } }
+          %span
+            = precede "#" do
+              {{ issue.id }}
+        %a.gutter-toggle.pull-right{ role: "button",
+          href: "#",
+          "@click" => "closeSidebar",
+          aria: { label: "Toggle sidebar" } }
           = icon("times")
-      .block.assignee
-        .title.hide-collapsed
-          Assignee
-          = icon("spinner spin", class: "block-loading")
-          = link_to "Edit", "#", class: "edit-link pull-right"
-        .value.hide-collapsed
-          %span.assign-yourself.no-value
-            No assignee
-            \-
-            %a.js-assign-yourself{ href: "#" }
-              assign yourself
-      .block.milestone
-        .title.hide-collapsed
-          Milestone
-          = icon("spinner spin", class: "block-loading")
-        .value.hide-collapsed
-          %span.no-value
-            None
-      .block.due_date
-        .title.hide-collapsed
-          Due date
-          = icon("spinner spin", class: "block-loading")
-        .value.hide-collapsed
-          %span.no-value No due date
-      .block.labels
-        .title.hide-collapsed
-          Labels
-          = icon("spinner spin", class: "block-loading")
-        .value.issuable-show-labels.hide-collapsed
-          %span.no-value None
+      = render "projects/boards/components/sidebar/assignee"
+      = render "projects/boards/components/sidebar/milestone"
+      = render "projects/boards/components/sidebar/due_date"
+      = render "projects/boards/components/sidebar/labels"
+      = render "projects/boards/components/sidebar/notifications"

@@ -7,18 +7,37 @@
   gl.issueBoards.BoardSidebar = Vue.extend({
     data() {
       return {
-        issue: Store.state.detailIssue
+        detail: Store.detail,
+        issue: {}
       };
     },
-    ready: function () {
-      console.log(this.issue);
+    computed: {
+      showSidebar () {
+        return Object.keys(this.issue).length;
+      }
     },
     watch: {
-      issue: {
+      detail: {
         handler () {
-          console.log('a');
+          this.issue = this.detail.issue;
         },
         deep: true
+      },
+      issue () {
+        if (this.showSidebar) {
+          this.$nextTick(() => {
+            new IssuableContext();
+            new MilestoneSelect();
+            new Sidebar();
+          });
+        } else {
+          $('.right-sidebar').getNiceScroll().remove();
+        }
+      }
+    },
+    methods: {
+      closeSidebar () {
+        this.detail.issue = {};
       }
     }
   });

@@ -1,0 +1,22 @@
+.block.assignee
+  .title.hide-collapsed
+    Assignee
+    = icon("spinner spin", class: "block-loading")
+    - if can?(current_user, :admin_issue, @project)
+      = link_to "Edit", "#", class: "edit-link pull-right"
+  .value.hide-collapsed
+    %span.assign-yourself.no-value{ "v-if" => "!issue.assignee" }
+      No assignee
+      - if can?(current_user, :admin_issue, @project)
+        \-
+        %a.js-assign-yourself{ href: "#" }
+          assign yourself
+    %a.author_link.bold{ href: "",
+      "v-if" => "issue.assignee" }
+      %img.avatar.avatar-inline.s32{ ":src" => "issue.assignee.avatar",
+        width: "32" }
+      %span.author
+        {{ issue.assignee.name }}
+      %span.username
+        = precede "@" do
+          {{ issue.assignee.username }}

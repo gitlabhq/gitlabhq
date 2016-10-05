@@ -4,8 +4,9 @@
 
   gl.issueBoards.BoardsStore = {
     disabled: false,
-    state: {
-      detailIssue: {}
+    state: {},
+    detail: {
+      issue: {}
     },
     moving: {
       issue: {},

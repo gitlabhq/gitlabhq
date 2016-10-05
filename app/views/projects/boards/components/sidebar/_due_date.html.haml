@@ -1,0 +1,16 @@
+.block.due_date
+  .title.hide-collapsed
+    Due date
+    = icon("spinner spin", class: "block-loading")
+    - if can?(current_user, :admin_issue, @project)
+      = link_to "Edit", "#", class: "edit-link pull-right"
+  .value.hide-collapsed
+    .value-content
+      %span.no-value{ "v-if" => "!issue.dueDate" }
+        No due date
+      %span.bold{ "v-if" => "issue.dueDate" }
+        {{ issue.dueDate }}
+      %span.no-value.js-remove-due-date-holder{ "v-if" => "issue.dueDate" }
+        \-
+        %a.js-remove-due-date{ href: "#", role: "button" }
+          remove due date

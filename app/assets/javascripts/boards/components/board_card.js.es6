@@ -39,8 +39,7 @@
         Store.updateFiltersUrl();
       },
       showIssue () {
-        Store.state.detailIssue = this.issue;
-        console.log(Store.state.detailIssue);
+        Store.detail.issue = this.issue;
       }
     }
   });

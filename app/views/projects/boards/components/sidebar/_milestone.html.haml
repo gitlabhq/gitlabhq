@@ -1,0 +1,16 @@
+.block.milestone
+  .title.hide-collapsed
+    Milestone
+    = icon("spinner spin", class: "block-loading")
+    - if can?(current_user, :admin_issue, @project)
+      = link_to "Edit", "#", class: "edit-link pull-right"
+  .value
+    %span.no-value{ "v-if" => "!issue.milestone" }
+      None
+    %span.bold.has-tooltip{ "v-if" => "issue.milestone" }
+      {{ issue.milestone.title }}
+  .selectbox
+    .dropdown
+      %button.dropdown-menu-toggle
+        Milestone
+    -# = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "issue[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: "issue", use_id: true }})

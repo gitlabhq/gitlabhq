@@ -1,0 +1,11 @@
+- if current_user
+  .block.light.subscription{ data: { url: '' } }
+    .title.hide-collapsed
+      Notifications
+    %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+      Unsubscribe
+    .subscription-status.hide-collapsed{ data: { status: '' } }
+      .unsubscribed{class: ( 'hidden' if true )}
+        You're not receiving notifications from this thread.
+      .subscribed{class: ( 'hidden' unless true )}
+        You're receiving notifications because you're subscribed to this thread.

@@ -1,0 +1,18 @@
+.block.labels
+  .title.hide-collapsed
+    Labels
+    = icon("spinner spin", class: "block-loading")
+    - if can?(current_user, :admin_issue, @project)
+      = link_to "Edit", "#", class: "edit-link pull-right"
+  .value.issuable-show-labels.hide-collapsed
+    %span.no-value{ "v-if" => "issue.labels.length === 0" }
+      None
+    %a{ href: "#",
+      "v-for" => "label in issue.labels" }
+      %span.label.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+        {{ label.title }}
+  .selectbox.hide-collapsed
+    %input{ type: "hidden",
+      name: "issue[label_names][]",
+      "v-for" => "label in issue.labels",
+      ":value" => "label.id" }

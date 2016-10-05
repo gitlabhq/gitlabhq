@@ -3,10 +3,15 @@ class ListIssue {
     this.id = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;
+    this.dueDate = obj.due_date;
     this.labels = [];
 
     if (obj.assignee) {
       this.assignee = new ListUser(obj.assignee);
+    }
+
+    if (obj.milestone) {
+      this.milestone = new ListMilestone(obj.milestone);
     }
 
     obj.labels.forEach((label) => {
