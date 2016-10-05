@@ -37,6 +37,12 @@ describe SessionsController do
             subject.sign_out user
           end
         end
+
+        it 'updates the user activity' do
+          expect do
+            post(:create, user: { login: user.username, password: user.password })
+          end.to change { user.reload.last_activity_at }.from(nil)
+        end
       end
     end
 

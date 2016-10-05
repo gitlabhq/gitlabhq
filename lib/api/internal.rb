@@ -15,6 +15,16 @@ module API
       #   project - project path with namespace
       #   action - git action (git-upload-pack or git-receive-pack)
       #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
+      helpers do
+        def log_user_activity(actor)
+          commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS +
+                      Gitlab::GitAccess::PUSH_COMMANDS +
+                      Gitlab::GitAccess::GIT_ANNEX_COMMANDS
+
+          ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
+        end
+      end
+
       post "/allowed" do
         status 200
 
@@ -40,6 +50,8 @@ module API
         response = { status: access_status.status, message: access_status.message }
 
         if access_status.status
+          log_user_activity(actor)
+
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
           response[:repository_path] =

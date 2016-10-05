@@ -129,4 +129,17 @@ describe EventCreateService, services: true do
       it { expect { subject }.to change { Event.count }.from(0).to(1) }
     end
   end
+
+  describe '#push' do
+    let(:project) { create(:empty_project) }
+    let(:user) { create(:user) }
+
+    it 'creates a new event' do
+      expect { service.push(project, user, {}) }.to change { Event.count }
+    end
+
+    it 'updates user last activity' do
+      expect { service.push(project, user, {}) }.to change { user.last_activity_at }
+    end
+  end
 end
