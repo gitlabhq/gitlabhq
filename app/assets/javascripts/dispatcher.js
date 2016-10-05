@@ -26,7 +26,7 @@
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new IssuableBulkActions();
+          new gl.IssuableBulkActions();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':
@@ -40,7 +40,7 @@
           new Milestone();
           break;
         case 'dashboard:todos:index':
-          new Todos();
+          new gl.Todos();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -59,7 +59,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
-          new IssuableTemplateSelectors();
+          new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
         case 'projects:merge_requests:edit':
@@ -67,7 +67,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
-          new IssuableTemplateSelectors();
+          new gl.IssuableTemplateSelectors();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -165,7 +165,7 @@
           break;
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
-            new LabelManager();
+            new gl.LabelManager();
           }
           break;
         case 'projects:network:show':
@@ -279,7 +279,7 @@
     Dispatcher.prototype.initSearch = function() {
       // Only when search form is present
       if ($('.search').length) {
-        return new SearchAutocomplete();
+        return new gl.SearchAutocomplete();
       }
     };
 
