@@ -2,7 +2,8 @@ class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
 
   before_action :authorize_read_board!, only: [:index, :show]
-  before_action :authorize_admin_board!, only: [:create, :update]
+  before_action :authorize_admin_board!, only: [:create, :update, :destroy]
+  before_action :find_board, only: [:show, :update, :destroy]
 
   def index
     @boards = ::Boards::ListService.new(project, current_user).execute
@@ -16,8 +17,6 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   def show
-    @board = project.boards.find(params[:id])
-
     respond_to do |format|
       format.html
       format.json do
@@ -41,19 +40,28 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   def update
-    board = project.boards.find(params[:id])
     service = ::Boards::UpdateService.new(project, current_user, board_params)
 
-    service.execute(board)
+    service.execute(@board)
 
     respond_to do |format|
       format.json do
-        if board.valid?
-          render json: serialize_as_json(board)
+        if @board.valid?
+          render json: serialize_as_json(@board)
         else
-          render json: board.errors, status: :unprocessable_entity
+          render json: @board.errors, status: :unprocessable_entity
         end
       end
+    end
+  end
+
+  def destroy
+    service = ::Boards::DestroyService.new(project, current_user)
+
+    if service.execute(@board)
+      head :ok
+    else
+      head :unprocessable_entity
     end
   end
 
@@ -69,6 +77,10 @@ class Projects::BoardsController < Projects::ApplicationController
 
   def board_params
     params.require(:board).permit(:name)
+  end
+
+  def find_board
+    @board = project.boards.find(params[:id])
   end
 
   def serialize_as_json(resource)

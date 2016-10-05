@@ -237,4 +237,48 @@ describe Projects::BoardsController do
                      format: :json
     end
   end
+
+  describe 'DELETE destroy' do
+    let!(:board) { create(:board, project: project) }
+
+    context 'with valid board id' do
+      it 'returns a successful 200 response' do
+        remove_board board: board
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'removes board from project' do
+        expect { remove_board board: board }.to change(project.boards, :size).by(-1)
+      end
+    end
+
+    context 'with invalid board id' do
+      it 'returns a not found 404 response' do
+        remove_board board: 999
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'with unauthorized user' do
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :admin_board, project).and_return(false)
+      end
+
+      it 'returns a not found 404 response' do
+        remove_board board: board
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def remove_board(board:)
+      delete :destroy, namespace_id: project.namespace.to_param,
+                       project_id: project.to_param,
+                       id: board.to_param,
+                       format: :json
+    end
+  end
 end
