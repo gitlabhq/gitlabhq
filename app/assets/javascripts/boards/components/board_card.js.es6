@@ -64,7 +64,12 @@
       showIssue () {
         if (this.showDetail) {
           this.showDetail = false;
-          Vue.set(Store.detail, 'issue', this.issue);
+
+          if (Store.detail.issue && Store.detail.issue.id === this.issue.id) {
+            Store.detail.issue = {};
+          } else {
+            Store.detail.issue = this.issue;
+          }
         }
       }
     }
