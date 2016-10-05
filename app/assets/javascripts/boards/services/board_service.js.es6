@@ -1,7 +1,5 @@
 class BoardService {
   constructor (root) {
-    Vue.http.options.root = root;
-
     this.lists = Vue.resource(`${root}/lists{/id}`, {}, {
       generate: {
         method: 'POST',

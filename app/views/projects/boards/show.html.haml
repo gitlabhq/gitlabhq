@@ -10,7 +10,7 @@
 
 = render 'shared/issuable/filter', type: :boards
 
-#board-app{ "v-cloak" => true,
+#board-app.boards-app{ "v-cloak" => true,
   "data-endpoint" => "#{namespace_project_board_path(@project.namespace, @project)}",
   "data-disabled" => "#{!can?(current_user, :admin_list, @project)}",
   "data-issue-link-base" => "#{namespace_project_issues_path(@project.namespace, @project)}" }

@@ -5,6 +5,7 @@
 //= require_tree ./stores
 //= require_tree ./services
 //= require_tree ./mixins
+//= require_tree ./filters
 //= require ./components/board
 //= require ./components/board_sidebar
 //= require ./components/new_list_dropdown

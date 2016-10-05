@@ -22,13 +22,18 @@
         return function() {
           var status;
           btn.removeClass('disabled');
-          status = current_status === 'subscribed' ? 'unsubscribed' : 'subscribed';
-          _this.subscription_status.attr('data-status', status);
-          action = status === 'subscribed' ? 'Unsubscribe' : 'Subscribe';
-          btn.find('span').text(action);
-          _this.subscription_status.find('>div').toggleClass('hidden');
-          if (btn.attr('data-original-title')) {
-            return btn.tooltip('hide').attr('data-original-title', action).tooltip('fixTitle');
+
+          if ($('body').data('page') === 'projects:boards:show') {
+            Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'subscribed', !gl.issueBoards.BoardsStore.detail.issue.subscribed);
+          } else {
+            status = current_status === 'subscribed' ? 'unsubscribed' : 'subscribed';
+            _this.subscription_status.attr('data-status', status);
+            action = status === 'subscribed' ? 'Unsubscribe' : 'Subscribe';
+            btn.find('span').text(action);
+            _this.subscription_status.find('>div').toggleClass('hidden');
+            if (btn.attr('data-original-title')) {
+              return btn.tooltip('hide').attr('data-original-title', action).tooltip('fixTitle');
+            }
           }
         };
       })(this));

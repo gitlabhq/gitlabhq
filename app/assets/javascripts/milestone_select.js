@@ -110,7 +110,7 @@
               e.preventDefault();
               return;
             }
-            if (page === 'projects:boards:show') {
+            if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-board-sidebar')) {
               gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
               gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
@@ -123,6 +123,24 @@
               return Issuable.filterResults($dropdown.closest('form'));
             } else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
+            } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
+              if (selected.id !== -1) {
+                Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'milestone', new ListMilestone({
+                  id: selected.id,
+                  title: selected.name
+                }));
+              } else {
+                Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'milestone');
+              }
+
+              $dropdown.trigger('loading.gl.dropdown');
+              $loading.fadeIn();
+
+              gl.issueBoards.BoardsStore.detail.issue.update(issueUpdateURL)
+                .then(function () {
+                  $dropdown.trigger('loaded.gl.dropdown');
+                  $loading.fadeOut();
+                });
             } else {
               selected = $selectbox.find('input[type="hidden"]').val();
               data = {};

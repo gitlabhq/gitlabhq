@@ -1,5 +1,5 @@
 .block.milestone
-  .title.hide-collapsed
+  .title
     Milestone
     = icon("spinner spin", class: "block-loading")
     - if can?(current_user, :admin_issue, @project)
@@ -9,8 +9,20 @@
       None
     %span.bold.has-tooltip{ "v-if" => "issue.milestone" }
       {{ issue.milestone.title }}
-  .selectbox
-    .dropdown
-      %button.dropdown-menu-toggle
-        Milestone
-    -# = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "issue[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: "issue", use_id: true }})
+  - if can?(current_user, :admin_issue, @project)
+    .selectbox
+      %input{ type: "hidden",
+        ":value" => "issue.milestone.id",
+        name: "issue[milestone_id]",
+        "v-if" => "issue.milestone" }
+      .dropdown
+        %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: "issue", use_id: "true" },
+          ":data-issuable-id" => "issue.id",
+          ":data-issue-update" => "'/root/issue-boards/issues/' + issue.id + '.json'" }
+          Milestone
+          = icon("chevron-down")
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          = dropdown_title("Assignee milestone")
+          = dropdown_filter("Search milestones")
+          = dropdown_content
+          = dropdown_loading

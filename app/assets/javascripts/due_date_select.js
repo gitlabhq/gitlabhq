@@ -38,6 +38,19 @@
             return $value.css('display', '');
           }
         });
+
+        var updateIssueBoardIssue = function () {
+          $dropdown.trigger('loading.gl.dropdown');
+          $selectbox.hide();
+          $value.css('display', '');
+          $loading.fadeIn();
+
+          gl.issueBoards.BoardsStore.detail.issue.update(issueUpdateURL)
+            .then(function () {
+              $loading.fadeOut();
+            });
+        }
+
         addDueDate = function(isDropdown) {
           var data, date, mediumDate, value;
           // Create the post date
@@ -83,15 +96,25 @@
         };
         $block.on('click', '.js-remove-due-date', function(e) {
           e.preventDefault();
-          $("input[name='" + fieldName + "']").val('');
-          return addDueDate(false);
+          if ($dropdown.hasClass('js-issue-boards-due-date')) {
+            gl.issueBoards.BoardsStore.detail.issue.dueDate = '';
+            updateIssueBoardIssue();
+          } else {
+            $("input[name='" + fieldName + "']").val('');
+            return addDueDate(false);
+          }
         });
         return $datePicker.datepicker({
           dateFormat: 'yy-mm-dd',
           defaultDate: $("input[name='" + fieldName + "']").val(),
           altField: "input[name='" + fieldName + "']",
           onSelect: function() {
-            return addDueDate(true);
+            if ($dropdown.hasClass('js-issue-boards-due-date')) {
+              gl.issueBoards.BoardsStore.detail.issue.dueDate = $("input[name='" + fieldName + "']").val();
+              updateIssueBoardIssue();
+            } else {
+              return addDueDate(true);
+            }
           }
         });
       });

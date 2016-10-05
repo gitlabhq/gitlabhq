@@ -9,7 +9,11 @@
       this.usersPath = "/autocomplete/users.json";
       this.userPath = "/autocomplete/users/:id.json";
       if (currentUser != null) {
-        this.currentUser = JSON.parse(currentUser);
+        if (typeof currentUser === 'object') {
+          this.currentUser = currentUser;
+        } else {
+          this.currentUser = JSON.parse(currentUser);
+        }
       }
       $('.js-user-search').each((function(_this) {
         return function(i, dropdown) {
@@ -32,9 +36,30 @@
           $value = $block.find('.value');
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
+
+          var updateIssueBoardsIssue = function () {
+            $loading.fadeIn();
+            gl.issueBoards.BoardsStore.detail.issue.update(issueURL)
+              .then(function () {
+                $loading.fadeOut();
+              });
+          };
+
           $block.on('click', '.js-assign-yourself', function(e) {
             e.preventDefault();
-            return assignTo(_this.currentUser.id);
+
+            if ($dropdown.hasClass('js-issue-board-assignee')) {
+              Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
+                id: _this.currentUser.id,
+                username: _this.currentUser.username,
+                name: _this.currentUser.name,
+                avatar_url: _this.currentUser.avatar_url
+              }));
+
+              updateIssueBoardsIssue();
+            } else {
+              return assignTo(_this.currentUser.id);
+            }
           });
           assignTo = function(selected) {
             var data;
@@ -160,7 +185,7 @@
                 selectedId = user.id;
                 return;
               }
-              if (page === 'projects:boards:show') {
+              if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-board-assignee')) {
                 selectedId = user.id;
                 gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
                 gl.issueBoards.BoardsStore.updateFiltersUrl();
@@ -170,6 +195,19 @@
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
+              } else if ($dropdown.hasClass('js-issue-board-assignee')) {
+                if (user.id) {
+                  Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    avatar_url: user.avatar_url
+                  }));
+                } else {
+                  Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'assignee');
+                }
+
+                updateIssueBoardsIssue();
               } else {
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);

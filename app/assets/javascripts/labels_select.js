@@ -22,7 +22,7 @@
         abilityName = $dropdown.data('ability-name');
         $selectbox = $dropdown.closest('.selectbox');
         $block = $selectbox.closest('.block');
-        $form = $dropdown.closest('form');
+        $form = $dropdown.closest('.js-issuable-update');
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
@@ -334,7 +334,7 @@
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
-            if (page === 'projects:boards:show') {
+            if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-boards-label')) {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
               }
@@ -361,6 +361,30 @@
             }
             else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
+            }
+            else if ($dropdown.hasClass('js-issue-boards-label')) {
+              if ($el.hasClass('is-active')) {
+                gl.issueBoards.BoardsStore.detail.issue.labels.push(new ListLabel({
+                  id: label.id,
+                  title: label.title,
+                  color: label.color[0],
+                  textColor: '#fff'
+                }));
+              }
+              else {
+                var labels = gl.issueBoards.BoardsStore.detail.issue.labels;
+                labels = labels.filter(function (selectedLabel) {
+                  return selectedLabel.id !== label.id;
+                });
+                gl.issueBoards.BoardsStore.detail.issue.labels = labels;
+              }
+
+              $loading.fadeIn();
+
+              gl.issueBoards.BoardsStore.detail.issue.update(issueUpdateURL)
+                .then(function () {
+                  $loading.fadeOut();
+                });
             }
             else {
               if ($dropdown.hasClass('js-multiselect')) {

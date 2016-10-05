@@ -46,6 +46,15 @@ lex
   .page-with-sidebar {
     padding-bottom: 0;
   }
+
+  .issues-filters {
+    position: relative;
+    z-index: 999999;
+  }
+}
+
+.boards-app {
+  position: relative;
 }
 
 .boards-app-loading {
@@ -264,4 +273,10 @@ lex
     border-bottom-right-radius: 0;
     border-width: 1px 0 1px 1px;
   }
+}
+
+.right-sidebar.issue-boards-sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
 }

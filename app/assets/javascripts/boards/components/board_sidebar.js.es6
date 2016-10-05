@@ -5,6 +5,9 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardSidebar = Vue.extend({
+    props: {
+      currentUser: Object
+    },
     data() {
       return {
         detail: Store.detail,
@@ -26,9 +29,12 @@
       issue () {
         if (this.showSidebar) {
           this.$nextTick(() => {
-            new IssuableContext();
+            new IssuableContext(this.currentUser);
             new MilestoneSelect();
+            new DueDateSelect();
+            new LabelsSelect();
             new Sidebar();
+            new Subscription('.subscription')
           });
         } else {
           $('.right-sidebar').getNiceScroll().remove();
