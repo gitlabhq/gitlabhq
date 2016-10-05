@@ -20,7 +20,7 @@
       .dropdown
         %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-issue-boards-label{ type: "button",
           data: { toggle: "dropdown", field_name: "issue[label_names][]", show_no: "true", show_any: "true", project_id: @project.id, labels: namespace_project_labels_path(@project.namespace, @project, :json) },
-          ":data-issue-update" => "'/root/issue-boards/issues/' + issue.id + '.json'" }
+          ":data-issue-update" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '.json'" }
           %span.dropdown-toggle-text
             Label
           = icon('chevron-down')
