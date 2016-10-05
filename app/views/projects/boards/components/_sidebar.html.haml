@@ -13,7 +13,7 @@
         %a.gutter-toggle.pull-right{ role: "button",
           href: "#",
           "@click" => "closeSidebar",
-          aria: { label: "Toggle sidebar" } }
+          "aria-label" => "Toggle sidebar" }
           = icon("times")
       .js-issuable-update
         = render "projects/boards/components/sidebar/assignee"

@@ -279,8 +279,38 @@ lex
   }
 }
 
-.right-sidebar.issue-boards-sidebar {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+.issue-boards-sidebar {
+  &.right-sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+
+  .issuable-sidebar-header {
+    position: relative;
+  }
+
+  .gutter-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 10px;
+    right: 0;
+    width: 22px;
+    color: $gray-darkest;
+
+    .fa {
+      position: absolute;
+      top: 50%;
+      margin-top: (-15px / 2);
+    }
+  }
+
+  .issuable-header-text {
+    width: 100%;
+    padding-right: 35px;
+
+    > strong {
+      font-weight: 600;
+    }
+  }
 }
