@@ -12,6 +12,21 @@
       disabled: Boolean,
       index: Number
     },
+    data () {
+      return {
+        showDetail: false,
+        detailIssue: Store.detail
+      };
+    },
+    computed: {
+      issueDetailVisible () {
+        if (this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
     methods: {
       filterByLabel (label, e) {
         let labelToggleText = label.title;
@@ -38,8 +53,19 @@
 
         Store.updateFiltersUrl();
       },
+      mouseDown () {
+        this.showDetail = true;
+      },
+      mouseMove () {
+        if (this.showDetail) {
+          this.showDetail = false;
+        }
+      },
       showIssue () {
-        Store.detail.issue = this.issue;
+        if (this.showDetail) {
+          this.showDetail = false;
+          Vue.set(Store.detail, 'issue', this.issue);
+        }
       }
     }
   });

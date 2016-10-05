@@ -7,9 +7,11 @@
   ":issue-link-base" => "issueLinkBase",
   ":disabled" => "disabled",
   "track-by" => "id" }
-  %li.card{ ":class" => "{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id }",
+  %li.card{ ":class" => "{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id, 'is-active': issueDetailVisible }",
     ":index" => "index",
-    "@click" => "showIssue" }
+    "@mousedown" => "mouseDown",
+    "@mouseMove" => "mouseMove",
+    "@mouseup" => "showIssue" }
     %h4.card-title
       = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")
       %a{ ":href" => "issueLinkBase + '/' + issue.id",

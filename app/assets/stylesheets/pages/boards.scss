@@ -194,6 +194,10 @@ lex
     margin-bottom: 5px;
   }
 
+  &.is-active {
+    background-color: $row-hover;
+  }
+
   .label {
     border: 0;
     outline: 0;
