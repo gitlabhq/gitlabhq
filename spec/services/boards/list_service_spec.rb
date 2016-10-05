@@ -29,9 +29,10 @@ describe Boards::ListService, services: true do
     end
 
     it 'returns project boards' do
-      board = create(:board, project: project)
+      board1 = create(:board, project: project)
+      board2 = create(:board, project: project)
 
-      expect(service.execute).to match_array [board]
+      expect(service.execute).to match_array [board1, board2]
     end
   end
 end
