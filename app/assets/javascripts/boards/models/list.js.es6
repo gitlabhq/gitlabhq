@@ -91,7 +91,7 @@ class List {
     this.addIssue(issue);
     this.issuesSize++;
 
-    gl.boardService.newIssue(this.id, issue)
+    return gl.boardService.newIssue(this.id, issue)
       .then((resp) => {
         const data = resp.json();
         issue.id = data.iid;

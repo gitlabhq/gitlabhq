@@ -54,7 +54,8 @@
                   ":id" => "list.id + '-title'" }
                 .clearfix.prepend-top-10
                   %button.btn.btn-success.pull-left{ type: "submit",
-                    ":disabled" => "title === ''" }
+                    ":disabled" => "title === ''",
+                    "v-el:submit-button" => true }
                     Submit issue
                   %button.btn.btn-default.pull-right{ type: "button",
                     "@click" => "cancel" }

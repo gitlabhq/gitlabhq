@@ -25,7 +25,11 @@
           labels
         });
 
-        this.list.newIssue(issue);
+        this.list.newIssue(issue)
+          .then(() => {
+            // Need this because our jQuery very kindly disables buttons on ALL form submissions
+            $(this.$els.submitButton).enable();
+          });
 
         this.cancel();
       },

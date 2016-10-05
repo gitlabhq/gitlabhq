@@ -7,7 +7,7 @@
   ":issue-link-base" => "issueLinkBase",
   ":disabled" => "disabled",
   "track-by" => "id" }
-  %li.card{ ":class" => "{ 'user-can-drag': !disabled }",
+  %li.card{ ":class" => "{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id }",
     ":index" => "index" }
     %h4.card-title
       = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")
