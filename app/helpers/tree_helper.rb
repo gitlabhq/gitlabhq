@@ -155,7 +155,7 @@ module TreeHelper
   def disabled_lock_link(label, title, html_options)
     html_options['data-toggle'] = 'tooltip'
     html_options[:title] = title
-    html_options[:class] = "#{html_options[:class].to_s} disabled has-tooltip"
+    html_options[:class] = "#{html_options[:class]} disabled has-tooltip"
 
     content_tag :span, label, html_options
   end
@@ -163,7 +163,7 @@ module TreeHelper
   def enabled_lock_link(label, title, html_options)
     html_options['data-toggle'] = 'tooltip'
     html_options[:title] = title
-    html_options[:class] = "#{html_options[:class].to_s} has-tooltip"
+    html_options[:class] = "#{html_options[:class]} has-tooltip"
 
     link_to label, '#', html_options
   end
