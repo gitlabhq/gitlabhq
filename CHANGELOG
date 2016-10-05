@@ -19,6 +19,7 @@ v 8.13.0 (unreleased)
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
+  - Fix showing commits from source project for merge request !6658
   - Add configurable email subject suffix (Fu Xu)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Replace `alias_method_chain` with `Module#prepend`
@@ -42,7 +43,7 @@ v 8.13.0 (unreleased)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
-  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
+  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
 
 v 8.12.4 (unreleased)
 
