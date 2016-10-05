@@ -4,10 +4,10 @@
   %td
     = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment)
 
-  %td
+  %td.deployment-column
     - if last_deployment
+      %span ##{last_deployment.iid} by
       = user_avatar(user: last_deployment.user, size: 20)
-      %span ##{last_deployment.iid}
 
   %td
     - if last_deployment
