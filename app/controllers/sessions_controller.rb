@@ -33,6 +33,7 @@ class SessionsController < Devise::SessionsController
                                    reset_password_sent_at: nil)
       end
       log_audit_event(current_user, with: authentication_method)
+      log_user_activity(current_user)
     end
   end
 
@@ -135,6 +136,10 @@ class SessionsController < Devise::SessionsController
   def log_audit_event(user, options = {})
     AuditEventService.new(user, user, options).
       for_authentication.security_event
+  end
+
+  def log_user_activity(user)
+    Users::ActivityService.new(user, 'login').execute
   end
 
   def load_recaptcha

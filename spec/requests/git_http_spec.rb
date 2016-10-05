@@ -178,6 +178,12 @@ describe 'Git HTTP requests', lib: true do
                   expect(response.status).to eq(200)
                 end
               end
+
+              it 'updates the user last activity' do
+                download(path, env) do |response|
+                  expect(user.reload.last_activity_at).not_to be_nil
+                end
+              end
             end
 
             it "complies with RFC4559" do

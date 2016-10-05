@@ -68,6 +68,8 @@ class EventCreateService
 
   def push(project, current_user, push_data)
     create_event(project, current_user, Event::PUSHED, data: push_data)
+
+    Users::ActivityService.new(current_user, 'push').execute
   end
 
   private
