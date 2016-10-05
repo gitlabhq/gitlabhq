@@ -39,4 +39,10 @@
     width: 20px;
     text-align: center;
   }
+  
+  .branch-commit {
+    .commit-id {
+      margin-right: 0px;
+    }
+  }
 }
