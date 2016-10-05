@@ -290,7 +290,7 @@ class MergeConflictDataProvider {
   isReadyToCommit() {
     const vi = this.vueInstance;
     const files = this.vueInstance.conflictsData.files;
-    const hasCommitMessage = $.trim(this.vueInstance.conflictsData.commitMessage).length;
+    const hasCommitMessage = this.vueInstance.conflictsData.commitMessage.trim();
     let unresolved = 0;
 
     for (let i = 0, l = files.length; i < l; i++) {

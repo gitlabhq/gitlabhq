@@ -659,6 +659,7 @@ describe Projects::MergeRequestsController do
            id: merge_request.iid
 
       expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+    end
   end
 
   describe 'GET conflict_for_path' do

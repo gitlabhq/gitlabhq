@@ -321,7 +321,8 @@
           let numberConflicts = 0;
           let resolvedConflicts = Object.keys(file.resolutionData).length
 
-          // We only check if
+          // We only check for conflicts type 'text'
+          // since conflicts `text_editor` can´t be resolved in interactive mode
           if (file.type === CONFLICT_TYPES.TEXT) {
             for (let j = 0, k = file.sections.length; j < k; j++) {
               if (file.sections[j].conflict) {
@@ -334,6 +335,7 @@
             }
           }
         } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
+
           // Unlikely to happen since switching to Edit mode saves content automatically.
           // Checking anyway in case the save strategy changes in the future
           if (!file.content) {
