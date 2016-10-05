@@ -22,14 +22,12 @@ module API
       # Example Request:
       #   GET /projects
       get do
-        @projects = current_user.authorized_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        if params[:simple]
-          present @projects, with: Entities::BasicProjectDetails, user: current_user
-        else
-          present @projects, with: Entities::ProjectWithAccess, user: current_user
-        end
+        projects = current_user.authorized_projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
+
+        present projects, with: entity, user: current_user
       end
 
       # Get a list of visible projects for authenticated user
@@ -37,14 +35,12 @@ module API
       # Example Request:
       #   GET /projects/visible
       get '/visible' do
-        @projects = ProjectsFinder.new.execute(current_user)
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        if params[:simple]
-          present @projects, with: Entities::BasicProjectDetails, user: current_user
-        else
-          present @projects, with: Entities::ProjectWithAccess, user: current_user
-        end
+        projects = ProjectsFinder.new.execute(current_user)
+        projects = filter_projects(projects)
+        projects = paginate projects
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
+
+        present projects, with: entity, user: current_user
       end
 
       # Get an owned projects list for authenticated user
@@ -52,10 +48,10 @@ module API
       # Example Request:
       #   GET /projects/owned
       get '/owned' do
-        @projects = current_user.owned_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        projects = current_user.owned_projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Gets starred project for the authenticated user
@@ -63,10 +59,10 @@ module API
       # Example Request:
       #   GET /projects/starred
       get '/starred' do
-        @projects = current_user.viewable_starred_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::Project, user: current_user
+        projects = current_user.viewable_starred_projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::Project, user: current_user
       end
 
       # Get all projects for admin user
@@ -75,10 +71,10 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        @projects = Project.all
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        projects = Project.all
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get a single project
