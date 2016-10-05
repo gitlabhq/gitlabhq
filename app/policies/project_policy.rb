@@ -91,6 +91,7 @@ class ProjectPolicy < BasePolicy
     can! :update_container_image
     can! :create_environment
     can! :create_deployment
+    can! :admin_board
   end
 
   def master_access!

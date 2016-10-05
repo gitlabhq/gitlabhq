@@ -21,6 +21,20 @@ describe Projects::BoardsController do
         expect(response).to render_template :index
         expect(response.content_type).to eq 'text/html'
       end
+
+      context 'with unauthorized user' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+        end
+
+        it 'returns a not found 404 response' do
+          list_boards
+
+          expect(response).to have_http_status(404)
+          expect(response.content_type).to eq 'text/html'
+        end
+      end
     end
 
     context 'when format is JSON' do
@@ -34,18 +48,19 @@ describe Projects::BoardsController do
         expect(response).to match_response_schema('boards')
         expect(parsed_response.length).to eq 2
       end
-    end
 
-    context 'with unauthorized user' do
-      before do
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
-      end
+      context 'with unauthorized user' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+        end
 
-      it 'returns a not found 404 response' do
-        list_boards
+        it 'returns a not found 404 response' do
+          list_boards format: :json
 
-        expect(response).to have_http_status(404)
+          expect(response).to have_http_status(404)
+          expect(response.content_type).to eq 'application/json'
+        end
       end
     end
 
@@ -66,6 +81,20 @@ describe Projects::BoardsController do
         expect(response).to render_template :show
         expect(response.content_type).to eq 'text/html'
       end
+
+      context 'with unauthorized user' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+        end
+
+        it 'returns a not found 404 response' do
+          read_board board: board
+
+          expect(response).to have_http_status(404)
+          expect(response.content_type).to eq 'text/html'
+        end
+      end
     end
 
     context 'when format is JSON' do
@@ -74,18 +103,19 @@ describe Projects::BoardsController do
 
         expect(response).to match_response_schema('board')
       end
-    end
 
-    context 'with unauthorized user' do
-      before do
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
-      end
+      context 'with unauthorized user' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+        end
 
-      it 'returns a not found 404 response' do
-        read_board board: board
+        it 'returns a not found 404 response' do
+          read_board board: board, format: :json
 
-        expect(response).to have_http_status(404)
+          expect(response).to have_http_status(404)
+          expect(response.content_type).to eq 'application/json'
+        end
       end
     end
 
@@ -104,6 +134,51 @@ describe Projects::BoardsController do
                  project_id: project.to_param,
                  id: board.to_param,
                  format: format
+    end
+  end
+
+  describe 'POST create' do
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        create_board name: 'Backend'
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the created board' do
+        create_board name: 'Backend'
+
+        expect(response).to match_response_schema('board')
+      end
+    end
+
+    context 'with invalid params' do
+      it 'returns an unprocessable entity 422 response' do
+        create_board name: nil
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    context 'with unauthorized user' do
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :admin_board, project).and_return(false)
+      end
+
+      it 'returns a not found 404 response' do
+        create_board name: 'Backend'
+
+        expect(response.content_type).to eq 'application/json'
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def create_board(name:)
+      post :create, namespace_id: project.namespace.to_param,
+                    project_id: project.to_param,
+                    board: { name: name },
+                    format: :json
     end
   end
 end
