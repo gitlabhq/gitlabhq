@@ -48,12 +48,13 @@ class Environment < ActiveRecord::Base
     self.name == "production"
   end
 
-  def deployment_id_for(commit)
+  def first_deployment_for(commit)
     ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
 
     return nil unless ref
 
-    ref.split('/').last.to_i
+    deployment_id = ref.split('/').last.to_i
+    deployments.find(deployment_id)
   end
 
   def ref_path

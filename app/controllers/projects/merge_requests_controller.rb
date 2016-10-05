@@ -393,33 +393,28 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    environments = @merge_request.environments
-    deployments = @merge_request.deployments
+    environments = @merge_request.environments.map do |environment|
+      next unless can?(current_user, :read_environment, environment)
 
-    if environments.present?
-      environments = environments.select { |e| can?(current_user, :read_environment, e) }.map do |environment|
-        project = environment.project
-        deployment = deployments.find { |d| d.environment == environment }
+      deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
+      environment = {
+        name: environment.name,
+        id: environment.id,
+        url: namespace_project_environment_path(@project.namespace, @project, environment),
+        external_url: environment.external_url,
+        deployed_at: deployment ? deployment.created_at : nil
+      }
 
-        environment = {
-           name: environment.name,
-           id: environment.id,
-           url: namespace_project_environment_path(project.namespace, project, environment),
-           external_url: environment.external_url,
-           deployed_at: deployment ? deployment.created_at : nil
-         }
-
-        if environment[:external_url]
-          environment[:external_url_formatted] = environment[:external_url].gsub(/\A.*?:\/\//, '')
-        end
-
-        if environment[:deployed_at]
-          environment[:deployed_at_formatted] = environment[:deployed_at].to_time.in_time_zone.to_s(:medium)
-        end
-
-        environment
+      if environment[:external_url]
+        environment[:external_url_formatted] = environment[:external_url].gsub(/\A.*?:\/\//, '')
       end
-    end
+
+      if environment[:deployed_at]
+        environment[:deployed_at_formatted] = environment[:deployed_at].to_time.in_time_zone.to_s(:medium)
+      end
+
+      environment
+    end.compact
 
     response = {
       title: merge_request.title,

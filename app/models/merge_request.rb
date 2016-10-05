@@ -685,24 +685,18 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
-  def deployments
-    deployment_ids =
-      environments.map do |environment|
-        environment.deployment_id_for(diff_head_commit)
-      end.compact
-
-    Deployment.find(deployment_ids)
-  end
-
   def environments
     return [] unless diff_head_commit
 
-    environments = source_project.environments_for(
-      source_branch, diff_head_commit)
-    environments += target_project.environments_for(
-      target_branch, diff_head_commit, with_tags: true)
+    @environments ||=
+      begin
+        environments = source_project.environments_for(
+          source_branch, diff_head_commit)
+        environments += target_project.environments_for(
+          target_branch, diff_head_commit, with_tags: true)
 
-    environments.uniq
+        environments.uniq
+      end
   end
 
   def state_human_name
