@@ -54,6 +54,7 @@ v 8.13.0 (unreleased)
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
+  - Grouped pipeline dropdown is a scrollable container
 
 v 8.12.4 (unreleased)
   - Fix type mismatch bug when closing Jira issue
