@@ -19,7 +19,7 @@
           = icon('stop', class: 'close-env-icon')
 
     - if local_assigns.fetch(:allow_rollback, false)
-      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
+      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn' do
         - if deployment.last?
           Re-deploy
         - else
