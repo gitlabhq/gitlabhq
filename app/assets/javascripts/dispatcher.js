@@ -59,6 +59,8 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
+          new LabelsSelect();
+          new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
@@ -67,6 +69,8 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
+          new LabelsSelect();
+          new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:tags:new':

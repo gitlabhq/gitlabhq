@@ -4,8 +4,9 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove;
         $dropdown = $(dropdown);
+        $toggleText = $dropdown.find('.dropdown-toggle-text');
         projectId = $dropdown.data('project-id');
         labelUrl = $dropdown.data('labels');
         issueUpdateURL = $dropdown.data('issueUpdate');
@@ -15,6 +16,7 @@
         }
         showNo = $dropdown.data('show-no');
         showAny = $dropdown.data('show-any');
+        showMenuAbove = $dropdown.data('showMenuAbove');
         defaultLabel = $dropdown.data('default-label');
         abilityName = $dropdown.data('ability-name');
         $selectbox = $dropdown.closest('.selectbox');
@@ -24,6 +26,9 @@
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
+        fieldName = $dropdown.data('field-name');
+        useId = $dropdown.is('.js-issuable-form-dropdown, .js-filter-bulk-update, .js-label-sidebar-dropdown');
+        propertyName = useId ? 'id' : 'title';
         initialSelected = $selectbox
           .find('input[name="' + $dropdown.data('field-name') + '"]')
           .map(function () {
@@ -45,7 +50,7 @@
 
         saveLabelData = function() {
           var data, selected;
-          selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").map(function() {
+          selected = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "']").map(function() {
             return this.value;
           }).get();
 
@@ -75,7 +80,8 @@
             if (data.labels.length) {
               template = labelHTMLTemplate(data);
               labelCount = data.labels.length;
-            } else {
+            }
+            else {
               template = labelNoneHTMLTemplate;
             }
             $value.removeAttr('style').html(template);
@@ -92,7 +98,8 @@
               }
 
               labelTooltipTitle = labelTitles.join(', ');
-            } else {
+            }
+            else {
               labelTooltipTitle = '';
               $sidebarLabelTooltip.tooltip('destroy');
             }
@@ -114,6 +121,7 @@
           });
         };
         return $dropdown.glDropdown({
+          showMenuAbove: showMenuAbove,
           data: function(term, callback) {
             return $.ajax({
               url: labelUrl
@@ -133,23 +141,29 @@
                 };
               }).value();
               if ($dropdown.hasClass('js-extra-options')) {
+                var extraData = [];
                 if (showNo) {
-                  data.unshift({
+                  extraData.unshift({
                     id: 0,
                     title: 'No Label'
                   });
                 }
                 if (showAny) {
-                  data.unshift({
+                  extraData.unshift({
                     isAny: true,
                     title: 'Any Label'
                   });
                 }
-                if (data.length > 2) {
-                  data.splice(2, 0, 'divider');
+                if (extraData.length) {
+                  extraData.push('divider');
+                  data = extraData.concat(data);
                 }
               }
-              return callback(data);
+
+              callback(data);
+              if (showMenuAbove) {
+                $dropdown.data('glDropdown').positionMenuAbove();
+              }
             });
           },
           renderRow: function(label, instance) {
@@ -157,7 +171,7 @@
             $li = $('<li>');
             $a = $('<a href="#">');
             selectedClass = [];
-            removesAll = label.id === 0 || (label.id == null);
+            removesAll = label.id <= 0 || (label.id == null);
             if ($dropdown.hasClass('js-filter-bulk-update')) {
               indeterminate = instance.indeterminateIds;
               active = instance.activeIds;
@@ -194,14 +208,16 @@
                 return color + " " + percentFirst + "%," + color + " " + percentSecond + "% ";
               }).join(',');
               color = "linear-gradient(" + color + ")";
-            } else {
+            }
+            else {
               if (label.color != null) {
                 color = label.color[0];
               }
             }
             if (color) {
               colorEl = "<span class='dropdown-label-box' style='background: " + color + "'></span>";
-            } else {
+            }
+            else {
               colorEl = '';
             }
             // We need to identify which items are actually labels
@@ -219,30 +235,46 @@
           },
           selectable: true,
           filterable: true,
+          selected: $dropdown.data('selected') || [],
           toggleLabel: function(selected, el) {
-            var selected_labels;
-            selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active');
-            if (selected && (selected.title != null)) {
-              if (selected_labels.length > 1) {
-                return selected.title + " +" + (selected_labels.length - 1) + " more";
-              } else {
-                return selected.title;
-              }
-            } else if (!selected && selected_labels.length !== 0) {
-              if (selected_labels.length > 1) {
-                return ($(selected_labels[0]).text()) + " +" + (selected_labels.length - 1) + " more";
-              } else if (selected_labels.length === 1) {
-                return $(selected_labels).text();
-              }
-            } else {
+            var isSelected = el !== null ? el.hasClass('is-active') : false;
+            var title = selected.title;
+            var selectedLabels = this.selected;
+
+            if (selected.id === 0) {
+              this.selected = [];
+              return 'No Label';
+            }
+            else if (isSelected) {
+              this.selected.push(title);
+            }
+            else {
+              var index = this.selected.indexOf(title);
+              this.selected.splice(index, 1);
+            }
+
+            if (selectedLabels.length === 1) {
+              return selectedLabels;
+            }
+            else if (selectedLabels.length) {
+              return selectedLabels[0] + " +" + (selectedLabels.length - 1) + " more";
+            }
+            else {
               return defaultLabel;
             }
           },
           fieldName: $dropdown.data('field-name'),
           id: function(label) {
+            if (label.id <= 0) return;
+
+            if ($dropdown.hasClass('js-issuable-form-dropdown')) {
+              return label.id;
+            }
+
             if ($dropdown.hasClass("js-filter-submit") && (label.isAny == null)) {
               return label.title;
-            } else {
+            }
+            else {
               return label.id;
             }
           },
@@ -254,6 +286,11 @@
             $selectbox.hide();
             // display:block overrides the hide-collapse rule
             $value.removeAttr('style');
+
+            if ($dropdown.hasClass('js-issuable-form-dropdown')) {
+              return;
+            }
+
             if (page === 'projects:boards:show') {
               return;
             }
@@ -261,9 +298,11 @@
               if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedLabels = $dropdown.closest('form').find("input:hidden[name='" + ($dropdown.data('fieldName')) + "']");
                 Issuable.filterResults($dropdown.closest('form'));
-              } else if ($dropdown.hasClass('js-filter-submit')) {
+              }
+              else if ($dropdown.hasClass('js-filter-submit')) {
                 $dropdown.closest('form').submit();
-              } else {
+              }
+              else {
                 if (!$dropdown.hasClass('js-filter-bulk-update')) {
                   saveLabelData();
                 }
@@ -280,18 +319,28 @@
           clicked: function(label, $el, e) {
             var isIssueIndex, isMRIndex, page;
             _this.enableBulkLabelDropdown();
-            if ($dropdown.hasClass('js-filter-bulk-update')) {
+
+            if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
+              $dropdown.parent()
+                .find('.dropdown-clear-active')
+                .removeClass('is-active')
+            }
+
+            if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
               return;
             }
+
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             if (page === 'projects:boards:show') {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              } else if ($el.hasClass('is-active')) {
+              }
+              else if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
-              } else {
+              }
+              else {
                 var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
                 filters = filters.filter(function (filteredLabel) {
                   return filteredLabel !== label.title;
@@ -302,17 +351,21 @@
               gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
               return;
-            } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+            }
+            else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (!$dropdown.hasClass('js-multiselect')) {
                 selectedLabel = label.title;
                 return Issuable.filterResults($dropdown.closest('form'));
               }
-            } else if ($dropdown.hasClass('js-filter-submit')) {
+            }
+            else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
-            } else {
+            }
+            else {
               if ($dropdown.hasClass('js-multiselect')) {
 
-              } else {
+              }
+              else {
                 return saveLabelData();
               }
             }
