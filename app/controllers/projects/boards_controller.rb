@@ -2,7 +2,7 @@ class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
 
   before_action :authorize_read_board!, only: [:index, :show]
-  before_action :authorize_admin_board!, only: [:create]
+  before_action :authorize_admin_board!, only: [:create, :update]
 
   def index
     @boards = ::Boards::ListService.new(project, current_user).execute
@@ -28,6 +28,23 @@ class Projects::BoardsController < Projects::ApplicationController
 
   def create
     board = ::Boards::CreateService.new(project, current_user, board_params).execute
+
+    respond_to do |format|
+      format.json do
+        if board.valid?
+          render json: serialize_as_json(board)
+        else
+          render json: board.errors, status: :unprocessable_entity
+        end
+      end
+    end
+  end
+
+  def update
+    board = project.boards.find(params[:id])
+    service = ::Boards::UpdateService.new(project, current_user, board_params)
+
+    service.execute(board)
 
     respond_to do |format|
       format.json do

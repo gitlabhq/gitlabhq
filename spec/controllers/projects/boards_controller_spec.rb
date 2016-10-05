@@ -181,4 +181,60 @@ describe Projects::BoardsController do
                     format: :json
     end
   end
+
+  describe 'PATCH update' do
+    let(:board) { create(:board, project: project, name: 'Backend') }
+
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        update_board board: board, name: 'Frontend'
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the updated board' do
+        update_board board: board, name: 'Frontend'
+
+        expect(response).to match_response_schema('board')
+      end
+    end
+
+    context 'with invalid params' do
+      it 'returns an unprocessable entity 422 response' do
+        update_board board: board, name: nil
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    context 'with invalid board id' do
+      it 'returns a not found 404 response' do
+        update_board board: 999, name: 'Frontend'
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'with unauthorized user' do
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :admin_board, project).and_return(false)
+      end
+
+      it 'returns a not found 404 response' do
+        update_board board: board, name: 'Backend'
+
+        expect(response.content_type).to eq 'application/json'
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def update_board(board:, name:)
+      patch :update, namespace_id: project.namespace.to_param,
+                     project_id: project.to_param,
+                     id: board.to_param,
+                     board: { name: name },
+                     format: :json
+    end
+  end
 end
