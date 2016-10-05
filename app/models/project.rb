@@ -380,6 +380,7 @@ class Project < ActiveRecord::Base
         SELECT project_id, COUNT(*) AS amount
         FROM notes
         WHERE created_at >= #{sanitize(since)}
+        AND system IS FALSE
         GROUP BY project_id
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 

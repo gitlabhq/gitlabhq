@@ -1,39 +1,48 @@
 require 'spec_helper'
 
 describe TrendingProjectsFinder do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
+  let(:public_project1) { create(:empty_project, :public) }
+  let(:public_project2) { create(:empty_project, :public) }
+  let(:private_project) { create(:empty_project, :private) }
+  let(:internal_project) { create(:empty_project, :internal) }
 
-  describe '#execute' do
-    describe 'without an explicit start date' do
-      subject { described_class.new }
+  before do
+    3.times do
+      create(:note_on_commit, project: public_project1)
+    end
 
-      it 'returns the trending projects' do
-        relation = double(:ar_relation)
+    2.times do
+      create(:note_on_commit, project: public_project2, created_at: 5.weeks.ago)
+    end
 
-        allow(subject).to receive(:projects_for)
-          .with(user)
-          .and_return(relation)
+    create(:note_on_commit, project: private_project)
+    create(:note_on_commit, project: internal_project)
+  end
 
-        allow(relation).to receive(:trending)
-          .with(an_instance_of(ActiveSupport::TimeWithZone))
+  describe '#execute', caching: true do
+    context 'without an explicit time range' do
+      it 'returns public trending projects' do
+        projects = described_class.new.execute
+
+        expect(projects).to eq([public_project1])
       end
     end
 
-    describe 'with an explicit start date' do
-      let(:date) { 2.months.ago }
+    context 'with an explicit time range' do
+      it 'returns public trending projects' do
+        projects = described_class.new.execute(2)
 
-      subject { described_class.new }
-
-      it 'returns the trending projects' do
-        relation = double(:ar_relation)
-
-        allow(subject).to receive(:projects_for)
-          .with(user)
-          .and_return(relation)
-
-        allow(relation).to receive(:trending)
-          .with(date)
+        expect(projects).to eq([public_project1, public_project2])
       end
+    end
+
+    it 'caches the list of projects' do
+      projects = described_class.new
+
+      expect(Project).to receive(:trending).once
+
+      2.times { projects.execute }
     end
   end
 end
