@@ -36,6 +36,19 @@
       // hidden when injected into DOM
       this.inputElement.after(this.fieldErrorElement);
       this.inputElement.off('invalid').on('invalid', this.handleInvalidInput.bind(this));
+      this.scopedSiblings = this.safelySelectSiblings();
+    }
+
+    safelySelectSiblings() {
+      // Apply `ignoreSelector` in markup to siblings whose visibility should not be toggled with input validity
+      const ignoreSelector = '.validation-ignore';
+      const unignoredSiblings = this.inputElement.siblings(`p:not(${ignoreSelector})`);
+      const parentContainer = this.inputElement.parent('.form-group');
+
+      // Only select siblings when they're scoped within a form-group with one input
+      const safelyScoped = parentContainer.length && parentContainer.find('input').length === 1;
+
+      return safelyScoped ? unignoredSiblings : this.fieldErrorElement;
     }
 
     renderValidity() {
@@ -90,7 +103,7 @@
 
     setInvalidState() {
       this.inputElement.addClass(inputErrorClass);
-      this.inputElement.siblings('p').hide();
+      this.scopedSiblings.hide();
       return this.fieldErrorElement.show();
     }
 
@@ -101,7 +114,7 @@
         this.inputElement.val(trimmedInput);
       }
       this.inputElement.removeClass(inputErrorClass);
-      this.inputElement.siblings('p').hide();
+      this.scopedSiblings.hide();
       this.fieldErrorElement.hide();
     }
   }
