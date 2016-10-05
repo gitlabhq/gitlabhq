@@ -10,6 +10,11 @@
       = user_avatar(user: last_deployment.user, size: 20)
 
   %td
+    - if last_deployment && last_deployment.deployable
+      = link_to [@project.namespace.becomes(Namespace), @project, last_deployment.deployable], class: 'build-link' do
+        = "#{last_deployment.deployable.name} (##{last_deployment.deployable.id})"
+
+  %td
     - if last_deployment
       = render 'projects/deployments/commit', deployment: last_deployment
     - else
