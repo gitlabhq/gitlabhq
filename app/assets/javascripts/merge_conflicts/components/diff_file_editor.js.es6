@@ -3,8 +3,11 @@
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.diffFileEditor = Vue.extend({
-    props: ['file', 'loadFile'],
-    template: '#diff-file-editor',
+    props: {
+      file: Object,
+      onCancelDiscardConfirmation: Function,
+      onAcceptDiscardConfirmation: Function
+    },
     data() {
       return {
         saved: false,
@@ -16,7 +19,6 @@
     computed: {
       classObject() {
         return {
-          'load-file': this.loadFile,
           'saved': this.saved,
           'is-loading': this.loading
         };
@@ -77,6 +79,12 @@
         if (this.fileLoaded) {
           this.editor.setValue(this.originalContent, -1);
         }
+      },
+      cancelDiscardConfirmation(file) {
+        this.onCancelDiscardConfirmation(file);
+      },
+      acceptDiscardConfirmation(file) {
+        this.onAcceptDiscardConfirmation(file);
       }
     }
   });

@@ -196,7 +196,7 @@
         isHead: true,
         isSelected: false,
         isUnselected: false
-      }
+      };
     },
 
     decorateLineForInlineView(line, id, conflict) {
@@ -227,7 +227,7 @@
         richText: rich_text,
         isSelected: false,
         isUnselected: false
-      }
+      };
     },
 
     getOriginHeaderLine(id) {
@@ -241,7 +241,7 @@
         isOrigin: true,
         isSelected: false,
         isUnselected: false
-      }
+      };
     },
 
     getFilePath(file) {

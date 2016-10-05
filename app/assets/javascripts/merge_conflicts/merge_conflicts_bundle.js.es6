@@ -1,7 +1,12 @@
 //= require vue
 //= require ./merge_conflict_store
 //= require ./merge_conflict_service
+//= require ./mixins/line_conflict_utils
+//= require ./mixins/line_conflict_actions
 //= require ./components/diff_file_editor
+//= require ./components/inline_conflict_lines
+//= require ./components/parallel_conflict_line
+//= require ./components/parallel_conflict_lines
 
 $(() => {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
@@ -16,7 +21,9 @@ $(() => {
     el: '#conflicts',
     data: mergeConflictsStore.state,
     components: {
-      'diff-file-editor': gl.mergeConflicts.diffFileEditor
+      'diff-file-editor': gl.mergeConflicts.diffFileEditor,
+      'inline-conflict-lines': gl.mergeConflicts.inlineConflictLines,
+      'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines
     },
     computed: {
       conflictsCountText() { return mergeConflictsStore.getConflictsCountText() },
@@ -46,9 +53,6 @@ $(() => {
         });
     },
     methods: {
-      handleSelected(file, sectionId, selection) {
-        mergeConflictsStore.handleSelected(file, sectionId, selection);
-      },
       handleViewTypeChange(viewType) {
         mergeConflictsStore.setViewType(viewType);
       },
