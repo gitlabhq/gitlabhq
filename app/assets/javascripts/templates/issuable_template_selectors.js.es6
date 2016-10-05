@@ -1,12 +1,12 @@
 ((global) => {
   class IssuableTemplateSelectors {
-    constructor(opts = {}) {
-      this.$dropdowns = opts.$dropdowns || $('.js-issuable-selector');
-      this.editor = opts.editor || this.initEditor();
+    constructor({ $dropdowns, editor } = {}) {
+      this.$dropdowns = $dropdowns || $('.js-issuable-selector');
+      this.editor = editor || this.initEditor();
 
       this.$dropdowns.each((i, dropdown) => {
-        let $dropdown = $(dropdown);
-        new IssuableTemplateSelector({
+        const $dropdown = $(dropdown);
+        new gl.IssuableTemplateSelector({
           pattern: /(\.md)/,
           data: $dropdown.data('data'),
           wrapper: $dropdown.closest('.js-issuable-selector-wrap'),
@@ -26,4 +26,4 @@
   }
 
   global.IssuableTemplateSelectors = IssuableTemplateSelectors;
-})(window);
+})(window.gl || (window.gl = {}));

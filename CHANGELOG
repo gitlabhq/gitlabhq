@@ -34,6 +34,7 @@ v 8.13.0 (unreleased)
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
   - Append issue template to existing description !6149 (Joseph Frazier)
+  - Trending projects now only show public projects and the list of projects is cached for a day
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
@@ -49,10 +50,13 @@ v 8.13.0 (unreleased)
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Reduce queries needed to find users using their SSH keys when pushing commits
+  - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
+  - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
+  - Grouped pipeline dropdown is a scrollable container
 
 v 8.12.4 (unreleased)
   - Fix type mismatch bug when closing Jira issue
@@ -79,6 +83,7 @@ v 8.12.2
   - Only update issuable labels if they have been changed
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
+  - Refactor remnants of CoffeeScript destructured opts and super !6261
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
