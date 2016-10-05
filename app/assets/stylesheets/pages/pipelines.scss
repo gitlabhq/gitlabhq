@@ -82,7 +82,7 @@
   }
 
   .branch-commit {
-    
+
     .branch-name {
       font-weight: bold;
       max-width: 150px;
@@ -390,6 +390,8 @@
         left: auto;
         right: -214px;
         top: -9px;
+        max-height: 245px;
+        overflow-y: scroll;
 
         a:hover {
           .ci-status-text {
