@@ -5,7 +5,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
-    @groups = @project.project_group_links
+    @group_links = @project.project_group_links
 
     @project_members = @project.project_members
     @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
@@ -14,9 +14,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       users = @project.users.search(params[:search]).to_a
       @project_members = @project_members.where(user_id: users)
 
-      group_ids = @groups.pluck(:group_id)
-      group_ids = Group.where(id: group_ids).search(params[:search]).to_a
-      @groups = @project.project_group_links.where(group_id: group_ids)
+      @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
     @project_members = @project_members.order(access_level: :desc).page(params[:page])
@@ -40,7 +38,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
       groups.each do |group|
         next unless can?(current_user, :read_group, group)
-        
+
         project.project_group_links.create(
           group: group,
           group_access: params[:access_level],

@@ -2,8 +2,8 @@
   .panel-heading
     Groups with access to
     %strong #{@project.name}
-    %span.badge= groups.size
+    %span.badge= group_links.size
   %ul.content-list
-    - @groups.each do |group_link|
+    - group_links.each do |group_link|
       - group = group_link.group
       = render 'shared/members/group', group_link: group_link, group: group
