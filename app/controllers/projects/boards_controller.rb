@@ -9,18 +9,29 @@ class Projects::BoardsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @boards.as_json(only: [:id, :name])
+        render json: serialize_as_json(@boards)
       end
     end
   end
 
   def show
-    ::Boards::CreateService.new(project, current_user).execute
+    @board = project.boards.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: serialize_as_json(@board)
+      end
+    end
   end
 
   private
 
   def authorize_read_board!
     return access_denied! unless can?(current_user, :read_board, project)
+  end
+
+  def serialize_as_json(resource)
+    resource.as_json(only: [:id, :name])
   end
 end

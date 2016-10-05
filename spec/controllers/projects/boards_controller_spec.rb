@@ -57,15 +57,23 @@ describe Projects::BoardsController do
   end
 
   describe 'GET show' do
-    it 'creates a new board when project does not have one' do
-      expect { read_board }.to change(Board, :count).by(1)
+    let!(:board) { create(:board, project: project) }
+
+    context 'when format is HTML' do
+      it 'renders template' do
+        read_board board: board
+
+        expect(response).to render_template :show
+        expect(response.content_type).to eq 'text/html'
+      end
     end
 
-    it 'renders HTML template' do
-      read_board
+    context 'when format is JSON' do
+      it 'returns project board' do
+        read_board board: board, format: :json
 
-      expect(response).to render_template :show
-      expect(response.content_type).to eq 'text/html'
+        expect(response).to match_response_schema('board')
+      end
     end
 
     context 'with unauthorized user' do
@@ -74,16 +82,27 @@ describe Projects::BoardsController do
         allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
       end
 
-      it 'returns a successful 404 response' do
-        read_board
+      it 'returns a not found 404 response' do
+        read_board board: board
 
         expect(response).to have_http_status(404)
       end
     end
 
-    def read_board(format: :html)
+    context 'when board does not belong to project' do
+      it 'returns a not found 404 response' do
+        another_board = create(:board)
+
+        read_board board: another_board
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def read_board(board:, format: :html)
       get :show, namespace_id: project.namespace.to_param,
                  project_id: project.to_param,
+                 id: board.to_param,
                  format: format
     end
   end
