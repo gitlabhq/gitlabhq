@@ -16,7 +16,7 @@ describe API::API, api: true  do
 
   before do
     group_with_ldap_links.add_owner owner
-    group_with_ldap_links.add_user user, group_access: Gitlab::Access::DEVELOPER
+    group_with_ldap_links.add_user user, Gitlab::Access::DEVELOPER
   end
 
   describe "POST /groups/:id/ldap_group_links" do
