@@ -7,7 +7,7 @@
   %td
     - if last_deployment
       = user_avatar(user: last_deployment.user, size: 20)
-      %strong ##{last_deployment.id}
+      %span ##{last_deployment.iid}
 
   %td
     - if last_deployment
