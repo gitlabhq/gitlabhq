@@ -24,7 +24,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_many(:boards).dependent(:destroy) }
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
