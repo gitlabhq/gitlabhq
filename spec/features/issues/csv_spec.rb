@@ -10,7 +10,9 @@ describe 'Issues csv', feature: true do
     visit namespace_project_issues_path(project.namespace, project, format: :csv)
   end
 
-  it 'downloads as a file' do
+  it "downloads from a project's issue index" do
+    visit namespace_project_issues_path(project.namespace, project)
+    click_on 'Download CSV'
     expect(page.response_headers['Content-Type']).to include('csv')
   end
 
