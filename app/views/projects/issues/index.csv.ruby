@@ -13,18 +13,4 @@ columns = {
   'Labels' => -> (issue) { issue.label_names.join(',').presence },
 }
 
-CSV.generate do |csv|
-  csv << columns.keys
-
-  @issues.each do |issue|
-    row = columns.values.map do |attribute|
-      if attribute.respond_to?(:call)
-        attribute.call(issue)
-      else
-        issue.send(attribute)
-      end
-    end
-
-    csv << row
-  end
-end
+CsvBuilder.new(columns).render(@issues)
