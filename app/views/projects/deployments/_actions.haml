@@ -1,5 +1,11 @@
 - if can?(current_user, :create_deployment, deployment) && deployment.deployable
   .pull-right
+  
+    - external_url = deployment.deployable.try(:external_url)
+    - if external_url
+      = link_to external_url, target: '_blank', class: 'btn external-url' do
+        = icon('external-link')
+    
     - actions = deployment.manual_actions
     - if actions.present?
       .inline

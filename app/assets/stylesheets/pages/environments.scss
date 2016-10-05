@@ -14,6 +14,7 @@
     width: 12px;
   }
 
+  .external-url,
   .dropdown-new {
     color: $table-text-gray;
   }
@@ -29,6 +30,19 @@
   .build-link,
   .branch-name {
     color: $gl-dark-link-color;
+  }
+  
+  .deployment {
+    .build-column {
+    
+      .build-link {
+        color: $gl-dark-link-color;
+      }
+      
+      .avatar {
+        float: none;
+      }
+    }
   }
 }
 
