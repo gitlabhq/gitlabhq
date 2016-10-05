@@ -17,6 +17,7 @@ v 8.13.0 (unreleased)
   - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
   - API: Multi-file commit !6096 (mahcsig)
+  - Revert "Label list shows all issues (opened or closed) with that label"
   - Expose expires_at field when sharing project on API
   - Fix VueJS template tags being rendered in code comments
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
