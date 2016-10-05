@@ -4,6 +4,8 @@ module Boards
       def execute(list)
         return false unless list.destroyable?
 
+        @board = list.board
+
         list.with_lock do
           decrement_higher_lists(list)
           remove_list(list)
@@ -11,6 +13,8 @@ module Boards
       end
 
       private
+
+      attr_reader :board
 
       def decrement_higher_lists(list)
         board.lists.movable.where('position > ?',  list.position)
