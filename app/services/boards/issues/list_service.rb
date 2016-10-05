@@ -10,6 +10,10 @@ module Boards
 
       private
 
+      def board
+        @board ||= project.boards.find(params[:board_id])
+      end
+
       def list
         @list ||= board.lists.find(params[:id])
       end
