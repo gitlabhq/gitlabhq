@@ -41,15 +41,6 @@ up-to-date and install it.
     apt-get upgrade -y
     apt-get install sudo -y
 
-**Note:**
-During this installation some files will need to be edited manually.
-If you are familiar with vim set it as default editor with the commands below.
-If you are not familiar with vim please skip this and keep using the default editor.
-
-    # Install vim and set as default editor
-    sudo apt-get install -y vim
-    sudo update-alternatives --set editor /usr/bin/vim.basic
-
 Install the required packages:
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
