@@ -1,6 +1,8 @@
 module Gitlab
   module ImportExport
     class ProjectTreeSaver
+      include Gitlab::ImportExport::CommandLineUtil
+
       attr_reader :full_path
 
       def initialize(project:, shared:)
@@ -10,7 +12,7 @@ module Gitlab
       end
 
       def save
-        FileUtils.mkdir_p(@shared.export_path)
+        mkdir_p(@shared.export_path)
 
         File.write(full_path, project_json_tree)
         true
