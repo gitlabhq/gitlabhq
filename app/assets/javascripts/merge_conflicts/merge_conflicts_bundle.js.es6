@@ -10,14 +10,14 @@
 
 $(() => {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
-  const $conflicts = $(document.getElementById('conflicts'));
+  const conflictsEl = document.querySelector('#conflicts');
   const mergeConflictsStore = gl.mergeConflicts.mergeConflictsStore;
   const mergeConflictsService = new gl.mergeConflicts.mergeConflictsService({
-    conflictsPath: $conflicts.data('conflictsPath'),
-    resolveConflictsPath: $conflicts.data('resolveConflictsPath')
+    conflictsPath: conflictsEl.dataset.conflictsPath,
+    resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath
   });
 
-  gl.MergeConflictsResolverApp   = new Vue({
+  gl.MergeConflictsResolverApp = new Vue({
     el: '#conflicts',
     data: mergeConflictsStore.state,
     components: {
@@ -48,7 +48,7 @@ $(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $conflicts.find('.js-syntax-highlight').syntaxHighlight();
+            $(conflictsEl.querySelectorAll('.js-syntax-highlight')).syntaxHighlight();
           });
         });
     },
