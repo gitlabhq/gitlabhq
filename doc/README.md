@@ -40,7 +40,6 @@
 - [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
-- [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
 - [Issue closing pattern](administration/issue_closing_pattern.md) Customize how to close an issue from commit messages.
 - [Koding](administration/integration/koding.md) Set up Koding to use with GitLab.
 - [Libravatar](customization/libravatar.md) Use Libravatar instead of Gravatar for user avatars.
