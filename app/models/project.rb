@@ -664,6 +664,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def issue_reference_pattern
+    issues_tracker.reference_pattern
+  end
+
   def default_issues_tracker?
     !external_issue_tracker
   end

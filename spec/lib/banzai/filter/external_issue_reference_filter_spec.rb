@@ -7,12 +7,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     IssuesHelper
   end
 
-  let(:project) { create(:jira_project) }
-
-  context 'JIRA issue references' do
-    let(:issue)     { ExternalIssue.new('JIRA-123', project) }
-    let(:reference) { issue.to_reference }
-
+  shared_examples_for "external issue tracker" do
     it 'requires project context' do
       expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
@@ -20,6 +15,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     %w(pre code a style).each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
         exp = act = "<#{elem}>Issue #{reference}</#{elem}>"
+
         expect(filter(act).to_html).to eq exp
       end
     end
@@ -33,25 +29,30 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
 
     it 'links to a valid reference' do
       doc = filter("Issue #{reference}")
+      issue_id = doc.css('a').first.attr("data-external-issue")
+
       expect(doc.css('a').first.attr('href'))
-        .to eq helper.url_for_issue(reference, project)
+        .to eq helper.url_for_issue(issue_id, project)
     end
 
     it 'links to the external tracker' do
       doc = filter("Issue #{reference}")
-      link = doc.css('a').first.attr('href')
 
-      expect(link).to eq "http://jira.example/browse/#{reference}"
+      link = doc.css('a').first.attr('href')
+      issue_id = doc.css('a').first.attr("data-external-issue")
+
+      expect(link).to eq(helper.url_for_issue(issue_id, project))
     end
 
     it 'links with adjacent text' do
       doc = filter("Issue (#{reference}.)")
+
       expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
     end
 
     it 'includes a title attribute' do
       doc = filter("Issue #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq "Issue in JIRA tracker"
+      expect(doc.css('a').first.attr('title')).to include("Issue in #{project.issues_tracker.title}")
     end
 
     it 'escapes the title attribute' do
@@ -69,9 +70,60 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
 
     it 'supports an :only_path context' do
       doc = filter("Issue #{reference}", only_path: true)
-      link = doc.css('a').first.attr('href')
 
-      expect(link).to eq helper.url_for_issue("#{reference}", project, only_path: true)
+      link = doc.css('a').first.attr('href')
+      issue_id = doc.css('a').first["data-external-issue"]
+
+      expect(link).to eq helper.url_for_issue(issue_id, project, only_path: true)
+    end
+
+    context 'with RequestStore enabled' do
+      let(:reference_filter) { HTML::Pipeline.new([described_class]) }
+
+      before { allow(RequestStore).to receive(:active?).and_return(true) }
+
+      it 'queries the collection on the first call' do
+        expect_any_instance_of(Project).to receive(:default_issues_tracker?).once.and_call_original
+        expect_any_instance_of(Project).to receive(:issue_reference_pattern).once.and_call_original
+
+        not_cached = reference_filter.call("look for #{reference}", { project: project })
+
+        expect_any_instance_of(Project).not_to receive(:default_issues_tracker?)
+        expect_any_instance_of(Project).not_to receive(:issue_reference_pattern)
+
+        cached = reference_filter.call("look for #{reference}", { project: project })
+
+        # Links must be the same
+        expect(cached[:output].css('a').first[:href]).to eq(not_cached[:output].css('a').first[:href])
+      end
+    end
+  end
+
+  context "redmine project" do
+    let(:project) { create(:redmine_project) }
+    let(:issue) { ExternalIssue.new("#123", project) }
+    let(:reference) { issue.to_reference }
+
+    it_behaves_like "external issue tracker"
+  end
+
+  context "jira project" do
+    let(:project) { create(:jira_project) }
+    let(:reference) { issue.to_reference }
+
+    context "with right markdown" do
+      let(:issue) { ExternalIssue.new("JIRA-123", project) }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with wrong markdown" do
+      let(:issue) { ExternalIssue.new("#123", project) }
+
+      it "ignores reference" do
+        exp = act = "Issue #{reference}"
+        expect(filter(act).to_html).to eq exp
+      end
     end
   end
 end

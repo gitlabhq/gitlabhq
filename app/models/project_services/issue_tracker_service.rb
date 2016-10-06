@@ -3,6 +3,12 @@ class IssueTrackerService < Service
 
   default_value_for :category, 'issue_tracker'
 
+  # Pattern used to extract links from comments
+  # Override this method on services that uses different patterns
+  def reference_pattern
+    @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+  end
+
   def default?
     default
   end
