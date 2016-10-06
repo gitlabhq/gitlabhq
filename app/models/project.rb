@@ -16,6 +16,7 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
   cache_markdown_field :description, pipeline: :description
@@ -65,7 +66,7 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
-  has_many :boards, dependent: :destroy
+  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
 
   # Project services
   has_many :services
@@ -1337,5 +1338,9 @@ class Project < ActiveRecord::Base
     end
 
     shared_projects.any?
+  end
+
+  def validate_board_limit(board)
+    raise StandardError, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 end
