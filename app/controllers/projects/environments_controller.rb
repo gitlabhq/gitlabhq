@@ -7,11 +7,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @environments = project.environments
-    
-    # TODO: fix the values of this vars to show the correct results
-    @available_environments_count = project.environments.count
-    @stopped_environments_count = project.environments.count
+    @all_environments = project.environments
+    @environments =
+      case @scope
+        when 'closed' then @all_environments.closed
+        else @all_environments.opened
+      end
   end
 
   def show

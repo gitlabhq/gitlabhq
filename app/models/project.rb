@@ -1302,7 +1302,7 @@ class Project < ActiveRecord::Base
         environment_ids.where(ref: ref)
       end
 
-    environments.where(id: environment_ids).select do |environment|
+    environments.opened.where(id: environment_ids).select do |environment|
       environment.includes_commit?(commit)
     end
   end

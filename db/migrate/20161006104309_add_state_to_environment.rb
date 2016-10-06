@@ -1,9 +1,15 @@
 class AddStateToEnvironment < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   DOWNTIME = false
 
-  def change
-    add_column :environments, :state, :string
+  def up
+    add_column_with_default(:environments, :state, :string, default: :opened)
+  end
+
+  def down
+    remove_column(:environments, :state)
   end
 end

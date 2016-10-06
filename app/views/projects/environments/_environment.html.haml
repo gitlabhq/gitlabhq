@@ -21,4 +21,4 @@
       #{time_ago_with_tooltip(last_deployment.created_at)}
 
   %td.hidden-xs
-    = render 'projects/deployments/actions', deployment: last_deployment
+    = render 'projects/deployments/actions', deployment: last_deployment, allow_close: environment.opened?

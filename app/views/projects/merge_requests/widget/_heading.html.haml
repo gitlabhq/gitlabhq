@@ -58,5 +58,6 @@
             = link_to external_url, target: '_blank' do
               = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)
         %span.close-env-container
-          = link_to '#', class: 'close-evn-link' do
-            = icon('stop-circle-o', text: 'Stop environment')
+          - if environment.closeable?
+            = link_to [:play, @project.namespace.becomes(Namespace), @project, environment.close_action], method: :post, class: 'close-evn-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
+              = icon('stop-circle-o', text: 'Stop environment')

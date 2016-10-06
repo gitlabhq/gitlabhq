@@ -3,26 +3,26 @@
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
-  - if can?(current_user, :create_environment, @project) && !@environments.blank?
-    .top-area
-      %ul.nav-links
-        %li{class: ('active' if @scope.nil?)}
-          = link_to project_environments_path(@project) do
-            Availabe
-            %span.badge.js-avaibale-environments-count
-              = number_with_delimiter(@available_environments_count)
-              
-        %li{class: ('active' if @scope == 'stopped')}
-          = link_to project_environments_path(@project, scope: :stopped) do
-            Stopped
-            %span.badge.js-stopped-environments-count
-              = number_with_delimiter(@stopped_environments_count)
+  .top-area
+    %ul.nav-links
+      %li{class: ('active' if @scope.nil?)}
+        = link_to project_environments_path(@project) do
+          Availabe
+          %span.badge.js-avaibale-environments-count
+            = number_with_delimiter(@all_environments.opened.count)
 
-      .nav-controls
+      %li{class: ('active' if @scope == 'closed')}
+        = link_to project_environments_path(@project, scope: :stopped) do
+          Stopped
+          %span.badge.js-stopped-environments-count
+            = number_with_delimiter(@all_environments.closed.count)
+
+    .nav-controls
+      - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
 
-  - if @environments.blank?
+  - if @all_environments.blank?
     .blank-state.blank-state-no-icon
       %h2.blank-state-title
         You don't have any environments right now.
