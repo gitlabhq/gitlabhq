@@ -9,6 +9,7 @@
     "iid": { "type": "integer" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
+    "due_date": { "type": ["date", "null"] },
     "labels": {
       "type": "array",
       "items": {

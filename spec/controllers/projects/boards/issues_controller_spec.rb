@@ -21,7 +21,7 @@ describe Projects::Boards::IssuesController do
       it 'returns issues that have the list label applied' do
         johndoe = create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
         create(:labeled_issue, project: project, labels: [planning])
-        create(:labeled_issue, project: project, labels: [development])
+        create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
         create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
 
         list_issues user: user, list_id: list2
