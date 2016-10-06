@@ -22,6 +22,11 @@
 
   .table.builds {
     min-width: 1200px;
+
+    .branch-commit {
+      width: 33%;
+    }
+
   }
 }
 
@@ -385,6 +390,8 @@
         left: auto;
         right: -214px;
         top: -9px;
+        max-height: 245px;
+        overflow-y: scroll;
 
         a:hover {
           .ci-status-text {

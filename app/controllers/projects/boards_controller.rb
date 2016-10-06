@@ -1,4 +1,6 @@
 class Projects::BoardsController < Projects::ApplicationController
+  include IssuableCollections
+  
   respond_to :html
 
   before_action :authorize_read_board!, only: [:show]

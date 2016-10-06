@@ -451,7 +451,7 @@ describe SystemNoteService, services: true do
     end
 
     context 'commit with cross-reference from fork' do
-      let(:author2) { create(:user) }
+      let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
       let(:forked_project) { Projects::ForkService.new(project, author2).execute }
       let(:commit2) { forked_project.commit }
 

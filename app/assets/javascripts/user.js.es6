@@ -1,7 +1,7 @@
-(global => {
+((global) => {
   global.User = class {
-    constructor(opts) {
-      this.opts = opts;
+    constructor({ action }) {
+      this.action = action;
       this.placeProfileAvatarsToTop();
       this.initTabs();
       this.hideProjectLimitMessage();
@@ -14,9 +14,9 @@
     }
 
     initTabs() {
-      return new UserTabs({
+      return new global.UserTabs({
         parentEl: '.user-profile',
-        action: this.opts.action
+        action: this.action
       });
     }
 

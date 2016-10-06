@@ -23,13 +23,13 @@
       })(this));
       this.initModePanesAndLinks();
       this.initSoftWrap();
-      new BlobLicenseSelectors({
+      new gl.BlobLicenseSelectors({
         editor: this.editor
       });
       new BlobGitignoreSelectors({
         editor: this.editor
       });
-      new BlobCiYamlSelectors({
+      new gl.BlobCiYamlSelectors({
         editor: this.editor
       });
     }

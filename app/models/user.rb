@@ -279,6 +279,11 @@ class User < ActiveRecord::Base
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
+    # Returns a user for the given SSH key.
+    def find_by_ssh_key_id(key_id)
+      find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+    end
+
     def build_user(attrs = {})
       User.new(attrs)
     end
@@ -825,6 +830,22 @@ class User < ActiveRecord::Base
   def update_todos_count_cache
     todos_done_count(force: true)
     todos_pending_count(force: true)
+  end
+
+  # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
+  # flow means we don't call that automatically (and can't conveniently do so).
+  #
+  # See:
+  #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
+  #
+  def increment_failed_attempts!
+    self.failed_attempts ||= 0
+    self.failed_attempts += 1
+    if attempts_exceeded?
+      lock_access! unless access_locked?
+    else
+      save(validate: false)
+    end
   end
 
   private

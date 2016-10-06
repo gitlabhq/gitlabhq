@@ -21,7 +21,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def trending
-    @projects = TrendingProjectsFinder.new.execute(current_user)
+    @projects = TrendingProjectsFinder.new.execute
     @projects = filter_projects(@projects)
     @projects = @projects.page(params[:page])
 

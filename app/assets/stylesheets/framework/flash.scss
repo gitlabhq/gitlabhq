@@ -21,7 +21,8 @@
   .flash-notice, .flash-alert {
     border-radius: $border-radius-default;
 
-    .container-fluid.container-limited.flash-text {
+    .container-fluid,
+    .container-fluid.container-limited {
       background: transparent;
     }
   }
@@ -32,12 +33,6 @@
     .flash-notice, .flash-alert {
       border-radius: 0;
     }
-  }
-}
-
-.content-wrapper {
-  .flash-notice .container-fluid {
-    background-color: transparent;
   }
 }
 

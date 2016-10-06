@@ -16,6 +16,8 @@ module Projects
       end
 
       new_project = CreateService.new(current_user, new_params).execute
+      return new_project unless new_project.persisted?
+
       builds_access_level = @project.project_feature.builds_access_level
       new_project.project_feature.update_attributes(builds_access_level: builds_access_level)
 
