@@ -13,14 +13,12 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    escaped_body = if body.start_with?('<img')
-                     body
-                   else
-                     escape_once(body)
-                   end
-
-    user = current_user if defined?(current_user)
-    gfm_body = Banzai.render(escaped_body, project: @project, current_user: user, pipeline: :single_line)
+    context = {
+      project: @project,
+      current_user: (current_user if defined?(current_user)),
+      pipeline: :single_line,
+    }
+    gfm_body = Banzai.render(body, context)
 
     fragment = Nokogiri::HTML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'

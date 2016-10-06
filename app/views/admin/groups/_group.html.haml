@@ -23,4 +23,4 @@
 
   - if group.description.present?
     .description
-      = markdown(group.description, pipeline: :description)
+      = markdown_field(group, :description)

@@ -3,6 +3,7 @@ module Banzai
     class SingleLinePipeline < GfmPipeline
       def self.filters
         @filters ||= FilterArray[
+          Filter::HTMLEntityFilter,
           Filter::SanitizationFilter,
 
           Filter::EmojiFilter,
