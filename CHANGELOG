@@ -22,6 +22,7 @@ v 8.13.0 (unreleased)
   - Fix VueJS template tags being rendered in code comments
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
   - Add Issue Board API support (andrebsguedes)
+  - Mattermost slash command support
   - Allow the Koding integration to be configured through the API
   - Added soft wrap button to repository file/blob editor
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
