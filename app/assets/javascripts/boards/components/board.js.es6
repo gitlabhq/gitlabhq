@@ -21,7 +21,8 @@
     },
     data () {
       return {
-        filters: Store.state.filters
+        filters: Store.state.filters,
+        showIssueForm: false
       };
     },
     watch: {
@@ -31,6 +32,11 @@
           this.list.getIssues(true);
         },
         deep: true
+      }
+    },
+    methods: {
+      showNewIssueForm() {
+        this.showIssueForm = !this.showIssueForm;
       }
     },
     ready () {
