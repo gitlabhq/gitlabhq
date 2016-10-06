@@ -56,12 +56,18 @@ module MergeRequests
 
     def pipeline_merge_requests(pipeline)
       merge_requests_for(pipeline.ref, pipeline.sha).each do |merge_request|
+        next unless pipeline == merge_request.pipeline
+
         yield merge_request
       end
     end
 
     def commit_status_merge_requests(commit_status)
       merge_requests_for(commit_status.ref, commit_status.sha).each do |merge_request|
+        pipeline = merge_request.pipeline
+        next unless pipeline
+        next unless pipeline.sha == commit_status.sha
+
         yield merge_request
       end
     end
