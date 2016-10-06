@@ -4,7 +4,8 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project) { create(:project_with_board, :public) }
+  let(:project) { create(:empty_project, :public) }
+  let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
 
@@ -468,7 +469,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       it 'removes filtered labels' do
         wait_for_vue_resource
-        
+
         page.within '.labels-filter' do
           click_button('Label')
           wait_for_ajax

@@ -4,7 +4,8 @@ describe 'Issue Boards new issue', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project) { create(:project_with_board, :public) }
+  let(:project) { create(:empty_project, :public) }
+  let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
 
   context 'authorized user' do

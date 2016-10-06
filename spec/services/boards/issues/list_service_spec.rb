@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Boards::Issues::ListService, services: true do
   describe '#execute' do
     let(:user)    { create(:user) }
-    let(:project) { create(:project_with_board) }
+    let(:project) { create(:empty_project) }
     let(:board)   { create(:board, project: project) }
 
     let(:bug) { create(:label, project: project, name: 'Bug') }

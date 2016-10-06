@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Projects::Boards::ListsController do
-  let(:project) { create(:project_with_board) }
-  let(:board)   { project.board }
+  let(:project) { create(:empty_project) }
+  let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let(:guest)   { create(:user) }
 
