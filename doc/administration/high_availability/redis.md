@@ -45,7 +45,7 @@ Redis.
     redis['bind'] = '0.0.0.0'
 
     # If you wish to use Redis authentication (recommended)
-    redis['password'] = 'Redis Password'
+    redis['password'] = 'redis-password-goes-here'
     ```
 
 1. Run `sudo gitlab-ctl reconfigure` to install and configure PostgreSQL.
@@ -132,7 +132,7 @@ the master, and `masterauth` in slaves.
     redis['port'] = 6379
 
     ## Master redis instance
-    redis['password'] = '<huge password string here>'
+    redis['password'] = 'redis-password-goes-here'
     ```
 
 1. Edit `/etc/gitlab/gitlab.rb` of a slave Redis machine (should be one or more machines):
@@ -146,7 +146,7 @@ the master, and `masterauth` in slaves.
     redis['master'] = false
     redis['master_ip'] = '10.10.10.10' # IP of master Redis server
     redis['master_port'] = 6379 # Port of master Redis server
-    redis['master_password'] = "<huge password string here>"
+    redis['master_password'] = "redis-password-goes-here"
     ```
 
 1. Reconfigure the GitLab for the changes to take effect: `sudo gitlab-ctl reconfigure`
@@ -203,7 +203,7 @@ The following steps should be performed in the [GitLab application server](gitla
 
     ```ruby
     redis['master_name'] = "gitlab-redis"
-    redis['master_password'] = '<huge password string here>'
+    redis['master_password'] = 'redis-password-goes-here'
     gitlab_rails['redis_sentinels'] = [
       {'host' => '10.10.10.1', 'port' => 26379},
       {'host' => '10.10.10.2', 'port' => 26379},
@@ -214,6 +214,21 @@ The following steps should be performed in the [GitLab application server](gitla
 1. [Reconfigure] the GitLab for the changes to take effect.
 
 ### Sentinel troubleshooting
+
+#### Omnibus install
+
+If you get an error like: `Redis::CannotConnectError: No sentinels available.`,
+there may be something wrong with your configuration files or it can be related
+to [this issue][gh-531].
+
+You must make sure you are defining the same value in `redis['master_name']`
+and `redis['master_pasword']` as you defined for your sentinel node.
+
+The way the redis connector `redis-rb` works with sentinel is a bit
+non-intuitive. We try to hide the complexity in omnibus, but it still requires
+a few extra configs.
+
+#### Source install
 
 If you get an error like: `Redis::CannotConnectError: No sentinels available.`,
 there may be something wrong with your configuration files or it can be related
