@@ -60,11 +60,11 @@ module Projects
       end
 
       def filter_params
-        params.merge(id: params[:list_id])
+        params.merge(board_id: params[:board_id], id: params[:list_id])
       end
 
       def move_params
-        params.permit(:id, :from_list_id, :to_list_id)
+        params.permit(:board_id, :id, :from_list_id, :to_list_id)
       end
 
       def issue_params
