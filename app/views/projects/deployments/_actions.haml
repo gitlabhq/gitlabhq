@@ -2,6 +2,8 @@
   .pull-right
     - actions = deployment.manual_actions
     - if actions.present?
+      %a.btn.btn-default{href: 'deployments/1/terminal'}
+        = custom_icon('icon_terminal')
       .inline
         .dropdown
           %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
