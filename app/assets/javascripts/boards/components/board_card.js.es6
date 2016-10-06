@@ -61,7 +61,11 @@
           this.showDetail = false;
         }
       },
-      showIssue () {
+      showIssue (e) {
+        const targetTagName = e.target.tagName.toLowerCase();
+
+        if (targetTagName === 'a' || targetTagName === 'button') return;
+
         if (this.showDetail) {
           this.showDetail = false;
 

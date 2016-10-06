@@ -11,7 +11,7 @@
     ":index" => "index",
     "@mousedown" => "mouseDown",
     "@mouseMove" => "mouseMove",
-    "@mouseup" => "showIssue" }
+    "@mouseup" => "showIssue($event)" }
     %h4.card-title
       = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")
       %a{ ":href" => "issueLinkBase + '/' + issue.id",
