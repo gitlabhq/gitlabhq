@@ -283,7 +283,7 @@ describe HipchatService, models: true do
     context 'build events' do
       let(:pipeline) { create(:ci_empty_pipeline) }
       let(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:data) { Gitlab::DataBuilder::Build.build(build) }
+      let(:data) { Gitlab::DataBuilder::Build.build(build.reload) }
 
       context 'for failed' do
         before { build.drop }

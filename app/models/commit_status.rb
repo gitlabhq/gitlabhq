@@ -84,13 +84,18 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.pipeline.try(:process!)
-      true
-    end
-
     after_transition do |commit_status, transition|
-      commit_status.pipeline.try(:build_updated) unless transition.loopback?
+      commit_status.pipeline.try do |pipeline|
+        break if transition.loopback?
+
+        if commit_status.complete?
+          ProcessPipelineWorker.perform_async(pipeline.id)
+        end
+
+        UpdatePipelineWorker.perform_async(pipeline.id)
+      end
+
+      true
     end
 
     after_transition [:created, :pending, :running] => :success do |commit_status|
