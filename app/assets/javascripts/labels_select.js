@@ -7,7 +7,8 @@
         var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove;
         $dropdown = $(dropdown);
         $toggleText = $dropdown.find('.dropdown-toggle-text');
-        projectId = $dropdown.data('project-id');
+        namespacePath = $dropdown.data('namespace-path');
+        projectPath = $dropdown.data('project-path');
         labelUrl = $dropdown.data('labels');
         issueUpdateURL = $dropdown.data('issueUpdate');
         selectedLabel = $dropdown.data('selected');
@@ -45,7 +46,7 @@
         $sidebarLabelTooltip.tooltip();
 
         if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
-          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
         }
 
         saveLabelData = function() {

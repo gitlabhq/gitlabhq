@@ -50,6 +50,7 @@ module Gitlab
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
+    # - GitLab-shell secret token (:secret_token)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
     config.filter_parameters += %i(
@@ -62,6 +63,7 @@ module Gitlab
       password
       password_confirmation
       private_token
+      secret_token
       sentry_dsn
       variables
     )
