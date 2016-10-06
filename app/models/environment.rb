@@ -19,6 +19,24 @@ class Environment < ActiveRecord::Base
             allow_nil: true,
             addressable_url: true
 
+  delegate :closeable?, :close_action, to: :last_deployment, allow_nil: true
+
+  scope :opened, -> { where(state: [:opened]) }
+  scope :closed, -> { where(state: [:closed]) }
+
+  state_machine :state, initial: :opened do
+    event :close do
+      transition opened: :closed
+    end
+
+    event :reopen do
+      transition closed: :opened
+    end
+
+    state :opened
+    state :closed
+  end
+
   def last_deployment
     deployments.last
   end

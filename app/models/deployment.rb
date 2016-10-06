@@ -77,6 +77,19 @@ class Deployment < ActiveRecord::Base
       take
   end
 
+  def close_action
+    return nil unless manual_actions
+
+    @close_action ||=
+      manual_actions.find do |manual_action|
+        manual_action.try(:closes_environment?, deployable.environment)
+      end
+  end
+
+  def closeable?
+    close_action.present?
+  end
+
   private
 
   def ref_path
