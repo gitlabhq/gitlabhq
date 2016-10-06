@@ -94,7 +94,7 @@
 .profile-user-bio {
   // Limits the width of the user bio for readability.
   max-width: 600px;
-  margin: 10px auto 0;
+  margin: 10px auto;
   padding: 0 16px;
 }
 
@@ -225,13 +225,6 @@
       width: 90px;
       margin: 0 auto 10px;
     }
-
-    .user-info {
-
-      .member-date {
-        margin-bottom: 4px;
-      }
-    }
   }
 
   @media (max-width: $screen-xs-max) {
@@ -256,10 +249,6 @@
       }
     }
   }
-}
-
-.user-profile-nav {
-  margin-top: 10px;
 }
 
 table.u2f-registrations {
