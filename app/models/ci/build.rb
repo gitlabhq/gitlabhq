@@ -110,8 +110,12 @@ module Ci
       project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
+    def close_environment?
+      options.fetch(:environment, {}).fetch(:close, false)
+    end
+
     def closes_environment?(name)
-      environment == name && options.fetch(:environment, {}).fetch(:close, false)
+      environment == name && close_environment?
     end
 
     def play(current_user = nil)
@@ -122,6 +126,16 @@ module Ci
       else
         # Otherwise we need to create a duplicate
         Ci::Build.retry(self, current_user)
+      end
+    end
+
+    def play_type
+      return nil unless playable?
+
+      if close_environment?
+        :close
+      else
+        :play
       end
     end
 
