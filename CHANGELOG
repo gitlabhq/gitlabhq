@@ -82,6 +82,7 @@ v 8.12.4
   - Fix failed project deletion when feature visibility set to private. !6688
   - Prevent claiming associated model IDs via import.
   - Set GitLab project exported file permissions to owner only
+  - Change user & group landing page routing from /u/:username to /:username
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves

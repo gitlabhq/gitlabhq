@@ -26,7 +26,7 @@
         ":title" => "label.description",
         data: { container: 'body' } }
         {{ label.title }}
-      %a.has-tooltip{ ":href" => "'/u/' + issue.assignee.username",
+      %a.has-tooltip{ ":href" => "'/' + issue.assignee.username",
         ":title" => "'Assigned to ' + issue.assignee.name",
         "v-if" => "issue.assignee",
         data: { container: 'body' } }
