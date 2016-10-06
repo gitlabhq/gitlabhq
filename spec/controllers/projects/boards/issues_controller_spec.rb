@@ -76,13 +76,13 @@ describe Projects::Boards::IssuesController do
   describe 'POST create' do
     context 'with valid params' do
       it 'returns a successful 200 response' do
-        create_issue user: user, list: list1, title: 'New issue'
+        create_issue user: user, board: board, list: list1, title: 'New issue'
 
         expect(response).to have_http_status(200)
       end
 
       it 'returns the created issue' do
-        create_issue user: user, list: list1, title: 'New issue'
+        create_issue user: user, board: board, list: list1, title: 'New issue'
 
         expect(response).to match_response_schema('issue')
       end
@@ -91,7 +91,7 @@ describe Projects::Boards::IssuesController do
     context 'with invalid params' do
       context 'when title is nil' do
         it 'returns an unprocessable entity 422 response' do
-          create_issue user: user, list: list1, title: nil
+          create_issue user: user, board: board, list: list1, title: nil
 
           expect(response).to have_http_status(422)
         end
@@ -101,7 +101,7 @@ describe Projects::Boards::IssuesController do
         it 'returns a not found 404 response' do
           list = create(:list)
 
-          create_issue user: user, list: list, title: 'New issue'
+          create_issue user: user, board: board, list: list, title: 'New issue'
 
           expect(response).to have_http_status(404)
         end
@@ -110,17 +110,18 @@ describe Projects::Boards::IssuesController do
 
     context 'with unauthorized user' do
       it 'returns a forbidden 403 response' do
-        create_issue user: guest, list: list1, title: 'New issue'
+        create_issue user: guest, board: board, list: list1, title: 'New issue'
 
         expect(response).to have_http_status(403)
       end
     end
 
-    def create_issue(user:, list:, title:)
+    def create_issue(user:, board:, list:, title:)
       sign_in(user)
 
       post :create, namespace_id: project.namespace.to_param,
                     project_id: project.to_param,
+                    board_id: board.to_param,
                     list_id: list.to_param,
                     issue: { title: title },
                     format: :json
