@@ -61,6 +61,9 @@
     function MergeRequestTabs(opts) {
       this.opts = opts != null ? opts : {};
       this.opts.setUrl = this.opts.setUrl !== undefined ? this.opts.setUrl : true;
+
+      this.buildsLoaded = this.opts.buildsLoaded || false;
+
       this.setCurrentAction = bind(this.setCurrentAction, this);
       this.tabShown = bind(this.tabShown, this);
       this.showTab = bind(this.showTab, this);
@@ -93,7 +96,7 @@
         this.loadCommits($target.attr('href'));
         this.expandView();
         this.resetViewContainer();
-      } else if (action === 'diffs') {
+      } else if (this.isDiffAction(action)) {
         this.loadDiff($target.attr('href'));
         if ((typeof bp !== "undefined" && bp !== null) && bp.getBreakpointSize() !== 'lg') {
           this.shrinkView();
@@ -170,8 +173,9 @@
         action = 'notes';
       }
       this.currentAction = action;
-      // Remove a trailing '/commits' or '/diffs'
-      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
+      // Remove a trailing '/commits' '/diffs' '/builds' '/pipelines' '/new' '/new/diffs'
+      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
+
       // Append the new action if we're on a tab other than 'notes'
       if (action !== 'notes') {
         new_state += "/" + action;
@@ -210,8 +214,13 @@
       if (this.diffsLoaded) {
         return;
       }
+
+      // We extract pathname for the current Changes tab anchor href
+      // some pages like MergeRequestsController#new has query parameters on that anchor
+      var url = gl.utils.parseUrl(source);
+
       return this._get({
-        url: (source + ".json") + this._location.search,
+        url: (url.pathname + ".json") + this._location.search,
         success: (function(_this) {
           return function(data) {
             $('#diffs').html(data.html);
@@ -223,7 +232,7 @@
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
             $('#diffs .js-syntax-highlight').syntaxHighlight();
             $('#diffs .diff-file').singleFileDiff();
-            if (_this.diffViewType() === 'parallel' && _this.currentAction === 'diffs') {
+            if (_this.diffViewType() === 'parallel' && (_this.isDiffAction(_this.currentAction)) ) {
               _this.expandViewContainer();
             }
             _this.diffsLoaded = true;
@@ -322,6 +331,10 @@
 
     MergeRequestTabs.prototype.diffViewType = function() {
       return $('.inline-parallel-buttons a.active').data('view-type');
+    };
+
+    MergeRequestTabs.prototype.isDiffAction = function(action) {
+      return action === 'diffs' || action === 'new/diffs'
     };
 
     MergeRequestTabs.prototype.expandViewContainer = function() {
