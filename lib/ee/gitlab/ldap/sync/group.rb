@@ -99,7 +99,12 @@ module EE
           def update_existing_group_membership(group, access_levels)
             logger.debug { "Updating existing membership for '#{group.name}' group" }
 
-            first_group_owner = group.members.owners.first.try(:user)
+            # Access requesters must be approved by a group owner so we take the
+            # first group owner and pass it as `current_user` to `#add_or_update_user_membership`.
+            # For users that are not access requesters, it doesn't matter if
+            #`current_user` is `nil` because the permissions to update users are
+            # not enforced in `Member.add_user`!
+            added_by = group.members.owners.first.try(:user)
 
             select_and_preload_group_members(group).each do |member|
               user = member.user
@@ -143,7 +148,7 @@ module EE
                   user,
                   group,
                   desired_access,
-                  current_user: first_group_owner
+                  current_user: added_by
                 )
               elsif group.last_owner?(user)
                 warn_cannot_remove_last_owner(user, group)
@@ -156,7 +161,12 @@ module EE
           def add_new_members(group, access_levels)
             logger.debug { "Adding new members to '#{group.name}' group" }
 
-            first_group_owner = group.members.owners.first.try(:user)
+            # Access requesters must be approved by a group owner so we take the
+            # first group owner and pass it as `current_user` to `#add_or_update_user_membership`.
+            # For users that are not access requesters, it doesn't matter if
+            #`current_user` is `nil` because the permissions to update users are
+            # not enforced in `Member.add_user`!
+            added_by = group.members.owners.first.try(:user)
 
             access_levels.each do |member_dn, access_level|
               user = ::Gitlab::LDAP::User.find_by_uid_and_provider(member_dn, provider)
@@ -166,7 +176,7 @@ module EE
                   user,
                   group,
                   access_level,
-                  current_user: first_group_owner
+                  current_user: added_by
                 )
               else
                 logger.debug do

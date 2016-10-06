@@ -161,8 +161,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
         it 'downgrades existing member access' do
           # Create user with higher access
-          group.add_users([user],
-                          ::Gitlab::Access::MASTER)
+          group.add_user(user, Gitlab::Access::MASTER)
 
           sync_group.update_permissions
 
@@ -172,8 +171,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
         it 'upgrades existing member access' do
           # Create user with lower access
-          group.add_users([user],
-                          ::Gitlab::Access::GUEST)
+          group.add_user(user, Gitlab::Access::GUEST)
 
           sync_group.update_permissions
 
@@ -213,8 +211,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         end
 
         it 'removes the user from the group' do
-          group.add_users([user],
-                          Gitlab::Access::MASTER)
+          group.add_user(user, Gitlab::Access::MASTER)
 
           sync_group.update_permissions
 
@@ -222,8 +219,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         end
 
         it 'refuses to delete the last owner' do
-          group.add_users([user],
-                          Gitlab::Access::OWNER)
+          group.add_user(user, Gitlab::Access::OWNER)
 
           sync_group.update_permissions
 
@@ -242,8 +238,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
         it 'downgrades one user but not the other' do
           create(:identity, user: user1, extern_uid: user_dn(user1.username))
           create(:identity, user: user2, extern_uid: user_dn(user2.username))
-          group.add_users([user1, user2],
-                          Gitlab::Access::OWNER)
+          group.add_users([user1, user2], Gitlab::Access::OWNER)
 
           sync_group.update_permissions
 
