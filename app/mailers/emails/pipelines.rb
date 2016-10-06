@@ -34,10 +34,10 @@ module Emails
     end
 
     def pipeline_subject(status)
-      ref = @pipeline.short_sha
-      ref << " in #{@merge_request.to_reference}" if @merge_request
+      commit = @pipeline.short_sha
+      commit << " in #{@merge_request.to_reference}" if @merge_request
 
-      subject("Pipeline ##{@pipeline.id} has #{status}", ref)
+      subject("Pipeline ##{@pipeline.id} has #{status} for #{@pipeline.ref}", commit)
     end
   end
 end
