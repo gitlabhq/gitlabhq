@@ -74,7 +74,7 @@ v 8.12.4
   - Fix failed project deletion when feature visibility set to private. !6688
   - Prevent claiming associated model IDs via import.
   - Set GitLab project exported file permissions to owner only
-  - changed project-settings-button from fa-cog to fa-sliders.
+  - Changed settings-button from fa-cog to fa-sliders.
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
