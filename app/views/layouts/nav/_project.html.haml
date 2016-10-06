@@ -2,7 +2,7 @@
   .controls
     .dropdown.project-settings-dropdown
       %a.dropdown-new.btn.btn-default#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
-        = icon('cog')
+        = icon('sliders')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         - can_edit = can?(current_user, :admin_project, @project)
