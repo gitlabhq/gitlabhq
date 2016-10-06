@@ -4,6 +4,7 @@
     constructor() {
       $(document).off('click', '.toggle-pipeline-btn').on('click', '.toggle-pipeline-btn', this.toggleGraph);
       $(document).off('ready.addMarginToBuildColumns').on('ready.addMarginToBuildColumns', this.addMarginToBuildColumns);
+      $(document).off('page:load.addMarginToBuildColumns').on('page:load.addMarginToBuildColumns', this.addMarginToBuildColumns);
     }
 
     toggleGraph() {

@@ -373,6 +373,9 @@
     }
 
     .build-content {
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
       width: 164px;
 
       .ci-status-icon {
@@ -403,6 +406,7 @@
         width: auto;
         padding: 0;
         color: $gl-text-color-light;
+        flex-grow: 1;
 
         .ci-status-text {
           max-width: 112px;
