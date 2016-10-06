@@ -16,26 +16,6 @@ have its own space to store its Docker images.
 
 You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
 
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Enable the Container Registry](#enable-the-container-registry)
-- [Container Registry domain configuration](#container-registry-domain-configuration)
-    - [Configure Container Registry under an existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain)
-    - [Configure Container Registry under its own domain](#configure-container-registry-under-its-own-domain)
-- [Disable Container Registry site-wide](#disable-container-registry-site-wide)
-- [Disable Container Registry per project](#disable-container-registry-per-project)
-- [Disable Container Registry for new projects site-wide](#disable-container-registry-for-new-projects-site-wide)
-- [Container Registry storage path](#container-registry-storage-path)
-- [Container Registry storage driver](#container-registry-storage-driver)
-- [Storage limitations](#storage-limitations)
-- [Changelog](#changelog)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## Enable the Container Registry
 
 **Omnibus GitLab installations**
