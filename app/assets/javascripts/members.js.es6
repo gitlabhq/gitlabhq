@@ -31,10 +31,7 @@
     }
 
     formSubmit() {
-      $(this).closest('form')
-        .trigger("submit.rails")
-        .end()
-        .disable();
+      $(this).closest('form').trigger("submit.rails").end().disable();
     }
 
     formSuccess() {
