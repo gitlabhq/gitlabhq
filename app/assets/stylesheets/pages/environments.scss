@@ -1,3 +1,9 @@
+.environments-container,
+.deployments-container {
+  width: 100%;
+  overflow: auto;
+}
+
 .environments {
   .deployment-column {
     .avatar {
@@ -47,7 +53,6 @@
 }
 
 .table.builds.environments {
-  min-width: 500px;
 
   .icon-container {
     width: 20px;

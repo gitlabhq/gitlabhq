@@ -27,5 +27,5 @@
     - if last_deployment
       #{time_ago_with_tooltip(last_deployment.created_at)}
 
-  %td
+  %td.hidden-xs
     = render 'projects/deployments/actions', deployment: last_deployment
