@@ -37,6 +37,7 @@ v 8.13.0 (unreleased)
   - Append issue template to existing description !6149 (Joseph Frazier)
   - Trending projects now only show public projects and the list of projects is cached for a day
   - Revoke button in Applications Settings underlines on hover.
+  - Use higher size on Gitlab::Redis connection pool on Sidekiq servers
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
