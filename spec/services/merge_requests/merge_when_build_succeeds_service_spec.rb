@@ -97,20 +97,9 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         expect(MergeWorker).not_to receive(:perform_async)
         service.trigger(unrelated_pipeline)
       end
-
-      it 'discovers branches and merges all merge requests when status is success' do
-        allow(project.repository).to receive(:branch_names_contains).
-          with(commit_status.sha).and_return([mr_merge_if_green_enabled.source_branch])
-        allow(pipeline).to receive(:success?).and_return(true)
-        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
-        allow(pipeline).to receive(:success?).and_return(true)
-
-        expect(MergeWorker).to receive(:perform_async)
-        service.trigger(commit_status)
-      end
     end
 
-    context 'properly handles multiple stages' do
+    context 'when there are multiple stages in the pipeline' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
       let!(:build) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
       let!(:test) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
