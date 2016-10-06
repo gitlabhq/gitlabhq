@@ -1,5 +1,6 @@
-- group = local_assigns[:group]
 - group_link = local_assigns[:group_link]
+- group = group_link.group
+- can_admin_member = can?(current_user, :admin_project_member, @project)
 %li.member.group_member{ id: "group_member_#{group_link.id}" }
   %span{ class: "list-item-name" }
     = image_tag group_icon(group), class: "avatar s40", alt: ''
@@ -13,11 +14,11 @@
           Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
   .controls.member-controls
     = form_tag namespace_project_group_link_path(@project.namespace, @project, group_link), method: :put, remote: true, class: 'form-horizontal js-edit-member-form' do
-      = select_tag 'group_link[group_access]', options_for_select(ProjectGroupLink.access_options, group_link.group_access), class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{group.id}", disabled: !can?(current_user, :admin_project_member, @project)
+      = select_tag 'group_link[group_access]', options_for_select(ProjectGroupLink.access_options, group_link.group_access), class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{group.id}", disabled: !can_admin_member
       .prepend-left-5.clearable-input.member-form-control
-        = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{group.id}", disabled: !can?(current_user, :admin_project_member, @project)
+        = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{group.id}", disabled: !can_admin_member
         %i.clear-icon.js-clear-input
-    - if can?(current_user, :admin_project_member, @project)
+    - if can_admin_member
       = link_to namespace_project_group_link_path(@project.namespace, @project, group_link),
         remote: true,
         method: :delete,

@@ -4,6 +4,4 @@
     %strong #{@project.name}
     %span.badge= group_links.size
   %ul.content-list
-    - group_links.each do |group_link|
-      - group = group_link.group
-      = render 'shared/members/group', group_link: group_link, group: group
+    = render partial: 'shared/members/group', collection: group_links, as: :group_link

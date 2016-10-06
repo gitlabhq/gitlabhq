@@ -4,5 +4,4 @@
     %strong #{@project.name}
     %span.badge= @project_members.total_count
   %ul.content-list
-    - members.each do |member|
-      = render 'shared/members/member', member: member
+    = render partial: 'shared/members/member', collection: members, as: :member

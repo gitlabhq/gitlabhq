@@ -21,7 +21,7 @@
         = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
         %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
           = icon("search")
-  - if @group_links.size > 0
+  - if @group_links.any?
     = render 'groups', group_links: @group_links
 
   = render 'team', members: @project_members

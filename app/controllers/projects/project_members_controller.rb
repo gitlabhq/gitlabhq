@@ -98,21 +98,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
                 notice: notice)
   end
 
-  def options
-    users = User.all
-    users = users.search(params[:search]) if params[:search].present?
-    users = users.page(1)
-
-    groups = Group.all
-    groups = groups.search(params[:search]) if params[:search].present?
-    groups = groups.page(1)
-
-    render json: {
-      Groups: groups.as_json(only: [:id, :name], methods: [:avatar_url]),
-      Users: users.as_json(only: [:id, :name, :username], methods: [:avatar_url]),
-    }
-  end
-
   protected
 
   def member_params

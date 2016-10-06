@@ -1,3 +1,3 @@
 :plain
-  var $listItem = $('#{escape_javascript(render('shared/members/group', group_link: @group_link, group: @group_link.group))}');
+  var $listItem = $('#{escape_javascript(render('shared/members/group', group_link: @group_link))}');
   $("#group_member_#{@group_link.id} .list-item-name").replaceWith($listItem.find('.list-item-name'));
