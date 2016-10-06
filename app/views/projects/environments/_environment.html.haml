@@ -6,8 +6,10 @@
 
   %td.deployment-column
     - if last_deployment
-      %span ##{last_deployment.iid} by
-      = user_avatar(user: last_deployment.user, size: 20)
+      %span ##{last_deployment.iid} 
+      - if last_deployment.user
+        by
+        = user_avatar(user: last_deployment.user, size: 20)
 
   %td
     - if last_deployment && last_deployment.deployable
