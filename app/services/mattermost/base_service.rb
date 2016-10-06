@@ -37,7 +37,7 @@ module Mattermost
     def respond_404
       {
         response_type: :ephemeral,
-        text: "404 not found! Please make you use the right identifier. :boom:",
+        text: "404 not found! GitLab couldn't find what your were looking for! :boom:",
       }
     end
 
