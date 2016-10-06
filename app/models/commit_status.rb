@@ -89,10 +89,10 @@ class CommitStatus < ActiveRecord::Base
         break if transition.loopback?
 
         if commit_status.complete?
-          ProcessPipelineWorker.perform_async(pipeline.id)
+          PipelineProcessWorker.perform_async(pipeline.id)
         end
 
-        UpdatePipelineWorker.perform_async(pipeline.id)
+        PipelineUpdateWorker.perform_async(pipeline.id)
       end
 
       true

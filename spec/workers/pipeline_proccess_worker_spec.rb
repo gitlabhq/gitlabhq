@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe UpdatePipelineWorker do
+describe PipelineProcessWorker do
   describe '#perform' do
     context 'when pipeline exists' do
       let(:pipeline) { create(:ci_pipeline) }
 
-      it 'updates pipeline status' do
-        expect_any_instance_of(Ci::Pipeline).to receive(:update_status)
+      it 'processes pipeline' do
+        expect_any_instance_of(Ci::Pipeline).to receive(:process!)
 
         described_class.new.perform(pipeline.id)
       end
