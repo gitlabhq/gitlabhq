@@ -1,0 +1,16 @@
+- @no_container = true
+- page_title "Deployment Terminal"
+= render "projects/pipelines/head"
+
+%div{ class: container_class }
+
+  %p.content-block
+    Environment:
+    %a{href: '#'} add information
+
+  .terminal
+    .line
+      Last login: Thu Oct  6 19:43:41 on ttys003
+    .line
+      \~
+      %span.caret
