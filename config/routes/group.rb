@@ -13,7 +13,6 @@ resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
   ## EE-specific
 
   scope module: :groups do
-
     ## EE-specific
     resource :analytics, only: [:show]
     resource :ldap, only: [] do
