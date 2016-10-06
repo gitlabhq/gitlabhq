@@ -55,5 +55,6 @@
             = link_to environment.name, environment_path(environment), class: 'environment'
           - external_url = environment.external_url
           - if external_url
-            = link_to external_url, target: '_blank', class: 'hidden-xs' do
-              = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)
+            = link_to external_url, target: '_blank' do
+              %span.hidden-xs View on #{external_url.gsub(/\A.*?:\/\//, '')}
+              = icon('external-link', right: true)
