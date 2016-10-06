@@ -1,7 +1,7 @@
 - group_status = CommitStatus.where(id: subject).status
-%span.ci-status-icon
-  = render_status_with_link('build', group_status)
 %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+  %span.ci-status-icon
+    = render_status_with_link('build', group_status)
   %span.ci-status-text
     = name
   %span.badge= subject.size
