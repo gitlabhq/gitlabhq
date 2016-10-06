@@ -178,6 +178,12 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
+      ## EE-specific
+      resource :pages, only: [:show, :destroy] do
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
+      end
+      ## EE-specific
+
       resources :compare, only: [:index, :create] do
         collection do
           get :diff_for_path
@@ -274,6 +280,12 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           post :cancel_merge_when_build_succeeds
           get :ci_status
           post :toggle_subscription
+
+          ## EE-specific
+          post :approve
+          post :rebase
+          ## EE-specific
+
           post :remove_wip
           get :diff_for_path
           post :resolve_conflicts
@@ -286,6 +298,10 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           get :diff_for_path
           post :bulk_update
         end
+
+        ## EE-specific
+        resources :approvers, only: :destroy
+        ## EE-specific
 
         resources :discussions, only: [], constraints: { id: /\h{40}/ } do
           member do
@@ -300,9 +316,32 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         resource :release, only: [:edit, :update]
       end
 
-      resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      ## EE-specific
+      resources :path_locks, only: [:index, :destroy] do
+        collection do
+          post :toggle
+        end
+      end
+
+      resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+        scope module: :protected_branches do
+          resources :merge_access_levels, only: [:destroy]
+          resources :push_access_levels, only: [:destroy]
+        end
+      end
+      ## EE-specific
+
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :destroy]
+
+      ## EE-specific
+      resource :mirror, only: [:show, :update] do
+        member do
+          post :update_now
+        end
+      end
+      resources :push_rules, constraints: { id: /\d+/ }
+      ## EE-specific
 
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
@@ -448,6 +487,10 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
+      ## EE-specific
+      resources :approvers, only: :destroy
+      ## EE-specific
+
       resources :runner_projects, only: [:create, :destroy]
       resources :badges, only: [:index] do
         collection do
@@ -459,6 +502,10 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           end
         end
       end
+
+      ## EE-specific
+      resources :audit_events, only: [:index]
+      ## EE-specific
     end
   end
 end
