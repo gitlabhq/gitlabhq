@@ -6,6 +6,7 @@
     = name
   %span.badge= subject.size
 %ul.dropdown-menu.grouped-pipeline-dropdown
-  .arrow
+  %li.arrow
   - subject.each do |status|
-    = render "projects/#{status.to_partial_path}_pipeline", subject: status
+    %li
+      = render "projects/#{status.to_partial_path}_pipeline", subject: status
