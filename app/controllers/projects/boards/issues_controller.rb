@@ -16,6 +16,9 @@ module Projects
       end
 
       def create
+        board = project.boards.find(params[:board_id])
+        list = board.lists.find(params[:list_id])
+
         service = ::Boards::Issues::CreateService.new(project, current_user, issue_params)
         issue = service.execute
 
