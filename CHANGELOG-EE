@@ -3,8 +3,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.13.0 (unreleased)
   - Fix 500 error updating mirror URLs for projects
 
-v 8.12.4 (unreleased)
-  - [ES] Indexer works with smaller batches of repositories to not exceed NOFILE limit
+v 8.12.5 (unreleased)
+
+v 8.12.4
+  - [ES] Indexer works with smaller batches of repositories to not exceed NOFILE limit. !774
 
 v 8.12.3
   - Fix prevent_secrets checkbox on admin view
