@@ -6,7 +6,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :destroy]
 
   def index
-    @environments = project.environments
+    @scope = params[:scope]
+    @all_environments = project.environments
+    @environments =
+      case @scope
+        when 'closed' then @all_environments.closed
+        else @all_environments.opened
+      end
   end
 
   def show

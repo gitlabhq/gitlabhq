@@ -24,6 +24,14 @@
   .branch-name {
     color: $gl-dark-link-color;
   }
+  
+  .close-env-link {
+    color: $table-text-gray;
+    
+    .close-env-icon {
+      font-size: 14px;
+    }
+  }
 }
 
 .table.builds.environments {

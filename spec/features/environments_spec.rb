@@ -175,12 +175,12 @@ feature 'Environments', feature: true do
     before do
       visit namespace_project_environment_path(project.namespace, project, environment)
     end
-
+    
     context 'when logged as master' do
       given(:role) { :master }
 
-      scenario 'does delete environment' do
-        click_link 'Destroy'
+      scenario 'does close environment' do
+        click_link 'Close'
         expect(page).not_to have_link(environment.name)
       end
     end
@@ -188,8 +188,8 @@ feature 'Environments', feature: true do
     context 'when logged as developer' do
       given(:role) { :developer }
 
-      scenario 'does not have a Destroy link' do
-        expect(page).not_to have_link('Destroy')
+      scenario 'does not have a Close link' do
+        expect(page).not_to have_link('Close')
       end
     end
   end

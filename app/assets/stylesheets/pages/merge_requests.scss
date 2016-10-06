@@ -177,6 +177,15 @@
   .ci-coverage {
     float: right;
   }
+  
+  .close-env-container {
+    color: $gl-text-color;
+    float: right;
+    
+    a {
+      color: $gl-text-color;
+    }
+  }
 }
 
 .mr_source_commit,

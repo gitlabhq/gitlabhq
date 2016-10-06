@@ -2,6 +2,8 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
+- last_deployment = @environment.last_deployment
+
 %div{ class: container_class }
   .top-area
     .col-md-9
@@ -10,7 +12,8 @@
       .nav-controls
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
-          = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to delete this environment?' }, class: 'btn btn-danger', method: :delete
+          - if @environment.opened? && last_deployment.try(:close_action)
+            = link_to 'Close', [:play, @project.namespace.becomes(Namespace), @project, last_deployment.close_action], data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
 
   - if @deployments.blank?
     .blank-state.blank-state-no-icon
@@ -30,7 +33,7 @@
             %th Commit
             %th Build
             %th
-            %th
+            %th.hidden-xs
 
         = render @deployments
 

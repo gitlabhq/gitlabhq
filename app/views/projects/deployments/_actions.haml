@@ -14,8 +14,13 @@
                   = custom_icon('icon_play')
                   %span= action.name.humanize
 
+      - if local_assigns.fetch(:allow_close, false) && deployment.closeable?
+        .inline
+          = link_to [:play, @project.namespace.becomes(Namespace), @project, deployment.close_action], method: :post, class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
+            = icon('stop', class: 'close-env-icon')
+
     - if local_assigns.fetch(:allow_rollback, false)
-      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
+      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn' do
         - if deployment.last?
           Re-deploy
         - else

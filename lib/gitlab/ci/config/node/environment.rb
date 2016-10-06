@@ -8,7 +8,7 @@ module Gitlab
         class Environment < Entry
           include Validatable
 
-          ALLOWED_KEYS = %i[name url]
+          ALLOWED_KEYS = %i[name url close]
 
           validations do
             validate do
@@ -35,6 +35,8 @@ module Gitlab
                         length: { maximum: 255 },
                         addressable_url: true,
                         allow_nil: true
+
+              validates :close, boolean: true, allow_nil: true
             end
           end
 

@@ -4,6 +4,13 @@ class CreateDeploymentService < BaseService
   def execute(deployable = nil)
     environment = find_or_create_environment
 
+    if close?
+      environment.close
+      return
+    end
+
+    environment.reopen
+
     deployment = project.deployments.create(
       environment: environment,
       ref: params[:ref],
@@ -14,7 +21,6 @@ class CreateDeploymentService < BaseService
     )
 
     deployment.update_merge_request_metrics!
-
     deployment
   end
 
@@ -42,6 +48,10 @@ class CreateDeploymentService < BaseService
 
   def url
     options[:url]
+  end
+
+  def close?
+    options[:close]
   end
 
   def options
