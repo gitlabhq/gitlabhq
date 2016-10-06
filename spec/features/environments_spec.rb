@@ -44,6 +44,10 @@ feature 'Environments', feature: true do
         scenario 'does show deployment SHA' do
           expect(page).to have_link(deployment.short_sha)
         end
+        
+        scenario 'does show deployment internal id' do
+          expect(page).to have_content(deployment.iid)
+        end
 
         context 'with build and manual actions' do
           given(:pipeline) { create(:ci_pipeline, project: project) }
@@ -60,6 +64,20 @@ feature 'Environments', feature: true do
             expect{ click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
             expect(page).to have_content(manual.name)
             expect(manual.reload).to be_pending
+          end
+          
+          scenario 'does show build name and id' do
+            expect(page).to have_link("#{build.name} (##{build.id})")
+          end
+          
+          context 'with external_url' do
+            given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
+            given(:build) { create(:ci_build, pipeline: pipeline) }
+            given(:deployment) { create(:deployment, environment: environment, deployable: build) }
+            
+            scenario 'does show an external link button' do
+              expect(page).to have_selector('.btn.external-url')
+            end
           end
         end
       end
