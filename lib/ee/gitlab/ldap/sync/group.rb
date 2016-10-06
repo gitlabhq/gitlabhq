@@ -102,7 +102,7 @@ module EE
             # Access requesters must be approved by a group owner so we take the
             # first group owner and pass it as `current_user` to `#add_or_update_user_membership`.
             # For users that are not access requesters, it doesn't matter if
-            #`current_user` is `nil` because the permissions to update users are
+            # `current_user` is `nil` because the permissions to update users are
             # not enforced in `Member.add_user`!
             added_by = group.members.owners.first.try(:user)
 
@@ -164,7 +164,7 @@ module EE
             # Access requesters must be approved by a group owner so we take the
             # first group owner and pass it as `current_user` to `#add_or_update_user_membership`.
             # For users that are not access requesters, it doesn't matter if
-            #`current_user` is `nil` because the permissions to update users are
+            # `current_user` is `nil` because the permissions to update users are
             # not enforced in `Member.add_user`!
             added_by = group.members.owners.first.try(:user)
 
