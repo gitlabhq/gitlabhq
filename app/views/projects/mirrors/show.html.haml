@@ -1,16 +1,17 @@
 - page_title "Mirror Repository"
 
+.row
+  = form_errors(@project)
 .row.prepend-top-default.append-bottom-default
-  .col-lg-3
-    %h4.prepend-top-0
-      Pull from a remote repository
-    %p.light
-      Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
-  .col-lg-9
-    %h5.prepend-top-0
-      Set up mirror repository
-    = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project) do |f|
-      = form_errors(@project)
+  = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project) do |f|
+    .col-lg-3
+      %h4.prepend-top-0
+        Pull from a remote repository
+      %p.light
+        Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
+    .col-lg-9
+      %h5.prepend-top-0
+        Set up mirror repository
       = render "shared/mirror_update_button"
       - if @project.mirror_last_update_failed?
         .panel.panel-danger
@@ -42,17 +43,14 @@
           They need to have at least master access to this project.
       - if @project.builds_enabled?
         = render "shared/mirror_trigger_builds_setting", f: f
-      = f.submit "Update", class: "btn btn-save"
-  .col-sm-12
-    %hr
-  .col-lg-3
-    %h4.prepend-top-0
-      Push to a remote repository
-    %p.light
-      Set up the remote repository that you want to update with the content of the current repository every hour.
-  .col-lg-9
-    = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project) do |f|
-      = form_errors(@project)
+    .col-sm-12
+      %hr
+    .col-lg-3
+      %h4.prepend-top-0
+        Push to a remote repository
+      %p.light
+        Set up the remote repository that you want to update with the content of the current repository every hour.
+    .col-lg-9
       = render "shared/remote_mirror_update_button", remote_mirror: @remote_mirror
       - if @remote_mirror.last_error.present?
         .panel.panel-danger
@@ -75,4 +73,6 @@
           = rm_form.label :url, "Git repository URL", class: "label-light"
           = rm_form.text_field :url, class: "form-control", placeholder: 'https://username:password@gitlab.company.com/group/project.git'
           = render "instructions"
-      = f.submit "Update", class: "btn btn-create"
+    .col-sm-12.text-center
+      %hr
+      = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'

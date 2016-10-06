@@ -139,7 +139,7 @@ class Project < ActiveRecord::Base
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
-  has_many :remote_mirrors, dependent: :destroy
+  has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
   has_many :path_locks, dependent: :destroy
