@@ -39,8 +39,7 @@
             // Need this because our jQuery very kindly disables buttons on ALL form submissions
             $(this.$els.submitButton).enable();
 
-            // Remove issue with no ID
-            const issue = this.list.findIssue(undefined);
+            // Remove the issue
             this.list.removeIssue(issue);
 
             // Show error message
