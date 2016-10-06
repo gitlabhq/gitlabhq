@@ -203,8 +203,6 @@ The following steps should be performed in the [GitLab application server](gitla
 
     ```ruby
     redis['master_name'] = "gitlab-redis"
-    redis['master_ip'] = "10.0.0.1"
-    redis['master_port'] = 6379
     redis['master_password'] = '<huge password string here>'
     gitlab_rails['redis_sentinels'] = [
       {'host' => '10.10.10.1', 'port' => 26379},
