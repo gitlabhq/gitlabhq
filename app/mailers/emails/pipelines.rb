@@ -34,8 +34,10 @@ module Emails
     end
 
     def pipeline_subject(status)
-      subject(
-        "Pipeline #{status} for #{@project.name}", @pipeline.short_sha)
+      ref = @pipeline.short_sha
+      ref << " in #{@merge_request.to_reference}" if @merge_request
+
+      subject("Pipeline ##{@pipeline.id} has #{status}", ref)
     end
   end
 end
