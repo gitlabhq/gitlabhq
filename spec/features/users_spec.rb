@@ -46,14 +46,8 @@ feature 'Users', feature: true do
     scenario '/u/user1 redirects to user page' do
       visit '/u/user1'
 
-      expect_user_show_page
-    end
-
-
-    scenario '/users/user1 redirects to user page' do
-      visit '/users/user1'
-
-      expect_user_show_page
+      expect(current_path).to eq user_path(user)
+      expect(page).to have_text(user.name)
     end
   end
 
@@ -63,10 +57,5 @@ feature 'Users', feature: true do
 
   def number_of_errors_on_page(page)
     page.find('#error_explanation').find('ul').all('li').count
-  end
-
-  def expect_user_show_page
-    expect(current_path).to eq user_path(user)
-    expect(page).to have_text(user.name)
   end
 end
