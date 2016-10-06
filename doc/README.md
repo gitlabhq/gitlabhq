@@ -6,7 +6,7 @@
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
-- [Container Registry](container_registry/README.md) Learn how to use GitLab Container Registry.
+- [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
