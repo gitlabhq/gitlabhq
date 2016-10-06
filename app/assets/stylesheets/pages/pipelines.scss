@@ -597,28 +597,24 @@
   }
 }
 
-
-.terminal {
-  width: 100%;
-  height: 450px;
-  background: #000;
-  border-radius: 3px;
-  box-sizing: border-box;
-  padding: 10px;
-
-  .line {
-    line-height: 24px;
-    font-size: 14px;
-    font-family: Monaco;
-    color: #9EA1A0;
+.terminal-container {
+  .content-block {
+    border-bottom: none;
   }
 
-  .caret {
-    border: none;
-    display: inline-block;
-    height: 16px;
-    width: 8px;
-    background: #9EA1A0;
-  }
+  #terminal {
+    .terminal {
+      padding: 10px;
+    }
 
+    margin-top: 10px;
+    min-height: 450px;
+    box-sizing: border-box;
+
+    > div {
+      min-height: 450px;
+    }
+  }
 }
+
+
