@@ -9,8 +9,9 @@
     - if deployment.deployable
       = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
         = "#{deployment.deployable.name} (##{deployment.deployable.id})"
-      by
-      = user_avatar(user: deployment.user, size: 20)
+      - if deployment.user
+        by
+        = user_avatar(user: deployment.user, size: 20)
 
   %td
     #{time_ago_with_tooltip(deployment.created_at)}
