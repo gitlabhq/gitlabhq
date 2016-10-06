@@ -52,6 +52,7 @@ v 8.13.0 (unreleased)
   - Add broadcast messages and alerts below sub-nav
   - Better empty state for Groups view
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
+  - Replace bootstrap caret with fontawesome caret (ClemMakesApps)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
   - Fix deploy status responsiveness error !6633
