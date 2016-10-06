@@ -41,8 +41,8 @@ You can see that there are seven stages in total:
     - Median time from when the merge request got merged until the deploy to
       production (production is last stage/environment)
 - **Production** (Total)
-   - Sum of all the above stages excluding the Test (CI) time. To clarify, it's
-     not so much that CI time is "excluded", but rather CI time is already
+   - Sum of all the above stages' times excluding the Test (CI) time. To clarify,
+     it's not so much that CI time is "excluded", but rather CI time is already
      counted in the review stage since CI is done automatically. Most of the
      other stages are purely sequential, but **Test** is not.
 
@@ -66,20 +66,19 @@ Below you can see in more detail what the various stages of Cycle Analytics mean
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. `master` is not excluded. It does not attempt to track time for any particular stages. |
 | Review    | Measures the median time taken to review the merge request, between its creation and until it's merged. |
 | Staging   | Measures the median time between merging the merge request until the very first deployment to production. It's tracked by the [environment] set to `production` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a `production` environment, this is not tracked. |
-| Production| The sum of all time taken to run the entire process, from issue creation to deploying the code to production. |
+| Production| The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. |
 
 ---
 
 Here's a little explanation of how this works behind the scenes:
 
 1. Issues and merge requests are grouped together in pairs, such that for each
-   `<issue, merge request>` pair, the merge request has `Fixes #xxx` for the
-   corresponding issue. All other issues and merge requests are **not** considered.
-
+   `<issue, merge request>` pair, the merge request has the [issue closing pattern]
+   for the corresponding issue. All other issues and merge requests are **not**
+   considered.
 1. Then the <issue, merge request> pairs are filtered out. Any merge request
    that has **not** been deployed to production in the last XX days (specified
    by the UI - default is 90 days) prohibits these pairs from being considered.
-
 1. For the remaining `<issue, merge request>` pairs, we check the information that
    we need for the stages, like issue creation date, merge request merge time,
    etc.
@@ -108,12 +107,15 @@ environments is configured.
 1. Push branch and create a merge request that contains the [issue closing pattern]
    in its description at 14:00 (stop of **Code** stage / start of **Test** and
    **Review** stages).
-1. The test suite starts running and takes 5min (stop of **Test** stage).
+1. The CI starts running your scripts defined in [`.gitlab-ci.yml`][yml] and
+   takes 5min (stop of **Test** stage).
 1. Review merge request, ensure that everything is OK and merge the merge
    request at 19:00. (stop of **Review** stage / start of **Staging** stage).
 1. Now that the merge request is merged, a deployment to the `production`
    environment starts and finishes at 19:30 (stop of **Staging** stage).
-1. The cycle completes and the sum of it is shown in the **Production** stage.
+1. The cycle completes and the sum of the median times of the previous stages
+   is recorded to the **Production** stage. That is the time between creating an
+   issue and deploying its relevant merge request to production.
 
 From the above example you can conclude the time it took each stage to complete
 as long as their total time:
@@ -124,19 +126,22 @@ as long as their total time:
 - **Test**:   5min
 - **Review**: 5h (19:00 - 14:00)
 - **Staging**:  30min (19:30 - 19:00)
-- **Production**: 10h 30min (19:30 - 09:00)
+- **Production**: Since this stage measures the sum of median time off all
+  previous stages, we cannot calculate it if we don't know the status of the
+  stages before. In case this is the very first cycle that is run in the project,
+  then the **Production** time is 10h 30min (19:30 - 09:00)
 
 A few notes:
 
+- In the above example we demonstrated that it doesn't matter if your first
+  commit doesn't mention the issue number, you can do this later in any commit
+  of the branch you are working on.
 - You can see that the **Test** stage is not calculated to the overall time of
   the cycle since it is included in the **Review** process (every MR should be
   tested).
-
----
-
-The example above was just one cycle of the seven stages. Add multiple cycles,
-calculate their median time and the result is what the dashboard of Cycle
-Analytics is showing.
+- The example above was just **one cycle** of the seven stages. Add multiple
+  cycles, calculate their median time and the result is what the dashboard of
+  Cycle Analytics is showing.
 
 ## Permissions
 
@@ -164,3 +169,4 @@ Learn more about Cycle Analytics in the following resources:
 [idea to production]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
 [issue closing pattern]: issues/automatic_issue_closing.md
 [permissions]: ../permissions.md
+[yml]: ../../ci/yaml/README.md
