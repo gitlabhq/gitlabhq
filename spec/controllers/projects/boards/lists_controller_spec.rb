@@ -240,7 +240,7 @@ describe Projects::Boards::ListsController do
       end
     end
 
-    def generate_default_lists(user:, board: board)
+    def generate_default_lists(user:, board:)
       sign_in(user)
 
       post :generate, namespace_id: project.namespace.to_param,
