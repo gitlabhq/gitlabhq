@@ -37,7 +37,8 @@
               border-left: 0 !important;
               border-right: 0 !important;
               border-radius: 0 !important;
-              padding: 0 10px !important;
+              padding-left: 10px !important;
+              padding-right: 10px !important;
           }
       }
   %body{:style => "background-color:#fafafa;margin:0;padding:0;text-align:center;min-width:640px;width:100%;height:100%;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"}
@@ -53,7 +54,7 @@
             %table.wrapper{:border => "0", :cellpadding => "0", :cellspacing => "0", :style => "width:640px;margin:0 auto;border-collapse:separate;border-spacing:0;"}
               %tbody
                 %tr
-                  %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;padding:0 25px 25px;border:1px solid #ededed;border-radius:3px;overflow:hidden;"}
+                  %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;padding:18px 25px;border:1px solid #ededed;border-radius:3px;overflow:hidden;"}
                     %table.content{:border => "0", :cellpadding => "0", :cellspacing => "0", :style => "width:100%;border-collapse:separate;border-spacing:0;"}
                       %tbody
                         %tr.alert
@@ -62,8 +63,9 @@
                               %tbody
                                 %tr
                                   %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;"}
-                                    %img{:alt => "x", :height => "10", :src => image_url('mailers/ci_pipeline_notif_v1/icon-x-red-inverted.gif'), :style => "display:block;", :width => "10"}/
-                                  %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;"} Uh oh, your CI pipeline has failed.
+                                    %img{:alt => "x", :height => "13", :src => image_url('mailers/ci_pipeline_notif_v1/icon-x-red-inverted.gif'), :style => "display:block;", :width => "13"}/
+                                  %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;"}
+                                    Uh oh, your CI pipeline has failed.
                         %tr.spacer
                           %td{:style => "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;"}
                             &nbsp;
