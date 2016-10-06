@@ -55,6 +55,16 @@ describe API::API, api: true  do
         expect(json_response.length).to eq(2)
       end
     end
+
+    context "when using skip_groups in request" do
+      it "returns all groups excluding skipped groups" do
+        get api("/groups", admin), skip_groups: [group2.id]
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+      end
+    end
   end
 
   describe "GET /groups/:id" do

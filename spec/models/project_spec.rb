@@ -70,7 +70,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
     describe '#members & #requesters' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -325,8 +325,7 @@ describe Project, models: true do
   end
 
   describe 'last_activity methods' do
-    let(:timestamp) { Time.now - 2.hours }
-    let(:project) { create(:project, created_at: timestamp, updated_at: timestamp) }
+    let(:project) { create(:project, last_activity_at: 2.hours.ago) }
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
@@ -338,7 +337,6 @@ describe Project, models: true do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        expect_any_instance_of(Event).to receive(:try_obtain_lease).and_return(true)
         new_event = create(:event, project: project, created_at: Time.now)
 
         expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
@@ -950,6 +948,14 @@ describe Project, models: true do
         expect(subject).to eq([project2, project1])
       end
     end
+
+    it 'does not take system notes into account' do
+      10.times do
+        create(:note_on_commit, project: project2, system: true)
+      end
+
+      expect(described_class.trending.to_a).to eq([project1, project2])
+    end
   end
 
   describe '.visible_to_user' do
@@ -960,7 +966,7 @@ describe Project, models: true do
 
     describe 'when a user has access to a project' do
       before do
-        project.team.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MASTER)
       end
 
       it { is_expected.to eq([project]) }

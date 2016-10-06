@@ -60,9 +60,8 @@ class MergeConflictResolver {
           $('#conflicts .js-syntax-highlight').syntaxHighlight();
         });
 
-        if (this.vue.diffViewType === 'parallel') {
-          $('.content-wrapper .container-fluid').removeClass('container-limited');
-        }
+        $('.content-wrapper .container-fluid')
+          .toggleClass('container-limited', !this.vue.isParallel && this.vue.fixedLayout);
       })
   }
 

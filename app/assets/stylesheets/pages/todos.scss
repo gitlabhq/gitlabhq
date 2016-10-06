@@ -51,6 +51,7 @@
     -webkit-flex-direction: column;
     flex-direction: column;
     margin-left: 10px;
+    min-width: 55px;
   }
 
   .todo-item {
@@ -120,6 +121,14 @@
   }
 }
 
+@media (max-width: $screen-sm-max) {
+  .todos-filters {
+    .dropdown-menu-toggle {
+      width: 135px;
+    }
+  }
+}
+
 @media (max-width: $screen-xs-max) {
   .todo {
     .avatar {
@@ -139,6 +148,16 @@
       margin: 0;
       border-left: 2px solid #ddd;
       padding-left: 10px;
+    }
+  }
+
+  .todos-filters {
+    .row-content-block {
+      padding-bottom: 50px;
+    }
+
+    .dropdown-menu-toggle {
+      width: 100%;
     }
   }
 }

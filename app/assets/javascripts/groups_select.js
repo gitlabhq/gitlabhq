@@ -5,33 +5,19 @@
     function GroupsSelect() {
       $('.ajax-groups-select').each((function(_this) {
         return function(i, select) {
-          var skip_group, url;
-          skip_group = $(select).data("skip-group");
-          url = $(select).data("url");
+          var skip_ldap, skip_groups;
+          skip_ldap = $(select).hasClass('skip_ldap');
+          skip_groups = $(select).data('skip-groups') || [];
           return $(select).select2({
             placeholder: "Search for a group",
             multiple: $(select).hasClass('multiselect'),
             minimumInputLength: 0,
             query: function(query) {
-              return $.ajax({
-                url: url,
-                data: {
-                  search: query.term,
-                  per_page: 20
-                },
-                dataType: "json"
-              }).done(function(groups) {
-                var data, group, j, len;
+              return Api.groups(query.term, skip_ldap, skip_groups, function(groups) {
+                var data;
                 data = {
-                  results: []
+                  results: groups
                 };
-                for (j = 0, len = groups.length; j < len; j++) {
-                  group = groups[j];
-                  if (skip_group && group.path === skip_group) {
-                    continue;
-                  }
-                  data.results.push(group);
-                }
                 return query.callback(data);
               });
             },

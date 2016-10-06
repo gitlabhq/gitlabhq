@@ -86,6 +86,30 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#cache_merge_request_closes_issues!' do
+    before do
+      subject.project.team << [subject.author, :developer]
+      subject.target_branch = subject.project.default_branch
+    end
+
+    it 'caches closed issues' do
+      issue  = create :issue, project: subject.project
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+
+      expect { subject.cache_merge_request_closes_issues! }.to change(subject.merge_requests_closing_issues, :count).by(1)
+    end
+
+    it 'does not cache issues from external trackers' do
+      subject.project.update_attribute(:has_external_issue_tracker, true)
+      issue  = ExternalIssue.new('JIRA-123', subject.project)
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+
+      expect { subject.cache_merge_request_closes_issues! }.not_to change(subject.merge_requests_closing_issues, :count)
+    end
+  end
+
   describe '#source_branch_sha' do
     let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
 
@@ -284,6 +308,46 @@ describe MergeRequest, models: true do
 
     it "doesn't detect WIP by default" do
       expect(subject.work_in_progress?).to eq false
+    end
+  end
+
+  describe "#wipless_title" do
+    ['WIP ', 'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP [WIP] WIP: WIP '].each do |wip_prefix|
+      it "removes the '#{wip_prefix}' prefix" do
+        wipless_title = subject.title
+        subject.title = "#{wip_prefix}#{subject.title}"
+
+        expect(subject.wipless_title).to eq wipless_title
+      end
+
+      it "is satisfies the #work_in_progress? method" do
+        subject.title = "#{wip_prefix}#{subject.title}"
+        subject.title = subject.wipless_title
+
+        expect(subject.work_in_progress?).to eq false
+      end
+    end
+  end
+
+  describe "#wip_title" do
+    it "adds the WIP: prefix to the title" do
+      wip_title = "WIP: #{subject.title}"
+
+      expect(subject.wip_title).to eq wip_title
+    end
+
+    it "does not add the WIP: prefix multiple times" do
+      wip_title = "WIP: #{subject.title}"
+      subject.title = subject.wip_title
+      subject.title = subject.wip_title
+
+      expect(subject.wip_title).to eq wip_title
+    end
+
+    it "is satisfies the #work_in_progress? method" do
+      subject.title = subject.wip_title
+
+      expect(subject.work_in_progress?).to eq true
     end
   end
 
@@ -576,7 +640,7 @@ describe MergeRequest, models: true do
   end
 
   it_behaves_like 'an editable mentionable' do
-    subject { create(:merge_request) }
+    subject { create(:merge_request, :simple) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
     let(:set_mentionable_text) { ->(txt){ subject.description = txt } }

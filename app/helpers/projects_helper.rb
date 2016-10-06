@@ -139,7 +139,7 @@ module ProjectsHelper
     end
 
     options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
-    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control", data: { field: field }).html_safe
+    content_tag(:select, options, name: "project[project_feature_attributes][#{field}]", id: "project_project_feature_attributes_#{field}", class: "pull-right form-control", data: { field: field }).html_safe
   end
 
   private

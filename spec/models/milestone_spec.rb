@@ -20,10 +20,10 @@ describe Milestone, models: true do
   let(:user) { create(:user) }
 
   describe "#title" do
-    let(:milestone) { create(:milestone, title: "<b>test</b>") }
+    let(:milestone) { create(:milestone, title: "<b>foo & bar -> 2.2</b>") }
 
     it "sanitizes title" do
-      expect(milestone.title).to eq("test")
+      expect(milestone.title).to eq("foo & bar -> 2.2")
     end
   end
 

@@ -624,6 +624,23 @@ describe User, models: true do
     end
   end
 
+  describe '.find_by_ssh_key_id' do
+    context 'using an existing SSH key ID' do
+      let(:user) { create(:user) }
+      let(:key) { create(:key, user: user) }
+
+      it 'returns the corresponding User' do
+        expect(described_class.find_by_ssh_key_id(key.id)).to eq(user)
+      end
+    end
+
+    context 'using an invalid SSH key ID' do
+      it 'returns nil' do
+        expect(described_class.find_by_ssh_key_id(-1)).to be_nil
+      end
+    end
+  end
+
   describe '.by_login' do
     let(:username) { 'John' }
     let!(:user) { create(:user, username: username) }

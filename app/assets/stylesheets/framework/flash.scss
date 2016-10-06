@@ -3,6 +3,8 @@
   margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
+  position: relative;
+  z-index: 1;
 
   .flash-notice {
     @extend .alert;
@@ -19,7 +21,8 @@
   .flash-notice, .flash-alert {
     border-radius: $border-radius-default;
 
-    .container-fluid.container-limited.flash-text {
+    .container-fluid,
+    .container-fluid.container-limited {
       background: transparent;
     }
   }

@@ -74,6 +74,11 @@
           Geo
           %span.light.pull-right
             = boolean_to_icon Gitlab::Geo.enabled?
+        %p
+          Container Registry
+          %span.light.pull-right
+            = boolean_to_icon Gitlab.config.registry.enabled
+
       .col-md-4
         %h4
           Components

@@ -18,6 +18,6 @@
 
     return BlobGitignoreSelector;
 
-  })(TemplateSelector);
+  })(gl.TemplateSelector);
 
 }).call(this);

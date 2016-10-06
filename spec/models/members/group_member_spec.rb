@@ -1,6 +1,33 @@
 require 'spec_helper'
 
 describe GroupMember, models: true do
+  describe '.access_level_roles' do
+    it 'returns Gitlab::Access.options_with_owner' do
+      expect(described_class.access_level_roles).to eq(Gitlab::Access.options_with_owner)
+    end
+  end
+
+  describe '.access_levels' do
+    it 'returns Gitlab::Access.options_with_owner' do
+      expect(described_class.access_levels).to eq(Gitlab::Access.sym_options_with_owner)
+    end
+  end
+
+  describe '.add_users_to_group' do
+    it 'adds the given users to the given group' do
+      group = create(:group)
+      users = create_list(:user, 2)
+
+      described_class.add_users_to_group(
+        group,
+        [users.first.id, users.second],
+        described_class::MASTER
+      )
+
+      expect(group.users).to include(users.first, users.second)
+    end
+  end
+
   describe 'notifications' do
     describe "#after_create" do
       it "sends email to user" do

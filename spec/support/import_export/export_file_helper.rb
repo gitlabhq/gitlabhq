@@ -130,4 +130,8 @@ module ExportFileHelper
 
     (parsed_model_attributes - parent.keys - excluded_attributes).empty?
   end
+
+  def file_permissions(file)
+    File.stat(file).mode & 0777
+  end
 end

@@ -775,6 +775,20 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  context 'POST remove_wip' do
+    it 'removes the wip status' do
+      merge_request.title = merge_request.wip_title
+      merge_request.save
+
+      post :remove_wip,
+           namespace_id: merge_request.project.namespace.to_param,
+           project_id: merge_request.project.to_param,
+           id: merge_request.iid
+
+      expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+    end
+  end
+
   context 'POST resolve_conflicts' do
     let(:json_response) { JSON.parse(response.body) }
     let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }

@@ -64,12 +64,12 @@ describe API::AccessRequests, api: true  do
       context 'when authenticated as a member' do
         %i[developer master].each do |type|
           context "as a #{type}" do
-            it 'returns 400' do
+            it 'returns 403' do
               expect do
                 user = public_send(type)
                 post api("/#{source_type.pluralize}/#{source.id}/access_requests", user)
 
-                expect(response).to have_http_status(400)
+                expect(response).to have_http_status(403)
               end.not_to change { source.requesters.count }
             end
           end
@@ -87,6 +87,20 @@ describe API::AccessRequests, api: true  do
       end
 
       context 'when authenticated as a stranger' do
+        context "when access request is disabled for the #{source_type}" do
+          before do
+            source.update(request_access_enabled: false)
+          end
+
+          it 'returns 403' do
+            expect do
+              post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
+
+              expect(response).to have_http_status(403)
+            end.not_to change { source.requesters.count }
+          end
+        end
+
         it 'returns 201' do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
@@ -181,7 +195,7 @@ describe API::AccessRequests, api: true  do
       end
 
       context 'when authenticated as the access requester' do
-        it 'returns 200' do
+        it 'deletes the access requester' do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
@@ -191,12 +205,22 @@ describe API::AccessRequests, api: true  do
       end
 
       context 'when authenticated as a master/owner' do
-        it 'returns 200' do
+        it 'deletes the access requester' do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", master)
 
             expect(response).to have_http_status(200)
           end.to change { source.requesters.count }.by(-1)
+        end
+
+        context 'user_id matches a member, not an access requester' do
+          it 'returns 404' do
+            expect do
+              delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{developer.id}", master)
+
+              expect(response).to have_http_status(404)
+            end.not_to change { source.requesters.count }
+          end
         end
 
         context 'user_id does not match an existing access requester' do

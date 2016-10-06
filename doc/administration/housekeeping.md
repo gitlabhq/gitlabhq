@@ -12,7 +12,7 @@ revisions (to reduce disk space and increase performance) and removing
 unreachable objects which may have been created from prior invocations of
 `git add`.
 
-You can find this option under your **[Project] > Settings**.
+You can find this option under your **[Project] > Edit Project**.
 
 ---
 

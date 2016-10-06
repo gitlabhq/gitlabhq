@@ -51,9 +51,8 @@ describe 'Issues', feature: true do
 
       expect(page).to have_content "Assignee #{@user.name}"
 
-      first('#s2id_issue_assignee_id').click
-      sleep 2 # wait for ajax stuff to complete
-      first('.user-result').click
+      first('.js-user-search').click
+      click_link 'Unassigned'
 
       click_button 'Save changes'
 

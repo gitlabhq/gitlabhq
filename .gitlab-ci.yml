@@ -1,9 +1,8 @@
-image: "ruby:2.3.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
 
 cache:
   key: "ruby-231"
   paths:
-  - vendor/apt
   - vendor/ruby
 
 variables:
@@ -143,14 +142,13 @@ spinach 9 10: *spinach-knapsack
 
 # Execute all testing suites against Ruby 2.1
 .ruby-21: &ruby-21
-  image: "ruby:2.1"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
     - master
   cache:
     key: "ruby21"
     paths:
-      - vendor/apt
       - vendor/ruby
 
 .rspec-knapsack-ruby21: &rspec-knapsack-ruby21
@@ -211,9 +209,7 @@ rubocop: *exec
 rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flay:
-  <<: *exec
-  allow_failure: yes
+rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
 

@@ -8,31 +8,31 @@
     %b.caret
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
     %li
-      = link_to page_filter_path(sort: sort_value_priority) do
+      = link_to page_filter_path(sort: sort_value_priority, label: true) do
         = sort_title_priority
-      = link_to page_filter_path(sort: sort_value_recently_created) do
+      = link_to page_filter_path(sort: sort_value_recently_created, label: true) do
         = sort_title_recently_created
-      = link_to page_filter_path(sort: sort_value_oldest_created) do
+      = link_to page_filter_path(sort: sort_value_oldest_created, label: true) do
         = sort_title_oldest_created
-      = link_to page_filter_path(sort: sort_value_recently_updated) do
+      = link_to page_filter_path(sort: sort_value_recently_updated, label: true) do
         = sort_title_recently_updated
-      = link_to page_filter_path(sort: sort_value_oldest_updated) do
+      = link_to page_filter_path(sort: sort_value_oldest_updated, label: true) do
         = sort_title_oldest_updated
       - if local_assigns[:type] == :issues
         = link_to page_filter_path(sort: sort_value_more_weight) do
           = sort_title_more_weight
         = link_to page_filter_path(sort: sort_value_less_weight) do
           = sort_title_less_weight
-      = link_to page_filter_path(sort: sort_value_milestone_soon) do
+      = link_to page_filter_path(sort: sort_value_milestone_soon, label: true) do
         = sort_title_milestone_soon
-      = link_to page_filter_path(sort: sort_value_milestone_later) do
+      = link_to page_filter_path(sort: sort_value_milestone_later, label: true) do
         = sort_title_milestone_later
       - if controller.controller_name == 'issues' || controller.action_name == 'issues'
-        = link_to page_filter_path(sort: sort_value_due_date_soon) do
+        = link_to page_filter_path(sort: sort_value_due_date_soon, label: true) do
           = sort_title_due_date_soon
-        = link_to page_filter_path(sort: sort_value_due_date_later) do
+        = link_to page_filter_path(sort: sort_value_due_date_later, label: true) do
           = sort_title_due_date_later
-      = link_to page_filter_path(sort: sort_value_upvotes) do
+      = link_to page_filter_path(sort: sort_value_upvotes, label: true) do
         = sort_title_upvotes
-      = link_to page_filter_path(sort: sort_value_downvotes) do
+      = link_to page_filter_path(sort: sort_value_downvotes, label: true) do
         = sort_title_downvotes
