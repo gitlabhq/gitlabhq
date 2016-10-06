@@ -175,6 +175,7 @@
               // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },
+            vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(user, $el, e) {
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');
@@ -185,7 +186,7 @@
                 selectedId = user.id;
                 return;
               }
-              if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-board-assignee')) {
+              if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-board-sidebar')) {
                 selectedId = user.id;
                 gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
                 gl.issueBoards.BoardsStore.updateFiltersUrl();
@@ -195,7 +196,7 @@
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
-              } else if ($dropdown.hasClass('js-issue-board-assignee')) {
+              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
                 if (user.id) {
                   Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
                     id: user.id,

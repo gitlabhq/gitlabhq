@@ -620,6 +620,17 @@
           selectedObject = this.renderedData[selectedIndex];
         }
       }
+
+      if (this.options.vue) {
+        if (el.hasClass(ACTIVE_CLASS)) {
+          el.removeClass(ACTIVE_CLASS);
+        } else {
+          el.addClass(ACTIVE_CLASS);
+        }
+
+        return selectedObject;
+      }
+
       field = [];
       value = this.options.id ? this.options.id(selectedObject, el) : selectedObject.id;
       if (isInput) {

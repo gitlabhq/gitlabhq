@@ -58,6 +58,10 @@ class ListIssue {
       }
     };
 
+    if (!data.issue.label_ids.length) {
+      data.issue.label_ids = [''];
+    }
+
     return Vue.http.patch(url, data);
   }
 }

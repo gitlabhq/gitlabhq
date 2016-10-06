@@ -101,6 +101,7 @@
             // display:block overrides the hide-collapse rule
             return $value.css('display', '');
           },
+          vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(selected, $el, e) {
             var data, isIssueIndex, isMRIndex, page;
             page = $('body').data('page');

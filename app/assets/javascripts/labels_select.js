@@ -317,6 +317,7 @@
             }
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
+          vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(label, $el, e) {
             var isIssueIndex, isMRIndex, page;
             _this.enableBulkLabelDropdown();
@@ -334,7 +335,7 @@
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
-            if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-boards-label')) {
+            if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-board-sidebar')) {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
               }
@@ -362,7 +363,7 @@
             else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
             }
-            else if ($dropdown.hasClass('js-issue-boards-label')) {
+            else if ($dropdown.hasClass('js-issue-board-sidebar')) {
               if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.detail.issue.labels.push(new ListLabel({
                   id: label.id,
