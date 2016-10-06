@@ -28,6 +28,9 @@
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
 
+  - if content_for?(:head)
+    = yield :head
+
   = javascript_include_tag "application"
 
   - if content_for?(:page_specific_javascripts)

@@ -2,15 +2,16 @@
 - page_title "Deployment Terminal"
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
+= content_for :head do
+  = stylesheet_link_tag "xterm/xterm"
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag("terminal/terminal_bundle.js")
+
+.terminal-container{ class: container_class }
 
   %p.content-block
     Environment:
     %a{href: '#'} add information
 
-  .terminal
-    .line
-      Last login: Thu Oct  6 19:43:41 on ttys003
-    .line
-      \~
-      %span.caret
+  #terminal
