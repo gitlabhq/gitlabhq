@@ -31,6 +31,7 @@ v 8.13.0 (unreleased)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
   - Add configurable email subject suffix (Fu Xu)
+  - Added tooltip to fork count on project show page. (Justin DiPierro)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Replace `alias_method_chain` with `Module#prepend`
   - Enable GitLab Import/Export for non-admin users.
