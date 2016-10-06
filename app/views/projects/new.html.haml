@@ -127,6 +127,11 @@
     }
   });
 
+  $('#new_project').submit(function(){
+    var $path = $('#project_path');
+    $path.val($path.val().trim());
+  });
+
   $('#project_path').keyup(function(){
     if($(this).val().length !=0) {
       $('.btn_import_gitlab_project').attr('disabled', false);
