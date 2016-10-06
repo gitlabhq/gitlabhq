@@ -159,7 +159,8 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @noteable = @issue ||= @project.issues.find_by(iid: params[:id]) || redirect_old
+    # The Sortable default scope causes performance issues when used with find_by
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
