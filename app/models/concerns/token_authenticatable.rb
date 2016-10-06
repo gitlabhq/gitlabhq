@@ -35,6 +35,10 @@ module TokenAuthenticatable
         current_token.blank? ? write_new_token(token_field) : current_token
       end
 
+      define_method("set_#{token_field}") do |token|
+        write_attribute(token_field, token) if token
+      end
+
       define_method("ensure_#{token_field}!") do
         send("reset_#{token_field}!") if read_attribute(token_field).blank?
         read_attribute(token_field)
