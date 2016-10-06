@@ -51,17 +51,15 @@ module GitlabMarkdownHelper
     context[:project] ||= @project
 
     html = Banzai.render(text, context)
+    banzai_postprocess(html, context)
+  end
 
-    context.merge!(
-      current_user:   (current_user if defined?(current_user)),
+  def markdown_field(object, field)
+    object = object.for_display if object.respond_to?(:for_display)
+    return "" unless object.present?
 
-      # RelativeLinkFilter
-      requested_path: @path,
-      project_wiki:   @project_wiki,
-      ref:            @ref
-    )
-
-    Banzai.post_process(html, context)
+    html = Banzai.render_field(object, field)
+    banzai_postprocess(html, object.banzai_render_context(field))
   end
 
   def asciidoc(text)
@@ -195,5 +193,19 @@ module GitlabMarkdownHelper
       aria: { label: options[:title] } do
       icon(options[:icon])
     end
+  end
+
+  # Calls Banzai.post_process with some common context options
+  def banzai_postprocess(html, context)
+    context.merge!(
+      current_user:   (current_user if defined?(current_user)),
+
+      # RelativeLinkFilter
+      requested_path: @path,
+      project_wiki:   @project_wiki,
+      ref:            @ref
+    )
+
+    Banzai.post_process(html, context)
   end
 end

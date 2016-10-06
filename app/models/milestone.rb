@@ -6,11 +6,15 @@ class Milestone < ActiveRecord::Base
   Any = MilestoneStruct.new('Any Milestone', '', -1)
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
 
+  include CacheMarkdownField
   include InternalId
   include Sortable
   include Referable
   include StripAttribute
   include Milestoneish
+
+  cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :description
 
   belongs_to :project
   has_many :issues
