@@ -1,3 +1,11 @@
+require 'constraints/group_url_constrainer'
+
+constraints(GroupUrlConstrainer.new) do
+  scope(path: ':id', as: :group, controller: :groups) do
+    get '/', action: :show
+  end
+end
+
 resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
   member do
     get :issues
