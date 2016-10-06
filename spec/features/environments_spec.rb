@@ -140,6 +140,16 @@ feature 'Environments', feature: true do
             expect(page).to have_content(manual.name)
             expect(manual.reload).to be_pending
           end
+          
+          context 'with external_url' do
+            given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
+            given(:build) { create(:ci_build, pipeline: pipeline) }
+            given(:deployment) { create(:deployment, environment: environment, deployable: build) }
+            
+            scenario 'does show an external link button' do
+              expect(page).to have_selector('.btn.external-url')
+            end
+          end
         end
       end
     end
