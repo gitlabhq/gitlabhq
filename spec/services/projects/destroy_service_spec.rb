@@ -42,6 +42,22 @@ describe Projects::DestroyService, services: true do
     it { expect(Dir.exist?(remove_path)).to be_truthy }
   end
 
+  context 'async delete of project with private issue visibility' do
+    let!(:async) { true }
+
+    before do
+      project.project_feature.update_attribute("issues_access_level", ProjectFeature::PRIVATE)
+      # Run sidekiq immediately to check that renamed repository will be removed
+      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+    end
+
+    it 'deletes the project' do
+      expect(Project.all).not_to include(project)
+      expect(Dir.exist?(path)).to be_falsey
+      expect(Dir.exist?(remove_path)).to be_falsey
+    end
+  end
+
   context 'container registry' do
     before do
       stub_container_registry_config(enabled: true)

@@ -71,9 +71,8 @@
           = render 'shared/members/access_request_buttons', source: @project
           = render "projects/buttons/koding"
 
-        .btn-group.project-repo-btn-group
-          = render 'projects/buttons/download', project: @project, ref: @ref
-          = render 'projects/buttons/dropdown'
+        = render 'projects/buttons/download', project: @project, ref: @ref
+        = render 'projects/buttons/dropdown'
 
         = render 'shared/notifications/button', notification_setting: @notification_setting
 - if @repository.commit

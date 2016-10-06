@@ -24,7 +24,22 @@ class CommitStatus < ActiveRecord::Base
 
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
-  scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
+
+  scope :failed_but_allowed, -> do
+    where(allow_failure: true, status: [:failed, :canceled])
+  end
+
+  scope :exclude_ignored, -> do
+    quoted_when = connection.quote_column_name('when')
+    # We want to ignore failed_but_allowed jobs
+    where("allow_failure = ? OR status IN (?)",
+      false, all_state_names - [:failed, :canceled]).
+      # We want to ignore skipped manual jobs
+      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
+      # We want to ignore skipped on_failure
+      where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+  end
+
   scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
 
@@ -111,7 +126,7 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def ignored?
+  def failed_but_allowed?
     allow_failure? && (failed? || canceled?)
   end
 

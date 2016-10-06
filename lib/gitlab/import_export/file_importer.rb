@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def import
-        FileUtils.mkdir_p(@shared.export_path)
+        mkdir_p(@shared.export_path)
 
         wait_for_archived_file do
           decompress_archive

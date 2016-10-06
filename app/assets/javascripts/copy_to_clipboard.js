@@ -26,15 +26,15 @@
   };
 
   showTooltip = function(target, title) {
-    return $(target).tooltip({
-      container: 'body',
-      html: 'true',
-      placement: 'auto bottom',
-      title: title,
-      trigger: 'manual'
-    }).tooltip('show').one('mouseleave', function() {
-      return $(this).tooltip('hide');
-    });
+    var $target = $(target);
+    var originalTitle = $target.data('original-title');
+
+    $target
+      .attr('title', 'Copied!')
+      .tooltip('fixTitle')
+      .tooltip('show')
+      .attr('title', originalTitle)
+      .tooltip('fixTitle');
   };
 
   $(function() {

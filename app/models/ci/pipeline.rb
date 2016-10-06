@@ -196,7 +196,7 @@ module Ci
     end
 
     def has_warnings?
-      builds.latest.ignored.any?
+      builds.latest.failed_but_allowed.any?
     end
 
     def config_processor

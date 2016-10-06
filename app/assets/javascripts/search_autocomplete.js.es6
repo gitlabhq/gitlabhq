@@ -1,30 +1,21 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+((global) => {
 
-  this.SearchAutocomplete = (function() {
-    var KEYCODE;
+  const KEYCODE = {
+    ESCAPE: 27,
+    BACKSPACE: 8,
+    ENTER: 13,
+    UP: 38,
+    DOWN: 40
+  };
 
-    KEYCODE = {
-      ESCAPE: 27,
-      BACKSPACE: 8,
-      ENTER: 13,
-      UP: 38,
-      DOWN: 40
-    };
-
-    function SearchAutocomplete(opts) {
-      var ref, ref1, ref2, ref3, ref4;
-      if (opts == null) {
-        opts = {};
-      }
-      this.onSearchInputBlur = bind(this.onSearchInputBlur, this);
-      this.onClearInputClick = bind(this.onClearInputClick, this);
-      this.onSearchInputFocus = bind(this.onSearchInputFocus, this);
-      this.onSearchInputClick = bind(this.onSearchInputClick, this);
-      this.onSearchInputKeyUp = bind(this.onSearchInputKeyUp, this);
-      this.onSearchInputKeyDown = bind(this.onSearchInputKeyDown, this);
-      this.wrap = (ref = opts.wrap) != null ? ref : $('.search'), this.optsEl = (ref1 = opts.optsEl) != null ? ref1 : this.wrap.find('.search-autocomplete-opts'), this.autocompletePath = (ref2 = opts.autocompletePath) != null ? ref2 : this.optsEl.data('autocomplete-path'), this.projectId = (ref3 = opts.projectId) != null ? ref3 : this.optsEl.data('autocomplete-project-id') || '', this.projectRef = (ref4 = opts.projectRef) != null ? ref4 : this.optsEl.data('autocomplete-project-ref') || '';
-      // Dropdown Element
+  class SearchAutocomplete {
+    constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
+      this.bindEventContext();
+      this.wrap = wrap || $('.search');
+      this.optsEl = optsEl || this.wrap.find('.search-autocomplete-opts');
+      this.autocompletePath = autocompletePath || this.optsEl.data('autocomplete-path');
+      this.projectId = projectId || (this.optsEl.data('autocomplete-project-id') || '');
+      this.projectRef = projectRef || (this.optsEl.data('autocomplete-project-ref') || '');
       this.dropdown = this.wrap.find('.dropdown');
       this.dropdownContent = this.dropdown.find('.dropdown-content');
       this.locationBadgeEl = this.getElement('.location-badge');
@@ -46,19 +37,27 @@
     }
 
     // Finds an element inside wrapper element
-    SearchAutocomplete.prototype.getElement = function(selector) {
+    bindEventContext() {
+      this.onSearchInputBlur = this.onSearchInputBlur.bind(this);
+      this.onClearInputClick = this.onClearInputClick.bind(this);
+      this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
+      this.onSearchInputClick = this.onSearchInputClick.bind(this);
+      this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
+      this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
+    }
+    getElement(selector) {
       return this.wrap.find(selector);
-    };
+    }
 
-    SearchAutocomplete.prototype.saveOriginalState = function() {
+    saveOriginalState() {
       return this.originalState = this.serializeState();
-    };
+    }
 
-    SearchAutocomplete.prototype.saveTextLength = function() {
+    saveTextLength() {
       return this.lastTextLength = this.searchInput.val().length;
-    };
+    }
 
-    SearchAutocomplete.prototype.createAutocomplete = function() {
+    createAutocomplete() {
       return this.searchInput.glDropdown({
         filterInputBlur: false,
         filterable: true,
@@ -73,9 +72,9 @@
         selectable: true,
         clicked: this.onClick.bind(this)
       });
-    };
+    }
 
-    SearchAutocomplete.prototype.getData = function(term, callback) {
+    getData(term, callback) {
       var _this, contents, jqXHR;
       _this = this;
       if (!term) {
@@ -138,9 +137,9 @@
       }).always(function() {
         return _this.loadingSuggestions = false;
       });
-    };
+    }
 
-    SearchAutocomplete.prototype.getCategoryContents = function() {
+    getCategoryContents() {
       var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, utils;
       userId = gon.current_user_id;
       utils = gl.utils, projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
@@ -173,9 +172,9 @@
         items.splice(0, 1);
       }
       return items;
-    };
+    }
 
-    SearchAutocomplete.prototype.serializeState = function() {
+    serializeState() {
       return {
         // Search Criteria
         search_project_id: this.projectInputEl.val(),
@@ -186,9 +185,9 @@
         // Location badge
         _location: this.locationBadgeEl.text()
       };
-    };
+    }
 
-    SearchAutocomplete.prototype.bindEvents = function() {
+    bindEvents() {
       this.searchInput.on('keydown', this.onSearchInputKeyDown);
       this.searchInput.on('keyup', this.onSearchInputKeyUp);
       this.searchInput.on('click', this.onSearchInputClick);
@@ -200,9 +199,9 @@
           return _this.searchInput.focus();
         };
       })(this));
-    };
+    }
 
-    SearchAutocomplete.prototype.enableAutocomplete = function() {
+    enableAutocomplete() {
       var _this;
       // No need to enable anything if user is not logged in
       if (!gon.current_user_id) {
@@ -216,12 +215,12 @@
       }
     };
 
-    SearchAutocomplete.prototype.onSearchInputKeyDown = function() {
       // Saves last length of the entered text
+    onSearchInputKeyDown() {
       return this.saveTextLength();
-    };
+    }
 
-    SearchAutocomplete.prototype.onSearchInputKeyUp = function(e) {
+    onSearchInputKeyUp(e) {
       switch (e.keyCode) {
         case KEYCODE.BACKSPACE:
           // when trying to remove the location badge
@@ -259,54 +258,53 @@
           }
       }
       this.wrap.toggleClass('has-value', !!e.target.value);
-    };
+    }
 
     // Avoid falsy value to be returned
-    SearchAutocomplete.prototype.onSearchInputClick = function(e) {
-      // Prevents closing the dropdown menu
+    onSearchInputClick(e) {
       return e.stopImmediatePropagation();
-    };
+    }
 
-    SearchAutocomplete.prototype.onSearchInputFocus = function() {
+    onSearchInputFocus() {
       this.isFocused = true;
       this.wrap.addClass('search-active');
       if (this.getValue() === '') {
         return this.getData();
       }
-    };
+    }
 
-    SearchAutocomplete.prototype.getValue = function() {
+    getValue() {
       return this.searchInput.val();
-    };
+    }
 
-    SearchAutocomplete.prototype.onClearInputClick = function(e) {
+   onClearInputClick(e) {
       e.preventDefault();
       return this.searchInput.val('').focus();
-    };
+    }
 
-    SearchAutocomplete.prototype.onSearchInputBlur = function(e) {
+   onSearchInputBlur(e) {
       this.isFocused = false;
       this.wrap.removeClass('search-active');
       // If input is blank then restore state
       if (this.searchInput.val() === '') {
         return this.restoreOriginalState();
       }
-    };
+    }
 
-    SearchAutocomplete.prototype.addLocationBadge = function(item) {
+    addLocationBadge(item) {
       var badgeText, category, value;
       category = item.category != null ? item.category + ": " : '';
       value = item.value != null ? item.value : '';
       badgeText = "" + category + value;
       this.locationBadgeEl.text(badgeText).show();
       return this.wrap.addClass('has-location-badge');
-    };
+    }
 
-    SearchAutocomplete.prototype.hasLocationBadge = function() {
+    hasLocationBadge() {
       return this.wrap.is('.has-location-badge');
     };
 
-    SearchAutocomplete.prototype.restoreOriginalState = function() {
+    restoreOriginalState() {
       var i, input, inputs, len;
       inputs = Object.keys(this.originalState);
       for (i = 0, len = inputs.length; i < len; i++) {
@@ -320,13 +318,13 @@
           value: this.originalState._location
         });
       }
-    };
+    }
 
-    SearchAutocomplete.prototype.badgePresent = function() {
+    badgePresent() {
       return this.locationBadgeEl.length;
-    };
+    }
 
-    SearchAutocomplete.prototype.resetSearchState = function() {
+    resetSearchState() {
       var i, input, inputs, len, results;
       inputs = Object.keys(this.originalState);
       results = [];
@@ -339,30 +337,30 @@
         results.push(this.getElement("#" + input).val(''));
       }
       return results;
-    };
+    }
 
-    SearchAutocomplete.prototype.removeLocationBadge = function() {
+    removeLocationBadge() {
       this.locationBadgeEl.hide();
       this.resetSearchState();
       this.wrap.removeClass('has-location-badge');
       return this.disableAutocomplete();
-    };
+    }
 
-    SearchAutocomplete.prototype.disableAutocomplete = function() {
+    disableAutocomplete() {
       if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('open')) {
         this.searchInput.addClass('disabled');
         this.dropdown.removeClass('open').trigger('hidden.bs.dropdown');
         this.restoreMenu();
       }
-    };
+    }
 
-    SearchAutocomplete.prototype.restoreMenu = function() {
+    restoreMenu() {
       var html;
       html = "<ul> <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li> </ul>";
       return this.dropdownContent.html(html);
     };
 
-    SearchAutocomplete.prototype.onClick = function(item, $el, e) {
+    onClick(item, $el, e) {
       if (location.pathname.indexOf(item.url) !== -1) {
         e.preventDefault();
         if (!this.badgePresent) {
@@ -385,9 +383,9 @@
       }
     };
 
-    return SearchAutocomplete;
+  }
 
-  })();
+  global.SearchAutocomplete = SearchAutocomplete;
 
   $(function() {
     var $projectOptionsDataEl = $('.js-search-project-options');
@@ -408,16 +406,16 @@
 
     if ($groupOptionsDataEl.length) {
       gl.groupOptions = gl.groupOptions || {};
-       
+
       var groupPath = $groupOptionsDataEl.data('group-path');
-   
+
       gl.groupOptions[groupPath] = {
         name: $groupOptionsDataEl.data('name'),
         issuesPath: $groupOptionsDataEl.data('issues-path'),
         mrPath: $groupOptionsDataEl.data('mr-path')
       };
     }
-   
+
     if ($dashboardOptionsDataEl.length) {
       gl.dashboardOptions = {
         issuesPath: $dashboardOptionsDataEl.data('issues-path'),
@@ -426,4 +424,4 @@
     }
   });
 
-}).call(this);
+})(window.gl || (window.gl = {}));

@@ -1147,6 +1147,10 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
+  def create_ref(ref, ref_path)
+    fetch_ref(path_to_repo, ref, ref_path)
+  end
+
   def update_branch_with_hooks(current_user, branch)
     update_autocrlf_option
 

@@ -221,7 +221,7 @@ time.
 *Note: The following commands are run without root privileges. You should be
 able to run docker with your regular user account.*
 
-First start with creating a file named `build script`:
+First start with creating a file named `build_script`:
 
 ```bash
 cat <<EOF > build_script

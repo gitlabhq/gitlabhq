@@ -1,6 +1,8 @@
 module Gitlab
   module ImportExport
     module CommandLineUtil
+      DEFAULT_MODE = 0700
+
       def tar_czf(archive:, dir:)
         tar_with_options(archive: archive, dir: dir, options: 'czf')
       end
@@ -19,6 +21,11 @@ module Gitlab
 
       def git_restore_hooks
         execute(%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
+      end
+
+      def mkdir_p(path)
+        FileUtils.mkdir_p(path, mode: DEFAULT_MODE)
+        FileUtils.chmod(DEFAULT_MODE, path)
       end
 
       private
@@ -45,7 +52,7 @@ module Gitlab
         # if we are copying files, create the destination folder
         destination_folder = File.file?(source) ? File.dirname(destination) : destination
 
-        FileUtils.mkdir_p(destination_folder)
+        mkdir_p(destination_folder)
         FileUtils.copy_entry(source, destination)
         true
       end

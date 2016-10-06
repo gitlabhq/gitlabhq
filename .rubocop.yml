@@ -453,6 +453,10 @@ Style/VariableName:
   EnforcedStyle: snake_case
   Enabled: true
 
+# Use the configured style when numbering variables.
+Style/VariableNumber:
+  Enabled: false
+
 # Use when x then ... for one-line cases.
 Style/WhenThen:
   Enabled: true

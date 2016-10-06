@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
+  - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
   - Fix centering of custom header logos (Ashley Dumaine)
@@ -8,17 +9,22 @@ v 8.13.0 (unreleased)
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
   - Speed-up group milestones show page
+  - Keep refs for each deployment
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
   - Expose expires_at field when sharing project on API
+  - Fix VueJS template tags being rendered in code comments
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
   - Allow the Koding integration to be configured through the API
   - Added soft wrap button to repository file/blob editor
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
+  - Fix todos page mobile viewport layout (ClemMakesApps)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
+  - Fix that manual jobs would no longer block jobs in the next stage. !6604
   - Add configurable email subject suffix (Fu Xu)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Replace `alias_method_chain` with `Module#prepend`
@@ -27,10 +33,14 @@ v 8.13.0 (unreleased)
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
+  - Prevent flash alert text from being obscured when container is fluid
+  - Append issue template to existing description !6149 (Joseph Frazier)
+  - Trending projects now only show public projects and the list of projects is cached for a day
   - Revoke button in Applications Settings underlines on hover.
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
   - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
+  - Stop using a Redis lease when updating the project activity timestamp whenever a new event is created
   - Add broadcast messages and alerts below sub-nav
   - Better empty state for Groups view
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
@@ -40,16 +50,35 @@ v 8.13.0 (unreleased)
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
+  - Reduce queries needed to find users using their SSH keys when pushing commits
+  - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
+  - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
-  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
+  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
+  - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
+  - Grouped pipeline dropdown is a scrollable container
 
-v 8.12.4 (unreleased)
+v 8.12.5 (unreleased)
+
+v 8.12.4
+  - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. !6294 (lukehowell)
+  - Fix padding in build sidebar. !6506
+  - Changed compare dropdowns to dropdowns with isolated search input. !6550
+  - Fix race condition on LFS Token. !6592
+  - Fix type mismatch bug when closing Jira issue. !6619
+  - Fix lint-doc error. !6623
+  - Skip wiki creation when GitHub project has wiki enabled. !6665
+  - Fix issues importing services via Import/Export. !6667
+  - Restrict failed login attempts for users with 2FA enabled. !6668
+  - Fix failed project deletion when feature visibility set to private. !6688
+  - Prevent claiming associated model IDs via import.
+  - Set GitLab project exported file permissions to owner only
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
 
-v 8.12.2 (unreleased)
+v 8.12.2
   - Fix Import/Export not recognising correctly the imported services.
   - Fix snippets pagination
   - Fix "Create project" button layout when visibility options are restricted
@@ -64,6 +93,7 @@ v 8.12.2 (unreleased)
   - Only update issuable labels if they have been changed
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
+  - Refactor remnants of CoffeeScript destructured opts and super !6261
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
@@ -104,6 +134,7 @@ v 8.12.0
   - Fix long comments in diffs messing with table width
   - Add spec covering 'Gitlab::Git::committer_hash' !6433 (dandunckelman)
   - Fix pagination on user snippets page
+  - Honor "fixed layout" preference in more places !6422
   - Run CI builds with the permissions of users !5735
   - Fix sorting of issues in API
   - Fix download artifacts button links !6407
@@ -120,6 +151,7 @@ v 8.12.0
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Show all pipelines for merge requests even from discarded commits !6414
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
+  - Changed MR widget build status to pipeline status !6335
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
@@ -143,6 +175,7 @@ v 8.12.0
   - Increase ci_builds artifacts_size column to 8-byte integer to allow larger files
   - Add textarea autoresize after comment (ClemMakesApps)
   - Do not write SSH public key 'comments' to authorized_keys !6381
+  - Add due date to issue todos
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Hides merge request button on branches page is user doesn't have permissions

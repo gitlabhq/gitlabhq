@@ -11,7 +11,7 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  after_save :keep_around_commit
+  after_save :create_ref
 
   def commit
     project.commit(sha)
@@ -29,8 +29,8 @@ class Deployment < ActiveRecord::Base
     self == environment.last_deployment
   end
 
-  def keep_around_commit
-    project.repository.keep_around(self.sha)
+  def create_ref
+    project.repository.create_ref(ref, ref_path)
   end
 
   def manual_actions
@@ -75,5 +75,11 @@ class Deployment < ActiveRecord::Base
       where(environments: { name: self.environment.name }, ref: self.ref).
       where.not(id: self.id).
       take
+  end
+
+  private
+
+  def ref_path
+    File.join(environment.ref_path, 'deployments', id.to_s)
   end
 end

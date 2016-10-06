@@ -320,6 +320,16 @@ describe Repository, models: true do
     end
   end
 
+  describe '#create_ref' do
+    it 'redirects the call to fetch_ref' do
+      ref, ref_path = '1', '2'
+
+      expect(repository).to receive(:fetch_ref).with(repository.path_to_repo, ref, ref_path)
+
+      repository.create_ref(ref, ref_path)
+    end
+  end
+
   describe "#changelog" do
     before do
       repository.send(:cache).expire(:changelog)

@@ -106,13 +106,17 @@ module Banzai
         project = context[:project]
         author = context[:author]
 
-        url = urls.namespace_project_url(project.namespace, project,
-                                         only_path: context[:only_path])
+        if author && !project.team.member?(author)
+          link_text
+        else
+          url = urls.namespace_project_url(project.namespace, project,
+                                           only_path: context[:only_path])
 
-        data = data_attribute(project: project.id, author: author.try(:id))
-        text = link_text || User.reference_prefix + 'all'
+          data = data_attribute(project: project.id, author: author.try(:id))
+          text = link_text || User.reference_prefix + 'all'
 
-        link_tag(url, data, text, 'All Project and Group Members')
+          link_tag(url, data, text, 'All Project and Group Members')
+        end
       end
 
       def link_to_namespace(namespace, link_text: nil)

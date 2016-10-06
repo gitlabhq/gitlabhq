@@ -7,6 +7,8 @@ module Projects
     def execute
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
+      @skip_wiki = params.delete(:skip_wiki)
+
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
@@ -92,7 +94,7 @@ module Projects
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
       unless @project.gitlab_project_import?
-        @project.create_wiki if @project.feature_available?(:wiki, current_user)
+        @project.create_wiki unless skip_wiki?
         @project.build_missing_services
 
         @project.create_labels
@@ -111,6 +113,10 @@ module Projects
         push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
         project.push_rule = push_rule
       end
+    end
+
+    def skip_wiki?
+      !@project.feature_available?(:wiki, current_user) || @skip_wiki
     end
 
     def save_project_and_import_data(import_data)

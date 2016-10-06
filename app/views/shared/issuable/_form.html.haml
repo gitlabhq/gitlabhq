@@ -1,3 +1,4 @@
+- project = @target_project || @project
 = form_errors(issuable)
 
 - if @conflict
@@ -82,38 +83,22 @@
         = f.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-                placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
-                selected: issuable.assignee_id, project: @target_project || @project,
-                first_user: true, current_user: true, include_blank: true)
-          %div
-            = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'
+            - if issuable.assignee_id
+              = f.hidden_field :assignee_id
+            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
+              placeholder: "Search assignee", data: { first_user: current_user.try(:username), null_user: true, current_user: true, project_id: project.try(:id), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee", show_menu_above: true } })
       .form-group.issue-milestone
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
-          - if milestone_options(issuable).present?
-            .issuable-form-select-holder
-              = f.select(:milestone_id, milestone_options(issuable),
-                { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
-          - else
-            .prepend-top-10
-            %span.light No open milestones available.
-          - if can? current_user, :admin_milestone, issuable.project
-            %div
-              = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+          .issuable-form-select-holder
+            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_menu_above: true, show_upcoming: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input"
       .form-group
         - has_labels = issuable.project.labels.any?
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
+        = f.hidden_field :label_ids, multiple: true, value: ''
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
-          - if has_labels
-            .issuable-form-select-holder
-              = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-                { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
-          - else
-            %span.light No labels yet.
-          - if can? current_user, :admin_label, issuable.project
-            %div
-              = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+          .issuable-form-select-holder
+            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }
 
       - if issuable.respond_to?(:weight)
         .form-group
@@ -122,6 +107,7 @@
           .col-sm-10{ class: ("col-lg-8" if has_due_date) }
             = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
               { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
+
     - if has_due_date
       .col-lg-6
         .form-group

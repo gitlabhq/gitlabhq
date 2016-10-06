@@ -110,9 +110,10 @@ module Gitlab
       def create_relation(relation, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: relation_hash.merge('project_id' => restored_project.id),
+                                                       relation_hash: relation_hash,
                                                        members_mapper: members_mapper,
-                                                       user: @user)
+                                                       user: @user,
+                                                       project_id: restored_project.id)
         end
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
