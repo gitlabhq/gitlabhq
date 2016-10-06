@@ -59,13 +59,21 @@ v 8.13.0 (unreleased)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
   - Grouped pipeline dropdown is a scrollable container
 
-v 8.12.4 (unreleased)
-  - Fix type mismatch bug when closing Jira issue
-  - Skip wiki creation when GitHub project has wiki enabled
-  - Fix failed project deletion when feature visibility set to private
-  - Fix issues importing services via Import/Export
-  - Restrict failed login attempts for users with 2FA enabled
-  - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
+v 8.12.5 (unreleased)
+
+v 8.12.4
+  - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. !6294 (lukehowell)
+  - Fix padding in build sidebar. !6506
+  - Changed compare dropdowns to dropdowns with isolated search input. !6550
+  - Fix race condition on LFS Token. !6592
+  - Fix type mismatch bug when closing Jira issue. !6619
+  - Fix lint-doc error. !6623
+  - Skip wiki creation when GitHub project has wiki enabled. !6665
+  - Fix issues importing services via Import/Export. !6667
+  - Restrict failed login attempts for users with 2FA enabled. !6668
+  - Fix failed project deletion when feature visibility set to private. !6688
+  - Prevent claiming associated model IDs via import.
+  - Set GitLab project exported file permissions to owner only
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
