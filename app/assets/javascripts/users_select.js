@@ -48,7 +48,7 @@
           $block.on('click', '.js-assign-yourself', function(e) {
             e.preventDefault();
 
-            if ($dropdown.hasClass('js-issue-board-assignee')) {
+            if ($dropdown.hasClass('js-issue-board-sidebar')) {
               Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
                 id: _this.currentUser.id,
                 username: _this.currentUser.username,

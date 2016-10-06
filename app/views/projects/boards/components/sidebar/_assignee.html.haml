@@ -28,7 +28,7 @@
         ":value" => "issue.assignee.id",
         "v-if" => "issue.assignee" }
       .dropdown
-        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-issue-board-sidebar{ data: { toggle: "dropdown", field_name: "issue[assignee_id]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, field_name: "issue[assignee_id]", null_user: "true" },
+        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-issue-board-sidebar{ data: { toggle: "dropdown", field_name: "issue[assignee_id]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true" },
           ":data-issuable-id" => "issue.id",
           ":data-issue-update" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '.json'" }
           Select assignee
