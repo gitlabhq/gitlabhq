@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160926145521) do
+ActiveRecord::Schema.define(version: 20161006104309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -392,11 +392,12 @@ ActiveRecord::Schema.define(version: 20160926145521) do
 
   create_table "environments", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "name",             null: false
+    t.string   "name",                                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "external_url"
     t.string   "environment_type"
+    t.string   "state",            default: "opened", null: false
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree

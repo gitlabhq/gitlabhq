@@ -14,7 +14,6 @@
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
           - if @environment.opened? && last_deployment.try(:close_action)
             = link_to 'Close', [:play, @project.namespace.becomes(Namespace), @project, last_deployment.close_action], data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
-          = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to delete this environment?' }, class: 'btn btn-danger', method: :delete
 
   - if @deployments.blank?
     .blank-state.blank-state-no-icon
