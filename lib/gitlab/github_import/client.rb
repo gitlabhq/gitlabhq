@@ -102,9 +102,19 @@ module Gitlab
       def request(method, *args, &block)
         sleep rate_limit_sleep_time if rate_limit_exceed?
 
-        data = api.send(method, *args, &block)
-        yield data
+        data = api.send(method, *args)
+        return data unless data.is_a?(Array)
 
+        if block_given?
+          yield data
+          each_response_page(&block)
+        else
+          each_response_page { |page| data.concat(page) }
+          data
+        end
+      end
+
+      def each_response_page
         last_response = api.last_response
 
         while last_response.rels[:next]
