@@ -1,7 +1,23 @@
-Project: <%= @project.path_with_namespace %>
-Branch: <%= @pipeline.ref %>
-Commit: <%= @pipeline.short_sha %> (<%= @pipeline.sha %>)
-Commit Message: <%= @pipeline.git_commit_message %>
-Commit Author: <%= @pipeline.git_author_name %>
-Pusher: <%= @pipeline.user.try(:name) %>
-Pipeline #<%= @pipeline.id %> had succeeded.
+Success! Your CI pipeline has passed.
+
+Project: <%= @project.name %> ( <%= namespace_project_url(@project.namespace, @project) %> )
+Branch: <%= @pipeline.ref %> ( <%= namespace_project_commits_url(@project.namespace, @project, @pipeline.ref) %> )
+<% if @merge_request -%>
+Merge Request: <%= @merge_request.to_reference %> ( <%= namespace_project_merge_request_url(@project.namespace, @project, @merge_request) %> )
+<% end -%>
+
+Commit: <%= @pipeline.short_sha %> ( <%= namespace_project_commit_url(@project.namespace, @project, @pipeline.sha) %> )
+Commit Message: <%= @pipeline.git_commit_message.truncate(50) %>
+<% commit = @pipeline.commit -%>
+<% if commit.author.nil? -%>
+Commit Author: <%= commit.author_name %>
+<% else -%>
+Commit Author: <%= commit.author.name %> ( <%= user_url(commit.author) %> )
+<% end -%>
+
+<% build_count = @pipeline.statuses.latest.size -%>
+<% stage_count = @pipeline.stages.size -%>
+Pipeline #<%= @pipeline.id %> ( <%= namespace_project_pipeline_url(@project.namespace, @project, @pipeline.id) %> ) successfully completed <%= build_count %> <%= 'build'.pluralize(build_count) %> in <%= stage_count %> <%= 'stage'.pluralize(stage_count) %>.
+
+Manage all notifications: <%= profile_notifications_url %>
+Help: <%= help_url %>
