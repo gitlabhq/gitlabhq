@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe NamespaceUrlConstrainer, lib: true do
   let!(:group) { create(:group, path: 'gitlab') }
-  subject { NamespaceUrlConstrainer.new }
 
   describe '#matches?' do
     context 'existing namespace' do
