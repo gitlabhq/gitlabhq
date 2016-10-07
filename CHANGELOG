@@ -48,6 +48,7 @@ v 8.13.0 (unreleased)
   - Prevent flash alert text from being obscured when container is fluid
   - Append issue template to existing description !6149 (Joseph Frazier)
   - Trending projects now only show public projects and the list of projects is cached for a day
+  - Memoize Gitlab Shell's secret token (!6599, Justin DiPierro)
   - Revoke button in Applications Settings underlines on hover.
   - Use higher size on Gitlab::Redis connection pool on Sidekiq servers
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
