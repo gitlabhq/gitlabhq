@@ -316,12 +316,11 @@
         &::before {
           content: '';
           position: absolute;
-          top: 50%;
+          top: 49%;
           left: -48px;
           border-top: 2px solid $border-color;
           width: 48px;
           height: 1px;
-          margin-top: -1px;
         }
       }
     }
@@ -494,12 +493,11 @@
       &::after {
         content: '';
         position: absolute;
-        top: 50%;
+        top: 49%;
         right: -48px;
         border-top: 2px solid $border-color;
         width: 48px;
         height: 1px;
-        margin-top: -1px;
       }
     }
 
@@ -591,7 +589,7 @@
       width: 21px;
       height: 25px;
       position: absolute;
-      top: -32.5px;
+      top: -31px;
       border-top: 2px solid $border-color;
     }
 
