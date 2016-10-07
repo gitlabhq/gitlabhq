@@ -902,7 +902,7 @@ class User < ActiveRecord::Base
       if domain_matches?(allowed_domains, self.email)
         valid = true
       else
-        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        error = "domain is not authorized for sign-up"
         valid = false
       end
     end
