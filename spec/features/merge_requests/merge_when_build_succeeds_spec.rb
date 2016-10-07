@@ -58,7 +58,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
                                                   merge_when_build_succeeds: true)
     end
 
-    background do
+    let!(:build) do
       create(:ci_build, pipeline: pipeline)
     end
 
@@ -72,7 +72,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
 
       expect(page).to have_button "Merge When Build Succeeds"
 
-      visit_merge_request(merge_request) # Needed to refresh the page
+      visit_merge_request(merge_request) # refresh the page
       expect(page).to have_content "Canceled the automatic merge"
     end
 
@@ -81,6 +81,17 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
 
       click_link "Remove Source Branch When Merged"
       expect(page).to have_content "The source branch will be removed"
+    end
+
+    context 'when build succeeds' do
+      background { build.success }
+
+      it 'merges merge request' do
+        visit_merge_request(merge_request) # refresh the page
+
+        expect(page).to have_content 'The changes were merged'
+        expect(merge_request.reload).to be_merged
+      end
     end
   end
 
