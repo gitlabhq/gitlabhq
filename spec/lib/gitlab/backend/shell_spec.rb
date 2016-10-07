@@ -30,6 +30,7 @@ describe Gitlab::Shell, lib: true do
       allow(Gitlab.config.gitlab_shell).to receive(:secret_file).and_return(secret_file)
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-secret-test')
       FileUtils.mkdir('tmp/tests/shell-secret-test')
+      Gitlab::Shell.ensure_secret_token!
     end
 
     after do
