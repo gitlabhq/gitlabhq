@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Issues csv', feature: true do
   let(:user)    { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let!(:issue)  { create(:issue, project: project) }
 
   before { login_as(user) }
@@ -10,7 +10,17 @@ describe 'Issues csv', feature: true do
   it "downloads from a project's issue index" do
     visit namespace_project_issues_path(project.namespace, project)
     click_on 'Download CSV'
+
     expect(page.response_headers['Content-Type']).to include('csv')
+  end
+
+  it 'ignores pagination' do
+    create_list(:issue, 30, project: project)
+
+    visit namespace_project_issues_path(project.namespace, project)
+    click_on 'Download CSV'
+
+    expect(csv.count).to eq 31
   end
 
   context 'includes' do
@@ -55,6 +65,7 @@ describe 'Issues csv', feature: true do
   context 'with minimal details' do
     it 'renders labels as nil' do
       visit namespace_project_issues_path(project.namespace, project, format: :csv)
+
       expect(csv[0]['Labels']).to eq nil
     end
   end

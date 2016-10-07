@@ -25,11 +25,14 @@ class Projects::IssuesController < Projects::ApplicationController
   def index
     @collection_type    = "Issue"
     @issues             = issues_collection
-    @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues)
 
-    if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages))
+    if !request.format.csv?
+      @issues = @issues.page(params[:page])
+      @issuable_meta_data = issuable_meta_data(@issues)
+
+      if @issues.out_of_range? && @issues.total_pages != 0
+        return redirect_to url_for(params.merge(page: @issues.total_pages))
+      end
     end
 
     if params[:label_name].present?
