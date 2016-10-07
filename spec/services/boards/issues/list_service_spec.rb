@@ -70,7 +70,7 @@ describe Boards::Issues::ListService, services: true do
       end
     end
 
-    context 'with list that does not belongs to the board' do
+    context 'with list that does not belong to the board' do
       it 'raises an error' do
         list = create(:list)
         service = described_class.new(project, user, board_id: board.id, id: list.id)
