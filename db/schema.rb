@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160926145521) do
+ActiveRecord::Schema.define(version: 20161007133303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1070,6 +1070,12 @@ ActiveRecord::Schema.define(version: 20160926145521) do
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
   add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
 
+  create_table "trending_projects", force: :cascade do |t|
+    t.integer "project_id", null: false
+  end
+
+  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", using: :btree
+
   create_table "u2f_registrations", force: :cascade do |t|
     t.text     "certificate"
     t.string   "key_handle"
@@ -1212,5 +1218,6 @@ ActiveRecord::Schema.define(version: 20160926145521) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
+  add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
 end
