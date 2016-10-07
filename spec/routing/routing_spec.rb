@@ -266,7 +266,9 @@ describe "Groups", "routing" do
   end
 
   it "also display group#show on the short path" do
-    expect(get('/1')).to route_to('namespaces#show', id: '1')
+    allow(Group).to receive(:find_by_path).and_return(true)
+
+    expect(get('/1')).to route_to('groups#show', id: '1')
   end
 end
 

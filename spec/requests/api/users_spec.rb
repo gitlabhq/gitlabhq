@@ -90,9 +90,9 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns a 404 if invalid ID" do
+    it "returns a 400 if invalid ID" do
       get api("/users/1ASDF", user)
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(400)
     end
   end
 

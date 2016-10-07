@@ -73,5 +73,9 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+
+    route :any, '*path' do
+      error!('400 Bad Request', 400)
+    end
   end
 end
