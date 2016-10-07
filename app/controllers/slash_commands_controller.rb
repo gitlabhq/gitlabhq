@@ -3,7 +3,7 @@ class SlashCommandsController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   skip_before_action :authenticate_user!
-  before_action :project
+  before_action :find_project
 
   def trigger
     if service
@@ -22,13 +22,22 @@ class SlashCommandsController < ApplicationController
     }
   end
 
-  def project
+  def project_not_found(path)
+    {
+      response_type: :ephemeral,
+      text: "We were unable to find a project for: ${path}"
+    }
+  end
+
+  def find_project
     path = "#{params[:team_domain]}/#{params[:channel_name]}"
     @project = Project.find_with_namespace(path)
+
+    render json: project_not_found(path) unless can?(user, :read_project, @project)
   end
 
   def user
-    User.find_by(username: params[:user_name])
+    @user ||= User.find_by(username: params[:user_name])
   end
 
   def service
