@@ -1,6 +1,7 @@
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
+  include AfterCommitQueue
 
   self.table_name = 'ci_builds'
 
@@ -84,20 +85,6 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition do |commit_status, transition|
-      commit_status.pipeline.try do |pipeline|
-        break if transition.loopback?
-
-        if commit_status.complete?
-          ProcessPipelineWorker.perform_async(pipeline.id)
-        end
-
-        UpdatePipelineWorker.perform_async(pipeline.id)
-      end
-
-      true
-    end
-
     after_transition [:created, :pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
     end
@@ -105,9 +92,25 @@ class CommitStatus < ActiveRecord::Base
     after_transition any => :failed do |commit_status|
       MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
     end
+
+    after_transition do: :schedule_pipeline_update
   end
 
   delegate :sha, :short_sha, to: :pipeline
+
+  def schedule_pipeline_update
+    run_after_commit(:process_pipeline!)
+  end
+
+  def process_pipeline!
+    pipeline.try do |pipeline|
+      if complete?
+        ProcessPipelineWorker.perform_async(pipeline.id)
+      else
+        UpdatePipelineWorker.perform_async(pipeline.id)
+      end
+    end
+  end
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
