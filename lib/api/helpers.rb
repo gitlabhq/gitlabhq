@@ -25,7 +25,7 @@ module API
     # Until CSRF protection is added to the API, disallow this method for
     # state-changing endpoints
     def find_user_from_warden
-      warden.try(:authenticate) if request.get? || request.head?
+      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
     end
 
     def find_user_by_private_token
