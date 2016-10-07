@@ -12,6 +12,7 @@ entry.
 - Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix Markdown styling inside reference links (Jan Zdráhal)
+- Create new issue board list after creating a new label
 - Fix extra space on Build sidebar on Firefox !7060
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
