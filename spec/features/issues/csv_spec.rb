@@ -23,6 +23,13 @@ describe 'Issues csv', feature: true do
     expect(csv.count).to eq 31
   end
 
+  it 'uses filters from issue index' do
+    visit namespace_project_issues_path(project.namespace, project, state: :closed)
+    click_on 'Download CSV'
+
+    expect(csv.count).to eq 0
+  end
+
   context 'includes' do
     let(:label1)    { create(:label, project: project, title: 'Feature') }
     let(:label2)    { create(:label, project: project, title: 'labels') }

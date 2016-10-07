@@ -19,6 +19,7 @@
 #
 class IssuableFinder
   NONE = '0'
+  VALID_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort)
 
   attr_accessor :current_user, :params
 
