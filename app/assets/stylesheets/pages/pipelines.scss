@@ -139,6 +139,11 @@
   .icon-container {
     display: inline-block;
     width: 10px;
+
+    &.commit-icon {
+      width: 15px;
+      text-align: center;
+    }
   }
 
   .stage-cell {
