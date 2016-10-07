@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class MoveService < Boards::BaseService
+    class MoveService < BaseService
       def execute(list)
         @board = list.board
         @old_position = list.position

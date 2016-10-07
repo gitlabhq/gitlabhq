@@ -1,5 +1,5 @@
 module Boards
-  class ListService < Boards::BaseService
+  class ListService < BaseService
     def execute
       create_board! if project.boards.empty?
       project.boards

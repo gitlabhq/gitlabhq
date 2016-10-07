@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class MoveService < Boards::BaseService
+    class MoveService < BaseService
       def execute(issue)
         return false unless can?(current_user, :update_issue, issue)
         return false unless valid_move?

@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class DestroyService < Boards::BaseService
+    class DestroyService < BaseService
       def execute(list)
         return false unless list.destroyable?
 

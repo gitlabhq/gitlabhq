@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class CreateService < Boards::BaseService
+    class CreateService < BaseService
       def execute
         create_issue(params.merge(label_ids: [list.label_id]))
       end

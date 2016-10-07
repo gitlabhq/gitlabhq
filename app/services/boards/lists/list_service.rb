@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class ListService < Boards::BaseService
+    class ListService < BaseService
       def execute(board)
         board.lists
       end
