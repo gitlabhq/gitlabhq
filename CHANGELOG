@@ -7,6 +7,7 @@ v 8.13.0 (unreleased)
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
+  - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
