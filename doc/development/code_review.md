@@ -35,7 +35,7 @@ request is up to one of our merge request "endbosses", denoted on the
 ## Having your code reviewed
 
 Please keep in mind that code review is a process that can take multiple
-iterations, and reviewer may spot things later that they may not have seen the
+iterations, and reviewers may spot things later that they may not have seen the
 first time.
 
 - The first reviewer of your code is _you_. Before you perform that first push
@@ -69,9 +69,9 @@ experience, refactors the existing code). Then:
   someone else would be confused by it as well.
 - After a round of line notes, it can be helpful to post a summary note such as
   "LGTM :thumbsup:", or "Just a couple things to address."
-- Avoid accepting a merge request before the build succeeds ("Merge when build
-  succeeds" is fine).
-- If you set the MR to "Merge when build succeeds", you should take over
+- Avoid accepting a merge request before the build succeeds. Of course, "Merge
+  When Build Succeeds" (MWBS) is fine.
+- If you set the MR to "Merge When Build Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.
 
 ## Credits
