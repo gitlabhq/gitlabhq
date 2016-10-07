@@ -29,7 +29,14 @@ describe 'Issues csv', feature: true do
     let(:milestone) { create(:milestone, title: "v1.0", project: project) }
 
     before do
-      issue.update!(milestone: milestone, assignee: user, description: 'Issue with details', labels: [label1, label2])
+      issue.update!(milestone: milestone,
+                    assignee: user,
+                    description: 'Issue with details',
+                    due_date: DateTime.new(2014, 3, 2),
+                    created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
+                    updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
+                    labels: [label1, label2])
+
       visit namespace_project_issues_path(project.namespace, project, format: :csv)
     end
 
@@ -59,6 +66,19 @@ describe 'Issues csv', feature: true do
 
     specify 'labels' do
       expect(csv[0]['Labels']).to eq 'Feature,labels'
+    end
+
+    specify 'due_date' do
+      expect(csv[0]['Due Date']).to eq '2014-03-02'
+    end
+
+
+    specify 'created_at' do
+      expect(csv[0]['Created At (UTC)']).to eq '2015-04-03 02:01:00'
+    end
+
+    specify 'updated_at' do
+      expect(csv[0]['Updated At (UTC)']).to eq '2016-05-04 03:02:01'
     end
   end
 
