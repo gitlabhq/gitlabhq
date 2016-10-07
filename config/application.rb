@@ -85,6 +85,8 @@ module Gitlab
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "graphs/graphs_bundle.js"
     config.assets.precompile << "users/users_bundle.js"
+    config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "terminal/terminal_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
     config.assets.precompile << "profile/profile_bundle.js"
     config.assets.precompile << "diff_notes/diff_notes_bundle.js"

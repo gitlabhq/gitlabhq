@@ -589,3 +589,25 @@
     fill: $gray-darkest;
   }
 }
+
+.terminal-container {
+  .content-block {
+    border-bottom: none;
+  }
+
+  #terminal {
+    .terminal {
+      padding: 10px;
+    }
+
+    margin-top: 10px;
+    min-height: 450px;
+    box-sizing: border-box;
+
+    > div {
+      min-height: 450px;
+    }
+  }
+}
+
+
