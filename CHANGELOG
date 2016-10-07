@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
+  - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
