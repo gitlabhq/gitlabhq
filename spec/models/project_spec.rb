@@ -518,7 +518,7 @@ describe Project, models: true do
   end
 
   describe '#cache_has_external_issue_tracker' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, has_external_issue_tracker: nil) }
 
     it 'stores true if there is any external_issue_tracker' do
       services = double(:service, external_issue_trackers: [RedmineService.new])

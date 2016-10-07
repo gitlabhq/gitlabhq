@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include CacheMarkdownField
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -20,6 +21,8 @@ class Project < ActiveRecord::Base
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?, 
             :merge_requests_enabled?, :issues_enabled?, to: :project_feature, 
             allow_nil: true
+
+  cache_markdown_field :description, pipeline: :description
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level

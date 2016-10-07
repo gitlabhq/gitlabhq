@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "message_html"
   end
 
   create_table "appearances", force: :cascade do |t|
@@ -30,8 +31,9 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.text     "description"
     t.string   "header_logo"
     t.string   "logo"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.text     "description_html"
   end
 
   create_table "application_settings", force: :cascade do |t|
@@ -92,6 +94,10 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.text     "domain_blacklist"
     t.boolean  "koding_enabled"
     t.string   "koding_url"
+    t.text     "sign_in_text_html"
+    t.text     "help_page_text_html"
+    t.text     "shared_runners_text_html"
+    t.text     "after_sign_up_text_html"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -128,13 +134,14 @@ ActiveRecord::Schema.define(version: 20161006104309) do
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
-    t.text     "message",    null: false
+    t.text     "message",      null: false
     t.datetime "starts_at"
     t.datetime "ends_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "color"
     t.string   "font"
+    t.text     "message_html"
   end
 
   create_table "ci_application_settings", force: :cascade do |t|
@@ -458,18 +465,20 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "position",      default: 0
+    t.integer  "position",         default: 0
     t.string   "branch_name"
     t.text     "description"
     t.integer  "milestone_id"
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.boolean  "confidential",  default: false
+    t.boolean  "confidential",     default: false
     t.datetime "deleted_at"
     t.date     "due_date"
     t.integer  "moved_to_id"
     t.integer  "lock_version"
+    t.text     "title_html"
+    t.text     "description_html"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -515,9 +524,10 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "template",    default: false
+    t.boolean  "template",         default: false
     t.string   "description"
     t.integer  "priority"
+    t.text     "description_html"
   end
 
   add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
@@ -633,6 +643,8 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.datetime "deleted_at"
     t.string   "in_progress_merge_commit_sha"
     t.integer  "lock_version"
+    t.text     "title_html"
+    t.text     "description_html"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -659,14 +671,16 @@ ActiveRecord::Schema.define(version: 20161006104309) do
   add_index "merge_requests_closing_issues", ["merge_request_id"], name: "index_merge_requests_closing_issues_on_merge_request_id", using: :btree
 
   create_table "milestones", force: :cascade do |t|
-    t.string   "title",       null: false
-    t.integer  "project_id",  null: false
+    t.string   "title",            null: false
+    t.integer  "project_id",       null: false
     t.text     "description"
     t.date     "due_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state"
     t.integer  "iid"
+    t.text     "title_html"
+    t.text     "description_html"
   end
 
   add_index "milestones", ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -690,6 +704,7 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.boolean  "request_access_enabled", default: true,  null: false
     t.datetime "deleted_at"
     t.boolean  "lfs_enabled"
+    t.text     "description_html"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -722,6 +737,7 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.integer  "resolved_by_id"
     t.string   "discussion_id"
     t.string   "original_discussion_id"
+    t.text     "note_html"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -873,6 +889,7 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.boolean  "request_access_enabled",             default: true,      null: false
     t.boolean  "has_external_wiki"
     t.boolean  "lfs_enabled"
+    t.text     "description_html"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -923,6 +940,7 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "description_html"
   end
 
   add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
@@ -977,6 +995,8 @@ ActiveRecord::Schema.define(version: 20161006104309) do
     t.string   "file_name"
     t.string   "type"
     t.integer  "visibility_level", default: 0, null: false
+    t.text     "title_html"
+    t.text     "content_html"
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
