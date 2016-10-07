@@ -18,8 +18,8 @@ class Project < ActiveRecord::Base
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, 
-            :merge_requests_enabled?, :issues_enabled?, to: :project_feature, 
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
             allow_nil: true
 
   cache_markdown_field :description, pipeline: :description

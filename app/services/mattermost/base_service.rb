@@ -1,13 +1,8 @@
 module Mattermost
   class BaseService < ::BaseService
     def execute
-      resource = if resource_id
-                   find_resource
-                 else
-                   collection.search(params[:text]).limit(5)
-                 end
-
-      generate_response(resource)
+      # Implement in child
+      raise NotImplementedError
     end
 
     private
@@ -18,17 +13,14 @@ module Mattermost
       match ? match[:id] : nil
     end
 
-    def find_resource
-      collection.find_by(iid: resource_id)
-    end
 
     def generate_response(resource)
-      return response_404 if resource.nil?
+      return respond_404 if resource.nil?
       return single_resource(resource) unless resource.respond_to?(:count)
       return no_search_results if resource.empty?
 
       if resource.count == 1
-        single_resource(resource)
+        single_resource(resource.first)
       else
         multiple_resources(resource)
       end
@@ -37,24 +29,14 @@ module Mattermost
     def respond_404
       {
         response_type: :ephemeral,
-        text: "404 not found! Please make you use the right identifier. :boom:",
+        text: "404 not found! GitLab couldn't find what your were looking for! :boom:",
       }
     end
 
     def no_search_results
       {
         response_type: :ephemeral,
-        text: "No search results for \"#{params[:text]}\". :disappointed:"
-      }
-    end
-
-    def single_resource(resource)
-      {
-        response_type: :in_channel,
-        text: %{### #{resource.to_reference} #{resource.title}
-
-        #{resource.description.truncate(256)}
-        }
+        text: "### No search results for \"#{params[:text]}\". :disappointed:"
       }
     end
 
@@ -63,11 +45,7 @@ module Mattermost
 
       {
         response_type: :ephemeral,
-        text: <<-MD
-        #### Search results for \"#{params[:text]}\"
-
-        #{list}
-        MD
+        text: "### Search results for \"#{params[:text]}\"\n\n#{list}"
       }
     end
   end

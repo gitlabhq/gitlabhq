@@ -1,29 +1,56 @@
 module Mattermost
   class IssueService < BaseService
+    SUBCOMMANDS = ['create', 'search'].freeze
+
     def execute
-      if params[:text].start_with?('create')
-        create_issue
-      else
-        super
-      end
+      resource  = if resource_id
+                    find_resource
+                  elsif subcommand
+                    send(subcommand)
+                  else
+                    nil
+                  end
+
+      generate_response(resource)
     end
 
     private
 
-    def create_issue
-      issue = Issues::CreateService.new(project, current_user, issue_params).execute
+    def find_resource
+      return nil unless can?(current_user, :read_issue, project)
 
-      if issue.valid?
-        generate_response(issue)
-      else
-        issue_create_error(issue.errors.full_messages)
-      end
+      collection.find_by(iid: resource_id)
+    end
+
+    def create
+      return nil unless can?(current_user, :create_issue, project)
+
+      Issues::CreateService.new(project, current_user, issue_params).execute
+    end
+
+    def search
+      return nil unless can?(current_user, :read_issue, project)
+
+      query = params[:text].gsub(/\Asearch /, '')
+      collection.search(query).limit(5)
     end
 
     def issue_create_error(errors)
       {
         response_type: :ephemeral,
-        text: "An error occured creating your issue: #{errors}"
+        text: "An error occured creating your issue: #{errors}" #TODO; this displays an array
+      }
+    end
+
+    def single_resource(issue)
+      return issue_create_error(issue) if issue.errors.any?
+
+      message = "### [#{issue.to_reference} #{issue.title}](#{link(issue)})"
+      message << "\n\n#{issue.description}" if issue.description
+
+      {
+        response_type: :in_channel,
+        text: message
       }
     end
 
@@ -44,8 +71,14 @@ module Mattermost
 
       {
         title: match[:title],
-        description: params[:text].gsub(/\Acreate .+$\s*/, ''),
+        description: params[:text].gsub(/\Acreate .+$\s*/, '')
       }
+    end
+
+    def subcommand
+      match = params[:text].match(/\A(?<subcommand>(#{SUBCOMMANDS.join('|')}))/)
+
+      match ? match[:subcommand] : nil
     end
   end
 end
