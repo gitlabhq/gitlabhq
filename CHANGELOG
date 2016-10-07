@@ -83,6 +83,7 @@ v 8.13.0 (unreleased)
   - Grouped pipeline dropdown is a scrollable container
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 400 Bad Request
+  - API: all unknown routing will be handled with 404 Not Found
 
 v 8.12.5 (unreleased)
 

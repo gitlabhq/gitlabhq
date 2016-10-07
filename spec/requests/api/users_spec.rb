@@ -90,10 +90,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns a 400 if invalid ID" do
+    it "returns a 404 for invalid ID" do
       get api("/users/1ASDF", user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -341,10 +341,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns a 400 if invalid ID" do
+    it "returns a 404 if invalid ID" do
       put api("/users/ASDF", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
 
     it 'returns 400 error if user does not validate' do
@@ -410,9 +410,9 @@ describe API::API, api: true  do
       end.to change{ user.keys.count }.by(1)
     end
 
-    it "returns 400 for invalid ID" do
+    it "returns 404 for invalid ID" do
       post api("/users/999999/keys", admin)
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -496,9 +496,10 @@ describe API::API, api: true  do
       end.to change{ user.emails.count }.by(1)
     end
 
-    it "raises error for invalid ID" do
+    it "returns a 404 for invalid ID" do
       post api("/users/999999/emails", admin)
-      expect(response).to have_http_status(400)
+
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -528,10 +529,10 @@ describe API::API, api: true  do
         expect(json_response.first['email']).to eq(email.email)
       end
 
-      it "returns a 400 for invalid ID" do
+      it "returns a 404 for invalid ID" do
         put api("/users/ASDF/emails", admin)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -570,10 +571,10 @@ describe API::API, api: true  do
         expect(json_response['message']).to eq('404 Email Not Found')
       end
 
-      it "returns a 400 for invalid ID" do
+      it "returns a 404 for invalid ID" do
         delete api("/users/ASDF/emails/bar", admin)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -606,10 +607,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "returns a 400 for invalid ID" do
+    it "returns a 404 for invalid ID" do
       delete api("/users/ASDF", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -662,6 +663,7 @@ describe API::API, api: true  do
 
     it "returns 404 Not Found within invalid ID" do
       get api("/user/keys/42", user)
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Not found')
     end
@@ -675,10 +677,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns 400 for invalid ID" do
+    it "returns 404 for invalid ID" do
       get api("/users/keys/ASDF", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -736,10 +738,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "returns a 400 for invalid ID" do
+    it "returns a 404 for invalid ID" do
       delete api("/users/keys/ASDF", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -787,10 +789,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns 400 for invalid ID" do
+    it "returns 404 for invalid ID" do
       get api("/users/emails/ASDF", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -837,10 +839,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "returns a 400 for invalid ID" do
+    it "returns a 404 for invalid ID" do
       delete api("/users/emails/ASDF", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -905,10 +907,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "returns a 400 for invalid ID" do
+    it "returns a 404 for invalid ID" do
       put api("/users/ASDF/block", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(404)
     end
   end
 end

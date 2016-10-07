@@ -357,13 +357,13 @@ follows:
 
 ## Bad request
 
-When you try to access API URL that does not exist you will receive 400 Bad Request. 
+When you try to access API URL that does not exist you will receive 404 Not Found.
 
 ```
-HTTP/1.1 400 Bad Request
+HTTP/1.1 404 Not Found
 Content-Type: application/json
 {
-    "error": "400 Bad Request"
+    "error": "404 Not Found"
 }
 ```
 

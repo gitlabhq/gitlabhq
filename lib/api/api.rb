@@ -75,7 +75,7 @@ module API
     mount ::API::Variables
 
     route :any, '*path' do
-      error!('400 Bad Request', 400)
+      error!('404 Not Found', 404)
     end
   end
 end
