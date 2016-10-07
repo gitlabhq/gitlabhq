@@ -1,7 +1,9 @@
 .environments-container,
 .deployments-container {
-  width: 100%;
-  overflow: auto;
+  @media (max-width: $screen-sm-max) {
+    width: 100%;
+    overflow: auto;
+  }
 }
 
 .environments {
