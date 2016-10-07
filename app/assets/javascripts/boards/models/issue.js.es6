@@ -54,7 +54,7 @@ class ListIssue {
         milestone_id: this.milestone ? this.milestone.id : null,
         due_date: this.dueDate,
         assignee_id: this.assignee ? this.assignee.id : null,
-        label_ids: this.labels.map((label) => label.id )
+        label_ids: this.labels.map( (label) => label.id )
       }
     };
 

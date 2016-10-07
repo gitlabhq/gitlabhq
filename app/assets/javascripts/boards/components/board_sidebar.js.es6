@@ -34,7 +34,7 @@
             new DueDateSelect();
             new LabelsSelect();
             new Sidebar();
-            new Subscription('.subscription')
+            new Subscription('.subscription');
           });
         } else {
           $('.right-sidebar').getNiceScroll().remove();
