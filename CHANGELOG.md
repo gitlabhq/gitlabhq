@@ -22,6 +22,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Escape ref and path for relative links !6050 (winniehell)
 - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
 - Fix filtering of milestones with quotes in title (airatshigapov)
+- Fix issue boards dragging bug in Safari
 - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
 - Update mail_room and enable sentinel support to Reply By Email (!7101)
 - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
