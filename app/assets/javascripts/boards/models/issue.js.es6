@@ -4,7 +4,7 @@ class ListIssue {
     this.title = obj.title;
     this.confidential = obj.confidential;
     this.dueDate = obj.due_date;
-    this.subscribed = true;
+    this.subscribed = obj.subscribed;
     this.labels = [];
 
     if (obj.assignee) {
