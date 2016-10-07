@@ -1,13 +1,13 @@
 .detail-page-description.content-block
   %h2.title
-    = markdown escape_once(@merge_request.title), pipeline: :single_line, author: @merge_request.author
+    = markdown_field(@merge_request, :title)
 
   %div
     - if @merge_request.description.present?
       .description{class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : ''}
         .wiki
           = preserve do
-            = markdown(@merge_request.description, cache_key: [@merge_request, "description"], author: @merge_request.author)
+            = markdown_field(@merge_request, :description)
         %textarea.hidden.js-task-list-field
           = @merge_request.description
 

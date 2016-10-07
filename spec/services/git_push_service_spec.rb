@@ -448,6 +448,8 @@ describe GitPushService, services: true do
       let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
 
       before do
+        # project.create_jira_service doesn't seem to invalidate the cache here
+        project.has_external_issue_tracker = true
         jira_service_settings
 
         WebMock.stub_request(:post, jira_api_transition_url)
