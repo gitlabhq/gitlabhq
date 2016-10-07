@@ -25,7 +25,7 @@ module Mattermost
     def generate_response(resource)
       return response_404 if resource.nil?
       return single_resource(resource) unless resource.respond_to?(:count)
-      return no_results if resource.empty?
+      return no_search_results if resource.empty?
 
       if resource.count == 1
         single_resource(resource)

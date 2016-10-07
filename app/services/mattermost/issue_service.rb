@@ -13,7 +13,6 @@ module Mattermost
     def create_issue
       issue = Issues::CreateService.new(project, current_user, issue_params).execute
 
-      byebug
       if issue.valid?
         generate_response(issue)
       else

@@ -3,7 +3,9 @@ class SlashCommandsController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   skip_before_action :authenticate_user!
-  before_action :project
+  before_action :find_project
+
+  attr_reader :project
 
   def trigger
     if service
@@ -22,9 +24,20 @@ class SlashCommandsController < ApplicationController
     }
   end
 
-  def project
+  def project_unavailable(path)
+    {
+      response_type: :ephemeral,
+      text: "The #{path} doesn't exist or you don't have access.",
+    }
+  end
+
+  def find_project
     path = "#{params[:team_domain]}/#{params[:channel_name]}"
     @project = Project.find_with_namespace(path)
+
+    unless can?(user, :read_project, @project)
+      render json: project_unavailable(path)
+    end
   end
 
   def user
