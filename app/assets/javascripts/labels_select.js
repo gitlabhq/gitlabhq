@@ -22,7 +22,7 @@
         abilityName = $dropdown.data('ability-name');
         $selectbox = $dropdown.closest('.selectbox');
         $block = $selectbox.closest('.block');
-        $form = $dropdown.closest('.js-issuable-update');
+        $form = $dropdown.closest('form, .js-issuable-update');
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
