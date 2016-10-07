@@ -216,7 +216,7 @@ rake ce_to_ee_merge_check:
     - branches
   except:
     - tags
-    - master
+  allow_failure: yes
 
 rake db:migrate:reset:
   stage: test

@@ -2,6 +2,9 @@ namespace :gitlab do
   namespace :dev do
     desc 'Checks if the branch would apply cleanly to EE'
     task ce_to_ee_merge_check: :environment do
+      return if defined?(Gitlab::License)
+      return unless ENV['CI']
+
       ce_repo = ENV['CI_BUILD_REPO']
       ce_branch = ENV['CI_BUILD_REF_NAME']
 
@@ -17,27 +20,28 @@ namespace :gitlab do
 
         # Try to merge the current tested branch to EE/master...
         puts "\n => Merging #{ce_repo}/#{ce_branch} into #{ee_repo}/master\n"
-        `git merge --ff-only FETCH_HEAD`
+        `git merge FETCH_HEAD`
 
         exit 0 if $?.success?
 
-        # Try to merge a possible <branch>-ee branch to EE/master...
-        puts "\n => Merging #{ee_repo}/#{ee_branch} into #{ee_repo}/master\n"
-        `git merge --ff-only #{ee_branch}`
+        # Check if the <branch>-ee branch exists...
+        puts "\n => Check if #{ee_repo}/#{ee_branch} exists\n"
+        `git rev-parse --verify #{ee_branch}`
 
         # The <branch>-ee doesn't exist
-        if $?.exitstatus == 1
+        unless $?.success?
+          puts
           puts <<-MSG.strip_heredoc
-            \n=================================================================
+            =================================================================
             The #{ce_branch} branch cannot be merged without conflicts to the
             current EE/master, and no #{ee_branch} branch was detected in
             the EE repository.
 
-            Please create a #{ee_branch} branch that includes changes
+            Please create a #{ee_branch} branch that includes changes from
             #{ce_branch} but also specific changes than can be applied cleanly
             to EE/master.
 
-            You can create this branch as follow:
+            You can create this branch as follows:
 
             1. In the EE repo:
               $ git fetch origin
@@ -45,7 +49,8 @@ namespace :gitlab do
               $ git checkout -b #{ee_branch} FETCH_HEAD
               $ git rebase origin/master
             2. At this point you will likely have conflicts, solve them, and
-              continue/finish the rebase.
+              continue/finish the rebase. Note: You can squash the CE commits
+              before rebasing.
             3. You can squash all the original #{ce_branch} commits into a
               single "Port of #{ce_branch} to EE".
             4. Push your branch to #{ee_repo}:
@@ -56,10 +61,15 @@ namespace :gitlab do
           exit 1
         end
 
+        # Try to merge the <branch>-ee branch to EE/master...
+        puts "\n => Merging #{ee_repo}/#{ee_branch} into #{ee_repo}/master\n"
+        `git merge #{ee_branch} master`
+
         # The <branch>-ee cannot be merged cleanly to EE/master...
         unless $?.success?
+          puts
           puts <<-MSG.strip_heredoc
-            \n=================================================================
+            =================================================================
             The #{ce_branch} branch cannot be merged without conflicts to
             EE/master, and even though the #{ee_branch} branch exists in the EE
             repository, it cannot be merged without conflicts to EE/master.
@@ -73,13 +83,14 @@ namespace :gitlab do
         end
 
         puts "\n => Merging #{ce_repo}/#{ce_branch} into #{ee_repo}/master\n"
-        `git merge --ff-only FETCH_HEAD`
+        `git merge FETCH_HEAD`
         exit 0 if $?.success?
 
         # The <branch>-ee can be merged cleanly to EE/master, but <branch> still
         # cannot be merged cleanly to EE/master...
+        puts
         puts <<-MSG.strip_heredoc
-          \n=================================================================
+          =================================================================
           The #{ce_branch} branch cannot be merged without conflicts to EE, and
           even though the #{ee_branch} branch exists in the EE repository and
           applies cleanly to EE/master, it doesn't prevent conflicts when
