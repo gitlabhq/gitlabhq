@@ -410,9 +410,9 @@ describe API::API, api: true  do
       end.to change{ user.keys.count }.by(1)
     end
 
-    it "returns 404 for invalid ID" do
+    it "returns 400 for invalid ID" do
       post api("/users/999999/keys", admin)
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -496,10 +496,10 @@ describe API::API, api: true  do
       end.to change{ user.emails.count }.by(1)
     end
 
-    it "returns a 404 for invalid ID" do
+    it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(400)
     end
   end
 
