@@ -76,7 +76,7 @@ feature 'Environments', feature: true do
             given(:deployment) { create(:deployment, environment: environment, deployable: build) }
             
             scenario 'does show an external link button' do
-              expect(page).to have_selector('.btn.external-url')
+              expect(page).to have_link(nil, href: environment.external_url)
             end
           end
         end
@@ -147,9 +147,10 @@ feature 'Environments', feature: true do
             given(:deployment) { create(:deployment, environment: environment, deployable: build) }
             
             scenario 'does show an external link button' do
-              expect(page).to have_selector('.btn.external-url')
+              expect(page).to have_link(nil, href: environment.external_url)
             end
           end
+
         end
       end
     end
