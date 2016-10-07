@@ -56,6 +56,10 @@ module Gitlab
             value[:url]
           end
 
+          def close
+            value[:close]
+          end
+
           def value
             case @config
             when String then { name: @config }

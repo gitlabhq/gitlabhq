@@ -100,6 +100,34 @@ describe Gitlab::Ci::Config::Node::Environment do
     end
   end
 
+  context 'when close is used' do
+    context 'when close is a boolean' do
+      let(:config) do
+        { name: 'review/$CI_BUILD_REF_NAME',
+          close: true }
+      end
+
+      describe '#valid?' do
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
+
+    context 'when close is a string' do
+      let(:config) do
+        { name: 'review/$CI_BUILD_REF_NAME',
+          close: 'string' }
+      end
+
+      describe '#valid?' do
+        it 'is invalid' do
+          expect(entry).not_to be_valid
+        end
+      end
+    end
+  end
+
   context 'when configuration is invalid' do
     context 'when configuration is an array' do
       let(:config) { ['env'] }
