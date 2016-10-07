@@ -355,6 +355,19 @@ follows:
 }
 ```
 
+## Bad request
+
+When you try to access API URL that does not exist you will receive 400 Bad Request. 
+
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+    "error": "400 Bad Request"
+}
+```
+
+
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular

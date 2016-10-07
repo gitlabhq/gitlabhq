@@ -92,6 +92,7 @@ describe API::API, api: true  do
 
     it "returns a 400 if invalid ID" do
       get api("/users/1ASDF", user)
+
       expect(response).to have_http_status(400)
     end
   end
@@ -340,8 +341,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "raises error for invalid ID" do
-      expect{put api("/users/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 400 if invalid ID" do
+      put api("/users/ASDF", admin)
+
+      expect(response).to have_http_status(400)
     end
 
     it 'returns 400 error if user does not validate' do
@@ -525,9 +528,10 @@ describe API::API, api: true  do
         expect(json_response.first['email']).to eq(email.email)
       end
 
-      it "raises error for invalid ID" do
+      it "returns a 400 for invalid ID" do
         put api("/users/ASDF/emails", admin)
-        expect(response).to have_http_status(405)
+
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -566,8 +570,10 @@ describe API::API, api: true  do
         expect(json_response['message']).to eq('404 Email Not Found')
       end
 
-      it "raises error for invalid ID" do
-        expect{delete api("/users/ASDF/emails/bar", admin) }.to raise_error(ActionController::RoutingError)
+      it "returns a 400 for invalid ID" do
+        delete api("/users/ASDF/emails/bar", admin)
+
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -600,8 +606,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 400 for invalid ID" do
+      delete api("/users/ASDF", admin)
+
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -667,9 +675,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns 404 for invalid ID" do
+    it "returns 400 for invalid ID" do
       get api("/users/keys/ASDF", admin)
-      expect(response).to have_http_status(404)
+
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -727,8 +736,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/keys/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 400 for invalid ID" do
+      delete api("/users/keys/ASDF", admin)
+
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -776,9 +787,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns 404 for invalid ID" do
+    it "returns 400 for invalid ID" do
       get api("/users/emails/ASDF", admin)
-      expect(response).to have_http_status(404)
+
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -825,8 +837,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/emails/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 400 for invalid ID" do
+      delete api("/users/emails/ASDF", admin)
+
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -891,8 +905,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "raises error for invalid ID" do
-      expect{put api("/users/ASDF/block", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 400 for invalid ID" do
+      put api("/users/ASDF/block", admin)
+
+      expect(response).to have_http_status(400)
     end
   end
 end

@@ -163,9 +163,10 @@ describe API::API, 'ProjectHooks', api: true do
       expect(response).to have_http_status(404)
     end
 
-    it "returns a 405 error if hook id not given" do
+    it "returns a 400 error if hook id not given" do
       delete api("/projects/#{project.id}/hooks", user)
-      expect(response).to have_http_status(405)
+
+      expect(response).to have_http_status(400)
     end
 
     it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
