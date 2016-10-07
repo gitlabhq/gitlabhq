@@ -91,7 +91,7 @@ class CommitStatus < ActiveRecord::Base
         if commit_status.complete?
           ProcessPipelineWorker.perform_in(3.seconds, pipeline.id)
         else
-          UpdatePipelineWorker.perform_in(3.seconds, pipeline.id)
+          pipeline.update_status
         end
       end
 
