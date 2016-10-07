@@ -249,6 +249,8 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
+
+      update_status
     end
 
     def update_status

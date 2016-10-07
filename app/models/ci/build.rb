@@ -73,7 +73,7 @@ module Ci
       end
     end
 
-    state_machine :status do
+    state_machine :status, use_transactions: false do
       after_transition pending: :running do |build|
         build.execute_hooks
       end

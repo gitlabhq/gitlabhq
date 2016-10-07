@@ -43,7 +43,7 @@ class CommitStatus < ActiveRecord::Base
   scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
 
-  state_machine :status do
+  state_machine :status, use_transactions: false do
     event :enqueue do
       transition [:created, :skipped] => :pending
     end
@@ -89,10 +89,10 @@ class CommitStatus < ActiveRecord::Base
         break if transition.loopback?
 
         if commit_status.complete?
-          ProcessPipelineWorker.perform_async(pipeline.id)
+          ProcessPipelineWorker.perform_in(3.seconds, pipeline.id)
+        else
+          UpdatePipelineWorker.perform_in(3.seconds, pipeline.id)
         end
-
-        UpdatePipelineWorker.perform_async(pipeline.id)
       end
 
       true
