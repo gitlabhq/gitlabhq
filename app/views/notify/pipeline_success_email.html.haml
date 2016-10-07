@@ -150,4 +150,7 @@
               %a{:href => profile_notifications_url, :style => "color:#3084bb;text-decoration:none;"} Manage all notifications
               &middot;
               %a{:href => help_url, :style => "color:#3084bb;text-decoration:none;"} Help
-            %div GitLab, 1233 Howard St 2F, San Francisco, CA 94103, USA
+            %div
+              You're receiving this email because of your account on
+              = succeed "." do
+                %a{:href => root_url, :style => "color:#3084bb;text-decoration:none;"}= Gitlab.config.gitlab.host
