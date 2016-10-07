@@ -55,4 +55,13 @@ describe IssueCollection do
       end
     end
   end
+
+  describe '#visible_to' do
+    it 'is an alias for updatable_by_user' do
+      updatable_by_user = described_class.instance_method(:updatable_by_user)
+      visible_to = described_class.instance_method(:visible_to)
+
+      expect(visible_to).to eq(updatable_by_user)
+    end
+  end
 end

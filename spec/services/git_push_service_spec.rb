@@ -302,6 +302,9 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(commit)
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -357,6 +360,9 @@ describe GitPushService, services: true do
         committed_date: commit_time
       )
 
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(commit)
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -392,6 +398,9 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(closing_commit)
 
       project.team << [commit_author, :master]
     end

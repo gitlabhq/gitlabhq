@@ -32,6 +32,8 @@ class IssueCollection
     end
   end
 
+  alias_method :visible_to, :updatable_by_user
+
   private
 
   def project_ids

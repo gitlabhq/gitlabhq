@@ -18,6 +18,6 @@ class IssuePolicy < IssuablePolicy
   def can_read_confidential?
     return false unless @user
 
-    IssueCollection.new([@subject]).updatable_by_user(@user).any?
+    IssueCollection.new([@subject]).visible_to(@user).any?
   end
 end
