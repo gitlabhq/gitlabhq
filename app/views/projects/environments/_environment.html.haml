@@ -29,4 +29,5 @@
 
   %td.hidden-xs
     = render 'projects/deployments/actions', deployment: last_deployment,
-      allow_close: environment.opened?, allow_rollback: environment.closed?
+      allow_close: environment.opened?, allow_rollback: environment.closed?,
+      show_external_url: environment.opened?, show_actions: environment.opened?
