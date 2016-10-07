@@ -14,7 +14,7 @@
         %button.dropdown-toggle.btn{ type: 'button', data: { toggle: 'dropdown'} }
           %span.light
             = @sort.humanize
-          %b.caret
+          = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
             = link_to filter_tags_path(sort: nil) do

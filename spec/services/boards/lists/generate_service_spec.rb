@@ -10,7 +10,7 @@ describe Boards::Lists::GenerateService, services: true do
 
     context 'when board lists is empty' do
       it 'creates the default lists' do
-        expect { service.execute }.to change(board.lists, :count).by(4)
+        expect { service.execute }.to change(board.lists, :count).by(2)
       end
     end
 
@@ -24,16 +24,15 @@ describe Boards::Lists::GenerateService, services: true do
 
     context 'when project labels does not contains any list label' do
       it 'creates labels' do
-        expect { service.execute }.to change(project.labels, :count).by(4)
+        expect { service.execute }.to change(project.labels, :count).by(2)
       end
     end
 
     context 'when project labels contains some of list label' do
       it 'creates the missing labels' do
-        create(:label, project: project, name: 'Development')
-        create(:label, project: project, name: 'Ready')
+        create(:label, project: project, name: 'Doing')
 
-        expect { service.execute }.to change(project.labels, :count).by(2)
+        expect { service.execute }.to change(project.labels, :count).by(1)
       end
     end
   end

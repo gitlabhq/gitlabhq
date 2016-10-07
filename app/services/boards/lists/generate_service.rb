@@ -25,10 +25,8 @@ module Boards
 
       def label_params
         [
-          { name: 'Development', color: '#5CB85C' },
-          { name: 'Testing',     color: '#F0AD4E' },
-          { name: 'Production',  color: '#FF5F00' },
-          { name: 'Ready',       color: '#FF0000' }
+          { name: 'To Do', color: '#F0AD4E' },
+          { name: 'Doing', color: '#5CB85C' }
         ]
       end
     end

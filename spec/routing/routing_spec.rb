@@ -9,7 +9,9 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    expect(get("/u/User")).to route_to('users#show', username: 'User')
+    allow(User).to receive(:find_by).and_return(true)
+
+    expect(get("/User")).to route_to('users#show', username: 'User')
   end
 
   it "to #groups" do

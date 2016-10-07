@@ -14,7 +14,7 @@
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
         %span.hidden-xs Options
-        %span.caret.commit-options-dropdown-caret
+        = icon('caret-down', class: ".commit-options-dropdown-caret")
       %ul.dropdown-menu.dropdown-menu-align-right
         %li.visible-xs-block.visible-sm-block
           = link_to namespace_project_tree_path(@project.namespace, @project, @commit) do
@@ -24,6 +24,8 @@
             = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
         %li.clearfix
           = cherry_pick_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
+        %li.clearfix
+          = link_to "Tag", new_namespace_project_tag_path(@project.namespace, @project, ref: @commit)
         %li.divider
         %li.dropdown-header
           Download
