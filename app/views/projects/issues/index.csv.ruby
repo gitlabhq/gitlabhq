@@ -10,7 +10,7 @@ columns = {
   'Created At (UTC)' => -> (issue) { issue.created_at&.strftime('%Y-%m-%d %H:%M:%S') },
   'Updated At (UTC)' => -> (issue) { issue.updated_at&.strftime('%Y-%m-%d %H:%M:%S') },
   'Milestone' => -> (issue) { issue.milestone&.title },
-  'Labels' => -> (issue) { issue.label_names.join(',').presence },
+  'Labels' => -> (issue) { issue.labels_array.sort_by(&:title).map(&:title).join(',').presence },
 }
 
-CsvBuilder.new(columns).render(@issues)
+CsvBuilder.new(columns).render(@issues.includes(:author, :assignee, :labels))
