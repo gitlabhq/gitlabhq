@@ -78,7 +78,7 @@
       this.form.focusOnFirstInvalid.apply(this.form);
       // For UX, wait til after first invalid submission to check each keyup
       this.inputElement.off('keyup.field_validator')
-        .on('keyup.field_validator', this.updateValidityState.bind(this));
+        .on('keyup.field_validator', this.updateValidity.bind(this));
 
     }
 

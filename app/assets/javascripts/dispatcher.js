@@ -297,7 +297,7 @@
 
     Dispatcher.prototype.initFieldErrors = function() {
       var flaggedForms = document.querySelectorAll('.show-gl-field-errors');
-      return [...taggedForms].forEach(function(form) {
+      return [...flaggedForms].forEach(function(form) {
           new gl.GlFieldErrors(form);
         });
     };
