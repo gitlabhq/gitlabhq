@@ -274,4 +274,10 @@ class Issue < ActiveRecord::Base
   def check_for_spam?
     project.public?
   end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user)
+    end
+  end
 end

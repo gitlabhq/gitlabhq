@@ -76,8 +76,11 @@ module Projects
           only: [:iid, :title, :confidential, :due_date],
           include: {
             assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
-            labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }
-          })
+            labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] },
+            milestone: { only: [:id, :title] }
+          },
+          user: current_user
+        )
       end
     end
   end
