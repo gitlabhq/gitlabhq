@@ -1,35 +1,33 @@
-- if can?(current_user, :create_deployment, deployment) && deployment.deployable
-  .pull-right
+.pull-right
+  - if local_assigns.fetch(:show_external_url, false)
+    - external_url = deployment.environment.external_url
+    - if external_url
+      = link_to external_url, target: '_blank', class: 'btn external-url' do
+        = icon('external-link')
 
-    - if local_assigns.fetch(:show_external_url, false)
-      - external_url = deployment.environment.external_url
-      - if external_url
-        = link_to external_url, target: '_blank', class: 'btn external-url' do
-          = icon('external-link')
+  - if can?(current_user, :create_deployment, deployment) && deployment.deployable && local_assigns.fetch(:show_actions, false)
+    - actions = deployment.manual_actions
+    - if actions.present?
+      .inline
+        .dropdown
+          %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+            = custom_icon('icon_play')
+            = icon('caret-down')
+          %ul.dropdown-menu.dropdown-menu-align-right
+            - actions.each do |action|
+              %li
+                = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
+                  = custom_icon('icon_play')
+                  %span= action.name.humanize
 
-    - if local_assigns.fetch(:show_actions, false)
-      - actions = deployment.manual_actions
-      - if actions.present?
-        .inline
-          .dropdown
-            %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
-              = custom_icon('icon_play')
-              = icon('caret-down')
-            %ul.dropdown-menu.dropdown-menu-align-right
-              - actions.each do |action|
-                %li
-                  = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
-                    = custom_icon('icon_play')
-                    %span= action.name.humanize
+    - if can?(current_user, :update_deployment, deployment) && local_assigns.fetch(:allow_close, false) && deployment.closeable?
+      .inline
+        = link_to close_namespace_project_environment_path(@project.namespace.becomes(Namespace), @project, deployment.environment), method: :post, class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
+          = icon('stop', class: 'close-env-icon')
 
-      - if local_assigns.fetch(:allow_close, false) && deployment.closeable?
-        .inline
-          = link_to close_namespace_project_environment_path(@project.namespace.becomes(Namespace), @project, deployment.environment), method: :post, class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
-            = icon('stop', class: 'close-env-icon')
-
-    - if local_assigns.fetch(:allow_rollback, false)
-      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn' do
-        - if deployment.last?
-          Re-deploy
-        - else
-          Rollback
+  - if can?(current_user, :create_deployment, deployment) && deployment.deployable && local_assigns.fetch(:allow_rollback, false)
+    = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn' do
+      - if deployment.last?
+        Re-deploy
+      - else
+        Rollback

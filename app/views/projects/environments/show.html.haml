@@ -2,14 +2,15 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
-- last_deployment = @environment.last_deployment
-
 %div{ class: container_class }
   .top-area
     .col-md-9
       %h3.page-title= @environment.name.capitalize
     .col-md-3
       .nav-controls
+        - if @environment.external_url
+          = link_to @environment.external_url, target: '_blank', class: 'btn external-url' do
+            = icon('external-link')
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
           - if @environment.opened?
