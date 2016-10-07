@@ -33,6 +33,7 @@ $(() => {
 			},
 			filterable: true,
       selectable: true,
+      multiSelect: true,
       clicked (label, $el, e) {
         e.preventDefault();
 
