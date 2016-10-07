@@ -1,5 +1,3 @@
-- merge_request = deployment.deployable.try(:merge_request)
-
 %div.branch-commit
   - if deployment.ref
     .icon-container
@@ -8,10 +6,6 @@
   .icon-container
     = custom_icon("icon_commit")
   = link_to deployment.short_sha, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-id monospace"
-  
-  - if merge_request
-    %span in
-    = link_to_gfm merge_request.to_reference, merge_request_path(merge_request)
 
   %p.commit-title
     %span
