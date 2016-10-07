@@ -72,6 +72,7 @@ v 8.13.0 (unreleased)
   - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
+  - Retouch environments list and deployments list
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
   - Grouped pipeline dropdown is a scrollable container
 
