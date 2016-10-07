@@ -44,6 +44,7 @@ module API
     mount ::API::Geo
     mount ::API::Internal
     mount ::API::Issues
+    mount ::API::Boards
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::License

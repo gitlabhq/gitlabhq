@@ -9,10 +9,10 @@
         = version_status_badge
   %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
-  - if help_text.present?
+  - if current_application_settings.help_text.present?
     %hr
     %p.slead
-      = markdown(help_text)
+      = markdown(current_application_settings.help_text)
   - else
     %p.slead
       GitLab is open source software to collaborate on code.
@@ -27,7 +27,7 @@
 
     - if current_application_settings.help_page_text.present?
       %hr
-      = markdown(current_application_settings.help_page_text)
+      = markdown_field(current_application_settings, :help_page_text)
 
 %hr
 

@@ -9,7 +9,7 @@
               latest version
             - else
               version #{version_index(@merge_request_diff)}
-          %span.caret
+          = icon('caret-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           .dropdown-title
             %span Version:
@@ -39,7 +39,7 @@
                 version #{version_index(@start_version)}
               - else
                 #{@merge_request.target_branch}
-            %span.caret
+            = icon('caret-down')
           .dropdown-menu.dropdown-select.dropdown-menu-selectable
             .dropdown-title
               %span Compared with:

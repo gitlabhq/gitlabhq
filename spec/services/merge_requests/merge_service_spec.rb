@@ -76,7 +76,10 @@ describe MergeRequests::MergeService, services: true do
 
         let(:jira_tracker) { project.create_jira_service }
 
-        before { jira_service_settings }
+        before do
+          project.update_attributes!(has_external_issue_tracker: true)
+          jira_service_settings
+        end
 
         it 'closes issues on JIRA issue tracker' do
           jira_issue = ExternalIssue.new('JIRA-123', project)

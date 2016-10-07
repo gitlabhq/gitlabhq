@@ -1,5 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
+  include CacheMarkdownField
   include TokenAuthenticatable
+
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
@@ -16,6 +18,11 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :disabled_oauth_sign_in_sources, Array
   serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
+
+  cache_markdown_field :sign_in_text
+  cache_markdown_field :help_page_text
+  cache_markdown_field :shared_runners_text, pipeline: :plain_markdown
+  cache_markdown_field :after_sign_up_text
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 

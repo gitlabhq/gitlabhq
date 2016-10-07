@@ -88,6 +88,34 @@ describe Gitlab::Redis do
     end
   end
 
+  describe '.with' do
+    before { clear_pool }
+    after { clear_pool }
+
+    context 'when running not on sidekiq workers' do
+      before { allow(Sidekiq).to receive(:server?).and_return(false) }
+
+      it 'instantiates a connection pool with size 5' do
+        expect(ConnectionPool).to receive(:new).with(size: 5).and_call_original
+
+        described_class.with { |_redis| true }
+      end
+    end
+
+    context 'when running on sidekiq workers' do
+      before do
+        allow(Sidekiq).to receive(:server?).and_return(true)
+        allow(Sidekiq).to receive(:options).and_return({ concurrency: 18 })
+      end
+
+      it 'instantiates a connection pool with a size based on the concurrency of the worker' do
+        expect(ConnectionPool).to receive(:new).with(size: 18 + 5).and_call_original
+
+        described_class.with { |_redis| true }
+      end
+    end
+  end
+
   describe '#raw_config_hash' do
     it 'returns default redis url when no config file is present' do
       expect(subject).to receive(:fetch_config) { false }
@@ -113,5 +141,11 @@ describe Gitlab::Redis do
     described_class.remove_instance_variable(:@_raw_config)
   rescue NameError
     # raised if @_raw_config was not set; ignore
+  end
+
+  def clear_pool
+    described_class.remove_instance_variable(:@pool)
+  rescue NameError
+    # raised if @pool was not set; ignore
   end
 end

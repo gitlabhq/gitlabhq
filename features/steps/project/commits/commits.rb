@@ -24,6 +24,14 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(body).to have_selector("entry summary", text: commit.description[0..10])
   end
 
+  step 'I click on tag link' do
+    click_link "Tag"
+  end
+
+  step 'I see commit SHA pre-filled' do
+    expect(page).to have_selector("input[value='#{sample_commit.id}']")
+  end
+
   step 'I click on commit link' do
     visit namespace_project_commit_path(@project.namespace, @project, sample_commit.id)
   end

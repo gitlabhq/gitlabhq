@@ -120,6 +120,7 @@ gem 'creole',             '~> 0.5.0'
 gem 'wikicloth',          '0.8.1'
 gem 'asciidoctor',        '~> 1.5.2'
 gem 'rouge',              '~> 2.0'
+gem 'truncato',           '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM

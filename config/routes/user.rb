@@ -1,15 +1,7 @@
-scope(path: 'u/:username',
-      as: :user,
-      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
-      controller: :users) do
-  get :calendar
-  get :calendar_activities
-  get :groups
-  get :projects
-  get :contributed, as: :contributed_projects
-  get :snippets
-  get '/', action: :show
-end
+require 'constraints/user_url_constrainer'
+
+get '/u/:username', to: redirect('/%{username}'),
+                    constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
 
 ## EE-specific
 get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
@@ -29,4 +21,23 @@ devise_scope :user do
   ## EE-specific
   get '/users/auth/kerberos_spnego/negotiate' => 'omniauth_kerberos_spnego#negotiate'
   ## EE-specific
+end
+
+constraints(UserUrlConstrainer.new) do
+  scope(path: ':username', as: :user, controller: :users) do
+    get '/', action: :show
+  end
+end
+
+scope(path: 'u/:username',
+      as: :user,
+      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+      controller: :users) do
+  get :calendar
+  get :calendar_activities
+  get :groups
+  get :projects
+  get :contributed, as: :contributed_projects
+  get :snippets
+  get '/', to: redirect('/%{username}')
 end

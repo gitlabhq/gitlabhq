@@ -109,9 +109,12 @@
                   %strong Container Registry
                   %br
                   %span.descr Enable Container Registry for this repository
+                  = link_to icon('question-circle'), help_page_path('user/project/container_registry'), target: '_blank'
+
         %hr
         = render 'issues_settings', f: f
         %hr
+
         = render 'merge_request_settings', f: f
         %hr
         %fieldset.features.append-bottom-default

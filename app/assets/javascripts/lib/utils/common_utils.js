@@ -41,6 +41,11 @@
     gl.utils.getPagePath = function() {
       return $('body').data('page').split(':')[0];
     };
+    gl.utils.parseUrl = function (url) {
+      var parser = document.createElement('a');
+      parser.href = url;
+      return parser;
+    };
     return jQuery.timefor = function(time, suffix, expiredLabel) {
       var suffixFromNow, timefor;
       if (!time) {

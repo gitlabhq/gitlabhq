@@ -97,7 +97,10 @@ describe API::Members, api: true  do
   shared_examples 'POST /:sources/:id/members' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { post api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
+        let(:route) do
+          post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
+               user_id: access_requester.id, access_level: Member::MASTER
+        end
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
@@ -105,7 +108,8 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              post api("/#{source_type.pluralize}/#{source.id}/members", user)
+              post api("/#{source_type.pluralize}/#{source.id}/members", user),
+                   user_id: access_requester.id, access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
             end
@@ -191,7 +195,10 @@ describe API::Members, api: true  do
   shared_examples 'PUT /:sources/:id/members/:user_id' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
+        let(:route) do
+          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
+              access_level: Member::MASTER
+        end
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
@@ -199,7 +206,8 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
+              put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
+                  access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
             end

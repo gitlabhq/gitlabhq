@@ -1,8 +1,11 @@
 class Namespace < ActiveRecord::Base
   acts_as_paranoid
 
+  include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+
+  cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
