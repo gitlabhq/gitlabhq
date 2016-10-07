@@ -35,13 +35,17 @@
       });
       this.firstCICheck = true;
       this.readyForCICheck = false;
+      this.readyForCIEnvironmentCheck = false;
       this.cancel = false;
       clearInterval(this.fetchBuildStatusInterval);
+      clearInterval(this.fetchBuildEnvironmentStatusInterval);
       this.clearEventListeners();
       this.addEventListeners();
       this.getCIStatus(false);
+      this.getCIEnvironmentsStatus();
       this.retrieveSuccessIcon();
       this.pollCIStatus();
+      this.pollCIEnvironmentsStatus();
       notifyPermissions();
     }
 
@@ -62,6 +66,7 @@
           page = $('body').data('page').split(':').last();
           if (allowedPages.indexOf(page) < 0) {
             clearInterval(_this.fetchBuildStatusInterval);
+            clearInterval(_this.fetchBuildEnvironmentStatusInterval);
             _this.cancelPolling();
             return _this.clearEventListeners();
           }
@@ -178,23 +183,39 @@
       })(this));
     };
 
+    MergeRequestWidget.prototype.pollCIEnvironmentsStatus = function() {
+      this.fetchBuildEnvironmentStatusInterval = setInterval(() => {
+        if (!this.readyForCIEnvironmentCheck) return;
+        this.getCIEnvironmentsStatus();
+        this.readyForCIEnvironmentCheck = false;
+      }, 300000);
+    };
+
+    MergeRequestWidget.prototype.getCIEnvironmentsStatus = function() {
+      $.getJSON(this.opts.ci_environments_status_url, (environments) => {
+        if (this.cancel) return;
+        this.readyForCIEnvironmentCheck = true;
+        if (environments && environments.length) this.renderEnvironments(environments);
+      });
+    };
+
     MergeRequestWidget.prototype.renderEnvironments = function(environments) {
-       for (let i = 0; i < environments.length; i++) {
-         const environment = environments[i];
-         if ($(`.mr-state-widget #${ environment.id }`).length) return;
-         const $template = $(DEPLOYMENT_TEMPLATE);
-         if (!environment.external_url) $('.js-environment-link', $template).remove();
-         if (environment.deployed_at) {
-           environment.deployed_at = $.timeago(environment.deployed_at) + '.';
-         } else {
-           $('.js-environment-timeago', $template).remove();
-           environment.name += '.';
-         }
-         environment.ci_success_icon = this.$ciSuccessIcon;
-         const templateString = _.unescape($template[0].outerHTML);
-         const template = _.template(templateString)(environment)
-         this.$widgetBody.before(template);
-       }
+      for (let i = 0; i < environments.length; i++) {
+        const environment = environments[i];
+        if ($(`.mr-state-widget #${ environment.id }`).length) return;
+        const $template = $(DEPLOYMENT_TEMPLATE);
+        if (!environment.external_url) $('.js-environment-link', $template).remove();
+        if (environment.deployed_at) {
+          environment.deployed_at = $.timeago(environment.deployed_at) + '.';
+        } else {
+          $('.js-environment-timeago', $template).remove();
+          environment.name += '.';
+        }
+        environment.ci_success_icon = this.$ciSuccessIcon;
+        const templateString = _.unescape($template[0].outerHTML);
+        const template = _.template(templateString)(environment)
+        this.$widgetBody.before(template);
+      }
      };
 
     MergeRequestWidget.prototype.showCIStatus = function(state) {

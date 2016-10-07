@@ -10,7 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds, :pipelines]
@@ -393,11 +393,23 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    environments = @merge_request.environments.map do |environment|
+    response = {
+      title: merge_request.title,
+      sha: merge_request.diff_head_commit.short_id,
+      status: status,
+      coverage: coverage
+    }
+
+    render json: response
+  end
+
+  def ci_environments_status
+    render json: @merge_request.environments.map do |environment|
       next unless can?(current_user, :read_environment, environment)
 
       deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
-      environment = {
+
+      environment_data = {
         name: environment.name,
         id: environment.id,
         url: namespace_project_environment_path(@project.namespace, @project, environment),
@@ -405,26 +417,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         deployed_at: deployment ? deployment.created_at : nil
       }
 
-      if environment[:external_url]
-        environment[:external_url_formatted] = environment[:external_url].gsub(/\A.*?:\/\//, '')
+      if environment_data[:external_url]
+        environment_data[:external_url_formatted] = environment_data[:external_url].gsub(/\A.*?:\/\//, '')
       end
 
-      if environment[:deployed_at]
-        environment[:deployed_at_formatted] = environment[:deployed_at].to_time.in_time_zone.to_s(:medium)
+      if environment_data[:deployed_at]
+        environment_data[:deployed_at_formatted] = environment_data[:deployed_at].to_time.in_time_zone.to_s(:medium)
       end
 
-      environment
+      environment_data
     end.compact
-
-    response = {
-      title: merge_request.title,
-      sha: merge_request.diff_head_commit.short_id,
-      status: status,
-      coverage: coverage,
-      environments: environments
-    }
-
-    render json: response
   end
 
   protected

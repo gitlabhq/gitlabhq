@@ -83,9 +83,4 @@ Rails.application.routes.draw do
   draw :group
   draw :user
   draw :project
-
-  # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
-
-  root to: "root#index"
 end

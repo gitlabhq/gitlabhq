@@ -12,6 +12,7 @@
     merge_check_url: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     ci_status_url: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
+    ci_environments_status_url: "#{ci_environments_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
     ci_status: "#{@merge_request.pipeline ? @merge_request.pipeline.status : ''}",
     ci_message: {
