@@ -9,8 +9,6 @@ gl.Terminal = class {
     options.screenKeys  = options.screenKeys || true;
     options.cols = options.cols || 100;
     options.rows = options.rows || 40;
-    options.sessionId = options.sessionId || '';
-    options.port = options.port || 5000;
     this.container = document.querySelector(options.selector);
 
     this.setSocketUrl();
@@ -18,10 +16,10 @@ gl.Terminal = class {
   }
 
   setSocketUrl() {
-    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const {sessionId, port} = this.options;
+    const {protocol, hostname, port} = window.location;
+    const wsProtocol = protocol === 'https:' ? 'wss://' : 'ws://';
 
-    this.socketUrl = `${protocol}${location.hostname}:${port}/shell/${sessionId}?${document.cookie}`;
+    this.socketUrl = `${wsProtocol}${hostname}:${port}/gitlab-org/gitlab-ce/deployments/4/terminal_websocket`
   }
 
   createTerminal() {
