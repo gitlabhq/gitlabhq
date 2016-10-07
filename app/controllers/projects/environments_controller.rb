@@ -2,7 +2,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_update_environment!, only: [:edit, :update, :destroy]
+  before_action :authorize_update_environment!, only: [:edit, :update, :close, :destroy]
   before_action :environment, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -52,6 +52,17 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
 
     redirect_to namespace_project_environments_path(project.namespace, project)
+  end
+
+  def close
+    close_action = @environment.close_action
+    if close_action
+      close_build = close_action.play(current_user)
+      redirect_to namespace_project_build_path(project.namespace, project, close_build)
+    else
+      @environment.close
+      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    end
   end
 
   private

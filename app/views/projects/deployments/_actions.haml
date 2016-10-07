@@ -22,7 +22,7 @@
 
       - if local_assigns.fetch(:allow_close, false) && deployment.closeable?
         .inline
-          = link_to [:play, @project.namespace.becomes(Namespace), @project, deployment.close_action], method: :post, class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
+          = link_to close_namespace_project_environment_path(@project.namespace.becomes(Namespace), @project, deployment.environment), method: :post, class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
             = icon('stop', class: 'close-env-icon')
 
     - if local_assigns.fetch(:allow_rollback, false)

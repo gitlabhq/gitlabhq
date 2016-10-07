@@ -12,8 +12,8 @@
       .nav-controls
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
-          - if @environment.opened? && last_deployment.try(:close_action)
-            = link_to 'Close', [:play, @project.namespace.becomes(Namespace), @project, last_deployment.close_action], data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
+          - if @environment.opened?
+            = link_to 'Close', close_namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
 
   .deployments-container
     - if @deployments.blank?
