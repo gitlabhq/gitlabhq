@@ -17,6 +17,7 @@ v 8.13.0 (unreleased)
   - Keep refs for each deployment
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
+  - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Simplify Mentionable concern instance methods
