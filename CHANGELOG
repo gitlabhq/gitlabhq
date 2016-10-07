@@ -76,6 +76,7 @@ v 8.13.0 (unreleased)
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Reorder issue and merge request titles to show IDs first. !6503 (Greg Laubenstein)
+  - Add a new gitlab:users:clear_all_authentication_tokens task. !6745
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
