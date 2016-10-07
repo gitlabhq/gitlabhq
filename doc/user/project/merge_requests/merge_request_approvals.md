@@ -58,9 +58,15 @@ creating or editing a merge request.
 When someone is marked as a required approver for a merge request, an email is
 sent to them and a todo is added to their list of todos.
 
-## Groups
+### Approver groups
 
-You can also assign one or more groups that can be assigned as approvers, it works in the same way like regular approvers, the only difference is that you assign several users with one action. It's also possible to assign group at the project level and you can always change them later by editing the merge request.
+> [Introduced][ee-743] in GitLab Enterprise Edition 8.13.
+
+You can also assign one or more groups that can be assigned as approvers. It
+works the same way like regular approvers do, the only difference is that you
+assign several users with one action. One possible scenario would be to to assign
+a group of approvers at the project level and change them later when creating
+or editing the merge request.
 
 ## Using approvals
 
@@ -85,3 +91,5 @@ Once you approve, the button will disappear and the number of approvers
 will be decreased by one.
 
 ![Merge request approval](img/approvals_mr_approved.png)
+
+[ee-743]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/743
