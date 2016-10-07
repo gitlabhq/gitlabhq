@@ -71,7 +71,7 @@ module Ci
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
-        MergeRequests::MergeWhenBuildSucceedsService.new(pipeline.project, nil).trigger(pipeline)
+        PipelineSuccessWorker.perform_async(pipeline.id)
       end
 
       after_transition do |pipeline, transition|
