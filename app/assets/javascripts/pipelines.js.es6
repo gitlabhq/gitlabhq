@@ -4,17 +4,6 @@
     constructor() {
       $(document).off('click', '.toggle-pipeline-btn').on('click', '.toggle-pipeline-btn', this.toggleGraph);
       this.addMarginToBuildColumns();
-      this.initGroupedPipelineTooltips();
-    }
-
-    initGroupedPipelineTooltips() {
-      $('.dropdown-menu-toggle', $('.grouped-pipeline-dropdown').parent()).each(function() {
-        const $this = $(this);
-        $this.tooltip({
-          title: $this.data('tooltip-title'),
-          placement: 'bottom'
-        });
-      });
     }
 
     toggleGraph() {
