@@ -45,11 +45,12 @@
       .table-holder
         %table.table.builds
           %thead
-            %th.col-xs-1.col-sm-1 Status
-            %th.col-xs-2.col-sm-4 Pipeline
-            %th.col-xs-2.col-sm-2 Stages
-            %th.col-xs-2.col-sm-2
-            %th.hidden-xs.col-sm-3
+            %th Status
+            %th Pipeline
+            %th Commit
+            %th Stages
+            %th
+            %th.hidden-xs
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 
       = paginate @pipelines, theme: 'gitlab'

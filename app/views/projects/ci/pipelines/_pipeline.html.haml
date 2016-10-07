@@ -9,17 +9,13 @@
         = ci_icon_for_status(status)
       - else
         = ci_status_with_icon(status)
-  %td.branch-commit
+
+  %td
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
-      %span ##{pipeline.id}
-    - if pipeline.ref && show_branch
-      .icon-container
-        = pipeline.tag? ? icon('tag') : icon('code-fork')
-      = link_to pipeline.ref, namespace_project_commits_path(pipeline.project.namespace, pipeline.project, pipeline.ref), class: "monospace branch-name"
-    - if show_commit
-      .icon-container
-        = custom_icon("icon_commit")
-      = link_to pipeline.short_sha, namespace_project_commit_path(pipeline.project.namespace, pipeline.project, pipeline.sha), class: "commit-id monospace"
+      %span.pipeline-id ##{pipeline.id}
+    %span by
+    - if commit = pipeline.commit
+      = author_avatar(commit, size: 20)
     - if pipeline.latest?
       %span.label.label-success.has-tooltip{ title: 'Latest build for this branch' } latest
     - if pipeline.triggered?
@@ -29,6 +25,16 @@
     - if pipeline.builds.any?(&:stuck?)
       %span.label.label-warning stuck
 
+  %td.branch-commit
+    - if pipeline.ref && show_branch
+      .icon-container
+        = pipeline.tag? ? icon('tag') : icon('code-fork')
+      = link_to pipeline.ref, namespace_project_commits_path(pipeline.project.namespace, pipeline.project, pipeline.ref), class: "monospace branch-name"
+    - if show_commit
+      .icon-container
+        = custom_icon("icon_commit")
+      = link_to pipeline.short_sha, namespace_project_commit_path(pipeline.project.namespace, pipeline.project, pipeline.sha), class: "commit-id monospace"
+
     %p.commit-title
       - if commit = pipeline.commit
         = author_avatar(commit, size: 20)
@@ -36,16 +42,15 @@
       - else
         Cant find HEAD commit for this branch
 
-
-    - stages_status = pipeline.statuses.relevant.latest.stages_status
-    %td.stage-cell
-      - stages.each do |stage|
-        - status = stages_status[stage]
-        - tooltip = "#{stage.titleize}: #{status || 'not found'}"
-        - if status
-          .stage-container
-            = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
-              = ci_icon_for_status(status)
+  - stages_status = pipeline.statuses.relevant.latest.stages_status
+  %td.stage-cell
+    - stages.each do |stage|
+      - status = stages_status[stage]
+      - tooltip = "#{stage.titleize}: #{status || 'not found'}"
+      - if status
+        .stage-container
+          = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
+            = ci_icon_for_status(status)
 
   %td
     - if pipeline.duration

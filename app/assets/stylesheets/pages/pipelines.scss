@@ -23,10 +23,9 @@
   .table.builds {
     min-width: 1200px;
 
-    .branch-commit {
-      width: 33%;
+    .pipeline-id {
+      color: $black;
     }
-
   }
 }
 
@@ -81,7 +80,13 @@
     }
   }
 
+  .avatar {
+    margin-left: 0;
+    float: none;
+  }
+
   .branch-commit {
+    width: 30%;
 
     .branch-name {
       font-weight: bold;
@@ -118,10 +123,6 @@
       text-overflow: ellipsis;
     }
 
-    .avatar {
-      margin-left: 0;
-    }
-
     .label {
       margin-right: 4px;
     }
@@ -137,18 +138,7 @@
 
   .icon-container {
     display: inline-block;
-    text-align: right;
-    width: 15px;
-
-    .fa {
-      position: relative;
-      right: 3px;
-    }
-
-    svg {
-      position: relative;
-      right: 1px;
-    }
+    width: 10px;
   }
 
   .stage-cell {
