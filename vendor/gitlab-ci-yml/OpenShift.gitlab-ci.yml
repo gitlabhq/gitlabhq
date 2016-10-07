@@ -8,9 +8,9 @@ stages:
 
 variables:
   # Configure these variables in Secure Variables:
-  # OPENSHIFT_SERVER: https://openshift.domain.com:8443
+  OPENSHIFT_SERVER: https://openshift.domain.com:8443
+  OPENSHIFT_DOMAIN: apps.origin.gitlap.com
   # OPENSHIFT_TOKEN: my.openshift.token
-  # OPENSHIFT_DOMAIN: routes.openshift.domain.com
 
 before_script:
   - oc login "$OPENSHIFT_SERVER" --token="$OPENSHIFT_TOKEN" --insecure-skip-tls-verify
