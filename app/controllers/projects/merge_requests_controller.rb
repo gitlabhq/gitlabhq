@@ -29,6 +29,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   # Allow modify merge_request
   before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
 
+  before_action :authenticate_user!, only: [:assign_related_issues]
+
   before_action :authorize_can_resolve_conflicts!, only: [:conflicts, :resolve_conflicts]
 
   def index

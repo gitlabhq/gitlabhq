@@ -3,9 +3,9 @@ module MergeRequests
     def assignable_issues
       @assignable_issues ||= begin
         if current_user == merge_request.author
-          closes_issues.
-            reject { |issue| issue.assignee_id? }.
-            select { |issue| can?(current_user, :admin_issue, issue) }
+          closes_issues.select do |issue|
+            !issue.assignee_id? && can?(current_user, :admin_issue, issue)
+          end
         else
           []
         end

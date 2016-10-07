@@ -738,5 +738,22 @@ describe Projects::MergeRequestsController do
 
       expect(flash[:notice]).to eq '1 issue has been assigned to you'
     end
+
+    it 'calls MergeRequests::AssignIssuesService' do
+      expect(MergeRequests::AssignIssuesService).to receive(:new).
+        with(project, user, merge_request: merge_request).
+        and_return(double(execute: {count: 1}))
+
+      post_assign_issues
+    end
+
+    it 'is skipped when not signed in' do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      sign_out(:user)
+
+      expect(MergeRequests::AssignIssuesService).not_to receive(:new)
+
+      post_assign_issues
+    end
   end
 end
