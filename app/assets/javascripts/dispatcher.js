@@ -296,9 +296,10 @@
     };
 
     Dispatcher.prototype.initFieldErrors = function() {
-      $('form.show-gl-field-errors').each(function(i, form) {
-        new gl.GlFieldErrors(form);
-      });
+      return document.querySelectorAll('.show-gl-field-errors')
+        .forEach(function(form) {
+          new gl.GlFieldErrors(form);
+        });
     };
 
     return Dispatcher;
