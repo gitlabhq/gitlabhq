@@ -25,6 +25,8 @@ describe MergeRequests::BuildService, services: true do
 
   before do
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
+    allow(project).to receive(:commit).and_return(commit_1)
+    allow(project).to receive(:commit).and_return(commit_2)
   end
 
   describe 'execute' do
@@ -191,6 +193,53 @@ describe MergeRequests::BuildService, services: true do
         it 'sets the title to: Resolves External Issue $issue-iid' do
           expect(merge_request.title).to eq('Resolve External Issue 12345')
         end
+      end
+    end
+
+    context 'source branch does not exist' do
+      before do
+        allow(project).to receive(:commit).with(source_branch).and_return(nil)
+        allow(project).to receive(:commit).with(target_branch).and_return(commit_1)
+      end
+
+      it 'forbids the merge request from being created' do
+        expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds an error message to the merge request' do
+        expect(merge_request.errors).to contain_exactly('Source branch "feature-branch" does not exist')
+      end
+    end
+
+    context 'target branch does not exist' do
+      before do
+        allow(project).to receive(:commit).with(source_branch).and_return(commit_1)
+        allow(project).to receive(:commit).with(target_branch).and_return(nil)
+      end
+
+      it 'forbids the merge request from being created' do
+        expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds an error message to the merge request' do
+        expect(merge_request.errors).to contain_exactly('Target branch "master" does not exist')
+      end
+    end
+
+    context 'both source and target branches do not exist' do
+      before do
+        allow(project).to receive(:commit).and_return(nil)
+      end
+
+      it 'forbids the merge request from being created' do
+        expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds both error messages to the merge request' do
+        expect(merge_request.errors).to contain_exactly(
+          'Source branch "feature-branch" does not exist',
+          'Target branch "master" does not exist'
+        )
       end
     end
   end
