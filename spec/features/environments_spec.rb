@@ -150,7 +150,6 @@ feature 'Environments', feature: true do
               expect(page).to have_link(nil, href: environment.external_url)
             end
           end
-
         end
       end
     end
