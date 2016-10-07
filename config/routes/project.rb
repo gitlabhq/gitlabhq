@@ -159,7 +159,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         get(
           '/commits/*id',
           to: 'commits#show',
-          constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
+          constraints: { id: /.+/, format: false },
           as: :commits
         )
       end

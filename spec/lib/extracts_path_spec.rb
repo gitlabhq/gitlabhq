@@ -6,6 +6,7 @@ describe ExtractsPath, lib: true do
   include Gitlab::Routing.url_helpers
 
   let(:project) { double('project') }
+  let(:request) { double('request') }
 
   before do
     @project = project
@@ -15,9 +16,10 @@ describe ExtractsPath, lib: true do
     allow(project).to receive(:repository).and_return(repo)
     allow(project).to receive(:path_with_namespace).
       and_return('gitlab/gitlab-ci')
+    allow(request).to receive(:format=)
   end
 
-  describe '#assign_ref' do
+  describe '#assign_ref_vars' do
     let(:ref) { sample_commit[:id] }
     let(:params) { { path: sample_commit[:line_code_path], ref: ref } }
 
@@ -59,6 +61,75 @@ describe ExtractsPath, lib: true do
         assign_ref_vars
 
         expect(@id).to eq(get_id)
+      end
+    end
+
+    context 'ref only exists without .atom suffix' do
+      context 'with a path' do
+        let(:params) { { ref: 'v1.0.0.atom', path: 'README.md' } }
+
+        it 'renders a 404' do
+          expect(self).to receive(:render_404)
+
+          assign_ref_vars
+        end
+      end
+
+      context 'without a path' do
+        let(:params) { { ref: 'v1.0.0.atom' } }
+        before { assign_ref_vars }
+
+        it 'sets the un-suffixed version as @ref' do
+          expect(@ref).to eq('v1.0.0')
+        end
+
+        it 'sets the request format to Atom' do
+          expect(request).to have_received(:format=).with(:atom)
+        end
+      end
+    end
+
+    context 'ref exists with .atom suffix' do
+      context 'with a path' do
+        let(:params) { { ref: 'master.atom', path: 'README.md' } }
+
+        before do
+          repository = @project.repository
+          allow(repository).to receive(:commit).and_call_original
+          allow(repository).to receive(:commit).with('master.atom').and_return(repository.commit('master'))
+
+          assign_ref_vars
+        end
+
+        it 'sets the suffixed version as @ref' do
+          expect(@ref).to eq('master.atom')
+        end
+
+        it 'does not change the request format' do
+          expect(request).not_to have_received(:format=)
+        end
+      end
+
+      context 'without a path' do
+        let(:params) { { ref: 'master.atom' } }
+
+        before do
+          repository = @project.repository
+          allow(repository).to receive(:commit).and_call_original
+          allow(repository).to receive(:commit).with('master.atom').and_return(repository.commit('master'))
+        end
+
+        it 'sets the suffixed version as @ref' do
+          assign_ref_vars
+
+          expect(@ref).to eq('master.atom')
+        end
+
+        it 'does not change the request format' do
+          expect(request).not_to receive(:format=)
+
+          assign_ref_vars
+        end
       end
     end
   end
@@ -113,6 +184,20 @@ describe ExtractsPath, lib: true do
       it "falls back to a primitive split for an invalid ref" do
         expect(extract_ref('stable/CHANGELOG')).to eq(['stable', 'CHANGELOG'])
       end
+    end
+  end
+
+  describe '#extract_ref_without_atom' do
+    it 'ignores any matching refs suffixed with atom' do
+      expect(extract_ref_without_atom('master.atom')).to eq('master')
+    end
+
+    it 'returns the longest matching ref' do
+      expect(extract_ref_without_atom('release/app/v1.0.0.atom')).to eq('release/app/v1.0.0')
+    end
+
+    it 'returns nil if there are no matching refs' do
+      expect(extract_ref_without_atom('foo.atom')).to eq(nil)
     end
   end
 end

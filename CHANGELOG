@@ -14,6 +14,7 @@ v 8.13.0 (unreleased)
   - Don't include archived projects when creating group milestones. !4940 (Jeroen Jacobs)
   - Add tag shortcut from the Commit page. !6543
   - Keep refs for each deployment
+  - Allow browsing branches that end with '.atom'
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Cache rendered markdown in the database, rather than Redis
