@@ -110,6 +110,7 @@ v 8.12.2
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
   - Refactor remnants of CoffeeScript destructured opts and super !6261
+  - Shortened merge request modal to let clipboard button not overlap
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
