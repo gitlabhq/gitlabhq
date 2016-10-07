@@ -100,6 +100,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add RTL support to markdown renderer (Ebrahim Byagowi)
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
+  - Make issues search less finicky
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
   - Remove redundant mixins (ClemMakesApps)
   - Added 'Download' button to the Snippets page (Justin DiPierro)
