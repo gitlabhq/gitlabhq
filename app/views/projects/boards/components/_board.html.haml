@@ -11,7 +11,9 @@
     .board-inner
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !list.preset) }" }
-          {{ list.title }}
+          %span.has-tooltip{ ":title" => "(list.label ? list.label.description : '')",
+            data: { container: "body", placement: "bottom" } }
+            {{ list.title }}
           .board-issue-count-holder.pull-right.clearfix{ "v-if" => "list.type !== 'blank'" }
             %span.board-issue-count.pull-left{ ":class" => "{ 'has-btn': list.type !== 'done' }" }
               {{ list.issuesSize }}
