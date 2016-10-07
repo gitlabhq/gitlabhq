@@ -35,7 +35,7 @@
     initFieldValidation() {
       // hidden when injected into DOM
       this.inputElement.after(this.fieldErrorElement);
-      this.inputElement.off('invalid').on('invalid', this.handleInvalidInput.bind(this));
+      this.inputElement.off('invalid').on('invalid', this.handleInvalidSubmit.bind(this));
       this.scopedSiblings = this.safelySelectSiblings();
     }
 
@@ -52,29 +52,25 @@
     }
 
     renderValidity() {
-      this.setClearState();
+      this.renderClear();
 
       if (this.state.valid) {
-        return this.setValidState();
+        return this.renderValid();
       }
 
       if (this.state.empty) {
-        return this.setEmptyState();
+        return this.renderEmpty();
       }
 
       if (!this.state.valid) {
-        return this.setInvalidState();
+        return this.renderInvalid();
       }
 
     }
 
-    accessCurrentVal(newVal) {
-      return newVal ? this.inputElement.val(newVal) : this.inputElement.val();
-    }
-
-    handleInvalidInput(event) {
+    handleInvalidSubmit(event) {
       event.preventDefault();
-      const currentValue = this.accessCurrentVal();
+      const currentValue = this.accessCurrentValue();
       this.state.valid = false;
       this.state.empty = currentValue === '';
 
@@ -86,36 +82,41 @@
 
     }
 
+    /* Get or set current input value */
+    accessCurrentValue(newVal) {
+      return newVal ? this.inputElement.val(newVal) : this.inputElement.val();
+    }
+
     getInputValidity() {
       return this.inputDomElement.validity.valid;
     }
 
-    updateValidityState() {
-      const inputVal = this.accessCurrentVal();
+    updateValidity() {
+      const inputVal = this.accessCurrentValue();
       this.state.empty = !inputVal.length;
       this.state.valid = this.getInputValidity();
       this.renderValidity();
     }
 
-    setValidState() {
-      return this.setClearState();
+    renderValid() {
+      return this.renderClear();
     }
 
-    setEmptyState() {
-      return this.setInvalidState();
+    renderEmpty() {
+      return this.renderInvalid();
     }
 
-    setInvalidState() {
+    renderInvalid() {
       this.inputElement.addClass(inputErrorClass);
       this.scopedSiblings.hide();
       return this.fieldErrorElement.show();
     }
 
-    setClearState() {
-      const inputVal = this.accessCurrentVal();
+    renderClear() {
+      const inputVal = this.accessCurrentValue();
       if (!inputVal.split(' ').length) {
         const trimmedInput = inputVal.trim();
-        this.accessCurrentVal(trimmedInput);
+        this.accessCurrentValue(trimmedInput);
       }
       this.inputElement.removeClass(inputErrorClass);
       this.scopedSiblings.hide();
