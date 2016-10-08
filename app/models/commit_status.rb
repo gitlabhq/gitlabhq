@@ -85,32 +85,34 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
+    after_transition do |commit_status|
+      commit_status.run_after_commit do
+        pipeline.try do |pipeline|
+          if complete?
+            ProcessPipelineWorker.perform_async(pipeline.id)
+          else
+            UpdatePipelineWorker.perform_async(pipeline.id)
+          end
+        end
+      end
+    end
+
     after_transition [:created, :pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
+      commit_status.run_after_commit do
+        MergeRequests::MergeWhenBuildSucceedsService
+          .new(pipeline.project, nil).trigger(self)
+      end
     end
 
     after_transition any => :failed do |commit_status|
-      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
-    end
-
-    after_transition do: :schedule_pipeline_update
-  end
-
-  delegate :sha, :short_sha, to: :pipeline
-
-  def schedule_pipeline_update
-    run_after_commit(:process_pipeline!)
-  end
-
-  def process_pipeline!
-    pipeline.try do |pipeline|
-      if complete?
-        ProcessPipelineWorker.perform_async(pipeline.id)
-      else
-        UpdatePipelineWorker.perform_async(pipeline.id)
+      commit_status.run_after_commit do
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(pipeline.project, nil).execute(self)
       end
     end
   end
+
+  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
