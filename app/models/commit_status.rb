@@ -85,7 +85,9 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition do |commit_status|
+    after_transition do |commit_status, transition|
+      return if transition.loopback?
+
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
           if complete?
