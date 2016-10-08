@@ -19,7 +19,7 @@ module Emails
                 target_branch: @project.default_branch)
       add_headers
 
-      mail(to: to, subject: pipeline_subject(status)) do |format|
+      mail(to: to, subject: pipeline_subject(status), skip_premailer: true) do |format|
         format.html { render layout: false }
         format.text
       end
