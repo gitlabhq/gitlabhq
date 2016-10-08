@@ -19,6 +19,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :pipelines]
   before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
+  before_action :apply_diff_view_cookie!, only: [:new_diffs]
+  before_action :build_merge_request, only: [:new, :new_diffs]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -210,29 +212,26 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    apply_diff_view_cookie!
+    define_new_vars
+  end
 
-    build_merge_request
-    @noteable = @merge_request
+  def new_diffs
+    respond_to do |format|
+      format.html do
+        define_new_vars
+        render "new"
+      end
+      format.json do
+        @diffs = if @merge_request.can_be_created
+                   @merge_request.diffs(diff_options)
+                 else
+                   []
+                 end
+        @diff_notes_disabled = true
 
-    @target_branches = if @merge_request.target_project
-                         @merge_request.target_project.repository.branch_names
-                       else
-                         []
-                       end
-
-    @target_project = merge_request.target_project
-    @source_project = merge_request.source_project
-    @commits = @merge_request.compare_commits.reverse
-    @commit = @merge_request.diff_head_commit
-    @base_commit = @merge_request.diff_base_commit
-    @diffs = @merge_request.diffs(diff_options) if @merge_request.compare
-    @diff_notes_disabled = true
-    @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses.relevant if @pipeline
-
-    @note_counts = Note.where(commit_id: @commits.map(&:id)).
-      group(:commit_id).count
+        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs) }
+      end
+    end
   end
 
   def create
@@ -490,6 +489,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     )
   end
 
+  def define_new_vars
+    @noteable = @merge_request
+
+    @target_branches = if @merge_request.target_project
+                         @merge_request.target_project.repository.branch_names
+                       else
+                         []
+                       end
+
+    @target_project = merge_request.target_project
+    @source_project = merge_request.source_project
+    @commits = @merge_request.compare_commits.reverse
+    @commit = @merge_request.diff_head_commit
+    @base_commit = @merge_request.diff_base_commit
+
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses.relevant if @pipeline
+    @note_counts = Note.where(commit_id: @commits.map(&:id)).
+      group(:commit_id).count
+  end
+
   def invalid_mr
     # Render special view for MR with removed target branch
     render 'invalid'
@@ -521,7 +541,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params.merge(diff_options: diff_options)).execute
   end
 
   def compared_diff_version

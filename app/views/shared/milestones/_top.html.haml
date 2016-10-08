@@ -26,7 +26,7 @@
 
 .detail-page-description.milestone-detail
   %h2.title
-    = markdown escape_once(milestone.title), pipeline: :single_line
+    = markdown_field(milestone, :title)
 
 - if milestone.complete?(current_user) && milestone.active?
   .alert.alert-success.prepend-top-default
@@ -55,4 +55,3 @@
             Open
         %td
           = ms.expires_at
-

@@ -51,7 +51,6 @@
         }).remove();
         // Submit the form to get new data
         Issuable.filterResults($('.filter-form'));
-        return $('.js-label-select').trigger('update.label');
       });
     },
     filterResults: (function(_this) {

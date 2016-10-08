@@ -43,6 +43,7 @@ module API
     mount ::API::Groups
     mount ::API::Internal
     mount ::API::Issues
+    mount ::API::Boards
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::LicenseTemplates

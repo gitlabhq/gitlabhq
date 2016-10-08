@@ -114,6 +114,26 @@ module TodosHelper
     selected_type ? selected_type[:text] : default_type
   end
 
+  def todo_due_date(todo)
+    return unless todo.target.try(:due_date)
+
+    is_due_today = todo.target.due_date.today?
+    is_overdue = todo.target.overdue?
+    css_class =
+      if is_due_today
+        'text-warning'
+      elsif is_overdue
+        'text-danger'
+      else
+        ''
+      end
+
+    html = "&middot; ".html_safe
+    html << content_tag(:span, class: css_class) do
+      "Due #{is_due_today ? "today" : todo.target.due_date.to_s(:medium)}"
+    end
+  end
+
   private
 
   def show_todo_state?(todo)

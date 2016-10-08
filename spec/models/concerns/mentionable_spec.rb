@@ -1,18 +1,27 @@
 require 'spec_helper'
 
 describe Mentionable do
-  include Mentionable
+  class Example
+    include Mentionable
 
-  def author
-    nil
+    attr_accessor :project, :message
+    attr_mentionable :message
+
+    def author
+      nil
+    end
   end
 
   describe 'references' do
     let(:project) { create(:project) }
+    let(:mentionable) { Example.new }
 
     it 'excludes JIRA references' do
       allow(project).to receive_messages(jira_tracker?: true)
-      expect(referenced_mentionables(project, 'JIRA-123')).to be_empty
+
+      mentionable.project = project
+      mentionable.message = 'JIRA-123'
+      expect(mentionable.referenced_mentionables).to be_empty
     end
   end
 end
@@ -39,9 +48,8 @@ describe Issue, "Mentionable" do
       let(:user) { create(:user) }
 
       def referenced_issues(current_user)
-        text = "#{private_issue.to_reference(project)} and #{public_issue.to_reference}"
-
-        issue.referenced_mentionables(current_user, text)
+        issue.title = "#{private_issue.to_reference(project)} and #{public_issue.to_reference}"
+        issue.referenced_mentionables(current_user)
       end
 
       context 'when the current user can see the issue' do

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Projects::Boards::IssuesController do
   let(:project) { create(:project_with_board) }
   let(:user)    { create(:user) }
+  let(:guest)   { create(:user) }
 
   let(:planning)    { create(:label, project: project, name: 'Planning') }
   let(:development) { create(:label, project: project, name: 'Development') }
@@ -12,6 +13,7 @@ describe Projects::Boards::IssuesController do
 
   before do
     project.team << [user, :master]
+    project.team << [guest, :guest]
   end
 
   describe 'GET index' do
@@ -61,6 +63,60 @@ describe Projects::Boards::IssuesController do
     end
   end
 
+  describe 'POST create' do
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        create_issue user: user, list: list1, title: 'New issue'
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the created issue' do
+        create_issue user: user, list: list1, title: 'New issue'
+
+        expect(response).to match_response_schema('issue')
+      end
+    end
+
+    context 'with invalid params' do
+      context 'when title is nil' do
+        it 'returns an unprocessable entity 422 response' do
+          create_issue user: user, list: list1, title: nil
+
+          expect(response).to have_http_status(422)
+        end
+      end
+
+      context 'when list does not belongs to project board' do
+        it 'returns a not found 404 response' do
+          list = create(:list)
+
+          create_issue user: user, list: list, title: 'New issue'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'with unauthorized user' do
+      it 'returns a forbidden 403 response' do
+        create_issue user: guest, list: list1, title: 'New issue'
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    def create_issue(user:, list:, title:)
+      sign_in(user)
+
+      post :create, namespace_id: project.namespace.to_param,
+                    project_id: project.to_param,
+                    list_id: list.to_param,
+                    issue: { title: title },
+                    format: :json
+    end
+  end
+
   describe 'PATCH update' do
     let(:issue) { create(:labeled_issue, project: project, labels: [planning]) }
 
@@ -93,13 +149,7 @@ describe Projects::Boards::IssuesController do
     end
 
     context 'with unauthorized user' do
-      let(:guest) { create(:user) }
-
-      before do
-        project.team << [guest, :guest]
-      end
-
-      it 'returns a successful 403 response' do
+      it 'returns a forbidden 403 response' do
         move user: guest, issue: issue, from_list_id: list1.id, to_list_id: list2.id
 
         expect(response).to have_http_status(403)

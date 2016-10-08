@@ -8,10 +8,8 @@
     data () {
       return {
         predefinedLabels: [
-          new ListLabel({ title: 'Development', color: '#5CB85C' }),
-          new ListLabel({ title: 'Testing', color: '#F0AD4E' }),
-          new ListLabel({ title: 'Production', color: '#FF5F00' }),
-          new ListLabel({ title: 'Ready', color: '#FF0000' })
+          new ListLabel({ title: 'To Do', color: '#F0AD4E' }),
+          new ListLabel({ title: 'Doing', color: '#5CB85C' })
         ]
       }
     },

@@ -23,4 +23,4 @@
   .note-search-result
     .term
       = preserve do
-        = search_md_sanitize(markdown(note.note, {no_header_anchors: true, author: note.author}))
+        = search_md_sanitize(note, :note)

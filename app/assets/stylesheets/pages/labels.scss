@@ -59,6 +59,13 @@
       width: 200px;
       margin-bottom: 0;
     }
+
+    .label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      max-width: 100%;
+    }    
   }
 
   .label-description {

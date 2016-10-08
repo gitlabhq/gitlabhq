@@ -203,6 +203,23 @@ describe Service, models: true do
     end
   end
 
+  describe 'initialize service with no properties' do
+    let(:service) do
+      GitlabIssueTrackerService.create(
+        project: create(:project),
+        title: 'random title'
+      )
+    end
+
+    it 'does not raise error' do
+      expect { service }.not_to raise_error
+    end
+
+    it 'creates the properties' do
+      expect(service.properties).to eq({ "title" => "random title" })
+    end
+  end
+
   describe "callbacks" do
     let(:project) { create(:project) }
     let!(:service) do
@@ -221,7 +238,7 @@ describe Service, models: true do
       it "updates the has_external_issue_tracker boolean" do
         expect do
           service.save!
-        end.to change { service.project.has_external_issue_tracker }.from(nil).to(true)
+        end.to change { service.project.has_external_issue_tracker }.from(false).to(true)
       end
     end
 

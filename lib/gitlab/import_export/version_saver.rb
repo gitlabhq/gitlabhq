@@ -1,12 +1,14 @@
 module Gitlab
   module ImportExport
     class VersionSaver
+      include Gitlab::ImportExport::CommandLineUtil
+
       def initialize(shared:)
         @shared = shared
       end
 
       def save
-        FileUtils.mkdir_p(@shared.export_path)
+        mkdir_p(@shared.export_path)
 
         File.write(version_file, Gitlab::ImportExport.version, mode: 'w')
       rescue => e
