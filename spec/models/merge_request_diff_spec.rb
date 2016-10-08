@@ -44,6 +44,16 @@ describe MergeRequestDiff, models: true do
       end
     end
 
+    context 'when the raw diffs have invalid content' do
+      before { mr_diff.update_attributes(st_diffs: ["--broken-diff"]) }
+
+      it 'returns an empty DiffCollection' do
+        expect(mr_diff.raw_diffs.to_a).to be_empty
+        expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+        expect(mr_diff.raw_diffs).to be_empty
+      end
+    end
+
     context 'when the raw diffs exist' do
       it 'returns the diffs' do
         expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)

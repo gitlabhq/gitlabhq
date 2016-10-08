@@ -6,6 +6,9 @@ class MergeRequestDiff < ActiveRecord::Base
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
 
+  # Valid types of serialized diffs allowed by Gitlab::Git::Diff
+  VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta]
+
   belongs_to :merge_request
 
   state_machine :state, initial: :empty do
@@ -170,6 +173,15 @@ class MergeRequestDiff < ActiveRecord::Base
 
   private
 
+  # Old GitLab implementations may have generated diffs as ["--broken-diff"].
+  # Avoid an error 500 by ignoring bad elements. See:
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/20776
+  def valid_raw_diff?(raw)
+    return false unless raw.respond_to?(:each)
+
+    raw.any? { |element| VALID_CLASSES.include?(element.class) }
+  end
+
   def dump_commits(commits)
     commits.map(&:to_hash)
   end
@@ -200,7 +212,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def load_diffs(raw, options)
-    if raw.respond_to?(:each)
+    if valid_raw_diff?(raw)
       if paths = options[:paths]
         raw = raw.select do |diff|
           paths.include?(diff[:old_path]) || paths.include?(diff[:new_path])
