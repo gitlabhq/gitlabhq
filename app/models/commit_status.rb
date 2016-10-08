@@ -99,6 +99,9 @@ class CommitStatus < ActiveRecord::Base
 
     after_transition [:created, :pending, :running] => :success do |commit_status|
       commit_status.run_after_commit do
+        # TODO, temporary fix for race condition
+        UpdatePipelineWorker.new.perform(pipeline.id)
+
         MergeRequests::MergeWhenBuildSucceedsService
           .new(pipeline.project, nil).trigger(self)
       end
