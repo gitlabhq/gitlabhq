@@ -1,9 +1,6 @@
 - expanded = discussion.expanded?
 %li.note.note-discussion.timeline-entry
   .timeline-entry-inner
-    .timeline-icon
-      = link_to user_path(discussion.author) do
-        = image_tag avatar_icon(discussion.author), class: "avatar s40"
     .timeline-content
       .discussion.js-toggle-container{ class: discussion.id, data: { discussion_id: discussion.id } }
         .discussion-header
@@ -13,9 +10,7 @@
                 = icon("chevron-up")
               - else
                 = icon("chevron-down")
-
               Toggle discussion
-
           = link_to_member(@project, discussion.author, avatar: false)
 
           .inline.discussion-headline-light
@@ -37,8 +32,6 @@
                 an outdated diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
-
-          = render "discussions/headline", discussion: discussion
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
           - if discussion.diff_discussion? && discussion.diff_file
