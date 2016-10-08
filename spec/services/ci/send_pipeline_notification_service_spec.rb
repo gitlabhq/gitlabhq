@@ -32,14 +32,14 @@ describe Ci::SendPipelineNotificationService, services: true do
 
     context 'with success pipeline' do
       let(:status) { 'success' }
-      let(:email_subject) { 'Pipeline succeeded for' }
+      let(:email_subject) { "Pipeline ##{pipeline.id} has succeeded" }
 
       it_behaves_like 'sending emails'
     end
 
     context 'with failed pipeline' do
       let(:status) { 'failed' }
-      let(:email_subject) { 'Pipeline failed for' }
+      let(:email_subject) { "Pipeline ##{pipeline.id} has failed" }
 
       it_behaves_like 'sending emails'
     end
