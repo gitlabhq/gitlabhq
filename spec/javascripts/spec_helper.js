@@ -11,6 +11,7 @@
 /*= require jquery.turbolinks */
 /*= require bootstrap */
 /*= require underscore */
+/*= require es6-promise.auto */
 
 // Teaspoon includes some support files, but you can use anything from your own
 // support path too.

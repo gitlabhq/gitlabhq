@@ -62,6 +62,7 @@
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
 /*= require es6-promise.auto */
+/*= require raven_config */
 
 (function () {
   document.addEventListener('page:fetch', function () {
