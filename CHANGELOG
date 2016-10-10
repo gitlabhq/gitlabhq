@@ -26,6 +26,7 @@ v 8.13.0 (unreleased)
   - Revert "Label list shows all issues (opened or closed) with that label"
   - Expose expires_at field when sharing project on API
   - Fix VueJS template tags being rendered in code comments
+  - Added copy file path button to merge request diff files
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
   - Add Issue Board API support (andrebsguedes)
   - Allow the Koding integration to be configured through the API
