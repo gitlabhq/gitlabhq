@@ -4,7 +4,7 @@ module ExpandVariables
       # Convert hash array to variables
       if variables.is_a?(Array)
         variables = variables.reduce({}) do |hash, variable|
-          hash[variable[:key]] = variable[:value]
+          hash[variable[:key].to_s] = variable[:value]
           hash
         end
       end
