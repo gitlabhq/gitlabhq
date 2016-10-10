@@ -50,6 +50,11 @@ RSpec.configure do |config|
     example.run
     Rails.cache = caching_store
   end
+
+  config.after(:each) do
+    FileUtils.rm_rf("tmp/tests/repositories")
+    FileUtils.mkdir_p("tmp/tests/repositories")
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

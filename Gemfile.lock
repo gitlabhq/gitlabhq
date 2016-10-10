@@ -745,6 +745,9 @@ GEM
     tilt (2.0.5)
     timecop (0.8.1)
     timfel-krb5-auth (0.8.3)
+    truncato (0.7.8)
+      htmlentities (~> 4.3.1)
+      nokogiri (~> 1.6.1)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -971,6 +974,7 @@ DEPENDENCIES
   test_after_commit (~> 0.4.2)
   thin (~> 1.7.0)
   timecop (~> 0.8.0)
+  truncato (~> 0.7.8)
   turbolinks (~> 2.5.0)
   u2f (~> 0.2.1)
   uglifier (~> 2.7.2)

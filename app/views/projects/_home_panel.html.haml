@@ -9,7 +9,7 @@
 
     .project-home-desc
       - if @project.description.present?
-        = markdown(@project.description, pipeline: :description)
+        = markdown_field(@project, :description)
 
       - if forked_from_project = @project.forked_from_project
         %p

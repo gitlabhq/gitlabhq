@@ -194,8 +194,15 @@
     pointer-events: none !important;
   }
 
-  .caret {
+  .fa-caret-down,
+  .fa-caret-up {
     margin-left: 5px;
+  }
+
+  &.dropdown-toggle {
+    .fa-caret-down {
+      margin-left: 3px;
+    }
   }
 
   svg {

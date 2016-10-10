@@ -98,6 +98,9 @@ As an Administrator, you can verify that the user is a member of the group or
 project they're trying to have access to, and you can impersonate the user to
 retry the failing build in order to verify that everything is correct.
 
+You need to make sure that your installation has HTTPS cloning enabled.
+HTTPS support is required by GitLab CI to clone all sources.
+
 ## Build triggers
 
 [Build triggers][triggers] do not support the new permission model.
