@@ -35,14 +35,10 @@ class Projects::GraphsController < Projects::ApplicationController
   def languages
     @languages = Linguist::Repository.new(@repository.rugged, @repository.rugged.head.target_id).languages
     total = @languages.map(&:last).sum
-    colors = Linguist::Language.colors.
-             select { |lang| @languages.include? lang.name }.
-             map { |lang| [lang.name, lang.color] }.
-             to_h
 
     @languages = @languages.map do |language|
       name, share = language
-      color = colors[name] || "##{Digest::SHA256.hexdigest(name)[0...6]}"
+      color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
       {
         value: (share.to_f * 100 / total).round(2),
         label: name,
