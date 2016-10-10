@@ -64,7 +64,7 @@ describe Environment, models: true do
     end
   end
 
-  describe '#deployment_id_for' do
+  describe '#first_deployment_for' do
     let(:project)       { create(:project) }
     let!(:environment)  { create(:environment, project: project) }
     let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
@@ -73,11 +73,11 @@ describe Environment, models: true do
     let(:commit)        { project.commit.parent }
 
     it 'returns deployment id for the environment' do
-      expect(environment.deployment_id_for(commit)).to eq deployment1.id
+      expect(environment.first_deployment_for(commit)).to eq deployment1
     end
 
     it 'return nil when no deployment is found' do
-      expect(environment.deployment_id_for(head_commit)).to eq nil
+      expect(environment.first_deployment_for(head_commit)).to eq nil
     end
   end
 
