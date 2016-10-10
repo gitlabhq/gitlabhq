@@ -355,9 +355,9 @@ follows:
 }
 ```
 
-## Bad request
+## Unknown route
 
-When you try to access API URL that does not exist you will receive 404 Not Found.
+When you try to access an API URL that does not exist you will receive 404 Not Found.
 
 ```
 HTTP/1.1 404 Not Found
