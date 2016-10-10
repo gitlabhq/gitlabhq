@@ -574,19 +574,31 @@
   }
 }
 
-.pipelines.tab-pane {
+.tab-pane {
 
-  .content-list.pipelines {
-    overflow: auto;
+  &.pipelines {
+
+    .content-list.pipelines {
+      overflow: auto;
+    }
+
+    .stage {
+      max-width: 100px;
+      width: 100px;
+    }
+
+    .pipeline-actions {
+      min-width: initial;
+    }
   }
 
-  .stage {
-    max-width: 100px;
-    width: 100px;
-  }
+  &.builds {
 
-  .pipeline-actions {
-    min-width: initial;
+    .ci-table {
+      tr {
+        height: 71px;
+      }
+    }
   }
 }
 
