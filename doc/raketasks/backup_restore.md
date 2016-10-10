@@ -32,15 +32,17 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 You can specify that portions of the application data be skipped using the
-environment variable `SKIP`.  You can skip:
-- `db`
+environment variable `SKIP`. You can skip:
+
+- `db` (database)
 - `uploads` (attachments)
-- `repositories`
+- `repositories` (Git repositories data)
 - `builds` (CI build output logs)
 - `artifacts` (CI build artifacts)
 - `lfs` (LFS objects)
+- `registry` (Container Registry images)
 
-Separate multiple data types to skip using a comma.  For example:
+Separate multiple data types to skip using a comma. For example:
 
 ```
 sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
