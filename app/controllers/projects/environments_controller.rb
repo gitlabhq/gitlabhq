@@ -3,7 +3,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_update_environment!, only: [:edit, :update, :close, :destroy]
-  before_action :environment, only: [:show, :edit, :update, :destroy]
+  before_action :environment, only: [:show, :edit, :update, :close, :destroy]
 
   def index
     @scope = params[:scope]
