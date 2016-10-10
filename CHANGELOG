@@ -21,6 +21,7 @@ v 8.13.0 (unreleased)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
+  - Replace issues and merge requests trigram indexes with constrained indexes to improve their performance
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
