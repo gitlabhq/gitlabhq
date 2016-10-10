@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::HTMLEntityFilter, lib: true do
+describe Banzai::Filter::HtmlEntityFilter, lib: true do
   include FilterSpecHelper
 
   let(:unescaped) { 'foo <strike attr="foo">&&&</strike>' }
