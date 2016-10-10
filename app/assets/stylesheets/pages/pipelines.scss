@@ -51,6 +51,13 @@
     min-width: 650px;
   }
 
+  &.builds-page {
+
+    tr {
+      height: 71px;
+    }
+  }
+
   tr {
     th {
       padding: 16px 8px;
