@@ -23,6 +23,8 @@
           data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: ref_project.path, namespace_path: ref_project.namespace.path } } ) do
           %ul.dropdown-footer-list
             %li
+              %a.no-template
+                No template
               %a.reset-template
                 Reset template
   %div{ class: issuable_template_names.any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
