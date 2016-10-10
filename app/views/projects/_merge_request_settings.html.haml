@@ -63,7 +63,7 @@
       Add an approver suggestion for each merge request
     = f.label :approver_group_ids, class: 'label-light' do
       Approver groups
-    - skip_groups = @project.approver_groups.includes(:group).map { |ag| ag.group.id }
+    - skip_groups = @project.approver_groups.pluck(:group_id)
     = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
     .help-block
       Add a group as an approver suggestion for each merge request

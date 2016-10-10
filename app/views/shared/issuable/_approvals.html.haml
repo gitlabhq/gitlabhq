@@ -21,7 +21,7 @@
       This merge request must be approved by these users.
       You can override the project settings by setting your own list of approvers.
 
-    - skip_groups = issuable.overall_approver_groups.includes(:group).map { |ag| ag.group.id }
+    - skip_groups = issuable.overall_approver_groups.pluck(:group_id)
     = groups_select_tag('merge_request[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
     .help-block
       This merge request must be approved by members of these groups.
