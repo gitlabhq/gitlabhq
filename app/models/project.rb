@@ -827,11 +827,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def update_merge_requests(oldrev, newrev, ref, user)
-    MergeRequests::RefreshService.new(self, user).
-      execute(oldrev, newrev, ref)
-  end
-
   def valid_repo?
     repository.exists?
   rescue
