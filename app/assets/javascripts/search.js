@@ -10,7 +10,7 @@
         filterable: true,
         fieldName: 'group_id',
         data: function(term, callback) {
-          return Api.groups(term, false, false, function(data) {
+          return Api.groups(term, {}, function(data) {
             data.unshift({
               name: 'Any'
             });

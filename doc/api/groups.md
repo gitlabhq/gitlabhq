@@ -2,7 +2,12 @@
 
 ## List groups
 
-Get a list of groups. (As user: my groups, as admin: all groups)
+Get a list of groups. (As user: my groups or all available, as admin: all groups).
+
+Parameters:
+
+- `all_available` (optional) - if passed, show all groups you have access to
+- `skip_groups` (optional)(array of group paths) - if passed, skip groups
 
 ```
 GET /groups
@@ -459,7 +464,7 @@ Parameters:
 - `id` (required) - The ID of a group
 - `cn` (required) - The CN of a LDAP group
 - `group_access` (required) - Minimum access level for members of the LDAP group
-- `provider` (required) - LDAP provider for the LDAP group (when using several providers) 
+- `provider` (required) - LDAP provider for the LDAP group (when using several providers)
 
 ### Delete LDAP group link
 

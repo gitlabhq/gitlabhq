@@ -60,9 +60,7 @@ module SelectsHelper
   def select2_tag(id, opts = {})
     opts[:class] << ' multiselect' if opts[:multiple]
     value = opts[:selected] || ''
-    css_class = opts[:class]
-
-    hidden_field_tag(id, value, class: css_class, data: { skip_groups: opts[:skip_groups], url: autocomplete_groups_path })
+    hidden_field_tag(id, value, opts)
   end
 
   def admin_email_select_tag(id, opts = {})
