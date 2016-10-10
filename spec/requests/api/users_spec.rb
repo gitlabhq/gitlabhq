@@ -895,4 +895,59 @@ describe API::API, api: true  do
       expect{put api("/users/ASDF/block", admin) }.to raise_error(ActionController::RoutingError)
     end
   end
+
+  describe 'GET /user/:id/events' do
+    let(:user) { create(:user) }
+    let(:lambda_user) { create(:user) }
+    let(:project) { create(:empty_project) }
+    let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
+
+    before do
+      project.add_user(user, :developer)
+      EventCreateService.new.leave_note(note, user)
+    end
+
+    context "as a user than cannot see the event's project" do
+      it 'returns no events' do
+        get api("/users/#{user.id}/events", lambda_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context "as a user than can see the event's project" do
+      it_behaves_like 'a paginated resources' do
+        let(:request) { get api("/users/#{user.id}/events", user) }
+      end
+
+      context 'joined event' do
+        it 'returns the "joined" event' do
+          get api("/users/#{user.id}/events", user)
+
+          first_event = json_response.first
+
+          expect(first_event['action_name']).to eq('commented on')
+          expect(first_event['project_id'].to_i).to eq(project.id)
+          expect(first_event['author_username']).to eq(user.username)
+          expect(first_event['note']['id']).to eq(note.id)
+          expect(first_event['note']['body']).to eq('What an awesome day!')
+
+          last_event = json_response.last
+
+          expect(last_event['action_name']).to eq('joined')
+          expect(last_event['project_id'].to_i).to eq(project.id)
+          expect(last_event['author_username']).to eq(user.username)
+          expect(last_event['author']['name']).to eq(user.name)
+        end
+      end
+    end
+
+    it 'returns a 404 error if not found' do
+      get api('/users/42/events', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
 end

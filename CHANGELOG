@@ -59,6 +59,7 @@ v 8.13.0 (unreleased)
   - Stop using a Redis lease when updating the project activity timestamp whenever a new event is created
   - Add broadcast messages and alerts below sub-nav
   - Better empty state for Groups view
+  - API: New /users/:id/events endpoint
   - Update ruby-prof to 0.16.2. !6026 (Elan Ruusamäe)
   - Replace bootstrap caret with fontawesome caret (ClemMakesApps)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
