@@ -88,6 +88,7 @@ v 8.13.0 (unreleased)
   - Allow empty merge requests !6384 (Artem Sidorenko)
   - Grouped pipeline dropdown is a scrollable container
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
+  - Fixes padding in all clipboard icons that have .btn class
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
 
