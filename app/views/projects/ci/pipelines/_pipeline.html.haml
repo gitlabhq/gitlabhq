@@ -14,8 +14,8 @@
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
       %span.pipeline-id ##{pipeline.id}
     %span by
-    - if commit = pipeline.commit
-      = author_avatar(commit, size: 20)
+    - if pipeline.user
+      = user_avatar(user: pipeline.user, size: 20)
     - if pipeline.latest?
       %span.label.label-success.has-tooltip{ title: 'Latest build for this branch' } latest
     - if pipeline.triggered?

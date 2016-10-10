@@ -26,6 +26,14 @@
     .pipeline-id {
       color: $black;
     }
+
+    .branch-commit {
+      width: 30%;
+
+      .branch-name {
+        width: 195px
+      }
+    }
   }
 }
 
@@ -86,7 +94,6 @@
   }
 
   .branch-commit {
-    width: 30%;
 
     .branch-name {
       font-weight: bold;
@@ -112,7 +119,6 @@
 
     .commit-id {
       color: $gl-link-color;
-      margin-right: 8px;
     }
 
     .commit-title {
