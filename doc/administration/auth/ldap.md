@@ -162,12 +162,32 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 EOS
 ```
 
+An other example:
+```ruby
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = YAML.load <<-EOS # remember to close this block with 'EOS' below
+main: # 'main' is the GitLab 'provider ID' of this LDAP server
+  label: 'LDAP'
+  host: 'ldap.company.com'
+  port: 3288
+  uid: 'sAMAccountName'
+  method: 'plain' # "tls" or "ssl" or "plain"
+  bind_dn: 'america\\momo'
+  password: 'MYPASSWORD'
+  active_directory: true
+  allow_username_or_email_login: true
+  base: 'DC=company,DC=com'
+  user_filter: '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
+EOS
+```
+
+
 **Source configuration**
 
 Use the same format as `gitlab_rails['ldap_servers']` for the contents under
 `servers:` in the example below:
 
-```
+
 production:
   # snip...
   ldap:
