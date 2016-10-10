@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.12.7
+  - Prevent running GfmAutocomplete setup for each diff note. !6569
+
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
 
