@@ -16,6 +16,8 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  class BoardLimitExceeded < StandardError; end
+
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
@@ -1341,6 +1343,6 @@ class Project < ActiveRecord::Base
   end
 
   def validate_board_limit(board)
-    raise StandardError, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
+    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 end
