@@ -18,10 +18,25 @@ feature 'Environments', feature: true do
     before do
       visit namespace_project_environments_path(project.namespace, project)
     end
+    
+    context 'shows two tabs' do
+      scenario 'does show Available tab with link' do
+        expect(page).to have_link('Available')
+      end
+
+      scenario 'does show Stopped tab with link' do
+        expect(page).to have_link('Stopped')
+      end
+    end
 
     context 'without environments' do
       scenario 'does show no environments' do
         expect(page).to have_content('You don\'t have any environments right now.')
+      end
+      
+      scenario 'does show 0 as counter for environments in both tabs' do
+        expect(page.find('.js-avaibale-environments-count').text).to eq('0')
+        expect(page.find('.js-stopped-environments-count').text).to eq('0')
       end
     end
 
