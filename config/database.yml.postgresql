@@ -1,45 +1,37 @@
-#
-# PRODUCTION
-#
-production:
+# DRY up your yaml database configuration
+defaults: &defaults
   adapter: postgresql
   encoding: unicode
-  database: gitlabhq_production
   pool: 10
   # username: git
   # password:
   # host: localhost
-  # port: 5432 
+  # port: 5432
+
+#
+# PRODUCTION
+#
+production:
+  database: gitlabhq_production
+  <<: *defaults
 
 #
 # Development specific
 #
 development:
-  adapter: postgresql
-  encoding: unicode
   database: gitlabhq_development
-  pool: 5
-  username: postgres
-  password:
+  <<: *defaults
 
 #
 # Staging specific
 #
 staging:
-  adapter: postgresql
-  encoding: unicode
   database: gitlabhq_staging
-  pool: 5
-  username: postgres
-  password:
+  <<: *defaults
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test: &test
-  adapter: postgresql
-  encoding: unicode
   database: gitlabhq_test
-  pool: 5
-  username: postgres
-  password:
+  <<: *defaults
