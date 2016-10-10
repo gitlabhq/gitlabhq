@@ -3,7 +3,7 @@
     = page_specific_javascript_tag('u2f.js')
 
 %div
-  = render 'devise/shared/tab_single', { :tab_title => 'Two-Factor Authentication' }
+  = render 'devise/shared/tab_single', tab_title: 'Two-Factor Authentication'
   .login-box
     .login-body
       - if @user.two_factor_otp_enabled?

@@ -1,4 +1,4 @@
-= render 'devise/shared/tab_single', { :tab_title => 'Resend unlock instructions' }
+= render 'devise/shared/tab_single', tab_title: 'Resend unlock instructions'
 .login-box
   .login-body
     = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: 'show-gl-field-errors' }) do |f|
