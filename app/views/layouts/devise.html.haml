@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: "en", class: "devise-layout-html"}
   = render "layouts/head"
-  %body{ class: "ui_charcoal login-page application navless", data: {page: body_data_page}}
+  %body.ui_charcoal.login-page.application.navless{ data: { page: body_data_page }}
     .page-wrap
       = Gon::Base.render_data
       = render "layouts/header/empty"
@@ -22,7 +22,7 @@
                 %h3 Open source software to collaborate on code
 
                 %p
-                  Manage git repositories with fine grained access controls that keep your code secure.
+                  Manage Git repositories with fine-grained access controls that keep your code secure.
                   Perform code reviews and enhance collaboration with merge requests.
                   Each project can also have an issue tracker and a wiki.
 
