@@ -63,6 +63,7 @@ v 8.13.0 (unreleased)
   - Replace bootstrap caret with fontawesome caret (ClemMakesApps)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
+  - Fix enter key when navigating search site search dropdown. !6643 (Brennan Roberts)
   - Fix deploy status responsiveness error !6633
   - Fix resolved discussion display in side-by-side diff view !6575
   - Optimize GitHub importing for speed and memory
