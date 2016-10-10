@@ -110,9 +110,21 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     context 'properly handles multiple stages' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
-      let!(:build) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
-      let!(:test) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
-      let(:pipeline) { create(:ci_empty_pipeline, ref: mr_merge_if_green_enabled.source_branch, project: project) }
+      let(:sha) { project.commit(ref).id }
+
+      let(:pipeline) do
+        create(:ci_empty_pipeline, ref: ref, sha: sha, project: project)
+      end
+
+      let!(:build) do
+        create(:ci_build, :created, pipeline: pipeline, ref: ref,
+                                    name: 'build', stage: 'build')
+      end
+
+      let!(:test) do
+        create(:ci_build, :created, pipeline: pipeline, ref: ref,
+                                    name: 'test', stage: 'test')
+      end
 
       before do
         # This behavior of MergeRequest: we instantiate a new object
@@ -121,14 +133,16 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         end
       end
 
-      it "doesn't merge if some stages failed" do
+      it "doesn't merge if any of stages failed" do
         expect(MergeWorker).not_to receive(:perform_async)
+
         build.success
         test.drop
       end
 
-      it 'merge when all stages succeeded' do
+      it 'merges when all stages succeeded' do
         expect(MergeWorker).to receive(:perform_async)
+
         build.success
         test.success
       end
