@@ -66,6 +66,7 @@ v 8.13.0 (unreleased)
   - Add organization field to user profile
   - Fix enter key when navigating search site search dropdown. !6643 (Brennan Roberts)
   - Fix deploy status responsiveness error !6633
+  - Make searching for commits case insensitive
   - Fix resolved discussion display in side-by-side diff view !6575
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
