@@ -122,8 +122,10 @@ class Repository
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
     ref ||= root_ref
 
-    # Limited to 1000 commits for now, could be parameterized?
-    args = %W(#{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset} --max-count #{limit} --grep=#{query})
+    args = %W(
+      #{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset}
+      --max-count #{limit} --grep=#{query} --regexp-ignore-case
+    )
     args = args.concat(%W(-- #{path})) if path.present?
 
     git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)

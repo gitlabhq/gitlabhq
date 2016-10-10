@@ -101,7 +101,6 @@ class ProjectPolicy < BasePolicy
     can! :admin_milestone
     can! :admin_project_snippet
     can! :admin_project_member
-    can! :admin_merge_request
     can! :admin_note
     can! :admin_wiki
     can! :admin_project
@@ -151,11 +150,18 @@ class ProjectPolicy < BasePolicy
   def team_access!(user)
     access = project.team.max_member_access(user.id)
 
-    guest_access!                if access >= Gitlab::Access::GUEST
-    reporter_access!             if access >= Gitlab::Access::REPORTER
-    team_member_reporter_access! if access >= Gitlab::Access::REPORTER
-    developer_access!            if access >= Gitlab::Access::DEVELOPER
-    master_access!               if access >= Gitlab::Access::MASTER
+    return if access < Gitlab::Access::GUEST
+    guest_access!
+
+    return if access < Gitlab::Access::REPORTER
+    reporter_access!
+    team_member_reporter_access!
+
+    return if access < Gitlab::Access::DEVELOPER
+    developer_access!
+
+    return if access < Gitlab::Access::MASTER
+    master_access!
   end
 
   def archived_access!

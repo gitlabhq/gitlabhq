@@ -113,14 +113,13 @@ module IssuesHelper
     end
   end
 
-  def award_user_list(awards, current_user)
+  def award_user_list(awards, current_user, limit: 10)
     names = awards.map do |award|
       award.user == current_user ? 'You' : award.user.name
     end
 
-    # Take first 9 OR current user + first 9
     current_user_name = names.delete('You')
-    names = names.first(9).insert(0, current_user_name).compact
+    names = names.insert(0, current_user_name).compact.first(limit)
 
     names << "#{awards.size - names.size} more." if awards.size > names.size
 

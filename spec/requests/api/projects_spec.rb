@@ -175,6 +175,36 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/visible' do
+    let(:public_project) { create(:project, :public) }
+
+    before do
+      public_project
+      project
+      project2
+      project3
+      project4
+    end
+
+    it 'returns the projects viewable by the user' do
+      get api('/projects/visible', user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).
+        to contain_exactly(public_project.id, project.id, project2.id, project3.id)
+    end
+
+    it 'shows only public projects when the user only has access to those' do
+      get api('/projects/visible', user2)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).
+        to contain_exactly(public_project.id)
+    end
+  end
+
   describe 'GET /projects/starred' do
     let(:public_project) { create(:project, :public) }
 

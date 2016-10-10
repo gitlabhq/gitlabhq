@@ -24,7 +24,10 @@ devise_scope :user do
 end
 
 constraints(UserUrlConstrainer.new) do
-  scope(path: ':username', as: :user, controller: :users) do
+  scope(path: ':username',
+        as: :user,
+        constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+        controller: :users) do
     get '/', action: :show
   end
 end
