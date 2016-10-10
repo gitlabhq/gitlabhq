@@ -264,7 +264,7 @@
   line-height: 31px;
 }
 
-.builds {
+.ci-table {
   .table-holder {
     overflow-x: auto;
   }
@@ -357,7 +357,7 @@
 }
 
 .table-holder {
-  .builds {
+  .ci-table {
 
     th {
       background-color: $white-light;

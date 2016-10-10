@@ -20,7 +20,7 @@
     margin: 4px;
   }
 
-  .table.builds {
+  .table.ci-table {
     min-width: 1200px;
 
     .branch-commit {
@@ -44,7 +44,7 @@
   overflow: auto;
 }
 
-.table.builds {
+.table.ci-table {
   min-width: 900px;
 
   &.pipeline {
