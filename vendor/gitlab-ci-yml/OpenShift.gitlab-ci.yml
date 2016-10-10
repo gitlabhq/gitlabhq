@@ -8,7 +8,7 @@ stages:
 
 variables:
   # Configure these variables in Secure Variables:
-  OPENSHIFT_SERVER: https://openshift.domain.com:8443
+  OPENSHIFT_SERVER: https://origin.gitlap.com:8443
   OPENSHIFT_DOMAIN: apps.origin.gitlap.com
   # OPENSHIFT_TOKEN: my.openshift.token
 
