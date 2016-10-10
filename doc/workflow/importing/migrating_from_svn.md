@@ -8,21 +8,16 @@ between the two, for more information consult your favorite search engine.
 
 There are two approaches to SVN to Git migration:
 
-#### [Git/SVN Mirror](#mirror)
+1. [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
+    - Makes the GitLab repository to mirror the SVN project.
+    - Git and SVN repositories are kept in sync; you can use either one.  
+    - Smoothens the migration process and allows to manage migration risks.
 
- Make GitLab repository mirror SVN project.
- 
- Git and SVN project are kept in sync; use either one or another.
- 
- Smoothens migration process and allows to manage migration risks.
+1. [Cut over migration](#cut-over-migration-with-svn2git) which:
+     - Translates and imports the existing data and history from SVN to Git.
+     - Is a fire and forget approach, good for smaller teams.
 
-#### [Cut over migration](#cutover)
-
-  Translate existing data and history from SVN to Git.
-  
-  Fire and forget approach, good for smaller teams.
-
-## Smooth migration with a Git/SVN mirror using SubGit <a name="mirror"></a>
+## Smooth migration with a Git/SVN mirror using SubGit
 
 #### Prerequisites
 
@@ -37,20 +32,32 @@ at `/opt/subgit-VERSION/bin/subgit`
 #### Configuration
 
 In GitLab create new empty repository. In filesystem it will be located at 
-`/var/opt/gitlab/git-data/repositories/USER/REPOS.git` path.
-
-Run SubGit to set up a Git/SVN mirror. Make sure `subgit` command is ran
-on behalf of the same user that runs GitLab.
+`/var/opt/gitlab/git-data/repositories/USER/REPOS.git` path by default. 
+For convenice, assign this path to a variable:
 
 ```
-subgit configure --layout auto SVN_PROJECT_URL GIT_REPOS_PATH
+GIT_REPOS_PATH=/var/opt/gitlab/git-data/repositories/USER/REPOS.git
+```
+
+SubGit will keep this repository will be kept in sync with a remote SVN project.
+For convenience, assign remote SVN project URL to a variable:
+
+```
+SVN_PROJECT_URL=http://svn.company.com/repos/project
+```
+
+Run SubGit to set up a Git/SVN mirror. Make sure `subgit` command is ran
+on behalf of the same user that keeps ownership of GitLab Git repositories (`git` by default):
+
+```
+subgit configure --layout auto $SVN_PROJECT_URL $GIT_REPOS_PATH
 ```
 
 Adjust authors and branches mappings, if necessary:
 
 ```
-edit GIT_REPOS_PATH/subgit/authors.txt
-edit GIT_REPOS_PATH/subgit/config
+edit $GIT_REPOS_PATH/subgit/authors.txt
+edit $GIT_REPOS_PATH/subgit/config
 ```
 
 For more information regarding SubGit configuration options, refer to 
@@ -62,7 +69,7 @@ Run `subgit` to perform initial translation of existing SVN revisions into
 Git repository:
 
 ```
-subgit install GIT_REPOS_PATH
+subgit install $GIT_REPOS_PATH
 ```
 
 After initial translation is completed, GitLab Git repository and SVN project
@@ -74,7 +81,7 @@ Would you prefer to perform one-time cut over migration with `subgit` use
 `import` command in place of `install`:
 
 ```
-subgit import GIT_REPOS_PATH
+subgit import $GIT_REPOS_PATH
 ```
 
 #### Licensing
@@ -87,10 +94,9 @@ progress at [this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/990).
 
 #### Support
 
-For any questions related to SVN to GitLab migration with SubGit contact us at [support@subgit.com](mailto:support@subgit.com). We support
-all our users.
+For any questions related to SVN to GitLab migration with SubGit you can contact SubGit team at [support@subgit.com](mailto:support@subgit.com).
 
-## Cut over migration with svn2git <a name="cutover"></a>
+## Cut over migration with svn2git
 
 If you are currently using an SVN repository, you can migrate the repository
 to Git and GitLab. We recommend a hard cut over - run the migration command once
