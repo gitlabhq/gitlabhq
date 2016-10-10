@@ -742,7 +742,7 @@ describe Projects::MergeRequestsController do
     it 'calls MergeRequests::AssignIssuesService' do
       expect(MergeRequests::AssignIssuesService).to receive(:new).
         with(project, user, merge_request: merge_request).
-        and_return(double(execute: {count: 1}))
+        and_return(double(execute: { count: 1 }))
 
       post_assign_issues
     end
