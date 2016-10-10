@@ -4,7 +4,7 @@ To create a new project, sign in to GitLab.
 
 Go to your Dashboard and click on "new project" on the right side of your screen.
 
-![Create a project](basicsimages/new_project.png)
+![Create a project](img/new_project.png)
 
 Fill out the required information:
 
@@ -18,4 +18,4 @@ Fill out the required information:
 
 1. Click on "create project"
 
-!![Project information](basicsimages/project_info.png)
+!![Project information](img/project_info.png)

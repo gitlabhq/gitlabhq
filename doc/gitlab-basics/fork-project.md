@@ -10,10 +10,10 @@ Sign in to GitLab.
 
 Select a project on the right side of your screen:
 
-![Select a project](basicsimages/select_project.png)
+![Select a project](img/select_project.png)
 
 Click on the "fork" button on the right side of your screen:
 
-![Fork](basicsimages/fork.png)
+![Fork](img/fork.png)
 
 Click on the user or group to where you'd like to add the forked project.

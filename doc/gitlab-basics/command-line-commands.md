@@ -6,11 +6,11 @@ In Git, when you copy a project you say you "clone" it. To work on a git project
 
 When you are on your Dashboard, click on the project that you'd like to clone, which you'll find at the right side of your screen.
 
-![Select a project](basicsimages/select_project.png)
+![Select a project](img/select_project.png)
 
 To work in the project, you can copy a link to the Git repository through a SSH or a HTTPS protocol. SSH is easier to use after it's been [setup](create-your-ssh-keys.md). When you're in the project, click on the HTTPS or SSH button at the right side of your screen. Then copy the link (you'll have to paste it on your shell in the next step).
 
-![Copy the HTTPS or SSH](basicsimages/https.png)
+![Copy the HTTPS or SSH](img/https.png)
 
 ## On the command line
 

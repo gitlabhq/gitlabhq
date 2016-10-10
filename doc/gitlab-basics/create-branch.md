@@ -8,19 +8,19 @@ To add changes to your GitLab project, you should create a branch. You can do it
 
 To create a new branch in GitLab, sign in and then select a project on the right side of your screen:
 
-![Select a project](basicsimages/select_project.png)
+![Select a project](img/select_project.png)
 
 Click on "commits" on the menu on the left side of your screen:
 
-![Commits](basicsimages/commits.png)
+![Commits](img/commits.png)
 
 Click on the "branches" tab:
 
-![Branches](basicsimages/branches.png)
+![Branches](img/branches.png)
 
 Click on the "new branch" button on the right side of the screen:
 
-![New branch](basicsimages/newbranch.png)
+![New branch](img/newbranch.png)
 
 Fill out the information required:
 
@@ -30,10 +30,10 @@ Fill out the information required:
 
 1. Click on the button "create branch"
 
-![Branch info](basicsimages/branch_info.png)
+![Branch info](img/branch_info.png)
 
 ### Note:
 
 You will be able to find and select the name of your branch in the white box next to a project's name:
 
-![Branch name](basicsimages/branch_name.png)
+![Branch name](img/branch_name.png)
