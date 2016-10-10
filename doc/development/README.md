@@ -12,8 +12,6 @@
   contributing to documentation.
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
-- [UI guide](ui_guide.md) for building GitLab with existing CSS styles and elements
-- [Frontend guidelines](frontend.md)
 - [SQL guidelines](sql.md) for SQL guidelines
 
 ## Process
@@ -38,6 +36,12 @@
 
 - [What requires downtime?](what_requires_downtime.md)
 - [Adding database indexes](adding_database_indexes.md)
+
+## Frontend guidelines
+
+- [Frontend guidelines](frontend/README.md)
+- [SCSS styleguide](frontend/scss-style-guide.md)
+- [UI guidelines](frontend/ui_guide.md) for building GitLab with existing CSS styles and elements
 
 ## Compliance
 
