@@ -316,7 +316,7 @@
         &::before {
           content: '';
           position: absolute;
-          top: 49%;
+          top: 48%;
           left: -48px;
           border-top: 2px solid $border-color;
           width: 48px;
@@ -493,7 +493,7 @@
       &::after {
         content: '';
         position: absolute;
-        top: 49%;
+        top: 48%;
         right: -48px;
         border-top: 2px solid $border-color;
         width: 48px;
@@ -589,7 +589,7 @@
       width: 21px;
       height: 25px;
       position: absolute;
-      top: -31px;
+      top: -32px;
       border-top: 2px solid $border-color;
     }
 
