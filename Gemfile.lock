@@ -399,7 +399,7 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    mail_room (0.8.0)
+    mail_room (0.8.1)
     method_source (0.8.2)
     mime-types (2.99.3)
     mimemagic (0.3.0)
