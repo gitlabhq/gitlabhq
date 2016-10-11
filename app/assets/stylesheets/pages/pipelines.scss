@@ -420,7 +420,11 @@
         left: auto;
         right: -197px;
         top: -9px;
-        max-height: 245px;
+
+        ul {
+          max-height: 245px;
+          overflow: auto;
+        }
 
         a {
           color: $gl-text-color;

@@ -5,8 +5,9 @@
   %span.ci-status-text
     = name
   %span.badge= subject.size
-%ul.dropdown-menu.grouped-pipeline-dropdown
-  %li.arrow
-  - subject.each do |status|
-    %li
-      = render "projects/#{status.to_partial_path}_pipeline", subject: status
+.dropdown-menu.grouped-pipeline-dropdown
+  .arrow
+  %ul
+    - subject.each do |status|
+      %li
+        = render "projects/#{status.to_partial_path}_pipeline", subject: status
