@@ -5,7 +5,6 @@ v 8.13.0 (unreleased)
   - Truncate long labels with ellipsis in labels page
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
-  - Improve issue load time performance by avoiding ORDER BY in find_by call
   - Use gitlab-shell v3.6.2 (GIT TRACE logging)
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
@@ -84,7 +83,6 @@ v 8.13.0 (unreleased)
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Reorder issue and merge request titles to show IDs first. !6503 (Greg Laubenstein)
-  - Add a new gitlab:users:clear_all_authentication_tokens task. !6745
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
@@ -102,8 +100,13 @@ v 8.13.0 (unreleased)
   - API: all unknown routing will be handled with 404 Not Found
   - Make guests unable to view MRs on private projects
 
-v 8.12.5 (unreleased)
-  - Update the mail_room gem to 0.8.1 to fix a race condition with the mailbox watching thread
+v 8.12.5
+  - Switch from request to env in ::API::Helpers. !6615
+  - Update the mail_room gem to 0.8.1 to fix a race condition with the mailbox watching thread. !6714
+  - Improve issue load time performance by avoiding ORDER BY in find_by call. !6724
+  - Add a new gitlab:users:clear_all_authentication_tokens task. !6745
+  - Don't send Private-Token (API authentication) headers to Sentry
+  - Share projects via the API only with groups the authenticated user can access
 
 v 8.12.4
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. !6294 (lukehowell)
@@ -330,6 +333,10 @@ v 8.12.0
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
 
+v 8.11.9
+  - Don't send Private-Token (API authentication) headers to Sentry
+  - Share projects via the API only with groups the authenticated user can access
+
 v 8.11.8
   - Respect the fork_project permission when forking projects
   - Set a restrictive CORS policy on the API for credentialed requests
@@ -554,6 +561,10 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.12
+  - Don't send Private-Token (API authentication) headers to Sentry
+  - Share projects via the API only with groups the authenticated user can access
 
 v 8.10.11
   - Respect the fork_project permission when forking projects
