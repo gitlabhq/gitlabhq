@@ -126,6 +126,9 @@
             new TreeView();
           }
           break;
+        case 'projects:pipelines:show':
+          new gl.Pipelines();
+          break;
         case 'groups:activity':
           new Activities();
           break;

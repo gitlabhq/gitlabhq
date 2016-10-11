@@ -135,6 +135,17 @@ describe Event, models: true do
       it { expect(event.visible_to_user?(member)).to eq true }
       it { expect(event.visible_to_user?(guest)).to eq true }
       it { expect(event.visible_to_user?(admin)).to eq true }
+
+      context 'private project' do
+        let(:project) { create(:project, :private) }
+
+        it { expect(event.visible_to_user?(non_member)).to eq false }
+        it { expect(event.visible_to_user?(author)).to eq true }
+        it { expect(event.visible_to_user?(assignee)).to eq true }
+        it { expect(event.visible_to_user?(member)).to eq true }
+        it { expect(event.visible_to_user?(guest)).to eq false }
+        it { expect(event.visible_to_user?(admin)).to eq true }
+      end
     end
   end
 

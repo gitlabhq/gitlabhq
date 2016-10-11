@@ -1,5 +1,5 @@
 @mixin btn-default {
-  @include border-radius(3px);
+  border-radius: 3px;
   font-size: $gl-font-size;
   font-weight: 500;
   padding: $gl-vert-padding $gl-btn-padding;
@@ -8,7 +8,7 @@
   &:active {
     outline: none;
     background-color: $btn-active-gray;
-    @include box-shadow($gl-btn-active-background);
+    box-shadow: $gl-btn-active-background;
   }
 }
 
@@ -43,7 +43,7 @@
 
   &:active,
   &.active {
-    @include box-shadow ($gl-btn-active-background);
+    box-shadow: $gl-btn-active-background;
 
     background-color: $dark;
     border-color: $border-dark;
@@ -279,7 +279,7 @@
   }
 
   .active {
-    @include box-shadow($gl-btn-active-background);
+    box-shadow: $gl-btn-active-background;
 
     border: 1px solid #c6cacf !important;
     background-color: #e4e7ed !important;

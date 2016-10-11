@@ -5,9 +5,6 @@ describe Key, models: true do
     it { is_expected.to belong_to(:user) }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe "Validation" do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:key) }

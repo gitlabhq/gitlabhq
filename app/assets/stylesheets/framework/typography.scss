@@ -116,7 +116,7 @@
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
-    @include border-radius(2px);
+    border-radius: 2px;
   }
 
   p > code {
