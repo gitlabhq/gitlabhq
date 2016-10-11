@@ -5,14 +5,16 @@
   %td
     = render 'projects/deployments/commit', deployment: deployment
 
-  %td
+  %td.build-column
     - if deployment.deployable
-      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable] do
-        = user_avatar(user: deployment.user, size: 20)
+      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
         = "#{deployment.deployable.name} (##{deployment.deployable.id})"
+      - if deployment.user
+        by
+        = user_avatar(user: deployment.user, size: 20)
 
   %td
     #{time_ago_with_tooltip(deployment.created_at)}
 
-  %td
+  %td.hidden-xs
     = render 'projects/deployments/actions', deployment: deployment, allow_rollback: true

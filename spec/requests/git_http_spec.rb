@@ -412,10 +412,9 @@ describe 'Git HTTP requests', lib: true do
 
         context "when the params are anything else" do
           let(:params) { { service: 'git-implode-pack' } }
-          before { get path, params }
 
-          it "redirects to the sign-in page" do
-            expect(response).to redirect_to(new_user_session_path)
+          it "fails to find a route" do
+            expect { get(path, params) }.to raise_error(ActionController::RoutingError)
           end
         end
       end

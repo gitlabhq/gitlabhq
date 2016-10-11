@@ -52,37 +52,27 @@
         }
       }
     },
-    setup: function(input) {
+    setup: _.debounce(function(input) {
       // Add GFM auto-completion to all input fields, that accept GFM input.
       this.input = input || $('.js-gfm-input');
       // destroy previous instances
       this.destroyAtWho();
       // set up instances
       this.setupAtWho();
-      if (this.dataSource) {
-        if (!this.dataLoading && !this.cachedData) {
-          this.dataLoading = true;
-          setTimeout((function(_this) {
-            return function() {
-              var fetch;
-              fetch = _this.fetchData(_this.dataSource);
-              return fetch.done(function(data) {
-                _this.dataLoading = false;
-                return _this.loadData(data);
-              });
-            };
-          // We should wait until initializations are done
-          // and only trigger the last .setup since
-          // The previous .dataSource belongs to the previous issuable
-          // and the last one will have the **proper** .dataSource property
-          // TODO: Make this a singleton and turn off events when moving to another page
-          })(this), 1000);
-        }
-        if (this.cachedData != null) {
-          return this.loadData(this.cachedData);
-        }
+
+      if (this.dataSource && !this.dataLoading && !this.cachedData) {
+        this.dataLoading = true;
+        return this.fetchData(this.dataSource)
+          .done((data) => {
+            this.dataLoading = false;
+            this.loadData(data);
+          });
+        };
+
+      if (this.cachedData != null) {
+        return this.loadData(this.cachedData);
       }
-    },
+    }, 1000),
     setupAtWho: function() {
       // Emoji
       this.input.atwho({

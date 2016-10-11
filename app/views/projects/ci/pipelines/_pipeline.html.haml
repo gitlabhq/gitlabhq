@@ -67,7 +67,7 @@
             .btn-group
               %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
                 = custom_icon('icon_play')
-                %b.caret
+                = icon('caret-down')
               %ul.dropdown-menu.dropdown-menu-align-right
                 - actions.each do |build|
                   %li
@@ -78,7 +78,7 @@
             .btn-group
               %a.dropdown-toggle.btn.btn-default.build-artifacts{type: 'button', 'data-toggle' => 'dropdown'}
                 = icon("download")
-                %b.caret
+                = icon('caret-down')
               %ul.dropdown-menu.dropdown-menu-align-right
                 - artifacts.each do |build|
                   %li

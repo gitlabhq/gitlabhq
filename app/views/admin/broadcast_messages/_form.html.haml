@@ -1,7 +1,10 @@
 .broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
   = icon('bullhorn')
   .js-broadcast-message-preview
-    = render_broadcast_message(@broadcast_message.message.presence || "Your message here")
+    - if @broadcast_message.message.present?
+      = render_broadcast_message(@broadcast_message)
+    - else
+      = "Your message here"
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)

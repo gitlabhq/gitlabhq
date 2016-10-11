@@ -451,7 +451,7 @@ describe SystemNoteService, services: true do
     end
 
     context 'commit with cross-reference from fork' do
-      let(:author2) { create(:user) }
+      let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
       let(:forked_project) { Projects::ForkService.new(project, author2).execute }
       let(:commit2) { forked_project.commit }
 
@@ -531,22 +531,18 @@ describe SystemNoteService, services: true do
   include JiraServiceHelper
 
   describe 'JIRA integration' do
-    let(:project)    { create(:project) }
+    let(:project)    { create(:jira_project) }
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
-    let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
+    let(:jira_tracker) { project.jira_service }
     let(:commit)     { project.commit }
 
     context 'in JIRA issue tracker' do
       before do
         jira_service_settings
         WebMock.stub_request(:post, jira_api_comment_url)
-      end
-
-      after do
-        jira_tracker.destroy!
       end
 
       describe "new reference" do
@@ -561,7 +557,7 @@ describe SystemNoteService, services: true do
 
       describe "existing reference" do
         before do
-          message = %Q{[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\\n'#{commit.title}'}
+          message = %Q{[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\\n'#{commit.title}'}
           WebMock.stub_request(:get, jira_api_comment_url).to_return(body: %Q({"comments":[{"body":"#{message}"}]}))
         end
 
@@ -576,10 +572,6 @@ describe SystemNoteService, services: true do
           jira_service_settings
           WebMock.stub_request(:post, jira_api_comment_url)
           WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        end
-
-        after do
-          jira_tracker.destroy!
         end
 
         subject { described_class.cross_reference(jira_issue, issue, author) }

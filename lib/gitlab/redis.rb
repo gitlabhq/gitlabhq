@@ -24,8 +24,18 @@ module Gitlab
       end
 
       def with
-        @pool ||= ConnectionPool.new { ::Redis.new(params) }
+        @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }
         @pool.with { |redis| yield redis }
+      end
+
+      def pool_size
+        if Sidekiq.server?
+          # the pool will be used in a multi-threaded context
+          Sidekiq.options[:concurrency] + 5
+        else
+          # probably this is a Unicorn process, so single threaded
+          5
+        end
       end
 
       def _raw_config

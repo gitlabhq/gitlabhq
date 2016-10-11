@@ -1,6 +1,7 @@
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
+  include AfterCommitQueue
 
   self.table_name = 'ci_builds'
 
@@ -84,21 +85,35 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.pipeline.try(:process!)
-      true
-    end
-
     after_transition do |commit_status, transition|
-      commit_status.pipeline.try(:build_updated) unless transition.loopback?
+      return if transition.loopback?
+
+      commit_status.run_after_commit do
+        pipeline.try do |pipeline|
+          if complete?
+            ProcessPipelineWorker.perform_async(pipeline.id)
+          else
+            UpdatePipelineWorker.perform_async(pipeline.id)
+          end
+        end
+      end
     end
 
     after_transition [:created, :pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
+      commit_status.run_after_commit do
+        # TODO, temporary fix for race condition
+        UpdatePipelineWorker.new.perform(pipeline.id)
+
+        MergeRequests::MergeWhenBuildSucceedsService
+          .new(pipeline.project, nil).trigger(self)
+      end
     end
 
     after_transition any => :failed do |commit_status|
-      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
+      commit_status.run_after_commit do
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(pipeline.project, nil).execute(self)
+      end
     end
   end
 

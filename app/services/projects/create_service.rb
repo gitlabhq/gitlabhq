@@ -17,6 +17,11 @@ module Projects
         return @project
       end
 
+      unless allowed_fork?(forked_from_project_id)
+        @project.errors.add(:forked_from_project_id, 'is forbidden')
+        return @project
+      end
+
       # Set project name from path
       if @project.name.present? && @project.path.present?
         # if both name and path set - everything is ok
@@ -71,6 +76,13 @@ module Projects
 
     def deny_namespace
       @project.errors.add(:namespace, "is not valid")
+    end
+
+    def allowed_fork?(source_project_id)
+      return true if source_project_id.nil?
+
+      source_project = Project.find_by(id: source_project_id)
+      current_user.can?(:fork_project, source_project)
     end
 
     def allowed_namespace?(user, namespace_id)

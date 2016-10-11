@@ -7,7 +7,7 @@
         this.currentProject = JSON.parse(currentProject);
       }
       $('.js-milestone-select').each(function(i, dropdown) {
-        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId;
+        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         milestonesUrl = $dropdown.data('milestones');
@@ -15,6 +15,7 @@
         selectedMilestone = $dropdown.data('selected');
         showNo = $dropdown.data('show-no');
         showAny = $dropdown.data('show-any');
+        showMenuAbove = $dropdown.data('showMenuAbove');
         showUpcoming = $dropdown.data('show-upcoming');
         useId = $dropdown.data('use-id');
         defaultLabel = $dropdown.data('default-label');
@@ -31,12 +32,12 @@
           collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
         }
         return $dropdown.glDropdown({
+          showMenuAbove: showMenuAbove,
           data: function(term, callback) {
             return $.ajax({
               url: milestonesUrl
             }).done(function(data) {
-              var extraOptions;
-              extraOptions = [];
+              var extraOptions = [];
               if (showAny) {
                 extraOptions.push({
                   id: 0,
@@ -58,10 +59,14 @@
                   title: 'Upcoming'
                 });
               }
-              if (extraOptions.length > 2) {
+              if (extraOptions.length) {
                 extraOptions.push('divider');
               }
-              return callback(extraOptions.concat(data));
+
+              callback(extraOptions.concat(data));
+              if (showMenuAbove) {
+                $dropdown.data('glDropdown').positionMenuAbove();
+              }
             });
           },
           filterable: true,
@@ -69,19 +74,20 @@
             fields: ['title']
           },
           selectable: true,
-          toggleLabel: function(selected) {
-            if (selected && 'id' in selected) {
+          toggleLabel: function(selected, el, e) {
+            if (selected && 'id' in selected && $(el).hasClass('is-active')) {
               return selected.title;
             } else {
               return defaultLabel;
             }
           },
+          defaultLabel: defaultLabel,
           fieldName: $dropdown.data('field-name'),
           text: function(milestone) {
             return _.escape(milestone.title);
           },
           id: function(milestone) {
-            if (!useId) {
+            if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
               return milestone.name;
             } else {
               return milestone.id;
@@ -100,7 +106,8 @@
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
-            if ($dropdown.hasClass('js-filter-bulk-update')) {
+            if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
+              e.preventDefault();
               return;
             }
             if (page === 'projects:boards:show') {

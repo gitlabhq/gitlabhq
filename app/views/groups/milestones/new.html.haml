@@ -33,8 +33,8 @@
       .form-group
         = f.label :projects, "Projects", class: "control-label"
         .col-sm-10
-          = f.collection_select :project_ids, @group.projects, :id, :name,
-            { selected: @group.projects.map(&:id) }, multiple: true, class: 'select2'
+          = f.collection_select :project_ids, @group.projects.non_archived, :id, :name,
+            { selected: @group.projects.non_archived.pluck(:id) }, multiple: true, class: 'select2'
 
     .col-md-6
       .form-group

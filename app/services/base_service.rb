@@ -56,9 +56,8 @@ class BaseService
     result
   end
 
-  def success
-    {
-      status: :success
-    }
+  def success(pass_back = {})
+    pass_back[:status] = :success
+    pass_back
   end
 end

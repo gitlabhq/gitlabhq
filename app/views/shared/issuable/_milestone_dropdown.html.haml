@@ -1,16 +1,20 @@
-- if params[:milestone_title].present?
-  = hidden_field_tag(:milestone_title, params[:milestone_title])
-= dropdown_tag(milestone_dropdown_label(params[:milestone_title]), options: { title: "Filter by milestone", toggle_class: 'js-milestone-select js-filter-submit', filter: true, dropdown_class: "dropdown-menu-selectable",
-  placeholder: "Search milestones", footer_content: @project.present?, data: { show_no: true, show_any: true, show_upcoming: true, field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
-  - if @project
+- project = @target_project || @project
+- extra_class = extra_class || ''
+- show_menu_above = show_menu_above || false
+- selected_text = selected.try(:title)
+- if selected.present?
+  = hidden_field_tag(name, name == :milestone_title ? selected.title : selected.id)
+= dropdown_tag(milestone_dropdown_label(selected_text), options: { title: "Filter by milestone", toggle_class: "js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone",
+  placeholder: "Search milestones", footer_content: project.present?, data: { show_no: true, show_menu_above: show_menu_above, show_any: show_any, show_upcoming: show_upcoming, field_name: name, selected: selected.try(:title), project_id: project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
+  - if project
     %ul.dropdown-footer-list
-      - if can? current_user, :admin_milestone, @project
+      - if can? current_user, :admin_milestone, project
         %li
-          = link_to new_namespace_project_milestone_path(@project.namespace, @project), title: "New Milestone" do
+          = link_to new_namespace_project_milestone_path(project.namespace, project), title: "New Milestone" do
             Create new
       %li
-        = link_to namespace_project_milestones_path(@project.namespace, @project) do
-          - if can? current_user, :admin_milestone, @project
+        = link_to namespace_project_milestones_path(project.namespace, project) do
+          - if can? current_user, :admin_milestone, project
             Manage milestones
           - else
             View milestones

@@ -21,7 +21,7 @@
 
       - if @group.description.present?
         .cover-desc.description
-          = markdown(@group.description, pipeline: :description)
+          = markdown_field(@group, :description)
 
 %div.groups-header{ class: container_class }
   .top-area

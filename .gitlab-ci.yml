@@ -19,6 +19,8 @@ variables:
 before_script:
   - source ./scripts/prepare_build.sh
   - cp config/gitlab.yml.example config/gitlab.yml
+  - mkdir -p tmp/tests
+  - mount -t tmpfs tmpfs tmp/tests || echo "tmpfs mount failed, falling back to disc"
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
   - retry gem install knapsack
@@ -207,9 +209,7 @@ rubocop: *exec
 rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flay:
-  <<: *exec
-  allow_failure: yes
+rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
 
