@@ -229,8 +229,11 @@
 
       .fa {
         color: $table-text-gray;
-        margin-right: 6px;
         font-size: 14px;
+      }
+
+      svg, .fa {
+        margin-right: 0;
       }
     }
 
@@ -272,18 +275,8 @@
 .toggle-pipeline-btn {
   background-color: $gray-dark;
 
-  .caret {
-    border-top: none;
-    border-bottom: 4px solid;
-  }
-
   &.graph-collapsed {
     background-color: $white-light;
-
-    .caret {
-      border-bottom: none;
-      border-top: 4px solid;
-    }
   }
 }
 

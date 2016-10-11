@@ -33,7 +33,7 @@
 - if @commit
   .commit-box.content-block
     %h3.commit-title
-      = markdown escape_once(@commit.title), pipeline: :single_line
+      = markdown(@commit.title, pipeline: :single_line)
     - if @commit.description.present?
       %pre.commit-description
-        = preserve(markdown(escape_once(@commit.description), pipeline: :single_line))
+        = preserve(markdown(@commit.description, pipeline: :single_line))

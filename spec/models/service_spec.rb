@@ -242,7 +242,7 @@ describe Service, models: true do
       it "updates the has_external_issue_tracker boolean" do
         expect do
           service.save!
-        end.to change { service.project.has_external_issue_tracker }.from(nil).to(true)
+        end.to change { service.project.has_external_issue_tracker }.from(false).to(true)
       end
     end
 

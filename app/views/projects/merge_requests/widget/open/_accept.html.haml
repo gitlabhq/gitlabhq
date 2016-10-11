@@ -12,7 +12,7 @@
               Merge When Build Succeeds
             - unless @project.only_allow_merge_if_build_succeeds?
               = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
-                %span.caret
+                = icon('caret-down')
                 %span.sr-only
                   Select Merge Moment
               %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }

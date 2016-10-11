@@ -34,14 +34,14 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'creates default lists' do
-      lists = ['Backlog', 'Development', 'Testing', 'Production', 'Ready', 'Done']
+      lists = ['Backlog', 'To Do', 'Doing', 'Done']
 
       page.within(find('.board-blank-state')) do
         click_button('Add default lists')
       end
       wait_for_vue_resource
 
-      expect(page).to have_selector('.board', count: 6)
+      expect(page).to have_selector('.board', count: 4)
 
       page.all('.board').each_with_index do |list, i|
         expect(list.find('.board-title')).to have_content(lists[i])

@@ -6,6 +6,7 @@
 #
 module Issuable
   extend ActiveSupport::Concern
+  include CacheMarkdownField
   include Participable
   include Mentionable
   include Subscribable
@@ -13,6 +14,9 @@ module Issuable
   include Awardable
 
   included do
+    cache_markdown_field :title, pipeline: :single_line
+    cache_markdown_field :description
+
     belongs_to :author, class_name: "User"
     belongs_to :assignee, class_name: "User"
     belongs_to :updated_by, class_name: "User"

@@ -25,13 +25,13 @@
                 Perform code reviews and enhance collaboration with merge requests.
                 Each project can also have an issue tracker and a wiki.
 
-            - if extra_sign_in_text.present?
-              = markdown(extra_sign_in_text)
-            - if help_text.present?
+            - if current_application_settings.sign_in_text.present?
+              = markdown_field(current_application_settings, :sign_in_text)
+            - if current_application_settings.help_text.present?
               %h3 Need help?
               %hr
               %p.slead
-                = markdown(help_text)
+                = markdown(current_application_settings.help_text)
 
     %hr
     .container

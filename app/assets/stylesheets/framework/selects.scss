@@ -21,7 +21,14 @@
       padding-right: 10px;
 
       b {
-        @extend .caret;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 2px;
+        vertical-align: middle;
+        border-top: $caret-width-base dashed;
+        border-right: $caret-width-base solid transparent;
+        border-left: $caret-width-base solid transparent;
         color: $gray-darkest;
       }
     }

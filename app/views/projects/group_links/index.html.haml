@@ -16,7 +16,7 @@
         = label_tag :link_group_access, "Max access level", class: "label-light"
         .select-wrapper
           = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
-          %span.caret
+          = icon('caret-down')
       .form-group
         = label_tag :expires_at, 'Access expiration date', class: 'label-light'
         .clearable-input

@@ -15,7 +15,7 @@
         %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
           %span.light
             = projects_sort_options_hash[@sort]
-          %b.caret
+          = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
             = link_to filter_branches_path(sort: sort_value_name) do

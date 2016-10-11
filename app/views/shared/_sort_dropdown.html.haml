@@ -5,7 +5,7 @@
       = sort_options_hash[@sort]
     - else
       = sort_title_recently_created
-    %b.caret
+    = icon('caret-down')
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
     %li
       = link_to page_filter_path(sort: sort_value_priority, label: true) do

@@ -1,4 +1,4 @@
-- page_title           "#{@issue.title} (##{@issue.iid})", "Issues"
+- page_title           "#{@issue.to_reference} #{@issue.title}", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 
@@ -23,7 +23,7 @@
     .issuable-actions
       .clearfix.issue-btn-group.dropdown
         %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
-          %span.caret
+          = icon('caret-down')
           Options
         .dropdown-menu.dropdown-menu-align-right.hidden-lg
           %ul
@@ -55,12 +55,12 @@
 .issue-details.issuable-details
   .detail-page-description.content-block
     %h2.title
-      = markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
+      = markdown_field(@issue, :title)
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
         .wiki
           = preserve do
-            = markdown(@issue.description, cache_key: [@issue, "description"], author: @issue.author)
+            = markdown_field(@issue, :description)
         %textarea.hidden.js-task-list-field
           = @issue.description
     = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')

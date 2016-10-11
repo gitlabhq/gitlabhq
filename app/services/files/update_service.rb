@@ -23,12 +23,6 @@ module Files
       end
     end
 
-    def file_has_changed?
-      return false unless @last_commit_sha && last_commit
-
-      @last_commit_sha != last_commit.sha
-    end
-
     def last_commit
       @last_commit ||= Gitlab::Git::Commit.
         last_for_path(@source_project.repository, @source_branch, @file_path)

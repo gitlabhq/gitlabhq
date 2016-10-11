@@ -251,9 +251,8 @@ module Ci
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
-    def build_updated
+    def update_status
       with_lock do
-        reload
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run

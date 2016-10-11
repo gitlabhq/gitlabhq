@@ -35,7 +35,7 @@
 
       - if commit.description?
         %pre.commit-row-description.js-toggle-content
-          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
+          = preserve(markdown(commit.description, pipeline: :single_line, author: commit.author))
 
       .commit-row-info
         = commit_author_link(commit, avatar: false, size: 24)

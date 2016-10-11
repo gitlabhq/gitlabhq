@@ -122,8 +122,10 @@ class Repository
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
     ref ||= root_ref
 
-    # Limited to 1000 commits for now, could be parameterized?
-    args = %W(#{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset} --max-count #{limit} --grep=#{query})
+    args = %W(
+      #{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset}
+      --max-count #{limit} --grep=#{query} --regexp-ignore-case
+    )
     args = args.concat(%W(-- #{path})) if path.present?
 
     git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
@@ -919,6 +921,52 @@ class Repository
       options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
       Gitlab::Git::Blob.remove(raw_repository, options)
+    end
+  end
+
+  def multi_action(user:, branch:, message:, actions:, author_email: nil, author_name: nil)
+    update_branch_with_hooks(user, branch) do |ref|
+      index = rugged.index
+      parents = []
+      branch = find_branch(ref)
+
+      if branch
+        last_commit = branch.target
+        index.read_tree(last_commit.raw_commit.tree)
+        parents = [last_commit.sha]
+      end
+
+      actions.each do |action|
+        case action[:action]
+        when :create, :update, :move
+          mode =
+            case action[:action]
+            when :update
+              index.get(action[:file_path])[:mode]
+            when :move
+              index.get(action[:previous_path])[:mode]
+            end
+          mode ||= 0o100644
+
+          index.remove(action[:previous_path]) if action[:action] == :move
+
+          content = action[:encoding] == 'base64' ? Base64.decode64(action[:content]) : action[:content]
+          oid = rugged.write(content, :blob)
+
+          index.add(path: action[:file_path], oid: oid, mode: mode)
+        when :delete
+          index.remove(action[:file_path])
+        end
+      end
+
+      options = {
+        tree: index.write_tree(rugged),
+        message: message,
+        parents: parents
+      }
+      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
+
+      Rugged::Commit.create(rugged, options)
     end
   end
 

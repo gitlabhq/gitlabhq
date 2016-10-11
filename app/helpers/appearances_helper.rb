@@ -16,7 +16,7 @@ module AppearancesHelper
   end
 
   def brand_text
-    markdown(brand_item.description)
+    markdown_field(brand_item, :description)
   end
 
   def brand_item

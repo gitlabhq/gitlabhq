@@ -13,14 +13,12 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    escaped_body = if body.start_with?('<img')
-                     body
-                   else
-                     escape_once(body)
-                   end
-
-    user = current_user if defined?(current_user)
-    gfm_body = Banzai.render(escaped_body, project: @project, current_user: user, pipeline: :single_line)
+    context = {
+      project: @project,
+      current_user: (current_user if defined?(current_user)),
+      pipeline: :single_line,
+    }
+    gfm_body = Banzai.render(body, context)
 
     fragment = Nokogiri::HTML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'
@@ -51,17 +49,15 @@ module GitlabMarkdownHelper
     context[:project] ||= @project
 
     html = Banzai.render(text, context)
+    banzai_postprocess(html, context)
+  end
 
-    context.merge!(
-      current_user:   (current_user if defined?(current_user)),
+  def markdown_field(object, field)
+    object = object.for_display if object.respond_to?(:for_display)
+    return "" unless object.present?
 
-      # RelativeLinkFilter
-      requested_path: @path,
-      project_wiki:   @project_wiki,
-      ref:            @ref
-    )
-
-    Banzai.post_process(html, context)
+    html = Banzai.render_field(object, field)
+    banzai_postprocess(html, object.banzai_render_context(field))
   end
 
   def asciidoc(text)
@@ -195,5 +191,19 @@ module GitlabMarkdownHelper
       aria: { label: options[:title] } do
       icon(options[:icon])
     end
+  end
+
+  # Calls Banzai.post_process with some common context options
+  def banzai_postprocess(html, context)
+    context.merge!(
+      current_user:   (current_user if defined?(current_user)),
+
+      # RelativeLinkFilter
+      requested_path: @path,
+      project_wiki:   @project_wiki,
+      ref:            @ref
+    )
+
+    Banzai.post_process(html, context)
   end
 end

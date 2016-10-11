@@ -4,6 +4,10 @@ class GlobalMilestone
   attr_accessor :title, :milestones
   alias_attribute :name, :title
 
+  def for_display
+    @first_milestone
+  end
+
   def self.build_collection(milestones)
     milestones = milestones.group_by(&:title)
 
@@ -17,6 +21,7 @@ class GlobalMilestone
     @title = title
     @name = title
     @milestones = milestones
+    @first_milestone = milestones.find {|m| m.description.present? } || milestones.first
   end
 
   def safe_title

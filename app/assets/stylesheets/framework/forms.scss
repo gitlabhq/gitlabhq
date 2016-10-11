@@ -81,10 +81,10 @@ label {
 .select-wrapper {
   position: relative;
 
-  .caret {
+  .fa-caret-down {
     position: absolute;
     right: 10px;
-    top: $gl-padding;
+    top: 10px;
     color: $gray-darkest;
     pointer-events: none;
   }
