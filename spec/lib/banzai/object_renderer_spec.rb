@@ -5,7 +5,7 @@ describe Banzai::ObjectRenderer do
   let(:user) { project.owner }
 
   def fake_object(attrs = {})
-    object = double(attrs.merge("new_record?": true, "destroyed?": true))
+    object = double(attrs.merge("new_record?" => true, "destroyed?" => true))
     allow(object).to receive(:markdown_cache_field_for).with(:note).and_return(:note_html)
     allow(object).to receive(:banzai_render_context).with(:note).and_return(project: nil, author: nil)
     allow(object).to receive(:update_column).with(:note_html, anything).and_return(true)

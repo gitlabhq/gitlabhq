@@ -128,7 +128,7 @@
       - builds.select{|build| build.status == build_status}.each do |build|
         .build-job{class: ('active' if build == @build), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
-            = icon('right-arrow')
+            = icon('arrow-right')
             = ci_icon_for_status(build.status)
             %span
               - if build.name

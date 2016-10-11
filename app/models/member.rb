@@ -103,7 +103,12 @@ class Member < ActiveRecord::Base
       }
 
       if member.request?
-        ::Members::ApproveAccessRequestService.new(source, current_user, id: member.id).execute
+        ::Members::ApproveAccessRequestService.new(
+          source,
+          current_user,
+          id: member.id,
+          access_level: access_level
+        ).execute
       else
         member.save
       end
