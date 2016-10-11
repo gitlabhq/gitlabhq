@@ -589,3 +589,48 @@
     fill: $gray-darkest;
   }
 }
+
+.iconrunning{
+  display: inline-block;
+  padding:2px;
+  border-radius: 10px;
+  border:2px solid #35A0D6;
+  transform:scale(.778);
+  position:relative;
+  top: 3px;
+  left: -2px;
+}
+
+.iconrunningpie {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  line-height: 10px;
+  border-radius: 50%;
+  background: white;
+  background-image:
+    linear-gradient(to right, transparent 50%, #35A0D6 0);
+  color: transparent;
+  text-align: center;
+}
+
+@keyframes spin {
+  to { transform: rotate(.5turn); }
+}
+@keyframes bg {
+  50% { background: #35A0D6; }
+}
+
+.iconrunningpie::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  width: 50%; height: 100%;
+  border-radius: 0 100% 100% 0 / 50%;
+  background-color: inherit;
+  transform-origin: left;
+  animation: spin 4s linear infinite,
+             bg 8s step-end infinite;
+  animation-play-state: running;
+  animation-delay: inherit;
+}
