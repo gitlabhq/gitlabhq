@@ -86,7 +86,7 @@ class UsersController < ApplicationController
   end
 
   def exists
-    render json: { exists: !Namespace.where(name: params[:username]).nil? }
+    render json: { exists: Namespace.where(path: params[:username].downcase).any? }
   end
 
   private
