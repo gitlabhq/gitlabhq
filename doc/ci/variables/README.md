@@ -48,6 +48,7 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |
 | **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
+| **CI_DEBUG_TRACE**      | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
 | **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the build |
 | **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the build |
 
@@ -104,6 +105,39 @@ The YAML-defined variables are also set to all created service containers, thus 
 Variables can be defined at a global level, but also at a job level.
 
 More information about Docker integration can be found in [Using Docker Images](../docker/using_docker_images.md).
+
+#### Debug tracing
+
+> **WARNING:** Enabling debug tracing can have severe security implications. The
+  output **will** contain the content of all your secure variables and any other
+  secrets! The output **will** be uploaded to the GitLab server and made visible
+  in build traces!
+
+By default, GitLab Runner hides most of the details of what it is doing when
+processing a job. This behaviour keeps build traces short, and prevents secrets
+from being leaked into the trace unless your script writes them to the screen.
+
+If a job isn't working as expected, this can make the problem difficult to
+investigate; in these cases, you can enable debug tracing in `.gitlab-ci.yml`.
+Available on GitLab Runner v1.7+, this feature enables the shell's execution
+trace, resulting in a verbose build trace listing all commands that were run,
+variables that were set, etc.
+
+Before enabling this, you should ensure builds are visible to
+[team members only](../../../user/permissions.md#project-features). You should
+also [erase](../pipelines.md#seeing-build-traces) all generated build traces
+before making them visible again.
+
+To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
+
+```yaml
+job1:
+  variables:
+    CI_DEBUG_TRACE: "true"
+```
+
+The [example project](https://gitlab.com/gitlab-examples/ci-debug-trace)
+demonstrates a working configuration, including build trace examples.
 
 ### User-defined variables (Secure Variables)
 **This feature requires GitLab Runner 0.4.0 or higher**
