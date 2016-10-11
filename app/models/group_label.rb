@@ -15,8 +15,20 @@ class GroupLabel < Label
   #
   # Returns a String
   #
-  def to_reference(from_project = nil, format: :id)
+  def to_reference(source_project = nil, target_project = nil, format: :id)
     format_reference = label_format_reference(format)
-    "#{self.class.reference_prefix}#{format_reference}"
+    reference = "#{self.class.reference_prefix}#{format_reference}"
+
+    if cross_project_reference?(source_project, target_project)
+      source_project.to_reference + reference
+    else
+      reference
+    end
+  end
+
+  private
+
+  def cross_project_reference?(source_project, target_project)
+    source_project && target_project && source_project != target_project
   end
 end
