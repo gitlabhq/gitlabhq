@@ -10,6 +10,10 @@ v 8.13.0 (unreleased)
   - Fix centering of custom header logos (Ashley Dumaine)
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
+  - Updating verbiage on git basics to be more intuitive
+  - Clarify documentation for Runners API (Gennady Trafimenkov)
+  - Change user & group landing page routing from /u/:username to /:username
+  - Prevent running GfmAutocomplete setup for each diff note !6569
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
@@ -110,7 +114,6 @@ v 8.12.4
   - Fix failed project deletion when feature visibility set to private. !6688
   - Prevent claiming associated model IDs via import.
   - Set GitLab project exported file permissions to owner only
-  - Change user & group landing page routing from /u/:username to /:username
 
 v 8.12.3
   - Update Gitlab Shell to support low IO priority for storage moves
@@ -130,7 +133,6 @@ v 8.12.2
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
   - Refactor remnants of CoffeeScript destructured opts and super !6261
-  - Prevent running GfmAutocomplete setup for each diff note !6569
 
 v 8.12.1
   - Fix a memory leak in HTML::Pipeline::SanitizationFilter::WHITELIST
@@ -334,7 +336,6 @@ v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
   - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
   - Allow the Rails cookie to be used for API authentication.
-  - Updating verbiage on git basics to be more intuitive
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
@@ -495,7 +496,6 @@ v 8.11.0
   - Add pipeline events hook
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
-  - Clarify documentation for Runners API (Gennady Trafimenkov)
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial
   - Convert image diff background image to CSS (ClemMakesApps)
