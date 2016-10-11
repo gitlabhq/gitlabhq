@@ -8,12 +8,18 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   def terminal_websocket_authorize
     Gitlab::Workhorse.verify_api_request!(request.headers)
-    openshift_project = project.variables.find_by(key: 'CI_PROJECT_NAME')
-    openshift_app = project.variables.find_by(key: 'APP')
+
+    variables = Hash[*%w[
+      openshift_project CI_PROJECT_NAME
+      openshift_app APP
+      openshift_server OPENSHIFT_SERVER
+      openshift_token OPENSHIFT_TOKEN
+    ]].map { |json_key, variable_key| [json_key, project.variables.find_by(key: variable_key)] }.to_h
+
     # TODO: restrict access: this allows even 'guests' to have terminal access
-    if openshift_project.present? && openshift_app.present?
+    if variables.values.all?(&:present?)
       set_workhorse_internal_api_content_type
-      render json: {openshift_app: openshift_app.value, openshift_project: openshift_project.value}
+      render json: variables.map { |k, v| [k, v.value] }.to_h
     else
       render text: 'Not found', status: 404
     end
