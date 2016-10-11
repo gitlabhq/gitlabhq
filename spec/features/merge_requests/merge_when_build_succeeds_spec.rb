@@ -79,6 +79,15 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
   end
 
+  context 'Has Environment' do
+    let(:environment) { create(:environment, project: project) }
+    
+    it 'does show link to close the environment' do
+        # TODO add test to verify if the button is visible when this condition
+        # is met: if environment.closeable?
+    end
+  end
+  
   def visit_merge_request(merge_request)
     visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
   end
