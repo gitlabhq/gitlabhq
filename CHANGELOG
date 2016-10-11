@@ -100,6 +100,9 @@ v 8.13.0 (unreleased)
   - API: all unknown routing will be handled with 404 Not Found
   - Make guests unable to view MRs on private projects
 
+v 8.12.6
+  - Update mailroom to 0.8.1 in Gemfile.lock  !6814
+
 v 8.12.5
   - Switch from request to env in ::API::Helpers. !6615
   - Update the mail_room gem to 0.8.1 to fix a race condition with the mailbox watching thread. !6714
