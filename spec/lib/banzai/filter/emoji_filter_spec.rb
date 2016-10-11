@@ -16,10 +16,12 @@ describe Banzai::Filter::EmojiFilter, lib: true do
     doc = filter('<p>:heart:</p>')
     expect(doc.css('img').first.attr('src')).to eq 'https://foo.com/assets/2764.png'
   end
+
   it 'replaces supported unicode emoji' do
     doc = filter('<p>❤️</p>')
     expect(doc.css('img').first.attr('src')).to eq 'https://foo.com/assets/2764.png'
   end
+
   it 'ignores unsupported emoji' do
     exp = act = '<p>:foo:</p>'
     doc = filter(act)
@@ -160,6 +162,20 @@ describe Banzai::Filter::EmojiFilter, lib: true do
     ActionController::Base.asset_host = 'https://cdn.example.com'
 
     doc = filter(':frowning:', asset_host: 'https://this-is-ignored-i-guess?')
+    expect(doc.css('img').first.attr('src')).to start_with('https://cdn.example.com')
+  end
+
+  it 'uses a custom asset_root context' do
+    root = Gitlab.config.gitlab.url + 'gitlab/root'
+
+    doc = filter("'🎱'", asset_root: root)
+    expect(doc.css('img').first.attr('src')).to start_with(root)
+  end
+
+  it 'uses a custom asset_host context' do
+    ActionController::Base.asset_host = 'https://cdn.example.com'
+
+    doc = filter("'🎱'", asset_host: 'https://this-is-ignored-i-guess?')
     expect(doc.css('img').first.attr('src')).to start_with('https://cdn.example.com')
   end
 end
