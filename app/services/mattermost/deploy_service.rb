@@ -11,18 +11,17 @@ module Mattermost
       deployment = environment.last_deployment
       return respond_404 unless can?(current_user, :create_deployment, deployment) && deployment.deployable
 
-      build = environment.last_deployment.manual_actions.find { |action| action.name = action_name }
-      return {
-        response_type: :ephemeral,
-        text: "No action '#{action_name}' defined for #{environment_name}."
-      } unless build
-
-      new_build = build.play(current_user)
-
-      {
-        response_type: :in_channel,
-        text: "Action '#{action_name}' started on '#{environment_name}' you can [follow the progress](#{link(new_build)})."
-      }
+      manual_action = deployment.manual_actions.find { |action| action.name = action_name }
+      
+      if manual_action
+        new_build = manual_action.play(current_user)
+        generate_response(new_build)
+      else
+        {
+          response_type: :ephemeral,
+          text: "No action '#{action_name}' defined for #{environment_name}."
+        }
+      end
     end
 
     private
@@ -30,7 +29,7 @@ module Mattermost
     def single_resource(build)
       {
         response_type: :in_channel,
-        message: "Deploy started [#{build.name} ##{build.id}](#{link(build)})"
+        text: "Action '#{action_name}' started on '#{environment_name}' you can [follow the progress](#{link(new_build)})."
       }
     end
 
@@ -42,9 +41,8 @@ module Mattermost
 
     def parse_command
       matches = params[:text].match(/\A(?<name>\w+) to (?<action>\w+)/)
-      return unless matches
 
-      return matches[:name], matches[:action]
+      matches ? [matches[:name], matches[:action]] : nil
     end
   end
 end

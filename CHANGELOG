@@ -85,6 +85,7 @@ v 8.13.0 (unreleased)
   - Retouch environments list and deployments list
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
   - Grouped pipeline dropdown is a scrollable container
+  - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
   - Fix a typo in doc/api/labels.md
 
 v 8.12.5 (unreleased)
@@ -326,6 +327,7 @@ v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
   - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
   - Allow the Rails cookie to be used for API authentication.
+  - Updating verbiage on git basics to be more intuitive
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
@@ -486,6 +488,7 @@ v 8.11.0
   - Add pipeline events hook
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
+  - Clarify documentation for Runners API (Gennady Trafimenkov)
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial
   - Convert image diff background image to CSS (ClemMakesApps)

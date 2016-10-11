@@ -27,7 +27,14 @@ class SlashCommandsController < ApplicationController
   def project_unavailable(path)
     {
       response_type: :ephemeral,
-      text: "The #{path} doesn't exist or you don't have access.",
+      text: "The #{path} doesn't exist or you don't have access."
+    }
+  end
+
+  def project_not_found(path)
+    {
+      response_type: :ephemeral,
+      text: "We were unable to find a project for: #{path}"
     }
   end
 
@@ -35,13 +42,11 @@ class SlashCommandsController < ApplicationController
     path = "#{params[:team_domain]}/#{params[:channel_name]}"
     @project = Project.find_with_namespace(path)
 
-    unless can?(user, :read_project, @project)
-      render json: project_unavailable(path)
-    end
+    render json: project_not_found(path) unless can?(user, :read_project, @project)
   end
 
   def user
-    User.find_by(username: params[:user_name])
+    @user ||= User.find_by(username: params[:user_name])
   end
 
   def service
