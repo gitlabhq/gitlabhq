@@ -4,7 +4,8 @@ v 8.13.0 (unreleased)
   - Fix 500 error updating mirror URLs for projects
   - Fix validations related to mirroring settings form. !773
 
-v 8.12.5 (unreleased)
+v 8.12.5
+  - No EE-specific changes
 
 v 8.12.4
   - [ES] Indexer works with smaller batches of repositories to not exceed NOFILE limit. !774
@@ -33,6 +34,12 @@ v 8.12.0
   - [ES] Global code search
   - [ES] Improve logging
   - Fix projects with remote mirrors asynchronously destruction
+
+v 8.11.9
+  - No EE-specific changes
+
+v 8.11.8
+  - No EE-specific changes
 
 v 8.11.7
   - Refactor Protected Branches dropdown. !687
@@ -77,6 +84,12 @@ v 8.11.0
   - [Fix] Push rules check existing commits in some cases
   - [ES] Limit amount of retries for sidekiq jobs
   - Fix Projects::UpdateMirrorService to allow tags pointing to blob objects
+
+v 8.10.12
+  - No EE-specific changes
+
+v 8.10.11
+  - No EE-specific changes
 
 v 8.10.10
   - No EE-specific changes
