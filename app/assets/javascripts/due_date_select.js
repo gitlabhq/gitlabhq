@@ -43,7 +43,7 @@
           // Create the post date
           value = $("input[name='" + fieldName + "']").val();
           if (value !== '') {
-            date = new Date(value.replace(new RegExp('-', 'g'), ','));
+            date = new Date(value);
             mediumDate = $.datepicker.formatDate('M d, yy', date);
           } else {
             mediumDate = 'No due date';
@@ -64,7 +64,7 @@
                 $selectbox.hide();
               }
               $value.css('display', '');
-              cssClass = Date.parse(mediumDate) ? 'bold' : 'no-value';
+              cssClass = new Date(mediumDate) ? 'bold' : 'no-value';
               $valueContent.html("<span class='" + cssClass + "'>" + mediumDate + "</span>");
               $sidebarValue.html(mediumDate);
               if (value !== '') {
