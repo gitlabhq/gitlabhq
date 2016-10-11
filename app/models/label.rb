@@ -97,7 +97,35 @@ class Label < ActiveRecord::Base
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
+  ##
+  # Returns the String necessary to reference this Label in Markdown
+  #
+  # format - Symbol format to use (default: :id, optional: :name)
+  #
+  # Examples:
+  #
+  #   Label.first.to_reference                     # => "~1"
+  #   Label.first.to_reference(format: :name)      # => "~\"bug\""
+  #   Label.first.to_reference(project1, project2) # => "gitlab-org/gitlab-ce~1"
+  #
+  # Returns a String
+  #
+  def to_reference(source_project = nil, target_project = nil, format: :id)
+    format_reference = label_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
+
+    if cross_project_reference?(source_project, target_project)
+      source_project.to_reference + reference
+    else
+      reference
+    end
+  end
+
   private
+
+  def cross_project_reference?(source_project, target_project)
+    source_project && target_project && source_project != target_project
+  end
 
   def issues_count(user, params = {})
     IssuesFinder.new(user, { label_name: title, scope: 'all' }.merge(params))
