@@ -123,15 +123,11 @@
     return str.replace(/<(?:.|\n)*?>/gm, '');
   };
 
-  window.unbindEvents = function() {
-    return $(document).off('scroll');
-  };
-
   window.shiftWindow = function() {
     return scrollBy(0, -100);
   };
 
-  document.addEventListener("page:fetch", unbindEvents);
+  document.addEventListener("page:fetch", gl.utils.cleanupBeforeFetch);
 
   window.addEventListener("hashchange", shiftWindow);
 
