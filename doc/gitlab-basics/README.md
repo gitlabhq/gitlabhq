@@ -2,7 +2,7 @@
 
 Step-by-step guides on the basics of working with Git and GitLab.
 
-- [Command Line basics](command-line-commands.md)
+- [Command line basics](command-line-commands.md)
 - [Start using Git on the command line](start-using-git.md)
 - [Create and add your SSH Keys](create-your-ssh-keys.md)
 - [Create a project](create-project.md)
