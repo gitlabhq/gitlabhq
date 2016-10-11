@@ -1,19 +1,20 @@
 # How to fork a project
 
-A fork is a copy of an original repository that you can put somewhere else
-or where you can experiment and apply changes that you can later decide if
+A fork is a copy of an original repository that you can put in another namespace
+where you can experiment and apply changes that you can later decide if
 publishing or not, without affecting your original project.
 
 It takes just a few steps to fork a project in GitLab.
 
-Sign in to GitLab.
+1. Go to a project's dashboard under the **Project** tab and click on the
+   **Fork** button.
 
-Select a project on the right side of your screen:
+    ![Click on Fork button](img/fork_new.png)
 
-![Select a project](img/select_project.png)
+1. You will be asked where to fork the repository. Click on the user or group
+   to where you'd like to add the forked project.
 
-Click on the "fork" button on the right side of your screen:
+    ![Choose namespace](img/fork_choose_namespace.png)
 
-![Fork](img/fork.png)
-
-Click on the user or group to where you'd like to add the forked project.
+1. After a few moments, depending on the repository's size, the forking will
+   complete.
