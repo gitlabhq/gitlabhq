@@ -4,6 +4,7 @@ v 8.12.5
   - Switch from request to env in ::API::Helpers. !6615
   - Update the mail_room gem to 0.8.1 to fix a race condition with the mailbox watching thread. !6714
   - Improve issue load time performance by avoiding ORDER BY in find_by call. !6724
+  - Add a new gitlab:users:clear_all_authentication_tokens task. !6745
 
 v 8.12.4
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. !6294 (lukehowell)
