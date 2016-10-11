@@ -786,6 +786,20 @@ describe API::API, api: true  do
       expect(response.status).to eq 400
     end
 
+    it 'returns a 404 error when user cannot read group' do
+      private_group = create(:group, :private)
+
+      post api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
+    end
+
+    it 'returns a 404 error when group does not exist' do
+      post api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
+    end
+
     it "returns a 409 error when wrong params passed" do
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
       expect(response.status).to eq 409
