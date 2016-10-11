@@ -59,7 +59,7 @@ class Projects::BoardsController < Projects::ApplicationController
     service = ::Boards::DestroyService.new(project, current_user)
 
     if service.execute(@board)
-      head :ok
+      redirect_to namespace_project_boards_path(@project.namespace, @project)
     else
       head :unprocessable_entity
     end
