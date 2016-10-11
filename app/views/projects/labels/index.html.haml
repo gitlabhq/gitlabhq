@@ -16,7 +16,7 @@
   .labels
     - if can?(current_user, :admin_label, @project)
       -# Only show it in the first page
-      - hide = @project.labels.empty? || (params[:page].present? && params[:page] != '1')
+      - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
       .prioritized-labels{ class: ('hide' if hide) }
         %h5 Prioritized Labels
         %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
