@@ -181,6 +181,8 @@ EOF
           break if deleted == 0
         end
       end
+
+      ActiveRecord::Base.clear_active_connections!
     end
   end
 end
