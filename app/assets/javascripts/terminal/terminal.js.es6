@@ -18,8 +18,9 @@ gl.Terminal = class {
   setSocketUrl() {
     const {protocol, hostname, port} = window.location;
     const wsProtocol = protocol === 'https:' ? 'wss://' : 'ws://';
+    const path = this.container.dataset.projectPath;
 
-    this.socketUrl = `${wsProtocol}${hostname}:${port}/gitlab-org/gitlab-ce/deployments/4/terminal_websocket`
+    this.socketUrl = `${wsProtocol}${hostname}:${port}${path}/deployments/4/terminal_websocket`
   }
 
   createTerminal() {
