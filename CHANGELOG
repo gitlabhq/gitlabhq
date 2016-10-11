@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
   - Truncate long labels with ellipsis in labels page
+  - Bump mail_room to v0.8.1 to fix thread cleanup issue
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Improve issue load time performance by avoiding ORDER BY in find_by call
