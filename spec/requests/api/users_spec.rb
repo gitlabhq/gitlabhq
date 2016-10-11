@@ -926,20 +926,18 @@ describe API::API, api: true  do
         it 'returns the "joined" event' do
           get api("/users/#{user.id}/events", user)
 
-          first_event = json_response.first
+          comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
 
-          expect(first_event['action_name']).to eq('commented on')
-          expect(first_event['project_id'].to_i).to eq(project.id)
-          expect(first_event['author_username']).to eq(user.username)
-          expect(first_event['note']['id']).to eq(note.id)
-          expect(first_event['note']['body']).to eq('What an awesome day!')
+          expect(comment_event['project_id'].to_i).to eq(project.id)
+          expect(comment_event['author_username']).to eq(user.username)
+          expect(comment_event['note']['id']).to eq(note.id)
+          expect(comment_event['note']['body']).to eq('What an awesome day!')
 
-          last_event = json_response.last
+          joined_event = json_response.find { |e| e['action_name'] == 'joined' }
 
-          expect(last_event['action_name']).to eq('joined')
-          expect(last_event['project_id'].to_i).to eq(project.id)
-          expect(last_event['author_username']).to eq(user.username)
-          expect(last_event['author']['name']).to eq(user.name)
+          expect(joined_event['project_id'].to_i).to eq(project.id)
+          expect(joined_event['author_username']).to eq(user.username)
+          expect(joined_event['author']['name']).to eq(user.name)
         end
       end
     end
