@@ -1,17 +1,18 @@
-- @no_container = true
-- page_title "Deployment Terminal"
-= render "projects/pipelines/head"
+- if current_user
+  - @no_container = true
+  - page_title "Deployment Terminal"
+  = render "projects/pipelines/head"
 
-= content_for :head do
-  = stylesheet_link_tag "xterm/xterm"
+  = content_for :head do
+    = stylesheet_link_tag "xterm/xterm"
 
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag("terminal/terminal_bundle.js")
+  - content_for :page_specific_javascripts do
+    = page_specific_javascript_tag("terminal/terminal_bundle.js")
 
-.terminal-container{ class: container_class }
+  .terminal-container{ class: container_class }
 
-  %p.content-block
-    Environment:
-    %a{href: '#'} add information
+    %p.content-block
+      Environment:
+      %a{href: '#'} add information
 
-  #terminal
+    #terminal

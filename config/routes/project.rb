@@ -328,6 +328,13 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
+      resources :deployments, only: [] do
+        member do
+          get :terminal
+          get '/terminal_websocket/authorize', to: 'deployments#terminal_websocket_authorize', constraints: {format: nil}
+        end
+      end
+
       resource :cycle_analytics, only: [:show]
 
       resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
