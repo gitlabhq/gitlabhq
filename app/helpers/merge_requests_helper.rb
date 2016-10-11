@@ -72,6 +72,19 @@ module MergeRequestsHelper
     )
   end
 
+  def mr_assign_issues_link
+    issues = MergeRequests::AssignIssuesService.new(@project,
+                                                    current_user,
+                                                    merge_request: @merge_request,
+                                                    closes_issues: mr_closes_issues
+                                                   ).assignable_issues
+    path = assign_related_issues_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    if issues.present?
+      pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
+      link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post
+    end
+  end
+
   def source_branch_with_namespace(merge_request)
     branch = link_to(merge_request.source_branch, namespace_project_commits_path(merge_request.source_project.namespace, merge_request.source_project, merge_request.source_branch))
 
