@@ -41,6 +41,8 @@
           return 'Edit board';
         } else if (this.currentPage === 'new') {
           return 'Create new board';
+        } else if (this.currentPage === 'delete') {
+          return 'Delete board';
         } else {
           return 'Go to a board';
         }
