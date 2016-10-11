@@ -40,7 +40,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute if params[:label_name].presence
+    if params[:label_name].present?
+      labels_params = { project_id: @project.id, title: params[:label_name] }
+      @labels = LabelsFinder.new(current_user, labels_params).execute
+    end
 
     respond_to do |format|
       format.html
