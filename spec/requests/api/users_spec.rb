@@ -898,7 +898,6 @@ describe API::API, api: true  do
 
   describe 'GET /user/:id/events' do
     let(:user) { create(:user) }
-    let(:lambda_user) { create(:user) }
     let(:project) { create(:empty_project) }
     let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
 
@@ -909,7 +908,9 @@ describe API::API, api: true  do
 
     context "as a user than cannot see the event's project" do
       it 'returns no events' do
-        get api("/users/#{user.id}/events", lambda_user)
+        other_user = create(:user)
+
+        get api("/users/#{user.id}/events", other_user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_empty

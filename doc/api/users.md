@@ -630,7 +630,7 @@ Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 
 ### Get user contribution events
 
-Get the contribution events for the specified user, sorted from newest to latest.
+Get the contribution events for the specified user, sorted from newest to oldest.
 
 ```
 GET /users/:id/events
