@@ -2,6 +2,8 @@ class CycleAnalytics
   include Gitlab::Database::Median
   include Gitlab::Database::DateTime
 
+  DEPLOYED_CHECK_METRICS = %i[production staging]
+
   def initialize(project, from:)
     @project = project
     @from = from
@@ -66,7 +68,7 @@ class CycleAnalytics
     # cycle analytics stage.
     interval_query = Arel::Nodes::As.new(
       cte_table,
-      subtract_datetimes(base_query, end_time_attrs, start_time_attrs, name.to_s))
+      subtract_datetimes(base_query_for(name), end_time_attrs, start_time_attrs, name.to_s))
 
     median_datetime(cte_table, interval_query, name)
   end
@@ -75,7 +77,7 @@ class CycleAnalytics
   # closes the given issue) with issue and merge request metrics included. The metrics
   # are loaded with an inner join, so issues / merge requests without metrics are
   # automatically excluded.
-  def base_query
+  def base_query_for(name)
     arel_table = MergeRequestsClosingIssues.arel_table
 
     # Load issues
@@ -91,7 +93,11 @@ class CycleAnalytics
             join(MergeRequest::Metrics.arel_table).
             on(MergeRequest.arel_table[:id].eq(MergeRequest::Metrics.arel_table[:merge_request_id]))
 
-    # Limit to merge requests that have been deployed to production after `@from`
-    query.where(MergeRequest::Metrics.arel_table[:first_deployed_to_production_at].gteq(@from))
+    if DEPLOYED_CHECK_METRICS.include?(name)
+      # Limit to merge requests that have been deployed to production after `@from`
+      query.where(MergeRequest::Metrics.arel_table[:first_deployed_to_production_at].gteq(@from))
+    end
+
+    query
   end
 end

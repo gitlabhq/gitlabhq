@@ -19,14 +19,12 @@ describe 'CycleAnalytics#review', feature: true do
                              -> (context, data) do
                                context.merge_merge_requests_closing_issue(data[:issue])
                              end]],
-    post_fn: -> (context, data) { context.deploy_master })
+    post_fn: nil)
 
   context "when a regular merge request (that doesn't close the issue) is created and merged" do
     it "returns nil" do
       5.times do
         MergeRequests::MergeService.new(project, user).execute(create(:merge_request))
-
-        deploy_master
       end
 
       expect(subject.review).to be_nil
