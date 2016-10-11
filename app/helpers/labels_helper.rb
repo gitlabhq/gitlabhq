@@ -46,7 +46,7 @@ module LabelsHelper
     end
   end
 
-  def label_filter_path(subject, label, type: issue)
+  def label_filter_path(subject, label, type: :issue)
     case subject
     when Group
       send("#{type.to_s.pluralize}_group_path",
