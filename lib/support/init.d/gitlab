@@ -49,7 +49,7 @@ test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ `whoami` != "$app_user" ]; then
-  eval su - "$app_user" -c $(echo \")$shell_path -l -c \'$0 "$@"\'$(echo \"); exit;
+  su - "$app_user" -c "$shell_path -l" -c "/etc/init.d/gitlab $@"; exit;
 fi
 
 # Switch to the gitlab path, exit on failure.
