@@ -39,7 +39,13 @@ module Banzai
       end
 
       def find_labels(project)
-        LabelsFinder.new(user, project_id: project.id).execute
+        label_ids = []
+        label_ids << project.group.labels.select(:id) if project.group.present?
+        label_ids << project.labels.select(:id)
+
+        union = Gitlab::SQL::Union.new(label_ids)
+
+        Label.where("labels.id IN (#{union.to_sql})")
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
