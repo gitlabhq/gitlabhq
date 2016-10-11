@@ -4,4 +4,4 @@
   Edit Label
 %hr
 
-= render 'form', url: group_label_path(@group, @label)
+= render 'shared/labels/form', url: group_label_path(@group, @label), back_path: @previous_labels_path

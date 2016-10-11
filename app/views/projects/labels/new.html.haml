@@ -6,4 +6,4 @@
   %h3.page-title
     New Label
   %hr
-  = render 'form', url: namespace_project_labels_path(@project.namespace.becomes(Namespace), @project)
+  = render 'shared/labels/form', url: namespace_project_labels_path(@project.namespace.becomes(Namespace), @project), back_path: namespace_project_labels_path(@project.namespace, @project)

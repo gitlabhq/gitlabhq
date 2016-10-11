@@ -21,6 +21,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def new
     @label = @group.labels.new
+    @previous_labels_path = previous_labels_path
   end
 
   def create
