@@ -93,6 +93,7 @@ v 8.13.0 (unreleased)
   - Ability to batch assign issues relating to a merge request to the author. !5725 (jamedjo)
   - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
   - Retouch environments list and deployments list
+  - Add multiple command support for all label related slash commands !6780 (barthc)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
   - Allow empty merge requests !6384 (Artem Sidorenko)
   - Grouped pipeline dropdown is a scrollable container
