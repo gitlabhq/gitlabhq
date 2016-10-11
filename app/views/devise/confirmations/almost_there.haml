@@ -3,9 +3,9 @@
     Almost there...
   %p.lead
     Please check your email to confirm your account
-- if after_sign_up_text.present?
+- if current_application_settings.after_sign_up_text.present?
   .well-confirmation.text-center
-    = markdown(after_sign_up_text)
+    = markdown_field(current_application_settings, :after_sign_up_text)
 %p.confirmation-content.text-center
   No confirmation email received? Please check your spam folder or
 .append-bottom-20.prepend-top-20.text-center

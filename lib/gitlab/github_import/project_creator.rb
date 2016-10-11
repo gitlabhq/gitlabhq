@@ -1,7 +1,7 @@
 module Gitlab
   module GithubImport
     class ProjectCreator
-      attr_reader :repo, :namespace, :current_user, :session_data
+      attr_reader :repo, :name, :namespace, :current_user, :session_data
 
       def initialize(repo, name, namespace, current_user, session_data)
         @repo = repo
@@ -12,24 +12,37 @@ module Gitlab
       end
 
       def execute
-        project = ::Projects::CreateService.new(
+        ::Projects::CreateService.new(
           current_user,
-          name: @name,
-          path: @name,
+          name: name,
+          path: name,
           description: repo.description,
           namespace_id: namespace.id,
-          visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : ApplicationSetting.current.default_project_visibility,
+          visibility_level: visibility_level,
           import_type: "github",
           import_source: repo.full_name,
-          import_url: repo.clone_url.sub("https://", "https://#{@session_data[:github_access_token]}@")
+          import_url: import_url,
+          skip_wiki: skip_wiki
         ).execute
+      end
 
-        # If repo has wiki we'll import it later
-        if repo.has_wiki? && project
-          project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
-        end
+      private
 
-        project
+      def import_url
+        repo.clone_url.sub('https://', "https://#{session_data[:github_access_token]}@")
+      end
+
+      def visibility_level
+        repo.private ? Gitlab::VisibilityLevel::PRIVATE : ApplicationSetting.current.default_project_visibility
+      end
+
+      #
+      # If the GitHub project repository has wiki, we should not create the
+      # default wiki. Otherwise the GitHub importer will fail because the wiki
+      # repository already exist.
+      #
+      def skip_wiki
+        repo.has_wiki?
       end
     end
   end

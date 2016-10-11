@@ -7,13 +7,16 @@ const ORIGIN_BUTTON_TITLE = 'Use theirs';
 class MergeConflictDataProvider {
 
   getInitialData() {
+    // TODO: remove reliance on jQuery and DOM state introspection
     const diffViewType = $.cookie('diff_view');
+    const fixedLayout = $('.content-wrapper .container-fluid').hasClass('container-limited');
 
     return {
       isLoading      : true,
       hasError       : false,
       isParallel     : diffViewType === 'parallel',
       diffViewType   : diffViewType,
+      fixedLayout    : fixedLayout,
       isSubmitting   : false,
       conflictsData  : {},
       resolutionData : {}
@@ -192,14 +195,17 @@ class MergeConflictDataProvider {
   updateViewType(newType) {
     const vi = this.vueInstance;
 
-    if (newType === vi.diffView || !(newType === 'parallel' || newType === 'inline')) {
+    if (newType === vi.diffViewType || !(newType === 'parallel' || newType === 'inline')) {
       return;
     }
 
-    vi.diffView   = newType;
-    vi.isParallel = newType === 'parallel';
-    $.cookie('diff_view', newType); // TODO: Make sure that cookie path added.
-    $('.content-wrapper .container-fluid').toggleClass('container-limited');
+    vi.diffViewType = newType;
+    vi.isParallel   = newType === 'parallel';
+    $.cookie('diff_view', newType, {
+      path: (gon && gon.relative_url_root) || '/'
+    });
+    $('.content-wrapper .container-fluid')
+      .toggleClass('container-limited', !vi.isParallel && vi.fixedLayout);
   }
 
 

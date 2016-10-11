@@ -153,8 +153,18 @@ module SearchHelper
     search_path(options)
   end
 
-  # Sanitize html generated after parsing markdown from issue description or comment
-  def search_md_sanitize(html)
+  # Sanitize a HTML field for search display. Most tags are stripped out and the
+  # maximum length is set to 200 characters.
+  def search_md_sanitize(object, field)
+    html = markdown_field(object, field)
+    html = Truncato.truncate(
+      html,
+      count_tags: false,
+      count_tail: false,
+      max_length: 200
+    )
+
+    # Truncato's filtered_tags and filtered_attributes are not quite the same
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 end

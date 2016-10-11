@@ -25,7 +25,7 @@ module Banzai
         return if customized?(whitelist[:transformers])
 
         # Allow code highlighting
-        whitelist[:attributes]['pre'] = %w(class)
+        whitelist[:attributes]['pre'] = %w(class v-pre)
         whitelist[:attributes]['span'] = %w(class)
 
         # Allow table alignment

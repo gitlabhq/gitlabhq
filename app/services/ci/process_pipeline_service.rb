@@ -16,6 +16,8 @@ module Ci
             process_stage(index)
           end
 
+        @pipeline.update_status
+
         # Return a flag if a when builds got enqueued
         new_builds.flatten.any?
       end

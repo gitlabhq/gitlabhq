@@ -26,10 +26,11 @@ describe 'Import/Export attribute configuration', lib: true do
   it 'has no new columns' do
     relation_names.each do |relation_name|
       relation_class = relation_class_for_name(relation_name)
+      relation_attributes = relation_class.new.attributes.keys
 
-      expect(safe_model_attributes[relation_class.to_s]).not_to be_nil, "Expected exported class #{relation_class.to_s} to exist in safe_model_attributes"
+      expect(safe_model_attributes[relation_class.to_s]).not_to be_nil, "Expected exported class #{relation_class} to exist in safe_model_attributes"
 
-      current_attributes = parsed_attributes(relation_name, relation_class.attribute_names)
+      current_attributes = parsed_attributes(relation_name, relation_attributes)
       safe_attributes = safe_model_attributes[relation_class.to_s]
       new_attributes = current_attributes - safe_attributes
 

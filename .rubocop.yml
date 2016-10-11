@@ -453,6 +453,10 @@ Style/VariableName:
   EnforcedStyle: snake_case
   Enabled: true
 
+# Use the configured style when numbering variables.
+Style/VariableNumber:
+  Enabled: false
+
 # Use when x then ... for one-line cases.
 Style/WhenThen:
   Enabled: true
@@ -638,6 +642,10 @@ Lint/RescueException:
 # Checks for the order which exceptions are rescued to avoid rescueing a less specific exception before a more specific exception.
 Lint/ShadowedException:
   Enabled: false
+
+# Checks for Object#to_s usage in string interpolation.
+Lint/StringConversionInInterpolation:
+  Enabled: true
 
 # Do not use prefix `_` for a variable that is used.
 Lint/UnderscorePrefixedVariableName:

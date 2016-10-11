@@ -26,7 +26,7 @@ describe Members::ApproveAccessRequestService, services: true do
     it 'returns a <Source>Member' do
       member = described_class.new(source, user, params).execute
 
-      expect(member).to be_a "#{source.class.to_s}Member".constantize
+      expect(member).to be_a "#{source.class}Member".constantize
       expect(member.requested_at).to be_nil
     end
 

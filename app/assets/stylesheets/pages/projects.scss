@@ -146,7 +146,8 @@
   }
 
   .project-repo-btn-group,
-  .notification-dropdown {
+  .notification-dropdown,
+  .project-dropdown {
     margin-left: 10px;
   }
 
@@ -353,7 +354,7 @@ a.deploy-project-label {
     justify-content: flex-start;
 
     .fork-thumbnail {
-      @include border-radius($border-radius-base);
+      border-radius: $border-radius-base;
       background-color: $white-light;
       border: 1px solid $border-white-light;
       height: 202px;
@@ -370,7 +371,7 @@ a.deploy-project-label {
         background-color: $gray-light;
         border: 1px solid $gray-dark;
         margin: 0 auto;
-        @include border-radius(50%);
+        border-radius: 50%;
         i {
           font-size: 100px;
           color: $gray-dark;
@@ -389,7 +390,7 @@ a.deploy-project-label {
       }
 
       img {
-        @include border-radius(50%);
+        border-radius: 50%;
         max-width: 100px;
       }
     }
@@ -495,7 +496,7 @@ pre.light-well {
   }
 
   .light-well {
-    @include border-radius (2px);
+    border-radius: 2px;
 
     color: #5b6169;
     font-size: 13px;

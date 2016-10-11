@@ -6,7 +6,7 @@
   background: $background-color;
   color: $gl-gray;
   border: 1px solid $border-color;
-  @include border-radius(2px);
+  border-radius: 2px;
 
   form {
     margin-bottom: 0;
@@ -70,7 +70,8 @@
     &.ci-success {
       color: $gl-success;
 
-      a.environment {
+      a.environment,
+      a.pipeline {
         color: inherit;
       }
     }
@@ -349,6 +350,10 @@
 .issuable-form-select-holder {
   display: inline-block;
   width: 250px;
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
 }
 
 .table-holder {

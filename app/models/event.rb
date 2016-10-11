@@ -328,25 +328,20 @@ class Event < ActiveRecord::Base
   def reset_project_activity
     return unless project
 
-    # Don't even bother obtaining a lock if the last update happened less than
-    # 60 minutes ago.
+    # Don't bother updating if we know the project was updated recently.
     return if recent_update?
 
-    return unless try_obtain_lease
-
-    project.update_column(:last_activity_at, created_at)
+    # At this point it's possible for multiple threads/processes to try to
+    # update the project. Only one query should actually perform the update,
+    # hence we add the extra WHERE clause for last_activity_at.
+    Project.unscoped.where(id: project_id).
+      where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
+      update_all(last_activity_at: created_at)
   end
 
   private
 
   def recent_update?
     project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
-  end
-
-  def try_obtain_lease
-    Gitlab::ExclusiveLease.
-      new("project:update_last_activity_at:#{project.id}",
-          timeout: RESET_PROJECT_ACTIVITY_INTERVAL.to_i).
-      try_obtain
   end
 end

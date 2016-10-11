@@ -110,6 +110,7 @@ gem 'creole',             '~> 0.5.0'
 gem 'wikicloth',          '0.8.1'
 gem 'asciidoctor',        '~> 1.5.2'
 gem 'rouge',              '~> 2.0'
+gem 'truncato',           '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -130,7 +131,7 @@ gem 'state_machines-activerecord', '~> 0.4.0'
 gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 3.4'
+gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 4.2'
@@ -231,7 +232,7 @@ gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 1.1.0'
+gem 'sentry-raven', '~> 2.0.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
@@ -295,7 +296,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.42.0', require: false
+  gem 'rubocop', '~> 0.43.0', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false

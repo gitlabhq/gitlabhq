@@ -173,13 +173,11 @@ describe Event, models: true do
       it 'updates the project' do
         project.update(last_activity_at: 1.year.ago)
 
-        expect_any_instance_of(Gitlab::ExclusiveLease).
-          to receive(:try_obtain).and_return(true)
-
-        expect(project).to receive(:update_column).
-          with(:last_activity_at, a_kind_of(Time))
-
         create_event(project, project.owner)
+
+        project.reload
+
+        project.last_activity_at <= 1.minute.ago
       end
     end
   end

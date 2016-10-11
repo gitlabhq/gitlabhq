@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include CacheMarkdownField
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -16,6 +17,8 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
+
+  cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
 
@@ -380,6 +383,7 @@ class Project < ActiveRecord::Base
         SELECT project_id, COUNT(*) AS amount
         FROM notes
         WHERE created_at >= #{sanitize(since)}
+        AND system IS FALSE
         GROUP BY project_id
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 

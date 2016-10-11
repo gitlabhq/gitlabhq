@@ -148,7 +148,7 @@ PUT /projects/:id/labels
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`            | integer | yes                               | The ID of the project            |
 | `name`          | string  | yes                               | The name of the existing label   |
-| `new_name`      | string  | yes if `color` if not provided    | The new name of the label        |
+| `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
 | `color`         | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
 | `description`   | string  | no                                | The new description of the label |
 

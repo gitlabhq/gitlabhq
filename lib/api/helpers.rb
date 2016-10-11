@@ -21,8 +21,11 @@ module API
     end
 
     # Check the Rails session for valid authentication details
+    #
+    # Until CSRF protection is added to the API, disallow this method for
+    # state-changing endpoints
     def find_user_from_warden
-      warden ? warden.authenticate : nil
+      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
     end
 
     def find_user_by_private_token
@@ -430,7 +433,7 @@ module API
     end
 
     def secret_token
-      File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+      Gitlab::Shell.secret_token
     end
 
     def send_git_blob(repository, blob)

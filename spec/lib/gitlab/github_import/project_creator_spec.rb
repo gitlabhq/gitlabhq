@@ -33,7 +33,7 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
       expect(project.import_data.credentials).to eq(user: 'asdffg', password: nil)
     end
 
-    context 'when Github project is private' do
+    context 'when GitHub project is private' do
       it 'sets project visibility to private' do
         repo.private = true
 
@@ -43,7 +43,7 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
       end
     end
 
-    context 'when Github project is public' do
+    context 'when GitHub project is public' do
       before do
         allow_any_instance_of(ApplicationSetting).to receive(:default_project_visibility).and_return(Gitlab::VisibilityLevel::INTERNAL)
       end
@@ -54,6 +54,26 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
         project = service.execute
 
         expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
+    end
+
+    context 'when GitHub project has wiki' do
+      it 'does not create the wiki repository' do
+        allow(repo).to receive(:has_wiki?).and_return(true)
+
+        project = service.execute
+
+        expect(project.wiki.repository_exists?).to eq false
+      end
+    end
+
+    context 'when GitHub project does not have wiki' do
+      it 'creates the wiki repository' do
+        allow(repo).to receive(:has_wiki?).and_return(false)
+
+        project = service.execute
+
+        expect(project.wiki.repository_exists?).to eq true
       end
     end
   end

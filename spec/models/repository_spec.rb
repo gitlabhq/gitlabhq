@@ -97,12 +97,20 @@ describe Repository, models: true do
   end
 
   describe '#find_commits_by_message' do
-    subject { repository.find_commits_by_message('submodule').map{ |k| k.id } }
+    it 'returns commits with messages containing a given string' do
+      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
 
-    it { is_expected.to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
-    it { is_expected.to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-    it { is_expected.to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660') }
-    it { is_expected.not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e') }
+      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      expect(commit_ids).to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+      expect(commit_ids).to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660')
+      expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+    end
+
+    it 'is case insensitive' do
+      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+
+      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+    end
   end
 
   describe '#blob_at' do
@@ -317,6 +325,16 @@ describe Repository, models: true do
 
       it { is_expected.to be_an String }
       it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
+    end
+  end
+
+  describe '#create_ref' do
+    it 'redirects the call to fetch_ref' do
+      ref, ref_path = '1', '2'
+
+      expect(repository).to receive(:fetch_ref).with(repository.path_to_repo, ref, ref_path)
+
+      repository.create_ref(ref, ref_path)
     end
   end
 

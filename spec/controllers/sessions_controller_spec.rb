@@ -109,6 +109,44 @@ describe SessionsController do
             end
           end
 
+          context 'when the user is on their last attempt' do
+            before do
+              user.update(failed_attempts: User.maximum_attempts.pred)
+            end
+
+            context 'when OTP is valid' do
+              it 'authenticates correctly' do
+                authenticate_2fa(otp_attempt: user.current_otp)
+
+                expect(subject.current_user).to eq user
+              end
+            end
+
+            context 'when OTP is invalid' do
+              before { authenticate_2fa(otp_attempt: 'invalid') }
+
+              it 'does not authenticate' do
+                expect(subject.current_user).not_to eq user
+              end
+
+              it 'warns about invalid login' do
+                expect(response).to set_flash.now[:alert]
+                  .to /Invalid Login or password/
+              end
+
+              it 'locks the user' do
+                expect(user.reload).to be_access_locked
+              end
+
+              it 'keeps the user locked on future login attempts' do
+                post(:create, user: { login: user.username, password: user.password })
+
+                expect(response)
+                  .to set_flash.now[:alert].to /Invalid Login or password/
+              end
+            end
+          end
+
           context 'when another user does not have 2FA enabled' do
             let(:another_user) { create(:user) }
 
