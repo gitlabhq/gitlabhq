@@ -1,0 +1,16 @@
+# When the Todos list on the user's dashboard is empty, one of the messages below shows up randomly.
+#
+# If you come up with a fun one, please feel free to contribute it to GitLab!
+# https://about.gitlab.com/contributing/
+
+--- 
+-
+  message: "Good job! Looks like you don't have any todos left."
+- 
+  message: "You're all done!"
+- 
+  message: "Coffee really tastes better without any todos left."
+  author: "Josep Llaneras"
+- 
+  message: "Isn't an empty To Do list beautiful?"
+  author: "Josep Llaneras"

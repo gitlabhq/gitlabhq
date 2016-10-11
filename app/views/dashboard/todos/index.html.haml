@@ -84,7 +84,7 @@
       = render "shared/empty_states/todos_all_done.svg"
       - if todos_filter_empty?
         %h4.text-center
-          Good job! Looks like you don't have any todos left.
+          = no_todos_message
         %p.text-center
           Are you looking for things to do? Take a look at
           = succeed "," do
