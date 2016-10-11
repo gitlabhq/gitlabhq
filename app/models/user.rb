@@ -72,6 +72,8 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
+  has_many :project_authorizations, dependent: :destroy
+  has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
@@ -438,11 +440,44 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
-  # Returns projects user is authorized to access.
-  #
-  # If you change the logic of this method, please also update `Project#authorized_for_user`
+  def refresh_authorized_projects
+    loop do
+      begin
+        Gitlab::Database.serialized_transaction do
+          project_authorizations.delete_all
+
+          # project_authorizations_union can return multiple records for the same project/user with
+          # different access_level so we take row with the maximum access_level
+          project_authorizations.connection.execute <<-SQL
+            INSERT INTO project_authorizations (user_id, project_id, access_level)
+            SELECT user_id, project_id, MAX(access_level) AS access_level
+            FROM (#{project_authorizations_union.to_sql}) sub
+            GROUP BY user_id, project_id
+          SQL
+
+          update_column(:authorized_projects_populated, true) unless authorized_projects_populated
+        end
+
+        break
+      # In the event of a concurrent modification Rails raises StatementInvalid.
+      # In this case we want to keep retrying until the transaction succeeds
+      rescue ActiveRecord::StatementInvalid
+      end
+    end
+  end
+
   def authorized_projects(min_access_level = nil)
-    Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
+    refresh_authorized_projects unless authorized_projects_populated
+
+    # We're overriding an association, so explicitly call super with no arguments or it would be passed as `force_reload` to the association
+    projects = super()
+    projects = projects.where('project_authorizations.access_level >= ?', min_access_level) if min_access_level
+
+    projects
+  end
+
+  def authorized_project?(project, min_access_level = nil)
+    authorized_projects(min_access_level).exists?({ id: project.id })
   end
 
   # Returns the projects this user has reporter (or greater) access to, limited
@@ -456,8 +491,9 @@ class User < ActiveRecord::Base
   end
 
   def viewable_starred_projects
-    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (#{projects_union.to_sql})",
-                           [Project::PUBLIC, Project::INTERNAL])
+    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (?)",
+                           [Project::PUBLIC, Project::INTERNAL],
+                           authorized_projects.select(:project_id))
   end
 
   def owned_projects
@@ -887,16 +923,14 @@ class User < ActiveRecord::Base
 
   private
 
-  def projects_union(min_access_level = nil)
-    relations = [personal_projects.select(:id),
-                 groups_projects.select(:id),
-                 projects.select(:id),
-                 groups.joins(:shared_projects).select(:project_id)]
-
-    if min_access_level
-      scope = { access_level: Gitlab::Access.all_values.select { |access| access >= min_access_level } }
-      relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
-    end
+  # Returns a union query of projects that the user is authorized to access
+  def project_authorizations_union
+    relations = [
+      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::OWNER} AS access_level"),
+      groups_projects.select_for_project_authorization,
+      projects.select_for_project_authorization,
+      groups.joins(:shared_projects).select_for_project_authorization
+    ]
 
     Gitlab::SQL::Union.new(relations)
   end

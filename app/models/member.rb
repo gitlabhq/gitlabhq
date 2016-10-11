@@ -113,6 +113,8 @@ class Member < ActiveRecord::Base
         member.save
       end
 
+      UserProjectAccessChangedService.new(user.id).execute if user.is_a?(User)
+
       member
     end
 
@@ -239,6 +241,7 @@ class Member < ActiveRecord::Base
   end
 
   def post_create_hook
+    UserProjectAccessChangedService.new(user.id).execute
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -247,7 +250,17 @@ class Member < ActiveRecord::Base
   end
 
   def post_destroy_hook
+    refresh_member_authorized_projects
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def refresh_member_authorized_projects
+    # If user/source is being destroyed, project access are gonna be destroyed eventually
+    # because of DB foreign keys, so we shouldn't bother with refreshing after each
+    # member is destroyed through association
+    return if destroyed_by_association.present?
+
+    UserProjectAccessChangedService.new(user_id).execute
   end
 
   def after_accept_invite
