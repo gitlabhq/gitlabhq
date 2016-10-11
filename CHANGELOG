@@ -93,6 +93,7 @@ v 8.13.0 (unreleased)
   - API: all unknown routing will be handled with 404 Not Found
 
 v 8.12.5 (unreleased)
+  - Update the mail_room gem to 0.8.1 to fix a race condition with the mailbox watching thread
 
 v 8.12.4
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. !6294 (lukehowell)
