@@ -733,12 +733,7 @@ class Project < ActiveRecord::Base
 
   def create_labels
     Label.templates.each do |label|
-      label = label.dup
-      label.template = false
-      label.project_id = self.id
-      label.type = 'ProjectLabel'
-
-      label.save
+      self.labels.create!(label.attributes.symbolize_keys.except(:id, :template))
     end
   end
 
