@@ -1,5 +1,5 @@
 module Gitlab
-  class RepositorySizeError < StandardError
+  class RepositorySizeError
     include ActionView::Helpers
 
     attr_reader :project
@@ -32,7 +32,7 @@ module Gitlab
       'Please contact your GitLab administrator for more information.'
     end
 
-    def over_size_limit_message
+    def above_size_limit_message
       "#{to_s} You won't be able to push new code to this project. #{more_info_message}"
     end
 

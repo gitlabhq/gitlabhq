@@ -92,15 +92,22 @@ describe ProjectsController do
 
       context 'project repo over limit' do
         before do
-          sign_in(user)
           allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
           project.team << [user, :master]
         end
 
-        it 'shows the over size limit warning message' do
+        it 'shows the over size limit warning message for project members' do
+          allow(controller).to receive(:current_user).and_return(user)
+
           get :show, namespace_id: project.namespace.path, id: project.path
 
-          expect(response).to render_template('_over_size_limit_warning')
+          expect(response).to render_template('_above_size_limit_warning')
+        end
+
+        it 'does not show the message for non members' do
+          get :show, namespace_id: project.namespace.path, id: project.path
+
+          expect(response).not_to render_template('_above_size_limit_warning')
         end
       end
     end
