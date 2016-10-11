@@ -894,7 +894,7 @@ DEPENDENCIES
   license_finder (~> 2.1.0)
   licensee (~> 8.0.0)
   loofah (~> 2.0.3)
-  mail_room (~> 0.8)
+  mail_room (~> 0.8.1)
   method_source (~> 0.8)
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)

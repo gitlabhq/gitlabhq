@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.5
   - Switch from request to env in ::API::Helpers. !6615
+  - Update the mail_room gem to 0.8.1 to fix a race condition with the mailbox watching thread. !6714
   - Improve issue load time performance by avoiding ORDER BY in find_by call. !6724
 
 v 8.12.4
