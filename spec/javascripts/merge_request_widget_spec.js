@@ -26,13 +26,13 @@
 
     describe('getCIEnvironmentsStatus', function() {
       beforeEach(function() {
-        this.ciEnvironmentsStatusData = {
+        this.ciEnvironmentsStatusData = [{
           created_at: '2016-09-12T13:38:30.636Z',
           environment_id: 1,
           environment_name: 'env1',
           external_url: 'https://test-url.com',
           external_url_formatted: 'test-url.com'
-        };
+        }];
 
         spyOn(jQuery, 'getJSON').and.callFake((req, cb) => {
           cb(this.ciEnvironmentsStatusData);
@@ -46,6 +46,7 @@
        });
 
        it('should not call renderEnvironments when the environments property is not set', function() {
+         this.ciEnvironmentsStatusData = null;
          const spy = spyOn(this.class, 'renderEnvironments').and.stub();
          this.class.getCIEnvironmentsStatus();
          expect(spy).not.toHaveBeenCalled();
