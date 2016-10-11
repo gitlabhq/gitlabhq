@@ -1,0 +1,4 @@
+---
+title: Limit autocomplete to currently selected items for unlabel slash command
+merge_request: 22680
+author: Akram Fares

@@ -13,7 +13,14 @@ module Projects
     end
 
     def labels
-      LabelsFinder.new(current_user, project_id: project.id).execute.select([:title, :color])
+      LabelsFinder.new(current_user, project_id: project.id).execute.
+        pluck(:title, :color).map { |l| { title: l.first, color: l.second } }
+    end
+
+    def unlabels(noteable)
+      return [] unless noteable && noteable.respond_to?(:labels)
+
+      noteable.labels.pluck(:title, :color).map { |l| { title: l.first, color: l.second } }
     end
 
     def commands(noteable, type)
