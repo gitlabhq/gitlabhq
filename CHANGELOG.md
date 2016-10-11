@@ -116,6 +116,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Grouped pipeline dropdown is a scrollable container
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
   - Fixes padding in all clipboard icons that have .btn class
+  - Fix due date being displayed as NaN in Safari
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
