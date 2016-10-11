@@ -11,7 +11,8 @@
 = render 'shared/issuable/filter', type: :boards
 
 .boards-list#board-app{ "v-cloak" => true,
-  "data-endpoint" => "#{namespace_project_board_path(@project.namespace, @project, @board)}",
+  "data-endpoint" => "#{namespace_project_boards_path(@project.namespace, @project)}",
+  "data-board-id" => "#{@board.id}",
   "data-disabled" => "#{!can?(current_user, :admin_list, @project)}",
   "data-issue-link-base" => "#{namespace_project_issues_path(@project.namespace, @project)}" }
   .boards-app-loading.text-center{ "v-if" => "loading" }
