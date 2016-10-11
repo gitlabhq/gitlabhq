@@ -14,7 +14,7 @@
 
 (() => {
   beforeEach(() => {
-    gl.boardService = new BoardService('/test/issue-boards/board');
+    gl.boardService = new BoardService('/test/issue-boards/board', '1');
     gl.issueBoards.BoardsStore.create();
 
     $.cookie('issue_board_welcome_hidden', 'false');
