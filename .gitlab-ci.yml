@@ -257,13 +257,18 @@ lint-doc:
   script:
     - scripts/lint-doc.sh
 
+bundler:check:
+ stage: test
+ <<: *ruby-static-analysis
+ script:
+   - bundle check
+
 bundler:audit:
   stage: test
   <<: *ruby-static-analysis
   only:
     - master
   script:
-    - bundle check
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
 migration paths:
