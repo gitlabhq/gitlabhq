@@ -53,11 +53,17 @@ class Environment < ActiveRecord::Base
 
     return nil unless ref
 
-    deployment_id = ref.split('/').last.to_i
+    deployment_id = ref.split('/').last
     deployments.find(deployment_id)
   end
 
   def ref_path
     "refs/environments/#{Shellwords.shellescape(name)}"
+  end
+
+  def formatted_external_url
+    return nil unless external_url
+
+    external_url.gsub(/\A.*?:\/\//, '')
   end
 end

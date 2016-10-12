@@ -404,30 +404,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_environments_status
-    environments = 
+    environments =
       begin
         @merge_request.environments.map do |environment|
           next unless can?(current_user, :read_environment, environment)
 
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 
-          environment_data = {
-            name: environment.name,
+          {
             id: environment.id,
+            name: environment.name,
             url: namespace_project_environment_path(@project.namespace, @project, environment),
             external_url: environment.external_url,
-            deployed_at: deployment ? deployment.created_at : nil
+            external_url_formatted: environment.formatted_external_url,
+            deployed_at: deployment.try(:created_at),
+            deployed_at_formatted: deployment.try(:formatted_deployment_time)
           }
-
-          if environment_data[:external_url]
-            environment_data[:external_url_formatted] = environment_data[:external_url].gsub(/\A.*?:\/\//, '')
-          end
-
-          if environment_data[:deployed_at]
-            environment_data[:deployed_at_formatted] = environment_data[:deployed_at].to_time.in_time_zone.to_s(:medium)
-          end
-
-          environment_data
         end.compact
       end
 

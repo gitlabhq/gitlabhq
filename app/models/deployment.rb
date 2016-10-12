@@ -84,6 +84,10 @@ class Deployment < ActiveRecord::Base
       take
   end
 
+  def formatted_deployment_time
+    created_at.to_time.in_time_zone.to_s(:medium)
+  end
+
   private
 
   def ref_path

@@ -446,6 +446,17 @@ ActiveRecord::Schema.define(version: 20161007133303) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+  create_table "integrations", force: :cascade do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "external_token"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "integrations", ["external_token"], name: "index_integrations_on_external_token", unique: true, using: :btree
+  add_index "integrations", ["project_id"], name: "index_integrations_on_project_id", using: :btree
+
   create_table "issue_metrics", force: :cascade do |t|
     t.integer "issue_id", null: false
     t.datetime "first_mentioned_in_commit_at"
@@ -613,7 +624,6 @@ ActiveRecord::Schema.define(version: 20161007133303) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
   add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
