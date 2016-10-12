@@ -1,8 +1,5 @@
 require 'constraints/user_url_constrainer'
 
-get '/u/:username', to: redirect('/%{username}'),
-                    constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
-
 devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
                                   registrations: :registrations,
                                   passwords: :passwords,
@@ -23,7 +20,7 @@ constraints(UserUrlConstrainer.new) do
   end
 end
 
-scope(path: 'u/:username',
+scope(path: 'users/:username',
       as: :user,
       constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
       controller: :users) do
@@ -35,3 +32,10 @@ scope(path: 'u/:username',
   get :snippets
   get '/', to: redirect('/%{username}')
 end
+
+# Compatibility with old routing
+get '/u/:username', to: redirect('/%{username}'), constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+get '/u/:username/groups', to: redirect('/users/%{username}/groups'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
+get '/u/:username/projects', to: redirect('/users/%{username}/projects'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
+get '/u/:username/snippets', to: redirect('/users/%{username}/snippets'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
+get '/u/:username/contributed', to: redirect('/users/%{username}/contributed'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
