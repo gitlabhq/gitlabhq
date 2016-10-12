@@ -255,6 +255,12 @@ lint-doc:
   script:
     - scripts/lint-doc.sh
 
+bundler:check:
+ stage: test
+ <<: *ruby-static-analysis
+ script:
+   - bundle check
+
 bundler:audit:
   stage: test
   <<: *ruby-static-analysis
