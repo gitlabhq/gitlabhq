@@ -72,6 +72,7 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::Version
 
     route :any, '*path' do
       error!('404 Not Found', 404)

@@ -32,6 +32,7 @@ v 8.13.0 (unreleased)
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Simplify Mentionable concern instance methods
+  - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date
   - API: Multi-file commit !6096 (mahcsig)
   - Revert "Label list shows all issues (opened or closed) with that label"
