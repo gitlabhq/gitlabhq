@@ -39,7 +39,7 @@ class PipelinesEmailService < Service
   end
 
   def can_test?
-    project.pipelines.count > 0
+    project.pipelines.any?
   end
 
   def disabled_title
