@@ -5,6 +5,7 @@ module Gitlab
   module Email
     module Handler
       class CreateIssueHandler < BaseHandler
+        include ReplyProcessing
         attr_reader :project_path, :incoming_email_token
 
         def initialize(mail, mail_key)
