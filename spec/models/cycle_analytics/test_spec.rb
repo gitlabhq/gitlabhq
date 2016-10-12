@@ -46,7 +46,6 @@ describe 'CycleAnalytics#test', feature: true do
 
         pipeline.run!
         pipeline.succeed!
-
       end
 
       expect(subject.test).to be_nil
