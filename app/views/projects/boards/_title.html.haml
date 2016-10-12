@@ -5,7 +5,7 @@
       data: { toggle: "dropdown" } }
       {{ currentBoard.name }}
       = icon("caret-down")
-    .dropdown-menu
+    .dropdown-menu{ ":class" => "{ 'is-loading': loading }" }
       .dropdown-title
         %button.dropdown-title-button.dropdown-menu-back{ type: "button",
           aria: { label: "Go back" },
@@ -21,8 +21,8 @@
           %li{ "v-for" => "board in boards" }
             %a{ ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + board.id" }
               {{ board.name }}
-        .text-center{ "v-if" => "loading" }
-          = icon("spin spinner")
+      .dropdown-loading{ "v-if" => "loading" }
+        = icon("spin spinner")
       %board-selector-form{ "inline-template" => true,
         "v-if" => "currentPage === 'edit'",
         "type" => "edit",
