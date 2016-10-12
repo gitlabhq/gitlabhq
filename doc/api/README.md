@@ -46,6 +46,7 @@ following locations:
 - [Todos](todos.md)
 - [Users](users.md)
 - [Validate CI configuration](ci/lint.md)
+- [Version](version.md)
 
 ### Internal CI API
 
