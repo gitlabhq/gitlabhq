@@ -391,7 +391,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.blobs_count).to eq 5
 
       results = described_class.new(user, 'def', [project_1.id, project_2.id])
-      expect(results.blobs_count).to eq 8
+      expect(results.blobs_count).to eq 10
     end
 
     it 'returns zero when blobs are not found' do
@@ -413,7 +413,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       commits = results.objects('commits')
 
       expect(commits.first.message).to include("Add")
-      expect(results.commits_count).to eq 5
+      expect(results.commits_count).to eq 24
     end
 
     it 'finds commits from public projects only' do
@@ -425,7 +425,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.commits_count).to eq 24
 
       results = described_class.new(user, 'add', [project_1.id, project_2.id])
-      expect(results.commits_count).to eq 10
+      expect(results.commits_count).to eq 48
     end
 
     it 'returns zero when commits are not found' do
