@@ -7,8 +7,8 @@ stages:
   - production
 
 variables:
-  OPENSHIFT_SERVER: https://origin.gitlap.com:8443
-  OPENSHIFT_DOMAIN: apps.tanukionline.com
+  OPENSHIFT_SERVER: https://openshift.example.com:8443
+  OPENSHIFT_DOMAIN: apps.example.com
 
   # Configure this variable in Secure Variables:
   # OPENSHIFT_TOKEN: my.openshift.token
@@ -37,8 +37,8 @@ test2:
     - oc login "$OPENSHIFT_SERVER" --token="$OPENSHIFT_TOKEN" --insecure-skip-tls-verify
     - oc project "$CI_PROJECT_NAME" || oc new-project "$CI_PROJECT_NAME"
   script:
-    - "! oc get services $APP || oc start-build $APP --from-dir=. --wait"
     - "oc get services $APP || oc new-app . --name=$APP --strategy=docker"
+    - "oc start-build $APP --from-dir=. --follow"
     - "oc get routes $APP || oc expose service $APP --hostname=$APP_HOST"
 
 production:
