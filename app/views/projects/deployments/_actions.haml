@@ -6,7 +6,7 @@
         = icon('external-link')
 
   - if can?(current_user, :update_deployment, deployment) && deployment.deployable
-    %a.btn.btn-default.btn-terminal{href: "deployments/#{deployment.id}/terminal"}
+    = link_to terminal_namespace_project_deployment_path(@project.namespace.becomes(Namespace), @project, deployment), class: 'btn btn-default btn-terminal', rel: 'nofollow' do
       = custom_icon('icon_terminal')
 
   - if can?(current_user, :create_deployment, deployment) && deployment.deployable && local_assigns.fetch(:show_actions, false)
