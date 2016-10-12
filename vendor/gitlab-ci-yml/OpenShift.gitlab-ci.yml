@@ -7,14 +7,11 @@ stages:
   - production
 
 variables:
-  # Configure these variables in Secure Variables:
   OPENSHIFT_SERVER: https://origin.gitlap.com:8443
-  OPENSHIFT_DOMAIN: apps.origin.gitlap.com
-  # OPENSHIFT_TOKEN: my.openshift.token
+  OPENSHIFT_DOMAIN: apps.tanukionline.com
 
-before_script:
-  - oc login "$OPENSHIFT_SERVER" --token="$OPENSHIFT_TOKEN" --insecure-skip-tls-verify
-  - oc project "$CI_PROJECT_NAME"
+  # Configure this variable in Secure Variables:
+  # OPENSHIFT_TOKEN: my.openshift.token
 
 build:
   stage: build
@@ -36,10 +33,13 @@ test2:
 
 .deploy: &deploy
   image: ayufan/openshift-cli
+  before_script:
+    - oc login "$OPENSHIFT_SERVER" --token="$OPENSHIFT_TOKEN" --insecure-skip-tls-verify
+    - oc project "$CI_PROJECT_NAME" || oc new-project "$CI_PROJECT_NAME"
   script:
-    - oc get services $APP || oc new-app . --name=$APP --strategy=docker
-    - oc get routes $APP || oc expose service $APP --hostname=$APP_HOST
-    - oc start-build $APP --from-dir=. --wait
+    - "! oc get services $APP || oc start-build $APP --from-dir=. --wait"
+    - "oc get services $APP || oc new-app . --name=$APP --strategy=docker"
+    - "oc get routes $APP || oc expose service $APP --hostname=$APP_HOST"
 
 production:
   <<: *deploy
