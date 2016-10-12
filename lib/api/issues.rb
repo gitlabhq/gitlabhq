@@ -90,12 +90,20 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        issues = IssuesFinder.new(current_user,
-                                  project_id: user_project.id,
-                                  state: params[:state],
-                                  milestone_title: params[:milestone]).execute.inc_notes_with_associations
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
+        project = find_project(params[:id])
+        params[:state] ||= 'opened'
+        params[:project_id] = project.id
+        params[:milestone_title] = params.delete(:milestone)
+        params[:label_name] = params.delete(:labels)
+
+        issues = IssuesFinder.new(current_user, params).execute
+
+        issues = issues.reorder(params[:order_by] => params[:sort])
+
+        unless params[:milestone].nil?
+          issues = filter_issues_milestone(issues, params[:milestone])
+        end
+
         issues = issues.reorder(params[:order_by] => params[:sort])
 
         present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
