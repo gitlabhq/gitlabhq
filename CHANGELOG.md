@@ -103,6 +103,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
+  - Fix the diff in the merge request view when converting a symlink to a regular file
   - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Ability to batch assign issues relating to a merge request to the author. !5725 (jamedjo)
