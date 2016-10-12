@@ -8,9 +8,11 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   def terminal_websocket_authorize
     Gitlab::Workhorse.verify_api_request!(request.headers)
-    if true # extra access checks, config flags can go here
+    openshift_project = project.variables.find('CI_PROJECT_NAME').to_s
+    openshift_app = project.variables.find('APP').to_s
+    if openshift_project.present? && openshift_app.present?
       set_workhorse_internal_api_content_type
-      render json: {} # Kubernetes namespace/pod/container should go here
+      render json: {openshift_app: openshift_app, openshift_project: openshift_project}
     else
       render text: 'Not found', status: 404
     end
