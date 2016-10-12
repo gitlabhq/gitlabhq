@@ -150,6 +150,7 @@ v 8.12.1
   - Fix issue with search filter labels not displaying
 
 v 8.12.0
+  - Removes inconsistency regarding tagging immediatelly as merged once you create a new branch. !6408
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Only check :can_resolve permission if the note is resolvable
   - Bump fog-aws to v0.11.0 to support ap-south-1 region

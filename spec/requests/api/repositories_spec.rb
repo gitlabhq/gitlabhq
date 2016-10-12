@@ -21,7 +21,7 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq('encoding')
+        expect(json_response.first['name']).to eq('bar')
         expect(json_response.first['type']).to eq('tree')
         expect(json_response.first['mode']).to eq('040000')
       end
@@ -166,9 +166,9 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       contributor = json_response.first
-      expect(contributor['email']).to eq('dmitriy.zaporozhets@gmail.com')
-      expect(contributor['name']).to eq('Dmitriy Zaporozhets')
-      expect(contributor['commits']).to eq(13)
+      expect(contributor['email']).to eq('tiagonbotelho@hotmail.com')
+      expect(contributor['name']).to eq('tiagonbotelho')
+      expect(contributor['commits']).to eq(1)
       expect(contributor['additions']).to eq(0)
       expect(contributor['deletions']).to eq(0)
     end

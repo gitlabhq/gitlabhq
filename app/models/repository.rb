@@ -1016,7 +1016,8 @@ class Repository
     root_ref_commit = commit(root_ref)
 
     if branch_commit
-      is_ancestor?(branch_commit.id, root_ref_commit.id)
+      same_head = branch_commit.id == root_ref_commit.id
+      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
