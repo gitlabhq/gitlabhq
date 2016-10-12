@@ -61,7 +61,7 @@
         }
 
         if (this.open && !this.boards.length) {
-          this.$http.get(this.endpoint).then((resp) => {
+          gl.boardService.allBoards().then((resp) => {
             this.loading = false;
             this.boards = resp.json();
           });

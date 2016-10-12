@@ -2,8 +2,7 @@ class BoardService {
   constructor (root, boardId) {
     Vue.http.options.root = root;
 
-    this.boards = Vue.resource(`${root}{/id}`);
-
+    this.boards = Vue.resource(`${root}{/id}.json`);
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
@@ -17,6 +16,10 @@ class BoardService {
       request.headers['X-CSRF-Token'] = $.rails.csrfToken();
       next();
     });
+  }
+
+  allBoards () {
+    return this.boards.get();
   }
 
   createBoard (board) {
