@@ -3,6 +3,7 @@ module Ci
     extend Ci::Model
     include HasStatus
     include Importable
+    include AfterCommitQueue
 
     self.table_name = 'ci_commits'
 
@@ -71,7 +72,11 @@ module Ci
       end
 
       after_transition do |pipeline, transition|
-        pipeline.execute_hooks unless transition.loopback?
+        next if transition.loopback?
+
+        pipeline.run_after_commit do
+          PipelineHooksWorker.perform_async(id)
+        end
       end
     end
 
