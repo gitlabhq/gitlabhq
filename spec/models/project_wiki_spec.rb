@@ -42,6 +42,14 @@ describe ProjectWiki, models: true do
     end
   end
 
+  describe "#kerberos_url_to_repo" do
+    it 'returns valid kerberos url for this repo' do
+      gitlab_kerberos_url = Gitlab.config.build_gitlab_kerberos_url
+      repo_kerberos_url = "#{gitlab_kerberos_url}/#{subject.path_with_namespace}.git"
+      expect(subject.kerberos_url_to_repo).to eq(repo_kerberos_url)
+    end
+  end
+
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
       wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.path_with_namespace}/wikis"
