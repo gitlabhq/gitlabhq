@@ -226,8 +226,7 @@ a feedback issue (if there isn't one already) and leave a comment asking for it
 to be marked as `Accepting merge requests`. Please include screenshots or
 wireframes if the feature will also change the UI.
 
-Merge requests can be filed either at [GitLab.com][gitlab-mr-tracker] or at
-[github.com][github-mr-tracker].
+Merge requests should be opened at [GitLab.com][gitlab-mr-tracker].
 
 If you are new to GitLab development (or web development in general), see the
 [I want to contribute!](#i-want-to-contribute) section to get you started with
@@ -246,10 +245,17 @@ tests are least likely to receive timely feedback. The workflow to make a merge
 request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
-1. Create a feature branch, branch away from `master`.
+1. Create a feature branch, branch away from `master`
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
-1. Add your changes to the [CHANGELOG](CHANGELOG)
-1. If you are writing documentation, make sure to read the [documentation styleguide][doc-styleguide]
+1. Add your changes to the [CHANGELOG](CHANGELOG):
+  1. If you are fixing a ~regression issue, you can add your entry to the next
+     patch release (e.g. `8.12.5` if current version is `8.12.4`)
+  1. Otherwise, add your entry to the next minor release (e.g. `8.13.0` if
+     current version is `8.12.4`
+  1. Please add your entry at a random place among the entries of the targeted
+     release
+1. If you are writing documentation, make sure to follow the
+   [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
    [squashing them][git-squash]
 1. Push the commit(s) to your fork
@@ -258,7 +264,7 @@ request is as follows:
 1. The MR description should give a motive for your change and the method you
    used to achieve it, see the [merge request description format]
    (#merge-request-description-format)
-1. If the MR changes the UI it should include before and after screenshots
+1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
 1. Link any relevant [issues][ce-tracker] in the merge request description and
@@ -270,7 +276,9 @@ request is as follows:
    [shell command guidelines](doc/development/shell_commands.md)
 1. If your code creates new files on disk please read the
    [shared files guidelines](doc/development/shared_files.md).
-1. When writing commit messages please follow [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [guidelines](http://chris.beams.io/posts/git-commit/).
+1. When writing commit messages please follow
+   [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
+   [guidelines](http://chris.beams.io/posts/git-commit/).
 1. If your merge request adds one or more migrations, make sure to execute all
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, do this again once the review is complete.
@@ -305,23 +313,6 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](doc/development/code_review.md) into account.
 
-### Merge request description format
-
-Please submit merge requests using the following template in the merge request
-description area. Copy-paste it to retain the markdown format.
-
-```
-## What does this MR do?
-
-## Are there points in the code the reviewer needs to double check?
-
-## Why was this MR needed?
-
-## What are the relevant issue numbers?
-
-## Screenshots (if relevant)
-```
-
 ### Contribution acceptance criteria
 
 1. The change is as small as possible
@@ -333,8 +324,8 @@ description area. Copy-paste it to retain the markdown format.
    aforementioned failing test
 1. Your MR initially contains a single commit (please use `git rebase -i` to
    squash commits)
-1. Your changes can merge without problems (if not please merge `master`, never
-   rebase commits pushed to the remote server)
+1. Your changes can merge without problems (if not please rebase if you're the
+   only one working on your feature branch, otherwise, merge `master`)
 1. Does not break any existing functionality
 1. Fixes one specific issue or implements one specific feature (do not combine
    things, send separate merge requests if needed)
@@ -352,7 +343,10 @@ description area. Copy-paste it to retain the markdown format.
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
       refactoring modifications may leave style non-compliant.
-1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.), they should conform to our [Licensing guidelines][license-finder-doc]. See the instructions in that document for help if your MR fails the "license-finder" test with a "Dependencies that need approval" error.
+1. If the merge request adds any new libraries (gems, JavaScript libraries,
+   etc.), they should conform to our [Licensing guidelines][license-finder-doc].
+   See the instructions in that document for help if your MR fails the
+   "license-finder" test with a "Dependencies that need approval" error.
 
 ## Changes for Stable Releases
 
@@ -468,7 +462,6 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests
 [accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Accepting+Merge+Requests
 [gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
-[github-mr-tracker]: https://github.com/gitlabhq/gitlabhq/pulls
 [gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
 [git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
 [closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed

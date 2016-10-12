@@ -40,10 +40,10 @@
       .user-info
         .cover-title
           = @user.name
-          %span.handle
-            @#{@user.username}
 
         .cover-desc.member-date
+          %span.middle-dot-divider
+            @#{@user.username}
           %span.middle-dot-divider
             Member since #{@user.created_at.to_s(:medium)}
 
@@ -82,7 +82,7 @@
 
     %ul.nav-links.center.user-profile-nav
       %li.js-activity-tab
-        = link_to user_calendar_activities_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
+        = link_to user_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
           Activity
       %li.js-groups-tab
         = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do

@@ -68,8 +68,10 @@ class Event < ActiveRecord::Base
       true
     elsif issue? || issue_note?
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
+    elsif merge_request? || merge_request_note?
+      Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
     else
-      ((merge_request? || note?) && target.present?) || milestone?
+      milestone?
     end
   end
 
@@ -280,6 +282,10 @@ class Event < ActiveRecord::Base
     note? && target && target.for_issue?
   end
 
+  def merge_request_note?
+    note? && target && target.for_merge_request?
+  end
+
   def project_snippet_note?
     target.for_snippet?
   end
@@ -335,7 +341,7 @@ class Event < ActiveRecord::Base
     # update the project. Only one query should actually perform the update,
     # hence we add the extra WHERE clause for last_activity_at.
     Project.unscoped.where(id: project_id).
-      where('last_activity_at > ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
+      where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
       update_all(last_activity_at: created_at)
   end
 

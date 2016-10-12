@@ -229,8 +229,11 @@
 
       .fa {
         color: $table-text-gray;
-        margin-right: 6px;
         font-size: 14px;
+      }
+
+      svg, .fa {
+        margin-right: 0;
       }
     }
 
@@ -272,18 +275,8 @@
 .toggle-pipeline-btn {
   background-color: $gray-dark;
 
-  .caret {
-    border-top: none;
-    border-bottom: 4px solid;
-  }
-
   &.graph-collapsed {
     background-color: $white-light;
-
-    .caret {
-      border-bottom: none;
-      border-top: 4px solid;
-    }
   }
 }
 
@@ -310,16 +303,41 @@
 .stage-column {
   display: inline-block;
   vertical-align: top;
-  margin-right: 65px;
+
+  &:not(:last-child) {
+    margin-right: 44px;
+  }
+
+  &.left-margin {
+    &:not(:first-child) {
+      margin-left: 44px;
+
+      .left-connector {
+        &::before {
+          content: '';
+          position: absolute;
+          top: 48%;
+          left: -48px;
+          border-top: 2px solid $border-color;
+          width: 48px;
+          height: 1px;
+        }
+      }
+    }
+  }
+
+  &.no-margin {
+    margin: 0;
+  }
 
   li {
     list-style: none;
   }
 
   .stage-name {
-    margin-bottom: 15px;
+    margin: 0 0 15px 10px;
     font-weight: bold;
-    width: 150px;
+    width: 176px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -328,17 +346,23 @@
   .build {
     border: 1px solid $border-color;
     position: relative;
-    padding: 6px 10px;
+    padding: 7px 10px 8px;
     border-radius: 30px;
-    width: 150px;
+    width: 186px;
     margin-bottom: 10px;
 
+    &:hover {
+      background-color: $gray-lighter;
+      .dropdown-menu-toggle {
+        background-color: transparent;
+      }
+    }
+
     &.playable {
-      background-color: $gray-light;
 
       svg {
-        height: 12px;
-        width: 12px;
+        height: 13px;
+        width: 20px;
         position: relative;
         top: 1px;
 
@@ -349,10 +373,20 @@
     }
 
     .build-content {
-      width: 130px;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      width: 164px;
+
+      .ci-status-icon {
+        svg {
+          height: 20px;
+          width: 20px;
+        }
+      }
 
       .ci-status-text {
-        width: 110px;
+        width: 135px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -363,44 +397,53 @@
       }
 
       a {
-        color: $layout-link-gray;
+        color: $gl-text-color-light;
         text-decoration: none;
-
-        &:hover {
-          .ci-status-text {
-            text-decoration: underline;
-          }
-        }
       }
 
       .dropdown-menu-toggle {
         border: none;
         width: auto;
         padding: 0;
-        color: $layout-link-gray;
+        color: $gl-text-color-light;
+        flex-grow: 1;
 
         .ci-status-text {
-          width: 80px;
+          max-width: 112px;
+          width: auto;
         }
       }
 
       .grouped-pipeline-dropdown {
         padding: 8px 0;
-        width: 200px;
+        width: 186px;
         left: auto;
-        right: -214px;
+        right: -197px;
         top: -9px;
         max-height: 245px;
         overflow-y: scroll;
 
-        a:hover {
-          .ci-status-text {
-            text-decoration: none;
+        a {
+          color: $gl-text-color;
+          padding: 7px 8px 8px;
+
+          &:hover {
+            background-color: $blue-light-transparent;
+            border-radius: 3px;
+
+            .ci-status-text {
+              text-decoration: none;
+            }
           }
         }
 
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+
         .ci-status-text {
-          width: 145px;
+          width: 112px;
         }
 
         .arrow {
@@ -433,9 +476,10 @@
       }
 
       .badge {
-        background-color: $gray-dark;
-        color: $layout-link-gray;
+        background-color: $gray-darker;
+        color: $gl-text-color-light;
         font-weight: normal;
+        margin-left: $btn-xs-side-margin;
       }
     }
 
@@ -449,10 +493,10 @@
       &::after {
         content: '';
         position: absolute;
-        top: 50%;
-        right: -69px;
+        top: 48%;
+        right: -48px;
         border-top: 2px solid $border-color;
-        width: 69px;
+        width: 48px;
         height: 1px;
       }
     }
@@ -461,25 +505,25 @@
     &:not(:first-child) {
       &::after, &::before {
         content: '';
-        top: -47px;
+        top: -49px;
         position: absolute;
         border-bottom: 2px solid $border-color;
-        width: 20px;
-        height: 65px;
+        width: 25px;
+        height: 69px;
       }
 
       // Right connecting curves
       &::after {
-        right: -20px;
+        right: -25px;
         border-right: 2px solid $border-color;
-        border-radius: 0 0 15px;
+        border-radius: 0 0 20px;
       }
 
       // Left connecting curves
       &::before {
-        left: -20px;
+        left: -25px;
         border-left: 2px solid $border-color;
-        border-radius: 0 0 0 15px;
+        border-radius: 0 0 0 20px;
       }
     }
 
@@ -487,7 +531,7 @@
     &:nth-child(2) {
       &::after, &::before {
         height: 29px;
-        top: -10px;
+        top: -9px;
       }
       .curve {
         display: block;
@@ -545,20 +589,20 @@
       width: 21px;
       height: 25px;
       position: absolute;
-      top: -29px;
+      top: -32px;
       border-top: 2px solid $border-color;
     }
 
     &::after {
-      left: -39px;
+      left: -44px;
       border-right: 2px solid $border-color;
-      border-radius: 0 15px;
+      border-radius: 0 20px;
     }
 
     &::before {
-      right: -39px;
+      right: -44px;
       border-left: 2px solid $border-color;
-      border-radius: 15px 0 0;
+      border-radius: 20px 0 0;
     }
   }
 }

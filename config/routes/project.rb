@@ -159,7 +159,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         get(
           '/commits/*id',
           to: 'commits#show',
-          constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
+          constraints: { id: /.+/, format: false },
           as: :commits
         )
       end
@@ -277,6 +277,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           post :remove_wip
           get :diff_for_path
           post :resolve_conflicts
+          post :assign_related_issues
         end
 
         collection do
@@ -285,6 +286,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           get :update_branches
           get :diff_for_path
           post :bulk_update
+          get :new_diffs, path: 'new/diffs'
         end
 
         resources :discussions, only: [], constraints: { id: /\h{40}/ } do
@@ -424,7 +426,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
               post :generate
             end
 
-            resources :issues, only: [:index]
+            resources :issues, only: [:index, :create]
           end
         end
       end

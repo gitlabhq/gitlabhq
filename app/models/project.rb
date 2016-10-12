@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include CacheMarkdownField
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -16,6 +17,8 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
+
+  cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
 
@@ -372,19 +375,9 @@ class Project < ActiveRecord::Base
       %r{(?<project>#{name_pattern}/#{name_pattern})}
     end
 
-    def trending(since = 1.month.ago)
-      # By counting in the JOIN we don't expose the GROUP BY to the outer query.
-      # This means that calls such as "any?" and "count" just return a number of
-      # the total count, instead of the counts grouped per project as a Hash.
-      join_body = "INNER JOIN (
-        SELECT project_id, COUNT(*) AS amount
-        FROM notes
-        WHERE created_at >= #{sanitize(since)}
-        AND system IS FALSE
-        GROUP BY project_id
-      ) join_note_counts ON projects.id = join_note_counts.project_id"
-
-      joins(join_body).reorder('join_note_counts.amount DESC')
+    def trending
+      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id').
+        reorder('trending_projects.id ASC')
     end
 
     def cached_count

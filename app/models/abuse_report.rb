@@ -1,4 +1,8 @@
 class AbuseReport < ActiveRecord::Base
+  include CacheMarkdownField
+
+  cache_markdown_field :message, pipeline: :single_line
+
   belongs_to :reporter, class_name: 'User'
   belongs_to :user
 
@@ -6,6 +10,9 @@ class AbuseReport < ActiveRecord::Base
   validates :user, presence: true
   validates :message, presence: true
   validates :user_id, uniqueness: { message: 'has already been reported' }
+
+  # For CacheMarkdownField
+  alias_method :author, :reporter
 
   def remove_user(deleted_by:)
     user.block

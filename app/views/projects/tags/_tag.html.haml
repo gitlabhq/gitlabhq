@@ -30,4 +30,4 @@
     .description.prepend-top-default
       .wiki
         = preserve do
-          = markdown release.description
+          = markdown_field(release, :description)

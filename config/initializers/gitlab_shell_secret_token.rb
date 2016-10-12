@@ -1,1 +1,1 @@
-Gitlab::Shell.new.generate_and_link_secret_token
+Gitlab::Shell.ensure_secret_token!

@@ -33,6 +33,6 @@
       .description
         .wiki
           = preserve do
-            = markdown @release.description
+            = markdown_field(@release, :description)
     - else
       This tag has no release notes.

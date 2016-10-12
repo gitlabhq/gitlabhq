@@ -31,6 +31,8 @@ project.
 ## Seeing build status
 
 Clicking on a pipeline will show the builds that were run for that pipeline.
+Clicking on an individual build will show you its build trace, and allow you to
+cancel the build, retry it,  or erase the build trace.
 
 ## Badges
 
