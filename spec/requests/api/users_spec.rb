@@ -913,4 +913,58 @@ describe API::API, api: true  do
       expect(response).to have_http_status(404)
     end
   end
+
+  describe 'GET /user/:id/events' do
+    let(:user) { create(:user) }
+    let(:project) { create(:empty_project) }
+    let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
+
+    before do
+      project.add_user(user, :developer)
+      EventCreateService.new.leave_note(note, user)
+    end
+
+    context "as a user than cannot see the event's project" do
+      it 'returns no events' do
+        other_user = create(:user)
+
+        get api("/users/#{user.id}/events", other_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context "as a user than can see the event's project" do
+      it_behaves_like 'a paginated resources' do
+        let(:request) { get api("/users/#{user.id}/events", user) }
+      end
+
+      context 'joined event' do
+        it 'returns the "joined" event' do
+          get api("/users/#{user.id}/events", user)
+
+          comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
+
+          expect(comment_event['project_id'].to_i).to eq(project.id)
+          expect(comment_event['author_username']).to eq(user.username)
+          expect(comment_event['note']['id']).to eq(note.id)
+          expect(comment_event['note']['body']).to eq('What an awesome day!')
+
+          joined_event = json_response.find { |e| e['action_name'] == 'joined' }
+
+          expect(joined_event['project_id'].to_i).to eq(project.id)
+          expect(joined_event['author_username']).to eq(user.username)
+          expect(joined_event['author']['name']).to eq(user.name)
+        end
+      end
+    end
+
+    it 'returns a 404 error if not found' do
+      get api('/users/42/events', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
 end
