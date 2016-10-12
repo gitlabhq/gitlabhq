@@ -296,10 +296,9 @@
     };
 
     Dispatcher.prototype.initFieldErrors = function() {
-      var flaggedForms = document.querySelectorAll('.show-gl-field-errors');
-      return [...flaggedForms].forEach(function(form) {
-          new gl.GlFieldErrors(form);
-        });
+      $('.show-gl-field-errors').each((i, form) => {
+        new gl.GlFieldErrors(form);
+      });
     };
 
     return Dispatcher;
