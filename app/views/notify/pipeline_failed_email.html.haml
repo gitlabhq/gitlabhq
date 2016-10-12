@@ -83,7 +83,7 @@
                                       %a.muted{href: user_url(@project.namespace.owner), style: "color:#333333;text-decoration:none;"}
                                         = @project.namespace.owner.name
                                     \/
-                                    %a.muted{href: namespace_project_url(@project.namespace, @project), style: "color:#333333;text-decoration:none;"}
+                                    %a.muted{href: project_url(@project), style: "color:#333333;text-decoration:none;"}
                                       = @project.name
                                 %tr
                                   %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;"} Branch
@@ -109,7 +109,7 @@
                                               = @pipeline.short_sha
                                             - if @merge_request
                                               in
-                                              %a{href: namespace_project_merge_request_url(@project.namespace, @project, @merge_request), style: "color:#3084bb;text-decoration:none;"}
+                                              %a{href: merge_request_url(@merge_request), style: "color:#3084bb;text-decoration:none;"}
                                                 = @merge_request.to_reference
                                     .commit{style: "color:#5c5c5c;font-weight:300;"}
                                       = @pipeline.git_commit_message.truncate(50)

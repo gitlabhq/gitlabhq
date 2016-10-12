@@ -1,9 +1,9 @@
 Your pipeline has failed.
 
-Project: <%= @project.name %> ( <%= namespace_project_url(@project.namespace, @project) %> )
+Project: <%= @project.name %> ( <%= project_url(@project) %> )
 Branch: <%= @pipeline.ref %> ( <%= namespace_project_commits_url(@project.namespace, @project, @pipeline.ref) %> )
 <% if @merge_request -%>
-Merge Request: <%= @merge_request.to_reference %> ( <%= namespace_project_merge_request_url(@project.namespace, @project, @merge_request) %> )
+Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
 <% end -%>
 
 Commit: <%= @pipeline.short_sha %> ( <%= namespace_project_commit_url(@project.namespace, @project, @pipeline.sha) %> )
