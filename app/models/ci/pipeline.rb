@@ -3,6 +3,7 @@ module Ci
     extend Ci::Model
     include HasStatus
     include Importable
+    include AfterCommitQueue
 
     self.table_name = 'ci_commits'
 
@@ -71,7 +72,7 @@ module Ci
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
-        PipelineSuccessWorker.perform_async(pipeline.id)
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
       end
 
       after_transition do |pipeline, transition|
