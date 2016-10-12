@@ -76,12 +76,10 @@
                                 %tr
                                   %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;"} Project
                                   %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;"}
-                                    - if @project.group
-                                      %a.muted{href: group_url(@project.group), style: "color:#333333;text-decoration:none;"}
-                                        = @project.group.name
-                                    - else
-                                      %a.muted{href: user_url(@project.namespace.owner), style: "color:#333333;text-decoration:none;"}
-                                        = @project.namespace.owner.name
+                                    - namespace_name = @project.group ? @project.group.name : @project.namespace.owner.name
+                                    - namespace_url = @project.group ? group_url(@project.group) : user_url(@project.namespace.owner)
+                                    %a.muted{href: namespace_url, style: "color:#333333;text-decoration:none;"}
+                                      = namespace_name
                                     \/
                                     %a.muted{href: project_url(@project), style: "color:#333333;text-decoration:none;"}
                                       = @project.name
