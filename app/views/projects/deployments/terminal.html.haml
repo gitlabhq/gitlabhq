@@ -15,4 +15,5 @@
       Environment:
       %a{href: '#'} add information
 
-    #terminal{data:{project_path: "#{project_path(@project)}/deployments/#{@deployment.id}/terminal_websocket"}}
+
+    #terminal{data:{project_path: "#{terminal_namespace_project_deployment_path(@project.namespace, @project, @deployment)}_websocket"}}
