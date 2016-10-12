@@ -128,22 +128,21 @@ class HipchatService < Service
   end
 
   def markdown(text, options = {})
-    if text
-      context = {
-        project: project,
-        pipeline: :email
-      }
+    return "" unless text
 
-      Banzai.render(text, context)
+    context = {
+      project: project,
+      pipeline: :email
+    }
 
-      context.merge!(options)
+    Banzai.render(text, context)
 
-      html = Banzai.render(text, context)
-      html = Banzai.post_process(html, context)
-      sanitize html, attributes: %w(href title alt)
-    else
-      ""
-    end
+    context.merge!(options)
+
+    html = Banzai.render(text, context)
+    html = Banzai.post_process(html, context)
+
+    sanitize html, attributes: %w(href title alt)
   end
 
   def create_issue_message(data)
