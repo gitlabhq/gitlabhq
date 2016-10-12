@@ -15,7 +15,11 @@ module Mattermost
       
       if manual_action
         new_build = manual_action.play(current_user)
-        generate_response(new_build)
+
+        {
+          response_type: :in_channel,
+          text: "Action '#{action_name}' started on '#{environment_name}' you can [follow the progress](#{link(new_build)})."
+        }
       else
         {
           response_type: :ephemeral,
@@ -27,10 +31,6 @@ module Mattermost
     private
 
     def single_resource(build)
-      {
-        response_type: :in_channel,
-        text: "Action '#{action_name}' started on '#{environment_name}' you can [follow the progress](#{link(new_build)})."
-      }
     end
 
     def link(build)
