@@ -7,13 +7,13 @@ describe CompareService, services: true do
 
   describe '#execute' do
     context 'compare with base, like feature...fix' do
-      subject { service.execute(project, 'feature', project, 'fix', false) }
+      subject { service.execute(project, 'feature', project, 'fix', straight: false) }
 
       it { expect(subject.diffs.size).to eq(1) }
     end
 
     context 'straight compare, like feature..fix' do
-      subject { service.execute(project, 'feature', project, 'fix', true) }
+      subject { service.execute(project, 'feature', project, 'fix', straight: true) }
 
       it { expect(subject.diffs.size).to eq(3) }
     end
