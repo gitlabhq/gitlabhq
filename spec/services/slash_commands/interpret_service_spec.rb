@@ -86,12 +86,40 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'multiple label command' do
+      it 'fetches label ids and populates add_label_ids if content contains multiple /label' do
+        bug # populate the label
+        inprogress # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(add_label_ids: [inprogress.id, bug.id])
+      end
+    end
+
+    shared_examples 'multiple label with same argument' do
+      it 'prevents duplicate label ids and populates add_label_ids if content contains multiple /label' do
+        inprogress # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(add_label_ids: [inprogress.id])
+      end
+    end
+
     shared_examples 'unlabel command' do
       it 'fetches label ids and populates remove_label_ids if content contains /unlabel' do
         issuable.update(label_ids: [inprogress.id]) # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(remove_label_ids: [inprogress.id])
+      end
+    end
+
+    shared_examples 'multiple unlabel command' do
+      it 'fetches label ids and populates remove_label_ids if content contains  mutiple /unlabel' do
+        issuable.update(label_ids: [inprogress.id, bug.id]) # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(remove_label_ids: [inprogress.id, bug.id])
       end
     end
 
@@ -285,6 +313,16 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'multiple label command' do
+      let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{bug.title}) }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'multiple label with same argument' do
+      let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
+      let(:issuable) { issue }
+    end	
+
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
       let(:issuable) { issue }
@@ -293,6 +331,11 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
       let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'multiple unlabel command' do
+      let(:content) { %(/unlabel ~"#{inprogress.title}" \n/unlabel ~#{bug.title}) }
+      let(:issuable) { issue }
     end
 
     it_behaves_like 'unlabel command with no argument' do

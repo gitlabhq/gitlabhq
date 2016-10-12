@@ -24,6 +24,7 @@
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [University](university/README.md) Learn Git and GitLab through videos and courses.
+- [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 
 ## Administrator documentation
 

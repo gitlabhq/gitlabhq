@@ -23,8 +23,8 @@
     .issuable-actions
       .clearfix.issue-btn-group.dropdown
         %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
-          = icon('caret-down')
           Options
+          = icon('caret-down')
         .dropdown-menu.dropdown-menu-align-right.hidden-lg
           %ul
             - if can?(current_user, :create_issue, @project)

@@ -291,12 +291,12 @@ class TodoService
   end
 
   def reject_users_without_access(users, project, target)
-    if target.is_a?(Note) && target.for_issue?
+    if target.is_a?(Note) && (target.for_issue? || target.for_merge_request?)
       target = target.noteable
     end
 
-    if target.is_a?(Issue)
-      select_users(users, :read_issue, target)
+    if target.is_a?(Issuable)
+      select_users(users, :"read_#{target.to_ability_name}", target)
     else
       select_users(users, :read_project, project)
     end

@@ -1,0 +1,49 @@
+require 'spec_helper'
+
+describe MergeRequests::AssignIssuesService, services: true do
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :public) }
+  let(:issue) { create(:issue, project: project) }
+  let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue.to_reference}") }
+  let(:service) { described_class.new(project, user, merge_request: merge_request) }
+
+  before do
+    project.team << [user, :developer]
+  end
+
+  it 'finds unassigned issues fixed in merge request' do
+    expect(service.assignable_issues.map(&:id)).to include(issue.id)
+  end
+
+  it 'ignores issues already assigned to any user' do
+    issue.update!(assignee: create(:user))
+
+    expect(service.assignable_issues).to be_empty
+  end
+
+  it 'ignores issues the user cannot update assignee on' do
+    project.team.truncate
+
+    expect(service.assignable_issues).to be_empty
+  end
+
+  it 'ignores all issues unless current_user is merge_request.author' do
+    merge_request.update!(author: create(:user))
+
+    expect(service.assignable_issues).to be_empty
+  end
+
+  it 'accepts precomputed data for closes_issues' do
+    issue2 = create(:issue, project: project)
+    service2 = described_class.new(project,
+                                   user,
+                                   merge_request: merge_request,
+                                   closes_issues: [issue, issue2])
+
+    expect(service2.assignable_issues.count).to eq 2
+  end
+
+  it 'assigns these to the merge request owner' do
+    expect { service.execute }.to change { issue.reload.assignee }.to(user)
+  end
+end

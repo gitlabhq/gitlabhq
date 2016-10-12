@@ -43,7 +43,6 @@ class ProjectPolicy < BasePolicy
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member
-    can! :read_merge_request
     can! :read_note
     can! :create_project
     can! :create_issue
@@ -66,6 +65,7 @@ class ProjectPolicy < BasePolicy
     can! :read_pipeline
     can! :read_environment
     can! :read_deployment
+    can! :read_merge_request
   end
 
   # Permissions given when an user is team member of a project
@@ -126,6 +126,7 @@ class ProjectPolicy < BasePolicy
     can! :read_container_image
     can! :build_download_code
     can! :build_read_container_image
+    can! :read_merge_request
   end
 
   def owner_access!

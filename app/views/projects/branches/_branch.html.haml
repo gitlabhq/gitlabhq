@@ -36,8 +36,8 @@
 
       = render 'projects/buttons/download', project: @project, ref: branch.name
 
-      - if can_remove_branch?(@project, branch.name)
-        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
+      - if can?(current_user, :push_code, @project)
+        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: "btn btn-remove remove-row has-tooltip #{can_remove_branch?(@project, branch.name) ? '' : 'disabled'}", title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
           = icon("trash-o")
 
     - if branch.name != @repository.root_ref

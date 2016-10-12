@@ -19,7 +19,7 @@ describe SearchHelper do
       expect(subject.filename).to eq('CHANGELOG')
       expect(subject.basename).to eq('CHANGELOG')
       expect(subject.ref).to eq('master')
-      expect(subject.startline).to eq(186)
+      expect(subject.startline).to eq(188)
       expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
     end
 
@@ -64,7 +64,7 @@ describe SearchHelper do
 
       parsed_result = helper.parse_search_result_from_elastic(result)
 
-      expect(parsed_result.ref). to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      expect(parsed_result.ref). to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
       expect(parsed_result.filename).to eq('files/ruby/popen.rb')
       expect(parsed_result.startline).to eq(2)
       expect(parsed_result.data).to include("Popen")

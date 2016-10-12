@@ -65,19 +65,6 @@
 
   - if @merge_request.errors.any?
     = form_errors(@merge_request)
-  - elsif @merge_request.source_branch.present? && @merge_request.target_branch.present?
-    .light-well.append-bottom-default
-      .center
-        %h4
-          There isn't anything to merge.
-        %p.slead
-          - if @merge_request.source_branch == @merge_request.target_branch
-            You'll need to use different branch names to get a valid comparison.
-          - else
-            %span.label-branch #{@merge_request.source_branch}
-            and
-            %span.label-branch #{@merge_request.target_branch}
-            are the same.
   = f.submit 'Compare branches and continue', class: "btn btn-new mr-compare-btn"
 
 :javascript

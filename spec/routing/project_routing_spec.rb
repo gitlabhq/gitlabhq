@@ -337,7 +337,7 @@ describe Projects::CommitsController, 'routing' do
   end
 
   it 'to #show' do
-    expect(get('/gitlab/gitlabhq/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'atom')
+    expect(get('/gitlab/gitlabhq/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
   end
 end
 

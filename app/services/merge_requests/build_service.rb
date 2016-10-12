@@ -4,7 +4,7 @@ module MergeRequests
       merge_request = MergeRequest.new(params)
 
       # Set MR attributes
-      merge_request.can_be_created = false
+      merge_request.can_be_created = true
       merge_request.compare_commits = []
       merge_request.source_project = project unless merge_request.source_project
 
@@ -22,6 +22,12 @@ module MergeRequests
         return build_failed(merge_request, message)
       end
 
+      if merge_request.source_project == merge_request.target_project &&
+         merge_request.target_branch == merge_request.source_branch
+
+        return build_failed(merge_request, 'You must select different branches')
+      end
+
       compare = CompareService.new.execute(
         merge_request.source_project,
         merge_request.source_branch,
@@ -29,17 +35,8 @@ module MergeRequests
         merge_request.target_branch,
       )
 
-      commits = compare.commits
-
-      # At this point we decide if merge request can be created
-      # If we have at least one commit to merge -> creation allowed
-      if commits.present?
-        merge_request.compare_commits = commits
-        merge_request.can_be_created = true
-        merge_request.compare = compare
-      else
-        merge_request.can_be_created = false
-      end
+      merge_request.compare_commits = compare.commits
+      merge_request.compare = compare
 
       set_title_and_description(merge_request)
     end
@@ -93,6 +90,8 @@ module MergeRequests
           merge_request.description = closes_issue
         end
       end
+
+      merge_request.title = merge_request.wip_title if commits.empty?
 
       merge_request
     end

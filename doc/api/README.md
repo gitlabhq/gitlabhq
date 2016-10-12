@@ -356,6 +356,19 @@ follows:
 }
 ```
 
+## Unknown route
+
+When you try to access an API URL that does not exist you will receive 404 Not Found.
+
+```
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+{
+    "error": "404 Not Found"
+}
+```
+
+
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular
