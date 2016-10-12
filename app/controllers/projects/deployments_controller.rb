@@ -11,6 +11,8 @@ class Projects::DeploymentsController < Projects::ApplicationController
   def terminal_websocket_authorize
     Gitlab::Workhorse.verify_api_request!(request.headers)
 
+    render text: 'Not found', status: 404 unless deployment.deployable
+
     variables = Hash[*%w[
       openshift_project CI_PROJECT_NAME
       openshift_app APP
@@ -32,6 +34,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   protected
 
   def deployment
-    @deployment = project.deployments.find(params[:id].to_i)
+    @deployment ||= project.deployments.find(params[:id].to_i)
+    @deployment || render_404
   end
 end

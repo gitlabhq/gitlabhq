@@ -20,7 +20,7 @@
       const wsProtocol = protocol === 'https:' ? 'wss://' : 'ws://';
       const path = this.container.dataset.projectPath;
 
-      this.socketUrl = `${wsProtocol}${hostname}:${port}${path}/deployments/4/terminal_websocket`
+      this.socketUrl = `${wsProtocol}${hostname}:${port}${path}`
     }
 
     createTerminal() {
