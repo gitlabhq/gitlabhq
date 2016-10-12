@@ -273,6 +273,8 @@ group :development do
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
+
+  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :development, :test do
