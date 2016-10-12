@@ -21,6 +21,7 @@
       shortcut_handler = null;
       switch (page) {
         case 'projects:boards:show':
+        case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:merge_requests:index':
