@@ -286,6 +286,11 @@ module Issuable
     false
   end
 
+  def assignee_or_author?(user)
+    # We're comparing IDs here so we don't need to load any associations.
+    author_id == user.id || assignee_id == user.id
+  end
+
   def record_metrics
     metrics = self.metrics || create_metrics
     metrics.record!
