@@ -133,7 +133,7 @@ describe 'Dashboard Todos', feature: true do
 
         it 'shows "All done" message!' do
           expect(page).to have_content 'To do 0'
-          expect(page).to have_content "Good job! Looks like you don't have any todos left."
+          expect(page).to have_content "You're all done!"
           expect(page).not_to have_selector('.gl-pagination')
         end
       end
