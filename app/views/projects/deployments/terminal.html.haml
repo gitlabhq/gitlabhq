@@ -1,19 +1,25 @@
-- if current_user
-  - @no_container = true
-  - page_title "Deployment Terminal"
-  = render "projects/pipelines/head"
+- @no_container = true
+- page_title "Deployment", "##{@deployment.iid}"
+= render "projects/pipelines/head"
 
-  = content_for :head do
-    = stylesheet_link_tag "xterm/xterm"
+= content_for :head do
+  = stylesheet_link_tag "xterm/xterm"
 
-  - content_for :page_specific_javascripts do
-    = page_specific_javascript_tag("terminal/terminal_bundle.js")
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag("terminal/terminal_bundle.js")
+
+%div{ class: container_class }
+  .top-area
+    .row
+      .col-sm-6
+        %h3.page-title
+          Deployment
+          = "##{@deployment.iid}"
+
+      .col-sm-6
+        .nav-controls
+          = render 'projects/deployments/actions', deployment: @deployment, allow_rollback: true,
+            show_actions: true, show_external_url: true, show_actions: true, allow_close: true
 
   .terminal-container{class: container_class}
-
-    %p.content-block
-      Environment:
-      %a{href: '#'} add information
-
-
     #terminal{data:{project_path: "#{terminal_namespace_project_deployment_path(@project.namespace, @project, @deployment)}_websocket"}}

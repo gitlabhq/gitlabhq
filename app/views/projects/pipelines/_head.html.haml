@@ -16,7 +16,7 @@
                 Builds
 
         - if project_nav_tab? :environments
-          = nav_link(controller: %w(environments)) do
+          = nav_link(controller: %w(environments deployments)) do
             = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
               %span
                 Environments
