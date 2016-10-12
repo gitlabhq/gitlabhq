@@ -34,7 +34,7 @@
             - if params[:weight]
               = hidden_field_tag(:weight, params[:weight])
             = dropdown_tag("Weight", options: { title: "Filter by weight", toggle_class: 'js-weight-select js-filter-submit', dropdown_class: "dropdown-menu-selectable",
-              placeholder: "Search weight", data: { field_name: "weight" } }) do
+              placeholder: "Search weight", data: { field_name: "weight" , default_label: "Weight" } }) do
               %ul
                 - Issue.weight_options.each do |weight|
                   %li
