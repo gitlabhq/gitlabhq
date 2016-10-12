@@ -262,6 +262,8 @@ group :development do
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
+
+  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :development, :test do
@@ -341,7 +343,7 @@ gem 'oauth2', '~> 1.2.0'
 gem 'paranoia', '~> 2.0'
 
 # Health check
-gem 'health_check', '~> 2.1.0'
+gem 'health_check', '~> 2.2.0'
 
 # System information
 gem 'vmstat', '~> 2.2'
