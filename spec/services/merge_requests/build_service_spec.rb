@@ -52,11 +52,27 @@ describe MergeRequests::BuildService, services: true do
       end
     end
 
-    context 'no commits in the diff' do
-      let(:commits) { [] }
+    context 'same source and target branch' do
+      let(:source_branch) { 'master' }
 
       it 'forbids the merge request from being created' do
         expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds an error message to the merge request' do
+        expect(merge_request.errors).to contain_exactly('You must select different branches')
+      end
+    end
+
+    context 'no commits in the diff' do
+      let(:commits) { [] }
+
+      it 'allows the merge request to be created' do
+        expect(merge_request.can_be_created).to eq(true)
+      end
+
+      it 'adds a WIP prefix to the merge request title' do
+        expect(merge_request.title).to eq('WIP: Feature branch')
       end
     end
 

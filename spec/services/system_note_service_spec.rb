@@ -54,7 +54,7 @@ describe SystemNoteService, services: true do
         it 'adds a message line for each commit' do
           new_commits.each_with_index do |commit, i|
             # Skip the header
-            expect(note_lines[i + 1]).to eq "* #{commit.short_id} - #{commit.title}"
+            expect(HTMLEntities.new.decode(note_lines[i + 1])).to eq "* #{commit.short_id} - #{commit.title}"
           end
         end
       end
@@ -81,7 +81,7 @@ describe SystemNoteService, services: true do
             end
 
             it 'includes a commit count' do
-              expect(summary_line).to end_with " - 2 commits from branch `feature`"
+              expect(summary_line).to end_with " - 26 commits from branch `feature`"
             end
           end
 
@@ -91,7 +91,7 @@ describe SystemNoteService, services: true do
             end
 
             it 'includes a commit count' do
-              expect(summary_line).to end_with " - 2 commits from branch `feature`"
+              expect(summary_line).to end_with " - 26 commits from branch `feature`"
             end
           end
 
@@ -544,7 +544,7 @@ describe SystemNoteService, services: true do
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
     let(:jira_tracker) { project.jira_service }
-    let(:commit)     { project.commit }
+    let(:commit)     { project.repository.commits('master').find { |commit| commit.id == '5937ac0a7beb003549fc5fd26fc247adbce4a52e' } }
 
     context 'in JIRA issue tracker' do
       before do

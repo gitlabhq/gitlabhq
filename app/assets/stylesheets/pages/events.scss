@@ -91,7 +91,7 @@
     float: right;
     border: 1px solid #eee;
     padding: 5px;
-    @include border-radius(5px);
+    border-radius: 5px;
     background: $gray-light;
     margin-left: 10px;
     top: -6px;

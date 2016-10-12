@@ -102,8 +102,9 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns a 404 if invalid ID" do
+    it "returns a 404 for invalid ID" do
       get api("/users/1ASDF", user)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -352,8 +353,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "raises error for invalid ID" do
-      expect{put api("/users/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 if invalid ID" do
+      put api("/users/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
 
     it 'returns 400 error if user does not validate' do
@@ -505,8 +508,9 @@ describe API::API, api: true  do
       end.to change{ user.emails.count }.by(1)
     end
 
-    it "raises error for invalid ID" do
+    it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
+
       expect(response).to have_http_status(400)
     end
   end
@@ -537,9 +541,10 @@ describe API::API, api: true  do
         expect(json_response.first['email']).to eq(email.email)
       end
 
-      it "raises error for invalid ID" do
+      it "returns a 404 for invalid ID" do
         put api("/users/ASDF/emails", admin)
-        expect(response).to have_http_status(405)
+
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -578,8 +583,10 @@ describe API::API, api: true  do
         expect(json_response['message']).to eq('404 Email Not Found')
       end
 
-      it "raises error for invalid ID" do
-        expect{delete api("/users/ASDF/emails/bar", admin) }.to raise_error(ActionController::RoutingError)
+      it "returns a 404 for invalid ID" do
+        delete api("/users/ASDF/emails/bar", admin)
+
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -612,8 +619,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      delete api("/users/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -666,6 +675,7 @@ describe API::API, api: true  do
 
     it "returns 404 Not Found within invalid ID" do
       get api("/user/keys/42", user)
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Not found')
     end
@@ -681,6 +691,7 @@ describe API::API, api: true  do
 
     it "returns 404 for invalid ID" do
       get api("/users/keys/ASDF", admin)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -739,8 +750,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/keys/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      delete api("/users/keys/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -790,6 +803,7 @@ describe API::API, api: true  do
 
     it "returns 404 for invalid ID" do
       get api("/users/emails/ASDF", admin)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -837,8 +851,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/emails/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      delete api("/users/emails/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -903,8 +919,64 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "raises error for invalid ID" do
-      expect{put api("/users/ASDF/block", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      put api("/users/ASDF/block", admin)
+
+      expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'GET /user/:id/events' do
+    let(:user) { create(:user) }
+    let(:project) { create(:empty_project) }
+    let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
+
+    before do
+      project.add_user(user, :developer)
+      EventCreateService.new.leave_note(note, user)
+    end
+
+    context "as a user than cannot see the event's project" do
+      it 'returns no events' do
+        other_user = create(:user)
+
+        get api("/users/#{user.id}/events", other_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context "as a user than can see the event's project" do
+      it_behaves_like 'a paginated resources' do
+        let(:request) { get api("/users/#{user.id}/events", user) }
+      end
+
+      context 'joined event' do
+        it 'returns the "joined" event' do
+          get api("/users/#{user.id}/events", user)
+
+          comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
+
+          expect(comment_event['project_id'].to_i).to eq(project.id)
+          expect(comment_event['author_username']).to eq(user.username)
+          expect(comment_event['note']['id']).to eq(note.id)
+          expect(comment_event['note']['body']).to eq('What an awesome day!')
+
+          joined_event = json_response.find { |e| e['action_name'] == 'joined' }
+
+          expect(joined_event['project_id'].to_i).to eq(project.id)
+          expect(joined_event['author_username']).to eq(user.username)
+          expect(joined_event['author']['name']).to eq(user.name)
+        end
+      end
+    end
+
+    it 'returns a 404 error if not found' do
+      get api('/users/42/events', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
   end
 end

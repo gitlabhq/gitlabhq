@@ -57,7 +57,7 @@ describe EmailsOnPushWorker do
       end
 
       it "sends a mail with the correct subject" do
-        expect(email.subject).to include('Change some files')
+        expect(email.subject).to include('adds bar folder and branch-test text file')
       end
 
       it "mentions force pushing in the body" do
@@ -73,7 +73,7 @@ describe EmailsOnPushWorker do
       before { perform }
 
       it "sends a mail with the correct subject" do
-        expect(email.subject).to include('Change some files')
+        expect(email.subject).to include('adds bar folder and branch-test text file')
       end
 
       it "does not mention force pushing in the body" do
