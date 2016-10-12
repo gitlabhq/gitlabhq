@@ -5,7 +5,7 @@ v 8.13.0 (unreleased)
   - Truncate long labels with ellipsis in labels page
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
-  - Use gitlab-shell v3.6.2 (GIT TRACE logging)
+  - Use gitlab-shell v3.6.6
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
