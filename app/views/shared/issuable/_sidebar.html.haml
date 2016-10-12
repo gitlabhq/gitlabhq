@@ -173,3 +173,4 @@
       new Subscription('.subscription')
       new gl.DueDateSelectors();
       sidebar = new Sidebar();
+      new gl.IssuableResource('#{issuable_json_path(issuable)}', '#{issuable.to_json}');

@@ -1,120 +1,60 @@
 // Creates the variables for setting up GFM auto-completion
-(function() {
+(() => {
   if (window.GitLab == null) {
     window.GitLab = {};
   }
 
-  GitLab.GfmAutoComplete = {
-    dataLoading: false,
-    dataLoaded: false,
-    cachedData: {},
-    dataSource: '',
-    // Emoji
-    Emoji: {
-      template: '<li>${name} <img alt="${name}" height="20" src="${path}" width="20" /></li>'
-    },
-    // Team Members
-    Members: {
-      template: '<li>${username} <small>${title}</small></li>'
-    },
-    Labels: {
-      template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
-    },
-    // Issues and MergeRequests
-    Issues: {
-      template: '<li><small>${id}</small> ${title}</li>'
-    },
-    // Milestones
-    Milestones: {
-      template: '<li>${title}</li>'
-    },
-    Loading: {
-      template: '<li><i class="fa fa-refresh fa-spin"></i> Loading...</li>'
-    },
-    DefaultOptions: {
-      sorter: function(query, items, searchKey) {
-        if ((items[0].name != null) && items[0].name === 'loading') {
-          return items;
-        }
-        return $.fn.atwho["default"].callbacks.sorter(query, items, searchKey);
-      },
-      filter: function(query, data, searchKey) {
-        if (data[0] === 'loading') {
-          return data;
-        }
-        return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
-      },
-      beforeInsert: function(value) {
-        if (!GitLab.GfmAutoComplete.dataLoaded) {
-          return this.at;
-        } else {
-          return value;
-        }
-      }
-    },
-    setup: _.debounce(function(input) {
-      // Add GFM auto-completion to all input fields, that accept GFM input.
-      this.input = input || $('.js-gfm-input');
-      // destroy previous instances
+  class GfmInputor {
+    constructor(elem) {
+      this.gfm = GitLab.GfmAutoComplete;
+      this.elem = $(elem);
+      this.setup();
+    }
+
+    setup() {
       this.destroyAtWho();
-      // set up instances
       this.setupAtWho();
+      this.loadData();
+    }
 
-      if (this.dataSource && !this.dataLoading && !this.cachedData) {
-        this.dataLoading = true;
-        return this.fetchData(this.dataSource)
-          .done((data) => {
-            this.dataLoading = false;
-            this.loadData(data);
-          });
-        };
-
-      if (this.cachedData != null) {
-        return this.loadData(this.cachedData);
-      }
-    }, 1000),
-    setupAtWho: function() {
-      // Emoji
-      this.input.atwho({
+    setupAtWho() {
+     // Emoji
+      this.elem.atwho({
         at: ':',
-        displayTpl: (function(_this) {
-          return function(value) {
-            if (value.path != null) {
-              return _this.Emoji.template;
-            } else {
-              return _this.Loading.template;
-            }
-          };
-        })(this),
+        displayTpl: (value) => {
+          if (value.path != null) {
+            return this.gfm.Emoji.template;
+          } else {
+            return this.gfm.Loading.template;
+          }
+        },
         insertTpl: ':${name}:',
         data: ['loading'],
         callbacks: {
-          sorter: this.DefaultOptions.sorter,
-          filter: this.DefaultOptions.filter,
-          beforeInsert: this.DefaultOptions.beforeInsert
+          sorter: this.gfm.DefaultOptions.sorter,
+          filter: this.gfm.DefaultOptions.filter,
+          beforeInsert: this.gfm.DefaultOptions.beforeInsert
         }
       });
       // Team Members
-      this.input.atwho({
+      this.elem.atwho({
         at: '@',
-        displayTpl: (function(_this) {
-          return function(value) {
-            if (value.username != null) {
-              return _this.Members.template;
-            } else {
-              return _this.Loading.template;
-            }
-          };
-        })(this),
+        displayTpl: (value) => {
+          if (value.username != null) {
+            return this.gfm.Members.template;
+          } else {
+            return this.gfm.Loading.template;
+          }
+        },
         insertTpl: '${atwho-at}${username}',
         searchKey: 'search',
         data: ['loading'],
         callbacks: {
-          sorter: this.DefaultOptions.sorter,
-          filter: this.DefaultOptions.filter,
-          beforeInsert: this.DefaultOptions.beforeInsert,
-          beforeSave: function(members) {
-            return $.map(members, function(m) {
+          sorter: this.gfm.DefaultOptions.sorter,
+          filter: this.gfm.DefaultOptions.filter,
+          beforeInsert: this.gfm.DefaultOptions.beforeInsert,
+          beforeSave: (members) => {
+            return $.map(members, (m) => {
               var title;
               if (m.username == null) {
                 return m;
@@ -132,27 +72,25 @@
           }
         }
       });
-      this.input.atwho({
+      this.elem.atwho({
         at: '#',
         alias: 'issues',
         searchKey: 'search',
-        displayTpl: (function(_this) {
-          return function(value) {
-            if (value.title != null) {
-              return _this.Issues.template;
-            } else {
-              return _this.Loading.template;
-            }
-          };
-        })(this),
+        displayTpl: (value) => {
+          if (value.title != null) {
+            return this.gfm.Issues.template;
+          } else {
+            return this.gfm.Loading.template;
+          }
+        },
         data: ['loading'],
         insertTpl: '${atwho-at}${id}',
         callbacks: {
-          sorter: this.DefaultOptions.sorter,
-          filter: this.DefaultOptions.filter,
-          beforeInsert: this.DefaultOptions.beforeInsert,
-          beforeSave: function(issues) {
-            return $.map(issues, function(i) {
+          sorter: this.gfm.DefaultOptions.sorter,
+          filter: this.gfm.DefaultOptions.filter,
+          beforeInsert: this.gfm.DefaultOptions.beforeInsert,
+          beforeSave: (issues) => {
+            return $.map(issues, (i) => {
               if (i.title == null) {
                 return i;
               }
@@ -165,24 +103,22 @@
           }
         }
       });
-      this.input.atwho({
+      this.elem.atwho({
         at: '%',
         alias: 'milestones',
         searchKey: 'search',
-        displayTpl: (function(_this) {
-          return function(value) {
-            if (value.title != null) {
-              return _this.Milestones.template;
-            } else {
-              return _this.Loading.template;
-            }
-          };
-        })(this),
+        displayTpl: (value) => {
+          if (value.title != null) {
+            return this.gfm.Milestones.template;
+          } else {
+            return this.gfm.Loading.template;
+          }
+        },
         insertTpl: '${atwho-at}"${title}"',
         data: ['loading'],
         callbacks: {
-          beforeSave: function(milestones) {
-            return $.map(milestones, function(m) {
+          beforeSave: (milestones) => {
+            return $.map(milestones, (m) => {
               if (m.title == null) {
                 return m;
               }
@@ -195,27 +131,25 @@
           }
         }
       });
-      this.input.atwho({
+      this.elem.atwho({
         at: '!',
         alias: 'mergerequests',
         searchKey: 'search',
-        displayTpl: (function(_this) {
-          return function(value) {
-            if (value.title != null) {
-              return _this.Issues.template;
-            } else {
-              return _this.Loading.template;
-            }
-          };
-        })(this),
+        displayTpl: (value) => {
+          if (value.title != null) {
+            return this.gfm.Issues.template;
+          } else {
+            return this.gfm.Loading.template;
+          }
+        },
         data: ['loading'],
         insertTpl: '${atwho-at}${id}',
         callbacks: {
-          sorter: this.DefaultOptions.sorter,
-          filter: this.DefaultOptions.filter,
-          beforeInsert: this.DefaultOptions.beforeInsert,
-          beforeSave: function(merges) {
-            return $.map(merges, function(m) {
+          sorter: this.gfm.DefaultOptions.sorter,
+          filter: this.gfm.DefaultOptions.filter,
+          beforeInsert: this.gfm.DefaultOptions.beforeInsert,
+          beforeSave: (merges) => {
+            return $.map(merges, (m) => {
               if (m.title == null) {
                 return m;
               }
@@ -228,23 +162,23 @@
           }
         }
       });
-      this.input.atwho({
+      this.elem.atwho({
         at: '~',
         alias: 'labels',
         searchKey: 'search',
-        displayTpl: this.Labels.template,
+        displayTpl: this.gfm.Labels.template,
         insertTpl: '${atwho-at}${title}',
         callbacks: {
-          beforeSave: function(merges) {
+          beforeSave: (merges) => {
             var sanitizeLabelTitle;
-            sanitizeLabelTitle = function(title) {
+            sanitizeLabelTitle = (title) => {
               if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
                 return "\"" + (sanitize(title)) + "\"";
               } else {
                 return sanitize(title);
               }
             };
-            return $.map(merges, function(m) {
+            return $.map(merges, (m) => {
               return {
                 title: sanitizeLabelTitle(m.title),
                 color: m.color,
@@ -255,11 +189,12 @@
         }
       });
       // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
-      this.input.filter('[data-supports-slash-commands="true"]').atwho({
+      // Can't filter elem tho
+      this.elem.filter('[data-supports-slash-commands="true"]').atwho({
         at: '/',
         alias: 'commands',
         searchKey: 'search',
-        displayTpl: function(value) {
+        displayTpl: (value) => {
           var tpl = '<li>/${name}';
           if (value.aliases.length > 0) {
             tpl += ' <small>(or /<%- aliases.join(", /") %>)</small>';
@@ -273,7 +208,7 @@
           tpl += '</li>';
           return _.template(tpl)(value);
         },
-        insertTpl: function(value) {
+        insertTpl: (value) => {
           var tpl = "/${name} ";
           var reference_prefix = null;
           if (value.params.length > 0) {
@@ -286,11 +221,11 @@
         },
         suffix: '',
         callbacks: {
-          sorter: this.DefaultOptions.sorter,
-          filter: this.DefaultOptions.filter,
-          beforeInsert: this.DefaultOptions.beforeInsert,
-          beforeSave: function(commands) {
-            return $.map(commands, function(c) {
+          sorter: this.gfm.DefaultOptions.sorter,
+          filter: this.gfm.DefaultOptions.filter,
+          beforeInsert: this.gfm.DefaultOptions.beforeInsert,
+          beforeSave: (commands) => {
+            return $.map(commands, (c) => {
               var search = c.name;
               if (c.aliases.length > 0) {
                 search = search + " " + c.aliases.join(" ");
@@ -304,7 +239,7 @@
               };
             });
           },
-          matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
+          matcher: (flag, subtext, should_startWithSpace, acceptSpaceBar) => {
             var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi
             var match = regexp.exec(subtext);
             if (match) {
@@ -316,34 +251,186 @@
         }
       });
       return;
-    },
-    destroyAtWho: function() {
-      return this.input.atwho('destroy');
-    },
-    fetchData: function(dataSource) {
-      return $.getJSON(dataSource);
-    },
-    loadData: function(data) {
-      this.cachedData = data;
-      this.dataLoaded = true;
+    }
+    // inputtor
+    destroyAtWho() {
+      return this.elem.atwho('destroy');
+    }
+
+    loadData() {
+      const data = this.gfm.cachedData;
       // load members
-      this.input.atwho('load', '@', data.members);
+      this.elem.atwho('load', '@', data.members);
       // load issues
-      this.input.atwho('load', 'issues', data.issues);
+      this.elem.atwho('load', 'issues', data.issues);
       // load milestones
-      this.input.atwho('load', 'milestones', data.milestones);
+      this.elem.atwho('load', 'milestones', data.milestones);
       // load merge requests
-      this.input.atwho('load', 'mergerequests', data.mergerequests);
+      this.elem.atwho('load', 'mergerequests', data.mergerequests);
       // load emojis
-      this.input.atwho('load', ':', data.emojis);
+      this.elem.atwho('load', ':', data.emojis);
       // load labels
-      this.input.atwho('load', '~', data.labels);
+      this.elem.atwho('load', '~', data.labels);
       // load commands
-      this.input.atwho('load', '/', data.commands);
+      this.elem.atwho('load', '/', data.commands);
       // This trigger at.js again
       // otherwise we would be stuck with loading until the user types
       return $(':focus').trigger('keyup');
     }
-  };
+  }
+
+/* Implementation of Gfm Pub/Sub
+
+  function myMatcher(val) {
+    return val.indexOf('hello') > -1;
+  }
+
+  function myCallback(val) {
+    console.log(val);
+  }
+
+  GitLab.GfmAutoComplete.subscribe(myMatcher, myCallback);
+
+*/
+let GfmAutoComplete;
+
+  class GfmFactory {
+    constructor() {
+      if (!GfmAutoComplete) {
+        GfmAutoComplete = this;
+        GfmAutoComplete.init();
+      }
+      return GfmAutoComplete;
+    }
+
+    init() {
+      // TODO: at this point, don't need to keep track of inputors. Reconsider storing.
+      this.inputors = [];
+      this.subscribers = [];
+      this.dataLoading = false;
+      this.dataLoaded = false;
+      this.cachedData = {};
+      this.dataSource = '';
+      this.listenForAddSuccess();
+
+      this.Emoji = {
+        template: '<li>${name} <img alt="${name}" height="20" src="${path}" width="20" /></li>'
+      };
+
+      this.Members = {
+        template: '<li>${username} <small>${title}</small></li>'
+      };
+
+      this.Labels = {
+        template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
+      };
+
+      this.Issues = {
+        template: '<li><small>${id}</small> ${title}</li>'
+      };
+
+      this.Milestones = {
+        template: '<li>${title}</li>'
+      };
+
+      this.Loading = {
+        template: '<li><i class="fa fa-refresh fa-spin"></i> Loading...</li>'
+      };
+
+      this.DefaultOptions = {
+        sorter: function(query, items, searchKey) {
+          if ((items[0].name != null) && items[0].name === 'loading') {
+            return items;
+          }
+          return $.fn.atwho["default"].callbacks.sorter(query, items, searchKey);
+        },
+        filter: function(query, data, searchKey) {
+          if (data[0] === 'loading') {
+            return data;
+          }
+          return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
+        },
+        beforeInsert: function(value) {
+          if (!GitLab.GfmAutoComplete.dataLoaded) {
+            return this.at;
+          } else {
+            return value;
+          }
+        }
+      };
+    }
+
+    listenForAddSuccess() {
+      $(document).on('ajax:success', '.gfm-form', this.publish.bind(this));
+    }
+
+    subscribe(matcher, callback) {
+      // TODO: Store by resource key -- this will depend on how Luke breaks things up
+      this.subscribers.push({ matcher, callback });
+    }
+
+    publish(event) {
+      const target = $(event.currentTarget).find('textarea');
+      const targetInputor = this.inputors.filter((inputor) => {
+        return inputor.elem.attr('data-noteable-iid') == target.attr('data-noteable-iid');
+      })[0];
+      const inputorText = targetInputor.elem.val();
+      // after submit event
+      const matched  = this.subscribers.filter((subscriber) => {
+        const matcher = subscriber.matcher;
+        // matcher must return boolean
+        return matcher(inputorText);
+      });
+      matched.forEach((subscriber) => {
+        subscriber.callback(inputorText);
+      });
+    }
+
+    initInputors() {
+      $('.js-gfm-input').each((i, inputor) => {
+        const inputorModel = new GfmInputor(inputor);
+        this.inputors.push(inputorModel);
+      });
+    }
+
+    setup() {
+      if (this.dataSource && !this.dataLoading && !this.cachedData) {
+        this.dataLoading = true;
+        return this.fetchData(this.dataSource)
+          .done((data) => {
+            // TODO: Make this DRY
+            this.cachedData = data;
+            this.dataLoading = false;
+            this.dataLoaded = true;
+            this.initInputors();
+          });
+        };
+
+      if (this.cachedData != null) {
+        this.dataLoading = false;
+        this.dataLoaded = true;
+        this.initInputors();
+      }
+    }
+
+    fetchData(dataSource) {
+      return $.getJSON(dataSource);
+    }
+  }
+
+  GitLab.GfmAutoComplete = new GfmFactory();
+
+  function mymatcher(text) {
+    return text === 'hello';
+  }
+  function mycallback(text) {
+    console.log("GOT SOME TEXT", text);
+  }
+
+  $(() => {
+    GitLab.GfmAutoComplete.subscribe(mymatcher, mycallback );
+  });
+
+
 
 }).call(this);
