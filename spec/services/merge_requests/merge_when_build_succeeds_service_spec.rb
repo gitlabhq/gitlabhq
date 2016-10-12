@@ -98,7 +98,26 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         service.trigger(unrelated_pipeline)
       end
     end
+  end
 
+  describe "#cancel" do
+    before do
+      service.cancel(mr_merge_if_green_enabled)
+    end
+
+    it "resets all the merge_when_build_succeeds params" do
+      expect(mr_merge_if_green_enabled.merge_when_build_succeeds).to be_falsey
+      expect(mr_merge_if_green_enabled.merge_params).to eq({})
+      expect(mr_merge_if_green_enabled.merge_user).to be nil
+    end
+
+    it 'Posts a system note' do
+      note = mr_merge_if_green_enabled.notes.last
+      expect(note.note).to include 'Canceled the automatic merge'
+    end
+  end
+
+  describe 'pipeline integration' do
     context 'when there are multiple stages in the pipeline' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
       let(:sha) { project.commit(ref).id }
@@ -137,23 +156,6 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         build.success
         test.success
       end
-    end
-  end
-
-  describe "#cancel" do
-    before do
-      service.cancel(mr_merge_if_green_enabled)
-    end
-
-    it "resets all the merge_when_build_succeeds params" do
-      expect(mr_merge_if_green_enabled.merge_when_build_succeeds).to be_falsey
-      expect(mr_merge_if_green_enabled.merge_params).to eq({})
-      expect(mr_merge_if_green_enabled.merge_user).to be nil
-    end
-
-    it 'Posts a system note' do
-      note = mr_merge_if_green_enabled.notes.last
-      expect(note.note).to include 'Canceled the automatic merge'
     end
   end
 end
