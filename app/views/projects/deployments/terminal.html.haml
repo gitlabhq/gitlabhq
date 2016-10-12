@@ -9,10 +9,10 @@
   - content_for :page_specific_javascripts do
     = page_specific_javascript_tag("terminal/terminal_bundle.js")
 
-  .terminal-container{ class: container_class }
+  .terminal-container{class: container_class}
 
     %p.content-block
       Environment:
       %a{href: '#'} add information
 
-    #terminal
+    #terminal{data:{project_path: project_path(@project)}}

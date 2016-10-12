@@ -5,11 +5,13 @@
       = link_to external_url, target: '_blank', class: 'btn external-url' do
         = icon('external-link')
 
+  - if can?(current_user, :update_deployment, deployment) && deployment.deployable
+    %a.btn.btn-default.btn-terminal{href: "deployments/#{deployment.id}/terminal"}
+      = custom_icon('icon_terminal')
+
   - if can?(current_user, :create_deployment, deployment) && deployment.deployable && local_assigns.fetch(:show_actions, false)
     - actions = deployment.manual_actions
     - if actions.present?
-      %a.btn.btn-default{href: 'deployments/1/terminal'}
-        = custom_icon('icon_terminal')
       .inline
         .dropdown
           %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}

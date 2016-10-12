@@ -3,7 +3,7 @@
 //= require ./xterm/fit.js
 //= require ./terminal.js
 
-$(function() {
+$(() => {
   new gl.Terminal({
     selector: '#terminal'
   });
