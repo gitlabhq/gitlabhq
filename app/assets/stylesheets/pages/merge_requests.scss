@@ -401,8 +401,12 @@
     padding: 16px;
   }
 
+  .content-block {
+    border-top: 1px solid $border-color;
+    padding: $gl-padding-top $gl-padding;
+  }
+
   .comments-disabled-notif {
-    padding: 10px 16px;
     .btn {
       margin-left: 5px;
     }
@@ -411,10 +415,6 @@
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
     margin: 0 7px;
-  }
-
-  .comments-disabled-notif {
-    border-top: 1px solid $border-color;
   }
 
   .dropdown-title {
