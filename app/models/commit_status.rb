@@ -86,7 +86,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition do |commit_status, transition|
-      return if transition.loopback?
+      next if transition.loopback?
 
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
