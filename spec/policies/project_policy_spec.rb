@@ -12,7 +12,7 @@ describe ProjectPolicy, models: true do
     [
       :read_project, :read_board, :read_list, :read_wiki, :read_issue, :read_label,
       :read_milestone, :read_project_snippet, :read_project_member,
-      :read_merge_request, :read_note, :create_project, :create_issue, :create_note,
+      :read_note, :create_project, :create_issue, :create_note,
       :upload_file
     ]
   end
@@ -21,7 +21,8 @@ describe ProjectPolicy, models: true do
     [
       :download_code, :fork_project, :create_project_snippet, :update_issue,
       :admin_issue, :admin_label, :admin_list, :read_commit_status, :read_build,
-      :read_container_image, :read_pipeline, :read_environment, :read_deployment
+      :read_container_image, :read_pipeline, :read_environment, :read_deployment,
+      :read_merge_request
     ]
   end
 

@@ -20,6 +20,7 @@
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [University](university/README.md) Learn Git and GitLab through videos and courses.
+- [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 
 ## Administrator documentation
 
@@ -35,7 +36,7 @@
 - [Libravatar](customization/libravatar.md) Use Libravatar instead of Gravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
-- [Operations](operations/README.md) Keeping GitLab up and running.
+- [Operations](administration/operations.md) Keeping GitLab up and running.
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.
 - [Repository storages](administration/repository_storages.md) Manage the paths used to store repositories.
@@ -47,8 +48,8 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
-- [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
-- [Monitoring uptime](monitoring/health_check.md) Check the server status using the health check endpoint.
+- [GitLab Performance Monitoring](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.

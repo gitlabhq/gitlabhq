@@ -1,10 +1,10 @@
 class SnippetsController < ApplicationController
   include ToggleAwardEmoji
 
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
 
   # Allow read snippet
-  before_action :authorize_read_snippet!, only: [:show, :raw]
+  before_action :authorize_read_snippet!, only: [:show, :raw, :download]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -12,7 +12,7 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :show, :raw]
+  skip_before_action :authenticate_user!, only: [:index, :show, :raw, :download]
 
   layout 'snippets'
   respond_to :html
@@ -71,6 +71,14 @@ class SnippetsController < ApplicationController
       @snippet.content,
       type: 'text/plain; charset=utf-8',
       disposition: 'inline',
+      filename: @snippet.sanitized_file_name
+    )
+  end
+
+  def download
+    send_data(
+      @snippet.content,
+      type: 'text/plain; charset=utf-8',
       filename: @snippet.sanitized_file_name
     )
   end

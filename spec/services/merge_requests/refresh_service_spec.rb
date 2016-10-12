@@ -118,7 +118,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it { expect(@merge_request.notes).to be_empty }
       it { expect(@merge_request).to be_open }
-      it { expect(@fork_merge_request.notes.last.note).to include('Added 4 commits') }
+      it { expect(@fork_merge_request.notes.last.note).to include('Added 28 commits') }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@build_failed_todo).to be_pending }
       it { expect(@fork_build_failed_todo).to be_pending }
@@ -169,7 +169,7 @@ describe MergeRequests::RefreshService, services: true do
 
         notes = @fork_merge_request.notes.reorder(:created_at).map(&:note)
         expect(notes[0]).to include('Restored source branch `master`')
-        expect(notes[1]).to include('Added 4 commits')
+        expect(notes[1]).to include('Added 28 commits')
         expect(@fork_merge_request).to be_open
       end
     end
