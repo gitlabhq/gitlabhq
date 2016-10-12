@@ -14,6 +14,7 @@ v 8.13.0 (unreleased)
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - Change user & group landing page routing from /u/:username to /:username
   - Prevent running GfmAutocomplete setup for each diff note !6569
+  - Added documentation for .gitattributes files
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
