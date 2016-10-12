@@ -402,12 +402,11 @@
   }
 
   .content-block {
+    border-top: 1px solid $border-color;
     padding: $gl-padding-top $gl-padding;
   }
 
   .comments-disabled-notif {
-    border-top: 1px solid $border-color;
-
     .btn {
       margin-left: 5px;
     }
