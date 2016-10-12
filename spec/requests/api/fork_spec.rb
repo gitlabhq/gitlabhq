@@ -18,7 +18,7 @@ describe API::API, api: true  do
   end
 
   let(:project_user2) do
-    create(:project_member, :guest, user: user2, project: project)
+    create(:project_member, :reporter, user: user2, project: project)
   end
 
   describe 'POST /projects/fork/:id' do

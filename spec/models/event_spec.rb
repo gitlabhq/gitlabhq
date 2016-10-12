@@ -135,6 +135,17 @@ describe Event, models: true do
       it { expect(event.visible_to_user?(member)).to eq true }
       it { expect(event.visible_to_user?(guest)).to eq true }
       it { expect(event.visible_to_user?(admin)).to eq true }
+
+      context 'private project' do
+        let(:project) { create(:project, :private) }
+
+        it { expect(event.visible_to_user?(non_member)).to eq false }
+        it { expect(event.visible_to_user?(author)).to eq true }
+        it { expect(event.visible_to_user?(assignee)).to eq true }
+        it { expect(event.visible_to_user?(member)).to eq true }
+        it { expect(event.visible_to_user?(guest)).to eq false }
+        it { expect(event.visible_to_user?(admin)).to eq true }
+      end
     end
   end
 
@@ -173,13 +184,11 @@ describe Event, models: true do
       it 'updates the project' do
         project.update(last_activity_at: 1.year.ago)
 
-        expect_any_instance_of(Gitlab::ExclusiveLease).
-          to receive(:try_obtain).and_return(true)
-
-        expect(project).to receive(:update_column).
-          with(:last_activity_at, a_kind_of(Time))
-
         create_event(project, project.owner)
+
+        project.reload
+
+        project.last_activity_at <= 1.minute.ago
       end
     end
   end

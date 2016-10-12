@@ -43,6 +43,7 @@ module API
     mount ::API::Groups
     mount ::API::Internal
     mount ::API::Issues
+    mount ::API::Boards
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::LicenseTemplates
@@ -72,5 +73,9 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+
+    route :any, '*path' do
+      error!('404 Not Found', 404)
+    end
   end
 end

@@ -279,6 +279,11 @@ class User < ActiveRecord::Base
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
+    # Returns a user for the given SSH key.
+    def find_by_ssh_key_id(key_id)
+      find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+    end
+
     def build_user(attrs = {})
       User.new(attrs)
     end
@@ -584,6 +589,11 @@ class User < ActiveRecord::Base
   end
 
   def set_projects_limit
+    # `User.select(:id)` raises
+    # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
+    # without this safeguard!
+    return unless self.has_attribute?(:projects_limit)
+
     connection_default_value_defined = new_record? && !projects_limit_changed?
     return unless self.projects_limit.nil? || connection_default_value_defined
 
@@ -827,6 +837,22 @@ class User < ActiveRecord::Base
     todos_pending_count(force: true)
   end
 
+  # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
+  # flow means we don't call that automatically (and can't conveniently do so).
+  #
+  # See:
+  #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
+  #
+  def increment_failed_attempts!
+    self.failed_attempts ||= 0
+    self.failed_attempts += 1
+    if attempts_exceeded?
+      lock_access! unless access_locked?
+    else
+      save(validate: false)
+    end
+  end
+
   private
 
   def projects_union(min_access_level = nil)
@@ -881,7 +907,7 @@ class User < ActiveRecord::Base
       if domain_matches?(allowed_domains, self.email)
         valid = true
       else
-        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        error = "domain is not authorized for sign-up"
         valid = false
       end
     end

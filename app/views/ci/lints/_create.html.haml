@@ -16,8 +16,7 @@
             %tr
               %td #{stage.capitalize} Job - #{build[:name]}
               %td
-                %pre
-                  = simple_format build[:commands]
+                %pre= build[:commands]
 
                 %br
                 %b Tag list:

@@ -70,6 +70,7 @@ production: &base
     email_from: example@example.com
     email_display_name: GitLab
     email_reply_to: noreply@example.com
+    email_subject_suffix: ''
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
@@ -111,7 +112,7 @@ production: &base
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
   incoming_email:
     enabled: false
 

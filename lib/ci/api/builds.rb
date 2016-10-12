@@ -12,10 +12,9 @@ module Ci
         #   POST /builds/register
         post "register" do
           authenticate_runner!
-          update_runner_last_contact(save: false)
-          update_runner_info
           required_attributes! [:token]
           not_found! unless current_runner.active?
+          update_runner_info
 
           build = Ci::RegisterBuildService.new.execute(current_runner)
 
@@ -41,9 +40,10 @@ module Ci
         #   PUT /builds/:id
         put ":id" do
           authenticate_runner!
-          update_runner_last_contact
           build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
           forbidden!('Build has been erased!') if build.erased?
+
+          update_runner_info
 
           build.update_attributes(trace: params[:trace]) if params[:trace]
 

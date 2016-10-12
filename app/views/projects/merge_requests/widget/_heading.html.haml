@@ -4,14 +4,15 @@
       .ci_widget{ class: "ci-#{status}", style: ("display:none" unless @pipeline.status == status) }
         = ci_icon_for_status(status)
         %span
-          CI build
+          Pipeline
+          = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'pipeline'
           = ci_label_for_status(status)
         for
         - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
         %span.ci-coverage
-        = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+        = link_to "View details", pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'pipelines'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
@@ -48,11 +49,12 @@
     .mr-widget-heading
       .ci_widget.ci-success
         = ci_icon_for_status("success")
-        %span.hidden-sm
+        %span
           Deployed to
           = succeed '.' do
             = link_to environment.name, environment_path(environment), class: 'environment'
           - external_url = environment.external_url
           - if external_url
             = link_to external_url, target: '_blank' do
-              = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)
+              %span.hidden-xs View on #{external_url.gsub(/\A.*?:\/\//, '')}
+              = icon('external-link', right: true)

@@ -1,6 +1,7 @@
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
+  include AfterCommitQueue
 
   self.table_name = 'ci_builds'
 
@@ -24,7 +25,22 @@ class CommitStatus < ActiveRecord::Base
 
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
-  scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
+
+  scope :failed_but_allowed, -> do
+    where(allow_failure: true, status: [:failed, :canceled])
+  end
+
+  scope :exclude_ignored, -> do
+    quoted_when = connection.quote_column_name('when')
+    # We want to ignore failed_but_allowed jobs
+    where("allow_failure = ? OR status IN (?)",
+      false, all_state_names - [:failed, :canceled]).
+      # We want to ignore skipped manual jobs
+      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
+      # We want to ignore skipped on_failure
+      where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+  end
+
   scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
 
@@ -69,21 +85,35 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.pipeline.try(:process!)
-      true
-    end
-
     after_transition do |commit_status, transition|
-      commit_status.pipeline.try(:build_updated) unless transition.loopback?
+      return if transition.loopback?
+
+      commit_status.run_after_commit do
+        pipeline.try do |pipeline|
+          if complete?
+            ProcessPipelineWorker.perform_async(pipeline.id)
+          else
+            UpdatePipelineWorker.perform_async(pipeline.id)
+          end
+        end
+      end
     end
 
     after_transition [:created, :pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
+      commit_status.run_after_commit do
+        # TODO, temporary fix for race condition
+        UpdatePipelineWorker.new.perform(pipeline.id)
+
+        MergeRequests::MergeWhenBuildSucceedsService
+          .new(pipeline.project, nil).trigger(self)
+      end
     end
 
     after_transition any => :failed do |commit_status|
-      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
+      commit_status.run_after_commit do
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(pipeline.project, nil).execute(self)
+      end
     end
   end
 
@@ -111,7 +141,7 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def ignored?
+  def failed_but_allowed?
     allow_failure? && (failed? || canceled?)
   end
 

@@ -308,7 +308,8 @@ describe Project, models: true do
   end
 
   describe 'last_activity methods' do
-    let(:timestamp) { Time.now - 2.hours }
+    let(:timestamp) { 2.hours.ago }
+    # last_activity_at gets set to created_at upon creation
     let(:project) { create(:project, created_at: timestamp, updated_at: timestamp) }
 
     describe 'last_activity' do
@@ -321,9 +322,9 @@ describe Project, models: true do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        expect_any_instance_of(Event).to receive(:try_obtain_lease).and_return(true)
         new_event = create(:event, project: project, created_at: Time.now)
 
+        project.reload
         expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
       end
 
@@ -520,7 +521,7 @@ describe Project, models: true do
   end
 
   describe '#cache_has_external_issue_tracker' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, has_external_issue_tracker: nil) }
 
     it 'stores true if there is any external_issue_tracker' do
       services = double(:service, external_issue_trackers: [RedmineService.new])
@@ -799,32 +800,22 @@ describe Project, models: true do
       end
 
       create(:note_on_commit, project: project2)
+
+      TrendingProject.refresh!
     end
 
-    describe 'without an explicit start date' do
-      subject { described_class.trending.to_a }
+    subject { described_class.trending.to_a }
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project1, project2])
-      end
+    it 'sorts projects by the amount of notes in descending order' do
+      expect(subject).to eq([project1, project2])
     end
 
-    describe 'with an explicit start date' do
-      let(:date) { 2.months.ago }
-
-      subject { described_class.trending(date).to_a }
-
-      before do
-        2.times do
-          # Little fix for special issue related to Fractional Seconds support for MySQL.
-          # See: https://github.com/rails/rails/pull/14359/files
-          create(:note_on_commit, project: project2, created_at: date + 1)
-        end
+    it 'does not take system notes into account' do
+      10.times do
+        create(:note_on_commit, project: project2, system: true)
       end
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project2, project1])
-      end
+      expect(described_class.trending.to_a).to eq([project1, project2])
     end
   end
 

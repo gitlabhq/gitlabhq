@@ -7,7 +7,7 @@ describe SlackService::WikiPageMessage, models: true do
     {
       user: {
         name: 'Test User',
-        username: 'Test User'
+        username: 'test.user'
       },
       project_name: 'project_name',
       project_url: 'somewhere.com',
@@ -25,7 +25,7 @@ describe SlackService::WikiPageMessage, models: true do
 
       it 'returns a message that a new wiki page was created' do
         expect(subject.pretext).to eq(
-          'Test User created <url|wiki page> in <somewhere.com|project_name>: '\
+          'test.user created <url|wiki page> in <somewhere.com|project_name>: '\
           '*Wiki page title*')
       end
     end
@@ -35,7 +35,7 @@ describe SlackService::WikiPageMessage, models: true do
 
       it 'returns a message that a wiki page was updated' do
         expect(subject.pretext).to eq(
-          'Test User edited <url|wiki page> in <somewhere.com|project_name>: '\
+          'test.user edited <url|wiki page> in <somewhere.com|project_name>: '\
           '*Wiki page title*')
       end
     end

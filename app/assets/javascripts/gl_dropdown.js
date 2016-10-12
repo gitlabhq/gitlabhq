@@ -443,6 +443,7 @@
       var contentHtml;
       this.resetRows();
       this.addArrowKeyEvent();
+
       if (this.options.setIndeterminateIds) {
         this.options.setIndeterminateIds.call(this);
       }
@@ -460,7 +461,19 @@
       if (this.options.filterable) {
         this.filterInput.focus();
       }
+
+      if (this.options.showMenuAbove) {
+        this.positionMenuAbove();
+      }
+
       return this.dropdown.trigger('shown.gl.dropdown');
+    };
+
+    GitLabDropdown.prototype.positionMenuAbove = function() {
+      var $button = $(this.el);
+      var $menu = this.dropdown.find('.dropdown-menu');
+
+      $menu.css('top', ($button.height() + $menu.height()) * -1);
     };
 
     GitLabDropdown.prototype.hidden = function(e) {
@@ -725,6 +738,7 @@
             return false;
           }
           if (currentKeyCode === 13 && currentIndex !== -1) {
+            e.preventDefault();
             _this.selectRowAtIndex();
           }
         };

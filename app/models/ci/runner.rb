@@ -2,7 +2,7 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
 
-    LAST_CONTACT_TIME = 2.hours.ago
+    LAST_CONTACT_TIME = 1.hour.ago
     AVAILABLE_SCOPES = %w[specific shared active paused online]
     FORM_EDITABLE = %i[description tag_list active run_untagged locked]
 

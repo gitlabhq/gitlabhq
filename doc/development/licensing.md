@@ -54,6 +54,7 @@ Libraries with the following licenses are acceptable for use:
 - [BSD 2-Clause License][BSD-2-Clause]: A permissive (non-copyleft) license as defined by the Open Source Initiative.
 - [BSD 3-Clause License][BSD-3-Clause] (also known as New BSD or Modified BSD): A permissive (non-copyleft) license as defined by the Open Source Initiative
 - [ISC License][ISC] (also known as the OpenBSD License): A permissive (non-copyleft) license as defined by the Open Source Initiative.
+- [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 
 ## Unacceptable Licenses
 
@@ -85,6 +86,7 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [BSD-2-Clause]: https://opensource.org/licenses/BSD-2-Clause
 [BSD-3-Clause]: https://opensource.org/licenses/BSD-3-Clause
 [ISC]: https://opensource.org/licenses/ISC
+[CC0]: https://creativecommons.org/publicdomain/zero/1.0/
 [GPL]: http://choosealicense.com/licenses/gpl-3.0/
 [GPLv2]: http://www.gnu.org/licenses/gpl-2.0.txt
 [GPLv3]: http://www.gnu.org/licenses/gpl-3.0.txt

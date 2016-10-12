@@ -30,13 +30,13 @@
 
 .detail-page-description.milestone-detail
   %h2.title
-    = markdown escape_once(@milestone.title), pipeline: :single_line
+    = markdown_field(@milestone, :title)
   %div
     - if @milestone.description.present?
       .description
         .wiki
           = preserve do
-            = markdown @milestone.description
+            = markdown_field(@milestone, :description)
 
 - if @milestone.total_items_count(current_user).zero?
   .alert.alert-success.prepend-top-default

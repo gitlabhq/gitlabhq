@@ -5,16 +5,16 @@ module API
     helpers ::API::Helpers::MembersHelpers
 
     %w[group project].each do |source_type|
+      params do
+        requires :id, type: String, desc: "The #{source_type} ID"
+      end
       resource source_type.pluralize do
-        # Get a list of group/project members viewable by the authenticated user.
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   query         - Query string
-        #
-        # Example Request:
-        #   GET /groups/:id/members
-        #   GET /projects/:id/members
+        desc 'Gets a list of group or project members viewable by the authenticated user.' do
+          success Entities::Member
+        end
+        params do
+          optional :query, type: String, desc: 'A query string to search for members'
+        end
         get ":id/members" do
           source = find_source(source_type, params[:id])
 
@@ -25,15 +25,12 @@ module API
           present users, with: Entities::Member, source: source
         end
 
-        # Get a group/project member
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   user_id (required) - The user ID of the member
-        #
-        # Example Request:
-        #   GET /groups/:id/members/:user_id
-        #   GET /projects/:id/members/:user_id
+        desc 'Gets a member of a group or project.' do
+          success Entities::Member
+        end
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the member'
+        end
         get ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
 
@@ -43,26 +40,25 @@ module API
           present member.user, with: Entities::Member, member: member
         end
 
-        # Add a new group/project member
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   user_id (required) - The user ID of the new member
-        #   access_level (required) - A valid access level
-        #   expires_at (optional) - Date string in the format YEAR-MONTH-DAY
-        #
-        # Example Request:
-        #   POST /groups/:id/members
-        #   POST /projects/:id/members
+        desc 'Adds a member to a group or project.' do
+          success Entities::Member
+        end
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the new member'
+          requires :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, developer access level)'
+          optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
+        end
         post ":id/members" do
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
-          required_attributes! [:user_id, :access_level]
 
           member = source.members.find_by(user_id: params[:user_id])
 
-          # This is to ensure back-compatibility but 409 behavior should be used
-          # for both project and group members in 9.0!
+          # We need this explicit check because `source.add_user` doesn't
+          # currently return the member created so it would return 201 even if
+          # the member already existed...
+          # The `source_type == 'group'` check is to ensure back-compatibility
+          # but 409 behavior should be used for both project and group members in 9.0!
           conflict!('Member already exists') if source_type == 'group' && member
 
           unless member
@@ -79,21 +75,17 @@ module API
           end
         end
 
-        # Update a group/project member
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   user_id (required) - The user ID of the member
-        #   access_level (required) - A valid access level
-        #   expires_at (optional) - Date string in the format YEAR-MONTH-DAY
-        #
-        # Example Request:
-        #   PUT /groups/:id/members/:user_id
-        #   PUT /projects/:id/members/:user_id
+        desc 'Updates a member of a group or project.' do
+          success Entities::Member
+        end
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the new member'
+          requires :access_level, type: Integer, desc: 'A valid access level'
+          optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
+        end
         put ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
-          required_attributes! [:user_id, :access_level]
 
           member = source.members.find_by!(user_id: params[:user_id])
           attrs = attributes_for_keys [:access_level, :expires_at]
@@ -108,18 +100,12 @@ module API
           end
         end
 
-        # Remove a group/project member
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   user_id (required) - The user ID of the member
-        #
-        # Example Request:
-        #   DELETE /groups/:id/members/:user_id
-        #   DELETE /projects/:id/members/:user_id
+        desc 'Removes a user from a group or project.'
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the member'
+        end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
-          required_attributes! [:user_id]
 
           # This is to ensure back-compatibility but find_by! should be used
           # in that casse in 9.0!
@@ -134,7 +120,7 @@ module API
           if member.nil?
             { message: "Access revoked", id: params[:user_id].to_i }
           else
-            ::Members::DestroyService.new(member, current_user).execute
+            ::Members::DestroyService.new(source, current_user, declared(params)).execute
 
             present member.user, with: Entities::Member, member: member
           end

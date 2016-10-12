@@ -1,7 +1,7 @@
 /*= require ../blob/template_selector */
 
 ((global) => {
-  class IssuableTemplateSelector extends TemplateSelector {
+  class IssuableTemplateSelector extends gl.TemplateSelector {
     constructor(...args) {
       super(...args);
       this.projectPath = this.dropdown.data('project-path');
@@ -16,7 +16,7 @@
       if (initialQuery.name) this.requestFile(initialQuery);
 
       $('.reset-template', this.dropdown.parent()).on('click', () => {
-        if (this.currentTemplate) this.setInputValueToTemplateContent();
+        if (this.currentTemplate) this.setInputValueToTemplateContent(false);
       });
     }
 
@@ -26,26 +26,28 @@
         this.currentTemplate = currentTemplate;
         if (err) return; // Error handled by global AJAX error handler
         this.stopLoadingSpinner();
-        this.setInputValueToTemplateContent();
+        this.setInputValueToTemplateContent(true);
       });
       return;
     }
 
-    setInputValueToTemplateContent() {
+    setInputValueToTemplateContent(append) {
       // `this.requestFileSuccess` sets the value of the description input field
-      // to the content of the template selected.
+      // to the content of the template selected. If `append` is true, the
+      // template content will be appended to the previous value of the field,
+      // separated by a blank line if the previous value is non-empty.
       if (this.titleInput.val() === '') {
         // If the title has not yet been set, focus the title input and
-        // skip focusing the description input by setting `true` as the 2nd
-        // argument to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, true);
+        // skip focusing the description input by setting `true` as the
+        // `skipFocus` option to `requestFileSuccess`.
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: true, append});
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate);
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: false, append});
       }
       return;
     }
   }
 
   global.IssuableTemplateSelector = IssuableTemplateSelector;
-})(window);
+})(window.gl || (window.gl = {}));

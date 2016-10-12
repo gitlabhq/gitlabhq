@@ -246,7 +246,7 @@ module SystemNoteService
         'deleted'
       end
 
-    body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
+    body = "#{verb} #{branch_type} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
@@ -347,7 +347,7 @@ module SystemNoteService
       notes = notes.where(noteable_id: noteable.id)
     end
 
-    notes_for_mentioner(mentioner, noteable, notes).count > 0
+    notes_for_mentioner(mentioner, noteable, notes).exists?
   end
 
   # Build an Array of lines detailing each commit added in a merge request

@@ -175,6 +175,36 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/visible' do
+    let(:public_project) { create(:project, :public) }
+
+    before do
+      public_project
+      project
+      project2
+      project3
+      project4
+    end
+
+    it 'returns the projects viewable by the user' do
+      get api('/projects/visible', user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).
+        to contain_exactly(public_project.id, project.id, project2.id, project3.id)
+    end
+
+    it 'shows only public projects when the user only has access to those' do
+      get api('/projects/visible', user2)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).
+        to contain_exactly(public_project.id)
+    end
+  end
+
   describe 'GET /projects/starred' do
     let(:public_project) { create(:project, :public) }
 
@@ -232,7 +262,7 @@ describe API::API, api: true  do
       post api('/projects', user), project
 
       project.each_pair do |k, v|
-        next if %i{ issues_enabled merge_requests_enabled wiki_enabled }.include?(k)
+        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
 
@@ -360,7 +390,7 @@ describe API::API, api: true  do
       post api("/projects/user/#{user.id}", admin), project
 
       project.each_pair do |k, v|
-        next if k == :path
+        next if %i[has_external_issue_tracker path].include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
     end
@@ -787,6 +817,20 @@ describe API::API, api: true  do
       project.namespace.update(share_with_group_lock: true)
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
       expect(response.status).to eq 400
+    end
+
+    it 'returns a 404 error when user cannot read group' do
+      private_group = create(:group, :private)
+
+      post api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
+    end
+
+    it 'returns a 404 error when group does not exist' do
+      post api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
     end
 
     it "returns a 409 error when wrong params passed" do

@@ -4,10 +4,17 @@
   %td
     = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment)
 
-  %td
+  %td.deployment-column
     - if last_deployment
-      = user_avatar(user: last_deployment.user, size: 20)
-      %strong ##{last_deployment.id}
+      %span ##{last_deployment.iid} 
+      - if last_deployment.user
+        by
+        = user_avatar(user: last_deployment.user, size: 20)
+
+  %td
+    - if last_deployment && last_deployment.deployable
+      = link_to [@project.namespace.becomes(Namespace), @project, last_deployment.deployable], class: 'build-link' do
+        = "#{last_deployment.deployable.name} (##{last_deployment.deployable.id})"
 
   %td
     - if last_deployment
@@ -20,5 +27,5 @@
     - if last_deployment
       #{time_ago_with_tooltip(last_deployment.created_at)}
 
-  %td
+  %td.hidden-xs
     = render 'projects/deployments/actions', deployment: last_deployment

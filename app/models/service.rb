@@ -136,6 +136,7 @@ class Service < ActiveRecord::Base
         end
 
         def #{arg}=(value)
+          self.properties ||= {}
           updated_properties['#{arg}'] = #{arg} unless #{arg}_changed?
           self.properties['#{arg}'] = value
         end

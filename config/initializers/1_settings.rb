@@ -186,6 +186,7 @@ Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].ni
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
@@ -302,6 +303,10 @@ Settings.cron_jobs['remove_expired_group_links_worker']['job_class'] = 'RemoveEx
 Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
+
+Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
+Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsWorker'
 
 #
 # GitLab Shell

@@ -23,6 +23,6 @@
 
     return BlobLicenseSelector;
 
-  })(TemplateSelector);
+  })(gl.TemplateSelector);
 
 }).call(this);

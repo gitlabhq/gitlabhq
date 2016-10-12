@@ -56,9 +56,14 @@
 
     MergeRequestTabs.prototype.commitsLoaded = false;
 
+    MergeRequestTabs.prototype.fixedLayoutPref = null;
+
     function MergeRequestTabs(opts) {
       this.opts = opts != null ? opts : {};
       this.opts.setUrl = this.opts.setUrl !== undefined ? this.opts.setUrl : true;
+
+      this.buildsLoaded = this.opts.buildsLoaded || false;
+
       this.setCurrentAction = bind(this.setCurrentAction, this);
       this.tabShown = bind(this.tabShown, this);
       this.showTab = bind(this.showTab, this);
@@ -70,7 +75,12 @@
 
     MergeRequestTabs.prototype.bindEvents = function() {
       $(document).on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown);
-      return $(document).on('click', '.js-show-tab', this.showTab);
+      $(document).on('click', '.js-show-tab', this.showTab);
+    };
+
+    MergeRequestTabs.prototype.unbindEvents = function() {
+      $(document).off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown);
+      $(document).off('click', '.js-show-tab', this.showTab);
     };
 
     MergeRequestTabs.prototype.showTab = function(event) {
@@ -85,10 +95,14 @@
       if (action === 'commits') {
         this.loadCommits($target.attr('href'));
         this.expandView();
-      } else if (action === 'diffs') {
+        this.resetViewContainer();
+      } else if (this.isDiffAction(action)) {
         this.loadDiff($target.attr('href'));
         if ((typeof bp !== "undefined" && bp !== null) && bp.getBreakpointSize() !== 'lg') {
           this.shrinkView();
+        }
+        if (this.diffViewType() === 'parallel') {
+          this.expandViewContainer();
         }
         navBarHeight = $('.navbar-gitlab').outerHeight();
         $.scrollTo(".merge-request-details .merge-request-tabs", {
@@ -97,11 +111,14 @@
       } else if (action === 'builds') {
         this.loadBuilds($target.attr('href'));
         this.expandView();
+        this.resetViewContainer();
       } else if (action === 'pipelines') {
         this.loadPipelines($target.attr('href'));
         this.expandView();
+        this.resetViewContainer();
       } else {
         this.expandView();
+        this.resetViewContainer();
       }
       if (this.opts.setUrl) {
         this.setCurrentAction(action);
@@ -126,7 +143,7 @@
       if (action === 'show') {
         action = 'notes';
       }
-      return $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
+      $(".merge-request-tabs a[data-action='" + action + "']").tab('show').trigger('shown.bs.tab');
     };
 
     // Replaces the current Merge Request-specific action in the URL with a new one
@@ -156,8 +173,9 @@
         action = 'notes';
       }
       this.currentAction = action;
-      // Remove a trailing '/commits' or '/diffs'
-      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
+      // Remove a trailing '/commits' '/diffs' '/builds' '/pipelines' '/new' '/new/diffs'
+      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
+
       // Append the new action if we're on a tab other than 'notes'
       if (action !== 'notes') {
         new_state += "/" + action;
@@ -196,8 +214,13 @@
       if (this.diffsLoaded) {
         return;
       }
+
+      // We extract pathname for the current Changes tab anchor href
+      // some pages like MergeRequestsController#new has query parameters on that anchor
+      var url = gl.utils.parseUrl(source);
+
       return this._get({
-        url: (source + ".json") + this._location.search,
+        url: (url.pathname + ".json") + this._location.search,
         success: (function(_this) {
           return function(data) {
             $('#diffs').html(data.html);
@@ -209,7 +232,7 @@
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
             $('#diffs .js-syntax-highlight').syntaxHighlight();
             $('#diffs .diff-file').singleFileDiff();
-            if (_this.diffViewType() === 'parallel') {
+            if (_this.diffViewType() === 'parallel' && (_this.isDiffAction(_this.currentAction)) ) {
               _this.expandViewContainer();
             }
             _this.diffsLoaded = true;
@@ -308,11 +331,25 @@
 
     MergeRequestTabs.prototype.diffViewType = function() {
       return $('.inline-parallel-buttons a.active').data('view-type');
-    // Returns diff view type
+    };
+
+    MergeRequestTabs.prototype.isDiffAction = function(action) {
+      return action === 'diffs' || action === 'new/diffs'
     };
 
     MergeRequestTabs.prototype.expandViewContainer = function() {
-      return $('.container-fluid').removeClass('container-limited');
+      var $wrapper = $('.content-wrapper .container-fluid');
+      if (this.fixedLayoutPref === null) {
+        this.fixedLayoutPref = $wrapper.hasClass('container-limited');
+      }
+      $wrapper.removeClass('container-limited');
+    };
+
+    MergeRequestTabs.prototype.resetViewContainer = function() {
+      if (this.fixedLayoutPref !== null) {
+        $('.content-wrapper .container-fluid')
+          .toggleClass('container-limited', this.fixedLayoutPref);
+      }
     };
 
     MergeRequestTabs.prototype.shrinkView = function() {

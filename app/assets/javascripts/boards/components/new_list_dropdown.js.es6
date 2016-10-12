@@ -3,8 +3,7 @@ $(() => {
 
   $('.js-new-board-list').each(function () {
     const $this = $(this);
-
-    new gl.CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('project-id'));
+    new gl.CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('namespace-path'), $this.data('project-path'));
 
     $this.glDropdown({
       data(term, callback) {
