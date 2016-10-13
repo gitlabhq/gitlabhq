@@ -230,18 +230,6 @@ module Issuable
     labels.order('title ASC').pluck(:title)
   end
 
-  def add_labels_by_names(label_names, current_user)
-    available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
-
-    label_names.each do |label_name|
-      title = label_name.strip
-      label = available_labels.find_by(title: title)
-      label ||= project.labels.build(title: title, color: Label::DEFAULT_COLOR)
-
-      self.labels << label
-    end
-  end
-
   # Convert this Issuable class name to a format usable by Ability definitions
   #
   # Examples:

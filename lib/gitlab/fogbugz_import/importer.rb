@@ -122,25 +122,20 @@ module Gitlab
           author_id = user_info(bug['ixPersonOpenedBy'])[:gitlab_id] || project.creator_id
 
           issue = Issue.create!(
-            project_id:   project.id,
-            title:        bug['sTitle'],
-            description:  body,
-            author_id:    author_id,
-            assignee_id:  assignee_id,
-            state:        bug['fOpen'] == 'true' ? 'opened' : 'closed'
+            iid:         bug['ixBug'],
+            project_id:  project.id,
+            title:       bug['sTitle'],
+            description: body,
+            author_id:   author_id,
+            assignee_id: assignee_id,
+            state:       bug['fOpen'] == 'true' ? 'opened' : 'closed',
+            created_at:  date,
+            updated_at:  DateTime.parse(bug['dtLastUpdated'])
           )
-          issue.add_labels_by_names(labels, project.creator)
 
-          if issue.iid != bug['ixBug']
-            issue.update_attribute(:iid, bug['ixBug'])
-          end
+          issue.update_attribute(:label_ids, project.labels.where(title: labels).pluck(:id))
 
           import_issue_comments(issue, comments)
-
-          issue.update_attribute(:created_at, date)
-
-          last_update = DateTime.parse(bug['dtLastUpdated'])
-          issue.update_attribute(:updated_at, last_update)
         end
       end
 

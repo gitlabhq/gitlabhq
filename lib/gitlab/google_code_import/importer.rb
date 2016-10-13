@@ -92,19 +92,16 @@ module Gitlab
           end
 
           issue = Issue.create!(
-            project_id:   project.id,
-            title:        raw_issue["title"],
-            description:  body,
-            author_id:    project.creator_id,
-            assignee_id:  assignee_id,
-            state:        raw_issue["state"] == "closed" ? "closed" : "opened"
+            iid:         raw_issue['id'],
+            project_id:  project.id,
+            title:       raw_issue['title'],
+            description: body,
+            author_id:   project.creator_id,
+            assignee_id: assignee_id,
+            state:       raw_issue['state'] == 'closed' ? 'closed' : 'opened'
           )
 
-          issue.add_labels_by_names(labels, project.creator)
-
-          if issue.iid != raw_issue["id"]
-            issue.update_attribute(:iid, raw_issue["id"])
-          end
+          issue.update_attribute(:label_ids, project.labels.where(title: labels).pluck(:id))
 
           import_issue_comments(issue, comments)
         end
