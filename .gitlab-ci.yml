@@ -309,6 +309,9 @@ coverage:
 # Trigger docs build
 trigger_docs:
   stage: post-test
+  before_script: []
+  cache: {}
+  artifacts: {}
   script:
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master https://gitlab.com/api/v3/projects/38069/trigger/builds"
   only:
