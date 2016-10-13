@@ -39,7 +39,7 @@
       .dropdown-content.board-selector-page-two{ "v-if" => "currentPage === 'delete'" }
         %p
           Are you sure you want to delete this board?
-        .clearfix
+        .board-delete-btns.clearfix
           = link_to "",
             class: "btn btn-danger pull-left",
             method: :delete,
