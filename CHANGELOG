@@ -29,6 +29,7 @@ v 8.13.0 (unreleased)
   - Keep refs for each deployment
   - Allow browsing branches that end with '.atom'
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
+  - Replace unique keyframes mixin with keyframe mixin with specific names (ClemMakesApps)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
