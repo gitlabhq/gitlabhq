@@ -342,12 +342,6 @@ You can use the following fake tokens as examples.
 Here is a list of must-have items. Use them in the exact order that appears
 on this document. Further explanation is given below.
 
-- Every method must be described using [Grape's DSL](https://github.com/ruby-grape/grape/tree/v0.13.0#describing-methods)
-  (see https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb
-  for a good example):
-  - `desc` for the method summary (you can pass it a block for additional details)
-  - `params` for the method params (this acts as description **and** validation
-    of the params)
 - Every method must have the REST API request. For example:
 
     ```

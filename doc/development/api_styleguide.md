@@ -2,6 +2,47 @@
 
 This styleguide recommends best practices for the API development.
 
+## Instance variables
+
+Please do not use instance variables, there is no need for them (we don't need
+to access them as we do in Rails views), local variables are fine.
+
+## Entities
+
+Always use an [Entity] to present the endpoint's payload.
+
+## Methods and parameters description
+
+Every method must be described using the [Grape DSL](https://github.com/ruby-grape/grape#describing-methods)
+(see https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb
+for a good example):
+
+- `desc` for the method summary. You should pass it a block for additional
+  details such as:
+  - The GitLab version when the endpoint was added
+  - If the endpoint is deprecated, and if yes when will it be removed
+
+- `params` for the method params. This acts as description, validation, and
+  coercion of the parameters
+
+A good example is as follows:
+
+```ruby
+desc 'Get all broadcast messages' do
+  detail 'This feature was introduced in GitLab 8.12.'
+  success Entities::BroadcastMessage
+end
+params do
+  optional :page,     type: Integer, desc: 'Current page number'
+  optional :per_page, type: Integer, desc: 'Number of messages per page'
+end
+get do
+  messages = BroadcastMessage.all
+
+  present paginate(messages), with: Entities::BroadcastMessage
+end
+```
+
 ## Declared params
 
 > Grape allows you to access only the parameters that have been declared by your
@@ -10,7 +51,7 @@ allowed.
 
 – https://github.com/ruby-grape/grape#declared
 
-### Exclude params from parent namespaces
+### Exclude params from parent namespaces!
 
 > By default `declared(params) `includes parameters that were defined in all
 parent namespaces.
@@ -51,8 +92,5 @@ For instance:
 Model.create(foo: params[:foo])
 ```
 
->**Note:**
-Since you [should use Grape's DSL to declare params](doc_styleguide.md#method-description), [parameters validation and
-coercion] comes for free!
-
+[Entity]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/entities.rb
 [parameters validation and coercion]: https://github.com/ruby-grape/grape#parameter-validation-and-coercion
