@@ -2,7 +2,7 @@ class CycleAnalytics
   include Gitlab::Database::Median
   include Gitlab::Database::DateTime
 
-  DEPLOYED_CHECK_METRICS = %i[production staging]
+  DEPLOYMENT_METRIC_STAGES = %i[production staging]
 
   def initialize(project, from:)
     @project = project
@@ -93,7 +93,7 @@ class CycleAnalytics
             join(MergeRequest::Metrics.arel_table).
             on(MergeRequest.arel_table[:id].eq(MergeRequest::Metrics.arel_table[:merge_request_id]))
 
-    if DEPLOYED_CHECK_METRICS.include?(name)
+    if DEPLOYMENT_METRIC_STAGES.include?(name)
       # Limit to merge requests that have been deployed to production after `@from`
       query.where(MergeRequest::Metrics.arel_table[:first_deployed_to_production_at].gteq(@from))
     end
