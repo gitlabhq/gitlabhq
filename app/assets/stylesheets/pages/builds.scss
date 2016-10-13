@@ -195,7 +195,7 @@
     .build-job {
       position: relative;
 
-      .fa-check {
+      .fa-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -205,7 +205,7 @@
       &.active {
         font-weight: bold;
 
-        .fa {
+        .fa-arrow-right {
           display: block;
         }
       }
