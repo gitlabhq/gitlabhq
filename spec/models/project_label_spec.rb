@@ -40,6 +40,16 @@ describe ProjectLabel, models: true do
 
         expect(label.errors[:title]).to be_empty
       end
+
+      it 'does not returns error when title does not change' do
+        project_label = create(:label, project: project, name: 'Security')
+        create(:group_label, group: group, name: 'Security')
+        project_label.description = 'Security related stuff.'
+
+        project_label.valid?
+
+        expect(project_label  .errors[:title]).to be_empty
+      end
     end
   end
 

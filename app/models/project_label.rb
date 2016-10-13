@@ -14,7 +14,7 @@ class ProjectLabel < Label
   private
 
   def title_must_not_exist_at_group_level
-    return unless group.present?
+    return unless group.present? && title_changed?
 
     if group.labels.with_title(self.title).exists?
       errors.add(:title, :label_already_exists_at_group_level, group: group.name)
