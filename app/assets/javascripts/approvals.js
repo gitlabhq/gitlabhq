@@ -1,8 +1,8 @@
 (function() {
   $(function() {
-    $(".approver-list").on("click", ".unsaved-approvers.approver .btn-remove", function() {
+    $(".approver-list").on("click", ".unsaved-approvers.approver .btn-remove", function(ev) {
       var removeElement = $(this).closest("li");
-      var approverId = parseInt(removeElement.attr("id").replace("user_",""));
+      var approverId = parseInt(removeElement.attr("id").replace("user_",""), 10);
       var approverIds = $("input#merge_request_approver_ids");
       var skipUsers = approverIds.data("skip-users") || [];
       var approverIndex = skipUsers.indexOf(approverId);
@@ -13,12 +13,12 @@
         approverIds.data("skip-users", skipUsers.splice(approverIndex, 1));
       }
 
-      return false;
+      ev.preventDefault();
     });
 
-    $(".approver-list").on("click", ".unsaved-approvers.approver-group .btn-remove", function() {
+    $(".approver-list").on("click", ".unsaved-approvers.approver-group .btn-remove", function(ev) {
       var removeElement = $(this).closest("li");
-      var approverGroupId = parseInt(removeElement.attr("id").replace("group_",""));
+      var approverGroupId = parseInt(removeElement.attr("id").replace("group_",""), 10);
       var approverGroupIds = $("input#merge_request_approver_group_ids");
       var skipGroups = approverGroupIds.data("skip-groups") || [];
       var approverGroupIndex = skipGroups.indexOf(approverGroupId);
@@ -29,7 +29,7 @@
         approverGroupIds.data("skip-groups", skipGroups.splice(approverGroupIndex, 1));
       }
 
-      return false;
+      ev.preventDefault();
     });
 
     $("form.merge-request-form").submit(function() {

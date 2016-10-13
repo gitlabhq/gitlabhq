@@ -7,7 +7,7 @@ Get a list of groups. (As user: my groups or all available, as admin: all groups
 Parameters:
 
 - `all_available` (optional) - if passed, show all groups you have access to
-- `skip_groups` (optional)(array of group paths) - if passed, skip groups
+- `skip_groups` (optional)(array of group IDs) - if passed, skip groups
 
 ```
 GET /groups

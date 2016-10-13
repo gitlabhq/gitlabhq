@@ -62,7 +62,7 @@ sent to them and a todo is added to their list of todos.
 
 > [Introduced][ee-743] in GitLab Enterprise Edition 8.13.
 
-You can also assign one or more groups that can be assigned as approvers. It
+You can also define one or more groups that can be assigned as approvers. It
 works the same way like regular approvers do, the only difference is that you
 assign several users with one action. One possible scenario would be to to assign
 a group of approvers at the project level and change them later when creating
