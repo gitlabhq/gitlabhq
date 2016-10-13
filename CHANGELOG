@@ -33,6 +33,7 @@ v 8.13.0 (unreleased)
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
+  - Do not alter 'force_remove_source_branch' options on MergeRequest unless specified
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date
