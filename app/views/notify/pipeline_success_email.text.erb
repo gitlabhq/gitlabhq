@@ -1,7 +1,7 @@
 Your pipeline has passed.
 
 Project: <%= @project.name %> ( <%= project_url(@project) %> )
-Branch: <%= @pipeline.ref %> ( <%= commits_url(@pipeline.ref) %> )
+Branch: <%= @pipeline.ref %> ( <%= commits_url(@pipeline) %> )
 <% if @merge_request -%>
 Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
 <% end -%>
