@@ -116,6 +116,7 @@ v 8.13.0 (unreleased)
 
 v 8.12.7
   - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
+  - Fix GFM autocomplete setup being called several times
 
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
