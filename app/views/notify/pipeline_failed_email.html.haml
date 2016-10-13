@@ -92,7 +92,7 @@
                                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;"}
                                             %img{height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-branch-gray.gif'), style: "display:block;", width: "13"}/
                                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;"}
-                                            %a.muted{href: namespace_project_commits_url(@project.namespace, @project, @pipeline.ref), style: "color:#333333;text-decoration:none;"}
+                                            %a.muted{href: commits_url(@pipeline), style: "color:#333333;text-decoration:none;"}
                                               = @pipeline.ref
                                 %tr
                                   %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;"} Commit
@@ -103,7 +103,7 @@
                                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;"}
                                             %img{height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-commit-gray.gif'), style: "display:block;", width: "13"}/
                                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;"}
-                                            %a{href: namespace_project_commit_url(@project.namespace, @project, @pipeline.sha), style: "color:#3084bb;text-decoration:none;"}
+                                            %a{href: commit_url(@pipeline), style: "color:#3084bb;text-decoration:none;"}
                                               = @pipeline.short_sha
                                             - if @merge_request
                                               in
@@ -134,7 +134,7 @@
                         %tr.pre-section
                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#333333;font-size:15px;font-weight:400;line-height:1.4;padding:15px 0;"}
                             Pipeline
-                            %a{href: namespace_project_pipeline_url(@project.namespace, @project, @pipeline.id), style: "color:#3084bb;text-decoration:none;"}
+                            %a{href: pipeline_url(@pipeline), style: "color:#3084bb;text-decoration:none;"}
                               = "\##{@pipeline.id}"
                             had
                             = failed.size
@@ -158,7 +158,7 @@
                                             %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8c8c8c;font-weight:500;font-size:15px;vertical-align:middle;"}
                                               = build.stage
                                     %td{align: "right", style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:20px 0;color:#8c8c8c;font-weight:500;font-size:15px;"}
-                                      %a{href: namespace_project_build_url(@project.namespace, @project, build.id), style: "color:#3084bb;text-decoration:none;"}
+                                      %a{href: pipeline_build_url(@pipeline, build), style: "color:#3084bb;text-decoration:none;"}
                                         = build.name
                                   %tr.build-log
                                     %td{colspan: "2", style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:0 0 15px;"}
