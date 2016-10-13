@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
   - Add user activity table and service to query for active users
   - Fix 500 error updating mirror URLs for projects
+  - Restrict protected branch access to specific groups !645
   - Fix validations related to mirroring settings form. !773
   - Fix Git access panel for Wikis when Kerberos authentication is enabled (Borja Aparicio)
   - Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
@@ -105,7 +106,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Allow syncing a group against all providers at once
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - Allow LDAP `sync_ssh_keys` setting to be set to `true`
-  - Restrict protected branch access to specific groups !645
   - Removed unused GitLab GEO database index
   - Restrict protected branch access to specific users !581
   - Enable monitoring for ES classes
