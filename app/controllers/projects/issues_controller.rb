@@ -26,7 +26,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues = issues_collection
     @issues = @issues.page(params[:page])
 
-    if params[:label_name].presence
+    if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
     end
 
