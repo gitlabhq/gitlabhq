@@ -204,8 +204,8 @@
         const environment = environments[i];
         if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
-        if (!environment.external_url) $('.js-environment-link', $template).remove();
-        if (environment.deployed_at) {
+        if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
+        if (environment.deployed_at && environment.deployed_at_formatted) {
           environment.deployed_at = $.timeago(environment.deployed_at) + '.';
         } else {
           $('.js-environment-timeago', $template).remove();
