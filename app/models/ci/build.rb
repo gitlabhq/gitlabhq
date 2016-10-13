@@ -1,6 +1,7 @@
 module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
+    include AfterCommitQueue
 
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
@@ -75,12 +76,12 @@ module Ci
 
     state_machine :status do
       after_transition pending: :running do |build|
-        build.execute_hooks
+        build.run_after_commit { BuildHooksWorker.perform_async(id) }
       end
 
       after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
-        build.execute_hooks
+        build.run_after_commit { BuildHooksWorker.perform_async(id) }
       end
 
       after_transition any => [:success] do |build|
