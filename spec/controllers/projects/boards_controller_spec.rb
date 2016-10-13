@@ -242,10 +242,10 @@ describe Projects::BoardsController do
     let!(:board) { create(:board, project: project) }
 
     context 'with valid board id' do
-      it 'returns a successful 200 response' do
+      it 'redirects to the issue boards page' do
         remove_board board: board
 
-        expect(response).to have_http_status(200)
+        expect(response).to redirect_to(namespace_project_boards_path(project.namespace, project))
       end
 
       it 'removes board from project' do
@@ -278,7 +278,7 @@ describe Projects::BoardsController do
       delete :destroy, namespace_id: project.namespace.to_param,
                        project_id: project.to_param,
                        id: board.to_param,
-                       format: :json
+                       format: :html
     end
   end
 end
