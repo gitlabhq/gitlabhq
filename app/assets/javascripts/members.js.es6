@@ -3,20 +3,13 @@
 
   class Members {
     constructor() {
-      this.removeListeners();
       this.addListeners();
     }
 
-    removeListeners() {
-      $('.project_member, .group_member').off('ajax:success');
-      $('.js-member-update-control').off('change');
-      $('.js-edit-member-form').off('ajax:success');
-    }
-
     addListeners() {
-      $('.project_member, .group_member').on('ajax:success', this.removeRow);
-      $('.js-member-update-control').on('change', this.formSubmit);
-      $('.js-edit-member-form').on('ajax:success', this.formSuccess);
+      $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
+      $('.js-member-update-control').off('change').on('change', this.formSubmit);
+      $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess);
     }
 
     removeRow(e) {
