@@ -7,5 +7,7 @@
 
     .note-form-actions.clearfix
       = f.submit 'Save Comment', class: 'btn btn-nr btn-save js-comment-button'
+      %span.settings-message.note-edit-warning.js-edit-warning
+        Finish editing this message first!
       %button.btn.btn-nr.btn-cancel.note-edit-cancel{ type: 'button' }
         Cancel

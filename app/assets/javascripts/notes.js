@@ -63,7 +63,7 @@
       // change note in UI after update
       $(document).on("ajax:success", "form.edit-note", this.updateNote);
       // Edit note link
-      $(document).on("click", ".js-note-edit", this.showEditForm);
+      $(document).on("click", ".js-note-edit", this.showEditForm.bind(this));
       $(document).on("click", ".note-edit-cancel", this.cancelEdit);
       // Reopen and close actions for Issue/MR combined with note form submit
       $(document).on("click", ".js-comment-button", this.updateCloseButton);
@@ -466,6 +466,9 @@
       var $html, $note_li;
       // Convert returned HTML to a jQuery object so we can modify it further
       $html = $(note.html);
+
+      $('.note-edit-form').insertBefore('.notes-form');
+
       gl.utils.localTimeAgo($('.js-timeago', $html));
       $html.renderGFM();
       $html.find('.js-task-list-container').taskList('enable');
@@ -480,48 +483,73 @@
     };
 
 
+    Notes.prototype.checkContentToAllowEditing = function($el) {
+      var initialContent = $el.find('.original-note-content').text().trim();
+      var currentContent = $el.find('.note-textarea').val();
+      var isAllowed = true;
+
+      if (currentContent === initialContent) {
+        this.removeNoteEditForm($el);
+        $el.find('.js-md-write-button').trigger('click');
+      }
+      else {
+        var $buttons = $el.find('.note-form-actions');
+        var isButtonsVisible = gl.utils.isElementVisibleInViewport($buttons[0]);
+        var isWidgetVisible = gl.utils.isElementVisibleInViewport($el[0]);
+
+        if (!isButtonsVisible || !isWidgetVisible) {
+          gl.utils.animateToElement($el);
+        }
+
+        $el.find('.js-edit-warning').show();
+        $el.find('.js-md-write-button').trigger('click');
+        isAllowed = false;
+      }
+
+      return isAllowed;
+    }
+
+
     /*
     Called in response to clicking the edit note link
 
     Replaces the note text with the note edit form
     Adds a data attribute to the form with the original content of the note for cancellations
-     */
-
+    */
     Notes.prototype.showEditForm = function(e, scrollTo, myLastNote) {
-      var $noteText, done, form, note;
       e.preventDefault();
-      note = $(this).closest(".note");
-      note.addClass("is-editting");
-      form = note.find(".note-edit-form");
-      form.addClass('current-note-edit-form');
-      // Show the attachment delete link
-      note.find(".js-note-attachment-delete").show();
-      done = function($noteText) {
-        var noteTextVal;
-        // Neat little trick to put the cursor at the end
-        noteTextVal = $noteText.val();
-        // Store the original note text in a data attribute to retrieve if a user cancels edit.
-        form.find('form.edit-note').data('original-note', noteTextVal);
-        return $noteText.val('').val(noteTextVal);
-      };
-      new GLForm(form);
-      if ((scrollTo != null) && (myLastNote != null)) {
-        // scroll to the bottom
-        // so the open of the last element doesn't make a jump
-        $('html, body').scrollTop($(document).height());
-        return $('html, body').animate({
-          scrollTop: myLastNote.offset().top - 150
-        }, 500, function() {
-          var $noteText;
-          $noteText = form.find(".js-note-text");
-          $noteText.focus();
-          return done($noteText);
-        });
-      } else {
-        $noteText = form.find('.js-note-text');
-        $noteText.focus();
-        return done($noteText);
+
+      var $currentlyEditing = $('.note.is-editting');
+      if ($currentlyEditing.length) {
+        var isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
+
+        if (!isEditAllowed) {
+          return;
+        }
       }
+
+      var note = $(e.target).closest('.note');
+      var $editForm = $('.note-edit-form');
+      var $originalContentEl = note.find('.original-note-content');
+      var originalContent = $originalContentEl.text().trim();
+      var postUrl = $originalContentEl.data('post-url');
+      var form = note.find('.note-edit-form');
+      var $noteText = form.find('.js-note-text');
+      var noteTextVal = $noteText.val(); // Neat little trick to put the cursor at the end
+
+      note.addClass('is-editting');
+      $editForm.insertAfter(note.find('.note-text'));
+      $editForm.find('.js-note-text').val(originalContent);
+      $editForm.find('form').attr('action', postUrl);
+
+      form.addClass('current-note-edit-form');
+      note.find('.js-note-attachment-delete').show(); // Show the attachment delete link
+      new GLForm(form);
+
+      $noteText.focus();
+      // Store the original note text in a data attribute to retrieve if a user cancels edit.
+      form.find('form.edit-note').data('original-note', noteTextVal);
+      $noteText.val('').val(noteTextVal);
     };
 
 
@@ -532,15 +560,17 @@
      */
 
     Notes.prototype.cancelEdit = function(e) {
-      var note;
       e.preventDefault();
-      note = $(e.target).closest('.note');
+      var note = $(e.target).closest('.note');
+      note.find('.js-edit-warning').hide();
+      note.find('.js-md-write-button').trigger('click');
+      $('.note-edit-form').insertBefore('.notes-form');
       return this.removeNoteEditForm(note);
     };
 
+
     Notes.prototype.removeNoteEditForm = function(note) {
-      var form;
-      form = note.find(".current-note-edit-form");
+      var form = note.find(".current-note-edit-form");
       note.removeClass("is-editting");
       form.removeClass("current-note-edit-form");
       // Replace markdown textarea text with original note text.
