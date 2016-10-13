@@ -90,7 +90,7 @@ class Label < ActiveRecord::Base
   end
 
   def text_color
-    LabelsHelper::text_color_for_bg(self.color)
+    LabelsHelper.text_color_for_bg(self.color)
   end
 
   def title=(value)
