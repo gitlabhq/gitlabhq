@@ -48,8 +48,6 @@
         %span.label.label-info triggered
       - if build.try(:allow_failure)
         %span.label.label-danger allowed to fail
-      - if retried
-        %span.label.label-warning retried
       - if build.manual?
         %span.label.label-info manual
 
