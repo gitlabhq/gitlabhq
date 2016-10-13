@@ -12,10 +12,10 @@ describe Projects::GraphsController do
   describe 'GET #languages' do
     let(:linguist_repository) do
       double(languages: {
-                       'Ruby'         => 1000,
-                       'CoffeeScript' => 350,
-                       'PowerShell'   => 15
-                     })
+               'Ruby'         => 1000,
+               'CoffeeScript' => 350,
+               'PowerShell'   => 15
+             })
     end
 
     let(:expected_values) do
@@ -37,7 +37,7 @@ describe Projects::GraphsController do
       get(:languages, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
 
       expected_values.each do |val|
-        expect(assigns(:languages)).to include(include(val))
+        expect(assigns(:languages)).to include(a_hash_including(val))
       end
     end
   end
