@@ -34,7 +34,9 @@ scope(path: 'users/:username',
 end
 
 # Compatibility with old routing
+# TODO (dzaporozhets): remove in 10.0
 get '/u/:username', to: redirect('/%{username}'), constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+# TODO (dzaporozhets): remove in 9.0
 get '/u/:username/groups', to: redirect('/users/%{username}/groups'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
 get '/u/:username/projects', to: redirect('/users/%{username}/projects'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
 get '/u/:username/snippets', to: redirect('/users/%{username}/snippets'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }

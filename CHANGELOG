@@ -78,6 +78,7 @@ v 8.13.0 (unreleased)
   - Replace bootstrap caret with fontawesome caret (ClemMakesApps)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
+  - Change user pages routing from /u/:username/PATH to /users/:username/PATH. Old routes will redirect to the new ones for the time being.
   - Fix enter key when navigating search site search dropdown. !6643 (Brennan Roberts)
   - Fix deploy status responsiveness error !6633
   - Make searching for commits case insensitive
@@ -102,7 +103,6 @@ v 8.13.0 (unreleased)
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
   - Make guests unable to view MRs on private projects
-  - Change user pages routing from /u/:username/PATH to /users/:username/PATH
 
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
