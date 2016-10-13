@@ -299,6 +299,14 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
+# Trigger docs build
+trigger_docs:
+  stage: post-test
+  script:
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master https://gitlab.com/api/v3/projects/38069/trigger/builds"
+  only:
+    - master
+
 # Notify slack in the end
 
 notify:slack:
