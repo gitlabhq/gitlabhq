@@ -128,13 +128,13 @@ class Label < ActiveRecord::Base
   end
 
   def issues_count(user, params = {})
-    IssuesFinder.new(user, { label_name: title, scope: 'all' }.merge(params))
+    IssuesFinder.new(user, params.reverse_merge(label_name: title, scope: 'all'))
                 .execute
                 .count
   end
 
   def merge_requests_count(user, params = {})
-    MergeRequestsFinder.new(user, { label_name: title, scope: 'all' }.merge(params))
+    MergeRequestsFinder.new(user, params.reverse_merge(label_name: title, scope: 'all'))
                        .execute
                        .count
   end
