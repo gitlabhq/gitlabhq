@@ -31,11 +31,12 @@ module API
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
+    mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
     mount ::API::Builds
-    mount ::API::CommitStatuses
     mount ::API::Commits
+    mount ::API::CommitStatuses
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
@@ -43,22 +44,21 @@ module API
     mount ::API::Groups
     mount ::API::Internal
     mount ::API::Issues
-    mount ::API::Boards
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::LicenseTemplates
     mount ::API::Lint
     mount ::API::Members
-    mount ::API::MergeRequests
     mount ::API::MergeRequestDiffs
+    mount ::API::MergeRequests
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
     mount ::API::ProjectHooks
-    mount ::API::ProjectSnippets
     mount ::API::Projects
+    mount ::API::ProjectSnippets
     mount ::API::Repositories
     mount ::API::Runners
     mount ::API::Services
