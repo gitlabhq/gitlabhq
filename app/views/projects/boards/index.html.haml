@@ -10,7 +10,7 @@
 
 = render 'shared/issuable/filter', type: :boards
 
-.boards-list#board-app{ "v-cloak" => true, data: board_data }
+#board-app{ "v-cloak" => true, data: board_data }
   = render "title", board: @boards.first
   .boards-app-loading.text-center{ "v-if" => "loading" }
     = icon("spinner spin")
