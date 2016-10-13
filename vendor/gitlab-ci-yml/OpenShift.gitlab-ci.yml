@@ -7,10 +7,9 @@ stages:
   - production
 
 variables:
-  OPENSHIFT_SERVER: https://openshift.example.com:8443
-  OPENSHIFT_DOMAIN: apps.example.com
-
-  # Configure this variable in Secure Variables:
+  # Configure these variables as Secure Variables:
+  # OPENSHIFT_SERVER: https://openshift.example.com:8443
+  # OPENSHIFT_DOMAIN: apps.example.com
   # OPENSHIFT_TOKEN: my.openshift.token
 
 build:
