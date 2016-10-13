@@ -400,6 +400,10 @@ Style/SpaceBeforeComment:
 Style/SpaceBeforeSemicolon:
   Enabled: true
 
+# No spaces before semicolons.
+Style/SpaceBeforeModifier:
+  Enabled: true
+
 # Use spaces inside hash literal braces - or don't.
 Style/SpaceInsideHashLiteralBraces:
   Enabled: true
