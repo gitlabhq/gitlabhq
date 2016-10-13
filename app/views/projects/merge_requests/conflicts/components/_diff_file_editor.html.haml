@@ -2,7 +2,7 @@
   .diff-editor-wrap{ "v-show" => "file.showEditor" }
     .discard-changes-alert-wrap{ "v-if" => "file.promptDiscardConfirmation" }
       .discard-changes-alert
-        Are you sure to discard your changes?
+        Are you sure you want to discard your changes?
         .discard-actions
           %button.btn.btn-sm.btn-close{ "@click" => "acceptDiscardConfirmation(file)" } Discard changes
           %button.btn.btn-sm{ "@click" => "cancelDiscardConfirmation(file)" } Cancel
