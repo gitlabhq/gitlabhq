@@ -46,6 +46,11 @@ class ProjectPolicy < BasePolicy
     can! :create_note
     can! :upload_file
     can! :read_cycle_analytics
+
+    if project.public_builds?
+      can! :read_pipeline
+      can! :read_build
+    end
   end
 
   def reporter_access!

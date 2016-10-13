@@ -111,13 +111,35 @@ describe ProjectPolicy, models: true do
     context 'guests' do
       let(:current_user) { guest }
 
-      it do
-        is_expected.to include(*guest_permissions)
-        is_expected.not_to include(*reporter_permissions)
-        is_expected.not_to include(*team_member_reporter_permissions)
-        is_expected.not_to include(*developer_permissions)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+      context 'public builds enabled' do
+        let(:reporter_public_build_permissions) do
+          reporter_permissions - [:read_build, :read_pipeline]
+        end
+
+        it do
+          is_expected.to include(*guest_permissions)
+          is_expected.not_to include(*reporter_public_build_permissions)
+          is_expected.not_to include(*team_member_reporter_permissions)
+          is_expected.not_to include(*developer_permissions)
+          is_expected.not_to include(*master_permissions)
+          is_expected.not_to include(*owner_permissions)
+        end
+      end
+
+      context 'public builds disabled' do
+        before do
+          project.public_builds = false
+          project.save
+        end
+
+        it do
+          is_expected.to include(*guest_permissions)
+          is_expected.not_to include(*reporter_permissions)
+          is_expected.not_to include(*team_member_reporter_permissions)
+          is_expected.not_to include(*developer_permissions)
+          is_expected.not_to include(*master_permissions)
+          is_expected.not_to include(*owner_permissions)
+        end
       end
     end
 
