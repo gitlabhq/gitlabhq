@@ -19,6 +19,8 @@ module Labels
         labels_to_transfer.find_each do |label|
           new_label_id = find_or_create_label!(label)
 
+          next if new_label_id == label.id
+
           LabelLink.where(label_id: label.id).update_all(label_id: new_label_id)
         end
       end
