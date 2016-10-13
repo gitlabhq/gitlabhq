@@ -13,6 +13,17 @@ describe BuildSuccessWorker do
           described_class.new.perform(build.id)
         end
       end
+
+      context 'when build is not associated with project' do
+        let!(:build) { create(:ci_build, project: nil) }
+
+        it 'does not create deployment' do
+          expect_any_instance_of(CreateDeploymentService)
+            .not_to receive(:execute)
+
+          described_class.new.perform(build.id)
+        end
+      end
     end
 
     context 'when build does not exist' do

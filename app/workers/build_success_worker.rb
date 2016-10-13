@@ -4,13 +4,15 @@ class BuildSuccessWorker
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      perform_deloyment(build)
+      return unless build.project
+
+      create_deloyment(build)
     end
   end
 
   private
 
-  def perform_deloyment(build)
+  def create_deloyment(build)
     return if build.environment.blank?
 
     service = CreateDeploymentService.new(
