@@ -111,6 +111,9 @@ v 8.13.0 (unreleased)
   - API: all unknown routing will be handled with 404 Not Found
   - Make guests unable to view MRs on private projects
 
+v 8.12.7
+  - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
+
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
 
