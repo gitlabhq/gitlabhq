@@ -61,20 +61,17 @@ feature 'Users', feature: true, js: true do
     before(:each) do
       visit new_user_session_path
       click_link 'Register'
-      @username_form_group = find '.username'
-      @username_field = find '#new_user_username'
     end
-
     scenario 'shows an error border if the username already exists' do
       fill_in username_input, with: user.username
       wait_for_ajax
-      expect(@username_form_group).to have_css '.gl-field-error-outline'
+      expect(find('.username')).to have_css '.gl-field-error-outline'
     end
 
     scenario 'doesn\'t show an error border if the username is available' do
       fill_in username_input, with: 'new-user'
       wait_for_ajax
-      expect(@username_field).not_to have_css '.gl-field-error-outline'
+      expect(find('#new_user_username')).not_to have_css '.gl-field-error-outline'
     end
   end
 
