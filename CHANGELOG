@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.12.7
   - Prevent running GfmAutocomplete setup for each diff note. !6569
   - Fix Long commit messages overflow viewport in file tree. !6573
+  - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
 
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
