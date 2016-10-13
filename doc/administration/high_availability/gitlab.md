@@ -101,9 +101,9 @@ need some additional configuration.
 
     ```ruby
     gitlab_shell['secret_token'] = 'fbfb19c355066a9afb030992231c4a363357f77345edd0f2e772359e5be59b02538e1fa6cae8f93f7d23355341cea2b93600dab6d6c3edcdced558fc6d739860'
-    gitlab_rails['secret_token'] = 'b719fe119132c7810908bba18315259ed12888d4f5ee5430c42a776d840a396799b0a5ef0a801348c8a357f07aa72bbd58e25a84b8f247a25c72f539c7a6c5fa'
-    gitlab_ci['secret_key_base'] = '6e657410d57c71b4fc3ed0d694e7842b1895a8b401d812c17fe61caf95b48a6d703cb53c112bc01ebd197a85da81b18e29682040e99b4f26594772a4a2c98c6d'
-    gitlab_ci['db_key_base'] = 'bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964'
+    gitlab_rails['otp_key_base'] = 'b719fe119132c7810908bba18315259ed12888d4f5ee5430c42a776d840a396799b0a5ef0a801348c8a357f07aa72bbd58e25a84b8f247a25c72f539c7a6c5fa'
+    gitlab_rails['secret_key_base'] = '6e657410d57c71b4fc3ed0d694e7842b1895a8b401d812c17fe61caf95b48a6d703cb53c112bc01ebd197a85da81b18e29682040e99b4f26594772a4a2c98c6d'
+    gitlab_rails['db_key_base'] = 'bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964'
     ```
 
 1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
