@@ -22,8 +22,8 @@ for a good example):
   - The GitLab version when the endpoint was added
   - If the endpoint is deprecated, and if yes when will it be removed
 
-- `params` for the method params. This acts as description, validation, and
-  coercion of the parameters
+- `params` for the method params. This acts as description,
+  [validation, and coercion of the parameters]
 
 A good example is as follows:
 
@@ -93,4 +93,4 @@ Model.create(foo: params[:foo])
 ```
 
 [Entity]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/entities.rb
-[parameters validation and coercion]: https://github.com/ruby-grape/grape#parameter-validation-and-coercion
+[validation, and coercion of the parameters]: https://github.com/ruby-grape/grape#parameter-validation-and-coercion
