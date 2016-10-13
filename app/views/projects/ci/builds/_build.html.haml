@@ -37,7 +37,7 @@
       = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
 
     - if defined?(retried) && retried
-      = icon('refresh', class: 'text-warning has-tooltip', title: 'Build was retried.')
+      = icon('refresh', class: 'text-warning has-tooltip', title: 'Build was retried')
 
     .label-container
       - if build.tags.any?
