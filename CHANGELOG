@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.13.0 (unreleased)
+  - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
   - Adding members no longer silently fails when there is extra whitespace
