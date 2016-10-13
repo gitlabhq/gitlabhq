@@ -36,6 +36,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Allow browsing branches that end with '.atom'
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Replace unique keyframes mixin with keyframe mixin with specific names (ClemMakesApps)
+  - Only exercise project cache when applies during creation of project services
   - Add more tests for calendar contribution (ClemMakesApps)
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
