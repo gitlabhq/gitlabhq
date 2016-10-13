@@ -230,10 +230,6 @@ module Issuable
     labels.order('title ASC').pluck(:title)
   end
 
-  def remove_labels
-    labels.delete_all
-  end
-
   def add_labels_by_names(label_names, current_user)
     available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
 
