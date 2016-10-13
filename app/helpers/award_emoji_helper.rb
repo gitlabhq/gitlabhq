@@ -1,7 +1,9 @@
 module AwardEmojiHelper
   def toggle_award_url(awardable)
     if @project
-      url_for([:toggle_award_emoji, @project.namespace.becomes(Namespace), @project, awardable])
+      @__namespace ||= @project.namespace.becomes(Namespace)
+
+      url_for([:toggle_award_emoji, @__namespace, @project, awardable])
     else
       url_for([:toggle_award_emoji, awardable])
     end
