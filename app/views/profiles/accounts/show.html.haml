@@ -86,11 +86,11 @@
           = f.label :username, "Path", class: "label-light"
           .input-group
             .input-group-addon
-              = "#{root_url}u/"
+              = "#{root_url}"
             = f.text_field :username, required: true, class: 'form-control'
         .help-block
           Current path:
-          = "#{root_url}u/#{current_user.username}"
+          = "#{root_url}#{current_user.username}"
         .prepend-top-default
           = f.button class: "btn btn-warning", type: "submit" do
             = icon "spinner spin", class: "hidden loading-username"
