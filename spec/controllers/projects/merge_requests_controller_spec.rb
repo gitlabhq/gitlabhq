@@ -712,6 +712,7 @@ describe Projects::MergeRequestsController do
                                          'new_path' => path,
                                          'blob_icon' => 'file-text-o',
                                          'blob_path' => a_string_ending_with(path),
+                                         'blob_ace_mode' => 'ruby',
                                          'content' => content)
       end
     end

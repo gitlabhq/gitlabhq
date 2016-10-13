@@ -25,6 +25,10 @@ module Gitlab
         merge_file_result[:data]
       end
 
+      def our_blob
+        @our_blob ||= repository.blob_at(merge_request.diff_refs.head_sha, our_path)
+      end
+
       def type
         lines unless @type
 
@@ -209,6 +213,7 @@ module Gitlab
         json_hash.tap do |json_hash|
           if opts[:full_content]
             json_hash[:content] = content
+            json_hash[:blob_ace_mode] = our_blob && our_blob.language.try(:ace_mode)
           else
             json_hash[:sections] = sections if type.text?
             json_hash[:type] = type
