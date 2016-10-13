@@ -76,25 +76,22 @@ module Ci
 
     state_machine :status do
       after_transition pending: :running do |build|
-        build.run_after_commit { BuildHooksWorker.perform_async(id) }
+        build.run_after_commit do
+          BuildHooksWorker.perform_async(id)
+        end
       end
 
       after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
-        build.run_after_commit { BuildHooksWorker.perform_async(id) }
+
+        build.run_after_commit do
+          BuildHooksWorker.perform_async(id)
+        end
       end
 
       after_transition any => [:success] do |build|
-        if build.environment.present?
-          service = CreateDeploymentService.new(
-            build.project, build.user,
-            environment: build.environment,
-            sha: build.sha,
-            ref: build.ref,
-            tag: build.tag,
-            options: build.options.to_h[:environment],
-            variables: build.variables)
-          service.execute(build)
+        build.run_after_commit do
+          BuildSuccessWorker.perform_async(id)
         end
       end
     end
