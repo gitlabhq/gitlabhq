@@ -38,6 +38,7 @@ v 8.13.0 (unreleased)
   - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date
   - API: Multi-file commit !6096 (mahcsig)
+  - Unicode emoji are now converted to images
   - Revert "Label list shows all issues (opened or closed) with that label"
   - Expose expires_at field when sharing project on API
   - Fix VueJS template tags being rendered in code comments
