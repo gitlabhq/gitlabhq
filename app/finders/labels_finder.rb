@@ -33,7 +33,7 @@ class LabelsFinder < UnionFinder
   end
 
   def with_title(items)
-    items = items.where(title: title) if title.present?
+    items = items.where(title: title) if title
     items
   end
 
