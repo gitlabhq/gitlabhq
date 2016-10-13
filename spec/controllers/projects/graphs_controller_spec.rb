@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'ostruct'
 
 describe Projects::GraphsController do
   let(:project) { create(:project) }
@@ -12,7 +11,7 @@ describe Projects::GraphsController do
 
   describe 'GET #languages' do
     let(:linguist_repository) do
-      OpenStruct.new(languages: {
+      double(languages: {
                        'Ruby'         => 1000,
                        'CoffeeScript' => 350,
                        'PowerShell'   => 15
@@ -23,10 +22,10 @@ describe Projects::GraphsController do
       ps_color = "##{Digest::SHA256.hexdigest('PowerShell')[0...6]}"
       [
         # colors from Linguist:
-        { value: 73.26, label: "Ruby",         color: "#701516", highlight: "#701516" },
-        { value: 25.64, label: "CoffeeScript", color: "#244776", highlight: "#244776" },
+        { label: "Ruby",         color: "#701516", highlight: "#701516" },
+        { label: "CoffeeScript", color: "#244776", highlight: "#244776" },
         # colors from SHA256 fallback:
-        { value: 1.1,   label: "PowerShell",   color: ps_color,  highlight: ps_color  }
+        { label: "PowerShell",   color: ps_color,  highlight: ps_color  }
       ]
     end
 
@@ -37,7 +36,9 @@ describe Projects::GraphsController do
     it 'sets the correct colour according to language' do
       get(:languages, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
 
-      expect(assigns(:languages)).to eq(expected_values)
+      expected_values.each do |val|
+        expect(assigns(:languages)).to include(include(val))
+      end
     end
   end
 end
