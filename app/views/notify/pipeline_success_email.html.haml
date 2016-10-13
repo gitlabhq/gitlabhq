@@ -121,12 +121,12 @@
                                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;"}
                                             %img.avatar{height: "24", src: avatar_icon(commit.author || commit.author_email, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24"}/
                                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;"}
-                                            - if commit.author.nil?
-                                              %span
-                                                = commit.author_name
-                                            - else
+                                            - if commit.author
                                               %a.muted{href: user_url(commit.author), style: "color:#333333;text-decoration:none;"}
                                                 = commit.author.name
+                                            - else
+                                              %span
+                                                = commit.author_name
                         %tr.spacer
                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;"}
                             &nbsp;

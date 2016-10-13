@@ -9,10 +9,10 @@ Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge
 Commit: <%= @pipeline.short_sha %> ( <%= namespace_project_commit_url(@project.namespace, @project, @pipeline.sha) %> )
 Commit Message: <%= @pipeline.git_commit_message.truncate(50) %>
 <% commit = @pipeline.commit -%>
-<% if commit.author.nil? -%>
-Commit Author: <%= commit.author_name %>
-<% else -%>
+<% if commit.author -%>
 Commit Author: <%= commit.author.name %> ( <%= user_url(commit.author) %> )
+<% else -%>
+Commit Author: <%= commit.author_name %>
 <% end -%>
 
 <% build_count = @pipeline.statuses.latest.size -%>
