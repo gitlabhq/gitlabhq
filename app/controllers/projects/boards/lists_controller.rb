@@ -5,11 +5,11 @@ module Projects
       before_action :authorize_read_list!, only: [:index]
 
       def index
-        render json: serialize_as_json(project.board.lists)
+        render json: serialize_as_json(board.lists)
       end
 
       def create
-        list = ::Boards::Lists::CreateService.new(project, current_user, list_params).execute
+        list = ::Boards::Lists::CreateService.new(project, current_user, list_params).execute(board)
 
         if list.valid?
           render json: serialize_as_json(list)
@@ -19,7 +19,7 @@ module Projects
       end
 
       def update
-        list = project.board.lists.movable.find(params[:id])
+        list = board.lists.movable.find(params[:id])
         service = ::Boards::Lists::MoveService.new(project, current_user, move_params)
 
         if service.execute(list)
@@ -30,8 +30,8 @@ module Projects
       end
 
       def destroy
-        list = project.board.lists.destroyable.find(params[:id])
-        service = ::Boards::Lists::DestroyService.new(project, current_user, params)
+        list = board.lists.destroyable.find(params[:id])
+        service = ::Boards::Lists::DestroyService.new(project, current_user)
 
         if service.execute(list)
           head :ok
@@ -43,8 +43,8 @@ module Projects
       def generate
         service = ::Boards::Lists::GenerateService.new(project, current_user)
 
-        if service.execute
-          render json: serialize_as_json(project.board.lists.movable)
+        if service.execute(board)
+          render json: serialize_as_json(board.lists.movable)
         else
           head :unprocessable_entity
         end
@@ -58,6 +58,10 @@ module Projects
 
       def authorize_read_list!
         return render_403 unless can?(current_user, :read_list, project)
+      end
+
+      def board
+        @board ||= project.boards.find(params[:board_id])
       end
 
       def list_params

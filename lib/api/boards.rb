@@ -7,13 +7,14 @@ module API
       # Get the project board
       get ':id/boards' do
         authorize!(:read_board, user_project)
-        present [user_project.board], with: Entities::Board
+        present user_project.boards, with: Entities::Board
       end
 
       segment ':id/boards/:board_id' do
         helpers do
           def project_board
-            board = user_project.board
+            board = user_project.boards.first
+
             if params[:board_id].to_i == board.id
               board
             else
@@ -55,8 +56,10 @@ module API
 
           authorize!(:admin_list, user_project)
 
-          list = ::Boards::Lists::CreateService.new(user_project, current_user,
-              { label_id: params[:label_id] }).execute
+          service = ::Boards::Lists::CreateService.new(user_project, current_user,
+            { label_id: params[:label_id] })
+
+          list = service.execute(project_board)
 
           if list.valid?
             present list, with: Entities::List
@@ -78,10 +81,10 @@ module API
 
           authorize!(:admin_list, user_project)
 
-          moved = ::Boards::Lists::MoveService.new(user_project, current_user,
-              { position: params[:position].to_i }).execute(list)
+          service = ::Boards::Lists::MoveService.new(user_project, current_user,
+              { position: params[:position].to_i })
 
-          if moved
+          if service.execute(list)
             present list, with: Entities::List
           else
             render_api_error!({ error: "List could not be moved!" }, 400)
@@ -97,16 +100,16 @@ module API
         # Example Request:
         #   DELETE /projects/:id/boards/:board_id/lists/:list_id
         delete "/lists/:list_id" do
-          list = board_lists.find_by(id: params[:list_id])
-
           authorize!(:admin_list, user_project)
 
-          if list
-            destroyed_list = ::Boards::Lists::DestroyService.new(
-              user_project, current_user).execute(list)
-            present destroyed_list, with: Entities::List
+          list = board_lists.find(params[:list_id])
+
+          service = ::Boards::Lists::DestroyService.new(user_project, current_user)
+
+          if service.execute(list)
+            present list, with: Entities::List
           else
-            not_found!('List')
+            render_api_error!({ error: 'List could not be deleted!' }, 400)
           end
         end
       end

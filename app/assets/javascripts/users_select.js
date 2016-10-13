@@ -160,7 +160,7 @@
                 selectedId = user.id;
                 return;
               }
-              if (page === 'projects:boards:show') {
+              if ($('html').hasClass('issue-boards-page')) {
                 selectedId = user.id;
                 gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
                 gl.issueBoards.BoardsStore.updateFiltersUrl();

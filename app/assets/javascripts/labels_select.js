@@ -292,7 +292,7 @@
               return;
             }
 
-            if (page === 'projects:boards:show') {
+            if ($('html').hasClass('issue-boards-page')) {
               return;
             }
             if ($dropdown.hasClass('js-multiselect')) {
@@ -334,7 +334,7 @@
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
-            if (page === 'projects:boards:show') {
+            if ($('html').hasClass('issue-boards-page')) {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
               }

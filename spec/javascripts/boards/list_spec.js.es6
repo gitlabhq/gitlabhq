@@ -16,7 +16,7 @@ describe('List model', () => {
   let list;
 
   beforeEach(() => {
-    gl.boardService = new BoardService('/test/issue-boards/board');
+    gl.boardService = new BoardService('/test/issue-boards/board', '1');
     gl.issueBoards.BoardsStore.create();
 
     list = new List(listObj);

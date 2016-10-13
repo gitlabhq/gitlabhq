@@ -24,7 +24,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_many(:boards).dependent(:destroy) }
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
@@ -92,6 +92,15 @@ describe Project, models: true do
           expect(requester_user_ids).to include(requester.id)
           expect(requester_user_ids).not_to include(developer.id)
         end
+      end
+    end
+
+    describe '#boards' do
+      it 'raises an error when attempting to add more than one board to the project' do
+        subject.boards.build
+
+        expect { subject.boards.build }.to raise_error(Project::BoardLimitExceeded, 'Number of permitted boards exceeded')
+        expect(subject.boards.size).to eq 1
       end
     end
   end
