@@ -195,6 +195,10 @@ class Service < ActiveRecord::Base
     self.category == :issue_tracker
   end
 
+  def external_wiki?
+    self.type == "ExternalWikiService"
+  end
+
   def self.available_services_names
     %w(
       asana
@@ -221,23 +225,23 @@ class Service < ActiveRecord::Base
     )
   end
 
-  def self.create_from_template(project_id, template)
+  def self.create_from_template(project, template)
     service = template.dup
     service.template = false
-    service.project_id = project_id
+    service.project = project
     service if service.save
   end
 
   private
 
   def cache_project_has_external_issue_tracker
-    if project && !project.destroyed?
+    if issue_tracker? && project && !project.destroyed?
       project.cache_has_external_issue_tracker
     end
   end
 
   def cache_project_has_external_wiki
-    if project && !project.destroyed?
+    if external_wiki? && project && !project.destroyed?
       project.cache_has_external_wiki
     end
   end
