@@ -88,7 +88,7 @@ class IssuableBaseService < BaseService
     return unless labels
 
     params[:label_ids] = labels.split(',').map do |label_name|
-      label = available_labels.find_by(title: title).select(:id)
+      label = available_labels.find_by(title: label_name)
       label ||= project.labels.create(title: label_name.strip, color: Label::DEFAULT_COLOR)
 
       label.id
