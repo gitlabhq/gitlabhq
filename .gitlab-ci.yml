@@ -61,8 +61,8 @@ update-knapsack:
     - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
     - rm -f knapsack/*_node_*.json
   only:
-    - master
-
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
 # Execute all testing suites
 
 .use-db: &use-db
@@ -143,7 +143,8 @@ spinach 9 10: *spinach-knapsack
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
   cache:
     key: "ruby21"
     paths:
@@ -286,7 +287,8 @@ bundler:audit:
   stage: test
   <<: *ruby-static-analysis
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
