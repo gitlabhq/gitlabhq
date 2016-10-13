@@ -1,7 +1,7 @@
 module Projects
   class ParticipantsService < BaseService
     attr_reader :noteable
-    
+
     def execute(noteable)
       @noteable = noteable
 
@@ -15,7 +15,8 @@ module Projects
 
       [{
         name: noteable.author.name,
-        username: noteable.author.username
+        username: noteable.author.username,
+        avatar_url: noteable.author.avatar_url
       }]
     end
 
@@ -28,14 +29,14 @@ module Projects
 
     def sorted(users)
       users.uniq.to_a.compact.sort_by(&:username).map do |user|
-        { username: user.username, name: user.name }
+        { username: user.username, name: user.name, avatar_url: user.avatar_url }
       end
     end
 
     def groups
       current_user.authorized_groups.sort_by(&:path).map do |group|
         count = group.users.count
-        { username: group.path, name: group.name, count: count }
+        { username: group.path, name: group.name, count: count, avatar_url: group.avatar.url }
       end
     end
 
