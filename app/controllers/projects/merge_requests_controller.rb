@@ -409,12 +409,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @merge_request.environments.map do |environment|
           next unless can?(current_user, :read_environment, environment)
 
+          project = environment.project
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 
           {
             id: environment.id,
             name: environment.name,
-            url: namespace_project_environment_path(@project.namespace, @project, environment),
+            url: namespace_project_environment_path(project.namespace, project, environment),
             external_url: environment.external_url,
             external_url_formatted: environment.formatted_external_url,
             deployed_at: deployment.try(:created_at),
