@@ -231,6 +231,6 @@ For our currently-supported browsers, see our [requirements][requirements].
 If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being thrown in tests, but
 can't reproduce them manually, you may have included `ES6`-style JavaScript in files that don't
 have the `.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file you're
-working in (`git mv <file>.js> <file.js.es6>`).
+working in (`git mv <file.js> <file.js.es6>`).
 
 
