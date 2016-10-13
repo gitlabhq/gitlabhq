@@ -13,15 +13,16 @@
   - else
     = form.label name, title, class: "control-label"
   .col-sm-10
-    - if type == 'text'
+    - case type
+    - when 'text'
       = form.text_field name, class: "form-control", placeholder: placeholder
-    - elsif type == 'textarea'
+    - when 'textarea'
       = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder
-    - elsif type == 'checkbox'
+    - when 'checkbox'
       = form.check_box name
-    - elsif type == 'select'
+    - when 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
-    - elsif type == 'password'
+    - when 'password'
       = form.password_field name, autocomplete: "new-password", class: 'form-control'
     - if help
       %span.help-block= help
