@@ -4,6 +4,7 @@ v 8.13.0 (unreleased)
   - Fix 500 error updating mirror URLs for projects
   - Fix validations related to mirroring settings form. !773
   - Fix Git access panel for Wikis when Kerberos authentication is enabled (Borja Aparicio)
+  - Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
 
 v 8.12.5
   - No EE-specific changes

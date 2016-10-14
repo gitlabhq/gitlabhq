@@ -42,7 +42,7 @@ describe UpdateAllMirrorsWorker do
 
   describe '#fail_stuck_mirrors!' do
     it 'ignores records that are not mirrors' do
-      create(:empty_project, :import_started, mirror_last_update_at: 3.days.ago)
+      create(:empty_project, :import_started, mirror_last_update_at: 12.hours.ago)
 
       expect_any_instance_of(Project).not_to receive(:import_fail)
 
@@ -50,7 +50,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'ignores records without in-progress import' do
-      create(:empty_project, :mirror, :import_finished, mirror_last_update_at: 3.days.ago)
+      create(:empty_project, :mirror, :import_finished, mirror_last_update_at: 12.hours.ago)
 
       expect_any_instance_of(Project).not_to receive(:import_fail)
 
@@ -66,7 +66,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'transitions stuck mirrors to a failed state' do
-      project = create(:empty_project, :mirror, mirror_last_update_at: 3.days.ago)
+      project = create(:empty_project, :mirror, mirror_last_update_at: 12.hours.ago)
 
       perform
       project.reload
@@ -75,7 +75,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'updates the import_error message' do
-      project = create(:empty_project, :mirror, mirror_last_update_at: 3.days.ago)
+      project = create(:empty_project, :mirror, mirror_last_update_at: 12.hours.ago)
 
       perform
       project.reload
