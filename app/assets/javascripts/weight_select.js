@@ -39,7 +39,7 @@
         return $dropdown.glDropdown({
           selectable: true,
           fieldName: $dropdown.data("field-name"),
-          showMenuAbove: true,
+          showMenuAbove: $dropdown.is('.js-issuable-form-weight'),
           toggleLabel: function (selected, el) {
             return $(el).data("id");
           },
@@ -57,7 +57,7 @@
           clicked: function(selected, $el, e) {
             if ($(dropdown).is(".js-filter-submit")) {
               return $(dropdown).parents('form').submit();
-            } else if ($(dropdown).is('.js-issuable-form-weight')) {
+            } else if ($dropdown.is('.js-issuable-form-weight')) {
               e.preventDefault();
             } else {
               selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
