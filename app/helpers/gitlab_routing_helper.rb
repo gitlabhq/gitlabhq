@@ -99,7 +99,7 @@ module GitlabRoutingHelper
   end
 
   def pipeline_build_url(pipeline, build, *args)
-    namespace_project_build_url(pipeline.project.namespace, pipeline.project,build.id, *args)
+    namespace_project_build_url(pipeline.project.namespace, pipeline.project, build.id, *args)
   end
 
   def commits_url(entity, *args)
