@@ -2,6 +2,9 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('environments/environments_bundle.js')
+
 %div{ class: container_class }
   .top-area
     %ul.nav-links
@@ -22,7 +25,7 @@
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
 
-  .environments-container
+  .environments-container#environments-list-view{ "v-cloak" => true, data: environments_list_data }
     - if @all_environments.blank?
       .blank-state.blank-state-no-icon
         %h2.blank-state-title
@@ -45,4 +48,4 @@
             %th Commit
             %th
             %th.hidden-xs
-          = render @environments
+        /  = render @environments
