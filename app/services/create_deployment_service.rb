@@ -2,6 +2,8 @@ require_relative 'base_service'
 
 class CreateDeploymentService < BaseService
   def execute(deployable = nil)
+    return unless executable?
+
     ActiveRecord::Base.transaction do
       @deployable = deployable
       @environment = prepare_environment
@@ -13,6 +15,10 @@ class CreateDeploymentService < BaseService
   end
 
   private
+
+  def executable?
+    project && name.present?
+  end
 
   def deploy
     project.deployments.create(

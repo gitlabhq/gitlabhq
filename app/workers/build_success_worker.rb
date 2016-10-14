@@ -4,8 +4,6 @@ class BuildSuccessWorker
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      return unless build.project
-
       create_deployment(build)
     end
   end
