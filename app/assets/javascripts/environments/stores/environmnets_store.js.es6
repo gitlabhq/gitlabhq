@@ -31,10 +31,13 @@
      *   },
      *  {name: "environment_1", environment_type: null}
      * ]
-     * @param  {Array} environments List of environments
+     * 
+     * 
+     * @param  {Array} environments List of environments.
+     * @returns {Array} Tree structured array with the received environments.
      */
     storeEnvironments(environments) {
-      this.state.environments = environments.reduce((acc, environment) => {
+      const environmentsTree = environments.reduce((acc, environment) => {
         if (environment.environment_type !== null) {
           const occurs = acc.find((element, index, array) => {
             return element.name === environment.environment_type;
@@ -55,6 +58,10 @@
 
         return acc;
       }, []).sort();
+    
+      this.state.environments = environmentsTree;
+      
+      return environmentsTree;
     }
   }
 })();

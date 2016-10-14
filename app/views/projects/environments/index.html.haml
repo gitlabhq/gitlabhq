@@ -26,26 +26,29 @@
           New environment
 
   .environments-container#environments-list-view{ "v-cloak" => true, data: environments_list_data }
-    - if @all_environments.blank?
-      .blank-state.blank-state-no-icon
-        %h2.blank-state-title
-          You don't have any environments right now.
-        %p.blank-state-text
-          Environments are places where code gets deployed, such as staging or production.
-          %br
-          = succeed "." do
-            = link_to "Read more about environments", help_page_path("ci/environments")
-        - if can?(current_user, :create_environment, @project)
-          = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
-            New environment
-    - else
-      .table-holder
-        %table.table.ci-table.environments
-          %tbody
-            %th Environment
-            %th Last Deployment
-            %th Build
-            %th Commit
-            %th
-            %th.hidden-xs
-        /  = render @environments
+    .environments-list-viewtext-center{ "v-if" => "loading" }
+      = icon("spinner spin")
+
+    .blank-state.blank-state-no-icon{ "v-if" => "state.environments.length === 0" }
+      %h2.blank-state-title
+        You don't have any environments right now.
+      %p.blank-state-text
+        Environments are places where code gets deployed, such as staging or production.
+        %br
+        = succeed "." do
+          = link_to "Read more about environments", help_page_path("ci/environments")
+      - if can?(current_user, :create_environment, @project)
+        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
+          New environment
+          
+    .table-holder{ "v-if" => "state.environments.length" }
+      %table.table.ci-table.environments
+        %thead
+          %th Environment
+          %th Last Deployment
+          %th Build
+          %th Commit
+          %th
+          %th.hidden-xs
+        %tbody
+          =render "projects/environments/components/environment"

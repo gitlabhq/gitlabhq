@@ -1,0 +1,8 @@
+%environment-item{"inline-template" => true, 
+  "v-for" => "environment in state.environments", 
+  ":model" => "environment"}
+  %i{"v-if" => "isFolder"}
+    = icon("plus")
+  %i{"v-if" => ""}
+    = icon("less")
+  {{model.name}}

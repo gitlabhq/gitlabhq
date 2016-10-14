@@ -2,7 +2,7 @@
 //= require vue-resource
 //= require_tree ./stores
 //= require_tree ./services
-
+//= require ./components/environment_item
 
 $(() => {
   
@@ -20,10 +20,11 @@ $(() => {
     el: $environmentsListApp,
     
     components: {
-      'tree-view': gl.environmentsList.TreeView
+      'environment-item': gl.environmentsList.EnvironmentItem
     },
 
     data: {
+      state: Store.state,
       endpoint: $environmentsListApp.dataset.endpoint,
       loading: true
     },
