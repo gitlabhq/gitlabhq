@@ -13,9 +13,9 @@ columns = {
   'Author' => 'author_name',
   'Assignee' => 'assignee_name',
   'Confidential' => 'confidential',
-  'Due Date' => -> (issue) { issue.due_date&.strftime('%Y-%m-%d') },
-  'Created At (UTC)' => -> (issue) { issue.created_at&.strftime('%Y-%m-%d %H:%M:%S') },
-  'Updated At (UTC)' => -> (issue) { issue.updated_at&.strftime('%Y-%m-%d %H:%M:%S') },
+  'Due Date' => -> (issue) { issue.due_date&.to_s(:csv) },
+  'Created At (UTC)' => -> (issue) { issue.created_at&.to_s(:csv) },
+  'Updated At (UTC)' => -> (issue) { issue.updated_at&.to_s(:csv) },
   'Milestone' => -> (issue) { issue.milestone&.title },
   'Labels' => -> (issue) { labels[issue.id].sort.join(',').presence }
 }
