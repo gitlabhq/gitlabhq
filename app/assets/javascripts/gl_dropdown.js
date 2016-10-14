@@ -43,9 +43,6 @@
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.removeClass(HAS_VALUE_CLASS);
           }
-          if (keyCode === 13 && !options.elIsInput) {
-            return false;
-          }
           // Only filter asynchronously only if option remote is set
           if (this.options.remote) {
             clearTimeout(timeout);
