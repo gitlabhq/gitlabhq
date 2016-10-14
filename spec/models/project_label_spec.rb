@@ -48,7 +48,18 @@ describe ProjectLabel, models: true do
 
         project_label.valid?
 
-        expect(project_label  .errors[:title]).to be_empty
+        expect(project_label.errors[:title]).to be_empty
+      end
+    end
+
+    context 'when attempting to add more than one priority to the project label' do
+      it 'returns error' do
+        subject.priorities.build
+        subject.priorities.build
+
+        subject.valid?
+
+        expect(subject.errors[:priorities]).to include 'Number of permitted priorities exceeded'
       end
     end
   end

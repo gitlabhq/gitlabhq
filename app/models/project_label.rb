@@ -1,8 +1,11 @@
 class ProjectLabel < Label
+  NUMBER_OF_PRIORITIES = 1
+
   belongs_to :project
 
   validates :project, presence: true
 
+  validate :permitted_numbers_of_priorities
   validate :title_must_not_exist_at_group_level
 
   delegate :group, to: :project, allow_nil: true
@@ -18,6 +21,12 @@ class ProjectLabel < Label
 
     if group.labels.with_title(self.title).exists?
       errors.add(:title, :label_already_exists_at_group_level, group: group.name)
+    end
+  end
+
+  def permitted_numbers_of_priorities
+    if priorities && priorities.size >= NUMBER_OF_PRIORITIES
+      errors.add(:priorities, 'Number of permitted priorities exceeded')
     end
   end
 end
