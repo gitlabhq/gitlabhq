@@ -280,12 +280,6 @@
   line-height: 31px;
 }
 
-.builds {
-  .table-holder {
-    overflow-x: auto;
-  }
-}
-
 .panel-new-merge-request {
   .panel-heading {
     padding: 5px 10px;
@@ -373,7 +367,7 @@
 }
 
 .table-holder {
-  .builds {
+  .ci-table {
 
     th {
       background-color: $white-light;
