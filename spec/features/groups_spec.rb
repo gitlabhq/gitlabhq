@@ -47,6 +47,32 @@ feature 'Group', feature: true do
     end
   end
 
+  describe 'Group Edit' do
+    let(:group) { create(:group) }
+    let(:path)  { edit_group_path(group) }
+
+    it 'saves new settings' do
+      expect(group.request_access_enabled).to be_truthy
+      visit path
+
+      find('#group_request_access_enabled').set(false)
+
+      click_button 'Save group'
+
+      expect(page).to have_content 'successfully updated'
+      group.reload
+      expect(group.request_access_enabled).to be_falsey
+    end
+
+    it 'removes group' do
+      visit path
+
+      click_link 'Remove Group'
+
+      expect(page).to have_content "scheduled for deletion"
+    end
+  end
+
   describe 'description' do
     let(:group) { create(:group) }
     let(:path)  { group_path(group) }
