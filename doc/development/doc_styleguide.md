@@ -96,7 +96,7 @@ merge request.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
   of the following GitLab members for a review: `@axil`, `@rspeicher`,
-  `@dblessing`, `@ashleys`. This is to ensure that no document
+  `@dblessing`. This is to ensure that no document
   with wrong heading is going live without an audit, thus preventing dead links
   and redirection issues when corrected
 - Leave exactly one newline after a heading
