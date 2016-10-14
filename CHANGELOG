@@ -7,6 +7,7 @@ v 8.12.7
   - Prevent flash alert text from being obscured when container is fluid. !6694
   - Fix JS bug with select2 because of missing `data-field` attribute in select box. !6812
   - Do not alter 'force_remove_source_branch' options on MergeRequest unless specified. !6817
+  - Fix GFM autocomplete setup being called several times. !6840
 
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
