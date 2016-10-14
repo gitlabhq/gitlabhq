@@ -437,3 +437,12 @@
     margin-bottom: 20px;
   }
 }
+
+.merge-request-tabs {
+  background-color: #fff;
+
+  &.affix {
+    top: 100px;
+    z-index: 9;
+  }
+}
