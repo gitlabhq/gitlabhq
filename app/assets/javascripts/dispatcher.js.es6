@@ -67,6 +67,7 @@
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
+          new WeightSelect();
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
