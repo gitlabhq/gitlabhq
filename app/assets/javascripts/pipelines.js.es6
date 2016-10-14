@@ -15,7 +15,7 @@
       $($pipelineBtn).add($pipelineGraph).toggleClass('graph-collapsed');
 
 
-      graphCollapsed ? $btnText.text('Expand') : $btnText.text('Hide')
+      graphCollapsed ? $btnText.text('Hide') : $btnText.text('Expand')
     }
 
     addMarginToBuildColumns() {
