@@ -33,6 +33,19 @@
       font-size: smaller;
     }
   }
+
+  .file-title {
+    cursor: pointer;
+
+    &:hover {
+      background-color: $dark-background-color;
+    }
+
+    .diff-toggle-caret {
+      padding-right: 6px;
+    }
+  }
+
   .diff-content {
     overflow: auto;
     overflow-y: hidden;

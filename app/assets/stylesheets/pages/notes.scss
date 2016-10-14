@@ -147,6 +147,14 @@ ul.notes {
 
 // Diff code in discussion view
 .discussion-body .diff-file {
+  .file-title {
+    cursor: default;
+
+    &:hover {
+      background-color: $gray-light;
+    }
+  }
+
   .diff-header > span {
     margin-right: 10px;
   }

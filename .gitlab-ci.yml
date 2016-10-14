@@ -339,16 +339,3 @@ pages:
       - public
   only:
     - master
-
-# Insurance in case a gem needed by one of our releases gets yanked from
-# rubygems.org in the future.
-cache gems:
-  only:
-    - tags
-  variables:
-    SETUP_DB: "false"
-  script:
-    - bundle package --all --all-platforms
-  artifacts:
-    paths:
-      - vendor/cache
