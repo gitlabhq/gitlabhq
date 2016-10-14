@@ -251,6 +251,8 @@
         label.push(this.defaultLabel);
       }
 
+      this.$dropdown.find('.dropdown-toggle-text').toggleClass('is-default', !!currentItems.length);
+
       return label.join(', ');
     }
 
