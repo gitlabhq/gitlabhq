@@ -2,12 +2,21 @@
 *
 *
 *
-* Simple usage:
 *
-* Matcher is passed the text successfully submitted in the gfm enabled form. The matcher
-* should return a boolean representing whether or not the text contains information your
-* callback would like to be passed when updated.
+* Using GfmAutocomplete pubsub:
 *
+* A pubsub notification system is needed with gfm forms because gfm notes have can change to
+* change the issueable state with slash commands. These changes need to be instantly propagated
+* to representations of state throughout the page, to prevent outdated information from persisting
+* on the page.
+*
+* To subscribe to successfully saved gfm forms, call the `subcribe` method, passing a matcher function
+* and a handler function. The matcher will be passed the submitted text, and should return
+* a boolean representing whether or not the text contains string(s) (e.g. '/assign' you would
+* you would like to be notified of being submitted. The handler will be called and passed the submitted text
+* when a new note for which the matcher returned true.
+*
+* Examples:
   function myMatcher(val) {
     return val === 'hello';
   }
@@ -18,35 +27,28 @@
 
   GitLab.GfmAutoComplete.subscribe(myMatcher, myCallback);
 
-  Integration with Vue:
+  With Vue:
 
-  $(() => {
-    new Vue({
-      el: '#example-el',
-      data: {
-        myVal: 'initial estimate value'
+  new Vue({
+    el: '#example-el',
+    data: {
+      myVal: 'initial estimate value'
+    },
+    methods: {
+      matchSubmitted: function(val) {
+        return val.indexOf('/estimate') > -1;
       },
-      methods: {
-        matchSubmitted: function(val) {
-          return val.indexOf('/estimate') > -1;
-        },
-        updateMyVal: function(val) {
-          this.myVal = val;
-        },
+      updateMyVal: function(val) {
+        this.myVal = val;
       },
-      ready: function() {
-        GitLab.GfmAutoComplete.subscribe(this.matchSubmitted, this.updateTester.bind(this));
-      }
-    });
+    },
+    ready: function() {
+      GitLab.GfmAutoComplete.subscribe(this.matchSubmitted, this.updateTester.bind(this));
+    }
   });
-*
-*
-*
 *
 * */
 
-
-// Creates the variables for setting up GFM auto-completion
 (() => {
   if (window.GitLab == null) {
     window.GitLab = {};
