@@ -115,6 +115,7 @@ v 8.13.0 (unreleased)
   - Fixes padding in all clipboard icons that have .btn class
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
+  - Add docs for request profiling
   - Make guests unable to view MRs on private projects
 
 v 8.12.7
