@@ -160,7 +160,7 @@
                 selectedId = user.id;
                 return;
               }
-              if (page === 'projects:boards:show') {
+              if ($('html').hasClass('issue-boards-page')) {
                 selectedId = user.id;
                 gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
                 gl.issueBoards.BoardsStore.updateFiltersUrl();
@@ -261,10 +261,11 @@
                   }
                 }
                 if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
+                  var trimmed = query.term.trim();
                   emailUser = {
                     name: "Invite \"" + query.term + "\"",
-                    username: query.term,
-                    id: query.term
+                    username: trimmed,
+                    id: trimmed
                   };
                   data.results.unshift(emailUser);
                 }

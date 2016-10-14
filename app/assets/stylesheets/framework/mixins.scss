@@ -1,15 +1,4 @@
 /**
- * Generic mixins
- */
-@mixin box-shadow($shadow) {
-  box-shadow: $shadow;
-}
-
-@mixin border-radius($radius) {
-  border-radius: $radius;
-}
-
-/**
  * Prefilled mixins
  * Mixins with fixed values
  */
@@ -92,6 +81,13 @@
   }
 
   @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin include-keyframes($animation-name) {
+  @include webkit-prefix(animation-name, $animation-name);
+  @include keyframes($animation-name) {
     @content;
   }
 }

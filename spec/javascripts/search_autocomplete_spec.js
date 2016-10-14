@@ -5,6 +5,8 @@
 /*= require lib/utils/common_utils */
 /*= require lib/utils/type_utility */
 /*= require fuzzaldrin-plus */
+/*= require turbolinks */
+/*= require jquery.turbolinks */
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
@@ -138,7 +140,7 @@
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, projectIssuesPath, projectMRsPath);
     });
-    return it('should not show category related menu if there is text in the input', function() {
+    it('should not show category related menu if there is text in the input', function() {
       var link, list;
       addBodyAttributes('project');
       mockProjectOptions();
@@ -147,6 +149,23 @@
       list = widget.wrap.find('.dropdown-menu').find('ul');
       link = "a[href='" + projectIssuesPath + "/?assignee_id=" + userId + "']";
       return expect(list.find(link).length).toBe(0);
+    });
+    return it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {
+      var ENTER = 13;
+      var DOWN = 40;
+      addBodyAttributes();
+      mockDashboardOptions(true);
+      var submitSpy = spyOnEvent('form', 'submit');
+      widget.searchInput.focus();
+      widget.wrap.trigger($.Event('keydown', { which: DOWN }));
+      var enterKeyEvent = $.Event('keydown', { which: ENTER });
+      widget.searchInput.trigger(enterKeyEvent);
+      // This does not currently catch failing behavior. For security reasons,
+      // browsers will not trigger default behavior (form submit, in this
+      // example) on JavaScript-created keypresses.
+      expect(submitSpy).not.toHaveBeenTriggered();
+      // Does a worse job at capturing the intent of the test, but works.
+      expect(enterKeyEvent.isDefaultPrevented()).toBe(true);
     });
   });
 

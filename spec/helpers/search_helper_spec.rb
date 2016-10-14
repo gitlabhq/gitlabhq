@@ -19,7 +19,7 @@ describe SearchHelper do
       expect(subject.filename).to eq('CHANGELOG')
       expect(subject.basename).to eq('CHANGELOG')
       expect(subject.ref).to eq('master')
-      expect(subject.startline).to eq(186)
+      expect(subject.startline).to eq(188)
       expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
     end
 

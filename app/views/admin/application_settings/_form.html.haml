@@ -221,7 +221,11 @@
   %fieldset
     %legend Metrics
     %p
-      These settings require a restart to take effect.
+      Setup InfluxDB to measure a wide variety of statistics like the time spent
+      in running SQL queries. These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox

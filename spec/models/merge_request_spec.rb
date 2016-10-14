@@ -497,7 +497,7 @@ describe MergeRequest, models: true do
       subject(:merge_request_with_divergence) { create(:merge_request, :diverged, source_project: project, target_project: project) }
 
       it 'counts commits that are on target branch but not on source branch' do
-        expect(subject.diverged_commits_count).to eq(5)
+        expect(subject.diverged_commits_count).to eq(29)
       end
     end
 
@@ -505,7 +505,7 @@ describe MergeRequest, models: true do
       subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: fork_project, target_project: project) }
 
       it 'counts commits that are on target branch but not on source branch' do
-        expect(subject.diverged_commits_count).to eq(5)
+        expect(subject.diverged_commits_count).to eq(29)
       end
     end
 

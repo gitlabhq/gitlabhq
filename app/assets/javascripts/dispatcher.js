@@ -21,6 +21,7 @@
       shortcut_handler = null;
       switch (page) {
         case 'projects:boards:show':
+        case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:merge_requests:index':
@@ -125,6 +126,9 @@
           if ($('#tree-slider').length) {
             new TreeView();
           }
+          break;
+        case 'projects:pipelines:show':
+          new gl.Pipelines();
           break;
         case 'groups:activity':
           new Activities();

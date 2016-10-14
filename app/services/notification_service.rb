@@ -475,10 +475,12 @@ class NotificationService
   end
 
   def reject_users_without_access(recipients, target)
-    return recipients unless target.is_a?(Issue)
+    return recipients unless target.is_a?(Issuable)
+
+    ability = :"read_#{target.to_ability_name}"
 
     recipients.select do |user|
-      user.can?(:read_issue, target)
+      user.can?(ability, target)
     end
   end
 

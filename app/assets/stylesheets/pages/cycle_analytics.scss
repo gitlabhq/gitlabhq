@@ -50,7 +50,7 @@
 
   .bordered-box {
     border: 1px solid $border-color;
-    @include border-radius($border-radius-default);
+    border-radius: $border-radius-default;
   
   }
 
