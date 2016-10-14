@@ -137,6 +137,7 @@
 
   .select2-results {
     max-height: 350px;
+
     .select2-highlighted {
       background: $gl-primary;
     }
@@ -212,9 +213,11 @@
   .group-image {
     float: left;
   }
+
   .group-name {
     font-weight: bold;
   }
+
   .group-path {
     color: #999;
   }
@@ -239,6 +242,7 @@
     color: #aaa;
     font-weight: normal;
   }
+
   .namespace-path {
     margin-left: 10px;
     font-weight: bolder;

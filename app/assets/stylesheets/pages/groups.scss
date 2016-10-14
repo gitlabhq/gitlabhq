@@ -34,6 +34,7 @@
   .group-right-buttons {
     position: absolute;
     right: 16px;
+
     .btn {
       @include btn-gray;
       padding: 3px 10px;

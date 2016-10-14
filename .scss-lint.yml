@@ -61,7 +61,7 @@ linters:
   
   # Separate rule, function, and mixin declarations with empty lines.
   EmptyLineBetweenBlocks:
-    enabled: false
+    enabled: true
   
   # Reports when you have an empty rule set.
   EmptyRule:
@@ -219,7 +219,7 @@ linters:
   # Property values, @extend, @include, and @import directives, and variable
   # declarations should always end with a semicolon.
   TrailingSemicolon:
-    enabled: false
+    enabled: true
 
   # Reports lines containing trailing whitespace.
   TrailingWhitespace:

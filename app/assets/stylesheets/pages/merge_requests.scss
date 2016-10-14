@@ -10,6 +10,7 @@
 
   form {
     margin-bottom: 0;
+
     .clearfix {
       margin-bottom: 0;
     }
@@ -46,6 +47,7 @@
 
       &.right {
         float: right;
+
         a {
           color: $gl-gray;
         }
@@ -192,6 +194,7 @@
     padding-top: 2px;
     padding-bottom: 2px;
     list-style: none;
+
     &:hover {
       background: none;
     }
@@ -215,6 +218,7 @@
     padding-top: 20px;
     padding-bottom: 10px;
   }
+
   svg {
     width: 230px;
   }
