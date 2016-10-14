@@ -1,6 +1,6 @@
 module Banzai
   module Renderer
-    extend self
+    module_function
 
     # Convert a Markdown String into an HTML-safe String of HTML
     #
@@ -140,8 +140,6 @@ module Banzai
         pipeline.to_html(html, context)
       end.html_safe
     end
-
-    private
 
     def cacheless_render(text, context = {})
       Gitlab::Metrics.measure(:banzai_cacheless_render) do

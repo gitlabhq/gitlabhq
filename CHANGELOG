@@ -14,6 +14,7 @@ v 8.13.0 (unreleased)
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Updating verbiage on git basics to be more intuitive
   - Clarify documentation for Runners API (Gennady Trafimenkov)
+  - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
   - Prevent running GfmAutocomplete setup for each diff note !6569
   - Added documentation for .gitattributes files
