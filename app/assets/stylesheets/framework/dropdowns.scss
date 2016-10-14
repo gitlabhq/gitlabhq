@@ -12,6 +12,7 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     display: block;
+
     @media (max-width: $screen-xs-max) {
       width: 100%;
     }
@@ -48,6 +49,7 @@
     margin-top: -6px;
     color: $dropdown-toggle-icon-color;
     font-size: 10px;
+
     &.fa-spinner {
       font-size: 16px;
       margin-top: -8px;

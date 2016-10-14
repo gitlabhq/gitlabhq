@@ -137,6 +137,7 @@
 
   .retry-link {
     color: $gl-link-color;
+
     &:hover {
       text-decoration: underline;
     }
@@ -218,6 +219,7 @@
 
 .build-detail-row {
   margin-bottom: 5px;
+
   &:last-of-type {
     margin-bottom: 0;
   }

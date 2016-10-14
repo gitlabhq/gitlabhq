@@ -183,7 +183,7 @@
         &::after {
           content: '';
           width: 8px;
-          position: absolute;;
+          position: absolute;
           right: -7px;
           bottom: 8px;
           border-bottom: 2px solid $border-color;
@@ -360,6 +360,7 @@
 
     &:hover {
       background-color: $gray-lighter;
+
       .dropdown-menu-toggle {
         background-color: transparent;
       }
@@ -543,6 +544,7 @@
         height: 29px;
         top: -9px;
       }
+
       .curve {
         display: block;
       }

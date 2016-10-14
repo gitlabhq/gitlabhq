@@ -158,6 +158,7 @@ ul.notes {
   .diff-header > span {
     margin-right: 10px;
   }
+
   .line_content {
     white-space: pre-wrap;
   }
@@ -353,6 +354,7 @@ ul.notes {
     width: 32px;
     // "hide" it by default
     display: none;
+
     &:hover {
       background: $gl-info;
       color: #fff;

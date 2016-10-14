@@ -37,6 +37,7 @@
         0%, 10%, 100% {
           fill: lighten($tanuki-yellow, 25%);
         }
+
         90% {
           fill: $tanuki-yellow;
         }
@@ -48,6 +49,7 @@
         10%, 80% {
           fill: $tanuki-orange;
         }
+
         20%, 90% {
           fill: lighten($tanuki-orange, 25%);
         }
@@ -59,6 +61,7 @@
         10%, 80% {
           fill: $tanuki-red;
         }
+ 
         20%, 90% {
           fill: lighten($tanuki-red, 25%);
         }
@@ -70,6 +73,7 @@
         20%, 70% {
           fill: $tanuki-red;
         }
+
         30%, 80% {
           fill: lighten($tanuki-red, 25%);
         }
@@ -81,6 +85,7 @@
         30%, 60% {
           fill: $tanuki-orange;
         }
+
         40%, 70% {
           fill: lighten($tanuki-orange, 25%);
         }
@@ -92,6 +97,7 @@
         30%, 60% {
           fill: $tanuki-red;
         }
+
         40%, 70% {
           fill: lighten($tanuki-red, 25%);
         }
@@ -103,6 +109,7 @@
         40% {
           fill: $tanuki-yellow;
         }
+
         60% {
           fill: lighten($tanuki-yellow, 25%);
         }

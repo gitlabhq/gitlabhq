@@ -5,6 +5,7 @@ v 8.13.0 (unreleased)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
   - Improve tabbing usability for sign in page (ClemMakesApps)
+  - Enforce TrailingSemicolon and EmptyLineBetweenBlocks in scss-lint
   - Adding members no longer silently fails when there is extra whitespace
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version

@@ -131,6 +131,7 @@ $colors: (
         }
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_header_head_neutral);
       border-color: map-get($colors, #{$color}_header_head_neutral);
@@ -174,6 +175,7 @@ $colors: (
         background-color: map-get($colors, #{$color}_line_not_chosen);
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_line_head_neutral);
 

@@ -27,6 +27,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
     display: inline-block;
+
     .color-label {
       padding: 6px 10px;
     }
@@ -128,7 +129,7 @@
   }
 
   .selectbox {
-    display: none
+    display: none;
   }
 
   .btn-clipboard {
@@ -199,7 +200,7 @@
     display: none;
     /* Small devices (tablets, 768px and up) */
     @media (min-width: $screen-sm-min) {
-      display: block
+      display: block;
     }
 
     width: $sidebar_collapsed_width;
@@ -276,7 +277,7 @@
     }
 
     &.btn-primary {
-      @extend .btn-primary
+      @extend .btn-primary;
     }
   }
 
@@ -400,6 +401,7 @@
   .js-issuable-selector {
     width: 100%;
   }
+
   @media (max-width: $screen-sm-max) {
     margin-bottom: $gl-padding;
   }

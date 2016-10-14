@@ -57,6 +57,7 @@
       margin-top: -3px;
     }
   }
+
   .file-content {
     background: #fff;
 
@@ -96,22 +97,27 @@
         border: none;
         margin: 0;
       }
+
       tr {
         border-bottom: 1px solid #eee;
       }
+
       td {
         &:first-child {
           border-left: none;
         }
+
         &:last-child {
           border-right: none;
         }
       }
+
       td.blame-commit {
         padding: 0 10px;
         min-width: 400px;
         background: $gray-light;
       }
+
       td.line-numbers {
         float: none;
         border-left: 1px solid #ddd;
@@ -121,6 +127,7 @@
           margin-right: 0;
         }
       }
+
       td.lines {
         padding: 0;
       }
@@ -137,8 +144,10 @@
         border-left: 1px solid $border-color;
         margin-bottom: 0;
         background: white;
+
         li {
           color: #888;
+
           p {
             margin: 0;
             color: #333;
