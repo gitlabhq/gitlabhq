@@ -68,29 +68,11 @@
     initPolling() {
       setInterval(() => {
         this.getIssuable();
-      }, 1000);
+      }, 3000);
     }
 
-    getIssuable() {
-      return this.resource.get()
-        .then((res) => this.updateState(res.data))
-        .then((newState) => this.publish(newState));
-    }
-
-    putIssuable() {
-
-    }
-
-    deleteIssuable() {
-
-    }
-
-    addSubscriber(prop, callback) {
-      const isNewProp = !this.subscribers.hasOwnProperty(prop);
-      if (isNewProp) {
-        this.subscribers[prop] = [];
-      }
-      this.subscribers[prop].push(callback);
+    subscribe(propToWatch, callback) {
+      this.addSubscriber(propToWatch, callback);
     }
 
     publish(diff) {
@@ -106,8 +88,12 @@
       }
     }
 
-    subscribe(propToWatch, callback) {
-      this.addSubscriber(propToWatch, callback);
+    addSubscriber(prop, callback) {
+      const isNewProp = !this.subscribers.hasOwnProperty(prop);
+      if (isNewProp) {
+        this.subscribers[prop] = [];
+      }
+      this.subscribers[prop].push(callback);
     }
 
     updateState(res) {
@@ -123,6 +109,17 @@
       }
       return diff;
     }
+
+    getIssuable() {
+      return this.resource.get()
+        .then((res) => this.updateState(res.data))
+        .then((newState) => this.publish(newState));
+    }
+
+    putIssuable() {}
+
+    deleteIssuable() {}
+
   }
 
   global.IssuableResource = IssuableResource;
