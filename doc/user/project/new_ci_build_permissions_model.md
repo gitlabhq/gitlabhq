@@ -162,7 +162,7 @@ As an administrator:
 
 - **500 errors**: You will need to update [GitLab Workhorse][workhorse] to at
   least 0.8.2. This is done automatically for Omnibus installations, you need to
-  check manually for installations from source.
+  [check manually][update-docs] for installations from source.
 - **500 errors**: Check if you have another web proxy sitting in front of NGINX (HAProxy,
   Apache, etc.). It might be a good idea to let GitLab use the internal NGINX
   web server and not disable it completely. See [this comment][comment] for an
@@ -307,4 +307,5 @@ test:
 [git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [https]: ../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
 [triggers]: ../../ci/triggers/README.md
+[update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
