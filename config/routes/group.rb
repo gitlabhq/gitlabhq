@@ -3,7 +3,6 @@ require 'constraints/group_url_constrainer'
 constraints(GroupUrlConstrainer.new) do
   scope(path: ':id', as: :group, controller: :groups) do
     get '/', action: :show
-    post '/', action: :create
     patch '/', action: :update
     put '/', action: :update
     delete '/', action: :destroy
