@@ -140,12 +140,12 @@
           break;
         case 'groups:group_members:index':
           new gl.MemberExpirationDate();
-          new GroupMembers();
+          new gl.Members();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
           new gl.MemberExpirationDate();
-          new ProjectMembers();
+          new gl.Members();
           new UsersSelect();
           break;
         case 'groups:new':

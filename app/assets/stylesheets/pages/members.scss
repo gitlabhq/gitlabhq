@@ -1,0 +1,98 @@
+.project-members-title {
+  padding-bottom: 10px;
+  border-bottom: 1px solid $border-color;
+}
+
+.member {
+  .list-item-name {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+      width: 50%;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  .controls {
+    @media (min-width: $screen-sm-min) {
+      display: -webkit-flex;
+      display: flex;
+      width: 400px;
+      max-width: 50%;
+    }
+  }
+
+  .form-horizontal {
+    margin-top: 5px;
+
+    @media (min-width: $screen-sm-min) {
+      display: -webkit-flex;
+      display: flex;
+      width: 100%;
+      margin-top: 3px;
+    }
+  }
+
+  .btn-remove {
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: auto;
+    }
+  }
+}
+
+.member-form-control {
+  @media (max-width: $screen-xs-max) {
+    padding: 5px 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    width: 50%;
+  }
+}
+
+.member-access-text {
+  margin-left: auto;
+  line-height: 43px;
+}
+
+.member.existing-title {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+  }
+}
+
+.member-search-form {
+  position: relative;
+
+  @media (min-width: $screen-sm-min) {
+    float: right;
+  }
+
+  .form-control {
+    width: 100%;
+    padding-right: 35px;
+
+    @media (min-width: $screen-sm-min) {
+      width: 350px;
+    }
+  }
+}
+
+.member-search-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 35px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: $gray-darkest;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
