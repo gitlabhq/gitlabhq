@@ -63,7 +63,8 @@ update-knapsack:
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
-# Execute all testing suites
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
 
 .use-db: &use-db
   services:
@@ -145,6 +146,8 @@ spinach 9 10: *spinach-knapsack
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   cache:
     key: "ruby21"
     paths:
@@ -289,6 +292,8 @@ bundler:audit:
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
@@ -299,6 +304,9 @@ migration paths:
     SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   script:
     - git checkout HEAD .
     - git fetch --tags
