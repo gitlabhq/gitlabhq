@@ -273,6 +273,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           post :merge
           post :cancel_merge_when_build_succeeds
           get :ci_status
+          get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
           get :diff_for_path
