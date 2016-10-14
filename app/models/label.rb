@@ -16,6 +16,7 @@ class Label < ActiveRecord::Base
   default_value_for :color, DEFAULT_COLOR
 
   has_many :lists, dependent: :destroy
+  has_many :priorities, class_name: 'LabelPriority'
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
@@ -25,8 +26,6 @@ class Label < ActiveRecord::Base
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
-
-  before_save :nullify_priority
 
   default_scope { order(title: :asc) }
 
@@ -147,10 +146,6 @@ class Label < ActiveRecord::Base
     else
       id
     end
-  end
-
-  def nullify_priority
-    self.priority = nil if priority.blank?
   end
 
   def sanitize_title(value)

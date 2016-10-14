@@ -519,6 +519,17 @@ ActiveRecord::Schema.define(version: 20161017095000) do
   add_index "label_links", ["label_id"], name: "index_label_links_on_label_id", using: :btree
   add_index "label_links", ["target_id", "target_type"], name: "index_label_links_on_target_id_and_target_type", using: :btree
 
+  create_table "label_priorities", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "label_id", null: false
+    t.integer "priority", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "label_priorities", ["priority"], name: "index_label_priorities_on_priority", using: :btree
+  add_index "label_priorities", ["project_id", "label_id"], name: "index_label_priorities_on_project_id_and_label_id", unique: true, using: :btree
+
   create_table "labels", force: :cascade do |t|
     t.string "title"
     t.string "color"
@@ -527,14 +538,12 @@ ActiveRecord::Schema.define(version: 20161017095000) do
     t.datetime "updated_at"
     t.boolean "template", default: false
     t.string "description"
-    t.integer "priority"
     t.text "description_html"
     t.string "type"
     t.integer "group_id"
   end
 
   add_index "labels", ["group_id"], name: "index_labels_on_group_id", using: :btree
-  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
@@ -1216,6 +1225,8 @@ ActiveRecord::Schema.define(version: 20161017095000) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
+  add_foreign_key "label_priorities", "labels", on_delete: :cascade
+  add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
