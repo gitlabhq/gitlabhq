@@ -11,6 +11,7 @@ describe Ci::SendPipelineNotificationService, services: true do
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+
   subject{ described_class.new(pipeline) }
 
   describe '#execute' do
