@@ -293,10 +293,14 @@ module Ci
     # the merge request's latest commit.
     def merge_requests
       @merge_requests ||=
-        begin
-          project.merge_requests.where(source_branch: self.ref).
-            select { |merge_request| merge_request.pipeline.try(:id) == self.id }
-        end
+        project.merge_requests.where(source_branch: ref).
+          select { |merge_request| merge_request.pipeline.try(:id) == id }
+    end
+
+    def merge_requests_with_active_first
+      merge_requests.sort_by do |merge_request|
+        [merge_request.state_priority, -merge_request.updated_at.to_i]
+      end
     end
 
     private
