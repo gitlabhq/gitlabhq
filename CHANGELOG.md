@@ -21,6 +21,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Change user & group landing page routing from /u/:username to /:username
   - Prevent running GfmAutocomplete setup for each diff note !6569
   - Added documentation for .gitattributes files
+  - Move Pipeline Metrics to separate worker
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
