@@ -42,6 +42,17 @@ class Label < ActiveRecord::Base
     where.not(id: prioritized(project).select(:id))
   end
 
+  def self.left_join_priorities
+    labels = Label.arel_table
+    priorities = LabelPriority.arel_table
+
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
+                              on(labels[:id].eq(priorities[:label_id])).
+                              join_sources
+
+    joins(label_priorities)
+  end
+
   alias_attribute :name, :title
 
   def self.reference_prefix

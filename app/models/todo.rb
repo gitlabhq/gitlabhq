@@ -52,7 +52,7 @@ class Todo < ActiveRecord::Base
     # Todos with highest priority first then oldest todos
     # Need to order by created_at last because of differences on Mysql and Postgres when joining by type "Merge_request/Issue"
     def order_by_labels_priority
-      highest_priority = highest_label_priority(["Issue", "MergeRequest"], "todos.target_id").to_sql
+      highest_priority = highest_label_priority(["Issue", "MergeRequest"], "todos.project_id", "todos.target_id").to_sql
 
       select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
         order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC')).
