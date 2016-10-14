@@ -40,7 +40,7 @@ $(() => {
      */
     ready() {
       gl.environmentsService.all().then((resp) => {
-        Store.addEnvironments(resp.json());
+        Store.storeEnvironments(resp.json());
 
         this.loading = false;
       });
