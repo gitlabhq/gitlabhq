@@ -1,3 +1,51 @@
+/*
+*
+*
+*
+* Simple usage:
+*
+* Matcher is passed the text successfully submitted in the gfm enabled form. The matcher
+* should return a boolean representing whether or not the text contains information your
+* callback would like to be passed when updated.
+*
+  function myMatcher(val) {
+    return val === 'hello';
+  }
+
+  function myCallback(text) {
+    console.log(`Submitted text: ${text}`);
+  }
+
+  GitLab.GfmAutoComplete.subscribe(myMatcher, myCallback);
+
+  Integration with Vue:
+
+  $(() => {
+    new Vue({
+      el: '#example-el',
+      data: {
+        myVal: 'initial estimate value'
+      },
+      methods: {
+        matchSubmitted: function(val) {
+          return val.indexOf('/estimate') > -1;
+        },
+        updateMyVal: function(val) {
+          this.myVal = val;
+        },
+      },
+      ready: function() {
+        GitLab.GfmAutoComplete.subscribe(this.matchSubmitted, this.updateTester.bind(this));
+      }
+    });
+  });
+*
+*
+*
+*
+* */
+
+
 // Creates the variables for setting up GFM auto-completion
 (() => {
   if (window.GitLab == null) {
@@ -417,16 +465,6 @@ let GfmAutoComplete;
   }
 
   GitLab.GfmAutoComplete = new GfmFactory();
-
-  function myMatcher(val) {
-    return val.indexOf('hello') > -1;
-  }
-
-  function myCallback(val) {
-    console.log(val);
-  }
-
-  GitLab.GfmAutoComplete.subscribe(myMatcher, myCallback);
 
 
 }).call(this);
