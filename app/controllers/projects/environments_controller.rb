@@ -15,6 +15,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       else
         @all_environments.available
       end
+    
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @environments
+      end
+    end
   end
 
   def show
