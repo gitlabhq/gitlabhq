@@ -8,6 +8,7 @@
     constructor(elem) {
       this.gfm = GitLab.GfmAutoComplete;
       this.elem = $(elem);
+      this.form = this.elem.parents('.gfm-form');
       this.setup();
     }
 
@@ -370,20 +371,17 @@ let GfmAutoComplete;
     }
 
     publish(event) {
-      const target = $(event.currentTarget).find('textarea');
-      const targetInputor = this.inputors.filter((inputor) => {
-        return inputor.elem.attr('data-noteable-iid') == target.attr('data-noteable-iid');
-      })[0];
-      const inputorText = targetInputor.elem.val();
-      // after submit event
-      const matched  = this.subscribers.filter((subscriber) => {
-        const matcher = subscriber.matcher;
-        // matcher must return boolean
-        return matcher(inputorText);
-      });
-      matched.forEach((subscriber) => {
-        subscriber.callback(inputorText);
-      });
+      const submittedText = this.findSubmittedText(event.currentTarget);
+      const matched  = this.subscribers
+        .filter((subscriber) => subscriber.matcher(submittedText))
+        .forEach((subscriber) => subscriber.callback(submittedText));
+    }
+
+    findSubmittedText(form) {
+      const formId = $(form).attr('data-noteable-iid');
+      const targetInputor = this.inputors
+        .filter((inputor) => inputor.form.attr('data-noteable-iid') === formId)[0];
+      return targetInputor.elem.val();
     }
 
     initInputors() {
@@ -420,17 +418,15 @@ let GfmAutoComplete;
 
   GitLab.GfmAutoComplete = new GfmFactory();
 
-  function mymatcher(text) {
-    return text === 'hello';
-  }
-  function mycallback(text) {
-    console.log("GOT SOME TEXT", text);
+  function myMatcher(val) {
+    return val.indexOf('hello') > -1;
   }
 
-  $(() => {
-    GitLab.GfmAutoComplete.subscribe(mymatcher, mycallback );
-  });
+  function myCallback(val) {
+    console.log(val);
+  }
 
+  GitLab.GfmAutoComplete.subscribe(myMatcher, myCallback);
 
 
 }).call(this);
