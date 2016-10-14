@@ -274,4 +274,16 @@ class Issue < ActiveRecord::Base
   def check_for_spam?
     project.public?
   end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      if options.has_key?(:labels)
+        json[:labels] = labels.as_json(
+          project: project,
+          only: [:id, :title, :description, :color],
+          methods: [:text_color]
+        )
+      end
+    end
+  end
 end

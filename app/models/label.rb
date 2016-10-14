@@ -133,6 +133,12 @@ class Label < ActiveRecord::Base
     end
   end
 
+  def as_json(options = {})
+    super(options).tap do |json|
+      json[:priority] = priorities.find_by(project: options[:project]).try(:priority) if options.has_key?(:project)
+    end
+  end
+
   private
 
   def cross_project_reference?(source_project, target_project)
