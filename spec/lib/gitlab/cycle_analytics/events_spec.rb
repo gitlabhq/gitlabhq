@@ -15,12 +15,13 @@ describe Gitlab::CycleAnalytics::Events do
     let!(:context) { create(:issue, project: project) }
 
     xit 'does something' do
-      expect(subject.issue_events).to eq([])
+      expect(subject.issue_events).to eq([context])
     end
   end
 
   def setup(context)
-    create(:milestone, project: project)
+    milestone = create(:milestone, project: project)
+    context.update(milestone: milestone)
     create_merge_request_closing_issue(context)
   end
 end

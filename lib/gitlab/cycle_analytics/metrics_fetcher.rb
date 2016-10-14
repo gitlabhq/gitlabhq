@@ -28,7 +28,7 @@ module Gitlab
       # automatically excluded.
       def base_query_for(name)
         # Load issues
-        query = issue_metrics_table.join(issue_table).on(issue_table[:id].eq(mr_closing_issues_table[:issue_id])).
+        query = mr_closing_issues_table.join(issue_table).on(issue_table[:id].eq(mr_closing_issues_table[:issue_id])).
           join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id])).
           where(issue_table[:project_id].eq(@project.id)).
           where(issue_table[:deleted_at].eq(nil)).
