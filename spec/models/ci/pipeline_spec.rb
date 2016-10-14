@@ -523,35 +523,4 @@ describe Ci::Pipeline, models: true do
       expect(pipeline.merge_requests).to be_empty
     end
   end
-
-  describe '#merge_requests_with_active_first' do
-    let(:project) { create(:project) }
-
-    let(:pipeline) do
-      create(:ci_empty_pipeline,
-             status: 'created',
-             project: project,
-             ref: 'master',
-             sha: project.repository.commit('master').sha)
-    end
-
-    let!(:merge_requests) do
-      [create_merge_request(:merged, Time.at(0)),
-       create_merge_request(:merged, Time.at(9)),
-       create_merge_request(:opened, Time.at(0))]
-    end
-
-    it 'returns opened/recent merge requests first, then closed ones' do
-      expect(pipeline.merge_requests_with_active_first).
-        to eq(merge_requests.reverse)
-    end
-
-    def create_merge_request(state, updated_at)
-      create(:merge_request,
-             source_project: project,
-             source_branch: pipeline.ref,
-             state: state,
-             updated_at: updated_at)
-    end
-  end
 end

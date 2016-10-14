@@ -58,14 +58,6 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:merge_when_build_succeeds) }
   end
 
-  describe '#state_priority' do
-    it 'returns the priority of state' do
-      %w[opened reopened closed merged locked].each.with_index do |state, idx|
-        expect(MergeRequest.new(state: state).state_priority).to eq(idx)
-      end
-    end
-  end
-
   describe '.in_projects' do
     it 'returns the merge requests for a set of projects' do
       expect(described_class.in_projects(Project.all)).to eq([subject])

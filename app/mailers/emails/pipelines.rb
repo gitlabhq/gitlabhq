@@ -13,7 +13,7 @@ module Emails
     def pipeline_mail(pipeline, to, status)
       @project = pipeline.project
       @pipeline = pipeline
-      @merge_request = pipeline.merge_requests_with_active_first.first
+      @merge_request = pipeline.merge_requests.first
       add_headers
 
       mail(to: to, subject: pipeline_subject(status), skip_premailer: true) do |format|

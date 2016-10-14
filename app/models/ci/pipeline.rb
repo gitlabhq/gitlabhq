@@ -302,12 +302,6 @@ module Ci
         .select { |merge_request| merge_request.pipeline.try(:id) == self.id }
     end
 
-    def merge_requests_with_active_first
-      merge_requests.sort_by do |merge_request|
-        [merge_request.state_priority, -merge_request.updated_at.to_i]
-      end
-    end
-
     private
 
     def pipeline_data
