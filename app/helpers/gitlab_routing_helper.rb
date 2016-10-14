@@ -95,35 +95,19 @@ module GitlabRoutingHelper
   end
 
   def pipeline_url(pipeline, *args)
-    namespace_project_pipeline_url(
-      pipeline.project.namespace,
-      pipeline.project,
-      pipeline.id,
-      *args)
+    namespace_project_pipeline_url(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
   end
 
   def pipeline_build_url(pipeline, build, *args)
-    namespace_project_build_url(
-      pipeline.project.namespace,
-      pipeline.project,
-      build.id,
-      *args)
+    namespace_project_build_url(pipeline.project.namespace, pipeline.project,build.id, *args)
   end
 
   def commits_url(entity, *args)
-    namespace_project_commits_url(
-      entity.project.namespace,
-      entity.project,
-      entity.ref,
-      *args)
+    namespace_project_commits_url(entity.project.namespace, entity.project, entity.ref, *args)
   end
 
   def commit_url(entity, *args)
-    namespace_project_commit_url(
-      entity.project.namespace,
-      entity.project,
-      entity.sha,
-      *args)
+    namespace_project_commit_url(entity.project.namespace, entity.project, entity.sha, *args)
   end
 
   def project_snippet_url(entity, *args)
