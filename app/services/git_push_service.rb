@@ -63,13 +63,12 @@ class GitPushService < BaseService
   protected
 
   def update_merge_requests
-    @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
+    UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
     EventCreateService.new.push(@project, current_user, build_push_data)
-    SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
     ProjectCacheWorker.perform_async(@project.id)
   end
 
@@ -87,16 +86,16 @@ class GitPushService < BaseService
     project.change_head(branch_name)
 
     # Set protection on the default branch if configured
-    if current_application_settings.default_branch_protection != PROTECTION_NONE
+    if current_application_settings.default_branch_protection != PROTECTION_NONE && !@project.protected_branch?(@project.default_branch)
 
       params = {
         name: @project.default_branch,
-        push_access_level_attributes: {
+        push_access_levels_attributes: [{
           access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        },
-        merge_access_level_attributes: {
+        }],
+        merge_access_levels_attributes: [{
           access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }
+        }]
       }
 
       ProtectedBranches::CreateService.new(@project, current_user, params).execute
@@ -134,17 +133,18 @@ class GitPushService < BaseService
       end
 
       commit.create_cross_references!(authors[commit], closed_issues)
+      update_issue_metrics(commit, authors)
     end
   end
 
   def build_push_data
-    @push_data ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
-  end
-
-  def build_push_data_system_hook
-    @push_data_system ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
+    @push_data ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      push_commits)
   end
 
   def push_to_existing_branch?
@@ -175,5 +175,12 @@ class GitPushService < BaseService
 
   def branch_name
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
+  end
+
+  def update_issue_metrics(commit, authors)
+    mentioned_issues = commit.all_references(authors[commit]).issues
+
+    Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil).
+      update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
 end

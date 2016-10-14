@@ -69,7 +69,7 @@ describe Projects::CreateService, services: true do
 
       context 'wiki_enabled false does not create wiki repository directory' do
         before do
-          @opts.merge!(wiki_enabled: false)
+          @opts.merge!( { project_feature_attributes: { wiki_access_level: ProjectFeature::DISABLED } })
           @project = create_project(@user, @opts)
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
@@ -85,7 +85,7 @@ describe Projects::CreateService, services: true do
 
       context 'global builds_enabled false does not enable CI by default' do
         before do
-          @opts.merge!(builds_enabled: false)
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
         end
 
         it { is_expected.to be_falsey }
@@ -93,7 +93,7 @@ describe Projects::CreateService, services: true do
 
       context 'global builds_enabled true does enable CI by default' do
         before do
-          @opts.merge!(builds_enabled: true)
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
         end
 
         it { is_expected.to be_truthy }
@@ -109,7 +109,7 @@ describe Projects::CreateService, services: true do
         )
       end
 
-      it 'should not allow a restricted visibility level for non-admins' do
+      it 'does not allow a restricted visibility level for non-admins' do
         project = create_project(@user, @opts)
         expect(project).to respond_to(:errors)
         expect(project.errors.messages).to have_key(:visibility_level)
@@ -118,7 +118,7 @@ describe Projects::CreateService, services: true do
         )
       end
 
-      it 'should allow a restricted visibility level for admins' do
+      it 'allows a restricted visibility level for admins' do
         admin = create(:admin)
         project = create_project(admin, @opts)
 
@@ -128,7 +128,7 @@ describe Projects::CreateService, services: true do
     end
 
     context 'repository creation' do
-      it 'should synchronously create the repository' do
+      it 'synchronously creates the repository' do
         expect_any_instance_of(Project).to receive(:create_repository)
 
         project = create_project(@user, @opts)

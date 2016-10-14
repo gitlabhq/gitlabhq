@@ -23,13 +23,13 @@ class User < ActiveRecord::Base
   default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
-    key:       Gitlab::Application.config.secret_key_base,
+    key:       Gitlab::Application.secrets.otp_key_base,
     mode:      :per_attribute_iv_and_salt,
     insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
   devise :two_factor_authenticatable,
-         otp_secret_encryption_key: Gitlab::Application.config.secret_key_base
+         otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   serialize :otp_backup_codes, JSON
@@ -279,6 +279,11 @@ class User < ActiveRecord::Base
       find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
+    # Returns a user for the given SSH key.
+    def find_by_ssh_key_id(key_id)
+      find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+    end
+
     def build_user(attrs = {})
       User.new(attrs)
     end
@@ -429,6 +434,13 @@ class User < ActiveRecord::Base
                     owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
+  # Returns projects which user can admin issues on (for example to move an issue to that project).
+  #
+  # This logic is duplicated from `Ability#project_abilities` into a SQL form.
+  def projects_where_can_admin_issues
+    authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
+  end
+
   def is_admin?
     admin
   end
@@ -453,16 +465,12 @@ class User < ActiveRecord::Base
     can?(:create_group, nil)
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can_select_namespace?
     several_namespaces? || admin
   end
 
   def can?(action, subject)
-    abilities.allowed?(self, action, subject)
+    Ability.allowed?(self, action, subject)
   end
 
   def first_name
@@ -482,10 +490,10 @@ class User < ActiveRecord::Base
     (personal_projects.count.to_f / projects_limit) * 100
   end
 
-  def recent_push(project_id = nil)
+  def recent_push(project_ids = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
-    events = events.where(project_id: project_id) if project_id
+    events = events.where(project_id: project_ids) if project_ids
 
     # Use the latest event that has not been pushed or merged recently
     events.recent.find do |event|
@@ -581,6 +589,11 @@ class User < ActiveRecord::Base
   end
 
   def set_projects_limit
+    # `User.select(:id)` raises
+    # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
+    # without this safeguard!
+    return unless self.has_attribute?(:projects_limit)
+
     connection_default_value_defined = new_record? && !projects_limit_changed?
     return unless self.projects_limit.nil? || connection_default_value_defined
 
@@ -809,19 +822,35 @@ class User < ActiveRecord::Base
 
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
-      todos.done.count
+      TodosFinder.new(self, state: :done).execute.count
     end
   end
 
   def todos_pending_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
-      todos.pending.count
+      TodosFinder.new(self, state: :pending).execute.count
     end
   end
 
   def update_todos_count_cache
     todos_done_count(force: true)
     todos_pending_count(force: true)
+  end
+
+  # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
+  # flow means we don't call that automatically (and can't conveniently do so).
+  #
+  # See:
+  #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
+  #
+  def increment_failed_attempts!
+    self.failed_attempts ||= 0
+    self.failed_attempts += 1
+    if attempts_exceeded?
+      lock_access! unless access_locked?
+    else
+      save(validate: false)
+    end
   end
 
   private
@@ -878,7 +907,7 @@ class User < ActiveRecord::Base
       if domain_matches?(allowed_domains, self.email)
         valid = true
       else
-        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        error = "domain is not authorized for sign-up"
         valid = false
       end
     end

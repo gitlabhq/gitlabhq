@@ -10,7 +10,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def show
     @members = @group.members.order("access_level DESC").page(params[:members_page])
-    @requesters = @group.requesters
+    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
     @projects = @group.projects.page(params[:projects_page])
   end
 
@@ -42,15 +42,15 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def members_update
-    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user: current_user)
 
     redirect_to [:admin, @group], notice: 'Users were successfully added.'
   end
 
   def destroy
-    DestroyGroupService.new(@group, current_user).execute
+    DestroyGroupService.new(@group, current_user).async_execute
 
-    redirect_to admin_groups_path, notice: 'Group was successfully deleted.'
+    redirect_to admin_groups_path, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   private
@@ -60,6 +60,14 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :visibility_level, :request_access_enabled)
+    params.require(:group).permit(
+      :avatar,
+      :description,
+      :lfs_enabled,
+      :name,
+      :path,
+      :request_access_enabled,
+      :visibility_level
+    )
   end
 end

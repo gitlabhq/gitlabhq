@@ -20,9 +20,14 @@
       path = page.split(':');
       shortcut_handler = null;
       switch (page) {
+        case 'projects:boards:show':
+        case 'projects:boards:index':
+          shortcut_handler = new ShortcutsNavigation();
+          break;
+        case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new IssuableBulkActions();
+          new gl.IssuableBulkActions();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':
@@ -36,7 +41,7 @@
           new Milestone();
           break;
         case 'dashboard:todos:index':
-          new Todos();
+          new gl.Todos();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -55,6 +60,9 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
+          new LabelsSelect();
+          new MilestoneSelect();
+          new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
         case 'projects:merge_requests:edit':
@@ -62,6 +70,9 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
+          new LabelsSelect();
+          new MilestoneSelect();
+          new gl.IssuableTemplateSelectors();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -85,6 +96,9 @@
           new Diff();
           new ZenMode();
           new MergedButtons();
+          break;
+        case "projects:merge_requests:conflicts":
+          window.mcui = new MergeConflictResolver()
           break;
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -113,6 +127,9 @@
             new TreeView();
           }
           break;
+        case 'projects:pipelines:show':
+          new gl.Pipelines();
+          break;
         case 'groups:activity':
           new Activities();
           break;
@@ -122,10 +139,12 @@
           new NotificationsDropdown();
           break;
         case 'groups:group_members:index':
+          new gl.MemberExpirationDate();
           new GroupMembers();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
+          new gl.MemberExpirationDate();
           new ProjectMembers();
           new UsersSelect();
           break;
@@ -154,10 +173,12 @@
           break;
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
-            new LabelManager();
+            new gl.LabelManager();
           }
           break;
         case 'projects:network:show':
+          // Ensure we don't create a particular shortcut handler here. This is
+          // already created, where the network graph is created.
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
@@ -167,14 +188,18 @@
           new BuildArtifacts();
           break;
         case 'projects:group_links:index':
+          new gl.MemberExpirationDate();
           new GroupsSelect();
           break;
         case 'search:show':
           new Search();
           break;
         case 'projects:protected_branches:index':
-          new ProtectedBranchesAccessSelect($(".new_protected_branch"), false, true);
-          new ProtectedBranchesAccessSelect($(".protected-branches-list"), true, false);
+          new gl.ProtectedBranchCreate();
+          new gl.ProtectedBranchEditList();
+          break;
+        case 'projects:cycle_analytics:show':
+          new gl.CycleAnalytics();
           break;
       }
       switch (path.first()) {
@@ -186,6 +211,16 @@
               break;
             case 'projects':
               new NamespaceSelects();
+              break;
+            case 'labels':
+              switch (path[2]) {
+                case 'new':
+                case 'edit':
+                  new Labels();
+              }
+            case 'abuse_reports':
+              new gl.AbuseReports();
+              break;
           }
           break;
         case 'dashboard':
@@ -211,6 +246,7 @@
               new ProjectNew();
               break;
             case 'show':
+              new Star();
               new ProjectNew();
               new ProjectShow();
               new NotificationsDropdown();
@@ -242,14 +278,16 @@
               shortcut_handler = new ShortcutsNavigation();
           }
       }
+      // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
         return new Shortcuts();
       }
     };
 
     Dispatcher.prototype.initSearch = function() {
+      // Only when search form is present
       if ($('.search').length) {
-        return new SearchAutocomplete();
+        return new gl.SearchAutocomplete();
       }
     };
 

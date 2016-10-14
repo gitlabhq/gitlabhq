@@ -4,7 +4,7 @@ describe 'Dashboard Todos', feature: true do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:issue)   { create(:issue) }
+  let(:issue)   { create(:issue, due_date: Date.today) }
 
   describe 'GET /dashboard/todos' do
     context 'User does not have todos' do
@@ -24,8 +24,14 @@ describe 'Dashboard Todos', feature: true do
         visit dashboard_todos_path
       end
 
-      it 'todo is present' do
+      it 'has todo present' do
         expect(page).to have_selector('.todos-list .todo', count: 1)
+      end
+
+      it 'shows due date as today' do
+        page.within first('.todo') do
+          expect(page).to have_content 'Due today'
+        end
       end
 
       describe 'deleting the todo' do
@@ -39,6 +45,27 @@ describe 'Dashboard Todos', feature: true do
 
         it 'shows "All done" message' do
           expect(page).to have_content("You're all done!")
+        end
+      end
+
+      context 'todo is stale on the page' do
+        before do
+          todos = TodosFinder.new(user, state: :pending).execute
+          TodoService.new.mark_todos_as_done(todos, user)
+        end
+
+        describe 'deleting the todo' do
+          before do
+            first('.done-todo').click
+          end
+
+          it 'is removed from the list' do
+            expect(page).not_to have_selector('.todos-list .todo')
+          end
+
+          it 'shows "All done" message' do
+            expect(page).to have_content("You're all done!")
+          end
         end
       end
     end
@@ -95,6 +122,20 @@ describe 'Dashboard Todos', feature: true do
 
           expect(current_path).to eq dashboard_todos_path
           expect(page).to have_css("#todo_#{Todo.first.id}")
+        end
+      end
+
+      describe 'mark all as done', js: true do
+        before do
+          visit dashboard_todos_path
+          click_link('Mark all as done')
+        end
+
+        it 'shows "All done" message!' do
+          within('.todos-pending-count') { expect(page).to have_content '0' }
+          expect(page).to have_content 'To do 0'
+          expect(page).to have_content "You're all done!"
+          expect(page).not_to have_selector('.gl-pagination')
         end
       end
     end

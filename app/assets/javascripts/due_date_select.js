@@ -2,6 +2,7 @@
   this.DueDateSelect = (function() {
     function DueDateSelect() {
       var $datePicker, $dueDate, $loading;
+      // Milestone edit/new form
       $datePicker = $('.datepicker');
       if ($datePicker.length) {
         $dueDate = $('#milestone_due_date');
@@ -16,6 +17,7 @@
         e.preventDefault();
         return $.datepicker._clearDate($datePicker);
       });
+      // Issuable sidebar
       $loading = $('.js-issuable-update .due_date').find('.block-loading').hide();
       $('.js-due-date-select').each(function(i, dropdown) {
         var $block, $dropdown, $dropdownParent, $selectbox, $sidebarValue, $value, $valueContent, abilityName, addDueDate, fieldName, issueUpdateURL;
@@ -38,6 +40,7 @@
         });
         addDueDate = function(isDropdown) {
           var data, date, mediumDate, value;
+          // Create the post date
           value = $("input[name='" + fieldName + "']").val();
           if (value !== '') {
             date = new Date(value.replace(new RegExp('-', 'g'), ','));

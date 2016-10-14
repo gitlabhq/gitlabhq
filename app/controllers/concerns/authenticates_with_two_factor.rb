@@ -23,15 +23,24 @@ module AuthenticatesWithTwoFactor
   #
   # Returns nil
   def prompt_for_two_factor(user)
+    return locked_user_redirect(user) if user.access_locked?
+
     session[:otp_user_id] = user.id
     setup_u2f_authentication(user)
     render 'devise/sessions/two_factor'
   end
 
+  def locked_user_redirect(user)
+    flash.now[:alert] = 'Invalid Login or password'
+    render 'devise/sessions/new'
+  end
+
   def authenticate_with_two_factor
     user = self.resource = find_user
 
-    if user_params[:otp_attempt].present? && session[:otp_user_id]
+    if user.access_locked?
+      locked_user_redirect(user)
+    elsif user_params[:otp_attempt].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_otp(user)
     elsif user_params[:device_response].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_u2f(user)
@@ -50,8 +59,9 @@ module AuthenticatesWithTwoFactor
       remember_me(user) if user_params[:remember_me] == '1'
       sign_in(user)
     else
+      user.increment_failed_attempts!
       flash.now[:alert] = 'Invalid two-factor code.'
-      render :two_factor
+      prompt_for_two_factor(user)
     end
   end
 
@@ -62,8 +72,10 @@ module AuthenticatesWithTwoFactor
       session.delete(:otp_user_id)
       session.delete(:challenges)
 
+      remember_me(user) if user_params[:remember_me] == '1'
       sign_in(user)
     else
+      user.increment_failed_attempts!
       flash.now[:alert] = 'Authentication via U2F device failed.'
       prompt_for_two_factor(user)
     end

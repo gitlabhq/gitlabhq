@@ -29,12 +29,16 @@ feature 'Merge request created from fork' do
     include WaitForAjax
 
     given(:pipeline) do
-      create(:ci_pipeline_with_two_job, project: fork_project,
-                                        sha: merge_request.diff_head_sha,
-                                        ref: merge_request.source_branch)
+      create(:ci_pipeline,
+             project: fork_project,
+             sha: merge_request.diff_head_sha,
+             ref: merge_request.source_branch)
     end
 
-    background { pipeline.create_builds(user) }
+    background do
+      create(:ci_build, pipeline: pipeline, name: 'rspec')
+      create(:ci_build, pipeline: pipeline, name: 'spinach')
+    end
 
     scenario 'user visits a pipelines page', js: true do
       visit_merge_request(merge_request)

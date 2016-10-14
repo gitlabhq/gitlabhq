@@ -14,7 +14,7 @@
     .col-sm-10
       .input-group
         .input-group-addon.label-color-preview &nbsp;
-        = f.color_field :color, class: "form-control"
+        = f.text_field :color, class: "form-control"
       .help-block
         Choose any color.
         %br
@@ -28,6 +28,3 @@
   .form-actions
     = f.submit 'Save', class: 'btn btn-save js-save-button'
     = link_to "Cancel", admin_labels_path, class: 'btn btn-cancel'
-
-:javascript
-  new Labels();

@@ -45,6 +45,8 @@ module API
           :tag_push_events,
           :note_events,
           :build_events,
+          :pipeline_events,
+          :wiki_page_events,
           :enable_ssl_verification
         ]
         @hook = user_project.hooks.new(attrs)
@@ -78,6 +80,8 @@ module API
           :tag_push_events,
           :note_events,
           :build_events,
+          :pipeline_events,
+          :wiki_page_events,
           :enable_ssl_verification
         ]
 

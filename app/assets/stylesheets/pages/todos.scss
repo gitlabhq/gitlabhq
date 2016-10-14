@@ -20,9 +20,43 @@
   }
 }
 
-.todo {
+.todos-list > .todo {
+  // workaround because we cannot use border-colapse
+  border-top: 1px solid transparent;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+
   &:hover {
+    background-color: $row-hover;
+    border-color: $row-hover-border;
     cursor: pointer;
+  }
+
+  // overwrite border style of .content-list
+  &:last-child {
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+      border-color: $row-hover-border;
+    }
+  }
+
+  .todo-actions {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    margin-left: 10px;
+    min-width: 55px;
+  }
+
+  .todo-item {
+    -webkit-flex: auto;
+    flex: auto;
   }
 }
 
@@ -43,8 +77,6 @@
   }
 
   .todo-body {
-    margin-right: 174px;
-
     .todo-note {
       word-wrap: break-word;
 
@@ -68,7 +100,7 @@
 
       pre {
         border: none;
-        background: #f9f9f9;
+        background: $gray-light;
         border-radius: 0;
         color: #777;
         margin: 0 20px;
@@ -89,7 +121,21 @@
   }
 }
 
+@media (max-width: $screen-sm-max) {
+  .todos-filters {
+    .dropdown-menu-toggle {
+      width: 135px;
+    }
+  }
+}
+
 @media (max-width: $screen-xs-max) {
+  .todo {
+    .avatar {
+      display: none;
+    }
+  }
+
   .todo-item {
     .todo-title {
       white-space: normal;
@@ -98,14 +144,20 @@
       margin-bottom: 10px;
     }
 
-    .avatar {
-      display: none;
-    }
-
     .todo-body {
       margin: 0;
       border-left: 2px solid #ddd;
       padding-left: 10px;
+    }
+  }
+
+  .todos-filters {
+    .row-content-block {
+      padding-bottom: 50px;
+    }
+
+    .dropdown-menu-toggle {
+      width: 100%;
     }
   }
 }

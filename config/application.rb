@@ -50,6 +50,7 @@ module Gitlab
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
+    # - GitLab-shell secret token (:secret_token)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
     config.filter_parameters += %i(
@@ -62,6 +63,7 @@ module Gitlab
       password
       password_confirmation
       private_token
+      secret_token
       sentry_dsn
       variables
     )
@@ -85,6 +87,11 @@ module Gitlab
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
     config.assets.precompile << "profile/profile_bundle.js"
+    config.assets.precompile << "diff_notes/diff_notes_bundle.js"
+    config.assets.precompile << "boards/boards_bundle.js"
+    config.assets.precompile << "boards/test_utils/simulate_drag.js"
+    config.assets.precompile << "blob_edit/blob_edit_bundle.js"
+    config.assets.precompile << "snippet/snippet_bundle.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"
@@ -94,22 +101,38 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    config.middleware.use Rack::Attack
+    config.middleware.insert_before Warden::Manager, Rack::Attack
 
     # Allow access to GitLab API from other domains
-    config.middleware.use Rack::Cors do
+    config.middleware.insert_before Warden::Manager, Rack::Cors do
+      allow do
+        origins Gitlab.config.gitlab.url
+        resource '/api/*',
+          credentials: true,
+          headers: :any,
+          methods: :any,
+          expose: ['Link']
+      end
+
+      # Cross-origin requests must not have the session cookie available
       allow do
         origins '*'
         resource '/api/*',
+          credentials: false,
           headers: :any,
           methods: :any,
           expose: ['Link']
       end
     end
 
-    redis_config_hash = Gitlab::Redis.redis_store_options
+    # Use Redis caching across all environments
+    redis_config_hash = Gitlab::Redis.params
     redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
+    if Sidekiq.server? # threaded context
+      redis_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
+      redis_config_hash[:pool_timeout] = 1
+    end
     config.cache_store = :redis_store, redis_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true

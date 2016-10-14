@@ -2,33 +2,47 @@
 
 ![backup banner](backup_hrz.png)
 
-## Create a backup of the GitLab system
+An application data backup creates an archive file that contains the database,
+all repositories and all attachments.
+This archive will be saved in `backup_path`, which is specified in the
+`config/gitlab.yml` file.
+The filename will be `[TIMESTAMP]_gitlab_backup.tar`, where `TIMESTAMP`
+identifies the time at which each backup was created.
 
-A backup creates an archive file that contains the database, all repositories and all attachments.
-This archive will be saved in backup_path (see `config/gitlab.yml`).
-The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
-You can only restore a backup to exactly the same version of GitLab that you created it
-on, for example 7.2.1. The best way to migrate your repositories from one server to
+You can only restore a backup to exactly the same version of GitLab on which it
+was created.  The best way to migrate your repositories from one server to
 another is through backup restore.
 
-You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
+To restore a backup, you will also need to restore `/etc/gitlab/gitlab-secrets.json`
 (for omnibus packages) or `/home/git/gitlab/.secret` (for installations
-from source). This file contains the database encryption key used
-for two-factor authentication. If you restore a GitLab backup without
-restoring the database encryption key, users who have two-factor
+from source). This file contains the database encryption key and CI secret
+variables used for two-factor authentication. If you fail to restore this
+encryption key file along with the application data backup, users with two-factor
 authentication enabled will lose access to your GitLab server.
 
-```
-# use this command if you've installed GitLab with the Omnibus package
-sudo gitlab-rake gitlab:backup:create
+## Create a backup of the GitLab system
 
-# if you've installed GitLab from source
+Use this command if you've installed GitLab with the Omnibus package:
+```
+sudo gitlab-rake gitlab:backup:create
+```
+Use this if you've installed GitLab from source:
+```
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
-Also you can choose what should be backed up by adding environment variable SKIP. Available options: db,
-uploads (attachments), repositories, builds(CI build output logs), artifacts (CI build artifacts), lfs (LFS objects).
-Use a comma to specify several options at the same time.
+You can specify that portions of the application data be skipped using the
+environment variable `SKIP`. You can skip:
+
+- `db` (database)
+- `uploads` (attachments)
+- `repositories` (Git repositories data)
+- `builds` (CI build output logs)
+- `artifacts` (CI build artifacts)
+- `lfs` (LFS objects)
+- `registry` (Container Registry images)
+
+Separate multiple data types to skip using a comma. For example:
 
 ```
 sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
@@ -68,7 +82,7 @@ Deleting old backups... [SKIPPING]
 Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.
 It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage.
-But Fog also lets you use [other storage providers](http://fog.io/storage/).
+Fog also supports [other storage providers](http://fog.io/storage/).
 
 For omnibus packages:
 
@@ -78,6 +92,9 @@ gitlab_rails['backup_upload_connection'] = {
   'region' => 'eu-west-1',
   'aws_access_key_id' => 'AKIAKIAKI',
   'aws_secret_access_key' => 'secret123'
+  # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
+  # ie. 'aws_access_key_id' => '',
+  # 'use_iam_profile' => 'true'
 }
 gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
 ```
@@ -94,6 +111,9 @@ For installations from source:
         region: eu-west-1
         aws_access_key_id: AKIAKIAKI
         aws_secret_access_key: 'secret123'
+        # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
+        # ie. aws_access_key_id: ''
+        # use_iam_profile: 'true'
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: 'my.s3.bucket'
       # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
@@ -154,7 +174,7 @@ with the name of your bucket:
 ### Uploading to locally mounted shares
 
 You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
-using the [`Local`](https://github.com/fog/fog-local#usage) storage provider.
+using the Fog [`Local`](https://github.com/fog/fog-local#usage) storage provider.
 The directory pointed to by the `local_root` key **must** be owned by the `git`
 user **when mounted** (mounting with the `uid=` of the `git` user for `CIFS` and
 `SMB`) or the user that you are executing the backup tasks under (for omnibus
@@ -221,11 +241,12 @@ of using encryption in the first place!
 
 If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
-If you have an installation from source, please consider backing up your `.secret` file, `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+If you installed from source, please consider backing up your `config/secrets.yml` file, `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
-At the very **minimum** you should backup `/etc/gitlab/gitlab-secrets.json`
-(Omnibus) or `/home/git/gitlab/.secret` (source) to preserve your
-database encryption key.
+At the very **minimum** you should backup `/etc/gitlab/gitlab.rb` and
+`/etc/gitlab/gitlab-secrets.json` (Omnibus), or
+`/home/git/gitlab/config/secrets.yml` (source) to preserve your database
+encryption key.
 
 ## Restore a previously created backup
 
@@ -240,11 +261,11 @@ the SQL database it needs to import data into ('gitlabhq_production').
 All existing data will be either erased (SQL) or moved to a separate
 directory (repositories, uploads).
 
-If some or all of your GitLab users are using two-factor authentication
-(2FA) then you must also make sure to restore
-`/etc/gitlab/gitlab-secrets.json` (Omnibus) or `/home/git/gitlab/.secret`
-(installations from source). Note that you need to run `gitlab-ctl
-reconfigure` after changing `gitlab-secrets.json`.
+If some or all of your GitLab users are using two-factor authentication (2FA)
+then you must also make sure to restore `/etc/gitlab/gitlab.rb` and
+`/etc/gitlab/gitlab-secrets.json` (Omnibus), or
+`/home/git/gitlab/config/secrets.yml` (installations from source). Note that you
+need to run `gitlab-ctl reconfigure` after changing `gitlab-secrets.json`.
 
 ### Installation from source
 

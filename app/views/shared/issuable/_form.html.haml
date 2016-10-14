@@ -1,8 +1,33 @@
+- project = @target_project || @project
 = form_errors(issuable)
+
+- if @conflict
+  .alert.alert-danger
+    Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
+    Please check out
+    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank"
+    and make sure your changes will not unintentionally remove theirs
 
 .form-group
   = f.label :title, class: 'control-label'
-  .col-sm-10
+
+  - issuable_template_names = issuable_templates(issuable)
+
+  - if issuable_template_names.any?
+    .col-sm-3.col-lg-2
+      .js-issuable-selector-wrap{ data: { issuable_type: issuable.class.to_s.underscore.downcase } }
+        - title = selected_template(issuable) || "Choose a template"
+
+        = dropdown_tag(title, options: { toggle_class: 'js-issuable-selector',
+          title: title, filter: true, placeholder: 'Filter', footer_content: true,
+          data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: ref_project.path, namespace_path: ref_project.namespace.path } } ) do
+          %ul.dropdown-footer-list
+            %li
+              %a.no-template
+                No template
+              %a.reset-template
+                Reset template
+  %div{ class: issuable_template_names.any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad', required: true
 
@@ -23,6 +48,13 @@
           to prevent a
           %strong Work In Progress
           merge request from being merged before it's ready.
+
+    - if can_add_template?(issuable)
+      %p.help-block
+        Add
+        = link_to "description templates", help_page_path('user/project/description_templates'), tabindex: -1
+        to help your contributors communicate effectively!
+
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
@@ -30,8 +62,9 @@
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'note-textarea',
-                               placeholder: "Write a comment or drag your files here..."
-      = render 'projects/notes/hints'
+                               placeholder: "Write a comment or drag your files here...",
+                               supports_slash_commands: !issuable.persisted?
+      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
       .clearfix
       .error-alert
 
@@ -52,38 +85,22 @@
         = f.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-                placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
-                selected: issuable.assignee_id, project: @target_project || @project,
-                first_user: true, current_user: true, include_blank: true)
-          %div
-            = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'
+            - if issuable.assignee_id
+              = f.hidden_field :assignee_id
+            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Select assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
+              placeholder: "Search assignee", data: { first_user: current_user.try(:username), null_user: true, current_user: true, project_id: project.try(:id), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee", show_menu_above: true } })
       .form-group.issue-milestone
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
-          - if milestone_options(issuable).present?
-            .issuable-form-select-holder
-              = f.select(:milestone_id, milestone_options(issuable),
-                { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
-          - else
-            .prepend-top-10
-            %span.light No open milestones available.
-          - if can? current_user, :admin_milestone, issuable.project
-            %div
-              = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+          .issuable-form-select-holder
+            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_menu_above: true, show_upcoming: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input", dropdown_title: "Select milestone"
       .form-group
         - has_labels = issuable.project.labels.any?
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
+        = f.hidden_field :label_ids, multiple: true, value: ''
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
-          - if has_labels
-            .issuable-form-select-holder
-              = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-                { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
-          - else
-            %span.light No labels yet.
-          - if can? current_user, :admin_label, issuable.project
-            %div
-              = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+          .issuable-form-select-holder
+            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }, dropdown_title: "Select label"
     - if has_due_date
       .col-lg-6
         .form-group
@@ -98,13 +115,13 @@
     = label_tag :move_to_project_id, 'Move', class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
-        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id) }
+        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id), page_size: MoveToProjectFinder::PAGE_SIZE }
       &nbsp;
       %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
         = icon('question-circle')
 
-- if issuable.is_a?(MergeRequest)
+- if issuable.is_a?(MergeRequest) && !issuable.closed_without_fork?
   %hr
   - if @merge_request.new_record?
     .form-group
@@ -145,7 +162,9 @@
     = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
   - else
     .pull-right
-      - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
+      - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
+
+= f.hidden_field :lock_version

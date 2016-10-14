@@ -114,6 +114,12 @@ ul.content-list {
     font-size: $list-font-size;
     color: $list-text-color;
 
+    &.no-description {
+      .title {
+        line-height: $list-text-height;
+      }
+    }
+
     .title {
       font-weight: 600;
     }
@@ -134,12 +140,11 @@ ul.content-list {
     }
 
     .controls {
-      padding-top: 1px;
       float: right;
 
       > .control-text {
         margin-right: $gl-padding-top;
-        line-height: 40px;
+        line-height: $list-text-height;
 
         &:last-child {
           margin-right: 0;
@@ -150,12 +155,16 @@ ul.content-list {
       > .btn-group {
         margin-right: $gl-padding-top;
         display: inline-block;
-        margin-top: 4px;
+        margin-top: 3px;
         margin-bottom: 4px;
 
         &:last-child {
           margin-right: 0;
         }
+      }
+
+      .no-comments {
+        opacity: .5;
       }
     }
 

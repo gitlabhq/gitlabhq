@@ -1,4 +1,4 @@
-- page_title           "#{@issue.title} (##{@issue.iid})", "Issues"
+- page_title           "#{@issue.to_reference} #{@issue.title}", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 
@@ -22,9 +22,9 @@
   - if can?(current_user, :create_issue, @project) || can?(current_user, :update_issue, @issue)
     .issuable-actions
       .clearfix.issue-btn-group.dropdown
-        %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ data: { toggle: "dropdown" } }
-          %span.caret
+        %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
           Options
+          = icon('caret-down')
         .dropdown-menu.dropdown-menu-align-right.hidden-lg
           %ul
             - if can?(current_user, :create_issue, @project)
@@ -37,25 +37,30 @@
                 = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
               %li
                 = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
+            - if @issue.submittable_as_spam? && current_user.admin?
+              %li
+                = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
+
         - if can?(current_user, :create_issue, @project)
           = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
             New issue
         - if can?(current_user, :update_issue, @issue)
           = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
           = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-          = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit' do
-            Edit
+          - if @issue.submittable_as_spam? && current_user.admin?
+            = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
+          = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 
 .issue-details.issuable-details
   .detail-page-description.content-block
     %h2.title
-      = markdown escape_once(@issue.title), pipeline: :single_line, author: @issue.author
+      = markdown_field(@issue, :title)
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
         .wiki
           = preserve do
-            = markdown(@issue.description, cache_key: [@issue, "description"], author: @issue.author)
+            = markdown_field(@issue, :description)
         %textarea.hidden.js-task-list-field
           = @issue.description
     = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')

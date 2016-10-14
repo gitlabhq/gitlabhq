@@ -13,14 +13,16 @@
       }
       $('.js-user-search').each((function(_this) {
         return function(i, dropdown) {
-          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser;
+          var options = {};
+          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
-          _this.projectId = $dropdown.data('project-id');
-          _this.showCurrentUser = $dropdown.data('current-user');
+          options.projectId = $dropdown.data('project-id');
+          options.showCurrentUser = $dropdown.data('current-user');
           showNullUser = $dropdown.data('null-user');
+          showMenuAbove = $dropdown.data('showMenuAbove');
           showAnyUser = $dropdown.data('any-user');
           firstUser = $dropdown.data('first-user');
-          _this.authorId = $dropdown.data('author-id');
+          options.authorId = $dropdown.data('author-id');
           selectedId = $dropdown.data('selected');
           defaultLabel = $dropdown.data('default-label');
           issueURL = $dropdown.data('issueUpdate');
@@ -69,17 +71,19 @@
               return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
             });
           };
-          collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/u/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
-          assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/u/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
+          collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
+          assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
           return $dropdown.glDropdown({
+            showMenuAbove: showMenuAbove,
             data: function(term, callback) {
               var isAuthorFilter;
               isAuthorFilter = $('.js-author-search');
-              return _this.users(term, function(users) {
+              return _this.users(term, options, function(users) {
                 var anyUser, index, j, len, name, obj, showDivider;
                 if (term.length === 0) {
                   showDivider = 0;
                   if (firstUser) {
+                    // Move current user to the front of the list
                     for (index = j = 0, len = users.length; j < len; index = ++j) {
                       obj = users[index];
                       if (obj.username === firstUser) {
@@ -114,7 +118,11 @@
                 if (showDivider) {
                   users.splice(showDivider, 0, "divider");
                 }
-                return callback(users);
+
+                callback(users);
+                if (showMenuAbove) {
+                  $dropdown.data('glDropdown').positionMenuAbove();
+                }
               });
             },
             filterable: true,
@@ -124,8 +132,8 @@
             },
             selectable: true,
             fieldName: $dropdown.data('field-name'),
-            toggleLabel: function(selected) {
-              if (selected && 'id' in selected) {
+            toggleLabel: function(selected, el) {
+              if (selected && 'id' in selected && $(el).hasClass('is-active')) {
                 if (selected.text) {
                   return selected.text;
                 } else {
@@ -135,20 +143,29 @@
                 return defaultLabel;
               }
             },
+            defaultLabel: defaultLabel,
             inputId: 'issue_assignee_id',
             hidden: function(e) {
               $selectbox.hide();
+              // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },
-            clicked: function(user) {
+            clicked: function(user, $el, e) {
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
               isMRIndex = (page === page && page === 'projects:merge_requests:index');
-              if ($dropdown.hasClass('js-filter-bulk-update')) {
+              if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
+                e.preventDefault();
+                selectedId = user.id;
                 return;
               }
-              if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+              if ($('html').hasClass('issue-boards-page')) {
+                selectedId = user.id;
+                gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
+                gl.issueBoards.BoardsStore.updateFiltersUrl();
+                e.preventDefault();
+              } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
@@ -157,6 +174,9 @@
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
+            },
+            id: function (user) {
+              return user.id;
             },
             renderRow: function(user) {
               var avatar, img, listClosingTags, listWithName, listWithUserName, selected, username;
@@ -171,6 +191,7 @@
                   img = "<img src='" + avatar + "' class='avatar avatar-inline' width='30' />";
                 }
               }
+              // split into three parts so we can remove the username section if nessesary
               listWithName = "<li> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
               listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
               listClosingTags = "</a> </li>";
@@ -185,11 +206,14 @@
       $('.ajax-users-select').each((function(_this) {
         return function(i, select) {
           var firstUser, showAnyUser, showEmailUser, showNullUser;
-          _this.projectId = $(select).data('project-id');
-          _this.groupId = $(select).data('group-id');
-          _this.showCurrentUser = $(select).data('current-user');
-          _this.authorId = $(select).data('author-id');
-          _this.skipUsers = $(select).data('skip-users');
+          var options = {};
+          options.skipLdap = $(select).hasClass('skip_ldap');
+          options.projectId = $(select).data('project-id');
+          options.groupId = $(select).data('group-id');
+          options.showCurrentUser = $(select).data('current-user');
+          options.pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches');
+          options.authorId = $(select).data('author-id');
+          options.skipUsers = $(select).data('skip-users');
           showNullUser = $(select).data('null-user');
           showAnyUser = $(select).data('any-user');
           showEmailUser = $(select).data('email-user');
@@ -199,13 +223,14 @@
             multiple: $(select).hasClass('multiselect'),
             minimumInputLength: 0,
             query: function(query) {
-              return _this.users(query.term, function(users) {
+              return _this.users(query.term, options, function(users) {
                 var anyUser, data, emailUser, index, j, len, name, nullUser, obj, ref;
                 data = {
                   results: users
                 };
                 if (query.term.length === 0) {
                   if (firstUser) {
+                    // Move current user to the front of the list
                     ref = data.results;
                     for (index = j = 0, len = ref.length; j < len; index = ++j) {
                       obj = ref[index];
@@ -236,10 +261,11 @@
                   }
                 }
                 if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
+                  var trimmed = query.term.trim();
                   emailUser = {
                     name: "Invite \"" + query.term + "\"",
-                    username: query.term,
-                    id: query.term
+                    username: trimmed,
+                    id: trimmed
                   };
                   data.results.unshift(emailUser);
                 }
@@ -262,6 +288,7 @@
               return _this.formatSelection.apply(_this, args);
             },
             dropdownCssClass: "ajax-users-dropdown",
+            // we do not want to escape markup since we are displaying html in results
             escapeMarkup: function(m) {
               return m;
             }
@@ -309,7 +336,9 @@
       });
     };
 
-    UsersSelect.prototype.users = function(query, callback) {
+    // Return users list. Filtered by query
+    // Only active users retrieved
+    UsersSelect.prototype.users = function(query, options, callback) {
       var url;
       url = this.buildUrl(this.usersPath);
       return $.ajax({
@@ -318,11 +347,13 @@
           search: query,
           per_page: 20,
           active: true,
-          project_id: this.projectId,
-          group_id: this.groupId,
-          current_user: this.showCurrentUser,
-          author_id: this.authorId,
-          skip_users: this.skipUsers
+          project_id: options.projectId || null,
+          group_id: options.groupId || null,
+          skip_ldap: options.skipLdap || null,
+          current_user: options.showCurrentUser || null,
+          push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
+          author_id: options.authorId || null,
+          skip_users: options.skipUsers || null
         },
         dataType: "json"
       }).done(function(users) {

@@ -20,7 +20,7 @@ Constants for project visibility levels are next:
 
 ## List projects
 
-Get a list of projects accessible by the authenticated user.
+Get a list of projects for which the authenticated user is a member.
 
 ```
 GET /projects
@@ -28,11 +28,150 @@ GET /projects
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+
+```json
+[
+  {
+    "id": 4,
+    "description": null,
+    "default_branch": "master",
+    "public": false,
+    "visibility_level": 0,
+    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
+    "web_url": "http://example.com/diaspora/diaspora-client",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
+    "owner": {
+      "id": 3,
+      "name": "Diaspora",
+      "created_at": "2013-09-30T13:46:02Z"
+    },
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "builds_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "created_at": "2013-09-30T13:46:02Z",
+      "description": "",
+      "id": 3,
+      "name": "Diaspora",
+      "owner_id": 1,
+      "path": "diaspora",
+      "updated_at": "2013-09-30T13:46:02Z"
+    },
+    "archived": false,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_builds": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_build_succeeds": false,
+    "request_access_enabled": false
+  },
+  {
+    "id": 6,
+    "description": null,
+    "default_branch": "master",
+    "public": false,
+    "visibility_level": 0,
+    "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
+    "http_url_to_repo": "http://example.com/brightbox/puppet.git",
+    "web_url": "http://example.com/brightbox/puppet",
+    "tag_list": [
+      "example",
+      "puppet"
+    ],
+    "owner": {
+      "id": 4,
+      "name": "Brightbox",
+      "created_at": "2013-09-30T13:46:02Z"
+    },
+    "name": "Puppet",
+    "name_with_namespace": "Brightbox / Puppet",
+    "path": "puppet",
+    "path_with_namespace": "brightbox/puppet",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "builds_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "created_at": "2013-09-30T13:46:02Z",
+      "description": "",
+      "id": 4,
+      "name": "Brightbox",
+      "owner_id": 1,
+      "path": "brightbox",
+      "updated_at": "2013-09-30T13:46:02Z"
+    },
+    "permissions": {
+      "project_access": {
+        "access_level": 10,
+        "notification_level": 3
+      },
+      "group_access": {
+        "access_level": 50,
+        "notification_level": 3
+      }
+    },
+    "archived": false,
+    "avatar_url": null,
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_builds": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_build_succeeds": false,
+    "request_access_enabled": false
+  }
+]
+```
+
+Get a list of projects which the authenticated user can see.
+
+```
+GET /projects/visible
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 
 ```json
 [
@@ -159,11 +298,13 @@ GET /projects/owned
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
 
 ### List starred projects
 
@@ -175,11 +316,13 @@ GET /projects/starred
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
 
 ### List ALL projects
 
@@ -191,11 +334,13 @@ GET /projects/all
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
 
 ### Get single project
 
@@ -208,7 +353,9 @@ GET /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 
 ```json
 {
@@ -280,14 +427,16 @@ Parameters:
       "group_name": "Gitlab Org",
       "group_access_level": 10
     }
-  ]
+  ],
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
 ### Get project events
 
 Get the events for the specified project.
-Sorted from newest to latest
+Sorted from newest to oldest
 
 ```
 GET /projects/:id/events
@@ -295,7 +444,9 @@ GET /projects/:id/events
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 
 ```json
 [
@@ -433,21 +584,26 @@ POST /projects
 
 Parameters:
 
-- `name` (required) - new project name
-- `path` (optional) - custom repository name for new project. By default generated based on name
-- `namespace_id` (optional) - namespace for the new project (defaults to user)
-- `description` (optional) - short project description
-- `issues_enabled` (optional)
-- `merge_requests_enabled` (optional)
-- `builds_enabled` (optional)
-- `wiki_enabled` (optional)
-- `snippets_enabled` (optional)
-- `container_registry_enabled` (optional)
-- `shared_runners_enabled` (optional)
-- `public` (optional) - if `true` same as setting visibility_level = 20
-- `visibility_level` (optional)
-- `import_url` (optional)
-- `public_builds` (optional)
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | yes | The name of the new project |
+| `path` | string | no | Custom repository name for new project. By default generated based on name |
+| `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `description` | string | no | Short project description |
+| `issues_enabled` | boolean | no | Enable issues for this project |
+| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
+| `builds_enabled` | boolean | no | Enable builds for this project |
+| `wiki_enabled` | boolean | no | Enable wiki for this project |
+| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `container_registry_enabled` | boolean | no | Enable container registry for this project |
+| `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
+| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
+| `visibility_level` | integer | no | See [project visibility level][#project-visibility-level] |
+| `import_url` | string | no | URL to import repository from |
+| `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
+| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `lfs_enabled` | boolean | no | Enable LFS |
+| `request_access_enabled` | boolean | no | Allow users to request member access |
 
 ### Create project for user
 
@@ -459,20 +615,27 @@ POST /projects/user/:user_id
 
 Parameters:
 
-- `user_id` (required) - user_id of owner
-- `name` (required) - new project name
-- `description` (optional) - short project description
-- `issues_enabled` (optional)
-- `merge_requests_enabled` (optional)
-- `builds_enabled` (optional)
-- `wiki_enabled` (optional)
-- `snippets_enabled` (optional)
-- `container_registry_enabled` (optional)
-- `shared_runners_enabled` (optional)
-- `public` (optional) - if `true` same as setting visibility_level = 20
-- `visibility_level` (optional)
-- `import_url` (optional)
-- `public_builds` (optional)
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The user ID of the project owner |
+| `name` | string | yes | The name of the new project |
+| `path` | string | no | Custom repository name for new project. By default generated based on name |
+| `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `description` | string | no | Short project description |
+| `issues_enabled` | boolean | no | Enable issues for this project |
+| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
+| `builds_enabled` | boolean | no | Enable builds for this project |
+| `wiki_enabled` | boolean | no | Enable wiki for this project |
+| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `container_registry_enabled` | boolean | no | Enable container registry for this project |
+| `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
+| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
+| `visibility_level` | integer | no | See [project visibility level][#project-visibility-level] |
+| `import_url` | string | no | URL to import repository from |
+| `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
+| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `lfs_enabled` | boolean | no | Enable LFS |
+| `request_access_enabled` | boolean | no | Allow users to request member access |
 
 ### Edit project
 
@@ -484,28 +647,33 @@ PUT /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `name` (optional) - project name
-- `path` (optional) - repository name for project
-- `description` (optional) - short project description
-- `default_branch` (optional)
-- `issues_enabled` (optional)
-- `merge_requests_enabled` (optional)
-- `builds_enabled` (optional)
-- `wiki_enabled` (optional)
-- `snippets_enabled` (optional)
-- `container_registry_enabled` (optional)
-- `shared_runners_enabled` (optional)
-- `public` (optional) - if `true` same as setting visibility_level = 20
-- `visibility_level` (optional)
-- `public_builds` (optional)
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
+| `name` | string | yes | The name of the project |
+| `path` | string | no | Custom repository name for the project. By default generated based on name |
+| `description` | string | no | Short project description |
+| `issues_enabled` | boolean | no | Enable issues for this project |
+| `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
+| `builds_enabled` | boolean | no | Enable builds for this project |
+| `wiki_enabled` | boolean | no | Enable wiki for this project |
+| `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `container_registry_enabled` | boolean | no | Enable container registry for this project |
+| `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
+| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
+| `visibility_level` | integer | no | See [project visibility level][#project-visibility-level] |
+| `import_url` | string | no | URL to import repository from |
+| `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
+| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `lfs_enabled` | boolean | no | Enable LFS |
+| `request_access_enabled` | boolean | no | Allow users to request member access |
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
 
 ### Fork project
 
-Forks a project into the user namespace of the authenticated user.
+Forks a project into the user namespace of the authenticated user or the one provided.
 
 ```
 POST /projects/fork/:id
@@ -513,7 +681,10 @@ POST /projects/fork/:id
 
 Parameters:
 
-- `id` (required) - The ID of the project to be forked
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
+| `namespace` | integer/string | yes | The ID or path of the namespace that the project will be forked to |
 
 ### Star a project
 
@@ -524,12 +695,14 @@ Stars a given project. Returns status code `201` and the project on success and
 POST /projects/:id/star
 ```
 
+Parameters:
+
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -577,7 +750,9 @@ Example response:
   "forks_count": 0,
   "star_count": 1,
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -592,10 +767,10 @@ DELETE /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -643,7 +818,9 @@ Example response:
   "forks_count": 0,
   "star_count": 0,
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -662,10 +839,10 @@ POST /projects/:id/archive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
 ```
 
 Example response:
@@ -729,7 +906,9 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -748,10 +927,10 @@ POST /projects/:id/unarchive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
 ```
 
 Example response:
@@ -815,7 +994,9 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -829,7 +1010,9 @@ DELETE /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ## Uploads
 
@@ -843,8 +1026,10 @@ POST /projects/:id/uploads
 
 Parameters:
 
-- `id` (required) - The ID of the project
-- `file` (required) - The file to be uploaded
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `file` | string | yes | The file to be uploaded |
 
 ```json
 {
@@ -858,95 +1043,9 @@ Parameters:
 In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
 
 
-## Team members
+## Project members
 
-### List project team members
-
-Get a list of a project's team members.
-
-```
-GET /projects/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `query` (optional) - Query string to search for members
-
-### Get project team member
-
-Gets a project team member.
-
-```
-GET /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a user
-
-```json
-{
-  "id": 1,
-  "username": "john_smith",
-  "email": "john@example.com",
-  "name": "John Smith",
-  "state": "active",
-  "created_at": "2012-05-23T08:00:58Z",
-  "access_level": 40
-}
-```
-
-### Add project team member
-
-Adds a user to a project team. This is an idempotent method and can be called multiple times
-with the same parameters. Adding team membership to a user that is already a member does not
-affect the existing membership.
-
-```
-POST /projects/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a user to add
-- `access_level` (required) - Project access level
-
-### Edit project team member
-
-Updates a project team member to a specified access level.
-
-```
-PUT /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a team member
-- `access_level` (required) - Project access level
-
-### Remove project team member
-
-Removes a user from a project team.
-
-```
-DELETE /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a team member
-
-This method removes the project member if the user has the proper access rights to do so.
-It returns a status code 403 if the member does not have the proper rights to perform this action.
-In all other cases this method is idempotent and revoking team membership for a user who is not
-currently a team member is considered success.
-Please note that the returned JSON currently differs slightly. Thus you should not
-rely on the returned JSON structure.
+Please consult the [Project Members](members.md) documentation.
 
 ### Share project with group
 
@@ -958,9 +1057,12 @@ POST /projects/:id/share
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `group_id` (required) - The ID of a group
-- `group_access` (required) - Level of permissions for sharing
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `group_id` | integer | yes | The ID of the group to share with |
+| `group_access` | integer | yes | The permissions level to grant the group |
+| `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
 
 ## Hooks
 
@@ -977,7 +1079,9 @@ GET /projects/:id/hooks
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ### Get project hook
 
@@ -989,8 +1093,10 @@ GET /projects/:id/hooks/:hook_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `hook_id` (required) - The ID of a project hook
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `hook_id` | integer | yes | The ID of a project hook |
 
 ```json
 {
@@ -1000,7 +1106,11 @@ Parameters:
   "push_events": true,
   "issues_events": true,
   "merge_requests_events": true,
+  "tag_push_events": true,
   "note_events": true,
+  "build_events": true,
+  "pipeline_events": true,
+  "wiki_page_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -1016,14 +1126,19 @@ POST /projects/:id/hooks
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `url` (required) - The hook URL
-- `push_events` - Trigger hook on push events
-- `issues_events` - Trigger hook on issues events
-- `merge_requests_events` - Trigger hook on merge_requests events
-- `tag_push_events` - Trigger hook on push_tag events
-- `note_events` - Trigger hook on note events
-- `enable_ssl_verification` - Do SSL verification when triggering the hook
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `url` | string | yes | The hook URL |
+| `push_events` | boolean | no | Trigger hook on push events |
+| `issues_events` | boolean | no | Trigger hook on issues events |
+| `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
+| `tag_push_events` | boolean | no | Trigger hook on tag push events |
+| `note_events` | boolean | no | Trigger hook on note events |
+| `build_events` | boolean | no | Trigger hook on build events |
+| `pipeline_events` | boolean | no | Trigger hook on pipeline events |
+| `wiki_events` | boolean | no | Trigger hook on wiki events |
+| `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 
 ### Edit project hook
 
@@ -1035,15 +1150,20 @@ PUT /projects/:id/hooks/:hook_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `hook_id` (required) - The ID of a project hook
-- `url` (required) - The hook URL
-- `push_events` - Trigger hook on push events
-- `issues_events` - Trigger hook on issues events
-- `merge_requests_events` - Trigger hook on merge_requests events
-- `tag_push_events` - Trigger hook on push_tag events
-- `note_events` - Trigger hook on note events
-- `enable_ssl_verification` - Do SSL verification when triggering the hook
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `hook_id` | integer | yes | The ID of the project hook |
+| `url` | string | yes | The hook URL |
+| `push_events` | boolean | no | Trigger hook on push events |
+| `issues_events` | boolean | no | Trigger hook on issues events |
+| `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
+| `tag_push_events` | boolean | no | Trigger hook on tag push events |
+| `note_events` | boolean | no | Trigger hook on note events |
+| `build_events` | boolean | no | Trigger hook on build events |
+| `pipeline_events` | boolean | no | Trigger hook on pipeline events |
+| `wiki_events` | boolean | no | Trigger hook on wiki events |
+| `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 
 ### Delete project hook
 
@@ -1056,13 +1176,17 @@ DELETE /projects/:id/hooks/:hook_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `hook_id` (required) - The ID of hook to delete
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `hook_id` | integer | yes | The ID of the project hook |
 
 Note the JSON response differs if the hook is available or not. If the project hook
 is available before it is returned in the JSON response or an empty response is returned.
 
 ## Branches
+
+For more information please consult the [Branches](branches.md) documentation.
 
 ### List branches
 
@@ -1074,7 +1198,9 @@ GET /projects/:id/repository/branches
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```json
 [
@@ -1082,56 +1208,46 @@ Parameters:
     "name": "async",
     "commit": {
       "id": "a2b702edecdf41f07b42653eb1abe30ce98b9fca",
-      "parents": [
-        {
-          "id": "3f94fc7c85061973edc9906ae170cc269b07ca55"
-        }
+      "parent_ids": [
+        "3f94fc7c85061973edc9906ae170cc269b07ca55"
       ],
-      "tree": "c68537c6534a02cc2b176ca1549f4ffa190b58ee",
       "message": "give Caolan credit where it's due (up top)",
-      "author": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
-      "committer": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
+      "author_name": "Jeremy Ashkenas",
+      "author_email": "jashkenas@example.com",
       "authored_date": "2010-12-08T21:28:50+00:00",
+      "committer_name": "Jeremy Ashkenas",
+      "committer_email": "jashkenas@example.com",
       "committed_date": "2010-12-08T21:28:50+00:00"
     },
-    "protected": false
+    "protected": false,
+    "developers_can_push": false,
+    "developers_can_merge": false
   },
   {
     "name": "gh-pages",
     "commit": {
       "id": "101c10a60019fe870d21868835f65c25d64968fc",
-      "parents": [
-        {
-          "id": "9c15d2e26945a665131af5d7b6d30a06ba338aaa"
-        }
+      "parent_ids": [
+          "9c15d2e26945a665131af5d7b6d30a06ba338aaa"
       ],
-      "tree": "fb5cc9d45da3014b17a876ad539976a0fb9b352a",
       "message": "Underscore.js 1.5.2",
-      "author": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
-      "committer": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
+      "author_name": "Jeremy Ashkenas",
+      "author_email": "jashkenas@example.com",
       "authored_date": "2013-09-07T12:58:21+00:00",
+      "committer_name": "Jeremy Ashkenas",
+      "committer_email": "jashkenas@example.com",
       "committed_date": "2013-09-07T12:58:21+00:00"
     },
-    "protected": false
+    "protected": false,
+    "developers_can_push": false,
+    "developers_can_merge": false
   }
 ]
 ```
 
-### List single branch
+### Single branch
 
-Lists a specific branch of a project.
+A specific branch of a project.
 
 ```
 GET /projects/:id/repository/branches/:branch
@@ -1139,8 +1255,12 @@ GET /projects/:id/repository/branches/:branch
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `branch` (required) - The name of the branch.
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `branch` | string | yes | The name of the branch |
+| `developers_can_push` | boolean | no | Flag if developers can push to the branch |
+| `developers_can_merge` | boolean | no | Flag if developers can merge to the branch |
 
 ### Protect single branch
 
@@ -1152,8 +1272,10 @@ PUT /projects/:id/repository/branches/:branch/protect
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `branch` (required) - The name of the branch.
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `branch` | string | yes | The name of the branch |
 
 ### Unprotect single branch
 
@@ -1165,8 +1287,10 @@ PUT /projects/:id/repository/branches/:branch/unprotect
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `branch` (required) - The name of the branch.
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `branch` | string | yes | The name of the branch |
 
 ## Admin fork relation
 
@@ -1180,8 +1304,10 @@ POST /projects/:id/fork/:forked_from_id
 
 Parameters:
 
-- `id` (required) - The ID of the project
-- `forked_from_id:` (required) - The ID of the project that was forked from
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `forked_from_id` | ID | yes | The ID of the project that was forked from |
 
 ### Delete an existing forked from relationship
 
@@ -1191,7 +1317,9 @@ DELETE /projects/:id/fork
 
 Parameter:
 
-- `id` (required) - The ID of the project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ## Search for projects by name
 
@@ -1203,8 +1331,10 @@ GET /projects/search/:query
 
 Parameters:
 
-- `query` (required) - A string contained in the project name
-- `per_page` (optional) - number of projects to return per page
-- `page` (optional) - the page to retrieve
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `query` (required) - A string contained in the project name
+| `per_page` (optional) - number of projects to return per page
+| `page` (optional) - the page to retrieve
+| `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
+| `sort` | string | no | Return requests sorted in `asc` or `desc` order |

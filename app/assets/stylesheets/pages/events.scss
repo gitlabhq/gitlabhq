@@ -60,7 +60,7 @@
 
       pre {
         border: none;
-        background: #f9f9f9;
+        background: $gray-light;
         border-radius: 0;
         color: #777;
         margin: 0 20px;
@@ -91,8 +91,8 @@
     float: right;
     border: 1px solid #eee;
     padding: 5px;
-    @include border-radius(5px);
-    background: #f9f9f9;
+    border-radius: 5px;
+    background: $gray-light;
     margin-left: 10px;
     top: -6px;
     img {
@@ -115,11 +115,8 @@
       }
 
       &.commits-stat {
-        margin-top: 3px;
         display: block;
-        padding: 3px;
-        padding-left: 0;
-
+        padding: 0 3px 0 0;
         &:hover {
           background: none;
         }

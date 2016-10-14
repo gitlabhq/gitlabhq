@@ -1,23 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#
-
 require 'spec_helper'
 
 describe DroneCiService, models: true do
@@ -84,7 +64,9 @@ describe DroneCiService, models: true do
     include_context :drone_ci_service
 
     let(:user)    { create(:user, username: 'username') }
-    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:push_sample_data) do
+      Gitlab::DataBuilder::Push.build_sample(project, user)
+    end
 
     it do
       service_hook = double

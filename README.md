@@ -1,11 +1,13 @@
 # GitLab
 
-[![build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
+[![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
+[![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](http://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+[![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 
 ## Canonical source
 
-The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
+The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
 
 ## Open source software to collaborate on code
 
@@ -69,7 +71,7 @@ Instructions on how to start GitLab and how to run the tests can be found in the
 GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL
-- Ruby (MRI) 2.1
+- Ruby (MRI) 2.3
 - Git 2.7.4+
 - Redis 2.8+
 - MySQL or PostgreSQL

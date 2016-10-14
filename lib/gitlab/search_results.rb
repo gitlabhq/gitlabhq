@@ -27,11 +27,6 @@ module Gitlab
       end
     end
 
-    def total_count
-      @total_count ||= projects_count + issues_count + merge_requests_count +
-        milestones_count
-    end
-
     def projects_count
       @projects_count ||= projects.count
     end
@@ -46,10 +41,6 @@ module Gitlab
 
     def milestones_count
       @milestones_count ||= milestones.count
-    end
-
-    def empty?
-      total_count.zero?
     end
 
     private

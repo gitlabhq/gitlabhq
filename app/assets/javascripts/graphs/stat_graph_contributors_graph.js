@@ -204,6 +204,7 @@
 
     function ContributorsAuthorGraph(data1) {
       this.data = data1;
+      // Don't split graph size in half for mobile devices.
       if ($(window).width() < 768) {
         this.width = $('.content').width() - 80;
       } else {

@@ -11,17 +11,14 @@ module BlobHelper
   def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
     return unless current_user
 
-    blob = project.repository.blob_at(ref, path) rescue nil
+    blob = options.delete(:blob)
+    blob ||= project.repository.blob_at(ref, path) rescue nil
 
     return unless blob
 
-    from_mr = options[:from_merge_request_id]
-    link_opts = {}
-    link_opts[:from_merge_request_id] = from_mr if from_mr
-
     edit_path = namespace_project_edit_blob_path(project.namespace, project,
                                      tree_join(ref, path),
-                                     link_opts)
+                                     options[:link_opts])
 
     if !on_top_of_branch?(project, ref)
       button_tag "Edit", class: "btn disabled has-tooltip btn-file-option", title: "You can only edit files when you are on a branch", data: { container: 'body' }
@@ -182,17 +179,50 @@ module BlobHelper
     }
   end
 
+  def selected_template(issuable)
+    templates = issuable_templates(issuable)
+    params[:issuable_template] if templates.include?(params[:issuable_template])
+  end
+
+  def can_add_template?(issuable)
+    names = issuable_templates(issuable)
+    names.empty? && can?(current_user, :push_code, @project) && !@project.private?
+  end
+
+  def merge_request_template_names
+    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
+  end
+
+  def issue_template_names
+    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
+  end
+
+  def issuable_templates(issuable)
+    @issuable_templates ||=
+      if issuable.is_a?(Issue)
+        issue_template_names
+      elsif issuable.is_a?(MergeRequest)
+        merge_request_template_names
+      end
+  end
+
+  def ref_project
+    @ref_project ||= @target_project || @project
+  end
+
   def gitignore_names
-    @gitignore_names ||=
-      Gitlab::Template::Gitignore.categories.keys.map do |k|
-        [k, Gitlab::Template::Gitignore.by_category(k).map { |t| { name: t.name } }]
-      end.to_h
+    @gitignore_names ||= Gitlab::Template::GitignoreTemplate.dropdown_names
   end
 
   def gitlab_ci_ymls
-    @gitlab_ci_ymls ||=
-      Gitlab::Template::GitlabCiYml.categories.keys.map do |k|
-        [k, Gitlab::Template::GitlabCiYml.by_category(k).map { |t| { name: t.name } }]
-      end.to_h
+    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names
+  end
+
+  def blob_editor_paths
+    {
+      'relative-url-root' => Rails.application.config.relative_url_root,
+      'assets-prefix' => Gitlab::Application.config.assets.prefix,
+      'blob-language' => @blob && @blob.language.try(:ace_mode)
+    }
   end
 end

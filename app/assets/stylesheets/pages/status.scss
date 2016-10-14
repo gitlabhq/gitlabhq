@@ -4,7 +4,7 @@
     margin-right: 10px;
     border: 1px solid #eee;
     white-space: nowrap;
-    @include border-radius(4px);
+    border-radius: 4px;
 
     &:hover {
       text-decoration: none;
@@ -41,6 +41,15 @@
     &.ci-running {
       color: $blue-normal;
       border-color: $blue-normal;
+    }
+
+    &.ci-created {
+      color: $table-text-gray;
+      border-color: $table-text-gray;
+
+      svg {
+        fill: $table-text-gray;
+      }
     }
 
     svg {

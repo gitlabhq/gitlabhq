@@ -99,7 +99,7 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 15px;
-    max-width: 480px;
+    max-width: 700px;
 
     > p {
       margin-bottom: 0;
@@ -146,7 +146,8 @@
   }
 
   .project-repo-btn-group,
-  .notification-dropdown {
+  .notification-dropdown,
+  .project-dropdown {
     margin-left: 10px;
   }
 
@@ -311,6 +312,14 @@ a.deploy-project-label {
   color: $gl-success;
 }
 
+.lfs-enabled {
+  color: $gl-success;
+}
+
+.lfs-disabled {
+  color: $gl-warning;
+}
+
 .breadcrumb.repo-breadcrumb {
   padding: 0;
   background: transparent;
@@ -325,6 +334,10 @@ a.deploy-project-label {
 
   a {
     color: $gl-dark-link-color;
+  }
+
+  .dropdown-menu {
+    width: 240px;
   }
 }
 
@@ -341,7 +354,7 @@ a.deploy-project-label {
     justify-content: flex-start;
 
     .fork-thumbnail {
-      @include border-radius($border-radius-base);
+      border-radius: $border-radius-base;
       background-color: $white-light;
       border: 1px solid $border-white-light;
       height: 202px;
@@ -358,7 +371,7 @@ a.deploy-project-label {
         background-color: $gray-light;
         border: 1px solid $gray-dark;
         margin: 0 auto;
-        @include border-radius(50%);
+        border-radius: 50%;
         i {
           font-size: 100px;
           color: $gray-dark;
@@ -377,7 +390,7 @@ a.deploy-project-label {
       }
 
       img {
-        @include border-radius(50%);
+        border-radius: 50%;
         max-width: 100px;
       }
     }
@@ -483,7 +496,7 @@ pre.light-well {
   }
 
   .light-well {
-    @include border-radius (2px);
+    border-radius: 2px;
 
     color: #5b6169;
     font-size: 13px;
@@ -512,18 +525,12 @@ pre.light-well {
   .project-row {
     border-color: $table-border-color;
 
-    &.no-description {
-      .project {
-        line-height: 40px;
-      }
-    }
-
     .project-full-name {
       @include str-truncated;
     }
 
     .controls {
-      line-height: 40px;
+      line-height: $list-text-height;
 
       a:hover {
         text-decoration: none;
@@ -606,18 +613,25 @@ pre.light-well {
   }
 }
 
-.project-show-readme .readme-holder {
-  padding: $gl-padding 0;
-  border-top: 0;
-
-  .edit-project-readme {
-    z-index: 2;
-    position: relative;
+.project-show-readme {
+  .row-content-block {
+    background-color: inherit;
+    border: none;
   }
 
-  .wiki h1 {
-    border-bottom: none;
-    padding: 0;
+  .readme-holder {
+    padding: $gl-padding 0;
+    border-top: 0;
+
+    .edit-project-readme {
+      z-index: 2;
+      position: relative;
+    }
+
+    .wiki h1 {
+      border-bottom: none;
+      padding: 0;
+    }
   }
 }
 
@@ -662,13 +676,9 @@ pre.light-well {
 }
 
 .new_protected_branch {
-  .dropdown {
-    display: inline;
-    margin-left: 15px;
-  }
-
   label {
-    min-width: 120px;
+    margin-top: 6px;
+    font-weight: normal;
   }
 }
 
@@ -682,6 +692,21 @@ pre.light-well {
 
     &.is-active {
       font-weight: 600;
+    }
+  }
+
+  .settings-message {
+    margin: 0;
+    border-radius: 0 0 1px 1px;
+    padding: 20px 0;
+    border: none;
+  }
+
+  .table-bordered {
+    border-radius: 1px;
+
+    th:not(:last-child), td:not(:last-child) {
+      border-right: solid 1px transparent;
     }
   }
 }
@@ -703,14 +728,112 @@ pre.light-well {
   }
 }
 
-.project-refs-form {
-  .dropdown-menu {
-    width: 300px;
+.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+  width: 300px;
+
+  @media (min-width: $screen-sm-min) {
+    width: 500px;
+  }
+
+  a {
+    white-space: normal;
   }
 }
 
 .compare-form-group {
   .dropdown-menu {
     width: 300px;
+  }
+
+  &.from .compare-dropdown-toggle {
+    width: 237px;
+  }
+
+  &.to .compare-dropdown-toggle {
+    width: 254px;
+  }
+
+  .dropdown-toggle-text {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
+.compare-ellipsis {
+  display: inline;
+}
+
+@media (max-width: $screen-xs-max) {
+  .compare-form-group {
+    .input-group {
+      width: 100%;
+
+      & > .compare-dropdown-toggle {
+        width: 100%;
+      }
+    }
+
+    .dropdown-menu {
+      width: 100%;
+    }
+  }
+
+  .compare-switch-container {
+    text-align: center;
+    padding: 0 0 $gl-padding;
+
+    .commits-compare-switch {
+      float: none;
+    }
+  }
+
+  .compare-ellipsis {
+    display: block;
+    text-align: center;
+    padding: 0 0 $gl-padding;
+  }
+
+  .commits-compare-btn {
+    width: 100%;
+  }
+}
+
+.clearable-input {
+  position: relative;
+
+  .clear-icon {
+    @extend .fa-times;
+    display: none;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    color: $location-icon-color;
+
+    &:before {
+      font-family: FontAwesome;
+      font-weight: normal;
+      font-style: normal;
+    }
+  }
+
+  &.has-value {
+    .clear-icon {
+      cursor: pointer;
+      display: block;
+    }
+  }
+}
+
+.project-path {
+  .form-control {
+    min-width: 100px;
+  }
+  .select2-choice {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }

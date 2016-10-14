@@ -7,8 +7,8 @@
         = visibility_level_label(params[:visibility_level].to_i)
       - else
         Any
-      %b.caret
-    %ul.dropdown-menu
+      = icon('caret-down')
+    %ul.dropdown-menu.dropdown-menu-align-right
       %li
         = link_to filter_projects_path(visibility_level: nil) do
           Any
@@ -27,8 +27,8 @@
         = params[:tag]
       - else
         Any
-      %b.caret
-    %ul.dropdown-menu
+      = icon('caret-down')
+    %ul.dropdown-menu.dropdown-menu-align-right
       %li
         = link_to filter_projects_path(tag: nil) do
           Any

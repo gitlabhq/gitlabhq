@@ -29,15 +29,15 @@ describe GlobalMilestone, models: true do
       @global_milestones = GlobalMilestone.build_collection(milestones)
     end
 
-    it 'should have all project milestones' do
+    it 'has all project milestones' do
       expect(@global_milestones.count).to eq(2)
     end
 
-    it 'should have all project milestones titles' do
+    it 'has all project milestones titles' do
       expect(@global_milestones.map(&:title)).to match_array(['Milestone v1.2', 'VD-123'])
     end
 
-    it 'should have all project milestones' do
+    it 'has all project milestones' do
       expect(@global_milestones.map { |group_milestone| group_milestone.milestones.count }.sum).to eq(6)
     end
   end
@@ -50,15 +50,16 @@ describe GlobalMilestone, models: true do
           milestone1_project2,
           milestone1_project3,
         ]
+      milestones_relation = Milestone.where(id: milestones.map(&:id))
 
-      @global_milestone = GlobalMilestone.new(milestone1_project1.title, milestones)
+      @global_milestone = GlobalMilestone.new(milestone1_project1.title, milestones_relation)
     end
 
-    it 'should have exactly one group milestone' do
+    it 'has exactly one group milestone' do
       expect(@global_milestone.title).to eq('Milestone v1.2')
     end
 
-    it 'should have all project milestones with the same title' do
+    it 'has all project milestones with the same title' do
       expect(@global_milestone.milestones.count).to eq(3)
     end
   end
@@ -66,8 +67,8 @@ describe GlobalMilestone, models: true do
   describe '#safe_title' do
     let(:milestone) { create(:milestone, title: "git / test", project: project1) }
 
-    it 'should strip out slashes and spaces' do
-      global_milestone = GlobalMilestone.new(milestone.title, [milestone])
+    it 'strips out slashes and spaces' do
+      global_milestone = GlobalMilestone.new(milestone.title, Milestone.where(id: milestone.id))
 
       expect(global_milestone.safe_title).to eq('git-test')
     end

@@ -3,6 +3,9 @@ class Blob < SimpleDelegator
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
 
+  # The maximum size of an SVG that can be displayed.
+  MAXIMUM_SVG_SIZE = 2.megabytes
+
   # Wrap a Gitlab::Git::Blob object, or return nil when given nil
   #
   # This method prevents the decorated object from evaluating to "truthy" when
@@ -19,6 +22,18 @@ class Blob < SimpleDelegator
     new(blob)
   end
 
+  # Returns the data of the blob.
+  #
+  # If the blob is a text based blob the content is converted to UTF-8 and any
+  # invalid byte sequences are replaced.
+  def data
+    if binary?
+      super
+    else
+      @data ||= super.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
+    end
+  end
+
   def no_highlighting?
     size && size > 1.megabyte
   end
@@ -29,6 +44,10 @@ class Blob < SimpleDelegator
 
   def svg?
     text? && language && language.name == 'SVG'
+  end
+
+  def size_within_svg_limits?
+    size <= MAXIMUM_SVG_SIZE
   end
 
   def video?

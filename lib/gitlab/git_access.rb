@@ -5,16 +5,17 @@ module Gitlab
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
 
-    attr_reader :actor, :project, :protocol, :user_access
+    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 
-    def initialize(actor, project, protocol)
+    def initialize(actor, project, protocol, authentication_abilities:)
       @actor    = actor
       @project  = project
       @protocol = protocol
+      @authentication_abilities = authentication_abilities
       @user_access = UserAccess.new(user, project: project)
     end
 
-    def check(cmd, changes = nil)
+    def check(cmd, changes)
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
       unless actor
@@ -60,14 +61,26 @@ module Gitlab
     end
 
     def user_download_access_check
-      unless user_access.can_do_action?(:download_code)
+      unless user_can_download_code? || build_can_download_code?
         return build_status_object(false, "You are not allowed to download code from this project.")
       end
 
       build_status_object(true)
     end
 
+    def user_can_download_code?
+      authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_code)
+    end
+
+    def build_can_download_code?
+      authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
+    end
+
     def user_push_access_check(changes)
+      unless authentication_abilities.include?(:push_code)
+        return build_status_object(false, "You are not allowed to upload code for this project.")
+      end
+
       if changes.blank?
         return build_status_object(true)
       end
@@ -76,10 +89,10 @@ module Gitlab
         return build_status_object(false, "A repository for this project does not exist yet.")
       end
 
-      changes = changes.lines if changes.kind_of?(String)
+      changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes.map(&:strip).reject(&:blank?).each do |change|
+      changes_list.each do |change|
         status = change_access_check(change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
@@ -134,7 +147,7 @@ module Gitlab
     end
 
     def build_status_object(status, message = '')
-      GitAccessStatus.new(status, message)
+      Gitlab::GitAccessStatus.new(status, message)
     end
   end
 end

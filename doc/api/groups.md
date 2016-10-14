@@ -84,7 +84,8 @@ Parameters:
     "forks_count": 0,
     "open_issues_count": 3,
     "public_builds": true,
-    "shared_with_groups": []
+    "shared_with_groups": [],
+    "request_access_enabled": false
   }
 ]
 ```
@@ -104,7 +105,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or path of a group |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
 ```
 
 Example response:
@@ -118,6 +119,7 @@ Example response:
   "visibility_level": 20,
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
+  "request_access_enabled": false,
   "projects": [
     {
       "id": 7,
@@ -163,7 +165,8 @@ Example response:
       "forks_count": 0,
       "open_issues_count": 3,
       "public_builds": true,
-      "shared_with_groups": []
+      "shared_with_groups": [],
+      "request_access_enabled": false
     },
     {
       "id": 6,
@@ -209,7 +212,8 @@ Example response:
       "forks_count": 0,
       "open_issues_count": 8,
       "public_builds": true,
-      "shared_with_groups": []
+      "shared_with_groups": [],
+      "request_access_enabled": false
     }
   ],
   "shared_projects": [
@@ -288,6 +292,8 @@ Parameters:
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
 - `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
+- `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
+- `request_access_enabled` (optional) - Allow users to request member access.
 
 ## Transfer project to group
 
@@ -317,9 +323,11 @@ PUT /groups/:id
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
 | `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
+| `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
+| `request_access_enabled` | boolean | no | Allow users to request member access. |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
 
 ```
 
@@ -334,6 +342,7 @@ Example response:
   "visibility_level": 10,
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
+  "request_access_enabled": false,
   "projects": [
     {
       "id": 9,
@@ -378,7 +387,8 @@ Example response:
       "forks_count": 0,
       "open_issues_count": 3,
       "public_builds": true,
-      "shared_with_groups": []
+      "shared_with_groups": [],
+      "request_access_enabled": false
     }
   ]
 }
@@ -417,87 +427,7 @@ GET /groups?search=foobar
 
 ## Group members
 
-**Group access levels**
-
-The group access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
-
-```
-GUEST     = 10
-REPORTER  = 20
-DEVELOPER = 30
-MASTER    = 40
-OWNER     = 50
-```
-
-### List group members
-
-Get a list of group members viewable by the authenticated user.
-
-```
-GET /groups/:id/members
-```
-
-```json
-[
-  {
-    "id": 1,
-    "username": "raymond_smith",
-    "name": "Raymond Smith",
-    "state": "active",
-    "created_at": "2012-10-22T14:13:35Z",
-    "access_level": 30
-  },
-  {
-    "id": 2,
-    "username": "john_doe",
-    "name": "John Doe",
-    "state": "active",
-    "created_at": "2012-10-22T14:13:35Z",
-    "access_level": 30
-  }
-]
-```
-
-### Add group member
-
-Adds a user to the list of group members.
-
-```
-POST /groups/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or path of a group
-- `user_id` (required) - The ID of a user to add
-- `access_level` (required) - Project access level
-
-### Edit group team member
-
-Updates a group team member to a specified access level.
-
-```
-PUT /groups/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID of a group
-- `user_id` (required) - The ID of a group member
-- `access_level` (required) - Project access level
-
-### Remove user team member
-
-Removes user from user team.
-
-```
-DELETE /groups/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or path of a user group
-- `user_id` (required) - The ID of a group member
+Please consult the [Group Members](members.md) documentation.
 
 ## Namespaces in groups
 

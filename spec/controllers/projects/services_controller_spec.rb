@@ -19,7 +19,7 @@ describe Projects::ServicesController do
 
     describe "#test" do
       context 'success' do
-        it "should redirect and show success message" do
+        it "redirects and show success message" do
           expect(service).to receive(:test).and_return({ success: true, result: 'done' })
           get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
           expect(response.status).to redirect_to('/')
@@ -28,7 +28,7 @@ describe Projects::ServicesController do
       end
 
       context 'failure' do
-        it "should redirect and show failure message" do
+        it "redirects and show failure message" do
           expect(service).to receive(:test).and_return({ success: false, result: 'Bad test' })
           get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
           expect(response.status).to redirect_to('/')
@@ -47,6 +47,22 @@ describe Projects::ServicesController do
   describe 'referrer undefined' do
     it_should_behave_like 'services controller' do
       let!(:referrer) { nil }
+    end
+  end
+
+  describe 'PUT #update' do
+    context 'on successful update' do
+      it 'sets the flash' do
+        expect(service).to receive(:to_param).and_return('hipchat')
+
+        put :update,
+          namespace_id: project.namespace.id,
+          project_id: project.id,
+          id: service.id,
+          service: { active: false }
+
+        expect(flash[:notice]).to eq 'Successfully updated.'
+      end
     end
   end
 end

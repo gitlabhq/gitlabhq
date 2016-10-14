@@ -15,13 +15,18 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
 
     @members = @members.order('access_level DESC').page(params[:page]).per(50)
-    @requesters = @group.requesters if can?(current_user, :admin_group, @group)
+    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 
     @group_member = @group.group_members.new
   end
 
   def create
-    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    @group.add_users(
+      params[:user_ids].split(','),
+      params[:access_level],
+      current_user: current_user,
+      expires_at: params[:expires_at]
+    )
 
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
@@ -35,10 +40,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def destroy
-    @group_member = @group.members.find_by(id: params[:id]) ||
-      @group.requesters.find_by(id: params[:id])
-
-    Members::DestroyService.new(@group_member, current_user).execute
+    Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
@@ -63,7 +65,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   protected
 
   def member_params
-    params.require(:group_member).permit(:access_level, :user_id)
+    params.require(:group_member).permit(:access_level, :user_id, :expires_at)
   end
 
   # MembershipActions concern

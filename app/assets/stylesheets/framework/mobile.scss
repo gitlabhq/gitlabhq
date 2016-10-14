@@ -79,10 +79,6 @@
     padding-left: 15px !important;
   }
 
-  .issue-info, .merge-request-info {
-    display: none;
-  }
-
   .nav-links, .nav-links {
     li a {
       font-size: 14px;
@@ -137,5 +133,5 @@
   font-size: 20px;
   color: #777;
   z-index: 100;
-  @include box-shadow(0 1px 2px #ddd);
+  box-shadow: 0 1px 2px #ddd;
 }

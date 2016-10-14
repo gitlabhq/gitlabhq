@@ -12,7 +12,9 @@ communication channel. For the consumer API see the
 This API uses two types of authentication:
 
 1. Unique Runner's token, which is the token assigned to the Runner after it
-   has been registered.
+   has been registered.  This token can be found on the Runner's edit page (go to
+   **Project > Runners**, select one of the Runners listed under **Runners activated for
+   this project**).
 
 2. Using Runners' registration token.
    This is a token that can be found in project's settings.
@@ -35,7 +37,7 @@ POST /ci/api/v1/runners/register
 Example request:
 
 ```sh
-curl -X POST "https://gitlab.example.com/ci/api/v1/runners/register" -F "token=t0k3n"
+curl --request POST "https://gitlab.example.com/ci/api/v1/runners/register" --form "token=t0k3n"
 ```
 
 ## Delete a Runner
@@ -48,10 +50,10 @@ DELETE /ci/api/v1/runners/delete
 
 | Attribute | Type    | Required  | Description |
 | --------- | ------- | --------- | ----------- |
-| `token`   | string  | yes       | Runner's registration token |
+| `token`   | string  | yes       | Unique Runner's token |
 
 Example request:
 
 ```sh
-curl -X DELETE "https://gitlab.example.com/ci/api/v1/runners/delete" -F "token=t0k3n"
+curl --request DELETE "https://gitlab.example.com/ci/api/v1/runners/delete" --form "token=t0k3n"
 ```

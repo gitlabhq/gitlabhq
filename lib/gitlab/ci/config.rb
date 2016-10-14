@@ -14,7 +14,7 @@ module Gitlab
         @config = Loader.new(config).load!
 
         @global = Node::Global.new(@config)
-        @global.process!
+        @global.compose!
       end
 
       def valid?

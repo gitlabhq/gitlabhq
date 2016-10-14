@@ -1,24 +1,8 @@
-# == Schema Information
-#
-# Table name: commits
-#
-#  id             :integer          not null, primary key
-#  project_id     :integer
-#  ref            :string(255)
-#  sha            :string(255)
-#  before_sha     :string(255)
-#  push_data      :text
-#  created_at     :datetime
-#  updated_at     :datetime
-#  tag            :boolean          default(FALSE)
-#  yaml_errors    :text
-#  committed_at   :datetime
-#  gl_project_id  :integer
-#
-
 FactoryGirl.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
+    ref 'master'
     sha '97de212e80737a608d939f648d959671fb0a0142'
+    status 'pending'
 
     project factory: :empty_project
 

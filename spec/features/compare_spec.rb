@@ -11,16 +11,17 @@ describe "Compare", js: true do
   end
 
   describe "branches" do
-    it "should pre-populate fields" do
-      expect(page.find_field("from").value).to eq("master")
+    it "pre-populates fields" do
+      expect(find(".js-compare-from-dropdown .dropdown-toggle-text")).to have_content("master")
+      expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("master")
     end
 
-    it "should compare branches" do
-      fill_in "from", with: "fea"
-      find("#from").click
+    it "compares branches" do
+      select_using_dropdown "from", "feature"
+      expect(find(".js-compare-from-dropdown .dropdown-toggle-text")).to have_content("feature")
 
-      click_link "feature"
-      expect(page.find_field("from").value).to eq("feature")
+      select_using_dropdown "to", "binary-encoding"
+      expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("binary-encoding")
 
       click_button "Compare"
       expect(page).to have_content "Commits"
@@ -28,15 +29,22 @@ describe "Compare", js: true do
   end
 
   describe "tags" do
-    it "should compare tags" do
-      fill_in "from", with: "v1.0"
-      find("#from").click
+    it "compares tags" do
+      select_using_dropdown "from", "v1.0.0"
+      expect(find(".js-compare-from-dropdown .dropdown-toggle-text")).to have_content("v1.0.0")
 
-      click_link "v1.0.0"
-      expect(page.find_field("from").value).to eq("v1.0.0")
+      select_using_dropdown "to", "v1.1.0"
+      expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("v1.1.0")
 
       click_button "Compare"
       expect(page).to have_content "Commits"
     end
+  end
+
+  def select_using_dropdown(dropdown_type, selection)
+    dropdown = find(".js-compare-#{dropdown_type}-dropdown")
+    dropdown.find(".compare-dropdown-toggle").click
+    dropdown.fill_in("Filter by branch/tag", with: selection)
+    click_link selection
   end
 end

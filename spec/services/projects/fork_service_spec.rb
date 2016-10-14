@@ -12,12 +12,26 @@ describe Projects::ForkService, services: true do
                              description: 'wow such project')
       @to_namespace = create(:namespace)
       @to_user = create(:user, namespace: @to_namespace)
+      @from_project.add_user(@to_user, :developer)
     end
 
     context 'fork project' do
+      context 'when forker is a guest' do
+        before do
+          @guest = create(:user)
+          @from_project.add_user(@guest, :guest)
+        end
+        subject { fork_project(@from_project, @guest) }
+
+        it { is_expected.not_to be_persisted }
+        it { expect(subject.errors[:forked_from_project_id]).to eq(['is forbidden']) }
+      end
+
       describe "successfully creates project in the user namespace" do
         let(:to_project) { fork_project(@from_project, @to_user) }
 
+        it { expect(to_project).to be_persisted }
+        it { expect(to_project.errors).to be_empty }
         it { expect(to_project.owner).to eq(@to_user) }
         it { expect(to_project.namespace).to eq(@to_user.namespace) }
         it { expect(to_project.star_count).to be_zero }
@@ -26,17 +40,19 @@ describe Projects::ForkService, services: true do
     end
 
     context 'project already exists' do
-      it "should fail due to validation, not transaction failure" do
+      it "fails due to validation, not transaction failure" do
         @existing_project = create(:project, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
         @to_project = fork_project(@from_project, @to_user)
-        expect(@existing_project.persisted?).to be_truthy
+        expect(@existing_project).to be_persisted
+
+        expect(@to_project).not_to be_persisted
         expect(@to_project.errors[:name]).to eq(['has already been taken'])
         expect(@to_project.errors[:path]).to eq(['has already been taken'])
       end
     end
 
     context 'GitLab CI is enabled' do
-      it "fork and enable CI for fork" do
+      it "forks and enables CI for fork" do
         @from_project.enable_ci
         @to_project = fork_project(@from_project, @to_user)
         expect(@to_project.builds_enabled?).to be_truthy
@@ -81,30 +97,35 @@ describe Projects::ForkService, services: true do
       @group = create(:group)
       @group.add_user(@group_owner, GroupMember::OWNER)
       @group.add_user(@developer,   GroupMember::DEVELOPER)
+      @project.add_user(@developer,   :developer)
+      @project.add_user(@group_owner, :developer)
       @opts = { namespace: @group }
     end
 
     context 'fork project for group' do
       it 'group owner successfully forks project into the group' do
         to_project = fork_project(@project, @group_owner, @opts)
+
+        expect(to_project).to             be_persisted
+        expect(to_project.errors).to      be_empty
         expect(to_project.owner).to       eq(@group)
         expect(to_project.namespace).to   eq(@group)
         expect(to_project.name).to        eq(@project.name)
         expect(to_project.path).to        eq(@project.path)
         expect(to_project.description).to eq(@project.description)
-        expect(to_project.star_count).to     be_zero
+        expect(to_project.star_count).to  be_zero
       end
     end
 
     context 'fork project for group when user not owner' do
-      it 'group developer should fail to fork project into the group' do
+      it 'group developer fails to fork project into the group' do
         to_project = fork_project(@project, @developer, @opts)
         expect(to_project.errors[:namespace]).to eq(['is not valid'])
       end
     end
 
     context 'project already exists in group' do
-      it 'should fail due to validation, not transaction failure' do
+      it 'fails due to validation, not transaction failure' do
         existing_project = create(:project, name: @project.name,
                                             namespace: @group)
         to_project = fork_project(@project, @group_owner, @opts)

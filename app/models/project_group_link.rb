@@ -1,4 +1,6 @@
 class ProjectGroupLink < ActiveRecord::Base
+  include Expirable
+
   GUEST     = 10
   REPORTER  = 20
   DEVELOPER = 30
@@ -8,7 +10,7 @@ class ProjectGroupLink < ActiveRecord::Base
   belongs_to :group
 
   validates :project_id, presence: true
-  validates :group_id, presence: true
+  validates :group, presence: true
   validates :group_id, uniqueness: { scope: [:project_id], message: "already shared with this group" }
   validates :group_access, presence: true
   validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
@@ -26,7 +28,7 @@ class ProjectGroupLink < ActiveRecord::Base
     self.class.access_options.key(self.group_access)
   end
 
-  private 
+  private
 
   def different_group
     if self.group && self.project && self.project.group == self.group

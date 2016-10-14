@@ -4,21 +4,23 @@
 
 - [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) main contributing guide
 - [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) contributing process
-- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) to install a development version
+- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md) to install a development version
 
 ## Styleguides
 
-- [Documentation styleguide](development/doc_styleguide.md) Use this styleguide if you are
+- [Documentation styleguide](doc_styleguide.md) Use this styleguide if you are
   contributing to documentation.
-- [Migration Style Guide](migration_style_guide.md) for creating safe migrations
+- [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
-- [UI guide](ui_guide.md) for building GitLab with existing css styles and elements
+- [UI guide](ui_guide.md) for building GitLab with existing CSS styles and elements
+- [Frontend guidelines](frontend.md)
 - [SQL guidelines](sql.md) for SQL guidelines
-
 
 ## Process
 
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
+- [Merge request performance guidelines](merge_request_performance_guidelines.md)
+  for ensuring merge requests do not negatively impact GitLab performance
 
 ## Backend howtos
 
@@ -31,6 +33,11 @@
 - [Rake tasks](rake_tasks.md) for development
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
+
+## Databases
+
+- [What requires downtime?](what_requires_downtime.md)
+- [Adding database indexes](adding_database_indexes.md)
 
 ## Compliance
 

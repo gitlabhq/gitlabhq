@@ -65,13 +65,13 @@ describe Service, models: true do
       end
       let(:project) { create(:project) }
 
-      describe 'should be prefilled for projects pushover service' do
+      describe 'is prefilled for projects pushover service' do
         before do
           service_template
           project.build_missing_services
         end
 
-        it "should have all fields prefilled" do
+        it "has all fields prefilled" do
           service = project.pushover_service
           expect(service.template).to eq(false)
           expect(service.device).to eq('MyDevice')
@@ -203,6 +203,23 @@ describe Service, models: true do
     end
   end
 
+  describe 'initialize service with no properties' do
+    let(:service) do
+      GitlabIssueTrackerService.create(
+        project: create(:project),
+        title: 'random title'
+      )
+    end
+
+    it 'does not raise error' do
+      expect { service }.not_to raise_error
+    end
+
+    it 'creates the properties' do
+      expect(service.properties).to eq({ "title" => "random title" })
+    end
+  end
+
   describe "callbacks" do
     let(:project) { create(:project) }
     let!(:service) do
@@ -221,7 +238,7 @@ describe Service, models: true do
       it "updates the has_external_issue_tracker boolean" do
         expect do
           service.save!
-        end.to change { service.project.has_external_issue_tracker }.from(nil).to(true)
+        end.to change { service.project.has_external_issue_tracker }.from(false).to(true)
       end
     end
 

@@ -21,14 +21,14 @@ describe API::API, api: true  do
 
   describe "GET /groups" do
     context "when unauthenticated" do
-      it "should return authentication error" do
+      it "returns authentication error" do
         get api("/groups")
         expect(response).to have_http_status(401)
       end
     end
 
     context "when authenticated as user" do
-      it "normal user: should return an array of groups of user1" do
+      it "normal user: returns an array of groups of user1" do
         get api("/groups", user1)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -38,11 +38,21 @@ describe API::API, api: true  do
     end
 
     context "when authenticated as  admin" do
-      it "admin: should return an array of all groups" do
+      it "admin: returns an array of all groups" do
         get api("/groups", admin)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
+      end
+    end
+
+    context "when using skip_groups in request" do
+      it "returns all groups excluding skipped groups" do
+        get api("/groups", admin), skip_groups: [group2.id]
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
       end
     end
   end
@@ -70,12 +80,12 @@ describe API::API, api: true  do
         expect(json_response['shared_projects'][0]['id']).to eq(project.id)
       end
 
-      it "should not return a non existing group" do
+      it "does not return a non existing group" do
         get api("/groups/1328", user1)
         expect(response).to have_http_status(404)
       end
 
-      it "should not return a group not attached to user1" do
+      it "does not return a group not attached to user1" do
         get api("/groups/#{group2.id}", user1)
 
         expect(response).to have_http_status(404)
@@ -83,31 +93,31 @@ describe API::API, api: true  do
     end
 
     context "when authenticated as admin" do
-      it "should return any existing group" do
+      it "returns any existing group" do
         get api("/groups/#{group2.id}", admin)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(group2.name)
       end
 
-      it "should not return a non existing group" do
+      it "does not return a non existing group" do
         get api("/groups/1328", admin)
         expect(response).to have_http_status(404)
       end
     end
 
     context 'when using group path in URL' do
-      it 'should return any existing group' do
+      it 'returns any existing group' do
         get api("/groups/#{group1.path}", admin)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(group1.name)
       end
 
-      it 'should not return a non existing group' do
+      it 'does not return a non existing group' do
         get api('/groups/unknown', admin)
         expect(response).to have_http_status(404)
       end
 
-      it 'should not return a group not attached to user1' do
+      it 'does not return a group not attached to user1' do
         get api("/groups/#{group2.path}", user1)
 
         expect(response).to have_http_status(404)
@@ -120,10 +130,11 @@ describe API::API, api: true  do
 
     context 'when authenticated as the group owner' do
       it 'updates the group' do
-        put api("/groups/#{group1.id}", user1), name: new_group_name
+        put api("/groups/#{group1.id}", user1), name: new_group_name, request_access_enabled: true
 
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
+        expect(json_response['request_access_enabled']).to eq(true)
       end
 
       it 'returns 404 for a non existing group' do
@@ -161,7 +172,7 @@ describe API::API, api: true  do
 
   describe "GET /groups/:id/projects" do
     context "when authenticated as user" do
-      it "should return the group's projects" do
+      it "returns the group's projects" do
         get api("/groups/#{group1.id}/projects", user1)
 
         expect(response).to have_http_status(200)
@@ -170,12 +181,12 @@ describe API::API, api: true  do
         expect(project_names).to match_array([project1.name, project3.name])
       end
 
-      it "should not return a non existing group" do
+      it "does not return a non existing group" do
         get api("/groups/1328/projects", user1)
         expect(response).to have_http_status(404)
       end
 
-      it "should not return a group not attached to user1" do
+      it "does not return a group not attached to user1" do
         get api("/groups/#{group2.id}/projects", user1)
 
         expect(response).to have_http_status(404)
@@ -215,12 +226,12 @@ describe API::API, api: true  do
         expect(project_names).to match_array([project1.name, project3.name])
       end
 
-      it 'should not return a non existing group' do
+      it 'does not return a non existing group' do
         get api('/groups/unknown/projects', admin)
         expect(response).to have_http_status(404)
       end
 
-      it 'should not return a group not attached to user1' do
+      it 'does not return a group not attached to user1' do
         get api("/groups/#{group2.path}/projects", user1)
 
         expect(response).to have_http_status(404)
@@ -230,30 +241,36 @@ describe API::API, api: true  do
 
   describe "POST /groups" do
     context "when authenticated as user without group permissions" do
-      it "should not create group" do
+      it "does not create group" do
         post api("/groups", user1), attributes_for(:group)
         expect(response).to have_http_status(403)
       end
     end
 
     context "when authenticated as user with group permissions" do
-      it "should create group" do
-        post api("/groups", user3), attributes_for(:group)
+      it "creates group" do
+        group = attributes_for(:group, { request_access_enabled: false })
+
+        post api("/groups", user3), group
         expect(response).to have_http_status(201)
+
+        expect(json_response["name"]).to eq(group[:name])
+        expect(json_response["path"]).to eq(group[:path])
+        expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
       end
 
-      it "should not create group, duplicate" do
+      it "does not create group, duplicate" do
         post api("/groups", user3), { name: 'Duplicate Test', path: group2.path }
         expect(response).to have_http_status(400)
         expect(response.message).to eq("Bad Request")
       end
 
-      it "should return 400 bad request error if name not given" do
+      it "returns 400 bad request error if name not given" do
         post api("/groups", user3), { path: group2.path }
         expect(response).to have_http_status(400)
       end
 
-      it "should return 400 bad request error if path not given" do
+      it "returns 400 bad request error if path not given" do
         post api("/groups", user3), { name: 'test' }
         expect(response).to have_http_status(400)
       end
@@ -262,24 +279,24 @@ describe API::API, api: true  do
 
   describe "DELETE /groups/:id" do
     context "when authenticated as user" do
-      it "should remove group" do
+      it "removes group" do
         delete api("/groups/#{group1.id}", user1)
         expect(response).to have_http_status(200)
       end
 
-      it "should not remove a group if not an owner" do
+      it "does not remove a group if not an owner" do
         user4 = create(:user)
         group1.add_master(user4)
         delete api("/groups/#{group1.id}", user3)
         expect(response).to have_http_status(403)
       end
 
-      it "should not remove a non existing group" do
+      it "does not remove a non existing group" do
         delete api("/groups/1328", user1)
         expect(response).to have_http_status(404)
       end
 
-      it "should not remove a group not attached to user1" do
+      it "does not remove a group not attached to user1" do
         delete api("/groups/#{group2.id}", user1)
 
         expect(response).to have_http_status(404)
@@ -287,12 +304,12 @@ describe API::API, api: true  do
     end
 
     context "when authenticated as admin" do
-      it "should remove any existing group" do
+      it "removes any existing group" do
         delete api("/groups/#{group2.id}", admin)
         expect(response).to have_http_status(200)
       end
 
-      it "should not remove a non existing group" do
+      it "does not remove a non existing group" do
         delete api("/groups/1328", admin)
         expect(response).to have_http_status(404)
       end
@@ -308,14 +325,14 @@ describe API::API, api: true  do
     end
 
     context "when authenticated as user" do
-      it "should not transfer project to group" do
+      it "does not transfer project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", user2)
         expect(response).to have_http_status(403)
       end
     end
 
     context "when authenticated as admin" do
-      it "should transfer project to group" do
+      it "transfers project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", admin)
         expect(response).to have_http_status(201)
       end

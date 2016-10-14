@@ -1,0 +1,78 @@
+%board{ "inline-template" => true,
+  "v-cloak" => true,
+  "v-for" => "list in state.lists | orderBy 'position'",
+  "v-ref:board" => true,
+  ":list" => "list",
+  ":disabled" => "disabled",
+  ":issue-link-base" => "issueLinkBase",
+  "track-by" => "_uid" }
+  .board{ ":class" => "{ 'is-draggable': !list.preset }",
+    ":data-id" => "list.id" }
+    .board-inner
+      %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
+        %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !list.preset) }" }
+          {{ list.title }}
+          .board-issue-count-holder.pull-right.clearfix{ "v-if" => "list.type !== 'blank'" }
+            %span.board-issue-count.pull-left{ ":class" => "{ 'has-btn': list.type !== 'done' }" }
+              {{ list.issuesSize }}
+            - if can?(current_user, :admin_issue, @project)
+              %button.btn.btn-small.btn-default.pull-right.has-tooltip{ type: "button",
+                "@click" => "showNewIssueForm",
+                "v-if" => "list.type !== 'done'",
+                "aria-label" => "Add an issue",
+                "title" => "Add an issue",
+                data: { placement: "top", container: "body" } }
+                = icon("plus")
+          - if can?(current_user, :admin_list, @project)
+            %board-delete{ "inline-template" => true,
+              ":list" => "list",
+              "v-if" => "!list.preset && list.id" }
+              %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+                = icon("trash")
+      %board-list{ "inline-template" => true,
+        "v-if" => "list.type !== 'blank'",
+        ":list" => "list",
+        ":issues" => "list.issues",
+        ":loading" => "list.loading",
+        ":disabled" => "disabled",
+        ":show-issue-form.sync" => "showIssueForm",
+        ":issue-link-base" => "issueLinkBase" }
+        .board-list-loading.text-center{ "v-if" => "loading" }
+          = icon("spinner spin")
+        - if can? current_user, :create_issue, @project
+          %board-new-issue{ "inline-template" => true,
+            ":list" => "list",
+            ":show-issue-form.sync" => "showIssueForm",
+            "v-show" => "list.type !== 'done' && showIssueForm" }
+            .card.board-new-issue-form
+              %form{ "@submit" => "submit($event)" }
+                .flash-container{ "v-if" => "error" }
+                  .flash-alert
+                    An error occured. Please try again.
+                %label.label-light{ ":for" => "list.id + '-title'" }
+                  Title
+                %input.form-control{ type: "text",
+                  "v-model" => "title",
+                  "v-el:input" => true,
+                  ":id" => "list.id + '-title'" }
+                .clearfix.prepend-top-10
+                  %button.btn.btn-success.pull-left{ type: "submit",
+                    ":disabled" => "title === ''",
+                    "v-el:submit-button" => true }
+                    Submit issue
+                  %button.btn.btn-default.pull-right{ type: "button",
+                    "@click" => "cancel" }
+                    Cancel
+        %ul.board-list{ "v-el:list" => true,
+          "v-show" => "!loading",
+          ":data-board" => "list.id",
+          ":class" => "{ 'is-smaller': showIssueForm }" }
+          = render "projects/boards/components/card"
+          %li.board-list-count.text-center{ "v-if" => "showCount" }
+            = icon("spinner spin", "v-show" => "list.loadingMore" )
+            %span{ "v-if" => "list.issues.length === list.issuesSize" }
+              Showing all issues
+            %span{ "v-else" => true }
+              Showing {{ list.issues.length }} of {{ list.issuesSize }} issues
+      - if can?(current_user, :admin_list, @project)
+        = render "projects/boards/components/blank_state"

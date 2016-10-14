@@ -19,7 +19,7 @@ describe CreateSnippetService, services: true do
       @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    it 'non-admins should not be able to create a public snippet' do
+    it 'non-admins are not able to create a public snippet' do
       snippet = create_snippet(nil, @user, @opts)
       expect(snippet.errors.messages).to have_key(:visibility_level)
       expect(snippet.errors.messages[:visibility_level].first).to(
@@ -27,7 +27,7 @@ describe CreateSnippetService, services: true do
       )
     end
 
-    it 'admins should be able to create a public snippet' do
+    it 'admins are able to create a public snippet' do
       snippet = create_snippet(nil, @admin, @opts)
       expect(snippet.errors.any?).to be_falsey
       expect(snippet.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)

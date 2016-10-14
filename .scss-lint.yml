@@ -79,7 +79,7 @@ linters:
   
   # HEX colors should use three-character values where possible.
   HexLength:
-    enabled: true
+    enabled: false
   
   # HEX color values should use lower-case colors to differentiate between
   # letters and numbers, e.g. `#E3E3E3` vs. `#e3e3e3`.

@@ -26,6 +26,15 @@
     padding: 10px $gl-padding;
     word-wrap: break-word;
     border-radius: 3px 3px 0 0;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $dark-background-color;
+    }
+
+    .diff-toggle-caret {
+      padding-right: 6px; 
+    }
 
     &.file-title-clear {
       padding-left: 0;
@@ -63,9 +72,10 @@
     &.image_file {
       background: #eee;
       text-align: center;
+
       img {
-        padding: 100px;
-        max-width: 50%;
+        padding: 20px;
+        max-width: 80%;
       }
     }
 
@@ -93,7 +103,6 @@
     &.blame {
       table {
         border: none;
-        box-shadow: none;
         margin: 0;
       }
       tr {
@@ -107,19 +116,10 @@
           border-right: none;
         }
       }
-      img.avatar {
-        border: 0 none;
-        float: none;
-        margin: 0;
-        padding: 0;
-      }
       td.blame-commit {
-        background: #f9f9f9;
-        min-width: 350px;
-
-        .commit-author-link {
-          color: #888;
-        }
+        padding: 0 10px;
+        min-width: 400px;
+        background: $gray-light;
       }
       td.line-numbers {
         float: none;
@@ -132,12 +132,6 @@
       }
       td.lines {
         padding: 0;
-        code {
-          font-family: $monospace_font;
-        }
-        pre {
-          margin: 0;
-        }
       }
     }
 

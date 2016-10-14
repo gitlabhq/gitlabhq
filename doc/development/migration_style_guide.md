@@ -9,10 +9,10 @@ a big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style guide below.
 
 Migrations should not require GitLab installations to be taken offline unless
-_absolutely_ necessary. If a migration requires downtime this should be
-clearly mentioned during the review process as well as being documented in the
-monthly release post. For more information see the "Downtime Tagging" section
-below.
+_absolutely_ necessary - see the ["What Requires Downtime?"](what_requires_downtime.md)
+page. If a migration requires downtime, this should be clearly mentioned during
+the review process, as well as being documented in the monthly release post. For
+more information, see the "Downtime Tagging" section below.
 
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as little assumptions as possible
@@ -109,6 +109,28 @@ class MyMigration < ActiveRecord::Migration
     remove_column(:projects, :foo)
   end
 end
+```
+
+
+## Integer column type
+
+By default, an integer column can hold up to a 4-byte (32-bit) number. That is
+a max value of 2,147,483,647. Be aware of this when creating a column that will
+hold file sizes in byte units. If you are tracking file size in bytes this
+restricts the maximum file size to just over 2GB.
+
+To allow an integer column to hold up to an 8-byte (64-bit) number, explicitly
+set the limit to 8-bytes. This will allow the column to hold a value up to
+9,223,372,036,854,775,807.
+
+Rails migration example:
+
+```
+add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
+
+# or
+
+add_column(:projects, :foo, :integer, default: 10, limit: 8)
 ```
 
 ## Testing

@@ -17,7 +17,7 @@ describe MergeRequests::CreateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::CreateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       before do
         project.team << [user, :master]
@@ -32,7 +32,7 @@ describe MergeRequests::CreateService, services: true do
       it { expect(@merge_request.assignee).to be_nil }
       it { expect(@merge_request.remove_source_branch).to be true }
 
-      it 'should execute hooks with default action' do
+      it 'executes hooks with default action' do
         expect(service).to have_received(:execute_hooks).with(@merge_request)
       end
 
@@ -72,6 +72,44 @@ describe MergeRequests::CreateService, services: true do
 
           expect(Todo.where(attributes).count).to eq 1
         end
+      end
+    end
+
+    it_behaves_like 'new issuable record that supports slash commands' do
+      let(:default_params) do
+        {
+          source_branch: 'feature',
+          target_branch: 'master'
+        }
+      end
+    end
+
+    context 'while saving references to issues that the created merge request closes' do
+      let(:first_issue) { create(:issue, project: project) }
+      let(:second_issue) { create(:issue, project: project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          force_remove_source_branch: '1'
+        }
+      end
+
+      before do
+        project.team << [user, :master]
+        project.team << [assignee, :developer]
+      end
+
+      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+        issue_closing_opts = opts.merge(description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}")
+        service = described_class.new(project, user, issue_closing_opts)
+        allow(service).to receive(:execute_hooks)
+        merge_request = service.execute
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
       end
     end
   end

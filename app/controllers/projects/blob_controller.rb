@@ -17,6 +17,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
+  before_action :set_last_commit_sha, only: [:edit, :update]
 
   def new
     commit unless @repository.empty?
@@ -33,17 +34,11 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def edit
-    @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
     blob.load_all_data!(@repository)
   end
 
   def update
-    if params[:file_path].present?
-      @previous_path = @path
-      @path = params[:file_path]
-      @commit_params[:file_path] = @path
-    end
-
+    @path = params[:file_path] if params[:file_path].present?
     after_edit_path =
       if from_merge_request && @target_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
@@ -55,6 +50,10 @@ class Projects::BlobController < Projects::ApplicationController
     create_commit(Files::UpdateService, success_path: after_edit_path,
                                         failure_view: :edit,
                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+
+  rescue Files::UpdateService::FileChangedError
+    @conflict = true
+    render :edit
   end
 
   def preview
@@ -76,6 +75,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def diff
+    apply_diff_view_cookie!
+
     @form  = UnfoldForm.new(params)
     @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
     @lines = @lines[@form.since - 1..@form.to - 1]
@@ -137,6 +138,8 @@ class Projects::BlobController < Projects::ApplicationController
           params[:file_name] = params[:file].original_filename
         end
         File.join(@path, params[:file_name])
+      elsif params[:file_path].present?
+        params[:file_path]
       else
         @path
       end
@@ -149,8 +152,10 @@ class Projects::BlobController < Projects::ApplicationController
     @commit_params = {
       file_path: @file_path,
       commit_message: params[:commit_message],
+      previous_path: @path,
       file_content: params[:content],
-      file_content_encoding: params[:encoding]
+      file_content_encoding: params[:encoding],
+      last_commit_sha: params[:last_commit_sha]
     }
   end
 
@@ -158,5 +163,10 @@ class Projects::BlobController < Projects::ApplicationController
     if [:since, :to, :offset].any? { |key| params[key].blank? }
       render nothing: true
     end
+  end
+
+  def set_last_commit_sha
+    @last_commit_sha = Gitlab::Git::Commit.
+      last_for_path(@repository, @ref, @path).sha
   end
 end

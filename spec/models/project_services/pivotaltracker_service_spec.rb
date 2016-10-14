@@ -1,23 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#
-
 require 'spec_helper'
 
 describe PivotaltrackerService, models: true do
@@ -37,6 +17,77 @@ describe PivotaltrackerService, models: true do
       before { subject.active = false }
 
       it { is_expected.not_to validate_presence_of(:token) }
+    end
+  end
+
+  describe 'Execute' do
+    let(:service) do
+      PivotaltrackerService.new.tap do |service|
+        service.token = 'secret_api_token'
+      end
+    end
+
+    let(:url) { PivotaltrackerService::API_ENDPOINT }
+
+    def push_data(branch: 'master')
+      {
+        object_kind: 'push',
+        ref: "refs/heads/#{branch}",
+        commits: [
+          {
+            id: '21c12ea',
+            author: {
+              name: 'Some User'
+            },
+            url: 'https://example.com/commit',
+            message: 'commit message',
+          }
+        ]
+      }
+    end
+
+    before do
+      WebMock.stub_request(:post, url)
+    end
+
+    it 'should post correct message' do
+      service.execute(push_data)
+      expect(WebMock).to have_requested(:post, url).with(
+        body: {
+          'source_commit' => {
+            'commit_id' => '21c12ea',
+            'author' => 'Some User',
+            'url' => 'https://example.com/commit',
+            'message' => 'commit message'
+          }
+        },
+        headers: {
+          'Content-Type' => 'application/json',
+          'X-TrackerToken' => 'secret_api_token'
+        }
+      ).once
+    end
+
+    context 'when allowed branches is specified' do
+      let(:service) do
+        super().tap do |service|
+          service.restrict_to_branch = 'master,v10'
+        end
+      end
+
+      it 'should post message if branch is in the list' do
+        service.execute(push_data(branch: 'master'))
+        service.execute(push_data(branch: 'v10'))
+
+        expect(WebMock).to have_requested(:post, url).twice
+      end
+
+      it 'should not post message if branch is not in the list' do
+        service.execute(push_data(branch: 'mas'))
+        service.execute(push_data(branch: 'v11'))
+
+        expect(WebMock).not_to have_requested(:post, url)
+      end
     end
   end
 end

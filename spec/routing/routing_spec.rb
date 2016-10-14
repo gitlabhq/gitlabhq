@@ -9,7 +9,9 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    expect(get("/u/User")).to route_to('users#show', username: 'User')
+    allow(User).to receive(:find_by).and_return(true)
+
+    expect(get("/User")).to route_to('users#show', username: 'User')
   end
 
   it "to #groups" do
@@ -107,18 +109,25 @@ describe HelpController, "routing" do
   end
 
   it 'to #show' do
-    path = '/help/markdown/markdown.md'
+    path = '/help/user/markdown.md'
     expect(get(path)).to route_to('help#show',
-                                  path: 'markdown/markdown',
+                                  path: 'user/markdown',
                                   format: 'md')
 
     path = '/help/workflow/protected_branches/protected_branches1.png'
     expect(get(path)).to route_to('help#show',
                                   path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-    
+
     path = '/help/ui'
     expect(get(path)).to route_to('help#ui')
+  end
+end
+
+#                      koding GET    /koding(.:format)                      koding#index
+describe KodingController, "routing" do
+  it "to #index" do
+    expect(get("/koding")).to route_to('koding#index')
   end
 end
 
@@ -257,7 +266,9 @@ describe "Groups", "routing" do
   end
 
   it "also display group#show on the short path" do
-    expect(get('/1')).to route_to('namespaces#show', id: '1')
+    allow(Group).to receive(:find_by_path).and_return(true)
+
+    expect(get('/1')).to route_to('groups#show', id: '1')
   end
 end
 

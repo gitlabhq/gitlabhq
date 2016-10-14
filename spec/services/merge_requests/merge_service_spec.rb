@@ -26,16 +26,79 @@ describe MergeRequests::MergeService, services: true do
       it { expect(merge_request).to be_valid }
       it { expect(merge_request).to be_merged }
 
-      it 'should send email to user2 about merge of new merge_request' do
+      it 'sends email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)
       end
 
-      it 'should create system note about merge_request merge' do
+      it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'Status changed to merged'
       end
+    end
+
+    context 'closes related issues' do
+      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+
+      before do
+        allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
+      end
+
+      it 'closes GitLab issue tracker issues' do
+        issue  = create :issue, project: project
+        commit = double('commit', safe_message: "Fixes #{issue.to_reference}")
+        allow(merge_request).to receive(:commits).and_return([commit])
+
+        service.execute(merge_request)
+
+        expect(issue.reload.closed?).to be_truthy
+      end
+
+      context 'with JIRA integration' do
+        include JiraServiceHelper
+
+        let(:jira_tracker) { project.create_jira_service }
+
+        before do
+          project.update_attributes!(has_external_issue_tracker: true)
+          jira_service_settings
+        end
+
+        it 'closes issues on JIRA issue tracker' do
+          jira_issue = ExternalIssue.new('JIRA-123', project)
+          commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
+          allow(merge_request).to receive(:commits).and_return([commit])
+
+          expect_any_instance_of(JiraService).to receive(:close_issue).with(merge_request, jira_issue).once
+
+          service.execute(merge_request)
+        end
+      end
+    end
+
+    context 'closes related todos' do
+      let(:merge_request) { create(:merge_request, assignee: user, author: user) }
+      let(:project) { merge_request.project }
+      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+      let!(:todo) do
+        create(:todo, :assigned,
+          project: project,
+          author: user,
+          user: user,
+          target: merge_request)
+      end
+
+      before do
+        allow(service).to receive(:execute_hooks)
+
+        perform_enqueued_jobs do
+          service.execute(merge_request)
+          todo.reload
+        end
+      end
+
+      it { expect(todo).to be_done }
     end
 
     context 'remove source branch by author' do

@@ -12,19 +12,21 @@
 %li.project-row{ class: css_class }
   = cache(cache_key) do
     .controls
+      - if project.archived
+        %span.label.label-warning archived
       - if project.commit.try(:status)
         %span
           = render_commit_status(project.commit)
       - if forks
         %span
           = icon('code-fork')
-          = project.forks_count
+          = number_with_delimiter(project.forks_count)
       - if stars
         %span
           = icon('star')
-          = project.star_count
+          = number_with_delimiter(project.star_count)
       %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
-        = visibility_level_icon(project.visibility_level, fw: false)
+        = visibility_level_icon(project.visibility_level, fw: true)
 
     .title
       = link_to project_path(project), class: dom_class(project) do
@@ -48,4 +50,4 @@
           class: "commit-row-message"
     - elsif project.description.present?
       .description
-        = markdown(project.description, pipeline: :description)
+        = markdown_field(project, :description)

@@ -55,7 +55,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last updated"' do
         visit_merge_requests_with_state(project, 'merged')
 
-        expect(selected_sort_order).to eq('last updated')
+        expect(find('.issues-other-filters')).to have_content('Last updated')
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)
       end
@@ -67,7 +67,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last updated"' do
         visit_merge_requests_with_state(project, 'closed')
 
-        expect(selected_sort_order).to eq('last updated')
+        expect(find('.issues-other-filters')).to have_content('Last updated')
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)
       end
@@ -79,7 +79,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last created"' do
         visit_merge_requests_with_state(project, 'all')
 
-        expect(selected_sort_order).to eq('last created')
+        expect(find('.issues-other-filters')).to have_content('Last created')
         expect(first_merge_request).to include(last_created_issuable.title)
         expect(last_merge_request).to include(first_created_issuable.title)
       end
@@ -108,7 +108,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last created"' do
         visit_issues project
 
-        expect(selected_sort_order).to eq('last created')
+        expect(find('.issues-other-filters')).to have_content('Last created')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
       end
@@ -120,7 +120,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last created"' do
         visit_issues_with_state(project, 'open')
 
-        expect(selected_sort_order).to eq('last created')
+        expect(find('.issues-other-filters')).to have_content('Last created')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
       end
@@ -132,7 +132,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last updated"' do
         visit_issues_with_state(project, 'closed')
 
-        expect(selected_sort_order).to eq('last updated')
+        expect(find('.issues-other-filters')).to have_content('Last updated')
         expect(first_issue).to include(last_updated_issuable.title)
         expect(last_issue).to include(first_updated_issuable.title)
       end
@@ -144,9 +144,33 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       it 'is "last created"' do
         visit_issues_with_state(project, 'all')
 
-        expect(selected_sort_order).to eq('last created')
+        expect(find('.issues-other-filters')).to have_content('Last created')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
+      end
+    end
+
+    context 'when the sort in the URL is id_desc' do
+      let(:issuable_type) { :issue }
+
+      before { visit_issues(project, sort: 'id_desc') }
+
+      it 'shows the sort order as last created' do
+        expect(find('.issues-other-filters')).to have_content('Last created')
+        expect(first_issue).to include(last_created_issuable.title)
+        expect(last_issue).to include(first_created_issuable.title)
+      end
+    end
+
+    context 'when the sort in the URL is id_asc' do
+      let(:issuable_type) { :issue }
+
+      before { visit_issues(project, sort: 'id_asc') }
+
+      it 'shows the sort order as oldest created' do
+        expect(find('.issues-other-filters')).to have_content('Oldest created')
+        expect(first_issue).to include(first_created_issuable.title)
+        expect(last_issue).to include(last_created_issuable.title)
       end
     end
   end

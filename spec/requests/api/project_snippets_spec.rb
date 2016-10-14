@@ -17,7 +17,7 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:project_id/snippets/' do
-    it 'all snippets available to team member' do
+    it 'returns all snippets available to team member' do
       project = create(:project, :public)
       user = create(:user)
       project.team << [user, :developer]
@@ -30,6 +30,7 @@ describe API::API, api: true do
       expect(response).to have_http_status(200)
       expect(json_response.size).to eq(3)
       expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
+      expect(json_response.last).to have_key('web_url')
     end
 
     it 'hides private snippets from regular user' do

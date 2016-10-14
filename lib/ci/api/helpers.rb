@@ -3,7 +3,7 @@ module Ci
     module Helpers
       BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN"
       BUILD_TOKEN_PARAM = :token
-      UPDATE_RUNNER_EVERY = 60
+      UPDATE_RUNNER_EVERY = 10 * 60
 
       def authenticate_runners!
         forbidden! unless runner_registration_token_valid?
@@ -14,19 +14,45 @@ module Ci
       end
 
       def authenticate_build_token!(build)
-        token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
-        forbidden! unless token && build.valid_token?(token)
+        forbidden! unless build_token_valid?(build)
       end
 
       def runner_registration_token_valid?
-        params[:token] == current_application_settings.runners_registration_token
+        ActiveSupport::SecurityUtils.variable_size_secure_compare(
+          params[:token],
+          current_application_settings.runners_registration_token)
       end
 
-      def update_runner_last_contact
-        # Use a random threshold to prevent beating DB updates
+      def build_token_valid?(build)
+        token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
+
+        # We require to also check `runners_token` to maintain compatibility with old version of runners
+        token && (build.valid_token?(token) || build.project.valid_runners_token?(token))
+      end
+
+      def update_runner_info
+        return unless update_runner?
+
+        current_runner.contacted_at = Time.now
+        current_runner.assign_attributes(get_runner_version_from_params)
+        current_runner.save if current_runner.changed?
+      end
+
+      def update_runner?
+        # Use a random threshold to prevent beating DB updates.
+        # It generates a distribution between [40m, 80m].
+        #
         contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
-        if current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= contacted_at_max_age
-          current_runner.update_attributes(contacted_at: Time.now)
+
+        current_runner.contacted_at.nil? ||
+          (Time.now - current_runner.contacted_at) >= contacted_at_max_age
+      end
+
+      def build_not_found!
+        if headers['User-Agent'].match(/gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
+          no_content!
+        else
+          not_found!
         end
       end
 
@@ -37,11 +63,6 @@ module Ci
       def get_runner_version_from_params
         return unless params["info"].present?
         attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
-      end
-
-      def update_runner_info
-        current_runner.assign_attributes(get_runner_version_from_params)
-        current_runner.save if current_runner.changed?
       end
 
       def max_artifacts_size

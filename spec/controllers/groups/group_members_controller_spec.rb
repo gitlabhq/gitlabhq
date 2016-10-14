@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe Groups::GroupMembersController do
   let(:user)  { create(:user) }
-  let(:group) { create(:group) }
 
   describe '#index' do
+    let(:group) { create(:group) }
+
     before do
       group.add_owner(user)
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
@@ -86,10 +87,10 @@ describe Groups::GroupMembersController do
     context 'when member is not found' do
       before { sign_in(user) }
 
-      it 'returns 403' do
+      it 'returns 404' do
         delete :leave, group_id: group
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(404)
       end
     end
 

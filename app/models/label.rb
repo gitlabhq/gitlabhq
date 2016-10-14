@@ -1,4 +1,5 @@
 class Label < ActiveRecord::Base
+  include CacheMarkdownField
   include Referable
   include Subscribable
 
@@ -8,11 +9,15 @@ class Label < ActiveRecord::Base
   None = LabelStruct.new('No Label', 'No Label')
   Any = LabelStruct.new('Any Label', '')
 
+  cache_markdown_field :description, pipeline: :single_line
+
   DEFAULT_COLOR = '#428BCA'
 
   default_value_for :color, DEFAULT_COLOR
 
   belongs_to :project
+
+  has_many :lists, dependent: :destroy
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'

@@ -1,7 +1,7 @@
 Gitlab::Seeder.quiet do
   Group.all.each do |group|
     User.all.sample(4).each do |user|
-      if group.add_users([user.id], Gitlab::Access.values.sample)
+      if group.add_user(user, Gitlab::Access.values.sample).persisted?
         print '.'
       else
         print 'F'

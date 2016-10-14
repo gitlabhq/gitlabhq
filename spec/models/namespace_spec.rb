@@ -61,11 +61,11 @@ describe Namespace, models: true do
       allow(@namespace).to receive(:path_changed?).and_return(true)
     end
 
-    it "should raise error when directory exists" do
+    it "raises error when directory exists" do
       expect { @namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 
-    it "should move dir if path changed" do
+    it "moves dir if path changed" do
       new_path = @namespace.path + "_new"
       allow(@namespace).to receive(:path_was).and_return(@namespace.path)
       allow(@namespace).to receive(:path).and_return(new_path)
@@ -93,7 +93,7 @@ describe Namespace, models: true do
 
     before { namespace.destroy }
 
-    it "should remove its dirs when deleted" do
+    it "removes its dirs when deleted" do
       expect(File.exist?(path)).to be(false)
     end
   end
@@ -114,6 +114,7 @@ describe Namespace, models: true do
 
     it "cleans the path and makes sure it's available" do
       expect(Namespace.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
+      expect(Namespace.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
     end
   end
 end

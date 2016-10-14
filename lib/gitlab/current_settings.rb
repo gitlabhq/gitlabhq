@@ -30,6 +30,7 @@ module Gitlab
         signup_enabled: Settings.gitlab['signup_enabled'],
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
+        koding_enabled: false,
         sign_in_text: nil,
         after_sign_up_text: nil,
         help_page_text: nil,
@@ -40,7 +41,7 @@ module Gitlab
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         domain_whitelist: Settings.gitlab['domain_whitelist'],
-        import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
+        import_sources: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         max_artifacts_size: Settings.artifacts['max_size'],
         require_two_factor_authentication: false,
@@ -58,10 +59,8 @@ module Gitlab
       # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
       active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
-      ENV['USE_DB'] != 'false' &&
       active_db_connection &&
-      ActiveRecord::Base.connection.table_exists?('application_settings')
-
+        ActiveRecord::Base.connection.table_exists?('application_settings')
     rescue ActiveRecord::NoDatabaseError
       false
     end

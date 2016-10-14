@@ -22,14 +22,25 @@ module API
       # Example Request:
       #   GET /projects
       get do
-        @projects = current_user.authorized_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        if params[:simple]
-          present @projects, with: Entities::BasicProjectDetails, user: current_user
-        else
-          present @projects, with: Entities::ProjectWithAccess, user: current_user
-        end
+        projects = current_user.authorized_projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
+
+        present projects, with: entity, user: current_user
+      end
+
+      # Get a list of visible projects for authenticated user
+      #
+      # Example Request:
+      #   GET /projects/visible
+      get '/visible' do
+        projects = ProjectsFinder.new.execute(current_user)
+        projects = filter_projects(projects)
+        projects = paginate projects
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
+
+        present projects, with: entity, user: current_user
       end
 
       # Get an owned projects list for authenticated user
@@ -37,10 +48,10 @@ module API
       # Example Request:
       #   GET /projects/owned
       get '/owned' do
-        @projects = current_user.owned_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        projects = current_user.owned_projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Gets starred project for the authenticated user
@@ -48,10 +59,10 @@ module API
       # Example Request:
       #   GET /projects/starred
       get '/starred' do
-        @projects = current_user.viewable_starred_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::Project
+        projects = current_user.viewable_starred_projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::Project, user: current_user
       end
 
       # Get all projects for admin user
@@ -60,10 +71,10 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        @projects = Project.all
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        projects = Project.all
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get a single project
@@ -91,8 +102,8 @@ module API
       # Create new project
       #
       # Parameters:
-      #   name (required) - name for new project
-      #   description (optional) - short project description
+      #   name (required)                   - name for new project
+      #   description (optional)            - short project description
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
       #   builds_enabled (optional)
@@ -100,30 +111,35 @@ module API
       #   snippets_enabled (optional)
       #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
-      #   namespace_id (optional) - defaults to user namespace
-      #   public (optional) - if true same as setting visibility_level = 20
-      #   visibility_level (optional) - 0 by default
+      #   namespace_id (optional)           - defaults to user namespace
+      #   public (optional)                 - if true same as setting visibility_level = 20
+      #   visibility_level (optional)       - 0 by default
       #   import_url (optional)
       #   public_builds (optional)
+      #   lfs_enabled (optional)
+      #   request_access_enabled (optional) - Allow users to request member access
       # Example Request
       #   POST /projects
       post do
         required_attributes! [:name]
-        attrs = attributes_for_keys [:name,
-                                     :path,
-                                     :description,
-                                     :issues_enabled,
-                                     :merge_requests_enabled,
-                                     :builds_enabled,
-                                     :wiki_enabled,
-                                     :snippets_enabled,
+        attrs = attributes_for_keys [:builds_enabled,
                                      :container_registry_enabled,
-                                     :shared_runners_enabled,
-                                     :namespace_id,
-                                     :public,
-                                     :visibility_level,
+                                     :description,
                                      :import_url,
-                                     :public_builds]
+                                     :issues_enabled,
+                                     :lfs_enabled,
+                                     :merge_requests_enabled,
+                                     :name,
+                                     :namespace_id,
+                                     :only_allow_merge_if_build_succeeds,
+                                     :path,
+                                     :public,
+                                     :public_builds,
+                                     :request_access_enabled,
+                                     :shared_runners_enabled,
+                                     :snippets_enabled,
+                                     :visibility_level,
+                                     :wiki_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -140,10 +156,10 @@ module API
       # Create new project for a specified user.  Only available to admin users.
       #
       # Parameters:
-      #   user_id (required) - The ID of a user
-      #   name (required) - name for new project
-      #   description (optional) - short project description
-      #   default_branch (optional) - 'master' by default
+      #   user_id (required)                - The ID of a user
+      #   name (required)                   - name for new project
+      #   description (optional)            - short project description
+      #   default_branch (optional)         - 'master' by default
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
       #   builds_enabled (optional)
@@ -151,28 +167,33 @@ module API
       #   snippets_enabled (optional)
       #   container_registry_enabled (optional)
       #   shared_runners_enabled (optional)
-      #   public (optional) - if true same as setting visibility_level = 20
+      #   public (optional)                 - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
       #   public_builds (optional)
+      #   lfs_enabled (optional)
+      #   request_access_enabled (optional) - Allow users to request member access
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find(params[:user_id])
-        attrs = attributes_for_keys [:name,
-                                     :description,
+        attrs = attributes_for_keys [:builds_enabled,
                                      :default_branch,
-                                     :issues_enabled,
-                                     :merge_requests_enabled,
-                                     :builds_enabled,
-                                     :wiki_enabled,
-                                     :snippets_enabled,
-                                     :shared_runners_enabled,
-                                     :public,
-                                     :visibility_level,
+                                     :description,
                                      :import_url,
-                                     :public_builds]
+                                     :issues_enabled,
+                                     :lfs_enabled,
+                                     :merge_requests_enabled,
+                                     :name,
+                                     :only_allow_merge_if_build_succeeds,
+                                     :public,
+                                     :public_builds,
+                                     :request_access_enabled,
+                                     :shared_runners_enabled,
+                                     :snippets_enabled,
+                                     :visibility_level,
+                                     :wiki_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -183,16 +204,32 @@ module API
         end
       end
 
-      # Fork new project for the current user.
+      # Fork new project for the current user or provided namespace.
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   namespace (optional) - The ID or name of the namespace that the project will be forked into.
       # Example Request
       #   POST /projects/fork/:id
       post 'fork/:id' do
+        attrs = {}
+        namespace_id = params[:namespace]
+
+        if namespace_id.present?
+          namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
+
+          unless namespace && can?(current_user, :create_projects, namespace)
+            not_found!('Target Namespace')
+          end
+
+          attrs[:namespace] = namespace
+        end
+
         @forked_project =
           ::Projects::ForkService.new(user_project,
-                                      current_user).execute
+                                      current_user,
+                                      attrs).execute
+
         if @forked_project.errors.any?
           conflict!(@forked_project.errors.messages)
         else
@@ -218,23 +255,27 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
-        attrs = attributes_for_keys [:name,
-                                     :path,
-                                     :description,
-                                     :default_branch,
-                                     :issues_enabled,
-                                     :merge_requests_enabled,
-                                     :builds_enabled,
-                                     :wiki_enabled,
-                                     :snippets_enabled,
+        attrs = attributes_for_keys [:builds_enabled,
                                      :container_registry_enabled,
-                                     :shared_runners_enabled,
+                                     :default_branch,
+                                     :description,
+                                     :issues_enabled,
+                                     :lfs_enabled,
+                                     :merge_requests_enabled,
+                                     :name,
+                                     :only_allow_merge_if_build_succeeds,
+                                     :path,
                                      :public,
+                                     :public_builds,
+                                     :request_access_enabled,
+                                     :shared_runners_enabled,
+                                     :snippets_enabled,
                                      :visibility_level,
-                                     :public_builds]
+                                     :wiki_enabled]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -323,7 +364,7 @@ module API
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).pending_delete!
+        ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
       end
 
       # Mark this project as forked from another
@@ -363,23 +404,30 @@ module API
       # Share project with group
       #
       # Parameters:
-      #   id (required) - The ID of a project
-      #   group_id (required) - The ID of a group
+      #   id (required)           - The ID of a project
+      #   group_id (required)     - The ID of a group
       #   group_access (required) - Level of permissions for sharing
+      #   expires_at (optional)   - Share expiration date
       #
       # Example Request:
       #   POST /projects/:id/share
       post ":id/share" do
         authorize! :admin_project, user_project
         required_attributes! [:group_id, :group_access]
+        attrs = attributes_for_keys [:group_id, :group_access, :expires_at]
+
+        group = Group.find_by_id(attrs[:group_id])
+
+        unless group && can?(current_user, :read_group, group)
+          not_found!('Group')
+        end
 
         unless user_project.allowed_to_share_with_group?
           return render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        link = user_project.project_group_links.new
-        link.group_id = params[:group_id]
-        link.group_access = params[:group_access]
+        link = user_project.project_group_links.new(attrs)
+
         if link.save
           present link, with: Entities::ProjectGroupLink
         else
@@ -405,18 +453,9 @@ module API
       # Example Request:
       #   GET /projects/search/:query
       get "/search/:query" do
-        ids = current_user.authorized_projects.map(&:id)
-        visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
-        projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
-        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
-
-        projects = case params["order_by"]
-                   when 'id' then projects.order("id #{sort}")
-                   when 'name' then projects.order("name #{sort}")
-                   when 'created_at' then projects.order("created_at #{sort}")
-                   when 'last_activity_at' then projects.order("last_activity_at #{sort}")
-                   else projects
-                   end
+        search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
+        projects = search_service.objects('projects', params[:page])
+        projects = projects.reorder(project_order_by => project_sort)
 
         present paginate(projects), with: Entities::Project
       end

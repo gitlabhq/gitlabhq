@@ -60,7 +60,7 @@ end
 #                  project GET    /:id(.:format)          projects#show
 #                          PUT    /:id(.:format)          projects#update
 #                          DELETE /:id(.:format)          projects#destroy
-# markdown_preview_project POST   /:id/markdown_preview(.:format) projects#markdown_preview
+# preview_markdown_project POST   /:id/preview_markdown(.:format) projects#preview_markdown
 describe ProjectsController, 'routing' do
   it 'to #create' do
     expect(post('/projects')).to route_to('projects#create')
@@ -91,9 +91,9 @@ describe ProjectsController, 'routing' do
     expect(delete('/gitlab/gitlabhq')).to route_to('projects#destroy', namespace_id: 'gitlab', id: 'gitlabhq')
   end
 
-  it 'to #markdown_preview' do
-    expect(post('/gitlab/gitlabhq/markdown_preview')).to(
-      route_to('projects#markdown_preview', namespace_id: 'gitlab', id: 'gitlabhq')
+  it 'to #preview_markdown' do
+    expect(post('/gitlab/gitlabhq/preview_markdown')).to(
+      route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
     )
   end
 end
@@ -337,7 +337,7 @@ describe Projects::CommitsController, 'routing' do
   end
 
   it 'to #show' do
-    expect(get('/gitlab/gitlabhq/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'atom')
+    expect(get('/gitlab/gitlabhq/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
   end
 end
 

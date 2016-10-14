@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
+
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
@@ -16,21 +17,27 @@ describe API::API, api: true  do
            assignee: user,
            project: project,
            state: :closed,
-           milestone: milestone
+           milestone: milestone,
+           created_at: generate(:issue_created_at),
+           updated_at: 3.hours.ago
   end
   let!(:confidential_issue) do
     create :issue,
            :confidential,
            project: project,
            author: author,
-           assignee: assignee
+           assignee: assignee,
+           created_at: generate(:issue_created_at),
+           updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
            assignee: user,
            project: project,
-           milestone: milestone
+           milestone: milestone,
+           created_at: generate(:issue_created_at),
+           updated_at: 1.hour.ago
   end
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
@@ -49,28 +56,29 @@ describe API::API, api: true  do
 
   describe "GET /issues" do
     context "when unauthenticated" do
-      it "should return authentication error" do
+      it "returns authentication error" do
         get api("/issues")
         expect(response).to have_http_status(401)
       end
     end
 
     context "when authenticated" do
-      it "should return an array of issues" do
+      it "returns an array of issues" do
         get api("/issues", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(issue.title)
+        expect(json_response.last).to have_key('web_url')
       end
 
-      it "should add pagination headers and keep query params" do
+      it "adds pagination headers and keep query params" do
         get api("/issues?state=closed&per_page=3", user)
         expect(response.headers['Link']).to eq(
           '<http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="last"' % [user.private_token, user.private_token]
         )
       end
 
-      it 'should return an array of closed issues' do
+      it 'returns an array of closed issues' do
         get api('/issues?state=closed', user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -78,7 +86,7 @@ describe API::API, api: true  do
         expect(json_response.first['id']).to eq(closed_issue.id)
       end
 
-      it 'should return an array of opened issues' do
+      it 'returns an array of opened issues' do
         get api('/issues?state=opened', user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -86,7 +94,7 @@ describe API::API, api: true  do
         expect(json_response.first['id']).to eq(issue.id)
       end
 
-      it 'should return an array of all issues' do
+      it 'returns an array of all issues' do
         get api('/issues?state=all', user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -95,7 +103,7 @@ describe API::API, api: true  do
         expect(json_response.second['id']).to eq(closed_issue.id)
       end
 
-      it 'should return an array of labeled issues' do
+      it 'returns an array of labeled issues' do
         get api("/issues?labels=#{label.title}", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -103,7 +111,7 @@ describe API::API, api: true  do
         expect(json_response.first['labels']).to eq([label.title])
       end
 
-      it 'should return an array of labeled issues when at least one label matches' do
+      it 'returns an array of labeled issues when at least one label matches' do
         get api("/issues?labels=#{label.title},foo,bar", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -111,14 +119,14 @@ describe API::API, api: true  do
         expect(json_response.first['labels']).to eq([label.title])
       end
 
-      it 'should return an empty array if no issue matches labels' do
+      it 'returns an empty array if no issue matches labels' do
         get api('/issues?labels=foo,bar', user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
 
-      it 'should return an array of labeled issues matching given state' do
+      it 'returns an array of labeled issues matching given state' do
         get api("/issues?labels=#{label.title}&state=opened", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -127,11 +135,47 @@ describe API::API, api: true  do
         expect(json_response.first['state']).to eq('opened')
       end
 
-      it 'should return an empty array if no issue matches labels and state filters' do
+      it 'returns an empty array if no issue matches labels and state filters' do
         get api("/issues?labels=#{label.title}&state=closed", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
+      end
+
+      it 'sorts by created_at descending by default' do
+        get api('/issues', user)
+        response_dates = json_response.map { |issue| issue['created_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort.reverse)
+      end
+
+      it 'sorts ascending when requested' do
+        get api('/issues?sort=asc', user)
+        response_dates = json_response.map { |issue| issue['created_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort)
+      end
+
+      it 'sorts by updated_at descending when requested' do
+        get api('/issues?order_by=updated_at', user)
+        response_dates = json_response.map { |issue| issue['updated_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort.reverse)
+      end
+
+      it 'sorts by updated_at ascending when requested' do
+        get api('/issues?order_by=updated_at&sort=asc', user)
+        response_dates = json_response.map { |issue| issue['updated_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort)
       end
     end
   end
@@ -145,21 +189,24 @@ describe API::API, api: true  do
              assignee: user,
              project: group_project,
              state: :closed,
-             milestone: group_milestone
+             milestone: group_milestone,
+             updated_at: 3.hours.ago
     end
     let!(:group_confidential_issue) do
       create :issue,
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee
+             assignee: assignee,
+             updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
              assignee: user,
              project: group_project,
-             milestone: group_milestone
+             milestone: group_milestone,
+             updated_at: 1.hour.ago
     end
     let!(:group_label) do
       create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
@@ -276,13 +323,49 @@ describe API::API, api: true  do
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(group_closed_issue.id)
     end
+
+    it 'sorts by created_at descending by default' do
+      get api(base_url, user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts ascending when requested' do
+      get api("#{base_url}?sort=asc", user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
+    end
+
+    it 'sorts by updated_at descending when requested' do
+      get api("#{base_url}?order_by=updated_at", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts by updated_at ascending when requested' do
+      get api("#{base_url}?order_by=updated_at&sort=asc", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
+    end
   end
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
     let(:title) { milestone.title }
 
-    it 'should return project issues without confidential issues for non project members' do
+    it 'returns project issues without confidential issues for non project members' do
       get api("#{base_url}/issues", non_member)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -290,7 +373,7 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
-    it 'should return project issues without confidential issues for project members with guest role' do
+    it 'returns project issues without confidential issues for project members with guest role' do
       get api("#{base_url}/issues", guest)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -298,7 +381,7 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
-    it 'should return project confidential issues for author' do
+    it 'returns project confidential issues for author' do
       get api("#{base_url}/issues", author)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -306,7 +389,7 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
-    it 'should return project confidential issues for assignee' do
+    it 'returns project confidential issues for assignee' do
       get api("#{base_url}/issues", assignee)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -314,7 +397,7 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
-    it 'should return project issues with confidential issues for project members' do
+    it 'returns project issues with confidential issues for project members' do
       get api("#{base_url}/issues", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -322,7 +405,7 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
-    it 'should return project confidential issues for admin' do
+    it 'returns project confidential issues for admin' do
       get api("#{base_url}/issues", admin)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -330,7 +413,7 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
-    it 'should return an array of labeled project issues' do
+    it 'returns an array of labeled project issues' do
       get api("#{base_url}/issues?labels=#{label.title}", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -338,7 +421,7 @@ describe API::API, api: true  do
       expect(json_response.first['labels']).to eq([label.title])
     end
 
-    it 'should return an array of labeled project issues when at least one label matches' do
+    it 'returns an array of labeled project issues when at least one label matches' do
       get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -346,28 +429,28 @@ describe API::API, api: true  do
       expect(json_response.first['labels']).to eq([label.title])
     end
 
-    it 'should return an empty array if no project issue matches labels' do
+    it 'returns an empty array if no project issue matches labels' do
       get api("#{base_url}/issues?labels=foo,bar", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
 
-    it 'should return an empty array if no issue matches milestone' do
+    it 'returns an empty array if no issue matches milestone' do
       get api("#{base_url}/issues?milestone=#{empty_milestone.title}", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
 
-    it 'should return an empty array if milestone does not exist' do
+    it 'returns an empty array if milestone does not exist' do
       get api("#{base_url}/issues?milestone=foo", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
 
-    it 'should return an array of issues in given milestone' do
+    it 'returns an array of issues in given milestone' do
       get api("#{base_url}/issues?milestone=#{title}", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -376,13 +459,49 @@ describe API::API, api: true  do
       expect(json_response.second['id']).to eq(closed_issue.id)
     end
 
-    it 'should return an array of issues matching state in milestone' do
+    it 'returns an array of issues matching state in milestone' do
       get api("#{base_url}/issues?milestone=#{milestone.title}"\
               '&state=closed', user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
+    end
+
+    it 'sorts by created_at descending by default' do
+      get api("#{base_url}/issues", user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts ascending when requested' do
+      get api("#{base_url}/issues?sort=asc", user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
+    end
+
+    it 'sorts by updated_at descending when requested' do
+      get api("#{base_url}/issues?order_by=updated_at", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts by updated_at ascending when requested' do
+      get api("#{base_url}/issues?order_by=updated_at&sort=asc", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
     end
   end
 
@@ -403,9 +522,10 @@ describe API::API, api: true  do
       expect(json_response['milestone']).to be_a Hash
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
+      expect(json_response['confidential']).to be_falsy
     end
 
-    it "should return a project issue by id" do
+    it "returns a project issue by id" do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
       expect(response).to have_http_status(200)
@@ -413,7 +533,7 @@ describe API::API, api: true  do
       expect(json_response['iid']).to eq(issue.iid)
     end
 
-    it 'should return a project issue by iid' do
+    it 'returns a project issue by iid' do
       get api("/projects/#{project.id}/issues?iid=#{issue.iid}", user)
       expect(response.status).to eq 200
       expect(json_response.first['title']).to eq issue.title
@@ -421,44 +541,44 @@ describe API::API, api: true  do
       expect(json_response.first['iid']).to eq issue.iid
     end
 
-    it "should return 404 if issue id not found" do
+    it "returns 404 if issue id not found" do
       get api("/projects/#{project.id}/issues/54321", user)
       expect(response).to have_http_status(404)
     end
 
     context 'confidential issues' do
-      it "should return 404 for non project members" do
+      it "returns 404 for non project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member)
         expect(response).to have_http_status(404)
       end
 
-      it "should return 404 for project members with guest role" do
+      it "returns 404 for project members with guest role" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest)
         expect(response).to have_http_status(404)
       end
 
-      it "should return confidential issue for project members" do
+      it "returns confidential issue for project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
 
-      it "should return confidential issue for author" do
+      it "returns confidential issue for author" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", author)
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
 
-      it "should return confidential issue for assignee" do
+      it "returns confidential issue for assignee" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", assignee)
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
 
-      it "should return confidential issue for admin" do
+      it "returns confidential issue for admin" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin)
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
@@ -468,21 +588,71 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/issues" do
-    it "should create a new project issue" do
+    it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2'
+
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['confidential']).to be_falsy
     end
 
-    it "should return a 400 bad request if title not given" do
+    it 'creates a new confidential project issue' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: true
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_truthy
+    end
+
+    it 'creates a new confidential project issue with a different param' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: 'y'
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_truthy
+    end
+
+    it 'creates a public issue when confidential param is false' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: false
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_falsy
+    end
+
+    it 'creates a public issue when confidential param is invalid' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: 'foo'
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_falsy
+    end
+
+    it "sends notifications for subscribers of newly added labels" do
+      label = project.labels.first
+      label.toggle_subscription(user2)
+
+      perform_enqueued_jobs do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', labels: label.title
+      end
+
+      should_email(user2)
+    end
+
+    it "returns a 400 bad request if title not given" do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
       expect(response).to have_http_status(400)
     end
 
-    it 'should allow special label names' do
+    it 'allows special label names' do
       post api("/projects/#{project.id}/issues", user),
            title: 'new issue',
            labels: 'label, label?, label&foo, ?, &'
@@ -494,7 +664,7 @@ describe API::API, api: true  do
       expect(json_response['labels']).to include '&'
     end
 
-    it 'should return 400 if title is too long' do
+    it 'returns 400 if title is too long' do
       post api("/projects/#{project.id}/issues", user),
            title: 'g' * 256
       expect(response).to have_http_status(400)
@@ -531,8 +701,8 @@ describe API::API, api: true  do
 
   describe 'POST /projects/:id/issues with spam filtering' do
     before do
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:check_for_spam?).and_return(true)
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
+      allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
+      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
     end
 
     let(:params) do
@@ -543,7 +713,7 @@ describe API::API, api: true  do
       }
     end
 
-    it "should not create a new project issue" do
+    it "does not create a new project issue" do
       expect { post api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
       expect(response).to have_http_status(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
@@ -554,12 +724,11 @@ describe API::API, api: true  do
       expect(spam_logs[0].description).to eq('content here')
       expect(spam_logs[0].user).to eq(user)
       expect(spam_logs[0].noteable_type).to eq('Issue')
-      expect(spam_logs[0].project_id).to eq(project.id)
     end
   end
 
   describe "PUT /projects/:id/issues/:issue_id to update only title" do
-    it "should update a project issue" do
+    it "updates a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         title: 'updated title'
       expect(response).to have_http_status(200)
@@ -567,13 +736,13 @@ describe API::API, api: true  do
       expect(json_response['title']).to eq('updated title')
     end
 
-    it "should return 404 error if issue id not found" do
+    it "returns 404 error if issue id not found" do
       put api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
       expect(response).to have_http_status(404)
     end
 
-    it 'should allow special label names' do
+    it 'allows special label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title',
           labels: 'label, label?, label&foo, ?, &'
@@ -587,37 +756,61 @@ describe API::API, api: true  do
     end
 
     context 'confidential issues' do
-      it "should return 403 for non project members" do
+      it "returns 403 for non project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member),
           title: 'updated title'
         expect(response).to have_http_status(403)
       end
 
-      it "should return 403 for project members with guest role" do
+      it "returns 403 for project members with guest role" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest),
           title: 'updated title'
         expect(response).to have_http_status(403)
       end
 
-      it "should update a confidential issue for project members" do
+      it "updates a confidential issue for project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
           title: 'updated title'
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
-      it "should update a confidential issue for author" do
+      it "updates a confidential issue for author" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", author),
           title: 'updated title'
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
-      it "should update a confidential issue for admin" do
+      it "updates a confidential issue for admin" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin),
           title: 'updated title'
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
+      end
+
+      it 'sets an issue to confidential' do
+        put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          confidential: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response['confidential']).to be_truthy
+      end
+
+      it 'makes a confidential issue public' do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
+          confidential: false
+
+        expect(response).to have_http_status(200)
+        expect(json_response['confidential']).to be_falsy
+      end
+
+      it 'does not update a confidential issue with wrong confidential flag' do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
+          confidential: 'foo'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['confidential']).to be_truthy
       end
     end
   end
@@ -626,21 +819,33 @@ describe API::API, api: true  do
     let!(:label) { create(:label, title: 'dummy', project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
-    it 'should not update labels if not present' do
+    it 'does not update labels if not present' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title'
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it 'should remove all labels' do
+    it "sends notifications for subscribers of newly added labels when issue is updated" do
+      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
+      label.toggle_subscription(user2)
+
+      perform_enqueued_jobs do
+        put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'updated title', labels: label.title
+      end
+
+      should_email(user2)
+    end
+
+    it 'removes all labels' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: ''
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([])
     end
 
-    it 'should update labels' do
+    it 'updates labels' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'foo,bar'
       expect(response).to have_http_status(200)
@@ -648,7 +853,7 @@ describe API::API, api: true  do
       expect(json_response['labels']).to include 'bar'
     end
 
-    it 'should allow special label names' do
+    it 'allows special label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label:foo, label-bar,label_bar,label/bar,label?bar,label&bar,?,&'
       expect(response.status).to eq(200)
@@ -662,7 +867,7 @@ describe API::API, api: true  do
       expect(json_response['labels']).to include '&'
     end
 
-    it 'should return 400 if title is too long' do
+    it 'returns 400 if title is too long' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'g' * 256
       expect(response).to have_http_status(400)
@@ -673,7 +878,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/issues/:issue_id to update state and label" do
-    it "should update a project issue" do
+    it "updates a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         labels: 'label2', state_event: "close"
       expect(response).to have_http_status(200)

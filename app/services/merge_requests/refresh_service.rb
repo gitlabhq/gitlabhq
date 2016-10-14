@@ -13,6 +13,7 @@ module MergeRequests
       reload_merge_requests
       reset_merge_when_build_succeeds
       mark_pending_todos_done
+      cache_merge_requests_closing_issues
 
       # Leave a system note if a branch was deleted/added
       if branch_added? || branch_removed?
@@ -138,6 +139,14 @@ module MergeRequests
     def execute_mr_web_hooks
       merge_requests_for_source_branch.each do |merge_request|
         execute_hooks(merge_request, 'update', @oldrev)
+      end
+    end
+
+    # If the merge requests closes any issues, save this information in the
+    # `MergeRequestsClosingIssues` model (as a performance optimization).
+    def cache_merge_requests_closing_issues
+      @project.merge_requests.where(source_branch: @branch_name).each do |merge_request|
+        merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end
 

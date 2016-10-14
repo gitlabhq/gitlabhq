@@ -26,10 +26,10 @@ namespace :gitlab do
       namespace_path = ENV['NAMESPACE']
 
       projects = find_projects(namespace_path)
-      projects_ids = projects.pluck(:id)
+      project_ids = projects.pluck(:id)
 
       puts "Removing webhooks with the url '#{web_hook_url}' ... "
-      count = WebHook.where(url: web_hook_url, project_id: projects_ids, type: 'ProjectHook').delete_all
+      count = WebHook.where(url: web_hook_url, project_id: project_ids, type: 'ProjectHook').delete_all
       puts "#{count} webhooks were removed."
     end
 

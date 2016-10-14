@@ -25,7 +25,7 @@ module Gitlab
         end
       end
 
-      def initialize(user, adapter=nil)
+      def initialize(user, adapter = nil)
         @adapter = adapter
         @user = user
         @provider = user.ldap_identity.provider
@@ -51,8 +51,6 @@ module Gitlab
           user.ldap_block
           false
         end
-      rescue
-        false
       end
 
       def adapter

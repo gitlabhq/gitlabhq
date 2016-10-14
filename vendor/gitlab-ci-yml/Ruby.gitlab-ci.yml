@@ -10,6 +10,9 @@ services:
   - redis:latest
   - postgres:latest
 
+variables:
+  POSTGRES_DB: database_name
+
 # Cache gems in between builds
 cache:
   paths:
@@ -34,6 +37,18 @@ rspec:
   - rspec spec
 
 rails:
+  variables:
+    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
   - bundle exec rake db:migrate
+  - bundle exec rake db:seed
   - bundle exec rake test
+
+# This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk
+# are supported too: https://github.com/travis-ci/dpl
+deploy:
+  type: deploy
+  environment: production
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY

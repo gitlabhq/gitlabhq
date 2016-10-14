@@ -1,20 +1,30 @@
 - if @lines.present?
+  - line_class = diff_view == :inline ? '' : diff_view
   - if @form.unfold? && @form.since != 1 && !@form.bottom?
-    %tr.line_holder
-      = render "projects/diffs/match_line", { line: @match_line,
-        line_old: @form.since, line_new: @form.since, bottom: false, new_file: false }
+    %tr.line_holder{ class: line_class }
+      = diff_match_line @form.since, @form.since, text: @match_line, view: diff_view
 
   - @lines.each_with_index do |line, index|
     - line_new = index + @form.since
     - line_old = line_new - @form.offset
-    %tr.line_holder{ id: line_old }
-      %td.old_line.diff-line-num{ data: { linenumber: line_old } }
-        = link_to raw(line_old), "##{line_old}"
-      %td.new_line.diff-line-num{ data: { linenumber: line_old } }
-        = link_to raw(line_new) , "##{line_old}"
-      %td.line_content.noteable_line==#{' ' * @form.indent}#{line}
+    - line_content = capture do
+      %td.line_content.noteable_line{ class: line_class }==#{' ' * @form.indent}#{line}
+    %tr.line_holder{ id: line_old, class: line_class }
+      - case diff_view
+      - when :inline
+        %td.old_line.diff-line-num{ data: { linenumber: line_old } }
+          %a{href: "##{line_old}", data: { linenumber: line_old }}
+        %td.new_line.diff-line-num{ data: { linenumber: line_new } }
+          %a{href: "##{line_new}", data: { linenumber: line_new }}
+        = line_content
+      - when :parallel
+        %td.old_line.diff-line-num{data: { linenumber: line_old }}
+          = link_to raw(line_old), "##{line_old}"
+        = line_content
+        %td.new_line.diff-line-num{data: { linenumber: line_new }}
+          = link_to raw(line_new), "##{line_new}"
+        = line_content
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.loc
-    %tr.line_holder{ id: @form.to }
-      = render "projects/diffs/match_line", { line: @match_line,
-        line_old: @form.to, line_new: @form.to, bottom: true, new_file: false }
+    %tr.line_holder{ id: @form.to, class: line_class }
+      = diff_match_line @form.to, @form.to, text: @match_line, view: diff_view, bottom: true

@@ -12,7 +12,7 @@
     }
 
     Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '#activity'));
+      return gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
     };
 
     Activities.prototype.reloadActivities = function() {
@@ -21,16 +21,14 @@
     };
 
     Activities.prototype.toggleFilter = function(sender) {
-      var event_filters, filter;
+      var filter = sender.attr("id").split("_")[0];
+
       $('.event-filter .active').removeClass("active");
-      event_filters = $.cookie("event_filter");
-      filter = sender.attr("id").split("_")[0];
-      $.cookie("event_filter", (event_filters !== filter ? filter : ""), {
-        path: '/'
+      $.cookie("event_filter", filter, {
+        path: gon.relative_url_root || '/'
       });
-      if (event_filters !== filter) {
-        return sender.closest('li').toggleClass("active");
-      }
+
+      sender.closest('li').toggleClass("active");
     };
 
     return Activities;

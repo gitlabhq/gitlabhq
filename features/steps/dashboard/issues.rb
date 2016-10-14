@@ -43,9 +43,14 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
 
   step 'I click "All" link' do
     find(".js-author-search").click
+    expect(page).to have_selector(".dropdown-menu-author li a")
     find(".dropdown-menu-author li a", match: :first).click
+    expect(page).not_to have_selector(".dropdown-menu-author li a")
+
     find(".js-assignee-search").click
+    expect(page).to have_selector(".dropdown-menu-assignee li a")
     find(".dropdown-menu-assignee li a", match: :first).click
+    expect(page).not_to have_selector(".dropdown-menu-assignee li a")
   end
 
   def should_see(issue)

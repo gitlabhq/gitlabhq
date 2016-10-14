@@ -7,9 +7,13 @@ module Gitlab
                     variables: 'Ci::Variable',
                     triggers: 'Ci::Trigger',
                     builds: 'Ci::Build',
-                    hooks: 'ProjectHook' }.freeze
+                    hooks: 'ProjectHook',
+                    merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
+                    push_access_levels: 'ProtectedBranch::PushAccessLevel' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
+
+      PROJECT_REFERENCES = %w[project_id source_project_id gl_project_id target_project_id].freeze
 
       BUILD_MODELS = %w[Ci::Build commit_status].freeze
 
@@ -17,13 +21,15 @@ module Gitlab
 
       EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
 
+      FINDER_ATTRIBUTES = %w[title project_id].freeze
+
       def self.create(*args)
         new(*args).create
       end
 
-      def initialize(relation_sym:, relation_hash:, members_mapper:, user:)
+      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project_id:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('id', 'noteable_id')
+        @relation_hash = relation_hash.except('id', 'noteable_id').merge('project_id' => project_id)
         @members_mapper = members_mapper
         @user = user
         @imported_object_retries = 0
@@ -102,17 +108,19 @@ module Gitlab
       def update_project_references
         project_id = @relation_hash.delete('project_id')
 
+        # If source and target are the same, populate them with the new project ID.
+        if @relation_hash['source_project_id']
+          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : -1
+        end
+
         # project_id may not be part of the export, but we always need to populate it if required.
         @relation_hash['project_id'] = project_id
         @relation_hash['gl_project_id'] = project_id if @relation_hash['gl_project_id']
         @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
-        @relation_hash['source_project_id'] = -1 if @relation_hash['source_project_id']
+      end
 
-        # If source and target are the same, populate them with the new project ID.
-        if @relation_hash['source_project_id'] && @relation_hash['target_project_id'] &&
-          @relation_hash['target_project_id'] == @relation_hash['source_project_id']
-          @relation_hash['source_project_id'] = project_id
-        end
+      def same_source_and_target?
+        @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
       def reset_ci_tokens
@@ -147,7 +155,11 @@ module Gitlab
       end
 
       def parsed_relation_hash
-        @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
+        @parsed_relation_hash ||= begin
+          Gitlab::ImportExport::AttributeCleaner.clean!(relation_hash: @relation_hash)
+
+          @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
+        end
       end
 
       def set_st_diffs
@@ -159,13 +171,29 @@ module Gitlab
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
           if EXISTING_OBJECT_CHECK.include?(@relation_name)
-            existing_object = relation_class.find_or_initialize_by(parsed_relation_hash.slice('title', 'project_id'))
-            existing_object.assign_attributes(parsed_relation_hash)
+            events = parsed_relation_hash.delete('events')
+
+            unless events.blank?
+              existing_object.assign_attributes(events: events)
+            end
+
             existing_object
           else
             relation_class.new(parsed_relation_hash)
           end
         end
+      end
+
+      def existing_object
+        @existing_object ||=
+          begin
+            finder_hash = parsed_relation_hash.slice(*FINDER_ATTRIBUTES)
+            existing_object = relation_class.find_or_create_by(finder_hash)
+            # Done in two steps, as MySQL behaves differently than PostgreSQL using
+            # the +find_or_create_by+ method and does not return the ID the second time.
+            existing_object.update(parsed_relation_hash)
+            existing_object
+          end
       end
     end
   end

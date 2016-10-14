@@ -45,7 +45,6 @@
 .line_content {
   padding-left: 0.5em;
   padding-right: 0.5em;
-  white-space: pre;
 
   &.old {
     background-color: $line-removed;
@@ -69,6 +68,10 @@
     color: $black-transparent;
     background-color: $match-line;
   }
+}
+
+pre {
+  margin: 0;
 }
 
 span.highlight_word {

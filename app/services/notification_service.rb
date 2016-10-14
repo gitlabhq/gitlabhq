@@ -35,6 +35,20 @@ class NotificationService
     new_resource_email(issue, issue.project, :new_issue_email)
   end
 
+  # When issue text is updated, we should send an email to:
+  #
+  #  * newly mentioned project team members with notification level higher than Participating
+  #
+  def new_mentions_in_issue(issue, new_mentioned_users, current_user)
+    new_mentions_in_resource_email(
+      issue,
+      issue.project,
+      new_mentioned_users,
+      current_user,
+      :new_mention_in_issue_email
+    )
+  end
+
   # When we close an issue we should send an email to:
   #
   #  * issue author if their notification level is not Disabled
@@ -75,6 +89,20 @@ class NotificationService
     new_resource_email(merge_request, merge_request.target_project, :new_merge_request_email)
   end
 
+  # When merge request text is updated, we should send an email to:
+  #
+  #  * newly mentioned project team members with notification level higher than Participating
+  #
+  def new_mentions_in_merge_request(merge_request, new_mentioned_users, current_user)
+    new_mentions_in_resource_email(
+      merge_request,
+      merge_request.target_project,
+      new_mentioned_users,
+      current_user,
+      :new_mention_in_merge_request_email
+    )
+  end
+
   # When we reassign a merge_request we should send an email to:
   #
   #  * merge_request old assignee if their notification level is not Disabled
@@ -106,7 +134,8 @@ class NotificationService
       merge_request,
       merge_request.target_project,
       current_user,
-      :merged_merge_request_email
+      :merged_merge_request_email,
+      skip_current_user: !merge_request.merge_when_build_succeeds?
     )
   end
 
@@ -118,6 +147,14 @@ class NotificationService
       :merge_request_status_email,
       'reopened'
     )
+  end
+
+  def resolve_all_discussions(merge_request, current_user)
+    recipients = build_recipients(merge_request, merge_request.target_project, current_user, action: "resolve_all_discussions")
+
+    recipients.each do |recipient|
+      mailer.resolved_all_discussions_email(recipient.id, merge_request.id, current_user.id).deliver_later
+    end
   end
 
   # Notify new user with email after creation
@@ -177,7 +214,7 @@ class NotificationService
 
     # build notify method like 'note_commit_email'
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
-    
+
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
     end
@@ -206,7 +243,6 @@ class NotificationService
       project_member.real_source_type,
       project_member.project.id,
       project_member.invite_email,
-      project_member.access_level,
       project_member.created_by_id
     ).deliver_later
   end
@@ -233,7 +269,6 @@ class NotificationService
       group_member.real_source_type,
       group_member.group.id,
       group_member.invite_email,
-      group_member.access_level,
       group_member.created_by_id
     ).deliver_later
   end
@@ -440,10 +475,12 @@ class NotificationService
   end
 
   def reject_users_without_access(recipients, target)
-    return recipients unless target.is_a?(Issue)
+    return recipients unless target.is_a?(Issuable)
+
+    ability = :"read_#{target.to_ability_name}"
 
     recipients.select do |user|
-      user.can?(:read_issue, target)
+      user.can?(ability, target)
     end
   end
 
@@ -471,9 +508,25 @@ class NotificationService
     end
   end
 
-  def close_resource_email(target, project, current_user, method)
+  def new_mentions_in_resource_email(target, project, new_mentioned_users, current_user, method)
+    recipients = build_recipients(target, project, current_user, action: "new")
+    recipients = recipients & new_mentioned_users
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
+    end
+  end
+
+  def close_resource_email(target, project, current_user, method, skip_current_user: true)
     action = method == :merged_merge_request_email ? "merge" : "close"
-    recipients = build_recipients(target, project, current_user, action: action)
+
+    recipients = build_recipients(
+      target,
+      project,
+      current_user,
+      action: action,
+      skip_current_user: skip_current_user
+    )
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
@@ -514,7 +567,7 @@ class NotificationService
     end
   end
 
-  def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
+  def build_recipients(target, project, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)
@@ -543,7 +596,8 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
 
-    recipients.delete(current_user)
+    recipients.delete(current_user) if skip_current_user
+
     recipients.uniq
   end
 

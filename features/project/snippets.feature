@@ -12,7 +12,7 @@ Feature: Project Snippets
     And I should not see "Snippet two" in snippets
 
   Scenario: I create new project snippet
-    Given I click link "New Snippet"
+    Given I click link "New snippet"
     And I submit new snippet "Snippet three"
     Then I should see snippet "Snippet three"
 

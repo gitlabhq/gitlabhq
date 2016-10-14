@@ -73,12 +73,12 @@
     height: auto;
 
     &.top {
-      @include border-radius(5px 5px 0 0);
+      border-radius: 5px 5px 0 0;
       margin-bottom: 0;
     }
 
     &.bottom {
-      @include border-radius(0 0 5px 5px);
+      border-radius: 0 0 5px 5px;
       border-top: 0;
       margin-bottom: 20px;
     }
@@ -86,7 +86,7 @@
     &.middle {
       border-top: 0;
       margin-bottom: 0;
-      @include border-radius(0);
+      border-radius: 0;
     }
 
     &:active, &:focus {

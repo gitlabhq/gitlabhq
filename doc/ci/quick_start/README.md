@@ -105,7 +105,8 @@ What is important is that each job is run independently from each other.
 
 If you want to check whether your `.gitlab-ci.yml` file is valid, there is a
 Lint tool under the page `/ci/lint` of your GitLab instance. You can also find
-the link under **Settings > CI settings** in your project.
+a "CI Lint" button to go to this page under **Pipelines > Pipelines** and
+**Pipelines > Builds** in your project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please read
 [the documentation on .gitlab-ci.yml](../yaml/README.md).
@@ -218,20 +219,12 @@ project's settings.
 For more information read the
 [Builds emails service documentation](../../project_services/builds_emails.md).
 
-## Builds badge
-
-You can access a builds badge image using following link:
-
-```
-http://example.gitlab.com/namespace/project/badges/branch/build.svg
-```
-
-Awesome! You started using CI in GitLab!
-
 ## Examples
 
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
+
+Awesome! You started using CI in GitLab!
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#install-gitlab-runner
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/

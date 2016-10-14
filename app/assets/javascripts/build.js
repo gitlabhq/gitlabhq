@@ -6,23 +6,32 @@
 
     Build.state = null;
 
-    function Build(page_url, build_url, build_status, state1) {
-      this.page_url = page_url;
-      this.build_url = build_url;
-      this.build_status = build_status;
-      this.state = state1;
+    function Build(options) {
+      this.page_url = options.page_url;
+      this.build_url = options.build_url;
+      this.build_status = options.build_status;
+      this.state = options.state1;
+      this.build_stage = options.build_stage;
       this.hideSidebar = bind(this.hideSidebar, this);
       this.toggleSidebar = bind(this.toggleSidebar, this);
+      this.updateDropdown = bind(this.updateDropdown, this);
       clearInterval(Build.interval);
+      // Init breakpoint checker
       this.bp = Breakpoints.get();
-      this.hideSidebar();
       $('.js-build-sidebar').niceScroll();
+
+      this.populateJobs(this.build_stage);
+      this.updateStageDropdownText(this.build_stage);
+      this.hideSidebar();
+
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
+      $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      $('#js-build-scroll > a').off('click').on('click', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
-        this.initScrollButtonAffix();
+        this.initScrollButtons();
       }
       if (this.build_status === "running" || this.build_status === "pending") {
         $('#autoscroll-button').on('click', function() {
@@ -35,6 +44,9 @@
             $(this).data("state", "enabled");
             return $(this).text("disable autoscroll");
           }
+        //
+        // Bind autoscroll button to follow build output
+        //
         });
         Build.interval = setInterval((function(_this) {
           return function() {
@@ -42,17 +54,23 @@
               return _this.getBuildTrace();
             }
           };
+        //
+        // Check for new build output if user still watching build page
+        // Only valid for runnig build when output changes during time
+        //
         })(this), 4000);
       }
     }
 
     Build.prototype.getInitialBuildTrace = function() {
+      var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
+
       return $.ajax({
         url: this.build_url,
         dataType: 'json',
         success: function(build_data) {
           $('.js-build-output').html(build_data.trace_html);
-          if (build_data.status === 'success' || build_data.status === 'failed') {
+          if (removeRefreshStatuses.indexOf(build_data.status) >= 0) {
             return $('.js-build-refresh').remove();
           }
         }
@@ -89,7 +107,7 @@
       }
     };
 
-    Build.prototype.initScrollButtonAffix = function() {
+    Build.prototype.initScrollButtons = function() {
       var $body, $buildScroll, $buildTrace;
       $buildScroll = $('#js-build-scroll');
       $body = $('body');
@@ -128,8 +146,32 @@
       $date = $('.js-artifacts-remove');
       if ($date.length) {
         date = $date.text();
-        return $date.text($.timefor(new Date(date.replace(/-/g, '/')), ' '));
+        return $date.text($.timefor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
       }
+    };
+
+    Build.prototype.populateJobs = function(stage) {
+      $('.build-job').hide();
+      $('.build-job[data-stage="' + stage + '"]').show();
+    };
+
+    Build.prototype.updateStageDropdownText = function(stage) {
+      $('.stage-selection').text(stage);
+    };
+
+    Build.prototype.updateDropdown = function(e) {
+      e.preventDefault();
+      var stage = e.currentTarget.text;
+      this.updateStageDropdownText(stage);
+      this.populateJobs(stage);
+    };
+
+    Build.prototype.stepTrace = function(e) {
+      e.preventDefault();
+      $currentTarget = $(e.currentTarget);
+      $.scrollTo($currentTarget.attr('href'), {
+        offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+      });
     };
 
     return Build;

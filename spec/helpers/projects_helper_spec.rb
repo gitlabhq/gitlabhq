@@ -11,7 +11,7 @@ describe ProjectsHelper do
 
   describe "can_change_visibility_level?" do
     let(:project) { create(:project) }
-    let(:user) { create(:user) }
+    let(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
     let(:fork_project) { Projects::ForkService.new(project, user).execute }
 
     it "returns false if there are no appropriate permissions" do
@@ -72,7 +72,7 @@ describe ProjectsHelper do
       it 'returns an HTML link to the user' do
         link = helper.link_to_member(project, user)
 
-        expect(link).to match(%r{/u/#{user.username}})
+        expect(link).to match(%r{/#{user.username}})
       end
     end
   end
@@ -134,6 +134,88 @@ describe ProjectsHelper do
       import_error = "Could not clone #{repo}\n"
 
       expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
+    end
+  end
+
+  describe '#last_push_event' do
+    let(:user) { double(:user, fork_of: nil) }
+    let(:project) { double(:project, id: 1) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      helper.instance_variable_set(:@project, project)
+    end
+
+    context 'when there is no current_user' do
+      let(:user) { nil }
+
+      it 'returns nil' do
+        expect(helper.last_push_event).to eq(nil)
+      end
+    end
+
+    it 'returns recent push on the current project' do
+      event = double(:event)
+      expect(user).to receive(:recent_push).with([project.id]).and_return(event)
+
+      expect(helper.last_push_event).to eq(event)
+    end
+
+    context 'when current user has a fork of the current project' do
+      let(:fork) { double(:fork, id: 2) }
+
+      it 'returns recent push considering fork events' do
+        expect(user).to receive(:fork_of).with(project).and_return(fork)
+
+        event_on_fork = double(:event)
+        expect(user).to receive(:recent_push).with([project.id, fork.id]).and_return(event_on_fork)
+
+        expect(helper.last_push_event).to eq(event_on_fork)
+      end
+    end
+  end
+
+  describe "#project_feature_access_select" do
+    let(:project) { create(:empty_project, :public) }
+    let(:user)    { create(:user) }
+
+    context "when project is internal or public" do
+      it "shows all options" do
+        helper.instance_variable_set(:@project, project)
+        result = helper.project_feature_access_select(:issues_access_level)
+        expect(result).to include("Disabled")
+        expect(result).to include("Only team members")
+        expect(result).to include("Everyone with access")
+      end
+    end
+
+    context "when project is private" do
+      before { project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
+      it "shows only allowed options" do
+        helper.instance_variable_set(:@project, project)
+        result = helper.project_feature_access_select(:issues_access_level)
+        expect(result).to include("Disabled")
+        expect(result).to include("Only team members")
+        expect(result).not_to include("Everyone with access")
+      end
+    end
+
+    context "when project moves from public to private" do
+      before do
+        project.project_feature.update_attributes(issues_access_level: ProjectFeature::ENABLED)
+        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it "shows the highest allowed level selected" do
+        helper.instance_variable_set(:@project, project)
+        result = helper.project_feature_access_select(:issues_access_level)
+
+        expect(result).to include("Disabled")
+        expect(result).to include("Only team members")
+        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[selected]', text: "Only team members")
+      end
     end
   end
 end

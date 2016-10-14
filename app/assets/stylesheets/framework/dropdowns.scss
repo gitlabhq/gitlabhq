@@ -1,22 +1,11 @@
-.caret {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  vertical-align: middle;
-  border-top: $caret-width-base dashed;
-  border-right: $caret-width-base solid transparent;
-  border-left: $caret-width-base solid transparent;
-}
-
-.btn-group {
-  .caret {
-    margin-left: 0;
-  }
-}
-
 .dropdown {
   position: relative;
+
+  .btn-link {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .open {
@@ -56,9 +45,13 @@
     position: absolute;
     top: 50%;
     right: 6px;
-    margin-top: -4px;
+    margin-top: -6px;
     color: $dropdown-toggle-icon-color;
     font-size: 10px;
+    &.fa-spinner {
+      font-size: 16px;
+      margin-top: -8px;
+    }
   }
 
   &:hover, {
@@ -71,6 +64,23 @@
 
   &.large {
     width: 200px;
+  }
+
+  &.wide {
+    width: 100%;
+
+    + .dropdown-select {
+      width: 100%;
+    }
+  }
+
+  // Allows dynamic-width text in the dropdown toggle.
+  // Resizes to allow long text without overflowing the container.
+  &.dynamic {
+    width: auto;
+    min-width: 160px;
+    max-width: 100%;
+    padding-right: 25px;
   }
 }
 
@@ -156,6 +166,13 @@
     &.dropdown-menu-user-link {
       line-height: 16px;
     }
+
+    .icon-play {
+      fill: $table-text-gray;
+      margin-right: 6px;
+      height: 12px;
+      width: 11px;
+    }
   }
 
   .dropdown-header {
@@ -167,6 +184,12 @@
 
   .separator + .dropdown-header {
     padding-top: 2px;
+  }
+
+  .unclickable {
+    cursor: not-allowed;
+    padding: 5px 8px;
+    color: $dropdown-header-color;
   }
 }
 
@@ -398,6 +421,7 @@
   font-size: 14px;
 
   a {
+    cursor: pointer;
     padding-left: 10px;
   }
 }
@@ -562,4 +586,10 @@
 .dropdown-menu-inner-content {
   display: block;
   color: $gl-placeholder-color;
+}
+
+.dropdown-toggle-text {
+  &.is-default {
+    color: $gl-placeholder-color;
+  }
 }

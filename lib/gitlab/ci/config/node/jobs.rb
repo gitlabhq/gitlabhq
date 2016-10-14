@@ -26,19 +26,23 @@ module Gitlab
             name.to_s.start_with?('.')
           end
 
-          private
+          def compose!(deps = nil)
+            super do
+              @config.each do |name, config|
+                node = hidden?(name) ? Node::Hidden : Node::Job
 
-          def compose!
-            @config.each do |name, config|
-              node = hidden?(name) ? Node::HiddenJob : Node::Job
+                factory = Node::Factory.new(node)
+                  .value(config || {})
+                  .metadata(name: name)
+                  .with(key: name, parent: self,
+                        description: "#{name} job definition.")
 
-              factory = Node::Factory.new(node)
-                .value(config || {})
-                .metadata(name: name)
-                .with(key: name, parent: self,
-                      description: "#{name} job definition.")
+                @entries[name] = factory.create!
+              end
 
-              @entries[name] = factory.create!
+              @entries.each_value do |entry|
+                entry.compose!(deps)
+              end
             end
           end
         end

@@ -12,7 +12,8 @@ describe Gitlab::ImportExport::Reader, lib: true  do
                   except: [:iid],
                   include: [:merge_request_diff, :merge_request_test]
                 } },
-                { commit_statuses: { include: :commit } }]
+                { commit_statuses: { include: :commit } },
+                { project_members: { include: { user: { only: [:email] } } } }]
     }
   end
 
@@ -29,6 +30,12 @@ describe Gitlab::ImportExport::Reader, lib: true  do
       setup_yaml(project_tree: [:issues])
 
       expect(described_class.new(shared: shared).project_tree).to match(include: [:issues])
+    end
+
+    it 'generates the correct hash for a single project feature relation' do
+      setup_yaml(project_tree: [:project_feature])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [:project_feature])
     end
 
     it 'generates the correct hash for a multiple project relation' do

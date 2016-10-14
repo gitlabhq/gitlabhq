@@ -1,12 +1,13 @@
 # Award Emoji
 
- >**Note:** This feature was introduced in GitLab 8.9
+> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
+
 
 An awarded emoji tells a thousand words, and can be awarded on issues, merge
-requests and notes/comments. Issues, merge requests and notes are further called
+requests, snippets, and notes/comments. Issues, merge requests, snippets, and notes are further called
 `awardables`.
 
-## Issues and merge requests
+## Issues, merge requests, and snippets
 
 ### List an awardable's award emoji
 
@@ -15,6 +16,7 @@ Gets a list of all award emoji
 ```
 GET /projects/:id/issues/:issue_id/award_emoji
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji
+GET /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
@@ -25,7 +27,7 @@ Parameters:
 | `awardable_id` | integer | yes | The ID of an awardable |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
 ```
 
 Example Response:
@@ -69,11 +71,12 @@ Example Response:
 
 ### Get single award emoji
 
-Gets a single award emoji from an issue or merge request.
+Gets a single award emoji from an issue, snippet, or merge request.
 
 ```
 GET /projects/:id/issues/:issue_id/award_emoji/:award_id
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -85,7 +88,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
 ```
 
 Example Response:
@@ -116,6 +119,7 @@ This end point creates an award emoji on the specified resource
 ```
 POST /projects/:id/issues/:issue_id/award_emoji
 POST /projects/:id/merge_requests/:merge_request_id/award_emoji
+POST /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
@@ -127,7 +131,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
 ```
 
 Example Response:
@@ -159,6 +163,7 @@ admins or the author of the award. Status code 200 on success, 401 if unauthoriz
 ```
 DELETE /projects/:id/issues/:issue_id/award_emoji/:award_id
 DELETE /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -170,7 +175,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
 ```
 
 Example Response:
@@ -197,7 +202,7 @@ Example Response:
 ## Award Emoji on Notes
 
 The endpoints documented above are available for Notes as well. Notes
-are a sub-resource of Issues and Merge Requests. The examples below
+are a sub-resource of Issues, Merge Requests, or Snippets. The examples below
 describe working with Award Emoji on notes for an Issue, but can be
 easily adapted for notes on a Merge Request.
 
@@ -217,7 +222,7 @@ Parameters:
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
 ```
 
 Example Response:
@@ -259,7 +264,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
 ```
 
 Example Response:
@@ -299,7 +304,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
 ```
 
 Example Response:
@@ -342,7 +347,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
 ```
 
 Example Response:
@@ -365,3 +370,5 @@ Example Response:
   "awardable_type": "Note"
 }
 ```
+
+[ce-4575]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575

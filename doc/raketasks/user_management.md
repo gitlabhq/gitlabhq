@@ -60,8 +60,8 @@ block_auto_created_users: false
 ## Disable Two-factor Authentication (2FA) for all users
 
 This task will disable 2FA for all users that have it enabled. This can be
-useful if GitLab's `.secret` file has been lost and users are unable to login,
-for example.
+useful if GitLab's `config/secrets.yml` file has been lost and users are unable
+to login, for example.
 
 ```bash
 # omnibus-gitlab
@@ -69,4 +69,19 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 
 # installation from source
 bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
+```
+
+## Clear authentication tokens for all users. Important! Data loss!
+
+Clear authentication tokens for all users in the GitLab database. This
+task is useful if your users' authentication tokens might have been exposed in
+any way. All the existing tokens will become invalid, and new tokens are
+automatically generated upon sign-in or user modification.
+
+```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:users:clear_all_authentication_tokens
+
+# installation from source
+bundle exec rake gitlab:users:clear_all_authentication_tokens RAILS_ENV=production
 ```

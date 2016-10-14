@@ -99,7 +99,7 @@ describe API::CommitStatuses, api: true do
     context "guest user" do
       before { get api(get_url, guest) }
 
-      it "should not return project commits" do
+      it "does not return project commits" do
         expect(response).to have_http_status(403)
       end
     end
@@ -107,7 +107,7 @@ describe API::CommitStatuses, api: true do
     context "unauthorized user" do
       before { get api(get_url) }
 
-      it "should not return project commits" do
+      it "does not return project commits" do
         expect(response).to have_http_status(401)
       end
     end
@@ -117,17 +117,36 @@ describe API::CommitStatuses, api: true do
     let(:post_url) { "/projects/#{project.id}/statuses/#{sha}" }
 
     context 'developer user' do
-      context 'only required parameters' do
-        before { post api(post_url, developer), state: 'success' }
+      %w[pending running success failed canceled].each do |status|
+        context "for #{status}" do
+          context 'uses only required parameters' do
+            it 'creates commit status' do
+              post api(post_url, developer), state: status
 
-        it 'creates commit status' do
-          expect(response).to have_http_status(201)
-          expect(json_response['sha']).to eq(commit.id)
-          expect(json_response['status']).to eq('success')
-          expect(json_response['name']).to eq('default')
-          expect(json_response['ref']).to be_nil
-          expect(json_response['target_url']).to be_nil
-          expect(json_response['description']).to be_nil
+              expect(response).to have_http_status(201)
+              expect(json_response['sha']).to eq(commit.id)
+              expect(json_response['status']).to eq(status)
+              expect(json_response['name']).to eq('default')
+              expect(json_response['ref']).not_to be_empty
+              expect(json_response['target_url']).to be_nil
+              expect(json_response['description']).to be_nil
+            end
+          end
+        end
+      end
+
+      context 'transitions status from pending' do
+        before do
+          post api(post_url, developer), state: 'pending'
+        end
+
+        %w[running success failed canceled].each do |status|
+          it "to #{status}" do
+            expect { post api(post_url, developer), state: status }.not_to change { CommitStatus.count }
+
+            expect(response).to have_http_status(201)
+            expect(json_response['status']).to eq(status)
+          end
         end
       end
 
@@ -179,7 +198,7 @@ describe API::CommitStatuses, api: true do
     context 'reporter user' do
       before { post api(post_url, reporter) }
 
-      it 'should not create commit status' do
+      it 'does not create commit status' do
         expect(response).to have_http_status(403)
       end
     end
@@ -187,7 +206,7 @@ describe API::CommitStatuses, api: true do
     context 'guest user' do
       before { post api(post_url, guest) }
 
-      it 'should not create commit status' do
+      it 'does not create commit status' do
         expect(response).to have_http_status(403)
       end
     end
@@ -195,7 +214,7 @@ describe API::CommitStatuses, api: true do
     context 'unauthorized user' do
       before { post api(post_url) }
 
-      it 'should not create commit status' do
+      it 'does not create commit status' do
         expect(response).to have_http_status(401)
       end
     end

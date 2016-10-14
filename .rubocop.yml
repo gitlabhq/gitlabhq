@@ -5,8 +5,8 @@ require:
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.1
-  # Cop names are not displayed in offense messages by default. Change behavior
+  TargetRubyVersion: 2.3
+  # Cop names are not d§splayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
   DisplayCopNames: true
@@ -149,19 +149,19 @@ Style/EmptyLinesAroundAccessModifier:
 
 # Keeps track of empty lines around block bodies.
 Style/EmptyLinesAroundBlockBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around class bodies.
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around module bodies.
 Style/EmptyLinesAroundModuleBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
-  Enabled: false
+  Enabled: true
 
 # Avoid the use of END blocks.
 Style/EndBlock:
@@ -192,6 +192,9 @@ Style/FlipFlop:
 Style/For:
   Enabled: true
 
+# Checks if there is a magic comment to enforce string literals
+Style/FrozenStringLiteralComment:
+  Enabled: false
 # Do not introduce global variables.
 Style/GlobalVars:
   Enabled: true
@@ -373,6 +376,10 @@ Style/SpaceAfterNot:
 Style/SpaceAfterSemicolon:
   Enabled: true
 
+# Use space around equals in parameter default
+Style/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
 # Use a space around keywords if appropriate.
 Style/SpaceAroundKeyword:
   Enabled: true
@@ -445,6 +452,10 @@ Style/VariableInterpolation:
 Style/VariableName:
   EnforcedStyle: snake_case
   Enabled: true
+
+# Use the configured style when numbering variables.
+Style/VariableNumber:
+  Enabled: false
 
 # Use when x then ... for one-line cases.
 Style/WhenThen:
@@ -631,6 +642,10 @@ Lint/RescueException:
 # Checks for the order which exceptions are rescued to avoid rescueing a less specific exception before a more specific exception.
 Lint/ShadowedException:
   Enabled: false
+
+# Checks for Object#to_s usage in string interpolation.
+Lint/StringConversionInInterpolation:
+  Enabled: true
 
 # Do not use prefix `_` for a variable that is used.
 Lint/UnderscorePrefixedVariableName:

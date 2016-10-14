@@ -7,7 +7,7 @@
 - cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
 - cache_key.push(commit.status) if commit.status
 
-= cache(cache_key) do
+= cache(cache_key, expires_in: 1.day) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     = author_avatar(commit, size: 36)
 
@@ -33,7 +33,7 @@
 
       - if commit.description?
         %pre.commit-row-description.js-toggle-content
-          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
+          = preserve(markdown(commit.description, pipeline: :single_line, author: commit.author))
 
       .commit-row-info
         = commit_author_link(commit, avatar: false, size: 24)

@@ -1,17 +1,23 @@
 - if can?(current_user, :create_deployment, deployment) && deployment.deployable
   .pull-right
+  
+    - external_url = deployment.environment.external_url
+    - if external_url
+      = link_to external_url, target: '_blank', class: 'btn external-url' do
+        = icon('external-link')
+    
     - actions = deployment.manual_actions
     - if actions.present?
-      .btn-group.inline
-        .btn-group
-          %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
-            = icon("play")
-            %b.caret
+      .inline
+        .dropdown
+          %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+            = custom_icon('icon_play')
+            = icon('caret-down')
           %ul.dropdown-menu.dropdown-menu-align-right
             - actions.each do |action|
               %li
                 = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
-                  = icon("play")
+                  = custom_icon('icon_play')
                   %span= action.name.humanize
 
     - if local_assigns.fetch(:allow_rollback, false)

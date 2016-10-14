@@ -15,7 +15,7 @@ describe Groups::MilestonesController do
   end
 
   describe "#create" do
-    it "should create group milestone with Chinese title" do
+    it "creates group milestone with Chinese title" do
       post :create,
            group_id: group.id,
            milestone: { project_ids: [project.id, project2.id], title: title }

@@ -4,7 +4,7 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  @include border-radius($avatar_radius);
+  border-radius: $avatar_radius;
   border: 1px solid rgba(0, 0, 0, .1);
 
   &.avatar-inline {
@@ -17,7 +17,7 @@
   }
 
   &.avatar-tile {
-    @include border-radius(0);
+    border-radius: 0;
     border: none;
   }
 

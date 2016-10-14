@@ -6,112 +6,121 @@ describe Ci::API::API do
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
   let(:project) { FactoryGirl.create(:empty_project) }
 
-  before do
-    stub_ci_pipeline_to_return_yaml_file
-  end
-
   describe "Builds API for runners" do
-    let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
-    let(:shared_project) { FactoryGirl.create(:empty_project, name: "SharedProject") }
+    let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
 
     before do
-      FactoryGirl.create :ci_runner_project, project: project, runner: runner
+      project.runners << runner
     end
 
     describe "POST /builds/register" do
-      it "should start a build" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
-        build = pipeline.builds.first
+      let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+      let(:user_agent) { 'gitlab-ci-multi-runner 1.5.2 (1-5-stable; go1.6.3; linux/amd64)' }
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+      shared_examples 'no builds available' do
+        context 'when runner sends version in User-Agent' do
+          context 'for stable version' do
+            it { expect(response).to have_http_status(204) }
+          end
 
-        expect(response).to have_http_status(201)
-        expect(json_response['sha']).to eq(build.sha)
-        expect(runner.reload.platform).to eq("darwin")
+          context 'for beta version' do
+            let(:user_agent) { 'gitlab-ci-multi-runner 1.6.0~beta.167.g2b2bacc (1-5-stable; go1.6.3; linux/amd64)' }
+            it { expect(response).to have_http_status(204) }
+          end
+        end
+
+        context "when runner doesn't send version in User-Agent" do
+          let(:user_agent) { 'Go-http-client/1.1' }
+          it { expect(response).to have_http_status(404) }
+        end
       end
 
-      it "should return 404 error if no pending build found" do
-        post ci_api("/builds/register"), token: runner.token
+      context 'when there is a pending build' do
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
 
-        expect(response).to have_http_status(404)
+          expect(response).to have_http_status(201)
+          expect(json_response['sha']).to eq(build.sha)
+          expect(runner.reload.platform).to eq("darwin")
+          expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
+          expect(json_response["variables"]).to include(
+            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "DB_NAME", "value" => "postgres", "public" => true }
+          )
+        end
+
+        it 'updates runner info' do
+          expect { register_builds }.to change { runner.reload.contacted_at }
+        end
       end
 
-      it "should return 404 error if no builds for specific runner" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: shared_project)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
+      context 'when builds are finished' do
+        before do
+          build.success
+          register_builds
+        end
 
-        post ci_api("/builds/register"), token: runner.token
-
-        expect(response).to have_http_status(404)
+        it_behaves_like 'no builds available'
       end
 
-      it "should return 404 error if no builds for shared runner" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
+      context 'for other project with builds' do
+        before do
+          build.success
+          create(:ci_build, :pending)
+          register_builds
+        end
 
-        post ci_api("/builds/register"), token: shared_runner.token
-
-        expect(response).to have_http_status(404)
+        it_behaves_like 'no builds available'
       end
 
-      it "returns options" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
+      context 'for shared runner' do
+        let(:shared_runner) { create(:ci_runner, token: "SharedRunner") }
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        before do
+          register_builds shared_runner.token
+        end
 
-        expect(response).to have_http_status(201)
-        expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
+        it_behaves_like 'no builds available'
       end
 
-      it "returns variables" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
-        project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
+      context 'for triggered build' do
+        before do
+          trigger = create(:ci_trigger, project: project)
+          create(:ci_trigger_request_with_variables, pipeline: pipeline, builds: [build], trigger: trigger)
+          project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
+        end
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        it "returns variables for triggers" do
+          register_builds info: { platform: :darwin }
 
-        expect(response).to have_http_status(201)
-        expect(json_response["variables"]).to include(
-          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-          { "key" => "DB_NAME", "value" => "postgres", "public" => true },
-          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false }
-        )
+          expect(response).to have_http_status(201)
+          expect(json_response["variables"]).to include(
+            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
+            { "key" => "DB_NAME", "value" => "postgres", "public" => true },
+            { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
+            { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false },
+          )
+        end
       end
 
-      it "returns variables for triggers" do
-        trigger = FactoryGirl.create(:ci_trigger, project: project)
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
+      context 'with multiple builds' do
+        before do
+          build.success
+        end
 
-        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger)
-        pipeline.create_builds(nil, trigger_request)
-        project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
+        let!(:test_build) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        it "returns dependent builds" do
+          register_builds info: { platform: :darwin }
 
-        expect(response).to have_http_status(201)
-        expect(json_response["variables"]).to include(
-          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-          { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
-          { "key" => "DB_NAME", "value" => "postgres", "public" => true },
-          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
-          { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false }
-        )
-      end
-
-      it "returns dependent builds" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil, nil)
-        pipeline.builds.where(stage: 'test').each(&:success)
-
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
-
-        expect(response).to have_http_status(201)
-        expect(json_response["depends_on_builds"].count).to eq(2)
-        expect(json_response["depends_on_builds"][0]["name"]).to eq("rspec")
+          expect(response).to have_http_status(201)
+          expect(json_response["id"]).to eq(test_build.id)
+          expect(json_response["depends_on_builds"].count).to eq(1)
+          expect(json_response["depends_on_builds"][0]).to include('id' => build.id, 'name' => 'spinach')
+        end
       end
 
       %w(name version revision platform architecture).each do |param|
@@ -121,8 +130,9 @@ describe Ci::API::API do
           subject { runner.read_attribute(param.to_sym) }
 
           it do
-            post ci_api("/builds/register"), token: runner.token, info: { param => value }
-            expect(response).to have_http_status(404)
+            register_builds info: { param => value }
+
+            expect(response).to have_http_status(201)
             runner.reload
             is_expected.to eq(value)
           end
@@ -131,8 +141,7 @@ describe Ci::API::API do
 
       context 'when build has no tags' do
         before do
-          pipeline = create(:ci_pipeline, project: project)
-          create(:ci_build, pipeline: pipeline, tags: [])
+          build.update(tags: [])
         end
 
         context 'when runner is allowed to pick untagged builds' do
@@ -146,50 +155,62 @@ describe Ci::API::API do
         end
 
         context 'when runner is not allowed to pick untagged builds' do
-          before { runner.update_column(:run_untagged, false) }
-
-          it 'does not pick build' do
+          before do
+            runner.update_column(:run_untagged, false)
             register_builds
-
-            expect(response).to have_http_status 404
           end
+
+          it_behaves_like 'no builds available'
+        end
+      end
+
+      context 'when runner is paused' do
+        let(:runner) { create(:ci_runner, :inactive, token: 'InactiveRunner') }
+
+        it 'responds with 404' do
+          register_builds
+
+          expect(response).to have_http_status 404
         end
 
-        def register_builds
-          post ci_api("/builds/register"), token: runner.token,
-                                           info: { platform: :darwin }
+        it 'does not update runner info' do
+          expect { register_builds }
+            .not_to change { runner.reload.contacted_at }
         end
+      end
+
+      def register_builds(token = runner.token, **params)
+        post ci_api("/builds/register"), params.merge(token: token), { 'User-Agent' => user_agent }
       end
     end
 
     describe "PUT /builds/:id" do
-      let(:pipeline) {create(:ci_pipeline, project: project)}
-      let(:build) { create(:ci_build, :trace, pipeline: pipeline, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :pending, :trace, pipeline: pipeline, runner_id: runner.id) }
 
       before do
         build.run!
         put ci_api("/builds/#{build.id}"), token: runner.token
       end
 
-      it "should update a running build" do
+      it "updates a running build" do
         expect(response).to have_http_status(200)
       end
 
-      it 'should not override trace information when no trace is given' do
+      it 'does not override trace information when no trace is given' do
         expect(build.reload.trace).to eq 'BUILD TRACE'
       end
 
       context 'build has been erased' do
         let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
-        it 'should respond with forbidden' do
+        it 'responds with forbidden' do
           expect(response.status).to eq 403
         end
       end
     end
 
     describe 'PATCH /builds/:id/trace.txt' do
-      let(:build) { create(:ci_build, :trace, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :pending, :trace, runner_id: runner.id) }
       let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
 
@@ -237,14 +258,15 @@ describe Ci::API::API do
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :pending, pipeline: pipeline, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:get_url) { ci_api("/builds/#{build.id}/artifacts") }
-      let(:headers) { { "GitLab-Workhorse" => "1.0" } }
-      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
+      let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
+      let(:headers) { { "GitLab-Workhorse" => "1.0", Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
+      let(:token) { build.token }
+      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => token) }
 
       before { build.run! }
 
@@ -252,27 +274,51 @@ describe Ci::API::API do
         context "should authorize posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
+
             expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
           end
 
           it "using token as header" do
             post authorize_url, {}, headers_with_token
+
             expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
+          end
+
+          it "using runners token" do
+            post authorize_url, { token: build.project.runners_token }, headers
+
+            expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            expect(json_response["TempPath"]).not_to be_nil
+          end
+
+          it "reject requests that did not go through gitlab-workhorse" do
+            headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+
+            post authorize_url, { token: build.token }, headers
+
+            expect(response).to have_http_status(500)
           end
         end
 
         context "should fail to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
+
             post authorize_url, { token: build.token, filesize: 100 }, headers
+
             expect(response).to have_http_status(413)
           end
 
           it "using token as header" do
             stub_application_setting(max_artifacts_size: 0)
+
             post authorize_url, { filesize: 100 }, headers_with_token
+
             expect(response).to have_http_status(413)
           end
         end
@@ -280,7 +326,7 @@ describe Ci::API::API do
         context 'authorization token is invalid' do
           before { post authorize_url, { token: 'invalid', filesize: 100 } }
 
-          it 'should respond with forbidden' do
+          it 'responds with forbidden' do
             expect(response).to have_http_status(403)
           end
         end
@@ -300,7 +346,7 @@ describe Ci::API::API do
               upload_artifacts(file_upload, headers_with_token)
             end
 
-            it 'should respond with forbidden' do
+            it 'responds with forbidden' do
               expect(response.status).to eq 403
             end
           end
@@ -340,9 +386,19 @@ describe Ci::API::API do
 
               it_behaves_like 'successful artifacts upload'
             end
+
+            context 'when using runners token' do
+              let(:token) { build.project.runners_token }
+
+              before do
+                upload_artifacts(file_upload, headers_with_token)
+              end
+
+              it_behaves_like 'successful artifacts upload'
+            end
           end
 
-          context 'should post artifacts file and metadata file' do
+          context 'posts artifacts file and metadata file' do
             let!(:artifacts) { file_upload }
             let!(:metadata) { file_upload2 }
 
@@ -354,7 +410,7 @@ describe Ci::API::API do
               post(post_url, post_data, headers_with_token)
             end
 
-            context 'post data accelerated by workhorse is correct' do
+            context 'posts data accelerated by workhorse is correct' do
               let(:post_data) do
                 { 'file.path' => artifacts.path,
                   'file.name' => artifacts.original_filename,
@@ -422,7 +478,7 @@ describe Ci::API::API do
           end
 
           context "artifacts file is too large" do
-            it "should fail to post too large artifact" do
+            it "fails to post too large artifact" do
               stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response).to have_http_status(413)
@@ -430,14 +486,14 @@ describe Ci::API::API do
           end
 
           context "artifacts post request does not contain file" do
-            it "should fail to post artifacts without file" do
+            it "fails to post artifacts without file" do
               post post_url, {}, headers_with_token
               expect(response).to have_http_status(400)
             end
           end
 
           context 'GitLab Workhorse is not configured' do
-            it "should fail to post artifacts without GitLab-Workhorse" do
+            it "fails to post artifacts without GitLab-Workhorse" do
               post post_url, { token: build.token }, {}
               expect(response).to have_http_status(403)
             end
@@ -456,7 +512,7 @@ describe Ci::API::API do
             FileUtils.remove_entry @tmpdir
           end
 
-          it "should fail to post artifacts for outside of tmp path" do
+          it "fails to post artifacts for outside of tmp path" do
             upload_artifacts(file_upload, headers_with_token)
             expect(response).to have_http_status(400)
           end
@@ -479,19 +535,40 @@ describe Ci::API::API do
 
         before do
           delete delete_url, token: build.token
-          build.reload
         end
 
-        it 'should remove build artifacts' do
-          expect(response).to have_http_status(200)
-          expect(build.artifacts_file.exists?).to be_falsy
-          expect(build.artifacts_metadata.exists?).to be_falsy
-          expect(build.artifacts_size).to be_nil
+        shared_examples 'having removable artifacts' do
+          it 'removes build artifacts' do
+            build.reload
+
+            expect(response).to have_http_status(200)
+            expect(build.artifacts_file.exists?).to be_falsy
+            expect(build.artifacts_metadata.exists?).to be_falsy
+            expect(build.artifacts_size).to be_nil
+          end
+        end
+
+        context 'when using build token' do
+          before do
+            delete delete_url, token: build.token
+          end
+
+          it_behaves_like 'having removable artifacts'
+        end
+
+        context 'when using runnners token' do
+          before do
+            delete delete_url, token: build.project.runners_token
+          end
+
+          it_behaves_like 'having removable artifacts'
         end
       end
 
       describe 'GET /builds/:id/artifacts' do
-        before { get get_url, token: build.token }
+        before do
+          get get_url, token: token
+        end
 
         context 'build has artifacts' do
           let(:build) { create(:ci_build, :artifacts) }
@@ -500,14 +577,30 @@ describe Ci::API::API do
               'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
           end
 
-          it 'should download artifact' do
-            expect(response).to have_http_status(200)
-            expect(response.headers).to include download_headers
+          shared_examples 'having downloadable artifacts' do
+            it 'download artifacts' do
+              expect(response).to have_http_status(200)
+              expect(response.headers).to include download_headers
+            end
+          end
+
+          context 'when using build token' do
+            let(:token) { build.token }
+
+            it_behaves_like 'having downloadable artifacts'
+          end
+
+          context 'when using runnners token' do
+            let(:token) { build.project.runners_token }
+
+            it_behaves_like 'having downloadable artifacts'
           end
         end
 
         context 'build does not has artifacts' do
-          it 'should respond with not found' do
+          let(:token) { build.token }
+
+          it 'responds with not found' do
             expect(response).to have_http_status(404)
           end
         end

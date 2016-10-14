@@ -47,25 +47,25 @@ describe Projects::CommitController do
     end
 
     shared_examples "export as" do |format|
-      it "should generally work" do
+      it "does generally work" do
         go(id: commit.id, format: format)
 
         expect(response).to be_success
       end
 
-      it "should generate it" do
+      it "generates it" do
         expect_any_instance_of(Commit).to receive(:"to_#{format}")
 
         go(id: commit.id, format: format)
       end
 
-      it "should render it" do
+      it "renders it" do
         go(id: commit.id, format: format)
 
         expect(response.body).to eq(commit.send(:"to_#{format}"))
       end
 
-      it "should not escape Html" do
+      it "does not escape Html" do
         allow_any_instance_of(Commit).to receive(:"to_#{format}").
           and_return('HTML entities &<>" ')
 
@@ -88,7 +88,7 @@ describe Projects::CommitController do
         expect(response.body).to start_with("diff --git")
       end
 
-      it "should really only be a git diff without whitespace changes" do
+      it "is only be a git diff without whitespace changes" do
         go(id: '66eceea0db202bb39c4e445e8ca28689645366c5', format: format, w: 1)
 
         expect(response.body).to start_with("diff --git")
@@ -102,15 +102,16 @@ describe Projects::CommitController do
     describe "as patch" do
       include_examples "export as", :patch
       let(:format) { :patch }
+      let(:commit2) { project.commit('498214de67004b1da3d820901307bed2a68a8ef6') }
 
-      it "should really be a git email patch" do
-        go(id: commit.id, format: format)
+      it "is a git email patch" do
+        go(id: commit2.id, format: format)
 
-        expect(response.body).to start_with("From #{commit.id}")
+        expect(response.body).to start_with("From #{commit2.id}")
       end
 
-      it "should contain a git diff" do
-        go(id: commit.id, format: format)
+      it "contains a git diff" do
+        go(id: commit2.id, format: format)
 
         expect(response.body).to match(/^diff --git/)
       end
@@ -135,6 +136,8 @@ describe Projects::CommitController do
 
   describe "GET branches" do
     it "contains branch and tags information" do
+      commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+
       get(:branches,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
@@ -147,7 +150,7 @@ describe Projects::CommitController do
 
   describe 'POST revert' do
     context 'when target branch is not provided' do
-      it 'should render the 404 page' do
+      it 'renders the 404 page' do
         post(:revert,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -159,7 +162,7 @@ describe Projects::CommitController do
     end
 
     context 'when the revert was successful' do
-      it 'should redirect to the commits page' do
+      it 'redirects to the commits page' do
         post(:revert,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -180,7 +183,7 @@ describe Projects::CommitController do
             id: commit.id)
       end
 
-      it 'should redirect to the commit page' do
+      it 'redirects to the commit page' do
         # Reverting a commit that has been already reverted.
         post(:revert,
             namespace_id: project.namespace.to_param,
@@ -196,7 +199,7 @@ describe Projects::CommitController do
 
   describe 'POST cherry_pick' do
     context 'when target branch is not provided' do
-      it 'should render the 404 page' do
+      it 'renders the 404 page' do
         post(:cherry_pick,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -208,7 +211,7 @@ describe Projects::CommitController do
     end
 
     context 'when the cherry-pick was successful' do
-      it 'should redirect to the commits page' do
+      it 'redirects to the commits page' do
         post(:cherry_pick,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -229,7 +232,7 @@ describe Projects::CommitController do
             id: master_pickable_commit.id)
       end
 
-      it 'should redirect to the commit page' do
+      it 'redirects to the commit page' do
         # Cherry-picking a commit that has been already cherry-picked.
         post(:cherry_pick,
             namespace_id: project.namespace.to_param,
@@ -254,16 +257,17 @@ describe Projects::CommitController do
     end
 
     let(:existing_path) { '.gitmodules' }
+    let(:commit2) { project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
     context 'when the commit exists' do
       context 'when the user has access to the project' do
         context 'when the path exists in the diff' do
           it 'enables diff notes' do
-            diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
+            diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:comments_target)).to eq(noteable_type: 'Commit',
-                                                    commit_id: commit.id)
+                                                    commit_id: commit2.id)
           end
 
           it 'only renders the diffs for the path given' do
@@ -272,7 +276,7 @@ describe Projects::CommitController do
               meth.call(diffs)
             end
 
-            diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
+            diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
           end
         end
 

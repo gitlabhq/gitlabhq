@@ -19,7 +19,7 @@
         = f.label :token, "Secret Token", class: 'label-light'
         = f.text_field :token, class: "form-control", placeholder: ''
         %p.help-block
-          Use this token to validate received payloads
+          Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.
       .form-group
         = f.label :url, "Trigger", class: 'label-light'
         %ul.list-unstyled
@@ -29,49 +29,63 @@
               = f.label :push_events, class: 'list-label' do
                 %strong Push events
               %p.light
-                This url will be triggered by a push to the repository
+                This URL will be triggered by a push to the repository
           %li
             = f.check_box :tag_push_events, class: 'pull-left'
             .prepend-left-20
               = f.label :tag_push_events, class: 'list-label' do
                 %strong Tag push events
               %p.light
-                This url will be triggered when a new tag is pushed to the repository
+                This URL will be triggered when a new tag is pushed to the repository
           %li
             = f.check_box :note_events, class: 'pull-left'
             .prepend-left-20
               = f.label :note_events, class: 'list-label' do
                 %strong Comments
               %p.light
-                This url will be triggered when someone adds a comment
+                This URL will be triggered when someone adds a comment
           %li
             = f.check_box :issues_events, class: 'pull-left'
             .prepend-left-20
               = f.label :issues_events, class: 'list-label' do
                 %strong Issues events
               %p.light
-                This url will be triggered when an issue is created/updated/merged
+                This URL will be triggered when an issue is created/updated/merged
+          %li
+            = f.check_box :confidential_issues_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :confidential_issues_events, class: 'list-label' do
+                %strong Confidential Issues events
+              %p.light
+                This URL will be triggered when a confidential issue is created/updated/merged
           %li
             = f.check_box :merge_requests_events, class: 'pull-left'
             .prepend-left-20
               = f.label :merge_requests_events, class: 'list-label' do
                 %strong Merge Request events
               %p.light
-                This url will be triggered when a merge request is created/updated/merged
+                This URL will be triggered when a merge request is created/updated/merged
           %li
             = f.check_box :build_events, class: 'pull-left'
             .prepend-left-20
               = f.label :build_events, class: 'list-label' do
                 %strong Build events
               %p.light
-                This url will be triggered when the build status changes
+                This URL will be triggered when the build status changes
+          %li
+            = f.check_box :pipeline_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :pipeline_events, class: 'list-label' do
+                %strong Pipeline events
+              %p.light
+                This URL will be triggered when the pipeline status changes
           %li
             = f.check_box :wiki_page_events, class: 'pull-left'
             .prepend-left-20
               = f.label :wiki_page_events, class: 'list-label' do
                 %strong Wiki Page events
               %p.light
-                This url will be triggered when a wiki page is created/updated
+                This URL will be triggered when a wiki page is created/updated
       .form-group
         = f.label :enable_ssl_verification, "SSL verification", class: 'label-light checkbox'
         .checkbox

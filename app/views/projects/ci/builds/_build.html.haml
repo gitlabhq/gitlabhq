@@ -1,3 +1,11 @@
+- admin = local_assigns.fetch(:admin, false)
+- ref = local_assigns.fetch(:ref, nil)
+- commit_sha = local_assigns.fetch(:commit_sha, nil)
+- retried = local_assigns.fetch(:retried, false)
+- stage = local_assigns.fetch(:stage, false)
+- coverage = local_assigns.fetch(:coverage, false)
+- allow_retry = local_assigns.fetch(:allow_retry, false)
+
 %tr.build.commit
   %td.status
     - if can?(current_user, :read_build, build)
@@ -5,54 +13,58 @@
     - else
       = ci_status_with_icon(build.status)
 
-  %td
-    .branch-commit
-      - if can?(current_user, :read_build, build)
-        = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
-          %span ##{build.id}
-      - else
-        %span ##{build.id}
+  %td.branch-commit
+    - if can?(current_user, :read_build, build)
+      = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
+        %span.build-link ##{build.id}
+    - else
+      %span.build-link ##{build.id}
 
-      - if defined?(ref) && ref
-        - if build.ref
-          .icon-container
-            = build.tag? ? icon('tag') : icon('code-fork')
-          = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
-        - else
-          .light none
+    - if ref
+      - if build.ref
         .icon-container
-          = custom_icon("icon_commit")
+          = build.tag? ? icon('tag') : icon('code-fork')
+        = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
+      - else
+        .light none
+      .icon-container
+        = custom_icon("icon_commit")
 
-      - if defined?(commit_sha) && commit_sha
-        = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "commit-id monospace"
+    - if commit_sha
+      = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "commit-id monospace"
 
-      - if build.stuck?
-        = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
-      - if defined?(retried) && retried
-        = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
+    - if build.stuck?
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+    - if retried
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
 
-      .label-container
-        - if build.tags.any?
-          - build.tags.each do |tag|
-            %span.label.label-primary
-              = tag
-        - if build.try(:trigger_request)
-          %span.label.label-info triggered
-        - if build.try(:allow_failure)
-          %span.label.label-danger allowed to fail
-        - if defined?(retried) && retried
-          %span.label.label-warning retried
-        - if build.manual?
-          %span.label.label-info manual
+    .label-container
+      - if build.tags.any?
+        - build.tags.each do |tag|
+          %span.label.label-primary
+            = tag
+      - if build.try(:trigger_request)
+        %span.label.label-info triggered
+      - if build.try(:allow_failure)
+        %span.label.label-danger allowed to fail
+      - if retried
+        %span.label.label-warning retried
+      - if build.manual?
+        %span.label.label-info manual
 
-  - if defined?(runner) && runner
+  - if admin
+    %td
+      - if build.project
+        = link_to build.project.name_with_namespace, admin_namespace_project_path(build.project.namespace, build.project)
+
+  - if admin
     %td
       - if build.try(:runner)
         = runner_link(build.runner)
       - else
         .light none
 
-  - if defined?(stage) && stage
+  - if stage
     %td
       = build.stage
 
@@ -63,14 +75,15 @@
     - if build.duration
       %p.duration
         = custom_icon("icon_timer")
-        = duration_in_numbers(build.finished_at, build.started_at)
+        = duration_in_numbers(build.duration)
+
     - if build.finished_at
       %p.finished-at
         = icon("calendar")
         %span #{time_ago_with_tooltip(build.finished_at)}
 
-  - if defined?(coverage) && coverage
-    %td.coverage
+  %td.coverage
+    - if coverage
       - if build.try(:coverage)
         #{build.coverage}%
 
@@ -83,10 +96,10 @@
         - if build.active?
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
-        - elsif defined?(allow_retry) && allow_retry
+        - elsif allow_retry
           - if build.retryable?
             = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
               = icon('repeat')
-          - elsif build.playable?
+          - elsif build.playable? && !admin
             = link_to play_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
-              = icon('play')
+              = custom_icon('icon_play')

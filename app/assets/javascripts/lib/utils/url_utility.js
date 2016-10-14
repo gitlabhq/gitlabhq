@@ -7,6 +7,8 @@
     if ((base = w.gl).utils == null) {
       base.utils = {};
     }
+    // Returns an array containing the value(s) of the
+    // of the key passed as an argument
     w.gl.utils.getParameterValues = function(sParam) {
       var i, sPageURL, sParameterName, sURLVariables, values;
       sPageURL = decodeURIComponent(window.location.search.substring(1));
@@ -17,12 +19,14 @@
       while (i < sURLVariables.length) {
         sParameterName = sURLVariables[i].split('=');
         if (sParameterName[0] === sParam) {
-          values.push(sParameterName[1]);
+          values.push(sParameterName[1].replace(/\+/g, ' '));
         }
         i++;
       }
       return values;
     };
+    // @param {Object} params - url keys and value to merge
+    // @param {String} url
     w.gl.utils.mergeUrlParams = function(params, url) {
       var lastChar, newUrl, paramName, paramValue, pattern;
       newUrl = decodeURIComponent(url);
@@ -37,13 +41,15 @@
           newUrl = "" + newUrl + (newUrl.indexOf('?') > 0 ? '&' : '?') + paramName + "=" + paramValue;
         }
       }
+      // Remove a trailing ampersand
       lastChar = newUrl[newUrl.length - 1];
       if (lastChar === '&') {
         newUrl = newUrl.slice(0, -1);
       }
       return newUrl;
     };
-    return w.gl.utils.removeParamQueryString = function(url, param) {
+    // removes parameter query string from url. returns the modified url
+    w.gl.utils.removeParamQueryString = function(url, param) {
       var urlVariables, variables;
       url = decodeURIComponent(url);
       urlVariables = url.split('&');
@@ -58,6 +64,16 @@
         }
         return results;
       })()).join('&');
+    };
+    w.gl.utils.getLocationHash = function(url) {
+      var hashIndex;
+      if (typeof url === 'undefined') {
+        // Note: We can't use window.location.hash here because it's
+        // not consistent across browsers - Firefox will pre-decode it
+        url = window.location.href;
+      }
+      hashIndex = url.indexOf('#');
+      return hashIndex === -1 ? null : url.substring(hashIndex + 1);
     };
   })(window);
 

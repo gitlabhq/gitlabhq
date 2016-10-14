@@ -6,11 +6,15 @@ class Milestone < ActiveRecord::Base
   Any = MilestoneStruct.new('Any Milestone', '', -1)
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
 
+  include CacheMarkdownField
   include InternalId
   include Sortable
   include Referable
   include StripAttribute
   include Milestoneish
+
+  cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :description
 
   belongs_to :project
   has_many :issues
@@ -158,7 +162,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def title=(value)
-    write_attribute(:title, Sanitize.clean(value.to_s)) if value.present?
+    write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
   # Sorts the issues for the given IDs.
@@ -203,5 +207,9 @@ class Milestone < ActiveRecord::Base
     else
       iid
     end
+  end
+
+  def sanitize_title(value)
+    CGI.unescape_html(Sanitize.clean(value.to_s))
   end
 end

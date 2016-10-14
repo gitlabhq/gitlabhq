@@ -33,18 +33,19 @@
       this.render = bind(this.render, this);
       this.VIEW_TYPE = $('input#view[type=hidden]').val();
       debounce = _.debounce(this.render, DEBOUNCE_TIMEOUT_DURATION);
-      $(document).off('mouseover', LINE_COLUMN_CLASSES).off('mouseleave', LINE_COLUMN_CLASSES).on('mouseover', LINE_COLUMN_CLASSES, debounce).on('mouseleave', LINE_COLUMN_CLASSES, this.destroy);
+      $(this.filesContainerElement).off('mouseover', LINE_COLUMN_CLASSES).off('mouseleave', LINE_COLUMN_CLASSES).on('mouseover', LINE_COLUMN_CLASSES, debounce).on('mouseleave', LINE_COLUMN_CLASSES, this.destroy);
     }
 
     FilesCommentButton.prototype.render = function(e) {
       var $currentTarget, buttonParentElement, lineContentElement, textFileElement;
       $currentTarget = $(e.currentTarget);
+
       buttonParentElement = this.getButtonParent($currentTarget);
-      if (!this.shouldRender(e, buttonParentElement)) {
-        return;
-      }
-      textFileElement = this.getTextFileElement($currentTarget);
+      if (!this.validateButtonParent(buttonParentElement)) return;
       lineContentElement = this.getLineContent($currentTarget);
+      if (!this.validateLineContent(lineContentElement)) return;
+
+      textFileElement = this.getTextFileElement($currentTarget);
       buttonParentElement.append(this.buildButton({
         noteableType: textFileElement.attr('data-noteable-type'),
         noteableID: textFileElement.attr('data-noteable-id'),
@@ -119,8 +120,12 @@
       return newButtonParent.is(this.getButtonParent($(e.currentTarget)));
     };
 
-    FilesCommentButton.prototype.shouldRender = function(e, buttonParentElement) {
+    FilesCommentButton.prototype.validateButtonParent = function(buttonParentElement) {
       return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS) && $(COMMENT_BUTTON_CLASS, buttonParentElement).length === 0;
+    };
+
+    FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
+      return lineContentElement.attr('data-discussion-id') && lineContentElement.attr('data-discussion-id') !== '';
     };
 
     return FilesCommentButton;

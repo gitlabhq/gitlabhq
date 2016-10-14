@@ -1,5 +1,16 @@
-.panel.panel-default
-  .notes{ data: { discussion_id: discussion.id } }
-    %ul.notes.timeline
-      = render partial: "projects/notes/note", collection: discussion.notes, as: :note
-  = link_to_reply_discussion(discussion)
+%ul.notes{ data: { discussion_id: discussion.id } }
+  = render partial: "projects/notes/note", collection: discussion.notes, as: :note
+
+- if current_user
+  .discussion-reply-holder
+    - if discussion.diff_discussion?
+      - line_type = local_assigns.fetch(:line_type, nil)
+
+      .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
+        .btn-group{ role: "group" }
+          = link_to_reply_discussion(discussion, line_type)
+        = render "discussions/resolve_all", discussion: discussion
+        - if discussion.for_merge_request?
+          = render "discussions/jump_to_next", discussion: discussion
+    - else
+      = link_to_reply_discussion(discussion)

@@ -9,12 +9,14 @@ describe Snippet, models: true do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(Awardable) }
   end
 
   describe 'associations' do
     it { is_expected.to belong_to(:author).class_name('User') }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
+    it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
   end
 
   describe 'validation' do
@@ -41,6 +43,13 @@ describe Snippet, models: true do
     it 'supports a cross-project reference' do
       cross = double('project')
       expect(snippet.to_reference(cross)).to eq "#{project.to_reference}$#{snippet.id}"
+    end
+  end
+
+  describe "#content_html_invalidated?" do
+    let(:snippet) { create(:snippet, content: "md", content_html: "html", file_name: "foo.md") }
+    it "invalidates the HTML cache of content when the filename changes" do
+      expect { snippet.file_name = "foo.rb" }.to change { snippet.content_html_invalidated? }.from(false).to(true)
     end
   end
 

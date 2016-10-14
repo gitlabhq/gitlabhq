@@ -1,5 +1,5 @@
 require 'ruby-prof'
-require 'gitlab/request_profiler'
+require_dependency 'gitlab/request_profiler'
 
 module Gitlab
   module RequestProfiler

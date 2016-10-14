@@ -11,10 +11,16 @@ module MergeRequests
       params.except!(:target_project_id)
       params.except!(:source_branch)
 
+      if merge_request.closed_without_fork?
+        params.except!(:target_branch, :force_remove_source_branch)
+      end
+
+      handle_wip_event(merge_request)
+
       update(merge_request)
     end
 
-    def handle_changes(merge_request, old_labels: [])
+    def handle_changes(merge_request, old_labels: [], old_mentioned_users: [])
       if has_changes?(merge_request, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)
       end
@@ -53,6 +59,15 @@ module MergeRequests
           current_user
         )
       end
+
+      added_mentions = merge_request.mentioned_users - old_mentioned_users
+      if added_mentions.present?
+        notification_service.new_mentions_in_merge_request(
+          merge_request,
+          added_mentions,
+          current_user
+        )
+      end
     end
 
     def reopen_service
@@ -61,6 +76,23 @@ module MergeRequests
 
     def close_service
       MergeRequests::CloseService
+    end
+
+    def after_update(issuable)
+      issuable.cache_merge_request_closes_issues!(current_user)
+    end
+
+    private
+
+    def handle_wip_event(merge_request)
+      if wip_event = params.delete(:wip_event)
+        # We update the title that is provided in the params or we use the mr title
+        title = params[:title] || merge_request.title
+        params[:title] = case wip_event
+                         when 'wip' then MergeRequest.wip_title(title)
+                         when 'unwip' then MergeRequest.wipless_title(title)
+                         end
+      end
     end
   end
 end

@@ -4,65 +4,89 @@
   .col-lg-3
     %h4.prepend-top-0
       = page_title
-    %p
-      Triggers can force a specific branch or tag to rebuild with an API call.
+    %p.prepend-top-20
+      Triggers can force a specific branch or tag to get rebuilt with an API call.
+    %p.append-bottom-0
+      = succeed '.' do
+        Learn more in the
+        = link_to 'triggers documentation', help_page_path('ci/triggers/README'), target: '_blank'
   .col-lg-9
-    %h5.prepend-top-0
-      Your triggers
-    - if @triggers.any?
-      .table-responsive
-        %table.table
-          %thead
-            %th Token
-            %th Last used
-            %th
-          = render partial: 'trigger', collection: @triggers, as: :trigger
-    - else
-      %p.settings-message.text-center.append-bottom-default
-        No triggers have been created yet. Add one using the button below.
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          Manage your project's triggers
+      .panel-body
+        - if @triggers.any?
+          .table-responsive
+            %table.table
+              %thead
+                %th
+                  %strong Token
+                %th
+                  %strong Last used
+                %th
+              = render partial: 'trigger', collection: @triggers, as: :trigger
+        - else
+          %p.settings-message.text-center.append-bottom-default
+            No triggers have been created yet. Add one using the button below.
 
-    = form_for @trigger, url: url_for(controller: 'projects/triggers', action: 'create') do |f|
-      = f.submit "Add Trigger", class: 'btn btn-success'
+        = form_for @trigger, url: url_for(controller: 'projects/triggers', action: 'create') do |f|
+          = f.submit "Add trigger", class: 'btn btn-success'
 
-    %h5.prepend-top-default
-      Use CURL
+      .panel-footer
 
-    %p.light
-      Copy the token above, set your branch or tag name, and that reference will be rebuilt.
+        %p
+          In the following examples, you can see the exact API call you need to
+          make in order to rebuild a specific
+          %code ref
+          (branch or tag) with a trigger token.
+        %p
+          All you need to do is replace the
+          %code TOKEN
+          and
+          %code REF_NAME
+          with the trigger token and the branch or tag name respectively.
 
-    %pre
-      :plain
-        curl -X POST \
-             -F token=TOKEN \
-             -F ref=REF_NAME \
-             #{builds_trigger_url(@project.id)}
-    %h5.prepend-top-default
-      Use .gitlab-ci.yml
+        %h5.prepend-top-default
+          Use cURL
 
-    %p.light
-      In the
-      %code .gitlab-ci.yml
-      of the dependent project, include the following snippet.
-      The project will rebuild at the end of the build.
+        %p.light
+          Copy one of the tokens above, set your branch or tag name, and that
+          reference will be rebuilt.
 
-    %pre
-      :plain
-        trigger:
-          type: deploy
-          script:
-            - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
-    %h5.prepend-top-default
-      Pass build variables
+        %pre
+          :plain
+            curl -X POST \
+                 -F token=TOKEN \
+                 -F ref=REF_NAME \
+                 #{builds_trigger_url(@project.id)}
+        %h5.prepend-top-default
+          Use .gitlab-ci.yml
 
-    %p.light
-      Add
-      %code variables[VARIABLE]=VALUE
-      to an API request. Variable values can be used to distinguish between triggered builds and normal builds.
+        %p.light
+          In the
+          %code .gitlab-ci.yml
+          of another project, include the following snippet.
+          The project will be rebuilt at the end of the build.
 
-    %pre.append-bottom-0
-      :plain
-        curl -X POST \
-             -F token=TOKEN \
-             -F "ref=REF_NAME" \
-             -F "variables[RUN_NIGHTLY_BUILD]=true" \
-             #{builds_trigger_url(@project.id)}
+        %pre
+          :plain
+            trigger_build:
+              stage: deploy
+              script:
+                - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
+        %h5.prepend-top-default
+          Pass build variables
+
+        %p.light
+          Add
+          %code variables[VARIABLE]=VALUE
+          to an API request. Variable values can be used to distinguish between triggered builds and normal builds.
+
+        %pre.append-bottom-0
+          :plain
+            curl -X POST \
+                 -F token=TOKEN \
+                 -F "ref=REF_NAME" \
+                 -F "variables[RUN_NIGHTLY_BUILD]=true" \
+                 #{builds_trigger_url(@project.id)}

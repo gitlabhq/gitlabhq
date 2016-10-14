@@ -1,16 +1,16 @@
 module Gitlab
   class ContributionsCalendar
-    attr_reader :timestamps, :projects, :user
+    attr_reader :activity_dates, :projects, :user
 
     def initialize(projects, user)
       @projects = projects
       @user = user
     end
 
-    def timestamps
-      return @timestamps if @timestamps.present?
+    def activity_dates
+      return @activity_dates if @activity_dates.present?
 
-      @timestamps = {}
+      @activity_dates = {}
       date_from = 1.year.ago
 
       events = Event.reorder(nil).contributions.where(author_id: user.id).
@@ -19,19 +19,17 @@ module Gitlab
         select('date(created_at) as date, count(id) as total_amount').
         map(&:attributes)
 
-      dates = (1.year.ago.to_date..Date.today).to_a
+      activity_dates = (1.year.ago.to_date..Date.today).to_a
 
-      dates.each do |date|
-        date_id = date.to_time.to_i.to_s
-        @timestamps[date_id] = 0
+      activity_dates.each do |date|
         day_events = events.find { |day_events| day_events["date"] == date }
 
         if day_events
-          @timestamps[date_id] = day_events["total_amount"]
+          @activity_dates[date] = day_events["total_amount"]
         end
       end
 
-      @timestamps
+      @activity_dates
     end
 
     def events_by_date(date)

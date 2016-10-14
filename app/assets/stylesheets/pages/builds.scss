@@ -36,6 +36,7 @@
     &.affix {
       right: 30px;
       bottom: 15px;
+      z-index: 1;
 
       @media (min-width: $screen-md-min) {
         right: 26%;
@@ -45,20 +46,6 @@
     a {
       display: block;
       margin-bottom: 10px;
-    }
-  }
-
-  .page-sidebar-collapsed {
-    .scroll-controls {
-      left: 70px;
-    }
-  }
-
-  .nav-links {
-    svg {
-      position: relative;
-      top: 2px;
-      margin-right: 3px;
     }
   }
 }
@@ -108,28 +95,132 @@
 }
 
 .right-sidebar.build-sidebar {
-  padding-top: $gl-padding;
-  padding-bottom: $gl-padding;
+  padding: $gl-padding 0;
 
   &.right-sidebar-collapsed {
     display: none;
   }
 
+  .blocks-container {
+    padding: 0 $gl-padding;
+  }
+
   .block {
     width: 100%;
+
+    &.coverage {
+      padding: 0 16px 11px;
+    }
+
+    .btn-group-justified {
+      margin-top: 5px;
+    }
+  }
+
+  .js-build-variable {
+    color: $code-color;
+  }
+
+  .js-build-value {
+    padding: 2px 4px;
+    color: $black;
+    background-color: $white-light;
   }
 
   .build-sidebar-header {
-    padding-top: 0;
+    padding: 0 $gl-padding $gl-padding;
 
     .gutter-toggle {
       margin-top: 0;
+    }
+  }
+
+  .retry-link {
+    color: $gl-link-color;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .stage-item {
+    cursor: pointer;
+
+    &:hover {
+      color: $gl-text-color;
+    }
+  }
+
+  .build-dropdown {
+    padding: $gl-padding 0;
+
+    .dropdown-menu-toggle {
+      margin-top: 8px;
+    }
+
+    .dropdown-menu {
+      right: $gl-padding;
+      left: $gl-padding;
+      width: auto;
+    }
+  }
+
+  .builds-container {
+    background-color: $white-light;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    max-height: 300px;
+    overflow: auto;
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
+      height: 13px;
+    }
+
+    a {
+      display: block;
+      padding: $gl-padding 10px $gl-padding 40px;
+      width: 270px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:hover {
+        color: $gl-text-color;
+      }
+    }
+
+    .build-job {
+      position: relative;
+
+      .fa {
+        position: absolute;
+        left: 15px;
+        top: 20px;
+        display: none;
+      }
+
+      &.active {
+        font-weight: bold;
+
+        .fa {
+          display: block;
+        }
+      }
+
+      &:hover {
+        background-color: $row-hover;
+      }
     }
   }
 }
 
 .build-detail-row {
   margin-bottom: 5px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .build-light-text {

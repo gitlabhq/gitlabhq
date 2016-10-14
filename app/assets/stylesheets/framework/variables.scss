@@ -10,12 +10,82 @@ $sidebar-transition-duration: .15s;
 $sidebar-breakpoint: 1024px;
 
 /*
+ * Color schema
+ */
+$white-light: #fff;
+$white-normal: #ededed;
+$white-dark: #ececec;
+
+$gray-light: #fafafa;
+$gray-lighter: #f9f9f9;
+$gray-normal: #f5f5f5;
+$gray-dark: #ededed;
+$gray-darker: #eee;
+$gray-darkest: #c9c9c9;
+
+$green-light: #38ae67;
+$green-normal: #2faa60;
+$green-dark: #2ca05b;
+
+$blue-light: #2ea8e5;
+$blue-normal: #2d9fd8;
+$blue-dark: #2897ce;
+
+$blue-medium-light: #3498cb;
+$blue-medium: #2f8ebf;
+$blue-medium-dark: #2d86b4;
+
+$blue-light-transparent: rgba(44, 159, 216, 0.05);
+
+$orange-light: #fc8a51;
+$orange-normal: #e75e40;
+$orange-dark: #ce5237;
+
+$red-light: #e52c5a;
+$red-normal: #d22852;
+$red-dark: darken($red-normal, 5%);
+
+$black: #000;
+$black-transparent: rgba(0, 0, 0, 0.3);
+
+$border-white-light: #f1f2f4;
+$border-white-normal: #d6dae2;
+$border-white-dark: #c6cacf;
+
+$border-gray-light: #dcdcdc;
+$border-gray-normal: #d7d7d7;
+$border-gray-dark: #c6cacf;
+
+$border-green-light: #2faa60;
+$border-green-normal: #2ca05b;
+$border-green-dark: #279654;
+
+$border-blue-light: #2d9fd8;
+$border-blue-normal: #2897ce;
+$border-blue-dark: #258dc1;
+
+$border-orange-light: #fc6d26;
+$border-orange-normal: #ce5237;
+$border-orange-dark: #c14e35;
+
+$border-red-light: #d22852;
+$border-red-normal: #ca264f;
+$border-red-dark: darken($border-red-normal, 5%);
+
+$help-well-bg: $gray-light;
+$help-well-border: #e5e5e5;
+
+$warning-message-bg: #fbf2d9;
+$warning-message-color: #9e8e60;
+$warning-message-border: #f0e2bb;
+
+/*
  * UI elements
  */
 $border-color:          #e5e5e5;
 $focus-border-color:    #3aabf0;
 $table-border-color:    #f0f0f0;
-$background-color:      #fafafa;
+$background-color:      $gray-light;
 $dark-background-color: #f5f5f5;
 $table-text-gray:       #8f8f8f;
 
@@ -25,6 +95,7 @@ $table-text-gray:       #8f8f8f;
 $gl-font-size:         15px;
 $gl-title-color:       #333;
 $gl-text-color:        #5c5c5c;
+$gl-text-color-light:  #8c8c8c;
 $gl-text-green:        #4a2;
 $gl-text-red:          #d12f19;
 $gl-text-orange:       #d90;
@@ -35,7 +106,8 @@ $gl-icon-color:        $gl-placeholder-color;
 $gl-grayish-blue:      #7f8fa4;
 $gl-gray:              $gl-text-color;
 $gl-gray-dark:         #313236;
-$gl-header-color:      $gl-title-color;
+$gl-gray-light:        $gl-placeholder-color;
+$gl-header-color:      #4c4e54;
 
 /*
  * Lists
@@ -43,6 +115,7 @@ $gl-header-color:      $gl-title-color;
 $list-font-size:   $gl-font-size;
 $list-title-color: $gl-title-color;
 $list-text-color:  $gl-text-color;
+$list-text-height: 42px;
 
 /*
  * Markdown
@@ -89,73 +162,6 @@ $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 
-/*
- * Color schema
- */
-
-$white-light: #fff;
-$white-normal: #ededed;
-$white-dark: #ececec;
-
-$gray-light: #faf9f9;
-$gray-normal: #f5f5f5;
-$gray-dark: #ededed;
-$gray-darkest: #c9c9c9;
-
-$green-light: #38ae67;
-$green-normal: #2faa60;
-$green-dark: #2ca05b;
-
-$blue-light: #2ea8e5;
-$blue-normal: #2d9fd8;
-$blue-dark: #2897ce;
-
-$blue-medium-light: #3498cb;
-$blue-medium: #2f8ebf;
-$blue-medium-dark: #2d86b4;
-
-$orange-light: #fc8a51;
-$orange-normal: #e75e40;
-$orange-dark: #ce5237;
-
-$red-light: #e52c5a;
-$red-normal: #d22852;
-$red-dark: darken($red-normal, 5%);
-
-$black: #000;
-$black-transparent: rgba(0, 0, 0, 0.3);
-
-$border-white-light: #f1f2f4;
-$border-white-normal: #d6dae2;
-$border-white-dark: #c6cacf;
-
-$border-gray-light: #dcdcdc;
-$border-gray-normal: #d7d7d7;
-$border-gray-dark: #c6cacf;
-
-$border-green-light: #2faa60;
-$border-green-normal: #2ca05b;
-$border-green-dark: #279654;
-
-$border-blue-light: #2d9fd8;
-$border-blue-normal: #2897ce;
-$border-blue-dark: #258dc1;
-
-$border-orange-light: #fc6d26;
-$border-orange-normal: #ce5237;
-$border-orange-dark: #c14e35;
-
-$border-red-light: #d22852;
-$border-red-normal: #ca264f;
-$border-red-dark: darken($border-red-normal, 5%);
-
-$help-well-bg: #fafafa;
-$help-well-border: #e5e5e5;
-
-$warning-message-bg: #fbf2d9;
-$warning-message-color: #9e8e60;
-$warning-message-border: #f0e2bb;
-
 /* tanuki logo colors */
 $tanuki-red: #e24329;
 $tanuki-orange: #fc6d26;
@@ -185,7 +191,7 @@ $line-removed-dark: #fac5cd;
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
-$match-line: #fafafa;
+$match-line: $gray-light;
 $table-border-gray: #f0f0f0;
 $line-target-blue: #eaf3fc;
 $line-select-yellow: #fcf8e7;
@@ -266,7 +272,13 @@ $zen-control-hover-color: #111;
 $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
-$calendar-unselectable-bg: #faf9f9;
+$calendar-unselectable-bg: $gray-light;
+
+/*
+ *  Cycle Analytics
+ */
+$cycle-analytics-box-padding: 30px;
+$cycle-analytics-box-text-color: #8c8c8c;
 
 /*
  * Personal Access Tokens
@@ -275,3 +287,5 @@ $personal-access-tokens-disabled-label-color: #bbb;
 
 $ci-output-bg: #1d1f21;
 $ci-text-color: #c5c8c6;
+
+$issue-boards-font-size: 15px;

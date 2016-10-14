@@ -3,7 +3,6 @@
 
   this.Calendar = (function() {
     function Calendar(timestamps, calendar_activities_path) {
-      var group, i;
       this.calendar_activities_path = calendar_activities_path;
       this.clickDay = bind(this.clickDay, this);
       this.currentSelectedDate = '';
@@ -12,29 +11,46 @@
       this.daySizeWithSpace = this.daySize + (this.daySpace * 2);
       this.monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       this.months = [];
+      // Loop through the timestamps to create a group of objects
+      // The group of objects will be grouped based on the day of the week they are
       this.timestampsTmp = [];
-      i = 0;
-      group = 0;
-      _.each(timestamps, (function(_this) {
-        return function(count, date) {
-          var day, innerArray, newDate;
-          newDate = new Date(parseInt(date) * 1000);
-          day = newDate.getDay();
-          if ((day === 0 && i !== 0) || i === 0) {
-            _this.timestampsTmp.push([]);
-            group++;
-          }
-          innerArray = _this.timestampsTmp[group - 1];
-          innerArray.push({
-            count: count,
-            date: newDate,
-            day: day
-          });
-          return i++;
-        };
-      })(this));
+      var group = 0;
+
+      var today = new Date()
+      today.setHours(0, 0, 0, 0, 0);
+
+      var oneYearAgo = new Date(today);
+      oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+      var days = gl.utils.getDayDifference(oneYearAgo, today);
+
+      for(var i = 0; i <= days; i++) {
+        var date = new Date(oneYearAgo);
+        date.setDate(date.getDate() + i);
+
+        var day = date.getDay();
+        var count = timestamps[dateFormat(date, 'yyyy-mm-dd')];
+
+        // Create a new group array if this is the first day of the week
+        // or if is first object
+        if ((day === 0 && i !== 0) || i === 0) {
+          this.timestampsTmp.push([]);
+          group++;
+        }
+
+        var innerArray = this.timestampsTmp[group - 1];
+        // Push to the inner array the values that will be used to render map
+        innerArray.push({
+          count: count || 0,
+          date: date,
+          day: day
+        });
+      }
+
+      // Init color functions
       this.colorKey = this.initColorKey();
       this.color = this.initColor();
+      // Init the svg element
       this.renderSvg(group);
       this.renderDays();
       this.renderMonths();
@@ -43,8 +59,22 @@
       this.initTooltips();
     }
 
+    // Add extra padding for the last month label if it is also the last column
+    Calendar.prototype.getExtraWidthPadding = function(group) {
+      var extraWidthPadding = 0;
+      var lastColMonth = this.timestampsTmp[group - 1][0].date.getMonth();
+      var secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
+
+      if (lastColMonth != secondLastColMonth) {
+        extraWidthPadding = 3;
+      }
+
+      return extraWidthPadding;
+    }
+
     Calendar.prototype.renderSvg = function(group) {
-      return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', (group + 1) * this.daySizeWithSpace).attr('height', 167).attr('class', 'contrib-calendar');
+      var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
+      return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
     };
 
     Calendar.prototype.renderDays = function() {

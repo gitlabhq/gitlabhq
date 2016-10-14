@@ -1,6 +1,5 @@
 module MembershipActions
   extend ActiveSupport::Concern
-  include MembersHelper
 
   def request_access
     membershipable.request_access(current_user)
@@ -10,28 +9,23 @@ module MembershipActions
   end
 
   def approve_access_request
-    @member = membershipable.requesters.find(params[:id])
-
-    return render_403 unless can?(current_user, action_member_permission(:update, @member), @member)
-
-    @member.accept_request
+    Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
 
     redirect_to polymorphic_url([membershipable, :members])
   end
 
   def leave
-    @member = membershipable.members.find_by(user_id: current_user) ||
-      membershipable.requesters.find_by(user_id: current_user)
-    Members::DestroyService.new(@member, current_user).execute
+    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
+      execute(:all)
 
-    source_type = @member.real_source_type.humanize(capitalize: false)
+    source_type = membershipable.class.to_s.humanize(capitalize: false)
     notice =
-      if @member.request?
+      if member.request?
         "Your access request to the #{source_type} has been withdrawn."
       else
-        "You left the \"#{@member.source.human_name}\" #{source_type}."
+        "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
-    redirect_path = @member.request? ? @member.source : [:dashboard, @member.real_source_type.tableize]
+    redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
 
     redirect_to redirect_path, notice: notice
   end

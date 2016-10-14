@@ -1,8 +1,14 @@
 # rubocop:disable all
 class FixNamespaces < ActiveRecord::Migration
+  DOWNTIME = false
+
   def up
-    Namespace.where('name <> path and type is null').each do |namespace|
-      namespace.update_attribute(:name, namespace.path)
+    namespaces = exec_query('SELECT id, path FROM namespaces WHERE name <> path and type is null')
+
+    namespaces.each do |row|
+      id = row['id']
+      path = row['path']
+      exec_query("UPDATE namespaces SET name = '#{path}' WHERE id = #{id}")
     end
   end
 

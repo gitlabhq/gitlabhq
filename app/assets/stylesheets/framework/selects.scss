@@ -21,7 +21,14 @@
       padding-right: 10px;
 
       b {
-        @extend .caret;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 2px;
+        vertical-align: middle;
+        border-top: $caret-width-base dashed;
+        border-right: $caret-width-base solid transparent;
+        border-left: $caret-width-base solid transparent;
         color: $gray-darkest;
       }
     }
@@ -39,13 +46,14 @@
 }
 
 .select2-drop {
-  @include box-shadow(rgba(76, 86, 103, 0.247059) 0 0 1px 0, rgba(31, 37, 50, 0.317647) 0 2px 18px 0);
-  @include border-radius ($border-radius-default);
+  box-shadow: rgba(76, 86, 103, 0.247059) 0 0 1px 0, rgba(31, 37, 50, 0.317647) 0 2px 18px 0;
+  border-radius: $border-radius-default;
   border: none;
   min-width: 175px;
 }
 
-.select2-results .select2-result-label {
+.select2-results .select2-result-label,
+.select2-more-results {
   padding: 10px 15px;
 }
 
@@ -64,7 +72,7 @@
 
 .select2-container-active {
   .select2-choice, .select2-choices {
-    @include box-shadow(none);
+    box-shadow: none;
   }
 }
 
@@ -74,13 +82,13 @@
     outline: 0;
     background-image: none;
     background-color: $white-dark;
-    @include box-shadow($gl-btn-active-gradient);
+    box-shadow: $gl-btn-active-gradient;
   }
 }
 
 .select2-container-multi {
   .select2-choices {
-    @include border-radius($border-radius-default);
+    border-radius: $border-radius-default;
     border-color: $input-border;
     background: none;
 
@@ -115,7 +123,7 @@
   &.select2-container-active .select2-choices,
   &.select2-dropdown-open .select2-choices {
     border-color: $border-white-normal;
-    @include box-shadow($gl-btn-active-gradient);
+    box-shadow: $gl-btn-active-gradient;
   }
 }
 
@@ -149,8 +157,8 @@
   background-repeat: no-repeat;
   background-position: right 0 bottom 6px;
   border: 1px solid $input-border;
-  @include border-radius($border-radius-default);
-  @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+  border-radius: $border-radius-default;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
   &:focus {
     border-color: $input-border-focus;

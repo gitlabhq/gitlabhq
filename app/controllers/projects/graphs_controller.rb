@@ -38,12 +38,12 @@ class Projects::GraphsController < Projects::ApplicationController
 
     @languages = @languages.map do |language|
       name, share = language
-      color = Digest::SHA256.hexdigest(name)[0...6]
+      color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
       {
         value: (share.to_f * 100 / total).round(2),
         label: name,
-        color: "##{color}",
-        highlight: "##{color}"
+        color: color,
+        highlight: color
       }
     end
 

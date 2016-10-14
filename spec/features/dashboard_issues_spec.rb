@@ -16,29 +16,32 @@ describe "Dashboard Issues filtering", feature: true, js: true do
       visit_issues
     end
 
-    it 'should show all issues with no milestone' do
+    it 'shows all issues with no milestone' do
       show_milestone_dropdown
 
       click_link 'No Milestone'
 
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
 
-    it 'should show all issues with any milestone' do
+    it 'shows all issues with any milestone' do
       show_milestone_dropdown
 
       click_link 'Any Milestone'
 
+      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
       expect(page).to have_selector('.issue', count: 2)
     end
 
-    it 'should show all issues with the selected milestone' do
+    it 'shows all issues with the selected milestone' do
       show_milestone_dropdown
 
       page.within '.dropdown-content' do
         click_link milestone.title
       end
 
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
   end

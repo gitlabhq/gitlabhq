@@ -6,12 +6,13 @@
   %strong.item-title
     Snippet #{@snippet.to_reference}
   %span.creator
-    created by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title")}
+    authored
     = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
     - if @snippet.updated_at != @snippet.created_at
       %span
         = icon('edit', title: 'edited')
         = time_ago_with_tooltip(@snippet.updated_at, placement: 'bottom', html_class: 'snippet_edited_ago')
+    by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "hidden-xs")}
 
   .snippet-actions
     - if @snippet.project_id?
@@ -19,6 +20,5 @@
     - else
       = render "snippets/actions"
 
-.content-block.second-block
-  %h2.snippet-title.prepend-top-0.append-bottom-0
-    = markdown escape_once(@snippet.title), pipeline: :single_line, author: @snippet.author
+%h2.snippet-title.prepend-top-0.append-bottom-0
+  = markdown_field(@snippet, :title)

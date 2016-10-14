@@ -15,6 +15,9 @@ module Files
                         else
                           params[:file_content]
                         end
+      @last_commit_sha = params[:last_commit_sha]
+      @author_email    = params[:author_email]
+      @author_name     = params[:author_name]
 
       # Validate parameters
       validate
@@ -24,8 +27,9 @@ module Files
         create_target_branch
       end
 
-      if commit
-        success
+      result = commit
+      if result
+        success(result: result)
       else
         error('Something went wrong. Your changes were not committed')
       end
@@ -37,6 +41,12 @@ module Files
 
     def different_branch?
       @source_branch != @target_branch || @source_project != @project
+    end
+
+    def file_has_changed?
+      return false unless @last_commit_sha && last_commit
+
+      @last_commit_sha != last_commit.sha
     end
 
     def raise_error(message)

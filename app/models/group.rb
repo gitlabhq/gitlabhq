@@ -95,34 +95,51 @@ class Group < Namespace
     end
   end
 
-  def add_users(user_ids, access_level, current_user = nil)
-    user_ids.each do |user_id|
-      Member.add_user(self.group_members, user_id, access_level, current_user)
-    end
+  def lfs_enabled?
+    return false unless Gitlab.config.lfs.enabled
+    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+
+    self[:lfs_enabled]
   end
 
-  def add_user(user, access_level, current_user = nil)
-    add_users([user], access_level, current_user)
+  def add_users(users, access_level, current_user: nil, expires_at: nil)
+    GroupMember.add_users_to_group(
+      self,
+      users,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at
+    )
+  end
+
+  def add_user(user, access_level, current_user: nil, expires_at: nil)
+    GroupMember.add_user(
+      self,
+      user,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at
+    )
   end
 
   def add_guest(user, current_user = nil)
-    add_user(user, Gitlab::Access::GUEST, current_user)
+    add_user(user, :guest, current_user: current_user)
   end
 
   def add_reporter(user, current_user = nil)
-    add_user(user, Gitlab::Access::REPORTER, current_user)
+    add_user(user, :reporter, current_user: current_user)
   end
 
   def add_developer(user, current_user = nil)
-    add_user(user, Gitlab::Access::DEVELOPER, current_user)
+    add_user(user, :developer, current_user: current_user)
   end
 
   def add_master(user, current_user = nil)
-    add_user(user, Gitlab::Access::MASTER, current_user)
+    add_user(user, :master, current_user: current_user)
   end
 
   def add_owner(user, current_user = nil)
-    add_user(user, Gitlab::Access::OWNER, current_user)
+    add_user(user, :owner, current_user: current_user)
   end
 
   def has_owner?(user)

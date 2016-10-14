@@ -1,9 +1,8 @@
-image: "ruby:2.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
 
 cache:
-  key: "ruby21"
+  key: "ruby-231"
   paths:
-  - vendor/apt
   - vendor/ruby
 
 variables:
@@ -12,9 +11,10 @@ variables:
   RSPEC_RETRY_RETRY_COUNT: "3"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
-  USE_DB: "true"
+  SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
+  PHANTOMJS_VERSION: "2.1.1"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -22,7 +22,7 @@ before_script:
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
   - retry gem install knapsack
-  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
+  - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
 
 stages:
 - prepare
@@ -34,7 +34,7 @@ stages:
 .knapsack-state: &knapsack-state
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   cache:
     key: "knapsack"
@@ -81,7 +81,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack rspec
+    - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
     paths:
@@ -138,64 +138,63 @@ spinach 7 10: *spinach-knapsack
 spinach 8 10: *spinach-knapsack
 spinach 9 10: *spinach-knapsack
 
-# Execute all testing suites against Ruby 2.3
-.ruby-23: &ruby-23
-  image: "ruby:2.3"
+# Execute all testing suites against Ruby 2.1
+.ruby-21: &ruby-21
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
     - master
   cache:
-    key: "ruby-23"
+    key: "ruby21"
     paths:
-      - vendor/apt
       - vendor/ruby
 
-.rspec-knapsack-ruby23: &rspec-knapsack-ruby23
+.rspec-knapsack-ruby21: &rspec-knapsack-ruby21
   <<: *rspec-knapsack
-  <<: *ruby-23
+  <<: *ruby-21
 
-.spinach-knapsack-ruby23: &spinach-knapsack-ruby23
+.spinach-knapsack-ruby21: &spinach-knapsack-ruby21
   <<: *spinach-knapsack
-  <<: *ruby-23
+  <<: *ruby-21
 
-rspec 0 20 ruby23: *rspec-knapsack-ruby23
-rspec 1 20 ruby23: *rspec-knapsack-ruby23
-rspec 2 20 ruby23: *rspec-knapsack-ruby23
-rspec 3 20 ruby23: *rspec-knapsack-ruby23
-rspec 4 20 ruby23: *rspec-knapsack-ruby23
-rspec 5 20 ruby23: *rspec-knapsack-ruby23
-rspec 6 20 ruby23: *rspec-knapsack-ruby23
-rspec 7 20 ruby23: *rspec-knapsack-ruby23
-rspec 8 20 ruby23: *rspec-knapsack-ruby23
-rspec 9 20 ruby23: *rspec-knapsack-ruby23
-rspec 10 20 ruby23: *rspec-knapsack-ruby23
-rspec 11 20 ruby23: *rspec-knapsack-ruby23
-rspec 12 20 ruby23: *rspec-knapsack-ruby23
-rspec 13 20 ruby23: *rspec-knapsack-ruby23
-rspec 14 20 ruby23: *rspec-knapsack-ruby23
-rspec 15 20 ruby23: *rspec-knapsack-ruby23
-rspec 16 20 ruby23: *rspec-knapsack-ruby23
-rspec 17 20 ruby23: *rspec-knapsack-ruby23
-rspec 18 20 ruby23: *rspec-knapsack-ruby23
-rspec 19 20 ruby23: *rspec-knapsack-ruby23
+rspec 0 20 ruby21: *rspec-knapsack-ruby21
+rspec 1 20 ruby21: *rspec-knapsack-ruby21
+rspec 2 20 ruby21: *rspec-knapsack-ruby21
+rspec 3 20 ruby21: *rspec-knapsack-ruby21
+rspec 4 20 ruby21: *rspec-knapsack-ruby21
+rspec 5 20 ruby21: *rspec-knapsack-ruby21
+rspec 6 20 ruby21: *rspec-knapsack-ruby21
+rspec 7 20 ruby21: *rspec-knapsack-ruby21
+rspec 8 20 ruby21: *rspec-knapsack-ruby21
+rspec 9 20 ruby21: *rspec-knapsack-ruby21
+rspec 10 20 ruby21: *rspec-knapsack-ruby21
+rspec 11 20 ruby21: *rspec-knapsack-ruby21
+rspec 12 20 ruby21: *rspec-knapsack-ruby21
+rspec 13 20 ruby21: *rspec-knapsack-ruby21
+rspec 14 20 ruby21: *rspec-knapsack-ruby21
+rspec 15 20 ruby21: *rspec-knapsack-ruby21
+rspec 16 20 ruby21: *rspec-knapsack-ruby21
+rspec 17 20 ruby21: *rspec-knapsack-ruby21
+rspec 18 20 ruby21: *rspec-knapsack-ruby21
+rspec 19 20 ruby21: *rspec-knapsack-ruby21
 
-spinach 0 10 ruby23: *spinach-knapsack-ruby23
-spinach 1 10 ruby23: *spinach-knapsack-ruby23
-spinach 2 10 ruby23: *spinach-knapsack-ruby23
-spinach 3 10 ruby23: *spinach-knapsack-ruby23
-spinach 4 10 ruby23: *spinach-knapsack-ruby23
-spinach 5 10 ruby23: *spinach-knapsack-ruby23
-spinach 6 10 ruby23: *spinach-knapsack-ruby23
-spinach 7 10 ruby23: *spinach-knapsack-ruby23
-spinach 8 10 ruby23: *spinach-knapsack-ruby23
-spinach 9 10 ruby23: *spinach-knapsack-ruby23
+spinach 0 10 ruby21: *spinach-knapsack-ruby21
+spinach 1 10 ruby21: *spinach-knapsack-ruby21
+spinach 2 10 ruby21: *spinach-knapsack-ruby21
+spinach 3 10 ruby21: *spinach-knapsack-ruby21
+spinach 4 10 ruby21: *spinach-knapsack-ruby21
+spinach 5 10 ruby21: *spinach-knapsack-ruby21
+spinach 6 10 ruby21: *spinach-knapsack-ruby21
+spinach 7 10 ruby21: *spinach-knapsack-ruby21
+spinach 8 10 ruby21: *spinach-knapsack-ruby21
+spinach 9 10 ruby21: *spinach-knapsack-ruby21
 
 # Other generic tests
 
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
 .exec: &exec
@@ -205,12 +204,19 @@ spinach 9 10 ruby23: *spinach-knapsack-ruby23
     - bundle exec $CI_BUILD_NAME
 
 rubocop: *exec
+rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flog: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
+rake ce_to_ee_merge_check:
+  <<: *exec
+  only:
+    - branches
+  except:
+    - tags
+  allow_failure: yes
 
 rake db:migrate:reset:
   stage: test
@@ -218,11 +224,49 @@ rake db:migrate:reset:
   script:
     - rake db:migrate:reset
 
+rake db:seed_fu:
+  stage: test
+  <<: *use-db
+  variables:
+    SIZE: "1"
+    SETUP_DB: "false"
+    RAILS_ENV: "development"
+  script:
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - bundle exec rake db:setup db:seed_fu
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
+
 teaspoon:
   stage: test
   <<: *use-db
   script:
+    - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
+    - apt-get install --assume-yes nodejs
+    - npm install --global istanbul
     - teaspoon
+  artifacts:
+    name: coverage-javascript
+    expire_in: 31d
+    paths:
+    - coverage-javascript/default/
+
+lint-doc:
+  stage: test
+  image: "phusion/baseimage:latest"
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
+
+bundler:check:
+ stage: test
+ <<: *ruby-static-analysis
+ script:
+   - bundle check
 
 bundler:audit:
   stage: test
@@ -232,11 +276,26 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+migration paths:
+  stage: test
+  <<: *use-db
+  only:
+    - master@gitlab-org/gitlab-ce
+  script:
+    - git checkout HEAD .
+    - git fetch --tags
+    - git checkout v8.5.9
+    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
+    - rake db:drop db:create db:schema:load db:seed_fu
+    - git checkout $CI_BUILD_REF
+    - rake db:migrate
+
 coverage:
   stage: post-test
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
@@ -247,13 +306,23 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
+# Trigger docs build
+trigger_docs:
+  stage: post-test
+  before_script: []
+  cache: {}
+  artifacts: {}
+  script:
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master https://gitlab.com/api/v3/projects/38069/trigger/builds"
+  only:
+    - master
 
 # Notify slack in the end
 
 notify:slack:
   stage: post-test
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
@@ -269,12 +338,27 @@ pages:
   stage: pages
   dependencies:
     - coverage
+    - teaspoon
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage public/coverage-ruby
+    - mv coverage-javascript/default/ public/coverage-javascript/
   artifacts:
     paths:
       - public
   only:
     - master
+
+# Insurance in case a gem needed by one of our releases gets yanked from
+# rubygems.org in the future.
+cache gems:
+  only:
+    - tags
+  variables:
+    SETUP_DB: "false"
+  script:
+    - bundle package --all --all-platforms
+  artifacts:
+    paths:
+      - vendor/cache

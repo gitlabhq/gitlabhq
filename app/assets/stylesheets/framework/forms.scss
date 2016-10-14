@@ -19,7 +19,6 @@ input[type='text'].danger {
 }
 
 .form-actions {
-  margin: -$gl-padding;
   margin-top: 0;
   margin-bottom: -$gl-padding;
   padding: $gl-padding;
@@ -74,7 +73,7 @@ label {
 }
 
 .form-control {
-  @include box-shadow(none);
+  box-shadow: none;
   border-radius: 3px;
   padding: $gl-vert-padding $gl-input-padding;
 }
@@ -82,10 +81,10 @@ label {
 .select-wrapper {
   position: relative;
 
-  .caret {
+  .fa-caret-down {
     position: absolute;
     right: 10px;
-    top: $gl-padding;
+    top: 10px;
     color: $gray-darkest;
     pointer-events: none;
   }

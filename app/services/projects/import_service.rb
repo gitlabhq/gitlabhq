@@ -44,6 +44,11 @@ module Projects
       begin
         gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
       rescue => e
+        # Expire cache to prevent scenarios such as:
+        # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
+        # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
+        project.repository.before_import if project.repository_exists?
+
         raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
       end
     end

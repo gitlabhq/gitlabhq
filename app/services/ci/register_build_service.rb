@@ -8,16 +8,18 @@ module Ci
       builds =
         if current_runner.shared?
           builds.
-            # don't run projects which have not enabled shared runners
-            joins(:project).where(projects: { builds_enabled: true, shared_runners_enabled: true }).
+            # don't run projects which have not enabled shared runners and builds
+            joins(:project).where(projects: { shared_runners_enabled: true }).
+            joins('LEFT JOIN project_features ON ci_builds.gl_project_id = project_features.project_id').
 
             # this returns builds that are ordered by number of running builds
             # we prefer projects that don't use shared runners at all
             joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.gl_project_id=project_builds.gl_project_id").
+            where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
             order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
         else
           # do run projects which are only assigned to this runner (FIFO)
-          builds.where(project: current_runner.projects.where(builds_enabled: true)).order('created_at ASC')
+          builds.where(project: current_runner.projects.with_builds_enabled).order('created_at ASC')
         end
 
       build = builds.find do |build|

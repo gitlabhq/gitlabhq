@@ -14,13 +14,12 @@ module Gitlab
 
       def options
         {
-          'GitHub'          => 'github',
-          'Bitbucket'       => 'bitbucket',
-          'GitLab.com'      => 'gitlab',
-          'Gitorious.org'   => 'gitorious',
-          'Google Code'     => 'google_code',
-          'FogBugz'         => 'fogbugz',
-          'Repo by URL'     => 'git',
+          'GitHub'        => 'github',
+          'Bitbucket'     => 'bitbucket',
+          'GitLab.com'    => 'gitlab',
+          'Google Code'   => 'google_code',
+          'FogBugz'       => 'fogbugz',
+          'Repo by URL'   => 'git',
           'GitLab export' => 'gitlab_project'
         }
       end

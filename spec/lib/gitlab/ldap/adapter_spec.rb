@@ -1,24 +1,105 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Adapter, lib: true do
-  let(:adapter) { Gitlab::LDAP::Adapter.new 'ldapmain' }
+  include LdapHelpers
+
+  let(:ldap) { double(:ldap) }
+  let(:adapter) { ldap_adapter('ldapmain', ldap) }
+
+  describe '#users' do
+    before do
+      stub_ldap_config(base: 'dc=example,dc=com')
+    end
+
+    it 'searches with the proper options when searching by uid' do
+      # Requires this expectation style to match the filter
+      expect(adapter).to receive(:ldap_search) do |arg|
+        expect(arg[:filter].to_s).to eq('(uid=johndoe)')
+        expect(arg[:base]).to eq('dc=example,dc=com')
+        expect(arg[:attributes]).to match(%w{uid cn mail dn})
+      end.and_return({})
+
+      adapter.users('uid', 'johndoe')
+    end
+
+    it 'searches with the proper options when searching by dn' do
+      expect(adapter).to receive(:ldap_search).with(
+        base: 'uid=johndoe,ou=users,dc=example,dc=com',
+        scope: Net::LDAP::SearchScope_BaseObject,
+        attributes: %w{uid cn mail dn},
+        filter: nil
+      ).and_return({})
+
+      adapter.users('dn', 'uid=johndoe,ou=users,dc=example,dc=com')
+    end
+
+    it 'searches with the proper options when searching with a limit' do
+      expect(adapter)
+        .to receive(:ldap_search).with(hash_including(size: 100)).and_return({})
+
+      adapter.users('uid', 'johndoe', 100)
+    end
+
+    it 'returns an LDAP::Person if search returns a result' do
+      entry = ldap_user_entry('johndoe')
+      allow(adapter).to receive(:ldap_search).and_return([entry])
+
+      results = adapter.users('uid', 'johndoe')
+
+      expect(results.size).to eq(1)
+      expect(results.first.uid).to eq('johndoe')
+    end
+
+    it 'returns empty array if search entry does not respond to uid' do
+      entry = Net::LDAP::Entry.new
+      entry['dn'] = user_dn('johndoe')
+      allow(adapter).to receive(:ldap_search).and_return([entry])
+
+      results = adapter.users('uid', 'johndoe')
+
+      expect(results).to be_empty
+    end
+
+    it 'uses the right uid attribute when non-default' do
+      stub_ldap_config(uid: 'sAMAccountName')
+      expect(adapter).to receive(:ldap_search).with(
+        hash_including(attributes: %w{sAMAccountName cn mail dn})
+      ).and_return({})
+
+      adapter.users('sAMAccountName', 'johndoe')
+    end
+  end
 
   describe '#dn_matches_filter?' do
-    let(:ldap) { double(:ldap) }
     subject { adapter.dn_matches_filter?(:dn, :filter) }
-    before { allow(adapter).to receive(:ldap).and_return(ldap) }
+
+    context "when the search result is non-empty" do
+      before { allow(adapter).to receive(:ldap_search).and_return([:foo]) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when the search result is empty" do
+      before { allow(adapter).to receive(:ldap_search).and_return([]) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#ldap_search' do
+    subject { adapter.ldap_search(base: :dn, filter: :filter) }
 
     context "when the search is successful" do
       context "and the result is non-empty" do
         before { allow(ldap).to receive(:search).and_return([:foo]) }
 
-        it { is_expected.to be_truthy }
+        it { is_expected.to eq [:foo] }
       end
 
       context "and the result is empty" do
         before { allow(ldap).to receive(:search).and_return([]) }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to eq [] }
       end
     end
 
@@ -30,7 +111,22 @@ describe Gitlab::LDAP::Adapter, lib: true do
         )
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq [] }
+    end
+
+    context "when the search raises an LDAP exception" do
+      before do
+        allow(ldap).to receive(:search) { raise Net::LDAP::Error, "some error" }
+        allow(Rails.logger).to receive(:warn)
+      end
+
+      it { is_expected.to eq [] }
+
+      it 'logs the error' do
+        subject
+        expect(Rails.logger).to have_received(:warn).with(
+          "LDAP search raised exception Net::LDAP::Error: some error")
+      end
     end
   end
 end

@@ -14,10 +14,18 @@
     margin-top: 0;
   }
 
+  // Single code lines should wrap
   code {
     font-family: $monospace_font;
-    white-space: pre;
+    white-space: pre-wrap;
     word-wrap: normal;
+  }
+
+  // Multi-line code blocks should scroll horizontally
+  pre {
+    code {
+      white-space: pre;
+    }
   }
 
   kbd {
@@ -108,7 +116,7 @@
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
-    @include border-radius(2px);
+    border-radius: 2px;
   }
 
   p > code {
@@ -151,25 +159,18 @@
     position: relative;
 
     a.anchor {
-      // Setting `display: none` would prevent the anchor being scrolled to, so
-      // instead we set the height to 0 and it gets updated on hover.
-      height: 0;
+      left: -16px;
+      position: absolute;
+      text-decoration: none;
+
+      &:after {
+        content: image-url('icon_anchor.svg');
+        visibility: hidden;
+      }
     }
 
-    &:hover > a.anchor {
-      $size: 14px;
-      position: absolute;
-      right: 100%;
-      top: 50%;
-      margin-top: -11px;
-      margin-right: 0;
-      padding-right: 15px;
-      display: inline-block;
-      width: $size;
-      height: $size;
-      background-image: image-url("icon-link.png");
-      background-size: contain;
-      background-repeat: no-repeat;
+    &:hover > a.anchor:after {
+      visibility: visible;
     }
   }
 }
@@ -203,7 +204,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: $gl-header-color;
+  color: $gl-title-color;
   font-weight: 600;
 }
 

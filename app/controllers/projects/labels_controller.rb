@@ -30,9 +30,15 @@ class Projects::LabelsController < Projects::ApplicationController
     @label = @project.labels.create(label_params)
 
     if @label.valid?
-      redirect_to namespace_project_labels_path(@project.namespace, @project)
+      respond_to do |format|
+        format.html { redirect_to namespace_project_labels_path(@project.namespace, @project) }
+        format.json { render json: @label }
+      end
     else
-      render 'new'
+      respond_to do |format|
+        format.html { render 'new' }
+        format.json { render json: { message: @label.errors.messages }, status: 400 }
+      end
     end
   end
 
@@ -99,7 +105,7 @@ class Projects::LabelsController < Projects::ApplicationController
   protected
 
   def module_enabled
-    unless @project.issues_enabled || @project.merge_requests_enabled
+    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
       return render_404
     end
   end

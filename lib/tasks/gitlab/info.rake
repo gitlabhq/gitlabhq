@@ -8,7 +8,7 @@ namespace :gitlab do
       # check Ruby version
       ruby_version = run_and_match(%W(ruby --version), /[\d\.p]+/).try(:to_s)
       # check Gem version
-      gem_version = run(%W(gem --version))
+      gem_version = run_command(%W(gem --version))
       # check Bundler version
       bunder_version = run_and_match(%W(bundle --version), /[\d\.]+/).try(:to_s)
       # check Bundler version
@@ -17,7 +17,7 @@ namespace :gitlab do
       puts ""
       puts "System information".color(:yellow)
       puts "System:\t\t#{os_name || "unknown".color(:red)}"
-      puts "Current User:\t#{run(%W(whoami))}"
+      puts "Current User:\t#{run_command(%W(whoami))}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
       puts "Ruby Version:\t#{ruby_version || "unknown".color(:red)}"

@@ -1,0 +1,144 @@
+#cycle-analytics {
+  margin: 24px auto 0;
+  max-width: 800px;
+  position: relative;
+
+  .panel {
+
+    .content-block {
+      padding: 24px 0;
+      border-bottom: none;
+      position: relative;
+      
+      @media (max-width: $screen-sm-min) {
+        padding: 6px 0 24px;
+      } 
+    }
+
+    .column {
+      text-align: center;
+      
+      @media (max-width: $screen-sm-min) {
+        padding: 15px 0;
+      }
+
+      .header {
+        font-size: 30px;
+        line-height: 38px;
+        font-weight: normal;
+        margin: 0;
+      }
+
+      .text {
+        color: $layout-link-gray;
+        margin: 0;
+      }
+
+      &:last-child {
+        text-align: right;
+        
+        @media (max-width: $screen-sm-min) {
+          text-align: center;
+        }
+      }
+    }
+
+    .dropdown {
+      top: 13px;
+    }
+  }
+
+  .bordered-box {
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+  
+  }
+
+  .content-list {
+    li {
+      padding: 18px $gl-padding $gl-padding;
+
+      .container-fluid {
+        padding: 0;
+      }
+    }
+
+    .title-col {
+      p {
+        margin: 0;
+
+        &.title {
+          line-height: 19px;
+          font-size: 15px;
+          font-weight: 600;
+          color: $gl-title-color;
+        }
+        
+        &.text {
+          color: $layout-link-gray;
+          
+          &.value-col {
+            color: $gl-title-color;
+          }
+        }
+      }
+    }
+
+    .value-col {
+      text-align: right;
+
+      span {
+        position: relative;
+        vertical-align: middle;
+        top: 3px;
+      }
+    }
+  }
+
+  .landing {
+    margin-bottom: $gl-padding;
+    overflow: hidden;
+
+    .dismiss-icon {
+      position: absolute;
+      right: $cycle-analytics-box-padding;
+      cursor: pointer;
+      color: #b2b2b2;
+    }
+
+    .svg-container {
+      text-align: center;
+      
+      svg {
+        width: 136px;
+        height: 136px;
+      }
+    }
+    
+    .inner-content {
+      @media (max-width: $screen-sm-min) {
+        padding: 0 28px;
+        text-align: center;
+      }
+
+      h4 {
+        color: $gl-text-color;
+        font-size: 17px;
+      }
+
+      p {
+        color: $cycle-analytics-box-text-color;
+        margin-bottom: $gl-padding;
+      }
+    }
+  }
+
+  .fa-spinner {
+    font-size: 28px;
+    position: relative;
+    margin-left: -20px;
+    left: 50%;
+    margin-top: 36px;
+  }
+
+}

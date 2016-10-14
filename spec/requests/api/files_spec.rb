@@ -5,17 +5,33 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let(:file_path) { 'files/ruby/popen.rb' }
+  let(:author_email) { FFaker::Internet.email }
+
+  # I have to remove periods from the end of the name
+  # This happened when the user's name had a suffix (i.e. "Sr.")
+  # This seems to be what git does under the hood. For example, this commit:
+  #
+  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
+  #
+  # results in this:
+  #
+  # $ git show --pretty
+  # ...
+  # Author: Foo Sr <foo@example.com>
+  # ...
+  let(:author_name) { FFaker::Name.name.chomp("\.") }
 
   before { project.team << [user, :developer] }
 
   describe "GET /projects/:id/repository/files" do
-    it "should return file info" do
+    it "returns file info" do
       params = {
         file_path: file_path,
         ref: 'master',
       }
 
       get api("/projects/#{project.id}/repository/files", user), params
+
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
       expect(json_response['file_name']).to eq('popen.rb')
@@ -23,18 +39,20 @@ describe API::API, api: true  do
       expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       get api("/projects/#{project.id}/repository/files", user)
+
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 404 if such file does not exist" do
+    it "returns a 404 if such file does not exist" do
       params = {
         file_path: 'app/models/application.rb',
         ref: 'master',
       }
 
       get api("/projects/#{project.id}/repository/files", user), params
+
       expect(response).to have_http_status(404)
     end
   end
@@ -49,23 +67,42 @@ describe API::API, api: true  do
       }
     end
 
-    it "should create a new file in project repo" do
+    it "creates a new file in project repo" do
       post api("/projects/#{project.id}/repository/files", user), valid_params
+
       expect(response).to have_http_status(201)
       expect(json_response['file_path']).to eq('newfile.rb')
+      last_commit = project.repository.commit.raw
+      expect(last_commit.author_email).to eq(user.email)
+      expect(last_commit.author_name).to eq(user.name)
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       post api("/projects/#{project.id}/repository/files", user)
+
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 400 if editor fails to create file" do
+    it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:commit_file).
         and_return(false)
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
+
       expect(response).to have_http_status(400)
+    end
+
+    context "when specifying an author" do
+      it "creates a new file with the specified author" do
+        valid_params.merge!(author_email: author_email, author_name: author_name)
+
+        post api("/projects/#{project.id}/repository/files", user), valid_params
+
+        expect(response).to have_http_status(201)
+        last_commit = project.repository.commit.raw
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
     end
   end
 
@@ -79,15 +116,33 @@ describe API::API, api: true  do
       }
     end
 
-    it "should update existing file in project repo" do
+    it "updates existing file in project repo" do
       put api("/projects/#{project.id}/repository/files", user), valid_params
+
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
+      last_commit = project.repository.commit.raw
+      expect(last_commit.author_email).to eq(user.email)
+      expect(last_commit.author_name).to eq(user.name)
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       put api("/projects/#{project.id}/repository/files", user)
+
       expect(response).to have_http_status(400)
+    end
+
+    context "when specifying an author" do
+      it "updates a file with the specified author" do
+        valid_params.merge!(author_email: author_email, author_name: author_name, content: "New content")
+
+        put api("/projects/#{project.id}/repository/files", user), valid_params
+
+        expect(response).to have_http_status(200)
+        last_commit = project.repository.commit.raw
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
     end
   end
 
@@ -100,22 +155,41 @@ describe API::API, api: true  do
       }
     end
 
-    it "should delete existing file in project repo" do
+    it "deletes existing file in project repo" do
       delete api("/projects/#{project.id}/repository/files", user), valid_params
+
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
+      last_commit = project.repository.commit.raw
+      expect(last_commit.author_email).to eq(user.email)
+      expect(last_commit.author_name).to eq(user.name)
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       delete api("/projects/#{project.id}/repository/files", user)
+
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 400 if fails to create file" do
+    it "returns a 400 if fails to create file" do
       allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
+
       expect(response).to have_http_status(400)
+    end
+
+    context "when specifying an author" do
+      it "removes a file with the specified author" do
+        valid_params.merge!(author_email: author_email, author_name: author_name)
+
+        delete api("/projects/#{project.id}/repository/files", user), valid_params
+
+        expect(response).to have_http_status(200)
+        last_commit = project.repository.commit.raw
+        expect(last_commit.author_email).to eq(author_email)
+        expect(last_commit.author_name).to eq(author_name)
+      end
     end
   end
 
@@ -143,6 +217,7 @@ describe API::API, api: true  do
 
     it "remains unchanged" do
       get api("/projects/#{project.id}/repository/files", user), get_params
+
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
       expect(json_response['file_name']).to eq(file_path)

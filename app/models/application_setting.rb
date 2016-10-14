@@ -1,5 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
+  include CacheMarkdownField
   include TokenAuthenticatable
+
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
@@ -16,6 +18,11 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :disabled_oauth_sign_in_sources, Array
   serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
+
+  cache_markdown_field :sign_in_text
+  cache_markdown_field :help_page_text
+  cache_markdown_field :shared_runners_text, pipeline: :plain_markdown
+  cache_markdown_field :after_sign_up_text
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
@@ -54,6 +61,10 @@ class ApplicationSetting < ActiveRecord::Base
   validates :akismet_api_key,
             presence: true,
             if: :akismet_enabled
+
+  validates :koding_url,
+            presence: true,
+            if: :koding_enabled
 
   validates :max_attachment_size,
             presence: true,
@@ -142,13 +153,15 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
-      import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
+      import_sources: Gitlab::ImportSources.values,
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
       require_two_factor_authentication: false,
       two_factor_grace_period: 48,
       recaptcha_enabled: false,
       akismet_enabled: false,
+      koding_enabled: false,
+      koding_url: nil,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
       send_user_confirmation_email: false,
