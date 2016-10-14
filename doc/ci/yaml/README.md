@@ -594,6 +594,8 @@ create the `review-apps/branch-name` environment.
 
 This environment should be accessible under `https://branch-name.review.example.com/`.
 
+You can see a simple example at https://gitlab.com/gitlab-examples/review-apps-nginx/.
+
 ### artifacts
 
 >**Notes:**
