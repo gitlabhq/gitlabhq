@@ -10,16 +10,18 @@ module Ci
         create_builds!
       end
 
-      @pipeline.with_lock do
-        new_builds =
-          stage_indexes_of_created_builds.map do |index|
-            process_stage(index)
-          end
+      Repository.with_forbidden_access do
+        @pipeline.with_lock do
+          new_builds =
+            stage_indexes_of_created_builds.map do |index|
+              process_stage(index)
+            end
 
-        @pipeline.update_status
+          @pipeline.update_status
 
-        # Return a flag if a when builds got enqueued
-        new_builds.flatten.any?
+          # Return a flag if a when builds got enqueued
+          new_builds.flatten.any?
+        end
       end
     end
 

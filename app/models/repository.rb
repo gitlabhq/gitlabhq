@@ -11,6 +11,14 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
+  def self.with_forbidden_access
+    @@forbidden_access ||= 0
+    @@forbidden_access += 1
+    yield
+  rescue
+    @@forbidden_access -= 1
+  end
+
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -18,6 +26,8 @@ class Repository
 
   def raw_repository
     return nil unless path_with_namespace
+
+    raise 'Repository access is forbidden' if @@forbidden_access
 
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
   end

@@ -29,10 +29,12 @@ module Ci
       if build
         # In case when 2 runners try to assign the same build, second runner will be declined
         # with StateMachines::InvalidTransition in run! method.
-        build.with_lock do
-          build.runner_id = current_runner.id
-          build.save!
-          build.run!
+        Repository.with_forbidden_access do
+          build.with_lock do
+            build.runner_id = current_runner.id
+            build.save!
+            build.run!
+          end
         end
       end
 
