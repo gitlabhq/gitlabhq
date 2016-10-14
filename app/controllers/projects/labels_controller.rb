@@ -12,8 +12,8 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @prioritized_labels = @available_labels.prioritized
-    @labels = @available_labels.unprioritized.page(params[:page])
+    @prioritized_labels = @available_labels.prioritized(@project)
+    @labels = @available_labels.unprioritized(@project).page(params[:page])
 
     respond_to do |format|
       format.html
@@ -84,11 +84,10 @@ class Projects::LabelsController < Projects::ApplicationController
     respond_to do |format|
       label = @available_labels.find(params[:id])
 
-      if label.update_attribute(:priority, nil)
+      if label.priorities.where(project_id: project).delete_all
         format.json { render json: label }
       else
-        message = label.errors.full_messages.uniq.join('. ')
-        format.json { render json: { message: message }, status: :unprocessable_entity }
+        format.json { head :unprocessable_entity }
       end
     end
   end
@@ -100,7 +99,9 @@ class Projects::LabelsController < Projects::ApplicationController
       params[:label_ids].each_with_index do |label_id, index|
         next unless label_ids.include?(label_id.to_i)
 
-        Label.where(id: label_id).update_all(priority: index)
+        label_priority = LabelPriority.find_or_initialize_by(project_id: @project.id, label_id: label_id)
+        label_priority.priority = index
+        label_priority.save!
       end
     end
 

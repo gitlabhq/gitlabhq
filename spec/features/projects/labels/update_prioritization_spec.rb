@@ -35,7 +35,7 @@ feature 'Prioritize labels', feature: true do
     end
 
     scenario 'user can unprioritize a group label', js: true do
-      feature.update(priority: 1)
+      create(:label_priority, project: project, label: feature, priority: 1)
 
       visit namespace_project_labels_path(project.namespace, project)
 
@@ -70,7 +70,7 @@ feature 'Prioritize labels', feature: true do
     end
 
     scenario 'user can unprioritize a project label', js: true do
-      bug.update(priority: 1)
+      create(:label_priority, project: project, label: bug, priority: 1)
 
       visit namespace_project_labels_path(project.namespace, project)
 
@@ -89,8 +89,8 @@ feature 'Prioritize labels', feature: true do
     end
 
     scenario 'user can sort prioritized labels and persist across reloads', js: true do
-      bug.update(priority: 1)
-      feature.update(priority: 2)
+      create(:label_priority, project: project, label: bug, priority: 1)
+      create(:label_priority, project: project, label: feature, priority: 2)
 
       visit namespace_project_labels_path(project.namespace, project)
 

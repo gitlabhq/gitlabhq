@@ -9,7 +9,6 @@ describe LabelPriority, models: true do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:label) }
-    it { is_expected.to validate_presence_of(:priority) }
     it { is_expected.to validate_numericality_of(:priority).only_integer.is_greater_than_or_equal_to(0) }
 
     it 'validates uniqueness of label_id scoped to project_id' do
