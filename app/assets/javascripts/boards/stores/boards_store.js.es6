@@ -63,7 +63,8 @@
       this.removeList('blank');
 
       Cookies.set('issue_board_welcome_hidden', 'true', {
-        expires: 365 * 10
+        expires: 365 * 10,
+        path: ''
       });
     },
     welcomeIsHidden () {
