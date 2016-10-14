@@ -6,7 +6,7 @@
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
-%tr.build.commit{class: ('retried' if defined?(retried) && retried)}
+%tr.build.commit{class: ('retried' if retried)}
   %td.status
     - if can?(current_user, :read_build, build)
       = ci_status_with_icon(build.status, namespace_project_build_url(build.project.namespace, build.project, build))
@@ -36,7 +36,7 @@
     - if build.stuck?
       = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
 
-    - if defined?(retried) && retried
+    - if retried
       = icon('refresh', class: 'text-warning has-tooltip', title: 'Build was retried')
 
     .label-container
