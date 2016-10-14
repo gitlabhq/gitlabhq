@@ -1,13 +1,49 @@
-// TODO: Bring in increasing interval util
-// TODO: return a promise to subscribers?
-
 /*
-*   gl.IssuableResource.subscribe('assignee_id', (state) => {
-*     console.log("Do something with the new state", state);
-*   });
 *
+*   IssuableResource is a pubsub-style service that polls the server for updates to
+*   an Issuable model and propagates changes to subscribers throughout the page. It is designed
+*   to update Vue-ized and non-Vue-ized components.
 *
+*   Subscribe by passing in the Issuable property you want to be notified of updates to, and pass
+*   a callback or render method you will use to render your component's updated state.
+*
+*   Currently this service only handles fetching new data. Eventually it would make sense to
+*   route more, if not all, Issuable ajax traffic through this class, to prevent conflicts and/or
+*   unneccessary requests.
+*
+*   JQuery usage:
+*
+    class IssuableAssigneeComponent {
+      constructor() {
+        this.$elem = $('#assignee');
+        gl.IssuableResource.subscribe('assignee_id', (newState) => {
+          this.renderState(newState);
+        });
+      }
+
+      renderState(issuable) {
+        this.$elem.val(issuable.assignee_id);
+      }
+    }
+
+   Vue usage:
+
+    const app = new Vue({
+      data: {
+        assignee_id: ''
+      },
+      ready: function() {
+        gl.IssuableResource.subscribe('assignee_id', (newState) => {
+          this.assignee_id = newState.assignee_id;
+        });
+      }
+    });
+
+
 * */
+
+//= require vue
+//= require vue-resource
 
 ((global) => {
 
