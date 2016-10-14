@@ -1,10 +1,4 @@
-# Generates CSV when given a mapping and a collection.
-#
-# Takes a hash of 'Column Heading' => 'value_method'.
-#
-# The value method will be called once for each object in the collection, to
-# determine the value for that row. It can either be the name of a method on
-# the object, or a lamda to call passing in the object.
+# Generates CSV when given a collection and a mapping.
 #
 # Example:
 #
@@ -15,18 +9,27 @@
 #       'Created At (UTC)' => -> (post) { post.created_at&.strftime('%Y-%m-%d %H:%M:%S') }
 #     }
 #
-#     CsvBuilder.new(columns).render(@posts)
+#     CsvBuilder.new(@posts, columns).render
 #
 class CsvBuilder
-  def initialize(header_to_value_hash)
+  #
+  # * +collection+ - The data collection to be used
+  # * +header_to_hash_value+ - A hash of 'Column Heading' => 'value_method'.
+  #
+  # The value method will be called once for each object in the collection, to
+  # determine the value for that row. It can either be the name of a method on
+  # the object, or a lamda to call passing in the object.
+  def initialize(collection, header_to_value_hash)
     @header_to_value_hash = header_to_value_hash
+    @collection = collection
   end
 
-  def render(collection)
+  # Renders the csv to a string
+  def render
     CSV.generate do |csv|
       csv << headers
 
-      collection.each do |object|
+      @collection.each do |object|
         csv << row(object)
       end
     end

@@ -20,4 +20,4 @@ columns = {
   'Labels' => -> (issue) { labels[issue.id].sort.join(',').presence }
 }
 
-CsvBuilder.new(columns).render(@issues.includes(:author, :assignee))
+CsvBuilder.new(@issues.includes(:author, :assignee), columns).render
