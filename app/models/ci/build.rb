@@ -83,8 +83,7 @@ module Ci
 
       after_transition any => [:success, :failed, :canceled] do |build|
         build.run_after_commit do
-          BuildCoverageWorker.perform_async(id)
-          BuildHooksWorker.perform_async(id)
+          BuildFinishedWorker.perform_async(id)
         end
       end
 
