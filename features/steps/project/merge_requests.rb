@@ -114,7 +114,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            source_project: project,
            target_project: project,
            source_branch: 'fix',
-           target_branch: 'master',
+           target_branch: 'merge-test',
            author: project.users.first,
            description: "# Description header"
           )
@@ -137,7 +137,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            title: "Bug NS-05",
            source_project: project,
            target_project: project,
-           author: project.users.first)
+           author: project.users.first,
+           source_branch: 'merge-test')
   end
 
   step 'project "Shop" have "Feature NS-05" merged merge request' do
@@ -508,7 +509,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see new target branch changes' do
     expect(page).to have_content 'Request to merge fix into feature'
-    expect(page).to have_content 'Target branch changed from master to feature'
+    expect(page).to have_content 'Target branch changed from merge-test to feature'
   end
 
   step 'I click on "Email Patches"' do
