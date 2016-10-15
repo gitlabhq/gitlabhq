@@ -10,6 +10,8 @@
         = icon('star')
   %span.label-name
     = link_to_label(label, subject: @project, tooltip: false)
+  %span.label-type
+    = label.model_name.human.titleize
   - if label.description
     %span.label-description
       = markdown_field(label, :description)
