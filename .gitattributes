@@ -1,2 +1,2 @@
-CHANGELOG merge=union
+CHANGELOG.md merge=union
 *.js.es6 gitlab-language=javascript
