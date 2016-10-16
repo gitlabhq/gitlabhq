@@ -17,6 +17,7 @@ module TestEnv
     'markdown'                           => '0ed8c6c',
     'lfs'                                => 'be93687',
     'master'                             => 'b83d6e3',
+    'merge-test'                         => '5937ac0',
     "'test'"                             => 'e56497b',
     'orphaned-branch'                    => '45127a9',
     'binary-encoding'                    => '7b1cf43',
