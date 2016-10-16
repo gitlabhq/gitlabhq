@@ -49,8 +49,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I fill compare fields with refs' do
-    select_using_dropdown('from', sample_commit.parent_id)
-    select_using_dropdown('to', sample_commit.id)
+    select_using_dropdown('from', sample_commit.parent_id, true)
+    select_using_dropdown('to', sample_commit.id, true)
 
     click_button "Compare"
   end
@@ -184,10 +184,14 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(page).not_to have_content "Change some files"
   end
 
-  def select_using_dropdown(dropdown_type, selection)
+  def select_using_dropdown(dropdown_type, selection, is_commit = false)
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
-    dropdown.fill_in("Filter by branch/tag", with: selection)
-    find_link(selection, visible: true).click
+    dropdown.fill_in("Filter by Git revision", with: selection)
+    if is_commit
+      dropdown.find('input[type="search"]').send_keys(:return)
+    else
+      find_link(selection, visible: true).click
+    end
   end
 end
