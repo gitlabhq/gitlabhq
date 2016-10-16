@@ -4,6 +4,8 @@ v 8.13.0 (unreleased)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
+  - Improve tabbing usability for sign in page (ClemMakesApps)
+  - Enforce TrailingSemicolon and EmptyLineBetweenBlocks in scss-lint
   - Adding members no longer silently fails when there is extra whitespace
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
@@ -14,6 +16,7 @@ v 8.13.0 (unreleased)
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Updating verbiage on git basics to be more intuitive
   - Clarify documentation for Runners API (Gennady Trafimenkov)
+  - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
   - Prevent running GfmAutocomplete setup for each diff note !6569
   - Added documentation for .gitattributes files
@@ -24,6 +27,7 @@ v 8.13.0 (unreleased)
   - Create a new /templates namespace for the /licenses, /gitignores and /gitlab_ci_ymls API endpoints. !5717 (tbalthazar)
   - Speed-up group milestones show page
   - Fix inconsistent options dropdown caret on mobile viewports (ClemMakesApps)
+  - Extract project#update_merge_requests and SystemHooks to its own worker from GitPushService
   - Don't include archived projects when creating group milestones. !4940 (Jeroen Jacobs)
   - Add tag shortcut from the Commit page. !6543
   - Keep refs for each deployment
@@ -50,6 +54,7 @@ v 8.13.0 (unreleased)
   - Add new issue button to each list on Issues Board
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
+  - Show the time ago a merge request was deployed to an environment
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
@@ -112,10 +117,12 @@ v 8.13.0 (unreleased)
   - Fixes padding in all clipboard icons that have .btn class
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
+  - Add docs for request profiling
   - Make guests unable to view MRs on private projects
 
 v 8.12.7
   - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
+  - Fix GFM autocomplete setup being called several times
 
 v 8.12.6
   - Update mailroom to 0.8.1 in Gemfile.lock  !6814
@@ -263,6 +270,7 @@ v 8.12.0
   - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
   - Add BroadcastMessage API
+  - Merge request tabs are fixed when scrolling page
   - Use 'git update-ref' for safer web commits !6130
   - Sort pipelines requested through the API
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
@@ -369,6 +377,7 @@ v 8.11.7
   - Avoid conflict with admin labels when importing GitHub labels. !6158
   - Restores `fieldName` to allow only string values in `gl_dropdown.js`. !6234
   - Allow the Rails cookie to be used for API authentication.
+  - Login/Register UX upgrade !6328
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005

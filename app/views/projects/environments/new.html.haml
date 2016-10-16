@@ -1,6 +1,9 @@
+- @no_container = true
 - page_title 'New Environment'
+= render "projects/pipelines/head"
 
-%h3.page-title
-  New environment
-%hr
-= render 'form'
+%div{ class: container_class }
+  %h3.page-title
+    New environment
+  %hr
+  = render 'form'

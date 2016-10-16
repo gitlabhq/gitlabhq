@@ -23,6 +23,8 @@
           data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: ref_project.path, namespace_path: ref_project.namespace.path } } ) do
           %ul.dropdown-footer-list
             %li
+              %a.no-template
+                No template
               %a.reset-template
                 Reset template
   %div{ class: issuable_template_names.any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
@@ -85,20 +87,20 @@
           .issuable-form-select-holder
             - if issuable.assignee_id
               = f.hidden_field :assignee_id
-            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
+            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Select assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
               placeholder: "Search assignee", data: { first_user: current_user.try(:username), null_user: true, current_user: true, project_id: project.try(:id), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee", show_menu_above: true } })
       .form-group.issue-milestone
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_menu_above: true, show_upcoming: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input"
+            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_menu_above: true, show_upcoming: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input", dropdown_title: "Select milestone"
       .form-group
         - has_labels = issuable.project.labels.any?
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
         = f.hidden_field :label_ids, multiple: true, value: ''
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
           .issuable-form-select-holder
-            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }
+            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }, dropdown_title: "Select label"
     - if has_due_date
       .col-lg-6
         .form-group

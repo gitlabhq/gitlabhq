@@ -270,6 +270,12 @@ describe "Groups", "routing" do
 
     expect(get('/1')).to route_to('groups#show', id: '1')
   end
+
+  it "also display group#show with dot in the path" do
+    allow(Group).to receive(:find_by_path).and_return(true)
+
+    expect(get('/group.with.dot')).to route_to('groups#show', id: 'group.with.dot')
+  end
 end
 
 describe HealthCheckController, 'routing' do

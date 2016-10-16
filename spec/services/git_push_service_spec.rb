@@ -184,8 +184,8 @@ describe GitPushService, services: true do
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
-        expect(project).to receive(:update_merge_requests).
-                               with(@blankrev, 'newrev', 'refs/heads/master', user)
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async).
+                                                with(project.id, user.id, @blankrev, 'newrev', 'refs/heads/master')
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end

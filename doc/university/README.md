@@ -64,6 +64,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Making GitLab Great for Everyone - Video](https://www.youtube.com/watch?v=GGC40y4vMx0) - Response to "Dear GitHub" letter
 1. [Using Innersourcing to Improve Collaboration](https://about.gitlab.com/2014/09/05/innersourcing-using-the-open-source-workflow-to-improve-collaboration-within-an-organization/)
 1. [The Software Development Market and GitLab - Video](https://www.youtube.com/watch?v=sXlhgPK1NTY&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e&index=6) - [Slides](https://docs.google.com/presentation/d/1vCU-NbZWz8NTNK8Vu3y4zGMAHb5DpC8PE5mHtw1PWfI/edit)
+1. [The GitLab Book Club](bookclub/index.md)
 
 #### 1.7 Community and Support
 

@@ -490,7 +490,7 @@ class Project < ActiveRecord::Base
   end
 
   def import_url
-    if import_data && super
+    if import_data && super.present?
       import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
@@ -827,11 +827,6 @@ class Project < ActiveRecord::Base
     services.send(hooks_scope).each do |service|
       service.async_execute(data)
     end
-  end
-
-  def update_merge_requests(oldrev, newrev, ref, user)
-    MergeRequests::RefreshService.new(self, user).
-      execute(oldrev, newrev, ref)
   end
 
   def valid_repo?

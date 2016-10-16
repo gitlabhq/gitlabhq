@@ -1,27 +1,22 @@
-= form_for @group_member, url: group_group_members_path(@group), html: { class: 'form-horizontal users-group-form' } do |f|
-  .form-group
-    = f.label :user_ids, "People", class: 'control-label'
-    .col-sm-10
-      = users_select_tag(:user_ids, multiple: true, class: 'input-large', scope: :all, email_user: true)
-      .help-block
+= form_for @group_member, url: group_group_members_path(@group), html: { class: 'users-project-form users-group-form' } do |f|
+  .row
+    .col-md-4.col-lg-6
+      = users_select_tag(:user_ids, multiple: true, class: 'input-clamp', scope: :all, email_user: true)
+      .help-block.append-bottom-10
         Search for users by name, username, or email, or invite new ones using their email address.
 
-  .form-group
-    = f.label :access_level, "Group Access", class: 'control-label'
-    .col-sm-10
-      = select_tag :access_level, options_for_select(GroupMember.access_level_roles, @group_member.access_level), class: "project-access-select select2"
-      .help-block
-        Read more about role permissions
-        %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
+    .col-md-3.col-lg-2
+      = select_tag :access_level, options_for_select(GroupMember.access_level_roles, @group_member.access_level), class: "form-control project-access-select"
+      .help-block.append-bottom-10
+        = link_to "Read more", help_page_path("user/permissions"), class: "vlink"
+        about role permissions
 
-  .form-group
-    = f.label :expires_at, 'Access expiration date', class: 'control-label'
-    .col-sm-10
+    .col-md-3.col-lg-2
       .clearable-input
-        = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
+        = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
         %i.clear-icon.js-clear-input
-      .help-block
+      .help-block.append-bottom-10
         On this date, the user(s) will automatically lose access to this group and all of its projects.
 
-  .form-actions
-    = f.submit 'Add users to group', class: "btn btn-create"
+    .col-md-2
+      = f.submit 'Add to group', class: "btn btn-create btn-block"
