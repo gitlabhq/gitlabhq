@@ -7,6 +7,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedMarkdown
   include SharedDiffNote
   include SharedUser
+  include WaitForAjax
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -90,6 +91,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click button "Unsubscribe"' do
     click_on "Unsubscribe"
+    wait_for_ajax
   end
 
   step 'I click link "Close"' do
