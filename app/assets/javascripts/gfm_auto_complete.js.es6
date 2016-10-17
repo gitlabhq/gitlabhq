@@ -66,7 +66,9 @@
     }
 
     setupAtWho() {
-     // Emoji
+     // TODO: Break this up, and move to a separate file for config. It's annoying to have to scroll/jump around these 200+ LOC
+
+      // Emoji
       this.$inputor.atwho({
         at: ':',
         displayTpl: (value) => {
