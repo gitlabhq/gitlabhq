@@ -44,7 +44,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/root"
+      "web_url": "https://gitlab.example.com/root"
     },
     "action_name": "marked",
     "target_type": "MergeRequest",
@@ -67,7 +67,7 @@ Example Response:
         "id": 12,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/u/craig_rutherford"
+        "web_url": "https://gitlab.example.com/craig_rutherford"
       },
       "assignee": {
         "name": "Administrator",
@@ -75,7 +75,7 @@ Example Response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/u/root"
+        "web_url": "https://gitlab.example.com/root"
       },
       "source_project_id": 2,
       "target_project_id": 2,
@@ -117,7 +117,7 @@ Example Response:
       "id": 12,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/craig_rutherford"
+      "web_url": "https://gitlab.example.com/craig_rutherford"
     },
     "action_name": "assigned",
     "target_type": "MergeRequest",
@@ -140,7 +140,7 @@ Example Response:
         "id": 12,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/u/craig_rutherford"
+        "web_url": "https://gitlab.example.com/craig_rutherford"
       },
       "assignee": {
         "name": "Administrator",
@@ -148,7 +148,7 @@ Example Response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/u/root"
+        "web_url": "https://gitlab.example.com/root"
       },
       "source_project_id": 2,
       "target_project_id": 2,
@@ -215,7 +215,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/root"
+      "web_url": "https://gitlab.example.com/root"
     },
     "action_name": "marked",
     "target_type": "MergeRequest",
@@ -238,7 +238,7 @@ Example Response:
         "id": 12,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/u/craig_rutherford"
+        "web_url": "https://gitlab.example.com/craig_rutherford"
       },
       "assignee": {
         "name": "Administrator",
@@ -246,7 +246,7 @@ Example Response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/u/root"
+        "web_url": "https://gitlab.example.com/root"
       },
       "source_project_id": 2,
       "target_project_id": 2,
