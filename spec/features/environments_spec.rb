@@ -217,7 +217,7 @@ feature 'Environments', feature: true do
               expect(page).to have_link('Stop')
             end
 
-            scenario '            scenario 'does allow to stop environment' do' do
+            scenario 'does allow to stop environment' do
               click_link('Stop')
 
               expect(page).to have_content('close_app')
