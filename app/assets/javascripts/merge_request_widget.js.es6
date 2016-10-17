@@ -18,7 +18,7 @@
            </a>
          </span>
          <span class="close-env-container js-close-env-link">
-          <a href="<%- stop_url %>" class="close-evn-link" data-method="post" rel="nofollow" data-confirm="Are you sure you want to close this environment?">
+          <a href="<%- stop_url %>" class="close-evn-link" data-method="post" rel="nofollow" data-confirm="Are you sure you want to stop this environment?">
             <i class="fa fa-stop-circle-o"/>
             Stop environment
           </a>

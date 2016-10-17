@@ -19,10 +19,7 @@ class Environment < ActiveRecord::Base
             allow_nil: true,
             addressable_url: true
 
-  delegate :stoppable?, :stop_action, to: :last_deployment, allow_nil: true
-
-  scope :available, -> { where(state: [:available]) }
-  scope :stopped, -> { where(state: [:stopped]) }
+  delegate :stop_action, to: :last_deployment, allow_nil: true
 
   state_machine :state, initial: :available do
     event :start do
@@ -83,5 +80,9 @@ class Environment < ActiveRecord::Base
     return nil unless external_url
 
     external_url.gsub(/\A.*?:\/\//, '')
+  end
+
+  def stoppable?
+    available? && stop_action.present?
   end
 end

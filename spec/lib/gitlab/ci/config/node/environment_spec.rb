@@ -87,6 +87,68 @@ describe Gitlab::Ci::Config::Node::Environment do
     end
   end
 
+  context 'when valid action is used' do
+    let(:config) do
+      { name: 'production',
+        action: 'start' }
+    end
+
+    it 'is valid' do
+      expect(entry).to be_valid
+    end
+  end
+
+  context 'when invalid action is used' do
+    let(:config) do
+      { name: 'production',
+        action: false }
+    end
+
+    describe '#valid?' do
+      it 'is not valid' do
+        expect(entry).not_to be_valid
+      end
+    end
+
+    describe '#errors' do
+      it 'contains error about invalid action' do
+        expect(entry.errors)
+          .to include 'environment action should be start or stop'
+      end
+    end
+  end
+
+  context 'when on_stop is used' do
+    let(:config) do
+      { name: 'production',
+        on_stop: 'close_app' }
+    end
+
+    it 'is valid' do
+      expect(entry).to be_valid
+    end
+  end
+
+  context 'when invalid on_stop is used' do
+    let(:config) do
+      { name: 'production',
+        on_stop: false }
+    end
+
+    describe '#valid?' do
+      it 'is not valid' do
+        expect(entry).not_to be_valid
+      end
+    end
+
+    describe '#errors' do
+      it 'contains error about invalid action' do
+        expect(entry.errors)
+          .to include 'environment action should be start or stop'
+      end
+    end
+  end
+
   context 'when variables are used for environment' do
     let(:config) do
       { name: 'review/$CI_BUILD_REF_NAME',

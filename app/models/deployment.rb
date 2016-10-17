@@ -85,13 +85,14 @@ class Deployment < ActiveRecord::Base
   end
 
   def stop_action
+    return nil unless on_stop.present?
     return nil unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
 
   def stoppable?
-    on_stop.present? && stop_action.present?
+    stop_action.present?
   end
 
   def formatted_deployment_time

@@ -1,5 +1,5 @@
-- if environment.available? && environment.stoppable?
+- if environment.stoppable?
   .inline
     = link_to stop_namespace_project_environment_path(@project.namespace, @project, environment), method: :post,
-      class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to close this environment?' } do
+      class: 'btn close-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to stop this environment?' } do
       = icon('stop', class: 'close-env-icon')

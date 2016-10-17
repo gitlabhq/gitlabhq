@@ -37,10 +37,10 @@ module Gitlab
                         allow_nil: true
 
               validates :action,
-                        inclusion: { in: %w[start stop], message: 'should be start or stop, ' },
+                        inclusion: { in: %w[start stop], message: 'should be start or stop' },
                         allow_nil: true
 
-              validates :on_stop, string: true, allow_nil: true
+              validates :on_stop, type: String, allow_nil: true
             end
           end
 

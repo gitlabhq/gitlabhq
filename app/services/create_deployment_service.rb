@@ -6,10 +6,11 @@ class CreateDeploymentService < BaseService
 
     ActiveRecord::Base.transaction do
       @deployable = deployable
+
       @environment = environment
       @environment.external_url = expanded_url if expanded_url
       @environment.state_event = action
-      @environment.save
+      @environment.save!
 
       return if @environment.stopped?
 
@@ -33,7 +34,7 @@ class CreateDeploymentService < BaseService
       sha: params[:sha],
       user: current_user,
       deployable: @deployable,
-      on_stop: options.fetch(:on_stop, nil))
+      on_stop: options[:on_stop])
   end
 
   def environment
