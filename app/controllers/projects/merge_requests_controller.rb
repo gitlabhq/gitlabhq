@@ -558,8 +558,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
 
-    @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses.relevant if @pipeline
+    @pipelines = @merge_request.all_pipelines
+    @statuses = @pipelines.first.statuses.relevant if @pipelines.any?
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
   end
