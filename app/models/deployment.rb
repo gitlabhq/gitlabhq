@@ -11,6 +11,8 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
+  store :properties, accessors: [:on_stop]
+
   after_save :create_ref
 
   def commit
@@ -34,7 +36,7 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    deployable.try(:other_actions)
+    @manual_actions ||= deployable.try(:other_actions)
   end
 
   def includes_commit?(commit)
@@ -84,17 +86,14 @@ class Deployment < ActiveRecord::Base
       take
   end
 
-  def close_action
+  def stop_action
     return nil unless manual_actions
 
-    @close_action ||=
-      manual_actions.find do |manual_action|
-        manual_action.try(:closes_environment?, deployable.environment)
-      end
+    @stop_action ||= manual_actions.find_by(name: on_stop)
   end
 
-  def closeable?
-    close_action.present?
+  def stoppable?
+    on_stop.present? && stop_action.present?
   end
 
   def formatted_deployment_time

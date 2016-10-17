@@ -106,14 +106,6 @@ module Ci
       project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
-    def close_environment?
-      options.fetch(:environment, {}).fetch(:close, false)
-    end
-
-    def closes_environment?(name)
-      environment == name && close_environment?
-    end
-
     def play(current_user = nil)
       # Try to queue a current build
       if self.enqueue

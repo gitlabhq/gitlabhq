@@ -10,8 +10,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @all_environments = project.environments
     @environments =
       case @scope
-        when 'closed' then @all_environments.closed
-        else @all_environments.opened
+        when 'stopped' then @all_environments.stopped
+        else @all_environments.available
       end
   end
 
@@ -45,7 +45,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def stop
-
+    action = @environment.stop_action
+    new_action = action.active? ? action : action.play(current_user)
+    redirect_to [project.namespace.become(Namespace), project, new_action]
   end
 
   def destroy

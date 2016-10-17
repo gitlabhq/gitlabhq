@@ -8,12 +8,12 @@ class CreateDeploymentService < BaseService
       @deployable = deployable
       @environment = prepare_environment
 
-      if close?
-        @environment.close
+      if stop?
+        @environment.stop
         return
       end
 
-      @environment.reopen
+      @environment.start
 
       deploy.tap do |deployment|
         deployment.update_merge_request_metrics!
@@ -61,15 +61,15 @@ class CreateDeploymentService < BaseService
     options[:url]
   end
 
-  def close?
-    options[:close]
-  end
-
   def options
     params[:options] || {}
   end
 
   def variables
     params[:variables] || []
+  end
+
+  def stop?
+    params[:options].fetch(:stop, false)
   end
 end

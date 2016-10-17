@@ -6,7 +6,7 @@ class AddStateToEnvironment < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    add_column_with_default(:environments, :state, :string, default: :opened)
+    add_column_with_default(:environments, :state, :string, default: :available)
   end
 
   def down

@@ -2,18 +2,20 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
-- last_deployment = @environment.last_deployment
-
 %div{ class: container_class }
   .top-area
     .col-md-9
       %h3.page-title= @environment.name.capitalize
     .col-md-3
       .nav-controls
+        - if can?(current_user, :read_environmnet, @environment)
+          = render 'projects/environments/external_url', environment: @environment
+
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
-          - if @environment.opened? && last_deployment.try(:close_action)
-            = link_to 'Close', [:play, @project.namespace.becomes(Namespace), @project, last_deployment.close_action], data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
+          - if @environment.available? && @environment.stoppable?
+            = link_to 'Stop', stop_namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
+          = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to delete this environment?' }, class: 'btn btn-danger', method: :delete
 
   .deployments-container
     - if @deployments.blank?

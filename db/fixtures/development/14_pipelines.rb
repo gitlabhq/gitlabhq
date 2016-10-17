@@ -16,8 +16,8 @@ class Gitlab::Seeder::Pipelines
     { name: 'env:alpha', stage: 'deploy', environment: 'alpha', status: :pending },
     { name: 'env:beta', stage: 'deploy', environment: 'beta', status: :running },
     { name: 'env:gamma', stage: 'deploy', environment: 'gamma', status: :canceled },
-    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success },
-    { name: 'close staging', stage: 'deploy', environment: 'staging', when: 'manual', status: :skipped, options: { environment: { close: true } } },
+    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success, options: { environment: { on_stop: 'stop staging' } } },
+    { name: 'stop staging', stage: 'deploy', environment: 'staging', when: 'manual', status: :skipped },
     { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :skipped },
     { name: 'slack', stage: 'notify', when: 'manual', status: :created },
   ]

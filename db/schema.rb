@@ -398,22 +398,13 @@ ActiveRecord::Schema.define(version: 20161007133303) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
-<<<<<<< HEAD
-    t.integer  "project_id"
-    t.string   "name",                                null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "external_url"
-    t.string   "environment_type"
-    t.string   "state",            default: "opened", null: false
-=======
     t.integer "project_id"
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "external_url"
     t.string "environment_type"
->>>>>>> origin/master
+    t.string "state", default: "available", null: false
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
