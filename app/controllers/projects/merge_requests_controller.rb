@@ -517,7 +517,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @pipeline = @merge_request.pipeline
-    @pipelines = [@pipeline].compact
   end
 
   def define_commit_vars
