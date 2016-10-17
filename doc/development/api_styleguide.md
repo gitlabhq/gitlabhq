@@ -20,7 +20,7 @@ for a good example):
 - `desc` for the method summary. You should pass it a block for additional
   details such as:
   - The GitLab version when the endpoint was added
-  - If the endpoint is deprecated, and if yes when will it be removed
+  - If the endpoint is deprecated, and if so, when will it be removed
 
 - `params` for the method params. This acts as description,
   [validation, and coercion of the parameters]
@@ -83,7 +83,7 @@ User.create(declared(params, include_parent_namespaces: false).to_h)
 `declared(params)` return a `Hashie::Mash` object, on which you will have to
 call `.to_h`.
 
-But we can use directly `params[key]` when we access single elements.
+But we can use `params[key]` directly when we access single elements.
 
 For instance:
 
