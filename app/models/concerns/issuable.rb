@@ -145,10 +145,16 @@ module Issuable
     end
 
     def order_labels_priority(excluded_labels: [])
+      project_column =
+        case table_name
+        when Issue.table_name then "#{table_name}.project_id"
+        when MergeRequest.table_name then "#{table_name}.target_project_id"
+        end
+
       params = {
         target_type: name,
         target_column: "#{table_name}.id",
-        project_column: "#{table_name}.project_id",
+        project_column: project_column,
         excluded_labels: excluded_labels
       }
 
