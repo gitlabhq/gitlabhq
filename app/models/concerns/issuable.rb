@@ -178,6 +178,13 @@ module Issuable
       end
     end
 
+    def labels_hash
+      eager_load(:labels).pluck(:id, 'labels.title').inject(Hash.new([])) do |memo, (issue_id, label)|
+        memo[issue_id] += [label]
+        memo
+      end
+    end
+
     # Includes table keys in group by clause when sorting
     # preventing errors in postgres
     #

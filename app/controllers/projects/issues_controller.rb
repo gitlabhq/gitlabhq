@@ -37,6 +37,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+    elsif request.format.csv?
+      @labels = @issues.labels_hash
     end
 
     @users = []
