@@ -4,7 +4,9 @@ class LabelsFinder < UnionFinder
     @params = params
   end
 
-  def execute
+  def execute(authorized_only: true)
+    @authorized_only = authorized_only
+
     items = find_union(label_ids, Label)
     items = with_title(items)
     sort(items)
@@ -12,7 +14,7 @@ class LabelsFinder < UnionFinder
 
   private
 
-  attr_reader :current_user, :params
+  attr_reader :current_user, :params, :authorized_only
 
   def label_ids
     label_ids = []
@@ -57,7 +59,7 @@ class LabelsFinder < UnionFinder
     return @project if defined?(@project)
 
     if project_id
-      @project = available_projects.find(project_id) rescue nil
+      @project = find_project
     else
       @project = nil
     end
@@ -65,10 +67,18 @@ class LabelsFinder < UnionFinder
     @project
   end
 
+  def find_project
+    if authorized_only
+      available_projects.find_by(id: project_id)
+    else
+      Project.find_by(id: project_id)
+    end
+  end
+
   def projects
     return @projects if defined?(@projects)
 
-    @projects = available_projects
+    @projects = authorized_only ? available_projects : Project.all
     @projects = @projects.in_namespace(group_id) if group_id
     @projects = @projects.where(id: projects_ids) if projects_ids
     @projects = @projects.reorder(nil)
