@@ -172,5 +172,10 @@
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       new Subscription('.subscription')
       new gl.DueDateSelectors();
+      new DueDateSelect();
+      gl.IssuableResource = createSubbableResource({
+        path: '#{issuable_json_path(issuable)}',
+        data: '#{issuable.to_json}'
+        pollInterval: 15000,
+      });
       sidebar = new Sidebar();
-      new gl.IssuableResource('#{issuable_json_path(issuable)}', '#{issuable.to_json}');
