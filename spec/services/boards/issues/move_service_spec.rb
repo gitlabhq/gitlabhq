@@ -3,17 +3,17 @@ require 'spec_helper'
 describe Boards::Issues::MoveService, services: true do
   describe '#execute' do
     let(:user)    { create(:user) }
-    let(:project) { create(:project_with_board) }
-    let(:board)   { project.board }
+    let(:project) { create(:empty_project) }
+    let(:board1)  { create(:board, project: project) }
 
     let(:bug) { create(:label, project: project, name: 'Bug') }
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)  { create(:label, project: project, name: 'Testing') }
 
-    let!(:backlog) { project.board.backlog_list }
-    let!(:list1)   { create(:list, board: board, label: development, position: 0) }
-    let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
-    let!(:done)    { project.board.done_list }
+    let!(:backlog) { create(:backlog_list, board: board1) }
+    let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
+    let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
+    let!(:done)    { create(:done_list, board: board1) }
 
     before do
       project.team << [user, :developer]
@@ -22,7 +22,7 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving from backlog' do
       it 'adds the label of the list it goes to' do
         issue = create(:labeled_issue, project: project, labels: [bug])
-        params = { from_list_id: backlog.id, to_list_id: list1.id }
+        params = { board_id: board1.id, from_list_id: backlog.id, to_list_id: list1.id }
 
         described_class.new(project, user, params).execute(issue)
 
@@ -33,7 +33,7 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving to backlog' do
       it 'removes all list-labels' do
         issue = create(:labeled_issue, project: project, labels: [bug, development, testing])
-        params = { from_list_id: list1.id, to_list_id: backlog.id }
+        params = { board_id: board1.id, from_list_id: list1.id, to_list_id: backlog.id }
 
         described_class.new(project, user, params).execute(issue)
 
@@ -44,7 +44,7 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving from backlog to done' do
       it 'closes the issue' do
         issue = create(:labeled_issue, project: project, labels: [bug])
-        params = { from_list_id: backlog.id, to_list_id: done.id }
+        params = { board_id: board1.id, from_list_id: backlog.id, to_list_id: done.id }
 
         described_class.new(project, user, params).execute(issue)
         issue.reload
@@ -56,7 +56,7 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving an issue between lists' do
       let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
-      let(:params) { { from_list_id: list1.id, to_list_id: list2.id } }
+      let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
 
       it 'delegates the label changes to Issues::UpdateService' do
         expect_any_instance_of(Issues::UpdateService).to receive(:execute).with(issue).once
@@ -72,8 +72,12 @@ describe Boards::Issues::MoveService, services: true do
     end
 
     context 'when moving to done' do
-      let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development, testing]) }
-      let(:params) { { from_list_id: list2.id, to_list_id: done.id } }
+      let(:board2) { create(:board, project: project) }
+      let(:regression) { create(:label, project: project, name: 'Regression') }
+      let!(:list3) { create(:list, board: board2, label: regression, position: 1) }
+
+      let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development, testing, regression]) }
+      let(:params) { { board_id: board1.id, from_list_id: list2.id, to_list_id: done.id } }
 
       it 'delegates the close proceedings to Issues::CloseService' do
         expect_any_instance_of(Issues::CloseService).to receive(:execute).with(issue).once
@@ -81,7 +85,7 @@ describe Boards::Issues::MoveService, services: true do
         described_class.new(project, user, params).execute(issue)
       end
 
-      it 'removes all list-labels and close the issue' do
+      it 'removes all list-labels from project boards and close the issue' do
         described_class.new(project, user, params).execute(issue)
         issue.reload
 
@@ -92,7 +96,7 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving from done' do
       let(:issue)  { create(:labeled_issue, :closed, project: project, labels: [bug]) }
-      let(:params) { { from_list_id: done.id, to_list_id: list2.id } }
+      let(:params) { { board_id: board1.id, from_list_id: done.id, to_list_id: list2.id } }
 
       it 'delegates the re-open proceedings to Issues::ReopenService' do
         expect_any_instance_of(Issues::ReopenService).to receive(:execute).with(issue).once
@@ -112,7 +116,7 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving from done to backlog' do
       it 'reopens the issue' do
         issue = create(:labeled_issue, :closed, project: project, labels: [bug])
-        params = { from_list_id: done.id, to_list_id: backlog.id }
+        params = { board_id: board1.id, from_list_id: done.id, to_list_id: backlog.id }
 
         described_class.new(project, user, params).execute(issue)
         issue.reload
@@ -124,7 +128,7 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving to same list' do
       let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
-      let(:params) { { from_list_id: list1.id, to_list_id: list1.id } }
+      let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list1.id } }
 
       it 'returns false' do
         expect(described_class.new(project, user, params).execute(issue)).to eq false

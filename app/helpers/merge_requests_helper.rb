@@ -123,4 +123,8 @@ module MergeRequestsHelper
   def version_index(merge_request_diff)
     @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
   end
+
+  def different_base?(version1, version2)
+    version1 && version2 && version1.base_commit_sha != version2.base_commit_sha
+  end
 end

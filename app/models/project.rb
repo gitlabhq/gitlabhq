@@ -16,6 +16,9 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  class BoardLimitExceeded < StandardError; end
+
+  NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
   cache_markdown_field :description, pipeline: :description
@@ -65,8 +68,7 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
-
-  has_one :board, dependent: :destroy
+  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
 
   # Project services
   has_many :services
@@ -488,7 +490,7 @@ class Project < ActiveRecord::Base
   end
 
   def import_url
-    if import_data && super
+    if import_data && super.present?
       import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
@@ -825,11 +827,6 @@ class Project < ActiveRecord::Base
     services.send(hooks_scope).each do |service|
       service.async_execute(data)
     end
-  end
-
-  def update_merge_requests(oldrev, newrev, ref, user)
-    MergeRequests::RefreshService.new(self, user).
-      execute(oldrev, newrev, ref)
   end
 
   def valid_repo?
@@ -1338,5 +1335,9 @@ class Project < ActiveRecord::Base
     end
 
     shared_projects.any?
+  end
+
+  def validate_board_limit(board)
+    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 end

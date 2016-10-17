@@ -10,6 +10,7 @@
 
   form {
     margin-bottom: 0;
+
     .clearfix {
       margin-bottom: 0;
     }
@@ -46,6 +47,7 @@
 
       &.right {
         float: right;
+
         a {
           color: $gl-gray;
         }
@@ -121,6 +123,10 @@
     color: #5c5d5e;
   }
 
+  .js-deployment-link {
+    display: inline-block;
+  }
+
   .mr-widget-body {
     h4 {
       font-weight: 600;
@@ -188,6 +194,7 @@
     padding-top: 2px;
     padding-bottom: 2px;
     list-style: none;
+
     &:hover {
       background: none;
     }
@@ -211,6 +218,7 @@
     padding-top: 20px;
     padding-bottom: 10px;
   }
+
   svg {
     width: 230px;
   }
@@ -274,12 +282,6 @@
 
 .mr-source-target {
   line-height: 31px;
-}
-
-.builds {
-  .table-holder {
-    overflow-x: auto;
-  }
 }
 
 .panel-new-merge-request {
@@ -369,7 +371,7 @@
 }
 
 .table-holder {
-  .builds {
+  .ci-table {
 
     th {
       background-color: $white-light;
@@ -401,8 +403,12 @@
     padding: 16px;
   }
 
+  .content-block {
+    border-top: 1px solid $border-color;
+    padding: $gl-padding-top $gl-padding;
+  }
+
   .comments-disabled-notif {
-    padding: 10px 16px;
     .btn {
       margin-left: 5px;
     }
@@ -411,10 +417,6 @@
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
     margin: 0 7px;
-  }
-
-  .comments-disabled-notif {
-    border-top: 1px solid $border-color;
   }
 
   .dropdown-title {
@@ -431,5 +433,14 @@
 
   .title {
     margin-bottom: 20px;
+  }
+}
+
+.merge-request-tabs {
+  background-color: #fff;
+
+  &.affix {
+    top: 100px;
+    z-index: 9;
   }
 }

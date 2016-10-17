@@ -15,18 +15,17 @@
       this.hideSidebar = bind(this.hideSidebar, this);
       this.toggleSidebar = bind(this.toggleSidebar, this);
       this.updateDropdown = bind(this.updateDropdown, this);
+      this.$document = $(document);
       clearInterval(Build.interval);
       // Init breakpoint checker
       this.bp = Breakpoints.get();
-      $('.js-build-sidebar').niceScroll();
+      this.initSidebar();
 
       this.populateJobs(this.build_stage);
       this.updateStageDropdownText(this.build_stage);
-      this.hideSidebar();
 
-      $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
-      $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      this.$document.off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
       $('#js-build-scroll > a').off('click').on('click', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
@@ -61,6 +60,21 @@
         })(this), 4000);
       }
     }
+
+    Build.prototype.initSidebar = function() {
+      this.$sidebar = $('.js-build-sidebar');
+      this.sidebarTranslationLimits = {
+        min: $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight()
+      }
+      this.sidebarTranslationLimits.max = this.sidebarTranslationLimits.min + $('.scrolling-tabs-container').outerHeight();
+      this.$sidebar.css({
+        top: this.sidebarTranslationLimits.max
+      });
+      this.$sidebar.niceScroll();
+      this.hideSidebar();
+      this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
+      this.$document.off('scroll.translateSidebar').on('scroll.translateSidebar', this.translateSidebar.bind(this));
+    };
 
     Build.prototype.getInitialBuildTrace = function() {
       var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
@@ -129,15 +143,23 @@
 
     Build.prototype.toggleSidebar = function() {
       if (this.shouldHideSidebar()) {
-        return $('.js-build-sidebar').toggleClass('right-sidebar-expanded right-sidebar-collapsed');
+        return this.$sidebar.toggleClass('right-sidebar-expanded right-sidebar-collapsed');
       }
+    };
+
+    Build.prototype.translateSidebar = function(e) {
+      var newPosition = this.sidebarTranslationLimits.max - document.body.scrollTop;
+      if (newPosition < this.sidebarTranslationLimits.min) newPosition = this.sidebarTranslationLimits.min;
+      this.$sidebar.css({
+        top: newPosition
+      });
     };
 
     Build.prototype.hideSidebar = function() {
       if (this.shouldHideSidebar()) {
-        return $('.js-build-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+        return this.$sidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
       } else {
-        return $('.js-build-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+        return this.$sidebar.removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
       }
     };
 

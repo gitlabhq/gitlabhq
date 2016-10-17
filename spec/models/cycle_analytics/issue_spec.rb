@@ -28,7 +28,6 @@ describe 'CycleAnalytics#issue', models: true do
       if data[:issue].persisted?
         context.create_merge_request_closing_issue(data[:issue].reload)
         context.merge_merge_requests_closing_issue(data[:issue])
-        context.deploy_master
       end
     end)
 
@@ -41,7 +40,6 @@ describe 'CycleAnalytics#issue', models: true do
 
         create_merge_request_closing_issue(issue)
         merge_merge_requests_closing_issue(issue)
-        deploy_master
       end
 
       expect(subject.issue).to be_nil

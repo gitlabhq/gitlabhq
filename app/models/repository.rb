@@ -719,6 +719,14 @@ class Repository
     end
   end
 
+  def ref_name_for_sha(ref_path, sha)
+    args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+    # Not found -> ["", 0]
+    # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+    Gitlab::Popen.popen(args, path_to_repo).first.split.last
+  end
+
   def refs_contains_sha(ref_type, sha)
     args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
     names = Gitlab::Popen.popen(args, path_to_repo).first
@@ -1016,7 +1024,8 @@ class Repository
     root_ref_commit = commit(root_ref)
 
     if branch_commit
-      is_ancestor?(branch_commit.id, root_ref_commit.id)
+      same_head = branch_commit.id == root_ref_commit.id
+      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end

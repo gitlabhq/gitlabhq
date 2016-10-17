@@ -26,7 +26,7 @@ const listObjDuplicate = {
 
 const BoardsMockData = {
   'GET': {
-    '/test/issue-boards/board/lists{/id}/issues': {
+    '/test/issue-boards/board/1/lists{/id}/issues': {
       issues: [{
         title: 'Testing',
         iid: 1,
@@ -37,13 +37,13 @@ const BoardsMockData = {
     }
   },
   'POST': {
-    '/test/issue-boards/board/lists{/id}': listObj
+    '/test/issue-boards/board/1/lists{/id}': listObj
   },
   'PUT': {
-    '/test/issue-boards/board/lists{/id}': {}
+    '/test/issue-boards/board/1/lists{/id}': {}
   },
   'DELETE': {
-    '/test/issue-boards/board/lists{/id}': {}
+    '/test/issue-boards/board/1/lists{/id}': {}
   }
 };
 

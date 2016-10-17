@@ -31,7 +31,6 @@ describe 'CycleAnalytics#plan', feature: true do
     post_fn: -> (context, data) do
       context.create_merge_request_closing_issue(data[:issue], source_branch: data[:branch_name])
       context.merge_merge_requests_closing_issue(data[:issue])
-      context.deploy_master
     end)
 
   context "when a regular label (instead of a list label) is added to the issue" do
@@ -44,7 +43,6 @@ describe 'CycleAnalytics#plan', feature: true do
 
       create_merge_request_closing_issue(issue, source_branch: branch_name)
       merge_merge_requests_closing_issue(issue)
-      deploy_master
 
       expect(subject.issue).to be_nil
     end

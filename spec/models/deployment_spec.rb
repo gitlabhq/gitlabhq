@@ -38,5 +38,14 @@ describe Deployment, models: true do
         expect(deployment.includes_commit?(commit)).to be true
       end
     end
+
+    context 'when the SHA for the deployment does not exist in the repo' do
+      it 'returns false' do
+        deployment.update(sha: Gitlab::Git::BLANK_SHA)
+        commit = project.commit
+
+        expect(deployment.includes_commit?(commit)).to be false
+      end
+    end
   end
 end

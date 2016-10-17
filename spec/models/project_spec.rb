@@ -24,7 +24,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_many(:boards).dependent(:destroy) }
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
@@ -92,6 +92,15 @@ describe Project, models: true do
           expect(requester_user_ids).to include(requester.id)
           expect(requester_user_ids).not_to include(developer.id)
         end
+      end
+    end
+
+    describe '#boards' do
+      it 'raises an error when attempting to add more than one board to the project' do
+        subject.boards.build
+
+        expect { subject.boards.build }.to raise_error(Project::BoardLimitExceeded, 'Number of permitted boards exceeded')
+        expect(subject.boards.size).to eq 1
       end
     end
   end
@@ -219,7 +228,6 @@ describe Project, models: true do
   describe 'Respond to' do
     it { is_expected.to respond_to(:url_to_repo) }
     it { is_expected.to respond_to(:repo_exists?) }
-    it { is_expected.to respond_to(:update_merge_requests) }
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
@@ -377,26 +385,6 @@ describe Project, models: true do
     it 'is falsey when issue does not exist' do
       expect(project).to receive(:get_issue).and_return(nil)
       expect(project.issue_exists?(1)).to be_falsey
-    end
-  end
-
-  describe '#update_merge_requests' do
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-    let(:key) { create(:key, user_id: project.owner.id) }
-    let(:prev_commit_id) { merge_request.commits.last.id }
-    let(:commit_id) { merge_request.commits.first.id }
-
-    it 'closes merge request if last commit from source branch was pushed to target branch' do
-      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.merged?).to be_truthy
-    end
-
-    it 'updates merge request commits with new one if pushed to source branch' do
-      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.diff_head_sha).to eq(commit_id)
     end
   end
 
