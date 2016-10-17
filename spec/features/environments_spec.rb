@@ -119,7 +119,7 @@ feature 'Environments', feature: true do
               expect(page).to have_selector('.close-env-link')
             end
 
-            scenario 'does allow to stop environment' do
+            scenario 'starts build when stop button clicked' do
               first('.close-env-link').click
 
               expect(page).to have_content('close_app')
@@ -217,7 +217,7 @@ feature 'Environments', feature: true do
               expect(page).to have_link('Stop')
             end
 
-            scenario 'does allow to stop environment' do
+            scenario '            scenario 'does allow to stop environment' do' do
               click_link('Stop')
 
               expect(page).to have_content('close_app')
@@ -274,44 +274,6 @@ feature 'Environments', feature: true do
 
       scenario 'does not have a New environment link' do
         expect(page).not_to have_link('New environment')
-      end
-    end
-  end
-
-  describe 'when deleting existing environment' do
-    given(:environment) { create(:environment, project: project) }
-
-    before do
-      visit namespace_project_environment_path(project.namespace, project, environment)
-    end
-    
-    context 'when logged as master' do
-      given(:role) { :master }
-
-      scenario 'does not have a Close link' do
-        expect(page).not_to have_link('Close')
-      end
-      
-      context 'when environment is opened and can be closed' do
-        let(:project)     { create(:project) }
-        let(:environment) { create(:environment, project: project) }
-
-        let!(:deployment) do
-          create(:deployment, environment: environment, sha: project.commit('master').id)
-        end
-
-        scenario 'does have a Close link' do
-          # TODO: Add missing validation. In order to have Close link 
-          # this must be true: last_deployment.try(:close_action)
-        end
-      end
-    end
-
-    context 'when logged as developer' do
-      given(:role) { :developer }
-
-      scenario 'does not have a Close link' do
-        expect(page).not_to have_link('Close')
       end
     end
   end
