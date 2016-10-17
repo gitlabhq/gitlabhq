@@ -14,8 +14,24 @@ describe Gitlab::CycleAnalytics::Events do
   describe '#issue' do
     let!(:context) { create(:issue, project: project) }
 
-    xit 'does something' do
-      expect(subject.issue_events).to eq([context])
+    it 'has an issue diff' do
+      expect(subject.issue_events['issue_diff']).to eq("-00:00:00.339259")
+    end
+
+    it 'has a title' do
+      expect(subject.issue_events['title']).to eq(context.title)
+    end
+
+    it 'has an iid' do
+      expect(subject.issue_events['iid']).to eq(context.iid)
+    end
+
+    it 'has a created_at timestamp' do
+      expect(subject.issue_events['created_at']).to eq(context.created_at)
+    end
+
+    it "has the author's name" do
+      expect(subject.issue_events['name']).to eq(context.author.name)
     end
   end
 
