@@ -17,9 +17,12 @@
     },
     
     computed: {
-      isFolder: function() {
-        debugger;
+      isFolder: function () {
         return this.model.children && this.model.children.length
+      },
+      
+      isOpen: function () {
+        return this.open;
       }
     },
 

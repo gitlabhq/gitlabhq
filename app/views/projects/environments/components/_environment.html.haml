@@ -1,8 +1,9 @@
 %environment-item{"inline-template" => true, 
   "v-for" => "environment in state.environments", 
   ":model" => "environment"}
-  %i{"v-if" => "isFolder"}
-    = icon("plus")
-  %i{"v-if" => ""}
-    = icon("less")
-  {{model.name}}
+  .name{"click" => "toggle"}
+    %i{"v-if" => "isFolder && isOpen"}
+      = icon("caret-down")
+      %i{"v-if" => "isFolder && !isOpen"}
+      = icon("caret-right")
+    {{model.name}}
