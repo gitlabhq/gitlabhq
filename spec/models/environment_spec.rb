@@ -8,7 +8,7 @@ describe Environment, models: true do
 
   it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
 
-  it { is_expected.to delegate_method(:stop_action).to(:last_deployment).as(:last) }
+  it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }

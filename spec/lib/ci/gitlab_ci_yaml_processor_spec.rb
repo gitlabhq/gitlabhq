@@ -754,7 +754,7 @@ module Ci
         it 'does return production' do
           expect(builds.size).to eq(1)
           expect(builds.first[:environment]).to eq(environment)
-          expect(builds.first[:options]).to include(environment: { name: environment })
+          expect(builds.first[:options]).to include(environment: { name: environment, action: "start" })
         end
       end
 

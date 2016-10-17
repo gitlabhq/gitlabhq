@@ -28,7 +28,7 @@ describe Gitlab::Ci::Config::Node::Environment do
 
     describe '#value' do
       it 'returns valid hash' do
-        expect(entry.value).to eq(name: 'production')
+        expect(entry.value).to include(name: 'production')
       end
     end
 
