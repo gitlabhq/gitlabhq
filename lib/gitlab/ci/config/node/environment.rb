@@ -8,7 +8,7 @@ module Gitlab
         class Environment < Entry
           include Validatable
 
-          ALLOWED_KEYS = %i[name url close]
+          ALLOWED_KEYS = %i[name url action on_stop]
 
           validations do
             validate do
@@ -36,7 +36,11 @@ module Gitlab
                         addressable_url: true,
                         allow_nil: true
 
-              validates :close, boolean: true, allow_nil: true
+              validates :action,
+                        inclusion: { in: %w[start stop], message: 'should be start or stop, ' },
+                        allow_nil: true
+
+              validates :on_stop, string: true, allow_nil: true
             end
           end
 
@@ -56,9 +60,13 @@ module Gitlab
             value[:url]
           end
 
+          def action
+            value[:action] || 'start'
+          end
+
           def value
             case @config
-            when String then { name: @config }
+            when String then { name: @config, action: 'start' }
             when Hash then @config
             else {}
             end

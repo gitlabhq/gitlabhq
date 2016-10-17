@@ -6,14 +6,12 @@ class CreateDeploymentService < BaseService
 
     ActiveRecord::Base.transaction do
       @deployable = deployable
-      @environment = prepare_environment
+      @environment = environment
+      @environment.external_url = expanded_url if expanded_url
+      @environment.state_event = action
+      @environment.save
 
-      if stop?
-        @environment.stop
-        return
-      end
-
-      @environment.start
+      return if @environment.stopped?
 
       deploy.tap do |deployment|
         deployment.update_merge_request_metrics!
@@ -37,10 +35,8 @@ class CreateDeploymentService < BaseService
       deployable: @deployable)
   end
 
-  def prepare_environment
-    project.environments.find_or_create_by(name: expanded_name) do |environment|
-      environment.external_url = expanded_url
-    end
+  def environment
+    @environment ||= project.environments.find_or_create_by(name: expanded_name)
   end
 
   def expanded_name
@@ -69,7 +65,7 @@ class CreateDeploymentService < BaseService
     params[:variables] || []
   end
 
-  def stop?
-    params[:options].fetch(:stop, false)
+  def action
+    params[:options].fetch(:action, 'start')
   end
 end
