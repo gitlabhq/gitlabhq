@@ -18,10 +18,25 @@ feature 'Environments', feature: true do
     before do
       visit namespace_project_environments_path(project.namespace, project)
     end
+    
+    context 'shows two tabs' do
+      scenario 'does show Available tab with link' do
+        expect(page).to have_link('Available')
+      end
+
+      scenario 'does show Stopped tab with link' do
+        expect(page).to have_link('Stopped')
+      end
+    end
 
     context 'without environments' do
       scenario 'does show no environments' do
         expect(page).to have_content('You don\'t have any environments right now.')
+      end
+      
+      scenario 'does show 0 as counter for environments in both tabs' do
+        expect(page.find('.js-avaibale-environments-count').text).to eq('0')
+        expect(page.find('.js-stopped-environments-count').text).to eq('0')
       end
     end
 
@@ -30,6 +45,14 @@ feature 'Environments', feature: true do
 
       scenario 'does show environment name' do
         expect(page).to have_link(environment.name)
+      end
+      
+      scenario 'does show number of opened environments in Availabe tab' do
+        expect(page.find('.js-avaibale-environments-count').text).to eq('1')
+      end
+
+      scenario 'does show number of closed environments in Stopped tab' do
+        expect(page.find('.js-stopped-environments-count').text).to eq('0')
       end
 
       context 'without deployments' do
@@ -78,6 +101,16 @@ feature 'Environments', feature: true do
             scenario 'does show an external link button' do
               expect(page).to have_link(nil, href: environment.external_url)
             end
+          end
+
+          scenario 'does show close button' do 
+            # TODO: Add test to verify if close button is visible
+            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
+          end
+          
+          scenario 'does allow to close environment' do 
+            # TODO: Add test to verify if close environment works
+            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
           end
         end
       end
@@ -150,6 +183,16 @@ feature 'Environments', feature: true do
               expect(page).to have_link(nil, href: environment.external_url)
             end
           end
+
+          scenario 'does show close button' do 
+            # TODO: Add test to verify if close button is visible
+            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
+          end
+          
+          scenario 'does allow to close environment' do 
+            # TODO: Add test to verify if close environment works
+            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
+          end
         end
       end
     end
@@ -207,9 +250,22 @@ feature 'Environments', feature: true do
     context 'when logged as master' do
       given(:role) { :master }
 
-      scenario 'does close environment' do
-        click_link 'Close'
-        expect(page).not_to have_link(environment.name)
+      scenario 'does not have a Close link' do
+        expect(page).not_to have_link('Close')
+      end
+      
+      context 'when environment is opened and can be closed' do
+        let(:project)     { create(:project) }
+        let(:environment) { create(:environment, project: project) }
+
+        let!(:deployment) do
+          create(:deployment, environment: environment, sha: project.commit('master').id)
+        end
+
+        scenario 'does have a Close link' do
+          # TODO: Add missing validation. In order to have Close link 
+          # this must be true: last_deployment.try(:close_action)
+        end
       end
     end
 
