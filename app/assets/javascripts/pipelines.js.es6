@@ -2,20 +2,22 @@
 
   class Pipelines {
     constructor() {
-      $(document).off('click', '.toggle-pipeline-btn').on('click', '.toggle-pipeline-btn', this.toggleGraph);
+      this.initGraphToggle();
       this.addMarginToBuildColumns();
     }
 
+    initGraphToggle() {
+      this.toggleButton = document.querySelector('.toggle-pipeline-btn');
+      this.toggleButtonText = this.toggleButton.querySelector('.toggle-btn-text');
+      this.pipelineGraph = document.querySelector('.pipeline-graph');
+      this.toggleButton.addEventListener('click', this.toggleGraph.bind(this));
+    }
+
     toggleGraph() {
-      const $pipelineBtn = $(this).closest('.toggle-pipeline-btn');
-      const $pipelineGraph = $(this).closest('.row-content-block').next('.pipeline-graph');
-      const $btnText = $(this).find('.toggle-btn-text');
-      const graphCollapsed = $pipelineGraph.hasClass('graph-collapsed');
-
-      $($pipelineBtn).add($pipelineGraph).toggleClass('graph-collapsed');
-
-
-      graphCollapsed ? $btnText.text('Hide') : $btnText.text('Expand')
+      const graphCollapsed = this.pipelineGraph.classList.contains('graph-collapsed');
+      this.toggleButton.classList.toggle('graph-collapsed');
+      this.pipelineGraph.classList.toggle('graph-collapsed');
+      graphCollapsed ? this.toggleButtonText.textContent = 'Hide' : this.toggleButtonText.textContent = 'Expand';
     }
 
     addMarginToBuildColumns() {
@@ -31,7 +33,7 @@
           if ($('.build', $this).length === 1) $this.addClass('no-margin');
         });
       }
-      $('.pipeline-graph').removeClass('hidden');
+      this.pipelineGraph.classList.remove('hidden');
     }
   }
 
