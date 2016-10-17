@@ -21,7 +21,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(response_headers['Content-Type']).to have_content("application/atom+xml")
     expect(body).to have_selector("title", text: "#{@project.name}:master commits")
     expect(body).to have_selector("author email", text: commit.author_email)
-    expect(body).to have_selector("entry summary", text: commit.description[0..10].gsub("\r", ""))
+    expect(body).to have_selector("entry summary", text: commit.description[0..10].delete("\r"))
   end
 
   step 'I click on tag link' do
