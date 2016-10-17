@@ -9,6 +9,14 @@ describe GroupLabel, models: true do
     it { is_expected.to validate_presence_of(:group) }
   end
 
+  describe '#subject' do
+    it 'aliases group to subject' do
+      subject = described_class.new(group: build(:group))
+
+      expect(subject.subject).to be(subject.group)
+    end
+  end
+
   describe '#to_reference' do
     let(:label) { create(:group_label) }
 

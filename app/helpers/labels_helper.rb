@@ -14,7 +14,7 @@ module LabelsHelper
   #
   # Examples:
   #
-  #   # Allow the generated link to use the label's own project
+  #   # Allow the generated link to use the label's own subject
   #   link_to_label(label)
   #
   #   # Force the generated link to use a provided group
@@ -31,13 +31,7 @@ module LabelsHelper
   #
   # Returns a String
   def link_to_label(label, subject: nil, type: :issue, tooltip: true, css_class: nil, &block)
-    subject ||=
-      case label
-      when GroupLabel then label.group
-      when ProjectLabel then label.project
-      end
-
-    link = label_filter_path(subject, label, type: type)
+    link = label_filter_path(subject || label.subject, label, type: type)
 
     if block_given?
       link_to link, class: css_class, &block

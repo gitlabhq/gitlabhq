@@ -64,6 +64,14 @@ describe ProjectLabel, models: true do
     end
   end
 
+  describe '#subject' do
+    it 'aliases project to subject' do
+      subject = described_class.new(project: build(:empty_project))
+
+      expect(subject.subject).to be(subject.project)
+    end
+  end
+
   describe '#to_reference' do
     let(:label) { create(:label) }
 

@@ -10,6 +10,8 @@ class ProjectLabel < Label
 
   delegate :group, to: :project, allow_nil: true
 
+  alias_attribute :subject, :project
+
   def to_reference(target_project = nil, format: :id)
     super(project, target_project, format: format)
   end
