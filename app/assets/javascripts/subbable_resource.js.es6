@@ -45,7 +45,7 @@
     constructor({ path, data, pollInterval }) {
       this.resource = Vue.resource(path);
       this.data = JSON.parse(data);
-      this.pollInterval = poll;
+      this.pollInterval = pollInterval;
 
       this.subscribers = {};
       this.state = {
@@ -98,7 +98,7 @@
         }
         this.data = _.extend(this.data, diff);
       }
-      this.loading = false;
+      this.state.loading = false;
       return diff;
     }
 
@@ -109,10 +109,10 @@
     }
 
     getResource() {
-      if (this.loading && this.subscribers.length) {
+      if (this.state.loading && this.subscribers.length) {
         return;
       }
-      this.loading = true;
+      this.state.loading = true;
       return this.resource.get()
         .then((res) => this.updateState(res.data))
         .then((newState) => this.publish(newState));
@@ -183,6 +183,6 @@
   const resourceFactory = new SubbableResourceFactory();
 
   // only expose creation method
-  global.createSubbableResource = resourceFactory.create;
+  global.createSubbableResource = resourceFactory.create.bind(resourceFactory);
 
 })(window.gl || (window.gl = {}));
