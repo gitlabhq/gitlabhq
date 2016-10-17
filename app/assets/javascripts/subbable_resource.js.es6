@@ -73,7 +73,7 @@
     publish(diff) {
       // prevent subscribers mutating state
       const stateCopy = _.extend({}, this.data);
-      for (var key in diff) {
+      for (let key in diff) {
         const hasSubscribers = this.subscribers.hasOwnProperty(key);
         if (hasSubscribers) {
           this.subscribers[key].forEach((fn) => {
@@ -85,20 +85,16 @@
 
     addSubscriber(prop, callback) {
       const isNewProp = !this.subscribers.hasOwnProperty(prop);
-      if (isNewProp) {
-        this.subscribers[prop] = [];
-      }
+      if (isNewProp) this.subscribers[prop] = [];
       this.subscribers[prop].push(callback);
     }
 
     updateState(res) {
       const diff = {};
       if (res.updated_at !== this.data.updated_at) {
-        for (var key in res) {
+        for (let key in res) {
           const val = res[key];
-          if (this.data[key] !== val) {
-            diff[key] = val;
-          }
+          if (this.data[key] !== val) diff[key] = val;
         }
         this.data = _.extend(this.data, diff);
       }
@@ -138,7 +134,7 @@
     }
 
     deleteResource(payload) {
-      this.resource.delete();
+      this.resource.delete()
         .then((res) => this.updateState(payload))
         .then((newState) => this.publish(newState));
     }
