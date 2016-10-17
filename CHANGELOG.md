@@ -120,6 +120,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
+  - Delete dynamic environments
   - Make guests unable to view MRs on private projects
 
 ## 8.12.7
