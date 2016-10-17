@@ -159,7 +159,8 @@ Variables can be also defined on [job level](#job-variables).
 > Introduced in GitLab Runner v0.7.0.
 
 `cache` is used to specify a list of files and directories which should be
-cached between builds.
+cached between builds. You can only use paths that are within the project
+workspace.
 
 **By default the caching is enabled per-job and per-branch.**
 
@@ -606,8 +607,8 @@ You can see a simple example at https://gitlab.com/gitlab-examples/review-apps-n
 > - Build artifacts are only collected for successful builds by default.
 
 `artifacts` is used to specify a list of files and directories which should be
-attached to the build after success. To pass artifacts between different builds,
-see [dependencies](#dependencies).
+attached to the build after success. You can only use paths that are within the
+project workspace. To pass artifacts between different builds, see [dependencies](#dependencies).
 
 Below are some examples.
 

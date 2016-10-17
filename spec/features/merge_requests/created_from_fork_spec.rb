@@ -45,7 +45,7 @@ feature 'Merge request created from fork' do
       page.within('.merge-request-tabs') { click_link 'Builds' }
       wait_for_ajax
 
-      page.within('table.builds') do
+      page.within('table.ci-table') do
         expect(page).to have_content 'rspec'
         expect(page).to have_content 'spinach'
       end

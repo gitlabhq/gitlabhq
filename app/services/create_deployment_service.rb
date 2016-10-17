@@ -2,25 +2,35 @@ require_relative 'base_service'
 
 class CreateDeploymentService < BaseService
   def execute(deployable = nil)
-    environment = find_or_create_environment
+    return unless executable?
 
-    deployment = project.deployments.create(
-      environment: environment,
-      ref: params[:ref],
-      tag: params[:tag],
-      sha: params[:sha],
-      user: current_user,
-      deployable: deployable
-    )
+    ActiveRecord::Base.transaction do
+      @deployable = deployable
+      @environment = prepare_environment
 
-    deployment.update_merge_request_metrics!
-
-    deployment
+      deploy.tap do |deployment|
+        deployment.update_merge_request_metrics!
+      end
+    end
   end
 
   private
 
-  def find_or_create_environment
+  def executable?
+    project && name.present?
+  end
+
+  def deploy
+    project.deployments.create(
+      environment: @environment,
+      ref: params[:ref],
+      tag: params[:tag],
+      sha: params[:sha],
+      user: current_user,
+      deployable: @deployable)
+  end
+
+  def prepare_environment
     project.environments.find_or_create_by(name: expanded_name) do |environment|
       environment.external_url = expanded_url
     end

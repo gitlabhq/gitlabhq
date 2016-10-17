@@ -1,5 +1,6 @@
 
 /*= require merge_request_tabs */
+//= require breakpoints
 
 (function() {
   describe('MergeRequestTabs', function() {

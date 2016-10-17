@@ -1,7 +1,7 @@
 = content_for :sub_nav do
   .scrolling-tabs-container.sub-nav-scroll
     = render 'shared/nav_scroll'
-    .nav-links.sub-nav.scrolling-tabs
+    .nav-links.sub-nav.scrolling-tabs{ class: ('build' if local_assigns.fetch(:build_subnav, false)) }
       %ul{ class: (container_class) }
         - if project_nav_tab? :pipelines
           = nav_link(controller: :pipelines) do

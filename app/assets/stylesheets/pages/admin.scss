@@ -22,7 +22,7 @@
 
 .admin-filter form {
   .select2-container {
-    width: 100%
+    width: 100%;
   }
 
   .controls {
@@ -31,7 +31,7 @@
 
   .form-actions {
     padding-left: 130px;
-    background: #fff
+    background: #fff;
    }
 
   .visibility-levels {
@@ -106,26 +106,33 @@
   .table {
     table-layout: fixed;
   }
+
   .subheading {
     padding-bottom: $gl-padding;
   }
+
   .message {
     word-wrap: break-word;
   }
+
   .btn {
     white-space: normal;
     padding: $gl-btn-padding;
   }
+
   th {
     width: 15%;
+
     &.wide {
       width: 55%;
     }
   }
+
   @media (max-width: $screen-sm-max) {
     th {
       width: 100%;
     }
+
     td {
       width: 100%;
       float: left;
@@ -137,6 +144,7 @@
       margin-left: $btn-side-margin;
       margin-top: 3px;
     }
+
     span {
       font-size: 19px;
     }
