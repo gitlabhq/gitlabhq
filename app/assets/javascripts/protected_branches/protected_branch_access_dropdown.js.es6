@@ -67,7 +67,7 @@
                 // remove selected item visually
                 self.$wrap.find(`.item-${item.type}`).removeClass(`is-active`);
               } else {
-                $noOne = self.$wrap.find(`.is-active.item-${item.type}:contains('No one')`);
+                let $noOne = self.$wrap.find(`.is-active.item-${item.type}:contains('No one')`);
                 if ($noOne.length) {
                   $noOne.removeClass('is-active');
                   self.removeSelectedItem(self.noOneObj);
