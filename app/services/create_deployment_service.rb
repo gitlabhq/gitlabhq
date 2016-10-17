@@ -9,7 +9,7 @@ class CreateDeploymentService < BaseService
 
       @environment = environment
       @environment.external_url = expanded_url if expanded_url
-      @environment.state_event = action
+      @environment.fire_state_event(action)
       @environment.save!
 
       return if @environment.stopped?
@@ -68,6 +68,6 @@ class CreateDeploymentService < BaseService
   end
 
   def action
-    params[:options].fetch(:action, 'start')
+    options[:action] || 'start'
   end
 end

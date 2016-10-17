@@ -8,6 +8,8 @@ describe Environment, models: true do
 
   it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
 
+  it { is_expected.to delegate_method(:stop_action).to(:last_deployment).as(:last) }
+
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
   it { is_expected.to validate_length_of(:name).is_within(0..255) }
@@ -94,6 +96,36 @@ describe Environment, models: true do
       environment.update!(name: 'production')
 
       is_expected.to be_nil
+    end
+  end
+
+  describe '#stoppable?' do
+    subject { environment.stoppable? }
+
+    context 'when no other actions' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when matching action is defined' do
+      let(:build) { create(:ci_build) }
+      let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+
+      context 'when environment is available' do
+        before do
+          environment.start
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when environment is stopped' do
+        before do
+          environment.stop
+        end
+
+        it { is_expected.to be_falsey }
+      end
     end
   end
 end
