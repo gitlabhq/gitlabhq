@@ -124,15 +124,12 @@ class IssuableFinder
   def labels
     return @labels if defined?(@labels)
 
-    if labels? && !filter_by_no_label?
-      @labels = Label.where(title: label_names)
-
-      if projects
-        @labels = LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute
+    @labels =
+      if labels? && !filter_by_no_label?
+        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute
+      else
+        Label.none
       end
-    else
-      @labels = Label.none
-    end
   end
 
   def assignee?

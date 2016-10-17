@@ -45,7 +45,7 @@ class LabelsFinder < UnionFinder
     params[:project_id].presence
   end
 
-  def project_ids
+  def projects_ids
     params[:project_ids].presence
   end
 
@@ -70,7 +70,7 @@ class LabelsFinder < UnionFinder
 
     @projects = available_projects
     @projects = @projects.in_namespace(group_id) if group_id
-    @projects = @projects.where(id: project_ids) if project_ids
+    @projects = @projects.where(id: projects_ids) if projects_ids
     @projects = @projects.reorder(nil)
 
     @projects
