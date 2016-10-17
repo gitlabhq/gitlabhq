@@ -173,7 +173,7 @@
       new Subscription('.subscription')
       new gl.DueDateSelectors();
       new DueDateSelect();
-      gl.IssuableResource = createSubbableResource({
+      gl.IssuableResource = gl.createSubbableResource({
         path: '#{issuable_json_path(issuable)}',
         data: '#{issuable.to_json}',
         pollInterval: 15000
