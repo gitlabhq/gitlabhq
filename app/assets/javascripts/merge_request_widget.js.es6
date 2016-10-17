@@ -17,6 +17,12 @@
              View on <%- external_url_formatted %>
            </a>
          </span>
+         <span class="close-env-container js-close-env-link">
+          <a href="<%- stop_url %>" class="close-evn-link" data-method="post" rel="nofollow" data-confirm="Are you sure you want to close this environment?">
+            <i class="fa fa-stop-circle-o"/>
+            Stop environment
+          </a>
+         </span>
        </div>
      </div>`;
 
@@ -205,6 +211,11 @@
         if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
         if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
+        
+        if (!environment.stop_url) {
+          $('.js-close-env-link', $template).remove();
+        }
+        
         if (environment.deployed_at && environment.deployed_at_formatted) {
           environment.deployed_at = $.timeago(environment.deployed_at) + '.';
         } else {
