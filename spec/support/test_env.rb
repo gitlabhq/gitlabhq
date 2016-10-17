@@ -98,7 +98,9 @@ module TestEnv
 
   def setup_gitlab_shell
     unless File.directory?(Gitlab.config.gitlab_shell.path)
-      `rake gitlab:shell:install`
+      unless system('rake', 'gitlab:shell:install')
+        raise 'Can`t clone gitlab-shell'
+      end
     end
   end
 
