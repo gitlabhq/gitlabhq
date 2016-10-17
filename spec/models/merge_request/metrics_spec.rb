@@ -12,7 +12,7 @@ describe MergeRequest::Metrics, models: true do
       metrics = subject.metrics
 
       expect(metrics).to be_present
-      expect(metrics.merged_at).to be_within(1.second).of(time)
+      expect(metrics.merged_at).to be_like_time(time)
     end
   end
 end
