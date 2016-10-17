@@ -94,7 +94,7 @@ feature 'Environments', feature: true do
           end
 
           scenario 'does not show stop button' do
-            expect(page).not_to have_selector('.close-env-link')
+            expect(page).not_to have_selector('.stop-env-link')
           end
 
           scenario 'does not show external link button' do
@@ -116,11 +116,11 @@ feature 'Environments', feature: true do
             given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
 
             scenario 'does show stop button' do
-              expect(page).to have_selector('.close-env-link')
+              expect(page).to have_selector('.stop-env-link')
             end
 
             scenario 'starts build when stop button clicked' do
-              first('.close-env-link').click
+              first('.stop-env-link').click
 
               expect(page).to have_content('close_app')
             end
@@ -129,7 +129,7 @@ feature 'Environments', feature: true do
               let(:role) { :reporter }
 
               scenario 'does not show stop button' do
-                expect(page).not_to have_selector('.close-env-link')
+                expect(page).not_to have_selector('.stop-env-link')
               end
             end
           end

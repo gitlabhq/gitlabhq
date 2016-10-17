@@ -17,7 +17,7 @@
              View on <%- external_url_formatted %>
            </a>
          </span>
-         <span class="close-env-container js-close-env-link">
+         <span class="stop-env-container js-stop-env-link">
           <a href="<%- stop_url %>" class="close-evn-link" data-method="post" rel="nofollow" data-confirm="Are you sure you want to stop this environment?">
             <i class="fa fa-stop-circle-o"/>
             Stop environment
@@ -213,7 +213,7 @@
         if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
         
         if (!environment.stop_url) {
-          $('.js-close-env-link', $template).remove();
+          $('.js-stop-env-link', $template).remove();
         }
         
         if (environment.deployed_at && environment.deployed_at_formatted) {
