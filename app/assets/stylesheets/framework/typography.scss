@@ -49,7 +49,7 @@
     font-weight: 600;
     margin: 16px 0 10px;
     padding: 0 0 0.3em;
-    border-bottom: 1px solid $btn-default-border;
+    border-bottom: 1px solid $white-dark;
     color: $gl-gray-dark;
   }
 
@@ -85,12 +85,12 @@
     font-size: inherit;
     padding: 8px 21px;
     margin: 12px 0;
-    border-left: 3px solid #e7e9ed;
+    border-left: 3px solid $white-dark;
   }
 
   blockquote:dir(rtl) {
     border-left: 0;
-    border-right: 3px solid #e7e9ed;
+    border-right: 3px solid $white-dark;
   }
 
   blockquote p {
