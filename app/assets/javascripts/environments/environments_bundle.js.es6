@@ -6,7 +6,7 @@
 
 $(() => {
   
-  const $environmentsListApp = document.getElementById('environments-list-view');
+  const environmentsListApp = document.getElementById('environments-list-view');
   const Store = gl.environmentsList.EnvironmentsStore;
   
   window.gl = window.gl || {};
@@ -17,7 +17,7 @@ $(() => {
   
   gl.EnvironmentsListApp = new Vue({
 
-    el: $environmentsListApp,
+    el: '#environments-list-view',
     
     components: {
       'environment-item': gl.environmentsList.EnvironmentItem
@@ -25,7 +25,7 @@ $(() => {
 
     data: {
       state: Store.state,
-      endpoint: $environmentsListApp.dataset.endpoint,
+      endpoint: environmentsListApp.dataset.endpoint,
       loading: true
     },
     

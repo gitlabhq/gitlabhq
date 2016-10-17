@@ -4,7 +4,11 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
   
+  debugger;
+  
   gl.environmentsList.EnvironmentItem = Vue.extend({
+    
+    template: '#environment-item-template',
 
     props: {
       model: Object
@@ -19,10 +23,6 @@
     computed: {
       isFolder: function () {
         return this.model.children && this.model.children.length
-      },
-      
-      isOpen: function () {
-        return this.open;
       }
     },
 

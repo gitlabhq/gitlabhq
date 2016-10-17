@@ -25,11 +25,11 @@
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
 
-  .environments-container#environments-list-view{ "v-cloak" => true, data: environments_list_data }
+  #environments-list-view{ data: environments_list_data, class: "environments-container" }
     .environments-list-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
 
-    .blank-state.blank-state-no-icon{ "v-if" => "!loading && state.environments.length === 0" }
+    .blank-state.blank-state-no-icon{ "v-if" => "!loading && !state.environments.length" }
       %h2.blank-state-title
         You don't have any environments right now.
       %p.blank-state-text
@@ -42,13 +42,25 @@
           New environment
           
     .table-holder{ "v-if" => "!loading && state.environments.length" }
-      %table.table.ci-table.environments
-        %thead
-          %th Environment
-          %th Last Deployment
-          %th Build
-          %th Commit
-          %th
-          %th.hidden-xs
-        %tbody
-          =render "projects/environments/components/environment"
+      %table.table
+        %tr{"is"=>"environment-item",
+          "inline-template" => true, 
+          "v-for" => "environment in state.environments", 
+          ":model" => "environment"}
+
+
+%script#environment-item-template{"type"=> "text/x-template"}
+  %tr
+    %td.environment-folder-name{"@click" => "toggle"}
+      %span.icon-container{"v-if" => "isFolder"}
+        %i{"v-show" => "open"}
+          = icon("caret-down")
+
+        %i{"v-show" => "!open"}
+          = icon("caret-right")
+      %span.name-container
+        {{model.name}}
+  %tr{"v-show" => "open", "v-if"=>"isFolder"}
+    %td{"v-for" => "child in model.children", 
+      ":model" => "child"}
+      {{child.name}}
