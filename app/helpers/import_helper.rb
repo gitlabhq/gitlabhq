@@ -8,6 +8,10 @@ module ImportHelper
     link_to path_with_namespace, github_project_url(path_with_namespace), target: '_blank'
   end
 
+  def gogs_project_link(path_with_namespace)
+    link_to path_with_namespace, gogs_project_url(path_with_namespace), target: '_blank'
+  end
+
   private
 
   def github_project_url(path_with_namespace)
@@ -19,5 +23,9 @@ module ImportHelper
 
     provider = Gitlab.config.omniauth.providers.find { |p| p.name == 'github' }
     @github_url = provider.fetch('url', 'https://github.com') if provider
+  end
+
+  def gogs_project_url(path_with_namespace)
+    "#{@gogs_root_url}/#{path_with_namespace}"
   end
 end

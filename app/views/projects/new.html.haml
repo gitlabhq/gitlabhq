@@ -49,6 +49,11 @@
                     = link_to new_import_github_path, class: 'btn import_github' do
                       = icon('github', text: 'GitHub')
                 %div
+                  - if gogs_import_enabled?
+                    = link_to new_import_gogs_url, class: 'btn import_gogs' do
+                      = image_tag(image_path('gogs-logo.svg'), alt: 'Gogs', size: "14x14")
+                      Gogs
+                %div
                   - if bitbucket_import_enabled?
                     = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}", "data-no-turbolink" => "true" do
                       = icon('bitbucket', text: 'Bitbucket')

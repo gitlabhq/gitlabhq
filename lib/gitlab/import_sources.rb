@@ -14,6 +14,7 @@ module Gitlab
 
       def options
         {
+          'Gogs'          => 'gogs',
           'GitHub'        => 'github',
           'Bitbucket'     => 'bitbucket',
           'GitLab.com'    => 'gitlab',

@@ -1,0 +1,17 @@
+- page_title "Gogs Import"
+- header_title "Projects", root_path
+
+%h3.page-title
+  = image_tag(image_path('gogs-logo.svg'), alt: 'Gogs', size: "16x16")
+  Gogs
+
+%p
+  To import a Gogs project, you can use a
+  = succeed '.' do
+    = link_to 'Personal Access Token', 'https://github.com/gogits/go-gogs-client/wiki#access-token'
+
+= form_tag personal_access_token_import_gogs_path, method: :post, class: 'form-inline' do
+  .form-group
+    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "Personal Access Token", size: 40
+    = text_field_tag :gogs_host_url, '', class: 'form-control', placeholder: "Gogs Host URL", size: 128
+    = submit_tag 'List Your Gogs Repositories', class: 'btn btn-success'

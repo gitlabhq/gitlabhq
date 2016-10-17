@@ -60,7 +60,7 @@ module Gitlab
         fetch_resources(:labels, repo, per_page: 100) do |labels|
           labels.each do |raw|
             begin
-              LabelFormatter.new(project, raw).create!
+              GithubImport::LabelFormatter.new(project, raw).create!
             rescue => e
               errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
@@ -74,7 +74,7 @@ module Gitlab
         fetch_resources(:milestones, repo, state: :all, per_page: 100) do |milestones|
           milestones.each do |raw|
             begin
-              MilestoneFormatter.new(project, raw).create!
+              GithubImport::MilestoneFormatter.new(project, raw).create!
             rescue => e
               errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
@@ -85,7 +85,7 @@ module Gitlab
       def import_issues
         fetch_resources(:issues, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |issues|
           issues.each do |raw|
-            gh_issue = IssueFormatter.new(project, raw)
+            gh_issue = GithubImport::IssueFormatter.new(project, raw)
 
             begin
               issuable =
@@ -106,7 +106,7 @@ module Gitlab
       def import_pull_requests
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
-            pull_request = PullRequestFormatter.new(project, raw)
+            pull_request = GithubImport::PullRequestFormatter.new(project, raw)
             next unless pull_request.valid?
 
             begin
@@ -179,7 +179,7 @@ module Gitlab
         ActiveRecord::Base.no_touching do
           comments.each do |raw|
             begin
-              comment         = CommentFormatter.new(project, raw)
+              comment         = GithubImport::CommentFormatter.new(project, raw)
               # GH does not return info about comment's parent, so we guess it by checking its URL!
               *_, parent, iid = URI(raw.html_url).path.split('/')
               issuable_class = parent == 'issues' ? Issue : MergeRequest
@@ -198,7 +198,7 @@ module Gitlab
         last_note_attrs = nil
 
         cut_off_index = comments.find_index do |raw|
-          comment           = CommentFormatter.new(project, raw)
+          comment           = GithubImport::CommentFormatter.new(project, raw)
           comment_attrs     = comment.attributes
           last_note_attrs ||= last_note.slice(*comment_attrs.keys)
 
@@ -214,7 +214,7 @@ module Gitlab
 
       def import_wiki
         unless project.wiki.repository_exists?
-          wiki = WikiFormatter.new(project)
+          wiki = GithubImport::WikiFormatter.new(project)
           gitlab_shell.import_repository(project.repository_storage_path, wiki.path_with_namespace, wiki.import_url)
         end
       rescue Gitlab::Shell::Error => e
@@ -230,7 +230,7 @@ module Gitlab
         fetch_resources(:releases, repo, per_page: 100) do |releases|
           releases.each do |raw|
             begin
-              gh_release = ReleaseFormatter.new(project, raw)
+              gh_release = GithubImport::ReleaseFormatter.new(project, raw)
               gh_release.create! if gh_release.valid?
             rescue => e
               errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }

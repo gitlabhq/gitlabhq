@@ -98,7 +98,7 @@ module Gitlab
 
       def milestone
         if raw_data.milestone.present?
-          project.milestones.find_by(iid: raw_data.milestone.number)
+          project.milestones.find_by(iid: raw_data.milestone.public_send("Gitlab::#{project.import_type.camelize}Import::MilestoneFormatter".constantize.iid_attr))
         end
       end
 
