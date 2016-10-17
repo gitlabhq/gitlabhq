@@ -6,6 +6,7 @@ entry.
 
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
+- Diff collapse won't shift when collapsing.
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
