@@ -131,8 +131,13 @@
       flex: 1;
       text-align: center;
 
+      &:first-of-type {
+        border-top-left-radius: 2px;
+      }
+
       &:last-of-type {
         border-left: 1px solid $border-color;
+        border-top-right-radius: 2px;
       }
 
       &:not(.active) {
