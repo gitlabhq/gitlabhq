@@ -380,7 +380,7 @@ ActiveRecord::Schema.define(version: 20161017095000) do
     t.string "deployable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text "properties"
+    t.string "on_stop"
   end
 
   add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree

@@ -11,8 +11,6 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  store :properties, accessors: [:on_stop]
-
   after_save :create_ref
 
   def commit
