@@ -42,15 +42,23 @@
           New environment
           
     .table-holder{ "v-if" => "!loading && state.environments.length" }
-      %table.table
-        %tr{"is"=>"environment-item",
-          "inline-template" => true, 
-          "v-for" => "environment in state.environments", 
-          ":model" => "environment"}
+      %table.table.ci-table.environments
+        %thead
+          %th Environment
+          %th Last Deployment
+          %th Build
+          %th Commit
+          %th
+          %th.hidden-xs
+        %tbody
+          %tr{"is"=>"environment-item",
+            "inline-template" => true, 
+            "v-for" => "environment in state.environments", 
+            ":model" => "environment"}
 
 
 %script#environment-item-template{"type"=> "text/x-template"}
-  %tr
+  %tr.environment
     %td.environment-folder-name{"@click" => "toggle"}
       %span.icon-container{"v-if" => "isFolder"}
         %i{"v-show" => "open"}
@@ -60,7 +68,16 @@
           = icon("caret-right")
       %span.name-container
         {{model.name}}
-  %tr{"v-show" => "open", "v-if"=>"isFolder"}
-    %td{"v-for" => "child in model.children", 
-      ":model" => "child"}
+    %td
+      %a{{"v-if" => "model.last_deployment"}}
+        {{model.last_deployment.id}}
+  %tr.environment-children{"v-show" => "open", 
+    "v-if"=>"isFolder", 
+    "v-for" => "child in model.children", 
+    ":model" => "child"}
+    %td
       {{child.name}}
+    %td.deployment-column
+      %span{"v-if" => "child.last_deployment && child.last_deployment.iid"}
+        {{child.last_deployment.iid}}
+    

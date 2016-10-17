@@ -61,7 +61,11 @@
 }
 
 .table.ci-table.environments {
-
+  
+  .environment-children td:first-child {
+    padding-left: 40px;
+  }
+  
   .icon-container {
     width: 20px;
     text-align: center;
