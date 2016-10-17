@@ -32,7 +32,8 @@ class CreateDeploymentService < BaseService
       tag: params[:tag],
       sha: params[:sha],
       user: current_user,
-      deployable: @deployable)
+      deployable: @deployable,
+      on_stop: options.fetch(:on_stop, nil))
   end
 
   def environment
