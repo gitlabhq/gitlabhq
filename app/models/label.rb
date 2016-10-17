@@ -97,6 +97,20 @@ class Label < ActiveRecord::Base
     merge_requests_count(user, project_id: project.try(:id) || project_id, state: 'opened')
   end
 
+  def prioritize!(project, value)
+    label_priority = priorities.find_or_initialize_by(project_id: project.id)
+    label_priority.priority = value
+    label_priority.save!
+  end
+
+  def unprioritize!(project)
+    priorities.where(project: project).delete_all
+  end
+
+  def priority(project)
+    priorities.find_by(project: project).try(:priority)
+  end
+
   def template?
     template
   end
@@ -135,7 +149,7 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:priority] = priorities.find_by(project: options[:project]).try(:priority) if options.has_key?(:project)
+      json[:priority] = priority(options[:project]) if options.has_key?(:project)
     end
   end
 

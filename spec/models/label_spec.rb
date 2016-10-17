@@ -46,4 +46,62 @@ describe Label, models: true do
       expect(label.title).to eq('foo & bar?')
     end
   end
+
+  describe 'priorization' do
+    subject(:label) { create(:label) }
+
+    let(:project) { label.project }
+
+    describe '#prioritize!' do
+      context 'when label is not prioritized' do
+        it 'creates a label priority' do
+          expect { label.prioritize!(project, 1) }.to change(label.priorities, :count).by(1)
+        end
+
+        it 'sets label priority' do
+          label.prioritize!(project, 1)
+
+          expect(label.priorities.first.priority).to eq 1
+        end
+      end
+
+      context 'when label is prioritized' do
+        let!(:priority) { create(:label_priority, project: project, label: label, priority: 0) }
+
+        it 'does not create a label priority' do
+          expect { label.prioritize!(project, 1) }.not_to change(label.priorities, :count)
+        end
+
+        it 'updates label priority' do
+          label.prioritize!(project, 1)
+
+          expect(priority.reload.priority).to eq 1
+        end
+      end
+    end
+
+    describe '#unprioritize!' do
+      it 'removes label priority' do
+        create(:label_priority, project: project, label: label, priority: 0)
+
+        expect { label.unprioritize!(project) }.to change(label.priorities, :count).by(-1)
+      end
+    end
+
+    describe '#priority' do
+      context 'when label is not prioritized' do
+        it 'returns nil' do
+          expect(label.priority(project)).to be_nil
+        end
+      end
+
+      context 'when label is prioritized' do
+        it 'returns label priority' do
+          create(:label_priority, project: project, label: label, priority: 1)
+
+          expect(label.priority(project)).to eq 1
+        end
+      end
+    end
+  end
 end

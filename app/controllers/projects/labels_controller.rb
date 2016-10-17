@@ -84,7 +84,7 @@ class Projects::LabelsController < Projects::ApplicationController
     respond_to do |format|
       label = @available_labels.find(params[:id])
 
-      if label.priorities.where(project_id: project).delete_all
+      if label.unprioritize!(project)
         format.json { render json: label }
       else
         format.json { head :unprocessable_entity }
@@ -94,14 +94,12 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def set_priorities
     Label.transaction do
-      label_ids = @available_labels.where(id: params[:label_ids]).pluck(:id)
+      available_labels_ids = @available_labels.where(id: params[:label_ids]).pluck(:id)
+      label_ids = params[:label_ids].select { |id| available_labels_ids.include?(id.to_i) }
 
-      params[:label_ids].each_with_index do |label_id, index|
-        next unless label_ids.include?(label_id.to_i)
-
-        label_priority = LabelPriority.find_or_initialize_by(project_id: @project.id, label_id: label_id)
-        label_priority.priority = index
-        label_priority.save!
+      label_ids.each_with_index do |label_id, index|
+        label = @available_labels.find(label_id)
+        label.prioritize!(project, index)
       end
     end
 
