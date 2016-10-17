@@ -1,0 +1,10 @@
+%ul.new-session-tabs.nav-links.nav-tabs
+  - if crowd_enabled?
+    %li.active
+      = link_to "Crowd", "#tab-crowd", 'data-toggle' => 'tab'
+  - @ldap_servers.each_with_index do |server, i|
+    %li{class: (:active if i.zero? && !crowd_enabled?)}
+      = link_to server['label'], "#tab-#{server['provider_name']}", 'data-toggle' => 'tab'
+  - if signin_enabled?
+    %li
+      = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'

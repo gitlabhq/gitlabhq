@@ -8,6 +8,7 @@
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
+      this.initFieldErrors();
       this.initPageScripts();
     }
 
@@ -20,6 +21,9 @@
       path = page.split(':');
       shortcut_handler = null;
       switch (page) {
+        case 'sessions:new':
+          new UsernameValidator();
+          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -137,12 +141,12 @@
           break;
         case 'groups:group_members:index':
           new gl.MemberExpirationDate();
-          new GroupMembers();
+          new gl.Members();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
           new gl.MemberExpirationDate();
-          new ProjectMembers();
+          new gl.Members();
           new UsersSelect();
           break;
         case 'groups:new':
@@ -286,6 +290,12 @@
       if ($('.search').length) {
         return new gl.SearchAutocomplete();
       }
+    };
+
+    Dispatcher.prototype.initFieldErrors = function() {
+      $('.show-gl-field-errors').each((i, form) => {
+        new gl.GlFieldErrors(form);
+      });
     };
 
     return Dispatcher;

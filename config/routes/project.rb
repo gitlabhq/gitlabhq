@@ -274,6 +274,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           post :merge
           post :cancel_merge_when_build_succeeds
           get :ci_status
+          get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
           get :diff_for_path
@@ -408,7 +409,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
-      resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
+      resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 
       resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
         member do

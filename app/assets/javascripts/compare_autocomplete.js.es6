@@ -9,7 +9,10 @@
         var $dropdown, selected;
         $dropdown = $(this);
         selected = $dropdown.data('selected');
-        return $dropdown.glDropdown({
+        const $dropdownContainer = $dropdown.closest('.dropdown');
+        const $fieldInput = $(`input[name="${$dropdown.data('field-name')}"]`, $dropdownContainer);
+        const $filterInput = $('input[type="search"]', $dropdownContainer);
+        $dropdown.glDropdown({
           data: function(term, callback) {
             return $.ajax({
               url: $dropdown.data('refs-url'),
@@ -41,6 +44,14 @@
           toggleLabel: function(obj, $el) {
             return $el.text().trim();
           }
+        });
+        $filterInput.on('keyup', (e) => {
+          const keyCode = e.keyCode || e.which;
+          if (keyCode !== 13) return;
+          const text = $filterInput.val();
+          $fieldInput.val(text);
+          $('.dropdown-toggle-text', $dropdown).text(text);
+          $dropdownContainer.removeClass('open');
         });
       });
     };

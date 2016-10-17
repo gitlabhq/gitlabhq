@@ -45,6 +45,10 @@ class ApplicationController < ActionController::Base
     redirect_to request.referer.present? ? :back : default, options
   end
 
+  def not_found
+    render_404
+  end
+
   protected
 
   # This filter handles both private tokens and personal access tokens

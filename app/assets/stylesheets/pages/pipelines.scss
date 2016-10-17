@@ -20,7 +20,7 @@
     margin: 4px;
   }
 
-  .table.builds {
+  .table.ci-table {
     min-width: 1200px;
 
     .branch-commit {
@@ -44,11 +44,18 @@
   overflow: auto;
 }
 
-.table.builds {
+.table.ci-table {
   min-width: 900px;
 
   &.pipeline {
     min-width: 650px;
+  }
+
+  &.builds-page {
+
+    tr {
+      height: 71px;
+    }
   }
 
   tr {
@@ -176,7 +183,7 @@
         &::after {
           content: '';
           width: 8px;
-          position: absolute;;
+          position: absolute;
           right: -7px;
           bottom: 8px;
           border-bottom: 2px solid $border-color;
@@ -353,6 +360,7 @@
 
     &:hover {
       background-color: $gray-lighter;
+
       .dropdown-menu-toggle {
         background-color: transparent;
       }
@@ -536,6 +544,7 @@
         height: 29px;
         top: -9px;
       }
+
       .curve {
         display: block;
       }
@@ -621,19 +630,31 @@
   }
 }
 
-.pipelines.tab-pane {
+.tab-pane {
 
-  .content-list.pipelines {
-    overflow: auto;
+  &.pipelines {
+
+    .content-list.pipelines {
+      overflow: auto;
+    }
+
+    .stage {
+      max-width: 100px;
+      width: 100px;
+    }
+
+    .pipeline-actions {
+      min-width: initial;
+    }
   }
 
-  .stage {
-    max-width: 100px;
-    width: 100px;
-  }
+  &.builds {
 
-  .pipeline-actions {
-    min-width: initial;
+    .ci-table {
+      tr {
+        height: 71px;
+      }
+    }
   }
 }
 

@@ -911,4 +911,34 @@ describe Projects::MergeRequestsController do
       post_assign_issues
     end
   end
+
+  describe 'GET ci_environments_status' do
+    context 'when the environment is from a forked project' do
+      let!(:forked)       { create(:project) }
+      let!(:environment)  { create(:environment, project: forked) }
+      let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
+      let(:json_response) { JSON.parse(response.body) }
+      let(:admin)         { create(:admin) }
+
+      let(:merge_request) do
+        create(:forked_project_link, forked_to_project: forked,
+                                     forked_from_project: project)
+
+        create(:merge_request, source_project: forked, target_project: project)
+      end
+
+      before do
+        forked.team << [user, :master]
+
+        get :ci_environments_status,
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project.to_param,
+          id: merge_request.iid, format: 'json'
+      end
+
+      it 'links to the environment on that project' do
+        expect(json_response.first['url']).to match /#{forked.path_with_namespace}/
+      end
+    end
+  end
 end

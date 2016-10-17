@@ -99,7 +99,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack spinach "-r rerun" || retry '[ ! -e tmp/spinach-rerun.txt ] || bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
     paths:
@@ -309,6 +309,9 @@ coverage:
 # Trigger docs build
 trigger_docs:
   stage: post-test
+  before_script: []
+  cache: {}
+  artifacts: {}
   script:
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master https://gitlab.com/api/v3/projects/38069/trigger/builds"
   only:

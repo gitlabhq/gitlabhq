@@ -33,5 +33,6 @@ scope(path: 'u/:username',
   get :projects
   get :contributed, as: :contributed_projects
   get :snippets
+  get :exists
   get '/', to: redirect('/%{username}')
 end

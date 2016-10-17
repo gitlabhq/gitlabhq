@@ -325,6 +325,10 @@
     };
 
     UsersSelect.prototype.user = function(user_id, callback) {
+      if(!/^\d+$/.test(user_id)) {
+        return false;
+      }
+
       var url;
       url = this.buildUrl(this.userPath);
       url = url.replace(':id', user_id);

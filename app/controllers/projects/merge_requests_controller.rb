@@ -10,7 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -411,6 +411,30 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     render json: response
+  end
+
+  def ci_environments_status
+    environments =
+      begin
+        @merge_request.environments.map do |environment|
+          next unless can?(current_user, :read_environment, environment)
+
+          project = environment.project
+          deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
+
+          {
+            id: environment.id,
+            name: environment.name,
+            url: namespace_project_environment_path(project.namespace, project, environment),
+            external_url: environment.external_url,
+            external_url_formatted: environment.formatted_external_url,
+            deployed_at: deployment.try(:created_at),
+            deployed_at_formatted: deployment.try(:formatted_deployment_time)
+          }
+        end.compact
+      end
+
+    render json: environments
   end
 
   protected
