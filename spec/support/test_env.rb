@@ -5,6 +5,8 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
+    'not-merged-branch'                  => 'b83d6e3',
+    'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
     'ends-with.json'                     => '98b0d8b',
     'flatten-dir'                        => 'e56497b',
@@ -14,7 +16,8 @@ module TestEnv
     'improve/awesome'                    => '5937ac0',
     'markdown'                           => '0ed8c6c',
     'lfs'                                => 'be93687',
-    'master'                             => '5937ac0',
+    'master'                             => 'b83d6e3',
+    'merge-test'                         => '5937ac0',
     "'test'"                             => 'e56497b',
     'orphaned-branch'                    => '45127a9',
     'binary-encoding'                    => '7b1cf43',

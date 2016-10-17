@@ -25,7 +25,7 @@
         return function(e) {
           e.preventDefault();
           e.stopPropagation();
-          return _this.input.val('').trigger('keyup').focus();
+          return _this.input.val('').trigger('input').focus();
         };
       })(this));
       // Key events
@@ -37,28 +37,16 @@
             e.preventDefault()
           }
         })
-        .on('keyup', function(e) {
-          var keyCode;
-          keyCode = e.which;
-          if (ARROW_KEY_CODES.indexOf(keyCode) >= 0) {
-            return;
-          }
+        .on('input', function() {
           if (this.input.val() !== "" && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.addClass(HAS_VALUE_CLASS);
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.removeClass(HAS_VALUE_CLASS);
           }
-          if (keyCode === 13 && !options.elIsInput) {
-            return false;
-          }
           // Only filter asynchronously only if option remote is set
           if (this.options.remote) {
             clearTimeout(timeout);
             return timeout = setTimeout(function() {
-              var blurField = this.shouldBlur(keyCode);
-              if (blurField && this.filterInputBlur) {
-                this.input.blur();
-              }
               return this.options.query(this.input.val(), function(data) {
                 return this.options.callback(data);
               }.bind(this));
@@ -255,7 +243,7 @@
                 _this.fullData = data;
                 _this.parseData(_this.fullData);
                 if (_this.options.filterable && _this.filter && _this.filter.input) {
-                  return _this.filter.input.trigger('keyup');
+                  return _this.filter.input.trigger('input');
                 }
               };
             // Remote data
@@ -487,7 +475,7 @@
       // Triggering 'keyup' will re-render the dropdown which is not always required
       // specially if we want to keep the state of the dropdown needed for bulk-assignment
       if (!this.options.persistWhenHide) {
-        $input.trigger("keyup");
+        $input.trigger("input");
       }
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         $('.dropdown-menu', this.dropdown).removeClass(PAGE_TWO_CLASS);
@@ -500,14 +488,27 @@
 
     // Render the full menu
     GitLabDropdown.prototype.renderMenu = function(html) {
-      var menu_html;
-      menu_html = "";
       if (this.options.renderMenu) {
-        menu_html = this.options.renderMenu(html);
+        return this.options.renderMenu(html);
       } else {
-        menu_html = $('<ul />').append(html);
+        var ul = document.createElement('ul');
+
+        for (var i = 0; i < html.length; i++) {
+          var el = html[i];
+
+          if (el instanceof jQuery) {
+            el = el.get(0);
+          }
+
+          if (typeof el === 'string') {
+            ul.innerHTML += el;
+          } else {
+            ul.appendChild(el);
+          }
+        }
+
+        return ul;
       }
-      return menu_html;
     };
 
     // Append the menu into the dropdown
@@ -521,7 +522,7 @@
     };
 
     GitLabDropdown.prototype.renderItem = function(data, group, index) {
-      var cssClass, field, fieldName, groupAttrs, html, selected, text, url, value;
+      var field, fieldName, html, selected, text, url, value;
       if (group == null) {
         group = false;
       }
@@ -529,18 +530,16 @@
         // Render the row
         index = false;
       }
-      html = "";
-      // Divider
-      if (data === "divider") {
-        return "<li class='divider'></li>";
-      }
-      // Separator is a full-width divider
-      if (data === "separator") {
-        return "<li class='separator'></li>";
+      html = document.createElement('li');
+      if (data === 'divider' || data === 'separator') {
+        html.className = data;
+        return html;
       }
       // Header
       if (data.header != null) {
-        return _.template('<li class="dropdown-header"><%- header %></li>')({ header: data.header });
+        html.className = 'dropdown-header';
+        html.innerHTML = data.header;
+        return html;
       }
       if (this.options.renderRow) {
         // Call the render function
@@ -567,24 +566,25 @@
         } else {
           text = data.text != null ? data.text : '';
         }
-        cssClass = "";
-        if (selected) {
-          cssClass = "is-active";
-        }
         if (this.highlight) {
           text = this.highlightTextMatches(text, this.filterInput.val());
         }
-        if (group) {
-          groupAttrs = 'data-group=' + group + ' data-index=' + index;
-        } else {
-          groupAttrs = '';
+        // Create the list item & the link
+        var link = document.createElement('a');
+
+        link.href = url;
+        link.innerHTML = text;
+
+        if (selected) {
+          link.className = 'is-active';
         }
-        html = _.template('<li><a href="<%- url %>" <%- groupAttrs %> class="<%- cssClass %>"><%= text %></a></li>')({
-          url: url,
-          groupAttrs: groupAttrs,
-          cssClass: cssClass,
-          text: text
-        });
+
+        if (group) {
+          link.dataset.group = group;
+          link.dataset.index = index;
+        }
+
+        html.appendChild(link);
       }
       return html;
     };
@@ -738,6 +738,7 @@
             return false;
           }
           if (currentKeyCode === 13 && currentIndex !== -1) {
+            e.preventDefault();
             _this.selectRowAtIndex();
           }
         };

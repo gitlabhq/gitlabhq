@@ -41,7 +41,7 @@
             %li.header-user.dropdown
               = link_to current_user, class: "header-user-dropdown-toggle", data: { toggle: "dropdown" } do
                 = image_tag avatar_icon(current_user, 26), width: 26, height: 26, class: "header-user-avatar"
-                %span.caret
+                = icon('caret-down')
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
                   %li

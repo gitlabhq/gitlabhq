@@ -66,7 +66,22 @@ class Environment < ActiveRecord::Base
     self.name == "production"
   end
 
+  def first_deployment_for(commit)
+    ref = project.repository.ref_name_for_sha(ref_path, commit.sha)
+
+    return nil unless ref
+
+    deployment_id = ref.split('/').last
+    deployments.find(deployment_id)
+  end
+
   def ref_path
     "refs/environments/#{Shellwords.shellescape(name)}"
+  end
+
+  def formatted_external_url
+    return nil unless external_url
+
+    external_url.gsub(/\A.*?:\/\//, '')
   end
 end

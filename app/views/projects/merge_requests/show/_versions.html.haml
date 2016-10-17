@@ -9,7 +9,7 @@
               latest version
             - else
               version #{version_index(@merge_request_diff)}
-          %span.caret
+          = icon('caret-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           .dropdown-title
             %span Version:
@@ -39,7 +39,7 @@
                 version #{version_index(@start_version)}
               - else
                 #{@merge_request.target_branch}
-            %span.caret
+            = icon('caret-down')
           .dropdown-menu.dropdown-select.dropdown-menu-selectable
             .dropdown-title
               %span Compared with:
@@ -63,6 +63,16 @@
                     %strong
                       #{@merge_request.target_branch} (base)
                     .monospace #{short_sha(@merge_request_diff.base_commit_sha)}
+
+    - if different_base?(@start_version, @merge_request_diff)
+      .content-block
+        = icon('info-circle')
+        Selected versions have different base commits.
+        Changes will include
+        = link_to namespace_project_compare_path(@project.namespace, @project, from: @start_version.base_commit_sha, to: @merge_request_diff.base_commit_sha) do
+          new commits
+        from
+        %code #{@merge_request.target_branch}
 
     - unless @merge_request_diff.latest? && !@start_sha
       .comments-disabled-notif.content-block

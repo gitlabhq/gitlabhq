@@ -87,17 +87,6 @@ your Runners in the most possible secure way, by avoiding the following:
 By using an insecure GitLab Runner configuration, you allow the rogue developers
 to steal the tokens of other builds.
 
-## Debugging problems
-
-With the new permission model in place, there may be times that your build will
-fail. This is most likely because your project tries to access other project's
-sources, and you don't have the appropriate permissions. In the build log look
-for information about 403 or forbidden access messages
-
-As an Administrator, you can verify that the user is a member of the group or
-project they're trying to have access to, and you can impersonate the user to
-retry the failing build in order to verify that everything is correct.
-
 ## Build triggers
 
 [Build triggers][triggers] do not support the new permission model.
@@ -149,17 +138,46 @@ with GitLab 8.12.
 
 ## Making use of the new CI build permissions model
 
-With the new build permission model, there is now an easy way to access all
+With the new build permissions model, there is now an easy way to access all
 dependent source code in a project. That way, we can:
 
 1. Access a project's Git submodules
 1. Access private container images
 1. Access project's and submodule LFS objects
 
-Let's see how that works with Git submodules and private Docker images hosted on
+Below you can see the prerequisites needed to make use of the new permissions
+model and how that works with Git submodules and private Docker images hosted on
 the container registry.
 
-## Git submodules
+### Prerequisites to use the new permissions model
+
+With the new permissions model in place, there may be times that your build will
+fail. This is most likely because your project tries to access other project's
+sources, and you don't have the appropriate permissions. In the build log look
+for information about 403 or forbidden access messages.
+
+In short here's what you need to do should you encounter any issues.
+
+As an administrator:
+
+- **500 errors**: You will need to update [GitLab Workhorse][workhorse] to at
+  least 0.8.2. This is done automatically for Omnibus installations, you need to
+  [check manually][update-docs] for installations from source.
+- **500 errors**: Check if you have another web proxy sitting in front of NGINX (HAProxy,
+  Apache, etc.). It might be a good idea to let GitLab use the internal NGINX
+  web server and not disable it completely. See [this comment][comment] for an
+  example.
+- **403 errors**: You need to make sure that your installation has [HTTP(S)
+  cloning enabled][https]. HTTP(S) support is now a **requirement** by GitLab CI
+  to clone all sources.
+
+As a user:
+
+- Make sure you are a member of the group or project you're trying to have
+  access to. As an Administrator, you can verify that by impersonating the user
+  and retry the failing build in order to verify that everything is correct.
+
+### Git submodules
 
 >
 It often happens that while working on one project, you need to use another
@@ -283,7 +301,11 @@ test:
     - docker run $CI_REGISTRY/group/other-project:latest
 ```
 
-[git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [build permissions]: ../permissions.md#builds-permissions
+[comment]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22484#note_16648302
 [ext]: ../permissions.md#external-users
+[git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+[https]: ../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
 [triggers]: ../../ci/triggers/README.md
+[update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
+[workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse

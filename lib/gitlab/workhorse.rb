@@ -111,7 +111,7 @@ module Gitlab
       def write_secret
         bytes = SecureRandom.random_bytes(SECRET_LENGTH)
         File.open(secret_path, 'w:BINARY', 0600) do |f|
-          f.chmod(0600)
+          f.chmod(0600) # If the file already existed, the '0600' passed to 'open' above was a no-op.
           f.write(Base64.strict_encode64(bytes))
         end
       end

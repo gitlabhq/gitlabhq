@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Boards::Lists::CreateService, services: true do
   describe '#execute' do
-    let(:project) { create(:project_with_board) }
-    let(:board)   { project.board }
+    let(:project) { create(:empty_project) }
+    let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
     let(:label)   { create(:label, project: project, name: 'in-progress') }
 
@@ -11,7 +11,7 @@ describe Boards::Lists::CreateService, services: true do
 
     context 'when board lists is empty' do
       it 'creates a new list at beginning of the list' do
-        list = service.execute
+        list = service.execute(board)
 
         expect(list.position).to eq 0
       end
@@ -19,7 +19,7 @@ describe Boards::Lists::CreateService, services: true do
 
     context 'when board lists has backlog, and done lists' do
       it 'creates a new list at beginning of the list' do
-        list = service.execute
+        list = service.execute(board)
 
         expect(list.position).to eq 0
       end
@@ -30,7 +30,7 @@ describe Boards::Lists::CreateService, services: true do
         create(:list, board: board, position: 0)
         create(:list, board: board, position: 1)
 
-        list = service.execute
+        list = service.execute(board)
 
         expect(list.position).to eq 2
       end
@@ -40,7 +40,7 @@ describe Boards::Lists::CreateService, services: true do
       it 'creates a new list at end of the label lists' do
         list1 = create(:list, board: board, position: 0)
 
-        list2 = service.execute
+        list2 = service.execute(board)
 
         expect(list1.reload.position).to eq 0
         expect(list2.reload.position).to eq 1
@@ -52,7 +52,7 @@ describe Boards::Lists::CreateService, services: true do
         label = create(:label, name: 'in-development')
         service = described_class.new(project, user, label_id: label.id)
 
-        expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { service.execute(board) }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

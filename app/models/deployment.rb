@@ -40,7 +40,14 @@ class Deployment < ActiveRecord::Base
   def includes_commit?(commit)
     return false unless commit
 
-    project.repository.is_ancestor?(commit.id, sha)
+    # Before 8.10, deployments didn't have keep-around refs. Any deployment
+    # created before then could have a `sha` referring to a commit that no
+    # longer exists in the repository, so just ignore those.
+    begin
+      project.repository.is_ancestor?(commit.id, sha)
+    rescue Rugged::OdbError
+      false
+    end
   end
 
   def update_merge_request_metrics!
@@ -88,6 +95,10 @@ class Deployment < ActiveRecord::Base
 
   def closeable?
     close_action.present?
+  end
+
+  def formatted_deployment_time
+    created_at.to_time.in_time_zone.to_s(:medium)
   end
 
   private

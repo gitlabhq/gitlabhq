@@ -3,6 +3,7 @@ module Ci
     extend Ci::Model
     include HasStatus
     include Importable
+    include AfterCommitQueue
 
     self.table_name = 'ci_commits'
 
@@ -56,6 +57,10 @@ module Ci
         pipeline.finished_at = Time.now
       end
 
+      before_transition do |pipeline|
+        pipeline.update_duration
+      end
+
       after_transition [:created, :pending] => :running do |pipeline|
         MergeRequest::Metrics.where(merge_request_id: pipeline.merge_requests.map(&:id)).
           update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: nil)
@@ -66,12 +71,16 @@ module Ci
           update_all(latest_build_finished_at: pipeline.finished_at)
       end
 
-      before_transition do |pipeline|
-        pipeline.update_duration
+      after_transition [:created, :pending, :running] => :success do |pipeline|
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
       end
 
       after_transition do |pipeline, transition|
-        pipeline.execute_hooks unless transition.loopback?
+        next if transition.loopback?
+
+        pipeline.run_after_commit do
+          PipelineHooksWorker.perform_async(id)
+        end
       end
     end
 
@@ -292,11 +301,9 @@ module Ci
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     def merge_requests
-      @merge_requests ||=
-        begin
-          project.merge_requests.where(source_branch: self.ref).
-            select { |merge_request| merge_request.pipeline.try(:id) == self.id }
-        end
+      @merge_requests ||= project.merge_requests
+        .where(source_branch: self.ref)
+        .select { |merge_request| merge_request.pipeline.try(:id) == self.id }
     end
 
     private

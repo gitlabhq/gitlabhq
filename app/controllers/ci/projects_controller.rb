@@ -1,5 +1,5 @@
 module Ci
-  class ProjectsController < Ci::ApplicationController
+  class ProjectsController < ::ApplicationController
     before_action :project
     before_action :no_cache, only: [:badge]
     before_action :authorize_read_project!, except: [:badge, :index]

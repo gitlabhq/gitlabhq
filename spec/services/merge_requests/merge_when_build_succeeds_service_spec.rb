@@ -58,79 +58,44 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
   end
 
   describe "#trigger" do
-    context 'build with ref' do
-      let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
+    let(:merge_request_ref) { mr_merge_if_green_enabled.source_branch }
+    let(:merge_request_head) do
+      project.commit(mr_merge_if_green_enabled.source_branch).id
+    end
+
+    context 'when triggered by pipeline with valid ref and sha' do
+      let(:triggering_pipeline) do
+        create(:ci_pipeline, project: project, ref: merge_request_ref,
+                             sha: merge_request_head, status: 'success')
+      end
 
       it "merges all merge requests with merge when build succeeds enabled" do
-        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
-        allow(pipeline).to receive(:success?).and_return(true)
-
         expect(MergeWorker).to receive(:perform_async)
-        service.trigger(build)
+        service.trigger(triggering_pipeline)
       end
     end
 
-    context 'triggered by an old build' do
-      let(:old_build) { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
-      let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
+    context 'when triggered by an old pipeline' do
+      let(:old_pipeline) do
+        create(:ci_pipeline, project: project, ref: merge_request_ref,
+                             sha: '1234abcdef', status: 'success')
+      end
 
-      it "merges all merge requests with merge when build succeeds enabled" do
-        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
-        allow(pipeline).to receive(:success?).and_return(true)
-        allow(old_build).to receive(:sha).and_return('1234abcdef')
-
+      it 'it does not merge merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
-        service.trigger(old_build)
+        service.trigger(old_pipeline)
       end
     end
 
-    context 'commit status without ref' do
-      let(:commit_status) { create(:generic_commit_status, status: 'success') }
+    context 'when triggered by pipeline from a different branch' do
+      let(:unrelated_pipeline) do
+        create(:ci_pipeline, project: project, ref: 'feature',
+                             sha: merge_request_head, status: 'success')
+      end
 
-      before { mr_merge_if_green_enabled }
-
-      it "doesn't merge a requests for status on other branch" do
-        allow(project.repository).to receive(:branch_names_contains).with(commit_status.sha).and_return([])
-
+      it 'does not merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
-        service.trigger(commit_status)
-      end
-
-      it 'discovers branches and merges all merge requests when status is success' do
-        allow(project.repository).to receive(:branch_names_contains).
-          with(commit_status.sha).and_return([mr_merge_if_green_enabled.source_branch])
-        allow(pipeline).to receive(:success?).and_return(true)
-        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
-        allow(pipeline).to receive(:success?).and_return(true)
-
-        expect(MergeWorker).to receive(:perform_async)
-        service.trigger(commit_status)
-      end
-    end
-
-    context 'properly handles multiple stages' do
-      let(:ref) { mr_merge_if_green_enabled.source_branch }
-      let!(:build) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
-      let!(:test) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
-      let(:pipeline) { create(:ci_empty_pipeline, ref: mr_merge_if_green_enabled.source_branch, project: project) }
-
-      before do
-        # This behavior of MergeRequest: we instantiate a new object
-        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_wrap_original do
-          Ci::Pipeline.find(pipeline.id)
-        end
-      end
-
-      it "doesn't merge if some stages failed" do
-        expect(MergeWorker).not_to receive(:perform_async)
-        build.success
-        test.drop
-      end
-
-      it 'merge when all stages succeeded' do
-        expect(MergeWorker).to receive(:perform_async)
-        build.success
-        test.success
+        service.trigger(unrelated_pipeline)
       end
     end
   end
@@ -149,6 +114,48 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
     it 'Posts a system note' do
       note = mr_merge_if_green_enabled.notes.last
       expect(note.note).to include 'Canceled the automatic merge'
+    end
+  end
+
+  describe 'pipeline integration' do
+    context 'when there are multiple stages in the pipeline' do
+      let(:ref) { mr_merge_if_green_enabled.source_branch }
+      let(:sha) { project.commit(ref).id }
+
+      let(:pipeline) do
+        create(:ci_empty_pipeline, ref: ref, sha: sha, project: project)
+      end
+
+      let!(:build) do
+        create(:ci_build, :created, pipeline: pipeline, ref: ref,
+                                    name: 'build', stage: 'build')
+      end
+
+      let!(:test) do
+        create(:ci_build, :created, pipeline: pipeline, ref: ref,
+                                    name: 'test', stage: 'test')
+      end
+
+      before do
+        # This behavior of MergeRequest: we instantiate a new object
+        allow_any_instance_of(MergeRequest).to receive(:pipeline).and_wrap_original do
+          Ci::Pipeline.find(pipeline.id)
+        end
+      end
+
+      it "doesn't merge if any of stages failed" do
+        expect(MergeWorker).not_to receive(:perform_async)
+
+        build.success
+        test.drop
+      end
+
+      it 'merges when all stages succeeded' do
+        expect(MergeWorker).to receive(:perform_async)
+
+        build.success
+        test.success
+      end
     end
   end
 end

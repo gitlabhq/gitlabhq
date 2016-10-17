@@ -628,7 +628,7 @@ describe Notify do
         it_behaves_like 'a user cannot unsubscribe through footer link'
 
         it 'has the correct subject' do
-          is_expected.to have_subject /#{commit.title} \(#{commit.short_id}\)/
+          is_expected.to have_subject /Re: #{project.name} | #{commit.title} \(#{commit.short_id}\)/
         end
 
         it 'contains a link to the commit' do

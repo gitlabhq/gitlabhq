@@ -1,45 +1,46 @@
-.row-content-block.build-content.middle-block.pipeline-actions
-  .pull-right
-    .btn.btn-grouped.btn-white.toggle-pipeline-btn
-      %span.toggle-btn-text Hide
-      %span pipeline graph
-      %span.caret
-    - if can?(current_user, :update_pipeline, pipeline.project)
-      - if pipeline.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: 'btn btn-grouped btn-primary', method: :post
+.pipeline-graph-container
+  .row-content-block.build-content.middle-block.pipeline-actions
+    .pull-right
+      .btn.btn-grouped.btn-white.toggle-pipeline-btn
+        %span.toggle-btn-text Hide
+        %span pipeline graph
+        %span.caret
+      - if can?(current_user, :update_pipeline, pipeline.project)
+        - if pipeline.builds.latest.failed.any?(&:retryable?)
+          = link_to "Retry failed", retry_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: 'btn btn-grouped btn-primary', method: :post
 
-      - if pipeline.builds.running_or_pending.any?
-        = link_to "Cancel running", cancel_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
+        - if pipeline.builds.running_or_pending.any?
+          = link_to "Cancel running", cancel_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
 
-  .oneline.clearfix
-    - if defined?(pipeline_details) && pipeline_details
-      Pipeline
-      = link_to "##{pipeline.id}", namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: "monospace"
-      with
-      = pluralize pipeline.statuses.count(:id), "build"
-      - if pipeline.ref
-        for
-        = link_to pipeline.ref, namespace_project_commits_path(pipeline.project.namespace, pipeline.project, pipeline.ref), class: "monospace"
-      - if defined?(link_to_commit) && link_to_commit
-        for commit
-        = link_to pipeline.short_sha, namespace_project_commit_path(pipeline.project.namespace, pipeline.project, pipeline.sha), class: "monospace"
-      - if pipeline.duration
-        in
-        = time_interval_in_words pipeline.duration
+    .oneline.clearfix
+      - if defined?(pipeline_details) && pipeline_details
+        Pipeline
+        = link_to "##{pipeline.id}", namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: "monospace"
+        with
+        = pluralize pipeline.statuses.count(:id), "build"
+        - if pipeline.ref
+          for
+          = link_to pipeline.ref, namespace_project_commits_path(pipeline.project.namespace, pipeline.project, pipeline.ref), class: "monospace"
+        - if defined?(link_to_commit) && link_to_commit
+          for commit
+          = link_to pipeline.short_sha, namespace_project_commit_path(pipeline.project.namespace, pipeline.project, pipeline.sha), class: "monospace"
+        - if pipeline.duration
+          in
+          = time_interval_in_words pipeline.duration
 
-.row-content-block.build-content.middle-block.pipeline-graph
-  .pipeline-visualization
-    %ul.stage-column-list
-      - stages = pipeline.stages_with_latest_statuses
-      - stages.each do |stage, statuses|
-        %li.stage-column
-          .stage-name
-            %a{name: stage}
-            - if stage
-              = stage.titleize
-          .builds-container
-            %ul
-              = render "projects/commit/pipeline_stage", statuses: statuses
+  .row-content-block.build-content.middle-block.pipeline-graph.hidden
+    .pipeline-visualization
+      %ul.stage-column-list
+        - stages = pipeline.stages_with_latest_statuses
+        - stages.each do |stage, statuses|
+          %li.stage-column
+            .stage-name
+              %a{name: stage}
+              - if stage
+                = stage.titleize
+            .builds-container
+              %ul
+                = render "projects/commit/pipeline_stage", statuses: statuses
 
 
 - if pipeline.yaml_errors.present?
@@ -55,7 +56,7 @@
     \.gitlab-ci.yml not found in this commit
 
 .table-holder.pipeline-holder
-  %table.table.builds.pipeline
+  %table.table.ci-table.pipeline
     %thead
       %tr
         %th Status

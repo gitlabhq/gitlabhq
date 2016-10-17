@@ -21,7 +21,14 @@
       padding-right: 10px;
 
       b {
-        @extend .caret;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 2px;
+        vertical-align: middle;
+        border-top: $caret-width-base dashed;
+        border-right: $caret-width-base solid transparent;
+        border-left: $caret-width-base solid transparent;
         color: $gray-darkest;
       }
     }
@@ -39,8 +46,8 @@
 }
 
 .select2-drop {
-  @include box-shadow(rgba(76, 86, 103, 0.247059) 0 0 1px 0, rgba(31, 37, 50, 0.317647) 0 2px 18px 0);
-  @include border-radius ($border-radius-default);
+  box-shadow: rgba(76, 86, 103, 0.247059) 0 0 1px 0, rgba(31, 37, 50, 0.317647) 0 2px 18px 0;
+  border-radius: $border-radius-default;
   border: none;
   min-width: 175px;
 }
@@ -65,7 +72,7 @@
 
 .select2-container-active {
   .select2-choice, .select2-choices {
-    @include box-shadow(none);
+    box-shadow: none;
   }
 }
 
@@ -75,18 +82,18 @@
     outline: 0;
     background-image: none;
     background-color: $white-dark;
-    @include box-shadow($gl-btn-active-gradient);
+    box-shadow: $gl-btn-active-gradient;
   }
 }
 
 .select2-container-multi {
   .select2-choices {
-    @include border-radius($border-radius-default);
+    border-radius: $border-radius-default;
     border-color: $input-border;
     background: none;
 
     .select2-search-field input {
-      padding: $gl-padding / 2;
+      padding: 5px $gl-padding / 2;
       font-size: 13px;
       height: auto;
       font-family: inherit;
@@ -94,7 +101,7 @@
     }
 
     .select2-search-choice {
-      margin: 8px 0 0 8px;
+      margin: 5px 0 0 8px;
       box-shadow: none;
       border-color: $input-border;
       color: $gl-text-color;
@@ -116,7 +123,7 @@
   &.select2-container-active .select2-choices,
   &.select2-dropdown-open .select2-choices {
     border-color: $border-white-normal;
-    @include box-shadow($gl-btn-active-gradient);
+    box-shadow: $gl-btn-active-gradient;
   }
 }
 
@@ -130,6 +137,7 @@
 
   .select2-results {
     max-height: 350px;
+
     .select2-highlighted {
       background: $gl-primary;
     }
@@ -150,7 +158,7 @@
   background-repeat: no-repeat;
   background-position: right 0 bottom 6px;
   border: 1px solid $input-border;
-  @include border-radius($border-radius-default);
+  border-radius: $border-radius-default;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
   &:focus {
@@ -205,9 +213,11 @@
   .group-image {
     float: left;
   }
+
   .group-name {
     font-weight: bold;
   }
+
   .group-path {
     color: #999;
   }
@@ -232,6 +242,7 @@
     color: #aaa;
     font-weight: normal;
   }
+
   .namespace-path {
     margin-left: 10px;
     font-weight: bolder;

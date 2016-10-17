@@ -57,6 +57,10 @@ header {
         &:hover, &:focus, &:active {
           background-color: $background-color;
         }
+
+        .fa-caret-down {
+          font-size: 15px;
+        }
       }
 
       .navbar-toggle {
@@ -164,6 +168,7 @@ header {
 
       a {
         color: $gl-text-color;
+
         &:hover {
           text-decoration: underline;
         }

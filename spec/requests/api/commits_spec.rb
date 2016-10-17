@@ -5,7 +5,7 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
@@ -13,7 +13,7 @@ describe API::API, api: true  do
 
   before { project.team << [user, :reporter] }
 
-  describe "GET /projects/:id/repository/commits" do
+  describe "List repository commits" do
     context "authorized user" do
       before { project.team << [user2, :reporter] }
 
@@ -53,7 +53,12 @@ describe API::API, api: true  do
 
         get api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-        expect(json_response.size).to eq(commits.size - 1)
+        if commits.size >= 20
+          expect(json_response.size).to eq(20)
+        else
+          expect(json_response.size).to eq(commits.size - 1)
+        end
+
         expect(json_response.first["id"]).to eq(commits.second.id)
         expect(json_response.second["id"]).to eq(commits.third.id)
       end
@@ -69,7 +74,268 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /projects:id/repository/commits/:sha" do
+  describe "Create a commit with multiple files and actions" do
+    let!(:url) { "/projects/#{project.id}/repository/commits" }
+
+    it 'returns a 403 unauthorized for user without permissions' do
+      post api(url, user2)
+
+      expect(response).to have_http_status(403)
+    end
+
+    it 'returns a 400 bad request if no params are given' do
+      post api(url, user)
+
+      expect(response).to have_http_status(400)
+    end
+
+    context :create do
+      let(:message) { 'Created file' }
+      let!(:invalid_c_params) do
+        {
+          branch_name: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'create',
+              file_path: 'files/ruby/popen.rb',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+      let!(:valid_c_params) do
+        {
+          branch_name: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it 'a new file in project repo' do
+        post api(url, user), valid_c_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq(message)
+      end
+
+      it 'returns a 400 bad request if file exists' do
+        post api(url, user), invalid_c_params
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context :delete do
+      let(:message) { 'Deleted file' }
+      let!(:invalid_d_params) do
+        {
+          branch_name: 'markdown',
+          commit_message: message,
+          actions: [
+            {
+              action: 'delete',
+              file_path: 'doc/api/projects.md'
+            }
+          ]
+        }
+      end
+      let!(:valid_d_params) do
+        {
+          branch_name: 'markdown',
+          commit_message: message,
+          actions: [
+            {
+              action: 'delete',
+              file_path: 'doc/api/users.md'
+            }
+          ]
+        }
+      end
+
+      it 'an existing file in project repo' do
+        post api(url, user), valid_d_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq(message)
+      end
+
+      it 'returns a 400 bad request if file does not exist' do
+        post api(url, user), invalid_d_params
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context :move do
+      let(:message) { 'Moved file' }
+      let!(:invalid_m_params) do
+        {
+          branch_name: 'feature',
+          commit_message: message,
+          actions: [
+            {
+              action: 'move',
+              file_path: 'CHANGELOG',
+              previous_path: 'VERSION',
+              content: '6.7.0.pre'
+            }
+          ]
+        }
+      end
+      let!(:valid_m_params) do
+        {
+          branch_name: 'feature',
+          commit_message: message,
+          actions: [
+            {
+              action: 'move',
+              file_path: 'VERSION.txt',
+              previous_path: 'VERSION',
+              content: '6.7.0.pre'
+            }
+          ]
+        }
+      end
+
+      it 'an existing file in project repo' do
+        post api(url, user), valid_m_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq(message)
+      end
+
+      it 'returns a 400 bad request if file does not exist' do
+        post api(url, user), invalid_m_params
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context :update do
+      let(:message) { 'Updated file' }
+      let!(:invalid_u_params) do
+        {
+          branch_name: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'update',
+              file_path: 'foo/bar.baz',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+      let!(:valid_u_params) do
+        {
+          branch_name: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'update',
+              file_path: 'files/ruby/popen.rb',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it 'an existing file in project repo' do
+        post api(url, user), valid_u_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq(message)
+      end
+
+      it 'returns a 400 bad request if file does not exist' do
+        post api(url, user), invalid_u_params
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context "multiple operations" do
+      let(:message) { 'Multiple actions' }
+      let!(:invalid_mo_params) do
+        {
+          branch_name: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'create',
+              file_path: 'files/ruby/popen.rb',
+              content: 'puts 8'
+            },
+            {
+              action: 'delete',
+              file_path: 'doc/api/projects.md'
+            },
+            {
+              action: 'move',
+              file_path: 'CHANGELOG',
+              previous_path: 'VERSION',
+              content: '6.7.0.pre'
+            },
+            {
+              action: 'update',
+              file_path: 'foo/bar.baz',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+      let!(:valid_mo_params) do
+        {
+          branch_name: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 8'
+            },
+            {
+              action: 'delete',
+              file_path: 'Gemfile.zip'
+            },
+            {
+              action: 'move',
+              file_path: 'VERSION.txt',
+              previous_path: 'VERSION',
+              content: '6.7.0.pre'
+            },
+            {
+              action: 'update',
+              file_path: 'files/ruby/popen.rb',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it 'are commited as one in project repo' do
+        post api(url, user), valid_mo_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq(message)
+      end
+
+      it 'return a 400 bad request if there are any issues' do
+        post api(url, user), invalid_mo_params
+
+        expect(response).to have_http_status(400)
+      end
+    end
+  end
+
+  describe "Get a single commit" do
     context "authorized user" do
       it "returns a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
@@ -122,7 +388,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /projects:id/repository/commits/:sha/diff" do
+  describe "Get the diff of a commit" do
     context "authorized user" do
       before { project.team << [user2, :reporter] }
 
@@ -149,7 +415,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /projects:id/repository/commits/:sha/comments' do
+  describe 'Get the comments of a commit' do
     context 'authorized user' do
       it 'returns merge_request comments' do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
@@ -174,7 +440,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'POST /projects:id/repository/commits/:sha/comments' do
+  describe 'Post comment to commit' do
     context 'authorized user' do
       it 'returns comment' do
         post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment'
@@ -186,11 +452,12 @@ describe API::API, api: true  do
       end
 
       it 'returns the inline comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 7, line_type: 'new'
+        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
+
         expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
-        expect(json_response['line']).to eq(7)
+        expect(json_response['line']).to eq(1)
         expect(json_response['line_type']).to eq('new')
       end
 

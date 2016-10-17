@@ -31,7 +31,7 @@ class MergeRequest < ActiveRecord::Base
 
   # Temporary fields to store compare vars
   # when creating new merge request
-  attr_accessor :can_be_created, :compare_commits, :compare
+  attr_accessor :can_be_created, :compare_commits, :diff_options, :compare
 
   state_machine :state, initial: :opened do
     event :close do
@@ -196,7 +196,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    merge_request_diff.size
+    diffs(diff_options).size
   end
 
   def diff_base_commit
@@ -688,12 +688,15 @@ class MergeRequest < ActiveRecord::Base
   def environments
     return [] unless diff_head_commit
 
-    environments = source_project.environments_for(
-      source_branch, diff_head_commit)
-    environments += target_project.environments_for(
-      target_branch, diff_head_commit, with_tags: true)
+    @environments ||=
+      begin
+        environments = source_project.environments_for(
+          source_branch, diff_head_commit)
+        environments += target_project.environments_for(
+          target_branch, diff_head_commit, with_tags: true)
 
-    environments.uniq
+        environments.uniq
+      end
   end
 
   def state_human_name

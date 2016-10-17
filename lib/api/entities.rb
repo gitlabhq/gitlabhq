@@ -432,12 +432,28 @@ module API
       end
     end
 
-    class Label < Grape::Entity
+    class LabelBasic < Grape::Entity
       expose :name, :color, :description
+    end
+
+    class Label < LabelBasic
       expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
 
       expose :subscribed do |label, options|
         label.subscribed?(options[:current_user])
+      end
+    end
+
+    class List < Grape::Entity
+      expose :id
+      expose :label, using: Entities::LabelBasic
+      expose :position
+    end
+
+    class Board < Grape::Entity
+      expose :id
+      expose :lists, using: Entities::List do |board|
+        board.lists.destroyable
       end
     end
 

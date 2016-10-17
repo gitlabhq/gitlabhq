@@ -1,6 +1,9 @@
+- @no_container = true
 - page_title "New Label"
+= render "projects/issues/head"
 
-%h3.page-title
-  New Label
-%hr
-= render 'form'
+%div{ class: container_class }
+  %h3.page-title
+    New Label
+  %hr
+  = render 'form'

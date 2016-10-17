@@ -24,7 +24,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_many(:boards).dependent(:destroy) }
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
@@ -92,6 +92,15 @@ describe Project, models: true do
           expect(requester_user_ids).to include(requester.id)
           expect(requester_user_ids).not_to include(developer.id)
         end
+      end
+    end
+
+    describe '#boards' do
+      it 'raises an error when attempting to add more than one board to the project' do
+        subject.boards.build
+
+        expect { subject.boards.build }.to raise_error(Project::BoardLimitExceeded, 'Number of permitted boards exceeded')
+        expect(subject.boards.size).to eq 1
       end
     end
   end
@@ -219,7 +228,6 @@ describe Project, models: true do
   describe 'Respond to' do
     it { is_expected.to respond_to(:url_to_repo) }
     it { is_expected.to respond_to(:repo_exists?) }
-    it { is_expected.to respond_to(:update_merge_requests) }
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
@@ -308,7 +316,9 @@ describe Project, models: true do
   end
 
   describe 'last_activity methods' do
-    let(:project) { create(:project, last_activity_at: 2.hours.ago) }
+    let(:timestamp) { 2.hours.ago }
+    # last_activity_at gets set to created_at upon creation
+    let(:project) { create(:project, created_at: timestamp, updated_at: timestamp) }
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
@@ -322,6 +332,7 @@ describe Project, models: true do
       it 'returns the creation date of the project\'s last event if present' do
         new_event = create(:event, project: project, created_at: Time.now)
 
+        project.reload
         expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
       end
 
@@ -374,26 +385,6 @@ describe Project, models: true do
     it 'is falsey when issue does not exist' do
       expect(project).to receive(:get_issue).and_return(nil)
       expect(project.issue_exists?(1)).to be_falsey
-    end
-  end
-
-  describe '#update_merge_requests' do
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-    let(:key) { create(:key, user_id: project.owner.id) }
-    let(:prev_commit_id) { merge_request.commits.last.id }
-    let(:commit_id) { merge_request.commits.first.id }
-
-    it 'closes merge request if last commit from source branch was pushed to target branch' do
-      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.merged?).to be_truthy
-    end
-
-    it 'updates merge request commits with new one if pushed to source branch' do
-      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.diff_head_sha).to eq(commit_id)
     end
   end
 
@@ -518,7 +509,7 @@ describe Project, models: true do
   end
 
   describe '#cache_has_external_issue_tracker' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, has_external_issue_tracker: nil) }
 
     it 'stores true if there is any external_issue_tracker' do
       services = double(:service, external_issue_trackers: [RedmineService.new])
@@ -797,32 +788,14 @@ describe Project, models: true do
       end
 
       create(:note_on_commit, project: project2)
+
+      TrendingProject.refresh!
     end
 
-    describe 'without an explicit start date' do
-      subject { described_class.trending.to_a }
+    subject { described_class.trending.to_a }
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project1, project2])
-      end
-    end
-
-    describe 'with an explicit start date' do
-      let(:date) { 2.months.ago }
-
-      subject { described_class.trending(date).to_a }
-
-      before do
-        2.times do
-          # Little fix for special issue related to Fractional Seconds support for MySQL.
-          # See: https://github.com/rails/rails/pull/14359/files
-          create(:note_on_commit, project: project2, created_at: date + 1)
-        end
-      end
-
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project2, project1])
-      end
+    it 'sorts projects by the amount of notes in descending order' do
+      expect(subject).to eq([project1, project2])
     end
 
     it 'does not take system notes into account' do

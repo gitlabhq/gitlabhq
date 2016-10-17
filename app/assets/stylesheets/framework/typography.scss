@@ -106,6 +106,7 @@
     @extend .table-bordered;
     margin: 12px 0;
     color: #5c5d5e;
+
     th {
       background: #f8fafc;
     }
@@ -116,7 +117,7 @@
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
-    @include border-radius(2px);
+    border-radius: 2px;
   }
 
   p > code {

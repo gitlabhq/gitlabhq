@@ -1,4 +1,4 @@
-- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
+- page_title           "#{@merge_request.to_reference} #{@merge_request.title}", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
@@ -22,7 +22,7 @@
           %span.dropdown.inline.prepend-left-5
             %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
               Download as
-              %span.caret
+              = icon('caret-down')
             %ul.dropdown-menu.dropdown-menu-align-right
               %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
@@ -47,7 +47,7 @@
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
     - if @commits_count.nonzero?
-      %ul.merge-request-tabs.nav-links.no-top.no-bottom
+      %ul.merge-request-tabs.nav-links.no-top.no-bottom{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
             Discussion

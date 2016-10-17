@@ -1,7 +1,8 @@
 .suggest-colors {
   margin-top: 5px;
+
   a {
-    @include border-radius(4px);
+    border-radius: 4px;
     width: 30px;
     height: 30px;
     display: inline-block;
@@ -17,7 +18,7 @@
     overflow: hidden;
 
     a {
-      @include border-radius(0);
+      border-radius: 0;
       width: (100% / 7);
       margin-right: 0;
       margin-bottom: -5px;
@@ -59,6 +60,13 @@
       width: 200px;
       margin-bottom: 0;
     }
+
+    .label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      max-width: 100%;
+    }    
   }
 
   .label-description {

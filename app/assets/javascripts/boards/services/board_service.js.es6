@@ -1,15 +1,15 @@
 class BoardService {
-  constructor (root) {
+  constructor (root, boardId) {
     Vue.http.options.root = root;
 
-    this.lists = Vue.resource(`${root}/lists{/id}`, {}, {
+    this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
-        url: `${root}/lists/generate.json`
+        url: `${root}/${boardId}/lists/generate.json`
       }
     });
-    this.issue = Vue.resource(`${root}/issues{/id}`, {});
-    this.issues = Vue.resource(`${root}/lists{/id}/issues`, {});
+    this.issue = Vue.resource(`${root}/${boardId}/issues{/id}`, {});
+    this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {});
 
     Vue.http.interceptors.push((request, next) => {
       request.headers['X-CSRF-Token'] = $.rails.csrfToken();
@@ -56,6 +56,12 @@ class BoardService {
     return this.issue.update({ id }, {
       from_list_id,
       to_list_id
+    });
+  }
+
+  newIssue (id, issue) {
+    return this.issues.save({ id }, {
+      issue
     });
   }
 };

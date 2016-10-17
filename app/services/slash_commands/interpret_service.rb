@@ -122,7 +122,12 @@ module SlashCommands
     command :label do |labels_param|
       label_ids = find_label_ids(labels_param)
 
-      @updates[:add_label_ids] = label_ids unless label_ids.empty?
+      if label_ids.any?
+        @updates[:add_label_ids] ||= []
+        @updates[:add_label_ids] += label_ids
+
+        @updates[:add_label_ids].uniq!
+      end
     end
 
     desc 'Remove all or specific label(s)'
@@ -136,7 +141,12 @@ module SlashCommands
       if labels_param.present?
         label_ids = find_label_ids(labels_param)
 
-        @updates[:remove_label_ids] = label_ids unless label_ids.empty?
+        if label_ids.any?
+          @updates[:remove_label_ids] ||= []
+          @updates[:remove_label_ids] += label_ids
+
+          @updates[:remove_label_ids].uniq!
+        end
       else
         @updates[:label_ids] = []
       end
@@ -152,7 +162,12 @@ module SlashCommands
     command :relabel do |labels_param|
       label_ids = find_label_ids(labels_param)
 
-      @updates[:label_ids] = label_ids unless label_ids.empty?
+      if label_ids.any?
+        @updates[:label_ids] ||= []
+        @updates[:label_ids] += label_ids
+
+        @updates[:label_ids].uniq!
+      end
     end
 
     desc 'Add a todo'

@@ -15,26 +15,27 @@
           - if @environment.opened? && last_deployment.try(:close_action)
             = link_to 'Close', [:play, @project.namespace.becomes(Namespace), @project, last_deployment.close_action], data: { confirm: 'Are you sure you want to close this environment?' }, class: 'btn btn-danger', method: :post
 
-  - if @deployments.blank?
-    .blank-state.blank-state-no-icon
-      %h2.blank-state-title
-        You don't have any deployments right now.
-      %p.blank-state-text
-        Define environments in the deploy stage(s) in
-        %code .gitlab-ci.yml
-        to track deployments here.
-      = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
-  - else
-    .table-holder
-      %table.table.builds.environments
-        %thead
-          %tr
-            %th ID
-            %th Commit
-            %th Build
-            %th
-            %th.hidden-xs
+  .deployments-container
+    - if @deployments.blank?
+      .blank-state.blank-state-no-icon
+        %h2.blank-state-title
+          You don't have any deployments right now.
+        %p.blank-state-text
+          Define environments in the deploy stage(s) in
+          %code .gitlab-ci.yml
+          to track deployments here.
+        = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
+    - else
+      .table-holder
+        %table.table.ci-table.environments
+          %thead
+            %tr
+              %th ID
+              %th Commit
+              %th Build
+              %th
+              %th.hidden-xs
 
-        = render @deployments
+          = render @deployments
 
-    = paginate @deployments, theme: 'gitlab'
+      = paginate @deployments, theme: 'gitlab'

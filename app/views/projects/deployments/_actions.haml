@@ -1,12 +1,18 @@
 - if can?(current_user, :create_deployment, deployment) && deployment.deployable
   .pull-right
+  
+    - external_url = deployment.environment.external_url
+    - if external_url
+      = link_to external_url, target: '_blank', class: 'btn external-url' do
+        = icon('external-link')
+    
     - actions = deployment.manual_actions
     - if actions.present?
       .inline
         .dropdown
           %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
             = custom_icon('icon_play')
-            %b.caret
+            = icon('caret-down')
           %ul.dropdown-menu.dropdown-menu-align-right
             - actions.each do |action|
               %li

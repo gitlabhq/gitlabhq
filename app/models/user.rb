@@ -589,6 +589,11 @@ class User < ActiveRecord::Base
   end
 
   def set_projects_limit
+    # `User.select(:id)` raises
+    # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
+    # without this safeguard!
+    return unless self.has_attribute?(:projects_limit)
+
     connection_default_value_defined = new_record? && !projects_limit_changed?
     return unless self.projects_limit.nil? || connection_default_value_defined
 
@@ -902,7 +907,7 @@ class User < ActiveRecord::Base
       if domain_matches?(allowed_domains, self.email)
         valid = true
       else
-        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        error = "domain is not authorized for sign-up"
         valid = false
       end
     end

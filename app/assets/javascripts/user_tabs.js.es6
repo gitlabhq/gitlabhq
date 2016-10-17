@@ -89,7 +89,7 @@ content on the Users#show page.
       const action = $target.data('action');
       const source = $target.attr('href');
       this.setTab(source, action);
-      return this.setCurrentAction(action);
+      return this.setCurrentAction(source, action);
     }
 
     activateTab(action) {
@@ -142,14 +142,9 @@ content on the Users#show page.
         .toggle(status);
     }
 
-    setCurrentAction(action) {
-      const regExp = new RegExp(`\/(${this.actions.join('|')})(\.html)?\/?$`);
-      let new_state = this._location.pathname;
+    setCurrentAction(source, action) {
+      let new_state = source
       new_state = new_state.replace(/\/+$/, '');
-      new_state = new_state.replace(regExp, '');
-      if (action !== this.defaultAction) {
-        new_state += `/${action}`;
-      }
       new_state += this._location.search + this._location.hash;
       history.replaceState({
         turbolinks: true,

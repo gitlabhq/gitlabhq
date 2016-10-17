@@ -45,6 +45,10 @@ class ApplicationController < ActionController::Base
     redirect_to request.referer.present? ? :back : default, options
   end
 
+  def not_found
+    render_404
+  end
+
   protected
 
   # This filter handles both private tokens and personal access tokens
@@ -173,7 +177,8 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
+    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
+    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
   end
 

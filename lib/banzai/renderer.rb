@@ -1,6 +1,6 @@
 module Banzai
   module Renderer
-    extend self
+    module_function
 
     # Convert a Markdown String into an HTML-safe String of HTML
     #
@@ -29,6 +29,34 @@ module Banzai
       else
         cacheless_render(text, context)
       end
+    end
+
+    # Convert a Markdown-containing field on an object into an HTML-safe String
+    # of HTML. This method is analogous to calling render(object.field), but it
+    # can cache the rendered HTML in the object, rather than Redis.
+    #
+    # The context to use is learned from the passed-in object by calling
+    # #banzai_render_context(field), and cannot be changed. Use #render, passing
+    # it the field text, if a custom rendering is needed. The generated context
+    # is returned along with the HTML.
+    def render_field(object, field)
+      html_field = object.markdown_cache_field_for(field)
+
+      html = object.__send__(html_field)
+      return html if html.present?
+
+      html = cacheless_render_field(object, field)
+      object.update_column(html_field, html) unless object.new_record? || object.destroyed?
+
+      html
+    end
+
+    # Same as +render_field+, but without consulting or updating the cache field
+    def cacheless_render_field(object, field)
+      text = object.__send__(field)
+      context = object.banzai_render_context(field)
+
+      cacheless_render(text, context)
     end
 
     # Perform multiple render from an Array of Markdown String into an
@@ -112,8 +140,6 @@ module Banzai
         pipeline.to_html(html, context)
       end.html_safe
     end
-
-    private
 
     def cacheless_render(text, context = {})
       Gitlab::Metrics.measure(:banzai_cacheless_render) do
