@@ -45,7 +45,7 @@
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
           new ZenMode();
-          new DueDateSelect();
+          new gl.DueDateSelectors();
           new GLForm($('.milestone-form'));
           break;
         case 'groups:milestones:new':

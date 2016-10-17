@@ -5,6 +5,7 @@ v 8.12.7
   - Fix Long commit messages overflow viewport in file tree. !6573
   - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
   - Prevent flash alert text from being obscured when container is fluid. !6694
+  - Fix due date being displayed as NaN in Safari. !6797
   - Fix JS bug with select2 because of missing `data-field` attribute in select box. !6812
   - Do not alter 'force_remove_source_branch' options on MergeRequest unless specified. !6817
   - Fix GFM autocomplete setup being called several times. !6840
