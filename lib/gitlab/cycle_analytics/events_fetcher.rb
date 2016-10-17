@@ -13,10 +13,10 @@ module Gitlab
         diff_fn = subtract_datetimes_diff(base_query, issue_table[:created_at], metric_attributes)
 
         query = base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id])).
-          project(diff_fn.as('issue_diff'), *issue_projections).
+          project(extract_epoch(diff_fn).as('issue_diff'), *issue_projections).
           order(issue_table[:created_at].desc)
 
-        ActiveRecord::Base.connection.execute(query.to_sql).first
+        ActiveRecord::Base.connection.execute(query.to_sql)
       end
 
       def metric_attributes
@@ -30,6 +30,10 @@ module Gitlab
 
       def user_table
         User.arel_table
+      end
+
+      def extract_epoch(arel_attribute)
+        Arel.sql(%Q{EXTRACT(EPOCH FROM (#{arel_attribute.to_sql}))})
       end
     end
   end
