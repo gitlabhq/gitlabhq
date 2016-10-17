@@ -551,7 +551,7 @@ describe Ci::Pipeline, models: true do
 
     shared_examples 'not sending any notification' do
       it 'does not send any email' do
-        should_email_no_one
+        should_not_email_anyone
       end
     end
 

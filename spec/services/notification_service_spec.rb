@@ -17,7 +17,7 @@ describe NotificationService, services: true do
 
     it 'sends no emails when no new mentions are present' do
       send_notifications
-      should_email_no_one
+      should_not_email_anyone
     end
 
     it 'emails new mentions with a watch level higher than participant' do
@@ -27,7 +27,7 @@ describe NotificationService, services: true do
 
     it 'does not email new mentions with a watch level equal to or less than participant' do
       send_notifications(@u_participating, @u_mentioned)
-      should_email_no_one
+      should_not_email_anyone
     end
   end
 

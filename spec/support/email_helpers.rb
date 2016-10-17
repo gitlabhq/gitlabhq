@@ -23,7 +23,7 @@ module EmailHelpers
     expect(sent_to_user?(user, recipients)).to be_falsey
   end
 
-  def should_email_no_one
+  def should_not_email_anyone
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
