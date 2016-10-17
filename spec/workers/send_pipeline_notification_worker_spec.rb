@@ -5,7 +5,7 @@ describe SendPipelineNotificationWorker do
     create(:ci_pipeline,
            project: project,
            sha: project.commit('master').sha,
-           user: user,
+           user: pusher,
            status: status)
   end
 
