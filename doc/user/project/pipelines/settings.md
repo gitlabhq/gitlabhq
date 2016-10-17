@@ -35,15 +35,27 @@ if the job surpasses the threshold, it is marked as failed.
 ## Test coverage parsing
 
 If you use test coverage in your code, GitLab can capture its output in the
-build trace using a regular expression. Leave blank if you want to disable it
-or enter a ruby regular expression. You can use http://rubular.com to test your
-regex.
+build log using a regular expression. In the pipelines settings, search for the
+"Test coverage parsing" section.
 
-A few examples can be found in the settings page.
+![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
+
+Leave blank if you want to disable it or enter a ruby regular expression. You
+can use http://rubular.com to test your regex.
+
+If the pipeline succeeds, the coverage is shown in the merge request widget and
+in the builds table.
+
+![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
+
+![Build status coverage](img/pipelines_test_coverage_build.png)
+
+A few examples of known coverage tools for a variety of languages can be found
+in the pipelines settings page.
 
 ## Visibility of pipelines
 
-For public and internal projects, the **Pipelines** page can be accessed by
+For public and internal projects, the pipelines page can be accessed by
 anyone and those logged in respectively. If you wish to hide it so that only
 the members of the project or group have access to it, uncheck the **Public
 pipelines** checkbox and save the changes.
@@ -54,7 +66,7 @@ In the pipelines settings page you can find build status and test coverage
 badges for your project. The latest successful pipeline will be used to read
 the build status and test coverage values.
 
-Visit the **Pipelines** settings page in your project to see the exact link to
+Visit the pipelines settings page in your project to see the exact link to
 your badges, as well as ways to embed the badge image in your HTML or Markdown
 pages.
 
