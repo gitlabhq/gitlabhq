@@ -16,9 +16,9 @@
           Stopped
           %span.badge.js-stopped-environments-count
             = number_with_delimiter(@all_environments.stopped.count)
-
-    .nav-controls
-      - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
+    
+    - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
+      .nav-controls
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
 
