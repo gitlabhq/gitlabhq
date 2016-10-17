@@ -91,7 +91,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Replace bootstrap caret with fontawesome caret (ClemMakesApps)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
-  - Ignore deployment for statistics in Cycle Analytics, except in staging and production stages
+  - Change user pages routing from /u/:username/PATH to /users/:username/PATH. Old routes will redirect to the new ones for the time being.
   - Fix enter key when navigating search site search dropdown. !6643 (Brennan Roberts)
   - Fix deploy status responsiveness error !6633
   - Make searching for commits case insensitive
