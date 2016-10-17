@@ -125,16 +125,6 @@ module Ci
       end
     end
 
-    def play_type
-      return nil unless playable?
-
-      if close_environment?
-        :close
-      else
-        :play
-      end
-    end
-
     def retryable?
       project.builds_enabled? && commands.present? && complete?
     end

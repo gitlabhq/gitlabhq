@@ -2,7 +2,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_update_environment!, only: [:edit, :update, :destroy]
+  before_action :authorize_update_environment!, only: [:edit, :update, :stop, :destroy]
   before_action :environment, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -42,6 +42,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     else
       render :edit
     end
+  end
+
+  def stop
+
   end
 
   def destroy

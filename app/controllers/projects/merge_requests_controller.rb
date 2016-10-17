@@ -416,6 +416,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
             id: environment.id,
             name: environment.name,
             url: namespace_project_environment_path(project.namespace, project, environment),
+            stop_url: (stop_namespace_project_environment_path(project.namespace, project, environment) if environment.closeable?),
             external_url: environment.external_url,
             external_url_formatted: environment.formatted_external_url,
             deployed_at: deployment.try(:created_at),
