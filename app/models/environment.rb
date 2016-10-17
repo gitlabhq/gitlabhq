@@ -21,6 +21,9 @@ class Environment < ActiveRecord::Base
 
   delegate :stop_action, to: :last_deployment, allow_nil: true
 
+  scope :available, -> { with_state(:available) }
+  scope :stopped, -> { with_state(:stopped) }
+
   state_machine :state, initial: :available do
     event :start do
       transition stopped: :available

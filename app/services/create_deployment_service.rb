@@ -10,8 +10,8 @@ class CreateDeploymentService < BaseService
       @environment = environment
       @environment.external_url = expanded_url if expanded_url
       @environment.fire_state_event(action)
-      @environment.save!
 
+      return unless @environment.save
       return if @environment.stopped?
 
       deploy.tap do |deployment|

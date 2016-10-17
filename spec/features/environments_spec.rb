@@ -35,7 +35,7 @@ feature 'Environments', feature: true do
       end
       
       scenario 'does show 0 as counter for environments in both tabs' do
-        expect(page.find('.js-avaibale-environments-count').text).to eq('0')
+        expect(page.find('.js-available-environments-count').text).to eq('0')
         expect(page.find('.js-stopped-environments-count').text).to eq('0')
       end
     end
@@ -48,7 +48,7 @@ feature 'Environments', feature: true do
       end
       
       scenario 'does show number of opened environments in Availabe tab' do
-        expect(page.find('.js-avaibale-environments-count').text).to eq('1')
+        expect(page.find('.js-available-environments-count').text).to eq('1')
       end
 
       scenario 'does show number of closed environments in Stopped tab' do
@@ -92,6 +92,14 @@ feature 'Environments', feature: true do
           scenario 'does show build name and id' do
             expect(page).to have_link("#{build.name} (##{build.id})")
           end
+
+          scenario 'does not show stop button' do
+            expect(page).not_to have_selector('.close-env-link')
+          end
+
+          scenario 'does not show external link button' do
+            expect(page).not_to have_css('external-url')
+          end
           
           context 'with external_url' do
             given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
@@ -103,14 +111,27 @@ feature 'Environments', feature: true do
             end
           end
 
-          scenario 'does show close button' do 
-            # TODO: Add test to verify if close button is visible
-            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
-          end
-          
-          scenario 'does allow to close environment' do 
-            # TODO: Add test to verify if close environment works
-            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
+          context 'with stop action' do
+            given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
+            given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+
+            scenario 'does show stop button' do
+              expect(page).to have_selector('.close-env-link')
+            end
+
+            scenario 'does allow to stop environment' do
+              first('.close-env-link').click
+
+              expect(page).to have_content('close_app')
+            end
+
+            context 'for reporter' do
+              let(:role) { :reporter }
+
+              scenario 'does not show stop button' do
+                expect(page).not_to have_selector('.close-env-link')
+              end
+            end
           end
         end
       end
@@ -160,6 +181,10 @@ feature 'Environments', feature: true do
           expect(page).to have_link('Re-deploy')
         end
 
+        scenario 'does not show stop button' do
+          expect(page).not_to have_link('Stop')
+        end
+
         context 'with manual action' do
           given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
 
@@ -178,20 +203,33 @@ feature 'Environments', feature: true do
             given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
             given(:build) { create(:ci_build, pipeline: pipeline) }
             given(:deployment) { create(:deployment, environment: environment, deployable: build) }
-            
+
             scenario 'does show an external link button' do
               expect(page).to have_link(nil, href: environment.external_url)
             end
           end
 
-          scenario 'does show close button' do 
-            # TODO: Add test to verify if close button is visible
-            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
-          end
-          
-          scenario 'does allow to close environment' do 
-            # TODO: Add test to verify if close environment works
-            # This needs to be true: if local_assigns.fetch(:allow_close, false) && deployment.closeable?
+          context 'with stop action' do
+            given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
+            given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+
+            scenario 'does show stop button' do
+              expect(page).to have_link('Stop')
+            end
+
+            scenario 'does allow to stop environment' do
+              click_link('Stop')
+
+              expect(page).to have_content('close_app')
+            end
+
+            context 'for reporter' do
+              let(:role) { :reporter }
+
+              scenario 'does not show stop button' do
+                expect(page).not_to have_link('Stop')
+              end
+            end
           end
         end
       end

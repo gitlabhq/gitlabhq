@@ -54,8 +54,8 @@ describe CreateDeploymentService, services: true do
             expect(environment.reload).to be_available
           end
 
-          it 'does not create a deployment' do
-            expect(subject).not_to be_persisted
+          it 'does create a deployment' do
+            expect(subject).to be_persisted
           end
         end
       end
@@ -95,7 +95,7 @@ describe CreateDeploymentService, services: true do
       end
 
       it 'does not create a deployment' do
-        expect(subject).not_to be_persisted
+        expect(subject).to be_nil
       end
     end
 
@@ -127,6 +127,8 @@ describe CreateDeploymentService, services: true do
       end
 
       context 'and environment exist' do
+        let!(:environment) { create(:environment, project: project, name: 'review-apps/feature-review-apps') }
+
         it 'does not create a new environment' do
           expect { subject }.not_to change { Environment.count }
         end
