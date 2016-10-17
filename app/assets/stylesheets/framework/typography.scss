@@ -90,6 +90,11 @@
     border-left: 3px solid #e7e9ed;
   }
 
+  blockquote:dir(rtl) {
+    border-left: 0;
+    border-right: 3px solid #e7e9ed;
+  }
+
   blockquote p {
     color: #7f8fa4 !important;
     font-size: inherit;
@@ -112,6 +117,10 @@
     }
   }
 
+  table:dir(rtl) th {
+    text-align: right;
+  }
+
   pre {
     margin: 12px 0;
     font-size: 13px;
@@ -127,6 +136,10 @@
   ul, ol {
     padding: 0;
     margin: 3px 0 3px 28px !important;
+  }
+
+  ul:dir(rtl), ol:dir(rtl) {
+    margin: 3px 28px 3px 0 !important;
   }
 
   li {

@@ -20,8 +20,8 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
-  - Prevent running GfmAutocomplete setup for each diff note !6569
   - Added documentation for .gitattributes files
+  - Move Pipeline Metrics to separate worker
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
@@ -40,7 +40,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
-  - Do not alter 'force_remove_source_branch' options on MergeRequest unless specified
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date
@@ -57,6 +56,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
   - Show the time ago a merge request was deployed to an environment
+  - Add RTL support to markdown renderer (Ebrahim Byagowi)
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
@@ -76,14 +76,12 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
-  - Prevent flash alert text from being obscured when container is fluid
   - Append issue template to existing description !6149 (Joseph Frazier)
   - Trending projects now only show public projects and the list of projects is cached for a day
   - Memoize Gitlab Shell's secret token (!6599, Justin DiPierro)
   - Revoke button in Applications Settings underlines on hover.
   - Use higher size on Gitlab::Redis connection pool on Sidekiq servers
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
-  - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Stop using a Redis lease when updating the project activity timestamp whenever a new event is created
   - Add disabled delete button to protected branches (ClemMakesApps)
@@ -124,8 +122,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.12.7
 
-  - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
-  - Fix GFM autocomplete setup being called several times
+  - Prevent running `GfmAutocomplete` setup for each diff note. !6569
+  - Fix long commit messages overflow viewport in file tree. !6573
+  - Use `gitlab-markup` gem instead of `github-markup` to fix `.rst` file rendering. !6659
+  - Prevent flash alert text from being obscured when container is fluid. !6694
+  - Fix due date being displayed as `NaN` in Safari. !6797
+  - Fix JS bug with select2 because of missing `data-field` attribute in select box. !6812
+  - Do not alter `force_remove_source_branch` options on MergeRequest unless specified. !6817
+  - Fix GFM autocomplete setup being called several times. !6840
+  - Handle case where deployment ref no longer exists. !6855
 
 ## 8.12.6
 

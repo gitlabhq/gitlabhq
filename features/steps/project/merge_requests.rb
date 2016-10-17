@@ -512,6 +512,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see new target branch changes' do
     expect(page).to have_content 'Request to merge fix into feature'
     expect(page).to have_content 'Target branch changed from merge-test to feature'
+    wait_for_ajax
   end
 
   step 'I click on "Email Patches"' do
