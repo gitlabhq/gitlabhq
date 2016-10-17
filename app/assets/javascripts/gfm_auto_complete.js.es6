@@ -46,6 +46,7 @@
 * */
 
 (() => {
+  // TODO: Is there a reason this namespace is being used here?
   if (window.GitLab == null) {
     window.GitLab = {};
   }
@@ -56,6 +57,7 @@
       this.gfm = GitLab.GfmAutoComplete;
       this.$inputor = $(inputor);
       this.form = this.$inputor.parents('.gfm-form');
+      this.text = null;
       this.setup();
     }
 
@@ -446,17 +448,20 @@ let GfmAutoComplete;
     }
 
     listenForAddSuccess() {
-      $(document).on('ajax:success', '.gfm-form', this.publish.bind(this));
+      const $document = $(document);
+      $document.on('ajax:success', '.gfm-form', this.publish.bind(this));
+      $document.on('submit', '.gfm-form', this.storeInputorText.bind(this));
     }
 
+  /* To, init/test quickly, you can execute the following in the console, and then submit comment 'hello'
+    * GitLab.GfmAutoComplete.subscribe(str => str === 'hello', str => alert(str))
+    */
     subscribe(matcher, callback) {
-      // To, init/test quickly, you can execute the following in the console, and then submit comment 'hello'
-      // GitLab.GfmAutoComplete.subscribe(str => str === 'hello', str => alert(str))
       this.subscribers.push({ matcher, callback });
     }
 
     publish(event) {
-      const submittedText = this.findSubmittedText(event.currentTarget);
+      const submittedText = this.findSubmittedText(event);
       this.subscribers.forEach((subscriber) => {
         const doesSubscribe = subscriber.matcher(submittedText);
         if (doesSubscribe) {
@@ -465,11 +470,25 @@ let GfmAutoComplete;
       });
     }
 
-    findSubmittedText(form) {
+    storeInputorText(event) {
+      const targetInputor = this.findTargetInputor(event);
+      targetInputor.text = targetInputor.$inputor.val();
+    }
+
+    findTargetInputor(event) {
+      const form = event.currentTarget;
       const formId = $(form).attr('data-noteable-iid');
-      const targetInputor = this.inputors
+      return this.inputors
         .filter((inputor) => inputor.form.attr('data-noteable-iid') === formId)[0];
-      return targetInputor.$inputor.val();
+    }
+
+    findSubmittedText(event) {
+      // TODO: Fix this. It's a bit of a hack, as 'ajax:success' is triggered more than once. Resetting inputor text
+      // ensures publishing isn't called twice for it. I know there's a cleaner way to do this.
+      const targetInputor = this.findTargetInputor(event);
+      const submitted = targetInputor.text;
+      targetInputor.text = null;
+      return submitted;
     }
 
   }
