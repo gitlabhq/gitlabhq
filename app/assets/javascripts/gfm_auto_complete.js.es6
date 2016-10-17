@@ -1,8 +1,4 @@
 /*
-*
-*
-*
-*
 * Using GfmAutocomplete pubsub:
 *
 * A pubsub notification system is needed with gfm forms because gfm notes have can change to
@@ -54,11 +50,12 @@
     window.GitLab = {};
   }
 
+  // 'Inputor' is atwho's name for the textarea/input element that will display autocomplete resources
   class GfmInputor {
-    constructor(elem) {
+    constructor(inputor) {
       this.gfm = GitLab.GfmAutoComplete;
-      this.elem = $(elem);
-      this.form = this.elem.parents('.gfm-form');
+      this.$inputor = $(inputor);
+      this.form = this.$inputor.parents('.gfm-form');
       this.setup();
     }
 
@@ -70,7 +67,7 @@
 
     setupAtWho() {
      // Emoji
-      this.elem.atwho({
+      this.$inputor.atwho({
         at: ':',
         displayTpl: (value) => {
           if (value.path != null) {
@@ -88,7 +85,7 @@
         }
       });
       // Team Members
-      this.elem.atwho({
+      this.$inputor.atwho({
         at: '@',
         displayTpl: (value) => {
           if (value.username != null) {
@@ -123,7 +120,7 @@
           }
         }
       });
-      this.elem.atwho({
+      this.$inputor.atwho({
         at: '#',
         alias: 'issues',
         searchKey: 'search',
@@ -154,7 +151,7 @@
           }
         }
       });
-      this.elem.atwho({
+      this.$inputor.atwho({
         at: '%',
         alias: 'milestones',
         searchKey: 'search',
@@ -182,7 +179,7 @@
           }
         }
       });
-      this.elem.atwho({
+      this.$inputor.atwho({
         at: '!',
         alias: 'mergerequests',
         searchKey: 'search',
@@ -213,7 +210,7 @@
           }
         }
       });
-      this.elem.atwho({
+      this.$inputor.atwho({
         at: '~',
         alias: 'labels',
         searchKey: 'search',
@@ -241,7 +238,7 @@
       });
       // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
       // Can't filter elem tho
-      this.elem.filter('[data-supports-slash-commands="true"]').atwho({
+      this.$inputor.filter('[data-supports-slash-commands="true"]').atwho({
         at: '/',
         alias: 'commands',
         searchKey: 'search',
@@ -305,25 +302,25 @@
     }
     // inputtor
     destroyAtWho() {
-      return this.elem.atwho('destroy');
+      return this.$inputor.atwho('destroy');
     }
 
     loadData() {
       const data = this.gfm.cachedData;
       // load members
-      this.elem.atwho('load', '@', data.members);
+      this.$inputor.atwho('load', '@', data.members);
       // load issues
-      this.elem.atwho('load', 'issues', data.issues);
+      this.$inputor.atwho('load', 'issues', data.issues);
       // load milestones
-      this.elem.atwho('load', 'milestones', data.milestones);
+      this.$inputor.atwho('load', 'milestones', data.milestones);
       // load merge requests
-      this.elem.atwho('load', 'mergerequests', data.mergerequests);
+      this.$inputor.atwho('load', 'mergerequests', data.mergerequests);
       // load emojis
-      this.elem.atwho('load', ':', data.emojis);
+      this.$inputor.atwho('load', ':', data.emojis);
       // load labels
-      this.elem.atwho('load', '~', data.labels);
+      this.$inputor.atwho('load', '~', data.labels);
       // load commands
-      this.elem.atwho('load', '/', data.commands);
+      this.$inputor.atwho('load', '/', data.commands);
       // This trigger at.js again
       // otherwise we would be stuck with loading until the user types
       return $(':focus').trigger('keyup');
@@ -356,7 +353,7 @@ let GfmAutoComplete;
 
     init() {
       // TODO: at this point, don't need to keep track of inputors. Reconsider storing.
-      this.inputors = [];
+      this.$inputors = [];
       this.subscribers = [];
       this.dataLoading = false;
       this.dataLoaded = false;
@@ -429,7 +426,7 @@ let GfmAutoComplete;
 
     findSubmittedText(form) {
       const formId = $(form).attr('data-noteable-iid');
-      const targetInputor = this.inputors
+      const targetInputor = this.$inputors
         .filter((inputor) => inputor.form.attr('data-noteable-iid') === formId)[0];
       return targetInputor.elem.val();
     }
@@ -437,7 +434,7 @@ let GfmAutoComplete;
     initInputors() {
       $('.js-gfm-input').each((i, inputor) => {
         const inputorModel = new GfmInputor(inputor);
-        this.inputors.push(inputorModel);
+        this.$inputors.push(inputorModel);
       });
     }
 
