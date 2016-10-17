@@ -76,7 +76,7 @@
         this.renderState();
         return $.ajax({
           type: 'GET',
-          url: `/u/${username}/exists`,
+          url: `/users/${username}/exists`,
           dataType: 'json',
           success: (res) => this.setAvailabilityState(res.exists)
         });
