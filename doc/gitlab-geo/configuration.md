@@ -1,21 +1,35 @@
 # GitLab Geo configuration
 
-By now, you should have an [idea of GitLab Geo](README.md) and already set up
-the [database replication](./database.md). There are a few more steps needed to
-complete the process.
+Before starting with configuration instructions, make sure you followed the
+[Setup Instructions](README.md#setup-instructions) first.
+
+By now, you should have an [idea of GitLab Geo](README.md), have already
+installed the Omnibus package in the new machine and already set up
+the [database replication](./database.md).
+
+Next steps will be setting up credentials so Geo can fetch repositories,
+replicate some required configurations, start GitLab server in the `secondary`
+node's machine and configure every node in the primary's Admin screen.
+
+After GitLab's instance is online and defined in `Geo Nodes` admin screen,
+new data will start to be automatically replicated but you still need to copy
+old data from the `primary machine` (more instructions below).
 
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents**
 
 - [Create SSH key pairs for Geo nodes](#create-ssh-key-pairs-for-geo-nodes)
 - [Primary Node GitLab setup](#primary-node-gitlab-setup)
 - [Secondary Node GitLab setup](#secondary-node-gitlab-setup)
-  - [Database Encryptation Key](#database-encryptation-key)
-  - [Authorized keys regeneration](#authorized-keys-regeneration)
+  - [Database Encryption Key](#database-encryption-key)
+  - [Enable the secondary GitLab instance](#enable-the-secondary-gitlab-instance)
   - [Repositories data replication](#repositories-data-replication)
+  - [Authorized keys regeneration](#authorized-keys-regeneration)
+  - [Ready to use](#ready-to-use)
+- [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -70,8 +84,9 @@ instance. If you haven't done that already, read [database replication](./databa
 
 Go to the server that you chose to be your primary, and visit
 **Admin Area > Geo Nodes** (`/admin/geo_nodes`) in order to add the Geo nodes.
+
 Although we are looking at the primary Geo node setup, **this is where you also
-add any secondary servers as well**.
+add any secondary servers as well**
 
 In the following table you can see what all these settings mean:
 
@@ -83,9 +98,11 @@ In the following table you can see what all these settings mean:
 
 First, add your primary node by providing its full URL and the public SSH key
 you created previously. Make sure to check the box 'This is a primary node'
-when adding it. Continue with all secondaries.
+when adding it.
 
 ![Geo Nodes Screen](img/geo-nodes-screen.png)
+
+Don't setup it for the `secondary` node yet, follow setup instructions below first.
 
 ---
 
@@ -93,7 +110,7 @@ when adding it. Continue with all secondaries.
 
 >**Note:**
 The Geo nodes admin area (**Admin Area > Geo Nodes**) is not used when setting
-up the secondary servers. This is handled by the primary server setup.
+up the secondary servers. This is handled at the primary server.
 
 To install a secondary node, you must follow the normal GitLab Enterprise
 Edition installation, with some extra requirements:
@@ -101,6 +118,11 @@ Edition installation, with some extra requirements:
 - You should point your database connection to a [replicated instance](./database.md).
 - Your secondary node should be allowed to communicate via HTTP/HTTPS and
   SSH with your primary node (make sure your firewall is not blocking that).
+- Don't make any extra step you would do for a normal new installation
+- Don't setup any custom authentication (this will be handled by the `primary` node)
+
+You need to make sure you restored the database backup (that is part of setting up replication)
+and that the `primary` node PostgreSQL instance is ready to replicate data.
 
 ### Database Encryption Key
 
@@ -113,22 +135,19 @@ For Omnibus installations it is stored at `/etc/gitlab/gitlab-secrets.json`.
 
 For Source installations it is stored at `/home/git/gitlab/config/secrets.yml`.
 
+### Enable the secondary GitLab instance
 
-### Authorized keys regeneration
+Your new GitLab secondary node can be safely started from here.
 
-The final step will be to regenerate the keys for `.ssh/authorized_keys` using
-the following command (HTTPS clone will still work without this extra step).
+You need to go back to the Primary Node Gitlab setup instructions and add the Secondary node
+as you did with the primary. After you hit the **Add Node** button, Primary node will start to notify
+changes to the Secondary. Make sure `secondary` instance is running and accessible.
 
-On the secondary node where the database is [already replicated](./database.md),
-run the following:
-
-```
-# For Omnibus installations
-gitlab-rake gitlab:shell:setup
-
-# For source installations
-sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
-```
+The two most obvious issues replication can have here is:
+- Database replication not working well
+- Instance to instance notification not working, can be some of the following:
+   - You are using a custom certificate or custom CA (see [Troubleshooting](#troubleshooting))
+   - Instance is firewalled (please check your firewall rules)
 
 ### Repositories data replication
 
@@ -155,6 +174,36 @@ primary node, so syncing the repositories beforehand will buy you some time.
 While active repositories will be eventually replicated, if you don't rsync
 the files, it will not have in the secondary node any archived/inactive
 repository, as Geo doensn't run any routime to look for missing repositories.
+
+### Authorized keys regeneration
+
+The final step will be to regenerate the keys for `.ssh/authorized_keys` using
+the following command (HTTPS clone will still work without this extra step).
+
+On the secondary node where the database is [already replicated](./database.md),
+run the following:
+
+```
+# For Omnibus installations
+gitlab-rake gitlab:shell:setup
+
+# For source installations
+sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
+```
+
+This will enable `git` operations to authorize against your existing users.
+New users and SSH keys updated after this step will be replicated automatically.
+
+
+### Ready to use
+
+Your instance should be ready to use. You can visit the Admin screen in the
+secondary node to check if it's correctly identified as a Secondary Geo node and
+if Geo is enabled.
+
+If your installation isn't working properly, check Troubleshooting below.
+
+---
 
 ## Troubleshooting
 

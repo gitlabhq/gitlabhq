@@ -20,8 +20,6 @@ locations as a read-only fully operational version.
     - [How long does it take to have a commit replicated to a secondary node?](#how-long-does-it-take-to-have-a-commit-replicated-to-a-secondary-node)
     - [What happens if the SSH server runs at a different port?](#what-happens-if-the-ssh-server-runs-at-a-different-port)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## Overview
 
 If you have two or more teams geographically spread out, but your GitLab
@@ -51,17 +49,31 @@ instance, than a normal setup.
 There are a couple of things you need to do in order to have one or more GitLab
 Geo instances. Follow the steps below in the order that they appear:
 
-1. Install GitLab Enterprise Edition on the server that will serve as the
+1. Install GitLab Enterprise Edition package on the server that will serve as the
    secondary Geo node
+   - Don't configure GitLab as a normal install
+   - Authentication will be handled by the primary node
+   - You will need to setup replication before continuing (next step)
+   - Than you will be guided on how to configure this setup (please follow the correct order)
 1. [Setup a database replication](database.md) in `primary <-> secondary (read-only)` topology
 1. [Configure GitLab](configuration.md) and set the primary and secondary nodes
+
 After you set up the database replication and configure the GitLab Geo nodes,
 there are a few things to consider:
 
 1. When you create a new project in the primary node, the Git repository will
    appear in the secondary only _after_ the first `git push`
-1. To fetch from the secondary node, a separate remote URL must be set in your
-   Git repository locally
+1. You need an extra configuration step to be able to fetch code from `secondary` and push to `primary`
+   - Clone your repository as you would normally do, from the `secondary` node
+   - Change the `push` URL following this example:
+
+     ```bash
+     git remote set-url --push origin git@primary.gitlab.example.com:user/repo.git
+     ```
+
+> **Important**: The initialization of a new Geo secondary node requires data
+to be copied from the primary, as there is no backfill feature bundled with it.
+See more details in the [Configure GitLab](configuration.md) step.
 
 ## Current limitations
 
@@ -78,8 +90,8 @@ There are limitations to what we replicate (see Current limitations).
 In an extreme data-loss situation you can make a secondary Geo into your
 primary, but this is not officially supported yet.
 
-If you still want to proceed, see our step-by-step instructions on how to 
-manually [promote a secondary node](disaster-recovery.md) into primary. 
+If you still want to proceed, see our step-by-step instructions on how to
+manually [promote a secondary node](disaster-recovery.md) into primary.
 
 ### What data is replicated to a secondary node?
 
