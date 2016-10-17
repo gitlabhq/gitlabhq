@@ -145,9 +145,14 @@ module Issuable
     end
 
     def order_labels_priority(excluded_labels: [])
-      condition_field = "#{table_name}.id"
-      project_field = "#{table_name}.project_id"
-      highest_priority = highest_label_priority(name, project_field, condition_field, excluded_labels: excluded_labels).to_sql
+      params = {
+        target_type: name,
+        target_column: "#{table_name}.id",
+        project_column: "#{table_name}.project_id",
+        excluded_labels: excluded_labels
+      }
+
+      highest_priority = highest_label_priority(params).to_sql
 
       select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
         group(arel_table[:id]).

@@ -38,13 +38,13 @@ module Sortable
 
     private
 
-    def highest_label_priority(object_types, project_field, condition_field, excluded_labels: [])
+    def highest_label_priority(target_type:, target_column:, project_column:, excluded_labels: [])
       query = Label.select(LabelPriority.arel_table[:priority].minimum).
         left_join_priorities.
         joins(:label_links).
-        where(label_links: { target_type: object_types }).
-        where("label_priorities.project_id = #{project_field}").
-        where("label_links.target_id = #{condition_field}").
+        where("label_priorities.project_id = #{project_column}").
+        where(label_links: { target_type: target_type }).
+        where("label_links.target_id = #{target_column}").
         reorder(nil)
 
       query.where.not(title: excluded_labels) if excluded_labels.present?
