@@ -47,7 +47,7 @@ feature 'Environments', feature: true do
         expect(page).to have_link(environment.name)
       end
       
-      scenario 'does show number of opened environments in Availabe tab' do
+      scenario 'does show number of opened environments in Available tab' do
         expect(page.find('.js-available-environments-count').text).to eq('1')
       end
 
