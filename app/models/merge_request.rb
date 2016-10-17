@@ -788,8 +788,8 @@ class MergeRequest < ActiveRecord::Base
     return unless source_project
 
     @all_pipelines ||= source_project.pipelines
-        .where(sha: all_commits_sha, ref: source_branch)
-        .order(id: :desc)
+      .where(sha: all_commits_sha, ref: source_branch)
+      .order(id: :desc)
   end
 
   # Note that this could also return SHA from now dangling commits
@@ -798,7 +798,8 @@ class MergeRequest < ActiveRecord::Base
     if persisted?
       merge_request_diffs.flat_map(&:commits_sha).uniq
     else
-      compare_commits.reverse.map(&:id)
+      cached_commits = compare_commits.to_a.reverse.map(&:id)
+      cached_commits.any? ? cached_commits : [diff_head_sha]
     end
   end
 
