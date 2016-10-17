@@ -1,4 +1,4 @@
-class SendPipelineNotificationWorker
+class PipelineNotificationWorker
   include Sidekiq::Worker
 
   def perform(pipeline_id, recipients = nil)

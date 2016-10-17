@@ -85,7 +85,7 @@ module Ci
 
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
-          SendPipelineNotificationWorker.perform_async(pipeline.id)
+          PipelineNotificationWorker.perform_async(pipeline.id)
         end
       end
     end
