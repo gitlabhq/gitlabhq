@@ -152,7 +152,7 @@ module Ci
 
     def retryable?
       builds.latest.any? do |build|
-        build.failed? && build.retryable?
+        (build.failed? || build.canceled?) && build.retryable?
       end
     end
 
