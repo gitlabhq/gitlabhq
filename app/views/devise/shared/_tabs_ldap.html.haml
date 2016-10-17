@@ -4,7 +4,7 @@
       = link_to "Crowd", "#crowd", 'data-toggle' => 'tab'
   - @ldap_servers.each_with_index do |server, i|
     %li{class: (:active if i.zero? && !crowd_enabled?)}
-      = link_to server['label'], "#{server['provider_name']}",  'data-toggle' => 'tab'
+      = link_to server['label'], "##{server['provider_name']}",  'data-toggle' => 'tab'
   - if signin_enabled?
     %li
       = link_to 'Standard', '#ldap-standard', 'data-toggle' => 'tab'
