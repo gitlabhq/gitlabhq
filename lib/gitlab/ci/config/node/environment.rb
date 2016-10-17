@@ -64,6 +64,10 @@ module Gitlab
             value[:action] || 'start'
           end
 
+          def on_stop
+            value[:on_stop]
+          end
+
           def value
             case @config
             when String then { name: @config, action: 'start' }

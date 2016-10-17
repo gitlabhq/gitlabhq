@@ -101,7 +101,7 @@ describe Gitlab::Ci::Config::Node::Environment do
   context 'when invalid action is used' do
     let(:config) do
       { name: 'production',
-        action: false }
+        action: 'invalid' }
     end
 
     describe '#valid?' do
@@ -144,7 +144,7 @@ describe Gitlab::Ci::Config::Node::Environment do
     describe '#errors' do
       it 'contains error about invalid action' do
         expect(entry.errors)
-          .to include 'environment action should be start or stop'
+          .to include 'environment on stop should be a string'
       end
     end
   end
