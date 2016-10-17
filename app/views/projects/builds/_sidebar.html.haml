@@ -1,5 +1,4 @@
 - builds = @build.pipeline.builds.to_a
-- statuses = ["failed", "pending", "running", "canceled", "success", "skipped"]
 
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
@@ -124,7 +123,7 @@
               %a.stage-item= stage
 
   .builds-container
-    - statuses.each do |build_status|
+    - HasStatus::ORDERED_STATUSES.each do |build_status|
       - builds.select{|build| build.status == build_status}.each do |build|
         .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
