@@ -355,13 +355,11 @@ let GfmAutoComplete;
 
     init() {
       // TODO: at this point, don't need to keep track of inputors. Reconsider storing.
-      this.$inputors = [];
       this.subscribers = [];
       this.dataLoading = false;
       this.dataLoaded = false;
       this.cachedData = {};
       this.dataSource = '';
-      this.listenForAddSuccess();
 
       this.Emoji = {
         template: '<li>${name} <img alt="${name}" height="20" src="${path}" width="20" /></li>'
@@ -410,12 +408,50 @@ let GfmAutoComplete;
       };
     }
 
+    setup() {
+      if (this.dataSource && !this.dataLoading && !this.cachedData) {
+        this.dataLoading = true;
+        return this.fetchData(this.dataSource)
+          .done((data) => {
+            // TODO: Make this DRY, once setup logic is determined
+            this.cachedData = data;
+            this.dataLoading = false;
+            this.dataLoaded = true;
+            this.initInputorPubSub();
+          });
+        };
+
+      if (this.cachedData != null) {
+        this.dataLoading = false;
+        this.dataLoaded = true;
+        this.initInputorPubSub();
+      }
+    }
+
+    fetchData(dataSource) {
+      return $.getJSON(dataSource);
+    }
+
+    /* pubsub setup/logic */
+
+    initInputorPubSub() {
+      this.inputors = [];
+
+      $('.js-gfm-input').each((i, inputor) => {
+        const inputorModel = new GfmInputor(inputor);
+        this.inputors.push(inputorModel);
+      });
+
+      this.listenForAddSuccess();
+    }
+
     listenForAddSuccess() {
       $(document).on('ajax:success', '.gfm-form', this.publish.bind(this));
     }
 
     subscribe(matcher, callback) {
-      // TODO: Store by resource key -- this will depend on how Luke breaks things up
+      // To, init/test quickly, you can execute the following in the console, and then submit comment 'hello'
+      // GitLab.GfmAutoComplete.subscribe(str => str === 'hello', str => alert(str))
       this.subscribers.push({ matcher, callback });
     }
 
@@ -431,44 +467,13 @@ let GfmAutoComplete;
 
     findSubmittedText(form) {
       const formId = $(form).attr('data-noteable-iid');
-      const targetInputor = this.$inputors
+      const targetInputor = this.inputors
         .filter((inputor) => inputor.form.attr('data-noteable-iid') === formId)[0];
-      return targetInputor.elem.val();
+      return targetInputor.$inputor.val();
     }
 
-    initInputors() {
-      $('.js-gfm-input').each((i, inputor) => {
-        const inputorModel = new GfmInputor(inputor);
-        this.$inputors.push(inputorModel);
-      });
-    }
-
-    setup() {
-      if (this.dataSource && !this.dataLoading && !this.cachedData) {
-        this.dataLoading = true;
-        return this.fetchData(this.dataSource)
-          .done((data) => {
-            // TODO: Make this DRY
-            this.cachedData = data;
-            this.dataLoading = false;
-            this.dataLoaded = true;
-            this.initInputors();
-          });
-        };
-
-      if (this.cachedData != null) {
-        this.dataLoading = false;
-        this.dataLoaded = true;
-        this.initInputors();
-      }
-    }
-
-    fetchData(dataSource) {
-      return $.getJSON(dataSource);
-    }
   }
 
   GitLab.GfmAutoComplete = new GfmFactory();
-
 
 }).call(this);
