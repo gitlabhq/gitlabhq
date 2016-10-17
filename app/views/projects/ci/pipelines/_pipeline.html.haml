@@ -16,6 +16,8 @@
     %span by
     - if pipeline.user
       = user_avatar(user: pipeline.user, size: 20)
+    - else
+      %span.api.monospace API
     - if pipeline.latest?
       %span.label.label-success.has-tooltip{ title: 'Latest build for this branch' } latest
     - if pipeline.triggered?
