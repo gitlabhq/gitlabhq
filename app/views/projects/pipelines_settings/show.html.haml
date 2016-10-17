@@ -65,8 +65,8 @@
             = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
             %span.input-group-addon /
           %p.help-block
-            We will use this regular expression to find test coverage output in build trace.
-            Leave blank if you want to disable this feature
+            A regular expression that will be used to find the test coverage
+            output in the build trace. Leave blank to disable
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'test-coverage-parsing')
           .bs-callout.bs-callout-info
             %p Below are examples of regex for existing tools:
