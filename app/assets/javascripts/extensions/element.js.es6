@@ -1,5 +1,7 @@
-/* eslint-disable */
-Element.prototype.matches = Element.prototype.matches || Element.prototype.msMatches;
+/* global Element */
+/* eslint-disable consistent-return, max-len */
+
+Element.prototype.matches = Element.prototype.matches || Element.prototype.msMatchesSelector;
 
 Element.prototype.closest = function closest(selector, selectedElement = this) {
   if (!selectedElement) return;
