@@ -62,7 +62,7 @@
             this.saveDiffResolution();
           })
           .fail(() => {
-            console.log('error');
+            new Flash('Failed to load the file, please try again.');
           })
           .always(() => {
             this.loading = false;
