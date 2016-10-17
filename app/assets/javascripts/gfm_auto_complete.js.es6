@@ -421,9 +421,12 @@ let GfmAutoComplete;
 
     publish(event) {
       const submittedText = this.findSubmittedText(event.currentTarget);
-      const matched  = this.subscribers
-        .filter((subscriber) => subscriber.matcher(submittedText))
-        .forEach((subscriber) => subscriber.callback(submittedText));
+      this.subscribers.forEach((subscriber) => {
+        const doesSubscribe = subscriber.matcher(submittedText);
+        if (doesSubscribe) {
+          subscriber.callback(submittedText);
+        }
+      });
     }
 
     findSubmittedText(form) {
