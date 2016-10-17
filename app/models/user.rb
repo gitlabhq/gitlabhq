@@ -92,6 +92,7 @@ class User < ActiveRecord::Base
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
   has_many :path_locks,               dependent: :destroy
+  has_one :user_activity, dependent: :destroy
 
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
@@ -146,6 +147,7 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :last_activity_at, to: :user_activity, allow_nil: true
 
   state_machine :state, initial: :active do
     event :block do

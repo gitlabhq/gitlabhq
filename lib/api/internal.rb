@@ -43,6 +43,14 @@ module API
             :push_code
           ]
         end
+
+        def log_user_activity(actor)
+          commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS +
+                      Gitlab::GitAccess::PUSH_COMMANDS +
+                      Gitlab::GitAccess::GIT_ANNEX_COMMANDS
+
+          ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
+        end
       end
 
       post "/allowed" do
@@ -69,6 +77,8 @@ module API
         response = { status: access_status.status, message: access_status.message }
 
         if access_status.status
+          log_user_activity(actor)
+
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
           response[:repository_path] =

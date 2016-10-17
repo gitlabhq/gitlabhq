@@ -30,6 +30,12 @@ describe SessionsController do
           expect { post(:create, user: { login: user.username, password: user.password }) }.to change { SecurityEvent.count }.by(1)
           expect(SecurityEvent.last.details[:with]).to eq("standard")
         end
+
+        it 'updates the user activity' do
+          expect do
+            post(:create, user: { login: user.username, password: user.password })
+          end.to change { user.reload.last_activity_at }.from(nil)
+        end
       end
     end
 
