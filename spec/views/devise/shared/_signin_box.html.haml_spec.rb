@@ -12,13 +12,13 @@ describe 'devise/shared/_signin_box' do
 
       render
 
-      expect(rendered).to have_selector('#tab-crowd form')
+      expect(rendered).to have_selector('#crowd form')
     end
 
     it 'is not shown when Crowd is disabled' do
       render
 
-      expect(rendered).not_to have_selector('#tab-crowd')
+      expect(rendered).not_to have_selector('#crowd')
     end
   end
 
