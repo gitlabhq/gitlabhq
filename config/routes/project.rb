@@ -318,7 +318,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
-      resources :environments do
+      resources :environments, except: [:destroy] do
         member do
           post :stop
         end

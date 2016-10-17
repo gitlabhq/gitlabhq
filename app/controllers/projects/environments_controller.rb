@@ -2,8 +2,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_update_environment!, only: [:edit, :update, :stop, :destroy]
-  before_action :environment, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_update_environment!, only: [:edit, :update, :stop]
+  before_action :environment, only: [:show, :edit, :update, :stop]
 
   def index
     @scope = params[:scope]
@@ -47,17 +47,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def stop
     action = @environment.stop_action
     new_action = action.active? ? action : action.play(current_user)
-    redirect_to [project.namespace.become(Namespace), project, new_action]
-  end
-
-  def destroy
-    if @environment.destroy
-      flash[:notice] = 'Environment was successfully removed.'
-    else
-      flash[:alert] = 'Failed to remove environment.'
-    end
-
-    redirect_to namespace_project_environments_path(project.namespace, project)
+    redirect_to [project.namespace.becomes(Namespace), project, new_action]
   end
 
   private
