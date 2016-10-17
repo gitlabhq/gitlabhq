@@ -325,6 +325,7 @@ class ProjectsController < Projects::ApplicationController
       # EE-only
       :approvals_before_merge,
       :approver_ids,
+      :approver_group_ids,
       :issues_template,
       :merge_method,
       :merge_requests_template,

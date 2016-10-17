@@ -1,3 +1,5 @@
 *.erb
 lib/gitlab/sanitizers/svg/whitelist.rb
 lib/gitlab/diff/position_tracer.rb
+app/controllers/projects/approver_groups_controller.rb
+app/controllers/projects/approvers_controller.rb

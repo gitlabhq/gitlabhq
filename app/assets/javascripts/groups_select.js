@@ -5,15 +5,17 @@
     function GroupsSelect() {
       $('.ajax-groups-select').each((function(_this) {
         return function(i, select) {
-          var skip_ldap, skip_groups;
+          var skip_ldap, all_available, skip_groups;
           skip_ldap = $(select).hasClass('skip_ldap');
+          all_available = $(select).data('all-available');
           skip_groups = $(select).data('skip-groups') || [];
           return $(select).select2({
             placeholder: "Search for a group",
             multiple: $(select).hasClass('multiselect'),
             minimumInputLength: 0,
             query: function(query) {
-              return Api.groups(query.term, skip_ldap, skip_groups, function(groups) {
+              options = { all_available: all_available, skip_groups: skip_groups }
+              return Api.groups(query.term, options, function(groups) {
                 var data;
                 data = {
                   results: groups

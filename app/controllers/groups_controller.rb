@@ -6,7 +6,7 @@ class GroupsController < Groups::ApplicationController
   respond_to :html
 
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :group, except: [:index, :new, :create, :autocomplete]
+  before_action :group, except: [:index, :new, :create]
 
   # Authorize
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
@@ -90,12 +90,6 @@ class GroupsController < Groups::ApplicationController
     DestroyGroupService.new(@group, current_user).async_execute
 
     redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
-  end
-
-  def autocomplete
-    groups = Group.search(params[:search]).limit(params[:per_page])
-
-    render json: groups.to_json
   end
 
   protected

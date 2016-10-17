@@ -78,6 +78,7 @@ merge_requests:
 - metrics
 - approvals
 - approvers
+- approver_groups
 merge_request_diff:
 - merge_request
 pipelines:
@@ -196,6 +197,7 @@ project:
 - audit_events
 - remote_mirrors
 - path_locks
+- approver_groups
 award_emoji:
 - awardable
 - user

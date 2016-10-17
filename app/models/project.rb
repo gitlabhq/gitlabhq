@@ -122,6 +122,7 @@ class Project < ActiveRecord::Base
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
   has_many :approvers, as: :target, dependent: :destroy
+  has_many :approver_groups, as: :target, dependent: :destroy
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
@@ -1225,6 +1226,12 @@ class Project < ActiveRecord::Base
   def approver_ids=(value)
     value.split(",").map(&:strip).each do |user_id|
       approvers.find_or_create_by(user_id: user_id, target_id: id)
+    end
+  end
+
+  def approver_group_ids=(value)
+    value.split(",").map(&:strip).each do |group_id|
+      approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
     end
   end
 

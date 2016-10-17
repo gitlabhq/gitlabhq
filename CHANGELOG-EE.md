@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix validations related to mirroring settings form. !773
   - Fix Git access panel for Wikis when Kerberos authentication is enabled (Borja Aparicio)
   - Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
+  - User groups (that can be assigned as approvers)
 
 ## 8.12.5
 

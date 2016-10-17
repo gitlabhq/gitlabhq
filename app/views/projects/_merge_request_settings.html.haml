@@ -61,21 +61,33 @@
     = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
     .help-block
       Add an approver suggestion for each merge request
+    = f.label :approver_group_ids, class: 'label-light' do
+      Approver groups
+    - skip_groups = @project.approver_groups.pluck(:group_id)
+    = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
+    .help-block
+      Add a group as an approver suggestion for each merge request
 
     .panel.panel-default.prepend-top-10
       .panel-heading
         Approvers
-        %small
-          (#{@project.approvers.count(:all)})
-      %ul.well-list
+      %ul.well-list.approver-list
         - @project.approvers.each do |approver|
-          %li
+          %li.approver
             = link_to approver.user.name, approver.user
             .pull-right
               = link_to namespace_project_approver_path(@project.namespace, @project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
                 = icon("sign-out")
                 Remove
-        - if @project.approvers.empty?
+        - @project.approver_groups.each do |approver_group|
+          %li.approver-group
+            Group:
+            = link_to approver_group.group.name, approver_group.group
+            .pull-right
+              = link_to namespace_project_approver_group_path(@project.namespace, @project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
+                = icon("sign-out")
+                Remove
+        - if @project.approvers.empty? && @project.approver_groups.empty?
           %li There are no approvers
 
   .form-group.builds-feature
@@ -89,3 +101,4 @@
 
 :javascript
   new UsersSelect();
+  new GroupsSelect();

@@ -542,7 +542,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see suggested approver' do
-    page.within 'ul .project-approvers' do
+    page.within 'ul .unsaved-approvers' do
       expect(page).to have_content(current_user.name)
     end
   end

@@ -68,6 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
 
     describe '#members & #requesters' do
       let(:project) { create(:project, :public) }
@@ -1901,6 +1902,22 @@ describe Project, models: true do
       3.times { project.increment_pushes_since_gc }
 
       expect(project.pushes_since_gc).to eq(3)
+    end
+  end
+
+  describe '#approver_group_ids=' do
+    let(:project) { create(:empty_project) }
+
+    it 'create approver_groups' do
+      group = create :group
+      group1 = create :group
+
+      project = create :project
+
+      project.approver_group_ids = "#{group.id}, #{group1.id}"
+      project.save!
+
+      expect(project.approver_groups.map(&:group)).to match_array([group, group1])
     end
   end
 

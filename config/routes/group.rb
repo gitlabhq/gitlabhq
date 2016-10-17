@@ -14,12 +14,6 @@ resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
     get :activity
   end
 
-  ## EE-specific
-  collection do
-    get :autocomplete
-  end
-  ## EE-specific
-
   scope module: :groups do
     ## EE-specific
     resource :analytics, only: [:show]

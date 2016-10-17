@@ -16,6 +16,12 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    factory :group_with_members do
+      after(:create) do |group, evaluator|
+        group.add_developer(create :user)
+      end
+    end
+
     factory :group_with_ldap_group_link do
       transient do
         cn 'group1'
