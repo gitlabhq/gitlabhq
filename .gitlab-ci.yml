@@ -210,7 +210,7 @@ rake brakeman: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
-rake ce_to_ee_merge_check:
+rake ee_compat_check:
   <<: *exec
   only:
     - branches
