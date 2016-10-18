@@ -80,6 +80,21 @@
   }
 }
 
+.commit-info-widget {
+  background: $background-color;
+  color: $gl-gray;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  .widget-row {
+    padding: $gl-padding;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $border-color;
+    }
+  }
+}
+
 .ci-status-link {
   svg {
     overflow: visible;
@@ -88,6 +103,7 @@
 
 .commit-box {
   border-top: 1px solid $border-color;
+  padding: $gl-padding 0;
 
   .commit-title {
     margin: 0;
