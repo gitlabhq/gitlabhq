@@ -26,6 +26,16 @@ describe Labels::TransferService, services: true do
       expect { service.execute }.to change(project.labels, :count).by(2)
     end
 
+    it 'recreates label priorities related to the missing group labels' do
+      create(:label_priority, project: project, label: group_label_1, priority: 1)
+
+      service.execute
+
+      new_project_label = project.labels.find_by(title: group_label_1.title)
+      expect(new_project_label.id).not_to eq group_label_1.id
+      expect(new_project_label.priorities).not_to be_empty
+    end
+
     it 'does not recreate missing group labels that are not applied to issues or merge requests' do
       service.execute
 

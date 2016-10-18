@@ -14,7 +14,7 @@ module Labels
       return unless group.present?
 
       Label.transaction do
-        labels_to_transfer = Label.where(id: label_links.select(:label_id).uniq)
+        labels_to_transfer = Label.where(id: label_links.select(:label_id))
 
         labels_to_transfer.find_each do |label|
           new_label_id = find_or_create_label!(label)
@@ -22,6 +22,7 @@ module Labels
           next if new_label_id == label.id
 
           LabelLink.where(label_id: label.id).update_all(label_id: new_label_id)
+          LabelPriority.where(project_id: project.id, label_id: label.id).update_all(label_id: new_label_id)
         end
       end
     end
