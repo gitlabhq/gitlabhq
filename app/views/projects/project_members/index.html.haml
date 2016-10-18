@@ -7,7 +7,8 @@
 .project-members-page.prepend-top-default
   %h4.project-members-title.clearfix
     Members
-    = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default pull-right hidden-xs", title: "Import members from another project"
+    - if can?(current_user, :admin_project_member, @project) && !membership_locked?
+      = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default pull-right hidden-xs", title: "Import members from another project"
   - if can?(current_user, :admin_project_member, @project) && !membership_locked?
     .project-members-new.append-bottom-default
       %p.clearfix
