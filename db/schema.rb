@@ -117,9 +117,9 @@ ActiveRecord::Schema.define(version: 20161007133303) do
   end
 
   create_table "approver_groups", force: :cascade do |t|
-    t.integer  "target_id",   null: false
-    t.string   "target_type", null: false
-    t.integer  "group_id",    null: false
+    t.integer "target_id", null: false
+    t.string "target_type", null: false
+    t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1044,7 +1044,7 @@ ActiveRecord::Schema.define(version: 20161007133303) do
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
     t.integer "protected_branch_id", null: false
-    t.integer "access_level", default: 40, null: false
+    t.integer "access_level", default: 40
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
@@ -1055,7 +1055,7 @@ ActiveRecord::Schema.define(version: 20161007133303) do
 
   create_table "protected_branch_push_access_levels", force: :cascade do |t|
     t.integer "protected_branch_id", null: false
-    t.integer "access_level", default: 40, null: false
+    t.integer "access_level", default: 40
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
