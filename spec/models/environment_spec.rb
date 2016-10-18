@@ -150,8 +150,8 @@ describe Environment, models: true do
         let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
         it 'returns the same action' do
-          is_expected.to eq(close_action)
-          is_expected.to include(user: user)
+          expect(subject).to eq(close_action)
+          expect(subject.user).to eq(user)
         end
       end
 
@@ -160,7 +160,8 @@ describe Environment, models: true do
 
         it 'returns a new action of the same type' do
           is_expected.to be_persisted
-          is_expected.to include(name: close_action.name, user: user)
+          expect(subject.name).to eq(close_action.name)
+          expect(subject.user).to eq(user)
         end
       end
     end

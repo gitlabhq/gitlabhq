@@ -32,7 +32,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
       given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
       given(:deployment) do
         create(:deployment, environment: environment, ref: merge_request.target_branch,
-               sha: sha, deployable: build, on_stop: 'close_app')
+                            sha: sha, deployable: build, on_stop: 'close_app')
       end
 
       background do
