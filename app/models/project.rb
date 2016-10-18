@@ -738,10 +738,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def all_labels
-    Label.find_by_project_id(self.id)
-  end
-
   def find_service(list, name)
     list.find { |service| service.to_param == name }
   end
