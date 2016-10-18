@@ -52,7 +52,7 @@ class LabelsFinder < UnionFinder
   end
 
   def title
-    params[:title].presence
+    params[:title].presence || params[:name].presence
   end
 
   def project
