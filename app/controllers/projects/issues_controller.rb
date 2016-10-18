@@ -37,8 +37,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
-    elsif request.format.csv?
-      @labels = @issues.labels_hash
     end
 
     @users = []
@@ -56,7 +54,9 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.atom { render layout: false }
-      format.csv
+      format.csv do
+        render text: Issues::ExportCsvService.new(@issues).render
+      end
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),
