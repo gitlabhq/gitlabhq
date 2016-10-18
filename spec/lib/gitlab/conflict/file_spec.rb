@@ -257,5 +257,16 @@ FILE
     it 'includes the blob icon for the file' do
       expect(conflict_file.as_json[:blob_icon]).to eq('file-text-o')
     end
+
+    context 'with the full_content option passed' do
+      it 'includes the full content of the conflict' do
+        expect(conflict_file.as_json(full_content: true)).to have_key(:content)
+      end
+
+      it 'includes the detected language of the conflict file' do
+        expect(conflict_file.as_json(full_content: true)[:blob_ace_mode]).
+          to eq('ruby')
+      end
+    end
   end
 end

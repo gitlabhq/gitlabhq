@@ -1155,12 +1155,6 @@ describe MergeRequest, models: true do
       expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
     end
 
-    it 'returns a falsey value when the conflicts contain a file with ambiguous conflict markers' do
-      merge_request = create_merge_request('conflict-contains-conflict-markers')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
     it 'returns a falsey value when the conflicts contain a file edited in one branch and deleted in another' do
       merge_request = create_merge_request('conflict-missing-side')
 
@@ -1169,6 +1163,12 @@ describe MergeRequest, models: true do
 
     it 'returns a truthy value when the conflicts are resolvable in the UI' do
       merge_request = create_merge_request('conflict-resolvable')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
+    end
+
+    it 'returns a truthy value when the conflicts have to be resolved in an editor' do
+      merge_request = create_merge_request('conflict-contains-conflict-markers')
 
       expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
     end

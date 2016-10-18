@@ -1,5 +1,5 @@
 - if !project.empty_repo? && can?(current_user, :download_code, project)
-  %span{class: 'hidden-xs hidden-sm'}
+  %span{class: 'hidden-xs hidden-sm download-button'}
     .dropdown.inline
       %button.btn{ 'data-toggle' => 'dropdown' }
         = icon('download')

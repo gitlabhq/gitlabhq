@@ -7,6 +7,7 @@
     function ProjectFindFile(element1, options) {
       this.element = element1;
       this.options = options;
+      this.goToBlob = bind(this.goToBlob, this);
       this.goToTree = bind(this.goToTree, this);
       this.selectRowDown = bind(this.selectRowDown, this);
       this.selectRowUp = bind(this.selectRowUp, this);
@@ -152,6 +153,14 @@
 
     ProjectFindFile.prototype.goToTree = function() {
       return location.href = this.options.treeUrl;
+    };
+
+    ProjectFindFile.prototype.goToBlob = function() {
+      var $link = this.element.find(".tree-item.selected .tree-item-file-name a");
+
+      if ($link.length) {
+        $link.get(0).click();
+      }
     };
 
     return ProjectFindFile;

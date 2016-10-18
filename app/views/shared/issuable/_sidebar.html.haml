@@ -171,5 +171,5 @@
       new LabelsSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       new Subscription('.subscription')
-      new DueDateSelect();
+      new gl.DueDateSelectors();
       sidebar = new Sidebar();

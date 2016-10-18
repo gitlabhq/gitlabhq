@@ -49,6 +49,10 @@ module Ci
         transition any => :canceled
       end
 
+      # IMPORTANT
+      # Do not add any operations to this state_machine
+      # Create a separate worker for each new operation
+
       before_transition [:created, :pending] => :running do |pipeline|
         pipeline.started_at = Time.now
       end
@@ -62,13 +66,11 @@ module Ci
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
-        MergeRequest::Metrics.where(merge_request_id: pipeline.merge_requests.map(&:id)).
-          update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: nil)
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
       end
 
       after_transition any => [:success] do |pipeline|
-        MergeRequest::Metrics.where(merge_request_id: pipeline.merge_requests.map(&:id)).
-          update_all(latest_build_finished_at: pipeline.finished_at)
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
