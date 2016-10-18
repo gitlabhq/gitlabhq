@@ -239,7 +239,8 @@ describe Projects::BoardsController do
   end
 
   describe 'DELETE destroy' do
-    let!(:board) { create(:board, project: project) }
+    let!(:boards) { create_pair(:board, project: project) }
+    let(:board)   { project.boards.first }
 
     context 'with valid board id' do
       it 'redirects to the issue boards page' do
