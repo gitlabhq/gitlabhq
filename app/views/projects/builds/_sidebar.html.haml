@@ -1,5 +1,4 @@
-- builds = @build.pipeline.builds.latest.to_a
-- statuses = ["failed", "pending", "running", "canceled", "success", "skipped"]
+- builds = @build.pipeline.builds.to_a
 
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
@@ -124,9 +123,9 @@
               %a.stage-item= stage
 
   .builds-container
-    - statuses.each do |build_status|
+    - HasStatus::ORDERED_STATUSES.each do |build_status|
       - builds.select{|build| build.status == build_status}.each do |build|
-        .build-job{class: ('active' if build == @build), data: {stage: build.stage}}
+        .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = icon('arrow-right')
             = ci_icon_for_status(build.status)
@@ -135,11 +134,5 @@
                 = build.name
               - else
                 = build.id
-
-      - if @build.retried?
-        %li.active
-          %a
-            Build ##{@build.id}
-            &middot;
-            %i.fa.fa-warning
-            This build was retried.
+            - if build.retried?
+              %i.fa.fa-refresh.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'Build was retried'}
