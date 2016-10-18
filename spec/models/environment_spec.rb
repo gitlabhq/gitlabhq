@@ -128,4 +128,41 @@ describe Environment, models: true do
       end
     end
   end
+
+  describe '#stop!' do
+    let(:user) { create(:user) }
+
+    subject { environment.stop!(user) }
+
+    before do
+      expect(environment).to receive(:stoppable?).and_call_original
+    end
+
+    context 'when no other actions' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when matching action is defined' do
+      let(:build) { create(:ci_build) }
+      let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+
+      context 'when action did not yet finish' do
+        let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
+
+        it 'returns the same action' do
+          is_expected.to eq(close_action)
+          is_expected.to include(user: user)
+        end
+      end
+
+      context 'if action did finish' do
+        let!(:close_action) { create(:ci_build, :manual, :success, pipeline: build.pipeline, name: 'close_app') }
+
+        it 'returns a new action of the same type' do
+          is_expected.to be_persisted
+          is_expected.to include(name: close_action.name, user: user)
+        end
+      end
+    end
+  end
 end

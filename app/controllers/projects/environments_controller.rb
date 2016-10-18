@@ -9,8 +9,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def index
     @scope = params[:scope]
     @all_environments = project.environments
-    @environments = @scope == 'stopped' ?
-      @all_environments.stopped : @all_environments.available
+    @environments =
+      if @scope == 'stopped' then
+        @all_environments.stopped
+      else
+        @all_environments.available
+      end
   end
 
   def show
@@ -45,8 +49,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def stop
     return render_404 unless @environment.stoppable?
 
-    action = @environment.stop_action
-    new_action = action.active? ? action : action.play(current_user)
+    new_action = @environment.stop!(current_user)
     redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, new_action])
   end
 
