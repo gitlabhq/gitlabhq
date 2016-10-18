@@ -797,9 +797,10 @@ class MergeRequest < ActiveRecord::Base
   def all_commits_sha
     if persisted?
       merge_request_diffs.flat_map(&:commits_sha).uniq
+    elsif compare_commits
+      compare_commits.to_a.reverse.map(&:id)
     else
-      cached_commits = compare_commits.to_a.reverse.map(&:id)
-      cached_commits.any? ? cached_commits : [diff_head_sha]
+      [diff_head_sha]
     end
   end
 
