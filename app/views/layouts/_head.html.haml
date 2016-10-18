@@ -29,6 +29,7 @@
   = stylesheet_link_tag "print",       media: "print"
 
   = javascript_include_tag "application"
+  = javascript_include_tag *webpack_asset_paths("bundle")
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts

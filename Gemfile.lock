@@ -779,6 +779,8 @@ GEM
     webmock (1.21.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
+    webpack-rails (0.9.9)
+      rails (>= 3.2.0)
     websocket-driver (0.6.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -980,6 +982,7 @@ DEPENDENCIES
   vmstat (~> 2.3.0)
   web-console (~> 2.0)
   webmock (~> 1.21.0)
+  webpack-rails (~> 0.9.9)
   wikicloth (= 0.8.1)
 
 BUNDLED WITH

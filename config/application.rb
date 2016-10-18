@@ -80,6 +80,11 @@ module Gitlab
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
+    # Configure webpack
+    config.webpack.config_file = "config/webpack.config.js"
+    config.webpack.output_dir  = "public/assets/webpack"
+    config.webpack.public_path = "assets/webpack"
+
     # Enable the asset pipeline
     config.assets.enabled = true
     config.assets.paths << Gemojione.images_path

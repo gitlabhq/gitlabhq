@@ -1,9 +1,15 @@
 {
   "private": true,
   "scripts": {
+    "dev-server": "node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
     "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
     "eslint-fix": "npm run eslint -- --fix",
     "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html"
+  },
+  "dependencies": {
+    "stats-webpack-plugin": "^0.4.2",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2"
   },
   "devDependencies": {
     "eslint": "^3.10.1",
