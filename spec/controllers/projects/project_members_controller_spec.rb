@@ -228,4 +228,40 @@ describe Projects::ProjectMembersController do
       end
     end
   end
+
+  describe 'POST create' do
+    let(:stranger) { create(:user) }
+
+    context 'when creating owner' do
+      before do
+        project.team << [user, :master]
+        sign_in(user)
+      end
+
+      it 'does not create a member' do
+        expect do
+          post :create, user_ids: stranger.id,
+                        namespace_id: project.namespace,
+                        access_level: Member::OWNER,
+                        project_id: project
+        end.to change { project.members.count }.by(0)
+      end
+    end
+
+    context 'when create master' do
+      before do
+        project.team << [user, :master]
+        sign_in(user)
+      end
+
+      it 'creates a member' do
+        expect do
+          post :create, user_ids: stranger.id,
+                        namespace_id: project.namespace,
+                        access_level: Member::MASTER,
+                        project_id: project
+        end.to change { project.members.count }.by(1)
+      end
+    end
+  end
 end

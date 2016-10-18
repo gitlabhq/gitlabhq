@@ -137,6 +137,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
   - Fix broken Project API docs (Takuya Noguchi)
+  - Migrate invalid project members (owner -> master)
 
 ## 8.12.7
 
