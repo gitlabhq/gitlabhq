@@ -17,6 +17,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix centering of custom header logos (Ashley Dumaine)
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
+  - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
