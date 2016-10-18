@@ -114,7 +114,13 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       it 'has project and group labels' do
         label_types = saved_project_json['issues'].first['label_links'].map { |link| link['label']['type']}
 
-        expect(label_types).to match(['ProjectLabel', 'GroupLabel'])
+        expect(label_types).to match_array(['ProjectLabel', 'GroupLabel'])
+      end
+
+      it 'has priorities associated to labels' do
+        priorities = saved_project_json['issues'].first['label_links'].map { |link| link['label']['priorities']}
+
+        expect(priorities.flatten).not_to be_empty
       end
 
       it 'saves the correct service type' do
@@ -154,6 +160,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)
     create(:label_link, label: group_label, target: issue)
+    create(:label_priority, label: group_label, priority: 1)
     milestone = create(:milestone, project: project)
     merge_request = create(:merge_request, source_project: project, milestone: milestone)
     commit_status = create(:commit_status, project: project)

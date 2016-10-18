@@ -1,6 +1,7 @@
 # Model relationships to be included in the project import/export
 project_tree:
-  - :labels
+  - labels:
+      :priorities
   - milestones:
     - :events
   - issues:
@@ -9,7 +10,8 @@ project_tree:
       - :author
       - :events
     - label_links:
-      - :label
+      - label:
+          :priorities
     - milestone:
       - :events
   - snippets:
@@ -26,7 +28,8 @@ project_tree:
     - :merge_request_diff
     - :events
     - label_links:
-      - :label
+      - label:
+          :priorities
     - milestone:
       - :events
   - pipelines:

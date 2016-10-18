@@ -134,6 +134,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
           expect(GroupLabel.count).to eq(1)
         end
+
+        it 'has label priorities' do
+          restored_project_json
+
+          expect(GroupLabel.first.priorities).not_to be_empty
+        end
       end
 
       it 'has a project feature' do

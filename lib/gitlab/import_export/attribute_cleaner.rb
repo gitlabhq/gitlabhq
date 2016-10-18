@@ -1,7 +1,7 @@
 module Gitlab
   module ImportExport
     class AttributeCleaner
-      ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES
+      ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES + ['group_id']
 
       def self.clean!(relation_hash:)
         relation_hash.reject! do |key, _value|
