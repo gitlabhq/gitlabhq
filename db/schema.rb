@@ -793,15 +793,15 @@ ActiveRecord::Schema.define(version: 20161007133303) do
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: true, null: false
-    t.datetime "deleted_at"
     t.string "ldap_sync_status", default: "ready", null: false
     t.string "ldap_sync_error"
     t.datetime "ldap_sync_last_update_at"
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
+    t.datetime "deleted_at"
+    t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "repository_size_limit"
-    t.text "description_html"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1019,12 +1019,12 @@ ActiveRecord::Schema.define(version: 20161007133303) do
     t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
+    t.boolean "repository_read_only"
     t.boolean "request_access_enabled", default: true, null: false
     t.boolean "has_external_wiki"
-    t.boolean "repository_read_only"
     t.boolean "lfs_enabled"
-    t.integer "repository_size_limit"
     t.text "description_html"
+    t.integer "repository_size_limit"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1385,8 +1385,8 @@ ActiveRecord::Schema.define(version: 20161007133303) do
     t.boolean "note_events", default: false, null: false
     t.boolean "enable_ssl_verification", default: true
     t.boolean "build_events", default: false, null: false
-    t.string "token"
     t.boolean "wiki_page_events", default: false, null: false
+    t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
   end
