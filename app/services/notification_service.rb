@@ -323,9 +323,7 @@ class NotificationService
       nil, # The acting user, who won't be added to recipients
       action: pipeline.status).map(&:email)
 
-    recipients.each do |to|
-      mailer.public_send(email_template, pipeline, to).deliver_later
-    end
+    mailer.public_send(email_template, pipeline, recipients).deliver_later
   end
 
   protected

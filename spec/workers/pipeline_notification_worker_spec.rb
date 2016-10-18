@@ -26,15 +26,13 @@ describe PipelineNotificationWorker do
           subject.perform(pipeline.id)
         end
 
-        expected_receivers = [pusher, watcher].uniq.sort_by(&:email)
-        actual = ActionMailer::Base.deliveries.sort_by(&:to)
+        emails = ActionMailer::Base.deliveries
+        actual = emails.flat_map(&:bcc).sort
+        expected_receivers = [pusher, watcher].map(&:email).uniq.sort
 
-        expect(expected_receivers.size).to eq(actual.size)
-
-        actual.zip(expected_receivers).each do |(email, receiver)|
-          expect(email.subject).to include(email_subject)
-          expect(email.to).to eq([receiver.email])
-        end
+        expect(actual).to eq(expected_receivers)
+        expect(emails.size).to eq(1)
+        expect(emails.last.subject).to include(email_subject)
       end
     end
 

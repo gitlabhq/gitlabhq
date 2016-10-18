@@ -7,8 +7,8 @@ module EmailHelpers
     ActionMailer::Base.deliveries.clear
   end
 
-  def should_only_email(*users)
-    recipients = email_recipients
+  def should_only_email(*users, kind: :to)
+    recipients = email_recipients(kind: kind)
 
     users.each { |user| should_email(user, recipients) }
 
@@ -27,7 +27,7 @@ module EmailHelpers
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
-  def email_recipients
-    ActionMailer::Base.deliveries.flat_map(&:to)
+  def email_recipients(kind: :to)
+    ActionMailer::Base.deliveries.flat_map(&kind)
   end
 end

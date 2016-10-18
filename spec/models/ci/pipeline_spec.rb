@@ -536,7 +536,7 @@ describe Ci::Pipeline, models: true do
 
     shared_examples 'sending a notification' do
       it 'sends an email' do
-        should_only_email(pipeline.user)
+        should_only_email(pipeline.user, kind: :bcc)
       end
     end
 
