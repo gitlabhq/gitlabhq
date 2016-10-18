@@ -624,7 +624,7 @@ class Project < ActiveRecord::Base
   end
 
   def new_issue_address(author)
-    return unless Gitlab::IncomingEmail.enabled? && author
+    return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
     author.ensure_incoming_email_token!
 

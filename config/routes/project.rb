@@ -18,6 +18,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       get :autocomplete_sources
       get :activity
       get :refs
+      put :new_issue_address
     end
 
     scope module: :projects do

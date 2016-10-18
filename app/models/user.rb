@@ -951,7 +951,7 @@ class User < ActiveRecord::Base
   def generate_token(token_field)
     if token_field == :incoming_email_token
       # Needs to be all lowercase and alphanumeric because it's gonna be used in an email address.
-      SecureRandom.hex
+      SecureRandom.hex.to_i(16).to_s(36)
     else
       super
     end

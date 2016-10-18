@@ -26,7 +26,7 @@ class ProfilesController < Profiles::ApplicationController
 
   def reset_private_token
     if current_user.reset_authentication_token!
-      flash[:notice] = "Private token was successfully updated"
+      flash[:notice] = "Private token was successfully reset"
     end
 
     redirect_to profile_account_path
@@ -34,7 +34,7 @@ class ProfilesController < Profiles::ApplicationController
 
   def reset_incoming_email_token
     if current_user.reset_incoming_email_token!
-      flash[:notice] = "Incoming email token was successfully updated"
+      flash[:notice] = "Incoming email token was successfully reset"
     end
 
     redirect_to profile_account_path
