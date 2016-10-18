@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.0 (2016-10-22)
 
+  - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
@@ -11,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.6
+  - Ability to resolve merge request conflicts with editor !6374
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
@@ -52,6 +54,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add Issue Board API support (andrebsguedes)
   - Allow the Koding integration to be configured through the API
   - Add new issue button to each list on Issues Board
+  - Execute specific named route method from toggle_award_url helper method
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
   - Show the time ago a merge request was deployed to an environment
@@ -104,6 +107,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
+  - Fix the diff in the merge request view when converting a symlink to a regular file
   - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Ability to batch assign issues relating to a merge request to the author. !5725 (jamedjo)
