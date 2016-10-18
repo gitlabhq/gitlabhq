@@ -35,3 +35,4 @@
         Accepting this merge request will close #{"issue".pluralize(mr_closes_issues.size)}
         = succeed '.' do
           != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
+        = mr_assign_issues_link

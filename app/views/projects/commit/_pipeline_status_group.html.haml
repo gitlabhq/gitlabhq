@@ -1,11 +1,13 @@
 - group_status = CommitStatus.where(id: subject).status
-= render_status_with_link('build', group_status)
-.dropdown.inline
-  %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-    %span.ci-status-text
-      = name
-    %span.badge= subject.size
-  %ul.dropdown-menu.grouped-pipeline-dropdown
-    .arrow
+%button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+  %span.ci-status-icon
+    = render_status_with_link('build', group_status)
+  %span.ci-status-text
+    = name
+  %span.badge= subject.size
+.dropdown-menu.grouped-pipeline-dropdown
+  .arrow
+  %ul
     - subject.each do |status|
-      = render "projects/#{status.to_partial_path}_pipeline", subject: status
+      %li
+        = render "projects/#{status.to_partial_path}_pipeline", subject: status

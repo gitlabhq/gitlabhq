@@ -7,15 +7,18 @@ describe Repository, models: true do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
+
   let(:commit_options) do
     author = repository.user_to_committer(user)
     { message: 'Test message', committer: author, author: author }
   end
+
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
     merge_commit_id = repository.merge(user, merge_request, commit_options)
     repository.commit(merge_commit_id)
   end
+
   let(:author_email) { FFaker::Internet.email }
 
   # I have to remove periods from the end of the name
@@ -90,6 +93,26 @@ describe Repository, models: true do
     end
   end
 
+  describe '#ref_name_for_sha' do
+    context 'ref found' do
+      it 'returns the ref' do
+        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
+          and_return(["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0])
+
+        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
+      end
+    end
+
+    context 'ref not found' do
+      it 'returns nil' do
+        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
+          and_return(["", 0])
+
+        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq nil
+      end
+    end
+  end
+
   describe '#last_commit_for_path' do
     subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
@@ -122,10 +145,29 @@ describe Repository, models: true do
   end
 
   describe '#merged_to_root_ref?' do
-    context 'merged branch' do
+    context 'merged branch without ff' do
+      subject { repository.merged_to_root_ref?('branch-merged') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    # If the HEAD was ff then it will be false
+    context 'merged with ff' do
       subject { repository.merged_to_root_ref?('improve/awesome') }
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'not merged branch' do
+      subject { repository.merged_to_root_ref?('not-merged-branch') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'default branch' do
+      subject { repository.merged_to_root_ref?('master') }
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -324,7 +366,7 @@ describe Repository, models: true do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -968,10 +1010,10 @@ describe Repository, models: true do
 
     context 'cherry-picking a merge commit' do
       it 'cherry-picks the changes' do
-        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).to be_nil
+        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
 
-        repository.cherry_pick(user, pickable_merge, 'master')
-        expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).not_to be_nil
+        repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
       end
     end
   end

@@ -24,6 +24,7 @@ class NamespaceValidator < ActiveModel::EachValidator
     projects
     public
     repository
+    robots.txt
     s
     search
     services

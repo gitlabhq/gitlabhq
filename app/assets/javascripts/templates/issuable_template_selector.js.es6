@@ -16,7 +16,13 @@
       if (initialQuery.name) this.requestFile(initialQuery);
 
       $('.reset-template', this.dropdown.parent()).on('click', () => {
-        if (this.currentTemplate) this.setInputValueToTemplateContent(false);
+        this.setInputValueToTemplateContent();
+      });
+
+      $('.no-template', this.dropdown.parent()).on('click', () => {
+        this.currentTemplate = '';
+        this.setInputValueToTemplateContent();
+        $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
       });
     }
 

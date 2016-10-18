@@ -2,33 +2,31 @@ require 'spec_helper'
 
 describe Boards::CreateService, services: true do
   describe '#execute' do
+    let(:project) { create(:empty_project) }
+
     subject(:service) { described_class.new(project, double) }
 
     context 'when project does not have a board' do
-      let(:project) { create(:empty_project, board: nil) }
-
       it 'creates a new board' do
         expect { service.execute }.to change(Board, :count).by(1)
       end
 
       it 'creates default lists' do
-        service.execute
+        board = service.execute
 
-        expect(project.board.lists.size).to eq 2
-        expect(project.board.lists.first).to be_backlog
-        expect(project.board.lists.last).to be_done
+        expect(board.lists.size).to eq 2
+        expect(board.lists.first).to be_backlog
+        expect(board.lists.last).to be_done
       end
     end
 
     context 'when project has a board' do
-      let!(:project) { create(:project_with_board) }
-
-      it 'does not create a new board' do
-        expect { service.execute }.not_to change(Board, :count)
+      before do
+        create(:board, project: project)
       end
 
-      it 'does not create board lists' do
-        expect { service.execute }.not_to change(project.board.lists, :count)
+      it 'does not create a new board' do
+        expect { service.execute }.not_to change(project.boards, :count)
       end
     end
   end

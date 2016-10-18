@@ -588,37 +588,39 @@ describe API::API, api: true  do
       before do
         note = create(:note_on_issue, note: 'What an awesome day!', project: project)
         EventCreateService.new.leave_note(note, note.author)
+      end
+
+      it 'returns all events' do
         get api("/projects/#{project.id}/events", user)
-      end
 
-      it { expect(response).to have_http_status(200) }
+        expect(response).to have_http_status(200)
 
-      context 'joined event' do
-        let(:json_event) { json_response[1] }
+        first_event = json_response.first
 
-        it { expect(json_event['action_name']).to eq('joined') }
-        it { expect(json_event['project_id'].to_i).to eq(project.id) }
-        it { expect(json_event['author_username']).to eq(user3.username) }
-        it { expect(json_event['author']['name']).to eq(user3.name) }
-      end
+        expect(first_event['action_name']).to eq('commented on')
+        expect(first_event['note']['body']).to eq('What an awesome day!')
 
-      context 'comment event' do
-        let(:json_event) { json_response.first }
+        last_event = json_response.last
 
-        it { expect(json_event['action_name']).to eq('commented on') }
-        it { expect(json_event['note']['body']).to eq('What an awesome day!') }
+        expect(last_event['action_name']).to eq('joined')
+        expect(last_event['project_id'].to_i).to eq(project.id)
+        expect(last_event['author_username']).to eq(user3.username)
+        expect(last_event['author']['name']).to eq(user3.name)
       end
     end
 
     it 'returns a 404 error if not found' do
       get api('/projects/42/events', user)
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Project Not Found')
     end
 
     it 'returns a 404 error if user is not a member' do
       other_user = create(:user)
+
       get api("/projects/#{project.id}/events", other_user)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -817,6 +819,20 @@ describe API::API, api: true  do
       project.namespace.update(share_with_group_lock: true)
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
       expect(response.status).to eq 400
+    end
+
+    it 'returns a 404 error when user cannot read group' do
+      private_group = create(:group, :private)
+
+      post api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
+    end
+
+    it 'returns a 404 error when group does not exist' do
+      post api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
     end
 
     it "returns a 409 error when wrong params passed" do

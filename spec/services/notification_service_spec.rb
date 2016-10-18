@@ -331,7 +331,7 @@ describe NotificationService, services: true do
       describe '#new_note' do
         it "records sent notifications" do
           # Ensure create SentNotification by noteable = merge_request 6 times, not noteable = note
-          expect(SentNotification).to receive(:record_note).with(note, any_args).exactly(4).times.and_call_original
+          expect(SentNotification).to receive(:record_note).with(note, any_args).exactly(3).times.and_call_original
 
           notification.new_note(note)
 
@@ -1166,6 +1166,61 @@ describe NotificationService, services: true do
           notification.decline_project_invite(project_member)
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
+    end
+  end
+
+  context 'guest user in private project' do
+    let(:private_project) { create(:empty_project, :private) }
+    let(:guest) { create(:user) }
+    let(:developer) { create(:user) }
+    let(:assignee) { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: private_project, assignee: assignee) }
+    let(:merge_request1) { create(:merge_request, source_project: private_project, assignee: assignee, description: "cc @#{guest.username}") }
+    let(:note) { create(:note, noteable: merge_request, project: private_project) }
+
+    before do
+      private_project.team << [assignee, :developer]
+      private_project.team << [developer, :developer]
+      private_project.team << [guest, :guest]
+
+      ActionMailer::Base.deliveries.clear
+    end
+
+    it 'filters out guests when new note is created' do
+      expect(SentNotification).to receive(:record).with(merge_request, any_args).exactly(1).times
+
+      notification.new_note(note)
+
+      should_not_email(guest)
+      should_email(assignee)
+    end
+
+    it 'filters out guests when new merge request is created' do
+      notification.new_merge_request(merge_request1, @u_disabled)
+
+      should_not_email(guest)
+      should_email(assignee)
+    end
+
+    it 'filters out guests when merge request is closed' do
+      notification.close_mr(merge_request, developer)
+
+      should_not_email(guest)
+      should_email(assignee)
+    end
+
+    it 'filters out guests when merge request is reopened' do
+      notification.reopen_mr(merge_request, developer)
+
+      should_not_email(guest)
+      should_email(assignee)
+    end
+
+    it 'filters out guests when merge request is merged' do
+      notification.merge_mr(merge_request, developer)
+
+      should_not_email(guest)
+      should_email(assignee)
     end
   end
 

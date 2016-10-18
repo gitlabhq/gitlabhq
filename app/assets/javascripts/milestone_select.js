@@ -110,7 +110,7 @@
               e.preventDefault();
               return;
             }
-            if (page === 'projects:boards:show') {
+            if ($('html').hasClass('issue-boards-page')) {
               gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
               gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();

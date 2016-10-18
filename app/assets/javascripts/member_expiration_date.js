@@ -14,14 +14,18 @@
     inputs.datepicker({
       dateFormat: 'yy-mm-dd',
       minDate: 1,
-      onSelect: toggleClearInput
+      onSelect: function () {
+        $(this).trigger('change');
+        toggleClearInput.call(this);
+      }
     });
 
     inputs.next('.js-clear-input').on('click', function(event) {
       event.preventDefault();
 
       var input = $(this).closest('.clearable-input').find('.js-access-expiration-date');
-      input.datepicker('setDate', null);
+      input.datepicker('setDate', null)
+        .trigger('change');
       toggleClearInput.call(input);
     });
 

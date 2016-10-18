@@ -1,5 +1,8 @@
+require Rails.root.join('features/support/wait_for_ajax')
+
 module SharedNote
   include Spinach::DSL
+  include WaitForAjax
 
   step 'I delete a comment' do
     page.within('.main-notes-list') do
@@ -116,8 +119,9 @@ module SharedNote
     page.within(".js-main-target-form") do
       fill_in "note[note]", with: "# Comment with a header"
       click_button "Comment"
-      sleep 0.05
     end
+
+    wait_for_ajax
   end
 
   step 'The comment with the header should not have an ID' do
