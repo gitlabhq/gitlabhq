@@ -32,12 +32,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       current_user: current_user
     )
 
-<<<<<<< HEAD
     members = @project.project_members.where(user_id: params[:user_ids].split(','))
 
     members.each do |member|
       log_audit_event(member, action: :create)
-=======
+    end
+
     if params[:group_ids].present?
       group_ids = params[:group_ids].split(',')
       groups = Group.where(id: group_ids)
@@ -51,7 +51,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
           expires_at: params[:expires_at]
         )
       end
->>>>>>> ce/master
     end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)

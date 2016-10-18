@@ -47,13 +47,9 @@ module API
     mount ::API::Issues
     mount ::API::Keys
     mount ::API::Labels
-<<<<<<< HEAD
-    mount ::API::License
-    mount ::API::LicenseTemplates
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
-=======
->>>>>>> ce/master
+    mount ::API::License
     mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequestDiffs
@@ -63,13 +59,9 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
-    mount ::API::ProjectHooks
-<<<<<<< HEAD
     mount ::API::ProjectGitHook # TODO: Should be removed after 8.11 is released
+    mount ::API::ProjectHooks
     mount ::API::ProjectPushRule
-    mount ::API::ProjectSnippets
-=======
->>>>>>> ce/master
     mount ::API::Projects
     mount ::API::ProjectSnippets
     mount ::API::Repositories

@@ -70,13 +70,9 @@ describe MergeRequests::RefreshService, services: true do
 
       it { expect(@merge_request.notes).not_to be_empty }
       it { expect(@merge_request).to be_open }
-<<<<<<< HEAD
       it { expect(@merge_request.approvals).to be_empty }
-      it { expect(@merge_request.merge_when_build_succeeds).to be_falsey}
-=======
       it { expect(@merge_request.merge_when_build_succeeds).to be_falsey }
       it { expect(@merge_request.diff_head_sha).to eq(@newrev) }
->>>>>>> ce/master
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
       it { expect(@build_failed_todo).to be_done }

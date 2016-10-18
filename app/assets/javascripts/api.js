@@ -6,16 +6,10 @@
     groupProjectsPath: "/api/:version/groups/:id/projects.json",
     projectsPath: "/api/:version/projects.json?simple=true",
     labelsPath: "/:namespace_path/:project_path/labels",
-<<<<<<< HEAD
-    licensePath: "/api/:version/licenses/:key",
-    gitignorePath: "/api/:version/gitignores/:key",
-    ldapGroupsPath: "/api/:version/ldap/:provider/groups.json",
-    gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key",
-=======
     licensePath: "/api/:version/templates/licenses/:key",
     gitignorePath: "/api/:version/templates/gitignores/:key",
     gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
->>>>>>> ce/master
+    ldapGroupsPath: "/api/:version/ldap/:provider/groups.json",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
     group: function(group_id, callback) {
       var url = Api.buildUrl(Api.groupPath)

@@ -1,16 +1,10 @@
 require 'constraints/user_url_constrainer'
 
-<<<<<<< HEAD
-get '/u/:username', to: redirect('/%{username}'),
-                    constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
-
 ## EE-specific
 get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
 post 'unsubscribes/:email', to: 'unsubscribes#create'
 ## EE-specific
 
-=======
->>>>>>> ce/master
 devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
                                   registrations: :registrations,
                                   passwords: :passwords,

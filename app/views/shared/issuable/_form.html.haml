@@ -100,8 +100,7 @@
         = f.hidden_field :label_ids, multiple: true, value: ''
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
           .issuable-form-select-holder
-<<<<<<< HEAD
-            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }
+            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }, dropdown_title: "Select label"
 
       - if issuable.respond_to?(:weight)
         .form-group
@@ -111,9 +110,6 @@
             = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
               { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
-=======
-            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }, dropdown_title: "Select label"
->>>>>>> ce/master
     - if has_due_date
       .col-lg-6
         .form-group

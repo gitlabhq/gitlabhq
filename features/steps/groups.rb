@@ -73,12 +73,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
-<<<<<<< HEAD
-  Then 'I should be redirected to group page' do
+  step 'I should be redirected to group page' do
     expect(current_path).to eq group_path(Group.last)
   end
 
-  And 'I change group name' do
+  step 'I change group name' do
     page.within '#tab-edit' do
       fill_in 'group_name', with: 'new-name'
       click_button "Save group"
@@ -97,8 +96,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     end
   end
 
-=======
->>>>>>> ce/master
   step 'I change group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"

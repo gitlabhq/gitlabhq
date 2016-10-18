@@ -9,14 +9,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :merge_request, only: [
-<<<<<<< HEAD
-    :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues,
-    :approve, :rebase
-=======
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
->>>>>>> ce/master
+    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues,
+    :approve, :rebase
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -445,18 +440,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-<<<<<<< HEAD
-  def approve
-    unless @merge_request.can_approve?(current_user)
-      return render_404
-    end
-
-    MergeRequests::ApprovalService.
-      new(project, current_user).
-      execute(@merge_request)
-
-    redirect_to merge_request_path(@merge_request)
-=======
   def ci_environments_status
     environments =
       begin
@@ -479,7 +462,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
     render json: environments
->>>>>>> ce/master
+  end
+
+  def approve
+    unless @merge_request.can_approve?(current_user)
+      return render_404
+    end
+
+    MergeRequests::ApprovalService.
+      new(project, current_user).
+      execute(@merge_request)
+
+    redirect_to merge_request_path(@merge_request)
   end
 
   protected

@@ -67,21 +67,13 @@ class GitPushService < BaseService
   protected
 
   def update_merge_requests
-<<<<<<< HEAD
-    @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
-    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
-=======
     UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
->>>>>>> ce/master
+    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-<<<<<<< HEAD
-    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(mirror_update: mirror_update)
-=======
-    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
->>>>>>> ce/master
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(@project.id)
   end
 
