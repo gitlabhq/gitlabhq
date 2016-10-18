@@ -14,7 +14,7 @@ class Spinach::Features::AdminPushRulesSample < Spinach::FeatureSteps
   end
 
   step 'I see my push rule saved' do
-    visit admin_push_rules_path
+    visit admin_push_rule_path
     expect(page).to have_selector("input[value='my_string']")
   end
 end

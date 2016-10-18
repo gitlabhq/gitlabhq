@@ -84,11 +84,22 @@ describe CreateDeploymentService, services: true do
         expect(subject).to be_persisted
       end
     end
+
+    context 'when project was removed' do
+      let(:project) { nil }
+
+      it 'does not create deployment or environment' do
+        expect { subject }.not_to raise_error
+
+        expect(Environment.count).to be_zero
+        expect(Deployment.count).to be_zero
+      end
+    end
   end
 
   describe 'processing of builds' do
     let(:environment) { nil }
-    
+
     shared_examples 'does not create environment and deployment' do
       it 'does not create a new environment' do
         expect { subject }.not_to change { Environment.count }
@@ -133,12 +144,12 @@ describe CreateDeploymentService, services: true do
 
     context 'without environment specified' do
       let(:build) { create(:ci_build, project: project) }
-      
+
       it_behaves_like 'does not create environment and deployment' do
         subject { build.success }
       end
     end
-    
+
     context 'when environment is specified' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
       let(:build) { create(:ci_build, pipeline: pipeline, environment: 'production', options: options) }

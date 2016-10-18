@@ -228,7 +228,7 @@ We'll discuss the three reasons to merge in master: leveraging code, merge confl
 If you need to leverage some code that was introduced in master after you created the feature branch you can sometimes solve this by just cherry-picking a commit.
 If your feature branch has a merge conflict, creating a merge commit is a normal way of solving this.
 You can prevent some merge conflicts by using [gitattributes](http://git-scm.com/docs/gitattributes) for files that can be in a random order.
-For example in GitLab our changelog file is specified in .gitattributes as `CHANGELOG merge=union` so that there are fewer merge conflicts in it.
+For example in GitLab our changelog file is specified in .gitattributes as `CHANGELOG.md merge=union` so that there are fewer merge conflicts in it.
 The last reason for creating merge commits is having long lived branches that you want to keep up to date with the latest state of the project.
 Martin Fowler, in [his article about feature branches](http://martinfowler.com/bliki/FeatureBranch.html) talks about this Continuous Integration (CI).
 At GitLab we are guilty of confusing CI with branch testing. Quoting Martin Fowler: "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.

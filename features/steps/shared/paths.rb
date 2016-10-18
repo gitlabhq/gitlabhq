@@ -224,7 +224,7 @@ module SharedPaths
   end
 
   step 'I visit push rules page' do
-    visit admin_push_rules_path
+    visit admin_push_rule_path
   end
 
   step 'I visit admin license page' do

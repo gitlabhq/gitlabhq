@@ -19,8 +19,8 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   end
 
   step 'page should have languages graphs' do
-    expect(page).to have_content "Ruby 66.63 %"
-    expect(page).to have_content "JavaScript 22.96 %"
+    expect(page).to have_content /Ruby 66.* %/
+    expect(page).to have_content /JavaScript 22.* %/
   end
 
   step 'page should have commits graphs' do

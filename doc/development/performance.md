@@ -34,10 +34,11 @@ graphs/dashboards.
 
 ## Tooling
 
-GitLab provides two built-in tools to aid the process of improving performance:
+GitLab provides built-in tools to aid the process of improving performance:
 
 * [Sherlock](profiling.md#sherlock)
 * [GitLab Performance Monitoring](../monitoring/performance/monitoring.md)
+* [Request Profiling](../administration/monitoring/performance/request_profiling.md)
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
 <http://performance.gitlab.net>, this requires you to log in using your
@@ -253,5 +254,5 @@ impact on runtime performance, and as such, using a constant instead of
 referencing an object directly may even slow code down.
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
-[yorickpeterse]: https://gitlab.com/u/yorickpeterse
+[yorickpeterse]: https://gitlab.com/yorickpeterse
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern

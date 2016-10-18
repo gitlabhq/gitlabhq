@@ -15,7 +15,9 @@ module MergeRequests
         params.except!(:target_branch, :force_remove_source_branch)
       end
 
-      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      if params[:force_remove_source_branch].present?
+        merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      end
       old_approvers = merge_request.overall_approvers.to_a
 
       handle_wip_event(merge_request)

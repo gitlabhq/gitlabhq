@@ -73,11 +73,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
-  Then 'I should be redirected to group page' do
+  step 'I should be redirected to group page' do
     expect(current_path).to eq group_path(Group.last)
   end
 
-  And 'I change group name' do
+  step 'I change group name' do
     page.within '#tab-edit' do
       fill_in 'group_name', with: 'new-name'
       click_button "Save group"

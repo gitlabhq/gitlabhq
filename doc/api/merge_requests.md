@@ -740,7 +740,7 @@ Example response when the GitLab issue tracker is used:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "web_url" : "https://gitlab.example.com/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -761,7 +761,7 @@ Example response when the GitLab issue tracker is used:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.example.com/root",
          "avatar_url" : null,
          "username" : "root"
       },
@@ -831,7 +831,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/leila"
+    "web_url": "https://gitlab.example.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -839,7 +839,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/carli"
+    "web_url": "https://gitlab.example.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -907,7 +907,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/leila"
+    "web_url": "https://gitlab.example.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -915,7 +915,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/carli"
+    "web_url": "https://gitlab.example.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -978,7 +978,7 @@ Example response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/root"
+    "web_url": "https://gitlab.example.com/root"
   },
   "action_name": "marked",
   "target_type": "MergeRequest",
@@ -1001,7 +1001,7 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/francisca"
+      "web_url": "https://gitlab.example.com/francisca"
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",
@@ -1009,7 +1009,7 @@ Example response:
       "id": 4,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/733005fcd7e6df12d2d8580171ccb966?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/barrett.krajcik"
+      "web_url": "https://gitlab.example.com/barrett.krajcik"
     },
     "source_project_id": 3,
     "target_project_id": 3,

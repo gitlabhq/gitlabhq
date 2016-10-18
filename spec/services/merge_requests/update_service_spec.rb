@@ -105,6 +105,18 @@ describe MergeRequests::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Target branch changed from `master` to `target`'
       end
+
+      context 'when not including source branch removal options' do
+        before do
+          opts.delete(:force_remove_source_branch)
+        end
+
+        it 'maintains the original options' do
+          update_merge_request(opts)
+
+          expect(@merge_request.merge_params["force_remove_source_branch"]).to eq("1")
+        end
+      end
     end
 
     context 'todos' do

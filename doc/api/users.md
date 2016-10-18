@@ -22,7 +22,7 @@ GET /users
     "name": "John Smith",
     "state": "active",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
-    "web_url": "http://localhost:3000/u/john_smith"
+    "web_url": "http://localhost:3000/john_smith"
   },
   {
     "id": 2,
@@ -30,7 +30,7 @@ GET /users
     "name": "Jack Smith",
     "state": "blocked",
     "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
-    "web_url": "http://localhost:3000/u/jack_smith"
+    "web_url": "http://localhost:3000/jack_smith"
   }
 ]
 ```
@@ -50,7 +50,7 @@ GET /users
     "name": "John Smith",
     "state": "active",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
-    "web_url": "http://localhost:3000/u/john_smith",
+    "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
     "is_admin": false,
     "bio": null,
@@ -83,7 +83,7 @@ GET /users
     "name": "Jack Smith",
     "state": "blocked",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
-    "web_url": "http://localhost:3000/u/jack_smith",
+    "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
     "is_admin": false,
     "bio": null,
@@ -143,7 +143,7 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
-  "web_url": "http://localhost:3000/u/john_smith",
+  "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -174,7 +174,7 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
-  "web_url": "http://localhost:3000/u/john_smith",
+  "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -295,7 +295,7 @@ GET /user
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
-  "web_url": "http://localhost:3000/u/john_smith",
+  "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -667,7 +667,7 @@ Example response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "author_username": "root"
   },
@@ -684,7 +684,7 @@ Example response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "author_username": "john",
     "data": {
@@ -730,7 +730,7 @@ Example response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "author_username": "root"
   },
@@ -754,7 +754,7 @@ Example response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-        "web_url": "http://localhost:3000/u/root"
+        "web_url": "http://localhost:3000/root"
       },
       "created_at": "2015-12-04T10:33:56.698Z",
       "system": false,
@@ -769,7 +769,7 @@ Example response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "author_username": "root"
   }

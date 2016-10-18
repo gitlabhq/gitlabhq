@@ -55,7 +55,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.6.7'
+gem 'gitlab_git', '~> 10.6.8'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -111,7 +111,7 @@ gem 'gitlab-elasticsearch-git', '~> 1.0.1', require: "elasticsearch/git"
 # Markdown and HTML processing
 gem 'html-pipeline',      '~> 1.11.0'
 gem 'deckar01-task_list', '1.0.5', require: 'task_list/railtie'
-gem 'github-markup',      '~> 1.4'
+gem 'gitlab-markup',      '~> 1.5.0'
 gem 'redcarpet',          '~> 3.3.3'
 gem 'RedCloth',           '~> 4.3.2'
 gem 'rdoc',               '~>3.6'
@@ -235,7 +235,7 @@ gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-ui-rails',    '~> 5.0.0'
-gem 'request_store',      '~> 1.3.0'
+gem 'request_store',      '~> 1.3'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
@@ -273,8 +273,6 @@ group :development do
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
-
-  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :development, :test do
@@ -321,6 +319,8 @@ group :development, :test do
 
   gem 'license_finder', '~> 2.1.0', require: false
   gem 'knapsack', '~> 1.11.0'
+
+  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :test do
@@ -354,7 +354,7 @@ gem 'oauth2', '~> 1.2.0'
 gem 'paranoia', '~> 2.0'
 
 # Health check
-gem 'health_check', '~> 2.1.0'
+gem 'health_check', '~> 2.2.0'
 
 # System information
 gem 'vmstat', '~> 2.2'

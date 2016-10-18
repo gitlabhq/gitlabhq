@@ -65,6 +65,7 @@
   .ci-status-icon-success {
     color: $gl-success;
   }
+
   .ci-status-icon-failed {
     color: $gl-danger;
   }
@@ -77,6 +78,7 @@
   .ci-status-icon-running {
     color: $blue-normal;
   }
+
   .ci-status-icon-canceled,
   .ci-status-icon-disabled,
   .ci-status-icon-not-found,

@@ -224,6 +224,10 @@ module SharedProject
     2.times { create(:note_on_issue, project: project) }
   end
 
+  step 'trending projects are refreshed' do
+    TrendingProject.refresh!
+  end
+
   step 'project "Shop" has labels: "bug", "feature", "enhancement"' do
     project = Project.find_by(name: "Shop")
     create(:label, project: project, title: 'bug')

@@ -23,28 +23,28 @@
   color: #555;
 
   tbody:first-child tr:first-child {
-    padding-top: 0
+    padding-top: 0;
   }
 
   th {
     padding-top: 15px;
     line-height: 1.5;
     color: #333;
-    text-align: left
+    text-align: left;
   }
 
   td {
     padding-top: 3px;
     padding-bottom: 3px;
     vertical-align: top;
-    line-height: 20px
+    line-height: 20px;
   }
 
   .shortcut {
     padding-right: 10px;
     color: #999;
     text-align: right;
-    white-space: nowrap
+    white-space: nowrap;
   }
 
   .key {

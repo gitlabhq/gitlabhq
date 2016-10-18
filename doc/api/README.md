@@ -17,6 +17,8 @@ following locations:
 - [Commits](commits.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
+- [Gitignores templates](templates/gitignores.md)
+- [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
 - [Group Access Requests](access_requests.md)
 - [Group Members](members.md)
@@ -26,6 +28,7 @@ following locations:
 - [License](license.md)
 - [Merge Requests](merge_requests.md)
 - [Milestones](milestones.md)
+- [Open source license templates](templates/licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
@@ -47,6 +50,7 @@ following locations:
 - [Todos](todos.md)
 - [Users](users.md)
 - [Validate CI configuration](ci/lint.md)
+- [Version](version.md)
 
 ### Internal CI API
 
