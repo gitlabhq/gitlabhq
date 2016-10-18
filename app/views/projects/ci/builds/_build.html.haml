@@ -27,7 +27,7 @@
         = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
       - else
         .light none
-      .icon-container
+      .icon-container.commit-icon
         = custom_icon("icon_commit")
 
     - if commit_sha
