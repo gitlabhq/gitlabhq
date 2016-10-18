@@ -16,6 +16,7 @@ that comes bundled with Omnibus GitLab packages.
 - [Configure Redis using Omnibus](#configure-redis-using-omnibus)
 - [Experimental Redis Sentinel support](#experimental-redis-sentinel-support)
 - [Redis Sentinel support](#redis-sentinel-support)
+  - [Prerequisites](#prerequisites)
   - [Redis setup](#redis-setup)
     - [Existing single-machine installation](#existing-single-machine-installation)
     - [Installation from source](#installation-from-source)
@@ -29,8 +30,8 @@ that comes bundled with Omnibus GitLab packages.
 - [Troubleshooting](#troubleshooting)
   - [Redis replication](#redis-replication)
   - [Sentinel](#sentinel)
-    - [Omnibus install](#omnibus-install)
-    - [Source install](#source-install)
+    - [Omnibus GitLab](#omnibus-gitlab)
+    - [Install from Source](#install-from-source)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -60,11 +61,8 @@ Redis.
     redis['enable'] = true
     bootstrap['enable'] = false
     nginx['enable'] = false
-    unicorn['enable'] = false
-    sidekiq['enable'] = false
     postgresql['enable'] = false
     gitlab_rails['enable'] = false
-    gitlab_workhorse['enable'] = false
     mailroom['enable'] = false
 
     # Redis configuration
@@ -340,13 +338,9 @@ redis['enable'] = true
 sentinel['enable'] = true
 
 # Disabled all other services
-redis['enable'] = false
 bootstrap['enable'] = false
 nginx['enable'] = false
-unicorn['enable'] = false
-sidekiq['enable'] = false
 postgresql['enable'] = false
-gitlab_workhorse['enable'] = false
 gitlab_rails['enable'] = false
 mailroom['enable'] = false
 
