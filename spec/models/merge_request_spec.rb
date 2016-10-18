@@ -334,7 +334,7 @@ describe MergeRequest, models: true do
       wip_title = "WIP: #{subject.title}"
 
       expect(subject.wip_title).to eq wip_title
-    end 
+    end
 
     it "does not add the WIP: prefix multiple times" do
       wip_title = "WIP: #{subject.title}"

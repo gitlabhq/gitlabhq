@@ -125,6 +125,7 @@ project:
 - drone_ci_service
 - emails_on_push_service
 - builds_email_service
+- pipelines_email_service
 - irker_service
 - pivotaltracker_service
 - hipchat_service

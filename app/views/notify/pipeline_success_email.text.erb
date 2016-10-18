@@ -1,0 +1,24 @@
+Your pipeline has passed.
+
+Project: <%= @project.name %> ( <%= project_url(@project) %> )
+Branch: <%= @pipeline.ref %> ( <%= commits_url(@pipeline) %> )
+<% if @merge_request -%>
+Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
+<% end -%>
+
+Commit: <%= @pipeline.short_sha %> ( <%= commit_url(@pipeline) %> )
+Commit Message: <%= @pipeline.git_commit_message.truncate(50) %>
+<% commit = @pipeline.commit -%>
+<% if commit.author -%>
+Commit Author: <%= commit.author.name %> ( <%= user_url(commit.author) %> )
+<% else -%>
+Commit Author: <%= commit.author_name %>
+<% end -%>
+
+<% build_count = @pipeline.statuses.latest.size -%>
+<% stage_count = @pipeline.stages.size -%>
+Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) successfully completed <%= build_count %> <%= 'build'.pluralize(build_count) %> in <%= stage_count %> <%= 'stage'.pluralize(stage_count) %>.
+
+You're receiving this email because of your account on <%= Gitlab.config.gitlab.host %>.
+Manage all notifications: <%= profile_notifications_url %>
+Help: <%= help_url %>

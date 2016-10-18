@@ -1,0 +1,31 @@
+Your pipeline has failed.
+
+Project: <%= @project.name %> ( <%= project_url(@project) %> )
+Branch: <%= @pipeline.ref %> ( <%= commits_url(@pipeline) %> )
+<% if @merge_request -%>
+Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
+<% end -%>
+
+Commit: <%= @pipeline.short_sha %> ( <%= commit_url(@pipeline) %> )
+Commit Message: <%= @pipeline.git_commit_message.truncate(50) %>
+<% commit = @pipeline.commit -%>
+<% if commit.author -%>
+Commit Author: <%= commit.author.name %> ( <%= user_url(commit.author) %> )
+<% else -%>
+Commit Author: <%= commit.author_name %>
+<% end -%>
+
+<% failed = @pipeline.statuses.latest.failed -%>
+Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
+
+<% failed.each do |build| -%>
+Build #<%= build.id %> ( <%= pipeline_build_url(@pipeline, build) %> )
+Stage: <%= build.stage %>
+Name: <%= build.name %>
+Trace: <%= build.trace_with_state(last_lines: 10)[:text] %>
+
+<% end -%>
+
+You're receiving this email because of your account on <%= Gitlab.config.gitlab.host %>.
+Manage all notifications: <%= profile_notifications_url %>
+Help: <%= help_url %>
