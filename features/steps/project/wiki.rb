@@ -81,7 +81,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I click on the "Pages" button' do
-    wiki_menu = find('.content .nav-links')
+    wiki_menu = find('.content-wrapper .nav-links')
     wiki_menu.click_on "Pages"
   end
 
