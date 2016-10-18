@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 CHANGELOG merge=union
 CHANGELOG-EE.md merge=union
+=======
+CHANGELOG.md merge=union
+>>>>>>> ce/master
 *.js.es6 gitlab-language=javascript

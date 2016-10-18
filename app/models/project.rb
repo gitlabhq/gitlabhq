@@ -17,6 +17,9 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  class BoardLimitExceeded < StandardError; end
+
+  NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
   cache_markdown_field :description, pipeline: :description
@@ -61,7 +64,11 @@ class Project < ActiveRecord::Base
 
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
+<<<<<<< HEAD
   has_one :board, dependent: :destroy
+=======
+  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
+>>>>>>> ce/master
 
   # Project services
   has_many :services
@@ -933,11 +940,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def update_merge_requests(oldrev, newrev, ref, user)
-    MergeRequests::RefreshService.new(self, user).
-      execute(oldrev, newrev, ref)
-  end
-
   def valid_repo?
     repository.exists?
   rescue
@@ -1614,5 +1616,9 @@ class Project < ActiveRecord::Base
     end
 
     shared_projects.any?
+  end
+
+  def validate_board_limit(board)
+    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 end

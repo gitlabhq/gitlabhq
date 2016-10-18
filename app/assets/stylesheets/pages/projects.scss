@@ -17,34 +17,43 @@
     &.features .control-label {
       font-weight: normal;
     }
+
     .form-group {
       margin-bottom: 5px;
     }
+
     &> .form-group {
       padding-left: 0;
     }
   }
+
   .help-block {
     margin-bottom: 10px;
   }
+
   .project-path {
     padding-right: 0;
+
     .form-control {
       border-radius: $border-radius-base;
     }
   }
+
   .input-group > div {
     &:last-child {
       padding-right: 0;
     }
   }
+
   @media (max-width: $screen-xs-max) {
     .input-group > div {
       margin-bottom: 14px;
+
       &:last-child {
         margin-bottom: 0;
       }
     }
+
     fieldset > .form-group:first-child {
       padding-right: 0;
     }
@@ -56,6 +65,7 @@
       border-radius: 3px;
       border: 1px solid #e5e5e5;
     }
+
     &+ .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
@@ -201,6 +211,7 @@
         pointer-events: none;
       }
     }
+
     .count {
       @include btn-gray;
       display: inline-block;
@@ -361,10 +372,12 @@ a.deploy-project-label {
       margin: $gl-padding;
       text-align: center;
       width: 169px;
+
       &:hover, &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
       }
+
       .no-avatar {
         width: 100px;
         height: 100px;
@@ -372,17 +385,20 @@ a.deploy-project-label {
         border: 1px solid $gray-dark;
         margin: 0 auto;
         border-radius: 50%;
+
         i {
           font-size: 100px;
           color: $gray-dark;
         }
       }
+
       a {
         display: block;
         width: 100%;
         height: 100%;
         padding-top: $gl-padding;
         color: $gl-gray;
+
         .caption {
           min-height: 30px;
           padding: $gl-padding 0;
@@ -644,6 +660,7 @@ pre.light-well {
 
   .clone-options {
     display: table-cell;
+
     a.btn {
       width: 100%;
     }
@@ -861,6 +878,7 @@ a.allowed-to-merge, a.allowed-to-push {
   .form-control {
     min-width: 100px;
   }
+
   .select2-choice {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

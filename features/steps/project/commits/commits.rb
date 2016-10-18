@@ -21,7 +21,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(response_headers['Content-Type']).to have_content("application/atom+xml")
     expect(body).to have_selector("title", text: "#{@project.name}:master commits")
     expect(body).to have_selector("author email", text: commit.author_email)
-    expect(body).to have_selector("entry summary", text: commit.description[0..10])
+    expect(body).to have_selector("entry summary", text: commit.description[0..10].delete("\r"))
   end
 
   step 'I click on tag link' do
@@ -42,15 +42,16 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I fill compare fields with branches' do
-    fill_in 'from', with: 'feature'
-    fill_in 'to',   with: 'master'
+    select_using_dropdown('from', 'feature')
+    select_using_dropdown('to', 'master')
 
     click_button 'Compare'
   end
 
   step 'I fill compare fields with refs' do
-    fill_in "from", with: sample_commit.parent_id
-    fill_in "to",   with: sample_commit.id
+    select_using_dropdown('from', sample_commit.parent_id, true)
+    select_using_dropdown('to', sample_commit.id, true)
+
     click_button "Compare"
   end
 
@@ -97,8 +98,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I fill compare fields with branches' do
-    fill_in 'from', with: 'master'
-    fill_in 'to',   with: 'feature'
+    select_using_dropdown('from', 'master')
+    select_using_dropdown('to', 'feature')
 
     click_button 'Compare'
   end
@@ -181,5 +182,16 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   step 'I should see only "submodules" commits' do
     expect(page).to have_content "More submodules"
     expect(page).not_to have_content "Change some files"
+  end
+
+  def select_using_dropdown(dropdown_type, selection, is_commit = false)
+    dropdown = find(".js-compare-#{dropdown_type}-dropdown")
+    dropdown.find(".compare-dropdown-toggle").click
+    dropdown.fill_in("Filter by Git revision", with: selection)
+    if is_commit
+      dropdown.find('input[type="search"]').send_keys(:return)
+    else
+      find_link(selection, visible: true).click
+    end
   end
 end

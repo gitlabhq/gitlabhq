@@ -67,14 +67,21 @@ class GitPushService < BaseService
   protected
 
   def update_merge_requests
+<<<<<<< HEAD
     @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
     mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
+=======
+    UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+>>>>>>> ce/master
 
     EventCreateService.new.push(@project, current_user, build_push_data)
-    SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
+<<<<<<< HEAD
     Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(mirror_update: mirror_update)
+=======
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
+>>>>>>> ce/master
     ProjectCacheWorker.perform_async(@project.id)
   end
 
@@ -151,16 +158,6 @@ class GitPushService < BaseService
       params[:newrev],
       params[:ref],
       push_commits)
-  end
-
-  def build_push_data_system_hook
-    @push_data_system ||= Gitlab::DataBuilder::Push.build(
-      @project,
-      current_user,
-      params[:oldrev],
-      params[:newrev],
-      params[:ref],
-      [])
   end
 
   def push_to_existing_branch?

@@ -1,29 +1,30 @@
 !!! 5
-%html{ lang: "en"}
+%html{ lang: "en", class: "devise-layout-html"}
   = render "layouts/head"
-  %body.ui_charcoal.login-page.application.navless
-    = Gon::Base.render_data
-    = render "layouts/header/empty"
-    = render "layouts/broadcast"
-    .container.navless-container
-      .content
-        = render "layouts/flash"
-        .row
-          .col-sm-5.pull-right
-            = yield
-          .col-sm-7.brand-holder.pull-left
-            %h1
-              = brand_title
-            - if brand_item
-              = brand_image
-              = brand_text
-            - else
-              %h3 Open source software to collaborate on code
+  %body.ui_charcoal.login-page.application.navless{ data: { page: body_data_page }}
+    .page-wrap
+      = Gon::Base.render_data
+      = render "layouts/header/empty"
+      = render "layouts/broadcast"
+      .container.navless-container
+        .content
+          = render "layouts/flash"
+          .row
+            .col-sm-5.pull-right.new-session-forms-container
+              = yield
+            .col-sm-7.brand-holder.pull-left
+              %h1
+                = brand_title
+              - if brand_item
+                = brand_image
+                = brand_text
+              - else
+                %h3 Open source software to collaborate on code
 
-              %p
-                Manage git repositories with fine grained access controls that keep your code secure.
-                Perform code reviews and enhance collaboration with merge requests.
-                Each project can also have an issue tracker and a wiki.
+                %p
+                  Manage Git repositories with fine-grained access controls that keep your code secure.
+                  Perform code reviews and enhance collaboration with merge requests.
+                  Each project can also have an issue tracker and a wiki.
 
             - if current_application_settings.sign_in_text.present?
               = markdown_field(current_application_settings, :sign_in_text)
@@ -33,9 +34,9 @@
               %p.slead
                 = markdown(current_application_settings.help_text)
 
-    %hr
-    .container
-      .footer-links
-        = link_to "Explore", explore_root_path
-        = link_to "Help", help_path
-        = link_to "About GitLab", "https://about.gitlab.com/"
+      %hr.footer-fixed
+      .container.footer-container
+        .footer-links
+          = link_to "Explore", explore_root_path
+          = link_to "Help", help_path
+          = link_to "About GitLab", "https://about.gitlab.com/"

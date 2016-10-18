@@ -16,9 +16,8 @@ module Projects
       end
 
       def create
-        list = project.board.lists.find(params[:list_id])
         service = ::Boards::Issues::CreateService.new(project, current_user, issue_params)
-        issue = service.execute(list)
+        issue = service.execute
 
         if issue.valid?
           render json: serialize_as_json(issue)
@@ -60,15 +59,15 @@ module Projects
       end
 
       def filter_params
-        params.merge(id: params[:list_id])
+        params.merge(board_id: params[:board_id], id: params[:list_id])
       end
 
       def move_params
-        params.permit(:id, :from_list_id, :to_list_id)
+        params.permit(:board_id, :id, :from_list_id, :to_list_id)
       end
 
       def issue_params
-        params.require(:issue).permit(:title).merge(request: request)
+        params.require(:issue).permit(:title).merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
       end
 
       def serialize_as_json(resource)

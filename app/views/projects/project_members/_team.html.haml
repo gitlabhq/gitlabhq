@@ -1,19 +1,7 @@
 .panel.panel-default
   .panel-heading
+    Users with access to
     %strong #{@project.name}
-    project members
-    %span.badge= members.size
-    .controls
-      = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
-        .form-group
-          = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }
-        = button_tag class: 'btn', title: 'Search' do
-          = icon("search")
+    %span.badge= @project_members.total_count
   %ul.content-list
     = render partial: 'shared/members/member', collection: members, as: :member
-
-:javascript
-  $('form.member-search-form').on('submit', function (event) {
-    event.preventDefault();
-    Turbolinks.visit(this.action + '?' + $(this).serialize());
-  });

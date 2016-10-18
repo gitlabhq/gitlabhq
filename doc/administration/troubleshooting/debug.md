@@ -144,14 +144,14 @@ separate Rails process to debug the issue:
 1. Obtain the private token for your user (Profile Settings -> Account).
 1. Bring up the GitLab Rails console. For omnibus users, run:
 
-    ````
+    ```
     sudo gitlab-rails console
     ```
 
 1. At the Rails console, run:
 
     ```ruby
-    [1] pry(main)> app.get '<URL FROM STEP 1>/private_token?<TOKEN FROM STEP 2>'
+    [1] pry(main)> app.get '<URL FROM STEP 2>/?private_token=<TOKEN FROM STEP 3>'
     ```
 
     For example:

@@ -7,15 +7,18 @@ describe Repository, models: true do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
+
   let(:commit_options) do
     author = repository.user_to_committer(user)
     { message: 'Test message', committer: author, author: author }
   end
+
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
     merge_commit_id = repository.merge(user, merge_request, commit_options)
     repository.commit(merge_commit_id)
   end
+
   let(:author_email) { FFaker::Internet.email }
 
   # I have to remove periods from the end of the name
@@ -86,6 +89,26 @@ describe Repository, models: true do
         end
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+      end
+    end
+  end
+
+  describe '#ref_name_for_sha' do
+    context 'ref found' do
+      it 'returns the ref' do
+        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
+          and_return(["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0])
+
+        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
+      end
+    end
+
+    context 'ref not found' do
+      it 'returns nil' do
+        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
+          and_return(["", 0])
+
+        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq nil
       end
     end
   end

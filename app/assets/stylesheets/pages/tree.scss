@@ -5,6 +5,7 @@
 
   .file-finder {
     width: 50%;
+
     .file-finder-input {
       width: 95%;
       display: inline-block;
@@ -168,4 +169,8 @@
   margin-top: 11px;
   position: relative;
   z-index: 2;
+
+  .download-button {
+    margin-left: $btn-side-margin;
+  }
 }

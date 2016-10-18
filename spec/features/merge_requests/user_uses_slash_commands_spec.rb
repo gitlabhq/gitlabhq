@@ -20,7 +20,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
       login_with(user)
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
-    
+
     after do
       wait_for_ajax
     end
@@ -34,7 +34,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
           expect(page).to have_content 'Your commands have been executed!'
 
           expect(merge_request.reload.work_in_progress?).to eq true
-        end 
+        end
 
         it 'removes the WIP: prefix from the title' do
           merge_request.title = merge_request.wip_title
@@ -45,7 +45,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
           expect(page).to have_content 'Your commands have been executed!'
 
           expect(merge_request.reload.work_in_progress?).to eq false
-        end 
+        end
       end
 
       context 'when the current user cannot toggle the WIP prefix' do

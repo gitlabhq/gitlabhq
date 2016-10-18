@@ -46,7 +46,7 @@ Example response:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "web_url" : "https://gitlab.example.com/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -67,7 +67,7 @@ Example response:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.example.com/root",
          "avatar_url" : null,
          "username" : "root"
       },
@@ -134,7 +134,7 @@ Example response:
       },
       "author" : {
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.example.com/root",
          "avatar_url" : null,
          "username" : "root",
          "id" : 1,
@@ -145,7 +145,7 @@ Example response:
       "iid" : 1,
       "assignee" : {
          "avatar_url" : null,
-         "web_url" : "https://gitlab.example.com/u/lennie",
+         "web_url" : "https://gitlab.example.com/lennie",
          "state" : "active",
          "username" : "lennie",
          "id" : 9,
@@ -215,7 +215,7 @@ Example response:
       },
       "author" : {
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.example.com/root",
          "avatar_url" : null,
          "username" : "root",
          "id" : 1,
@@ -226,7 +226,7 @@ Example response:
       "iid" : 1,
       "assignee" : {
          "avatar_url" : null,
-         "web_url" : "https://gitlab.example.com/u/lennie",
+         "web_url" : "https://gitlab.example.com/lennie",
          "state" : "active",
          "username" : "lennie",
          "id" : 9,
@@ -281,7 +281,7 @@ Example response:
    },
    "author" : {
       "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/root",
+      "web_url" : "https://gitlab.example.com/root",
       "avatar_url" : null,
       "username" : "root",
       "id" : 1,
@@ -292,7 +292,7 @@ Example response:
    "iid" : 1,
    "assignee" : {
       "avatar_url" : null,
-      "web_url" : "https://gitlab.example.com/u/lennie",
+      "web_url" : "https://gitlab.example.com/lennie",
       "state" : "active",
       "username" : "lennie",
       "id" : 9,
@@ -357,7 +357,7 @@ Example response:
       "name" : "Alexandra Bashirian",
       "avatar_url" : null,
       "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
       "id" : 18,
       "username" : "eileen.lowe"
    },
@@ -414,7 +414,7 @@ Example response:
       "username" : "eileen.lowe",
       "id" : 18,
       "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/eileen.lowe"
+      "web_url" : "https://gitlab.example.com/eileen.lowe"
    },
    "state" : "closed",
    "title" : "Issues with auth",
@@ -500,7 +500,7 @@ Example response:
     "id": 12,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/axel.block"
+    "web_url": "https://gitlab.example.com/axel.block"
   },
   "author": {
     "name": "Kris Steuber",
@@ -508,7 +508,7 @@ Example response:
     "id": 10,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/solon.cremin"
+    "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
@@ -557,7 +557,7 @@ Example response:
     "id": 12,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/axel.block"
+    "web_url": "https://gitlab.example.com/axel.block"
   },
   "author": {
     "name": "Kris Steuber",
@@ -565,7 +565,7 @@ Example response:
     "id": 10,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/solon.cremin"
+    "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
@@ -614,7 +614,7 @@ Example response:
     "id": 21,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/keyon"
+    "web_url": "https://gitlab.example.com/keyon"
   },
   "author": {
     "name": "Vivian Hermann",
@@ -622,7 +622,7 @@ Example response:
     "id": 11,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/orville"
+    "web_url": "https://gitlab.example.com/orville"
   },
   "subscribed": false,
   "due_date": null,
@@ -669,7 +669,7 @@ Example response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/root"
+    "web_url": "https://gitlab.example.com/root"
   },
   "action_name": "marked",
   "target_type": "Issue",
@@ -700,7 +700,7 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/francisca"
+      "web_url": "https://gitlab.example.com/francisca"
     },
     "author": {
       "name": "Maxie Medhurst",
@@ -708,7 +708,7 @@ Example response:
       "id": 12,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/craig_rutherford"
+      "web_url": "https://gitlab.example.com/craig_rutherford"
     },
     "subscribed": true,
     "user_notes_count": 7,

@@ -1,37 +1,36 @@
 - page_title "Members"
 
-.group-members-page.prepend-top-default
+.project-members-page.prepend-top-default
+  %h4
+    Members
+  %hr
   - if can?(current_user, :admin_group_member, @group)
-    .panel.panel-default
-      .panel-heading
-        Add new user to group
-      .panel-body
-        %p.light
-          Members of group have access to all group projects.
-        .new-group-member-holder
-          = render "new_group_member"
+    .project-members-new.append-bottom-default
+      %p.clearfix
+        Add new user to
+        %strong= @group.name
+      = render "new_group_member"
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 
+<<<<<<< HEAD
   = render 'ldap_sync'
 
+=======
+  .append-bottom-default.clearfix
+    %h5.member.existing-title
+      Existing users
+    = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
+      .form-group
+        = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
+        %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+          = icon("search")
+>>>>>>> ce/master
   .panel.panel-default
     .panel-heading
+      Users with access to
       %strong #{@group.name}
-      group members
       %span.badge= @members.total_count
-      .controls
-        = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
-          .form-group
-            = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }
-          = button_tag class: 'btn', title: 'Search' do
-            = icon("search")
     %ul.content-list
       = render partial: 'shared/members/member', collection: @members, as: :member
     = paginate @members, theme: 'gitlab'
-
-:javascript
-  $('form.member-search-form').on('submit', function(event) {
-    event.preventDefault();
-    Turbolinks.visit(this.action + '?' + $(this).serialize());
-  });

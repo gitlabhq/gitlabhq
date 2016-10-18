@@ -29,7 +29,7 @@ feature 'Login', feature: true do
 
   describe 'with two-factor authentication' do
     def enter_code(code)
-      fill_in 'Two-Factor Authentication code', with: code
+      fill_in 'user_otp_attempt', with: code
       click_button 'Verify code'
     end
 

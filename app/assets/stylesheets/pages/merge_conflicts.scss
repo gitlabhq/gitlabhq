@@ -131,6 +131,7 @@ $colors: (
         }
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_header_head_neutral);
       border-color: map-get($colors, #{$color}_header_head_neutral);
@@ -174,6 +175,7 @@ $colors: (
         background-color: map-get($colors, #{$color}_line_not_chosen);
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_line_head_neutral);
 
@@ -234,5 +236,52 @@ $colors: (
 
   .btn-success .fa-spinner {
     color: #fff;
+  }
+
+  .editor-wrap {
+    &.is-loading {
+      .editor {
+        display: none;
+      }
+
+      .loading {
+        display: block;
+      }
+    }
+
+    &.saved {
+      .editor {
+        border-top: solid 2px $border-green-extra-light;
+      }
+    }
+    
+    .editor {
+      pre {
+        height: 350px;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .loading {
+      display: none;
+    }
+  }
+
+  .discard-changes-alert {
+    background-color: $background-color;
+    text-align: right;
+    padding: $gl-padding-top $gl-padding;
+    color: $gl-text-color;
+
+    .discard-actions {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  }
+
+  .resolve-conflicts-form {
+    padding-top: $gl-padding;
   }
 }

@@ -1,11 +1,7 @@
-- class_bindings = "{ |
-    'head': line.isHead, |
-    'origin': line.isOrigin, |
-    'match': line.hasMatch, |
-    'selected': line.isSelected, |
-    'unselected': line.isUnselected }"
-
 - page_title "Merge Conflicts", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('merge_conflicts/merge_conflicts_bundle.js')
+  = page_specific_javascript_tag('lib/ace.js')
 = render "projects/merge_requests/show/mr_title"
 
 .merge-request-details.issuable-details
@@ -24,6 +20,21 @@
   = render partial: "projects/merge_requests/conflicts/commit_stats"
 
   .files-wrapper{"v-if" => "!isLoading && !hasError"}
-    = render partial: "projects/merge_requests/conflicts/parallel_view", locals: { class_bindings: class_bindings }
-    = render partial: "projects/merge_requests/conflicts/inline_view", locals: { class_bindings: class_bindings }
+    .files
+      .diff-file.file-holder.conflict{"v-for" => "file in conflictsData.files"}
+        .file-title
+          %i.fa.fa-fw{":class" => "file.iconClass"}
+          %strong {{file.filePath}}
+          = render partial: 'projects/merge_requests/conflicts/file_actions'
+        .diff-content.diff-wrap-lines
+          .diff-wrap-lines.code.file-content.js-syntax-highlight{"v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+            = render partial: "projects/merge_requests/conflicts/components/inline_conflict_lines"
+          .diff-wrap-lines.code.file-content.js-syntax-highlight{"v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+            = render partial: "projects/merge_requests/conflicts/components/parallel_conflict_lines"
+          %div{"v-show" => "file.resolveMode === 'edit' ||  file.type === 'text-editor'"}
+            = render partial: "projects/merge_requests/conflicts/components/diff_file_editor"
+
     = render partial: "projects/merge_requests/conflicts/submit_form"
+
+-# Components
+= render partial: 'projects/merge_requests/conflicts/components/parallel_conflict_line'

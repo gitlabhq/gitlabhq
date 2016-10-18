@@ -44,7 +44,7 @@ describe "Compare", js: true do
   def select_using_dropdown(dropdown_type, selection)
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
-    dropdown.fill_in("Filter by branch/tag", with: selection)
-    click_link selection
+    dropdown.fill_in("Filter by Git revision", with: selection)
+    find_link(selection, visible: true).click
   end
 end

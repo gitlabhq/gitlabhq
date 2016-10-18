@@ -137,6 +137,7 @@
 
   .retry-link {
     color: $gl-link-color;
+
     &:hover {
       text-decoration: underline;
     }
@@ -218,6 +219,7 @@
 
 .build-detail-row {
   margin-bottom: 5px;
+
   &:last-of-type {
     margin-bottom: 0;
   }
@@ -232,4 +234,10 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
+}
+
+@media (min-width: $screen-md-min) {
+  .sub-nav.build {
+    width: calc(100% + #{$gutter_width});
+  }
 }

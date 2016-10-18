@@ -1,29 +1,30 @@
-.login-box
-  - if signin_enabled?
-    .login-heading
-      %h3 New user? Create an account
-  - else
-    .login-heading
-      %h3 Create an account
+#register-pane.login-box{ role: 'tabpanel', class: 'tab-pane' }
   .login-body
-    = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name)) do |f|
+    = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user show-gl-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors
         = devise_error_messages!
-      %div
-        = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
-      %div
-        = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
-      %div
-        = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
+      %div.form-group
+        = f.label :name
+        = f.text_field :name, class: "form-control top", required: true, title: "This field is required."
+      %div.username.form-group
+        = f.label :username
+        = f.text_field :username, class: "form-control middle no-gl-field-error", pattern: "[a-zA-Z0-9]+", required: true, title: 'Please create a username with only alphanumeric characters.'
+        %p.validation-error.hide Username is already taken.
+        %p.validation-success.hide Username is available.
+        %p.validation-pending.hide Checking username availability...
+      %div.form-group
+        = f.label :email
+        = f.email_field :email, class: "form-control middle", required: true, title: "Please provide a valid email address."
       .form-group.append-bottom-20#password-strength
-        = f.password_field :password, class: "form-control bottom", placeholder: "Password - minimum length #{@minimum_password_length} characters", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters"
+        = f.label :password
+        = f.password_field :password, class: "form-control bottom", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
+        %p.gl-field-hint Minimum length is #{@minimum_password_length} characters
       %div
       - if current_application_settings.recaptcha_enabled
         = recaptcha_tags
       %div
-        = f.submit "Sign up", class: "btn-create btn"
-
-.clearfix.prepend-top-20
+        = f.submit "Register", class: "btn-register btn"
+.clearfix.submit-container
   %p
     %span.light Didn't receive a confirmation email?
     = succeed '.' do

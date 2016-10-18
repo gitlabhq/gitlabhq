@@ -247,7 +247,7 @@ request is as follows:
 1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch, branch away from `master`
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
-1. Add your changes to the [CHANGELOG](CHANGELOG):
+1. Add your changes to the [CHANGELOG.md](CHANGELOG.md):
   1. If you are fixing a ~regression issue, you can add your entry to the next
      patch release (e.g. `8.12.5` if current version is `8.12.4`)
   1. Otherwise, add your entry to the next minor release (e.g. `8.13.0` if

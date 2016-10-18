@@ -103,7 +103,13 @@ describe PostReceive do
       allow(Project).to receive(:find_with_namespace).and_return(project)
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
-      expect(project).to receive(:update_merge_requests)
+
+      PostReceive.new.perform(pwd(project), key_id, base64_changes)
+    end
+
+    it "enqueues a UpdateMergeRequestsWorker job" do
+      allow(Project).to receive(:find_with_namespace).and_return(project)
+      expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
       PostReceive.new.perform(pwd(project), key_id, base64_changes)
     end

@@ -5,34 +5,23 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
+    @group_links = @project.project_group_links
+
     @project_members = @project.project_members
     @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a
       @project_members = @project_members.where(user_id: users)
+
+      @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    @project_members = @project_members.order('access_level DESC')
-
-    @group = @project.group
-
-    if @group
-      @group_members = @group.group_members
-      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
-
-      if params[:search].present?
-        users = @group.users.search(params[:search]).to_a
-        @group_members = @group_members.where(user_id: users)
-      end
-
-      @group_members = @group_members.order('access_level DESC')
-    end
+    @project_members = @project_members.order(access_level: :desc).page(params[:page])
 
     @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 
     @project_member = @project.project_members.new
-    @project_group_links = @project.project_group_links
   end
 
   def create
@@ -43,10 +32,26 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       current_user: current_user
     )
 
+<<<<<<< HEAD
     members = @project.project_members.where(user_id: params[:user_ids].split(','))
 
     members.each do |member|
       log_audit_event(member, action: :create)
+=======
+    if params[:group_ids].present?
+      group_ids = params[:group_ids].split(',')
+      groups = Group.where(id: group_ids)
+
+      groups.each do |group|
+        next unless can?(current_user, :read_group, group)
+
+        project.project_group_links.create(
+          group: group,
+          group_access: params[:access_level],
+          expires_at: params[:expires_at]
+        )
+      end
+>>>>>>> ce/master
     end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)

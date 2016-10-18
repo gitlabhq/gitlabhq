@@ -1,12 +1,7 @@
-.login-box
-  - if signup_enabled?
-    .login-heading
-      %h3 Existing user? Sign in
-  - else
-    .login-heading
-      %h3 Sign in
+#login-pane.login-box{ role: 'tabpanel', class: 'tab-pane active' }
   .login-body
     - if form_based_providers.any?
+<<<<<<< HEAD
       %ul.nav-links
         - if kerberos_enabled?
           %li{class: (:active unless crowd_enabled? || ldap_enabled?)}
@@ -35,6 +30,17 @@
         - if signin_enabled?
           %div#tab-signin.tab-pane
             = render 'devise/sessions/new_base'
+=======
+      - if crowd_enabled?
+        %div.tab-pane.active{id: "tab-crowd"}
+          = render 'devise/sessions/new_crowd'
+      - @ldap_servers.each_with_index do |server, i|
+        %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero? && !crowd_enabled?)}
+          = render 'devise/sessions/new_ldap', server: server
+      - if signin_enabled?
+        %div#tab-signin.tab-pane
+          = render 'devise/sessions/new_base'
+>>>>>>> ce/master
 
     - elsif signin_enabled?
       = render 'devise/sessions/new_base'
