@@ -43,7 +43,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/u/root"
+      "web_url": "http://gitlab.example.com/root"
     },
     "created_at": "2016-06-15T10:09:34.206Z",
     "updated_at": "2016-06-15T10:09:34.206Z",
@@ -59,7 +59,7 @@ Example Response:
       "id": 26,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/u/user4"
+      "web_url": "http://gitlab.example.com/user4"
     },
     "created_at": "2016-06-15T10:09:34.177Z",
     "updated_at": "2016-06-15T10:09:34.177Z",
@@ -103,7 +103,7 @@ Example Response:
     "id": 26,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/user4"
+    "web_url": "http://gitlab.example.com/user4"
   },
   "created_at": "2016-06-15T10:09:34.177Z",
   "updated_at": "2016-06-15T10:09:34.177Z",
@@ -146,7 +146,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T17:47:29.266Z",
   "updated_at": "2016-06-17T17:47:29.266Z",
@@ -190,7 +190,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T17:47:29.266Z",
   "updated_at": "2016-06-17T17:47:29.266Z",
@@ -238,7 +238,7 @@ Example Response:
       "id": 26,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/u/user4"
+      "web_url": "http://gitlab.example.com/user4"
     },
     "created_at": "2016-06-15T10:09:34.197Z",
     "updated_at": "2016-06-15T10:09:34.197Z",
@@ -279,7 +279,7 @@ Example Response:
     "id": 26,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/user4"
+    "web_url": "http://gitlab.example.com/user4"
   },
   "created_at": "2016-06-15T10:09:34.197Z",
   "updated_at": "2016-06-15T10:09:34.197Z",
@@ -319,7 +319,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T19:59:55.888Z",
   "updated_at": "2016-06-17T19:59:55.888Z",
@@ -362,7 +362,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T19:59:55.888Z",
   "updated_at": "2016-06-17T19:59:55.888Z",

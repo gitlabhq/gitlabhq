@@ -169,4 +169,8 @@
   margin-top: 11px;
   position: relative;
   z-index: 2;
+
+  .download-button {
+    margin-left: $btn-side-margin;
+  }
 }

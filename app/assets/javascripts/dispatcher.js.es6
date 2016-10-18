@@ -50,7 +50,7 @@
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
           new ZenMode();
-          new DueDateSelect();
+          new gl.DueDateSelectors();
           new GLForm($('.milestone-form'));
           break;
         case 'groups:milestones:new':
@@ -100,9 +100,6 @@
           new Diff();
           new ZenMode();
           new MergedButtons();
-          break;
-        case "projects:merge_requests:conflicts":
-          window.mcui = new MergeConflictResolver()
           break;
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();

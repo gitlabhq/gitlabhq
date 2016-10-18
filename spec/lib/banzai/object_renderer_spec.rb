@@ -24,7 +24,7 @@ describe Banzai::ObjectRenderer do
         with(an_instance_of(Array)).
         and_call_original
 
-      expect(object).to receive(:redacted_note_html=).with('<p>hello</p>')
+      expect(object).to receive(:redacted_note_html=).with('<p dir="auto">hello</p>')
       expect(object).to receive(:user_visible_reference_count=).with(0)
 
       renderer.render([object], :note)
@@ -92,10 +92,10 @@ describe Banzai::ObjectRenderer do
       docs = renderer.render_attributes(objects, :note)
 
       expect(docs[0]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
-      expect(docs[0].to_html).to eq('<p>hello</p>')
+      expect(docs[0].to_html).to eq('<p dir="auto">hello</p>')
 
       expect(docs[1]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
-      expect(docs[1].to_html).to eq('<p>bye</p>')
+      expect(docs[1].to_html).to eq('<p dir="auto">bye</p>')
     end
 
     it 'returns when no objects to render' do
