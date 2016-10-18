@@ -41,6 +41,46 @@ describe ProjectsController do
           end
         end
       end
+
+      describe "when project repository is disabled" do
+        render_views
+
+        before do
+          project.team << [user, :developer]
+          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+        end
+
+        it 'shows wiki homepage' do
+          get :show, namespace_id: project.namespace.path, id: project.path
+
+          expect(response).to render_template('projects/_wiki')
+        end
+
+        it 'shows issues list page if wiki is disabled' do
+          project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+
+          get :show, namespace_id: project.namespace.path, id: project.path
+
+          expect(response).to render_template('projects/issues/_issues')
+        end
+
+        it 'shows customize workflow page if wiki and issues are disabled' do
+          project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get :show, namespace_id: project.namespace.path, id: project.path
+
+          expect(response).to render_template("projects/_customize_workflow")
+        end
+
+        it 'shows activity if enabled by user' do
+          user.update_attribute(:project_view, 'activity')
+
+          get :show, namespace_id: project.namespace.path, id: project.path
+
+          expect(response).to render_template("projects/_activity")
+        end
+      end
     end
 
     context "project with empty repo" do

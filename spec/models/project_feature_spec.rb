@@ -5,7 +5,7 @@ describe ProjectFeature do
   let(:user) { create(:user) }
 
   describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets) }
+    let(:features) { %w(issues wiki builds merge_requests snippets repository) }
 
     context 'when features are disabled' do
       it "returns false" do
@@ -60,6 +60,27 @@ describe ProjectFeature do
           project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
           expect(project.feature_available?(:issues, user)).to eq(true)
         end
+      end
+    end
+  end
+
+  context 'repository related features' do
+    before do
+      project.project_feature.update_attributes(
+        merge_requests_access_level: ProjectFeature::DISABLED,
+        builds_access_level: ProjectFeature::DISABLED,
+        repository_access_level: ProjectFeature::PRIVATE
+      )
+    end
+
+    it "does not allow repository related features have higher level" do
+      features = %w(builds merge_requests)
+      project_feature = project.project_feature
+
+      features.each do |feature|
+        field = "#{feature}_access_level".to_sym
+        project_feature.update_attribute(field, ProjectFeature::ENABLED)
+        expect(project_feature.valid?).to be_falsy
       end
     end
   end

@@ -364,7 +364,7 @@ describe GitPushService, services: true do
       it 'sets the metric for referenced issues' do
         execute_service(project, user, @oldrev, @newrev, @ref)
 
-        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_within(1.second).of(commit_time)
+        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_like_time(commit_time)
       end
 
       it 'does not set the metric for non-referenced issues' do

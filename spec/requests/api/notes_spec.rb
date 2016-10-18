@@ -217,7 +217,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(201)
           expect(json_response['body']).to eq('hi!')
           expect(json_response['author']['username']).to eq(user.username)
-          expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
         end
       end
 
