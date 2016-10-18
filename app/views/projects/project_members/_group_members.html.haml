@@ -1,7 +1,7 @@
 .panel.panel-default
   .panel-heading
+    Group members with access to
     %strong #{@group.name}
-    group members
     %span.badge= members.size
     - if can?(current_user, :admin_group_member, @group)
       .controls

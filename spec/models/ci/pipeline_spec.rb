@@ -187,33 +187,24 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    describe "merge request metrics" do
+    describe 'merge request metrics' do
       let(:project) { FactoryGirl.create :project }
       let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
+      before do
+        expect(PipelineMetricsWorker).to receive(:perform_async).with(pipeline.id)
+      end
+
       context 'when transitioning to running' do
-        it 'records the build start time' do
-          time = Time.now
-          Timecop.freeze(time) { build.run }
-
-          expect(merge_request.reload.metrics.latest_build_started_at).to be_within(1.second).of(time)
-        end
-
-        it 'clears the build end time' do
-          build.run
-
-          expect(merge_request.reload.metrics.latest_build_finished_at).to be_nil
+        it 'schedules metrics workers' do
+          pipeline.run
         end
       end
 
       context 'when transitioning to success' do
-        it 'records the build end time' do
-          build.run
-          time = Time.now
-          Timecop.freeze(time) { build.success }
-
-          expect(merge_request.reload.metrics.latest_build_finished_at).to be_within(1.second).of(time)
+        it 'schedules metrics workers' do
+          pipeline.succeed
         end
       end
     end

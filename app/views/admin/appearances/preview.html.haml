@@ -1,9 +1,12 @@
-- page_title "Preview | Appearance"
+= render 'devise/shared/tab_single', tab_title: 'Sign in preview'
 .login-box
-  .login-heading
-    %h3 Existing user? Sign in
-  %form
-    = text_field_tag :login, nil, class: "form-control top", placeholder: "Username or Email"
-    = password_field_tag :password, nil, class: "form-control bottom", placeholder: "Password"
-    = button_tag "Sign in", class: "btn-create btn"
+  %form.show-gl-field-errors
+    .form-group
+      = label_tag :login
+      = text_field_tag :login, nil, class: "form-control top", title: 'Please provide your username or email address.'
+    .form-group
+      = label_tag :password
+      = password_field_tag :password, nil, class: "form-control bottom", title: 'This field is required.'
+    .form-group
+      = button_tag "Sign in", class: "btn-create btn"
 

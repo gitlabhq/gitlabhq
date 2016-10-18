@@ -304,6 +304,10 @@ Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
 
+Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
+Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsWorker'
+
 #
 # GitLab Shell
 #

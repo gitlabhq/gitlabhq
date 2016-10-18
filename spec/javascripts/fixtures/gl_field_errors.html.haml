@@ -1,0 +1,15 @@
+%form.show-gl-field-errors{action: 'submit', method: 'post'}
+  .form-group
+    %input.required-text{required: true, type: 'text'} Text
+  .form-group
+    %input.email{type: 'email', title: 'Please provide a valid email address.', required: true } Email
+  .form-group
+    %input.password{type: 'password', required: true} Password
+  .form-group
+    %input.alphanumeric{type: 'text', pattern: '[a-zA-Z0-9]', required: true} Alphanumeric
+  .form-group
+    %input.hidden{ type:'hidden' }
+  .form-group
+    %input.custom.no-gl-field-errors{ type:'text' } Custom, do not validate
+  .form-group
+  %input.submit{type: 'submit'} Submit

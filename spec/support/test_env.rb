@@ -5,6 +5,8 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
+    'not-merged-branch'                  => 'b83d6e3',
+    'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
     'ends-with.json'                     => '98b0d8b',
     'flatten-dir'                        => 'e56497b',
@@ -14,7 +16,8 @@ module TestEnv
     'improve/awesome'                    => '5937ac0',
     'markdown'                           => '0ed8c6c',
     'lfs'                                => 'be93687',
-    'master'                             => '5937ac0',
+    'master'                             => 'b83d6e3',
+    'merge-test'                         => '5937ac0',
     "'test'"                             => 'e56497b',
     'orphaned-branch'                    => '45127a9',
     'binary-encoding'                    => '7b1cf43',
@@ -24,10 +27,10 @@ module TestEnv
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
     'crlf-diff'                          => '5938907',
-    'conflict-start'                     => '75284c7',
+    'conflict-start'                     => '824be60',
     'conflict-resolvable'                => '1450cd6',
     'conflict-binary-file'               => '259a6fb',
-    'conflict-contains-conflict-markers' => '5e0964c',
+    'conflict-contains-conflict-markers' => '78a3086',
     'conflict-missing-side'              => 'eb227b3',
     'conflict-non-utf8'                  => 'd0a293c',
     'conflict-too-large'                 => '39fa04f',
@@ -95,7 +98,9 @@ module TestEnv
 
   def setup_gitlab_shell
     unless File.directory?(Gitlab.config.gitlab_shell.path)
-      `rake gitlab:shell:install`
+      unless system('rake', 'gitlab:shell:install')
+        raise 'Can`t clone gitlab-shell'
+      end
     end
   end
 

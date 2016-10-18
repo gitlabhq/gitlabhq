@@ -1,14 +1,21 @@
 module Boards
   module Issues
-    class CreateService < Boards::BaseService
-      def execute(list)
-        params.merge!(label_ids: [list.label_id])
-        create_issue
+    class CreateService < BaseService
+      def execute
+        create_issue(params.merge(label_ids: [list.label_id]))
       end
 
       private
 
-      def create_issue
+      def board
+        @board ||= project.boards.find(params.delete(:board_id))
+      end
+
+      def list
+        @list ||= board.lists.find(params.delete(:list_id))
+      end
+
+      def create_issue(params)
         ::Issues::CreateService.new(project, current_user, params).execute
       end
     end

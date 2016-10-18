@@ -18,29 +18,35 @@
   = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.merge-request-tabs.nav-links.no-top.no-bottom
-    %li.commits-tab.active
-      = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
-        Commits
-        %span.badge= @commits.size
-    - if @pipeline
-      %li.builds-tab
-        = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
-          Builds
-          %span.badge= @statuses.size
-    %li.diffs-tab
-      = link_to url_for(params.merge(action: 'new_diffs')), data: {target: 'div#diffs', action: 'new/diffs', toggle: 'tab'} do
-        Changes
-        %span.badge= @merge_request.diff_size
+  - if @commits.empty?
+    .commits-empty
+      %h4
+        There are no commits yet.
+      = custom_icon ('illustration_no_commits')
+  - else
+    %ul.merge-request-tabs.nav-links.no-top.no-bottom
+      %li.commits-tab.active
+        = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
+          Commits
+          %span.badge= @commits.size
+      - if @pipeline
+        %li.builds-tab
+          = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
+            Builds
+            %span.badge= @statuses.size
+      %li.diffs-tab
+        = link_to url_for(params.merge(action: 'new_diffs')), data: {target: 'div#diffs', action: 'new/diffs', toggle: 'tab'} do
+          Changes
+          %span.badge= @merge_request.diff_size
 
-  .tab-content
-    #commits.commits.tab-pane.active
-      = render "projects/merge_requests/show/commits"
-    #diffs.diffs.tab-pane
-      - # This tab is always loaded via AJAX
-    - if @pipeline
-      #builds.builds.tab-pane
-        = render "projects/merge_requests/show/builds"
+    .tab-content
+      #commits.commits.tab-pane.active
+        = render "projects/merge_requests/show/commits"
+      #diffs.diffs.tab-pane
+        - # This tab is always loaded via AJAX
+      - if @pipeline
+        #builds.builds.tab-pane
+          = render "projects/merge_requests/show/builds"
 
   .mr-loading-status
     = spinner

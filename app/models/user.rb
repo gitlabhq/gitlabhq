@@ -589,6 +589,11 @@ class User < ActiveRecord::Base
   end
 
   def set_projects_limit
+    # `User.select(:id)` raises
+    # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
+    # without this safeguard!
+    return unless self.has_attribute?(:projects_limit)
+
     connection_default_value_defined = new_record? && !projects_limit_changed?
     return unless self.projects_limit.nil? || connection_default_value_defined
 

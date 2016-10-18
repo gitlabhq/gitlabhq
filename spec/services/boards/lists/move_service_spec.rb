@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe Boards::Lists::MoveService, services: true do
   describe '#execute' do
-    let(:project) { create(:project_with_board) }
-    let(:board)   { project.board }
+    let(:project) { create(:empty_project) }
+    let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
-    let!(:backlog)     { project.board.backlog_list }
+    let!(:backlog)     { create(:backlog_list, board: board) }
     let!(:planning)    { create(:list, board: board, position: 0) }
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }
     let!(:staging)     { create(:list, board: board, position: 3) }
-    let!(:done)        { project.board.done_list }
+    let!(:done)        { create(:done_list, board: board) }
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do

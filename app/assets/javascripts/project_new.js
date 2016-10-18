@@ -4,7 +4,9 @@
   this.ProjectNew = (function() {
     function ProjectNew() {
       this.toggleSettings = bind(this.toggleSettings, this);
-      this.$selects = $('.features select');
+      this.$selects = $('.features select').filter(function () {
+        return $(this).data('field');
+      });
 
       $('.project-edit-container').on('ajax:before', (function(_this) {
         return function() {

@@ -89,6 +89,7 @@ module Gitlab
     config.assets.precompile << "profile/profile_bundle.js"
     config.assets.precompile << "diff_notes/diff_notes_bundle.js"
     config.assets.precompile << "boards/boards_bundle.js"
+    config.assets.precompile << "merge_conflicts/merge_conflicts_bundle.js"
     config.assets.precompile << "boards/test_utils/simulate_drag.js"
     config.assets.precompile << "blob_edit/blob_edit_bundle.js"
     config.assets.precompile << "snippet/snippet_bundle.js"

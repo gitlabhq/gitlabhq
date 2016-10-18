@@ -47,8 +47,8 @@ module Gitlab
 
         unless File.size?(secret_file)
           # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
-          token = SecureRandom.hex(16)
-          File.write(secret_file, token)
+          @secret_token = SecureRandom.hex(16)
+          File.write(secret_file, @secret_token)
         end
 
         link_path = File.join(shell_path, '.gitlab_shell_secret')

@@ -1,12 +1,12 @@
+= render 'devise/shared/tab_single', tab_title: 'Resend unlock instructions'
 .login-box
-  .login-heading
-    %h3 Resend unlock email
   .login-body
-    = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f|
+    = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: 'show-gl-field-errors' }) do |f|
       .devise-errors
         = devise_error_messages!
-      .clearfix.append-bottom-20
-        = f.email_field :email, class: 'form-control', placeholder: 'Email', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off'
+      .form-group.append-bottom-20
+        = f.label :email
+        = f.email_field :email, class: 'form-control', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', title: 'Please provide a valid email address.'
       .clearfix
         = f.submit 'Resend unlock instructions', class: 'btn btn-success'
 

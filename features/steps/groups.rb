@@ -73,18 +73,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
-  step 'I change group "Owned" name to "new-name"' do
-    fill_in 'group_name', with: 'new-name'
-    fill_in 'group_path', with: 'new-name'
-    click_button "Save group"
-  end
-
-  step 'I should see new group "Owned" name' do
-    page.within ".navbar-gitlab" do
-      expect(page).to have_content "new-name"
-    end
-  end
-
   step 'I change group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
