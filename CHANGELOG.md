@@ -11,6 +11,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.6
+  - Ability to resolve merge request conflicts with editor !6374
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup

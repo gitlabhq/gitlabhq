@@ -267,6 +267,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           get :commits
           get :diffs
           get :conflicts
+          get :conflict_for_path
           get :builds
           get :pipelines
           get :merge_check

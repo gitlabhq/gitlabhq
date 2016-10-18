@@ -1,0 +1,10 @@
+%script{"id" => 'parallel-conflict-line', "type" => "text/x-template"}
+  %td.diff-line-num.header{":class" => "lineCssClass(line)", "v-if" => "line.isHeader"}
+  %td.line_content.header{":class" => "lineCssClass(line)", "v-if" => "line.isHeader"}
+    %strong {{line.richText}}
+    %button.btn{"@click" => "handleSelected(file, line.id, line.section)"}
+      {{line.buttonTitle}}
+  %td.diff-line-num.old_line{":class" => "lineCssClass(line)", "v-if" => "!line.isHeader"}
+    {{line.lineNumber}}
+  %td.line_content.parallel{":class" => "lineCssClass(line)", "v-if" => "!line.isHeader"}
+    {{{line.richText}}}
