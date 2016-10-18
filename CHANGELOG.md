@@ -54,6 +54,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add Issue Board API support (andrebsguedes)
   - Allow the Koding integration to be configured through the API
   - Add new issue button to each list on Issues Board
+  - Execute specific named route method from toggle_award_url helper method
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
   - Show the time ago a merge request was deployed to an environment
