@@ -1,7 +1,8 @@
 {
   "type": "object",
   "required" : [
-    "id"
+    "id",
+    "name"
   ],
   "properties" : {
     "id": { "type": "integer" },

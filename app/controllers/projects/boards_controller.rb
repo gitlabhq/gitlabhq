@@ -83,6 +83,6 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   def serialize_as_json(resource)
-    resource.as_json(only: [:id])
+    resource.as_json(only: [:id, :name])
   end
 end
