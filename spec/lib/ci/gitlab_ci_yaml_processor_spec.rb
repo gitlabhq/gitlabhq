@@ -796,6 +796,52 @@ module Ci
           expect { builds }.to raise_error("jobs:deploy_to_production:environment name #{Gitlab::Regex.environment_name_regex_message}")
         end
       end
+
+      context 'when on_stop is specified' do
+        let(:review) { { stage: 'deploy', script: 'test', environment: { name: 'review', on_stop: 'close_review' } } }
+        let(:config) { { review: review, close_review: close_review }.compact }
+
+        context 'with matching job' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review', action: 'stop' } } }
+
+          it 'does return a list of builds' do
+            expect(builds.size).to eq(2)
+            expect(builds.first[:environment]).to eq('review')
+          end
+        end
+
+        context 'without matching job' do
+          let(:close_review) { nil  }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review is not defined')
+          end
+        end
+
+        context 'with close job without environment' do
+          let(:close_review) { { stage: 'deploy', script: 'test' } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review does not have environment defined')
+          end
+        end
+
+        context 'with close job for different environment' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: 'production' } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review have different environment name')
+          end
+        end
+
+        context 'with close job without stop action' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review' } } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review needs to have action stop defined')
+          end
+        end
+      end
     end
 
     describe "Dependencies" do

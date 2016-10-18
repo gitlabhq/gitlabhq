@@ -10,7 +10,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @scope = params[:scope]
     @all_environments = project.environments
     @environments =
-      if @scope == 'stopped' then
+      if @scope == 'stopped'
         @all_environments.stopped
       else
         @all_environments.available
