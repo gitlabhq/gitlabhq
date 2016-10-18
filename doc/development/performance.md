@@ -254,5 +254,5 @@ impact on runtime performance, and as such, using a constant instead of
 referencing an object directly may even slow code down.
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
-[yorickpeterse]: https://gitlab.com/u/yorickpeterse
+[yorickpeterse]: https://gitlab.com/yorickpeterse
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern

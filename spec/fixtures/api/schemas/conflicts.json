@@ -1,0 +1,137 @@
+{
+  "type": "object",
+  "required": [
+    "commit_message",
+    "commit_sha",
+    "source_branch",
+    "target_branch",
+    "files"
+  ],
+  "properties": {
+    "commit_message": {"type": "string"},
+    "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_branch": {"type": "string"},
+    "target_branch": {"type": "string"},
+    "files": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/conflict-text-with-sections" },
+          { "$ref": "#/definitions/conflict-text-for-editor" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "conflict-base": {
+      "type": "object",
+      "required": [
+        "old_path",
+        "new_path",
+        "blob_icon",
+        "blob_path"
+      ],
+      "properties": {
+        "old_path": {"type": "string"},
+        "new_path": {"type": "string"},
+        "blob_icon": {"type": "string"},
+        "blob_path": {"type": "string"}
+      }
+    },
+    "conflict-text-for-editor": {
+      "allOf": [
+        {"$ref": "#/definitions/conflict-base"},
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "content_path"
+          ],
+          "properties": {
+            "type": {"type": {"enum": ["text-editor"]}},
+            "content_path": {"type": "string"}
+          }
+        }
+      ]
+    },
+    "conflict-text-with-sections": {
+      "allOf": [
+        {"$ref": "#/definitions/conflict-base"},
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "content_path",
+            "sections"
+          ],
+          "properties": {
+            "type": {"type": {"enum": ["text"]}},
+            "content_path": {"type": "string"},
+            "sections": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  { "$ref": "#/definitions/section-context" },
+                  { "$ref": "#/definitions/section-conflict" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "section-base": {
+      "type": "object",
+      "required": [
+        "conflict",
+        "lines"
+      ],
+      "properties": {
+        "conflict": {"type": "boolean"},
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "old_line",
+              "new_line",
+              "text",
+              "rich_text"
+            ],
+            "properties": {
+              "type": {"type": "string"},
+              "old_line": {"type": "string"},
+              "new_line": {"type": "string"},
+              "text": {"type": "string"},
+              "rich_text": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "section-context": {
+      "allOf": [
+        {"$ref": "#/definitions/section-base"},
+        {
+          "type": "object",
+          "properties": {
+            "conflict": {"enum": [false]}
+          }
+        }
+      ]
+    },
+    "section-conflict": {
+      "allOf": [
+        {"$ref": "#/definitions/section-base"},
+        {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "conflict": {"enum": [true]},
+            "id": {"type": "string"}
+          }
+        }
+      ]
+    }
+  }
+}

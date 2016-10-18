@@ -51,6 +51,18 @@ feature 'Users', feature: true, js: true do
       expect(current_path).to eq user_path(user)
       expect(page).to have_text(user.name)
     end
+
+    scenario '/u/user1/groups redirects to user groups page' do
+      visit '/u/user1/groups'
+
+      expect(current_path).to eq user_groups_path(user)
+    end
+
+    scenario '/u/user1/projects redirects to user projects page' do
+      visit '/u/user1/projects'
+
+      expect(current_path).to eq user_projects_path(user)
+    end
   end
 
   feature 'username validation' do

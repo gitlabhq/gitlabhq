@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.0 (2016-10-22)
 
+  - Fix save button on project pipeline settings page. (!6955)
+  - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
@@ -11,15 +13,16 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.6
+  - Ability to resolve merge request conflicts with editor !6374
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
+  - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
-  - Prevent running GfmAutocomplete setup for each diff note !6569
   - Added documentation for .gitattributes files
   - Move Pipeline Metrics to separate worker
   - AbstractReferenceFilter caches project_refs on RequestStore when active
@@ -40,7 +43,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
-  - Do not alter 'force_remove_source_branch' options on MergeRequest unless specified
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date
@@ -54,6 +56,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add Issue Board API support (andrebsguedes)
   - Allow the Koding integration to be configured through the API
   - Add new issue button to each list on Issues Board
+  - Execute specific named route method from toggle_award_url helper method
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
   - Show the time ago a merge request was deployed to an environment
@@ -63,6 +66,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
   - Remove redundant mixins (ClemMakesApps)
   - Added 'Download' button to the Snippets page (Justin DiPierro)
+  - Add visibility level to project repository
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
@@ -77,14 +81,12 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
-  - Prevent flash alert text from being obscured when container is fluid
   - Append issue template to existing description !6149 (Joseph Frazier)
   - Trending projects now only show public projects and the list of projects is cached for a day
   - Memoize Gitlab Shell's secret token (!6599, Justin DiPierro)
   - Revoke button in Applications Settings underlines on hover.
   - Use higher size on Gitlab::Redis connection pool on Sidekiq servers
   - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
-  - Fix Long commit messages overflow viewport in file tree
   - Revert avoid touching file system on Build#artifacts?
   - Stop using a Redis lease when updating the project activity timestamp whenever a new event is created
   - Add disabled delete button to protected branches (ClemMakesApps)
@@ -95,7 +97,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Replace bootstrap caret with fontawesome caret (ClemMakesApps)
   - Fix unnecessary escaping of reserved HTML characters in milestone title. !6533
   - Add organization field to user profile
-  - Ignore deployment for statistics in Cycle Analytics, except in staging and production stages
+  - Change user pages routing from /u/:username/PATH to /users/:username/PATH. Old routes will redirect to the new ones for the time being.
   - Fix enter key when navigating search site search dropdown. !6643 (Brennan Roberts)
   - Fix deploy status responsiveness error !6633
   - Make searching for commits case insensitive
@@ -107,6 +109,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
+  - Fix the diff in the merge request view when converting a symlink to a regular file
   - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Ability to batch assign issues relating to a merge request to the author. !5725 (jamedjo)
@@ -118,7 +121,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Grouped pipeline dropdown is a scrollable container
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
   - Fixes padding in all clipboard icons that have .btn class
-  - Fix due date being displayed as NaN in Safari
   - Fix a typo in doc/api/labels.md
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
@@ -126,8 +128,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.12.7
 
-  - Use gitlab-markup gem instead of github-markup to fix `.rst` file rendering. !6659
-  - Fix GFM autocomplete setup being called several times
+  - Prevent running `GfmAutocomplete` setup for each diff note. !6569
+  - Fix long commit messages overflow viewport in file tree. !6573
+  - Use `gitlab-markup` gem instead of `github-markup` to fix `.rst` file rendering. !6659
+  - Prevent flash alert text from being obscured when container is fluid. !6694
+  - Fix due date being displayed as `NaN` in Safari. !6797
+  - Fix JS bug with select2 because of missing `data-field` attribute in select box. !6812
+  - Do not alter `force_remove_source_branch` options on MergeRequest unless specified. !6817
+  - Fix GFM autocomplete setup being called several times. !6840
+  - Handle case where deployment ref no longer exists. !6855
 
 ## 8.12.6
 
