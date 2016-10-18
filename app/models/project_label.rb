@@ -1,5 +1,5 @@
 class ProjectLabel < Label
-  NUMBER_OF_PRIORITIES = 1
+  MAX_NUMBER_OF_PRIORITIES = 1
 
   belongs_to :project
 
@@ -27,7 +27,7 @@ class ProjectLabel < Label
   end
 
   def permitted_numbers_of_priorities
-    if priorities && priorities.size >= NUMBER_OF_PRIORITIES
+    if priorities && priorities.size > MAX_NUMBER_OF_PRIORITIES
       errors.add(:priorities, 'Number of permitted priorities exceeded')
     end
   end
