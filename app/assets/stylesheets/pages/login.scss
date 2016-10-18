@@ -124,20 +124,20 @@
     display: -webkit-flex;
     display: flex;
     box-shadow: 0 0 0 1px $border-color;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
+    border-top-right-radius: $border-radius-default;
+    border-top-left-radius: $border-radius-default;
 
     li {
       flex: 1;
       text-align: center;
 
       &:first-of-type {
-        border-top-left-radius: 2px;
+        border-top-left-radius: $border-radius-default;
       }
 
       &:last-of-type {
         border-left: 1px solid $border-color;
-        border-top-right-radius: 2px;
+        border-top-right-radius: $border-radius-default;
       }
 
       &:not(.active) {
