@@ -20,11 +20,8 @@ feature 'Environments', feature: true do
     end
 
     context 'shows two tabs' do
-      scenario 'does show Available tab with link' do
+      scenario 'shows "Available" and "Stopped" tab with links' do
         expect(page).to have_link('Available')
-      end
-
-      scenario 'does show Stopped tab with link' do
         expect(page).to have_link('Stopped')
       end
     end
@@ -47,11 +44,8 @@ feature 'Environments', feature: true do
         expect(page).to have_link(environment.name)
       end
 
-      scenario 'does show number of opened environments in Available tab' do
+      scenario 'does show number of available and stopped environments' do
         expect(page.find('.js-available-environments-count').text).to eq('1')
-      end
-
-      scenario 'does show number of closed environments in Stopped tab' do
         expect(page.find('.js-stopped-environments-count').text).to eq('0')
       end
 
