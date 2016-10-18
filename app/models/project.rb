@@ -76,6 +76,7 @@ class Project < ActiveRecord::Base
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
   has_one :builds_email_service, dependent: :destroy
+  has_one :pipelines_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
@@ -718,7 +719,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          self.send :"create_#{service_name}_service"
+          public_send("create_#{service_name}_service")
         else
           Service.create_from_template(self.id, template)
         end

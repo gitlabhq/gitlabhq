@@ -250,6 +250,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Changed MR widget build status to pipeline status !6335
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Enable pipeline events by default !6278
+  - Add pipeline email service !6019
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
   - Added go to issue boards keyboard shortcut
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
