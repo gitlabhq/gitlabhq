@@ -185,6 +185,7 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
+    # Run permission checks for a user
     def self.run_permission_checks(permissions_matrix)
       permissions_matrix.keys.each do |role|
         describe "#{role} access" do
@@ -194,13 +195,12 @@ describe Gitlab::GitAccess, lib: true do
             else
               project.team << [user, role]
             end
-          end
 
-          permissions_matrix[role].each do |action, allowed|
-            context action do
-              subject { access.push_access_check(changes[action]) }
-
-              it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+            permissions_matrix[role].each do |action, allowed|
+              context action do
+                subject { access.push_access_check(changes[action]) }
+                it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+              end
             end
           end
         end
