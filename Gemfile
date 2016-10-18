@@ -262,8 +262,6 @@ group :development do
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
-
-  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :development, :test do
@@ -310,6 +308,8 @@ group :development, :test do
 
   gem 'license_finder', '~> 2.1.0', require: false
   gem 'knapsack', '~> 1.11.0'
+
+  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :test do

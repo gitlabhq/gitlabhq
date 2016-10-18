@@ -15,27 +15,27 @@ describe UsersController, "routing" do
   end
 
   it "to #groups" do
-    expect(get("/u/User/groups")).to route_to('users#groups', username: 'User')
+    expect(get("/users/User/groups")).to route_to('users#groups', username: 'User')
   end
 
   it "to #projects" do
-    expect(get("/u/User/projects")).to route_to('users#projects', username: 'User')
+    expect(get("/users/User/projects")).to route_to('users#projects', username: 'User')
   end
 
   it "to #contributed" do
-    expect(get("/u/User/contributed")).to route_to('users#contributed', username: 'User')
+    expect(get("/users/User/contributed")).to route_to('users#contributed', username: 'User')
   end
 
   it "to #snippets" do
-    expect(get("/u/User/snippets")).to route_to('users#snippets', username: 'User')
+    expect(get("/users/User/snippets")).to route_to('users#snippets', username: 'User')
   end
 
   it "to #calendar" do
-    expect(get("/u/User/calendar")).to route_to('users#calendar', username: 'User')
+    expect(get("/users/User/calendar")).to route_to('users#calendar', username: 'User')
   end
 
   it "to #calendar_activities" do
-    expect(get("/u/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
+    expect(get("/users/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
   end
 end
 

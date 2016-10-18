@@ -64,7 +64,7 @@ Example of response
       "state": "active",
       "twitter": "",
       "username": "root",
-      "web_url": "http://gitlab.dev/u/root",
+      "web_url": "http://gitlab.dev/root",
       "website_url": ""
     }
   },
@@ -108,7 +108,7 @@ Example of response
       "state": "active",
       "twitter": "",
       "username": "root",
-      "web_url": "http://gitlab.dev/u/root",
+      "web_url": "http://gitlab.dev/root",
       "website_url": ""
     }
   }
@@ -212,7 +212,7 @@ Example of response
       "state": "active",
       "twitter": "",
       "username": "root",
-      "web_url": "http://gitlab.dev/u/root",
+      "web_url": "http://gitlab.dev/root",
       "website_url": ""
     }
   }
@@ -279,7 +279,7 @@ Example of response
     "state": "active",
     "twitter": "",
     "username": "root",
-    "web_url": "http://gitlab.dev/u/root",
+    "web_url": "http://gitlab.dev/root",
     "website_url": ""
   }
 }
