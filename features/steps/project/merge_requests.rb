@@ -9,6 +9,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedUser
   include WaitForAjax
 
+  after do
+    wait_for_ajax if javascript_test?
+  end
+
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
   end
