@@ -1,5 +1,3 @@
-require Rails.root.join('features/support/wait_for_ajax')
-
 module SharedNote
   include Spinach::DSL
   include WaitForAjax
