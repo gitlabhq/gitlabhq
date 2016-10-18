@@ -13,10 +13,8 @@
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 
-<<<<<<< HEAD
   = render 'ldap_sync'
 
-=======
   .append-bottom-default.clearfix
     %h5.member.existing-title
       Existing users
@@ -25,7 +23,6 @@
         = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
         %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
           = icon("search")
->>>>>>> ce/master
   .panel.panel-default
     .panel-heading
       Users with access to
