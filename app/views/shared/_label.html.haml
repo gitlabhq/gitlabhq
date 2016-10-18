@@ -44,7 +44,7 @@
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = icon('pencil-square-o')
-      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?", toggle: "tooltip"} do
+      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, remote: true, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
         %span.sr-only Delete
         = icon('trash-o')
 

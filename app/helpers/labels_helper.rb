@@ -155,6 +155,13 @@ module LabelsHelper
     label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
   end
 
+  def label_deletion_confirm_text(label)
+    case label
+    when GroupLabel then 'Remove this label? This will affect all projects within the group. Are you sure?'
+    when ProjectLabel then 'Remove this label? Are you sure?'
+    end
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :render_colored_cross_project_label,
                   :text_color_for_bg, :escape_once
