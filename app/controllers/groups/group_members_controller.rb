@@ -10,11 +10,15 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @members = @members.non_invite unless can?(current_user, :admin_group, @group)
 
     if params[:search].present?
-      users = @group.users.search(params[:search]).to_a
-      @members = @members.where(user_id: users)
+      @members = @members.joins(:user).merge(User.search(params[:search]))
     end
 
-    @members = @members.order('access_level DESC').page(params[:page]).per(50)
+    if params[:sort].present?
+      @members = @members.joins(:user).merge(User.sort(@sort = params[:sort]))
+    end
+
+
+    @members = @members.page(params[:page]).per(50)
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 
     @group_member = @group.group_members.new
