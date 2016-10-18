@@ -16,7 +16,7 @@ module Gitlab
           project(extract_epoch(diff_fn).as('issue_diff'), *issue_projections).
           order(issue_table[:created_at].desc)
 
-        ActiveRecord::Base.connection.execute(query.to_sql)
+        ActiveRecord::Base.connection.execute(query.to_sql).to_a
       end
 
       def metric_attributes
