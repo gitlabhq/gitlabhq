@@ -41,13 +41,9 @@ module Labels
       LabelLink.where("label_links.id IN (#{union.to_sql})")
     end
 
-    def labels
-      @labels ||= LabelsFinder.new(current_user, project_id: project.id).execute
-    end
-
     def find_or_create_label!(label)
-      new_label = labels.find_by(title: label.title)
-      new_label ||= project.labels.create!(label.attributes.slice("title", "description", "color"))
+      params = label.attributes.slice('title', 'description', 'color')
+      new_label = CreateService.new(current_user, project, params).execute
 
       new_label.id
     end

@@ -14,9 +14,10 @@ module Gitlab
       end
 
       def create!
-        project.labels.find_or_create_by!(title: title) do |label|
-          label.color = color
-        end
+        params  = attributes.except(:project)
+        service = ::Labels::CreateService.new(project.owner, project, params)
+
+        service.execute
       end
 
       private

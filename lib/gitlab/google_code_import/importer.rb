@@ -233,8 +233,8 @@ module Gitlab
       end
 
       def create_label(name)
-        color = nice_label_color(name)
-        project.labels.create!(name: name, color: color)
+        params = { name: name, color: nice_label_color(name) }
+        ::Labels::CreateService.new(project.owner, project, params).execute
       end
 
       def format_content(raw_content)
