@@ -117,6 +117,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Retouch environments list and deployments list
   - Add multiple command support for all label related slash commands !6780 (barthc)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
+  - Add Nofollow for uppercased scheme in external urls !6820 (the-undefined)
   - Allow empty merge requests !6384 (Artem Sidorenko)
   - Grouped pipeline dropdown is a scrollable container
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
