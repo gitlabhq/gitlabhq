@@ -1,5 +1,5 @@
 module Boards
-  class UpdateService < Boards::BaseService
+  class UpdateService < BaseService
     def execute(board)
       board.update(name: params[:name])
     end
