@@ -126,6 +126,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
   - Delete dynamic environments
+  - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
 
 ## 8.12.7
