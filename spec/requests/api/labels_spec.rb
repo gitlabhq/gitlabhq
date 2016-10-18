@@ -14,10 +14,18 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/labels' do
     it 'returns project labels' do
       get api("/projects/#{project.id}/labels", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(1)
+      expect(json_response.first['id']).to eq(label1.id)
       expect(json_response.first['name']).to eq(label1.name)
+      expect(json_response.first['color']).to eq(label1.color)
+      expect(json_response.first['description']).to eq(label1.description)
+      expect(json_response.first['open_issues_count']).to eq(0)
+      expect(json_response.first['closed_issues_count']).to eq(0)
+      expect(json_response.first['open_merge_requests_count']).to eq(0)
+      expect(json_response.first['subscribed']).to be_falsey
     end
   end
 
@@ -89,6 +97,8 @@ describe API::API, api: true  do
   describe 'DELETE /projects/:id/labels' do
     it 'returns 200 for existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label1'
+
+      pp json_response
       expect(response).to have_http_status(200)
     end
 

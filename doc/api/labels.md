@@ -21,44 +21,54 @@ Example response:
 ```json
 [
    {
+      "id" : 1,
       "name" : "bug",
       "color" : "#d9534f",
       "description": "Bug reported by user",
       "open_issues_count": 1,
       "closed_issues_count": 0,
-      "open_merge_requests_count": 1
+      "open_merge_requests_count": 1,
+      "subscribed": false
    },
    {
+      "id" : 2,
       "color" : "#d9534f",
       "name" : "confirmed",
       "description": "Confirmed issue",
       "open_issues_count": 2,
       "closed_issues_count": 5,
-      "open_merge_requests_count": 0
+      "open_merge_requests_count": 0,
+      "subscribed": false
    },
    {
+      "id" : 3,
       "name" : "critical",
       "color" : "#d9534f",
       "description": "Critical issue. Need fix ASAP",
       "open_issues_count": 1,
       "closed_issues_count": 3,
-      "open_merge_requests_count": 1
+      "open_merge_requests_count": 1,
+      "subscribed": false
    },
    {
+      "id" : 4,
       "name" : "documentation",
       "color" : "#f0ad4e",
       "description": "Issue about documentation",
       "open_issues_count": 1,
       "closed_issues_count": 0,
-      "open_merge_requests_count": 2
+      "open_merge_requests_count": 2,
+      "subscribed": true
    },
    {
+      "id" : 5,
       "color" : "#5cb85c",
       "name" : "enhancement",
       "description": "Enhancement proposal",
       "open_issues_count": 1,
       "closed_issues_count": 0,
-      "open_merge_requests_count": 1
+      "open_merge_requests_count": 1,
+      "subscribed": false
    }
 ]
 ```
@@ -89,9 +99,14 @@ Example response:
 
 ```json
 {
+   "id" : 7,
    "name" : "feature",
    "color" : "#5843AD",
-   "description":null
+   "description": null,
+   "open_issues_count": 0,
+   "closed_issues_count": 0,
+   "open_merge_requests_count": 0,
+   "subscribed": false
 }
 ```
 
@@ -127,6 +142,7 @@ Example response:
    "template" : false,
    "project_id" : 1,
    "created_at" : "2015-11-03T21:22:30.737Z",
+   "priority": 1,
    "id" : 9
 }
 ```
@@ -160,9 +176,14 @@ Example response:
 
 ```json
 {
+   "id" : 8,
    "color" : "#8E44AD",
    "name" : "docs",
-   "description": "Documentation"
+   "description": "Documentation",
+   "open_issues_count": 0,
+   "closed_issues_count": 0,
+   "open_merge_requests_count": 0,
+   "subscribed": false
 }
 ```
 
@@ -191,6 +212,7 @@ Example response:
 
 ```json
 {
+    "id" : 9,
     "name": "Docs",
     "color": "#cc0033",
     "description": "",
@@ -226,6 +248,7 @@ Example response:
 
 ```json
 {
+   "id" : 9,
     "name": "Docs",
     "color": "#cc0033",
     "description": "",
