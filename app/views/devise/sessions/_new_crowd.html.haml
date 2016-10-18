@@ -1,7 +1,7 @@
 = form_tag(omniauth_authorize_path(:user, :crowd), id: 'new_crowd_user', class: 'show-gl-field-errors') do
   .form-group
-    = label_tag 'Username or email', for: :username
-    = text_field_tag :username, nil, {class: "form-control top", title: "This field is required", autofocus: "autofocus", required: true }
+    = label_tag :username, 'Username or email'
+    = text_field_tag :username, nil, { class: "form-control top", title: "This field is required", autofocus: "autofocus", required: true }
   .form-group
     = label_tag :password
     = password_field_tag :password, nil, { class: "form-control bottom", title: "This field is required.", required: true }
@@ -10,4 +10,4 @@
       %label{for: "remember_me"}
         = check_box_tag :remember_me, '1', false, id: 'remember_me'
         %span Remember me
-  = button_tag "Sign in", class: "btn-save btn"
+  = submit_tag "Sign in", class: "btn-save btn"
