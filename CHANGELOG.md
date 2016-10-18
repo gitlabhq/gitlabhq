@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.0 (2016-10-22)
 
+  - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
