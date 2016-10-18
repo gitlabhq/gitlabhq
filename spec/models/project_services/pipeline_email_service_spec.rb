@@ -58,8 +58,7 @@ describe PipelinesEmailService do
     end
 
     it 'sends email' do
-      sent_to = ActionMailer::Base.deliveries.flat_map(&:to)
-      expect(sent_to).to contain_exactly(recipient)
+      should_only_email(double(email: recipient), kind: :bcc)
     end
   end
 
@@ -71,7 +70,7 @@ describe PipelinesEmailService do
     end
 
     it 'does not send email' do
-      expect(ActionMailer::Base.deliveries).to be_empty
+      should_not_email_anyone
     end
   end
 
