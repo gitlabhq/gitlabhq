@@ -64,6 +64,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
   - Remove redundant mixins (ClemMakesApps)
   - Added 'Download' button to the Snippets page (Justin DiPierro)
+  - Add visibility level to project repository
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Fix that manual jobs would no longer block jobs in the next stage. !6604

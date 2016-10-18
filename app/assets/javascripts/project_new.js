@@ -4,9 +4,8 @@
   this.ProjectNew = (function() {
     function ProjectNew() {
       this.toggleSettings = bind(this.toggleSettings, this);
-      this.$selects = $('.features select').filter(function () {
-        return $(this).data('field');
-      });
+      this.$selects = $('.features select');
+      this.$repoSelects = this.$selects.filter('.js-repo-select');
 
       $('.project-edit-container').on('ajax:before', (function(_this) {
         return function() {
@@ -16,6 +15,7 @@
       })(this));
       this.toggleSettings();
       this.toggleSettingsOnclick();
+      this.toggleRepoVisibility();
     }
 
     ProjectNew.prototype.toggleSettings = function() {
@@ -41,6 +41,38 @@
       } else {
         return $container.hide();
       }
+    };
+
+    ProjectNew.prototype.toggleRepoVisibility = function () {
+      var $repoAccessLevel = $('.js-repo-access-level select');
+
+      this.$repoSelects.find("option[value='" + $repoAccessLevel.val() + "']")
+        .nextAll()
+        .hide();
+
+      $repoAccessLevel.off('change')
+        .on('change', function () {
+          var selectedVal = parseInt($repoAccessLevel.val());
+
+          this.$repoSelects.each(function () {
+            var $this = $(this),
+                repoSelectVal = parseInt($this.val());
+
+            $this.find('option').show();
+
+            if (selectedVal < repoSelectVal) {
+              $this.val(selectedVal);
+            }
+
+            $this.find("option[value='" + selectedVal + "']").nextAll().hide();
+          });
+
+          if (selectedVal) {
+            this.$repoSelects.removeClass('disabled');
+          } else {
+            this.$repoSelects.addClass('disabled');
+          }
+        }.bind(this));
     };
 
     return ProjectNew;
