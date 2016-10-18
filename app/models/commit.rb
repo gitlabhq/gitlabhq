@@ -233,8 +233,15 @@ class Commit
     @pipelines
   end
 
+  # Passing the ref for this method makes sure we filter on commit and ref, so
+  # we can have better results as other pipeline status' won't influence the
+  # one you want
   def status(ref = nil)
-    pipelines(ref).last.try(:status)
+    if ref && pipelines(ref).any?
+      pipelines(ref).last.status
+    else
+      pipelines.status
+    end
   end
 
   def revert_branch_name

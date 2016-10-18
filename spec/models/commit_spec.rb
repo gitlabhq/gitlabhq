@@ -213,11 +213,22 @@ eos
     let(:commit) { project.commit }
 
     context 'when the pipeline is available' do
-      it 'only uses the last pipeline' do
-        create(:ci_pipeline_without_jobs, project: project, status: 'failed', sha: commit.id)
-        create(:ci_pipeline_without_jobs, project: project, status: 'success', sha: commit.id)
+      context 'without ref' do
+        it 'only uses the last pipeline' do
+          create(:ci_pipeline_without_jobs, project: project, status: 'failed', sha: commit.id)
+          create(:ci_pipeline_without_jobs, project: project, status: 'success', sha: commit.id)
 
-        expect(commit.status).to eq('success')
+          expect(commit.status).to eq('failed')
+        end
+      end
+
+      context 'with ref' do
+        it 'only uses the last pipeline' do
+          create(:ci_pipeline_without_jobs, project: project, status: 'failed', sha: commit.id)
+          create(:ci_pipeline_without_jobs, project: project, status: 'success', sha: commit.id)
+
+          expect(commit.status('master')).to eq('success')
+        end
       end
     end
 
