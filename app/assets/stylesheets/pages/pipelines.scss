@@ -23,10 +23,17 @@
   .table.ci-table {
     min-width: 1200px;
 
-    .branch-commit {
-      width: 33%;
+    .pipeline-id {
+      color: $black;
     }
 
+    .branch-commit {
+      width: 30%;
+
+      .branch-name {
+        width: 195px
+      }
+    }
   }
 }
 
@@ -92,6 +99,15 @@
     }
   }
 
+  .avatar {
+    margin-left: 0;
+    float: none;
+  }
+
+  .api {
+    color: $code-color;
+  }
+
   .branch-commit {
 
     .branch-name {
@@ -119,7 +135,6 @@
 
     .commit-id {
       color: $gl-link-color;
-      margin-right: 8px;
     }
 
     .commit-title {
@@ -128,10 +143,6 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
-
-    .avatar {
-      margin-left: 0;
     }
 
     .label {
@@ -149,17 +160,11 @@
 
   .icon-container {
     display: inline-block;
-    text-align: right;
-    width: 15px;
+    width: 10px;
 
-    .fa {
-      position: relative;
-      right: 3px;
-    }
-
-    svg {
-      position: relative;
-      right: 1px;
+    &.commit-icon {
+      width: 15px;
+      text-align: center;
     }
   }
 
