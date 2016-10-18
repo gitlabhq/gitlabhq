@@ -9,9 +9,8 @@ feature 'Widget Deployments Header', feature: true, js: true do
     given(:merge_request) { create(:merge_request, :merged) }
     given(:environment) { create(:environment, project: project) }
     given(:role) { :developer }
-    given!(:deployment) do
-      create(:deployment, environment: environment, sha: project.commit('master').id)
-    end
+    given(:sha) { project.commit('master').id }
+    given!(:deployment) { create(:deployment, environment: environment, sha: sha) }
     given!(:manual) { }
 
     background do
@@ -31,7 +30,10 @@ feature 'Widget Deployments Header', feature: true, js: true do
       given(:pipeline) { create(:ci_pipeline, project: project) }
       given(:build) { create(:ci_build, pipeline: pipeline) }
       given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
-      given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+      given(:deployment) do
+        create(:deployment, environment: environment, ref: merge_request.target_branch,
+               sha: sha, deployable: build, on_stop: 'close_app')
+      end
 
       background do
         wait_for_ajax
