@@ -120,7 +120,7 @@ module Ci
 
     # For now the only user who participates is the user who triggered
     def participants(_current_user = nil)
-      [user].compact
+      Array(user)
     end
 
     def valid_commit_sha
