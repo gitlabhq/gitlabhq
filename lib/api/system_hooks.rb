@@ -56,12 +56,10 @@ module API
         requires :id, type: Integer, desc: 'The ID of the system hook'
       end
       delete ":id" do
-        begin
-          hook = SystemHook.find(params[:id])
-          present hook.destroy, with: Entities::Hook
-        rescue
-          # SystemHook raises an Error if no hook with id found
-        end
+        hook = SystemHook.find_by(id: params[:id])
+        not_found!('System hook') unless hook
+
+        present hook.destroy, with: Entities::Hook
       end
     end
   end
