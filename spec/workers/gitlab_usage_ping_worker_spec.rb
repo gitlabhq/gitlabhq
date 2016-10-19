@@ -8,7 +8,7 @@ describe GitlabUsagePingWorker do
 
     stub_request(:post, "https://version.gitlab.com/usage_data").
         to_return(status: 200, body: '', headers: {})
-    expect(Gitlab::UsageData).to receive(:to_json).with(true).and_call_original
+    expect(Gitlab::UsageData).to receive(:to_json).with({ force_refresh: true }).and_call_original
     expect(subject).to receive(:try_obtain_lease).and_return(true)
 
     expect(subject.perform.response.code.to_i).to eq(200)
