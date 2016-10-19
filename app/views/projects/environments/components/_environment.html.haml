@@ -11,8 +11,8 @@
 
         %i{ "v-show" => "!open" }
           = icon("caret-right")
-
-
+        
+        {{model.name}}
 
     %td.deployment-column
       %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid" }
@@ -23,25 +23,25 @@
           {{model.last_deployment.user.name}}
 
     %td
-      %a{ "v-if" => "!isFolder" }
-        column 3
+      %a{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.deployable",
+        ":class" => "build-link",
+        ":href" => "" }
+        {{model.last_deployment.deployable.name}}  (## {{model.last_deployment.deployable.id}})
 
     %td
-      %a{ "v-if" => "!isFolder" }
-        column 3
+      %a{ "v-if" => "!isFolder && model.last_deployment" }
+        column 4
+      %p.commit-title{ "v-if" => "!isFolder && !model.last_deployment"}
+        No deployments yet
 
     %td 
       %span{ "v-if" => "!isFolder && model.last_deployment" }
-        {{last_deployment.created_at}}
+        {{model.last_deployment.created_at}}
 
     %td.hidden-xs
-      .pull-right
+      .pull-right{ "v-if" => "!isFolder"}
         actions
-        -# = render 'projects/environments/external_url', environment: "model"
-        -# = render 'projects/deployments/actions', deployment: "model.last_deployment"
-        -# = render 'projects/environments/stop', environment: "model"
-        -# = render 'projects/deployments/rollback', deployment: "model.last_deployment"
-        
+
   %tr.environment-children{ "v-show" => "open", 
     "v-if"=>"isFolder", 
     "v-for" => "child in model.children", 
@@ -54,21 +54,27 @@
     %td.deployment-column
       %span{ "v-if" => "child.last_deployment && child.last_deployment.iid" }
         {{child.last_deployment.iid}}
-      %span{ "v-if" => "child.last_deployment && child.last_deployment.user" }
-        {{child.last_deployment.user}}
-        /= user_avatar(user: "child.last_deployment.user", size: 20)
+
+        by
+        %span{ "v-if" => "model.last_deployment.user" }
+          {{child.last_deployment.user.name}}
 
     %td
-      %a.build-link{ "v-if" => "child.last_deployment && child.last_deployment.deployable",
+      %a{ "v-if" => " child.last_deployment && child.last_deployment.deployable",
+        ":class" => "build-link",
         ":href" => "" }
-        {{child.last_deployment}}
+        {{model.last_deployment.deployable.name}}  (## {{model.last_deployment.deployable.id}})
 
     %td
-      column 4
+      %a{ "v-if" => "child.last_deployment" }
+        column 4
+      %p.commit-title{ "v-if" => "!child.last_deployment"}
+        No deployments yet
 
     %td 
-      column 5
+      %span{ "v-if" => "child.last_deployment" }
+        {{child.last_deployment.created_at}}
 
     %td.hidden-xs
-      .pull-right
+      .pull-right{ "v-if" => "!isFolder"}
         actions
