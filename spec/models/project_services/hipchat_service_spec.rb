@@ -135,7 +135,7 @@ describe HipchatService, models: true do
             "<a href=\"#{obj_attr[:url]}\">issue ##{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome issue</b>" \
-            "<p><strong>please</strong> fix</p>")
+            "<pre><strong>please</strong> fix</pre>")
       end
     end
 
@@ -159,7 +159,7 @@ describe HipchatService, models: true do
             "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome merge request</b>" \
-            "<p><strong>please</strong> fix</p>")
+            "<pre><strong>please</strong> fix</pre>")
       end
     end
 
@@ -190,7 +190,7 @@ describe HipchatService, models: true do
               "<a href=\"#{obj_attr[:url]}\">commit #{commit_id}</a> in " \
               "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
               "#{title}" \
-              "<p>a comment on a commit</p>")
+              "<pre>a comment on a commit</pre>")
         end
       end
 
@@ -222,7 +222,7 @@ describe HipchatService, models: true do
               "<a href=\"#{obj_attr[:url]}\">merge request !#{merge_id}</a> in " \
               "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
               "<b>#{title}</b>" \
-              "<p>merge request <strong>note</strong></p>")
+              "<pre>merge request <strong>note</strong></pre>")
         end
       end
 
@@ -247,7 +247,7 @@ describe HipchatService, models: true do
               "<a href=\"#{obj_attr[:url]}\">issue ##{issue_id}</a> in " \
               "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
               "<b>#{title}</b>" \
-              "<p>issue <strong>note</strong></p>")
+              "<pre>issue <strong>note</strong></pre>")
         end
       end
 
@@ -275,7 +275,7 @@ describe HipchatService, models: true do
               "<a href=\"#{obj_attr[:url]}\">snippet ##{snippet_id}</a> in " \
               "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
               "<b>#{title}</b>" \
-              "<p>snippet note</p>")
+              "<pre>snippet note</pre>")
         end
       end
     end

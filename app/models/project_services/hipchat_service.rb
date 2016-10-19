@@ -2,6 +2,11 @@ class HipchatService < Service
   include ActionView::Helpers::SanitizeHelper
 
   MAX_COMMITS = 3
+  HIPCHAT_ALLOWED_TAGS = %w[
+    a b i strong em br img pre code
+    table th tr td caption colgroup col thead tbody tfoot
+    ul ol li dl dt dd
+  ]
 
   prop_accessor :token, :room, :server, :notify, :color, :api_version
   boolean_accessor :notify_only_broken_builds
@@ -139,10 +144,10 @@ class HipchatService < Service
 
     context.merge!(options)
 
-    html = Banzai.render(text, context)
-    html = Banzai.post_process(html, context)
+    html = Banzai.post_process(Banzai.render(text, context), context)
+    sanitized_html = sanitize(html, tags: HIPCHAT_ALLOWED_TAGS, attributes: %w[href title alt])
 
-    sanitize html, attributes: %w(href title alt)
+    sanitized_html.truncate(200, separator: ' ', omission: '...')
   end
 
   def create_issue_message(data)
@@ -159,7 +164,7 @@ class HipchatService < Service
     issue_link = "<a href=\"#{issue_url}\">issue ##{issue_iid}</a>"
     message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
-    message << markdown(description)
+    message << "<pre>#{markdown(description)}</pre>"
 
     message
   end
@@ -179,7 +184,7 @@ class HipchatService < Service
     message = "#{user_name} #{state} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
-    message << markdown(description)
+    message << "<pre>#{markdown(description)}</pre>"
 
     message
   end
@@ -230,7 +235,7 @@ class HipchatService < Service
     message = "#{user_name} commented on #{subject_html} in #{project_link}: "
     message << title
 
-    message << markdown(note, ref: commit_id)
+    message << "<pre>#{markdown(note, ref: commit_id)}</pre>"
 
     message
   end
