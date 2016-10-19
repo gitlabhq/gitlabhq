@@ -2,6 +2,7 @@ require 'securerandom'
 
 class Repository
   class CommitError < StandardError; end
+  class AccessForbiddenError < StandardError; end
 
   # Files to use as a project avatar in case no avatar was uploaded via the web
   # UI.
@@ -19,6 +20,10 @@ class Repository
     Thread.current[:repository_forbidden_access] -= 1
   end
 
+  def self.is_access_forbidden?
+    Thread.current[:repository_forbidden_access].to_i > 0
+  end
+
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -27,7 +32,7 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    raise 'Repository access is forbidden' if Thread.current[:repository_forbidden_access].to_i > 0
+    raise AccessForbiddenError.new('Repository access is forbidden') if Repository.is_access_forbidden?
 
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
   end

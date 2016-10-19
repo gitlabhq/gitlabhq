@@ -265,14 +265,14 @@ module Ci
     def update_status
       Repository.with_forbidden_access do
         with_lock do
-            case latest_builds_status
-            when 'pending' then enqueue
-            when 'running' then run
-            when 'success' then succeed
-            when 'failed' then drop
-            when 'canceled' then cancel
-            when 'skipped' then skip
-            end
+          case latest_builds_status
+          when 'pending' then enqueue
+          when 'running' then run
+          when 'success' then succeed
+          when 'failed' then drop
+          when 'canceled' then cancel
+          when 'skipped' then skip
+          end
         end
       end
     end
