@@ -2,7 +2,7 @@
 - page_title "Cycle Analytics"
 = render "projects/pipelines/head"
 
-#cycle-analytics{class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project)}}
+#cycle-analytics{class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) }}
 
   .bordered-box.landing.content-block{"v-if" => "!isHelpDismissed"}
     = icon('times', class: 'dismiss-icon', "@click" => "dismissLanding()")
