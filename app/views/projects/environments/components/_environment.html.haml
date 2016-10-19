@@ -12,23 +12,27 @@
         %i{ "v-show" => "!open" }
           = icon("caret-right")
 
-        {{model.name}}
+
 
     %td.deployment-column
-      %span{ "v-if" => "model.last_deployment && model.last_deployment.iid" }
+      %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid" }
         {{model.last_deployment.iid}}
+
         by
         %span{ "v-if" => "model.last_deployment.user" }
-          {{model.last_deployment.user}}
+          {{model.last_deployment.user.name}}
 
     %td
-      column 3
+      %a{ "v-if" => "!isFolder" }
+        column 3
 
     %td
-      column 4
+      %a{ "v-if" => "!isFolder" }
+        column 3
 
     %td 
-      column 5
+      %span{ "v-if" => "!isFolder && model.last_deployment" }
+        {{last_deployment.created_at}}
 
     %td.hidden-xs
       .pull-right
@@ -55,7 +59,9 @@
         /= user_avatar(user: "child.last_deployment.user", size: 20)
 
     %td
-      column 3
+      %a.build-link{ "v-if" => "child.last_deployment && child.last_deployment.deployable",
+        ":href" => "" }
+        {{child.last_deployment}}
 
     %td
       column 4
