@@ -640,32 +640,56 @@ describe MergeRequest, models: true do
   end
 
   describe '#all_commits_sha' do
-    let(:all_commits_sha) do
-      subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
-    end
+    context 'when merge request is persisted' do
+      let(:all_commits_sha) do
+        subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
+      end
 
-    shared_examples 'returning all SHA' do
-      it 'returns all SHA from all merge_request_diffs' do
-        expect(subject.merge_request_diffs.size).to eq(2)
-        expect(subject.all_commits_sha).to eq(all_commits_sha)
+      shared_examples 'returning all SHA' do
+        it 'returns all SHA from all merge_request_diffs' do
+          expect(subject.merge_request_diffs.size).to eq(2)
+          expect(subject.all_commits_sha).to eq(all_commits_sha)
+        end
+      end
+
+      context 'with a completely different branch' do
+        before do
+          subject.update(target_branch: 'v1.0.0')
+        end
+
+        it_behaves_like 'returning all SHA'
+      end
+
+      context 'with a branch having no difference' do
+        before do
+          subject.update(target_branch: 'v1.1.0')
+          subject.reload # make sure commits were not cached
+        end
+
+        it_behaves_like 'returning all SHA'
       end
     end
 
-    context 'with a completely different branch' do
-      before do
-        subject.update(target_branch: 'v1.0.0')
+    context 'when merge request is not persisted' do
+      context 'when compare commits are set in the service' do
+        let(:commit) { spy('commit') }
+
+        subject do
+          build(:merge_request, compare_commits: [commit, commit])
+        end
+
+        it 'returns commits from compare commits temporary data' do
+          expect(subject.all_commits_sha).to eq [commit, commit]
+        end
       end
 
-      it_behaves_like 'returning all SHA'
-    end
+      context 'when compare commits are not set in the service' do
+        subject { build(:merge_request) }
 
-    context 'with a branch having no difference' do
-      before do
-        subject.update(target_branch: 'v1.1.0')
-        subject.reload # make sure commits were not cached
+        it 'returns array with diff head sha element only' do
+          expect(subject.all_commits_sha).to eq [subject.diff_head_sha]
+        end
       end
-
-      it_behaves_like 'returning all SHA'
     end
   end
 

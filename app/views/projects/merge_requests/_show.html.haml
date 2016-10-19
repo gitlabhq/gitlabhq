@@ -61,7 +61,7 @@
           %li.pipelines-tab
             = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
               Pipelines
-              %span.badge= @merge_request.all_pipelines.size
+              %span.badge= @pipelines.size
           %li.builds-tab
             = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#builds', action: 'builds', toggle: 'tab' } do
               Builds
