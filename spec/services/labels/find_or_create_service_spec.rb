@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Labels::CreateService, services: true do
+describe Labels::FindOrCreateService, services: true do
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:group)   { create(:group) }

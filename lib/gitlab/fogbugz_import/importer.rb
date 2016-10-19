@@ -75,7 +75,7 @@ module Gitlab
 
       def create_label(name)
         params = { title: name, color: nice_label_color(name) }
-        ::Labels::CreateService.new(project.owner, project, params).execute
+        ::Labels::FindOrCreateService.new(project.owner, project, params).execute
       end
 
       def user_info(person_id)

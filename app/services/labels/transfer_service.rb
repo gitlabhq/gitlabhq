@@ -43,7 +43,7 @@ module Labels
 
     def find_or_create_label!(label)
       params = label.attributes.slice('title', 'description', 'color')
-      new_label = CreateService.new(current_user, project, params).execute
+      new_label = FindOrCreateService.new(current_user, project, params).execute
 
       new_label.id
     end

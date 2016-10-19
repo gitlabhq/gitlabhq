@@ -19,7 +19,7 @@ module Boards
       end
 
       def find_or_create_label(params)
-        ::Labels::CreateService.new(current_user, project, params).execute
+        ::Labels::FindOrCreateService.new(current_user, project, params).execute
       end
 
       def label_params

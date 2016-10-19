@@ -734,7 +734,7 @@ class Project < ActiveRecord::Base
   def create_labels
     Label.templates.each do |label|
       params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
-      Labels::CreateService.new(owner, self, params).execute
+      Labels::FindOrCreateService.new(owner, self, params).execute
     end
   end
 

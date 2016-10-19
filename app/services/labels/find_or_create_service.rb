@@ -1,5 +1,5 @@
 module Labels
-  class CreateService
+  class FindOrCreateService
     def initialize(current_user, project, params = {})
       @current_user = current_user
       @group = project.group

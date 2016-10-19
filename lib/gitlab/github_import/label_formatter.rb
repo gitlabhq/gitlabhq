@@ -15,7 +15,7 @@ module Gitlab
 
       def create!
         params  = attributes.except(:project)
-        service = ::Labels::CreateService.new(project.owner, project, params)
+        service = ::Labels::FindOrCreateService.new(project.owner, project, params)
         label   = service.execute
 
         raise ActiveRecord::RecordInvalid.new(label) unless label.persisted?
