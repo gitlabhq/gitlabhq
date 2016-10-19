@@ -136,6 +136,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 # Background jobs
 gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
+gem 'sidekiq-unique-jobs'
 gem 'redis-namespace', '~> 1.5.2'
 
 # HTTP requests

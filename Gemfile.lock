@@ -685,6 +685,9 @@ GEM
       redis-namespace (>= 1.5.2)
       rufus-scheduler (>= 2.0.24)
       sidekiq (>= 4.0.0)
+    sidekiq-unique-jobs (4.0.18)
+      sidekiq (>= 2.6)
+      thor
     simplecov (0.12.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -961,6 +964,7 @@ DEPENDENCIES
   shoulda-matchers (~> 2.8.0)
   sidekiq (~> 4.2)
   sidekiq-cron (~> 0.4.0)
+  sidekiq-unique-jobs
   simplecov (= 0.12.0)
   slack-notifier (~> 1.2.0)
   spinach-rails (~> 0.2.1)
