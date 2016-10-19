@@ -20,13 +20,13 @@ module Gitlab
       end
 
       def execute
-        import_labels
-        import_milestones
-        import_issues
-        import_pull_requests
+        import_labels        unless imported?(:labels)
+        import_milestones    unless imported?(:milestones)
+        import_issues        unless imported?(:issues)
+        import_pull_requests unless imported?(:pull_requests)
         import_comments
         import_wiki
-        import_releases
+        import_releases      unless imported?(:releases)
         handle_errors
 
         true
@@ -48,7 +48,7 @@ module Gitlab
       end
 
       def import_labels
-        client.labels(repo, per_page: 100) do |labels|
+        client.labels(repo, page: current_page(:labels), per_page: 100) do |labels|
           labels.each do |raw|
             begin
               label = LabelFormatter.new(project, raw).create!
@@ -57,11 +57,15 @@ module Gitlab
               errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
+
+          increment_page(:labels)
         end
+
+        imported!(:labels)
       end
 
       def import_milestones
-        client.milestones(repo, state: :all, per_page: 100) do |milestones|
+        client.milestones(repo, state: :all, page: current_page(:milestones), per_page: 100) do |milestones|
           milestones.each do |raw|
             begin
               MilestoneFormatter.new(project, raw).create!
@@ -69,11 +73,15 @@ module Gitlab
               errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
+
+          increment_page(:milestones)
         end
+
+        imported!(:milestones)
       end
 
       def import_issues
-        client.issues(repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |issues|
+        client.issues(repo, state: :all, sort: :created, direction: :asc, page: current_page(:issues), per_page: 100) do |issues|
           issues.each do |raw|
             gh_issue = IssueFormatter.new(project, raw)
 
@@ -86,11 +94,15 @@ module Gitlab
               end
             end
           end
+
+          increment_page(:issues)
         end
+
+        imported!(:issues)
       end
 
       def import_pull_requests
-        client.pull_requests(repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
+        client.pull_requests(repo, state: :all, sort: :created, direction: :asc, page: current_page(:pull_requests), per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
             pull_request = PullRequestFormatter.new(project, raw)
             next unless pull_request.valid?
@@ -107,9 +119,13 @@ module Gitlab
               clean_up_restored_branches(pull_request)
             end
           end
+
+          increment_page(:pull_requests)
         end
 
         project.repository.after_remove_branch
+
+        imported!(:pull_requests)
       end
 
       def restore_source_branch(pull_request)
@@ -149,13 +165,34 @@ module Gitlab
       end
 
       def import_comments
-        client.issues_comments(repo, per_page: 100) do |comments|
-          create_comments(comments)
-        end
+        # We don't have a distinctive attribute for comments (unlike issues iid), so we fetch the last inserted note,
+        # compare it against every comment in the current imported page until we find match, and that's where start importing
+        last_note = Note.where(noteable_type: 'Issue').last
 
-        client.pull_requests_comments(repo, per_page: 100) do |comments|
+        client.issues_comments(repo, page: current_page(:issue_comments), per_page: 100) do |comments|
+          if last_note
+            discard_inserted_comments(comments, last_note)
+            last_note = nil
+          end
+
           create_comments(comments)
-        end
+          increment_page(:issue_comments)
+        end unless imported?(:issue_comments)
+
+        imported!(:issue_comments)
+
+        last_note = Note.where(noteable_type: 'MergeRequest').last
+        client.pull_requests_comments(repo, page: current_page(:pull_request_comments), per_page: 100) do |comments|
+          if last_note
+            discard_inserted_comments(comments, last_note)
+            last_note = nil
+          end
+
+          create_comments(comments)
+          increment_page(:pull_request_comments)
+        end unless imported?(:pull_request_comments)
+
+        imported!(:pull_request_comments)
       end
 
       def create_comments(comments)
@@ -177,6 +214,24 @@ module Gitlab
         end
       end
 
+      def discard_inserted_comments(comments, last_note)
+        last_note_attrs = nil
+
+        cut_off_index = comments.find_index do |raw|
+          comment           = CommentFormatter.new(project, raw)
+          comment_attrs     = comment.attributes
+          last_note_attrs ||= last_note.slice(*comment_attrs.keys)
+
+          comment_attrs.with_indifferent_access == last_note_attrs
+        end
+
+        # No matching resource in the collection, which means we got halted right on the end of the last page, so all good
+        return unless cut_off_index
+
+        # Otherwise, remove the resouces we've already inserted
+        comments.shift(cut_off_index + 1)
+      end
+
       def import_wiki
         unless project.wiki.repository_exists?
           wiki = WikiFormatter.new(project)
@@ -192,7 +247,7 @@ module Gitlab
       end
 
       def import_releases
-        client.releases(repo, per_page: 100) do |releases|
+        client.releases(repo, page: current_page(:releases), per_page: 100) do |releases|
           releases.each do |raw|
             begin
               gh_release = ReleaseFormatter.new(project, raw)
@@ -201,7 +256,39 @@ module Gitlab
               errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
+
+          increment_page(:releases)
         end
+
+        imported!(:releases)
+      end
+
+      def imported?(resource_type)
+        Rails.cache.read("#{cache_key_prefix}:#{resource_type}:imported")
+      end
+
+      def imported!(resource_type)
+        Rails.cache.write("#{cache_key_prefix}:#{resource_type}:imported", true, ex: 1.day)
+      end
+
+      def increment_page(resource_type)
+        key = "#{cache_key_prefix}:#{resource_type}:current-page"
+
+        # Rails.cache.increment calls INCRBY directly on the value stored under the key, which is
+        # a serialized ActiveSupport::Cache::Entry, so it will return an error by Redis, hence this ugly work-around
+        page = Rails.cache.read(key)
+        page += 1
+        Rails.cache.write(key, page)
+
+        page
+      end
+
+      def current_page(resource_type)
+        Rails.cache.fetch("#{cache_key_prefix}:#{resource_type}:current-page", ex: 1.day) { 1 }
+      end
+
+      def cache_key_prefix
+        @cache_key_prefix ||= "github-import:#{project.id}"
       end
     end
   end
