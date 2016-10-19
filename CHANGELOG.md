@@ -35,6 +35,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
   - Fix Error 500 when viewing old merge requests with bad diff data
   - Create a new /templates namespace for the /licenses, /gitignores and /gitlab_ci_ymls API endpoints. !5717 (tbalthazar)
+  - Fix viewing merged MRs when the source project has been removed !6991
   - Speed-up group milestones show page
   - Fix inconsistent options dropdown caret on mobile viewports (ClemMakesApps)
   - Extract project#update_merge_requests and SystemHooks to its own worker from GitPushService
