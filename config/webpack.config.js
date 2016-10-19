@@ -22,6 +22,8 @@ var config = {
     filename: IS_PRODUCTION ? '[name]-[chunkhash].js' : '[name].js'
   },
 
+  devtool: 'source-map',
+
   module: {
     loaders: [
       {
@@ -52,7 +54,19 @@ var config = {
   }
 }
 
-if (!IS_PRODUCTION) {
+if (IS_PRODUCTION) {
+  config.plugins.push(
+    new webpack.NoErrorsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: { warnings: false }
+    }),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: JSON.stringify('production') }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin()
+  );
+} else {
   config.devServer = {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' }
