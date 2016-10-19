@@ -16,11 +16,11 @@ describe PipelineUnlockWorker do
         end
 
         it 'updates pipeline status to finished' do
-          expect(pipeline.reload.status).to eq 'running'
+          expect(pipeline.reload).to be_running
 
           worker.perform
 
-          expect(pipeline.reload.status).to eq 'success'
+          expect(pipeline.reload).to be_success
         end
       end
 
@@ -32,15 +32,13 @@ describe PipelineUnlockWorker do
         end
 
         it 'retriggers pipeline processing' do
-          expect(pipeline.reload.status).to eq 'running'
+          expect(pipeline.reload).to be_running
 
           worker.perform
 
-          expect(pipeline.reload.status).to eq 'running'
-          expect(pipeline.builds.find_by(stage: 'test').status)
-            .to eq 'pending'
-          expect(pipeline.builds.find_by(stage: 'deploy').status)
-            .to eq 'created'
+          expect(pipeline.reload).to be_running
+          expect(find_build(stage: 'test')).to be_pending
+          expect(find_build(stage: 'deploy')).to be_created
         end
 
         it 'updates pipeline' do
@@ -52,10 +50,18 @@ describe PipelineUnlockWorker do
 
     context 'when locked pipelines are not present' do
       context 'when there are fresh running pipelines' do
+        before { create(:ci_pipeline, status: :running) }
+
+        it 'does not trigger update' do
+          expect_any_instance_of(PipelineProcessWorker)
+            .not_to receive(:perform)
+        end
       end
 
       context 'when there are no pipelines at all' do
         it 'does nothing' do
+          expect_any_instance_of(PipelineProcessWorker)
+            .not_to receive(:perform)
         end
       end
     end
@@ -63,5 +69,9 @@ describe PipelineUnlockWorker do
 
   def create_build(opts)
     create(:ci_build, opts.merge(pipeline: pipeline))
+  end
+
+  def find_build(opts)
+    pipeline.builds.find_by(opts)
   end
 end
