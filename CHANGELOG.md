@@ -1,5 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.0 (2016-11-22)
+
 ## 8.13.0 (2016-10-22)
 
   - Fix save button on project pipeline settings page. (!6955)
