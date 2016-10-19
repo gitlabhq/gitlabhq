@@ -7,6 +7,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   include SharedMarkdown
   include SharedDiffNote
   include SharedUser
+  include WaitForAjax
 
   step 'project "Shop" have "Bug NS-05" open merge request with diffs inside' do
     create(:merge_request_with_diffs,
@@ -73,6 +74,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
 
   step 'I press rebase button' do
     click_button "Rebase"
+    wait_for_ajax
   end
 
   step "I should see rebase in progress message" do
