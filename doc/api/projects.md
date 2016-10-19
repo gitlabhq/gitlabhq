@@ -1333,8 +1333,8 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `query` (required) - A string contained in the project name
-| `per_page` (optional) - number of projects to return per page
-| `page` (optional) - the page to retrieve
-| `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
+| `query` | string | yes | A string contained in the project name |
+| `per_page` | integer | no | number of projects to return per page |
+| `page` | integer | no | the page to retrieve |
+| `order_by` | string | no | Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields |
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
