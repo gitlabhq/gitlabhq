@@ -124,15 +124,12 @@ class IssuableFinder
   def labels
     return @labels if defined?(@labels)
 
-    if labels? && !filter_by_no_label?
-      @labels = Label.where(title: label_names)
-
-      if projects
-        @labels = @labels.where(project: projects)
+    @labels =
+      if labels? && !filter_by_no_label?
+        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute
+      else
+        Label.none
       end
-    else
-      @labels = Label.none
-    end
   end
 
   def assignee?
@@ -274,8 +271,10 @@ class IssuableFinder
         items = items.without_label
       else
         items = items.with_label(label_names, params[:sort])
+
         if projects
-          items = items.where(labels: { project_id: projects })
+          label_ids = LabelsFinder.new(current_user, project_ids: projects).execute.select(:id)
+          items = items.where(labels: { id: label_ids })
         end
       end
     end

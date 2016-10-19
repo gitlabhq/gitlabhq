@@ -1,5 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.0 (2016-11-22)
+
 ## 8.13.0 (2016-10-22)
 
   - Fix save button on project pipeline settings page. (!6955)
@@ -13,10 +15,13 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.6
+  - Ignore references to internal issues when using external issues tracker
   - Ability to resolve merge request conflicts with editor !6374
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
+  - Keep around commits only pipeline creation as pipeline data doesn't change over time
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
+  - Add group level labels. (!6425)
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
@@ -105,7 +110,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
-  - Reorder issue and merge request titles to show IDs first. !6503 (Greg Laubenstein)
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
@@ -123,8 +127,11 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
   - Fixes padding in all clipboard icons that have .btn class
   - Fix a typo in doc/api/labels.md
+  - Fix double-escaping in activities tab (Alexandre Maia)
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
+  - Delete dynamic environments
+  - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
 
 ## 8.12.7

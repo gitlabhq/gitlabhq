@@ -266,7 +266,7 @@
           },
           fieldName: $dropdown.data('field-name'),
           id: function(label) {
-            if (label.id <= 0) return;
+            if (label.id <= 0) return label.title;
 
             if ($dropdown.hasClass('js-issuable-form-dropdown')) {
               return label.id;
