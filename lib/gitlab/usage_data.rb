@@ -36,7 +36,8 @@ module Gitlab
             merge_requests: MergeRequest.count,
             milestones: Milestone.count,
             notes: Note.count,
-            pushes: Event.code_push.count,
+            # Default scope causes this query to run for a long time
+            pushes: Event.unscoped.code_push.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
             protected_branches: ProtectedBranch.count,
