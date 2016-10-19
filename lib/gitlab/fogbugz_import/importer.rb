@@ -133,7 +133,8 @@ module Gitlab
             updated_at:  DateTime.parse(bug['dtLastUpdated'])
           )
 
-          issue.update_attribute(:label_ids, project.labels.where(title: labels).pluck(:id))
+          issue_labels = ::LabelsFinder.new(project.owner, project_id: project.id, title: labels).execute
+          issue.update_attribute(:label_ids, issue_labels.pluck(:id))
 
           import_issue_comments(issue, comments)
         end
