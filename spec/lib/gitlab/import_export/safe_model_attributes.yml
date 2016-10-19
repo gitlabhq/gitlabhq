@@ -318,6 +318,7 @@ ProtectedBranch::MergeAccessLevel:
 - created_at
 - updated_at
 - user_id
+- group_id
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
@@ -325,6 +326,7 @@ ProtectedBranch::PushAccessLevel:
 - created_at
 - updated_at
 - user_id
+- group_id
 AwardEmoji:
 - id
 - user_id

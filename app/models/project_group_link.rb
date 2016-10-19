@@ -16,6 +16,8 @@ class ProjectGroupLink < ActiveRecord::Base
   validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
   validate :different_group
 
+  before_destroy :delete_branch_protection
+
   def self.access_options
     Gitlab::Access.options
   end
@@ -33,6 +35,13 @@ class ProjectGroupLink < ActiveRecord::Base
   def different_group
     if self.group && self.project && self.project.group == self.group
       errors.add(:base, "Project cannot be shared with the project it is in.")
+    end
+  end
+
+  def delete_branch_protection
+    if group.present? && project.present?
+      project.protected_branches.merge_access_by_group(group).destroy_all
+      project.protected_branches.push_access_by_group(group).destroy_all
     end
   end
 end

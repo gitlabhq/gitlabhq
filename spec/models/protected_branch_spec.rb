@@ -38,6 +38,16 @@ describe ProtectedBranch, models: true do
 
           expect(protected_branch).to be_valid
         end
+
+        it "does not count a group-based #{human_association_name} with an `access_level` set" do
+          group = create(:group)
+          protected_branch = create(:protected_branch, :remove_default_access_levels)
+
+          protected_branch.send(association_name) << build(factory_name, group: group, access_level: Gitlab::Access::MASTER)
+          protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+
+          expect(protected_branch).to be_valid
+        end
       end
 
       context "while checking uniqueness of a user-based #{human_association_name}" do
@@ -61,6 +71,34 @@ describe ProtectedBranch, models: true do
 
           protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
           protected_branch.send(association_name) << build(factory_name, user: user, access_level: Gitlab::Access::MASTER)
+
+          expect(protected_branch).to be_valid
+        end
+      end
+
+      context "while checking uniqueness of a group-based #{human_association_name}" do
+        let(:group) { create(:group) }
+
+        it "allows a single #{human_association_name} for a group (per protected branch)" do
+          first_protected_branch = create(:protected_branch, :remove_default_access_levels)
+          second_protected_branch = create(:protected_branch, :remove_default_access_levels)
+
+          first_protected_branch.send(association_name) << build(factory_name, group: group)
+          second_protected_branch.send(association_name) << build(factory_name, group: group)
+
+          expect(first_protected_branch).to be_valid
+          expect(second_protected_branch).to be_valid
+
+          first_protected_branch.send(association_name) << build(factory_name, group: group)
+          expect(first_protected_branch).to be_invalid
+          expect(first_protected_branch.errors.full_messages.first).to match("group has already been taken")
+        end
+
+        it "ignores the `access_level` while validating a group-based #{human_association_name}" do
+          protected_branch = create(:protected_branch, :remove_default_access_levels)
+
+          protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+          protected_branch.send(association_name) << build(factory_name, group: group, access_level: Gitlab::Access::MASTER)
 
           expect(protected_branch).to be_valid
         end

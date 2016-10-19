@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
   - Add user activity table and service to query for active users
   - Fix 500 error updating mirror URLs for projects
+  - Restrict protected branch access to specific groups !645
   - Fix validations related to mirroring settings form. !773
   - Add multiple issue boards. !782
   - Fix Git access panel for Wikis when Kerberos authentication is enabled (Borja Aparicio)

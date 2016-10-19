@@ -6,6 +6,12 @@
     PUSH: 'push_access_levels',
   };
 
+  const LEVEL_TYPES = {
+    ROLE: 'role',
+    USER: 'user',
+    GROUP: 'group'
+  };
+
   gl.ProtectedBranchCreate = class {
     constructor() {
       this.$wrap = this.$form = $('#new_protected_branch');
@@ -72,13 +78,17 @@
         for (let i = 0; i < selectedItems.length; i++) {
           let current = selectedItems[i];
 
-          if (current.type === 'user') {
+          if (current.type === LEVEL_TYPES.USER) {
             levelAttributes.push({
               user_id: selectedItems[i].user_id
             });
-          } else if (current.type === 'role') {
+          } else if (current.type === LEVEL_TYPES.ROLE) {
             levelAttributes.push({
               access_level: selectedItems[i].access_level
+            });
+          } else if (current.type === LEVEL_TYPES.GROUP) {
+            levelAttributes.push({
+              group_id: selectedItems[i].group_id
             });
           }
         }

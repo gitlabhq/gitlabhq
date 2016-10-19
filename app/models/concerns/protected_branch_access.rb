@@ -2,13 +2,19 @@ module ProtectedBranchAccess
   extend ActiveSupport::Concern
 
   included do
-    validates :user_id, uniqueness: { scope: :protected_branch, allow_nil: true }
-    validates :access_level, uniqueness: { scope: :protected_branch, unless: :user_id?, conditions: -> { where(user_id: nil) } }
+    validates_uniqueness_of :group_id, scope: :protected_branch, allow_nil: true
+    validates_uniqueness_of :user_id, scope: :protected_branch, allow_nil: true
+    validates_uniqueness_of :access_level,
+                            scope: :protected_branch,
+                            unless: Proc.new { |access_level| access_level.user_id? || access_level.group_id? },
+                            conditions: -> { where(user_id: nil, group_id: nil) }
   end
 
   def type
     if self.user.present?
       :user
+    elsif self.group.present?
+      :group
     else
       :role
     end
@@ -16,6 +22,7 @@ module ProtectedBranchAccess
 
   def humanize
     return self.user.name if self.user.present?
+    return self.group.name if self.group.present?
 
     self.class.human_access_levels[self.access_level]
   end

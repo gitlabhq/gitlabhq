@@ -11,6 +11,9 @@ FactoryGirl.define do
     transient do
       authorize_user_to_push nil
       authorize_user_to_merge nil
+
+      authorize_group_to_push nil
+      authorize_group_to_merge nil
     end
 
     trait :remove_default_access_levels do
@@ -47,6 +50,9 @@ FactoryGirl.define do
     after(:create) do |protected_branch, evaluator|
       protected_branch.push_access_levels.create!(user: evaluator.authorize_user_to_push) if evaluator.authorize_user_to_push
       protected_branch.merge_access_levels.create!(user: evaluator.authorize_user_to_merge) if evaluator.authorize_user_to_merge
+
+      protected_branch.push_access_levels.create!(group: evaluator.authorize_group_to_push) if evaluator.authorize_group_to_push
+      protected_branch.merge_access_levels.create!(group: evaluator.authorize_group_to_merge) if evaluator.authorize_group_to_merge
     end
   end
 end

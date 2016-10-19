@@ -3,6 +3,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
 
   belongs_to :protected_branch
   belongs_to :user
+  belongs_to :group
 
   delegate :project, to: :protected_branch
 
@@ -10,6 +11,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
                                                              Gitlab::Access::DEVELOPER] }
 
   scope :by_user, -> (user) { where(user: user ) }
+  scope :by_group, -> (group) { where(group: group ) }
 
   def self.human_access_levels
     {
@@ -21,6 +23,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
   def check_access(user)
     return true if user.is_admin?
     return user.id == self.user_id if self.user.present?
+    return group.users.exists?(user.id) if self.group.present?
 
     project.team.max_member_access(user.id) >= access_level
   end

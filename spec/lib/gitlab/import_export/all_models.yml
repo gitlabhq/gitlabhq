@@ -112,9 +112,11 @@ protected_branches:
 merge_access_levels:
 - user
 - protected_branch
+- group
 push_access_levels:
 - user
 - protected_branch
+- group
 project:
 - taggings
 - base_tags

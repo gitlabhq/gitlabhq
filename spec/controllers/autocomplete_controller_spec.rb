@@ -338,4 +338,44 @@ describe AutocompleteController do
       end
     end
   end
+
+  context "groups" do
+    let(:matching_group) { create(:group) }
+    let(:non_matching_group) { create(:group) }
+
+    context "while fetching all groups belonging to a project" do
+      before do
+        project.team << [user, :developer]
+        project.invited_groups << matching_group
+        sign_in(user)
+        get(:project_groups, project_id: project.id)
+      end
+
+      let(:body) { JSON.parse(response.body) }
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+      it { expect(body.first.values_at('id', 'name')).to eq [matching_group.id, matching_group.name] }
+    end
+
+    context "while fetching all groups belonging to a project the current user cannot access" do
+      before do
+        project.invited_groups << matching_group
+        sign_in(user)
+        get(:project_groups, project_id: project.id)
+      end
+
+      it { expect(response).to be_not_found }
+    end
+
+    context "while fetching all groups belonging to an invalid project ID" do
+      before do
+        project.invited_groups << matching_group
+        sign_in(user)
+        get(:project_groups, project_id: 'invalid')
+      end
+
+      it { expect(response).to be_not_found }
+    end
+  end
 end

@@ -1,6 +1,6 @@
 class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users]
-  before_action :load_project, only: [:users]
+  before_action :load_project, only: [:users, :project_groups]
   before_action :find_users, only: [:users]
 
   def users
@@ -26,6 +26,10 @@ class AutocompleteController < ApplicationController
     end
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
+  end
+
+  def project_groups
+    render json: @project.invited_groups, only: [:id, :name], methods: [:avatar_url]
   end
 
   def user

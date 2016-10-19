@@ -22,6 +22,14 @@ class ProtectedBranch < ActiveRecord::Base
   # access to the given user.
   scope :push_access_by_user, -> (user) { PushAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(PushAccessLevel.by_user(user)) }
 
+  # Returns all merge access levels (for protected branches in scope) that grant merge
+  # access to the given group.
+  scope :merge_access_by_group, -> (group) { MergeAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(MergeAccessLevel.by_group(group)) }
+
+  # Returns all push access levels (for protected branches in scope) that grant push
+  # access to the given group.
+  scope :push_access_by_group, -> (group) { PushAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(PushAccessLevel.by_group(group)) }
+
   def commit
     project.commit(self.name)
   end

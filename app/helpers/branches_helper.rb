@@ -41,6 +41,8 @@ module BranchesHelper
           name: level.user.name,
           avatar_url: level.user.avatar_url
         }
+      elsif level.type == :group
+        { id: level.id, type: level.type, group_id: level.group_id }
       else
         { id: level.id, type: level.type, access_level: level.access_level }
       end
