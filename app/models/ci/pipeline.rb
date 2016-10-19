@@ -104,6 +104,22 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
+    def update_events_key
+      "#{id}_suppress_update_events"
+    end
+
+    def are_update_events_suppressed?
+      Thread.current[update_events_key].to_i > 0
+    end
+
+    def suppress_update_events
+      Thread.current[update_events_key] ||= 0
+      Thread.current[update_events_key] += 1
+      yield
+    ensure
+      Thread.current[update_events_key] -= 1
+    end
+
     def stages_with_latest_statuses
       statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
     end
@@ -173,7 +189,9 @@ module Ci
     end
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
+      suppress_update_events do
+        builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
+      end
     end
 
     def latest?

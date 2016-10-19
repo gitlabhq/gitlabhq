@@ -90,10 +90,12 @@ class CommitStatus < ActiveRecord::Base
 
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
+          next if pipeline.are_update_events_suppressed?
+
           if complete?
             PipelineProcessWorker.perform_async(pipeline.id)
           else
-            PipelineUpdateWorker.perform_async(pipeline.id)
+            PipelineUpdateWorker.perform_async(pipeline.id, commit_status.id, transition.from, transition.to)
           end
         end
       end
