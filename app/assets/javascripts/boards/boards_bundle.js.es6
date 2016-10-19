@@ -33,9 +33,15 @@ $(() => {
       endpoint: $boardApp.dataset.endpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
-      issueLinkBase: $boardApp.dataset.issueLinkBase
+      issueLinkBase: $boardApp.dataset.issueLinkBase,
+      detailIssue: Store.detail
     },
     init: Store.create.bind(Store),
+    computed: {
+      detailIssueVisible () {
+        return Object.keys(this.detailIssue.issue).length;
+      }
+    },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
     },

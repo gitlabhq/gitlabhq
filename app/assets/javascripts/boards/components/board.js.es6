@@ -21,6 +21,7 @@
     },
     data () {
       return {
+        detailIssue: Store.detail,
         filters: Store.state.filters,
         showIssueForm: false
       };
@@ -30,6 +31,26 @@
         handler () {
           this.list.page = 1;
           this.list.getIssues(true);
+        },
+        deep: true
+      },
+      detailIssue: {
+        handler () {
+          if (!Object.keys(this.detailIssue.issue).length) return;
+
+          const issue = this.list.findIssue(this.detailIssue.issue.id);
+
+          if (issue) {
+            const boardsList = document.querySelectorAll('.boards-list')[0];
+            const right = (this.$el.offsetLeft + this.$el.offsetWidth) - boardsList.offsetWidth;
+            const left = boardsList.scrollLeft - this.$el.offsetLeft;
+
+            if (right - boardsList.scrollLeft > 0) {
+              boardsList.scrollLeft = right;
+            } else if (left > 0) {
+              boardsList.scrollLeft = this.$el.offsetLeft;
+            }
+          }
         },
         deep: true
       }

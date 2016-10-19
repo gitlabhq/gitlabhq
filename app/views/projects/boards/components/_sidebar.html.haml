@@ -12,7 +12,7 @@
               {{ issue.id }}
         %a.gutter-toggle.pull-right{ role: "button",
           href: "#",
-          "@click" => "closeSidebar",
+          "@click.prevent" => "closeSidebar",
           "aria-label" => "Toggle sidebar" }
           = icon("times")
       .js-issuable-update

@@ -76,6 +76,10 @@ lex
     height: 475px; // Needed for PhantomJS
     height: calc(100vh - 220px);
     min-height: 475px;
+
+    &.is-compact {
+      width: calc(100% - 290px);
+    }
   }
 }
 

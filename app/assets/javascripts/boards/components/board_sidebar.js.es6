@@ -29,15 +29,22 @@
       issue () {
         if (this.showSidebar) {
           this.$nextTick(() => {
-            new IssuableContext(this.currentUser);
-            new MilestoneSelect();
-            new gl.DueDateSelectors();
-            new LabelsSelect();
-            new Sidebar();
-            new Subscription('.subscription');
+            this.issuableContext = new IssuableContext(this.currentUser);
+            this.milestoneSelect = new MilestoneSelect();
+            this.dueDateSelect = new gl.DueDateSelectors();
+            this.labelsSelect = new LabelsSelect();
+            this.sidebar = new Sidebar();
+            this.subscription = new Subscription('.subscription');
           });
         } else {
           $('.right-sidebar').getNiceScroll().remove();
+
+          delete this.issuableContext;
+          delete this.milestoneSelect;
+          delete this.dueDateSelect;
+          delete this.labelsSelect;
+          delete this.sidebar;
+          delete this.subscription;
         }
       }
     },

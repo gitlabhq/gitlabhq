@@ -11,7 +11,7 @@
 = render 'shared/issuable/filter', type: :boards
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
-  .boards-list
+  .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
     = render "projects/boards/components/board"

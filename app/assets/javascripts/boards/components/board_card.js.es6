@@ -20,11 +20,7 @@
     },
     computed: {
       issueDetailVisible () {
-        if (this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id) {
-          return true;
-        } else {
-          return false;
-        }
+        return this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id;
       }
     },
     methods: {
