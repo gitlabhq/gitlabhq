@@ -5,7 +5,7 @@
 #cycle-analytics{class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project)}}
 
   .bordered-box.landing.content-block{"v-if" => "!isHelpDismissed"}
-    = icon('times', class: 'dismiss-icon', "@click": "dismissLanding()")
+    = icon('times', class: 'dismiss-icon', "@click" => "dismissLanding()")
     .row
       .col-sm-3.col-xs-12.svg-container
         = custom_icon('icon_cycle_analytics_splash')
