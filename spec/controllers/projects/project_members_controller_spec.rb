@@ -4,50 +4,6 @@ describe Projects::ProjectMembersController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
-  describe 'POST apply_import' do
-    let(:another_project) { create(:project, :private) }
-    let(:member) { create(:user) }
-
-    before do
-      project.team << [user, :master]
-      another_project.team << [member, :guest]
-      sign_in(user)
-    end
-
-    shared_context 'import applied' do
-      before do
-        post(:apply_import, namespace_id: project.namespace,
-                            project_id: project,
-                            source_project_id: another_project.id)
-      end
-    end
-
-    context 'when user can access source project members' do
-      before { another_project.team << [user, :guest] }
-      include_context 'import applied'
-
-      it 'imports source project members' do
-        expect(project.team_members).to include member
-        expect(response).to set_flash.to 'Successfully imported'
-        expect(response).to redirect_to(
-          namespace_project_project_members_path(project.namespace, project)
-        )
-      end
-    end
-
-    context 'when user is not member of a source project' do
-      include_context 'import applied'
-
-      it 'does not import team members' do
-        expect(project.team_members).not_to include member
-      end
-
-      it 'responds with not found' do
-        expect(response.status).to eq 404
-      end
-    end
-  end
-
   describe 'GET index' do
     it 'renders index with 200 status code' do
       get :index, namespace_id: project.namespace, project_id: project
@@ -225,6 +181,50 @@ describe Projects::ProjectMembersController do
           )
           expect(project.members).to include member
         end
+      end
+    end
+  end
+
+  describe 'POST apply_import' do
+    let(:another_project) { create(:project, :private) }
+    let(:member) { create(:user) }
+
+    before do
+      project.team << [user, :master]
+      another_project.team << [member, :guest]
+      sign_in(user)
+    end
+
+    shared_context 'import applied' do
+      before do
+        post(:apply_import, namespace_id: project.namespace,
+                            project_id: project,
+                            source_project_id: another_project.id)
+      end
+    end
+
+    context 'when user can access source project members' do
+      before { another_project.team << [user, :guest] }
+      include_context 'import applied'
+
+      it 'imports source project members' do
+        expect(project.team_members).to include member
+        expect(response).to set_flash.to 'Successfully imported'
+        expect(response).to redirect_to(
+          namespace_project_project_members_path(project.namespace, project)
+        )
+      end
+    end
+
+    context 'when user is not member of a source project' do
+      include_context 'import applied'
+
+      it 'does not import team members' do
+        expect(project.team_members).not_to include member
+      end
+
+      it 'responds with not found' do
+        expect(response.status).to eq 404
       end
     end
   end
