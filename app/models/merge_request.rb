@@ -333,11 +333,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def closed_without_fork?
-    closed? && forked_source_project_missing?
-  end
-
-  def closed_without_source_project?
-    closed? && !source_project
+    closed? && (forked_source_project_missing? || !source_project)
   end
 
   def forked_source_project_missing?
@@ -348,9 +344,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reopenable?
-    return false if closed_without_fork? || closed_without_source_project? || merged?
-
-    closed?
+    source_branch_exists? && closed?
   end
 
   def ensure_merge_request_diff
