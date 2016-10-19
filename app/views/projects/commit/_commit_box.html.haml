@@ -1,7 +1,11 @@
 .commit-info-row.commit-info-row-header
   %span.hidden-xs.hidden-sm Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace hidden-xs hidden-sm"
-  = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace visible-xs-inline visible-sm-inline"
+  = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace js-details-short"
+  = link_to("#", class: "js-details-expand") do
+    %span.text-expander
+      \...
+  %span.js-details-content.hide
+    = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace hidden-xs hidden-sm"
   = clipboard_button(clipboard_text: @commit.id)
   %span.hidden-xs authored
   #{time_ago_with_tooltip(@commit.authored_date)}
@@ -53,6 +57,8 @@
 
 .commit-info-widget
   .widget-row.branch-info
+    .icon-container.commit-icon
+      = custom_icon("icon_commit")
     %span.cgray= pluralize(@commit.parents.count, "parent")
     - @commit.parents.each do |parent|
       = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
@@ -61,12 +67,14 @@
 
   .widget-row.pipeline-info
     - if @commit.status
-      = ci_icon_for_status(@commit.status)
-      Builds for
-      = pluralize(@commit.pipelines.count, 'pipeline')
-      = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status-link ci-status-icon-#{@commit.status}" do
-        %span.ci-status-label
-          = ci_label_for_status(@commit.status)
+      .icon-container
+        = ci_icon_for_status(@commit.status)
+      Pipeline
+      = link_to "##{@commit.pipelines.last.id}", pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
+      for
+      = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+      %span.ci-status-label
+        = ci_label_for_status(@commit.status)
       in
       = time_interval_in_words @commit.pipelines.total_duration
 
