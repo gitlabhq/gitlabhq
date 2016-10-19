@@ -35,7 +35,9 @@
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
-    = render "projects/merge_requests/show/how_to_merge"
+    - if @merge_request.source_branch_exists?
+      = render "projects/merge_requests/show/how_to_merge"
+
     = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
@@ -50,10 +52,11 @@
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
             Discussion
             %span.badge= @merge_request.mr_and_commit_notes.user.count
-        %li.commits-tab
-          = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
-            Commits
-            %span.badge= @commits_count
+        - if @merge_request.source_project
+          %li.commits-tab
+            = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
+              Commits
+              %span.badge= @commits_count
         - if @pipeline
           %li.pipelines-tab
             = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
