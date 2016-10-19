@@ -74,6 +74,18 @@ describe MergeRequests::MergeService, services: true do
 
           service.execute(merge_request)
         end
+
+        context "wrong issue markdown" do
+          it 'does not close issues on JIRA issue tracker' do
+            jira_issue = ExternalIssue.new('#123', project)
+            commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
+            allow(merge_request).to receive(:commits).and_return([commit])
+
+            expect_any_instance_of(JiraService).not_to receive(:close_issue)
+
+            service.execute(merge_request)
+          end
+        end
       end
     end
 
