@@ -12,6 +12,10 @@ describe API::API, api: true do
   let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 

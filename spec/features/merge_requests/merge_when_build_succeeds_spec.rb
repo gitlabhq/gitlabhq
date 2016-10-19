@@ -84,7 +84,10 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
 
     context 'when build succeeds' do
-      background { build.success }
+      background do
+        stub_repository_forbidden_access
+        build.success
+      end
 
       it 'merges merge request' do
         visit_merge_request(merge_request) # refresh the page

@@ -15,10 +15,12 @@ module SharedBuilds
   end
 
   step 'recent build is successful' do
+    allow(PipelineHooksWorker).to receive(:perform_async).and_return(true)
     @build.success
   end
 
   step 'recent build failed' do
+    allow(PipelineHooksWorker).to receive(:perform_async).and_return(true)
     @build.drop
   end
 

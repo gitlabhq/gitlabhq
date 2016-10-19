@@ -7,6 +7,10 @@ describe Notify do
 
   include_context 'gitlab email notification'
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe 'build notification email' do
     let(:build) { create(:ci_build) }
     let(:project) { build.project }

@@ -10,6 +10,7 @@ describe BuildEmailWorker do
   subject { BuildEmailWorker.new }
 
   before do
+    stub_ci_pipeline_hooks
     allow(build).to receive(:execute_hooks).and_return(false)
     build.success
   end

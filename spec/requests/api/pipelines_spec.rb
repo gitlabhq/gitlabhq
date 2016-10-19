@@ -108,6 +108,10 @@ describe API::API, api: true do
 
     let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
+    before do
+      stub_ci_pipeline_hooks
+    end
+
     context 'authorized user' do
       it 'retries failed builds' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)

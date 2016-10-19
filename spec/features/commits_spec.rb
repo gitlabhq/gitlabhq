@@ -42,6 +42,10 @@ describe 'Commits' do
       let!(:build) { FactoryGirl.create :ci_build, pipeline: pipeline }
       let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
+      before do
+        stub_ci_pipeline_hooks
+      end
+
       context 'when logged as developer' do
         before do
           project.team << [@user, :developer]

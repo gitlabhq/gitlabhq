@@ -11,6 +11,10 @@ describe API::CommitStatuses, api: true do
   let(:developer) { create_user(:developer) }
   let(:sha) { commit.id }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 

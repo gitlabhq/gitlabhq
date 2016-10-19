@@ -7,6 +7,7 @@ describe Ci::CreateTriggerRequestService, services: true do
 
   before do
     stub_ci_pipeline_to_return_yaml_file
+    stub_ci_pipeline_hooks
   end
 
   describe '#execute' do

@@ -14,6 +14,10 @@ describe API::API do
   let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2) }
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe 'POST /projects/:project_id/trigger' do
     let!(:project2) { create(:empty_project) }
     let(:options) do

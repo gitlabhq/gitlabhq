@@ -59,6 +59,7 @@ describe PostReceive do
           end
           allow_any_instance_of(Ci::CreatePipelineService).to receive(:branch?).and_return(true)
           stub_ci_pipeline_to_return_yaml_file
+          stub_ci_pipeline_hooks
         end
 
         it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }

@@ -41,6 +41,8 @@ describe HipchatService, models: true do
         token: token
       )
       WebMock.stub_request(:post, api_url)
+
+      stub_repository_forbidden_access
     end
 
     it 'tests and return errors' do

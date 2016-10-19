@@ -4,6 +4,10 @@ feature 'test coverage badge' do
   given!(:user) { create(:user) }
   given!(:project) { create(:project, :private) }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   context 'when user has access to view badge' do
     background do
       project.team << [user, :developer]

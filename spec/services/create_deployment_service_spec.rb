@@ -6,6 +6,10 @@ describe CreateDeploymentService, services: true do
 
   let(:service) { described_class.new(project, user, params) }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe '#execute' do
     let(:params) do
       { environment: 'production',

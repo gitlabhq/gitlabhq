@@ -16,6 +16,10 @@ describe Ci::Build, models: true do
 
   it { is_expected.to respond_to :trace_html }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe '#first_pending' do
     let!(:first) { create(:ci_build, pipeline: pipeline, status: 'pending', created_at: Date.yesterday) }
     let!(:second) { create(:ci_build, pipeline: pipeline, status: 'pending') }

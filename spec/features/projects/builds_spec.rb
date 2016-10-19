@@ -5,6 +5,7 @@ describe "Builds" do
   let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
   before do
+    stub_ci_pipeline_hooks
     login_as(:user)
     @commit = FactoryGirl.create :ci_pipeline
     @build = FactoryGirl.create :ci_build, :trace, pipeline: @commit

@@ -6,6 +6,10 @@ describe Ci::API::API do
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
   let(:project) { FactoryGirl.create(:empty_project) }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe "Builds API for runners" do
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
 

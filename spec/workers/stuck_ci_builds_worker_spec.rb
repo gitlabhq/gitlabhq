@@ -4,6 +4,10 @@ describe StuckCiBuildsWorker do
   let!(:build) { create :ci_build }
   let(:worker) { described_class.new }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   subject do
     build.reload
     build.status

@@ -9,6 +9,7 @@ describe "Pipelines" do
   before do
     login_as(user)
     project.team << [user, :developer]
+    stub_ci_pipeline_hooks
   end
 
   describe 'GET /:project/pipelines' do

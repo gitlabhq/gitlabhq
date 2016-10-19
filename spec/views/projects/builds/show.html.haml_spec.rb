@@ -15,6 +15,8 @@ describe 'projects/builds/show' do
     assign(:project, project)
 
     allow(view).to receive(:can?).and_return(true)
+
+    stub_ci_pipeline_hooks
   end
 
   context 'when build is running' do

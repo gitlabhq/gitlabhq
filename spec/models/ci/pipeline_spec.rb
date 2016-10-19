@@ -20,6 +20,10 @@ describe Ci::Pipeline, models: true do
 
   it { is_expected.to delegate_method(:stages).to(:statuses) }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do
@@ -425,6 +429,10 @@ describe Ci::Pipeline, models: true do
 
       before do
         WebMock.stub_request(:post, hook.url)
+
+        stub_repository_forbidden_access
+
+        allow(PipelineHooksWorker).to receive(:perform_async).and_call_original
       end
 
       context 'with multiple builds' do

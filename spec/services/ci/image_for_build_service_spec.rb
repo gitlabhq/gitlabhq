@@ -8,6 +8,10 @@ module Ci
     let(:pipeline) { project.ensure_pipeline('master', commit_sha) }
     let(:build) { FactoryGirl.create(:ci_build, pipeline: pipeline) }
 
+    before do
+      stub_ci_pipeline_hooks
+    end
+
     describe '#execute' do
       before { build }
 

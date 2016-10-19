@@ -13,6 +13,18 @@ module StubGitlabCalls
     allow_any_instance_of(Network).to receive(:projects) { project_hash_array }
   end
 
+  def stub_ci_pipeline_hooks
+    allow(PipelineHooksWorker).to receive(:perform_async).and_return(true)
+  end
+
+  def stub_ci_build_hooks
+    allow(BuildHooksWorker).to receive(:perform_async).and_return(true)
+  end
+
+  def stub_repository_forbidden_access
+    allow(Repository).to receive(:is_access_forbidden?).and_return(false)
+  end
+
   def stub_ci_pipeline_to_return_yaml_file
     stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end

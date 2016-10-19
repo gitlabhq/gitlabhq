@@ -7,6 +7,7 @@ describe Ci::ProcessPipelineService, services: true do
 
   before do
     allow(pipeline).to receive(:ci_yaml_file).and_return(config)
+    stub_ci_pipeline_hooks
   end
 
   describe '#execute' do

@@ -6,6 +6,10 @@ describe Gitlab::Badge::Build::Status do
   let(:branch) { 'master' }
   let(:badge) { described_class.new(project, branch) }
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe '#entity' do
     it 'always says build' do
       expect(badge.entity).to eq 'build'

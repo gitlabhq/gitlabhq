@@ -141,17 +141,19 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         allow_any_instance_of(MergeRequest).to receive(:pipeline).and_wrap_original do
           Ci::Pipeline.find(pipeline.id)
         end
+
+        stub_ci_pipeline_hooks
       end
 
       it "doesn't merge if any of stages failed" do
-        expect(MergeWorker).not_to receive(:perform_async)
+        expect(PipelineSuccessWorker).not_to receive(:perform_async)
 
         build.success
         test.drop
       end
 
       it 'merges when all stages succeeded' do
-        expect(MergeWorker).to receive(:perform_async)
+        expect(PipelineSuccessWorker).to receive(:perform_async).and_return(true)
 
         build.success
         test.success

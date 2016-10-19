@@ -11,6 +11,7 @@ module Ci
 
     before do
       specific_runner.assign_to(project)
+      stub_ci_pipeline_hooks
     end
 
     describe '#execute' do

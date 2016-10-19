@@ -8,6 +8,10 @@ describe Gitlab::Badge::Coverage::Report do
     described_class.new(project, 'master', job_name)
   end
 
+  before do
+    stub_ci_pipeline_hooks
+  end
+
   describe '#entity' do
     it 'describes a coverage' do
       expect(badge.entity).to eq 'coverage'

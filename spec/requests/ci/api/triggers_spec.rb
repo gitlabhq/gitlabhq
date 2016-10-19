@@ -38,6 +38,10 @@ describe Ci::API::API do
     context 'Have a commit' do
       let(:pipeline) { project.pipelines.last }
 
+      before do
+        stub_ci_pipeline_hooks
+      end
+
       it 'creates builds' do
         post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options
         expect(response).to have_http_status(201)
