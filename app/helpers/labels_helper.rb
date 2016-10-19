@@ -68,11 +68,12 @@ module LabelsHelper
     end
   end
 
-  def toggle_subscription_label_path(label)
-    case label
-    when GroupLabel then toggle_subscription_group_label_path(label.group, label)
-    when ProjectLabel then toggle_subscription_namespace_project_label_path(label.project.namespace, label.project, label)
-    end
+  def toggle_subscription_data(label)
+    return unless label.is_a?(ProjectLabel)
+
+    {
+      url: toggle_subscription_namespace_project_label_path(label.project.namespace, label.project, label)
+    }
   end
 
   def render_colored_label(label, label_suffix = '', tooltip: true)
@@ -148,11 +149,17 @@ module LabelsHelper
   end
 
   def label_subscription_status(label)
-    label.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+    case label
+    when GroupLabel then 'Subscribing to group labels is currently not supported.'
+    when ProjectLabel then label.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+    end
   end
 
   def label_subscription_toggle_button_text(label)
-    label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
+    case label
+    when GroupLabel then 'Subscribing to group labels is currently not supported.'
+    when ProjectLabel then label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
+    end
   end
 
   def label_deletion_confirm_text(label)

@@ -18,7 +18,7 @@
           = link_to_label(label, subject: @project) do
             = pluralize open_issues_count, 'open issue'
         - if current_user
-          %li.label-subscription{ data: { url: toggle_subscription_label_path(label) } }
+          %li.label-subscription{ data: toggle_subscription_data(label) }
             %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
               %span= label_subscription_toggle_button_text(label)
         - if can?(current_user, :admin_label, label)
@@ -34,10 +34,10 @@
       = pluralize open_issues_count, 'open issue'
 
     - if current_user
-      .label-subscription.inline{ data: { url: toggle_subscription_label_path(label) } }
+      .label-subscription.inline{ data: toggle_subscription_data(label) }
         %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label), data: { toggle: "tooltip", status: label_subscription_status(label) } }
           %span.sr-only= label_subscription_toggle_button_text(label)
-          = icon('eye', class: 'label-subscribe-button-icon')
+          = icon('eye', class: 'label-subscribe-button-icon', disabled: label.is_a?(GroupLabel))
           = icon('spinner spin', class: 'label-subscribe-button-loading')
 
     - if can?(current_user, :admin_label, label)
@@ -48,6 +48,6 @@
         %span.sr-only Delete
         = icon('trash-o')
 
-  - if current_user
+  - if current_user && label.is_a?(ProjectLabel)
     :javascript
       new Subscription('##{dom_id(label)} .label-subscription');
