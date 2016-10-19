@@ -108,7 +108,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
-  - Reorder issue and merge request titles to show IDs first. !6503 (Greg Laubenstein)
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
