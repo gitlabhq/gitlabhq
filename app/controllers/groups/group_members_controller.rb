@@ -21,7 +21,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    if params[:user_ids].empty?
+    if params[:user_ids].blank?
       return redirect_to group_group_members_path(@group), alert: 'No users specified.'
     end
 

@@ -25,16 +25,18 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def create
-    if params[:user_ids].empty?
-      return redirect_to namespace_project_project_members_path(@project.namespace, @project), alert: 'No users specified.'
+    if params[:user_ids].blank? && params[:group_ids].blank?
+      return redirect_to namespace_project_project_members_path(@project.namespace, @project), alert: 'No users or groups specified.'
     end
 
-    @project.team.add_users(
-      params[:user_ids].split(','),
-      params[:access_level],
-      expires_at: params[:expires_at],
-      current_user: current_user
-    )
+    if params[:user_ids].present?
+      @project.team.add_users(
+        params[:user_ids].split(','),
+        params[:access_level],
+        expires_at: params[:expires_at],
+        current_user: current_user
+      )
+    end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project), notice: 'Users were successfully added.'
   end
