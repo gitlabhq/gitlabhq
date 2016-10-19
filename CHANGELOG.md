@@ -30,6 +30,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update duration at the end of pipeline
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add group level labels. (!6425)
+  - Fix Cycle analytics not showing correct data when filtering by date. !6906
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
