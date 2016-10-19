@@ -11,14 +11,14 @@ module MergeRequests
     def execute(merge_request)
       @merge_request = merge_request
 
-      return error('Merge request is not mergeable') unless @merge_request.mergeable?
+      return log_merge_error('Merge request is not mergeable', true) unless @merge_request.mergeable?
 
       merge_request.in_locked_state do
         if commit
           after_merge
           success
         else
-          error('Can not merge changes')
+          log_merge_error('Can not merge changes', true)
         end
       end
     end
@@ -46,8 +46,8 @@ module MergeRequests
       merge_request.update(merge_error: e.message)
       false
     rescue StandardError => e
-      merge_request.update(merge_error: "Something went wrong during merge")
-      Rails.logger.error(e.message)
+      merge_request.update(merge_error: "Something went wrong during merge: #{e.message}")
+      log_merge_error(e.message)
       false
     ensure
       merge_request.update(in_progress_merge_commit_sha: nil)
@@ -64,6 +64,18 @@ module MergeRequests
 
     def branch_deletion_user
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
+    end
+
+    def log_merge_error(message, http_error = false)
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{message}")
+
+      error(message) if http_error
+    end
+
+    def merge_request_info
+      project = merge_request.project
+
+      "#{project.to_reference}#{merge_request.to_reference}"
     end
   end
 end
