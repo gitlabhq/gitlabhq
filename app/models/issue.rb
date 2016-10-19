@@ -211,7 +211,13 @@ class Issue < ActiveRecord::Base
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
+    merge_requests = ext.merge_requests.select(&:open?)
+    if merge_requests.any?
+      ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: id).pluck(:merge_request_id)
+      merge_requests.select { |mr| mr.id.in?(ids) }
+    else
+      []
+    end
   end
 
   def moved?
