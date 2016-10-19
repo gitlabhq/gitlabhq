@@ -17,6 +17,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Ability to resolve merge request conflicts with editor !6374
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
+  - Keep around commits only pipeline creation as pipeline data doesn't change over time
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add group level labels. (!6425)
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
