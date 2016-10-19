@@ -22,6 +22,19 @@ var config = {
     filename: IS_PRODUCTION ? '[name]-[chunkhash].js' : '[name].js'
   },
 
+  module: {
+    loaders: [
+      {
+        test: /\.es6$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015']
+        }
+      }
+    ]
+  },
+
   plugins: [
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
@@ -32,7 +45,11 @@ var config = {
       modules: false,
       assets: true
     })
-  ]
+  ],
+
+  resolve: {
+    extensions: ['', '.js', '.es6', '.js.es6']
+  }
 }
 
 if (!IS_PRODUCTION) {

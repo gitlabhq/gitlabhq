@@ -7,6 +7,9 @@
     "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html"
   },
   "dependencies": {
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
     "stats-webpack-plugin": "^0.4.2",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
