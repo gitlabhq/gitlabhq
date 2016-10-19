@@ -122,6 +122,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
   - Fixes padding in all clipboard icons that have .btn class
   - Fix a typo in doc/api/labels.md
+  - Fix double-escaping in activities tab (Alexandre Maia)
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
   - Delete dynamic environments
