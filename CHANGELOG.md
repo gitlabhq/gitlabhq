@@ -7,6 +7,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
   - Fix extra space on Build sidebar on Firefox !7060
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Refactor Jira service to use jira-ruby gem
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Fix sidekiq stats in admin area (blackst0ne)
   - Escape ref and path for relative links !6050 (winniehell)
@@ -161,7 +162,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Make searching for commits case insensitive
   - Fix resolved discussion display in side-by-side diff view !6575
   - Optimize GitHub importing for speed and memory
-  - Refactor Jira service to use jira-ruby gem
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Reduce queries needed to find users using their SSH keys when pushing commits
