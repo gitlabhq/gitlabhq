@@ -7,17 +7,25 @@ module Ci
 
       ensure_created_builds! # TODO, remove me in 9.0
 
-      new_builds =
-        stage_indexes_of_created_builds.map do |index|
-          process_stage(index)
-        end
+      new_builds = enqueue_builds!
 
-      @pipeline.update_status
+      pipeline.update_status
+      pipeline.touch
 
       new_builds.flatten.any?
     end
 
     private
+
+    def enqueue_builds!
+      stage_indexes_of_created_builds.map do |index|
+        process_stage(index)
+      end
+    end
+
+    def stage_indexes_of_created_builds
+      created_builds.order(:stage_idx).pluck('distinct stage_idx')
+    end
 
     def process_stage(index)
       current_status = status_for_prior_stages(index)
@@ -56,10 +64,6 @@ module Ci
 
     def status_for_prior_stages(index)
       pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
-    end
-
-    def stage_indexes_of_created_builds
-      created_builds.order(:stage_idx).pluck('distinct stage_idx')
     end
 
     def created_builds_in_stage(index)
