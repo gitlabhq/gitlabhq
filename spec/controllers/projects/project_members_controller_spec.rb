@@ -1,10 +1,11 @@
 require('spec_helper')
 
 describe Projects::ProjectMembersController do
-  describe '#apply_import' do
-    let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :public) }
+
+  describe 'POST apply_import' do
     let(:another_project) { create(:project, :private) }
-    let(:user) { create(:user) }
     let(:member) { create(:user) }
 
     before do
@@ -47,23 +48,19 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe '#index' do
-    context 'when user is member' do
-      before do
-        project = create(:project, :private)
-        member = create(:user)
-        project.team << [member, :guest]
-        sign_in(member)
+  describe 'GET index' do
+    it 'renders index with 200 status code' do
+      get :index, namespace_id: project.namespace, project_id: project
 
-        get :index, namespace_id: project.namespace, project_id: project
-      end
-
-      it { expect(response).to have_http_status(200) }
+      expect(response).to have_http_status(200)
+      expect(response).to render_template(:index)
     end
   end
 
-  describe '#destroy' do
-    let(:project) { create(:project, :public) }
+  describe 'DELETE destroy' do
+    let(:member) { create(:project_member, :developer, project: project) }
+
+    before { sign_in(user) }
 
     context 'when member is not found' do
       it 'returns 404' do
@@ -76,18 +73,8 @@ describe Projects::ProjectMembersController do
     end
 
     context 'when member is found' do
-      let(:user) { create(:user) }
-      let(:team_user) { create(:user) }
-      let(:member) do
-        project.team << [team_user, :developer]
-        project.members.find_by(user_id: team_user.id)
-      end
-
       context 'when user does not have enough rights' do
-        before do
-          project.team << [user, :developer]
-          sign_in(user)
-        end
+        before { project.team << [user, :developer] }
 
         it 'returns 404' do
           delete :destroy, namespace_id: project.namespace,
@@ -95,15 +82,12 @@ describe Projects::ProjectMembersController do
                            id: member
 
           expect(response).to have_http_status(404)
-          expect(project.users).to include team_user
+          expect(project.members).to include member
         end
       end
 
       context 'when user has enough rights' do
-        before do
-          project.team << [user, :master]
-          sign_in(user)
-        end
+        before { project.team << [user, :master] }
 
         it '[HTML] removes user from members' do
           delete :destroy, namespace_id: project.namespace,
@@ -113,7 +97,7 @@ describe Projects::ProjectMembersController do
           expect(response).to redirect_to(
             namespace_project_project_members_path(project.namespace, project)
           )
-          expect(project.users).not_to include team_user
+          expect(project.members).not_to include member
         end
 
         it '[JS] removes user from members' do
@@ -122,19 +106,16 @@ describe Projects::ProjectMembersController do
                                  id: member
 
           expect(response).to be_success
-          expect(project.users).not_to include team_user
+          expect(project.members).not_to include member
         end
       end
     end
   end
 
-  describe '#leave' do
-    let(:project) { create(:project, :public) }
-    let(:user) { create(:user) }
+  describe 'DELETE leave' do
+    before { sign_in(user) }
 
     context 'when member is not found' do
-      before { sign_in(user) }
-
       it 'returns 404' do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
@@ -145,10 +126,7 @@ describe Projects::ProjectMembersController do
 
     context 'when member is found' do
       context 'and is not an owner' do
-        before do
-          project.team << [user, :developer]
-          sign_in(user)
-        end
+        before { project.team << [user, :developer] }
 
         it 'removes user from members' do
           delete :leave, namespace_id: project.namespace,
@@ -161,11 +139,9 @@ describe Projects::ProjectMembersController do
       end
 
       context 'and is an owner' do
-        before do
-          project.update(namespace_id: user.namespace_id)
-          project.team << [user, :master, user]
-          sign_in(user)
-        end
+        let(:project) { create(:project, namespace: user.namespace) }
+
+        before { project.team << [user, :master] }
 
         it 'cannot remove himself from the project' do
           delete :leave, namespace_id: project.namespace,
@@ -176,10 +152,7 @@ describe Projects::ProjectMembersController do
       end
 
       context 'and is a requester' do
-        before do
-          project.request_access(user)
-          sign_in(user)
-        end
+        before { project.request_access(user) }
 
         it 'removes user from members' do
           delete :leave, namespace_id: project.namespace,
@@ -194,13 +167,8 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe '#request_access' do
-    let(:project) { create(:project, :public) }
-    let(:user) { create(:user) }
-
-    before do
-      sign_in(user)
-    end
+  describe 'POST request_access' do
+    before { sign_in(user) }
 
     it 'creates a new ProjectMember that is not a team member' do
       post :request_access, namespace_id: project.namespace,
@@ -215,8 +183,10 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe '#approve' do
-    let(:project) { create(:project, :public) }
+  describe 'POST approve' do
+    let(:member) { create(:project_member, :access_request, project: project) }
+
+    before { sign_in(user) }
 
     context 'when member is not found' do
       it 'returns 404' do
@@ -229,18 +199,8 @@ describe Projects::ProjectMembersController do
     end
 
     context 'when member is found' do
-      let(:user) { create(:user) }
-      let(:team_requester) { create(:user) }
-      let(:member) do
-        project.request_access(team_requester)
-        project.requesters.find_by(user_id: team_requester.id)
-      end
-
       context 'when user does not have enough rights' do
-        before do
-          project.team << [user, :developer]
-          sign_in(user)
-        end
+        before { project.team << [user, :developer] }
 
         it 'returns 404' do
           post :approve_access_request, namespace_id: project.namespace,
@@ -248,15 +208,12 @@ describe Projects::ProjectMembersController do
                                         id: member
 
           expect(response).to have_http_status(404)
-          expect(project.users).not_to include team_requester
+          expect(project.members).not_to include member
         end
       end
 
       context 'when user has enough rights' do
-        before do
-          project.team << [user, :master]
-          sign_in(user)
-        end
+        before { project.team << [user, :master] }
 
         it 'adds user to members' do
           post :approve_access_request, namespace_id: project.namespace,
@@ -266,7 +223,7 @@ describe Projects::ProjectMembersController do
           expect(response).to redirect_to(
             namespace_project_project_members_path(project.namespace, project)
           )
-          expect(project.users).to include team_requester
+          expect(project.members).to include member
         end
       end
     end
