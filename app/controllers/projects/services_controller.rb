@@ -10,7 +10,7 @@ class Projects::ServicesController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @services = @project.find_or_initialize_services
+    redirect_to namespace_project_hooks_path(@project.namespace, @project)
   end
 
   def edit

@@ -4,8 +4,7 @@ class Projects::TriggersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @triggers = project.triggers
-    @trigger = Ci::Trigger.new
+    redirect_to namespace_project_runners_path(project.namespace, project)
   end
 
   def create

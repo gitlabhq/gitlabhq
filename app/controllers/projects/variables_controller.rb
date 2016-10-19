@@ -4,7 +4,7 @@ class Projects::VariablesController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @variable = Ci::Variable.new
+    redirect_to namespace_project_runners_path(project.namespace, project)
   end
 
   def show

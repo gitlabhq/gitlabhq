@@ -4,10 +4,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, only: [:update]
 
   def index
-    @group_links = project.project_group_links.all
-
-    @skip_groups = @group_links.pluck(:group_id)
-    @skip_groups << project.namespace_id unless project.personal?
+    redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end
 
   def create

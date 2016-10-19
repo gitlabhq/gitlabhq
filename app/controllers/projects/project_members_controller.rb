@@ -5,10 +5,13 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
-    @group_links = @project.project_group_links
-
     @project_members = @project.project_members
     @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
+
+    @group_links = project.project_group_links.all
+
+    @skip_groups = @group_links.pluck(:group_id)
+    @skip_groups << project.group.try(:id)
 
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a

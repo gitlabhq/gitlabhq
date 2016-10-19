@@ -8,6 +8,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def index
     @key = DeployKey.new
+    @protected_branch = @project.protected_branches.new
+    @protected_branches = @project.protected_branches.order(:name).page(params[:page])
     set_index_vars
   end
 

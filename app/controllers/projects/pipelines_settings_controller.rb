@@ -2,14 +2,7 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
   before_action :authorize_admin_pipeline!
 
   def show
-    @ref = params[:ref] || @project.default_branch || 'master'
-
-    @badges = [Gitlab::Badge::Build::Status,
-               Gitlab::Badge::Coverage::Report]
-
-    @badges.map! do |badge|
-      badge.new(@project, @ref).metadata
-    end
+    redirect_to namespace_project_runners_path(@project.namespace, @project)
   end
 
   def update

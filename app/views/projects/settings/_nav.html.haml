@@ -1,0 +1,24 @@
+= content_for :sub_nav do
+  .scrolling-tabs-container.sub-nav-scroll
+    = render 'shared/nav_scroll'
+    .nav-links.sub-nav.scrolling-tabs
+      %ul{ class: (container_class) }
+        = nav_link(path: 'projects#edit') do
+          = link_to edit_project_path(@project), title: 'General' do
+            General
+
+        = nav_link(path: 'project_members#index') do
+          = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members' do
+            Members
+
+        = nav_link(path: 'hooks#index') do
+          = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Integrations' do
+            Integrations
+
+        = nav_link(path: 'deploy_keys#index') do
+          = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Repository' do
+            Repository
+
+        = nav_link(path: 'runners#index') do
+          = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Automation / CI' do
+            Automation / CI

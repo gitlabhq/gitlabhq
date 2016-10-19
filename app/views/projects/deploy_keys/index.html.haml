@@ -1,4 +1,5 @@
 - page_title "Deploy Keys"
+= render "projects/settings/nav"
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -34,3 +35,7 @@
         Public deploy keys available to any project (#{@available_public_keys.size})
       %ul.well-list
         = render @available_public_keys
+
+%hr
+
+= render "projects/protected_branches/index"

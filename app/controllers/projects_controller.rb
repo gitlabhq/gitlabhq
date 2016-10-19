@@ -26,6 +26,10 @@ class ProjectsController < Projects::ApplicationController
     render 'edit'
   end
 
+  def integrations
+    render 'settings/integrations'
+  end
+
   def create
     @project = ::Projects::CreateService.new(current_user, project_params).execute
 
