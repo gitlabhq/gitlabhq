@@ -5,6 +5,7 @@ var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
+var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
 var ROOT_PATH = path.resolve(__dirname, '..');
 
 // must match config.webpack.dev_server.port
@@ -66,7 +67,9 @@ if (IS_PRODUCTION) {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurrenceOrderPlugin()
   );
-} else {
+}
+
+if (IS_DEV_SERVER) {
   config.devServer = {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' }
