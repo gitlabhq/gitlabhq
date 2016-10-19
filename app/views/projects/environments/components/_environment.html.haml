@@ -1,14 +1,68 @@
-%environment-item{"inline-template" => true, 
-  "v-for" => "environment in state.environments", 
-  ":model" => "environment"}
-  .environment-folder-name{"@click" => "toggle"}
-    %span.icon-container{"v-if" => "isFolder"}
-      %i{"v-show" => "open"}
-        = icon("caret-down")
+%script#environment-item-template{ "type"=> "text/x-template" }
+  %tr.environment
+    %td.environment-folder-name{ "@click" => "toggle" }
+      %a{ "v-if" => "!isFolder", 
+        ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + model.id" }
+        {{model.name}}
+        
+      %span{ "v-if" => "isFolder" }
+        %i{ "v-show" => "open" }
+          = icon("caret-down")
 
-      %i{"v-show" => "!open"}
-        = icon("caret-right")
-    %span.name-container
-      {{model.name}}
+        %i{ "v-show" => "!open" }
+          = icon("caret-right")
 
-    //  {"name":"review","children":[{"id":8,"project_id":10,"name":"review/app","created_at":"2016-10-13T14:15:33.550Z","updated_at":"2016-10-13T14:15:33.550Z","external_url":"http://gitlab.com","environment_type":"review","state":"opened"}]}
+        {{model.name}}
+
+    %td.deployment-column
+      %span{ "v-if" => "model.last_deployment && model.last_deployment.iid" }
+        {{model.last_deployment.iid}}
+        by
+        %span{ "v-if" => "model.last_deployment.user" }
+          {{model.last_deployment.user}}
+
+    %td
+      column 3
+
+    %td
+      column 4
+
+    %td 
+      column 5
+
+    %td.hidden-xs
+      .pull-right
+        actions
+        -# = render 'projects/environments/external_url', environment: "model"
+        -# = render 'projects/deployments/actions', deployment: "model.last_deployment"
+        -# = render 'projects/environments/stop', environment: "model"
+        -# = render 'projects/deployments/rollback', deployment: "model.last_deployment"
+        
+  %tr.environment-children{ "v-show" => "open", 
+    "v-if"=>"isFolder", 
+    "v-for" => "child in model.children", 
+    ":model" => "child" }
+
+    %td
+      %a{ ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + child.id" }
+        {{child.name}}
+  
+    %td.deployment-column
+      %span{ "v-if" => "child.last_deployment && child.last_deployment.iid" }
+        {{child.last_deployment.iid}}
+      %span{ "v-if" => "child.last_deployment && child.last_deployment.user" }
+        {{child.last_deployment.user}}
+        /= user_avatar(user: "child.last_deployment.user", size: 20)
+
+    %td
+      column 3
+
+    %td
+      column 4
+
+    %td 
+      column 5
+
+    %td.hidden-xs
+      .pull-right
+        actions

@@ -3,7 +3,7 @@
 = render "projects/pipelines/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('environments/environments_bundle.js')
+  = page_specific_javascript_tag("environments/environments_bundle.js")
 
 %div{ class: container_class }
   .top-area
@@ -22,7 +22,7 @@
 
     - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
       .nav-controls
-        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
+        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: "btn btn-create" do
           New environment
 
   #environments-list-view{ data: environments_list_data, class: "environments-container" }
@@ -51,33 +51,9 @@
           %th
           %th.hidden-xs
         %tbody
-          %tr{"is"=>"environment-item",
+          %tr{ "is"=>"environment-item",
             "inline-template" => true, 
             "v-for" => "environment in state.environments", 
-            ":model" => "environment"}
+            ":model" => "environment" }
 
-
-%script#environment-item-template{"type"=> "text/x-template"}
-  %tr.environment
-    %td.environment-folder-name{"@click" => "toggle"}
-      %span.icon-container{"v-if" => "isFolder"}
-        %i{"v-show" => "open"}
-          = icon("caret-down")
-
-        %i{"v-show" => "!open"}
-          = icon("caret-right")
-      %span.name-container
-        {{model.name}}
-    %td
-      %a{{"v-if" => "model.last_deployment"}}
-        {{model.last_deployment.id}}
-  %tr.environment-children{"v-show" => "open", 
-    "v-if"=>"isFolder", 
-    "v-for" => "child in model.children", 
-    ":model" => "child"}
-    %td
-      {{child.name}}
-    %td.deployment-column
-      %span{"v-if" => "child.last_deployment && child.last_deployment.iid"}
-        {{child.last_deployment.iid}}
-    
+=render "projects/environments/components/environment"
