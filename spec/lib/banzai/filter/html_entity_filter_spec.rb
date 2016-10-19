@@ -11,4 +11,9 @@ describe Banzai::Filter::HtmlEntityFilter, lib: true do
 
     expect(output).to eq(escaped)
   end
+
+  it 'does not double-escape' do
+    escaped = ERB::Util.html_escape("Merge branch 'blabla' into 'master'")
+    expect(filter(escaped)).to eq(escaped)
+  end
 end
