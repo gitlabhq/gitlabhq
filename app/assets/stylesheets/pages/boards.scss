@@ -302,10 +302,16 @@ lex
     width: 22px;
     color: $gray-darkest;
 
-    .fa {
+    svg {
       position: absolute;
       top: 50%;
-      margin-top: (-15px / 2);
+      margin-top: (-11px / 2);
+    }
+
+    &:hover {
+      path {
+        fill: $gray-darkest;
+      }
     }
   }
 

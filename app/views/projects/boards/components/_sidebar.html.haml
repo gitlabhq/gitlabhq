@@ -14,7 +14,7 @@
           href: "#",
           "@click.prevent" => "closeSidebar",
           "aria-label" => "Toggle sidebar" }
-          = icon("times")
+          = custom_icon("icon_close", size: 15)
       .js-issuable-update
         = render "projects/boards/components/sidebar/assignee"
         = render "projects/boards/components/sidebar/milestone"
