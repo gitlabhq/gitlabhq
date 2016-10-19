@@ -65,12 +65,12 @@
     %span.commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
-  .widget-row.pipeline-info
-    - if @commit.status
+  - if @commit.status
+    .widget-row.pipeline-info
       .icon-container
         = ci_icon_for_status(@commit.status)
       Pipeline
-      = link_to "##{@commit.pipelines.last.id}", pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
+      = link_to "##{@commit.pipelines.first.id}", pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
       for
       = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
       %span.ci-status-label
