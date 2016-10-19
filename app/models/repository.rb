@@ -12,11 +12,11 @@ class Repository
   attr_accessor :path_with_namespace, :project
 
   def self.with_forbidden_access
-    @@forbidden_access ||= 0
-    @@forbidden_access += 1
+    Thread.current[:repository_forbidden_access] ||= 0
+    Thread.current[:repository_forbidden_access] += 1
     yield
-  rescue
-    @@forbidden_access -= 1
+  ensure
+    Thread.current[:repository_forbidden_access] -= 1
   end
 
   def initialize(path_with_namespace, project)
@@ -27,7 +27,7 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    raise 'Repository access is forbidden' if @@forbidden_access
+    raise 'Repository access is forbidden' if Thread.current[:repository_forbidden_access].to_i > 0
 
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
   end
