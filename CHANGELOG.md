@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
+  - Simpler arguments passed to named_route on toggle_award_url helper method 
 
 ## 8.13.0 (2016-10-22)
 
