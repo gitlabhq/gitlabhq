@@ -389,12 +389,18 @@
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
       var $diffTabs = $('#diff-notes-app'),
-        offsetTop = $tabs.offset().top - ($('.navbar-fixed-top').height() + $('.layout-nav').height());
+        $fixedNav = $('.navbar-fixed-top'),
+        $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
           offset: {
-            top: offsetTop
+            top: function () {
+              var tabsTop = $diffTabs.offset().top - $tabs.height();
+              tabsTop = tabsTop - ($fixedNav.height() + $layoutNav.height());
+
+              return tabsTop;
+            }
           }
         }).on('affix.bs.affix', function () {
           $diffTabs.css({
