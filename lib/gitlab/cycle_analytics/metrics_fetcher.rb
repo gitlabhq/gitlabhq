@@ -56,6 +56,10 @@ module Gitlab
         MergeRequest.arel_table
       end
 
+      def merge_request_diff_table
+        MergeRequestDiff.arel_table
+      end
+
       def mr_closing_issues_table
         MergeRequestsClosingIssues.arel_table
       end

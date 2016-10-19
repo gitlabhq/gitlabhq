@@ -11,11 +11,11 @@ describe Gitlab::CycleAnalytics::Events do
     setup(context)
   end
 
-  describe '#issue' do
+  describe '#issue_events' do
     let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
-    it 'has an issue diff' do
-      expect(subject.issue_events.first['issue_diff']).to eq('2 days ago')
+    it 'has the total time' do
+      expect(subject.issue_events.first['total_time']).to eq('2 days')
     end
 
     it 'has a title' do
@@ -32,6 +32,18 @@ describe Gitlab::CycleAnalytics::Events do
 
     it "has the author's name" do
       expect(subject.issue_events.first['name']).to eq(context.author.name)
+    end
+  end
+
+  describe '#plan_events' do
+    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
+
+    xit 'has the first referenced commit' do
+      expect(subject.plan_events.first['commit']).to eq(project.commit)
+    end
+
+    it 'has the total time' do
+      expect(subject.plan_events.first['total_time']).to eq('2 days')
     end
   end
 
