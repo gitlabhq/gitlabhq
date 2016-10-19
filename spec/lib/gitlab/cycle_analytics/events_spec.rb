@@ -38,8 +38,8 @@ describe Gitlab::CycleAnalytics::Events do
   describe '#plan_events' do
     let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
-    xit 'has the first referenced commit' do
-      expect(subject.plan_events.first['commit']).to eq(project.commit)
+    it 'has the first referenced commit' do
+      expect(subject.plan_events.first['commit'].message).to eq('commit message')
     end
 
     it 'has the total time' do

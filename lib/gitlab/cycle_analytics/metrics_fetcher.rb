@@ -35,28 +35,28 @@ module Gitlab
           where(issue_table[:created_at].gteq(@from))
 
         # Load merge_requests
-        query = query.join(merge_request_table, Arel::Nodes::OuterJoin).
-          on(merge_request_table[:id].eq(mr_closing_issues_table[:merge_request_id])).
-          join(merge_request_metrics_table).
-          on(merge_request_table[:id].eq(merge_request_metrics_table[:merge_request_id]))
+        query = query.join(mr_table, Arel::Nodes::OuterJoin).
+          on(mr_table[:id].eq(mr_closing_issues_table[:merge_request_id])).
+          join(mr_metrics_table).
+          on(mr_table[:id].eq(mr_metrics_table[:merge_request_id]))
 
         if DEPLOYMENT_METRIC_STAGES.include?(name)
           # Limit to merge requests that have been deployed to production after `@from`
-          query.where(merge_request_metrics_table[:first_deployed_to_production_at].gteq(@from))
+          query.where(mr_metrics_table[:first_deployed_to_production_at].gteq(@from))
         end
 
         query
       end
 
-      def merge_request_metrics_table
+      def mr_metrics_table
         MergeRequest::Metrics.arel_table
       end
 
-      def merge_request_table
+      def mr_table
         MergeRequest.arel_table
       end
 
-      def merge_request_diff_table
+      def mr_diff_table
         MergeRequestDiff.arel_table
       end
 

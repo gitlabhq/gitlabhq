@@ -20,11 +20,22 @@ module Gitlab
       end
 
       def plan_events
-        # TODO sort out 1st referenced commit and parse stuff
-        @fetcher.fetch_plan_events
+        @fetcher.fetch_plan_events.each do |event|
+          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
+          commits = event.delete('commits')
+          event['commit'] = first_time_reference_commit(commits, event)
+        end
       end
 
       private
+
+      def first_time_reference_commit(commits, event)
+        st_commit = YAML.load(commits).detect do |commit|
+          commit['created_at'] == event['first_mentioned_in_commit_at']
+        end
+
+        Commit.new(Gitlab::Git::Commit.new(st_commit), @project)
+      end
 
       def interval_in_words(diff)
         "#{distance_of_time_in_words(diff.to_f)} ago"

@@ -23,8 +23,8 @@ module Gitlab
         base_query = base_query_for(:plan)
         diff_fn = subtract_datetimes_diff(base_query, issue_table[:created_at], plan_attributes)
 
-        query = base_query.join(merge_request_diff_table).on(merge_request_diff_table[:merge_request_id].eq(merge_request_table[:id])).
-          project(merge_request_diff_table[:st_commits].as(:commits), extract_epoch(diff_fn).as('total_time')).
+        query = base_query.join(mr_diff_table).on(mr_diff_table[:merge_request_id].eq(mr_table[:id])).
+          project(extract_epoch(diff_fn).as('total_time'), *plan_projections).
           order(issue_table[:created_at].desc)
 
         ActiveRecord::Base.connection.execute(query.to_sql).to_a
@@ -43,6 +43,10 @@ module Gitlab
 
       def issue_projections
         [issue_table[:title], issue_table[:iid], issue_table[:created_at], User.arel_table[:name]]
+      end
+
+      def plan_projections
+        [mr_diff_table[:st_commits].as('commits'), issue_metrics_table[:first_mentioned_in_commit_at]]
       end
 
       def user_table
