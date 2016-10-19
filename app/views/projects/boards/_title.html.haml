@@ -1,5 +1,5 @@
 %boards-selector{ "inline-template" => true,
-  ":current-board" => "#{board.to_json}" }
+  ":current-board" => board.to_json }
   .boards-title-holder.dropdown
     %button.boards-switcher{ "@click" => "loadBoards",
       data: { toggle: "dropdown" } }
