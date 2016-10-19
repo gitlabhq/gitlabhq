@@ -22,13 +22,7 @@ module API
       segment ':id/boards/:board_id' do
         helpers do
           def project_board
-            board = user_project.boards.first
-
-            if params[:board_id] == board.id
-              board
-            else
-              not_found!('Board')
-            end
+            user_project.boards.find(params[:board_id])
           end
 
           def board_lists
@@ -92,12 +86,12 @@ module API
           requires :position, type: Integer, desc: 'The position of the list'
         end
         put '/lists/:list_id' do
-          list = project_board.lists.movable.find(params[:list_id])
+          list = board_lists.find(params[:list_id])
 
           authorize!(:admin_list, user_project)
 
           service = ::Boards::Lists::MoveService.new(user_project, current_user,
-              { position: params[:position] })
+              { position: params[:position].to_i })
 
           if service.execute(list)
             present list, with: Entities::List

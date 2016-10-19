@@ -3,7 +3,7 @@ class Board < ActiveRecord::Base
 
   has_many :lists, -> { order(:list_type, :position) }, dependent: :delete_all
 
-  validates :project, presence: true
+  validates :name, :project, presence: true
 
   def backlog_list
     lists.merge(List.backlog).take

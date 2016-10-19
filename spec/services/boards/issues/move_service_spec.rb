@@ -10,10 +10,10 @@ describe Boards::Issues::MoveService, services: true do
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)  { create(:label, project: project, name: 'Testing') }
 
-    let!(:backlog) { create(:backlog_list, board: board1) }
+    let!(:backlog) { board1.backlog_list }
     let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
-    let!(:done)    { create(:done_list, board: board1) }
+    let!(:done)    { board1.done_list }
 
     before do
       project.team << [user, :developer]

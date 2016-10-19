@@ -1,0 +1,61 @@
+%boards-selector{ "inline-template" => true,
+  ":current-board" => board.to_json }
+  .boards-title-holder.dropdown
+    %button.boards-switcher{ "@click" => "loadBoards",
+      data: { toggle: "dropdown" } }
+      {{ currentBoard.name }}
+      = icon("caret-down")
+    .dropdown-menu{ ":class" => "{ 'is-loading': loading }" }
+      .dropdown-title
+        %button.dropdown-title-button.dropdown-menu-back{ type: "button",
+          aria: { label: "Go back" },
+          "@click.stop.prevent" => "showPage('')",
+          "v-if" => "currentPage !== ''" }
+          = icon("arrow-left")
+        {{ title }}
+        %button.dropdown-title-button.dropdown-menu-close{ type: "button",
+          aria: { label: "Close" } }
+          = icon("times", class: "dropdown-menu-close-icon")
+      .dropdown-content{ "v-if" => "currentPage === ''" }
+        %ul{ "v-if" => "!loading" }
+          %li{ "v-for" => "board in boards" }
+            %a{ ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + board.id" }
+              {{ board.name }}
+      .dropdown-loading{ "v-if" => "loading" }
+        = icon("spin spinner")
+      %board-selector-form{ "inline-template" => true,
+        "v-if" => "currentPage === 'edit'",
+        "type" => "edit",
+        ":current-board.sync" => "currentBoard",
+        ":current-page.sync" => "currentPage",
+        ":reload.sync" => "reload" }
+        = render "projects/boards/components/form"
+      %board-selector-form{ "inline-template" => true,
+        "v-if" => "currentPage === 'new'",
+        "type" => "new",
+        ":current-page.sync" => "currentPage",
+        ":reload.sync" => "reload" }
+        = render "projects/boards/components/form"
+      .dropdown-content.board-selector-page-two{ "v-if" => "currentPage === 'delete'" }
+        %p
+          Are you sure you want to delete this board?
+        .board-delete-btns.clearfix
+          = link_to "",
+            class: "btn btn-danger pull-left",
+            method: :delete,
+            ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + currentBoard.id" do
+            Delete
+          %button.btn.btn-default.pull-right{ type: "button",
+            "@click.stop.prevent" => "currentPage = ''" }
+            Cancel
+      .dropdown-footer{ "v-if" => "currentPage === ''" }
+        %ul.dropdown-footer-list
+          %li
+            %a{ "href": "#", "@click.stop.prevent" => "showPage('new')" }
+              Create new board
+          %li
+            %a{ "href": "#", "@click.stop.prevent" => "showPage('edit')" }
+              Edit board name
+          %li{ "v-if" => "showDelete" }
+            %a.text-danger{ "href": "#", "@click.stop.prevent" => "showPage('delete')" }
+              Delete board

@@ -1,0 +1,15 @@
+.dropdown-content.board-selector-page-two
+  %form{ "@submit.prevent" => "submit" }
+    %label.label-light{ for: "board-new-name" }
+      Board name
+    %input.form-control{ type: "text",
+      id: "board-new-name",
+      "v-model" => "board.name" }
+    .clearfix.prepend-top-10
+      %button.btn.btn-primary.pull-left{ type: "submit",
+        ":disabled" => "board.name === ''",
+        "v-el:submit-btn" => true }
+        {{ buttonText }}
+      %button.btn.btn-default.pull-right{ type: "button",
+        "@click.stop.prevent" => "currentPage = ''" }
+        Cancel

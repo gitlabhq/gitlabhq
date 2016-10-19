@@ -51,7 +51,7 @@ describe API::API, api: true  do
     end
 
     context "when authenticated" do
-      it "returns the project issue board" do
+      it "returns the project issue boards" do
         get api(base_url, user)
 
         expect(response).to have_http_status(200)

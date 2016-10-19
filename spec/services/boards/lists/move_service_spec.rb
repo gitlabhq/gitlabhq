@@ -6,12 +6,12 @@ describe Boards::Lists::MoveService, services: true do
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
-    let!(:backlog)     { create(:backlog_list, board: board) }
+    let!(:backlog)     { board.backlog_list }
     let!(:planning)    { create(:list, board: board, position: 0) }
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }
     let!(:staging)     { create(:list, board: board, position: 3) }
-    let!(:done)        { create(:done_list, board: board) }
+    let!(:done)        { board.done_list }
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do

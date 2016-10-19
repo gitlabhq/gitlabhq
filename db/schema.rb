@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20161007133303) do
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", default: "Development", null: false
   end
 
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree

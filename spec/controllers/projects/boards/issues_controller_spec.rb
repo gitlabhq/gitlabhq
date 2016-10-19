@@ -106,6 +106,22 @@ describe Projects::Boards::IssuesController do
           expect(response).to have_http_status(404)
         end
       end
+
+      context 'with invalid board id' do
+        it 'returns a not found 404 response' do
+          create_issue user: user, board: 999, list: list1, title: 'New issue'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'with invalid list id' do
+        it 'returns a not found 404 response' do
+          create_issue user: user, board: board, list: 999, title: 'New issue'
+
+          expect(response).to have_http_status(404)
+        end
+      end
     end
 
     context 'with unauthorized user' do
