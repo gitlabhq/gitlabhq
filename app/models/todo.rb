@@ -41,7 +41,7 @@ class Todo < ActiveRecord::Base
     state :done
   end
 
-  after_save :keep_around_commit
+  after_create :keep_around_commit
 
   class << self
     def sort(method)

@@ -11,7 +11,7 @@ class SentNotification < ActiveRecord::Base
   validates :commit_id, presence: true, if: :for_commit?
   validate :note_valid
 
-  after_save :keep_around_commit
+  after_create :keep_around_commit
 
   class << self
     def reply_key

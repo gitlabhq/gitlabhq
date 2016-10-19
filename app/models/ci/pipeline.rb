@@ -19,7 +19,7 @@ module Ci
     validates_presence_of :status, unless: :importing?
     validate :valid_commit_sha, unless: :importing?
 
-    after_save :keep_around_commits, unless: :importing?
+    after_create :keep_around_commits, unless: :importing?
 
     delegate :stages, to: :statuses
 

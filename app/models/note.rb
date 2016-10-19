@@ -79,7 +79,7 @@ class Note < ActiveRecord::Base
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id
-  after_save :keep_around_commit
+  after_create :keep_around_commit
 
   class << self
     def model_name
