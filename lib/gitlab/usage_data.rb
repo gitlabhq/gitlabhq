@@ -3,16 +3,16 @@ module Gitlab
     include Gitlab::CurrentSettings
 
     class << self
-      def data(force_refresh = false)
-        Rails.cache.fetch('usage_data', force: force_refresh) { uncached_data }
+      def data(force_refresh: false)
+        Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
       end
 
       def uncached_data
         license_usage_data.merge(system_usage_data)
       end
 
-      def to_json(force_refresh = false)
-        data(force_refresh).to_json
+      def to_json(force_refresh: false)
+        data(force_refresh: force_refresh).to_json
       end
 
       def system_usage_data
