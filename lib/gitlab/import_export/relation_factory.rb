@@ -9,7 +9,10 @@ module Gitlab
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
-                    push_access_levels: 'ProtectedBranch::PushAccessLevel' }.freeze
+                    push_access_levels: 'ProtectedBranch::PushAccessLevel',
+                    labels: :project_labels,
+                    priorities: :label_priorities,
+                    label: :project_label }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
 
@@ -19,9 +22,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
-
-      FINDER_ATTRIBUTES = %w[title project_id].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels project_label group_label].freeze
 
       def self.create(*args)
         new(*args).create
@@ -56,6 +57,8 @@ module Gitlab
 
         update_user_references
         update_project_references
+
+        handle_group_label if group_label?
         reset_ci_tokens if @relation_name == 'Ci::Trigger'
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diffs if @relation_name == :merge_request_diff
@@ -123,6 +126,20 @@ module Gitlab
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
+      def group_label?
+        @relation_hash['type'] == 'GroupLabel'
+      end
+
+      def handle_group_label
+        # If there's no group, move the label to a project label
+        if @relation_hash['group_id']
+          @relation_hash['project_id'] = nil
+          @relation_name = :group_label
+        else
+          @relation_hash['type'] = 'ProjectLabel'
+        end
+      end
+
       def reset_ci_tokens
         return unless Gitlab::ImportExport.reset_tokens?
 
@@ -171,11 +188,9 @@ module Gitlab
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
           if EXISTING_OBJECT_CHECK.include?(@relation_name)
-            events = parsed_relation_hash.delete('events')
+            attribute_hash = attribute_hash_for(['events', 'priorities'])
 
-            unless events.blank?
-              existing_object.assign_attributes(events: events)
-            end
+            existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
 
             existing_object
           else
@@ -184,14 +199,22 @@ module Gitlab
         end
       end
 
+      def attribute_hash_for(attributes)
+        attributes.inject({}) do |hash, value|
+          hash[value] = parsed_relation_hash.delete(value) if parsed_relation_hash[value]
+          hash
+        end
+      end
+
       def existing_object
         @existing_object ||=
           begin
-            finder_hash = parsed_relation_hash.slice(*FINDER_ATTRIBUTES)
+            finder_attributes = @relation_name == :group_label ? %w[title group_id] : %w[title project_id]
+            finder_hash = parsed_relation_hash.slice(*finder_attributes)
             existing_object = relation_class.find_or_create_by(finder_hash)
             # Done in two steps, as MySQL behaves differently than PostgreSQL using
             # the +find_or_create_by+ method and does not return the ID the second time.
-            existing_object.update(parsed_relation_hash)
+            existing_object.update!(parsed_relation_hash)
             existing_object
           end
       end

@@ -1,0 +1,7 @@
+- page_title 'Edit', @label.name, 'Labels'
+
+%h3.page-title
+  Edit Label
+%hr
+
+= render 'shared/labels/form', url: group_label_path(@group, @label), back_path: @previous_labels_path

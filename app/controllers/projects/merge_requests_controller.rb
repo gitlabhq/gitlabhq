@@ -40,7 +40,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @labels = @project.labels.where(title: params[:label_name])
+    if params[:label_name].present?
+      labels_params = { project_id: @project.id, title: params[:label_name] }
+      @labels = LabelsFinder.new(current_user, labels_params).execute
+    end
 
     respond_to do |format|
       format.html
@@ -574,6 +577,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
+
+    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     define_pipelines_vars
   end

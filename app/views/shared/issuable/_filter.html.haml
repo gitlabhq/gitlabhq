@@ -78,11 +78,10 @@
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
             = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
-
-  - if !@labels.nil?
-    .row-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }
-      - if @labels.any?
-        = render "shared/labels_row", labels: @labels
+  - has_labels = @labels && @labels.any?
+  .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }
+    - if has_labels
+      = render 'shared/labels_row', labels: @labels
 
 :javascript
   new UsersSelect();

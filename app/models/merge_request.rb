@@ -137,6 +137,10 @@ class MergeRequest < ActiveRecord::Base
     reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
+  def self.project_foreign_key
+    'target_project_id'
+  end
+
   # Returns all the merge requests from an ActiveRecord:Relation.
   #
   # This method uses a UNION as it usually operates on the result of
