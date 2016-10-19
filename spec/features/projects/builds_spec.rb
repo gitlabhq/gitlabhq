@@ -79,12 +79,14 @@ describe "Builds" do
       click_link "Cancel running"
     end
 
-    it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
-    it { expect(page).to have_content 'canceled' }
-    it { expect(page).to have_content @build.short_sha }
-    it { expect(page).to have_content @build.ref }
-    it { expect(page).to have_content @build.name }
-    it { expect(page).not_to have_link 'Cancel running' }
+    it 'shows all necessary content' do
+      expect(page).to have_selector('.nav-links li.active', text: 'All')
+      expect(page).to have_content 'canceled'
+      expect(page).to have_content @build.short_sha
+      expect(page).to have_content @build.ref
+      expect(page).to have_content @build.name
+      expect(page).not_to have_link 'Cancel running'
+    end
   end
 
   describe "GET /:project/builds/:id" do
@@ -93,10 +95,12 @@ describe "Builds" do
         visit namespace_project_build_path(@project.namespace, @project, @build)
       end
 
-      it { expect(page.status_code).to eq(200) }
-      it { expect(page).to have_content @commit.sha[0..7] }
-      it { expect(page).to have_content @commit.git_commit_message }
-      it { expect(page).to have_content @commit.git_author_name }
+      it 'shows commit`s data' do
+        expect(page.status_code).to eq(200)
+        expect(page).to have_content @commit.sha[0..7]
+        expect(page).to have_content @commit.git_commit_message
+        expect(page).to have_content @commit.git_author_name
+      end
     end
 
     context "Build from other project" do
@@ -167,7 +171,7 @@ describe "Builds" do
 
     describe 'Variables' do
       before do
-        @trigger_request = create :ci_trigger_request_with_variables 
+        @trigger_request = create :ci_trigger_request_with_variables
         @build = create :ci_build, pipeline: @commit, trigger_request: @trigger_request
         visit namespace_project_build_path(@project.namespace, @project, @build)
       end
@@ -176,14 +180,14 @@ describe "Builds" do
         expect(page).to have_css('.reveal-variables')
         expect(page).not_to have_css('.js-build-variable')
         expect(page).not_to have_css('.js-build-value')
-     
+
         click_button 'Reveal Variables'
 
         expect(page).not_to have_css('.reveal-variables')
         expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
         expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
       end
-    end    
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do
@@ -194,9 +198,11 @@ describe "Builds" do
         click_link "Cancel"
       end
 
-      it { expect(page.status_code).to eq(200) }
-      it { expect(page).to have_content 'canceled' }
-      it { expect(page).to have_content 'Retry' }
+      it 'loads the page and shows all needed controls' do
+        expect(page.status_code).to eq(200)
+        expect(page).to have_content 'canceled'
+        expect(page).to have_content 'Retry'
+      end
     end
 
     context "Build from other project" do
