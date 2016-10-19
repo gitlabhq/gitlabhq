@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161012180455) do
+ActiveRecord::Schema.define(version: 20161017095000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -380,6 +380,7 @@ ActiveRecord::Schema.define(version: 20161012180455) do
     t.string "deployable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "on_stop"
   end
 
   add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree
@@ -404,6 +405,7 @@ ActiveRecord::Schema.define(version: 20161012180455) do
     t.datetime "updated_at"
     t.string "external_url"
     t.string "environment_type"
+    t.string "state", default: "available", null: false
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
