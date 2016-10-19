@@ -280,6 +280,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           get :diff_for_path
           post :resolve_conflicts
           post :assign_related_issues
+          get :participants
         end
 
         collection do
@@ -388,6 +389,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
+          get :participants
         end
         collection do
           post  :bulk_update

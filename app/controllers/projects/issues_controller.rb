@@ -5,11 +5,12 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
   include SpammableActions
+  include ApplicationHelper
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch]
+                               :related_branches, :can_create_branch, :participants]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show]
@@ -154,6 +155,16 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: { can_create_branch: can_create }
       end
     end
+  end
+
+  def participants
+    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(@noteable)
+    participants.map do |participant|
+      user = User.find_by_username(participant[:username])
+      participant[:link] = user_path(participant)
+      participant[:avatar] = avatar_icon(user)
+    end
+    render json: participants
   end
 
   protected

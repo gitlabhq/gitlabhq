@@ -1,20 +1,25 @@
-- participants_row = 7
-- participants_size = participants.size
-- participants_extra = participants_size - participants_row
-.block.participants
+- if current_controller?(:issues)
+  - participants_endpoint = participants_namespace_project_issue_path(@project.namespace, @project, @issue)
+- else
+  - participants_endpoint = participants_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+
+.block.participants.js-participants-block
+  #js-participants-options{ data: { 'participants-endpoint': participants_endpoint, 'participants-row': 7 } }
   .sidebar-collapsed-icon
     = icon('users')
-    %span
-      = participants.count
+    %span.count
+      = icon('spinner spin')
   .title.hide-collapsed
-    = pluralize participants.count, "participant"
+    Participants
   .hide-collapsed.participants-list
-    - participants.each do |participant|
-      .participants-author.js-participants-author
-        = link_to_member(@project, participant, name: false, size: 24)
-    - if participants_extra > 0
-      %div.participants-more
-        %a.js-participants-more{href: "#", data: {original_text: "+ #{participants_size - 7} more", less_text: "- show less"}}
-          + #{participants_extra} more
-:javascript
-  IssuableContext.prototype.PARTICIPANTS_ROW_COUNT = #{participants_row};
+    = icon('spinner spin', class: 'spinner')
+
+  %script#participant-template{ type: 'text/template' }
+    .participants-author.js-participants-author
+      %a.author_link.has_tooltip{ href: '<%- link %>', data: { 'original-title': '<%- name %>' } }
+        %img.avatar.avatar-inline.s24{ width: '24', src: '<%- avatar %>' }
+
+  %script#more-participants-template{ type: 'text/template' }
+    .participants-more
+      %a.js-participants-more{ href: '#', data: { 'original-text': '+ <%- moreCount %> more', 'less-text': '- show less' } }
+        + <%- moreCount %> more

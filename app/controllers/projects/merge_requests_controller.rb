@@ -6,11 +6,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include NotesHelper
   include ToggleAwardEmoji
   include IssuableCollections
+  include ApplicationHelper
 
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :participants
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -435,6 +436,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
     render json: environments
+  end
+
+  def participants
+    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(@issuable)
+    participants.map do |participant|
+      user = User.find_by_username(participant[:username])
+      participant[:link] = user_path(participant)
+      participant[:avatar] = avatar_icon(user)
+    end
+    render json: participants
   end
 
   protected
