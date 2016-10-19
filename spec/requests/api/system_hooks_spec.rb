@@ -30,7 +30,6 @@ describe API::API, api: true  do
       it "returns an array of hooks" do
         get api("/hooks", admin)
 
-        byebug
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)

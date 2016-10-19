@@ -12,6 +12,7 @@ module API
       end
       get do
         hooks = SystemHook.all
+
         present hooks, with: Entities::Hook
       end
 
