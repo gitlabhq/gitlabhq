@@ -4,7 +4,8 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project)     { create(:project_with_board, :public) }
+  let(:project)     { create(:empty_project, :public) }
+  let(:board)       { create(:board, project: project) }
   let(:user)        { create(:user) }
   let!(:label)      { create(:label, project: project) }
   let!(:label2)     { create(:label, project: project) }
@@ -17,7 +18,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     login_as(user)
 
-    visit namespace_project_board_path(project.namespace, project)
+    visit namespace_project_board_path(project.namespace, project, board)
     wait_for_vue_resource
   end
 
