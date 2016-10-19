@@ -13,7 +13,7 @@
       "enum": ["backlog", "label", "done"]
     },
     "label": {
-      "type": ["object"],
+      "type": ["object", "null"],
       "required": [
         "id",
         "color",

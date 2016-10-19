@@ -107,7 +107,7 @@ class Project < ActiveRecord::Base
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
   has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy
+  has_many :labels,             dependent: :destroy, class_name: 'ProjectLabel'
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
@@ -387,6 +387,10 @@ class Project < ActiveRecord::Base
       Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
         Project.count
       end
+    end
+
+    def group_ids
+      joins(:namespace).where(namespaces: { type: 'Group' }).pluck(:namespace_id)
     end
   end
 
@@ -729,10 +733,8 @@ class Project < ActiveRecord::Base
 
   def create_labels
     Label.templates.each do |label|
-      label = label.dup
-      label.template = nil
-      label.project_id = self.id
-      label.save
+      params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
+      Labels::FindOrCreateService.new(owner, self, params).execute
     end
   end
 

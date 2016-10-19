@@ -11,7 +11,7 @@ module API
       # Example Request:
       #   GET /projects/:id/labels
       get ':id/labels' do
-        present user_project.labels, with: Entities::Label, current_user: current_user
+        present available_labels, with: Entities::Label, current_user: current_user
       end
 
       # Creates a new label
