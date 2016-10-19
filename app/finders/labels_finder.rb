@@ -31,7 +31,7 @@ class LabelsFinder < UnionFinder
   end
 
   def sort(items)
-    items.reorder(title: :asc, type: :desc)
+    items.reorder(title: :asc)
   end
 
   def with_title(items)
