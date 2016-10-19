@@ -13,56 +13,45 @@ describe Groups::GroupMembersController do
     end
   end
 
-  describe '#create' do
-    let(:group) { create(:group, :public) }
+  describe 'POST create' do
+    let(:group_user) { create(:user) }
 
-    context 'when users are added' do
-      let(:user) { create(:user) }
-      let(:group_user) { create(:user) }
-      let(:member) do
-        group.add_developer(group_user)
-        group.members.find_by(user_id: group_user)
+    before { sign_in(user) }
+
+    context 'when user does not have enough rights' do
+      before { group.add_developer(user) }
+
+      it 'returns 403' do
+        post :create, group_id: group,
+                      user_ids: group_user.id,
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to have_http_status(403)
+        expect(group.users).not_to include group_user
+      end
+    end
+
+    context 'when user has enough rights' do
+      before { group.add_owner(user) }
+
+      it 'adds user to members' do
+        post :create, group_id: group,
+                      user_ids: group_user.id,
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to set_flash.to 'Users were successfully added.'
+        expect(response).to redirect_to(group_group_members_path(group))
+        expect(group.users).to include group_user
       end
 
-      context 'when user does not have enough rights' do
-        before do
-          group.members.delete(member)
-          group.add_developer(user)
-          sign_in(user)
-        end
+      it 'adds no user to members' do
+        post :create, group_id: group,
+                      user_ids: '',
+                      access_level: Gitlab::Access::GUEST
 
-        it 'returns 403' do
-          post :create, group_id: group,
-                        user_ids: member
-
-          expect(response).to have_http_status(403)
-          expect(group.users).not_to include group_user
-        end
-      end
-
-      context 'when user has enough rights' do
-        before do
-          group.add_owner(user)
-          sign_in(user)
-        end
-
-        it 'adds user to members' do
-          post :create, group_id: group,
-                        user_ids: member
-
-          expect(response).to set_flash.to 'Users were successfully added.'
-          expect(response).to redirect_to(group_group_members_path(group))
-          expect(group.users).to include group_user
-        end
-
-        it 'adds no user to members' do
-          post :create, group_id: group,
-                        user_ids: ''
-
-          expect(response).to set_flash.to 'No users specified.'
-          expect(response).to redirect_to(group_group_members_path(group))
-          expect(group.users).not_to include group_user
-        end
+        expect(response).to set_flash.to 'No users specified.'
+        expect(response).to redirect_to(group_group_members_path(group))
+        expect(group.users).not_to include group_user
       end
     end
   end
