@@ -34,10 +34,7 @@
   &.commit-info-row-header {
     line-height: 34px;
     padding: 10px 0;
-
-    @media (min-width: $screen-sm-min) {
-      margin-bottom: 0;
-    }
+    margin-bottom: 0;
 
     .commit-options-dropdown-caret {
       @media (max-width: $screen-sm) {

@@ -1,7 +1,7 @@
 .commit-info-row.commit-info-row-header
   %span.hidden-xs.hidden-sm Commit
   = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace js-details-short"
-  = link_to("#", class: "js-details-expand") do
+  = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
     %span.text-expander
       \...
   %span.js-details-content.hide
@@ -9,7 +9,7 @@
   = clipboard_button(clipboard_text: @commit.id)
   %span.hidden-xs authored
   #{time_ago_with_tooltip(@commit.authored_date)}
-  %span.hidden-xs by
+  %span by
   = author_avatar(@commit, size: 24)
   %strong
     = commit_author_link(@commit, avatar: true, size: 24)
