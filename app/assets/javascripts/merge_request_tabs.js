@@ -388,8 +388,7 @@
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
-      var tabsWidth = $tabs.outerWidth(),
-        $diffTabs = $('#diff-notes-app'),
+      var $diffTabs = $('#diff-notes-app'),
         offsetTop = $tabs.offset().top - ($('.navbar-fixed-top').height() + $('.layout-nav').height());
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
@@ -398,18 +397,10 @@
             top: offsetTop
           }
         }).on('affix.bs.affix', function () {
-          $tabs.css({
-            left: $tabs.offset().left,
-            width: tabsWidth
-          });
           $diffTabs.css({
             marginTop: $tabs.height()
           });
         }).on('affix-top.bs.affix', function () {
-          $tabs.css({
-            left: '',
-            width: ''
-          });
           $diffTabs.css({
             marginTop: ''
           });
