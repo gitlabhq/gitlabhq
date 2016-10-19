@@ -67,9 +67,15 @@ module MergeRequests
     end
 
     def log_merge_error(message, http_error = false)
-      Rails.logger.error("MergeService error: #{message}")
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{message}")
 
       error(message) if http_error
+    end
+
+    def merge_request_info
+      project = merge_request.project
+
+      "#{project.to_reference}#{merge_request.to_reference}"
     end
   end
 end
