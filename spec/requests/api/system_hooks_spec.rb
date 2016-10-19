@@ -73,9 +73,10 @@ describe API::API, api: true  do
       end.to change { SystemHook.count }.by(-1)
     end
 
-    it "returns success if hook id not found" do
-      delete api("/hooks/12345", admin)
-      expect(response).to have_http_status(200)
+    it 'returns 404 if the system hook does not exist' do
+      delete api('/hooks/12345', admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 end
