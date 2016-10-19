@@ -34,7 +34,7 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    deployable.try(:other_actions)
+    @manual_actions ||= deployable.try(:other_actions)
   end
 
   def includes_commit?(commit)
@@ -82,6 +82,17 @@ class Deployment < ActiveRecord::Base
       where(environments: { name: self.environment.name }, ref: self.ref).
       where.not(id: self.id).
       take
+  end
+
+  def stop_action
+    return nil unless on_stop.present?
+    return nil unless manual_actions
+
+    @stop_action ||= manual_actions.find_by(name: on_stop)
+  end
+
+  def stoppable?
+    stop_action.present?
   end
 
   def formatted_deployment_time
