@@ -223,3 +223,14 @@ For our currently-supported browsers, see our [requirements][requirements].
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 [scss-style-guide]: scss_styleguide.md
 [requirements]: ../install/requirements.md#supported-web-browsers
+
+## Common Errors
+
+### Rspec (Capybara/Poltergeist) chokes on general JavaScript errors
+
+If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being thrown in tests, but
+can't reproduce them manually, you may have included `ES6`-style JavaScript in files that don't
+have the `.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file you're
+working in (`git mv <file>.js> <file.js.es6>`).
+
+

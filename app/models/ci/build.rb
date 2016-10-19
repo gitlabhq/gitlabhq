@@ -1,6 +1,7 @@
 module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
+    include AfterCommitQueue
 
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
@@ -75,25 +76,20 @@ module Ci
 
     state_machine :status do
       after_transition pending: :running do |build|
-        build.execute_hooks
+        build.run_after_commit do
+          BuildHooksWorker.perform_async(id)
+        end
       end
 
       after_transition any => [:success, :failed, :canceled] do |build|
-        build.update_coverage
-        build.execute_hooks
+        build.run_after_commit do
+          BuildFinishedWorker.perform_async(id)
+        end
       end
 
       after_transition any => [:success] do |build|
-        if build.environment.present?
-          service = CreateDeploymentService.new(
-            build.project, build.user,
-            environment: build.environment,
-            sha: build.sha,
-            ref: build.ref,
-            tag: build.tag,
-            options: build.options.to_h[:environment],
-            variables: build.variables)
-          service.execute(build)
+        build.run_after_commit do
+          BuildSuccessWorker.perform_async(id)
         end
       end
     end
@@ -137,13 +133,17 @@ module Ci
       latest_builds.where('stage_idx < ?', stage_idx)
     end
 
-    def trace_html
-      trace_with_state[:html] || ''
+    def trace_html(**args)
+      trace_with_state(**args)[:html] || ''
     end
 
-    def trace_with_state(state = nil)
-      trace_with_state = Ci::Ansi2html::convert(trace, state) if trace.present?
-      trace_with_state || {}
+    def trace_with_state(state: nil, last_lines: nil)
+      trace_ansi = trace(last_lines: last_lines)
+      if trace_ansi.present?
+        Ci::Ansi2html.convert(trace_ansi, state)
+      else
+        {}
+      end
     end
 
     def timeout
@@ -226,9 +226,10 @@ module Ci
       raw_trace.present?
     end
 
-    def raw_trace
+    def raw_trace(last_lines: nil)
       if File.exist?(trace_file_path)
-        File.read(trace_file_path)
+        Gitlab::Ci::TraceReader.new(trace_file_path).
+          read(last_lines: last_lines)
       else
         # backward compatibility
         read_attribute :trace
@@ -243,8 +244,8 @@ module Ci
       project.ci_id && File.exist?(old_path_to_trace)
     end
 
-    def trace
-      hide_secrets(raw_trace)
+    def trace(last_lines: nil)
+      hide_secrets(raw_trace(last_lines: last_lines))
     end
 
     def trace_length

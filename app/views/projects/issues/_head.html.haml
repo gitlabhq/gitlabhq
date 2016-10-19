@@ -10,7 +10,7 @@
                 Issues
 
           = nav_link(controller: :boards) do
-            = link_to namespace_project_board_path(@project.namespace, @project), title: 'Board' do
+            = link_to namespace_project_boards_path(@project.namespace, @project), title: 'Board' do
               %span
                 Board
 

@@ -78,6 +78,7 @@
         margin-bottom: 0;
       }
     }
+
     .event-note-icon {
       color: #777;
       float: left;
@@ -86,21 +87,23 @@
       margin-right: 5px;
     }
   }
+
   .event_icon {
     position: relative;
     float: right;
     border: 1px solid #eee;
     padding: 5px;
-    @include border-radius(5px);
+    border-radius: 5px;
     background: $gray-light;
     margin-left: 10px;
     top: -6px;
+
     img {
       width: 20px;
     }
   }
 
-  &:last-child { border: none }
+  &:last-child { border: none; }
 
   .event_commits {
     li {
@@ -109,6 +112,7 @@
         padding: 3px;
         padding-left: 0;
         border: none;
+
         .commit-row-title {
           font-size: $gl-font-size;
         }
@@ -117,6 +121,7 @@
       &.commits-stat {
         display: block;
         padding: 0 3px 0 0;
+
         &:hover {
           background: none;
         }
@@ -158,6 +163,7 @@
       overflow: visible;
       max-width: 100%;
     }
+
     .avatar {
       display: none;
     }

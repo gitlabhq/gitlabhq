@@ -17,6 +17,7 @@ describe MergeRequests::UpdateService, services: true do
   before do
     project.team << [user, :master]
     project.team << [user2, :developer]
+    project.team << [user3, :developer]
   end
 
   describe 'execute' do
@@ -104,6 +105,18 @@ describe MergeRequests::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Target branch changed from `master` to `target`'
       end
+
+      context 'when not including source branch removal options' do
+        before do
+          opts.delete(:force_remove_source_branch)
+        end
+
+        it 'maintains the original options' do
+          update_merge_request(opts)
+
+          expect(@merge_request.merge_params["force_remove_source_branch"]).to eq("1")
+        end
+      end
     end
 
     context 'todos' do
@@ -187,6 +200,11 @@ describe MergeRequests::UpdateService, services: true do
     context 'when the issue is relabeled' do
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+
+      before do
+        project.team << [non_subscriber, :developer]
+        project.team << [subscriber, :developer]
+      end
 
       it 'sends notifications for subscribers of newly added labels' do
         opts = { label_ids: [label.id] }

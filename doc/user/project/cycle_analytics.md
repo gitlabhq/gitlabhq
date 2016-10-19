@@ -3,8 +3,8 @@
 > [Introduced][ce-5986] in GitLab 8.12.
 >
 > **Note:**
-This the first iteration of Cycle Analytics, you can follow the following issue
-to track the changes that are coming to this feature: [#20975][ce-20975].
+There are more changes coming to Cycle Analytics, you can follow the following
+issue to track the changes to this feature: [#20975][ce-20975].
 
 Cycle Analytics measures the time it takes to go from an [idea to production] for
 each project you have. This is achieved by not only indicating the total time it
@@ -48,13 +48,12 @@ You can see that there are seven stages in total:
 
 ## How the data is measured
 
-Cycle Analytics records cycle time so only data on the issues that have been
-deployed to production are measured. In case you just started a new project and
-you have not pushed anything to production, then you will not be able to
-properly see the Cycle Analytics of your project.
+Cycle Analytics records cycle time and data based on the project issues with the
+exception of the staging and production stages, where only data deployed to 
+production are measured.
 
 Specifically, if your CI is not set up and you have not defined a `production`
-[environment], then you will not have any data.
+[environment], then you will not have any data for those stages.
 
 Below you can see in more detail what the various stages of Cycle Analytics mean.
 
@@ -76,9 +75,8 @@ Here's a little explanation of how this works behind the scenes:
    `<issue, merge request>` pair, the merge request has the [issue closing pattern]
    for the corresponding issue. All other issues and merge requests are **not**
    considered.
-1. Then the <issue, merge request> pairs are filtered out. Any merge request
-   that has **not** been deployed to production in the last XX days (specified
-   by the UI - default is 90 days) prohibits these pairs from being considered.
+1. Then the <issue, merge request> pairs are filtered out by last XX days (specified
+   by the UI - default is 90 days). So it prohibits these pairs from being considered.
 1. For the remaining `<issue, merge request>` pairs, we check the information that
    we need for the stages, like issue creation date, merge request merge time,
    etc.
@@ -86,8 +84,8 @@ Here's a little explanation of how this works behind the scenes:
 To sum up, anything that doesn't follow the [GitLab flow] won't be tracked at all.
 So, if a merge request doesn't close an issue or an issue is not labeled with a
 label present in the Issue Board or assigned a milestone or a project has no
-`production` environment, the Cycle Analytics dashboard won't present any data
-at all.
+`production` environment (for staging and production stages), the Cycle Analytics
+dashboard won't present any data at all.
 
 ## Example workflow
 

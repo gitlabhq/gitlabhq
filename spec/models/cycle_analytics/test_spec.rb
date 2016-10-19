@@ -20,7 +20,6 @@ describe 'CycleAnalytics#test', feature: true do
     end_time_conditions:   [["pipeline is finished", -> (context, data) { data[:pipeline].succeed! }]],
     post_fn: -> (context, data) do
       context.merge_merge_requests_closing_issue(data[:issue])
-      context.deploy_master
     end)
 
   context "when the pipeline is for a regular merge request (that doesn't close an issue)" do
@@ -34,7 +33,6 @@ describe 'CycleAnalytics#test', feature: true do
         pipeline.succeed!
 
         merge_merge_requests_closing_issue(issue)
-        deploy_master
       end
 
       expect(subject.test).to be_nil
@@ -48,8 +46,6 @@ describe 'CycleAnalytics#test', feature: true do
 
         pipeline.run!
         pipeline.succeed!
-
-        deploy_master
       end
 
       expect(subject.test).to be_nil
@@ -67,7 +63,6 @@ describe 'CycleAnalytics#test', feature: true do
         pipeline.drop!
 
         merge_merge_requests_closing_issue(issue)
-        deploy_master
       end
 
       expect(subject.test).to be_nil
@@ -85,7 +80,6 @@ describe 'CycleAnalytics#test', feature: true do
         pipeline.cancel!
 
         merge_merge_requests_closing_issue(issue)
-        deploy_master
       end
 
       expect(subject.test).to be_nil

@@ -1,13 +1,13 @@
 class BoardService {
-  constructor (root) {
-    this.lists = Vue.resource(`${root}/lists{/id}`, {}, {
+  constructor (root, boardId) {
+    this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
-        url: `${root}/lists/generate.json`
+        url: `${root}/${boardId}/lists/generate.json`
       }
     });
-    this.issue = Vue.resource(`${root}/issues{/id}`, {});
-    this.issues = Vue.resource(`${root}/lists{/id}/issues`, {});
+    this.issue = Vue.resource(`${root}/${boardId}/issues{/id}`, {});
+    this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {});
 
     Vue.http.interceptors.push((request, next) => {
       request.headers['X-CSRF-Token'] = $.rails.csrfToken();

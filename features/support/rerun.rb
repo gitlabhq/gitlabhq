@@ -1,5 +1,7 @@
 # The spinach-rerun-reporter doesn't define the on_undefined_step
 # See it here: https://github.com/javierav/spinach-rerun-reporter/blob/master/lib/spinach/reporter/rerun.rb
+require 'spinach-rerun-reporter'
+
 module Spinach
   class Reporter
     class Rerun

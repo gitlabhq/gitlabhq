@@ -19,6 +19,7 @@
 
   &.diff-collapsed {
     padding: 5px;
+
     .click-to-expand {
       cursor: pointer;
     }
@@ -133,7 +134,7 @@
     }
 
     .identicon {
-      @include border-radius(50%);
+      border-radius: 50%;
     }
   }
 
@@ -203,6 +204,7 @@
       }
     }
   }
+
   &.user-cover-block {
     padding: 24px 0 0;
   }

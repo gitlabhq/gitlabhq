@@ -288,7 +288,7 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/u/thedude",
+      "web_url" : "https://gitlab.example.com/thedude",
       "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
       "username" : "thedude",
       "state" : "active",
@@ -343,7 +343,7 @@ Example response:
       "author" : {
          "username" : "thedude",
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/u/thedude",
+         "web_url" : "https://gitlab.example.com/thedude",
          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
          "id" : 28,
          "name" : "Jeff Lebowski"
@@ -370,7 +370,7 @@ Example response:
          "id" : 28,
          "name" : "Jeff Lebowski",
          "username" : "thedude",
-         "web_url" : "https://gitlab.example.com/u/thedude",
+         "web_url" : "https://gitlab.example.com/thedude",
          "state" : "active",
          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
       },
@@ -408,7 +408,7 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/u/thedude",
+      "web_url" : "https://gitlab.example.com/thedude",
       "name" : "Jeff Lebowski",
       "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
       "username" : "thedude",

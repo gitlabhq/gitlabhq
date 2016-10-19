@@ -1,6 +1,7 @@
 resources :snippets, concerns: :awardable do
   member do
     get 'raw'
+    get 'download'
   end
 end
 

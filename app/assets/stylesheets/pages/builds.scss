@@ -137,6 +137,7 @@
 
   .retry-link {
     color: $gl-link-color;
+
     &:hover {
       text-decoration: underline;
     }
@@ -194,7 +195,7 @@
     .build-job {
       position: relative;
 
-      .fa {
+      .fa-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -204,13 +205,22 @@
       &.active {
         font-weight: bold;
 
-        .fa {
+        .fa-arrow-right {
           display: block;
         }
       }
 
+      &.retried {
+        background-color: $gray-lightest;
+      }
+
       &:hover {
         background-color: $row-hover;
+      }
+
+      .fa-refresh {
+        font-size: 13px;
+        margin-left: 3px;
       }
     }
   }
@@ -218,6 +228,7 @@
 
 .build-detail-row {
   margin-bottom: 5px;
+
   &:last-of-type {
     margin-bottom: 0;
   }
@@ -232,4 +243,10 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
+}
+
+@media (min-width: $screen-md-min) {
+  .sub-nav.build {
+    width: calc(100% + #{$gutter_width});
+  }
 }

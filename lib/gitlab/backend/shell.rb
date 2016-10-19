@@ -17,6 +17,18 @@ module Gitlab
     end
 
     class << self
+      def secret_token
+        @secret_token ||= begin
+          File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+        end
+      end
+
+      def ensure_secret_token!
+        return if File.exist?(File.join(Gitlab.config.gitlab_shell.path, '.gitlab_shell_secret'))
+
+        generate_and_link_secret_token
+      end
+
       def version_required
         @version_required ||= File.read(Rails.root.
                                         join('GITLAB_SHELL_VERSION')).strip
@@ -24,6 +36,25 @@ module Gitlab
 
       def strip_key(key)
         key.split(/ /)[0, 2].join(' ')
+      end
+
+      private
+
+      # Create (if necessary) and link the secret token file
+      def generate_and_link_secret_token
+        secret_file = Gitlab.config.gitlab_shell.secret_file
+        shell_path = Gitlab.config.gitlab_shell.path
+
+        unless File.size?(secret_file)
+          # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
+          @secret_token = SecureRandom.hex(16)
+          File.write(secret_file, @secret_token)
+        end
+
+        link_path = File.join(shell_path, '.gitlab_shell_secret')
+        if File.exist?(shell_path) && !File.exist?(link_path)
+          FileUtils.symlink(secret_file, link_path)
+        end
       end
     end
 
@@ -199,21 +230,6 @@ module Gitlab
     #
     def exists?(storage, dir_name)
       File.exist?(full_path(storage, dir_name))
-    end
-
-    # Create (if necessary) and link the secret token file
-    def generate_and_link_secret_token
-      secret_file = Gitlab.config.gitlab_shell.secret_file
-      unless File.size?(secret_file)
-        # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
-        token = SecureRandom.hex(16)
-        File.write(secret_file, token)
-      end
-
-      link_path = File.join(gitlab_shell_path, '.gitlab_shell_secret')
-      if File.exist?(gitlab_shell_path) && !File.exist?(link_path)
-        FileUtils.symlink(secret_file, link_path)
-      end
     end
 
     protected

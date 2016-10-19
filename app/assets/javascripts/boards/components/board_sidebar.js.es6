@@ -31,7 +31,7 @@
           this.$nextTick(() => {
             new IssuableContext(this.currentUser);
             new MilestoneSelect();
-            new DueDateSelect();
+            new gl.DueDateSelectors();
             new LabelsSelect();
             new Sidebar();
             new Subscription('.subscription');

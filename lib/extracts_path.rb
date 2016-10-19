@@ -52,8 +52,7 @@ module ExtractsPath
       # Append a trailing slash if we only get a ref and no file path
       id += '/' unless id.ends_with?('/')
 
-      valid_refs = @project.repository.ref_names
-      valid_refs.select! { |v| id.start_with?("#{v}/") }
+      valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
 
       if valid_refs.length == 0
         # No exact ref match, so just try our best
@@ -74,6 +73,19 @@ module ExtractsPath
     pair
   end
 
+  # If we have an ID of 'foo.atom', and the controller provides Atom and HTML
+  # formats, then we have to check if the request was for the Atom version of
+  # the ID without the '.atom' suffix, or the HTML version of the ID including
+  # the suffix. We only check this if the version including the suffix doesn't
+  # match, so it is possible to create a branch which has an unroutable Atom
+  # feed.
+  def extract_ref_without_atom(id)
+    id_without_atom = id.sub(/\.atom$/, '')
+    valid_refs = ref_names.select { |v| "#{id_without_atom}/".start_with?("#{v}/") }
+
+    valid_refs.max_by(&:length)
+  end
+
   # Assigns common instance variables for views working with Git tree-ish objects
   #
   # Assignments are:
@@ -86,6 +98,10 @@ module ExtractsPath
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
   #
+  # If there is no path and the ref doesn't exist in the repo, try to resolve
+  # the ref without an '.atom' suffix. If _that_ ref is found, set the request's
+  # format to Atom manually.
+  #
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
@@ -97,10 +113,18 @@ module ExtractsPath
     @id = get_id
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
-    if @options[:extended_sha1].blank?
-      @commit = @repo.commit(@ref)
-    else
+
+    if @options[:extended_sha1].present?
       @commit = @repo.commit(@options[:extended_sha1])
+    else
+      @commit = @repo.commit(@ref)
+
+      if @path.empty? && !@commit && @id.ends_with?('.atom')
+        @id = @ref = extract_ref_without_atom(@id)
+        @commit = @repo.commit(@ref)
+
+        request.format = :atom if @commit
+      end
     end
 
     raise InvalidPathError unless @commit
@@ -124,5 +148,11 @@ module ExtractsPath
     id = params[:id] || params[:ref]
     id += "/" + params[:path] unless params[:path].blank?
     id
+  end
+
+  def ref_names
+    return [] unless @project
+
+    @ref_names ||= @project.repository.ref_names
   end
 end

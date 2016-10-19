@@ -15,7 +15,7 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
-%w(select2_helper test_env repo_helpers).each do |f|
+%w(select2_helper test_env repo_helpers wait_for_ajax).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 

@@ -2,7 +2,7 @@ module Gitlab
   module Regex
     extend self
 
-    NAMESPACE_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])'.freeze
+    NAMESPACE_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])(?<!\.git|\.atom)'.freeze
 
     def namespace_regex
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
@@ -10,7 +10,7 @@ module Gitlab
 
     def namespace_regex_message
       "can contain only letters, digits, '_', '-' and '.'. " \
-      "Cannot start with '-' or end in '.'." \
+      "Cannot start with '-' or end in '.', '.git' or '.atom'." \
     end
 
     def namespace_name_regex

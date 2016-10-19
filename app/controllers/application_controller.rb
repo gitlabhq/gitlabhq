@@ -45,6 +45,10 @@ class ApplicationController < ActionController::Base
     redirect_to request.referer.present? ? :back : default, options
   end
 
+  def not_found
+    render_404
+  end
+
   protected
 
   # This filter handles both private tokens and personal access tokens
@@ -114,7 +118,12 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render file: Rails.root.join("public", "404"), layout: false, status: "404"
+    respond_to do |format|
+      format.html do
+        render file: Rails.root.join("public", "404"), layout: false, status: "404"
+      end
+      format.any { head :not_found }
+    end
   end
 
   def no_cache_headers

@@ -21,7 +21,7 @@
       setupButton = this.container.find("#js-login-u2f-device");
       setupMessage = this.container.find("p");
       expect(setupMessage.text()).toContain('Insert your security key');
-      expect(setupButton.text()).toBe('Login Via U2F Device');
+      expect(setupButton.text()).toBe('Sign in via U2F device');
       setupButton.trigger('click');
       inProgressMessage = this.container.find("p");
       expect(inProgressMessage.text()).toContain("Trying to communicate with your device");

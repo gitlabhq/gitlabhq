@@ -31,12 +31,13 @@ $(() => {
       state: Store.state,
       loading: true,
       endpoint: $boardApp.dataset.endpoint,
+      boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase
     },
     init: Store.create.bind(Store),
     created () {
-      gl.boardService = new BoardService(this.endpoint);
+      gl.boardService = new BoardService(this.endpoint, this.boardId);
     },
     ready () {
       Store.disabled = this.disabled;

@@ -4,6 +4,10 @@ class GlobalLabel
 
   delegate :color, :description, to: :@first_label
 
+  def for_display
+    @first_label
+  end
+
   def self.build_collection(labels)
     labels = labels.group_by(&:title)
 

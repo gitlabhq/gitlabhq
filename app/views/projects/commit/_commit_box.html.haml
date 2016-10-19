@@ -65,10 +65,10 @@
 
 .commit-box.content-block
   %h3.commit-title
-    = markdown escape_once(@commit.title), pipeline: :single_line, author: @commit.author
+    = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
   - if @commit.description.present?
     %pre.commit-description
-      = preserve(markdown(escape_once(@commit.description), pipeline: :single_line, author: @commit.author))
+      = preserve(markdown(@commit.description, pipeline: :single_line, author: @commit.author))
 
 :javascript
   $(".commit-info.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");

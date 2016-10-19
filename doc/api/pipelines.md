@@ -34,7 +34,7 @@ Example of response
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "created_at": "2016-08-16T10:23:19.007Z",
     "updated_at": "2016-08-16T10:23:19.216Z",
@@ -57,7 +57,7 @@ Example of response
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "created_at": "2016-08-16T10:23:21.184Z",
     "updated_at": "2016-08-16T10:23:21.314Z",
@@ -103,7 +103,7 @@ Example of response
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "created_at": "2016-08-11T11:28:34.085Z",
   "updated_at": "2016-08-11T11:32:35.169Z",
@@ -148,7 +148,7 @@ Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "created_at": "2016-08-11T11:28:34.085Z",
   "updated_at": "2016-08-11T11:32:35.169Z",
@@ -193,7 +193,7 @@ Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "created_at": "2016-08-11T11:28:34.085Z",
   "updated_at": "2016-08-11T11:32:35.169Z",

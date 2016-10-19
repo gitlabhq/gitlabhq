@@ -88,23 +88,37 @@ describe Ci::Pipeline, models: true do
 
     context 'no failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", pipeline: pipeline, status: 'success'
+        create_build('rspec', 'success')
       end
 
-      it 'be not retryable' do
+      it 'is not retryable' do
         is_expected.to be_falsey
+      end
+
+      context 'one canceled job' do
+        before do
+          create_build('rubocop', 'canceled')
+        end
+
+        it 'is retryable' do
+          is_expected.to be_truthy
+        end
       end
     end
 
     context 'with failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", pipeline: pipeline, status: 'running'
-        FactoryGirl.create :ci_build, name: "rubocop", pipeline: pipeline, status: 'failed'
+        create_build('rspec', 'running')
+        create_build('rubocop', 'failed')
       end
 
-      it 'be retryable' do
+      it 'is retryable' do
         is_expected.to be_truthy
       end
+    end
+
+    def create_build(name, status)
+      create(:ci_build, name: name, status: status, pipeline: pipeline)
     end
   end
 
@@ -187,33 +201,24 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    describe "merge request metrics" do
+    describe 'merge request metrics' do
       let(:project) { FactoryGirl.create :project }
       let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
+      before do
+        expect(PipelineMetricsWorker).to receive(:perform_async).with(pipeline.id)
+      end
+
       context 'when transitioning to running' do
-        it 'records the build start time' do
-          time = Time.now
-          Timecop.freeze(time) { build.run }
-
-          expect(merge_request.reload.metrics.latest_build_started_at).to be_within(1.second).of(time)
-        end
-
-        it 'clears the build end time' do
-          build.run
-
-          expect(merge_request.reload.metrics.latest_build_finished_at).to be_nil
+        it 'schedules metrics workers' do
+          pipeline.run
         end
       end
 
       context 'when transitioning to success' do
-        it 'records the build end time' do
-          build.run
-          time = Time.now
-          Timecop.freeze(time) { build.success }
-
-          expect(merge_request.reload.metrics.latest_build_finished_at).to be_within(1.second).of(time)
+        it 'schedules metrics workers' do
+          pipeline.succeed
         end
       end
     end

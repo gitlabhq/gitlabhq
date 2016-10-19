@@ -4,7 +4,8 @@ describe 'Issue Boards new issue', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project) { create(:project_with_board, :public) }
+  let(:project) { create(:empty_project, :public) }
+  let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
 
   context 'authorized user' do
@@ -13,7 +14,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
       login_as(user)
 
-      visit namespace_project_board_path(project.namespace, project)
+      visit namespace_project_board_path(project.namespace, project, board)
       wait_for_vue_resource
 
       expect(page).to have_selector('.board', count: 3)
@@ -84,7 +85,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
   context 'unauthorized user' do
     before do
-      visit namespace_project_board_path(project.namespace, project)
+      visit namespace_project_board_path(project.namespace, project, board)
       wait_for_vue_resource
     end
 

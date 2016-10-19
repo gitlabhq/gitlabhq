@@ -111,7 +111,7 @@
               e.preventDefault();
               return;
             }
-            if (page === 'projects:boards:show' && !$dropdown.hasClass('js-issue-board-sidebar')) {
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
               gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
               gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();

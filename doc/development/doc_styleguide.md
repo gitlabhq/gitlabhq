@@ -95,10 +95,10 @@ merge request.
   someone in the Merge Request
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`,
-  `@dblessing`, `@ashleys`. This is to ensure that no document
-  with wrong heading is going live without an audit, thus preventing dead links
-  and redirection issues when corrected
+  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`,
+  `@SeanPackham`. This is to ensure that no document with wrong heading is going
+  live without an audit, thus preventing dead links and redirection issues when
+  corrected
 - Leave exactly one newline after a heading
 
 ## Links
@@ -313,6 +313,29 @@ In this case:
   correctly
 - different highlighting languages are used for each config in the code block
 - the [references](#references) guide is used for reconfigure/restart
+
+## Fake tokens
+
+There may be times where a token is needed to demonstrate an API call using
+cURL or a secret variable used in CI. It is strongly advised not to use real
+tokens in documentation even if the probability of a token being exploited is
+low.
+
+You can use the following fake tokens as examples.
+
+|     **Token type**    |           **Token value**         |
+| --------------------- | --------------------------------- |
+| Private user token    | `9koXpg98eAheJpvBs5tK`            |
+| Personal access token | `n671WNGecHugsdEDPsyo`            |
+| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
+| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
+| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`            |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`        |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`            |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`  |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`            |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`            |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`            |
 
 ## API
 

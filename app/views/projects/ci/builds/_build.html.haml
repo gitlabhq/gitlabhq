@@ -6,7 +6,7 @@
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
-%tr.build.commit
+%tr.build.commit{class: ('retried' if retried)}
   %td.status
     - if can?(current_user, :read_build, build)
       = ci_status_with_icon(build.status, namespace_project_build_url(build.project.namespace, build.project, build))
@@ -27,7 +27,7 @@
         = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
       - else
         .light none
-      .icon-container
+      .icon-container.commit-icon
         = custom_icon("icon_commit")
 
     - if commit_sha
@@ -35,8 +35,9 @@
 
     - if build.stuck?
       = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+
     - if retried
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
+      = icon('refresh', class: 'text-warning has-tooltip', title: 'Build was retried')
 
     .label-container
       - if build.tags.any?
@@ -47,8 +48,6 @@
         %span.label.label-info triggered
       - if build.try(:allow_failure)
         %span.label.label-danger allowed to fail
-      - if retried
-        %span.label.label-warning retried
       - if build.manual?
         %span.label.label-info manual
 

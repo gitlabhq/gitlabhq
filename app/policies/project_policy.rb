@@ -40,7 +40,6 @@ class ProjectPolicy < BasePolicy
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member
-    can! :read_merge_request
     can! :read_note
     can! :create_project
     can! :create_issue
@@ -63,6 +62,7 @@ class ProjectPolicy < BasePolicy
     can! :read_pipeline
     can! :read_environment
     can! :read_deployment
+    can! :read_merge_request
   end
 
   # Permissions given when an user is team member of a project
@@ -98,7 +98,6 @@ class ProjectPolicy < BasePolicy
     can! :admin_milestone
     can! :admin_project_snippet
     can! :admin_project_member
-    can! :admin_merge_request
     can! :admin_note
     can! :admin_wiki
     can! :admin_project
@@ -118,6 +117,7 @@ class ProjectPolicy < BasePolicy
     can! :read_container_image
     can! :build_download_code
     can! :build_read_container_image
+    can! :read_merge_request
   end
 
   def owner_access!
@@ -139,11 +139,18 @@ class ProjectPolicy < BasePolicy
   def team_access!(user)
     access = project.team.max_member_access(user.id)
 
-    guest_access!                if access >= Gitlab::Access::GUEST
-    reporter_access!             if access >= Gitlab::Access::REPORTER
-    team_member_reporter_access! if access >= Gitlab::Access::REPORTER
-    developer_access!            if access >= Gitlab::Access::DEVELOPER
-    master_access!               if access >= Gitlab::Access::MASTER
+    return if access < Gitlab::Access::GUEST
+    guest_access!
+
+    return if access < Gitlab::Access::REPORTER
+    reporter_access!
+    team_member_reporter_access!
+
+    return if access < Gitlab::Access::DEVELOPER
+    developer_access!
+
+    return if access < Gitlab::Access::MASTER
+    master_access!
   end
 
   def archived_access!
@@ -155,11 +162,13 @@ class ProjectPolicy < BasePolicy
   end
 
   def disabled_features!
+    repository_enabled = project.feature_available?(:repository, user)
+
     unless project.feature_available?(:issues, user)
       cannot!(*named_abilities(:issue))
     end
 
-    unless project.feature_available?(:merge_requests, user)
+    unless project.feature_available?(:merge_requests, user) && repository_enabled
       cannot!(*named_abilities(:merge_request))
     end
 
@@ -176,11 +185,19 @@ class ProjectPolicy < BasePolicy
       cannot!(*named_abilities(:wiki))
     end
 
-    unless project.feature_available?(:builds, user)
+    unless project.feature_available?(:builds, user) && repository_enabled
       cannot!(*named_abilities(:build))
       cannot!(*named_abilities(:pipeline))
       cannot!(*named_abilities(:environment))
       cannot!(*named_abilities(:deployment))
+    end
+
+    unless repository_enabled
+      cannot! :push_code
+      cannot! :push_code_to_protected_branches
+      cannot! :download_code
+      cannot! :fork_project
+      cannot! :read_commit_status
     end
 
     unless project.container_registry_enabled

@@ -196,12 +196,13 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w(
+    %w[
       asana
       assembla
       bamboo
       buildkite
       builds_email
+      pipelines_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -218,7 +219,7 @@ class Service < ActiveRecord::Base
       redmine
       slack
       teamcity
-    )
+    ]
   end
 
   def self.create_from_template(project_id, template)

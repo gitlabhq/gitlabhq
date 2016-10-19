@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include CacheMarkdownField
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -15,7 +16,12 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  class BoardLimitExceeded < StandardError; end
+
+  NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
+
+  cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
 
@@ -62,8 +68,7 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
-
-  has_one :board, dependent: :destroy
+  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
 
   # Project services
   has_many :services
@@ -71,6 +76,7 @@ class Project < ActiveRecord::Base
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
   has_one :builds_email_service, dependent: :destroy
+  has_one :pipelines_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
@@ -372,19 +378,9 @@ class Project < ActiveRecord::Base
       %r{(?<project>#{name_pattern}/#{name_pattern})}
     end
 
-    def trending(since = 1.month.ago)
-      # By counting in the JOIN we don't expose the GROUP BY to the outer query.
-      # This means that calls such as "any?" and "count" just return a number of
-      # the total count, instead of the counts grouped per project as a Hash.
-      join_body = "INNER JOIN (
-        SELECT project_id, COUNT(*) AS amount
-        FROM notes
-        WHERE created_at >= #{sanitize(since)}
-        AND system IS FALSE
-        GROUP BY project_id
-      ) join_note_counts ON projects.id = join_note_counts.project_id"
-
-      joins(join_body).reorder('join_note_counts.amount DESC')
+    def trending
+      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id').
+        reorder('trending_projects.id ASC')
     end
 
     def cached_count
@@ -495,7 +491,7 @@ class Project < ActiveRecord::Base
   end
 
   def import_url
-    if import_data && super
+    if import_data && super.present?
       import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
@@ -723,7 +719,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          self.send :"create_#{service_name}_service"
+          public_send("create_#{service_name}_service")
         else
           Service.create_from_template(self.id, template)
         end
@@ -832,11 +828,6 @@ class Project < ActiveRecord::Base
     services.send(hooks_scope).each do |service|
       service.async_execute(data)
     end
-  end
-
-  def update_merge_requests(oldrev, newrev, ref, user)
-    MergeRequests::RefreshService.new(self, user).
-      execute(oldrev, newrev, ref)
   end
 
   def valid_repo?
@@ -1345,5 +1336,9 @@ class Project < ActiveRecord::Base
     end
 
     shared_projects.any?
+  end
+
+  def validate_board_limit(board)
+    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 end

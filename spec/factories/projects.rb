@@ -9,6 +9,9 @@ FactoryGirl.define do
     namespace
     creator
 
+    # Behaves differently to nil due to cache_has_external_issue_tracker
+    has_external_issue_tracker false
+
     trait :public do
       visibility_level Gitlab::VisibilityLevel::PUBLIC
     end
@@ -42,6 +45,7 @@ FactoryGirl.define do
       snippets_access_level ProjectFeature::ENABLED
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
+      repository_access_level ProjectFeature::ENABLED
     end
 
     after(:create) do |project, evaluator|
@@ -52,6 +56,7 @@ FactoryGirl.define do
           snippets_access_level: evaluator.snippets_access_level,
           issues_access_level: evaluator.issues_access_level,
           merge_requests_access_level: evaluator.merge_requests_access_level,
+          repository_access_level: evaluator.repository_access_level
         )
     end
   end
@@ -92,6 +97,8 @@ FactoryGirl.define do
   end
 
   factory :redmine_project, parent: :project do
+    has_external_issue_tracker true
+
     after :create do |project|
       project.create_redmine_service(
         active: true,
@@ -105,6 +112,8 @@ FactoryGirl.define do
   end
 
   factory :jira_project, parent: :project do
+    has_external_issue_tracker true
+
     after :create do |project|
       project.create_jira_service(
         active: true,
@@ -115,14 +124,6 @@ FactoryGirl.define do
           'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
         }
       )
-    end
-  end
-
-  factory :project_with_board, parent: :empty_project do
-    after(:create) do |project|
-      project.create_board
-      project.board.lists.create(list_type: :backlog)
-      project.board.lists.create(list_type: :done)
     end
   end
 end

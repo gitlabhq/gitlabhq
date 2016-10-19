@@ -4,7 +4,7 @@
     margin-right: 10px;
     border: 1px solid #eee;
     white-space: nowrap;
-    @include border-radius(4px);
+    border-radius: 4px;
 
     &:hover {
       text-decoration: none;
@@ -65,6 +65,7 @@
   .ci-status-icon-success {
     color: $gl-success;
   }
+
   .ci-status-icon-failed {
     color: $gl-danger;
   }
@@ -77,6 +78,7 @@
   .ci-status-icon-running {
     color: $blue-normal;
   }
+
   .ci-status-icon-canceled,
   .ci-status-icon-disabled,
   .ci-status-icon-not-found,

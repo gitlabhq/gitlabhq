@@ -9,7 +9,7 @@ input {
 input[type='text'].danger {
   background: #f2dede!important;
   border-color: #d66;
-  text-shadow: 0 1px 1px #fff
+  text-shadow: 0 1px 1px #fff;
 }
 
 .datetime-controls {
@@ -74,7 +74,7 @@ label {
 
 .form-control {
   @include box-shadow(none);
-  border-radius: 3px;
+  border-radius: 2px;
   padding: $gl-vert-padding $gl-input-padding;
 }
 
@@ -117,9 +117,11 @@ label {
     display: table-cell;
     width: 200px !important;
   }
+
   .input-group-addon {
     background-color: #f7f8fa;
   }
+
   .input-group-addon:not(:first-child):not(:last-child) {
     border-left: 0;
     border-right: 0;
@@ -129,3 +131,8 @@ label {
 .help-block {
   margin-bottom: 0;
 }
+
+.gl-field-error {
+  color: $red-normal;
+}
+

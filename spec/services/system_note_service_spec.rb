@@ -54,7 +54,7 @@ describe SystemNoteService, services: true do
         it 'adds a message line for each commit' do
           new_commits.each_with_index do |commit, i|
             # Skip the header
-            expect(note_lines[i + 1]).to eq "* #{commit.short_id} - #{commit.title}"
+            expect(HTMLEntities.new.decode(note_lines[i + 1])).to eq "* #{commit.short_id} - #{commit.title}"
           end
         end
       end
@@ -81,7 +81,7 @@ describe SystemNoteService, services: true do
             end
 
             it 'includes a commit count' do
-              expect(summary_line).to end_with " - 2 commits from branch `feature`"
+              expect(summary_line).to end_with " - 26 commits from branch `feature`"
             end
           end
 
@@ -91,7 +91,7 @@ describe SystemNoteService, services: true do
             end
 
             it 'includes a commit count' do
-              expect(summary_line).to end_with " - 2 commits from branch `feature`"
+              expect(summary_line).to end_with " - 26 commits from branch `feature`"
             end
           end
 
@@ -531,22 +531,18 @@ describe SystemNoteService, services: true do
   include JiraServiceHelper
 
   describe 'JIRA integration' do
-    let(:project)    { create(:project) }
+    let(:project)    { create(:jira_project) }
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
-    let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
-    let(:commit)     { project.commit }
+    let(:jira_tracker) { project.jira_service }
+    let(:commit)     { project.repository.commits('master').find { |commit| commit.id == '5937ac0a7beb003549fc5fd26fc247adbce4a52e' } }
 
     context 'in JIRA issue tracker' do
       before do
         jira_service_settings
         WebMock.stub_request(:post, jira_api_comment_url)
-      end
-
-      after do
-        jira_tracker.destroy!
       end
 
       describe "new reference" do
@@ -576,10 +572,6 @@ describe SystemNoteService, services: true do
           jira_service_settings
           WebMock.stub_request(:post, jira_api_comment_url)
           WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        end
-
-        after do
-          jira_tracker.destroy!
         end
 
         subject { described_class.cross_reference(jira_issue, issue, author) }
