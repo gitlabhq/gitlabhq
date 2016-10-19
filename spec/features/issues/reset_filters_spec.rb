@@ -75,6 +75,14 @@ feature 'Issues filter reset button', feature: true, js: true do
     end
   end
 
+  context 'when no filters have been applied' do
+    it 'the reset link should not be visible' do
+      visit_issues(project)
+      expect(page).to have_css('.issue', count: 2)
+      expect(page).not_to have_css '.reset_filters'
+    end
+  end
+
   def reset_filters
     find('.reset-filters').click
   end
