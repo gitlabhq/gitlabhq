@@ -29,6 +29,3 @@
     %ul.content-list
       = render partial: 'shared/members/member', collection: @members, as: :member
     = paginate @members, theme: 'gitlab'
-
-:javascript
-  window.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
