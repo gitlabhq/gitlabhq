@@ -913,7 +913,7 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET ci_environments_status' do
-    context 'when the environment is from a forked project' do
+    context 'the environment is from a forked project' do
       let!(:forked)       { create(:project) }
       let!(:environment)  { create(:environment, project: forked) }
       let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
