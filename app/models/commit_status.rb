@@ -107,7 +107,7 @@ class CommitStatus < ActiveRecord::Base
       end
     end
 
-    after_transition any => HasStatus::COMPLETED_STATUSES do |commit_status, transition|
+    after_transition any => [:success, :failed, :canceled] do |commit_status, transition|
       next if transition.loopback?
       next unless commit_status.pipeline
 
