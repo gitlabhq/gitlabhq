@@ -1,5 +1,6 @@
 class MergeRequest::Metrics < ActiveRecord::Base
   belongs_to :merge_request
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :ci_commit_id
 
   def record!
     if merge_request.merged? && self.merged_at.blank?

@@ -12,11 +12,11 @@ class PipelineMetricsWorker
   private
 
   def update_metrics_for_active_pipeline(pipeline)
-    metrics(pipeline).update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: nil)
+    metrics(pipeline).update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: nil, ci_commit_id: pipeline.id)
   end
 
   def update_metrics_for_succeeded_pipeline(pipeline)
-    metrics(pipeline).update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: pipeline.finished_at)
+    metrics(pipeline).update_all(latest_build_started_at: pipeline.started_at, latest_build_finished_at: pipeline.finished_at, ci_commit_id: pipeline.id)
   end
 
   def metrics(pipeline)
