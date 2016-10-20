@@ -101,6 +101,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [How to Use GitLab Labels](https://about.gitlab.com/2016/08/17/using-gitlab-labels/)
 1. [Applying GitLab Labels Automatically](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/)
 1. [GitLab Issue Board - Product Page](https://about.gitlab.com/solutions/issueboard/)
+2. [Project Management within GitLab](https://docs.google.com/presentation/d/1ZBxXhf3jJmSlJGahnVtD9V9mTAy1S6PG_IfudFWUNpo/edit#slide=id.g1676cdea56_2_29)
 1. [An Overview of GitLab Issue Board](https://about.gitlab.com/2016/08/22/announcing-the-gitlab-issue-board/)
 1. [Designing GitLab Issue Board](https://about.gitlab.com/2016/08/31/designing-issue-boards/)
 1. [From Idea to Production with GitLab - Video](https://www.youtube.com/watch?v=25pHyknRgEo&index=14&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
