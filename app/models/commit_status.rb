@@ -85,17 +85,34 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition do |commit_status, transition|
+    after_transition any => [:pending] do |commit_status, transition|
       next if transition.loopback?
+      next unless commit_status.pipeline
 
       commit_status.run_after_commit do
-        pipeline.try do |pipeline|
-          if complete?
-            PipelineProcessWorker.perform(pipeline.id)
-          else
-            PipelineUpdateWorker.perform(pipeline.id)
-          end
-        end
+        next if pipeline.reload.active?
+
+        PipelineUpdateWorker.perform_async(pipeline.id)
+      end
+    end
+
+    after_transition any => [:running] do |commit_status, transition|
+      next if transition.loopback?
+      next unless commit_status.pipeline
+
+      commit_status.run_after_commit do
+        next if pipeline.reload.running?
+
+        PipelineUpdateWorker.perform_async(pipeline.id)
+      end
+    end
+
+    after_transition any => HasStatus::COMPLETED_STATUSES do |commit_status, transition|
+      next if transition.loopback?
+      next unless commit_status.pipeline
+
+      commit_status.run_after_commit do
+        PipelineProcessWorker.perform_async(pipeline.id)
       end
     end
 
