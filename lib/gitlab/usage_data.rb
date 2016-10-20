@@ -1,16 +1,16 @@
 module Gitlab
   class UsageData
     class << self
-      def data
-        Rails.cache.fetch('usage_data', expires_in: 1.hour) { uncached_data }
+      def data(force_refresh: false)
+        Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
       end
 
       def uncached_data
         license_usage_data.merge(system_usage_data)
       end
 
-      def to_json
-        data.to_json
+      def to_json(force_refresh: false)
+        data(force_refresh: force_refresh).to_json
       end
 
       def system_usage_data
@@ -36,7 +36,8 @@ module Gitlab
             merge_requests: MergeRequest.count,
             milestones: Milestone.count,
             notes: Note.count,
-            pushes: Event.code_push.count,
+            # Default scope causes this query to run for a long time
+            pushes: Event.unscoped.code_push.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
             protected_branches: ProtectedBranch.count,
