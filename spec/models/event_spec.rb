@@ -40,6 +40,33 @@ describe Event, models: true do
     end
   end
 
+  describe '#membership_changed?' do
+    context "created" do
+      subject { build(:event, action: Event::CREATED).membership_changed? }
+      it { is_expected.to be_falsey }
+    end
+
+    context "updated" do
+      subject { build(:event, action: Event::UPDATED).membership_changed? }
+      it { is_expected.to be_falsey }
+    end
+
+    context "expired" do
+      subject { build(:event, action: Event::EXPIRED).membership_changed? }
+      it { is_expected.to be_truthy }
+    end
+
+    context "left" do
+      subject { build(:event, action: Event::LEFT).membership_changed? }
+      it { is_expected.to be_truthy }
+    end
+
+    context "joined" do
+      subject { build(:event, action: Event::JOINED).membership_changed? }
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#note?' do
     subject { Event.new(project: target.project, target: target) }
 
