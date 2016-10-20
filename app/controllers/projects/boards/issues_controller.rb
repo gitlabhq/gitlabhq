@@ -72,10 +72,10 @@ module Projects
 
       def serialize_as_json(resource)
         resource.as_json(
+          labels: true,
           only: [:iid, :title, :confidential],
           include: {
-            assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
-            labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }
+            assignee: { only: [:id, :name, :username], methods: [:avatar_url] }
           })
       end
     end

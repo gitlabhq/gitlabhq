@@ -38,6 +38,7 @@ label:
 - label_links
 - issues
 - merge_requests
+- priorities
 milestone:
 - project
 - issues
@@ -186,3 +187,5 @@ project:
 award_emoji:
 - awardable
 - user
+priorities:
+- label

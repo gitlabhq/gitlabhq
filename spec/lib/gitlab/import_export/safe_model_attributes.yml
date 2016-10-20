@@ -60,11 +60,13 @@ LabelLink:
 - target_type
 - created_at
 - updated_at
-Label:
+ProjectLabel:
 - id
 - title
 - color
+- group_id
 - project_id
+- type
 - created_at
 - updated_at
 - template
@@ -327,5 +329,12 @@ AwardEmoji:
 - user_id
 - name
 - awardable_type
+- created_at
+- updated_at
+LabelPriority:
+- id
+- project_id
+- label_id
+- priority
 - created_at
 - updated_at

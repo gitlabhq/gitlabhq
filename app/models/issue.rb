@@ -138,6 +138,10 @@ class Issue < ActiveRecord::Base
     reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
+  def self.project_foreign_key
+    'project_id'
+  end
+
   def self.sort(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
@@ -273,5 +277,17 @@ class Issue < ActiveRecord::Base
   # Only issues on public projects should be checked for spam
   def check_for_spam?
     project.public?
+  end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      if options.has_key?(:labels)
+        json[:labels] = labels.as_json(
+          project: project,
+          only: [:id, :title, :description, :color],
+          methods: [:text_color]
+        )
+      end
+    end
   end
 end

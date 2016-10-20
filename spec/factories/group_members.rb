@@ -9,5 +9,6 @@ FactoryGirl.define do
     trait(:developer) { access_level GroupMember::DEVELOPER }
     trait(:master)    { access_level GroupMember::MASTER }
     trait(:owner)     { access_level GroupMember::OWNER }
+    trait(:access_request) { requested_at Time.now }
   end
 end

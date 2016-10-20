@@ -9,6 +9,10 @@ describe Boards::Lists::CreateService, services: true do
 
     subject(:service) { described_class.new(project, user, label_id: label.id) }
 
+    before do
+      project.team << [user, :developer]
+    end
+
     context 'when board lists is empty' do
       it 'creates a new list at beginning of the list' do
         list = service.execute(board)
