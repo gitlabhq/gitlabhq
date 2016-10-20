@@ -9,12 +9,12 @@
   %p
     Project will be imported as
     %strong
-      #{@namespace_name}/#{@path}
+      #{@namespace.name}/#{@path}
 
   %p
     To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.
   .form-group
-    = hidden_field_tag :namespace_id, @namespace_id
+    = hidden_field_tag :namespace_id, @namespace.id
     = hidden_field_tag :path, @path
     = label_tag :file, class: 'control-label' do
       %span GitLab project export
