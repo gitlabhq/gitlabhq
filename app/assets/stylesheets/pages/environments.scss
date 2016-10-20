@@ -4,6 +4,11 @@
   overflow: auto;
 }
 
+.environments-list-loading {
+  width: 100%;
+  font-size: 34px;
+}
+
 .environments {
   .deployment-column {
     .avatar {
@@ -58,13 +63,22 @@
       }
     }
   }
+  
+  .children-name{
+    margin-left: 17px;
+    margin-right: -17px;
+  }
+  
+  .folder-icon {
+    padding: 0 5px 0 0;
+  }
+  
+  .folder-name {
+    cursor: pointer;
+  }
 }
 
 .table.ci-table.environments {
-  
-  .environment-children td:first-child {
-    padding-left: 40px;
-  }
   
   .icon-container {
     width: 20px;
@@ -76,13 +90,4 @@
       margin-right: 0;
     }
   }
-  
-  .environment-folder-name {
-    cursor: pointer;
-  }
-}
-
-.environments-list-loading {
-  width: 100%;
-  font-size: 34px;
 }

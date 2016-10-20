@@ -1,22 +1,23 @@
 %script#environment-item-template{ "type"=> "text/x-template" }
   %tr.environment
-    %td.environment-folder-name{ "@click" => "toggle" }
+    %td.folder-name{ "@click" => "toggle" }
       %a{ "v-if" => "!isFolder", 
         ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + model.id" }
         {{model.name}}
         
       %span{ "v-if" => "isFolder" }
-        %i{ "v-show" => "open" }
+        %i.folder-icon{ "v-show" => "open" }
           = icon("caret-down")
 
-        %i{ "v-show" => "!open" }
+        %i.folder-icon{ "v-show" => "!open" }
           = icon("caret-right")
         
         {{model.name}}
 
     %td.deployment-column
       %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid" }
-        {{model.last_deployment.iid}}
+        = precede '#' do
+          {{model.last_deployment.iid}}
 
         %span{ "v-if" => "model.last_deployment.user" }
           by
@@ -52,18 +53,19 @@
         -# = render "projects/environments/stop", environment: "{{model}}"
         -# = render "projects/deployments/rollback", deployment: "{{model.last_deployment}}"
 
-  %tr.environment-children{ "v-show" => "open", 
+  %tr{ "v-show" => "open", 
     "v-if"=>"isFolder", 
     "v-for" => "child in model.children", 
     ":model" => "child" }
 
     %td
-      %a{ ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + child.id" }
+      %a.children-name{ ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + child.id" }
         {{child.name}}
   
     %td.deployment-column
       %span{ "v-if" => "child.last_deployment && child.last_deployment.iid" }
-        {{child.last_deployment.iid}}
+        = precede '#' do
+          {{child.last_deployment.iid}}
 
         %span{ "v-if" => "child.last_deployment.user" }
           by
