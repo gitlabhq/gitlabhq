@@ -1339,6 +1339,13 @@ class Project < ActiveRecord::Base
     shared_projects.any?
   end
 
+  # Similar to the normal callbacks that hook into the life cycle of an
+  # Active Record object, you can also define callbacks that get triggered
+  # when you add an object to an association collection. If any of these
+  # callbacks throw an exception, the object will not be added to the
+  # collection. Before you add a new board to the boards collection if you
+  # already have 1, 2, or n it will fail, but it if you have 0 that is lower
+  # than the number of permitted boards per project it won't fail.
   def validate_board_limit(board)
     raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
