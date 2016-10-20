@@ -67,6 +67,14 @@ describe Project, models: true do
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
+    context 'after create' do
+      it "creates project feature" do
+        project = FactoryGirl.build(:project)
+
+        expect { project.save }.to change{ project.project_feature.present? }.from(false).to(true)
+      end
+    end
+
     describe '#members & #requesters' do
       let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
@@ -531,9 +539,9 @@ describe Project, models: true do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project) { build(:project, wiki_enabled: false, has_external_wiki: false) }
-    let(:wiki_enabled_project) { build(:project) }
-    let(:external_wiki_project) { build(:project, has_external_wiki: true) }
+    let(:no_wiki_project)       { create(:project, wiki_access_level: ProjectFeature::DISABLED, has_external_wiki: false) }
+    let(:wiki_enabled_project)  { create(:project) }
+    let(:external_wiki_project) { create(:project, has_external_wiki: true) }
 
     it 'returns true if project is wiki enabled or has external wiki' do
       expect(wiki_enabled_project).to have_wiki

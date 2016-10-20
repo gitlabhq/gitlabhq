@@ -109,6 +109,10 @@ class Repository
   end
 
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
+    unless exists? && has_visible_content? && query.present?
+      return []
+    end
+
     ref ||= root_ref
 
     args = %W(
@@ -117,9 +121,8 @@ class Repository
     )
     args = args.concat(%W(-- #{path})) if path.present?
 
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
-    commits = git_log_results.map { |c| commit(c) }
-    commits
+    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines
+    git_log_results.map { |c| commit(c.chomp) }.compact
   end
 
   def find_branch(name, fresh_repo: true)
