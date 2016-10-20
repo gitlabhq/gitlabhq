@@ -34,6 +34,13 @@ module Gitlab
         end
       end
 
+      def test_events
+        @fetcher.fetch_test_events.each do |event|
+          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
+          event['pipeline'] = ::Ci::Pipeline.find_by_id(event['ci_commit_id']) # we may not have a pipeline
+        end
+      end
+
       private
 
       def first_time_reference_commit(commits, event)

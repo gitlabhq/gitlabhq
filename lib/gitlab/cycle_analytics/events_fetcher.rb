@@ -36,10 +36,22 @@ module Gitlab
         base_query = base_query_for(:code)
         diff_fn = subtract_datetimes_diff(base_query,
                                           issue_metrics_table[:first_mentioned_in_commit_at],
-                                          issue_table[:created_at])
+                                          mr_table[:created_at])
 
         query = base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id])).
           project(extract_epoch(diff_fn).as('total_time'), *code_projections).
+          order(mr_table[:created_at].desc)
+
+        execute(query)
+      end
+
+      def fetch_test_events
+        base_query = base_query_for(:code)
+        diff_fn = subtract_datetimes_diff(base_query,
+                                          mr_metrics_table[:latest_build_started_at],
+                                          mr_metrics_table[:latest_build_finished_at])
+
+        query = base_query.project(extract_epoch(diff_fn).as('total_time'), mr_metrics_table[:ci_commit_id]).
           order(mr_table[:created_at].desc)
 
         execute(query)

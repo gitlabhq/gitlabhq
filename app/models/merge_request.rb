@@ -232,7 +232,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_head_commit
-    if persisted?diff_head_commit
+    if persisted?
       merge_request_diff.head_commit
     else
       source_branch_head

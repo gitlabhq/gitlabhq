@@ -55,7 +55,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.code_events.first['total_time']).to eq('2 days')
+      expect(subject.code_events.first['total_time']).to eq('less than a minute')
     end
 
     it 'has a title' do
@@ -72,6 +72,28 @@ describe Gitlab::CycleAnalytics::Events do
 
     it "has the author's name" do
       expect(subject.code_events.first['name']).to eq(context.author.name)
+    end
+  end
+
+  describe '#test_events' do
+    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
+    let(:merge_request) { MergeRequest.first }
+    let!(:pipeline) { create(:ci_pipeline,
+                             ref: merge_request.source_branch,
+                             sha: merge_request.diff_head_sha,
+                             project: context.project) }
+
+    before do
+      pipeline.run!
+      pipeline.succeed!
+    end
+
+    it 'has the build info as a pipeline' do
+      expect(subject.test_events.first['pipeline']).to eq(pipeline)
+    end
+
+    it 'has the total time' do
+      expect(subject.test_events.first['total_time']).to eq('less than a minute')
     end
   end
 
