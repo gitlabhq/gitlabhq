@@ -10,17 +10,14 @@ module Ci
         create_builds!
       end
 
-      @pipeline.with_lock do
-        new_builds =
-          stage_indexes_of_created_builds.map do |index|
-            process_stage(index)
-          end
+      new_builds =
+        stage_indexes_of_created_builds.map do |index|
+          process_stage(index)
+        end
 
-        @pipeline.update_status
+      @pipeline.update_status
 
-        # Return a flag if a when builds got enqueued
-        new_builds.flatten.any?
-      end
+      new_builds.flatten.any?
     end
 
     private
@@ -32,9 +29,11 @@ module Ci
     def process_stage(index)
       current_status = status_for_prior_stages(index)
 
-      created_builds_in_stage(index).select do |build|
-        if HasStatus::COMPLETED_STATUSES.include?(current_status)
-          process_build(build, current_status)
+      if HasStatus::COMPLETED_STATUSES.include?(current_status)
+        created_builds_in_stage(index).select do |build|
+          Gitlab::OptimisticLocking.retry_lock(build) do |build|
+            process_build(build, current_status)
+          end
         end
       end
     end

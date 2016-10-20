@@ -28,17 +28,14 @@ module Ci
 
       if build
         # In case when 2 runners try to assign the same build, second runner will be declined
-        # with StateMachines::InvalidTransition in run! method.
-        build.with_lock do
-          build.runner_id = current_runner.id
-          build.save!
-          build.run!
-        end
+        # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
+        build.runner_id = current_runner.id
+        build.run!
       end
 
       build
 
-    rescue StateMachines::InvalidTransition
+    rescue StateMachines::InvalidTransition, StaleObjectError
       nil
     end
 
