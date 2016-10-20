@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.0 (2016-11-22)
+  - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
+  - Simpler arguments passed to named_route on toggle_award_url helper method
+
 ## 8.13.0 (2016-10-22)
 
   - Fix save button on project pipeline settings page. (!6955)
@@ -33,6 +37,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
+  - ProjectCacheWorker updates caches at most once per 15 minutes per project
   - Fix Error 500 when viewing old merge requests with bad diff data
   - Create a new /templates namespace for the /licenses, /gitignores and /gitlab_ci_ymls API endpoints. !5717 (tbalthazar)
   - Fix viewing merged MRs when the source project has been removed !6991
