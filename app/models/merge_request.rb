@@ -326,21 +326,17 @@ class MergeRequest < ActiveRecord::Base
   def validate_fork
     return true unless target_project && source_project
     return true if target_project == source_project
-    return true unless forked_source_project_missing?
+    return true unless source_project_missing?
 
     errors.add :validate_fork,
                'Source project is not a fork of the target project'
   end
 
   def closed_without_fork?
-    closed? && forked_source_project_missing?
+    closed? && source_project_missing?
   end
 
-  def closed_without_source_project?
-    closed? && !source_project
-  end
-
-  def forked_source_project_missing?
+  def source_project_missing?
     return false unless for_fork?
     return true unless source_project
 
@@ -348,9 +344,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reopenable?
-    return false if closed_without_fork? || closed_without_source_project? || merged?
-
-    closed?
+    closed? && !source_project_missing? && source_branch_exists?
   end
 
   def ensure_merge_request_diff
@@ -662,7 +656,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_ci?
-    source_project.ci_service && commits.any?
+    source_project.try(:ci_service) && commits.any?
   end
 
   def branch_missing?
@@ -694,12 +688,9 @@ class MergeRequest < ActiveRecord::Base
 
     @environments ||=
       begin
-        environments = source_project.environments_for(
-          source_branch, diff_head_commit)
-        environments += target_project.environments_for(
-          target_branch, diff_head_commit, with_tags: true)
-
-        environments.uniq
+        envs = target_project.environments_for(target_branch, diff_head_commit, with_tags: true)
+        envs.concat(source_project.environments_for(source_branch, diff_head_commit)) if source_project
+        envs.uniq
       end
   end
 

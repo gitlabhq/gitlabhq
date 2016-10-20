@@ -26,19 +26,19 @@
             %ul.dropdown-menu.dropdown-menu-align-right
               %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
-      - unless @merge_request.closed_without_fork?
-        .normal
-          %span Request to merge
-          %span.label-branch= source_branch_with_namespace(@merge_request)
-          %span into
-          %span.label-branch
-            = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
-          - if @merge_request.open? && @merge_request.diverged_from_target_branch?
-            %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
+      .normal
+        %span Request to merge
+        %span.label-branch= source_branch_with_namespace(@merge_request)
+        %span into
+        %span.label-branch
+          = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
+        - if @merge_request.open? && @merge_request.diverged_from_target_branch?
+          %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
-    - unless @merge_request.closed_without_source_project?
+    - if @merge_request.source_branch_exists?
       = render "projects/merge_requests/show/how_to_merge"
-      = render "projects/merge_requests/widget/show.html.haml"
+
+    = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
       .light.prepend-top-default.append-bottom-default
@@ -52,7 +52,7 @@
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
             Discussion
             %span.badge= @merge_request.mr_and_commit_notes.user.count
-        - unless @merge_request.closed_without_source_project?
+        - if @merge_request.source_project
           %li.commits-tab
             = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
               Commits
