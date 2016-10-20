@@ -220,6 +220,10 @@ module ProjectsHelper
     "The total size of this project's repository #{show_lfs} will be limited to this size. 0 for unlimited. Leave empty to inherit the group/global value."
   end
 
+  def project_above_size_limit_message
+    Gitlab::RepositorySizeError.new(@project).above_size_limit_message
+  end
+
   def git_user_name
     if current_user
       current_user.name
