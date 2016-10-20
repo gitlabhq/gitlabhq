@@ -29,7 +29,11 @@
         = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
           Commits
           %span.badge= @commits.size
-      - if @pipeline
+      - if @pipelines.any?
+        %li.builds-tab
+          = link_to url_for(params), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
+            Pipelines
+            %span.badge= @pipelines.size
         %li.builds-tab
           = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
             Builds
@@ -44,9 +48,11 @@
         = render "projects/merge_requests/show/commits"
       #diffs.diffs.tab-pane
         - # This tab is always loaded via AJAX
-      - if @pipeline
+      - if @pipelines.any?
         #builds.builds.tab-pane
           = render "projects/merge_requests/show/builds"
+        #pipelines.pipelines.tab-pane
+          = render "projects/merge_requests/show/pipelines"
 
   .mr-loading-status
     = spinner
@@ -59,5 +65,5 @@
 :javascript
   var merge_request = new MergeRequest({
     action: "#{(@show_changes_tab ? 'new/diffs' : 'new')}",
-    buildsLoaded: "#{@pipeline ? 'true' : 'false'}"
+    buildsLoaded: "#{@pipelines.any? ? 'true' : 'false'}"
   });

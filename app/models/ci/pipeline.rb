@@ -19,7 +19,7 @@ module Ci
     validates_presence_of :status, unless: :importing?
     validate :valid_commit_sha, unless: :importing?
 
-    after_save :keep_around_commits, unless: :importing?
+    after_create :keep_around_commits, unless: :importing?
 
     delegate :stages, to: :statuses
 
@@ -165,7 +165,7 @@ module Ci
 
     def retryable?
       builds.latest.any? do |build|
-        build.failed? && build.retryable?
+        (build.failed? || build.canceled?) && build.retryable?
       end
     end
 

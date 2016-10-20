@@ -98,11 +98,8 @@ Example response:
 
 ## Delete system hook
 
-Deletes a system hook. This is an idempotent API function and returns `200 OK`
-even if the hook is not available.
-
-If the hook is deleted, a JSON object is returned. An error is raised if the
-hook is not found.
+Deletes a system hook. It returns `200 OK` if the hooks is deleted and
+`404 Not Found` if the hook is not found.
 
 ---
 

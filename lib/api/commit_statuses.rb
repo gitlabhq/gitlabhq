@@ -6,17 +6,17 @@ module API
     resource :projects do
       before { authenticate! }
 
-      # Get a commit's statuses
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit hash
-      #   ref (optional) - The ref
-      #   stage (optional) - The stage
-      #   name (optional) - The name
-      #   all (optional) - Show all statuses, default: false
-      # Examples:
-      #   GET /projects/:id/repository/commits/:sha/statuses
+      desc "Get a commit's statuses" do
+        success Entities::CommitStatus
+      end
+      params do
+        requires :id,    type: String, desc: 'The ID of a project'
+        requires :sha,   type: String, desc: 'The commit hash'
+        optional :ref,   type: String, desc: 'The ref'
+        optional :stage, type: String, desc: 'The stage'
+        optional :name,  type: String, desc: 'The name'
+        optional :all,   type: String, desc: 'Show all statuses, default: false'
+      end
       get ':id/repository/commits/:sha/statuses' do
         authorize!(:read_commit_status, user_project)
 
@@ -31,22 +31,23 @@ module API
         present paginate(statuses), with: Entities::CommitStatus
       end
 
-      # Post status to commit
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit hash
-      #   ref (optional) - The ref
-      #   state (required) - The state of the status. Can be: pending, running, success, failed or canceled
-      #   target_url (optional) - The target URL to associate with this status
-      #   description (optional) - A short description of the status
-      #   name or context (optional) - A string label to differentiate this status from the status of other systems. Default: "default"
-      # Examples:
-      #   POST /projects/:id/statuses/:sha
+      desc 'Post status to a commit' do
+        success Entities::CommitStatus
+      end
+      params do
+        requires :id,          type: String,  desc: 'The ID of a project'
+        requires :sha,         type: String,  desc: 'The commit hash'
+        requires :state,       type: String,  desc: 'The state of the status',
+                               values: ['pending', 'running', 'success', 'failed', 'canceled']
+        optional :ref,         type: String,  desc: 'The ref'
+        optional :target_url,  type: String,  desc: 'The target URL to associate with this status'
+        optional :description, type: String,  desc: 'A short description of the status'
+        optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
+        optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
+      end
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
-        required_attributes! [:state]
-        attrs = attributes_for_keys [:target_url, :description]
+
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
@@ -68,7 +69,7 @@ module API
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project, pipeline: pipeline,
           user: current_user, name: name, ref: ref)
-        status.attributes = attrs
+        status.attributes = declared(params).slice(:target_url, :description)
 
         begin
           case params[:state].to_s

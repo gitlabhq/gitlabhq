@@ -8,5 +8,6 @@ FactoryGirl.define do
     trait(:reporter)  { access_level ProjectMember::REPORTER }
     trait(:developer) { access_level ProjectMember::DEVELOPER }
     trait(:master)    { access_level ProjectMember::MASTER }
+    trait(:access_request) { requested_at Time.now }
   end
 end

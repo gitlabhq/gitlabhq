@@ -364,7 +364,7 @@ describe GitPushService, services: true do
       it 'sets the metric for referenced issues' do
         execute_service(project, user, @oldrev, @newrev, @ref)
 
-        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_within(1.second).of(commit_time)
+        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_like_time(commit_time)
       end
 
       it 'does not set the metric for non-referenced issues' do
@@ -415,7 +415,7 @@ describe GitPushService, services: true do
       it "doesn't close issues when external issue tracker is in use" do
         allow_any_instance_of(Project).to receive(:default_issues_tracker?).
           and_return(false)
-        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid)
+        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid, reference_pattern: project.issue_reference_pattern)
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
 
         # The push still shouldn't create cross-reference notes.
@@ -484,30 +484,46 @@ describe GitPushService, services: true do
       end
 
       context "closing an issue" do
-        let(:message) { "this is some work.\n\ncloses JIRA-1" }
+        let(:message)         { "this is some work.\n\ncloses JIRA-1" }
+        let(:transition_body) { { transition: { id: '2' } }.to_json }
+        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
 
-        it "initiates one api call to jira server to close the issue" do
-          transition_body = {
-            transition: {
-              id: '2'
-            }
-          }.to_json
+        context "using right markdown" do
+          it "initiates one api call to jira server to close the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-          execute_service(project, commit_author, @oldrev, @newrev, @ref )
-          expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
-            body: transition_body
-          ).once
+            expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
+              body: transition_body
+            ).once
+          end
+
+          it "initiates one api call to jira server to comment on the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+              body: comment_body
+            ).once
+          end
         end
 
-        it "initiates one api call to jira server to comment on the issue" do
-          comment_body = {
-            body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
-          }.to_json
+        context "using wrong markdown" do
+          let(:message) { "this is some work.\n\ncloses #1" }
 
-          execute_service(project, commit_author, @oldrev, @newrev, @ref )
-          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
-            body: comment_body
-          ).once
+          it "does not initiates one api call to jira server to close the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).not_to have_requested(:post, jira_api_transition_url).with(
+              body: transition_body
+            )
+          end
+
+          it "does not initiates one api call to jira server to comment on the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).not_to have_requested(:post, jira_api_comment_url).with(
+              body: comment_body
+            ).once
+          end
         end
       end
     end

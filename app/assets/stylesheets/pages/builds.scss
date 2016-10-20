@@ -195,7 +195,7 @@
     .build-job {
       position: relative;
 
-      .fa {
+      .fa-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -205,13 +205,22 @@
       &.active {
         font-weight: bold;
 
-        .fa {
+        .fa-arrow-right {
           display: block;
         }
       }
 
+      &.retried {
+        background-color: $gray-lightest;
+      }
+
       &:hover {
         background-color: $row-hover;
+      }
+
+      .fa-refresh {
+        font-size: 13px;
+        margin-left: 3px;
       }
     }
   }

@@ -28,7 +28,7 @@ describe Gitlab::Ci::Config::Node::Environment do
 
     describe '#value' do
       it 'returns valid hash' do
-        expect(entry.value).to eq(name: 'production')
+        expect(entry.value).to include(name: 'production')
       end
     end
 
@@ -83,6 +83,68 @@ describe Gitlab::Ci::Config::Node::Environment do
     describe '#url' do
       it 'returns environment url' do
         expect(entry.url).to eq 'https://example.gitlab.com'
+      end
+    end
+  end
+
+  context 'when valid action is used' do
+    let(:config) do
+      { name: 'production',
+        action: 'start' }
+    end
+
+    it 'is valid' do
+      expect(entry).to be_valid
+    end
+  end
+
+  context 'when invalid action is used' do
+    let(:config) do
+      { name: 'production',
+        action: 'invalid' }
+    end
+
+    describe '#valid?' do
+      it 'is not valid' do
+        expect(entry).not_to be_valid
+      end
+    end
+
+    describe '#errors' do
+      it 'contains error about invalid action' do
+        expect(entry.errors)
+          .to include 'environment action should be start or stop'
+      end
+    end
+  end
+
+  context 'when on_stop is used' do
+    let(:config) do
+      { name: 'production',
+        on_stop: 'close_app' }
+    end
+
+    it 'is valid' do
+      expect(entry).to be_valid
+    end
+  end
+
+  context 'when invalid on_stop is used' do
+    let(:config) do
+      { name: 'production',
+        on_stop: false }
+    end
+
+    describe '#valid?' do
+      it 'is not valid' do
+        expect(entry).not_to be_valid
+      end
+    end
+
+    describe '#errors' do
+      it 'contains error about invalid action' do
+        expect(entry.errors)
+          .to include 'environment on stop should be a string'
       end
     end
   end

@@ -45,6 +45,7 @@ FactoryGirl.define do
       snippets_access_level ProjectFeature::ENABLED
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
+      repository_access_level ProjectFeature::ENABLED
     end
 
     after(:create) do |project, evaluator|
@@ -55,6 +56,7 @@ FactoryGirl.define do
           snippets_access_level: evaluator.snippets_access_level,
           issues_access_level: evaluator.issues_access_level,
           merge_requests_access_level: evaluator.merge_requests_access_level,
+          repository_access_level: evaluator.repository_access_level
         )
     end
   end

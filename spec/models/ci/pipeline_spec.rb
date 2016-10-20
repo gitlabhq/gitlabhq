@@ -88,23 +88,37 @@ describe Ci::Pipeline, models: true do
 
     context 'no failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", pipeline: pipeline, status: 'success'
+        create_build('rspec', 'success')
       end
 
-      it 'be not retryable' do
+      it 'is not retryable' do
         is_expected.to be_falsey
+      end
+
+      context 'one canceled job' do
+        before do
+          create_build('rubocop', 'canceled')
+        end
+
+        it 'is retryable' do
+          is_expected.to be_truthy
+        end
       end
     end
 
     context 'with failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", pipeline: pipeline, status: 'running'
-        FactoryGirl.create :ci_build, name: "rubocop", pipeline: pipeline, status: 'failed'
+        create_build('rspec', 'running')
+        create_build('rubocop', 'failed')
       end
 
-      it 'be retryable' do
+      it 'is retryable' do
         is_expected.to be_truthy
       end
+    end
+
+    def create_build(name, status)
+      create(:ci_build, name: name, status: status, pipeline: pipeline)
     end
   end
 

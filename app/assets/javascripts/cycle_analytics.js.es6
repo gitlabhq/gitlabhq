@@ -1,3 +1,5 @@
+//= require vue
+
 ((global) => {
 
   const COOKIE_NAME = 'cycle_analytics_help_dismissed';

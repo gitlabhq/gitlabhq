@@ -1,7 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.0 (2016-11-22)
+  - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
+
 ## 8.13.0 (2016-10-22)
 
+  - Fix save button on project pipeline settings page. (!6955)
+  - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
   - Truncate long labels with ellipsis in labels page
@@ -11,11 +16,15 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update runner version only when updating contacted_at
   - Add link from system note to compare with previous version
   - Use gitlab-shell v3.6.6
+  - Ignore references to internal issues when using external issues tracker
   - Ability to resolve merge request conflicts with editor !6374
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
+  - Keep around commits only pipeline creation as pipeline data doesn't change over time
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
+  - Add group level labels. (!6425)
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
+  - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
@@ -54,6 +63,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add Issue Board API support (andrebsguedes)
   - Allow the Koding integration to be configured through the API
   - Add new issue button to each list on Issues Board
+  - Execute specific named route method from toggle_award_url helper method
   - Added soft wrap button to repository file/blob editor
   - Update namespace validation to forbid reserved names (.git and .atom) (Will Starms)
   - Show the time ago a merge request was deployed to an environment
@@ -63,6 +73,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
   - Remove redundant mixins (ClemMakesApps)
   - Added 'Download' button to the Snippets page (Justin DiPierro)
+  - Add visibility level to project repository
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
@@ -101,10 +112,10 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Optimize GitHub importing for speed and memory
   - API: expose pipeline data in builds API (!6502, Guilherme Salazar)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
-  - Reorder issue and merge request titles to show IDs first. !6503 (Greg Laubenstein)
   - Reduce queries needed to find users using their SSH keys when pushing commits
   - Prevent rendering the link to all when the author has no access (Katarzyna Kobierska Ula Budziszewska)
   - Fix broken repository 500 errors in project list
+  - Fix the diff in the merge request view when converting a symlink to a regular file
   - Fix Pipeline list commit column width should be adjusted
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
   - Ability to batch assign issues relating to a merge request to the author. !5725 (jamedjo)
@@ -112,13 +123,17 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Retouch environments list and deployments list
   - Add multiple command support for all label related slash commands !6780 (barthc)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
+  - Add Nofollow for uppercased scheme in external urls !6820 (the-undefined)
   - Allow empty merge requests !6384 (Artem Sidorenko)
   - Grouped pipeline dropdown is a scrollable container
   - Cleanup Ci::ApplicationController. !6757 (Takuya Noguchi)
   - Fixes padding in all clipboard icons that have .btn class
   - Fix a typo in doc/api/labels.md
+  - Fix double-escaping in activities tab (Alexandre Maia)
   - API: all unknown routing will be handled with 404 Not Found
   - Add docs for request profiling
+  - Delete dynamic environments
+  - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
 
 ## 8.12.7
