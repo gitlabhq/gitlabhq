@@ -59,9 +59,6 @@ module Ci
 
       before_transition any => [:success, :failed, :canceled] do |pipeline|
         pipeline.finished_at = Time.now
-      end
-
-      before_transition do |pipeline|
         pipeline.update_duration
       end
 
