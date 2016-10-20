@@ -11,7 +11,7 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  after_save :create_ref
+  after_create :create_ref
 
   def commit
     project.commit(sha)
