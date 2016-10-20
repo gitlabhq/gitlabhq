@@ -565,6 +565,8 @@ A [virtual machine](https://en.wikipedia.org/wiki/Virtual_private_server) sold a
 
 ### VM Instance
 
+In object-oriented programming, an [instance](http://stackoverflow.com/questions/20461907/what-is-meaning-of-instance-in-programming) is a specific realization of any object. An object may be varied in a number of ways. Each realized variation of that object is an instance. Therefore, a VM instance is an instance of a virtual machine, which is an emulation of a computer system. 
+
 ### Waterfall
 
 A [model](http://www.umsl.edu/~hugheyd/is6840/waterfall.html) of building software that involves collecting all requirements from the customer, then building and refining all the requirements and finally delivering the complete software to the customer that meets all the requirements they specified. 
