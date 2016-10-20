@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
   - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
+  - Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
 
 ## 8.13.0 (2016-10-22)
 
@@ -30,7 +31,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
   - Added documentation for .gitattributes files
-  - Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
   - Move Pipeline Metrics to separate worker
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
