@@ -208,9 +208,6 @@
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
-        case 'projects:cycle_analytics:show':
-          new gl.CycleAnalytics();
-          break;
       }
       switch (path.first()) {
         case 'admin':
