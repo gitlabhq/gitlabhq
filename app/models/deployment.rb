@@ -11,7 +11,7 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  after_save :create_ref
+  after_create :create_ref
 
   def commit
     project.commit(sha)
@@ -102,6 +102,6 @@ class Deployment < ActiveRecord::Base
   private
 
   def ref_path
-    File.join(environment.ref_path, 'deployments', id.to_s)
+    File.join(environment.ref_path, 'deployments', iid.to_s)
   end
 end

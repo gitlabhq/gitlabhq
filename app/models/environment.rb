@@ -71,8 +71,8 @@ class Environment < ActiveRecord::Base
 
     return nil unless ref
 
-    deployment_id = ref.split('/').last
-    deployments.find(deployment_id)
+    deployment_iid = ref.split('/').last
+    deployments.find_by(iid: deployment_iid)
   end
 
   def ref_path
