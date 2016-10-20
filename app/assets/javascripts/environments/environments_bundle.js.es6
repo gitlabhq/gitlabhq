@@ -20,7 +20,7 @@ $(() => {
     el: '#environments-list-view',
     
     components: {
-      'environment-item': gl.environmentsList.EnvironmentItem
+      'item': gl.environmentsList.EnvironmentItem
     },
 
     data: {

@@ -41,7 +41,7 @@
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
           
-    .table-holder{ "v-if" => "!loading && state.environments.length" }
+    .table-holder{ "v-if" => "!loading && state.environments" }
       %table.table.ci-table.environments
         %thead
           %th Environment
@@ -51,9 +51,6 @@
           %th
           %th.hidden-xs
         %tbody
-          %tr{ "is"=>"environment-item",
-            "inline-template" => true, 
-            "v-for" => "environment in state.environments", 
-            ":model" => "environment" }
+          %tr{"is" => "environment-item", "v-for" => "model in state.environments", ":model" => "model"}
 
 =render "projects/environments/components/environment"

@@ -1,102 +1,52 @@
 %script#environment-item-template{ "type"=> "text/x-template" }
-  %tr.environment
-    %td.folder-name{ "@click" => "toggle" }
-      %a{ "v-if" => "!isFolder", 
+  %tr
+    %td.folder-name
+      %a{ "v-if" => "!isFolder",
         ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + model.id" }
         {{model.name}}
+      %span{ "v-if" => "isFolder",
+        "@click" => "toggle" }
         
-      %span{ "v-if" => "isFolder" }
-        %i.folder-icon{ "v-show" => "open" }
-          = icon("caret-down")
-
-        %i.folder-icon{ "v-show" => "!open" }
-          = icon("caret-right")
+        %i.folder-icon{ "v-show" => "open"}
+          =icon ("caret-down")
+        %i.folder-icon{ "v-show" => "!open"}
+          =icon("caret-right")
         
         {{model.name}}
-
+    
     %td.deployment-column
-      %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid" }
-        = precede '#' do
+      %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid"}
+        = precede "#" do
           {{model.last_deployment.iid}}
-
-        %span{ "v-if" => "model.last_deployment.user" }
+        
+        %span{ "v-if" => "model.last_deployment.user"}
           by
           %a{":href" => "'/' + model.last_deployment.user.username"}
-
-            %img.avatar.has-tooltip.s20{ ":src" => "model.last_deployment.user.avatar_url",
-            ":alt" => "model.last_deployment.user.username + ' avatar'",
+            %img.avatar.has_tooltip.s20{ ":src" => "model.last_deployment.user.avatar_url",
+            ":alt" => "model.last_deployment.user.username + 'avatar'",
             ":title" => "model.last_deployment.user.username",
-            data: { container: 'body'},
-            width: 20, height: 20 }
-
+            data: {container: "body"},
+            width: 20, height: 20}
+    
     %td
       %a.build-link{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.deployable",
-        ":href" => "'#{namespace_project_builds_path(@project.namespace, @project)}/' + model.last_deployment.deployable.id" }
-        {{model.last_deployment.deployable.name}}
-        = precede '#' do
-          ({{model.last_deployment.deployable.id}})
-
+        ":href" => "'#{namespace_project_builds_path(@project.namespace, @project)}/' + model.last_deployment.deployable.id"}
+        {{model.last_deployment.deployble.name}}
+        = precede "#" do
+          {{model.last_deployment.deployable.id}}
+    
     %td
-      %a{ "v-if" => "!isFolder && model.last_deployment" }
-      -#  = render "projects/deployments/commit", deployment: "{{model.last_deployment}}"
+      %a{ "v-if" => "!isFolder && model.last_deployment"}
+        commit message goes here
       %p.commit-title{ "v-if" => "!isFolder && !model.last_deployment"}
         No deployments yet
-
-    %td 
-      %span{ "v-if" => "!isFolder && model.last_deployment" }
+    
+    %td
+      %span{ "v-if" => "!isFolder && model.last_deployment"}
         {{model.last_deployment.created_at}}
-
+    
     %td.hidden-xs
       .pull-right{ "v-if" => "!isFolder"}
-        -# = render "projects/environments/external_url", environment: "{{model}}"
-        -# = render "projects/deployments/actions", deployment: "{{model.last_deployment}}"
-        -# = render "projects/environments/stop", environment: "{{model}}"
-        -# = render "projects/deployments/rollback", deployment: "{{model.last_deployment}}"
-
-  %tr{ "v-show" => "open", 
-    "v-if"=>"isFolder", 
-    "v-for" => "child in model.children", 
-    ":model" => "child" }
-
-    %td
-      %a.children-name{ ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + child.id" }
-        {{child.name}}
-  
-    %td.deployment-column
-      %span{ "v-if" => "child.last_deployment && child.last_deployment.iid" }
-        = precede '#' do
-          {{child.last_deployment.iid}}
-
-        %span{ "v-if" => "child.last_deployment.user" }
-          by
-          %a{":href" => "'/' + child.last_deployment.user.username"}
-          
-            %img.avatar.has-tooltip.s20{ ":src" => "child.last_deployment.user.avatar_url",
-            ":alt" => "child.last_deployment.user.username + ' avatar'",
-            ":title" => "child.last_deployment.user.username",
-            data: { container: 'body'},
-            width: 20, height: 20 }
-
-    %td
-      %a.build-link{ "v-if" => "child.last_deployment && child.last_deployment.deployable",
-        ":href" => "'#{namespace_project_builds_path(@project.namespace, @project)}/' + child.last_deployment.deployable.id" }
-        {{child.last_deployment.deployable.name}}  
-        = precede '#' do
-          ({{child.last_deployment.deployable.id}})
-
-    %td
-      %a{ "v-if" => "child.last_deployment" }
-      -#  = render "projects/deployments/commit", deployment: "{{child.last_deployment}}"
-      %p.commit-title{ "v-if" => "!child.last_deployment"}
-        No deployments yet
-
-    %td 
-      %span{ "v-if" => "child.last_deployment" }
-        {{child.last_deployment.created_at}}
-
-    %td.hidden-xs
-      .pull-right
-        -# = render "projects/environments/external_url", environment: "{{child}}"
-        -# = render "projects/deployments/actions", deployment: "{{child.last_deployment}}"
-        -# = render "projects/environments/stop", environment: "{{child}}"
-        -# = render "projects/deployments/rollback", deployment: "{{child.last_deployment}}"
+        actions will go here
+      
+  %tr{"v-if" => "open && isFolder", "is" => "environment-item", "v-for" => "model in model.children", ":model" => "model"}

@@ -5,8 +5,7 @@
    * 
    * Used in a hierarchical structure to show folders with children
    * in a table.
-   * Based on [Tree View](https://vuejs.org/examples/tree-view.html) 
-   * The template used in this Component is non recursive.
+   * Recursive component based on [Tree View](https://vuejs.org/examples/tree-view.html) 
    * 
    * See this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/22539) 
    * for more information.
@@ -17,7 +16,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
   
-  gl.environmentsList.EnvironmentItem = Vue.extend({
+  gl.environmentsList.EnvironmentItem = Vue.component("environment-item", {
     
     template: '#environment-item-template',
 
@@ -25,7 +24,7 @@
       model: Object
     },
 
-    data: function () {
+    data () {
       return {
         open: false
       };
@@ -40,7 +39,7 @@
        *
        * @returns {Number}  The length of the children array
        */
-      isFolder: function () {
+      isFolder () {
         return this.model.children && this.model.children.length
       }
     },
@@ -50,7 +49,7 @@
       /**
        * Toggles the visibility of a folders' children.
        */
-      toggle: function () {
+      toggle () {
         if (this.isFolder) {
           this.open = !this.open;
         }
