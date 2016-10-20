@@ -15,6 +15,8 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix error in generating labels
   - Fix reply-by-email not working due to queue name mismatch
   - Expire and build repository cache after project import
+  - Simpler arguments passed to named_route on toggle_award_url helper method 
+  - Better handle when no users were selected for adding to group or project. (Linus Thiel)
 
 ## 8.13.0 (2016-10-22)
   - Removes extra line for empty issue description. (!7045)
@@ -69,7 +71,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
-  - Better handle when no users were selected for adding to group or project. (Linus Thiel)
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
   - Fix permission for setting an issue's due date
