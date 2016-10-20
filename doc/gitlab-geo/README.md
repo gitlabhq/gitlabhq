@@ -47,29 +47,31 @@ GitLab Geo requires some additional work installing and configuring your
 instance, than a normal setup.
 
 There are a couple of things you need to do in order to have one or more GitLab
-Geo instances. Follow the steps below in the order that they appear:
+Geo instances. Follow the steps below in the **exact order** that they appear:
 
-1. Install GitLab Enterprise Edition package on the server that will serve as the
-   secondary Geo node
-   - Don't configure GitLab as a normal install
-   - Authentication will be handled by the primary node
-   - You will need to setup replication before continuing (next step)
-   - Than you will be guided on how to configure this setup (please follow the correct order)
-1. [Setup a database replication](database.md) in `primary <-> secondary (read-only)` topology
-1. [Configure GitLab](configuration.md) and set the primary and secondary nodes
+1. Follow the instructions to [install GitLab Enterprise Edition][install-ee]
+   on the server that will serve as the secondary Geo node, but don't further
+   configure GitLab as authentication will be handled by the primary node (more
+   on this in the configuration step).
+1. [Setup a database replication](database.md) in `primary <-> secondary (read-only)` topology.
+1. [Configure GitLab](configuration.md) and set the primary and secondary nodes.
+
+## After setup
 
 After you set up the database replication and configure the GitLab Geo nodes,
 there are a few things to consider:
 
 1. When you create a new project in the primary node, the Git repository will
-   appear in the secondary only _after_ the first `git push`
-1. You need an extra configuration step to be able to fetch code from `secondary` and push to `primary`
-   - Clone your repository as you would normally do, from the `secondary` node
-   - Change the `push` URL following this example:
+   appear in the secondary only _after_ the first `git push`.
+1. You need an extra step to be able to fetch code from the `secondary` and push
+   to `primary`:
 
-     ```bash
-     git remote set-url --push origin git@primary.gitlab.example.com:user/repo.git
-     ```
+     1. Clone your repository as you would normally do from the `secondary` node
+     1. Change the remote push URL following this example:
+
+         ```bash
+         git remote set-url --push origin git@primary.gitlab.example.com:user/repo.git
+         ```
 
 > **Important**: The initialization of a new Geo secondary node requires data
 to be copied from the primary, as there is no backfill feature bundled with it.
@@ -119,3 +121,5 @@ connectivity between your nodes, your hardware, etc.
 We send the clone url from the primary server to any secondaries, so it
 doesn't matter. If primary is running on port `2200` clone url will reflect
 that.
+
+[install-ee]: https://about.gitlab.com/downloads-ee/
