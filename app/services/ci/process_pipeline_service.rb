@@ -16,6 +16,8 @@ module Ci
         end
 
       @pipeline.update_status if new_builds.flatten.any?
+
+      new_builds.flatten.any?
     end
 
     private
@@ -27,8 +29,8 @@ module Ci
     def process_stage(index)
       current_status = status_for_prior_stages(index)
 
-      created_builds_in_stage(index).select do |build|
-        if HasStatus::COMPLETED_STATUSES.include?(current_status)
+      if HasStatus::COMPLETED_STATUSES.include?(current_status)
+        created_builds_in_stage(index).select do |build|
           process_build(build, current_status)
         end
       end
