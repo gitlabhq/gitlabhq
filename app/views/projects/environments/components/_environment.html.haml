@@ -21,7 +21,7 @@
         %span{ "v-if" => "model.last_deployment.user" }
           by
           %a{":href" => "'/' + model.last_deployment.user.username"}
-          
+
             %img.avatar.has-tooltip.s20{ ":src" => "model.last_deployment.user.avatar_url",
             ":alt" => "model.last_deployment.user.username + ' avatar'",
             ":title" => "model.last_deployment.user.username",
@@ -35,7 +35,7 @@
 
     %td
       %a{ "v-if" => "!isFolder && model.last_deployment" }
-      /  = render "projects/deployments/commit", deployment: "{{model.last_deployment}}"
+      -#  = render "projects/deployments/commit", deployment: "{{model.last_deployment}}"
       %p.commit-title{ "v-if" => "!isFolder && !model.last_deployment"}
         No deployments yet
 
@@ -80,7 +80,7 @@
 
     %td
       %a{ "v-if" => "child.last_deployment" }
-      /  = render "projects/deployments/commit", deployment: "{{child.last_deployment}}"
+      -#  = render "projects/deployments/commit", deployment: "{{child.last_deployment}}"
       %p.commit-title{ "v-if" => "!child.last_deployment"}
         No deployments yet
 

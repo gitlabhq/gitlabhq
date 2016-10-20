@@ -76,7 +76,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         last_deployment: {
           include: {
             user: { only: [:id, :name, :username], methods: [:avatar_url] },
-            deployable: { only: [:id, :name] }
+            deployable: { only: [:id, :name, :ref, :tag, :short_sha] }
           }
         }
       }
