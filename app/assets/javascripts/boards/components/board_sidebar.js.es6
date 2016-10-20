@@ -29,22 +29,8 @@
       issue () {
         if (this.showSidebar) {
           this.$nextTick(() => {
-            this.issuableContext = new IssuableContext(this.currentUser);
-            this.milestoneSelect = new MilestoneSelect();
-            this.dueDateSelect = new gl.DueDateSelectors();
-            this.labelsSelect = new LabelsSelect();
-            this.sidebar = new Sidebar();
-            this.subscription = new Subscription('.subscription');
+            $(".right-sidebar").getNiceScroll(0).doScrollTop(0, 0);
           });
-        } else {
-          $('.right-sidebar').getNiceScroll().remove();
-
-          delete this.issuableContext;
-          delete this.milestoneSelect;
-          delete this.dueDateSelect;
-          delete this.labelsSelect;
-          delete this.sidebar;
-          delete this.subscription;
         }
       }
     },
@@ -52,6 +38,14 @@
       closeSidebar () {
         this.detail.issue = {};
       }
+    },
+    ready () {
+      new IssuableContext(this.currentUser);
+      new MilestoneSelect();
+      new gl.DueDateSelectors();
+      new LabelsSelect();
+      new Sidebar();
+      new Subscription('.subscription');
     }
   });
 })();

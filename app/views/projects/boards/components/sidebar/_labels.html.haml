@@ -5,7 +5,7 @@
     - if can?(current_user, :admin_issue, @project)
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value.issuable-show-labels
-    %span.no-value{ "v-if" => "issue.labels.length === 0" }
+    %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
       None
     %a{ href: "#",
       "v-for" => "label in issue.labels" }

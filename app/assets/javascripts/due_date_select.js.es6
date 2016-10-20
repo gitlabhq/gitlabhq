@@ -41,7 +41,12 @@
         defaultDate: $("input[name='" + this.fieldName + "']").val(),
         altField: "input[name='" + this.fieldName + "']",
         onSelect: () => {
-          return this.saveDueDate(true);
+          if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
+            gl.issueBoards.BoardsStore.detail.issue.dueDate = $("input[name='" + this.fieldName + "']").val();
+            this.updateIssueBoardIssue();
+          } else {
+            return this.saveDueDate(true);
+          }
         }
       });
     }
@@ -49,8 +54,14 @@
     initRemoveDueDate() {
       this.$block.on('click', '.js-remove-due-date', (e) => {
         e.preventDefault();
-        $("input[name='" + this.fieldName + "']").val('');
-        return this.saveDueDate(false);
+
+        if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
+          gl.issueBoards.BoardsStore.detail.issue.dueDate = '';
+          this.updateIssueBoardIssue();
+        } else {
+          $("input[name='" + this.fieldName + "']").val('');
+          return this.saveDueDate(false);
+        }
       });
     }
 
@@ -81,6 +92,18 @@
       datePayload[this.abilityName] = {};
       datePayload[this.abilityName].due_date = this.rawSelectedDate;
       this.datePayload = datePayload;
+    }
+
+    updateIssueBoardIssue () {
+      this.$loading.fadeIn();
+      this.$dropdown.trigger('loading.gl.dropdown');
+      this.$selectbox.hide();
+      this.$value.css('display', '');
+
+      gl.issueBoards.BoardsStore.detail.issue.update(this.$dropdown.attr('data-issue-update'))
+        .then(() => {
+          this.$loading.fadeOut();
+        });
     }
 
     submitSelectedDate(isDropdown) {

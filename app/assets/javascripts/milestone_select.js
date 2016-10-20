@@ -137,7 +137,7 @@
               $dropdown.trigger('loading.gl.dropdown');
               $loading.fadeIn();
 
-              gl.issueBoards.BoardsStore.detail.issue.update(issueUpdateURL)
+              gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
                   $dropdown.trigger('loaded.gl.dropdown');
                   $loading.fadeOut();

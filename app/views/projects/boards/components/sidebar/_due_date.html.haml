@@ -10,10 +10,11 @@
         No due date
       %span.bold{ "v-if" => "issue.dueDate" }
         {{ issue.dueDate | due-date }}
-      %span.no-value.js-remove-due-date-holder{ "v-if" => "issue.dueDate" }
-        \-
-        %a.js-remove-due-date{ href: "#", role: "button" }
-          remove due date
+      - if can?(current_user, :admin_issue, @project)
+        %span.no-value.js-remove-due-date-holder{ "v-if" => "issue.dueDate" }
+          \-
+          %a.js-remove-due-date{ href: "#", role: "button" }
+            remove due date
   - if can?(current_user, :admin_issue, @project)
     .selectbox
       %input{ type: "hidden",

@@ -382,7 +382,7 @@
 
               $loading.fadeIn();
 
-              gl.issueBoards.BoardsStore.detail.issue.update(issueUpdateURL)
+              gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
                   $loading.fadeOut();
                 });
