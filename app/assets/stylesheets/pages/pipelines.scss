@@ -369,10 +369,6 @@
 
     &:hover {
       background-color: $gray-lighter;
-
-      .dropdown-menu-toggle {
-        background-color: transparent;
-      }
     }
 
     &.playable {
@@ -402,6 +398,15 @@
         }
       }
 
+      .tooltip {
+        white-space: nowrap;
+
+        .tooltip-inner {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
       .ci-status-text {
         width: 135px;
         white-space: nowrap;
@@ -419,6 +424,7 @@
       }
 
       .dropdown-menu-toggle {
+        background-color: transparent;
         border: none;
         width: auto;
         padding: 0;
