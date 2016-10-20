@@ -2,14 +2,17 @@
 - page_title "Cycle Analytics"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('cycle_analytics/cycle_analytics_bundle.js')
+  = page_specific_javascript_tag("cycle_analytics/cycle_analytics_bundle.js")
 
 = render "projects/pipelines/head"
 
-#cycle-analytics{class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) }}
+#cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
+  .empty-dialog-message{ "v-if" => "!isEmptyDialogDismissed" }
+    %p There is nothing happened
+    = icon("times", class: "dismiss-icon", "@click" => "dismissEmptyDialog()")
 
-  .bordered-box.landing.content-block{"v-if" => "!isHelpDismissed"}
-    = icon('times', class: 'dismiss-icon', "@click" => "dismissLanding()")
+  .bordered-box.landing.content-block{"v-if" => "!isOverviewDialogDismissed"}
+    = icon("times", class: "dismiss-icon", "@click" => "dismissOverviewDialog()")
     .row
       .col-sm-3.col-xs-12.svg-container
         = custom_icon('icon_cycle_analytics_splash')
@@ -20,21 +23,17 @@
           Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
 
         = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
-
   = icon("spinner spin", "v-show" => "isLoading")
-
   .wrapper{"v-show" => "!isLoading && !hasError"}
     .panel.panel-default
       .panel-heading
         Pipeline Health
-
       .content-block
         .container-fluid
           .row
-            .col-sm-3.col-xs-12.column{"v-for" => "item in analytics.summary"}
+            .col-sm-3.col-xs-12.column{"v-for" => "item in state.analytics.summary"}
               %h3.header {{item.value}}
               %p.text {{item.title}}
-
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{"data-toggle" => "dropdown", :type => "button"}
@@ -42,22 +41,167 @@
                   %i.fa.fa-chevron-down
                 %ul.dropdown-menu.dropdown-menu-align-right
                   %li
-                    %a{'href' => "#", 'data-value' => '30'}
+                    %a{ "href" => "#", "data-value" => "30" }
                       Last 30 days
                   %li
-                    %a{'href' => "#", 'data-value' => '90'}
+                    %a{ "href" => "#", "data-value" => "90" }
                       Last 90 days
+    .panel.panel-default.stage-panel
+      .panel-heading
+        %nav.col-headers
+          %ul
+            %li.stage-header
+              %span.stage-name
+                Stage
+              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The phase of the development lifecycle.", "aria-hidden" => "true" }
+            %li.median-header
+              %span.stage-name
+                Median
+              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
+            %li.delta-header
+              %span.stage-name
+                = render "shared/icons/delta.svg"
+              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The difference between the previous and last measure, expressed as positive or negative values. E.g., if the previous value was 5 and the new value is 7, the delta is +2.", "aria-hidden" => "true" }
+            %li.event-header
+              %span.stage-name
+                {{ currentStage ? currentStage.legendTitle : 'Related Issues' }}
+              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
+            %li.total-time-header
+              %span.stage-name
+                Total Time
+              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The time taken by each data entry gathered by that stage.", "aria-hidden" => "true" }
+      .stage-panel-body
+        %nav.stage-nav
+          %ul
+            %stage-button{ "inline-template" => true,
+              "v-for" => "stage in state.stages",
+              ":stage" => "stage",
+              ":on-stage-click" => "selectStage" }
+              %li.stage-nav-item{ ":class" => "classObject", "@click" => "onClick(stage)" }
+                .stage-name
+                  {{stage.name}}
+                .stage-median
+                  20 hrs 21 mins
+                .stage-delta
+                  + 20 days
+                  %span.stage-direction
+                    = render "shared/icons/down_arrow.svg"
+        .section.stage-events
+          %template{ "v-if" => "isLoadingStage" }
+            = icon("spinner spin", "v-show" => "isLoadingStage")
+          %template{ "v-if" => "isEmptyStage" }
+            %p No results
+          %template{ "v-if" => "state.items.length && !isLoadingStage && !isEmptyStage" }
+            %component{ ":is" => "currentStage.component", ":items" => "state.items" }
 
-    .bordered-box
-      %ul.content-list
-        %li{"v-for" => "item in analytics.stats"}
-          .container-fluid
-            .row
-              .col-xs-8.title-col
-                %p.title
-                  {{item.title}}
-                %p.text
-                  {{item.description}}
-              .col-xs-4.value-col
-                %span
-                  {{item.value}}
+%script{ type: 'text/x-template', id: 'stage-issue-component' }
+  %div
+    .events-description
+      Time before an issue get scheluded
+    %ul.stage-event-list
+      %li.stage-event-item{ "v-for" => "issue in items" }
+        %item-issue-component{ ":issue" => "issue" }
+
+%script{ type: 'text/x-template', id: 'stage-plan-component' }
+  %div
+    .events-description
+      Time before an issue starts implementation
+    %ul.event-list
+      %li.event-item{ "v-for" => "commit in items" }
+        %item-commit-component{ ":commit" => "commit" }
+
+%script{ type: 'text/x-template', id: 'stage-code-component' }
+  %div
+    .events-description
+      Time spent coding
+    %ul
+      %li{ "v-for" => "mergeRequest in items" }
+        %item-merge-request-component{ ":merge-request" => "mergeRequest" }
+
+%script{ type: 'text/x-template', id: 'stage-test-component' }
+  %div
+    .events-description
+      The time taken to build and test the application
+    %ul
+      %li{ "v-for" => "build in items" }
+        %item-build-component{ ":build" => "build" }
+
+
+%script{ type: 'text/x-template', id: 'stage-review-component' }
+  %div
+    .events-description
+      The time taken to review the code
+    %ul
+      %li{ "v-for" => "mergeRequest in items" }
+        %item-merge-request-component{ ":merge-request" => "mergeRequest" }
+
+
+%script{ type: 'text/x-template', id: 'stage-staging-component' }
+  %div
+    .events-description
+      The time taken in staging
+    %ul
+      %li{ "v-for" => "build in items" }
+        %item-build-component{ ":build" => "build" }
+
+%script{ type: 'text/x-template', id: 'stage-production-component' }
+  %div
+    .events-description
+      The total time taken from idea to production
+    %ul
+      %li{ "v-for" => "issue in items" }
+        %item-issue-component{ ":issue" => "issue" }
+
+%script{ type: 'text/x-template', id: 'item-issue-component' }
+  .item-details
+    %img.avatar{:src => "https://secure.gravatar.com/avatar/3731e7dd4f2b4fa8ae184c0a7519dd58?s=64&d=identicon"}/
+    %h5.item-title
+      %a{ :href => "issue.url" }
+        {{ issue.title }}
+    %a{ :href => "issue.url" }
+      = '#{{issue.id}}'
+    %span
+      Opened
+      %a{:href => "issue.url"}
+        {{ issue.datetime }}
+    %span
+      by
+      %a{:href => "issue.profile"}
+        {{ issue.author }}
+  .item-time
+    %span.hours{ "v-if" => "issue.totalTime.hours"}
+      {{ issue.totalTime.hours }}
+      %abbr{:title => "Hours"} hr
+    %span.minutes{ "v-if" => "issue.totalTime.minutes" }
+      {{ issue.totalTime.minutes }}
+      %abbr{:title => "Minutes"} mins
+
+%script{ type: 'text/x-template', id: 'item-commit-component' }
+  %div
+    %p
+      %h5
+        %a{:href => "commit.url"}
+          {{ commit.title }}
+      %span
+        First
+        %a{:href => "#"}
+          {{ commit.hash }}
+        pushed by
+        %a{:href => "commit.profile"}
+          {{ commit.author }}
+
+%script{ type: 'text/x-template', id: 'item-merge-request-component' }
+  %div
+    %p
+      %h5
+        merge request -
+        %a{:href => "mergeRequest.url"}
+          {{ mergeRequest.title }}
+
+%script{ type: 'text/x-template', id: 'item-build-component' }
+  %div
+    %p
+      %h5
+        build -
+        %a{:href => "build.url"}
+          {{ build.title }}
