@@ -134,6 +134,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Delete dynamic environments
   - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
+  - Fix broken Project API docs (Takuya Noguchi)
 
 ## 8.12.7
 
