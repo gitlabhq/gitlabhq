@@ -91,9 +91,9 @@ class CommitStatus < ActiveRecord::Base
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
           if complete?
-            PipelineProcessWorker.perform_async(pipeline.id)
+            PipelineProcessWorker.perform(pipeline.id)
           else
-            PipelineUpdateWorker.perform_async(pipeline.id)
+            PipelineUpdateWorker.perform(pipeline.id)
           end
         end
       end
