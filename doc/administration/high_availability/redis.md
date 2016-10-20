@@ -63,13 +63,10 @@ Redis.
     nginx['enable'] = false
     postgresql['enable'] = false
     gitlab_rails['enable'] = false
-    mailroom['enable'] = false
 
     # Redis configuration
     redis['port'] = 6379
     redis['bind'] = '0.0.0.0'
-
-    # If you wish to use Redis authentication (recommended)
     redis['password'] = 'redis-password-goes-here'
     ```
 
@@ -85,8 +82,8 @@ Redis.
 ## Experimental Redis Sentinel support
 
    > Experimental Redis Sentinel support was [Introduced][ce-1877] in GitLab 8.11.
-     Starting with 8.13, Redis Sentinel is no longer experimental.
-     If you used with versions `< 8.13` before, please check the updated
+     Starting with 8.14, Redis Sentinel is no longer experimental.
+     If you used with versions `< 8.14` before, please check the updated
      documentation below.
 
 ## Redis Sentinel support
@@ -279,7 +276,7 @@ be each in a independent machine. You can configure them in the same
 machines where you've configured the other Redis servers.
 
 This number is required for the consensus algorithm to be effective
-in the case of a failure. **You should always have and `odd` number
+in the case of a failure. **You should always have an `odd` number
 of Sentinel nodes provisioned**.
 
 #### How sentinel handles a failover
@@ -400,7 +397,7 @@ master and the new sentinels servers.
 
 You can enable or disable sentinel support at any time in new or existing
 installations. From the GitLab application perspective, all it requires is
-the correct credentials for the master Redis and for a few Sentinel nodes.
+the correct credentials for the master Redis and for all Sentinel nodes.
 
 It doesn't require a list of all Sentinel nodes, as in case of a failure,
 the application will need to query only one of them.
