@@ -58,7 +58,7 @@ describe PipelinesEmailService do
     end
 
     it 'sends email' do
-      should_only_email(double(email: recipient), kind: :bcc)
+      should_only_email(double(notification_email: recipient), kind: :bcc)
     end
   end
 
