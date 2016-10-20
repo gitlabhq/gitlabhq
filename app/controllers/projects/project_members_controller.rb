@@ -26,7 +26,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def create
     if params[:user_ids].blank? && params[:group_ids].blank?
-      return redirect_to namespace_project_project_members_path(@project.namespace, @project), alert: 'No users or groups specified.'
+      return redirect_to(namespace_project_project_members_path(@project.namespace, @project), alert: 'No users or groups specified.')
     end
 
     if params[:user_ids].present?
