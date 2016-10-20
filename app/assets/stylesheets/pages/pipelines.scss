@@ -650,6 +650,10 @@
 
   &.pipelines {
 
+    .ci-table {
+      min-width: 900px;
+    }
+
     .content-list.pipelines {
       overflow: auto;
     }
