@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 8.14.0 (2016-11-22)
   - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Add hover to trash icon in notes !7008 (blackst0ne)
   - Simpler arguments passed to named_route on toggle_award_url helper method
 
 ## 8.13.0 (2016-10-22)
