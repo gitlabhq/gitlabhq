@@ -588,7 +588,7 @@ If you are allowed to, you can approve a merge request using the following
 endpoint:
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/approvals
+POST /projects/:id/merge_requests/:merge_request_id/approve
 ```
 
 **Parameters:**
