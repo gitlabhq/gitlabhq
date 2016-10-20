@@ -43,7 +43,35 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.plan_events.first['total_time']).to eq('2 days')
+      expect(subject.plan_events.first['total_time']).to eq('less than a minute')
+    end
+  end
+
+  describe '#code_events' do
+    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
+
+    before do
+      create_commit_referencing_issue(context)
+    end
+
+    it 'has the total time' do
+      expect(subject.code_events.first['total_time']).to eq('2 days')
+    end
+
+    it 'has a title' do
+      expect(subject.code_events.first['title']).to eq('Awesome merge_request')
+    end
+
+    it 'has an iid' do
+      expect(subject.code_events.first['iid']).to eq(context.iid.to_s)
+    end
+
+    it 'has a created_at timestamp' do
+      expect(subject.code_events.first['created_at']).to end_with('ago')
+    end
+
+    it "has the author's name" do
+      expect(subject.code_events.first['name']).to eq(context.author.name)
     end
   end
 

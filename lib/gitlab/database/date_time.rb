@@ -7,13 +7,13 @@ module Gitlab
       #
       # Note: For MySQL, the interval is returned in seconds.
       #       For PostgreSQL, the interval is returned as an INTERVAL type.
-      def subtract_datetimes(query_so_far, end_time_attrs, start_time_attrs, as)
+      def subtract_datetimes(query_so_far, start_time_attrs, end_time_attrs, as)
         diff_fn = subtract_datetimes_diff(query_so_far, end_time_attrs, start_time_attrs)
 
         query_so_far.project(diff_fn.as(as))
       end
 
-      def subtract_datetimes_diff(query_so_far, end_time_attrs, start_time_attrs)
+      def subtract_datetimes_diff(query_so_far, start_time_attrs, end_time_attrs)
         if Gitlab::Database.postgresql?
           Arel::Nodes::Subtraction.new(
             Arel::Nodes::NamedFunction.new("COALESCE", Array.wrap(end_time_attrs)),

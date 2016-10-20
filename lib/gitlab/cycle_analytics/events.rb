@@ -9,10 +9,10 @@ module Gitlab
         @fetcher = EventsFetcher.new(project: project, from: from)
       end
 
-      #TODO: backend pagination - specially for commits, etc...
+      # TODO: backend pagination - specially for commits, etc...
 
       def issue_events
-        #TODO figure out what the frontend needs for displaying the avatar
+        # TODO figure out what the frontend needs for displaying the avatar
         @fetcher.fetch_issue_events.each do |event|
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           event['created_at'] = interval_in_words(event['created_at'])
@@ -24,6 +24,13 @@ module Gitlab
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           commits = event.delete('commits')
           event['commit'] = first_time_reference_commit(commits, event)
+        end
+      end
+
+      def code_events
+        @fetcher.fetch_code_events.each do |event|
+          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
+          event['created_at'] = interval_in_words(event['created_at'])
         end
       end
 
