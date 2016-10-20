@@ -73,8 +73,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def serialize_as_json(resource)
     resource.as_json(
       include: {
-        last_deployment: { 
-          include: [:deployable, :user]
+        last_deployment: {
+          include: {
+            user: { only: [:id, :name, :username], methods: [:avatar_url] },
+            deployable: { only: [:id, :name] }
+          }
         }
       }
     )

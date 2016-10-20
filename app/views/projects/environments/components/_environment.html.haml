@@ -18,9 +18,15 @@
       %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid" }
         {{model.last_deployment.iid}}
 
-        by
         %span{ "v-if" => "model.last_deployment.user" }
-          {{model.last_deployment.user.name}}
+          by
+          %a{":href" => "'/' + model.last_deployment.user.username"}
+          
+            %img.avatar.has-tooltip.s20{ ":src" => "model.last_deployment.user.avatar_url",
+            ":alt" => "model.last_deployment.user.username + ' avatar'",
+            ":title" => "model.last_deployment.user.username",
+            data: { container: 'body'},
+            width: 20, height: 20 }
 
     %td
       %a{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.deployable",
@@ -30,7 +36,7 @@
 
     %td
       %a{ "v-if" => "!isFolder && model.last_deployment" }
-        column 4
+      /  = render "projects/deployments/commit", deployment: "{{model.last_deployment}}"
       %p.commit-title{ "v-if" => "!isFolder && !model.last_deployment"}
         No deployments yet
 
@@ -40,7 +46,10 @@
 
     %td.hidden-xs
       .pull-right{ "v-if" => "!isFolder"}
-        actions
+        -# = render "projects/environments/external_url", environment: "{{model}}"
+        -# = render "projects/deployments/actions", deployment: "{{model.last_deployment}}"
+        -# = render "projects/environments/stop", environment: "{{model}}"
+        -# = render "projects/deployments/rollback", deployment: "{{model.last_deployment}}"
 
   %tr.environment-children{ "v-show" => "open", 
     "v-if"=>"isFolder", 
@@ -55,19 +64,25 @@
       %span{ "v-if" => "child.last_deployment && child.last_deployment.iid" }
         {{child.last_deployment.iid}}
 
-        by
-        %span{ "v-if" => "model.last_deployment.user" }
-          {{child.last_deployment.user.name}}
+        %span{ "v-if" => "child.last_deployment.user" }
+          by
+          %a{":href" => "'/' + child.last_deployment.user.username"}
+          
+            %img.avatar.has-tooltip.s20{ ":src" => "child.last_deployment.user.avatar_url",
+            ":alt" => "child.last_deployment.user.username + ' avatar'",
+            ":title" => "child.last_deployment.user.username",
+            data: { container: 'body'},
+            width: 20, height: 20 }
 
     %td
       %a{ "v-if" => " child.last_deployment && child.last_deployment.deployable",
         ":class" => "build-link",
         ":href" => "" }
-        {{model.last_deployment.deployable.name}}  (## {{model.last_deployment.deployable.id}})
+        {{chil.last_deployment.deployable.name}}  (## {{child.last_deployment.deployable.id}})
 
     %td
       %a{ "v-if" => "child.last_deployment" }
-        column 4
+      /  = render "projects/deployments/commit", deployment: "{{child.last_deployment}}"
       %p.commit-title{ "v-if" => "!child.last_deployment"}
         No deployments yet
 
@@ -76,5 +91,8 @@
         {{child.last_deployment.created_at}}
 
     %td.hidden-xs
-      .pull-right{ "v-if" => "!isFolder"}
-        actions
+      .pull-right
+        -# = render "projects/environments/external_url", environment: "{{child}}"
+        -# = render "projects/deployments/actions", deployment: "{{child.last_deployment}}"
+        -# = render "projects/environments/stop", environment: "{{child}}"
+        -# = render "projects/deployments/rollback", deployment: "{{child.last_deployment}}"
