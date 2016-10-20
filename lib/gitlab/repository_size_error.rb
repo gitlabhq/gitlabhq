@@ -33,7 +33,7 @@ module Gitlab
     end
 
     def above_size_limit_message
-      "#{to_s} You won't be able to push new code to this project. #{more_info_message}"
+      "#{self} You won't be able to push new code to this project. #{more_info_message}"
     end
 
     private
