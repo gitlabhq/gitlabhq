@@ -53,6 +53,7 @@
       margin: 0 0 10px;
     }
 
+
     .login-footer {
       margin-top: 10px;
 
@@ -244,5 +245,21 @@
 
   .navless-container {
     padding: 65px; // height of footer + bottom padding of email confirmation link
+  }
+}
+
+// For sign in pane only, to improve tab order, the following removes the submit button from
+// normal document flow and pins it to the bottom of the form. For context, see !6867 & !6928
+
+.login-box {
+  .new_user {
+    position: relative;
+    padding-bottom: 35px;
+  }
+
+  .move-submit-down {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
   }
 }
