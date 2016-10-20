@@ -13,58 +13,49 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe '#create' do
-    let(:project) { create(:project, :public) }
-
+  describe 'POST create' do
     context 'when users are added' do
-      let(:user) { create(:user) }
-      let(:team_user) { create(:user) }
-      let(:member) do
-        project.team << [team_user, :developer]
-        project.members.find_by(user_id: team_user.id)
-      end
+      let(:project_user) { create(:user) }
+
+      before { sign_in(user) }
 
       context 'when user does not have enough rights' do
-        before do
-          project.members.delete(member)
-          project.team << [user, :developer]
-          sign_in(user)
-        end
+        before { project.team << [user, :developer] }
 
         it 'returns 404' do
           post :create, namespace_id: project.namespace,
                         project_id: project,
-                        user_ids: member
+                        user_ids: project_user.id,
+                        access_level: Gitlab::Access::GUEST
 
           expect(response).to have_http_status(404)
-          expect(project.users).not_to include team_user
+          expect(project.users).not_to include project_user
         end
       end
 
       context 'when user has enough rights' do
-        before do
-          project.team << [user, :master]
-          sign_in(user)
-        end
+        before { project.team << [user, :master] }
 
         it 'adds user to members' do
           post :create, namespace_id: project.namespace,
                         project_id: project,
-                        user_ids: member
+                        user_ids: project_user.id,
+                        access_level: Gitlab::Access::GUEST
 
           expect(response).to set_flash.to 'Users were successfully added.'
           expect(response).to redirect_to(namespace_project_project_members_path(project.namespace, project))
-          expect(project.users).to include team_user
+          expect(project.users).to include project_user
         end
 
         it 'adds no user to members' do
           post :create, namespace_id: project.namespace,
                         project_id: project,
-                        user_ids: ''
+                        user_ids: '',
+                        access_level: Gitlab::Access::GUEST
 
-          expect(response).to set_flash.to 'No users specified.'
+          expect(response).to set_flash.to 'No users or groups specified.'
           expect(response).to redirect_to(namespace_project_project_members_path(project.namespace, project))
-          expect(project.users).not_to include team_user
+          expect(project.users).not_to include project_user
         end
       end
     end
