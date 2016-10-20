@@ -51,11 +51,11 @@
       .dropdown-footer{ "v-if" => "currentPage === ''" }
         %ul.dropdown-footer-list
           %li
-            %a{ "href": "#", "@click.stop.prevent" => "showPage('new')" }
+            %a{ "href" => "#", "@click.stop.prevent" => "showPage('new')" }
               Create new board
           %li
-            %a{ "href": "#", "@click.stop.prevent" => "showPage('edit')" }
+            %a{ "href" => "#", "@click.stop.prevent" => "showPage('edit')" }
               Edit board name
           %li{ "v-if" => "showDelete" }
-            %a.text-danger{ "href": "#", "@click.stop.prevent" => "showPage('delete')" }
+            %a.text-danger{ "href" => "#", "@click.stop.prevent" => "showPage('delete')" }
               Delete board
