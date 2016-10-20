@@ -55,7 +55,7 @@ Entry level [subscription](https://about.gitlab.com/pricing/) for GitLab EE curr
 
 ### Bitbucket
 
-Atlassian's web hosting service for Git and Mercurial Projects i.e. GitLab.com competitor.
+Atlassian's web hosting service for Git and Mercurial Projects. Read about [migrating](https://docs.gitlab.com/ce/workflow/importing/import_projects_from_bitbucket.html) from BitBucket to a GitLab instance. 
 
 ### Branch
 
@@ -152,11 +152,15 @@ The difference between two commits, or saved changes. This will also be shown vi
 
 A folder used for storing multiple files.
 
-### Docker
+### Docker Container Registry
 
-Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
+A [feature](https://docs.gitlab.com/ce/user/project/container_registry.html) of GitLab projects. Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
 
 ### Dynamic Environment
+
+### ElasticSearch
+
+Elasticsearch is a flexible, scalable and powerful search service. When [enabled](https://gitlab.com/help/integration/elasticsearch.md), it helps keep GitLab's search fast when dealing with a huge amount of data. 
 
 ### Emacs
 
@@ -168,6 +172,10 @@ Your [own copy](https://docs.gitlab.com/ce/workflow/forking_workflow.html) of a 
 
 A code review [tool](https://www.gerritcodereview.com/) built on top of Git.
 
+### Git Attributes
+
+A [git attributes file](https://git-scm.com/docs/gitattributes) is a simple text file that gives attributes to pathnames. 
+
 ### Git Hooks
 
 [Scripts](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you can use to trigger actions at certain points.
@@ -178,7 +186,7 @@ A single-tenant solution that provides GitLab CE or EE as a managed service. Git
 
 ### GitHub
 
-A web-based Git repository hosting service with an enterprise offering. Its main features are: issue tracking, pull request with code review, abundancy of integrations and wiki. As of April 2016, the service has over 14 million users. It offers free public repos, private repos and enterprise services are paid.
+A web-based Git repository hosting service with an enterprise offering. Its main features are: issue tracking, pull request with code review, abundancy of integrations and wiki. It offers free public repos, private repos and enterprise services are paid. Read about [importing a project](https://docs.gitlab.com/ce/workflow/importing/import_projects_from_github.html) from GitHub to GitLab.
 
 ### GitLab CE
 
@@ -201,7 +209,7 @@ Our free SaaS for public and private repositories.
 Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](https://docs.gitlab.com/ee/gitlab-geo/README.html) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
 
 ### GitLab Pages
-These allow you to [create websites](https://pages.gitlab.io/) for your GitLab projects, groups, or user account. 
+These allow you to [create websites](https://gitlab.com/help/pages/README.md) for your GitLab projects, groups, or user account. 
 
 ### Gitolite
 
@@ -249,7 +257,7 @@ An Open Source CI tool written using the Java programming language. [Jenkins](ht
 
 ### Jira
 
-Atlassian's [project management software](https://www.atlassian.com/software/jira), i.e. a complex issue tracker. GitLab [can be configured](https://docs.gitlab.com/ee/project_services/jira.html) to interact with JIRA Core either using an on-premises instance or the SaaS solution that Atlassian offers.
+Atlassian's [project management software](https://www.atlassian.com/software/jira), i.e. a complex issue tracker. GitLab [can be configured](https://docs.gitlab.com/ee/project_services/jira.html) to interact with JIRA Core either using an on-premise instance or the SaaS solution that Atlassian offers.
 
 ### JUnit
 
@@ -353,7 +361,7 @@ A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). I
 
 ### OAuth
 
-An open [standard](https://oauth.net/) for authorization, commonly used as a way for internet users to log into third party websites using their Microsoft, Google, Facebook or Twitter accounts without exposing their password.
+An open standard for authorization, commonly used as a way for internet users to log into third party websites using their Microsoft, Google, Facebook or Twitter accounts without exposing their password. GitLab [is](https://docs.gitlab.com/ce/integration/oauth_provider.html) an OAuth2 authentication service provider. 
 
 ### Omnibus Packages
 
@@ -413,7 +421,7 @@ A popular DevOps [automation tool](https://puppet.com/product/how-puppet-works).
 
 ### Push
 
-Git [command](https://git-scm.com/docs/git-push) to send commits from the local repository to the remote repository.
+Git [command](https://git-scm.com/docs/git-push) to send commits from the local repository to the remote repository. Read about [advanced push rules](https://gitlab.com/help/pages/README.md) in GitLab. 
 
 ### RE Read Only
 
@@ -447,6 +455,10 @@ A route table contains rules (called routes) that determine where network traffi
 
 Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner) you have specified to be run on GitLab CI.
 
+### Sidekiq
+
+The background job processor GitLab [uses](https://docs.gitlab.com/ce/administration/troubleshooting/sidekiq.html) to asynchronously run tasks.
+
 ### Software as a service (SaaS)
 
 Software that is hosted centrally and accessed on-demand (i.e. whenever you want to). This applies to GitLab.com.
@@ -465,7 +477,7 @@ The board used to track the status and progress of each of the sprint backlog it
 
 ### Shell
 
-[Terminal](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) on Mac OSX, GitBash on Windows, or Linux Terminal on Linux.
+Terminal on Mac OSX, GitBash on Windows, or Linux Terminal on Linux. You [use git]() and make changes to GitLab projects in your shell. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell. 
 
 ### Single-tenant
 
@@ -517,7 +529,7 @@ A program that allows you to perform superuser/administrator actions on Unix Ope
 
 ### Subversion (SVN)
 
-An open source version control system. 
+An open source version control system. Read about [migrating from SVN](https://docs.gitlab.com/ce/workflow/importing/migrating_from_svn.html) to GitLab using SubGit. 
 
 ### Tag
 
@@ -559,7 +571,7 @@ A [model](http://www.umsl.edu/~hugheyd/is6840/waterfall.html) of building softwa
 
 ### Webhooks
 
-A way for for an app to [provide](https://docs.gitlab.com/ce/web_hooks/web_hooks.html) other applications with real-time information (e.g., send a message to a slack channel when a commit is pushed.)
+A way for for an app to [provide](https://docs.gitlab.com/ce/web_hooks/web_hooks.html) other applications with real-time information (e.g., send a message to a slack channel when a commit is pushed.) Read about setting up [custom git hooks](https://gitlab.com/help/administration/custom_hooks.md) for when webhooks are insufficient. 
 
 ### Wiki
 
