@@ -30,10 +30,7 @@ var config = {
       {
         test: /\.es6$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015']
-        }
+        loader: 'babel-loader'
       }
     ]
   },
