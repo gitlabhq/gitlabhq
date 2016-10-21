@@ -542,6 +542,8 @@ describe Ci::Pipeline, models: true do
     before do
       reset_delivered_emails!
 
+      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+
       perform_enqueued_jobs do
         pipeline.enqueue
         pipeline.run
