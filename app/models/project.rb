@@ -32,8 +32,8 @@ class Project < ActiveRecord::Base
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   after_create :ensure_dir_exist
+  after_create :create_project_feature, unless: :project_feature
   after_save :ensure_dir_exist, if: :namespace_id_changed?
-  after_initialize :setup_project_feature
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -1310,11 +1310,6 @@ class Project < ActiveRecord::Base
     "projects/#{id}/pushes_since_gc"
   end
 
-  # Prevents the creation of project_feature record for every project
-  def setup_project_feature
-    build_project_feature unless project_feature
-  end
-
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
@@ -1344,6 +1339,13 @@ class Project < ActiveRecord::Base
     shared_projects.any?
   end
 
+  # Similar to the normal callbacks that hook into the life cycle of an
+  # Active Record object, you can also define callbacks that get triggered
+  # when you add an object to an association collection. If any of these
+  # callbacks throw an exception, the object will not be added to the
+  # collection. Before you add a new board to the boards collection if you
+  # already have 1, 2, or n it will fail, but it if you have 0 that is lower
+  # than the number of permitted boards per project it won't fail.
   def validate_board_limit(board)
     raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end

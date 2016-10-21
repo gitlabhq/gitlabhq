@@ -73,11 +73,7 @@ module Gitlab
     end
 
     def commits
-      if project.empty_repo? || query.blank?
-        []
-      else
-        project.repository.find_commits_by_message(query).compact
-      end
+      project.repository.find_commits_by_message(query)
     end
 
     def project_ids_relation

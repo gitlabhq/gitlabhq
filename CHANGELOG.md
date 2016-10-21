@@ -3,6 +3,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 8.14.0 (2016-11-22)
   - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
   - Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
+  - Trim leading and trailing whitespace on project_path (Linus Thiel)
+  - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix: Backup restore doesn't clear cache
 
 ## 8.13.0 (2016-10-22)
 
@@ -22,11 +26,13 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add `/projects/visible` API endpoint (Ben Boeckel)
   - Fix centering of custom header logos (Ashley Dumaine)
   - Keep around commits only pipeline creation as pipeline data doesn't change over time
+  - Update duration at the end of pipeline
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add group level labels. (!6425)
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
+  - Fix project_feature record not generated on project creation
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
@@ -35,11 +41,14 @@ Please view this file on the master branch, on stable branches it's out of date.
   - AbstractReferenceFilter caches project_refs on RequestStore when active
   - Replaced the check sign to arrow in the show build view. !6501
   - Add a /wip slash command to toggle the Work In Progress status of a merge request. !6259 (tbalthazar)
+  - ProjectCacheWorker updates caches at most once per 15 minutes per project
   - Fix Error 500 when viewing old merge requests with bad diff data
   - Create a new /templates namespace for the /licenses, /gitignores and /gitlab_ci_ymls API endpoints. !5717 (tbalthazar)
+  - Fix viewing merged MRs when the source project has been removed !6991
   - Speed-up group milestones show page
   - Fix inconsistent options dropdown caret on mobile viewports (ClemMakesApps)
   - Extract project#update_merge_requests and SystemHooks to its own worker from GitPushService
+  - Fix discussion thread from emails for merge requests. !7010
   - Don't include archived projects when creating group milestones. !4940 (Jeroen Jacobs)
   - Add tag shortcut from the Commit page. !6543
   - Keep refs for each deployment
@@ -135,6 +144,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Delete dynamic environments
   - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
+  - Fix broken Project API docs (Takuya Noguchi)
 
 ## 8.12.7
 

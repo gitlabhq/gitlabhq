@@ -25,6 +25,20 @@ feature 'Merge request created from fork' do
     expect(page).to have_content 'Test merge request'
   end
 
+  context 'source project is deleted' do
+    background do
+      MergeRequests::MergeService.new(project, user).execute(merge_request)
+      fork_project.destroy!
+    end
+
+    scenario 'user can access merge request' do
+      visit_merge_request(merge_request)
+
+      expect(page).to have_content 'Test merge request'
+      expect(page).to have_content "(removed):#{merge_request.source_branch}"
+    end
+  end
+
   context 'pipeline present in source project' do
     include WaitForAjax
 
