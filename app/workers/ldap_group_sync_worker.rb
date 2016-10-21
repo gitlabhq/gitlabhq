@@ -1,7 +1,6 @@
 class LdapGroupSyncWorker
   include Sidekiq::Worker
-
-  sidekiq_options retry: false
+  include CronjobQueue
 
   def perform(group_id = nil)
     if group_id

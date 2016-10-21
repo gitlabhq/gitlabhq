@@ -1,5 +1,6 @@
 class UpdateAllMirrorsWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   LEASE_TIMEOUT = 3600
 

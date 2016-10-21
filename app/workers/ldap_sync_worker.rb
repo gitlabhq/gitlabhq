@@ -1,7 +1,6 @@
 class LdapSyncWorker
   include Sidekiq::Worker
-
-  sidekiq_options retry: false
+  include CronjobQueue
 
   def perform
     return unless Gitlab.config.ldap.enabled

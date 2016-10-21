@@ -1,5 +1,6 @@
 class UpdateAllRemoteMirrorsWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   def perform
     fail_stuck_mirrors!

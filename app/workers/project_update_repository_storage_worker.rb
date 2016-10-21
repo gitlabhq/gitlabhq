@@ -1,7 +1,6 @@
 class ProjectUpdateRepositoryStorageWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include DedicatedSidekiqQueue
 
   def perform(project_id, new_repository_storage_key)
     project = Project.find(project_id)

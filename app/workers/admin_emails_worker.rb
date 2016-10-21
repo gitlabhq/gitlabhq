@@ -1,5 +1,6 @@
 class AdminEmailsWorker
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
 
   def perform(recipient_id, subject, body)
     recipient_list(recipient_id).pluck(:id).each do |user_id|

@@ -1,8 +1,7 @@
 class GeoKeyRefreshWorker
   include Sidekiq::Worker
   include ::GeoDynamicBackoff
-
-  sidekiq_options queue: :default
+  include GeoQueue
 
   def perform(key_id, key, action)
     action = action.to_sym

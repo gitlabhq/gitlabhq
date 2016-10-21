@@ -1,7 +1,6 @@
 class GeoBulkNotifyWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include CronjobQueue
 
   def perform
     Geo::NotifyNodesService.new.execute
