@@ -13,11 +13,11 @@ module Gitlab
 
       def issue_events
         # TODO figure out what the frontend needs for displaying the avatar
-        @fetcher.fetch_issue_events.each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :issue).each { |event| parse_event(event) }
       end
 
       def plan_events
-        @fetcher.fetch_plan_events.each do |event|
+        @fetcher.fetch(stage: :plan).each do |event|
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           commits = event.delete('commits')
           event['commit'] = first_time_reference_commit(commits, event)
@@ -25,22 +25,22 @@ module Gitlab
       end
 
       def code_events
-        @fetcher.fetch_code_events.each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :code).each { |event| parse_event(event) }
       end
 
       def test_events
-        @fetcher.fetch_test_events.each do |event|
+        @fetcher.fetch(stage: :test).each do |event|
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           event['pipeline'] = ::Ci::Pipeline.find_by_id(event['ci_commit_id']) # we may not have a pipeline
         end
       end
 
       def review_events
-        @fetcher.fetch_review_events.each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :review).each { |event| parse_event(event) }
       end
 
       def staging_events
-        @fetcher.fetch_staging_events.each do |event|
+        @fetcher.fetch(stage: :staging).each do |event|
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           event['pipeline'] = ::Ci::Pipeline.find_by_id(event['ci_commit_id']) # we may not have a pipeline
         end

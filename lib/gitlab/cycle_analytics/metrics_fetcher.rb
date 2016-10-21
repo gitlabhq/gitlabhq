@@ -6,6 +6,10 @@ module Gitlab
 
       DEPLOYMENT_METRIC_STAGES = %i[production staging]
 
+      def self.included(klass)
+        klass.extend self
+      end
+
       private
 
       def calculate_metric(name, start_time_attrs, end_time_attrs)
@@ -70,6 +74,10 @@ module Gitlab
 
       def issue_metrics_table
         Issue::Metrics.arel_table
+      end
+
+      def user_table
+        User.arel_table
       end
     end
   end

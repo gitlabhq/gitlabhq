@@ -3,121 +3,73 @@ module Gitlab
     class EventsFetcher
       include MetricsFetcher
 
+      EVENTS_CONFIG = {
+        issue: {
+          start_time_attrs: issue_table[:created_at],
+          end_time_attrs: [issue_metrics_table[:first_associated_with_milestone_at],
+                           issue_metrics_table[:first_added_to_board_at]],
+          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name]],
+          project: @project,
+          from: @from
+        },
+        plan: {
+          start_time_attrs: issue_metrics_table[:first_associated_with_milestone_at],
+          end_time_attrs: [issue_metrics_table[:first_added_to_board_at],
+                           issue_metrics_table[:first_mentioned_in_commit_at]],
+          projections: [mr_diff_table[:st_commits].as('commits'), issue_metrics_table[:first_mentioned_in_commit_at]]
+        },
+        code: {
+          start_time_attrs: issue_metrics_table[:first_mentioned_in_commit_at],
+          end_time_attrs: mr_table[:created_at],
+          projections: [mr_table[:title], mr_table[:iid], mr_table[:created_at], user_table[:name]],
+          order: mr_table[:created_at]
+        },
+        test: {
+          start_time_attrs: mr_metrics_table[:latest_build_started_at],
+          end_time_attrs: mr_metrics_table[:latest_build_finished_at],
+          projections: mr_metrics_table[:ci_commit_id],
+          order: mr_table[:created_at]
+        },
+        review: {
+          start_time_attrs: mr_table[:created_at],
+          end_time_attrs: mr_metrics_table[:merged_at],
+          projections: [mr_table[:title], mr_table[:iid], mr_table[:created_at], user_table[:name]]
+        },
+        staging: {
+          start_time_attrs: mr_metrics_table[:merged_at],
+          end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
+          projections: mr_metrics_table[:ci_commit_id]
+        }
+      }.freeze
+
       def initialize(project:, from:)
         @project = project
         @from = from
+        @query = EventsQuery.new(project: project, from: from)
       end
 
-      def fetch_issue_events
-        base_query = base_query_for(:issue)
-        diff_fn = subtract_datetimes_diff(base_query, issue_table[:created_at], issue_attributes)
+      def fetch(stage:)
+        custom_query = "#{stage}_custom_query".to_sym
 
-        query = base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id])).
-          project(extract_epoch(diff_fn).as('total_time'), *issue_projections).
-          order(issue_table[:created_at].desc)
-
-        execute(query)
+        @query.execute(stage, EVENTS_CONFIG[stage]) do |base_query|
+          public_send(custom_query, base_query) if self.respond_to?(custom_query)
+        end
       end
 
-      def fetch_plan_events
-        base_query = base_query_for(:plan)
-        diff_fn = subtract_datetimes_diff(base_query,
-                                          issue_metrics_table[:first_associated_with_milestone_at],
-                                          plan_attributes)
-
-        query = base_query.join(mr_diff_table).on(mr_diff_table[:merge_request_id].eq(mr_table[:id])).
-          project(extract_epoch(diff_fn).as('total_time'), *plan_projections).
-          order(issue_metrics_table[:first_associated_with_milestone_at].desc)
-
-        execute(query)
+      def issue_custom_query(base_query)
+        base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id]))
       end
 
-      def fetch_code_events
-        base_query = base_query_for(:code)
-        diff_fn = subtract_datetimes_diff(base_query,
-                                          issue_metrics_table[:first_mentioned_in_commit_at],
-                                          mr_table[:created_at])
-
-        query = base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id])).
-          project(extract_epoch(diff_fn).as('total_time'), *code_projections).
-          order(mr_table[:created_at].desc)
-
-        execute(query)
+      def plan_custom_query(base_query)
+        base_query.join(mr_diff_table).on(mr_diff_table[:merge_request_id].eq(mr_table[:id]))
       end
 
-      def fetch_test_events
-        base_query = base_query_for(:test)
-        diff_fn = subtract_datetimes_diff(base_query,
-                                          mr_metrics_table[:latest_build_started_at],
-                                          mr_metrics_table[:latest_build_finished_at])
-
-        query = base_query.project(extract_epoch(diff_fn).as('total_time'), mr_metrics_table[:ci_commit_id]).
-          order(mr_table[:created_at].desc)
-
-        execute(query)
+      def code_custom_query(base_query)
+        base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id]))
       end
 
-      def fetch_review_events
-        base_query = base_query_for(:review)
-        diff_fn = subtract_datetimes_diff(base_query,
-                                          mr_table[:created_at],
-                                          mr_metrics_table[:merged_at])
-
-        query = base_query.join(user_table).on(mr_table[:author_id].eq(user_table[:id])).
-          project(extract_epoch(diff_fn).as('total_time'), *code_projections).
-          order(mr_table[:created_at].desc)
-
-        execute(query)
-      end
-
-      def fetch_staging_events
-        base_query = base_query_for(:staging)
-        diff_fn = subtract_datetimes_diff(base_query,
-                                          mr_metrics_table[:merged_at],
-                                          mr_metrics_table[:first_deployed_to_production_at])
-
-        query = base_query.project(extract_epoch(diff_fn).as('total_time'), mr_metrics_table[:ci_commit_id]).
-          order(mr_table[:created_at].desc)
-
-        execute(query)
-      end
-
-      private
-
-      def issue_attributes
-        [issue_metrics_table[:first_associated_with_milestone_at],
-         issue_metrics_table[:first_added_to_board_at]]
-      end
-
-      def plan_attributes
-        [issue_metrics_table[:first_added_to_board_at],
-         issue_metrics_table[:first_mentioned_in_commit_at]]
-      end
-
-      def issue_projections
-        [issue_table[:title], issue_table[:iid], issue_table[:created_at], User.arel_table[:name]]
-      end
-
-      def plan_projections
-        [mr_diff_table[:st_commits].as('commits'), issue_metrics_table[:first_mentioned_in_commit_at]]
-      end
-
-      def code_projections
-        [mr_table[:title], mr_table[:iid], mr_table[:created_at], User.arel_table[:name]]
-      end
-
-      def user_table
-        User.arel_table
-      end
-
-      def extract_epoch(arel_attribute)
-        return arel_attribute unless Gitlab::Database.postgresql?
-
-        Arel.sql(%Q{EXTRACT(EPOCH FROM (#{arel_attribute.to_sql}))})
-      end
-
-      def execute(query)
-        ActiveRecord::Base.connection.execute(query.to_sql).to_a
+      def review_custom_query(base_query)
+        base_query.join(user_table).on(mr_table[:author_id].eq(user_table[:id]))
       end
     end
   end
