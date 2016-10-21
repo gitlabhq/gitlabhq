@@ -21,7 +21,7 @@
     });
 
     it('should ignore elements with custom error handling', function() {
-      const customErrorFlag = 'no-gl-field-errors';
+      const customErrorFlag = 'gl-field-error-ignore';
       const customErrorElem = $(`.${customErrorFlag}`);
 
       expect(customErrorElem.length).toBe(1);
