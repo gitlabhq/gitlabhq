@@ -13,6 +13,7 @@ describe 'Issues csv', feature: true do
   it "downloads from a project's issue index" do
     visit namespace_project_issues_path(project.namespace, project)
     click_on 'Download CSV'
+    click_on 'Request export'
 
     expect(page.response_headers['Content-Type']).to include('csv')
   end
@@ -22,6 +23,7 @@ describe 'Issues csv', feature: true do
 
     visit namespace_project_issues_path(project.namespace, project)
     click_on 'Download CSV'
+    click_on 'Request export'
 
     expect(csv.count).to eq 31
   end
@@ -29,6 +31,7 @@ describe 'Issues csv', feature: true do
   it 'uses filters from issue index' do
     visit namespace_project_issues_path(project.namespace, project, state: :closed)
     click_on 'Download CSV'
+    click_on 'Request export'
 
     expect(csv.count).to eq 0
   end
