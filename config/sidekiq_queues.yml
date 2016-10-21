@@ -44,3 +44,9 @@
   - [git_garbage_collect, 1]
   - [cronjob, 1]
   - [default, 1]
+  # EE specific queues
+  - [pages, 1]
+  - [elasticsearch, 1]
+  - [geo, 1]
+  - [project_update_repository_storage, 1]
+  - [admin_emails, 1]

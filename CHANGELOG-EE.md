@@ -12,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
   - User groups (that can be assigned as approvers)
   - Fix a search for non-default branches when ES is enabled
+  - Re-organized the Sidekiq queues for EE specific workers
 
 ## 8.12.7
 

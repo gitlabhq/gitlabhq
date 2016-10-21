@@ -2,10 +2,8 @@ class GitlabUsagePingWorker
   LEASE_TIMEOUT = 86400
 
   include Sidekiq::Worker
+  include CronjobQueue
   include HTTParty
-
-  # This is not guaranteed to succeed, so don't retry on failure
-  sidekiq_options queue: :default, retry: false
 
   def perform
     return unless current_application_settings.usage_ping_enabled
