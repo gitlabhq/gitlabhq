@@ -337,8 +337,7 @@ module API
           merge(ProjectsFinder.new.execute(current_user)).
           references(:project).
           with_associations.
-          recent.
-          page(params[:page])
+          recent
 
         present paginate(events), with: Entities::Event
       end
