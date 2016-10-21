@@ -254,6 +254,12 @@ test:
 This will make GitLab CI initialize (fetch) and update (checkout) all your
 submodules recursively.
 
+If git does not use the newly added relative URLs but still uses your old URLs,
+you might need to add `git submodule sync --recursive` to your `.gitlab-ci.yml`,
+prior to running `git submodule update --init --recursive`. This transfers the
+changes from your `.gitmodules` file into the `.git` folder, which is kept by
+runners between runs.
+
 In case your environment or your Docker image doesn't have Git installed,
 you have to either ask your Administrator or install the missing dependency
 yourself:
