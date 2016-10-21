@@ -13,6 +13,11 @@
      * In order to display a tree view we need to modify the received 
      * data in to a tree structure based on `environment_type` 
      * sorted alphabetically.
+     * In each children a `vue-` property will be added. This property will be
+     * used to know if an item is a children mostly for css purposes. This is 
+     * needed because the children row is a fragment instance and therfore does
+     * not accept non-prop attributes.
+     * 
      * 
      * @example
      * it will transform this:
@@ -25,8 +30,8 @@
      * [
      *   { name: "review", children: 
      *      [
-     *        { name: "environment", environment_type: "review"},
-     *        { name: "environment_2", environment_type: "review"}
+     *        { name: "environment", environment_type: "review", vue-isChildren: true},
+     *        { name: "environment_2", environment_type: "review", vue-isChildren: true}
      *      ]
      *   },
      *  {name: "environment_1", environment_type: null}
@@ -44,12 +49,15 @@
           });
 
           if (occurs !== undefined) {
-            acc[acc.indexOf(occurs)].children.push(environment);
+            acc[acc.indexOf(occurs)].children.push(
+              Object.assign({}, environment, {"vue-isChildren": true}));
             acc[acc.indexOf(occurs)].children.sort();
           } else {
             acc.push({
               name: environment.environment_type,
-              children: [environment]
+              children: [
+                Object.assign({}, environment, {"vue-isChildren": true})
+              ]
             });
           }
         } else {
