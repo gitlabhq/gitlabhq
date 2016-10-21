@@ -5,6 +5,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Trim leading and trailing whitespace on project_path (Linus Thiel)
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
   - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix: Backup restore doesn't clear cache
 
 ## 8.13.0 (2016-10-22)
 
