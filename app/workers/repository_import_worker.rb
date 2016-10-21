@@ -1,8 +1,7 @@
 class RepositoryImportWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
-
-  sidekiq_options queue: :gitlab_shell
+  include DedicatedSidekiqQueue
 
   attr_accessor :project, :current_user
 

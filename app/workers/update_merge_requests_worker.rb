@@ -1,5 +1,6 @@
 class UpdateMergeRequestsWorker
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
 
   def perform(project_id, user_id, oldrev, newrev, ref)
     project = Project.find_by(id: project_id)

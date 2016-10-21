@@ -1,8 +1,7 @@
 module RepositoryCheck
   class SingleRepositoryWorker
     include Sidekiq::Worker
-
-    sidekiq_options retry: false
+    include RepositoryCheckQueue
 
     def perform(project_id)
       project = Project.find(project_id)

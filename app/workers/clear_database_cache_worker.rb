@@ -1,6 +1,7 @@
 # This worker clears all cache fields in the database, working in batches.
 class ClearDatabaseCacheWorker
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
 
   BATCH_SIZE = 1000
 
