@@ -4,7 +4,7 @@ module MergeRequests
       @assignable_issues ||= begin
         if current_user == merge_request.author
           closes_issues.select do |issue|
-            !issue.assignee_id? && can?(current_user, :admin_issue, issue)
+            !issue.is_a?(ExternalIssue) && !issue.assignee_id? && can?(current_user, :admin_issue, issue)
           end
         else
           []
