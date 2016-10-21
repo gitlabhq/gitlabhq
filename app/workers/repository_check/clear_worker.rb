@@ -1,8 +1,7 @@
 module RepositoryCheck
   class ClearWorker
     include Sidekiq::Worker
-
-    sidekiq_options retry: false
+    include RepositoryCheckQueue
 
     def perform
       # Do small batched updates because these updates will be slow and locking
