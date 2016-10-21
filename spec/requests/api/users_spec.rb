@@ -958,6 +958,26 @@ describe API::API, api: true  do
           expect(joined_event['author']['name']).to eq(user.name)
         end
       end
+
+      context 'when there are multiple events' do
+        let(:old_note) { create(:note_on_issue, project: project) }
+        let(:new_event) { note.events.first }
+        let(:old_event) { old_note.events.first }
+
+        before do
+          EventCreateService.new.leave_note(old_note, user)
+
+          new_event.update(id: 1000)
+          old_event.update(id: 900)
+        end
+
+        it 'returns them in the correct order (from newest to oldest determined by ID field)' do
+          get api("/users/#{user.id}/events", user)
+
+          expect(json_response[0]['target_id']).to eq(note.id)
+          expect(json_response[1]['target_id']).to eq(old_note.id)
+        end
+      end
     end
 
     it 'returns a 404 error if not found' do
