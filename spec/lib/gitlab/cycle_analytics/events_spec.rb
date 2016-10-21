@@ -78,10 +78,12 @@ describe Gitlab::CycleAnalytics::Events do
   describe '#test_events' do
     let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
     let(:merge_request) { MergeRequest.first }
-    let!(:pipeline) { create(:ci_pipeline,
-                             ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha,
-                             project: context.project) }
+    let!(:pipeline) do
+      create(:ci_pipeline,
+             ref: merge_request.source_branch,
+             sha: merge_request.diff_head_sha,
+             project: context.project)
+    end
 
     before do
       pipeline.run!
@@ -120,7 +122,6 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.review_events.first['name']).to eq(MergeRequest.first.author.name)
     end
   end
-
 
   def setup(context)
     milestone = create(:milestone, project: project)

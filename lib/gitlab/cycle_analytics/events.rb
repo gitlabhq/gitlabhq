@@ -13,7 +13,7 @@ module Gitlab
 
       def issue_events
         # TODO figure out what the frontend needs for displaying the avatar
-        @fetcher.fetch_issue_events { |event| parse_event(event) }
+        @fetcher.fetch_issue_events.each { |event| parse_event(event) }
       end
 
       def plan_events
@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def code_events
-        @fetcher.fetch_code_events { |event| parse_event(event) }
+        @fetcher.fetch_code_events.each { |event| parse_event(event) }
       end
 
       def test_events
@@ -39,12 +39,12 @@ module Gitlab
         @fetcher.fetch_review_events.each { |event| parse_event(event) }
       end
 
+      private
+
       def parse_event(event)
         event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
         event['created_at'] = interval_in_words(event['created_at'])
       end
-
-      private
 
       def first_time_reference_commit(commits, event)
         st_commit = YAML.load(commits).detect do |commit|
