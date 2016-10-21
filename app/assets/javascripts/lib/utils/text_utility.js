@@ -112,6 +112,9 @@
     gl.text.removeListeners = function(form) {
       return $('.js-md', form).off();
     };
+    gl.text.humanize = function(string) {
+      return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
+    }
     return gl.text.truncate = function(string, maxLength) {
       return string.substr(0, (maxLength - 3)) + '...';
     };
