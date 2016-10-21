@@ -68,7 +68,7 @@ class Group < Namespace
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.group_url(self)
+    Gitlab::Routing.url_helpers.group_canonical_url(self)
   end
 
   def human_name
