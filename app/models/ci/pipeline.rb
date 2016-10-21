@@ -30,23 +30,23 @@ module Ci
       end
 
       event :run do
-        transition any => :running
+        transition any - [:running] => :running
       end
 
       event :skip do
-        transition any => :skipped
+        transition any - [:skipped] => :skipped
       end
 
       event :drop do
-        transition any => :failed
+        transition any - [:failed] => :failed
       end
 
       event :succeed do
-        transition any => :success
+        transition any - [:success] => :success
       end
 
       event :cancel do
-        transition any => :canceled
+        transition any - [:canceled] => :canceled
       end
 
       # IMPORTANT
@@ -263,6 +263,20 @@ module Ci
     end
 
     def update_status
+      reload
+
+      can_update =
+        case latest_builds_status
+        when 'pending' then can_enqueue?
+        when 'running' then can_run?
+        when 'success' then can_succeed?
+        when 'failed' then can_drop?
+        when 'canceled' then can_cancel?
+        when 'skipped' then can_skip?
+        end
+
+      return unless can_update
+
       with_lock do
         case latest_builds_status
         when 'pending' then enqueue

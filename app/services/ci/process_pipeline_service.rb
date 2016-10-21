@@ -15,7 +15,7 @@ module Ci
           process_stage(index)
         end
 
-      @pipeline.update_status if new_builds.flatten.any?
+      @pipeline.update_status
 
       new_builds.flatten.any?
     end
