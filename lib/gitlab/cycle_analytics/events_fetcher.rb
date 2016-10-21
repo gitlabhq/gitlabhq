@@ -8,9 +8,7 @@ module Gitlab
           start_time_attrs: issue_table[:created_at],
           end_time_attrs: [issue_metrics_table[:first_associated_with_milestone_at],
                            issue_metrics_table[:first_added_to_board_at]],
-          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name]],
-          project: @project,
-          from: @from
+          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name]]
         },
         plan: {
           start_time_attrs: issue_metrics_table[:first_associated_with_milestone_at],
@@ -39,12 +37,15 @@ module Gitlab
           start_time_attrs: mr_metrics_table[:merged_at],
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
           projections: mr_metrics_table[:ci_commit_id]
-        }
+        },
+        production: {
+          start_time_attrs: issue_table[:created_at],
+          end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
+          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name]]
+        },
       }.freeze
 
       def initialize(project:, from:)
-        @project = project
-        @from = from
         @query = EventsQuery.new(project: project, from: from)
       end
 
@@ -60,12 +61,11 @@ module Gitlab
         base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id]))
       end
 
+      alias_method :code_custom_query, :issue_custom_query
+      alias_method :production_custom_query, :issue_custom_query
+
       def plan_custom_query(base_query)
         base_query.join(mr_diff_table).on(mr_diff_table[:merge_request_id].eq(mr_table[:id]))
-      end
-
-      def code_custom_query(base_query)
-        base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id]))
       end
 
       def review_custom_query(base_query)
