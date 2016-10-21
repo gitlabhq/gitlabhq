@@ -1,7 +1,7 @@
 class ProjectWebHookWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :project_web_hook
+  sidekiq_options queue: :project_web_hook, retry: 4
 
   def perform(hook_id, data, hook_name)
     data = data.with_indifferent_access
