@@ -105,7 +105,11 @@ module Gitlab
               per_page: per_page
             )
           else
-            project.repository.find_commits_by_message(query).compact
+            Kaminari.paginate_array(
+              project.repository.find_commits_by_message(query).compact,
+              page: (page || 1).to_i,
+              per_page: per_page
+            )
           end
         end
       end

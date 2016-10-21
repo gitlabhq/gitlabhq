@@ -63,6 +63,15 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
     end
   end
 
+  describe "search for commits in non-default branch" do
+    it "finds needed commit" do
+      project = create :project
+
+      result = Gitlab::Elastic::ProjectSearchResults.new(user, "initial", project.id, 'test')
+      expect(result.commits_count).to eq(1)
+    end
+  end
+
   describe 'confidential issues' do
     let(:query) { 'issue' }
     let(:author) { create(:user) }
