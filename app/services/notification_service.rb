@@ -489,9 +489,14 @@ class NotificationService
   end
 
   def reject_users_without_access(recipients, target)
-    return recipients unless target.is_a?(Issuable)
+    ability = case target
+              when Issuable
+                :"read_#{target.to_ability_name}"
+              when Ci::Pipeline
+                :read_build # We have build trace in pipeline emails
+              end
 
-    ability = :"read_#{target.to_ability_name}"
+    return recipients unless ability
 
     recipients.select do |user|
       user.can?(ability, target)
