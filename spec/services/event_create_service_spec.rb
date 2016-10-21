@@ -123,4 +123,23 @@ describe EventCreateService, services: true do
       expect { service.push(project, user, {}) }.to change { user.last_activity_at }
     end
   end
+
+  describe 'Project' do
+    let(:user) { create :user }
+    let(:project) { create(:empty_project) }
+
+    describe '#join_project' do
+      subject { service.join_project(project, user) }
+
+      it { is_expected.to be_truthy }
+      it { expect { subject }.to change { Event.count }.from(0).to(1) }
+    end
+
+    describe '#expired_leave_project' do
+      subject { service.expired_leave_project(project, user) }
+
+      it { is_expected.to be_truthy }
+      it { expect { subject }.to change { Event.count }.from(0).to(1) }
+    end
+  end
 end

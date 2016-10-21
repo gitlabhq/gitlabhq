@@ -175,11 +175,13 @@ class ProjectPolicy < BasePolicy
   end
 
   def disabled_features!
+    repository_enabled = project.feature_available?(:repository, user)
+
     unless project.feature_available?(:issues, user)
       cannot!(*named_abilities(:issue))
     end
 
-    unless project.feature_available?(:merge_requests, user)
+    unless project.feature_available?(:merge_requests, user) && repository_enabled
       cannot!(*named_abilities(:merge_request))
     end
 
@@ -196,11 +198,19 @@ class ProjectPolicy < BasePolicy
       cannot!(*named_abilities(:wiki))
     end
 
-    unless project.feature_available?(:builds, user)
+    unless project.feature_available?(:builds, user) && repository_enabled
       cannot!(*named_abilities(:build))
       cannot!(*named_abilities(:pipeline))
       cannot!(*named_abilities(:environment))
       cannot!(*named_abilities(:deployment))
+    end
+
+    unless repository_enabled
+      cannot! :push_code
+      cannot! :push_code_to_protected_branches
+      cannot! :download_code
+      cannot! :fork_project
+      cannot! :read_commit_status
     end
 
     unless project.container_registry_enabled

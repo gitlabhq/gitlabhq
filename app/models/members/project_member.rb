@@ -129,7 +129,11 @@ class ProjectMember < Member
   end
 
   def post_destroy_hook
-    event_service.leave_project(self.project, self.user)
+    if expired?
+      event_service.expired_leave_project(self.project, self.user)
+    else
+      event_service.leave_project(self.project, self.user)
+    end
 
     super
   end

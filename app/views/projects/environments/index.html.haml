@@ -3,14 +3,27 @@
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
-  - if can?(current_user, :create_environment, @project) && !@environments.blank?
-    .top-area
+  .top-area
+    %ul.nav-links
+      %li{class: ('active' if @scope.nil?)}
+        = link_to project_environments_path(@project) do
+          Available
+          %span.badge.js-available-environments-count
+            = number_with_delimiter(@all_environments.available.count)
+
+      %li{class: ('active' if @scope == 'stopped')}
+        = link_to project_environments_path(@project, scope: :stopped) do
+          Stopped
+          %span.badge.js-stopped-environments-count
+            = number_with_delimiter(@all_environments.stopped.count)
+
+    - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
       .nav-controls
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
 
   .environments-container
-    - if @environments.blank?
+    - if @all_environments.blank?
       .blank-state.blank-state-no-icon
         %h2.blank-state-title
           You don't have any environments right now.

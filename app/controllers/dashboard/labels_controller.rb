@@ -1,9 +1,9 @@
 class Dashboard::LabelsController < Dashboard::ApplicationController
   def index
-    labels = Label.where(project_id: projects).select(:id, :title, :color).uniq(:title)
+    labels = LabelsFinder.new(current_user).execute
 
     respond_to do |format|
-      format.json { render json: labels }
+      format.json { render json: labels.as_json(only: [:id, :title, :color]) }
     end
   end
 end

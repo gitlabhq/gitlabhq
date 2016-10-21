@@ -13,6 +13,11 @@ class JiraService < IssueTrackerService
 
   before_update :reset_password
 
+  # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
+  def reference_pattern
+    @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
+  end
+
   def reset_password
     # don't reset the password if a new one is provided
     if api_url_changed? && !password_touched?

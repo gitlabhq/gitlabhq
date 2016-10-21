@@ -237,8 +237,10 @@ describe Gitlab::GitAccess, lib: true do
           permissions_matrix[role].each do |action, allowed|
             context action do
               subject { access.push_access_check(changes[action]) }
-
-              it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+                subject { access.push_access_check(changes[action]) }
+                
+                it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+              end
             end
           end
         end

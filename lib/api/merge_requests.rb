@@ -87,14 +87,11 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
+        attrs[:labels] = params[:labels] if params[:labels]
+
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, attrs).execute
 
         if merge_request.valid?
-          # Find or create labels and attach to issue
-          if params[:labels].present?
-            merge_request.add_labels_by_names(params[:labels].split(","))
-          end
-
           present merge_request, with: Entities::MergeRequest, current_user: current_user
         else
           handle_merge_request_errors! merge_request.errors
@@ -196,15 +193,11 @@ module API
             render_api_error!({ labels: errors }, 400)
           end
 
+          attrs[:labels] = params[:labels] if params[:labels]
+
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)
 
           if merge_request.valid?
-            # Find or create labels and attach to issue
-            unless params[:labels].nil?
-              merge_request.remove_labels
-              merge_request.add_labels_by_names(params[:labels].split(","))
-            end
-
             present merge_request, with: Entities::MergeRequest, current_user: current_user
           else
             handle_merge_request_errors! merge_request.errors

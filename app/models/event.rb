@@ -12,6 +12,7 @@ class Event < ActiveRecord::Base
   JOINED    = 8 # User joined project
   LEFT      = 9 # User left project
   DESTROYED = 10
+  EXPIRED   = 11 # User left project due to expiry
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
@@ -120,6 +121,10 @@ class Event < ActiveRecord::Base
     action == LEFT
   end
 
+  def expired?
+    action == EXPIRED
+  end
+
   def destroyed?
     action == DESTROYED
   end
@@ -129,7 +134,7 @@ class Event < ActiveRecord::Base
   end
 
   def membership_changed?
-    joined? || left?
+    joined? || left? || expired?
   end
 
   def created_project?
@@ -189,6 +194,8 @@ class Event < ActiveRecord::Base
       'joined'
     elsif left?
       'left'
+    elsif expired?
+      'removed due to membership expiration from'
     elsif destroyed?
       'destroyed'
     elsif commented?

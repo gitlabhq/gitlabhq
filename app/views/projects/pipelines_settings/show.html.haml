@@ -7,7 +7,7 @@
   .col-lg-9
     %h5.prepend-top-0
       Pipelines
-    = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project), remote: true, authenticity_token: true do |f|
+    = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project) do |f|
       %fieldset.builds-feature
         - unless @repository.gitlab_ci_yml
           .form-group
@@ -64,8 +64,8 @@
           .checkbox
             = f.label :public_builds do
               = f.check_box :public_builds
-              %strong Public pipelines
-            .help-block Allow everyone to access pipelines for Public and Internal projects
+              %strong Public builds
+            .help-block Allow everyone to access builds traces for Public and Internal projects
 
         - if @project.mirror?
           = render 'shared/mirror_trigger_builds_setting', f: f

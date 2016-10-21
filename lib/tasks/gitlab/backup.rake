@@ -52,6 +52,7 @@ namespace :gitlab do
         $progress.puts 'done'.color(:green)
         Rake::Task['gitlab:backup:db:restore'].invoke
       end
+
       Rake::Task['gitlab:backup:repo:restore'].invoke unless backup.skipped?('repositories')
       Rake::Task['gitlab:backup:uploads:restore'].invoke unless backup.skipped?('uploads')
       Rake::Task['gitlab:backup:builds:restore'].invoke unless backup.skipped?('builds')
@@ -60,6 +61,7 @@ namespace :gitlab do
       Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
       Rake::Task['gitlab:backup:registry:restore'].invoke unless backup.skipped?('registry')
       Rake::Task['gitlab:shell:setup'].invoke
+      Rake::Task['cache:clear'].invoke
 
       backup.cleanup
     end

@@ -130,7 +130,7 @@
 }
 
 .board-blank-state {
-  height: 100%;
+  height: calc(100% - 49px);
   padding: $gl-padding;
   background-color: #fff;
 }

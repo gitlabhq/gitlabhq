@@ -117,7 +117,7 @@ describe HipchatService, models: true do
     end
 
     context 'issue events' do
-      let(:issue) { create(:issue, title: 'Awesome issue', description: 'please fix') }
+      let(:issue) { create(:issue, title: 'Awesome issue', description: '**please** fix') }
       let(:issue_service) { Issues::CreateService.new(project, user) }
       let(:issues_sample_data) { issue_service.hook_data(issue, 'open') }
 
@@ -135,12 +135,12 @@ describe HipchatService, models: true do
             "<a href=\"#{obj_attr[:url]}\">issue ##{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome issue</b>" \
-            "<pre>please fix</pre>")
+            "<pre><strong>please</strong> fix</pre>")
       end
     end
 
     context 'merge request events' do
-      let(:merge_request) { create(:merge_request, description: 'please fix', title: 'Awesome merge request', target_project: project, source_project: project) }
+      let(:merge_request) { create(:merge_request, description: '**please** fix', title: 'Awesome merge request', target_project: project, source_project: project) }
       let(:merge_service) { MergeRequests::CreateService.new(project, user) }
       let(:merge_sample_data) { merge_service.hook_data(merge_request, 'open') }
       let(:approved_merge_sample_data) { merge_service.hook_data(merge_request, 'approved') }
@@ -159,8 +159,8 @@ describe HipchatService, models: true do
           expect(message).to eq("#{user.name} opened " \
             "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr['iid']}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            '<b>Awesome merge request</b>' \
-            '<pre>please fix</pre>')
+            "<b>Awesome merge request</b>" \
+            "<pre><strong>please</strong> fix</pre>")
         end
 
         it 'creates a message for approved merge requests' do
@@ -216,7 +216,7 @@ describe HipchatService, models: true do
         let(:merge_request_note) do
           create(:note_on_merge_request, noteable: merge_request,
                                          project: project,
-                                         note: "merge request note")
+                                         note: "merge request **note**")
         end
 
         it "calls Hipchat API for merge request comment events" do
@@ -235,7 +235,7 @@ describe HipchatService, models: true do
               "<a href=\"#{obj_attr[:url]}\">merge request !#{merge_id}</a> in " \
               "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
               "<b>#{title}</b>" \
-              "<pre>merge request note</pre>")
+              "<pre>merge request <strong>note</strong></pre>")
         end
       end
 
@@ -243,7 +243,7 @@ describe HipchatService, models: true do
         let(:issue) { create(:issue, project: project) }
         let(:issue_note) do
           create(:note_on_issue, noteable: issue, project: project,
-                                 note: "issue note")
+                                 note: "issue **note**")
         end
 
         it "calls Hipchat API for issue comment events" do
@@ -260,7 +260,7 @@ describe HipchatService, models: true do
               "<a href=\"#{obj_attr[:url]}\">issue ##{issue_id}</a> in " \
               "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
               "<b>#{title}</b>" \
-              "<pre>issue note</pre>")
+              "<pre>issue <strong>note</strong></pre>")
         end
       end
 

@@ -23,7 +23,7 @@ describe PipelineMetricsWorker do
       it 'records the build start time' do
         subject
 
-        expect(merge_request.reload.metrics.latest_build_started_at).to be_within(1.second).of(pipeline.started_at)
+        expect(merge_request.reload.metrics.latest_build_started_at).to be_like_time(pipeline.started_at)
       end
 
       it 'clears the build end time' do
@@ -39,7 +39,7 @@ describe PipelineMetricsWorker do
       it 'records the build end time' do
         subject
 
-        expect(merge_request.reload.metrics.latest_build_finished_at).to be_within(1.second).of(pipeline.finished_at)
+        expect(merge_request.reload.metrics.latest_build_finished_at).to be_like_time(pipeline.finished_at)
       end
     end
   end

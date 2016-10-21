@@ -7,11 +7,13 @@ describe CreateDeploymentService, services: true do
   let(:service) { described_class.new(project, user, params) }
 
   describe '#execute' do
+    let(:options) { nil }
     let(:params) do
       { environment: 'production',
         ref: 'master',
         tag: false,
         sha: '97de212e80737a608d939f648d959671fb0a0142',
+        options: options
       }
     end
 
@@ -28,7 +30,7 @@ describe CreateDeploymentService, services: true do
     end
 
     context 'when environment exist' do
-      before { create(:environment, project: project, name: 'production') }
+      let!(:environment) { create(:environment, project: project, name: 'production') }
 
       it 'does not create a new environment' do
         expect { subject }.not_to change { Environment.count }
@@ -36,6 +38,46 @@ describe CreateDeploymentService, services: true do
 
       it 'does create a deployment' do
         expect(subject).to be_persisted
+      end
+
+      context 'and start action is defined' do
+        let(:options) { { action: 'start' } }
+
+        context 'and environment is stopped' do
+          before do
+            environment.stop
+          end
+
+          it 'makes environment available' do
+            subject
+
+            expect(environment.reload).to be_available
+          end
+
+          it 'does create a deployment' do
+            expect(subject).to be_persisted
+          end
+        end
+      end
+
+      context 'and stop action is defined' do
+        let(:options) { { action: 'stop' } }
+
+        context 'and environment is available' do
+          before do
+            environment.start
+          end
+
+          it 'makes environment stopped' do
+            subject
+
+            expect(environment.reload).to be_stopped
+          end
+
+          it 'does not create a deployment' do
+            expect(subject).to be_nil
+          end
+        end
       end
     end
 
@@ -53,7 +95,7 @@ describe CreateDeploymentService, services: true do
       end
 
       it 'does not create a deployment' do
-        expect(subject).not_to be_persisted
+        expect(subject).to be_nil
       end
     end
 
@@ -82,6 +124,25 @@ describe CreateDeploymentService, services: true do
 
       it 'does create a new deployment' do
         expect(subject).to be_persisted
+      end
+
+      context 'and environment exist' do
+        let!(:environment) { create(:environment, project: project, name: 'review-apps/feature-review-apps') }
+
+        it 'does not create a new environment' do
+          expect { subject }.not_to change { Environment.count }
+        end
+
+        it 'updates external url' do
+          subject
+
+          expect(subject.environment.name).to eq('review-apps/feature-review-apps')
+          expect(subject.environment.external_url).to eq('http://feature-review-apps.review-apps.gitlab.com')
+        end
+
+        it 'does create a new deployment' do
+          expect(subject).to be_persisted
+        end
       end
     end
 
@@ -201,7 +262,7 @@ describe CreateDeploymentService, services: true do
           time = Time.now
           Timecop.freeze(time) { service.execute }
 
-          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
         end
 
         it "doesn't set the time if the deploy's environment is not 'production'" do
@@ -227,13 +288,13 @@ describe CreateDeploymentService, services: true do
             time = Time.now
             Timecop.freeze(time) { service.execute }
 
-            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
 
             # Current deploy
             service = described_class.new(project, user, params)
             Timecop.freeze(time + 12.hours) { service.execute }
 
-            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_within(1.second).of(time)
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
           end
         end
 

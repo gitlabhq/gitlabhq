@@ -27,6 +27,7 @@
                 - else
                   .input-group-addon.static-namespace
                     #{root_url}#{current_user.username}/
+                  = f.hidden_field :namespace_id, value: current_user.namespace_id
           .form-group.col-xs-12.col-sm-6.project-path
             = f.label :namespace_id, class: 'label-light' do
               %span
@@ -124,6 +125,11 @@
       event.preventDefault();
       new Flash("Please enter path and name for the project to be imported to.");
     }
+  });
+
+  $('#new_project').submit(function(){
+    var $path = $('#project_path');
+    $path.val($path.val().trim());
   });
 
   $('#project_path').keyup(function(){

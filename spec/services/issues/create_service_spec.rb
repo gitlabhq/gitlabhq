@@ -67,6 +67,27 @@ describe Issues::CreateService, services: true do
         expect(Todo.where(attributes).count).to eq 1
       end
 
+      context 'when label belongs to project group' do
+        let(:group) { create(:group) }
+        let(:group_labels) { create_pair(:group_label, group: group) }
+
+        let(:opts) do
+          {
+            title: 'Title',
+            description: 'Description',
+            label_ids: group_labels.map(&:id)
+          }
+        end
+
+        before do
+          project.update(group: group)
+        end
+
+        it 'assigns group labels' do
+          expect(issue.labels).to match_array group_labels
+        end
+      end
+
       context 'when label belongs to different project' do
         let(:label) { create(:label) }
 

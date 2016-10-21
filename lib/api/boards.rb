@@ -59,8 +59,8 @@ module API
           requires :label_id, type: Integer, desc: 'The ID of an existing label'
         end
         post '/lists' do
-          unless user_project.labels.exists?(params[:label_id])
-            render_api_error!({ error: "Label not found!" }, 400)
+          unless available_labels.exists?(params[:label_id])
+            render_api_error!({ error: 'Label not found!' }, 400)
           end
 
           authorize!(:admin_list, user_project)

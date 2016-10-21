@@ -35,16 +35,16 @@ module Gitlab
         # for the highlighted ones, so we just skip their execution.
         # If the highlighted diff files lines are not cached we calculate and cache them.
         #
-        # The content of the cache is a Hash where the key correspond to the file_path and the values are Arrays of
+        # The content of the cache is a Hash where the key identifies the file and the values are Arrays of
         # hashes that represent serialized diff lines.
         #
         def cache_highlight!(diff_file)
-          file_path = diff_file.file_path
+          item_key = diff_file.cache_key
 
-          if highlight_cache[file_path]
-            highlight_diff_file_from_cache!(diff_file, highlight_cache[file_path])
+          if highlight_cache[item_key]
+            highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])
           else
-            highlight_cache[file_path] = diff_file.highlighted_diff_lines.map(&:to_hash)
+            highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash)
           end
         end
 
