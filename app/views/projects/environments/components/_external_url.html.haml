@@ -1,4 +1,5 @@
-%a.btn.external-url{ "v-if" => "!isFolder && model.external_url", 
-  ":target" => "_blank", 
-  ":href" => "model.external_url"}
-  = icon("external-link")
+-if can?(current_user, :read_environment, @project)
+  %a.btn.external-url{ "v-if" => "!isFolder && model.external_url", 
+    ":target" => "_blank", 
+    ":href" => "model.external_url"}
+    = icon("external-link")
