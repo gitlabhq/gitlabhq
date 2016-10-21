@@ -273,6 +273,8 @@ describe Projects::ProjectMembersController do
   end
 
   describe 'POST create' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
     let(:stranger) { create(:user) }
 
     context 'when creating owner' do
