@@ -1,0 +1,14 @@
+- if can?(current_user, :create_deployment, @project)
+  .inline{ "v-if" => "model.last_deployment.manual_actions && model.last_deployment.manual_actions.present"}
+    .dropdown
+      %a.dropdown-new.btn.btn-default{type: "button", "data-toggle" => "dropdown"}
+        = custom_icon('icon_play')
+        = icon('caret-down')
+        
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li{ "v-for" => "action in model.last_deployment.manual_actions" }
+            -# transform this = link_to [:play, @project.namespace.becomes(Namespace), @project, action] into href
+            %a{data: {"method" => ":post", "rel" => "nofollow"}}
+              = custom_icon('icon_play')
+              %span
+                {{action.name}}
