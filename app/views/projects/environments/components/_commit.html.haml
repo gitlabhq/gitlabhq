@@ -8,8 +8,7 @@
     .icon-container{ "v-if" => "!model.last_deployment.tag" }
       =icon("code-fork")
 
-    %a.monospace.branch-name{":href" => ""}
-      -# need commits branch name url
+    %a.monospace.branch-name{":href" => "'/' + model.project.namespace.name + '/' + model.project.name + '/commits/' +model.last_deployment.ref"}
       {{model.last_deployment.ref}}
     
   .icon-container.commit-icon

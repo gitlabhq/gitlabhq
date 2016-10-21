@@ -78,7 +78,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
             user: { only: [:id, :name, :username], methods: [:avatar_url] }
           },
           methods: [:short_sha, :commit_title, :deployable, :commit]
-        }
+        },
+        project: { methods: [:namespace]}
       }
     )
   end
