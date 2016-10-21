@@ -71,6 +71,11 @@ module Banzai
         @doc = parse_html(rinku)
       end
 
+      # Return true if any of the UNSAFE_PROTOCOLS strings are included in the URI scheme
+      def contains_unsafe?(scheme)
+        Banzai::Filter::SanitizationFilter::UNSAFE_PROTOCOLS.any? { |protocol| scheme.include?(protocol) }
+      end
+
       # Autolinks any text matching LINK_PATTERN that Rinku didn't already
       # replace
       def text_parse
@@ -78,6 +83,14 @@ module Banzai
           content = node.to_html
 
           next unless content.match(LINK_PATTERN)
+
+          begin
+            uri = Addressable::URI.parse(content)
+            uri.scheme = uri.scheme.strip.downcase if uri.scheme
+            next if contains_unsafe?(uri.scheme)
+          rescue Addressable::URI::InvalidURIError
+            next
+          end
 
           html = autolink_filter(content)
 
