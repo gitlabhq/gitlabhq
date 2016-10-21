@@ -31,6 +31,7 @@ module Projects
           project.rename_repo
         end
       end
+      project
     end
   end
 end
