@@ -1,6 +1,6 @@
 module EmailHelpers
   def sent_to_user?(user, recipients = email_recipients)
-    recipients.include?(user.email)
+    recipients.include?(user.notification_email)
   end
 
   def reset_delivered_emails!
