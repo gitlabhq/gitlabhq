@@ -333,10 +333,11 @@ module API
         user = User.find_by(id: declared(params).id)
         not_found!('User') unless user
 
-        events = user.recent_events.
+        events = user.events.
           merge(ProjectsFinder.new.execute(current_user)).
           references(:project).
           with_associations.
+          recent.
           page(params[:page])
 
         present paginate(events), with: Entities::Event
