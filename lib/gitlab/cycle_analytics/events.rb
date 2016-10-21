@@ -39,6 +39,13 @@ module Gitlab
         @fetcher.fetch_review_events.each { |event| parse_event(event) }
       end
 
+      def staging_events
+        @fetcher.fetch_staging_events.each do |event|
+          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
+          event['pipeline'] = ::Ci::Pipeline.find_by_id(event['ci_commit_id']) # we may not have a pipeline
+        end
+      end
+
       private
 
       def parse_event(event)

@@ -46,7 +46,7 @@ module Gitlab
       end
 
       def fetch_test_events
-        base_query = base_query_for(:code)
+        base_query = base_query_for(:test)
         diff_fn = subtract_datetimes_diff(base_query,
                                           mr_metrics_table[:latest_build_started_at],
                                           mr_metrics_table[:latest_build_finished_at])
@@ -58,13 +58,25 @@ module Gitlab
       end
 
       def fetch_review_events
-        base_query = base_query_for(:code)
+        base_query = base_query_for(:review)
         diff_fn = subtract_datetimes_diff(base_query,
                                           mr_table[:created_at],
                                           mr_metrics_table[:merged_at])
 
         query = base_query.join(user_table).on(mr_table[:author_id].eq(user_table[:id])).
           project(extract_epoch(diff_fn).as('total_time'), *code_projections).
+          order(mr_table[:created_at].desc)
+
+        execute(query)
+      end
+
+      def fetch_staging_events
+        base_query = base_query_for(:staging)
+        diff_fn = subtract_datetimes_diff(base_query,
+                                          mr_metrics_table[:merged_at],
+                                          mr_metrics_table[:first_deployed_to_production_at])
+
+        query = base_query.project(extract_epoch(diff_fn).as('total_time'), mr_metrics_table[:ci_commit_id]).
           order(mr_table[:created_at].desc)
 
         execute(query)

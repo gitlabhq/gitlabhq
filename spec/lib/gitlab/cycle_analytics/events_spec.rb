@@ -123,6 +123,32 @@ describe Gitlab::CycleAnalytics::Events do
     end
   end
 
+  describe '#staging_events' do
+    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
+    let(:merge_request) { MergeRequest.first }
+    let!(:pipeline) do
+      create(:ci_pipeline,
+             ref: merge_request.source_branch,
+             sha: merge_request.diff_head_sha,
+             project: context.project)
+    end
+
+    before do
+      pipeline.run!
+      pipeline.succeed!
+      merge_merge_requests_closing_issue(context)
+      deploy_master
+    end
+
+    it 'has the build info as a pipeline' do
+      expect(subject.staging_events.first['pipeline']).to eq(pipeline)
+    end
+
+    it 'has the total time' do
+      expect(subject.staging_events.first['total_time']).to eq('less than a minute')
+    end
+  end
+
   def setup(context)
     milestone = create(:milestone, project: project)
     context.update(milestone: milestone)
