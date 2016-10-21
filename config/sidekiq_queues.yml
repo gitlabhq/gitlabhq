@@ -1,0 +1,46 @@
+# This configuration file should be exclusively used to set queue settings for
+# Sidekiq. Any other setting should be specified using the Sidekiq CLI or the
+# Sidekiq Ruby API (see config/initializers/sidekiq.rb).
+---
+# All the queues to process and their weights. Every queue _must_ have a weight
+# defined.
+#
+# The available weights are as follows
+#
+# 1: low priority
+# 2: medium priority
+# 3: high priority
+# 5: _super_ high priority, this should only be used for _very_ important queues
+#
+# As per http://stackoverflow.com/a/21241357/290102 the formula for calculating
+# the likelihood of a job being popped off a queue (given all queues have work
+# to perform) is:
+#
+#     chance = (queue weight / total weight of all queues) * 100
+:queues:
+  - [post_receive, 5]
+  - [merge, 5]
+  - [update_merge_requests, 3]
+  - [new_note, 2]
+  - [build, 2]
+  - [pipeline, 2]
+  - [gitlab_shell, 2]
+  - [email_receiver, 2]
+  - [emails_on_push, 2]
+  - [repository_fork, 1]
+  - [repository_import, 1]
+  - [project_service, 1]
+  - [clear_database_cache, 1]
+  - [delete_user, 1]
+  - [expire_build_instance_artifacts, 1]
+  - [group_destroy, 1]
+  - [irker, 1]
+  - [project_cache, 1]
+  - [project_destroy, 1]
+  - [project_export, 1]
+  - [project_web_hook, 1]
+  - [repository_check, 1]
+  - [system_hook, 1]
+  - [git_garbage_collect, 1]
+  - [cronjob, 1]
+  - [default, 1]
