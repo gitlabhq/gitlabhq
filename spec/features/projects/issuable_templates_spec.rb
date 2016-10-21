@@ -77,7 +77,7 @@ feature 'issuable templates', feature: true, js: true do
     scenario 'user selects "bug" template' do
       select_template 'bug'
       wait_for_ajax
-      preview_template("#{prior_description}\n\n#{template_content}")
+      preview_template("#{template_content}")
       save_changes
     end
   end
