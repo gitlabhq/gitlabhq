@@ -843,7 +843,7 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.integer "builds_access_level"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repository_access_level",     default: 20, null: false
+    t.integer "repository_access_level", default: 20, null: false
   end
 
   add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree

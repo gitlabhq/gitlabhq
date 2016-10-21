@@ -328,4 +328,15 @@ describe API::Members, api: true  do
   it_behaves_like 'DELETE /:sources/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
+
+  context 'Adding owner to project' do
+    it 'returns 403' do
+      expect do
+        post api("/projects/#{project.id}/members", master),
+             user_id: stranger.id, access_level: Member::OWNER
+
+        expect(response).to have_http_status(422)
+      end.to change { project.members.count }.by(0)
+    end
+  end
 end
