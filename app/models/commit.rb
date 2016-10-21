@@ -225,6 +225,10 @@ class Commit
     )
   end
 
+  def pipelines_for(ref)
+    project.pipelines.where(sha: sha, ref: ref)
+  end
+
   def pipelines
     @pipeline ||= project.pipelines.where(sha: sha)
   end
