@@ -1,10 +1,11 @@
 %script#environment-item-template{ "type"=> "text/x-template" }
   %tr
-    %td.folder-name
-      %a{ "v-if" => "!isFolder",
+    %td{"v-bind:class" => "{ 'children-row': isChildren}"}
+      %a.environment-name{ "v-if" => "!isFolder",
         ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + model.id" }
         {{model.name}}
-      %span{ "v-if" => "isFolder",
+        
+      %span.folder-name{ "v-if" => "isFolder",
         "@click" => "toggle" }
         
         %i.folder-icon{ "v-show" => "open"}
@@ -49,4 +50,7 @@
       .pull-right{ "v-if" => "!isFolder"}
         actions will go here
       
-  %tr{"v-if" => "open && isFolder", "is" => "environment-item", "v-for" => "model in model.children", ":model" => "model"}
+  %tr{"v-if" => "open && isFolder", 
+    "is" => "environment-item", 
+    "v-for" => "model in model.children",
+    ":model" => "model"}

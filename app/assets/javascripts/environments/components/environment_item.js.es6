@@ -16,7 +16,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
   
-  gl.environmentsList.EnvironmentItem = Vue.component("environment-item", {
+  gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
     
     template: '#environment-item-template',
 
@@ -41,6 +41,16 @@
        */
       isFolder () {
         return this.model.children && this.model.children.length
+      },
+      
+      /**
+       * If an item is inside a folder structure will return true.
+       * Used for css purposes.
+       *
+       * @returns {Boolean|undefined}
+       */
+      isChildren () {
+        return this.model['vue-isChildren'];
       }
     },
 
