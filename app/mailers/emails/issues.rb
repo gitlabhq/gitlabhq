@@ -49,6 +49,13 @@ module Emails
       mail_answer_thread(issue, issue_thread_options(updated_by_user.id, recipient.id))
     end
 
+    def issues_csv_email(user, project, content)#, issues) file_name: or content: or issues:
+      @project = project
+
+      attachments['issues.csv'] = { content: content, mime_type: 'text/csv' }
+      mail(to: user.notification_email, subject: subject("Issues exported as CSV"))
+    end
+
     private
 
     def setup_issue_mail(issue_id, recipient_id)
