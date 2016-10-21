@@ -24,7 +24,8 @@ module Gitlab
                                      #{config.root}/app/models/ci
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
-                                     #{config.root}/app/models/project_services))
+                                     #{config.root}/app/models/project_services
+                                     #{config.root}/app/workers/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 

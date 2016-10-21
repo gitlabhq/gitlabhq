@@ -1,7 +1,6 @@
 class AdminEmailWorker
   include Sidekiq::Worker
-
-  sidekiq_options retry: false # this job auto-repeats via sidekiq-cron
+  include CronjobQueue
 
   def perform
     repository_check_failed_count = Project.where(last_repository_check_failed: true).count

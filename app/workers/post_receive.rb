@@ -1,8 +1,7 @@
 class PostReceive
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
   extend Gitlab::CurrentSettings
-
-  sidekiq_options queue: :post_receive
 
   def perform(repo_path, identifier, changes)
     if path = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1].to_s) }

@@ -1,7 +1,6 @@
 class ProjectCacheWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include DedicatedSidekiqQueue
 
   def perform(project_id)
     project = Project.find(project_id)
