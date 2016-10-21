@@ -14,8 +14,7 @@
   .icon-container.commit-icon
     = custom_icon("icon_commit")
 
-  %a.commit-id.monospace{":href" => ""}
-    -# need commit url built with commit sha
+  %a.commit-id.monospace{":href" => "'/' + model.project.namespace.name + '/' + model.project.name + '/commit/' +model.last_deployment.sha"}
     {{model.last_deployment.short_sha}}
     
   %p.commit-title
@@ -24,8 +23,7 @@
     
       -# need commit author username and avatar_url
       commit author goes here
-      %a.commit-row-message{":href" => ""}
-        -# need commit url built with commit sha
+      %a.commit-row-message{":href" => "'/' + model.project.namespace.name + '/' + model.project.name + '/commit/' +model.last_deployment.sha"}
         {{model.last_deployment.commit_title}}
 
     %span{ "v-if" => "!model.last_deployment.commit_title"}
