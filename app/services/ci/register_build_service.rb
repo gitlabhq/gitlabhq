@@ -35,7 +35,7 @@ module Ci
 
       build
 
-    rescue StateMachines::InvalidTransition, StaleObjectError
+    rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
       nil
     end
 

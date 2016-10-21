@@ -260,7 +260,7 @@ module Ci
     end
 
     def update_status
-      Gitlab::OptimisticLocking.retry_lock(build) do
+      Gitlab::OptimisticLocking.retry_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run

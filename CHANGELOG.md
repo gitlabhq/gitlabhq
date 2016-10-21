@@ -66,6 +66,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Updating verbiage on git basics to be more intuitive
   - Fix project_feature record not generated on project creation
   - Clarify documentation for Runners API (Gennady Trafimenkov)
+  - Use optimistic locking for pipelines and builds
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
   - Added documentation for .gitattributes files

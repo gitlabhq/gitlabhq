@@ -1,10 +1,12 @@
 module Gitlab
-  module OptimisticLocking
-    def retry_lock(subject, &block)
-      while true do
+  class OptimisticLocking
+    def self.retry_lock(subject, &block)
+      loop do
         begin
-          return yield subject
-        rescue StaleObjectError
+          subject.transaction do
+            return block.call(subject)
+          end
+        rescue ActiveRecord::StaleObjectError
           subject.reload
         end
       end
