@@ -13,10 +13,7 @@ module Gitlab
 
       def issue_events
         # TODO figure out what the frontend needs for displaying the avatar
-        @fetcher.fetch_issue_events.each do |event|
-          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
-          event['created_at'] = interval_in_words(event['created_at'])
-        end
+        @fetcher.fetch_issue_events { |event| parse_event(event) }
       end
 
       def plan_events
@@ -28,10 +25,7 @@ module Gitlab
       end
 
       def code_events
-        @fetcher.fetch_code_events.each do |event|
-          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
-          event['created_at'] = interval_in_words(event['created_at'])
-        end
+        @fetcher.fetch_code_events { |event| parse_event(event) }
       end
 
       def test_events
@@ -39,6 +33,15 @@ module Gitlab
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           event['pipeline'] = ::Ci::Pipeline.find_by_id(event['ci_commit_id']) # we may not have a pipeline
         end
+      end
+
+      def review_events
+        @fetcher.fetch_review_events.each { |event| parse_event(event) }
+      end
+
+      def parse_event(event)
+        event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
+        event['created_at'] = interval_in_words(event['created_at'])
       end
 
       private

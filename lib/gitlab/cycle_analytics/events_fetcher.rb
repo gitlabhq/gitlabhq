@@ -57,6 +57,19 @@ module Gitlab
         execute(query)
       end
 
+      def fetch_review_events
+        base_query = base_query_for(:code)
+        diff_fn = subtract_datetimes_diff(base_query,
+                                          mr_table[:created_at],
+                                          mr_metrics_table[:merged_at])
+
+        query = base_query.join(user_table).on(mr_table[:author_id].eq(user_table[:id])).
+          project(extract_epoch(diff_fn).as('total_time'), *code_projections).
+          order(mr_table[:created_at].desc)
+
+        execute(query)
+      end
+
       private
 
       def issue_attributes

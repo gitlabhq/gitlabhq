@@ -97,6 +97,31 @@ describe Gitlab::CycleAnalytics::Events do
     end
   end
 
+  describe '#review_events' do
+    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
+
+    it 'has the total time' do
+      expect(subject.review_events.first['total_time']).to eq('less than a minute')
+    end
+
+    it 'has a title' do
+      expect(subject.review_events.first['title']).to eq('Awesome merge_request')
+    end
+
+    it 'has an iid' do
+      expect(subject.review_events.first['iid']).to eq(context.iid.to_s)
+    end
+
+    it 'has a created_at timestamp' do
+      expect(subject.review_events.first['created_at']).to end_with('ago')
+    end
+
+    it "has the author's name" do
+      expect(subject.review_events.first['name']).to eq(MergeRequest.first.author.name)
+    end
+  end
+
+
   def setup(context)
     milestone = create(:milestone, project: project)
     context.update(milestone: milestone)
