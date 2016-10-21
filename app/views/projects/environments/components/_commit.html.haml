@@ -9,19 +9,24 @@
       =icon("code-fork")
 
     %a.monospace.branch-name{":href" => ""}
+      -# need commits branch name url
       {{model.last_deployment.ref}}
     
   .icon-container.commit-icon
     = custom_icon("icon_commit")
 
   %a.commit-id.monospace{":href" => ""}
+    -# need commit url built with commit sha
     {{model.last_deployment.short_sha}}
-    {{model.last_deployment.sha}}
     
   %p.commit-title
 
     %span{ "v-if" => "model.last_deployment.commit_title"}
+    
+      -# need commit author username and avatar_url
+      commit author goes here
       %a.commit-row-message{":href" => ""}
+        -# need commit url built with commit sha
         {{model.last_deployment.commit_title}}
 
     %span{ "v-if" => "!model.last_deployment.commit_title"}
