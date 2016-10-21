@@ -90,11 +90,8 @@ class CommitStatus < ActiveRecord::Base
 
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
-          if complete?
-            PipelineProcessWorker.perform_async(pipeline.id)
-          else
-            PipelineUpdateWorker.perform_async(pipeline.id)
-          end
+          worker = complete? ? PipelineProcessWorker : PipelineUpdateWorker
+          Gitlab::Worker::Unique.new(worker, pipeline.id).schedule!
         end
       end
     end
