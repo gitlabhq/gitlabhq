@@ -111,6 +111,8 @@ module Gitlab
       end
 
       def extract_epoch(arel_attribute)
+        return arel_attribute unless Gitlab::Database.postgresql?
+
         Arel.sql(%Q{EXTRACT(EPOCH FROM (#{arel_attribute.to_sql}))})
       end
 
