@@ -35,6 +35,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix documents and comments on Build API `scope`
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
   - Shortened merge request modal to let clipboard button not overlap
+  - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
 
 ## 8.13.2
   - Fix builds dropdown overlapping bug !7124

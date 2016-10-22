@@ -239,6 +239,7 @@
           this.fullData = this.options.data;
           currentIndex = -1;
           this.parseData(this.options.data);
+          this.focusTextInput();
         } else {
           this.remote = new GitLabDropdownRemote(this.options.data, {
             dataType: this.options.dataType,
@@ -247,6 +248,7 @@
               return function(data) {
                 _this.fullData = data;
                 _this.parseData(_this.fullData);
+                _this.focusTextInput();
                 if (_this.options.filterable && _this.filter && _this.filter.input) {
                   return _this.filter.input.trigger('input');
                 }
@@ -452,9 +454,8 @@
       contentHtml = $('.dropdown-content', this.dropdown).html();
       if (this.remote && contentHtml === "") {
         this.remote.execute();
-      }
-      if (this.options.filterable) {
-        this.filterInput.focus();
+      } else {
+        this.focusTextInput();
       }
 
       if (this.options.showMenuAbove) {
@@ -690,6 +691,10 @@
 
       return selectedObject;
     };
+
+    GitLabDropdown.prototype.focusTextInput = function() {
+      if (this.options.filterable) { this.filterInput.focus() }
+    }
 
     GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
       var $input;
