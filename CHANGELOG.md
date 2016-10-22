@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix Cycle analytics not showing correct data when filtering by date. !6906
   - Ensure custom provider tab labels don't break layout. !6993
   - Fix issue boards user link when in subdirectory. !7018
+  - Refactor and add new environment functionality to CI yaml reference. !7026
 
 ## 8.13.0 (2016-10-22)
 
