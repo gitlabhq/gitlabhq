@@ -8,7 +8,7 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
+      #   scope (optional) - The scope of builds to show (one or array of: created, pending, running, failed, success, canceled, skipped;
       #                      if none provided showing all builds)
       # Example Request:
       #   GET /projects/:id/builds
@@ -25,7 +25,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   sha (required) - The SHA id of a commit
-      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
+      #   scope (optional) - The scope of builds to show (one or array of: created, pending, running, failed, success, canceled, skipped;
       #                      if none provided showing all builds)
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha/builds

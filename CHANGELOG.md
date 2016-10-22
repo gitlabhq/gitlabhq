@@ -9,6 +9,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix: Backup restore doesn't clear cache
 
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix documents and comments on Build API `scope`
 
 ## 8.13.0 (2016-10-22)
 
