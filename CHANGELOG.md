@@ -10,6 +10,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
 
+## 8.13.1 (unreleased)
+  - Fix error in generating labels
+
 ## 8.13.0 (2016-10-22)
 
   - Fix save button on project pipeline settings page. (!6955)
