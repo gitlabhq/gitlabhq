@@ -148,7 +148,7 @@
     };
 
     Build.prototype.translateSidebar = function(e) {
-      var newPosition = this.sidebarTranslationLimits.max - document.body.scrollTop;
+      var newPosition = this.sidebarTranslationLimits.max - (document.body.scrollTop || document.documentElement.scrollTop);
       if (newPosition < this.sidebarTranslationLimits.min) newPosition = this.sidebarTranslationLimits.min;
       this.$sidebar.css({
         top: newPosition
