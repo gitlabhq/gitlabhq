@@ -36,7 +36,11 @@
         method: 'GET',
         dataType: 'json',
         contentType: 'application/json',
-        data: { start_date: options.startDate }
+        data: {
+          cycle_analytics: {
+            start_date: options.startDate
+          }
+        }
       }).done((data) => {
         this.decorateData(data);
         this.initDropdown();

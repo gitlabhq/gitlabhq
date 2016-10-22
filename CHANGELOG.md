@@ -1,7 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.1 (unreleased)
+
   - Fixed hidden pipeline graph on commit and MR page. !6895
+  - Fix Cycle analytics not showing correct data when filtering by date. !6906
 
 ## 8.13.0 (2016-10-22)
 
