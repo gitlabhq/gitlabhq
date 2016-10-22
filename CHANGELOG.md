@@ -9,6 +9,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix: Backup restore doesn't clear cache
 
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
 
 ## 8.13.0 (2016-10-22)
 
