@@ -70,4 +70,19 @@ describe Projects::LabelsController do
       get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
     end
   end
+
+  describe 'POST #generate' do
+    let(:admin) { create(:admin) }
+    let(:project) { create(:empty_project) }
+
+    before do
+      sign_in(admin)
+    end
+
+    it 'creates labels' do
+      post :generate, namespace_id: project.namespace.to_param, project_id: project.to_param
+
+      expect(response).to have_http_status(302)
+    end
+  end
 end
