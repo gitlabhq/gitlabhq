@@ -10,6 +10,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
   - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
+  - Fix documents and comments on Build API `scope`
+
+## 8.13.1 (unreleased)
+  - Fix error in generating labels
 
 ## 8.13.0 (2016-10-22)
 
@@ -33,6 +37,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update duration at the end of pipeline
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add group level labels. (!6425)
+  - Fix Cycle analytics not showing correct data when filtering by date. !6906
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
