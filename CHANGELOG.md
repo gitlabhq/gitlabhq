@@ -10,6 +10,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix typo in project settings that prevents users from enabling container registry. !7037
   - Remove extra line for empty issue description. !7045
   - Fix error in generating labels. !7055
+  - Stop clearing the database cache on `rake cache:clear`. !7056
 
 ## 8.13.0 (2016-10-22)
 
