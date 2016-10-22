@@ -82,7 +82,7 @@ describe Projects::LabelsController do
     it 'creates labels' do
       post :generate, namespace_id: project.namespace.to_param, project_id: project.to_param
 
-      expect(response.code).to eq(302)
+      expect(response).to have_http_status(302)
     end
   end
 end
