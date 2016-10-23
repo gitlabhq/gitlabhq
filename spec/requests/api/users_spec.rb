@@ -959,23 +959,24 @@ describe API::API, api: true  do
         end
       end
 
-      context 'when there are multiple events' do
-        let(:old_note) { create(:note_on_issue, project: project) }
-        let(:new_event) { note.events.first }
-        let(:old_event) { old_note.events.first }
+      context 'when there are multiple events from different projects' do
+        let(:another_project) { create(:empty_project) }
+        let(:notes) { create_list(:note_on_issue, 5, project: [project, another_project].sample) }
 
         before do
-          EventCreateService.new.leave_note(old_note, user)
+          another_project.add_user(user, :developer)
 
-          new_event.update(id: 1000)
-          old_event.update(id: 900)
+          notes.each { |note| EventCreateService.new.leave_note(note, user) }
         end
 
         it 'returns them in the correct order (from newest to oldest determined by ID field)' do
           get api("/users/#{user.id}/events", user)
 
-          expect(json_response[0]['target_id']).to eq(note.id)
-          expect(json_response[1]['target_id']).to eq(old_note.id)
+          comment_events = json_response.select { |e| e['action_name'] == 'commented on' }
+
+          notes.reverse.each_with_index do |note, i|
+            expect(note.id).to eq(comment_events[i]['target_id'])
+          end
         end
       end
     end
