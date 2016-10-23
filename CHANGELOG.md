@@ -16,6 +16,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 
 ## 8.13.1 (unreleased)
+  - Fix bug where labels would be assigned to issues that were moved
   - Fix error in generating labels
   - Fix reply-by-email not working due to queue name mismatch
   - Fixed hidden pipeline graph on commit and MR page !6895
