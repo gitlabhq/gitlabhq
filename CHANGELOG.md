@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
 - Prevent award emoji via notes for issues/MRs authored by user (barthc)
+- Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix extra space on Build sidebar on Firefox !7060
 - Fix mobile layout issues in admin user overview page !7087

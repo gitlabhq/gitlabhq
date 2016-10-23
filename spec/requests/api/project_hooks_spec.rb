@@ -36,6 +36,7 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['wiki_page_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
+        expect(json_response.first['token']).to eq('S3cr3t')
       end
     end
 
@@ -62,6 +63,7 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
+        expect(json_response['token']).to eq(hook.token)
       end
 
       it "returns a 404 error if hook id is not available" do
@@ -99,6 +101,7 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(false)
       expect(json_response['enable_ssl_verification']).to eq(true)
+      expect(json_response['token']).to eq('S3cr3t')
     end
 
     it "returns a 400 error if url not given" do
@@ -127,6 +130,7 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
+      expect(json_response['token']).to eq(hook.token)
     end
 
     it "returns 404 error if hook id not found" do
