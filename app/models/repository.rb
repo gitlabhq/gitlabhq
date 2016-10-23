@@ -445,14 +445,7 @@ class Repository
 
     expire_cache if exists?
 
-    # expire cache that don't depend on repository data (when expiring)
-    expire_tags_cache
-    expire_tag_count_cache
-    expire_branches_cache
-    expire_branch_count_cache
-    expire_root_ref_cache
-    expire_emptiness_caches
-    expire_exists_cache
+    expire_content_cache
 
     repository_event(:remove_repository)
   end
