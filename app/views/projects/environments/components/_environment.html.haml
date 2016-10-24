@@ -53,6 +53,8 @@
       .pull-right{ "v-if" => "!isFolder"}
         =render "projects/environments/components/external_url"
         =render "projects/environments/components/actions"
+        =render "projects/environments/components/stop"
+        =render "projects/environments/components/rollback"
       
   %tr{"v-if" => "open && isFolder", 
     "is" => "environment-item", 
