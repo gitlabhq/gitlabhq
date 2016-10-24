@@ -146,13 +146,17 @@ variables:
 ```
 
 These variables can be later used in all executed commands and scripts.
-
 The YAML-defined variables are also set to all created service containers,
-thus allowing to fine tune them.
+thus allowing to fine tune them. Variables can be also defined on a
+[job level](#job-variables).
 
-Variables can be also defined on [job level](#job-variables).
+Except for the user defined variables, there are also the ones set up by the
+Runner itself. One example would be `CI_BUILD_REF_NAME` which has the value of
+the branch or tag name for which project is built. Apart from the variables
+you can set in `.gitlab-ci.yml`, there are also the so called secret variables
+which can be set in GitLab's UI.
 
-[Learn more about variables.](../variables/README.md)
+[Learn more about variables.][variables]
 
 ### cache
 
@@ -541,20 +545,29 @@ An example usage of manual actions is deployment to production.
 
 > Introduced in GitLab 8.9.
 
-`environment` is used to define that a job deploys to a specific [environment].
-This allows easy tracking of all deployments to your environments straight from
-GitLab.
+> You can read more about environments and find more examples in the
+[documentation about environments][environment].
 
+`environment` is used to define that a job deploys to a specific environment.
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
 
-The `environment` name must contain only letters, digits, '-', '_', '/', '$', '{', '}' and spaces. Common
-names are `qa`, `staging`, and `production`, but you can use whatever name works
-with your workflow.
+The `environment` name can contain:
 
----
+- letters
+- digits
+- spaces
+- `-`
+- `_`
+- `/`
+- `$`
+- `{`
+- `}`
 
-**Example configurations**
+Common names are `qa`, `staging`, and `production`, but you can use whatever
+name works with your workflow.
+
+In its simplest form, the `environment` keyword can be defined like:
 
 ```
 deploy to production:
@@ -563,39 +576,134 @@ deploy to production:
   environment: production
 ```
 
-The `deploy to production` job will be marked as doing deployment to
-`production` environment.
+In the above example, the `deploy to production` job will be marked as doing a
+deployment to the `production` environment.
+
+#### environment:name
+
+> Introduced in GitLab 8.11.
+
+>**Note:**
+Before GitLab 8.11, the name of an environment could be defined as a string like
+`environment: production`. The recommended way now is to define it under the
+`name` keyword.
+
+Instead of defining the name of the environment right after the `environment`
+keyword, it is also possible to define it as a separate value. For that, use
+the `name` keyword under `environment`:
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment:
+    name: production
+```
+
+#### environment:url
+
+> Introduced in GitLab 8.11.
+
+>**Note:**
+Before GitLab 8.11, the URL could be added only in GitLab's UI. The
+recommended way now is to define it in `.gitlab-ci.yml`.
+
+This is an optional value that when set, it exposes buttons in various places
+in GitLab which when clicked take you to the defined URL.
+
+In the example below, if the job finishes successfully, it will create buttons
+in the merge requests and in the environments/deployments pages which will point
+to `https://prod.example.com`.
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment:
+    name: production
+    url: https://prod.example.com
+```
+
+#### environment:on_stop
+
+> [Introduced][ce-6669] in GitLab 8.13.
+
+Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
+`environment`. It declares a different job that runs in order to close
+the environment.
+
+Read the `environment:action` section for an example.
+
+#### environment:action
+
+> [Introduced][ce-6669] in GitLab 8.13.
+
+The `action` keyword is to be used in conjunction with `on_stop` and is defined
+in the job that is called to close the environment.
+
+Take for instance:
+
+```yaml
+review_app:
+  stage: deploy
+  script: make deploy-app
+  environment:
+    name: review
+    on_stop: stop_review_app
+
+stop_review_app:
+  stage: deploy
+  script: make delete-app
+  when: manual
+  environment:
+    name: review
+    action: stop
+```
+
+In the above example we set up the `review_app` job to deploy to the `review`
+environment, and we also defined a new `stop_review_app` job under `on_stop`.
+Once the `review_app` job is successfully finished, it will trigger the
+`stop_review_app` job based on what is defined under `when`. In this case we
+set it up to `manual` so it will need a [manual action](#manual-actions) via
+GitLab's web interface in order to run.
+
+The `stop_review_app` job is **required** to have the following keywords defined:
+
+- `when` - [reference](#when)
+- `environment:name`
+- `environment:action`
 
 #### dynamic environments
 
 > [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
 
 `environment` can also represent a configuration hash with `name` and `url`.
-These parameters can use any of the defined CI [variables](#variables)
+These parameters can use any of the defined [CI variables](#variables)
 (including predefined, secure variables and `.gitlab-ci.yml` variables).
 
-The common use case is to create dynamic environments for branches and use them
-as review apps.
-
----
-
-**Example configurations**
+For example:
 
 ```
 deploy as review app:
   stage: deploy
-  script: ...
+  script: make deploy
   environment:
     name: review-apps/$CI_BUILD_REF_NAME
     url: https://$CI_BUILD_REF_NAME.review.example.com/
 ```
 
 The `deploy as review app` job will be marked as deployment to dynamically
-create the `review-apps/branch-name` environment.
+create the `review-apps/$CI_BUILD_REF_NAME` environment, which `$CI_BUILD_REF_NAME`
+is an [environment variable][variables] set by the Runner. If for example the
+`deploy as review app` job was run in a branch named `pow`, this environment
+should be accessible under `https://pow.review.example.com/`.
 
-This environment should be accessible under `https://branch-name.review.example.com/`.
+This of course implies that the underlying server which hosts the application
+is properly configured.
 
-You can see a simple example at https://gitlab.com/gitlab-examples/review-apps-nginx/.
+The common use case is to create dynamic environments for branches and use them
+as Review Apps. You can see a simple example using Review Apps at
+https://gitlab.com/gitlab-examples/review-apps-nginx/.
 
 ### artifacts
 
@@ -1105,3 +1213,5 @@ CI with various languages.
 [examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
 [environment]: ../environments.md
+[ce-6669]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6669
+[variables]: ../variables/README.md

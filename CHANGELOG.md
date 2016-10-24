@@ -4,14 +4,20 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
   - Trim leading and trailing whitespace on project_path (Linus Thiel)
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Add hover to trash icon in notes !7008 (blackst0ne)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
 
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix documents and comments on Build API `scope`
+
+## 8.13.1 (unreleased)
+  - Fix error in generating labels
 
 ## 8.13.0 (2016-10-22)
   - Removes extra line for empty issue description. (!7045)
   - Fix save button on project pipeline settings page. (!6955)
+  - All Sidekiq workers now use their own queue
   - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
@@ -30,6 +36,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update duration at the end of pipeline
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add group level labels. (!6425)
+  - Fix Cycle analytics not showing correct data when filtering by date. !6906
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
