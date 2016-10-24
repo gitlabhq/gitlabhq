@@ -1,7 +1,8 @@
 class ProjectExportWorker
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
 
-  sidekiq_options queue: :gitlab_shell, retry: 3
+  sidekiq_options retry: 3
 
   def perform(current_user_id, project_id)
     current_user = User.find(current_user_id)

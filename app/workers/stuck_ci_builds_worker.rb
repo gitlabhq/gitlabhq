@@ -1,5 +1,6 @@
 class StuckCiBuildsWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   BUILD_STUCK_TIMEOUT = 1.day
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019213545) do
+ActiveRecord::Schema.define(version: 20161021185735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1034,9 +1034,9 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
-    t.boolean "repository_read_only"
     t.boolean "request_access_enabled", default: true, null: false
     t.boolean "has_external_wiki"
+    t.boolean "repository_read_only"
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.integer "repository_size_limit"
@@ -1063,7 +1063,7 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.integer  "group_id"
+    t.integer "group_id"
   end
 
   add_index "protected_branch_merge_access_levels", ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
@@ -1075,7 +1075,7 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.integer  "group_id"
+    t.integer "group_id"
   end
 
   add_index "protected_branch_push_access_levels", ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
@@ -1402,8 +1402,8 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.boolean "note_events", default: false, null: false
     t.boolean "enable_ssl_verification", default: true
     t.boolean "build_events", default: false, null: false
-    t.boolean "wiki_page_events", default: false, null: false
     t.string "token"
+    t.boolean "wiki_page_events", default: false, null: false
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
   end

@@ -1,7 +1,6 @@
 class GeoRepositoryDestroyWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include GeoQueue
 
   def perform(id, name, path_with_namespace)
     # We don't have access to the original model anymore, so we are

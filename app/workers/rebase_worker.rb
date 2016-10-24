@@ -1,7 +1,7 @@
 class RebaseWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :default
+  sidekiq_options queue: :merge
 
   def perform(merge_request_id, current_user_id)
     current_user = User.find(current_user_id)
