@@ -7,7 +7,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
-
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
   - Fix documents and comments on Build API `scope`
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
@@ -47,6 +46,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
+  - Fixed issue boards user link when in subdirectory
   - Added documentation for .gitattributes files
   - Move Pipeline Metrics to separate worker
   - AbstractReferenceFilter caches project_refs on RequestStore when active
