@@ -8,6 +8,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix issue boards user link when in subdirectory. !7018
   - Refactor and add new environment functionality to CI yaml reference. !7026
   - Fix typo in project settings that prevents users from enabling container registry. !7037
+  - Remove extra line for empty issue description. !7045
 
 ## 8.13.0 (2016-10-22)
 
