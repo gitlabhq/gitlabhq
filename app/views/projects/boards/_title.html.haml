@@ -23,7 +23,7 @@
               {{ board.name }}
       .dropdown-loading{ "v-if" => "loading" }
         = icon("spin spinner")
-      - if can?(current_user, :admin_list, @project)
+      - if can?(current_user, :admin_board, @project)
         %board-selector-form{ "inline-template" => true,
           "v-if" => "currentPage === 'edit'",
           "type" => "edit",
@@ -49,7 +49,7 @@
             %button.btn.btn-default.pull-right{ type: "button",
               "@click.stop.prevent" => "currentPage = ''" }
               Cancel
-      - if can?(current_user, :admin_list, @project)
+      - if can?(current_user, :admin_board, @project)
         .dropdown-footer{ "v-if" => "currentPage === ''" }
           %ul.dropdown-footer-list
             %li
