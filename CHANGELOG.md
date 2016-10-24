@@ -15,6 +15,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Expire and build repository cache after project import. !7064
   - Fix bug where labels would be assigned to issues that were moved. !7065
   - Fix reply-by-email not working due to queue name mismatch. !7068
+  - Fix 404 for group pages when GitLab setup uses relative url. !7071
 
 ## 8.13.0 (2016-10-22)
 
