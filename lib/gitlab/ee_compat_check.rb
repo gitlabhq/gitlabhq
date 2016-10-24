@@ -116,7 +116,7 @@ module Gitlab
     end
 
     def delete_ee_branch_locally
-      step("Checking out origin/master", %w[git checkout master])
+      command(%w[git checkout master])
       step("Deleting the local #{ee_branch} branch", %W[git branch -D #{ee_branch}])
     end
 
