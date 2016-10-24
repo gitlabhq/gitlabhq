@@ -13,6 +13,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.1 (unreleased)
   - Fix error in generating labels
+  - Fix reply-by-email not working due to queue name mismatch
 
 ## 8.13.0 (2016-10-22)
 
