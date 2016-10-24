@@ -223,7 +223,7 @@ linters:
 
   # Reports lines containing trailing whitespace.
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   # Don't write trailing zeros for numeric values with a decimal point.
   TrailingZero:
