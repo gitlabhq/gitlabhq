@@ -187,38 +187,42 @@
   // only expose creation method
   global.createSubbableResource = resourceFactory.create.bind(resourceFactory);
 
-
-
   class SmartInterval {
-    constructor({ callback, high = 120000, low = 15000, increment = 0, immediate = true, runInBackground = false, runInCache = false }) {
-      if (!callback) {
-        throw Error("You need to pass a callback to create a smart interval.");
-      }
+    constructor({ name = 'SmartIntervalInstance', callback, high = 120000, low = 15000, increment = 0, delay = 5000, immediate = true, runInBackground = false, runInCache = false }) {
       this.callback = callback;
       this.high = high;
       this.low = low;
+      this.delay = delay;
       this.runInBackground = runInBackground;
       this.increment = increment;
-      this.currentInterval = low;
       this.immediate = immediate;
-      this.intervalId = null;
-      this.iterations = 0;
+      this.name = name;
+
+      this.state = {
+        iterations: 0,
+        currentInterval: low,
+        intervalId: null
+      };
+
       this.init();
     }
 
     init() {
       if (this.immediate) {
-        this.start();
+        window.setTimeout(() => {
+          this.start();
+        }, this.delay);
       }
 
       if (!this.runInBackground) {
         // cancel interval when tab no longer shown
-        $(document).on('visibilitychange', (e) => {
+        const visChangeEventName = `visibilitychange:${this.name}`;
+        $(document).off(visChangeEventName).on(visChangeEventName, (e) => {
           const visState = document.visibilityState;
           if (visState === 'hidden') {
-            this.cancel();
+            this.pause();
           } else {
-            this.start();
+            this.restart();
           }
         });
       }
@@ -231,70 +235,55 @@
       }
     }
 
-    incrementInterval() {
-      if (this.currentInterval < this.high) {
-        let nextInterval = this.currentInterval + this.increment;
-        if (nextInterval > this.high) {
-          nextInterval = this.high;
-        }
-        this.cancel();
-        this.start();
-      }
+    stopTimer() {
+      window.clearInterval(this.state.intervalId);
+      this.state.intervalId = null;
     }
 
+    // TODO: Remove after development
     logIteration() {
-      // TODO: Remove after development
-      this.iterations++;
-      console.log(`interval callback executed -- iterations: ${ this.iterations } -- current interval: ${this.currentInterval}`);
+      const iterations = this.state.iterations++;
+      console.log(`interval callback executed -- iterations: ${ iterations } -- current interval: ${ this.state.currentInterval }`);
     }
 
     /* public methods */
 
-    resetInterval() {
-      // set the currentInterval to low
-      // set the interval
-    }
-
-    restartInterval() {
-    }
-
-    setNextInterval() {
-      // set the new interval
-      this.intervalId = setInterval(() => {
-        // on interval trigger, cancel the current interval, increment the interval, and call the passed method
-        this.incrementInterval();
-        this.callback();
-        this.logIteration();
-      }, this.currentInterval);
-    }
-
-    clearPrevious() {
-      if (this.intervalId) {
-        clearInterval(this.intervalId);
-        this.currentInterval = this.low;
-      }
-    }
-
     start() {
-      // if it's currently set, clear it
-      this.clearPrevious();
-      this.setNextInterval();
+      this.state.intervalId = setInterval(() => {
+        this.callback();
+
+        this.logIteration();
+
+        if (this.state.currentInterval === this.high) {
+          return;
+        }
+
+        let nextInterval = this.state.currentInterval + this.increment;
+
+        if (nextInterval > this.high) {
+          nextInterval = this.high;
+        }
+
+        this.state.currentInterval = nextInterval;
+        this.restart();
+      }, this.state.currentInterval);
     }
 
+    // cancel the existing timer, setting the currentInterval back to low
     cancel() {
-      this.currentInterval = this.low;
-      return clearInterval(this.intervalId);
+      this.state.currentInterval = this.low;
+      this.stopTimer();
     }
 
+    // cancel the existing timer, without setting the currentInterval back to low
+    pause() {
+      this.stopTimer();
+    }
+
+    // start a timer, using the existing interval
+    restart() {
+      this.stopTimer();
+      this.start();
+    }
   }
-
-
-
-
-
-
-
-
-
-
 })(window.gl || (window.gl = {}));
