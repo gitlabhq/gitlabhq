@@ -218,7 +218,7 @@ feature 'Login', feature: true do
 
   describe 'UI tabs and panes' do
     context 'when no defaults are changed' do
-      it 'should correctly render tabs and panes' do
+      it 'correctly renders tabs and panes' do
         ensure_tab_pane_correctness
       end
     end
@@ -227,7 +227,8 @@ feature 'Login', feature: true do
       before do
         stub_application_setting(signup_enabled: false)
       end
-      it 'should correctly render tabs and panes' do
+
+      it 'correctly renders tabs and panes' do
         ensure_tab_pane_correctness
       end
     end
@@ -239,7 +240,7 @@ feature 'Login', feature: true do
         allow(page).to receive(:ldap_enabled).and_return(true)
       end
 
-      it 'should correctly render tabs and panes' do
+      it 'correctly renders tabs and panes' do
         ensure_tab_pane_correctness(false)
       end
     end
@@ -251,7 +252,7 @@ feature 'Login', feature: true do
         allow(page).to receive(:crowd_enabled?).and_return(true)
       end
 
-      it 'tabs and panes should be configured correctly' do
+      it 'correctly renders tabs and panes' do
         ensure_tab_pane_correctness(false)
       end
     end
@@ -260,6 +261,7 @@ feature 'Login', feature: true do
       if visit_path
         visit new_user_session_path
       end
+
       ensure_tab_pane_counts
       ensure_one_active_tab
       ensure_one_active_pane
