@@ -94,14 +94,14 @@
           position: relative;
 
           &.old {
-            &:before {
+            &::before {
               content: '-';
               position: absolute;
             }
           }
 
           &.new {
-            &:before {
+            &::before {
               content: '+';
               position: absolute;
             }
@@ -471,7 +471,7 @@
 .file-holder {
   .diff-line-num:not(.js-unfold-bottom) {
     a {
-      &:before {
+      &::before {
         content: attr(data-linenumber);
       }
     }
