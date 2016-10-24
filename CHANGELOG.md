@@ -15,6 +15,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix error in generating labels
   - Fix reply-by-email not working due to queue name mismatch
   - Expire and build repository cache after project import
+  - Fix 404 for group pages when GitLab setup uses relative url
 
 ## 8.13.0 (2016-10-22)
   - Removes extra line for empty issue description. (!7045)
