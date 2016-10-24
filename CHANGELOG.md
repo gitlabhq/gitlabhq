@@ -10,6 +10,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
   - Fix documents and comments on Build API `scope`
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 

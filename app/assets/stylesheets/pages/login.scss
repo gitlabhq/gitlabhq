@@ -286,6 +286,13 @@
   .new_user {
     position: relative;
     padding-bottom: 35px;
+    
+    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      .forgot-password {
+        float: none !important;
+        margin-top: 5px;
+      }
+    }
   }
 
   .move-submit-down {
