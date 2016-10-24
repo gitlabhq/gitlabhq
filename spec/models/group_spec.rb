@@ -265,10 +265,4 @@ describe Group, models: true do
 
     members
   end
-
-  describe '#web_url' do
-    it 'returns the canonical URL' do
-      expect(group.web_url).to include("groups/#{group.name}")
-    end
-  end
 end
