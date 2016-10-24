@@ -322,10 +322,7 @@
       var frequentlyUsedEmojis;
       frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
       frequentlyUsedEmojis.push(emoji);
-      Cookies.set('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
-        path: gon.relative_url_root || '/',
-        expires: 365
-      });
+      Cookies.set('frequently_used_emojis', frequentlyUsedEmojis.join(','), { expires: 365 });
     };
 
     AwardsHandler.prototype.getFrequentlyUsedEmojis = function() {

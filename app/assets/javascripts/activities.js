@@ -24,9 +24,7 @@
       var filter = sender.attr("id").split("_")[0];
 
       $('.event-filter .active').removeClass("active");
-      Cookies.set("event_filter", filter, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set("event_filter", filter);
 
       sender.closest('li').toggleClass("active");
     };

@@ -62,10 +62,7 @@
       if (!this.isPinned) {
         this.isExpanded = false;
       }
-      Cookies.set(pinnedStateCookie, this.isPinned ? 'true' : 'false', {
-        path: gon.relative_url_root || '/',
-        expires: 3650
-      });
+      Cookies.set(pinnedStateCookie, this.isPinned ? 'true' : 'false', { expires: 3650 });
       this.renderState();
     }
 

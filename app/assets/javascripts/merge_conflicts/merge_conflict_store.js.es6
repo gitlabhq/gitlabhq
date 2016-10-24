@@ -180,9 +180,7 @@
       this.state.diffView = viewType;
       this.state.isParallel = viewType === VIEW_TYPES.PARALLEL;
 
-      Cookies.set('diff_view', viewType, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set('diff_view', viewType);
     },
 
     getHeadHeaderLine(id) {

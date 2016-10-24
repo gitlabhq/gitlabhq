@@ -75,9 +75,7 @@
 
     dismissLanding() {
       store.isHelpDismissed = true;
-      Cookies.set(COOKIE_NAME, true, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set(COOKIE_NAME, true);
     }
 
     initDropdown() {
