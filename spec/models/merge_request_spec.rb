@@ -1286,7 +1286,8 @@ describe MergeRequest, models: true do
         let(:project)      { create(:project) }
         let(:user)         { create(:user) }
         let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
-        let(:merge_request) do
+
+        let!(:merge_request) do
           create(:closed_merge_request,
             source_project: fork_project,
             target_project: project)
