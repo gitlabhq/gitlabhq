@@ -11,7 +11,7 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  after_save :create_ref
+  after_create :create_ref
 
   def commit
     project.commit(sha)
@@ -34,7 +34,7 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    deployable.try(:other_actions)
+    @manual_actions ||= deployable.try(:other_actions)
   end
 
   def includes_commit?(commit)
@@ -84,6 +84,17 @@ class Deployment < ActiveRecord::Base
       take
   end
 
+  def stop_action
+    return nil unless on_stop.present?
+    return nil unless manual_actions
+
+    @stop_action ||= manual_actions.find_by(name: on_stop)
+  end
+
+  def stoppable?
+    stop_action.present?
+  end
+
   def formatted_deployment_time
     created_at.to_time.in_time_zone.to_s(:medium)
   end
@@ -91,6 +102,6 @@ class Deployment < ActiveRecord::Base
   private
 
   def ref_path
-    File.join(environment.ref_path, 'deployments', id.to_s)
+    File.join(environment.ref_path, 'deployments', iid.to_s)
   end
 end

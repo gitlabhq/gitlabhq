@@ -116,8 +116,10 @@ module SlashCommands
     desc 'Add label(s)'
     params '~label1 ~"label 2"'
     condition do
+      available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
+
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
-        project.labels.any?
+        available_labels.any?
     end
     command :label do |labels_param|
       label_ids = find_label_ids(labels_param)
@@ -248,7 +250,7 @@ module SlashCommands
 
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
-      labels_ids_by_name = @project.labels.where(name: labels_param.split).select(:id)
+      labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)
 
       label_ids_by_reference | labels_ids_by_name
     end

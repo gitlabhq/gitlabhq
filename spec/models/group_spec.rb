@@ -12,6 +12,7 @@ describe Group, models: true do
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
+    it { is_expected.to have_many(:labels).class_name('GroupLabel') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -263,5 +264,11 @@ describe Group, models: true do
     group.request_access(members[:requester])
 
     members
+  end
+
+  describe '#web_url' do
+    it 'returns the canonical URL' do
+      expect(group.web_url).to include("groups/#{group.name}")
+    end
   end
 end

@@ -27,3 +27,15 @@ body {
 .container-limited {
   max-width: $fixed-layout-width;
 }
+
+
+/* The following prevents side effects related to iOS Safari's implementation of -webkit-overflow-scrolling: touch,
+which is applied to the body by jquery.nicescroling plugin to force hardware acceleration for momentum scrolling. Side
+effects are commonly related to inconsisent z-index behavior (e.g. tooltips). By applying the following to direct children
+of the body element here, we negate cascading side effects but allow momentum scrolling to be applied to the body  */
+
+.navbar,
+.page-gutter,
+.page-with-sidebar {
+  -webkit-overflow-scrolling: auto;
+}

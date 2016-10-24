@@ -196,7 +196,7 @@ describe API::CommitStatuses, api: true do
     end
 
     context 'reporter user' do
-      before { post api(post_url, reporter) }
+      before { post api(post_url, reporter), state: 'running' }
 
       it 'does not create commit status' do
         expect(response).to have_http_status(403)
@@ -204,7 +204,7 @@ describe API::CommitStatuses, api: true do
     end
 
     context 'guest user' do
-      before { post api(post_url, guest) }
+      before { post api(post_url, guest), state: 'running' }
 
       it 'does not create commit status' do
         expect(response).to have_http_status(403)

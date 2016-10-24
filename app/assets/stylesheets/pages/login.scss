@@ -53,6 +53,7 @@
       margin: 0 0 10px;
     }
 
+
     .login-footer {
       margin-top: 10px;
 
@@ -124,19 +125,25 @@
     display: -webkit-flex;
     display: flex;
     box-shadow: 0 0 0 1px $border-color;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
+    border-top-right-radius: $border-radius-default;
+    border-top-left-radius: $border-radius-default;
 
     li {
       flex: 1;
       text-align: center;
 
+      &:first-of-type {
+        border-top-left-radius: $border-radius-default;
+      }
+
       &:last-of-type {
         border-left: 1px solid $border-color;
+        border-top-right-radius: $border-radius-default;
       }
 
       &:not(.active) {
         background-color: $gray-light;
+        border-left: 1px solid $border-color;
       }
 
       a {
@@ -161,6 +168,31 @@
           }
         }
       }
+    }
+  }
+
+  // Ldap configurations may need more tabs & the tab labels are user generated (arbitrarily long).
+  // These styles prevent this from breaking the layout, and only applied when providers are configured.
+
+  .new-session-tabs.custom-provider-tabs {
+    flex-wrap: wrap;
+
+    li {
+      min-width: 85px;
+      flex-basis: auto;
+
+      // This styles tab elements that have wrapped to a second line. We cannot easily predict when this will happen.
+      // We are making somewhat of an assumption about the configuration here: that users do not have more than
+      // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
+      // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
+      // above one of the bottom row elements. If you know a better way, please implement it!
+      &:nth-child(n+5) {
+        border-top: 1px solid $border-color;
+      }
+    }
+
+    a {
+      font-size: 16px;
     }
   }
 
@@ -197,6 +229,7 @@
   .login-page {
     .col-sm-5.pull-right {
       float: none !important;
+      margin-bottom: 45px;
     }
   }
 }
@@ -238,6 +271,27 @@
   }
 
   .navless-container {
-    padding: 65px; // height of footer + bottom padding of email confirmation link
+    padding: 65px 15px; // height of footer + bottom padding of email confirmation link
+
+    @media (max-width: $screen-xs-max) {
+      padding: 0 15px 65px;
+    }
   }
 }
+
+// For sign in pane only, to improve tab order, the following removes the submit button from
+// normal document flow and pins it to the bottom of the form. For context, see !6867 & !6928
+
+.login-box {
+  .new_user {
+    position: relative;
+    padding-bottom: 35px;
+  }
+
+  .move-submit-down {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+  }
+}
+

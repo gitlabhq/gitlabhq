@@ -12,12 +12,17 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/labels' do
-    it 'returns project labels' do
+    it 'returns all available labels to the project' do
+      group = create(:group)
+      group_label = create(:group_label, group: group)
+      project.update(group: group)
+
       get api("/projects/#{project.id}/labels", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(1)
-      expect(json_response.first['name']).to eq(label1.name)
+      expect(json_response.size).to eq(2)
+      expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, label1.name])
     end
   end
 

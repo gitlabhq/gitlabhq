@@ -25,9 +25,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:reference) { issue.to_reference }
 
     it 'ignores valid references when using non-default tracker' do
-      expect_any_instance_of(described_class).to receive(:find_object).
-        with(project, issue.iid).
-        and_return(nil)
+      allow(project).to receive(:default_issues_tracker?).and_return(false)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -196,19 +194,6 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
-    end
-  end
-
-  context 'referencing external issues' do
-    let(:project) { create(:redmine_project) }
-
-    it 'renders internal issue IDs as external issue links' do
-      doc = reference_filter('#1')
-      link = doc.css('a').first
-
-      expect(link.attr('data-reference-type')).to eq('external_issue')
-      expect(link.attr('title')).to eq('Issue in Redmine')
-      expect(link.attr('data-external-issue')).to eq('1')
     end
   end
 

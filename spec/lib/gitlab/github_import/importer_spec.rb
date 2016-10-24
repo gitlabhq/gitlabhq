@@ -157,7 +157,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
             { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Validation failed: Validate branches Cannot Create: This merge request already exists: [\"New feature\"]" },
             { type: :wiki, errors: "Gitlab::Shell::Error" },
             { type: :release, url: 'https://api.github.com/repos/octocat/Hello-World/releases/2', errors: "Validation failed: Description can't be blank" }
-        ]
+          ]
         }
 
         described_class.new(project).execute

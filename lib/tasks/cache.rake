@@ -29,5 +29,5 @@ namespace :cache do
     task all: [:db, :redis]
   end
 
-  task clear: 'cache:clear:all'
+  task clear: 'cache:clear:redis'
 end

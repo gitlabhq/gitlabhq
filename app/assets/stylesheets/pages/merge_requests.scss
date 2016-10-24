@@ -183,6 +183,15 @@
   .ci-coverage {
     float: right;
   }
+
+  .stop-env-container {
+    color: $gl-text-color;
+    float: right;
+
+    a {
+      color: $gl-text-color;
+    }
+  }
 }
 
 .mr_source_commit,
@@ -429,11 +438,18 @@
   }
 }
 
-.merge-request-tabs {
+.merge-request-tabs-holder {
   background-color: #fff;
 
   &.affix {
     top: 100px;
+    left: 0;
     z-index: 9;
+    transition: right .15s;
+  }
+
+  &:not(.affix) .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
   }
 }

@@ -3,7 +3,7 @@ module Boards
     class CreateService < BaseService
       def execute(board)
         List.transaction do
-          label    = project.labels.find(params[:label_id])
+          label    = available_labels.find(params[:label_id])
           position = next_position(board)
 
           create_list(board, label, position)
@@ -11,6 +11,10 @@ module Boards
       end
 
       private
+
+      def available_labels
+        LabelsFinder.new(current_user, project_id: project.id).execute
+      end
 
       def next_position(board)
         max_position = board.lists.movable.maximum(:position)

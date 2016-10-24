@@ -501,6 +501,10 @@ There are two ways to create links, inline-style and reference-style.
     [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
     [I'm a relative reference to a repository file](LICENSE)
+    
+    [I am an absolute reference within the repository](/doc/user/markdown.md)
+    
+    [I link to the Milestones page](/../milestones)
 
     [You can use numbers for reference-style link definitions][1]
 
@@ -518,6 +522,10 @@ There are two ways to create links, inline-style and reference-style.
 
 [I'm a relative reference to a repository file](LICENSE)[^1]
 
+[I am an absolute reference within the repository](/doc/user/markdown.md)
+    
+[I link to the Milestones page](/../milestones)
+    
 [You can use numbers for reference-style link definitions][1]
 
 Or leave it empty and use the [link text itself][]

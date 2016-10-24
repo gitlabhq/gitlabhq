@@ -13,9 +13,18 @@
 
 .new_project,
 .edit-project {
+
   fieldset {
-    &.features .control-label {
-      font-weight: normal;
+
+    &.features {
+
+      .label-light {
+        margin-bottom: 0;
+      }
+
+      .help-block {
+        margin-top: 0;
+      }
     }
 
     .form-group {
@@ -40,6 +49,7 @@
   }
 
   .input-group > div {
+
     &:last-child {
       padding-right: 0;
     }
@@ -47,6 +57,7 @@
 
   @media (max-width: $screen-xs-max) {
     .input-group > div {
+
       margin-bottom: 14px;
 
       &:last-child {
@@ -60,6 +71,7 @@
   }
 
   .input-group-addon {
+
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
@@ -761,62 +773,6 @@ pre.light-well {
   .dropdown-menu {
     width: 300px;
   }
-
-  &.from .compare-dropdown-toggle {
-    width: 237px;
-  }
-
-  &.to .compare-dropdown-toggle {
-    width: 254px;
-  }
-
-  .dropdown-toggle-text {
-    display: block;
-    height: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-  }
-}
-
-.compare-ellipsis {
-  display: inline;
-}
-
-@media (max-width: $screen-xs-max) {
-  .compare-form-group {
-    .input-group {
-      width: 100%;
-
-      & > .compare-dropdown-toggle {
-        width: 100%;
-      }
-    }
-
-    .dropdown-menu {
-      width: 100%;
-    }
-  }
-
-  .compare-switch-container {
-    text-align: center;
-    padding: 0 0 $gl-padding;
-
-    .commits-compare-switch {
-      float: none;
-    }
-  }
-
-  .compare-ellipsis {
-    display: block;
-    text-align: center;
-    padding: 0 0 $gl-padding;
-  }
-
-  .commits-compare-btn {
-    width: 100%;
-  }
 }
 
 .clearable-input {
@@ -853,5 +809,32 @@ pre.light-well {
   .select2-choice {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+  }
+}
+
+.project-home-empty {
+  border-top: 0;
+
+  .container-fluid {
+    background: none;
+  }
+
+  p {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 650px;
+  }
+}
+
+.project-feature-nested {
+  @media (min-width: $screen-sm-min) {
+    padding-left: 45px;
+  }
+}
+
+.project-repo-select {
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 }

@@ -2,11 +2,19 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_update_environment!, only: [:edit, :update, :destroy]
-  before_action :environment, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_create_deployment!, only: [:stop]
+  before_action :authorize_update_environment!, only: [:edit, :update]
+  before_action :environment, only: [:show, :edit, :update, :stop]
 
   def index
-    @environments = project.environments
+    @scope = params[:scope]
+    @all_environments = project.environments
+    @environments =
+      if @scope == 'stopped'
+        @all_environments.stopped
+      else
+        @all_environments.available
+      end
   end
 
   def show
@@ -38,14 +46,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-  def destroy
-    if @environment.destroy
-      flash[:notice] = 'Environment was successfully removed.'
-    else
-      flash[:alert] = 'Failed to remove environment.'
-    end
+  def stop
+    return render_404 unless @environment.stoppable?
 
-    redirect_to namespace_project_environments_path(project.namespace, project)
+    new_action = @environment.stop!(current_user)
+    redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, new_action])
   end
 
   private

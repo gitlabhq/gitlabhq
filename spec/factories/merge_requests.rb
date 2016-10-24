@@ -68,5 +68,15 @@ FactoryGirl.define do
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
+
+    factory :labeled_merge_request do
+      transient do
+        labels []
+      end
+
+      after(:create) do |merge_request, evaluator|
+        merge_request.update_attributes(labels: evaluator.labels)
+      end
+    end
   end
 end

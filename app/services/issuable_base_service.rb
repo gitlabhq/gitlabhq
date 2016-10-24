@@ -80,17 +80,18 @@ class IssuableBaseService < BaseService
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
-    params[key] = project.labels.where(id: params[key]).pluck(:id)
+    params[key] = available_labels.where(id: params[key]).pluck(:id)
   end
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
     return unless labels
 
-    params[:label_ids] = labels.split(",").map do |label_name|
-      project.labels.create_with(color: Label::DEFAULT_COLOR)
-                    .find_or_create_by(title: label_name.strip)
-                    .id
+    params[:label_ids] = labels.split(',').map do |label_name|
+      service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
+      label   = service.execute
+
+      label.id
     end
   end
 
@@ -109,6 +110,10 @@ class IssuableBaseService < BaseService
     end
 
     new_label_ids
+  end
+
+  def available_labels
+    LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
   def merge_slash_commands_into_params!(issuable)
