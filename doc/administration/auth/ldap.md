@@ -61,11 +61,15 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   # Example: 'Paris' or 'Acme, Ltd.'
   label: 'LDAP'
-
+  
+  # Example: 'ldap.mydomain.com'
   host: '_your_ldap_server'
+  # This port is an example, it is sometimes different but it is always an integer and not a string
   port: 389
   uid: 'sAMAccountName'
   method: 'plain' # "tls" or "ssl" or "plain"
+  
+  # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
@@ -97,7 +101,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
   # Base where we can search for users
   #
-  #   Ex. ou=People,dc=gitlab,dc=example
+  #   Ex. 'ou=People,dc=gitlab,dc=example' or 'DC=mydomain,DC=com'
   #
   base: ''
 
@@ -107,6 +111,9 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #   Ex. (employeeType=developer)
   #
   #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+  #
+  #   Below an example for get only specific users
+  #   Example: '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
   #
   user_filter: ''
 
@@ -162,32 +169,12 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 EOS
 ```
 
-An other example:
-```ruby
-gitlab_rails['ldap_enabled'] = true
-gitlab_rails['ldap_servers'] = YAML.load <<-EOS # remember to close this block with 'EOS' below
-main: # 'main' is the GitLab 'provider ID' of this LDAP server
-  label: 'LDAP'
-  host: 'ldap.company.com'
-  port: 3288
-  uid: 'sAMAccountName'
-  method: 'plain' # "tls" or "ssl" or "plain"
-  bind_dn: 'america\\momo'
-  password: 'MYPASSWORD'
-  active_directory: true
-  allow_username_or_email_login: true
-  base: 'DC=company,DC=com'
-  user_filter: '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
-EOS
-```
-
-
 **Source configuration**
 
 Use the same format as `gitlab_rails['ldap_servers']` for the contents under
 `servers:` in the example below:
 
-
+```
 production:
   # snip...
   ldap:
