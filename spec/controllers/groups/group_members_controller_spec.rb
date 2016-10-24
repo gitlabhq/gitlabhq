@@ -13,6 +13,49 @@ describe Groups::GroupMembersController do
     end
   end
 
+  describe 'POST create' do
+    let(:group_user) { create(:user) }
+
+    before { sign_in(user) }
+
+    context 'when user does not have enough rights' do
+      before { group.add_developer(user) }
+
+      it 'returns 403' do
+        post :create, group_id: group,
+                      user_ids: group_user.id,
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to have_http_status(403)
+        expect(group.users).not_to include group_user
+      end
+    end
+
+    context 'when user has enough rights' do
+      before { group.add_owner(user) }
+
+      it 'adds user to members' do
+        post :create, group_id: group,
+                      user_ids: group_user.id,
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to set_flash.to 'Users were successfully added.'
+        expect(response).to redirect_to(group_group_members_path(group))
+        expect(group.users).to include group_user
+      end
+
+      it 'adds no user to members' do
+        post :create, group_id: group,
+                      user_ids: '',
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to set_flash.to 'No users specified.'
+        expect(response).to redirect_to(group_group_members_path(group))
+        expect(group.users).not_to include group_user
+      end
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:member) { create(:group_member, :developer, group: group) }
 

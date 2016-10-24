@@ -16,6 +16,8 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix reply-by-email not working due to queue name mismatch
   - Expire and build repository cache after project import
   - Fix 404 for group pages when GitLab setup uses relative url
+  - Simpler arguments passed to named_route on toggle_award_url helper method 
+  - Better handle when no users were selected for adding to group or project. (Linus Thiel)
 
 ## 8.13.0 (2016-10-22)
   - Removes extra line for empty issue description. (!7045)
