@@ -15,7 +15,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix error in generating labels
 
 ## 8.13.0 (2016-10-22)
-
+  - Removes extra line for empty issue description. (!7045)
   - Fix save button on project pipeline settings page. (!6955)
   - All Sidekiq workers now use their own queue
   - Avoid race condition when asynchronously removing expired artifacts. (!6881)
