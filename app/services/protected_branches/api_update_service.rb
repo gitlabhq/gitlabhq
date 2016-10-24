@@ -4,13 +4,10 @@
 # lives in this service.
 module ProtectedBranches
   class ApiUpdateService < BaseService
-    def initialize(project, user, params)
-      @developers_can_merge = params.delete(:developers_can_merge)
-      @developers_can_push = params.delete(:developers_can_push)
-      super(project, user, params)
-    end
-
     def execute(protected_branch)
+      @developers_can_push = params.delete(:developers_can_push)
+      @developers_can_merge = params.delete(:developers_can_merge)
+
       @protected_branch = protected_branch
 
       protected_branch.transaction do

@@ -4,22 +4,16 @@
 # lives in this service.
 module ProtectedBranches
   class ApiCreateService < BaseService
-    def initialize(project, user, params)
-      @developers_can_merge = params.delete(:developers_can_merge)
-      @developers_can_push = params.delete(:developers_can_push)
-      super(project, user, params)
-    end
-
     def execute
       push_access_level =
-        if @developers_can_push
+        if params.delete(:developers_can_push)
           Gitlab::Access::DEVELOPER
         else
           Gitlab::Access::MASTER
         end
 
       merge_access_level =
-        if @developers_can_merge
+        if params.delete(:developers_can_merge)
           Gitlab::Access::DEVELOPER
         else
           Gitlab::Access::MASTER
