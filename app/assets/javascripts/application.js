@@ -149,6 +149,10 @@
     $document = $(document);
     $window = $(window);
     $body = $('body');
+
+    // Set the default path for all cookies to GitLab's root directory
+    Cookies.defaults.path = gon.relative_url_root || '/';
+
     gl.utils.preventDisabledButtons();
     bootstrapBreakpoint = bp.getBreakpointSize();
     $(".nav-sidebar").niceScroll({
