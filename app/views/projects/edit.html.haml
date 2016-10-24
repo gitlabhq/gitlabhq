@@ -101,7 +101,7 @@
                     Git Large File Storage
                     = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
-          - if Gitlab.config.lfs.enabled && current_user.admin?
+          - if Gitlab.config.registry.enabled
             .form-group
               .checkbox
                 = f.label :container_registry_enabled do
