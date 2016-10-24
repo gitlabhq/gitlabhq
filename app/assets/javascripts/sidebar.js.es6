@@ -28,7 +28,7 @@
     }
 
     init() {
-      this.isPinned = $.cookie(pinnedStateCookie) === 'true';
+      this.isPinned = Cookies.get(pinnedStateCookie) === 'true';
       this.isExpanded = (
         window.innerWidth >= sidebarBreakpoint &&
         $(pageSelector).hasClass(expandedPageClass)
@@ -62,7 +62,7 @@
       if (!this.isPinned) {
         this.isExpanded = false;
       }
-      $.cookie(pinnedStateCookie, this.isPinned ? 'true' : 'false', {
+      Cookies.set(pinnedStateCookie, this.isPinned ? 'true' : 'false', {
         path: gon.relative_url_root || '/',
         expires: 3650
       });

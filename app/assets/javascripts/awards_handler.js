@@ -322,7 +322,7 @@
       var frequentlyUsedEmojis;
       frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
       frequentlyUsedEmojis.push(emoji);
-      return $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
+      Cookies.set('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
         path: gon.relative_url_root || '/',
         expires: 365
       });
@@ -330,13 +330,13 @@
 
     AwardsHandler.prototype.getFrequentlyUsedEmojis = function() {
       var frequentlyUsedEmojis;
-      frequentlyUsedEmojis = ($.cookie('frequently_used_emojis') || '').split(',');
+      frequentlyUsedEmojis = (Cookies.get('frequently_used_emojis') || '').split(',');
       return _.compact(_.uniq(frequentlyUsedEmojis));
     };
 
     AwardsHandler.prototype.renderFrequentlyUsedBlock = function() {
       var emoji, frequentlyUsedEmojis, i, len, ul;
-      if ($.cookie('frequently_used_emojis')) {
+      if (Cookies.get('frequently_used_emojis')) {
         frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
         ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>");
         for (i = 0, len = frequentlyUsedEmojis.length; i < len; i++) {

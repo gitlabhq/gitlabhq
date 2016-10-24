@@ -1,7 +1,7 @@
 
 /*= require awards_handler */
 /*= require jquery */
-/*= require jquery.cookie */
+/*= require js.cookie */
 /*= require ./fixtures/emoji_menu */
 
 (function() {
@@ -44,7 +44,7 @@
       spyOn(jQuery, 'get').and.callFake(function(req, cb) {
         return cb(window.emojiMenu);
       });
-      spyOn(jQuery, 'cookie');
+      spyOn(Cookies, 'set');
     });
     afterEach(function() {
       // restore original url root value
@@ -194,7 +194,7 @@
       it('should set a cookie with the correct default path', function() {
         gon.relative_url_root = '';
         awardsHandler.addEmojiToFrequentlyUsedList('sunglasses');
-        expect(jQuery.cookie)
+        expect(Cookies.set)
           .toHaveBeenCalledWith('frequently_used_emojis', 'sunglasses', {
             path: '/',
             expires: 365
@@ -204,7 +204,7 @@
       it('should set a cookie with the correct custom root path', function() {
         gon.relative_url_root = '/gitlab/subdir';
         awardsHandler.addEmojiToFrequentlyUsedList('alien');
-        expect(jQuery.cookie)
+        expect(Cookies.set)
           .toHaveBeenCalledWith('frequently_used_emojis', 'alien', {
             path: '/gitlab/subdir',
             expires: 365

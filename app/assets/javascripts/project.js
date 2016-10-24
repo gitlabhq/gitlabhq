@@ -23,14 +23,14 @@
         return $(this).parents('form').submit();
       });
       $('.hide-no-ssh-message').on('click', function(e) {
-        $.cookie('hide_no_ssh_message', 'false', {
+        Cookies.set('hide_no_ssh_message', 'false', {
           path: gon.relative_url_root || '/'
         });
         $(this).parents('.no-ssh-key-message').remove();
         return e.preventDefault();
       });
       $('.hide-no-password-message').on('click', function(e) {
-        $.cookie('hide_no_password_message', 'false', {
+        Cookies.set('hide_no_password_message', 'false', {
           path: gon.relative_url_root || '/'
         });
         $(this).parents('.no-password-message').remove();

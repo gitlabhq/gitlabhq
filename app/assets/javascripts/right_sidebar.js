@@ -29,7 +29,7 @@
           $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
         }
         if (!triggered) {
-          return $.cookie("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'), {
+          return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'), {
             path: gon.relative_url_root || '/'
           });
         }

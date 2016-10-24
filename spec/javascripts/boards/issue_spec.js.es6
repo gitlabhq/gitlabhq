@@ -1,6 +1,6 @@
 //= require jquery
 //= require jquery_ujs
-//= require jquery.cookie
+//= require js.cookie
 //= require vue
 //= require vue-resource
 //= require lib/utils/url_utility
