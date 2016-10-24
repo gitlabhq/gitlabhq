@@ -65,8 +65,20 @@ describe LabelsFinder do
         expect(finder.execute).to eq [group_label_2]
       end
 
+      it 'returns label with title alias' do
+        finder = described_class.new(user, name: 'Group Label 2')
+
+        expect(finder.execute).to eq [group_label_2]
+      end
+
       it 'returns no labels if empty titles are supplied' do
         finder = described_class.new(user, title: [])
+
+        expect(finder.execute).to be_empty
+      end
+
+      it 'returns no labels if empty names are supplied' do
+        finder = described_class.new(user, name: [])
 
         expect(finder.execute).to be_empty
       end

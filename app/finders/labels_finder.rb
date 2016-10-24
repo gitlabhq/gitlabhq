@@ -37,10 +37,13 @@ class LabelsFinder < UnionFinder
   def with_title(items)
     # Match no labels if an empty title is supplied to avoid matching all
     # labels (e.g. when an issue is moved)
-    return Label.none if params[:title] && params[:title].empty?
+    return items.none if raw_title && raw_title.empty?
 
-    items = items.where(title: title) if title
-    items
+    if title
+      items = items.where(title: title)
+    else
+      items
+    end
   end
 
   def group_id
@@ -57,6 +60,10 @@ class LabelsFinder < UnionFinder
 
   def title
     params[:title].presence || params[:name].presence
+  end
+
+  def raw_title
+    params[:title] || params[:name]
   end
 
   def project
