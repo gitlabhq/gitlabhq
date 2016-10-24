@@ -12,23 +12,26 @@ constraints(GroupUrlConstrainer.new) do
   end
 end
 
-resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
-  member do
-    get :issues
-    get :merge_requests
-    get :projects
-    get :activity
-  end
-
-  scope module: :groups do
-    resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
-      post :resend_invite, on: :member
-      delete :leave, on: :collection
+scope constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ } do
+  resources :groups, except: [:show] do
+    member do
+      get :issues
+      get :merge_requests
+      get :projects
+      get :activity
     end
 
-    resource :avatar, only: [:destroy]
-    resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+    scope module: :groups do
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
+        post :resend_invite, on: :member
+        delete :leave, on: :collection
+      end
 
-    resources :labels, except: [:show], constraints: { id: /\d+/ }
+      resource :avatar, only: [:destroy]
+      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+
+      resources :labels, except: [:show], constraints: { id: /\d+/ }
+    end
   end
+  get 'groups/:id' => 'groups#show', as: :group_canonical
 end
