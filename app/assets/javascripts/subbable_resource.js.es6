@@ -52,7 +52,6 @@
         loading: false,
         last_updated: null
       };
-
       this.init();
     }
     /* private methods */
@@ -63,9 +62,12 @@
 
     initPolling() {
       if (this.pollInterval) {
-        setInterval(() => {
-          this.getResource();
-        }, this.pollInterval);
+        this.interval = new SmartInterval({
+          callback: this.getResource.bind(this),
+          high: 15000,
+          low: 1000,
+          increment: 2000
+        });
       }
     }
 
@@ -184,5 +186,115 @@
 
   // only expose creation method
   global.createSubbableResource = resourceFactory.create.bind(resourceFactory);
+
+
+
+  class SmartInterval {
+    constructor({ callback, high = 120000, low = 15000, increment = 0, immediate = true, runInBackground = false, runInCache = false }) {
+      if (!callback) {
+        throw Error("You need to pass a callback to create a smart interval.");
+      }
+      this.callback = callback;
+      this.high = high;
+      this.low = low;
+      this.runInBackground = runInBackground;
+      this.increment = increment;
+      this.currentInterval = low;
+      this.immediate = immediate;
+      this.intervalId = null;
+      this.iterations = 0;
+      this.init();
+    }
+
+    init() {
+      if (this.immediate) {
+        this.start();
+      }
+
+      if (!this.runInBackground) {
+        // cancel interval when tab no longer shown
+        $(document).on('visibilitychange', (e) => {
+          const visState = document.visibilityState;
+          if (visState === 'hidden') {
+            this.cancel();
+          } else {
+            this.start();
+          }
+        });
+      }
+
+      if (!this.runInCache) {
+        // prevent interval continuing after page change, when kept in cache by Turbolinks
+        $(document).on('page:before-unload', (e) => {
+          this.cancel();
+        });
+      }
+    }
+
+    incrementInterval() {
+      if (this.currentInterval < this.high) {
+        let nextInterval = this.currentInterval + this.increment;
+        if (nextInterval > this.high) {
+          nextInterval = this.high;
+        }
+        this.cancel();
+        this.start();
+      }
+    }
+
+    logIteration() {
+      // TODO: Remove after development
+      this.iterations++;
+      console.log(`interval callback executed -- iterations: ${ this.iterations } -- current interval: ${this.currentInterval}`);
+    }
+
+    /* public methods */
+
+    resetInterval() {
+      // set the currentInterval to low
+      // set the interval
+    }
+
+    restartInterval() {
+    }
+
+    setNextInterval() {
+      // set the new interval
+      this.intervalId = setInterval(() => {
+        // on interval trigger, cancel the current interval, increment the interval, and call the passed method
+        this.incrementInterval();
+        this.callback();
+        this.logIteration();
+      }, this.currentInterval);
+    }
+
+    clearPrevious() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.currentInterval = this.low;
+      }
+    }
+
+    start() {
+      // if it's currently set, clear it
+      this.clearPrevious();
+      this.setNextInterval();
+    }
+
+    cancel() {
+      this.currentInterval = this.low;
+      return clearInterval(this.intervalId);
+    }
+
+  }
+
+
+
+
+
+
+
+
+
 
 })(window.gl || (window.gl = {}));
