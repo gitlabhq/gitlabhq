@@ -7,6 +7,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
+  - Fix showing pipeline status from correct branch !7034
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
   - Fix documents and comments on Build API `scope`
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
