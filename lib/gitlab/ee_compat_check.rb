@@ -1,3 +1,4 @@
+# rubocop: disable Rails/Output
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
   class EeCompatCheck
