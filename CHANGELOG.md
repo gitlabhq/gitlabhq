@@ -14,6 +14,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Only show register tab if signup enabled. !7058
   - Expire and build repository cache after project import. !7064
   - Fix bug where labels would be assigned to issues that were moved. !7065
+  - Fix reply-by-email not working due to queue name mismatch. !7068
 
 ## 8.13.0 (2016-10-22)
 
