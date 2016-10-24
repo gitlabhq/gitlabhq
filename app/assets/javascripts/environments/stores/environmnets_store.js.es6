@@ -60,14 +60,14 @@
         
         if (environment.environment_type !== null) {
           const occurs = acc.find((element, index, array) => {
-            return element.name === environment.environment_type;
+            return element.environment_type === environment.environment_type;
           });
           
           data["vue-isChildren"] = true;
 
           if (occurs !== undefined) {
             acc[acc.indexOf(occurs)].children.push(data);
-            acc[acc.indexOf(occurs)].children.sort();
+            acc[acc.indexOf(occurs)].children.push(data).sort(this.sortByName)
           } else {
             acc.push({
               name: environment.environment_type,
@@ -81,11 +81,26 @@
         }
 
         return acc;
-      }, []).sort();
+      }, []).sort(this.sortByName);
     
       this.state.environments = environmentsTree;
       
       return environmentsTree;
+    },
+    
+    sortByName (a,b) {
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase();
+      
+      if (nameA < nameB) {
+        return -1;
+      }
+      
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      return 0;
     }
   }
 })();

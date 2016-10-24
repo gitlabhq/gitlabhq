@@ -52,6 +52,7 @@
     %td.hidden-xs
       .pull-right{ "v-if" => "!isFolder"}
         =render "projects/environments/components/external_url"
+        =render "projects/environments/components/actions"
       
   %tr{"v-if" => "open && isFolder", 
     "is" => "environment-item", 
