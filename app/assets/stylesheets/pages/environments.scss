@@ -64,7 +64,7 @@
     }
   }
   
-  .children-row .environment-name{
+  .children-row .environment-name {
     margin-left: 17px;
     margin-right: -17px;
   }
@@ -75,6 +75,13 @@
   
   .folder-name {
     cursor: pointer;
+    
+    .badge {
+      font-weight: normal;
+      background-color: $gray-darker;
+      color: $gl-placeholder-color;
+      vertical-align: baseline;
+    }
   }
 }
 

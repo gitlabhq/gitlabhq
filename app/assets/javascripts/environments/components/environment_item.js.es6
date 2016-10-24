@@ -37,10 +37,10 @@
        * Folder items have different behaviours - it is possible to toggle
        * them and show their children. 
        *
-       * @returns {Number}  The length of the children array
+       * @returns {Boolean}
        */
       isFolder () {
-        return this.model.children && this.model.children.length
+        return this.model.children && this.model.children.length ? true : false;
       },
       
       /**
@@ -51,6 +51,17 @@
        */
       isChildren () {
         return this.model['vue-isChildren'];
+      },
+      
+      
+      /**
+       * Counts the number of environments in each folder.
+       * Used to show a badge with the counter.
+       *
+       * @returns {Boolean}  The number of environments for the current folder
+       */
+      childrenCounter () {
+        return this.model.children && this.model.children.length;
       }
     },
 

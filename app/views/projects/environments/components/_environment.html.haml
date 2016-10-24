@@ -14,6 +14,9 @@
           =icon("caret-right")
         
         {{model.name}}
+        
+        %span.badge 
+          {{childrenCounter}}
     
     %td.deployment-column
       %span{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.iid"}
