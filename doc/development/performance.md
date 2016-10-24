@@ -37,7 +37,7 @@ graphs/dashboards.
 GitLab provides built-in tools to aid the process of improving performance:
 
 * [Sherlock](profiling.md#sherlock)
-* [GitLab Performance Monitoring](../monitoring/performance/monitoring.md)
+* [GitLab Performance Monitoring](../administration/monitoring/performance/monitoring.md)
 * [Request Profiling](../administration/monitoring/performance/request_profiling.md)
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
