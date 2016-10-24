@@ -191,7 +191,7 @@ linters:
   # Variables should be formatted with a single space separating the colon
   # from the variable's value.
   SpaceAfterVariableColon:
-    enabled: false
+    enabled: true
 
   # Variables should be formatted with no space between the name and the
   # colon.
