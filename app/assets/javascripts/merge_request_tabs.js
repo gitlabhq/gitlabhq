@@ -282,6 +282,7 @@
             document.querySelector("div#builds").innerHTML = data.html;
             gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
             _this.buildsLoaded = true;
+            if (!this.pipelines) this.pipelines = new gl.Pipelines();
             return _this.scrollToElement("#builds");
           };
         })(this)
