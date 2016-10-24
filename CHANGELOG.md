@@ -12,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix error in generating labels. !7055
   - Stop clearing the database cache on `rake cache:clear`. !7056
   - Only show register tab if signup enabled. !7058
+  - Expire and build repository cache after project import. !7064
 
 ## 8.13.0 (2016-10-22)
 
