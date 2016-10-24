@@ -75,11 +75,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       include: {
         last_deployment: {
           include: {
-            user: { only: [:id, :name, :username], methods: [:avatar_url] }
+            user: { only: [:id, :name, :username], methods: [:avatar_url] },
+            deployable: { only: [:id, :name, :ref, :tag] }
           },
-          methods: [:short_sha, :commit_title, :deployable, :commit]
+          methods: [:short_sha, :commit_title, :commit]
         },
-        project: { methods: [:namespace]}
+        project: { methods: [:namespace] }
       }
     )
   end

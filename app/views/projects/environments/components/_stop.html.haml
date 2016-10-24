@@ -2,5 +2,6 @@
   .inline{ "v-if" => "model.stop_action" }
     %a.btn.stop-env-link{":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + model.id", 
       "method" => ":post", 
-      "rel" => "nofollow", "confirm" => "Are you sure you want to stop this environment?"}
+      "rel" => "nofollow", 
+      "confirm" => "Are you sure you want to stop this environment?"}
       = icon("stop", class: "stop-env-icon")

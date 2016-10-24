@@ -29,7 +29,7 @@
         open: false
       };
     },
-    
+
     computed: {
       
       /**
@@ -42,7 +42,7 @@
       isFolder () {
         return this.model.children && this.model.children.length ? true : false;
       },
-      
+
       /**
        * If an item is inside a folder structure will return true.
        * Used for css purposes.
@@ -52,8 +52,7 @@
       isChildren () {
         return this.model['vue-isChildren'];
       },
-      
-      
+
       /**
        * Counts the number of environments in each folder.
        * Used to show a badge with the counter.

@@ -1,14 +1,14 @@
 (() => {
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
-  
+
   gl.environmentsList.EnvironmentsStore = {
     state: {},
-    
+
     create () {
       this.state.environments = [];
     },
-    
+
     /**
      * In order to display a tree view we need to modify the received 
      * data in to a tree structure based on `environment_type` 
@@ -87,15 +87,22 @@
       
       return environmentsTree;
     },
-    
-    sortByName (a,b) {
+
+    /**
+     * Sorts the two objects provided by their name.
+     *
+     * @param  {Object} a
+     * @param  {Object} b
+     * @returns {Number}
+     */
+    sortByName (a, b) {
       const nameA = a.name.toUpperCase();
       const nameB = b.name.toUpperCase();
-      
+
       if (nameA < nameB) {
         return -1;
       }
-      
+
       if (nameA > nameB) {
         return 1;
       }
