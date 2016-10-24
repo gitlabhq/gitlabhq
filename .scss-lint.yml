@@ -201,7 +201,7 @@ linters:
   # Operators should be formatted with a single space on both sides of an
   # infix operator.
   SpaceAroundOperator:
-    enabled: false
+    enabled: true
   
   # Opening braces should be preceded by a single space.
   SpaceBeforeBrace:
