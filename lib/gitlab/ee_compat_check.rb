@@ -111,7 +111,7 @@ module Gitlab
       output, status = Gitlab::Popen.popen(%w[git format-patch FETCH_HEAD --stdout])
       throw(:halt_check, :ko) unless status.zero?
 
-      File.open(filepath, 'w+') { |f| f.write(output) }
+      File.write(filepath, output)
       throw(:halt_check, :ko) unless File.exist?(filepath)
     end
 
