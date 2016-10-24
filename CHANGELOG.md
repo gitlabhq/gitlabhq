@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.1 (2016-10-25)
 
+  - Fix branch protection API. !6215
   - Fix hidden pipeline graph on commit and MR page. !6895
   - Fix Cycle analytics not showing correct data when filtering by date. !6906
   - Ensure custom provider tab labels don't break layout. !6993
