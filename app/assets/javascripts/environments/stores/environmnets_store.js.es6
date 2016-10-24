@@ -63,6 +63,7 @@
             return element.environment_type === environment.environment_type;
           });
           
+          
           data["vue-isChildren"] = true;
 
           if (occurs !== undefined) {

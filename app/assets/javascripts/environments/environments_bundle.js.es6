@@ -15,19 +15,20 @@ $(() => {
     gl.EnvironmentsListApp.$destroy(true);
   }
   
-  const filters = {
-    stopped (environments) {
-      return environments.filter((env) => env.state === 'stopped')
-    },
-    available (environments) {
-      return environments.filter((env) => env.state === 'available')
-    }
+  const filterEnvironments = (environments = [], filter = "") => {
+    return environments.filter((env) => {
+      if (env.children) {
+        return env.children.filter((child) =>  child.state === filter).length;
+      } else {
+        return env.state === filter;
+      };
+    });
   };
   
   gl.EnvironmentsListApp = new Vue({
 
     el: '#environments-list-view',
-    
+
     components: {
       'item': gl.environmentsList.EnvironmentItem
     },
@@ -41,15 +42,15 @@ $(() => {
     
     computed: {
       filteredEnvironments () {
-        return filters[this.visibility](this.state.environments);
+        return filterEnvironments(this.state.environments, this.visibility);
       },
-      
+
       countStopped () {
-        return filters['stopped'](this.state.environments).length;
+        return filterEnvironments(this.state.environments, 'stopped').length;
       },
-      
+
       counAvailable () {
-        return filters['available'](this.state.environments).length;
+        return filterEnvironments(this.state.environments, 'available').length;
       }
     },
     
