@@ -1,12 +1,10 @@
-- builds = @build.pipeline.builds.to_a
-
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
     Build
     %strong ##{@build.id}
     %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
       = icon('angle-double-right')
-  - if @build.coverage
+  - if @build.coverage_visible?
     .block.coverage
       .title
         Test coverage
@@ -14,7 +12,7 @@
         #{@build.coverage}%
 
   .blocks-container
-    - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
+    - if @build.artifacts_visible?
       .block{ class: ("block-first" if !@build.coverage) }
         .title
           Build artifacts
@@ -40,10 +38,10 @@
               = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
                 Browse
 
-    .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
+    .block{ class: ("block-first" if @build.details_block_first?) }
       .title
         Build details
-        - if can?(current_user, :update_build, @build) && @build.retryable?
+        - if @build.retry_visible?
           = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right retry-link', method: :post
       - if @build.merge_request
         %p.build-detail-row
@@ -63,7 +61,7 @@
           #{time_ago_with_tooltip(@build.erased_at)}
       %p.build-detail-row
         %span.build-light-text Runner:
-        - if @build.runner && current_user && current_user.admin
+        - if @build.link_to_runner_administration_visible?
           = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
         - elsif @build.runner
           \##{@build.runner.id}
@@ -72,7 +70,7 @@
           = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default'
         - if @build.active?
           = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post
-        - if can?(current_user, :update_build, @project) && @build.erasable?
+        - if @build.erase_visible?
           = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
                     class: "btn btn-sm btn-default", method: :post,
                     data: { confirm: "Are you sure you want to erase this build?" } do
@@ -85,7 +83,7 @@
 
         %p
           %span.build-light-text Token:
-          #{@build.trigger_request.trigger.short_token}
+          #{@build.trigger_request_short_token}
 
         - if @build.trigger_request.variables
           %p
@@ -123,16 +121,17 @@
               %a.stage-item= stage
 
   .builds-container
-    - HasStatus::ORDERED_STATUSES.each do |build_status|
-      - builds.select{|build| build.status == build_status}.each do |build|
-        .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
-          = link_to namespace_project_build_path(@project.namespace, @project, build) do
-            = icon('arrow-right')
-            = ci_icon_for_status(build.status)
-            %span
-              - if build.name
-                = build.name
-              - else
-                = build.id
-            - if build.retried?
-              %i.fa.fa-refresh.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'Build was retried'}
+    - @builds_pipeline.each_ordered_build do |build|
+      - next if build == @build
+
+      .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
+        = link_to namespace_project_build_path(@project.namespace, @project, build) do
+          = icon('arrow-right')
+          = ci_icon_for_status(build.status)
+          %span
+            - if build.name
+              = build.name
+            - else
+              = build.id
+          - if build.retried?
+            %i.fa.fa-refresh.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'Build was retried'}

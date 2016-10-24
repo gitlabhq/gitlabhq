@@ -28,8 +28,8 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
-    @builds = @builds.where("id not in (?)", @build.id)
+    @builds_pipeline = PipelineDecorator
+      .new(@project.pipelines.find_by_sha(@build.sha))
     @pipeline = @build.pipeline
 
     respond_to do |format|
@@ -94,7 +94,7 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.builds.find_by!(id: params[:id])
+    @build ||= BuildDecorator.new(project.builds.find_by!(id: params[:id]), current_user)
   end
 
   def build_path(build)

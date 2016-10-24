@@ -33,8 +33,10 @@
           %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
       - if @build.erased?
         .erased.alert.alert-warning
-          - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
-          Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
+          - if @build.erased_by_user?
+            Build has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
+          - else
+            Build has been erased #{time_ago_with_tooltip(@build.erased_at)}
       - else
         #js-build-scroll.scroll-controls
           = link_to '#build-trace', class: 'btn' do
