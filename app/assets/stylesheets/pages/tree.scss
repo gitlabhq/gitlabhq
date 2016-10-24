@@ -23,7 +23,8 @@
       border-bottom: 1px solid $table-border-gray;
       border-top: 1px solid $table-border-gray;
 
-      td, th {
+      td,
+      th {
         line-height: 21px;
       }
 
@@ -74,7 +75,8 @@
       max-width: 320px;
       vertical-align: middle;
 
-      i, a {
+      i,
+      a {
         color: $gl-dark-link-color;
       }
 

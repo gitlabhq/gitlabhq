@@ -131,12 +131,14 @@
     font-weight: inherit;
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding: 0;
     margin: 3px 0 3px 28px !important;
   }
 
-  ul:dir(rtl), ol:dir(rtl) {
+  ul:dir(rtl),
+  ol:dir(rtl) {
     margin: 3px 28px 3px 0 !important;
   }
 
@@ -144,7 +146,8 @@
     line-height: 1.6em;
   }
 
-  a[href*="/uploads/"], a[href*="storage.googleapis.com/google-code-attachments/"] {
+  a[href*="/uploads/"],
+  a[href*="storage.googleapis.com/google-code-attachments/"] {
     &:before {
       margin-right: 4px;
 
@@ -167,7 +170,12 @@
   }
 
   /* Link to current header. */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     position: relative;
 
     a.anchor {
@@ -215,7 +223,12 @@ body {
   margin: 12px 7px;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: $gl-title-color;
   font-weight: 600;
 }
@@ -273,7 +286,10 @@ a > code {
   text-decoration: line-through;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   small {
     color: $gl-gray;
   }

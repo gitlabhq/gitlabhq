@@ -248,7 +248,8 @@
         font-size: 14px;
       }
 
-      svg, .fa {
+      svg,
+      .fa {
         margin-right: 0;
       }
     }
@@ -529,7 +530,8 @@
 
     // Connect each build (except for first) with curved lines
     &:not(:first-child) {
-      &::after, &::before {
+      &::after,
+      &::before {
         content: '';
         top: -49px;
         position: absolute;
@@ -555,7 +557,8 @@
 
     // Connect second build to first build with smaller curved line
     &:nth-child(2) {
-      &::after, &::before {
+      &::after,
+      &::before {
         height: 29px;
         top: -9px;
       }
@@ -570,7 +573,8 @@
     .build {
       // Remove right connecting horizontal line from first build in last stage
       &:first-child {
-        &::after, &::before {
+        &::after,
+        &::before {
           border: none;
         }
       }

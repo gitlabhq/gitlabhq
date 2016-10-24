@@ -143,7 +143,8 @@ li.note {
   }
 }
 
-.wiki_content code, .readme code {
+.wiki_content code,
+.readme code {
   background-color: inherit;
 }
 
@@ -350,7 +351,8 @@ table {
   margin-right: 10px;
 }
 
-.alert, .progress {
+.alert,
+.progress {
   margin-bottom: $gl-padding;
 }
 

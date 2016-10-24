@@ -37,7 +37,8 @@
 }
 
 @include keyframes(pulse) {
-  from, to {
+  from,
+  to {
     @include webkit-prefix(transform, scale3d(1, 1, 1));
   }
 

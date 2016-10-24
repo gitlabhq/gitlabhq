@@ -41,7 +41,8 @@
     font-size: 13px;
   }
 
-  .login-box, .omniauth-container {
+  .login-box,
+  .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
@@ -198,7 +199,8 @@
 
 
   .form-control {
-    &:active, &:focus {
+    &:active,
+    &:focus {
       background-color: #fff;
     }
   }
@@ -261,7 +263,8 @@
     position: relative;
   }
 
-  .footer-container, hr.footer-fixed {
+  .footer-container,
+  hr.footer-fixed {
     position: absolute;
     bottom: 0;
     left: 0;

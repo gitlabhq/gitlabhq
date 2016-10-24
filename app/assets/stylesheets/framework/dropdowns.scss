@@ -275,7 +275,8 @@
   a {
     padding-left: 25px;
 
-    &.is-indeterminate, &.is-active {
+    &.is-indeterminate,
+    &.is-active {
       &::before {
         position: absolute;
         left: 5px;
@@ -373,7 +374,8 @@
   }
 }
 
-.dropdown-input-field, .default-dropdown-input {
+.dropdown-input-field,
+.default-dropdown-input {
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
