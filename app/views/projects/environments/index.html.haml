@@ -4,28 +4,28 @@
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag("environments/environments_bundle.js")
-
-%div{ class: container_class }
+  
+#environments-list-view{ data: environments_list_data, class: container_class }
   .top-area
-    %ul.nav-links
+    %ul.nav-links{ "v-if" => "!loading" }
       %li{class: ('active' if @scope.nil?)}
         = link_to project_environments_path(@project) do
           Available
           %span.badge.js-available-environments-count
-            = number_with_delimiter(@all_environments.available.count)
+            {{counAvailable}}
 
       %li{class: ('active' if @scope == 'stopped')}
         = link_to project_environments_path(@project, scope: :stopped) do
           Stopped
           %span.badge.js-stopped-environments-count
-            = number_with_delimiter(@all_environments.stopped.count)
+            {{countStopped}}
 
     - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
       .nav-controls
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: "btn btn-create" do
           New environment
 
-  #environments-list-view{ data: environments_list_data, class: "environments-container" }
+  .environments-container
     .environments-list-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
 
@@ -51,6 +51,6 @@
           %th
           %th.hidden-xs
         %tbody
-          %tr{"is" => "environment-item", "v-for" => "model in state.environments", ":model" => "model"}
+          %tr{"is" => "environment-item", "v-for" => "model in filteredEnvironments", ":model" => "model"}
 
 =render "projects/environments/components/environment"

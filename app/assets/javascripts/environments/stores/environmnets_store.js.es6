@@ -82,7 +82,7 @@
 
         return acc;
       }, []).sort(this.sortByName);
-    
+
       this.state.environments = environmentsTree;
       
       return environmentsTree;

@@ -8,14 +8,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @all_environments = project.environments
-    @environments =
-      if @scope == 'stopped'
-        @all_environments.stopped
-      else
-        @all_environments.available
-      end
-    
+    @environments = project.environments
+  
     respond_to do |format|
       format.html
       format.json do
