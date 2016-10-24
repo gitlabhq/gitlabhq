@@ -19,7 +19,7 @@ module Gitlab
         ]
 
         labels.each do |params|
-          ::Labels::FindOrCreateService.new(project.owner, project).execute(params)
+          ::Labels::FindOrCreateService.new(project.owner, project, params).execute
         end
       end
     end

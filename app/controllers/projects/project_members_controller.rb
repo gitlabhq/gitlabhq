@@ -25,6 +25,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def create
+    if params[:user_ids].blank?
+      return redirect_to(namespace_project_project_members_path(@project.namespace, @project), alert: 'No users or groups specified.')
+    end
+
     @project.team.add_users(
       params[:user_ids].split(','),
       params[:access_level],
@@ -38,7 +42,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       log_audit_event(member, action: :create)
     end
 
-    redirect_to namespace_project_project_members_path(@project.namespace, @project)
+    redirect_to namespace_project_project_members_path(@project.namespace, @project), notice: 'Users were successfully added.'
   end
 
   def update

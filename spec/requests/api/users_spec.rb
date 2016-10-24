@@ -858,7 +858,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /user/:id/block' do
+  describe 'PUT /users/:id/block' do
     before { admin }
     it 'blocks existing user' do
       put api("/users/#{user.id}/block", admin)
@@ -885,7 +885,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /user/:id/unblock' do
+  describe 'PUT /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
 
@@ -926,7 +926,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /user/:id/events' do
+  describe 'GET /users/:id/events' do
     let(:user) { create(:user) }
     let(:project) { create(:empty_project) }
     let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }

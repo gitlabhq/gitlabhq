@@ -27,6 +27,7 @@
   - [gitlab_shell, 2]
   - [email_receiver, 2]
   - [emails_on_push, 2]
+  - [mailers, 2]
   - [repository_fork, 1]
   - [repository_import, 1]
   - [project_service, 1]
