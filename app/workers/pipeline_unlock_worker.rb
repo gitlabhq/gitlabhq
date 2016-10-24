@@ -1,5 +1,6 @@
 class PipelineUnlockWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   def perform
     Ci::Pipeline.running_or_pending
