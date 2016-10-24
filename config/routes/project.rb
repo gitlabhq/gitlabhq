@@ -155,7 +155,13 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
 
       namespace :cycle_analytics do
         scope :events, controller: '/projects/cycle_analytics/events' do
-          get :issues
+          get :issue
+          get :plan
+          get :code
+          get :test
+          get :review
+          get :staging
+          get :production
         end
       end
 
