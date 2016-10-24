@@ -23,7 +23,7 @@ describe Issues::MoveService, services: true do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
 
-      labels = 2.times.map { |x| "label%d" % (x + 1) }
+      labels = Array.new(2) { |x| "label%d" % (x + 1) }
 
       labels.each do |label|
         old_issue.labels << create(:label,
@@ -32,7 +32,7 @@ describe Issues::MoveService, services: true do
 
         new_project.labels << create(:label, title: label)
       end
-   end
+    end
   end
 
   describe '#execute' do
@@ -284,7 +284,7 @@ describe Issues::MoveService, services: true do
         old_project.team << [user, :reporter]
         new_project.team << [user, :reporter]
 
-        labels = 2.times.map { |x| "label%d" % (x + 1) }
+        labels = Array.new(2) { |x| "label%d" % (x + 1) }
 
         labels.each do |label|
           new_project.labels << create(:label, title: label)
