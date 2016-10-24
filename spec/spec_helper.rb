@@ -6,7 +6,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
-require 'sidekiq/testing/inline'
+require 'sidekiq/testing'
 require 'rspec/retry'
 
 if ENV['CI']
@@ -42,6 +42,12 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     TestEnv.init
+    puts "Sidekiq::Testing.__test_mode: #{Sidekiq::Testing.__test_mode}"
+  end
+
+  config.after(:suite) do
+    puts "Sidekiq::Testing.__test_mode: #{Sidekiq::Testing.__test_mode}"
+    puts "# of jobs after test suite: #{Sidekiq::Worker.jobs.size}"
   end
 
   config.around(:each, :caching) do |example|
