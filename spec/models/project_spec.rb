@@ -1490,6 +1490,7 @@ describe Project, models: true do
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
       allow(project).to receive(:repository_exists?).and_return(true)
+      allow_any_instance_of(Repository).to receive(:build_cache).and_return(true)
     end
 
     it 'imports a project' do
