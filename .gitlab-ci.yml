@@ -307,13 +307,16 @@ coverage:
     - coverage/assets/
 
 # Trigger docs build
+# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:
+  variables:
+    GIT_STRATEGY: none
   stage: post-test
   before_script: []
   cache: {}
   artifacts: {}
   script:
-    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master https://gitlab.com/api/v3/projects/38069/trigger/builds"
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/38069/trigger/builds"
   only:
     - master
 
