@@ -54,7 +54,7 @@
     },
     maybeFocusOnSearch: function() {
       const currentSearchVal = Issuable.searchState.current;
-      if (currentSearchVal !== '') {
+      if (currentSearchVal && currentSearchVal !== '') {
         const queryLength = currentSearchVal.length;
         const $searchInput = Issuable.searchState.elem;
 
