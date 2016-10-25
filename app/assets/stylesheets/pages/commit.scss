@@ -2,14 +2,16 @@
   display: block;
 }
 
-.commit-author, .commit-committer {
+.commit-author,
+.commit-committer {
   display: block;
   color: #999;
   font-weight: normal;
   font-style: italic;
 }
 
-.commit-author strong, .commit-committer strong {
+.commit-author strong,
+.commit-committer strong {
   font-weight: bold;
   font-style: normal;
 }

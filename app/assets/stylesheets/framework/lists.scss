@@ -76,14 +76,16 @@
 
 
 /** light list with border-bottom between li **/
-ul.bordered-list, ul.unstyled-list {
+ul.bordered-list,
+ul.unstyled-list {
   @include basic-list;
 
   &.top-list {
     li:first-child {
       padding-top: 0;
 
-      h4, h5 {
+      h4,
+      h5 {
         margin-top: 0;
       }
     }

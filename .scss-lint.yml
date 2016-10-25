@@ -172,7 +172,7 @@ linters:
   # Split selectors onto separate lines after each comma, and have each
   # individual selector occupy a single line.
   SingleLinePerSelector:
-    enabled: false
+    enabled: true
   
   # Commas in lists should be followed by a space.
   SpaceAfterComma:
