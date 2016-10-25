@@ -42,35 +42,23 @@
 * */
 
   class SubbableResource {
-    constructor({ path, data, pollInterval }) {
+    constructor({ path, data, pollCfg }) {
       this.resource = Vue.resource(path);
       this.data = JSON.parse(data);
-      this.pollInterval = pollInterval;
-
       this.subscribers = {};
       this.state = {
-        loading: false,
-        last_updated: null
+        loading: false
       };
-      this.init();
+      this.init(pollCfg);
     }
     /* private methods */
 
-    init() {
-      this.initPolling();
+    init(pollCfg) {
+      const preppedCfg = _.extend(pollCfg, {
+        callback: this.getResource.bind(this)
+      });
+      this.interval = new global.SmartInterval(preppedCfg);
     }
-
-    initPolling() {
-      if (this.pollInterval) {
-        this.interval = new global.SmartInterval({
-          callback: this.getResource.bind(this),
-          high: 15000,
-          low: 1000,
-          increment: 2000
-        });
-      }
-    }
-
 
     publish(diff) {
       // prevent subscribers mutating state

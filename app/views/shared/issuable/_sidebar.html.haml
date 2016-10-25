@@ -175,6 +175,10 @@
       gl.IssuableResource = gl.createSubbableResource({
         path: '#{issuable_json_path(issuable)}',
         data: '#{issuable.to_json}',
-        pollInterval: 15000
+        pollCfg: {
+          high: 15000,
+          low: 1000,
+          increment: 2000
+        }
       });
       sidebar = new Sidebar();
