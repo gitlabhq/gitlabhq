@@ -45,54 +45,49 @@
 //     </div>
 //   </div>
 //
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+((global) => {
 
-  this.MergeRequestTabs = (function() {
-    MergeRequestTabs.prototype.diffsLoaded = false;
+  class MergeRequestTabs {
 
-    MergeRequestTabs.prototype.buildsLoaded = false;
+    constructor({ action, setUrl, buildsLoaded } = {}) {
+      this.diffsLoaded = false;
+      this.buildsLoaded = false;
+      this.pipelinesLoaded = false;
+      this.commitsLoaded = false;
+      this.fixedLayoutPref = null;
 
-    MergeRequestTabs.prototype.pipelinesLoaded = false;
+      this.setUrl = setUrl !== undefined ? setUrl : true;
+      this.buildsLoaded = buildsLoaded || false;
 
-    MergeRequestTabs.prototype.commitsLoaded = false;
+      this.setCurrentAction = this.setCurrentAction.bind(this);
+      this.tabShown = this.tabShown.bind(this);
+      this.showTab = this.showTab.bind(this);
 
-    MergeRequestTabs.prototype.fixedLayoutPref = null;
-
-    function MergeRequestTabs(opts) {
-      this.opts = opts != null ? opts : {};
-      this.opts.setUrl = this.opts.setUrl !== undefined ? this.opts.setUrl : true;
-
-      this.buildsLoaded = this.opts.buildsLoaded || false;
-
-      this.setCurrentAction = bind(this.setCurrentAction, this);
-      this.tabShown = bind(this.tabShown, this);
-      this.showTab = bind(this.showTab, this);
       // Store the `location` object, allowing for easier stubbing in tests
-      this._location = location;
+      this._location = window.location;
       this.bindEvents();
-      this.activateTab(this.opts.action);
+      this.activateTab(action);
       this.initAffix();
     }
 
-    MergeRequestTabs.prototype.bindEvents = function() {
+    bindEvents() {
       $(document)
         .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
         .on('click', '.js-show-tab', this.showTab);
     }
 
-    MergeRequestTabs.prototype.unbindEvents = function() {
+    unbindEvents() {
       $(document)
         .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
         .off('click', '.js-show-tab', this.showTab);
     }
 
-    MergeRequestTabs.prototype.showTab = function(event) {
+    showTab(event) {
       event.preventDefault();
-      return this.activateTab($(event.target).data('action'));
-    };
+      this.activateTab($(event.target).data('action'));
+    }
 
-    MergeRequestTabs.prototype.tabShown = function(event) {
+    tabShown(event) {
       var $target, action, navBarHeight;
       $target = $(event.target);
       action = $target.data('action');
@@ -124,12 +119,12 @@
         this.expandView();
         this.resetViewContainer();
       }
-      if (this.opts.setUrl) {
+      if (this.setUrl) {
         this.setCurrentAction(action);
       }
-    };
+    }
 
-    MergeRequestTabs.prototype.scrollToElement = function(container) {
+    scrollToElement(container) {
       var $el, navBarHeight;
       if (window.location.hash) {
         navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + document.querySelector('.js-tabs-affix').offsetHeight;
@@ -140,16 +135,16 @@
           });
         }
       }
-    };
+    }
 
     // Activate a tab based on the current action
-    MergeRequestTabs.prototype.activateTab = function(action) {
+    activateTab(action) {
       if (action === 'show') {
         action = 'notes';
       }
       // important note: the .tab('show') method triggers 'shown.bs.tab' event itself
       $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
-    };
+    }
 
     // Replaces the current Merge Request-specific action in the URL with a new one
     //
@@ -171,7 +166,7 @@
     //   location.pathname # => "/namespace/project/merge_requests/1/commits"
     //
     // Returns the new URL String
-    MergeRequestTabs.prototype.setCurrentAction = function(action) {
+    setCurrentAction(action) {
       var new_state;
       // Normalize action, just to be safe
       if (action === 'show') {
@@ -187,35 +182,37 @@
       }
       // Ensure parameters and hash come along for the ride
       new_state += this._location.search + this._location.hash;
-      history.replaceState({
-        turbolinks: true,
-        url: new_state
+
       // Replace the current history state with the new one without breaking
       // Turbolinks' history.
       //
       // See https://github.com/rails/turbolinks/issues/363
+      history.replaceState({
+        turbolinks: true,
+        url: new_state
       }, document.title, new_state);
-      return new_state;
-    };
 
-    MergeRequestTabs.prototype.loadCommits = function(source) {
+      return new_state;
+    }
+
+    loadCommits(source) {
       if (this.commitsLoaded) {
         return;
       }
-      return this._get({
+      this.ajaxGet({
         url: source + ".json",
         success: (function(_this) {
           return function(data) {
             document.querySelector("div#commits").innerHTML = data.html;
             gl.utils.localTimeAgo($('.js-timeago', 'div#commits'));
             _this.commitsLoaded = true;
-            return _this.scrollToElement("#commits");
+            _this.scrollToElement("#commits");
           };
         })(this)
       });
-    };
+    }
 
-    MergeRequestTabs.prototype.loadDiff = function(source) {
+    loadDiff(source) {
       if (this.diffsLoaded) {
         return;
       }
@@ -225,7 +222,7 @@
       var url = document.createElement('a');
       url.href = source;
 
-      return this._get({
+      this.ajaxGet({
         url: (url.pathname + ".json") + this._location.search,
         success: (function(_this) {
           return function(data) {
@@ -248,13 +245,13 @@
           };
         })(this)
       });
-    };
+    }
 
-    MergeRequestTabs.prototype.loadBuilds = function(source) {
+    loadBuilds(source) {
       if (this.buildsLoaded) {
         return;
       }
-      return this._get({
+      this.ajaxGet({
         url: source + ".json",
         success: (function(_this) {
           return function(data) {
@@ -262,106 +259,107 @@
             gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
             _this.buildsLoaded = true;
             if (!this.pipelines) this.pipelines = new gl.Pipelines();
-            return _this.scrollToElement("#builds");
+            _this.scrollToElement("#builds");
           };
         })(this)
       });
-    };
+    }
 
-    MergeRequestTabs.prototype.loadPipelines = function(source) {
+    loadPipelines(source) {
       if (this.pipelinesLoaded) {
         return;
       }
-      return this._get({
+      this.ajaxGet({
         url: source + ".json",
         success: function(data) {
           $('#pipelines').html(data.html);
           gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
           this.pipelinesLoaded = true;
-          return this.scrollToElement("#pipelines");
+          this.scrollToElement("#pipelines");
         }.bind(this)
       });
-    };
+    }
 
     // Show or hide the loading spinner
     //
     // status - Boolean, true to show, false to hide
-    MergeRequestTabs.prototype.toggleLoading = function(status) {
-      return $('.mr-loading-status .loading').toggle(status);
-    };
+    toggleLoading(status) {
+      $('.mr-loading-status .loading').toggle(status);
+    }
 
-    MergeRequestTabs.prototype._get = function(options) {
-      var defaults;
-      defaults = {
+    ajaxGet(options) {
+      var defaults = {
         beforeSend: (function(_this) {
           return function() {
-            return _this.toggleLoading(true);
+            _this.toggleLoading(true);
           };
         })(this),
         complete: (function(_this) {
           return function() {
-            return _this.toggleLoading(false);
+            _this.toggleLoading(false);
           };
         })(this),
         dataType: 'json',
         type: 'GET'
       };
       options = $.extend({}, defaults, options);
-      return $.ajax(options);
-    };
+      $.ajax(options);
+    }
 
-    MergeRequestTabs.prototype.diffViewType = function() {
+    diffViewType() {
       return $('.inline-parallel-buttons a.active').data('view-type');
-    };
+    }
 
-    MergeRequestTabs.prototype.isDiffAction = function(action) {
+    isDiffAction(action) {
       return action === 'diffs' || action === 'new/diffs'
-    };
+    }
 
-    MergeRequestTabs.prototype.expandViewContainer = function() {
+    expandViewContainer() {
       var $wrapper = $('.content-wrapper .container-fluid');
       if (this.fixedLayoutPref === null) {
         this.fixedLayoutPref = $wrapper.hasClass('container-limited');
       }
       $wrapper.removeClass('container-limited');
-    };
+    }
 
-    MergeRequestTabs.prototype.resetViewContainer = function() {
+    resetViewContainer() {
       if (this.fixedLayoutPref !== null) {
         $('.content-wrapper .container-fluid')
           .toggleClass('container-limited', this.fixedLayoutPref);
       }
-    };
+    }
 
-    MergeRequestTabs.prototype.shrinkView = function() {
+    shrinkView() {
       var $gutterIcon;
       $gutterIcon = $('.js-sidebar-toggle i:visible');
-      return setTimeout(function() {
-        if ($gutterIcon.is('.fa-angle-double-right')) {
-          return $gutterIcon.closest('a').trigger('click', [true]);
-        }
-      // Wait until listeners are set
-      // Only when sidebar is expanded
-      }, 0);
-    };
 
-    MergeRequestTabs.prototype.expandView = function() {
+      // Wait until listeners are set
+      setTimeout(function() {
+        // Only when sidebar is expanded
+        if ($gutterIcon.is('.fa-angle-double-right')) {
+          $gutterIcon.closest('a').trigger('click', [true]);
+        }
+      }, 0);
+    }
+
+    // Expand the issuable sidebar unless the user explicitly collapsed it
+    expandView() {
       var $gutterIcon;
       if (Cookies.get('collapsed_gutter') === 'true') {
         return;
       }
       $gutterIcon = $('.js-sidebar-toggle i:visible');
-      return setTimeout(function() {
+
+      // Wait until listeners are set
+      setTimeout(function() {
+        // Only when sidebar is collapsed
         if ($gutterIcon.is('.fa-angle-double-left')) {
-          return $gutterIcon.closest('a').trigger('click', [true]);
+          $gutterIcon.closest('a').trigger('click', [true]);
         }
       }, 0);
-    // Expand the issuable sidebar unless the user explicitly collapsed it
-    // Wait until listeners are set
-    // Only when sidebar is collapsed
-    };
+    }
 
-    MergeRequestTabs.prototype.initAffix = function () {
+    initAffix() {
       var $tabs = $('.js-tabs-affix');
 
       // Screen space on small screens is usually very sparse
@@ -396,10 +394,9 @@
       if ($tabs.hasClass('affix')) {
         $tabs.trigger('affix.bs.affix');
       }
-    };
+    }
+  }
 
-    return MergeRequestTabs;
+  global.MergeRequestTabs = MergeRequestTabs;
 
-  })();
-
-}).call(this);
+})(window.gl || (window.gl = {}));

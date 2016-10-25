@@ -17,7 +17,7 @@
     };
     fixture.preload('merge_request_tabs.html');
     beforeEach(function() {
-      this["class"] = new MergeRequestTabs();
+      this["class"] = new gl.MergeRequestTabs();
       return this.spies = {
         ajax: spyOn($, 'ajax').and.callFake(function() {}),
         history: spyOn(history, 'replaceState').and.callFake(function() {})
