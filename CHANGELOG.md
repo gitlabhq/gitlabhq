@@ -21,6 +21,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix `User#to_reference`. !7088
   - Reduce overhead of `LabelFinder` by avoiding `#presence` call. !7094
   - Fix unauthorized users dragging on issue boards. !7096
+  - Only schedule `ProjectCacheWorker` jobs when needed. !7099
 
 ## 8.13.0 (2016-10-22)
 
