@@ -21,6 +21,11 @@
       %span.card-number{ "v-if" => "issue.id" }
         = precede '#' do
           {{ issue.id }}
+      %a.has-tooltip{ ":href" => "'/' + issue.assignee.username",
+        ":title" => "'Assigned to ' + issue.assignee.name",
+        "v-if" => "issue.assignee",
+        data: { container: 'body' } }
+        %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }
       %button.label.color-label.has-tooltip{ "v-for" => "label in issue.labels",
         type: "button",
         "v-if" => "(!list.label || label.id !== list.label.id)",
@@ -29,8 +34,3 @@
         ":title" => "label.description",
         data: { container: 'body' } }
         {{ label.title }}
-      %a.has-tooltip{ ":href" => "'/' + issue.assignee.username",
-        ":title" => "'Assigned to ' + issue.assignee.name",
-        "v-if" => "issue.assignee",
-        data: { container: 'body' } }
-        %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }
