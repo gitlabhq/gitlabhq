@@ -76,14 +76,16 @@
     }
 
     MergeRequestTabs.prototype.bindEvents = function() {
-      $(document).on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown);
-      $(document).on('click', '.js-show-tab', this.showTab);
-    };
+      $(document)
+        .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
+        .on('click', '.js-show-tab', this.showTab);
+    }
 
     MergeRequestTabs.prototype.unbindEvents = function() {
-      $(document).off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown);
-      $(document).off('click', '.js-show-tab', this.showTab);
-    };
+      $(document)
+        .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
+        .off('click', '.js-show-tab', this.showTab);
+    }
 
     MergeRequestTabs.prototype.showTab = function(event) {
       event.preventDefault();
@@ -235,43 +237,17 @@
 
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
             $('#diffs .js-syntax-highlight').syntaxHighlight();
-            $('#diffs .diff-file').singleFileDiff();
+
             if (_this.diffViewType() === 'parallel' && (_this.isDiffAction(_this.currentAction)) ) {
               _this.expandViewContainer();
             }
             _this.diffsLoaded = true;
             _this.scrollToElement("#diffs");
-            _this.highlighSelectedLine();
-            _this.filesCommentButton = $('.files .diff-file').filesCommentButton();
-            return $(document).off('click', '.diff-line-num a').on('click', '.diff-line-num a', function(e) {
-              e.preventDefault();
-              window.location.hash = $(e.currentTarget).attr('href');
-              _this.highlighSelectedLine();
-              return _this.scrollToElement("#diffs");
-            });
+
+            new Diff();
           };
         })(this)
       });
-    };
-
-    MergeRequestTabs.prototype.highlighSelectedLine = function() {
-      var $diffLine, diffLineTop, hashClassString, locationHash, navBarHeight;
-      $('.hll').removeClass('hll');
-      locationHash = window.location.hash;
-      if (locationHash !== '') {
-        dataLineString = '[data-line-code="' + locationHash.replace('#', '') + '"]';
-        $diffLine = $(locationHash + ":not(.match)", $('#diffs'));
-        if (!$diffLine.is('tr')) {
-          $diffLine = $('#diffs').find("td" + locationHash + ", td" + dataLineString);
-        } else {
-          $diffLine = $diffLine.find('td');
-        }
-        if ($diffLine.length) {
-          $diffLine.addClass('hll');
-          diffLineTop = $diffLine.offset().top;
-          return navBarHeight = $('.navbar-gitlab').outerHeight();
-        }
-      }
     };
 
     MergeRequestTabs.prototype.loadBuilds = function(source) {
