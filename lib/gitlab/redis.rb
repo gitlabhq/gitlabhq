@@ -63,6 +63,14 @@ module Gitlab
       raw_config_hash[:url]
     end
 
+    def sentinels
+      raw_config_hash[:sentinels]
+    end
+
+    def sentinels?
+      sentinels && !sentinels.empty?
+    end
+
     private
 
     def redis_store_options

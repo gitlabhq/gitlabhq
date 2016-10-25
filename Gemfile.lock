@@ -402,7 +402,7 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    mail_room (0.8.1)
+    mail_room (0.9.0)
     method_source (0.8.2)
     mime-types (2.99.3)
     mimemagic (0.3.0)
@@ -893,7 +893,7 @@ DEPENDENCIES
   license_finder (~> 2.1.0)
   licensee (~> 8.0.0)
   loofah (~> 2.0.3)
-  mail_room (~> 0.8.1)
+  mail_room (~> 0.9.0)
   method_source (~> 0.8)
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
@@ -994,4 +994,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.13.2
+   1.13.3

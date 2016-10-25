@@ -116,6 +116,55 @@ describe Gitlab::Redis do
     end
   end
 
+  describe '#sentinels' do
+    subject { described_class.new(Rails.env).sentinels }
+
+    context 'when sentinels are defined' do
+      let(:config) { Rails.root.join('spec/fixtures/config/redis_new_format_host.yml') }
+
+      it 'returns an array of hashes with host and port keys' do
+        stub_const("#{described_class}::CONFIG_FILE", config)
+
+        is_expected.to include(host: 'localhost', port: 26380)
+        is_expected.to include(host: 'slave2', port: 26381)
+      end
+    end
+
+    context 'when sentinels are not defined' do
+      let(:config) { Rails.root.join('spec/fixtures/config/redis_old_format_host.yml') }
+
+      it 'returns nil' do
+        stub_const("#{described_class}::CONFIG_FILE", config)
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#sentinels?' do
+    subject { described_class.new(Rails.env).sentinels? }
+
+    context 'when sentinels are defined' do
+      let(:config) { Rails.root.join('spec/fixtures/config/redis_new_format_host.yml') }
+
+      it 'returns true' do
+        stub_const("#{described_class}::CONFIG_FILE", config)
+
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when sentinels are not defined' do
+      let(:config) { Rails.root.join('spec/fixtures/config/redis_old_format_host.yml') }
+
+      it 'returns false' do
+        stub_const("#{described_class}::CONFIG_FILE", config)
+
+        is_expected.to be_falsey
+      end
+    end
+  end
+
   describe '#raw_config_hash' do
     it 'returns default redis url when no config file is present' do
       expect(subject).to receive(:fetch_config) { false }

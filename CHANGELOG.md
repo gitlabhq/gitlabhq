@@ -9,6 +9,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Escape ref and path for relative links !6050 (winniehell)
+  - Update mail_room and enable sentinel support to Reply By Email (!7101)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
