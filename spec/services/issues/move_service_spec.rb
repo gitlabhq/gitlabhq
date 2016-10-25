@@ -207,16 +207,26 @@ describe Issues::MoveService, services: true do
         end
       end
 
-      describe 'rewritting references' do
+      describe 'rewriting references' do
         include_context 'issue move executed'
 
-        context 'issue reference' do
+        context 'issue references' do
           let(:another_issue) { create(:issue, project: old_project) }
           let(:description) { "Some description #{another_issue.to_reference}" }
 
           it 'rewrites referenced issues creating cross project reference' do
             expect(new_issue.description)
               .to eq "Some description #{old_project.to_reference}#{another_issue.to_reference}"
+          end
+        end
+
+        context "user references" do
+          let(:another_issue) { create(:issue, project: old_project) }
+          let(:description) { "Some description #{user.to_reference}" }
+
+          it "doesn't throw any errors for issues containing user references" do
+            expect(new_issue.description)
+              .to eq "Some description #{user.to_reference}"
           end
         end
       end
