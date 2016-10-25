@@ -694,26 +694,6 @@ class MergeRequest < ActiveRecord::Base
       end
   end
 
-  def state_human_name
-    if merged?
-      "Merged"
-    elsif closed?
-      "Closed"
-    else
-      "Open"
-    end
-  end
-
-  def state_icon_name
-    if merged?
-      "check"
-    elsif closed?
-      "times"
-    else
-      "circle-o"
-    end
-  end
-
   def fetch_ref
     target_project.repository.fetch_ref(
       source_project.repository.path_to_repo,

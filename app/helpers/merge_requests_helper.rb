@@ -26,6 +26,29 @@ module MergeRequestsHelper
     classes
   end
 
+  def merge_request_state_icon(merge_request, icon_options = {})
+    icon_name =
+      if merge_request.merged?
+        'check'
+      elsif merge_request.closed?
+        'times'
+      else
+        'circle-o'
+      end
+
+    icon(icon_name, icon_options)
+  end
+
+  def merge_request_state(merge_request)
+    if merge_request.merged?
+      'Merged'
+    elsif merge_request.closed?
+      'Closed'
+    else
+      'Open'
+    end
+  end
+
   def ci_build_details_path(merge_request)
     build_url = merge_request.source_project.ci_service.build_page(merge_request.diff_head_sha, merge_request.source_branch)
     return nil unless build_url

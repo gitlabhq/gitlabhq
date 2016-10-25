@@ -1,6 +1,55 @@
 require 'spec_helper'
 
 describe MergeRequestsHelper do
+  describe 'merge_request_state_icon' do
+    it 'returns the correct icon for merged' do
+      merge = double(merged?: true)
+      icon = helper.merge_request_state_icon(merge)
+
+      expect(icon).to include('check')
+    end
+
+    it 'returns the correct icon for closed' do
+      merge = double(merged?: false, closed?: true)
+      icon = helper.merge_request_state_icon(merge)
+
+      expect(icon).to include('times')
+    end
+
+    it 'returns the correct icon for other' do
+      merge = double(merged?: false, closed?: false)
+      icon = helper.merge_request_state_icon(merge)
+
+      expect(icon).to include('circle-o')
+    end
+
+    it 'passes options to the icon helper' do
+      icon = helper.merge_request_state_icon(spy, class: 'foo bar')
+
+      expect(icon).to include('foo bar')
+    end
+  end
+
+  describe 'merge_request_state' do
+    it 'returns the correct state for merged' do
+      merge = double(merged?: true)
+
+      expect(helper.merge_request_state(merge)).to eq 'Merged'
+    end
+
+    it 'returns the correct state for closed' do
+      merge = double(merged?: false, closed?: true)
+
+      expect(helper.merge_request_state(merge)).to eq 'Closed'
+    end
+
+    it 'returns the correc state for other' do
+      merge = double(merged?: false, closed?: false)
+
+      expect(helper.merge_request_state(merge)).to eq 'Open'
+    end
+  end
+
   describe 'ci_build_details_path' do
     let(:project) { create :project }
     let(:merge_request) { MergeRequest.new }
