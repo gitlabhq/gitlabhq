@@ -86,8 +86,8 @@ ActiveRecord::Schema.define(version: 20161024042317) do
     t.string "health_check_access_token"
     t.boolean "send_user_confirmation_email", default: false
     t.integer "container_registry_token_expire_delay", default: 5
-    t.text "after_sign_up_text"
     t.boolean "user_default_external", default: false, null: false
+    t.text "after_sign_up_text"
     t.string "repository_storage", default: "default"
     t.string "enabled_git_access_protocol"
     t.boolean "domain_blacklist_enabled", default: false
@@ -182,8 +182,8 @@ ActiveRecord::Schema.define(version: 20161024042317) do
     t.text "artifacts_metadata"
     t.integer "erased_by_id"
     t.datetime "erased_at"
-    t.datetime "artifacts_expire_at"
     t.string "environment"
+    t.datetime "artifacts_expire_at"
     t.integer "artifacts_size", limit: 8
     t.string "when"
     t.text "yaml_variables"
@@ -825,10 +825,10 @@ ActiveRecord::Schema.define(version: 20161024042317) do
     t.integer "user_id", null: false
     t.string "token", null: false
     t.string "name", null: false
-    t.boolean "revoked", default: false
-    t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "revoked", default: false
+    t.datetime "expires_at"
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -899,8 +899,8 @@ ActiveRecord::Schema.define(version: 20161024042317) do
     t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
-    t.boolean "request_access_enabled", default: true, null: false
     t.boolean "has_external_wiki"
+    t.boolean "request_access_enabled", default: true, null: false
     t.boolean "lfs_enabled"
     t.text "description_html"
   end
