@@ -23,7 +23,8 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fixed hidden pipeline graph on commit and MR page !6895
   - Expire and build repository cache after project import
   - Fix 404 for group pages when GitLab setup uses relative url
-  - Simpler arguments passed to named_route on toggle_award_url helper method 
+  - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix unauthorized users dragging on issue boards
   - Better handle when no users were selected for adding to group or project. (Linus Thiel)
   - Only show register tab if signup enabled.
 
