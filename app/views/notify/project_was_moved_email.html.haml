@@ -5,11 +5,11 @@
   = link_to namespace_project_url(@project.namespace, @project) do
     = @project.name_with_namespace
 %p
-  To update the remote url in your local repository run (for ssh):
+  To update the remote URL in your local repository run (for SSH):
 %p{ style: "background: #f5f5f5; padding:10px; border:1px solid #ddd" }
   git remote set-url origin #{@project.ssh_url_to_repo}
 %p
-  or for http(s):
+  or for HTTP(S):
 %p{ style: "background: #f5f5f5; padding:10px; border:1px solid #ddd" }
   git remote set-url origin #{@project.http_url_to_repo}
 %br

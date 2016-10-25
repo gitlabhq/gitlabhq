@@ -4,7 +4,7 @@ The project is now located under
 <%= namespace_project_url(@project.namespace, @project) %>
 
 
-To update the remote url in your local repository run (for ssh):
+To update the remote URL in your local repository run (for SSH):
   git remote set-url origin <%= @project.ssh_url_to_repo %>
-or for http(s):
+or for HTTP(S):
   git remote set-url origin <%= @project.http_url_to_repo %>
