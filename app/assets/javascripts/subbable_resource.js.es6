@@ -99,7 +99,8 @@
     }
 
     getResource() {
-      if (this.state.loading && this.subscribers.length) {
+      const totalSubscribers = Object.keys(this.subscribers).length;
+      if (!this.state.loading || !totalSubscribers) {
         return;
       }
       this.state.loading = true;
