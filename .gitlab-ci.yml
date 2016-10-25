@@ -311,10 +311,12 @@ coverage:
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:
+  stage: post-test
+  image: "alpine"
+  before_script:
+    - apk update && apk add curl
   variables:
     GIT_STRATEGY: none
-  stage: post-test
-  before_script: []
   cache: {}
   artifacts: {}
   script:
