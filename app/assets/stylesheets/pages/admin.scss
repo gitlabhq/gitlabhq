@@ -79,15 +79,24 @@
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    white-space: nowrap;
   }
 
   .user-details {
     flex: 1 1 auto;
+    overflow: hidden;
+    padding-right: 8px;
   }
 
   .user-name {
     display: inline-block;
     font-weight: 600;
+  }
+
+  .user-name,
+  .user-email {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .dropdown {
