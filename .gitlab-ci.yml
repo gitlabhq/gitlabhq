@@ -320,7 +320,7 @@ trigger_docs:
   script:
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/38069/trigger/builds"
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
 
 # Notify slack in the end
 
