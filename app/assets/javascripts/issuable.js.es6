@@ -53,8 +53,22 @@
       }
     },
     maybeFocusOnSearch: function() {
-      if (Issuable.searchState.current !== '') {
-        Issuable.searchState.elem.focus();
+      const currentSearchVal = Issuable.searchState.current;
+      if (currentSearchVal !== '') {
+        const queryLength = currentSearchVal.length;
+        const $searchInput = Issuable.searchState.elem;
+
+      /* The following ensures that the cursor is initially placed at
+        * the end of search input when focus is applied. It accounts
+        * for differences in browser implementations of `setSelectionRange`
+        * and cursor placement for elements in focus.
+      */
+        $searchInput.focus();
+        if ($searchInput.setSelectionRange) {
+          $searchInput.setSelectionRange(queryLength, queryLength);
+        } else {
+          $searchInput.val(currentSearchVal);
+        }
       }
     },
     executeSearch: function(e) {
