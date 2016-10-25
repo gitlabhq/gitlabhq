@@ -51,6 +51,7 @@
       };
       this.init(pollCfg);
     }
+
     /* private methods */
 
     init(pollCfg) {
@@ -92,12 +93,6 @@
       return diff;
     }
 
-    /* public methods */
-
-    subscribe(propToWatch, callback) {
-      this.addSubscriber(propToWatch, callback);
-    }
-
     getResource() {
       const totalSubscribers = Object.keys(this.subscribers).length;
       if (!this.state.loading || !totalSubscribers) {
@@ -105,6 +100,13 @@
       }
       this.state.loading = true;
       return this.get();
+    }
+
+
+    /* public methods */
+
+    subscribe(propToWatch, callback) {
+      this.addSubscriber(propToWatch, callback);
     }
 
     get() {
