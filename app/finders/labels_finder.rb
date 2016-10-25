@@ -50,7 +50,7 @@ class LabelsFinder < UnionFinder
   end
 
   def projects_ids
-    params[:project_ids].presence
+    params[:project_ids]
   end
 
   def title
