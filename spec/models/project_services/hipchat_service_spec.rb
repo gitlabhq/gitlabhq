@@ -171,7 +171,7 @@ describe HipchatService, models: true do
             "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr['iid']}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             '<b>Awesome merge request</b>' \
-            '<pre>please fix</pre>')
+            '<pre><strong>please</strong> fix</pre>')
         end
       end
     end
