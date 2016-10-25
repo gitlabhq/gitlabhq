@@ -3,6 +3,7 @@
 //= require_tree ./stores
 //= require_tree ./services
 //= require ./components/environment_item
+//= require ../boards/vue_resource_interceptor
 
 $(() => {
   
@@ -72,6 +73,8 @@ $(() => {
     ready() {
       gl.environmentsService.all().then((resp) => {
         Store.storeEnvironments(resp.json());
+        
+        console.log("HELLLLOOOOOOOOOOOOOO", resp.json())
 
         this.loading = false;
       });
