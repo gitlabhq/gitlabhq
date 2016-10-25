@@ -257,7 +257,7 @@ feature 'Login', feature: true do
       end
     end
 
-    def ensure_tab_pane_correctness(visit_path=true)
+    def ensure_tab_pane_correctness(visit_path = true)
       if visit_path
         visit new_user_session_path
       end
