@@ -27,6 +27,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix unauthorized users dragging on issue boards
   - Better handle when no users were selected for adding to group or project. (Linus Thiel)
   - Only show register tab if signup enabled.
+  - Only schedule ProjectCacheWorker jobs when needed
 
 ## 8.13.0 (2016-10-22)
   - Removes extra line for empty issue description. (!7045)
