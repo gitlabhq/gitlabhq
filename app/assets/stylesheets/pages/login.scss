@@ -41,7 +41,8 @@
     font-size: 13px;
   }
 
-  .login-box, .omniauth-container {
+  .login-box,
+  .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
@@ -198,7 +199,8 @@
 
 
   .form-control {
-    &:active, &:focus {
+    &:active,
+    &:focus {
       background-color: #fff;
     }
   }
@@ -261,7 +263,8 @@
     position: relative;
   }
 
-  .footer-container, hr.footer-fixed {
+  .footer-container,
+  hr.footer-fixed {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -286,6 +289,13 @@
   .new_user {
     position: relative;
     padding-bottom: 35px;
+
+    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      .forgot-password {
+        float: none !important;
+        margin-top: 5px;
+      }
+    }
   }
 
   .move-submit-down {

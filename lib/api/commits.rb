@@ -19,6 +19,7 @@ module API
         optional :until,    type: String, desc: 'Only commits before or in this date will be returned'
         optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
         optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
+        optional :path,     type: String, desc: 'The file path'
       end
       get ":id/repository/commits" do
         # TODO remove the next line for 9.0, use DateTime type in the params block
@@ -28,6 +29,7 @@ module API
         offset = params[:page] * params[:per_page]
 
         commits = user_project.repository.commits(ref,
+                                                  path: params[:path],
                                                   limit: params[:per_page],
                                                   offset: offset,
                                                   after: params[:since],

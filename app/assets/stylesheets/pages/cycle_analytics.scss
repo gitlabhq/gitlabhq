@@ -9,15 +9,15 @@
       padding: 24px 0;
       border-bottom: none;
       position: relative;
-      
+
       @media (max-width: $screen-sm-min) {
         padding: 6px 0 24px;
-      } 
+      }
     }
 
     .column {
       text-align: center;
-      
+
       @media (max-width: $screen-sm-min) {
         padding: 15px 0;
       }
@@ -36,7 +36,7 @@
 
       &:last-child {
         text-align: right;
-        
+
         @media (max-width: $screen-sm-min) {
           text-align: center;
         }
@@ -51,7 +51,7 @@
   .bordered-box {
     border: 1px solid $border-color;
     border-radius: $border-radius-default;
-  
+
   }
 
   .content-list {
@@ -73,10 +73,10 @@
           font-weight: 600;
           color: $gl-title-color;
         }
-        
+
         &.text {
           color: $layout-link-gray;
-          
+
           &.value-col {
             color: $gl-title-color;
           }
@@ -108,13 +108,13 @@
 
     .svg-container {
       text-align: center;
-      
+
       svg {
         width: 136px;
         height: 136px;
       }
     }
-    
+
     .inner-content {
       @media (max-width: $screen-sm-min) {
         padding: 0 28px;

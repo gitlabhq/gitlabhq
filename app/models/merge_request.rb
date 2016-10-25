@@ -6,8 +6,8 @@ class MergeRequest < ActiveRecord::Base
   include Taskable
   include Importable
 
-  belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
-  belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
+  belongs_to :target_project, class_name: "Project"
+  belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy

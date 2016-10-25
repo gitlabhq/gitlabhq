@@ -1,7 +1,7 @@
 class GroupMember < Member
   SOURCE_TYPE = 'Namespace'
 
-  belongs_to :group, class_name: 'Group', foreign_key: 'source_id'
+  belongs_to :group, foreign_key: 'source_id'
 
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE

@@ -7,20 +7,25 @@
 
 .code.white {
   // Line numbers
-  .line-numbers, .diff-line-num {
+  .line-numbers,
+  .diff-line-num {
     background-color: $background-color;
   }
 
-  .diff-line-num, .diff-line-num a {
+  .diff-line-num,
+  .diff-line-num a {
     color: $black-transparent;
   }
 
   // Code itself
-  pre.code, .diff-line-num {
+  pre.code,
+  .diff-line-num {
     border-color: $table-border-gray;
   }
 
-  &, pre.code, .line_holder .line_content {
+  &,
+  pre.code,
+  .line_holder .line_content {
     background-color: #fff;
     color: #333;
   }
