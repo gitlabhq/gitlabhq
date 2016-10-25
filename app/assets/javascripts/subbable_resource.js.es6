@@ -109,23 +109,20 @@
         .then((newState) => this.publish(newState));
     }
 
-    // The following are only stubs. They would be used to provide DRY
-    // access to a remote resource used/modified by multiple components
-
-    postResource(payload) {
-      this.resource.post(payload)
+    save(payload) {
+      this.resource.save(payload)
         .then((res) => this.updateState(payload))
         .then((newState) => this.publish(newState));
     }
 
-    putResource(payload) {
-      this.resource.put(state)
+    update(payload) {
+      this.resource.update(payload)
         .then((res) => this.updateState(payload))
         .then((newState) => this.publish(newState));
     }
 
-    deleteResource(payload) {
-      this.resource.delete()
+    remove(payload) {
+      this.resource.remove(payload)
         .then((res) => this.updateState(payload))
         .then((newState) => this.publish(newState));
     }
