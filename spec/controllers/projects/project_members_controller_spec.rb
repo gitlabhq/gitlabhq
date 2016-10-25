@@ -13,6 +13,54 @@ describe Projects::ProjectMembersController do
     end
   end
 
+  describe 'POST create' do
+    context 'when users are added' do
+      let(:project_user) { create(:user) }
+
+      before { sign_in(user) }
+
+      context 'when user does not have enough rights' do
+        before { project.team << [user, :developer] }
+
+        it 'returns 404' do
+          post :create, namespace_id: project.namespace,
+                        project_id: project,
+                        user_ids: project_user.id,
+                        access_level: Gitlab::Access::GUEST
+
+          expect(response).to have_http_status(404)
+          expect(project.users).not_to include project_user
+        end
+      end
+
+      context 'when user has enough rights' do
+        before { project.team << [user, :master] }
+
+        it 'adds user to members' do
+          post :create, namespace_id: project.namespace,
+                        project_id: project,
+                        user_ids: project_user.id,
+                        access_level: Gitlab::Access::GUEST
+
+          expect(response).to set_flash.to 'Users were successfully added.'
+          expect(response).to redirect_to(namespace_project_project_members_path(project.namespace, project))
+          expect(project.users).to include project_user
+        end
+
+        it 'adds no user to members' do
+          post :create, namespace_id: project.namespace,
+                        project_id: project,
+                        user_ids: '',
+                        access_level: Gitlab::Access::GUEST
+
+          expect(response).to set_flash.to 'No users or groups specified.'
+          expect(response).to redirect_to(namespace_project_project_members_path(project.namespace, project))
+          expect(project.users).not_to include project_user
+        end
+      end
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:member) { create(:project_member, :developer, project: project) }
 

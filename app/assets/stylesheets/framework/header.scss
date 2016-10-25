@@ -15,7 +15,8 @@ header {
       margin: 8px 0;
       text-align: center;
 
-      .tanuki-logo, img {
+      .tanuki-logo,
+      img {
         height: 36px;
       }
     }
@@ -54,7 +55,9 @@ header {
         line-height: 28px;
         text-align: center;
 
-        &:hover, &:focus, &:active {
+        &:hover,
+        &:focus,
+        &:active {
           background-color: $background-color;
         }
 
@@ -125,7 +128,8 @@ header {
         left: -50%;
       }
 
-      svg, img {
+      svg,
+      img {
         height: 36px;
       }
 
@@ -222,7 +226,8 @@ header {
       margin: 0;
       float: none !important;
 
-      .visible-xs, .visable-sm {
+      .visible-xs,
+      .visable-sm {
         display: table-cell !important;
       }
     }

@@ -159,14 +159,14 @@ describe API::API, api: true  do
     it 'returns 400 if no label name given' do
       put api("/projects/#{project.id}/labels", user), new_name: 'label2'
       expect(response).to have_http_status(400)
-      expect(json_response['message']).to eq('400 (Bad request) "name" not given')
+      expect(json_response['error']).to eq('name is missing')
     end
 
     it 'returns 400 if no new parameters given' do
       put api("/projects/#{project.id}/labels", user), name: 'label1'
       expect(response).to have_http_status(400)
-      expect(json_response['message']).to eq('Required parameters '\
-                                         '"new_name" or "color" missing')
+      expect(json_response['error']).to eq('new_name, color, description are missing, '\
+                                           'at least one parameter must be provided')
     end
 
     it 'returns 400 for invalid name' do

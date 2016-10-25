@@ -3,7 +3,8 @@
   width: 100% !important;
 }
 
-.select2-container, .select2-container.select2-drop-above {
+.select2-container,
+.select2-container.select2-drop-above {
   .select2-choice {
     background: #fff;
     border-color: $input-border;
@@ -71,7 +72,8 @@
 }
 
 .select2-container-active {
-  .select2-choice, .select2-choices {
+  .select2-choice,
+  .select2-choices {
     box-shadow: none;
   }
 }

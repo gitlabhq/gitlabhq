@@ -624,6 +624,10 @@ describe 'Issue Boards', feature: true, js: true do
     it 'does not show create new list' do
       expect(page).not_to have_selector('.js-new-board-list')
     end
+
+    it 'does not allow dragging' do
+      expect(page).not_to have_selector('.user-can-drag')
+    end
   end
 
   context 'as guest user' do

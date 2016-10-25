@@ -6,7 +6,8 @@
   }
 }
 
-.no-ssh-key-message, .project-limit-message {
+.no-ssh-key-message,
+.project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
@@ -385,7 +386,8 @@ a.deploy-project-label {
       text-align: center;
       width: 169px;
 
-      &:hover, &.forked {
+      &:hover,
+      &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
       }
@@ -734,7 +736,8 @@ pre.light-well {
   .table-bordered {
     border-radius: 1px;
 
-    th:not(:last-child), td:not(:last-child) {
+    th:not(:last-child),
+    td:not(:last-child) {
       border-right: solid 1px transparent;
     }
   }
@@ -757,7 +760,8 @@ pre.light-well {
   }
 }
 
-.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+.project-refs-form .dropdown-menu,
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {

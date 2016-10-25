@@ -17,6 +17,16 @@ describe NamespaceUrlConstrainer, lib: true do
       it { expect(subject.matches?(request '/g/gitlab')).to be_falsey }
       it { expect(subject.matches?(request '/.gitlab')).to be_falsey }
     end
+
+    context 'relative url' do
+      before do
+        allow(Gitlab::Application.config).to receive(:relative_url_root) { '/gitlab' }
+      end
+
+      it { expect(subject.matches?(request '/gitlab/gitlab')).to be_truthy }
+      it { expect(subject.matches?(request '/gitlab/gitlab-ce')).to be_falsey }
+      it { expect(subject.matches?(request '/gitlab/')).to be_falsey }
+    end
   end
 
   def request(path)
