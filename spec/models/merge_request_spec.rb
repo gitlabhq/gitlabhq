@@ -6,8 +6,8 @@ describe MergeRequest, models: true do
   subject { create(:merge_request) }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
-    it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
+    it { is_expected.to belong_to(:target_project).class_name('Project') }
+    it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
   end
