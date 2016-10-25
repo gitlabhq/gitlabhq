@@ -1,4 +1,4 @@
-
+((global) => {
   class SmartInterval {
     constructor({ name = 'SmartIntervalInstance', callback, high = 120000, low = 15000, increment = 0, delay = 5000, immediate = true, runInBackground = false, runInCache = false }) {
       this.callback = callback;
@@ -98,3 +98,6 @@
       this.start();
     }
   }
+
+  global.SmartInterval = SmartInterval;
+})(window.gl || (window.gl = {}));

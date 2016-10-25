@@ -62,7 +62,7 @@
 
     initPolling() {
       if (this.pollInterval) {
-        this.interval = new SmartInterval({
+        this.interval = new global.SmartInterval({
           callback: this.getResource.bind(this),
           high: 15000,
           low: 1000,
