@@ -38,6 +38,14 @@ describe LabelsFinder do
 
         expect(finder.execute).to eq [group_label_2, group_label_3, project_label_1, group_label_1, project_label_2, project_label_4]
       end
+
+      it 'returns labels available if nil title is supplied' do
+        group_2.add_developer(user)
+        # params[:title] will return `nil` regardless whether it is specified
+        finder = described_class.new(user, title: nil)
+
+        expect(finder.execute).to eq [group_label_2, group_label_3, project_label_1, group_label_1, project_label_2, project_label_4]
+      end
     end
 
     context 'filtering by group_id' do
@@ -63,6 +71,30 @@ describe LabelsFinder do
         finder = described_class.new(user, title: 'Group Label 2')
 
         expect(finder.execute).to eq [group_label_2]
+      end
+
+      it 'returns label with title alias' do
+        finder = described_class.new(user, name: 'Group Label 2')
+
+        expect(finder.execute).to eq [group_label_2]
+      end
+
+      it 'returns no labels if empty title is supplied' do
+        finder = described_class.new(user, title: [])
+
+        expect(finder.execute).to be_empty
+      end
+
+      it 'returns no labels if blank title is supplied' do
+        finder = described_class.new(user, title: '')
+
+        expect(finder.execute).to be_empty
+      end
+
+      it 'returns no labels if empty name is supplied' do
+        finder = described_class.new(user, name: [])
+
+        expect(finder.execute).to be_empty
       end
     end
   end
