@@ -42,7 +42,7 @@
         altField: "input[name='" + this.fieldName + "']",
         onSelect: () => {
           if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
-            gl.issueBoards.BoardsStore.detail.issue.dueDate = $("input[name='" + this.fieldName + "']").val();
+            gl.issueBoards.BoardsStore.detail.issue.dueDate = $(`input[name='${this.fieldName}']`).val();
             this.updateIssueBoardIssue();
           } else {
             return this.saveDueDate(true);

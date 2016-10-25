@@ -11,7 +11,7 @@
         \-
         %a.js-assign-yourself{ href: "#" }
           assign yourself
-    %a.author_link.bold{ href: "",
+    %a.author_link.bold{ ":href" => "'#{root_url}' + issue.assignee.username",
       "v-if" => "issue.assignee" }
       %img.avatar.avatar-inline.s32{ ":src" => "issue.assignee.avatar",
         width: "32" }
