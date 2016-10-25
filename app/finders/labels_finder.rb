@@ -35,13 +35,10 @@ class LabelsFinder < UnionFinder
   end
 
   def with_title(items)
-    if title
-      items.where(title: title)
-    elsif params[:title] || params[:name] # empty input, should match nothing
-      items.none
-    else # not filtering
-      items
-    end
+    return items if title.nil?
+    return items.none if title.blank?
+
+    items.where(title: title)
   end
 
   def group_id
@@ -57,7 +54,7 @@ class LabelsFinder < UnionFinder
   end
 
   def title
-    params[:title].presence || params[:name].presence
+    params[:title] || params[:name]
   end
 
   def project
