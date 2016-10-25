@@ -75,6 +75,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Don't include archived projects when creating group milestones. !4940 (Jeroen Jacobs)
   - Add tag shortcut from the Commit page. !6543
   - Keep refs for each deployment
+  - Close open tooltips on page navigation (Linus Thiel)
   - Allow browsing branches that end with '.atom'
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Replace unique keyframes mixin with keyframe mixin with specific names (ClemMakesApps)
