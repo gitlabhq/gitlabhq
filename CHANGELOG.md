@@ -107,6 +107,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add visibility level to project repository
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
+  - Fix showing commits from source project for merge request !6658
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
   - Add configurable email subject suffix (Fu Xu)
   - Use defined colour for a language when available !6748 (nilsding)
