@@ -12,7 +12,7 @@
         = link_to project_environments_path(@project) do
           Available
           %span.badge.js-available-environments-count
-            {{counAvailable}}
+            {{countAvailable}}
 
       %li{class: ('active' if @scope == 'stopped')}
         = link_to project_environments_path(@project, scope: :stopped) do
@@ -41,7 +41,7 @@
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
           
-    .table-holder{ "v-if" => "!loading && state.environments" }
+    .table-holder{ "v-if" => "!loading && state.environments.length" }
       %table.table.ci-table.environments
         %thead
           %th Environment

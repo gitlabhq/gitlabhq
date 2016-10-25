@@ -41,7 +41,7 @@
      * @param  {Array} environments List of environments.
      * @returns {Array} Tree structured array with the received environments.
      */
-    storeEnvironments(environments) {
+    storeEnvironments(environments = []) {
       const environmentsTree = environments.reduce((acc, environment) => {
         const data = Object.assign({}, environment);
         

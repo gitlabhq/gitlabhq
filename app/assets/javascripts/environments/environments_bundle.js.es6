@@ -24,7 +24,7 @@ $(() => {
       };
     });
   };
-  
+
   gl.EnvironmentsListApp = new Vue({
 
     el: '#environments-list-view',
@@ -49,7 +49,7 @@ $(() => {
         return filterEnvironments(this.state.environments, 'stopped').length;
       },
 
-      counAvailable () {
+      countAvailable () {
         return filterEnvironments(this.state.environments, 'available').length;
       }
     },
@@ -86,10 +86,10 @@ $(() => {
      */
     getQueryParameter(param) {
       return window.location.search.substring(1).split('&').reduce((acc, param) => {
-        acc[param.split('=')[0]] = param.split('=')[1];
+        const paramSplited = param.split('=');
+        acc[paramSplited[0]] = paramSplited[1];
         return acc;
       }, {})[param];
     }
-
   });
 });
