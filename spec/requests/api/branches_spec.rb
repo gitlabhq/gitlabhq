@@ -48,92 +48,167 @@ describe API::API, api: true  do
   end
 
   describe 'PUT /projects/:id/repository/branches/:branch/protect' do
-    it 'protects a single branch' do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
-
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(branch_name)
-      expect(json_response['commit']['id']).to eq(branch_sha)
-      expect(json_response['protected']).to eq(true)
-      expect(json_response['developers_can_push']).to eq(false)
-      expect(json_response['developers_can_merge']).to eq(false)
-    end
-
-    it 'protects a single branch and developers can push' do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
-        developers_can_push: true
-
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(branch_name)
-      expect(json_response['commit']['id']).to eq(branch_sha)
-      expect(json_response['protected']).to eq(true)
-      expect(json_response['developers_can_push']).to eq(true)
-      expect(json_response['developers_can_merge']).to eq(false)
-    end
-
-    it 'protects a single branch and developers can merge' do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
-        developers_can_merge: true
-
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(branch_name)
-      expect(json_response['commit']['id']).to eq(branch_sha)
-      expect(json_response['protected']).to eq(true)
-      expect(json_response['developers_can_push']).to eq(false)
-      expect(json_response['developers_can_merge']).to eq(true)
-    end
-
-    it 'protects a single branch and developers can push and merge' do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
-        developers_can_push: true, developers_can_merge: true
-
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(branch_name)
-      expect(json_response['commit']['id']).to eq(branch_sha)
-      expect(json_response['protected']).to eq(true)
-      expect(json_response['developers_can_push']).to eq(true)
-      expect(json_response['developers_can_merge']).to eq(true)
-    end
-
-    it 'protects a single branch and developers cannot push and merge' do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
-        developers_can_push: 'tru', developers_can_merge: 'tr'
-
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(branch_name)
-      expect(json_response['commit']['id']).to eq(branch_sha)
-      expect(json_response['protected']).to eq(true)
-      expect(json_response['developers_can_push']).to eq(false)
-      expect(json_response['developers_can_merge']).to eq(false)
-    end
-
-    context 'on a protected branch' do
-      let(:protected_branch) { 'foo' }
-
-      before do
-        project.repository.add_branch(user, protected_branch, 'master')
-        create(:protected_branch, :developers_can_push, :developers_can_merge, project: project, name: protected_branch)
-      end
-
-      it 'updates that a developer can push' do
-        put api("/projects/#{project.id}/repository/branches/#{protected_branch}/protect", user),
-          developers_can_push: false, developers_can_merge: false
+    context "when a protected branch doesn't already exist" do
+      it 'protects a single branch' do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
 
         expect(response).to have_http_status(200)
-        expect(json_response['name']).to eq(protected_branch)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['commit']['id']).to eq(branch_sha)
         expect(json_response['protected']).to eq(true)
         expect(json_response['developers_can_push']).to eq(false)
         expect(json_response['developers_can_merge']).to eq(false)
       end
 
-      it 'does not update that a developer can push' do
-        put api("/projects/#{project.id}/repository/branches/#{protected_branch}/protect", user),
-          developers_can_push: 'foobar', developers_can_merge: 'foo'
+      it 'protects a single branch and developers can push' do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
+            developers_can_push: true
 
         expect(response).to have_http_status(200)
-        expect(json_response['name']).to eq(protected_branch)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['commit']['id']).to eq(branch_sha)
         expect(json_response['protected']).to eq(true)
         expect(json_response['developers_can_push']).to eq(true)
+        expect(json_response['developers_can_merge']).to eq(false)
+      end
+
+      it 'protects a single branch and developers can merge' do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
+            developers_can_merge: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['commit']['id']).to eq(branch_sha)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(false)
+        expect(json_response['developers_can_merge']).to eq(true)
+      end
+
+      it 'protects a single branch and developers can push and merge' do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
+            developers_can_push: true, developers_can_merge: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['commit']['id']).to eq(branch_sha)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(true)
+        expect(json_response['developers_can_merge']).to eq(true)
+      end
+
+      it 'protects a single branch and developers cannot push and merge' do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
+            developers_can_push: 'tru', developers_can_merge: 'tr'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['commit']['id']).to eq(branch_sha)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(false)
+        expect(json_response['developers_can_merge']).to eq(false)
+      end
+    end
+
+    context 'for an existing protected branch' do
+      before do
+        project.repository.add_branch(user, protected_branch.name, 'master')
+      end
+
+      context "when developers can push and merge" do
+        let(:protected_branch) { create(:protected_branch, :developers_can_push, :developers_can_merge, project: project, name: 'protected_branch') }
+
+        it 'updates that a developer cannot push or merge' do
+          put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
+              developers_can_push: false, developers_can_merge: false
+
+          expect(response).to have_http_status(200)
+          expect(json_response['name']).to eq(protected_branch.name)
+          expect(json_response['protected']).to eq(true)
+          expect(json_response['developers_can_push']).to eq(false)
+          expect(json_response['developers_can_merge']).to eq(false)
+        end
+
+        it "doesn't result in 0 access levels when 'developers_can_push' is switched off" do
+          put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
+              developers_can_push: false
+
+          expect(response).to have_http_status(200)
+          expect(json_response['name']).to eq(protected_branch.name)
+          expect(protected_branch.reload.push_access_levels.first).to be_present
+          expect(protected_branch.reload.push_access_levels.first.access_level).to eq(Gitlab::Access::MASTER)
+        end
+
+        it "doesn't result in 0 access levels when 'developers_can_merge' is switched off" do
+          put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
+              developers_can_merge: false
+
+          expect(response).to have_http_status(200)
+          expect(json_response['name']).to eq(protected_branch.name)
+          expect(protected_branch.reload.merge_access_levels.first).to be_present
+          expect(protected_branch.reload.merge_access_levels.first.access_level).to eq(Gitlab::Access::MASTER)
+        end
+      end
+
+      context "when developers cannot push or merge" do
+        let(:protected_branch) { create(:protected_branch, project: project, name: 'protected_branch') }
+
+        it 'updates that a developer can push and merge' do
+          put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
+              developers_can_push: true, developers_can_merge: true
+
+          expect(response).to have_http_status(200)
+          expect(json_response['name']).to eq(protected_branch.name)
+          expect(json_response['protected']).to eq(true)
+          expect(json_response['developers_can_push']).to eq(true)
+          expect(json_response['developers_can_merge']).to eq(true)
+        end
+      end
+
+      context "when no one can push" do
+        let(:protected_branch) { create(:protected_branch, :no_one_can_push, project: project, name: 'protected_branch') }
+
+        it "updates 'developers_can_push' without removing the 'no_one' access level" do
+          put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
+              developers_can_push: true, developers_can_merge: true
+
+          expect(response).to have_http_status(200)
+          expect(json_response['name']).to eq(protected_branch.name)
+          expect(protected_branch.reload.push_access_levels.pluck(:access_level)).to include(Gitlab::Access::NO_ACCESS)
+        end
+      end
+    end
+
+    context "multiple API calls" do
+      it "returns success when `protect` is called twice" do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(false)
+        expect(json_response['developers_can_merge']).to eq(false)
+      end
+
+      it "returns success when `protect` is called twice with `developers_can_push` turned on" do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user), developers_can_push: true
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user), developers_can_push: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(true)
+        expect(json_response['developers_can_merge']).to eq(false)
+      end
+
+      it "returns success when `protect` is called twice with `developers_can_merge` turned on" do
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user), developers_can_merge: true
+        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user), developers_can_merge: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(false)
         expect(json_response['developers_can_merge']).to eq(true)
       end
     end
@@ -146,12 +221,6 @@ describe API::API, api: true  do
     it "returns a 403 error if guest" do
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user2)
       expect(response).to have_http_status(403)
-    end
-
-    it "returns success when protect branch again" do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
-      expect(response).to have_http_status(200)
     end
   end
 
