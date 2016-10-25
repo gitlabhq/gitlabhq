@@ -5,6 +5,26 @@ describe ProjectCacheWorker do
 
   subject { described_class.new }
 
+  describe '.perform_async' do
+    it 'schedules the job when no lease exists' do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).
+        and_return(false)
+
+      expect_any_instance_of(described_class).to receive(:perform)
+
+      described_class.perform_async(project.id)
+    end
+
+    it 'does not schedule the job when a lease exists' do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).
+        and_return(true)
+
+      expect_any_instance_of(described_class).not_to receive(:perform)
+
+      described_class.perform_async(project.id)
+    end
+  end
+
   describe '#perform' do
     context 'when an exclusive lease can be obtained' do
       before do
