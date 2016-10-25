@@ -19,6 +19,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Removed delete branch tooltip !6954
 - Stop unauthorized users dragging on milestone page (blackst0ne)
 - Restore issue boards welcome message when a project is created !6899
+- Do not show tooltip for active element !7105 (winniehell)
 - Escape ref and path for relative links !6050 (winniehell)
 - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
 - Fix filtering of milestones with quotes in title (airatshigapov)
