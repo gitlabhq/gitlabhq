@@ -6,7 +6,7 @@ class Group < Namespace
   include AccessRequestable
   include Referable
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :owners,

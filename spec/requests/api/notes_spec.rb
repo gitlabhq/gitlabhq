@@ -221,12 +221,23 @@ describe API::API, api: true  do
         end
       end
 
-      context 'when the user is posting an award emoji' do
+      context 'when the user is posting an award emoji on an issue created by someone else' do
+        let(:issue2) { create(:issue, project: project) }
+
         it 'returns an award emoji' do
+          post api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
+
+          expect(response).to have_http_status(201)
+          expect(json_response['awardable_id']).to eq issue2.id
+        end
+      end
+
+      context 'when the user is posting an award emoji on his/her own issue' do
+        it 'creates a new issue note' do
           post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: ':+1:'
 
           expect(response).to have_http_status(201)
-          expect(json_response['awardable_id']).to eq issue.id
+          expect(json_response['body']).to eq(':+1:')
         end
       end
     end

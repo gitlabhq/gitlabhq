@@ -6,83 +6,87 @@ Please add any terms that you discover that you think would be useful for others
 
 ### 2FA
 
-User authentication by combination of 2 different steps during login. This allows for more security.
+User authentication by combination of 2 different steps during login. This allows for [more security](https://about.gitlab.com/handbook/security/).
 
 ### Access Levels
 
-Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions.
-See, [GitLab's Permission Guidelines](http://doc.gitlab.com/ce/permissions/permissions.html)
+Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](http://doc.gitlab.com/ce/permissions/permissions.html)
 
 ### Active Directory (AD)
 
-A Microsoft based directory service for windows domain networks. It uses LDAP technology under the hood
+A Microsoft-based [directory service](https://msdn.microsoft.com/en-us/library/bb742424.aspx) for windows domain networks. It uses LDAP technology under the hood.
 
 ### Agile
 
-Building and delivering software in phases/parts rather than trying to build everything at once then delivering to the user/client. The later is known as a WaterFall model
+Building and [delivering software](http://agilemethodology.org/) in phases/parts rather than trying to build everything at once then delivering to the user/client. The latter is known as the WaterFall model.
 
 ### Application Lifecycle Management (ALM)
 
-Entire product lifecycle management process for an application. From requirements management, development and testing until deployment.
+The entire product lifecycle management process for an application, from requirements management, development, and testing until deployment. GitLab has [advantages](https://docs.google.com/presentation/d/1vCU-NbZWz8NTNK8Vu3y4zGMAHb5DpC8PE5mHtw1PWfI/edit#slide=id.g72f2e4906_2_288) over both legacy and modern ALM tools.
 
 ### Artifactory
 
-Version control for binaries.
+A version control [system](https://www.jfrog.com/open-source/#os-arti) for non-text files.
 
 ### Artifacts
 
-objects (usually binary and large) created by a build process
+Objects (usually binary and large) created by a build process. These can include use cases, class diagrams, requirements and design documents. 
 
 ### Atlassian
 
-A company that develops software products for developers and project managers including Bitbucket, Jira, Hipchat, Confluence, Bamboo. See [Atlassian] (https://www.atlassian.com)
+A [company](https://www.atlassian.com) that develops software products for developers and project managers including Bitbucket, Jira, Hipchat, Confluence, Bamboo. 
 
 ### Audit Log
 
-*** Needs definition here
+Also called an [audit trail](https://en.wikipedia.org/wiki/Audit_trail), an audit log is a document that records an event in an IT system. 
 
 ### Auto Defined User Group
 
-User groups are a way of centralizing control over important management tasks, particularly access control and password policies.
-A simple example of such groups are the users and the admins groups.
-In most of the cases these groups are auto defined in terms of access, rules of usage, conditions to be part of, etc...
+User groups are a way of centralizing control over important management tasks, particularly access control and password policies. A simple example of such groups are the users and the admins groups.
+In most of the cases these groups are auto defined in terms of access, rules of usage, conditions to be part of, etc.
 
 ### Bamboo
 
-Atlassian's CI tool similar to GitLab CI and Jenkins
+Atlassian's CI tool similar to GitLab CI and Jenkins.
 
 ### Basic Subscription
 
-Entry level subscription for GitLab EE currently available in packs of 10 see [Basic subscription](https://about.gitlab.com/pricing/)
+Entry level [subscription](https://about.gitlab.com/pricing/) for GitLab EE currently available in packs of 10.
 
 ### Bitbucket
 
-Atlassian's web hosting service for Git and Mercurial Projects i.e. GitLab.com competitor
+Atlassian's web hosting service for Git and Mercurial Projects. Read about [migrating](https://docs.gitlab.com/ce/workflow/importing/import_projects_from_bitbucket.html) from BitBucket to a GitLab instance. 
 
 ### Branch
 
-A branch is a parallel version of a repository. Allows you to work on the repository without you affecting the "master" branch. Allows you to make changes without affecting the current "live" version. When you have made all your changes to your branch you can then merge to the master and to make the changes fo "live".
+A branch is a parallel version of a repository. This allows you to work on the repository without affecting the "master" branch, and without affecting the current "live" version. When you have made all your changes to your branch you can then merge to the master. When your merge request is accepted your changes will be "live."
 
 ### Branded Login
 
-Having your own logo on your GitLab instance login page instead of the GitLab logo.
+Having your own logo on [your GitLab instance login page](https://docs.gitlab.com/ee/customization/branded_login_page.html) instead of the GitLab logo.
+
+### Build triggers
+These protect your code base against breaks, for instance when a team is working on the same project. Learn about [setting up](https://docs.gitlab.com/ce/ci/triggers/README.html) build triggers.
 
 ### CEPH
 
-is a distributed object store and file system designed to provide excellent performance, reliability and scalability.
+ A distributed object store and file [system](http://ceph.com/) designed to provide excellent performance, reliability and scalability.
+
+### ChatOps
+
+The ability to [initiate an action](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/1412) from chat. ChatBots run in your chat application and give you the ability to do "anything" from chat. 
 
 ### Clone
 
-A copy of a repository stored on your machine that allows you to use your own editor without being online, but still tracks the changes made remotely.
+A [copy](https://git-scm.com/docs/git-clone) of a repository stored on your machine that allows you to use your own editor without being online, but still tracks the changes made remotely.
 
 ### Code Review
 
-Examination of a progam's code. The main aim is to maintain high standards quality of code that is being shipped.
+Examination of a progam's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab. 
 
 ### Code Snippet
 
-A small amount of code. Usually for the purpose of showing other developers how
-to do something specific or reproduce a problem.
+A small amount of code, usually selected for the purpose of showing other developers how to do something specific or reproduce a problem.
 
 ### Collaborator
 
@@ -90,31 +94,39 @@ Person with read and write access to a repository who has been invited by reposi
 
 ### Commit
 
-Is a change (revision) to a file, and also creates an ID that allows you to see revision history and who made the changes.
+A [change](https://git-scm.com/docs/git-commit) (revision) to a file that also creates an ID, allowing you to see revision history and the author of the changes.
 
 ### Community
 
-Everyone who is using GitLab
+[Everyone](https://about.gitlab.com/community/) who uses GitLab.
 
 ### Confluence
 
-Atlassian's product for collaboration of documents and projects.
+Atlassian's product for collaboration on documents and projects.
 
-### Continuous Deivery
+### Continuous Delivery
 
-Continuous delivery is a series of practices designed to ensure that code can be rapidly and safely deployed to production by delivering every change to a production-like environment and ensuring business applications and services function as expected through rigorous automated testing.
+A [software engineering approach](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which continuous integration, automated testing, and automated deployment capabilities allow software to be developed and deployed rapidly, reliably and repeatedly with minimal human intervention. Still, the deployment to production is defined strategically and triggered manually.
 
 ### Continuous Deployment
 
-Continuous deployment is the next step of continuous delivery: Every change that passes the automated tests is deployed to production automatically.
+A [software development practice](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which every code change goes through the entire pipeline and is put into production automatically, resulting in many production deployments every day. It does everything that Continuous Delivery does, but the process is fully automated, there's no human intervention at all.
 
 ### Continuous Integration
 
-A process that involves adding new code commits to source code with the combined code being run on an automated test to ensure that the changes do not break the software.
+A [software development practice](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) in which you build and test software every time a developer pushes code to the application, and it happens several times a day.
 
 ### Contributor
 
-Term used to a person contributing to an Open Source Project.
+Term used for a person contributing to an open source project.
+
+### Conversational Development (ConvDev)
+
+A [natural evolution](https://about.gitlab.com/2016/09/14/gitlab-live-event-recap/) of software development that carries a conversation across functional groups throughout the development process, enabling developers to track the full path of development in a cohesive and intuitive way. ConvDev accelerates the development lifecycle by fostering collaboration and knowledge sharing from idea to production.
+
+### Cycle Time
+
+The time it takes to move from [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab).
 
 ### Data Centre
 
@@ -122,41 +134,59 @@ Atlassian product for High Availability.
 
 ### Deploy Keys
 
-An SSH key stored on the your server that grants access to a single GitLab repository. This is used by a GitLab runner to clone a project's code so that tests can be run against the checked out code.
+A [SSH key](https://docs.gitlab.com/ce/gitlab-basics/create-your-ssh-keys.html)stored on your server that grants access to a single GitLab repository. This is used by a GitLab runner to clone a project's code so that tests can be run against the checked out code.
 
 ### Developer
 
-For us (GitLab) this means a software developer, i.e. someone who makes software. It is also one of the levels of access in our multi level approval system.
+For us at GitLab, this means a software developer, or someone who makes software. It is also one of the levels of access in our multi-level approval system.
+
+### DevOps 
+
+The intersection of software engineering, quality assurance, and technology operations. Explore more DevOps topics in the [glossary by XebiaLabs](https://xebialabs.com/glossary/)
 
 ### Diff
 
-Is the difference between two commits, or saved changes. This will also be shown visually after the changes.
+The difference between two commits, or saved changes. This will also be shown visually after the changes.
 
-### Docker
+#### Directory
 
-Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server.
-This guarantees that it will always run the same, regardless of the environment it is running in.
+A folder used for storing multiple files.
+
+### Docker Container Registry
+
+A [feature](https://docs.gitlab.com/ce/user/project/container_registry.html) of GitLab projects. Containers wrap up a piece of software in a complete filesystem that contains everything it needs to run: code, runtime, system tools, system libraries – anything you can install on a server. This guarantees that it will always run the same, regardless of the environment it is running in.
+
+### Dynamic Environment
+
+### ElasticSearch
+
+Elasticsearch is a flexible, scalable and powerful search service. When [enabled](https://gitlab.com/help/integration/elasticsearch.md), it helps keep GitLab's search fast when dealing with a huge amount of data. 
+
+### Emacs
 
 ### Fork
 
-Your own copy of a repository that allows you to make changes to the repository without affecting the original.
+Your [own copy](https://docs.gitlab.com/ce/workflow/forking_workflow.html) of a repository that allows you to make changes to the repository without affecting the original.
 
 ### Gerrit
 
-A code review tool built on top of Git.
+A code review [tool](https://www.gerritcodereview.com/) built on top of Git.
+
+### Git Attributes
+
+A [git attributes file](https://git-scm.com/docs/gitattributes) is a simple text file that gives attributes to pathnames. 
 
 ### Git Hooks
 
-Are scripts you can use to trigger actions at certain points.
+[Scripts](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you can use to trigger actions at certain points.
 
 ### GitHost.io
 
-Is a single-tenant solution that provides GitLab CE or EE as a managed service. GitLab Inc. is responsible for
-installing, updating, hosting, and backing up customers own private and secure GitLab instance.
+A single-tenant solution that provides GitLab CE or EE as a managed service. GitLab Inc. is responsible for installing, updating, hosting, and backing up customers' own private and secure GitLab instance.
 
 ### GitHub
 
-A web-based Git repository hosting service with an enterprise offering. Its main features are: issue tracking, pull request with code review, abundancy of integrations and wiki. As of April 2016, the service has over 14 million users. It offers free public repos, private repos and enterprise services are paid.
+A web-based Git repository hosting service with an enterprise offering. Its main features are: issue tracking, pull request with code review, abundancy of integrations and wiki. It offers free public repos, private repos and enterprise services are paid. Read about [importing a project](https://docs.gitlab.com/ce/workflow/importing/import_projects_from_github.html) from GitHub to GitLab.
 
 ### GitLab CE
 
@@ -164,51 +194,78 @@ Our free on Premise solution with >100,000 users
 
 ### GitLab CI
 
-Our own Continuos Integration feature that is shipped with each instance
+Our own Continuos Integration [feature](https://about.gitlab.com/gitlab-ci/) that is shipped with each instance
 
 ### GitLab EE
 
-Our premium on premise solution that currently has Basic, Standard and Plus subscription packages with additional features and support.
+Our premium on premise [solution](https://about.gitlab.com/features/#enterprise) that currently has Basic, Standard and Plus subscription packages with additional features and support.
 
 ### GitLab.com
 
 Our free SaaS for public and private repositories.
 
+### GitLab Geo
+
+Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](https://docs.gitlab.com/ee/gitlab-geo/README.html) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
+
+### GitLab Pages
+These allow you to [create websites](https://gitlab.com/help/pages/README.md) for your GitLab projects, groups, or user account. 
+
 ### Gitolite
 
-Is basically an access layer that sits on top of Git. Users are granted access to repos via a simple config file and you as an admin only needs the users public SSH key and a username from the user.
+An [access layer](https://git-scm.com/book/en/v1/Git-on-the-Server-Gitolite) that sits on top of Git. Users are granted access to repos via a simple config file. As an admin, you only need the users' public SSH key and a username.
 
 ### Gitorious
 
-A web based hosting service for projects using Git. It was acquired by GitLab and we discontinued the service. [Gitorious Acquisition Blog Post](https://about.gitlab.com/2015/03/03/gitlab-acquires-gitorious/)
+A web-based hosting service for projects using Git. It was acquired by GitLab and we discontinued the service. Read the[Gitorious Acquisition Blog Post](https://about.gitlab.com/2015/03/03/gitlab-acquires-gitorious/).
 
-### HADR
+### Go
 
-Sometimes written HA/DR.  High Availability for Disaster Recovery.  Usually refers to a strategy having a failover server in place in case the main server fails.
+An open source programming [language](https://golang.org/).
+
+### GUI/ Git GUI
+
+A portable [graphical interface](https://git-scm.com/docs/git-gui) to Git that allows users to make changes to their repository by making new commits, amending existing ones, creating branches, performing local merges, and fetching/pushing to remote repositories.
+
+### High Availability for Disaster Recovery (HADR)
+
+Sometimes written HA/DR, this usually refers to a strategy for having a failover server in place in case the main server fails.
 
 ### Hip Chat
 
-Atlassian's real time chat application for teams. Competitor to Slack, RocketChat and MatterMost.
+Atlassian's real time chat application for teams, Hip Chat is a competitor to Slack, RocketChat and MatterMost.
 
 ### High Availability
 
-Refers to a system or component that is continuously operational for a desirably long length of time. Availability can be measured relative to "100% operational" or "never failing."
+Refers to a [system or component](https://about.gitlab.com/high-availability/) that is continuously operational for a desirably long length of time. Availability can be measured relative to "100% operational" or "never failing."
+
+### Inner-sourcing
+
+The [use of](https://about.gitlab.com/2014/09/05/innersourcing-using-the-open-source-workflow-to-improve-collaboration-within-an-organization/) open source development techniques within the corporation.
+
+### Internet Relay Chat (IRC)
+
+An [application layer protocol](http://www.irchelp.org/) that facilitates communication in the form of text.
 
 ### Issue Tracker
 
-A tool used to manage, organize, and maintain a list of issues, making it easier for an organization to manage.
+A [tool](https://docs.gitlab.com/ee/integration/external-issue-tracker.html) used to manage, organize, and maintain a list of issues, making it easier for an organization to manage.
 
 ### Jenkins
 
-An Open Source CI tool written using the Java programming language. Does the same job as GitLab CI, Bamboo, Travis CI. It is extremely popular. see [Jenkins](https://jenkins-ci.org/)
+An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins-ci.org/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. 
 
 ### Jira
 
-Atlassian's project management software. i.e. a complex issue tracker. See[Jira](https://www.atlassian.com/software/jira)
+Atlassian's [project management software](https://www.atlassian.com/software/jira), i.e. a complex issue tracker. GitLab [can be configured](https://docs.gitlab.com/ee/project_services/jira.html) to interact with JIRA Core either using an on-premise instance or the SaaS solution that Atlassian offers.
+
+### JUnit
+
+A testing framework for the Java programming language, [JUnit](http://junit.org/junit4/) has been important in the evolution of test-driven development.
 
 ### Kerberos
 
-A network authentication protocol that uses secret-key cryptography for security.
+A network authentication [protocol](http://web.mit.edu/kerberos/) that uses secret-key cryptography for security.
 
 ### Kubernetes
 
@@ -216,23 +273,27 @@ An open source container cluster manager originally designed by Google. It's bas
 
 ### Labels
 
-An identifier to describe a group of one or more specific file revisions
+An [identifier](https://docs.gitlab.com/ce/user/project/labels.html) to describe a group of one or more specific file revisions.
 
-### LDAP
+### Lightweight Directory Access Protocol (LDAP)
 
-Lightweight Directory Access Protocol - basically its a directory (electronic address book) with user information e.g. name, phone_number etc
+ A directory (electronic address book) with user information (e.g. name, phone_number etc.)
 
 ### LDAP User Authentication
 
-Allowing GitLab to sign in people from an LDAP server i.e. Allow people whose names are on the electronic user directory server) to be able to use their LDAP accounts to login.
+GitLab [integrates](https://docs.gitlab.com/ce/administration/auth/ldap.html) with LDAP to support user authentication. This enables GitLab to sign in people from an LDAP server (i.e., allowing people whose names are on the electronic user directory server to be able to use their LDAP accounts to login.)
 
 ### LDAP Group Sync
 
 Allows you to synchronize the members of a GitLab group with one or more LDAP groups.
 
-### Git LFS
+### Load Balancer
 
-Git Large File Storage. A way to enable git to handle large binary files by using reference pointers within small text files to point to the large files.
+A [device](https://en.wikipedia.org/wiki/Load_balancing_(computing)) that distributes network or application traffic across multiple servers. 
+
+### Git Large File Storage (LFS)
+
+A way [to enable](https://about.gitlab.com/2015/11/23/announcing-git-lfs-support-in-gitlab/) git to handle large binary files by using reference pointers within small text files to point to the large files. Large files such as high resolution images and videos, audio files, and assets can be called from a remote server.
 
 ### Linux
 
@@ -240,8 +301,7 @@ An operating system like Windows or OS X. It is mostly used by software develope
 
 ### Markdown
 
-Is a lightweight markup language with plain text formatting syntax designed so that it can be converted to HTML and many other formats using a tool by the same name.
-Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
+A lightweight markup language with plain text formatting syntax designed so that it can be converted to HTML and many other formats using a tool by the same name. Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor. Checkout GitLab's [Markdown guide](https://gitlab.com/help/user/markdown.md). 
 
 ### Maria DB
 
@@ -249,193 +309,215 @@ A community developed fork/variation of MySQL. MySQL is owned by Oracle.
 
 ### Master
 
-Name of the default branch in every git repository.
+Name of the [default branch](https://git-scm.com/book/en/v1/Git-Branching-What-a-Branch-Is) in every git repository.
+
+### Mattermost
+
+An open source, self-hosted messaging alternative to Slack. View GitLab's Mattermost [feature](https://gitlab.com/gitlab-org/gitlab-mattermost). 
 
 ### Mercurial
 
-A free distributed version control system like Git. Think of it as a competitor to Git.
+A free distributed version control system similar to and a competitor with Git. 
 
 ### Merge
 
-Takes changes from one branch, and applies them into another branch.
+Takes changes from one branch, and [applies them](https://git-scm.com/docs/git-merge) into another branch.
+
+### Merge Conflict
+
+[Arises](https://about.gitlab.com/2016/09/06/resolving-merge-conflicts-from-the-gitlab-ui/) when a merge can't be performed cleanly between two versions of the same file. 
 
 ### Meteor
 
-A hip platform for building javascript apps.[Meteor] (https://www.meteor.com)
+A [platform](https://www.meteor.com) for building javascript apps.
 
 ### Milestones
 
-Allows you to track the progress on issues, and merge requests, which allows you to get a snapshot of the progress made.
+Allow you to [organize issues](https://docs.gitlab.com/ce/workflow/milestones.html) and merge requests in GitLab into a cohesive group, optionally setting a due date. A common use is keeping track of an upcoming software version. Milestones are created per-project.
 
 ### Mirror Repositories
 
-You can set up a project to automatically have its branches, tags, and commits updated from an upstream repository. This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and its activity using the familiar GitLab interface.
+A project that is setup to automatically have its branches, tags, and commits [updated from an upstream repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
 
 ### MIT License
 
-A type of software license. It lets people do anything with your code with proper attribution and without warranty. It is the most common license for open source applications written in Ruby on Rails. GitLab CE is issued under this license.
-This means, you can download the code, modify it as you want even build a new commercial product using the underlying code and its not illegal. The only condition is that there is no form of waranty provided by GitLab so whatever happens if you use the code is your own problem.
+A type of software license. It lets people do anything with your code with proper attribution and without warranty. It is the most common license for open source applications written in Ruby on Rails. GitLab CE is issued under this [license](https://docs.gitlab.com/ce/development/licensing.html). This means you can download the code, modify it as you want, and even build a new commercial product using the underlying code and it's not illegal. The only condition is that there is no form of warranty provided by GitLab so whatever happens when you use the code is your own problem.
 
-### Mondo
+### Mondo Rescue
 
-*** Needs definition here
+A free disaster recovery [software](https://help.ubuntu.com/community/MondoMindi). 
 
-### Multi LDAP Server
+### MySQL
 
-*** Needs definition here
-
-### My SQL
-
-A relational database. Currently only supported if you are using EE. It is owned by Oracle.
+A relational [database](http://www.mysql.com/) owned by Oracle. Currently only supported if you are using EE.
 
 ### Namespace
 
-In computing, a namespace is a set of symbols that are used to organize objects of various kinds, so that these objects may be referred to by name.
-
-Prominent examples include:
-- file systems are namespaces that assign names to files;
-- programming languages organize their variables and subroutines in namespaces;
-- computer networks and distributed systems assign names to resources, such as computers, printers, websites, (remote) files, etc.
+A set of symbols that are used to organize objects of various kinds so that these objects may be referred to by name. Examples of namespaces in action include file systems that assign names to files; programming languages that organize their variables and subroutines in namespaces; and computer networks and distributed systems that assign names to resources, such as computers, printers, websites, (remote) files, etc.
 
 ### Nginx
 
-(pronounced "engine x") is a web server. It can act as a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and an HTTP cache.
+A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). It can act as a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and an HTTP cache.
 
-### oAuth
+### OAuth
 
-Is an open standard for authorization, commonly used as a way for Internet users to log into third party websites using their Microsoft, Google, Facebook or Twitter accounts without exposing their password.
+An open standard for authorization, commonly used as a way for internet users to log into third party websites using their Microsoft, Google, Facebook or Twitter accounts without exposing their password. GitLab [is](https://docs.gitlab.com/ce/integration/oauth_provider.html) an OAuth2 authentication service provider. 
 
 ### Omnibus Packages
 
-Omnibus is a way to package the different services and tools required to run GitLab, so that users can install it without as much work.
+A way to [package different services and tools](https://docs.gitlab.com/omnibus/) required to run GitLab, so that most developers can install it without laborious configuration.
 
 ### On Premise
 
-On your own server. In GitLab, this refers to the ability to download GitLab EE/GitLab CE and host it on your own server rather than using GitLab.com which is hosted by GitLab Inc's servers.
+On your own server. In GitLab, this [refers](https://about.gitlab.com/2015/02/12/why-ship-on-premises-in-the-saas-era/) to the ability to download GitLab EE/GitLab CE and host it on your own server rather than using GitLab.com, which is hosted by GitLab Inc's servers.
+
+### Open Core 
+
+GitLab's [business model](https://about.gitlab.com/2016/07/20/gitlab-is-open-core-github-is-closed-source/). Coined by Andrew Lampitt in 2008, the [open core model](https://en.wikipedia.org/wiki/Open_core) primarily involves offering a "core" or feature-limited version of a software product as free and open-source software, while offering "commercial" versions or add-ons as proprietary software.
 
 ### Open Source Software
 
-Software for which the original source code is freely available and may be redistributed and modified.
+Software for which the original source code is freely [available](https://opensource.org/docs/osd) and may be redistributed and modified. GitLab prioritizes open source [stewardship](https://about.gitlab.com/2016/01/11/being-a-good-open-source-steward/). 
 
 ### Owner
 
-This is the most powerful person on a GitLab project. He has the permissions of all the other users plus the additional permission of being able to destroy i.e. delete the project
+The most powerful person on a GitLab project. They have the permissions of all the other users plus the additional permission of being able to destroy (i.e. delete) the project.
 
-### PaaS
+### Platform as a Service (PaaS)
 
-Typically referred to in regards to application development, it is a model in which a cloud provider delivers hardware and software tools to its users as a service
+Typically referred to in regards to application development, PaaS is a model in which a cloud provider delivers hardware and software tools to its users as a service.
 
 ### Perforce
 
-The company that produces Helix.  A commercial, proprietary, centralised VCS well known for it's ability to version files of any size and type.  They OEM a re-branded version of GitLab called "GitSwarm" that is tightly integrated with their "GitFusion" product, which in turn represents a portion of a Helix repository (called a depot) as a git repo
+The company that produces Helix.  A commercial, proprietary, centralised VCS well known for its ability to version files of any size and type.  They OEM a re-branded version of GitLab called "GitSwarm" that is tightly integrated with their "GitFusion" product, which in turn represents a portion of a Helix repository (called a depot) as a git repo.
 
 ### Phabricator
 
-Is a suite of web-based software development collaboration tools, including the Differential code review tool, the Diffusion repository browser, the Herald change monitoring tool, the Maniphest bug tracker and the Phriction wiki. Phabricator integrates with Git, Mercurial, and Subversion.
+A suite of web-based software development collaboration tools, including the Differential code review tool, the Diffusion repository browser, the Herald change monitoring tool, the Maniphest bug tracker and the Phriction wiki. Phabricator integrates with Git, Mercurial, and Subversion.
 
 ### Piwik Analytics
 
-An open source analytics software to help you analyze web traffic. It is similar to google analytics only that google analytics is not open source and information is stored by google while in Piwik the information is stored in your own server hence fully private.
+An open source analytics software to help you analyze web traffic. It is similar to Google Analytics, except that the latter is not open source and information is stored by Google. In Piwik, the information is stored on your own server and hence is fully private.
 
 ### Plus Subscription
 
-GitLab Premium EE subscription that includes training and dedicated Account Management and Service Engineer and complete support package [Plus subscription](https://about.gitlab.com/pricing/)
+GitLab Premium EE [subscription](https://about.gitlab.com/pricing/) that includes training and dedicated Account Management and Service Engineer and complete support package.
 
 ### PostgreSQL
 
-A relational database. Touted as the most advanced open source database.
+An [object-relational](https://en.wikipedia.org/wiki/PostgreSQL) database. Touted as the most advanced open source database, it is one of two database management systems [supported by](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/database.md) GitLab, the other being MySQL. 
 
 ### Protected Branches
 
-A feature that protects branches from unauthorized pushes, force pushing or deletion.
+A [feature](https://docs.gitlab.com/ce/user/project/protected_branches.html) that protects branches from unauthorized pushes, force pushing or deletion.
 
 ### Pull
 
-Git command to synchronize the local repository with the remote repository, by fetching all remote changes and merging them into the local repository.
+Git command to [synchronize](https://git-scm.com/docs/git-pull) the local repository with the remote repository, by fetching all remote changes and merging them into the local repository.
 
 ### Puppet
 
-A popular devops automation tool
+A popular DevOps [automation tool](https://puppet.com/product/how-puppet-works).
 
 ### Push
 
-Git command to send commits from the local repository to the remote repository.
+Git [command](https://git-scm.com/docs/git-push) to send commits from the local repository to the remote repository. Read about [advanced push rules](https://gitlab.com/help/pages/README.md) in GitLab. 
 
 ### RE Read Only
 
-Permissions to see a file and it's contents, but not change it
+Permissions to see a file and its contents, but not change it.
 
 ### Rebase
 
-Moves a branch from one commit to another.  This allows you to re-write your project's history.
+In addition to the merge, the [rebase](https://git-scm.com/book/en/v2/Git-Branching-Rebasing) is a main way to integrate changes from one branch into another. 
 
-### Git Repository
+### (Git) Repository
 
-Storage location of all files which are tracked by git.
+A directory where Git [has been initiatlized](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository) to start version controlling your files. The history of your work is stored here. A remote repository is not on your machine, but usually online (like on GitLab.com, for instance). The main remote repository is usually called "Origin."
 
 ### Requirements management
 
-*** Needs definition here
-
-### Revision
-
-*** Needs definition here
+Gives your distributed teams a single shared repository to collaborate and share requirements, understand their relationship to tests, and evaluate linked defects. It includes multiple, preconfigured requirement types.
 
 ### Revision Control
 
-Also known as version control or source control, is the management of changes to documents, computer programs, large web sites, and other collections of information. Changes are usually identified by a number or letter code, termed the "revision number", "revision level", or simply "revision".
+Also known as version control or source control, this is the management of changes to documents, computer programs, large web sites, and other collections of information. Changes are usually identified by a number or letter code, termed the "revision number," "revision level," or simply "revision."
 
 ### RocketChat
 
-An open source chat application for teams. Very similar to Slack only that is is open-source.
+An open source chat application for teams, RocketChat is very similar to Slack but it is also open-source.
+
+### Route Table
+
+A route table contains rules (called routes) that determine where network traffic is directed. Each [subnet in a VPC](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html) must be associated with a route table. 
 
 ### Runners
 
-Actual build machines/containers that run/execute tests you have specified to be run on GitLab CI
+Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner) you have specified to be run on GitLab CI.
 
-### SaaS
+### Sidekiq
 
-Software as a service. Software is hosted centrally and accessed on-demand i.e. when you want to. This refers to GitLab.com in our scenario
+The background job processor GitLab [uses](https://docs.gitlab.com/ce/administration/troubleshooting/sidekiq.html) to asynchronously run tasks.
 
-### SCM
+### Software as a service (SaaS)
 
-Software Configuration Management.  Often used by people when they mean Version Control
+Software that is hosted centrally and accessed on-demand (i.e. whenever you want to). This applies to GitLab.com.
+
+### Software Configuration Management (SCM)
+
+This term is often used by people when they mean "Version Control."
 
 ## Scrum
 
-An Agile framework designed to help complete complex (typically) software projects. It's made up of several parts: product requirments backlog, sprint plannnig, sprint (development), sprint review, retrospec (analyzing the sprint). The goal is to end up with potentially shippable products.
+An Agile [framework](https://www.scrum.org/Resources/What-is-Scrum) designed to typically help complete complex software projects. It's made up of several parts: product requirements backlog, sprint planning, sprint (development), sprint review, and retrospec (analyzing the sprint). The goal is to end up with potentially shippable products.
 
 ### Scrum Board
 
 The board used to track the status and progress of each of the sprint backlog items.
 
+### Shell
+
+Terminal on Mac OSX, GitBash on Windows, or Linux Terminal on Linux. You [use git]() and make changes to GitLab projects in your shell. You [use git](https://docs.gitlab.com/ce/gitlab-basics/start-using-git.html) and make changes to GitLab projects in your shell. 
+
+### Single-tenant
+
+The tenant purchases their own copy of the software and the software can be customized to meet the specific and needs of that customer. [GitHost.io](https://about.gitlab.com/handbook/positioning-faq/) is our provider of single-tenant 'managed cloud' GitLab instances. 
+
 ### Slack
 
-Real time messaging app for teams. Used internally by  GitLab
+Real time messaging app for teams that is used internally by  GitLab team members. GitLab users can enable [Slack integration](https://docs.gitlab.com/ce/project_services/slack.html) to trigger push, issue, and merge request events among others. 
 
 ### Slave Servers
 
-Also known as secondary servers. They help to spread the load over multiple machines, they also provide backups when the master/primary server crashes.
+Also known as secondary servers, these help to spread the load over multiple machines. They also provide backups when the master/primary server crashes.
 
 ### Source Code
 
-Program code as typed by a computer programmer. i.e. it has not yet been compiled/translated by the computer to machine language.
+Program code as typed by a computer programmer (i.e. it has not yet been compiled/translated by the computer to machine language).
 
 ### SSH Key
 
-A unique identifier of a computer. It is used to identify computers without the need for a password. e.g. On GitLab I have added the ssh key of all my work machines so that the GitLab instance knows that it can accept code pushes and pulls from this trusted machines whose keys are I have added.
+A unique identifier of a computer. It is used to identify computers without the need for a password (e.g., On GitLab I have [added the ssh key](https://docs.gitlab.com/ce/gitlab-basics/create-your-ssh-keys.html) of all my work machines so that the GitLab instance knows that it can accept code pushes and pulls from this trusted machines whose keys are I have added.)
 
-### SSO
+### Single Sign On (SSO)
 
-Single Sign On. An authentication process that allows you enter one username and password to access multiple applications.
+An authentication process that allows you enter one username and password to access multiple applications.
+
+### Staging Area
+
+[Staging occurs](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics) before the commit process in git. The staging area is a file, generally contained in your Git directory, that stores information about what will go into your next commit. It’s sometimes referred to as the “index.""
 
 ### Standard Subscription
 
-Our mid range EE subscription that includes 24/7 support, support for High Availability [Standard Subscription](https://about.gitlab.com/pricing/)
+Our mid range EE subscription that includes 24/7 support and support for High Availability [Standard Subscription](https://about.gitlab.com/pricing/).
 
 ### Stash
 
-Atlassian's Git On-Premises solution. Think of it as Atlassian's GitLab EE. It is now known as BitBucket Server.
+Atlassian's Git on-premise solution. Think of it as Atlassian's GitLab EE, now known as BitBucket Server.
+
+### Static Site Generators (SSGs)
+
+A [software](https://wiki.python.org/moin/StaticSiteGenerator) that takes some text and templates as input and produces html files on the output.
 
 ### Subversion
 
@@ -443,40 +525,65 @@ Non-proprietary, centralized version control system.
 
 ### Sudo
 
-A program that allows you to perform superuser/administrator actions on Unix Operating Systems e.g. Linux, OS X. It actually stands for 'superuser do'
+A program that allows you to perform superuser/administrator actions on Unix Operating Systems (e.g., Linux, OS X.) It actually stands for 'superuser do.'
 
-### SVN
+### Subversion (SVN)
 
-Abbreviation for Subversion.
+An open source version control system. Read about [migrating from SVN](https://docs.gitlab.com/ce/workflow/importing/migrating_from_svn.html) to GitLab using SubGit. 
 
 ### Tag
 
-Represents a version of a particular branch at a moment in time.
+[Represents](https://docs.gitlab.com/ce/api/tags.html) a version of a particular branch at a moment in time.
 
 ### Tool Stack
 
-Set of tools used in a process to achieve a common outcome. E.g. set of tools used in Application Lifecycle Management.
+The set of tools used in a process to achieve a common outcome (e.g. set of tools used in Application Lifecycle Management).
 
 ### Trac
 
-An Open Source project management and bug tracking web application.
+An open source project management and bug tracking web [application](https://trac.edgewall.org/).
+
+### Untracked files
+
+New files that Git has not [been told](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository) to track previously. 
 
 ### User
 
 Anyone interacting with the software.
 
-### VCS
+### Version Control Software (VCS)
 
-Version Control Software
+Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. VCS [has evolved](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.gd69537a19_0_32) from local version control systems, to centralized version control systems, to the present distributed version control systems like Git, Mercurial, Bazaar, and Darcs. 
+
+### Virtual Private Cloud (VPC)
+
+An on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/). 
+
+### Virtual private server (VPS)
+
+A [virtual machine](https://en.wikipedia.org/wiki/Virtual_private_server) sold as a service by an Internet hosting service. A VPS runs its own copy of an operating system, and customers have superuser-level access to that operating system instance, so they can install almost any software that runs on that OS.
+
+### VM Instance
+
+In object-oriented programming, an [instance](http://stackoverflow.com/questions/20461907/what-is-meaning-of-instance-in-programming) is a specific realization of any object. An object may be varied in a number of ways. Each realized variation of that object is an instance. Therefore, a VM instance is an instance of a virtual machine, which is an emulation of a computer system. 
 
 ### Waterfall
 
-A model of building software that involves collecting all requirements from the customer, then building and refining all the requirements and finally delivering the COMPLETE software to the customer that meets all the requirements specified by the customer
+A [model](http://www.umsl.edu/~hugheyd/is6840/waterfall.html) of building software that involves collecting all requirements from the customer, then building and refining all the requirements and finally delivering the complete software to the customer that meets all the requirements they specified. 
 
 ### Webhooks
 
-A way for for an app to provide other applications with real-time information. e.g. send a message to a slack channel when a commit is pushed
+A way for for an app to [provide](https://docs.gitlab.com/ce/web_hooks/web_hooks.html) other applications with real-time information (e.g., send a message to a slack channel when a commit is pushed.) Read about setting up [custom git hooks](https://gitlab.com/help/administration/custom_hooks.md) for when webhooks are insufficient. 
 
 ### Wiki
 
-A website/system that allows for collaborative editing of its content by the users. In programming, they usually contain documentation of how to use the software
+A [website/system](http://www.wiki.com/) that allows for collaborative editing of its content by the users. In programming, wikis usually contain documentation of how to use the software.
+
+### Working Tree
+
+[Consists of files](http://stackoverflow.com/questions/3689838/difference-between-head-working-tree-index-in-git) that you are currently working on.
+
+### YAML
+
+A human-readable data serialization [language](http://www.yaml.org/about.html) that takes concepts from programming languages such as C, Perl, and Python, and ideas from XML and the data format of electronic mail. 
+

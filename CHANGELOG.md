@@ -2,12 +2,35 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
   - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
+  - Trim leading and trailing whitespace on project_path (Linus Thiel)
+  - Prevent award emoji via notes for issues/MRs authored by user (barthc)
+  - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
+  - Fix extra space on Build sidebar on Firefox !7060
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Add hover to trash icon in notes !7008 (blackst0ne)
+  - Escape ref and path for relative links !6050 (winniehell)
   - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix: Backup restore doesn't clear cache
+  - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
+  - Fix documents and comments on Build API `scope`
+  - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
+
+## 8.13.1 (unreleased)
+  - Fix bug where labels would be assigned to issues that were moved
+  - Fix error in generating labels
+  - Fix reply-by-email not working due to queue name mismatch
+  - Fixed hidden pipeline graph on commit and MR page !6895
+  - Expire and build repository cache after project import
+  - Fix 404 for group pages when GitLab setup uses relative url
+  - Simpler arguments passed to named_route on toggle_award_url helper method 
+  - Better handle when no users were selected for adding to group or project. (Linus Thiel)
+  - Only show register tab if signup enabled.
 
 ## 8.13.0 (2016-10-22)
-
+  - Removes extra line for empty issue description. (!7045)
   - Fix save button on project pipeline settings page. (!6955)
+  - All Sidekiq workers now use their own queue
   - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
@@ -26,6 +49,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Update duration at the end of pipeline
   - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
   - Add group level labels. (!6425)
+  - Fix Cycle analytics not showing correct data when filtering by date. !6906
   - Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
   - Cancelled pipelines could be retried. !6927
   - Updating verbiage on git basics to be more intuitive
@@ -33,6 +57,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Clarify documentation for Runners API (Gennady Trafimenkov)
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
+  - Fixed issue boards user link when in subdirectory
   - Added documentation for .gitattributes files
   - Move Pipeline Metrics to separate worker
   - AbstractReferenceFilter caches project_refs on RequestStore when active
@@ -83,6 +108,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add visibility level to project repository
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
+  - Fix showing commits from source project for merge request !6658
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
   - Add configurable email subject suffix (Fu Xu)
   - Use defined colour for a language when available !6748 (nilsding)
@@ -143,6 +169,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
   - Fix broken Project API docs (Takuya Noguchi)
+  - Migrate invalid project members (owner -> master)
 
 ## 8.12.7
 
@@ -376,6 +403,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix inconsistent checkbox alignment (ClemMakesApps)
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
   - Adds response mime type to transaction metric action when it's not HTML
+  - Fix branch protection API !6215
   - Fix hover leading space bug in pipeline graph !5980
   - Avoid conflict with admin labels when importing GitHub labels
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496

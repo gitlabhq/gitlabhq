@@ -11,12 +11,12 @@
       this.fieldErrors = new global.GlFieldErrors($form);
     });
 
-    it('should properly initialize the form', function() {
+    it('should select the correct input elements', function() {
       expect(this.$form).toBeDefined();
       expect(this.$form.length).toBe(1);
       expect(this.fieldErrors).toBeDefined();
       const inputs = this.fieldErrors.state.inputs;
-      expect(inputs.length).toBe(5);
+      expect(inputs.length).toBe(4);
     });
 
     it('should ignore elements with custom error handling', function() {

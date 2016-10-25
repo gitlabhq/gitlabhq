@@ -142,7 +142,7 @@
 .event-last-push {
   overflow: auto;
   width: 100%;
-  
+
   .event-last-push-text {
     @include str-truncated(100%);
     padding: 4px 0;

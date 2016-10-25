@@ -1,8 +1,9 @@
 class GitGarbageCollectWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
+  include DedicatedSidekiqQueue
 
-  sidekiq_options queue: :gitlab_shell, retry: false
+  sidekiq_options retry: false
 
   def perform(project_id)
     project = Project.find(project_id)

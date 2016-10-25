@@ -5,8 +5,7 @@
 # storage engine as much.
 class ProjectCacheWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include DedicatedSidekiqQueue
 
   LEASE_TIMEOUT = 15.minutes.to_i
 

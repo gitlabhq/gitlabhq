@@ -13,9 +13,18 @@
 
 .new_project,
 .edit-project {
+
   fieldset {
-    &.features .control-label {
-      font-weight: normal;
+
+    &.features {
+
+      .label-light {
+        margin-bottom: 0;
+      }
+
+      .help-block {
+        margin-top: 0;
+      }
     }
 
     .form-group {
@@ -40,6 +49,7 @@
   }
 
   .input-group > div {
+
     &:last-child {
       padding-right: 0;
     }
@@ -47,6 +57,7 @@
 
   @media (max-width: $screen-xs-max) {
     .input-group > div {
+
       margin-bottom: 14px;
 
       &:last-child {
@@ -60,6 +71,7 @@
   }
 
   .input-group-addon {
+
     &.static-namespace {
       height: 35px;
       border-radius: 3px;

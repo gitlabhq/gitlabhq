@@ -31,7 +31,7 @@
         = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
           Delete
 
-  .detail-page-description.milestone-detail
+  .detail-page-description.milestone-detail{ class: ('hide-bottom-border' unless @milestone.description.present? ) }
     %h2.title
       = markdown_field(@milestone, :title)
     %div
