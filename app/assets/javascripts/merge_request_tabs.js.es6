@@ -88,9 +88,9 @@
     }
 
     tabShown(event) {
-      var $target, action, navBarHeight;
-      $target = $(event.target);
-      action = $target.data('action');
+      const $target = $(event.target);
+      const action = $target.data('action');
+
       if (action === 'commits') {
         this.loadCommits($target.attr('href'));
         this.expandView();
@@ -103,7 +103,7 @@
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
-        navBarHeight = $('.navbar-gitlab').outerHeight();
+        const navBarHeight = $('.navbar-gitlab').outerHeight();
         $.scrollTo(".merge-request-details .merge-request-tabs", {
           offset: -navBarHeight
         });
@@ -125,12 +125,12 @@
     }
 
     scrollToElement(container) {
-      var $el, navBarHeight;
       if (window.location.hash) {
-        navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + document.querySelector('.js-tabs-affix').offsetHeight;
-        $el = $(container + " " + window.location.hash + ":not(.match)");
+        const navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + document.querySelector('.js-tabs-affix').offsetHeight;
+        const navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+        const $el = $(`${container} ${window.location.hash}:not(.match)`);
         if ($el.length) {
-          return $.scrollTo(container + " " + window.location.hash + ":not(.match)", {
+          $.scrollTo($el[0], {
             offset: -navBarHeight
           });
         }
@@ -143,7 +143,7 @@
         action = 'notes';
       }
       // important note: the .tab('show') method triggers 'shown.bs.tab' event itself
-      $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
+      $(`.merge-request-tabs a[data-action='${action}']`).tab('show');
     }
 
     // Replaces the current Merge Request-specific action in the URL with a new one
@@ -167,19 +167,20 @@
     //
     // Returns the new URL String
     setCurrentAction(action) {
-      var new_state;
       // Normalize action, just to be safe
       if (action === 'show') {
         action = 'notes';
       }
       this.currentAction = action;
+
       // Remove a trailing '/commits' '/diffs' '/builds' '/pipelines' '/new' '/new/diffs'
-      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
+      let new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
 
       // Append the new action if we're on a tab other than 'notes'
       if (action !== 'notes') {
-        new_state += "/" + action;
+        new_state += `/${action}`;
       }
+
       // Ensure parameters and hash come along for the ride
       new_state += this._location.search + this._location.hash;
 
@@ -200,7 +201,7 @@
         return;
       }
       this.ajaxGet({
-        url: source + ".json",
+        url: `${source}.json`,
         success: (data) => {
           document.querySelector("div#commits").innerHTML = data.html;
           gl.utils.localTimeAgo($('.js-timeago', 'div#commits'));
@@ -217,11 +218,11 @@
 
       // We extract pathname for the current Changes tab anchor href
       // some pages like MergeRequestsController#new has query parameters on that anchor
-      var url = document.createElement('a');
+      const url = document.createElement('a');
       url.href = source;
 
       this.ajaxGet({
-        url: (url.pathname + ".json") + this._location.search,
+        url: `${url.pathname}.json${this._location.search}`,
         success: (data) => {
           $('#diffs').html(data.html);
 
@@ -248,7 +249,7 @@
         return;
       }
       this.ajaxGet({
-        url: source + ".json",
+        url: `${source}.json`,
         success: (data) => {
           document.querySelector("div#builds").innerHTML = data.html;
           gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
@@ -264,7 +265,7 @@
         return;
       }
       this.ajaxGet({
-        url: source + ".json",
+        url: `${source}.json`,
         success: (data) => {
           $('#pipelines').html(data.html);
           gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
@@ -282,7 +283,7 @@
     }
 
     ajaxGet(options) {
-      var defaults = {
+      const defaults = {
         beforeSend: () => this.toggleLoading(true),
         complete: () => this.toggleLoading(false),
         dataType: 'json',
@@ -301,7 +302,7 @@
     }
 
     expandViewContainer() {
-      var $wrapper = $('.content-wrapper .container-fluid');
+      const $wrapper = $('.content-wrapper .container-fluid');
       if (this.fixedLayoutPref === null) {
         this.fixedLayoutPref = $wrapper.hasClass('container-limited');
       }
@@ -316,8 +317,7 @@
     }
 
     shrinkView() {
-      var $gutterIcon;
-      $gutterIcon = $('.js-sidebar-toggle i:visible');
+      const $gutterIcon = $('.js-sidebar-toggle i:visible');
 
       // Wait until listeners are set
       setTimeout(() => {
@@ -330,11 +330,10 @@
 
     // Expand the issuable sidebar unless the user explicitly collapsed it
     expandView() {
-      var $gutterIcon;
       if (Cookies.get('collapsed_gutter') === 'true') {
         return;
       }
-      $gutterIcon = $('.js-sidebar-toggle i:visible');
+      const $gutterIcon = $('.js-sidebar-toggle i:visible');
 
       // Wait until listeners are set
       setTimeout(() => {
@@ -346,15 +345,15 @@
     }
 
     initAffix() {
-      var $tabs = $('.js-tabs-affix');
+      const $tabs = $('.js-tabs-affix');
 
       // Screen space on small screens is usually very sparse
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
-      var $diffTabs = $('#diff-notes-app'),
-        $fixedNav = $('.navbar-fixed-top'),
-        $layoutNav = $('.layout-nav');
+      const $diffTabs = $('#diff-notes-app');
+      const $fixedNav = $('.navbar-fixed-top');
+      const $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({ offset: {
