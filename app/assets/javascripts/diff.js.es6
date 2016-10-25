@@ -1,19 +1,19 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, max-len, one-var, camelcase, one-var-declaration-per-line, no-unused-vars, no-unused-expressions, no-sequences, object-shorthand, comma-dangle, prefer-arrow-callback, semi, radix, padded-blocks, max-len */
-(function() {
-  this.Diff = (function() {
-    var UNFOLD_COUNT;
+/* eslint-disable */
 
-    UNFOLD_COUNT = 20;
+((global) => {
+  const UNFOLD_COUNT = 20;
 
-    function Diff() {
+  class Diff {
+    constructor() {
       $('.files .diff-file').singleFileDiff();
-      this.filesCommentButton = $('.files .diff-file').filesCommentButton();
+      $('.files .diff-file').filesCommentButton();
+
       if (this.diffViewType() === 'parallel') {
         $('.content-wrapper .container-fluid').removeClass('container-limited');
       }
       $(document)
         .off('click', '.js-unfold')
-        .on('click', '.js-unfold', (function(event) {
+        .on('click', '.js-unfold', (event) => {
           var line_number, link, file, offset, old_line, params, prev_new_line, prev_old_line, ref, ref1, since, target, to, unfold, unfoldBottom;
           target = $(event.target);
           unfoldBottom = target.hasClass('js-unfold-bottom');
@@ -48,29 +48,27 @@
           return $.get(link, params, function(response) {
             return target.parent().replaceWith(response);
           });
-        }).bind(this));
-
-      $(document)
+        })
         .off('click', '.diff-line-num a')
-        .on('click', '.diff-line-num a', (function(e) {
-          var hash = $(e.currentTarget).attr('href');
-          e.preventDefault();
+        .on('click', '.diff-line-num a', (event) => {
+          var hash = $(event.currentTarget).attr('href');
+          event.preventDefault();
           if ( history.pushState ) {
             history.pushState(null, null, hash);
           } else {
             window.location.hash = hash;
           }
           this.highlighSelectedLine();
-        }).bind(this));
+        });
 
       this.highlighSelectedLine();
     }
 
-    Diff.prototype.diffViewType = function() {
+    diffViewType() {
       return $('.inline-parallel-buttons a.active').data('view-type');
     }
 
-    Diff.prototype.lineNumbers = function(line) {
+    lineNumbers(line) {
       if (!line.children().length) {
         return [0, 0];
       }
@@ -78,26 +76,21 @@
       return line.find('.diff-line-num').map(function() {
         return parseInt($(this).data('linenumber'));
       });
-    };
+    }
 
-    Diff.prototype.highlighSelectedLine = function() {
-      var $diffLine, dataLineString, locationHash;
-      $('.hll').removeClass('hll');
-      locationHash = window.location.hash;
-      if (locationHash !== '') {
-        dataLineString = '[data-line-code="' + locationHash.replace('#', '') + '"]';
-        $diffLine = $(".diff-file " + locationHash + ":not(.match)");
-        if (!$diffLine.is('tr')) {
-          $diffLine = $(".diff-file td" + locationHash + ", .diff-file td" + dataLineString);
-        } else {
-          $diffLine = $diffLine.find('td');
-        }
-        $diffLine.addClass('hll');
+    highlighSelectedLine() {
+      const $diffFiles = $('.diff-file');
+      $diffFiles.find('.hll').removeClass('hll');
+
+      if (window.location.hash !== '') {
+        const hash = window.location.hash.replace('#', '');
+        $diffFiles
+          .find(`tr#${hash}:not(.match) td, td#${hash}, td[data-line-code="${hash}"]`)
+          .addClass('hll');
       }
-    };
+    }
+  }
 
-    return Diff;
+  global.Diff = Diff;
 
-  })();
-
-}).call(this);
+})(window.gl || (window.gl = {}));
