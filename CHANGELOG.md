@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Prevent award emoji via notes for issues/MRs authored by user (barthc)
   - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
   - Fix extra space on Build sidebar on Firefox !7060
+  - Fix mobile layout issues in admin user overview page !7087
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Simpler arguments passed to named_route on toggle_award_url helper method
