@@ -5,17 +5,21 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Trim leading and trailing whitespace on project_path (Linus Thiel)
   - Prevent award emoji via notes for issues/MRs authored by user (barthc)
   - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
+  - Fix extra space on Build sidebar on Firefox !7060
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
   - Fix documents and comments on Build API `scope`
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 
 ## 8.13.1 (unreleased)
+  - Fix bug where labels would be assigned to issues that were moved
   - Fix error in generating labels
   - Fix reply-by-email not working due to queue name mismatch
+  - Fixed hidden pipeline graph on commit and MR page !6895
   - Expire and build repository cache after project import
   - Fix 404 for group pages when GitLab setup uses relative url
   - Simpler arguments passed to named_route on toggle_award_url helper method 

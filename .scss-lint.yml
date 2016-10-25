@@ -191,7 +191,7 @@ linters:
   # Variables should be formatted with a single space separating the colon
   # from the variable's value.
   SpaceAfterVariableColon:
-    enabled: false
+    enabled: true
 
   # Variables should be formatted with no space between the name and the
   # colon.
@@ -201,7 +201,7 @@ linters:
   # Operators should be formatted with a single space on both sides of an
   # infix operator.
   SpaceAroundOperator:
-    enabled: false
+    enabled: true
   
   # Opening braces should be preceded by a single space.
   SpaceBeforeBrace:
@@ -223,7 +223,7 @@ linters:
 
   # Reports lines containing trailing whitespace.
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   # Don't write trailing zeros for numeric values with a decimal point.
   TrailingZero:
