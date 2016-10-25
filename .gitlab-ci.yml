@@ -317,7 +317,6 @@ lint-javascript:
     - npm install
   script:
     - npm run eslint
-  allow_failure: true # don't break build until old linting errors have been fixed
 
 # Trigger docs build
 trigger_docs:
