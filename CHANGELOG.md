@@ -10,6 +10,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Refactor and add new environment functionality to CI yaml reference. !7026
   - Fix typo in project settings that prevents users from enabling container registry. !7037
   - Remove extra line for empty issue description. !7045
+  - Don't append issue/MR templates to any existing text. !7050
   - Fix error in generating labels. !7055
   - Stop clearing the database cache on `rake cache:clear`. !7056
   - Only show register tab if signup enabled. !7058
