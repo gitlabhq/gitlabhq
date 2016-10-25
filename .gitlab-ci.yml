@@ -279,19 +279,20 @@ bundler:audit:
 migration paths:
   stage: test
   <<: *use-db
+  variables:
+    SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
   script:
     - git checkout HEAD .
     - git fetch --tags
     - git checkout v8.5.9
-    - mv config/resque.yml config/resque.yml.new
-    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - cp config/resque.yml.example config/resque.yml
+    - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
     - rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_BUILD_REF
-    - rm config/resque.yml
-    - mv config/resque.yml.new config/resque.yml
+    - source scripts/prepare_build.sh
     - rake db:migrate
 
 coverage:
