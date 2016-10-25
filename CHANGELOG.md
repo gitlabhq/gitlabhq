@@ -13,6 +13,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Stop clearing the database cache on `rake cache:clear`. !7056
   - Only show register tab if signup enabled. !7058
   - Expire and build repository cache after project import. !7064
+  - Fix bug where labels would be assigned to issues that were moved. !7065
 
 ## 8.13.0 (2016-10-22)
 
