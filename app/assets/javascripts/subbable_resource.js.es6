@@ -104,26 +104,30 @@
         return;
       }
       this.state.loading = true;
+      return this.get();
+    }
+
+    get() {
       return this.resource.get()
         .then((res) => this.updateState(res.data))
         .then((newState) => this.publish(newState));
     }
 
     save(payload) {
-      this.resource.save(payload)
-        .then((res) => this.updateState(payload))
+      return this.resource.save(payload)
+        .then((res) => this.updateState(res.data))
         .then((newState) => this.publish(newState));
     }
 
     update(payload) {
-      this.resource.update(payload)
-        .then((res) => this.updateState(payload))
+      return this.resource.update(payload)
+        .then((res) => this.updateState(res.data))
         .then((newState) => this.publish(newState));
     }
 
     remove(payload) {
-      this.resource.remove(payload)
-        .then((res) => this.updateState(payload))
+      return this.resource.remove(payload)
+        .then((res) => this.updateState(res.data))
         .then((newState) => this.publish(newState));
     }
   }
