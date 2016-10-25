@@ -201,14 +201,12 @@
       }
       this.ajaxGet({
         url: source + ".json",
-        success: (function(_this) {
-          return function(data) {
-            document.querySelector("div#commits").innerHTML = data.html;
-            gl.utils.localTimeAgo($('.js-timeago', 'div#commits'));
-            _this.commitsLoaded = true;
-            _this.scrollToElement("#commits");
-          };
-        })(this)
+        success: (data) => {
+          document.querySelector("div#commits").innerHTML = data.html;
+          gl.utils.localTimeAgo($('.js-timeago', 'div#commits'));
+          this.commitsLoaded = true;
+          this.scrollToElement("#commits");
+        }
       });
     }
 
@@ -224,26 +222,24 @@
 
       this.ajaxGet({
         url: (url.pathname + ".json") + this._location.search,
-        success: (function(_this) {
-          return function(data) {
-            $('#diffs').html(data.html);
+        success: (data) => {
+          $('#diffs').html(data.html);
 
-            if (typeof gl.diffNotesCompileComponents !== 'undefined') {
-              gl.diffNotesCompileComponents();
-            }
+          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+            gl.diffNotesCompileComponents();
+          }
 
-            gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
-            $('#diffs .js-syntax-highlight').syntaxHighlight();
+          gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
+          $('#diffs .js-syntax-highlight').syntaxHighlight();
 
-            if (_this.diffViewType() === 'parallel' && (_this.isDiffAction(_this.currentAction)) ) {
-              _this.expandViewContainer();
-            }
-            _this.diffsLoaded = true;
-            _this.scrollToElement("#diffs");
+          if (this.diffViewType() === 'parallel' && this.isDiffAction(this.currentAction) ) {
+            this.expandViewContainer();
+          }
+          this.diffsLoaded = true;
+          this.scrollToElement("#diffs");
 
-            new Diff();
-          };
-        })(this)
+          new Diff();
+        }
       });
     }
 
@@ -253,15 +249,13 @@
       }
       this.ajaxGet({
         url: source + ".json",
-        success: (function(_this) {
-          return function(data) {
-            document.querySelector("div#builds").innerHTML = data.html;
-            gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
-            _this.buildsLoaded = true;
-            if (!this.pipelines) this.pipelines = new gl.Pipelines();
-            _this.scrollToElement("#builds");
-          };
-        })(this)
+        success: (data) => {
+          document.querySelector("div#builds").innerHTML = data.html;
+          gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
+          this.buildsLoaded = true;
+          new gl.Pipelines();
+          this.scrollToElement("#builds");
+        }
       });
     }
 
@@ -271,12 +265,12 @@
       }
       this.ajaxGet({
         url: source + ".json",
-        success: function(data) {
+        success: (data) => {
           $('#pipelines').html(data.html);
           gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
           this.pipelinesLoaded = true;
           this.scrollToElement("#pipelines");
-        }.bind(this)
+        }
       });
     }
 
@@ -289,16 +283,8 @@
 
     ajaxGet(options) {
       var defaults = {
-        beforeSend: (function(_this) {
-          return function() {
-            _this.toggleLoading(true);
-          };
-        })(this),
-        complete: (function(_this) {
-          return function() {
-            _this.toggleLoading(false);
-          };
-        })(this),
+        beforeSend: () => this.toggleLoading(true),
+        complete: () => this.toggleLoading(false),
         dataType: 'json',
         type: 'GET'
       };
@@ -334,7 +320,7 @@
       $gutterIcon = $('.js-sidebar-toggle i:visible');
 
       // Wait until listeners are set
-      setTimeout(function() {
+      setTimeout(() => {
         // Only when sidebar is expanded
         if ($gutterIcon.is('.fa-angle-double-right')) {
           $gutterIcon.closest('a').trigger('click', [true]);
@@ -351,7 +337,7 @@
       $gutterIcon = $('.js-sidebar-toggle i:visible');
 
       // Wait until listeners are set
-      setTimeout(function() {
+      setTimeout(() => {
         // Only when sidebar is collapsed
         if ($gutterIcon.is('.fa-angle-double-left')) {
           $gutterIcon.closest('a').trigger('click', [true]);
@@ -371,24 +357,13 @@
         $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
-        .affix({
-          offset: {
-            top: function () {
-              var tabsTop = $diffTabs.offset().top - $tabs.height();
-              tabsTop = tabsTop - ($fixedNav.height() + $layoutNav.height());
-
-              return tabsTop;
-            }
-          }
-        }).on('affix.bs.affix', function () {
-          $diffTabs.css({
-            marginTop: $tabs.height()
-          });
-        }).on('affix-top.bs.affix', function () {
-          $diffTabs.css({
-            marginTop: ''
-          });
-        });
+        .affix({ offset: {
+          top: () => (
+            $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
+          )
+        }})
+        .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))
+        .on('affix-top.bs.affix', () => $diffTabs.css({ marginTop: '' }));
 
       // Fix bug when reloading the page already scrolling
       if ($tabs.hasClass('affix')) {
