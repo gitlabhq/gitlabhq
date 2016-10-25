@@ -309,7 +309,7 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil)
+  def to_reference(_from_project = nil, _target_project = nil)
     "#{self.class.reference_prefix}#{username}"
   end
 
