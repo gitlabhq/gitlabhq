@@ -22,6 +22,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix reply-by-email not working due to queue name mismatch
   - Fixed hidden pipeline graph on commit and MR page !6895
   - Expire and build repository cache after project import
+  - Reduce overhead of LabelFinder by avoiding #presence call !7094
   - Fix 404 for group pages when GitLab setup uses relative url
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix unauthorized users dragging on issue boards
