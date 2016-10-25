@@ -43,17 +43,16 @@
      */
     storeEnvironments(environments = []) {
       const environmentsTree = environments.reduce((acc, environment) => {
-        const data = Object.assign({}, environment);
-        
-        if (data.last_deployment) {
+
+        if (environment.last_deployment) {
 
           //humanizes actions names if there are any actions
-          if (data.last_deployment.manual_actions) {
-            data.last_deployment.manual_actions = data.last_deployment.manual_actions.map((action) => Object.assign({}, action, {name: gl.text.humanize(action.name)}));
+          if (environment.last_deployment.manual_actions) {
+            environment.last_deployment.manual_actions = environment.last_deployment.manual_actions.map((action) => Object.assign({}, action, {name: gl.text.humanize(action.name)}));
           }
           
           //transforms created date for deployment in a human readable format
-          if (data.last_deployment.created_at) {
+          if (environment.last_deployment.created_at) {
             // TODO - how to do this without jquery
           }
         }
@@ -64,21 +63,21 @@
           });
           
           
-          data["vue-isChildren"] = true;
+          environment["vue-isChildren"] = true;
 
           if (occurs !== undefined) {
-            acc[acc.indexOf(occurs)].children.push(data);
-            acc[acc.indexOf(occurs)].children.push(data).sort(this.sortByName)
+            acc[acc.indexOf(occurs)].children.push(environment);
+            acc[acc.indexOf(occurs)].children.push(environment).sort(this.sortByName)
           } else {
             acc.push({
               name: environment.environment_type,
               children: [
-                Object.assign(data)
+                Object.assign(environment)
               ]
             });
           }
         } else {
-          acc.push(data);
+          acc.push(environment);
         }
 
         return acc;

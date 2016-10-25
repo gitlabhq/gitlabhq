@@ -73,9 +73,6 @@ $(() => {
     ready() {
       gl.environmentsService.all().then((resp) => {
         Store.storeEnvironments(resp.json());
-        
-        console.log("HELLLLOOOOOOOOOOOOOO", resp.json())
-
         this.loading = false;
       });
     },
