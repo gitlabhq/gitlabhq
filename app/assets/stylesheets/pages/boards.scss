@@ -284,9 +284,12 @@
 
 .issue-boards-sidebar {
   &.right-sidebar {
-    position: absolute;
-    top: 0;
+    top: 153px;
     bottom: 0;
+
+    @media (min-width: $screen-sm-min) {
+      top: 220px;
+    }
   }
 
   .issuable-sidebar-header {
