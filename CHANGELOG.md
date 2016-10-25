@@ -17,6 +17,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix reply-by-email not working due to queue name mismatch. !7068
   - Fix 404 for group pages when GitLab setup uses relative url. !7071
   - Fix `User#to_reference`. !7088
+  - Fix unauthorized users dragging on issue boards. !7096
 
 ## 8.13.0 (2016-10-22)
 
