@@ -163,6 +163,19 @@ describe API::API, api: true  do
           expect(json_response['developers_can_merge']).to eq(true)
         end
       end
+
+      context "when no one can push" do
+        let(:protected_branch) { create(:protected_branch, :no_one_can_push, project: project, name: 'protected_branch') }
+
+        it "updates 'developers_can_push' without removing the 'no_one' access level" do
+          put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
+              developers_can_push: true, developers_can_merge: true
+
+          expect(response).to have_http_status(200)
+          expect(json_response['name']).to eq(protected_branch.name)
+          expect(protected_branch.reload.push_access_levels.pluck(:access_level)).to include(Gitlab::Access::NO_ACCESS)
+        end
+      end
     end
 
     context "multiple API calls" do

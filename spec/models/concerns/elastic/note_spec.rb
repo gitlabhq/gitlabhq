@@ -29,6 +29,24 @@ describe Note, elastic: true do
     expect(described_class.elastic_search('term', options: options).total_count).to eq(1)
   end
 
+  it "indexes && searches diff notes" do
+    notes = []
+
+    Sidekiq::Testing.inline! do
+      notes << create(:diff_note_on_merge_request, note: "term")
+      notes << create(:diff_note_on_commit, note: "term")
+      notes << create(:legacy_diff_note_on_merge_request, note: "term")
+      notes << create(:legacy_diff_note_on_commit, note: "term")
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    project_ids = notes.map { |note| note.noteable.project.id }
+    options = { project_ids: project_ids }
+
+    expect(described_class.elastic_search('term', options: options).total_count).to eq(4)
+  end
+
   it "returns json with all needed elements" do
     note = create :note
 

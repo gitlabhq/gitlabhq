@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.1
+
+  - Fix Elasticsearch::Transport::Transport::Errors::BadRequest when ES is enabled. #21036
+  - Hides multiple board actions if user doesnt have permissions
+
 ## 8.13.0 (2016-10-22)
 
   - Cache the last usage data to avoid unicorn timeouts

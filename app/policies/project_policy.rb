@@ -58,6 +58,7 @@ class ProjectPolicy < BasePolicy
     can! :update_issue
     can! :admin_issue
     can! :admin_label
+    can! :admin_board
     can! :admin_list
     can! :read_commit_status
     can! :read_build
