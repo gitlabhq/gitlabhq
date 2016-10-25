@@ -26,6 +26,16 @@ module API
         present @groups, with: Entities::Group
       end
 
+      # Get list of owned groups for authenticated user
+      #
+      # Example Request:
+      #   GET /groups/owned
+      get '/owned' do
+        @groups = current_user.owned_groups
+        @groups = paginate @groups
+        present @groups, with: Entities::Group, user: current_user
+      end
+
       # Create group. Available only for users who can create groups.
       #
       # Parameters:
