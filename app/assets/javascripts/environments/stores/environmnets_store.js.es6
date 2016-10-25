@@ -7,6 +7,8 @@
 
     create () {
       this.state.environments = [];
+      this.state.stoppedCounter = 0;
+      this.state.availableCounter = 0;
     },
 
     /**
@@ -42,6 +44,10 @@
      * @returns {Array} Tree structured array with the received environments.
      */
     storeEnvironments(environments = []) {
+
+      this.state.stoppedCounter = this.countByState(environments, 'stopped');
+      this.state.availableCounter = this.countByState(environments, 'available');
+
       const environmentsTree = environments.reduce((acc, environment) => {
 
         if (environment.last_deployment) {
@@ -59,15 +65,14 @@
         
         if (environment.environment_type !== null) {
           const occurs = acc.find((element, index, array) => {
-            return element.environment_type === environment.environment_type;
+            return element.children && element.name === environment.environment_type;
           });
-          
-          
+
           environment["vue-isChildren"] = true;
 
           if (occurs !== undefined) {
             acc[acc.indexOf(occurs)].children.push(environment);
-            acc[acc.indexOf(occurs)].children.push(environment).sort(this.sortByName)
+            acc[acc.indexOf(occurs)].children.sort(this.sortByName)
           } else {
             acc.push({
               name: environment.environment_type,
@@ -86,6 +91,18 @@
       this.state.environments = environmentsTree;
       
       return environmentsTree;
+    },
+
+    /**
+     * Given an array of environments, returns the number of environments 
+     * that have the given state.
+     *
+     * @param  {Array} environments 
+     * @param  {String} state
+     * @returns {Number}
+     */
+    countByState(environments, state) {
+      return environments.filter((env) => env.state === state).length;
     },
 
     /**

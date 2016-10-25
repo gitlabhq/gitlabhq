@@ -12,13 +12,13 @@
         = link_to project_environments_path(@project) do
           Available
           %span.badge.js-available-environments-count
-            {{countAvailable}}
+            {{state.availableCounter}}
 
       %li{class: ('active' if @scope == 'stopped')}
         = link_to project_environments_path(@project, scope: :stopped) do
           Stopped
           %span.badge.js-stopped-environments-count
-            {{countStopped}}
+            {{state.stoppedCounter}}
 
     - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
       .nav-controls

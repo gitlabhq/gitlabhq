@@ -16,14 +16,21 @@ $(() => {
     gl.EnvironmentsListApp.$destroy(true);
   }
   
-  const filterEnvironments = (environments = [], filter = "") => {
-    return environments.filter((env) => {
-      if (env.children) {
-        return env.children.filter((child) =>  child.state === filter).length;
-      } else {
-        return env.state === filter;
-      };
-    });
+  
+  const filterState = (state) => (environment) => environment.state === state && environment;
+  
+  // recursiveMap :: (Function, Array) -> Array 
+  const recursiveMap = (fn, arr) => {
+    return arr.map((item) => {
+      if (!item.children) { return fn(item); }
+      
+      const filteredChildren = recursiveMap(fn, item.children).filter(Boolean);
+      if (filteredChildren.length) {
+        item.children = filteredChildren;
+        return item;
+      }
+      
+    }).filter(Boolean);
   };
 
   gl.EnvironmentsListApp = new Vue({
@@ -43,15 +50,15 @@ $(() => {
     
     computed: {
       filteredEnvironments () {
-        return filterEnvironments(this.state.environments, this.visibility);
+        return recursiveMap(filterState(this.visibility), this.state.environments);
       },
 
       countStopped () {
-        return filterEnvironments(this.state.environments, 'stopped').length;
+      
       },
 
       countAvailable () {
-        return filterEnvironments(this.state.environments, 'available').length;
+      //  return recursiveMap(filterState('available'), this.state.environments).length;
       }
     },
     
