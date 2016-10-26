@@ -7,9 +7,9 @@ class AddUniqueIndexToLabels < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    select_all('SELECT title, COUNT(id) as cnt FROM labels GROUP BY project_id, title HAVING COUNT(id) > 1').each do |label|
+    select_all('SELECT title, project_id, COUNT(id) as cnt FROM labels GROUP BY project_id, title HAVING COUNT(id) > 1').each do |label|
       label_title = quote_string(label['title'])
-      duplicated_ids = select_all("SELECT id FROM labels WHERE title = '#{label_title}' ORDER BY id ASC").map{ |label| label['id'] }
+      duplicated_ids = select_all("SELECT id FROM labels WHERE project_id = #{label['project_id']} AND title = '#{label_title}' ORDER BY id ASC").map{ |label| label['id'] }
       label_id = duplicated_ids.first
       duplicated_ids.delete(label_id)
 

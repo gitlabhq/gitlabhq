@@ -210,7 +210,7 @@ rake brakeman: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
-rake ce_to_ee_merge_check:
+rake ee_compat_check:
   <<: *exec
   only:
     - branches
@@ -279,16 +279,20 @@ bundler:audit:
 migration paths:
   stage: test
   <<: *use-db
+  variables:
+    SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
   script:
     - git checkout HEAD .
     - git fetch --tags
     - git checkout v8.5.9
-    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - cp config/resque.yml.example config/resque.yml
+    - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
     - rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_BUILD_REF
+    - source scripts/prepare_build.sh
     - rake db:migrate
 
 coverage:

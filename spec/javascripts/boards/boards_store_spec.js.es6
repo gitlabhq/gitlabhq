@@ -1,6 +1,6 @@
 //= require jquery
 //= require jquery_ujs
-//= require jquery.cookie
+//= require js.cookie
 //= require vue
 //= require vue-resource
 //= require lib/utils/url_utility
@@ -17,7 +17,7 @@
     gl.boardService = new BoardService('/test/issue-boards/board', '1');
     gl.issueBoards.BoardsStore.create();
 
-    $.cookie('issue_board_welcome_hidden', 'false');
+    Cookies.set('issue_board_welcome_hidden', 'false');
   });
 
   describe('Store', () => {

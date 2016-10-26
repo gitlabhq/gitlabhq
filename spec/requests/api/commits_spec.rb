@@ -72,6 +72,17 @@ describe API::API, api: true  do
         expect(json_response['message']).to include "\"since\" must be a timestamp in ISO 8601 format"
       end
     end
+
+    context "path optional parameter" do
+      it "returns project commits matching provided path parameter" do
+        path = 'files/ruby/popen.rb'
+
+        get api("/projects/#{project.id}/repository/commits?path=#{path}", user)
+
+        expect(json_response.size).to eq(3)
+        expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+      end
+    end
   end
 
   describe "Create a commit with multiple files and actions" do

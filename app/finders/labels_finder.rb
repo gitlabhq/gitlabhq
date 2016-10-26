@@ -35,8 +35,10 @@ class LabelsFinder < UnionFinder
   end
 
   def with_title(items)
-    items = items.where(title: title) if title
-    items
+    return items if title.nil?
+    return items.none if title.blank?
+
+    items.where(title: title)
   end
 
   def group_id
@@ -48,11 +50,11 @@ class LabelsFinder < UnionFinder
   end
 
   def projects_ids
-    params[:project_ids].presence
+    params[:project_ids]
   end
 
   def title
-    params[:title].presence || params[:name].presence
+    params[:title] || params[:name]
   end
 
   def project

@@ -24,7 +24,8 @@ module Gitlab
                                      #{config.root}/app/models/ci
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
-                                     #{config.root}/app/models/project_services))
+                                     #{config.root}/app/models/project_services
+                                     #{config.root}/app/workers/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -87,6 +88,7 @@ module Gitlab
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
     config.assets.precompile << "profile/profile_bundle.js"
+    config.assets.precompile << "protected_branches/protected_branches_bundle.js"
     config.assets.precompile << "diff_notes/diff_notes_bundle.js"
     config.assets.precompile << "boards/boards_bundle.js"
     config.assets.precompile << "merge_conflicts/merge_conflicts_bundle.js"

@@ -1,5 +1,6 @@
 class RemoveExpiredMembersWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   def perform
     Member.expired.find_each do |member|

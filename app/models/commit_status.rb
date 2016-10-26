@@ -5,7 +5,7 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
-  belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+  belongs_to :project, foreign_key: :gl_project_id
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 

@@ -1,7 +1,6 @@
 class ProjectWebHookWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :project_web_hook
+  include DedicatedSidekiqQueue
 
   def perform(hook_id, data, hook_name)
     data = data.with_indifferent_access

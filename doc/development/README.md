@@ -8,13 +8,16 @@
 
 ## Styleguides
 
+- [API styleguide](api_styleguide.md) Use this styleguide if you are
+  contributing to the API.
 - [Documentation styleguide](doc_styleguide.md) Use this styleguide if you are
   contributing to documentation.
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
 - [UI guide](ui_guide.md) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](frontend.md)
-- [SQL guidelines](sql.md) for SQL guidelines
+- [SQL guidelines](sql.md) for working with SQL queries
+- [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 
 ## Process
 

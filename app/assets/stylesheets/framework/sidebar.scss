@@ -185,6 +185,10 @@ header.header-sidebar-pinned {
 
   @media (min-width: $screen-sm-min) {
     padding-right: $sidebar_collapsed_width;
+
+    .merge-request-tabs-holder.affix {
+      right: $sidebar_collapsed_width;
+    }
   }
 
   .sidebar-collapsed-icon {
@@ -207,6 +211,10 @@ header.header-sidebar-pinned {
 
   @media (min-width: $screen-md-min) {
     padding-right: $gutter_width;
+
+    .merge-request-tabs-holder.affix {
+      right: $gutter_width;
+    }
   }
 
   &.with-overlay {

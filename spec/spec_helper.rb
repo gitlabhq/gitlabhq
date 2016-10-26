@@ -50,6 +50,12 @@ RSpec.configure do |config|
     example.run
     Rails.cache = caching_store
   end
+
+  config.around(:each, :redis) do |example|
+    Gitlab::Redis.with(&:flushall)
+    example.run
+    Gitlab::Redis.with(&:flushall)
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

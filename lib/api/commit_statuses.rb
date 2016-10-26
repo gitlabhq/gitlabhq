@@ -67,9 +67,14 @@ module API
         pipeline = @project.ensure_pipeline(ref, commit.sha, current_user)
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
-          project: @project, pipeline: pipeline,
-          user: current_user, name: name, ref: ref)
-        status.attributes = declared(params).slice(:target_url, :description)
+          project: @project,
+          pipeline: pipeline,
+          user: current_user,
+          name: name,
+          ref: ref,
+          target_url: params[:target_url],
+          description: params[:description]
+        )
 
         begin
           case params[:state].to_s

@@ -21,7 +21,7 @@
       %span.card-number{ "v-if" => "issue.id" }
         = precede '#' do
           {{ issue.id }}
-      %a.has-tooltip{ ":href" => "'/' + issue.assignee.username",
+      %a.has-tooltip{ ":href" => "'#{root_path}' + issue.assignee.username",
         ":title" => "'Assigned to ' + issue.assignee.name",
         "v-if" => "issue.assignee",
         data: { container: 'body' } }

@@ -3,7 +3,7 @@
 // Handles persisting and restoring the current tab selection and lazily-loading
 // content on the MergeRequests#show page.
 //
-/*= require jquery.cookie */
+/*= require js.cookie */
 
 //
 // ### Example Markup
@@ -282,6 +282,7 @@
             document.querySelector("div#builds").innerHTML = data.html;
             gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
             _this.buildsLoaded = true;
+            if (!this.pipelines) this.pipelines = new gl.Pipelines();
             return _this.scrollToElement("#builds");
           };
         })(this)
@@ -367,7 +368,7 @@
 
     MergeRequestTabs.prototype.expandView = function() {
       var $gutterIcon;
-      if ($.cookie('collapsed_gutter') === 'true') {
+      if (Cookies.get('collapsed_gutter') === 'true') {
         return;
       }
       $gutterIcon = $('.js-sidebar-toggle i:visible');
@@ -388,28 +389,25 @@
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
-      var tabsWidth = $tabs.outerWidth(),
-        $diffTabs = $('#diff-notes-app'),
-        offsetTop = $tabs.offset().top - ($('.navbar-fixed-top').height() + $('.layout-nav').height());
+      var $diffTabs = $('#diff-notes-app'),
+        $fixedNav = $('.navbar-fixed-top'),
+        $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
           offset: {
-            top: offsetTop
+            top: function () {
+              var tabsTop = $diffTabs.offset().top - $tabs.height();
+              tabsTop = tabsTop - ($fixedNav.height() + $layoutNav.height());
+
+              return tabsTop;
+            }
           }
         }).on('affix.bs.affix', function () {
-          $tabs.css({
-            left: $tabs.offset().left,
-            width: tabsWidth
-          });
           $diffTabs.css({
             marginTop: $tabs.height()
           });
         }).on('affix-top.bs.affix', function () {
-          $tabs.css({
-            left: '',
-            width: ''
-          });
           $diffTabs.css({
             marginTop: ''
           });

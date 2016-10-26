@@ -7,8 +7,10 @@ module Notes
 
       if note.award_emoji?
         noteable = note.noteable
-        todo_service.new_award_emoji(noteable, current_user)
-        return noteable.create_award_emoji(note.award_emoji_name, current_user)
+        if noteable.user_can_award?(current_user, note.award_emoji_name)
+          todo_service.new_award_emoji(noteable, current_user)
+          return noteable.create_award_emoji(note.award_emoji_name, current_user)
+        end
       end
 
       # We execute commands (extracted from `params[:note]`) on the noteable
