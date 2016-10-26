@@ -1,4 +1,5 @@
 require 'spec_helper'
+include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
@@ -44,6 +45,100 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
         it 'event belongs to note, belongs to merge request, belongs to a project' do
           expect(event.note.noteable.project).not_to be_nil
+        end
+      end
+
+      it 'has the correct data for merge request st_diffs' do
+        # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
+
+        expect { restored_project_json }.to change(MergeRequestDiff.where.not(st_diffs: nil), :count).by(9)
+      end
+
+      it 'has labels associated to label links, associated to issues' do
+        restored_project_json
+
+        expect(Label.first.label_links.first.target).not_to be_nil
+      end
+
+      it 'has project labels' do
+        restored_project_json
+
+        expect(ProjectLabel.count).to eq(2)
+      end
+
+      it 'has no group labels' do
+        restored_project_json
+
+        expect(GroupLabel.count).to eq(0)
+      end
+
+      context 'with group' do
+        let!(:project) do 
+          create(:empty_project,
+                                name: 'project',
+                                path: 'project',
+                                builds_access_level: ProjectFeature::DISABLED,
+                                issues_access_level: ProjectFeature::DISABLED,
+                                group: create(:group)) 
+        end
+
+        it 'has group labels' do
+          restored_project_json
+
+          expect(GroupLabel.count).to eq(1)
+        end
+
+        it 'has label priorities' do
+          restored_project_json
+
+          expect(GroupLabel.first.priorities).not_to be_empty
+        end
+      end
+
+      it 'has a project feature' do
+        restored_project_json
+
+        expect(project.project_feature).not_to be_nil
+      end
+
+      it 'restores the correct service' do
+        restored_project_json
+
+        expect(CustomIssueTrackerService.first).not_to be_nil
+      end
+
+      context 'Merge requests' do
+        before do
+          restored_project_json
+        end
+
+        it 'always has the new project as a target' do
+          expect(MergeRequest.find_by_title('MR1').target_project).to eq(project)
+        end
+
+        it 'has the same source project as originally if source/target are the same' do
+          expect(MergeRequest.find_by_title('MR1').source_project).to eq(project)
+        end
+
+        it 'has the new project as target if source/target differ' do
+          expect(MergeRequest.find_by_title('MR2').target_project).to eq(project)
+        end
+
+        it 'has no source if source/target differ' do
+          expect(MergeRequest.find_by_title('MR2').source_project_id).to eq(-1)
+        end
+      end
+
+      context 'project.json file access check' do
+        it 'does not read a symlink' do
+          Dir.mktmpdir do |tmpdir|
+            setup_symlink(tmpdir, 'project.json')
+            allow(shared).to receive(:export_path).and_call_original
+
+            restored_project_json
+
+            expect(shared.errors.first).not_to include('test')
+          end
         end
       end
     end
