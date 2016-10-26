@@ -11,7 +11,6 @@ module ProtectedBranches
       @protected_branch = protected_branch
 
       protected_branch.transaction do
-        delete_redundant_access_levels
         delete_redundant_ee_access_levels
 
         case @developers_can_push
