@@ -78,7 +78,7 @@
             if (ref.header != null) {
               return $('<li />').addClass('dropdown-header').text(ref.header);
             } else {
-              link = $('<a />').attr('href', '#').addClass(ref === selected ? 'is-active' : '').text(ref).attr('data-ref', escape(ref));
+              link = $('<a />').attr('href', '#').addClass(ref === selected ? 'is-active' : '').text(ref).attr('data-ref', ref);
               return $('<li />').append(link);
             }
           },
