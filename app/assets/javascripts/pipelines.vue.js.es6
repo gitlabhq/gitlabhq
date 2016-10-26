@@ -1,6 +1,8 @@
 //= require vue
+/* global Vue, gl */
+/* eslint-disable no-param-reassign */
 
-(gl => {
+((gl) => {
   gl.VuePipeLines = Vue.extend({
     props: ['pipelines', 'count'],
     template: `
@@ -29,8 +31,8 @@
     `,
     computed: {
       pipes() {
-        return this.pipelines
-      }
-    }
-  })
-})(window.gl || (window.gl = {}))
+        return this.pipelines;
+      },
+    },
+  });
+})(window.gl || (window.gl = {}));

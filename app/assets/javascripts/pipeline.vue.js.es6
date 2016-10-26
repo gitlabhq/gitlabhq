@@ -1,6 +1,8 @@
 //= require vue
+/* global Vue, gl */
+/* eslint-disable no-param-reassign */
 
-(gl => {
+((gl) => {
   gl.VuePipeLine = Vue.extend({
     props: ['pipeline'],
     template: `
@@ -9,6 +11,6 @@
           {{ pipeline.status }}
         </td>
       </div>
-    `
-  })
-})(window.gl || (window.gl = {}))
+    `,
+  });
+})(window.gl || (window.gl = {}));
