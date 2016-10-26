@@ -48,6 +48,7 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
+        this.setting.highlightFirst = query.length > 0;
         if (gl.GfmAutoComplete.isLoading(items)) {
           return items;
         }
@@ -204,6 +205,7 @@
           sorter: this.DefaultOptions.sorter,
           beforeInsert: this.DefaultOptions.beforeInsert,
           filter: this.DefaultOptions.filter,
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(milestones) {
             return $.map(milestones, function(m) {
               if (m.title == null) {
@@ -257,9 +259,9 @@
         insertTpl: '${atwho-at}${title}',
         callbacks: {
           matcher: this.DefaultOptions.matcher,
-          sorter: this.DefaultOptions.sorter,
           beforeInsert: this.DefaultOptions.beforeInsert,
           filter: this.DefaultOptions.filter,
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(merges) {
             if (gl.GfmAutoComplete.isLoading(merges)) return merges;
             var sanitizeLabelTitle;
