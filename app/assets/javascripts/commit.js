@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Commit = (function() {
     function Commit() {

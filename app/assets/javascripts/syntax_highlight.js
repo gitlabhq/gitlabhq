@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Syntax Highlighter
 //
 // Applies a syntax highlighting color scheme CSS class to any element with the

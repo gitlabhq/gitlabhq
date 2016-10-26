@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require graphs/stat_graph
 
 describe("StatGraph", function () {

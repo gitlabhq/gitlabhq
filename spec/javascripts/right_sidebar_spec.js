@@ -1,7 +1,8 @@
+/* eslint-disable */
 
 /*= require right_sidebar */
 /*= require jquery */
-/*= require jquery.cookie */
+/*= require js.cookie */
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   /*
    * This class overrides the browser's validation error bubbles, displaying custom

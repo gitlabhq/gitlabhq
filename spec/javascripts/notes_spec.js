@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require notes */
 /*= require autosize */
 /*= require gl_form */

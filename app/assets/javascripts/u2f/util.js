@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.U2FUtil = (function() {
     function U2FUtil() {}

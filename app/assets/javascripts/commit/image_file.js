@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ImageFile = (function() {
     var prepareFrames;

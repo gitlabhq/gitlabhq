@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.LabelsSelect = (function() {
     function LabelsSelect() {
@@ -22,7 +23,7 @@
         abilityName = $dropdown.data('ability-name');
         $selectbox = $dropdown.closest('.selectbox');
         $block = $selectbox.closest('.block');
-        $form = $dropdown.closest('form');
+        $form = $dropdown.closest('form, .js-issuable-update');
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
         $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
@@ -317,6 +318,7 @@
             }
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
+          vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(label, $el, e) {
             var isIssueIndex, isMRIndex, page;
             _this.enableBulkLabelDropdown();
@@ -334,7 +336,7 @@
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
-            if ($('html').hasClass('issue-boards-page')) {
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
               if (label.isAny) {
                 gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
               }
@@ -361,6 +363,30 @@
             }
             else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
+            }
+            else if ($dropdown.hasClass('js-issue-board-sidebar')) {
+              if ($el.hasClass('is-active')) {
+                gl.issueBoards.BoardsStore.detail.issue.labels.push(new ListLabel({
+                  id: label.id,
+                  title: label.title,
+                  color: label.color[0],
+                  textColor: '#fff'
+                }));
+              }
+              else {
+                var labels = gl.issueBoards.BoardsStore.detail.issue.labels;
+                labels = labels.filter(function (selectedLabel) {
+                  return selectedLabel.id !== label.id;
+                });
+                gl.issueBoards.BoardsStore.detail.issue.labels = labels;
+              }
+
+              $loading.fadeIn();
+
+              gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
+                .then(function () {
+                  $loading.fadeOut();
+                });
             }
             else {
               if ($dropdown.hasClass('js-multiselect')) {

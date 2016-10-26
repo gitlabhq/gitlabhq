@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require vue
 //= require ./merge_conflict_store
 //= require ./merge_conflict_service

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Aside = (function() {
     function Aside() {

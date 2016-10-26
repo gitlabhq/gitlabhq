@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Api = {
     groupsPath: "/api/:version/groups.json",

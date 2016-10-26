@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   class IssuableTemplateSelectors {
     constructor({ $dropdowns, editor } = {}) {

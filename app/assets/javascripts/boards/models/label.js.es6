@@ -1,3 +1,4 @@
+/* eslint-disable */
 class ListLabel {
   constructor (obj) {
     this.id = obj.id;

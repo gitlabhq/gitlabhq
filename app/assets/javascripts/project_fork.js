@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ProjectFork = (function() {
     function ProjectFork() {

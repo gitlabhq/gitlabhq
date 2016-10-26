@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Milestone = (function() {
     Milestone.updateIssue = function(li, issue_url, data) {

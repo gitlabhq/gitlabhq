@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Network = (function() {
     function Network(opts) {
