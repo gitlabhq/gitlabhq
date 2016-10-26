@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.4
+
+- Honour issue and merge request visibility in their respective finders.
+
 ## 8.13.3 (2016-11-02)
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
