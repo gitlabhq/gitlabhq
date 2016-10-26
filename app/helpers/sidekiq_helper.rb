@@ -5,7 +5,7 @@ module SidekiqHelper
     (?<mem>[\d\.,]+)\s+
     (?<state>[DRSTWXZNLsl\+<]+)\s+
     (?<start>.+)\s+
-    (?<command>sidekiq.*\])\s+
+    (?<command>sidekiq.*\])\s*
     \z/x
 
   def parse_sidekiq_ps(line)
