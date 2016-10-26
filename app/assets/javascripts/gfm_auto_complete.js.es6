@@ -34,6 +34,8 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
+        // Highlight first item only if at least one char was typed
+        this.setting.highlightFirst = query.length > 0;
         if ((items[0].name != null) && items[0].name === 'loading') {
           return items;
         }
@@ -182,6 +184,7 @@
         insertTpl: '${atwho-at}"${title}"',
         data: ['loading'],
         callbacks: {
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(milestones) {
             return $.map(milestones, function(m) {
               if (m.title == null) {
@@ -236,6 +239,7 @@
         displayTpl: this.Labels.template,
         insertTpl: '${atwho-at}${title}',
         callbacks: {
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(merges) {
             var sanitizeLabelTitle;
             sanitizeLabelTitle = function(title) {
