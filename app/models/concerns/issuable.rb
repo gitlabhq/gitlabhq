@@ -172,6 +172,10 @@ module Issuable
 
       grouping_columns
     end
+
+    def to_ability_name
+      model_name.singular
+    end
   end
 
   def today?
@@ -245,7 +249,7 @@ module Issuable
   #   issuable.class           # => MergeRequest
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
-    self.class.to_s.underscore
+    self.class.to_ability_name
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
