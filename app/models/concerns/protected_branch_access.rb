@@ -21,9 +21,6 @@ module ProtectedBranchAccess
     else
       :role
     end
-
-    scope :master, -> { where(access_level: Gitlab::Access::MASTER) }
-    scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
   end
 
   def humanize
