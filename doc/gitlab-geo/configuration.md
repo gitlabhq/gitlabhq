@@ -8,10 +8,10 @@ After having installed GitLab Enterprise Edition in the instance that will serve
 as a Geo node and set up the database replication, the next steps can be summed
 up to:
 
-- configure the primary node
-- replicate some required configurations between the primary and the secondaries
-- start GitLab in the secondary node's machine
-- configure every secondary node in the primary's Admin screen
+1. Configure the primary node
+1. Replicate some required configurations between the primary and the secondaries
+1. Start GitLab in the secondary node's machine
+1. Configure every secondary node in the primary's Admin screen
 
 After GitLab's instance is online and defined in **Geo Nodes** admin screen,
 new data will start to be automatically replicated, but you still need to copy
@@ -191,11 +191,7 @@ user will act as a "normal user" who fetches from the primary Geo node.
 
 1. Copy them to the admin area of the **primary** node (**Admin Area > Geo Nodes**).
 
-Remember to add your primary node to the `known_hosts` file of your `git` user.
-
-You can find ssh key files and `know_hosts` at `/var/opt/gitlab/.ssh/` in
-Omnibus installations or at `/home/git/.ssh/` when following the source
-installation guide.
+---
 
 If for any reason you generate the key using a different name from the default
 `id_rsa`, or you want to generate an extra key only for the repository
@@ -216,6 +212,28 @@ Host example.com                    # The FQDN of the primary Geo node
   HostName example.com              # The FQDN of the primary Geo node
   IdentityFile ~/.ssh/mycustom.key  # The location of your private key
 ```
+
+### Add the primary node to the `known_hosts` file of the secondary nodes
+
+>**Note:**
+This operation is only needed for the secondary nodes.
+
+---
+
+The secondary nodes need to know the SSH fingerprint of the primary node that
+will be used for the Git clone/fetch operations. In order to add it to the
+`known_hosts` file, while in the terminal of a secondary node, run the
+following command and type `yes` when asked:
+
+```
+sudo -u git -H ssh git@<primary-node-url>
+```
+
+Replace `<primary-node-url>` with the FQDN of the primary node. You can verify
+that the fingerprint was added by checking:
+
+- `/var/opt/gitlab/.ssh/known_hosts` for Omnibus installations or
+- `/home/git/.ssh/known_hosts` for installations from source
 
 ## Troubleshooting
 
