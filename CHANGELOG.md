@@ -19,6 +19,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
   - Replace jquery.cookie plugin with js.cookie !7085
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Add `Retry build` button in build page header on desktop
   - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
   - Show full status link on MR & commit pipelines
   - Fix documents and comments on Build API `scope`
