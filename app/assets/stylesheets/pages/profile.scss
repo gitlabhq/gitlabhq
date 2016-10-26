@@ -77,14 +77,14 @@
 
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
-  &:after {
+  &::after {
     content: "\00B7"; // Middle Dot
     padding: 0 6px;
     font-weight: bold;
   }
 
   &:last-child {
-    &:after {
+    &::after {
       content: "";
       padding: 0;
     }

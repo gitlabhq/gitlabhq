@@ -143,7 +143,7 @@ linters:
   # with two colons. Pseudo-classes, like :hover and :first-child, should
   # be declared with one colon.
   PseudoElement:
-    enabled: false
+    enabled: true
   
   # Avoid qualifying elements in selectors (also known as "tag-qualifying").
   QualifyingElement:
