@@ -1,3 +1,4 @@
+/* eslint-disable */
 class ProtectedBranchDropdown {
   constructor(options) {
     this.onSelect = options.onSelect;

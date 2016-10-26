@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require line_highlighter */
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   global.User = class {
     constructor({ action }) {

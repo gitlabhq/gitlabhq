@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var issuable_created;
 

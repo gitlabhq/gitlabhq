@@ -1,3 +1,4 @@
+/* eslint-disable */
 class BoardService {
   constructor (root, boardId) {
     Vue.http.options.root = root;

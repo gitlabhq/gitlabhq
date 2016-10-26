@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.NotificationsDropdown = (function() {
     function NotificationsDropdown() {

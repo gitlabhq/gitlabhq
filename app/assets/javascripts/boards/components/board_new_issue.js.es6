@@ -1,3 +1,4 @@
+/* eslint-disable */
 (() => {
   window.gl = window.gl || {};
 

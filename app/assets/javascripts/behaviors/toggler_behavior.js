@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function(w) {
   $(function() {
     // Toggle button. Show/hide content inside parent container.

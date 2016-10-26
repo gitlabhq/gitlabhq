@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ProjectShow = (function() {
     function ProjectShow() {}

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.LabelsSelect = (function() {
     function LabelsSelect() {

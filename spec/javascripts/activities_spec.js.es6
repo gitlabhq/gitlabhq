@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
 /*= require pager */

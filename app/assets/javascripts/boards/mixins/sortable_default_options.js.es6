@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((w) => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};

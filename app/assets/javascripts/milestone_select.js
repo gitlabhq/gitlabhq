@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.MilestoneSelect = (function() {
     function MilestoneSelect(currentProject) {

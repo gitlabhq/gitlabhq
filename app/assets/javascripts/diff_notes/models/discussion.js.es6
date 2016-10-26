@@ -1,3 +1,4 @@
+/* eslint-disable */
 class DiscussionModel {
   constructor (discussionId) {
     this.id = discussionId;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require lib/utils/type_utility
 //= require jquery
 //= require bootstrap

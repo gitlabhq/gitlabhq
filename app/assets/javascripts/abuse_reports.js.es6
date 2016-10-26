@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   const MAX_MESSAGE_LENGTH = 500;
   const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';

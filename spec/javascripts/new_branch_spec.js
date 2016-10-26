@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require jquery-ui/autocomplete */
 /*= require new_branch_form */
