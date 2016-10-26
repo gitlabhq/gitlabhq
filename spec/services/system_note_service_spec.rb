@@ -712,4 +712,32 @@ describe SystemNoteService, services: true do
       end
     end
   end
+
+  describe '.discussion_continued_in_issue' do
+    let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+    let(:merge_request) { discussion.noteable }
+    let(:project) { merge_request.source_project }
+    let(:issue) { create(:issue, project: project) }
+    let(:user) { create(:user) }
+
+    def reloaded_merge_request
+      MergeRequest.find(merge_request.id)
+    end
+
+    before do
+      project.team << [user, :developer]
+    end
+
+    it 'creates a new note in the discussion' do
+      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+      expect { SystemNoteService.discussion_continued_in_issue(discussion, project, user, issue) }.
+        to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    end
+
+    it 'mentions the created issue in the system note' do
+      note = SystemNoteService.discussion_continued_in_issue(discussion, project, user, issue)
+
+      expect(note.note).to include(issue.to_reference)
+    end
+  end
 end

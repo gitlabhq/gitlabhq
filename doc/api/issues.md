@@ -330,6 +330,7 @@ POST /projects/:id/issues
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 | `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`      | string  | no  | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `merge_request_for_resolving_discussions` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values. |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -506,7 +507,7 @@ Example response:
 
 ## Subscribe to an issue
 
-Subscribes the authenticated user to an issue to receive notifications. 
+Subscribes the authenticated user to an issue to receive notifications.
 If the user is already subscribed to the issue, the status code `304`
 is returned.
 
