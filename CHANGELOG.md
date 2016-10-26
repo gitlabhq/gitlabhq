@@ -9,6 +9,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Escape ref and path for relative links !6050 (winniehell)
+  - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
   - Replace jquery.cookie plugin with js.cookie !7085
