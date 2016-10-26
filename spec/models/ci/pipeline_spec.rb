@@ -138,9 +138,9 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create_build('build1', current, 10) }
-    let(:build_b) { create_build('build2', current, 20) }
-    let(:build_c) { create_build('build3', current + 50, 10) }
+    let(:build) { create_build('build1', 0) }
+    let(:build_b) { create_build('build2', 0) }
+    let(:build_c) { create_build('build3', 0) }
 
     describe '#duration' do
       before do
@@ -163,11 +163,12 @@ describe Ci::Pipeline, models: true do
           build_c.success
         end
 
-        pipeline.drop
+        # We have to reload pipeline, because its status is updated by processing builds
+        pipeline.reload.drop
       end
 
       it 'matches sum of builds duration' do
-        pipeline.reload
+        binding.pry
 
         expect(pipeline.duration).to eq(40)
       end
@@ -455,7 +456,9 @@ describe Ci::Pipeline, models: true do
         context 'when all builds succeed' do
           before do
             build_a.success
-            build_b.success
+
+            # We have to reload build_b as this is in next stage and it gets triggered by PipelineProcessWorker
+            build_b.reload.success
           end
 
           it 'receives a success event once' do
