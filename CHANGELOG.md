@@ -13,6 +13,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
   - Fix filtering of milestones with quotes in title (airatshigapov)
   - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix typo in framework css class. !7086 (Daniel Voogsgerd)
   - Fix: Backup restore doesn't clear cache
   - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
   - Replace jquery.cookie plugin with js.cookie !7085
