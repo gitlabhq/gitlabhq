@@ -51,12 +51,14 @@ class Commit
   end
 
   attr_accessor :raw
+  attr_reader :statuses
 
   def initialize(raw_commit, project)
     raise "Nil as raw commit passed" unless raw_commit
 
     @raw = raw_commit
     @project = project
+    @statuses = {}
   end
 
   def id
@@ -225,17 +227,22 @@ class Commit
     )
   end
 
-  def pipelines_for(ref)
-    project.pipelines.where(sha: sha, ref: ref)
-  end
-
   def pipelines
-    @pipeline ||= project.pipelines.where(sha: sha)
+    project.pipelines.where(sha: sha)
   end
 
   def status
-    return @status if defined?(@status)
-    @status ||= pipelines.status
+    status_for(nil)
+  end
+
+  def status_for(ref)
+    if statuses.key?(ref)
+      statuses[ref]
+    elsif ref
+      statuses[ref] = pipelines.where(ref: ref).status
+    else
+      statuses[ref] = pipelines.status
+    end
   end
 
   def revert_branch_name
