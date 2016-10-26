@@ -12,6 +12,17 @@
       disabled: Boolean,
       index: Number
     },
+    data () {
+      return {
+        showDetail: false,
+        detailIssue: Store.detail
+      };
+    },
+    computed: {
+      issueDetailVisible () {
+        return this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id;
+      }
+    },
     methods: {
       filterByLabel (label, e) {
         let labelToggleText = label.title;
@@ -37,6 +48,29 @@
         $('.labels-filter .dropdown-toggle-text').text(labelToggleText);
 
         Store.updateFiltersUrl();
+      },
+      mouseDown () {
+        this.showDetail = true;
+      },
+      mouseMove () {
+        if (this.showDetail) {
+          this.showDetail = false;
+        }
+      },
+      showIssue (e) {
+        const targetTagName = e.target.tagName.toLowerCase();
+
+        if (targetTagName === 'a' || targetTagName === 'button') return;
+
+        if (this.showDetail) {
+          this.showDetail = false;
+
+          if (Store.detail.issue && Store.detail.issue.id === this.issue.id) {
+            Store.detail.issue = {};
+          } else {
+            Store.detail.issue = this.issue;
+          }
+        }
       }
     }
   });
