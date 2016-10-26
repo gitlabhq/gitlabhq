@@ -1,4 +1,5 @@
 require 'spec_helper'
+include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
@@ -138,6 +139,19 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
         it 'has no source if source/target differ' do
           expect(MergeRequest.find_by_title('MR2').source_project_id).to eq(-1)
+        end
+      end
+
+      context 'project.json file access check' do
+        it 'does not read a symlink' do
+          Dir.mktmpdir do |tmpdir|
+            setup_symlink(tmpdir, 'project.json')
+            allow(shared).to receive(:export_path).and_call_original
+
+            restored_project_json
+
+            expect(shared.errors.first).not_to include('test')
+          end
         end
       end
     end
