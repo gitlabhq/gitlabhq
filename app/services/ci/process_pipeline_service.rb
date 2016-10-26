@@ -40,10 +40,10 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        r = build.enqueue
+        build.enqueue
         true
       else
-        r = build.skip
+        build.skip
         false
       end
     end
