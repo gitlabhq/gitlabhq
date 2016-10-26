@@ -41,11 +41,9 @@ module Ci
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
         r = build.enqueue
-        puts "process_build: #{build.id}: enqueue: #{build.status} => #{r}"
         true
       else
         r = build.skip
-        puts "process_build: #{build.id}: skip: #{build.status} => #{r}"
         false
       end
     end
