@@ -79,7 +79,7 @@
           = render 'shared/notifications/button', notification_setting: @notification_setting
   - if @repository.commit
     .project-last-commit{ class: container_class }
-      = render 'projects/last_commit', commit: @repository.commit, project: @project
+      = render 'projects/last_commit', commit: @repository.commit, ref: current_ref, project: @project
 
 %div{ class: container_class }
   - if @project.archived?
