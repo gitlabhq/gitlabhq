@@ -39,10 +39,10 @@ module EventsHelper
     end
   end
 
-  def event_filter_visible(key)
+  def event_filter_visible(feature_key)
     return true unless @project
 
-    @project.feature_available?(:repository, current_user)
+    @project.feature_available?(feature_key, current_user)
   end
 
   def event_preposition(event)
