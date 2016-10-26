@@ -11,58 +11,58 @@
       if (this.diffViewType() === 'parallel') {
         $('.content-wrapper .container-fluid').removeClass('container-limited');
       }
+
       $(document)
-        .off('click', '.js-unfold')
-        .on('click', '.js-unfold', (event) => {
-          var line_number, link, file, offset, old_line, params, prev_new_line, prev_old_line, ref, ref1, since, target, to, unfold, unfoldBottom;
-          target = $(event.target);
-          unfoldBottom = target.hasClass('js-unfold-bottom');
-          unfold = true;
-          ref = this.lineNumbers(target.parent()), old_line = ref[0], line_number = ref[1];
-          offset = line_number - old_line;
-          if (unfoldBottom) {
-            line_number += 1;
-            since = line_number;
-            to = line_number + UNFOLD_COUNT;
-          } else {
-            ref1 = this.lineNumbers(target.parent().prev()), prev_old_line = ref1[0], prev_new_line = ref1[1];
-            line_number -= 1;
-            to = line_number;
-            if (line_number - UNFOLD_COUNT > prev_new_line + 1) {
-              since = line_number - UNFOLD_COUNT;
-            } else {
-              since = prev_new_line + 1;
-              unfold = false;
-            }
-          }
-          file = target.parents('.diff-file');
-          link = file.data('blob-diff-path');
-          params = {
-            since: since,
-            to: to,
-            bottom: unfoldBottom,
-            offset: offset,
-            unfold: unfold,
-            view: file.data('view')
-          };
-          return $.get(link, params, function(response) {
-            return target.parent().replaceWith(response);
-          });
-        })
-        .off('click', '.diff-line-num a')
-        .on('click', '.diff-line-num a', (event) => {
-          var hash = $(event.currentTarget).attr('href');
-          event.preventDefault();
-          if ( history.pushState ) {
-            history.pushState(null, null, hash);
-          } else {
-            window.location.hash = hash;
-          }
-          this.highlighSelectedLine();
-        });
+        .off('click', '.js-unfold, .diff-line-num a')
+        .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
+        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
 
       this.highlighSelectedLine();
     }
+
+    handleClickUnfold(event) {
+      const $target = $(event.target);
+      const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
+      const offset = newLineNumber - oldLineNumber;
+      const bottom = $target.hasClass('js-unfold-bottom');
+      let since, to;
+      let unfold = true;
+
+      if (bottom) {
+        const lineNumber = newLineNumber + 1;
+        since = lineNumber;
+        to = lineNumber + UNFOLD_COUNT;
+      } else {
+        const lineNumber = newLineNumber - 1;
+        since = lineNumber - UNFOLD_COUNT;
+        to = lineNumber;
+
+        // make sure we aren't loading more than we need
+        const [prevOldLine, prevNewLine] = this.lineNumbers($target.parent().prev());
+        if (since <= prevNewLine + 1) {
+          since = prevNewLine + 1;
+          unfold = false;
+        }
+      }
+
+      const file = $target.parents('.diff-file');
+      const link = file.data('blob-diff-path');
+      const view = file.data('view');
+
+      const params = { since, to, bottom, offset, unfold, view };
+      $.get(link, params, (response) => $target.parent().replaceWith(response));
+    }
+
+    handleClickLineNum(event) {
+      const hash = $(event.currentTarget).attr('href');
+      event.preventDefault();
+      if (history.pushState) {
+        history.pushState(null, null, hash);
+      } else {
+        window.location.hash = hash;
+      }
+      this.highlighSelectedLine();
+    };
 
     diffViewType() {
       return $('.inline-parallel-buttons a.active').data('view-type');
