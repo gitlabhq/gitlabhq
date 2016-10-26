@@ -215,6 +215,7 @@ rake ee_compat_check:
   only:
     - branches
   except:
+    - master
     - tags
   allow_failure: yes
 
