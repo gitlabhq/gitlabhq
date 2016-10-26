@@ -144,31 +144,24 @@ describe Ci::Pipeline, models: true do
 
     describe '#duration' do
       before do
-        pipeline.update(created_at: current)
-
-        travel_to(current + 5) do
-          pipeline.run
-          pipeline.save
-        end
-
         travel_to(current + 30) do
-          build.success
+          build.run!
+          build.success!
+          build_b.run!
+          build_c.run!
         end
 
         travel_to(current + 40) do
-          build_b.drop
+          build_b.drop!
         end
 
         travel_to(current + 70) do
-          build_c.success
+          build_c.success!
         end
-
-        # We have to reload pipeline, because its status is updated by processing builds
-        pipeline.reload.drop
       end
 
       it 'matches sum of builds duration' do
-        binding.pry
+        pipeline.reload
 
         expect(pipeline.duration).to eq(40)
       end
