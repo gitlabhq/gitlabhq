@@ -57,20 +57,17 @@
       = paginate @pipelines, theme: 'gitlab'
 
 :javascript
-  var VuePipeLines = gl.VuePipeLines
-  var VuePipeLine = gl.VuePipeLine
-
-  Vue.component('vue-pipelines', VuePipeLines)
-  Vue.component('vue-pipeline', VuePipeLine)
+  Vue.component('vue-pipelines', gl.VuePipeLines);
+  Vue.component('vue-pipeline', gl.VuePipeLine);
 
   new Vue({
     el: ".app",
     data:{
       pipelines: JSON.parse('#{@pipelines.to_json}'),
-      count: JSON.parse('#{@pipeline_count.to_json}')
+      count: JSON.parse('#{@pipeline_count.to_json}'),
     },
     template: ""
       + "<div>"
       + "<vue-pipelines :pipelines='pipelines' :count='count'></vue-pipelines>"
-      + "</div>"
+      + "</div>",
   })
