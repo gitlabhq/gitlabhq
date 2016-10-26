@@ -5,7 +5,9 @@
 //= require_tree ./stores
 //= require_tree ./services
 //= require_tree ./mixins
+//= require_tree ./filters
 //= require ./components/board
+//= require ./components/board_sidebar
 //= require ./components/new_list_dropdown
 //= require ./vue_resource_interceptor
 
@@ -22,7 +24,8 @@ $(() => {
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
-      'board': gl.issueBoards.Board
+      'board': gl.issueBoards.Board,
+      'board-sidebar': gl.issueBoards.BoardSidebar
     },
     data: {
       state: Store.state,
@@ -30,9 +33,15 @@ $(() => {
       endpoint: $boardApp.dataset.endpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
-      issueLinkBase: $boardApp.dataset.issueLinkBase
+      issueLinkBase: $boardApp.dataset.issueLinkBase,
+      detailIssue: Store.detail
     },
     init: Store.create.bind(Store),
+    computed: {
+      detailIssueVisible () {
+        return Object.keys(this.detailIssue.issue).length;
+      }
+    },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
     },

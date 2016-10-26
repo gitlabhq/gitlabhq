@@ -11,13 +11,13 @@
 /*= require jquery-ui/effect-highlight */
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
-/*= require jquery.cookie */
 /*= require jquery.endless-scroll */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */
+/*= require js.cookie */
 /*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */
@@ -124,15 +124,11 @@
     return str.replace(/<(?:.|\n)*?>/gm, '');
   };
 
-  window.unbindEvents = function() {
-    return $(document).off('scroll');
-  };
-
   window.shiftWindow = function() {
     return scrollBy(0, -100);
   };
 
-  document.addEventListener("page:fetch", unbindEvents);
+  document.addEventListener("page:fetch", gl.utils.cleanupBeforeFetch);
 
   window.addEventListener("hashchange", shiftWindow);
 
@@ -149,6 +145,10 @@
     $document = $(document);
     $window = $(window);
     $body = $('body');
+
+    // Set the default path for all cookies to GitLab's root directory
+    Cookies.defaults.path = gon.relative_url_root || '/';
+
     gl.utils.preventDisabledButtons();
     bootstrapBreakpoint = bp.getBreakpointSize();
     $(".nav-sidebar").niceScroll({

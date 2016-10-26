@@ -22,7 +22,7 @@
       fallbackOnBody: true,
       ghostClass: 'is-ghost',
       filter: '.has-tooltip, .btn',
-      delay: gl.issueBoards.touchEnabled ? 100 : 0,
+      delay: gl.issueBoards.touchEnabled ? 100 : 50,
       scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,
       onStart: gl.issueBoards.onStart,

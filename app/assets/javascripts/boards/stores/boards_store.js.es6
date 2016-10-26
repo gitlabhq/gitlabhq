@@ -5,6 +5,9 @@
   gl.issueBoards.BoardsStore = {
     disabled: false,
     state: {},
+    detail: {
+      issue: {}
+    },
     moving: {
       issue: {},
       list: {}
@@ -58,12 +61,12 @@
     removeBlankState () {
       this.removeList('blank');
 
-      $.cookie('issue_board_welcome_hidden', 'true', {
+      Cookies.set('issue_board_welcome_hidden', 'true', {
         expires: 365 * 10
       });
     },
     welcomeIsHidden () {
-      return $.cookie('issue_board_welcome_hidden') === 'true';
+      return Cookies.get('issue_board_welcome_hidden') === 'true';
     },
     removeList (id, type = 'blank') {
       const list = this.findList('id', id, type);
