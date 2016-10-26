@@ -12,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
+  - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
   - Replace jquery.cookie plugin with js.cookie !7085
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
   - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
