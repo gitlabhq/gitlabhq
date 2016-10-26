@@ -73,5 +73,23 @@ const environmentsList = [
         "name": "root"
       }
     }
+  },
+  {
+    "id": 18,
+    "project_id": 11,
+    "name": "review/test-environment-1",
+    "created_at": "2016-10-19T14:59:59.303Z",
+    "updated_at": "2016-10-19T14:59:59.303Z",
+    "external_url": "http://test-1.com",
+    "environment_type": "review",
+    "state": "stopped",
+    "project": {
+      "id": 11,
+      "name": "review-apps",
+      "namespace": {
+        "id": 1,
+        "name": "root"
+      }
+    }
   }
 ];

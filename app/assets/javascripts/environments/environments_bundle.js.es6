@@ -51,14 +51,6 @@ $(() => {
     computed: {
       filteredEnvironments () {
         return recursiveMap(filterState(this.visibility), this.state.environments);
-      },
-
-      countStopped () {
-      
-      },
-
-      countAvailable () {
-      //  return recursiveMap(filterState('available'), this.state.environments).length;
       }
     },
     
