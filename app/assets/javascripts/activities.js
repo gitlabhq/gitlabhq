@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Activities = (function() {
     function Activities() {

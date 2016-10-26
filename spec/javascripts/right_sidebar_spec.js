@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require right_sidebar */
 /*= require jquery */

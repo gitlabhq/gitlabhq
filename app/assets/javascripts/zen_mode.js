@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Zen Mode (full screen) textarea
 //
 /*= provides zen_mode:enter */

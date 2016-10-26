@@ -1,3 +1,4 @@
+/* eslint-disable */
 // MergeRequestTabs
 //
 // Handles persisting and restoring the current tab selection and lazily-loading

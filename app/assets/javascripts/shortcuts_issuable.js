@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require mousetrap */
 /*= require shortcuts_navigation */

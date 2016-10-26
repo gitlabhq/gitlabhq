@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   window.ContributorsStatGraphUtil = {
     parse_log: function(log) {

@@ -311,6 +311,14 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
+lint-javascript:
+  stage: test
+  image: "node:latest"
+  before_script:
+    - npm install
+  script:
+    - npm run eslint
+
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:

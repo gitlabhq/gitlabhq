@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require gl_dropdown */
 /*= require search_autocomplete */

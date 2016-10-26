@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require vue
 //= require vue-resource
 //= require_directory ./models

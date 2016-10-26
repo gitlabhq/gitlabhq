@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Quick Submit behavior
 //
 // When a child field of a form with a `js-quick-submit` class receives a

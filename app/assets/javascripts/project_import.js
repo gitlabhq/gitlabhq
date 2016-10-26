@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ProjectImport = (function() {
     function ProjectImport() {

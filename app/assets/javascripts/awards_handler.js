@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.AwardsHandler = (function() {
     const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence

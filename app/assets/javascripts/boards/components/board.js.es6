@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require ./board_blank_state
 //= require ./board_delete
 //= require ./board_list

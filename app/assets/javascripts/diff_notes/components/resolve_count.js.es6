@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((w) => {
   w.ResolveCount = Vue.extend({
     mixins: [DiscussionMixins],

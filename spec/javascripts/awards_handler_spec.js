@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require awards_handler */
 /*= require jquery */
