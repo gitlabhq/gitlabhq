@@ -45,6 +45,9 @@
         = time_ago_with_tooltip(member.created_at)
   - if show_roles
     .controls.member-controls
+      - if member.ldap
+        %span.label.label-info.members-ldap
+          LDAP
       - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
@@ -66,7 +69,7 @@
                     class: 'btn btn-success prepend-left-10',
                     title: 'Grant access'
 
-        - if can?(current_user, action_member_permission(:destroy, member), member)
+        - if can?(current_user, action_member_permission(:destroy, member), member) && !member.ldap
           - if current_user == user
             = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
                       method: :delete,
@@ -82,5 +85,23 @@
               %span.visible-xs-block
                 Delete
               = icon('trash', class: 'hidden-xs')
+        - elsif member.ldap
+          %button.btn.btn-default.prepend-left-10.js-ldap-permissions{ type: "button",
+            "aria-label" => "Override LDAP settings",
+            data: { name: user.name, id: dom_id(member) } }
+            = icon("pencil")
       - else
         %span.member-access-text= member.human_access
+- if member.ldap
+  %li.alert.alert-member-ldap{ style: "display: none;" }
+    %p
+      = user.name
+      is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.
+    .controls
+      %button.btn.btn-warning{ type: "button",
+        "aria-label" => "Change LDAP member permissions" }
+        Change permissions
+      %button.btn.btn-default.js-ldap-permissions{ type: "button",
+        "aria-label" => "Close permissions override",
+        data: { id: dom_id(member) } }
+        = icon("times")

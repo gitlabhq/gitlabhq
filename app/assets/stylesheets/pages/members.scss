@@ -96,3 +96,24 @@
   border: 0;
   outline: 0;
 }
+
+.members-ldap {
+  -webkit-align-self: center;
+  align-self: center;
+  height: 100%;
+  margin-right: 10px;
+  margin-left: -49px;
+}
+
+.alert-member-ldap {
+  background-color: #fff1e0;
+
+  > p {
+    float: left;
+    color: $orange-normal;
+
+    @media (min-width: $screen-sm-min) {
+      padding-left: 55px;
+    }
+  }
+}

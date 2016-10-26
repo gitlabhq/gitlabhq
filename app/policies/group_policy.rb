@@ -35,7 +35,7 @@ class GroupPolicy < BasePolicy
     end
 
     # EE-only
-    cannot! :admin_group_member if @subject.ldap_synced?
+    # cannot! :admin_group_member if @subject.ldap_synced?
   end
 
   def can_read_group?

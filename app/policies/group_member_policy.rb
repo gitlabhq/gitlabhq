@@ -15,5 +15,7 @@ class GroupMemberPolicy < BasePolicy
     elsif @user == target_user
       can! :destroy_group_member
     end
+
+    cannot! :update_group_member if @subject.ldap
   end
 end
