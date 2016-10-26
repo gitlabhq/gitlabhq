@@ -5,10 +5,7 @@
 %tr.commit
   %td.commit-link
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
-      - if defined?(status_icon_only) && status_icon_only
-        = ci_icon_for_status(status)
-      - else
-        = ci_status_with_icon(status)
+      = ci_status_with_icon(status)
 
   %td
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
