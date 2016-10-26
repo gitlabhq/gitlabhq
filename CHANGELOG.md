@@ -40,6 +40,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 - Shortened merge request modal to let clipboard button not overlap
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
+- Improve search query parameter naming in /admin/users !7115 (YarNayar)
 
 ## 8.13.2 (2016-10-31)
 
