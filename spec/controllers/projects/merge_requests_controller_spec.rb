@@ -298,28 +298,68 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'when project project has unresolved discussion' do
-        before do
-          project.update_column(:only_allow_merge_if_all_discussions_are_resolved, allowed)
-        end
+      describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
+        let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
 
-        context "when the only_allow_merge_if_all_discussions_are_resolved? is true" do
-          let(:allowed) { true }
+        context 'when enabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+          end
 
-          it 'returns :failed' do
-            merge_with_sha
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
 
-            expect(assigns(:status)).to eq(:failed)
+            it 'returns :failed' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:failed)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
           end
         end
 
-        context "when the only_allow_merge_if_all_discussions_are_resolved? is false" do
-          let(:allowed) { false }
+        context 'when disabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+          end
 
-          it 'returns :failed' do
-            merge_with_sha
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
 
-            expect(assigns(:status)).to eq(:success)
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
           end
         end
       end

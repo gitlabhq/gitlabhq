@@ -1,30 +1,30 @@
 require 'spec_helper'
 
 feature 'Check if mergeable with unresolved discussions', js: true, feature: true do
-  let!(:user)          { create(:user) }
-  let!(:project)       { create(:project, :public, only_allow_merge_if_all_discussions_are_resolved: allowed) }
-  let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user, title: "Bug NS-04" ) }
+  let(:user)           { create(:user) }
+  let(:project)        { create(:project) }
+  let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
 
   before do
     login_as user
     project.team << [user, :master]
   end
 
-  context 'when only_allow_merge_if_all_discussions_are_resolved is false' do
-    let(:allowed) { false }
-
-    it 'allows MR to be merged' do
-      visit_merge_request(merge_request)
-
-      expect(page).to have_button 'Accept Merge Request'
+  context 'when project.only_allow_merge_if_all_discussions_are_resolved == true' do
+    before do
+      project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
     end
-  end
 
-  context 'when only_allow_merge_if_all_discussions_are_resolved is true' do
-    let(:allowed) { true }
+    context 'with unresolved discussions' do
+      it 'does not allow to merge' do
+        visit_merge_request(merge_request)
 
-    context "when discussions are resolved" do
+        expect(page).not_to have_button 'Accept Merge Request'
+        expect(page).to have_content('This merge request has unresolved discussions')
+      end
+    end
 
+    context 'with all discussions resolved' do
       before do
         merge_request.discussions.each { |d| d.resolve!(user) }
       end
@@ -35,14 +35,30 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
         expect(page).to have_button 'Accept Merge Request'
       end
     end
+  end
 
-    context "when discussions are unresolved" do
+  context 'when project.only_allow_merge_if_all_discussions_are_resolved == false' do
+    before do
+      project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+    end
 
+    context 'with unresolved discussions' do
       it 'does not allow to merge' do
         visit_merge_request(merge_request)
 
-        expect(page).not_to have_button 'Accept Merge Request'
-        expect(page).to have_content('This merge request has unresolved discussions')
+        expect(page).to have_button 'Accept Merge Request'
+      end
+    end
+
+    context 'with all discussions resolved' do
+      before do
+        merge_request.discussions.each { |d| d.resolve!(user) }
+      end
+
+      it 'allows MR to be merged' do
+        visit_merge_request(merge_request)
+
+        expect(page).to have_button 'Accept Merge Request'
       end
     end
   end

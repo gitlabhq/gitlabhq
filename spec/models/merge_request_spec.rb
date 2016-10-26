@@ -825,11 +825,8 @@ describe MergeRequest, models: true do
     end
 
     context 'when failed' do
-      before { allow(subject).to receive(:broken?) { false } }
-
-      context 'when project settings restrict to merge only if build succeeds and build failed' do
+      context 'when #mergeable_ci_state? is false' do
         before do
-          project.only_allow_merge_if_build_succeeds = true
           allow(subject).to receive(:mergeable_ci_state?) { false }
         end
 
@@ -838,9 +835,8 @@ describe MergeRequest, models: true do
         end
       end
 
-      context "when project settings restrict to merge only when all the discussions are resolved" do
+      context 'when #mergeable_discussions_state? is false' do
         before do
-          project.only_allow_merge_if_all_discussions_are_resolved = true
           allow(subject).to receive(:mergeable_discussions_state?) { false }
         end
 
@@ -899,45 +895,42 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable_discussions_state?' do
-    let!(:user)    { create(:user) }
-    let!(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: allowed) }
+    let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project) }
 
-    subject { create(:merge_request_with_diff_notes, source_project: project) }
+    context 'when project.only_allow_merge_if_all_discussions_are_resolved == true' do
+      let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: true) }
 
-    context 'when is true' do
-      let(:allowed) { true }
-
-      context 'when discussions are resolved' do
+      context 'with all discussions resolved' do
         before do
-          subject.discussions.each { |d| d.resolve!(user) }
+          merge_request.discussions.each { |d| d.resolve!(merge_request.author) }
         end
 
         it 'returns true' do
-          expect(subject.mergeable_discussions_state?).to be_truthy
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
         end
       end
 
-      context 'when discussions are unresolved' do
+      context 'with unresolved discussions' do
         before do
-          subject.discussions.map(&:unresolve!)
+          merge_request.discussions.each(&:unresolve!)
         end
 
         it 'returns false' do
-          expect(subject.mergeable_discussions_state?).to be_falsey
+          expect(merge_request.mergeable_discussions_state?).to be_falsey
         end
       end
     end
 
-    context 'when is false' do
-      let(:allowed) { false }
+    context 'when project.only_allow_merge_if_all_discussions_are_resolved == false' do
+      let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: false) }
 
-      context 'when discussions are unresolved' do
+      context 'with unresolved discussions' do
         before do
-          subject.discussions.map(&:unresolve!)
+          merge_request.discussions.each(&:unresolve!)
         end
 
         it 'returns true' do
-          expect(subject.mergeable_discussions_state?).to be_truthy
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
         end
       end
     end
