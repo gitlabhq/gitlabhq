@@ -207,8 +207,38 @@ class Project < ActiveRecord::Base
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
 
-  scope :with_builds_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0') }
-  scope :with_issues_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.issues_access_level IS NULL or project_features.issues_access_level > 0') }
+  scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
+
+  # "enabled" here means "not disabled". It includes private features!
+  scope :with_feature_enabled, ->(feature) {
+    access_level_attribute = ProjectFeature.access_level_attribute(feature)
+    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED] })
+  }
+
+  # Picks a feature where the level is exactly that given.
+  scope :with_feature_access_level, ->(feature, level) {
+    access_level_attribute = ProjectFeature.access_level_attribute(feature)
+    with_project_feature.where(project_features: { access_level_attribute => level })
+  }
+
+  scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
+  scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+
+  # project features may be "disabled", "internal" or "enabled". If "internal",
+  # they are only available to team members. This scope returns projects where
+  # the feature is either enabled, or internal with permission for the user.
+  def self.with_feature_available_for_user(feature, user)
+    return with_feature_enabled(feature) if user.try(:admin?)
+
+    unconditional = with_feature_access_level(feature, [nil, ProjectFeature::ENABLED])
+    return unconditional if user.nil?
+
+    conditional = with_feature_access_level(feature, ProjectFeature::PRIVATE)
+    authorized = user.authorized_projects.merge(conditional.reorder(nil))
+
+    union = Gitlab::SQL::Union.new([unconditional.select(:id), authorized.select(:id)])
+    where(arel_table[:id].in(Arel::Nodes::SqlLiteral.new(union.to_sql)))
+  end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
