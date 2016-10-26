@@ -54,7 +54,7 @@
 
           //humanizes actions names if there are any actions
           if (environment.last_deployment.manual_actions) {
-            environment.last_deployment.manual_actions = environment.last_deployment.manual_actions.map((action) => Object.assign({}, action, {name: gl.text.humanize(action.name)}));
+            environment.last_deployment.manual_actions = environment.last_deployment.manual_actions.map((action) => action.name = gl.text.humanize(action.name));
           }
 
           //transforms created date for deployment in a human readable format
@@ -64,21 +64,19 @@
         }
 
         if (environment.environment_type !== null) {
-          const occurs = acc.find((element, index, array) => {
+          const occurs = acc.filter((element, index, array) => {
             return element.children && element.name === environment.environment_type;
           });
 
           environment["vue-isChildren"] = true;
 
-          if (occurs !== undefined) {
-            acc[acc.indexOf(occurs)].children.push(environment);
-            acc[acc.indexOf(occurs)].children.sort(this.sortByName)
+          if (occurs.length) {
+            acc[acc.indexOf(occurs[0])].children.push(environment);
+            acc[acc.indexOf(occurs[0])].children.sort(this.sortByName)
           } else {
             acc.push({
               name: environment.environment_type,
-              children: [
-                Object.assign(environment)
-              ]
+              children: [environment]
             });
           }
         } else {
