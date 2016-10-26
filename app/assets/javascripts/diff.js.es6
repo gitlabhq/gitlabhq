@@ -22,7 +22,11 @@
 
     handleClickUnfold(event) {
       const $target = $(event.target);
-      const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
+      // current babel config relies on iterators implementation, so we cannot simply do:
+      // const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
+      const ref = this.lineNumbers($target.parent());
+      const oldLineNumber = ref[0];
+      const newLineNumber = ref[1];
       const offset = newLineNumber - oldLineNumber;
       const bottom = $target.hasClass('js-unfold-bottom');
       let since, to;
@@ -38,7 +42,7 @@
         to = lineNumber;
 
         // make sure we aren't loading more than we need
-        const [prevOldLine, prevNewLine] = this.lineNumbers($target.parent().prev());
+        const prevNewLine = this.lineNumbers($target.parent().prev())[1];
         if (since <= prevNewLine + 1) {
           since = prevNewLine + 1;
           unfold = false;
