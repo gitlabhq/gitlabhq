@@ -97,6 +97,11 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '.to_ability_name' do
+    it { expect(Issue.to_ability_name).to eq("issue") }
+    it { expect(MergeRequest.to_ability_name).to eq("merge_request") }
+  end
+
   describe "#today?" do
     it "returns true when created today" do
       # Avoid timezone differences and just return exactly what we want
