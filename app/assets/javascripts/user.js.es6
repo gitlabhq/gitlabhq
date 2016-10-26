@@ -23,10 +23,7 @@
     hideProjectLimitMessage() {
       $('.hide-project-limit-message').on('click', e => {
         e.preventDefault();
-        const path = gon.relative_url_root || '/';
-        $.cookie('hide_project_limit_message', 'false', {
-          path: path
-        });
+        Cookies.set('hide_project_limit_message', 'false');
         $(this).parents('.project-limit-message').remove();
       });
     }
