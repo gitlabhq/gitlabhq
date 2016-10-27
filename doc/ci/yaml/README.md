@@ -687,6 +687,13 @@ The `stop_review_app` job is **required** to have the following keywords defined
 These parameters can use any of the defined [CI variables](#variables)
 (including predefined, secure variables and `.gitlab-ci.yml` variables).
 
+>**Note:**
+Be aware than if the branch name contains special characters and you use the
+`$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
+be complications during deployment. Follow the
+[issue 22849](https://gitlab.com/gitlab-org/gitlab-ce/issues/22849) for more
+information.
+
 For example:
 
 ```
