@@ -36,22 +36,16 @@
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
 
-        .app
-  -# %div.content-list.pipelines
-  -#   - stages = @pipelines.stages
-  -#   - if @pipelines.blank?
-  -#     %div
-  -#       .nothing-here-block No pipelines to show
-  -#   - else
-  -#     .table-holder
-  -#       %table.table.ci-table
-  -#         %thead
-  -#           %th Status
-  -#           %th Pipeline
-  -#           %th Commit
-  -#           %th Stages
-  -#           %th
-  -#           %th.hidden-xs
+  %div.content-list.pipelines
+    - stages = @pipelines.stages
+    - if @pipelines.blank?
+      %div
+        .nothing-here-block No pipelines to show
+    - else
+      .table-holder
+        %table.table.ci-table
+          %thead
+          %tbody.app
   -#         = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 
       = paginate @pipelines, theme: 'gitlab'
