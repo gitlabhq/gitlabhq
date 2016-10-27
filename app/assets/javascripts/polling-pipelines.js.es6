@@ -14,6 +14,7 @@
       this.storePipelineStatuses();
       this.checkStatusChanges();
       setTimeout(() => this.applyNewStatusChanges(), 3000);
+      this.runnerStatuses = new gl.RunnerStatuses();
     }
 
     storePipelineStatuses() {
@@ -44,6 +45,10 @@
       // using 'mock' data
       const apiPipelines = this.pipelines;
       apiPipelines[0].status = 'failed';
+      apiPipelines[1].status = 'passed';
+      apiPipelines[2].status = 'created';
+      apiPipelines[3].status = 'skipped';
+      apiPipelines[4].status = 'pending';
       // end of 'mock' data
       this.pipelines = apiPipelines;
       return apiPipelines;
@@ -51,10 +56,11 @@
 
     applyNewStatusChanges() {
       this.pipelinesOnDOM.forEach((e, i) => {
-        const newStatus = `ci-status ci-${this.pipelines[i].status}`;
-        // needs to be explicitly called
-        // cannot ask `currentDomStatus` to change
+        const updatedStatus = this.pipelines[i].status;
+        const newStatus = `ci-status ci-${updatedStatus}`;
         e.children[0].childNodes[0].className = newStatus;
+        e.children[0].childNodes[0].innerHTML = this.runnerStatuses[updatedStatus];
+        // debugger
       });
     }
   };
