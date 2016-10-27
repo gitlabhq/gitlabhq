@@ -14,8 +14,7 @@
       <th></th>
       <th class="hidden-xs"></th>
       </tr></thead>
-      <tbody>
-        <div v-for='pipeline in pipelines'>
+      <tbody v-for='pipeline in pipelines'>
           <tr class="commit">
             <td class="commit-link">
               <a href="/gitlab-org/gitlab-ce/pipelines/30"><span class="ci-status ci-failed">
@@ -168,7 +167,6 @@
             </div>
             </td>
           </tr>
-        </div>
       </tbody>
     `,
     computed: {
