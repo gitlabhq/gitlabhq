@@ -30,6 +30,10 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.issue_events.first['created_at']).to end_with('ago')
     end
 
+    it "has the author's email" do
+      expect(subject.issue_events.first['email']).to eq(context.author.email)
+    end
+
     it "has the author's name" do
       expect(subject.issue_events.first['name']).to eq(context.author.name)
     end
@@ -68,6 +72,10 @@ describe Gitlab::CycleAnalytics::Events do
 
     it 'has a created_at timestamp' do
       expect(subject.code_events.first['created_at']).to end_with('ago')
+    end
+
+    it "has the author's email" do
+      expect(subject.code_events.first['email']).to eq(context.author.email)
     end
 
     it "has the author's name" do
@@ -116,6 +124,10 @@ describe Gitlab::CycleAnalytics::Events do
 
     it 'has a created_at timestamp' do
       expect(subject.review_events.first['created_at']).to end_with('ago')
+    end
+
+    it "has the author's email" do
+      expect(subject.review_events.first['email']).to eq(MergeRequest.first.author.email)
     end
 
     it "has the author's name" do
@@ -171,6 +183,10 @@ describe Gitlab::CycleAnalytics::Events do
 
     it 'has a created_at timestamp' do
       expect(subject.production_events.first['created_at']).to end_with('ago')
+    end
+
+    it "has the author's email" do
+      expect(subject.production_events.first['email']).to eq(context.author.email)
     end
 
     it "has the author's name" do

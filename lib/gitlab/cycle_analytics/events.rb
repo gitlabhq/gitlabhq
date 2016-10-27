@@ -10,7 +10,6 @@ module Gitlab
       end
 
       # TODO: backend pagination - specially for commits, etc...
-      # TODO figure out what the frontend needs for displaying the avatar
 
       def issue_events
         @fetcher.fetch(stage: :issue).each { |event| parse_event(event) }

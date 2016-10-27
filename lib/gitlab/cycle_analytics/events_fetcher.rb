@@ -8,7 +8,7 @@ module Gitlab
           start_time_attrs: issue_table[:created_at],
           end_time_attrs: [issue_metrics_table[:first_associated_with_milestone_at],
                            issue_metrics_table[:first_added_to_board_at]],
-          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name]]
+          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name], user_table[:email]]
         },
         plan: {
           start_time_attrs: issue_metrics_table[:first_associated_with_milestone_at],
@@ -19,7 +19,7 @@ module Gitlab
         code: {
           start_time_attrs: issue_metrics_table[:first_mentioned_in_commit_at],
           end_time_attrs: mr_table[:created_at],
-          projections: [mr_table[:title], mr_table[:iid], mr_table[:created_at], user_table[:name]],
+          projections: [mr_table[:title], mr_table[:iid], mr_table[:created_at], user_table[:name], user_table[:email]],
           order: mr_table[:created_at]
         },
         test: {
@@ -31,7 +31,7 @@ module Gitlab
         review: {
           start_time_attrs: mr_table[:created_at],
           end_time_attrs: mr_metrics_table[:merged_at],
-          projections: [mr_table[:title], mr_table[:iid], mr_table[:created_at], user_table[:name]]
+          projections: [mr_table[:title], mr_table[:iid], mr_table[:created_at], user_table[:name], user_table[:email]]
         },
         staging: {
           start_time_attrs: mr_metrics_table[:merged_at],
@@ -41,7 +41,7 @@ module Gitlab
         production: {
           start_time_attrs: issue_table[:created_at],
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
-          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name]]
+          projections: [issue_table[:title], issue_table[:iid], issue_table[:created_at], user_table[:name], user_table[:email]]
         },
       }.freeze
 

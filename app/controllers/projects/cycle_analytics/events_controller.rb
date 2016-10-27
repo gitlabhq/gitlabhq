@@ -1,5 +1,5 @@
 class Projects::CycleAnalytics::EventsController < Projects::ApplicationController
-  #before_action :authorize_read_cycle_analytics!
+  # before_action :authorize_read_cycle_analytics!
 
   def issue
     render_events(events.issue_events)
@@ -41,12 +41,12 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   # TODO refactor this
   def start_date
     case events_params[:start_date]
-      when '30' then
-        30.days.ago
-      when '90' then
-        90.days.ago
-      else
-        90.days.ago
+    when '30' then
+      30.days.ago
+    when '90' then
+      90.days.ago
+    else
+      90.days.ago
     end
   end
 
