@@ -32,17 +32,25 @@
 
         $btn.glDropdown({
           selectable: true,
-          fieldName: 'test',
-          id () {
-            return 1;
+          fieldName: $btn.data('field-name'),
+          id (selected, $el) {
+            return $el.data('id');
+          },
+          toggleLabel (selected, $el) {
+            console.log($el.text().trim());
+            return $el.text();
           },
           clicked: (selected, $el) => {
             const $link = $($el);
 
             if ($link.data('revert')) {
-              const memberListitem = this.getMemberListItem($link.get(0));
+              const memberListItem = this.getMemberListItem($link.get(0));
+              const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
 
-              this.overrideLdap(memberListitem, $link.data('endpoint'), false);
+              toggle.disabled = true;
+              this.overrideLdap(memberListItem, $link.data('endpoint'), false);
+            } else {
+              $btn.closest('form').trigger("submit.rails");
             }
           }
         });

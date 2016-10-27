@@ -34,6 +34,10 @@
           %span{ class: ('text-warning' if member.expires_soon?) }
             Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
+      - if member.ldap
+        %span.label.label-info.pull-right.visible-xs-block
+          LDAP
+
     - else
       = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
       %strong= member.invite_email
@@ -46,17 +50,19 @@
   - if show_roles
     .controls.member-controls
       - if member.ldap
-        %span.label.label-info.members-ldap
+        %span.label.label-info.members-ldap.hidden-xs
           LDAP
       - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
+            = f.hidden_field :access_level
             -# = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can_admin_member
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
                 disabled: member.ldap && !member.override,
-                data: { toggle: "dropdown" } }
-                = member.human_access
+                data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]" } }
+                %span.dropdown-toggle-text
+                  = member.human_access
                 = icon("caret-down")
               .dropdown-menu.dropdown-select.dropdown-menu-align-right.dropdown-menu-selectable
                 = dropdown_title("Change permissions")
