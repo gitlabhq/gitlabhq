@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require header */
 /*= require lib/utils/text_utility */
 /*= require jquery */

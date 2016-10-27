@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
 
   $(document).on('todo:toggle', function(e, count) {
