@@ -37,14 +37,22 @@
   .branch-name {
     color: $gl-dark-link-color;
   }
-  
+
+  .stop-env-link {
+    color: $table-text-gray;
+
+    .stop-env-icon {
+      font-size: 14px;
+    }
+  }
+
   .deployment {
     .build-column {
-    
+
       .build-link {
         color: $gl-dark-link-color;
       }
-      
+
       .avatar {
         float: none;
       }

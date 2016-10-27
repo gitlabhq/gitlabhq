@@ -66,7 +66,21 @@
       text-overflow: ellipsis;
       vertical-align: middle;
       max-width: 100%;
-    }    
+    }
+  }
+
+  .label-type {
+    display: block;
+    margin-bottom: 10px;
+    margin-left: 50px;
+
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 100px;
+      margin-left: 10px;
+      margin-bottom: 0;
+      vertical-align: middle;
+    }
   }
 
   .label-description {
@@ -209,6 +223,13 @@
 }
 
 .label-subscribe-button {
+  .label-subscribe-button-icon {
+    &[disabled] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+
   .label-subscribe-button-loading {
     display: none;
   }

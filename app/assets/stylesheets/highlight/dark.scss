@@ -1,20 +1,25 @@
 /* https://github.com/MozMorris/tomorrow-pygments */
 .code.dark {
   // Line numbers
-  .line-numbers, .diff-line-num {
+  .line-numbers,
+  .diff-line-num {
     background-color: #1d1f21;
   }
 
-  .diff-line-num, .diff-line-num a {
+  .diff-line-num,
+  .diff-line-num a {
     color: rgba(255, 255, 255, 0.3);
   }
 
   // Code itself
-  pre.code, .diff-line-num {
+  pre.code,
+  .diff-line-num {
     border-color: #666;
   }
 
-  &, pre.code, .line_holder .line_content {
+  &,
+  pre.code,
+  .line_holder .line_content {
     background-color: #1d1f21;
     color: #c5c8c6;
   }
@@ -31,11 +36,13 @@
       border-color: darken(#557, 15%);
     }
 
-    .diff-line-num.new, .line_content.new {
+    .diff-line-num.new,
+    .line_content.new {
       @include diff_background(rgba(51, 255, 51, 0.1), rgba(51, 255, 51, 0.2), #808080);
     }
 
-    .diff-line-num.old, .line_content.old {
+    .diff-line-num.old,
+    .line_content.old {
       @include diff_background(rgba(255, 51, 51, 0.2), rgba(255, 51, 51, 0.25), #808080);
     }
 

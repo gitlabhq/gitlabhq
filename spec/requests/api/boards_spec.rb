@@ -106,9 +106,20 @@ describe API::API, api: true  do
   describe "POST /projects/:id/board/lists" do
     let(:base_url) { "/projects/#{project.id}/boards/#{board.id}/lists" }
 
-    it 'creates a new issue board list' do
-      post api(base_url, user),
-        label_id: ux_label.id
+    it 'creates a new issue board list for group labels' do
+      group = create(:group)
+      group_label = create(:group_label, group: group)
+      project.update(group: group)
+
+      post api(base_url, user), label_id: group_label.id
+
+      expect(response).to have_http_status(201)
+      expect(json_response['label']['name']).to eq(group_label.title)
+      expect(json_response['position']).to eq(3)
+    end
+
+    it 'creates a new issue board list for project labels' do
+      post api(base_url, user), label_id: ux_label.id
 
       expect(response).to have_http_status(201)
       expect(json_response['label']['name']).to eq(ux_label.title)
@@ -116,15 +127,13 @@ describe API::API, api: true  do
     end
 
     it 'returns 400 when creating a new list if label_id is invalid' do
-      post api(base_url, user),
-        label_id: 23423
+      post api(base_url, user), label_id: 23423
 
       expect(response).to have_http_status(400)
     end
 
-    it "returns 403 for project members with guest role" do
-      put api("#{base_url}/#{test_list.id}", guest),
-        position: 1
+    it 'returns 403 for project members with guest role' do
+      put api("#{base_url}/#{test_list.id}", guest), position: 1
 
       expect(response).to have_http_status(403)
     end

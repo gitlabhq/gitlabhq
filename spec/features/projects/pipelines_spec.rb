@@ -177,7 +177,7 @@ describe "Pipelines" do
         before { click_on 'Retry failed' }
 
         it { expect(page).not_to have_content('Retry failed') }
-        it { expect(page).to have_content('retried') }
+        it { expect(page).to have_selector('.retried') }
       end
     end
 

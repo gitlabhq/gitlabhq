@@ -154,7 +154,7 @@ module EventsHelper
   end
 
   def event_commit_title(message)
-    escape_once(truncate(message.split("\n").first, length: 70))
+    (message.split("\n").first || "").truncate(70)
   rescue
     "--broken encoding"
   end

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.CommitsList = (function() {
     function CommitsList() {}

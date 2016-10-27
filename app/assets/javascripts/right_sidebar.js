@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -5,7 +6,16 @@
     function Sidebar(currentUser) {
       this.toggleTodo = bind(this.toggleTodo, this);
       this.sidebar = $('aside');
+      this.removeListeners();
       this.addEventListeners();
+    }
+
+    Sidebar.prototype.removeListeners = function () {
+      this.sidebar.off('click', '.sidebar-collapsed-icon');
+      $('.dropdown').off('hidden.gl.dropdown');
+      $('.dropdown').off('loading.gl.dropdown');
+      $('.dropdown').off('loaded.gl.dropdown');
+      $(document).off('click', '.js-sidebar-toggle');
     }
 
     Sidebar.prototype.addEventListeners = function() {
@@ -13,7 +23,7 @@
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(document).off('click', '.js-sidebar-toggle').on('click', '.js-sidebar-toggle', function(e, triggered) {
+      $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);
@@ -29,9 +39,7 @@
           $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
         }
         if (!triggered) {
-          return $.cookie("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'), {
-            path: gon.relative_url_root || '/'
-          });
+          return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
         }
       });
       return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
@@ -74,16 +82,11 @@
     };
 
     Sidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
-      var $todoPendingCount;
-      $todoPendingCount = $('.todos-pending-count');
-      $todoPendingCount.text(data.count);
+      $(document).trigger('todo:toggle', data.count);
+
       $btn.enable();
       $todoLoading.addClass('hidden');
-      if (data.count === 0) {
-        $todoPendingCount.addClass('hidden');
-      } else {
-        $todoPendingCount.removeClass('hidden');
-      }
+
       if (data.delete_path != null) {
         $btn.attr('aria-label', $btn.data('mark-text')).attr('data-delete-path', data.delete_path);
         return $btnText.text($btn.data('mark-text'));

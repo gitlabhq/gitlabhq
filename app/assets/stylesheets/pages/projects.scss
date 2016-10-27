@@ -6,16 +6,26 @@
   }
 }
 
-.no-ssh-key-message, .project-limit-message {
+.no-ssh-key-message,
+.project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
 
 .new_project,
 .edit-project {
+
   fieldset {
-    &.features .control-label {
-      font-weight: normal;
+
+    &.features {
+
+      .label-light {
+        margin-bottom: 0;
+      }
+
+      .help-block {
+        margin-top: 0;
+      }
     }
 
     .form-group {
@@ -40,6 +50,7 @@
   }
 
   .input-group > div {
+
     &:last-child {
       padding-right: 0;
     }
@@ -47,6 +58,7 @@
 
   @media (max-width: $screen-xs-max) {
     .input-group > div {
+
       margin-bottom: 14px;
 
       &:last-child {
@@ -60,6 +72,7 @@
   }
 
   .input-group-addon {
+
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
@@ -180,7 +193,7 @@
     margin-left: 4px;
 
     .arrow {
-      &:before {
+      &::before {
         content: '';
         display: inline-block;
         position: absolute;
@@ -196,7 +209,7 @@
         pointer-events: none;
       }
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         width: 0;
@@ -338,7 +351,7 @@ a.deploy-project-label {
   line-height: 36px;
   margin: 0;
 
-  > li + li:before {
+  > li + li::before {
     padding: 0 3px;
     color: #999;
   }
@@ -373,7 +386,8 @@ a.deploy-project-label {
       text-align: center;
       width: 169px;
 
-      &:hover, &.forked {
+      &:hover,
+      &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
       }
@@ -722,7 +736,8 @@ pre.light-well {
   .table-bordered {
     border-radius: 1px;
 
-    th:not(:last-child), td:not(:last-child) {
+    th:not(:last-child),
+    td:not(:last-child) {
       border-right: solid 1px transparent;
     }
   }
@@ -745,7 +760,8 @@ pre.light-well {
   }
 }
 
-.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+.project-refs-form .dropdown-menu,
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {
@@ -774,7 +790,7 @@ pre.light-well {
     top: 7px;
     color: $location-icon-color;
 
-    &:before {
+    &::before {
       font-family: FontAwesome;
       font-weight: normal;
       font-style: normal;

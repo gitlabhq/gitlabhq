@@ -1,10 +1,13 @@
+/* eslint-disable */
+//= require vue
+
 ((global) => {
 
   const COOKIE_NAME = 'cycle_analytics_help_dismissed';
   const store = gl.cycleAnalyticsStore = {
     isLoading: true,
     hasError: false,
-    isHelpDismissed: $.cookie(COOKIE_NAME),
+    isHelpDismissed: Cookies.get(COOKIE_NAME),
     analytics: {}
   };
 
@@ -34,7 +37,11 @@
         method: 'GET',
         dataType: 'json',
         contentType: 'application/json',
-        data: { start_date: options.startDate }
+        data: {
+          cycle_analytics: {
+            start_date: options.startDate
+          }
+        }
       }).done((data) => {
         this.decorateData(data);
         this.initDropdown();
@@ -69,9 +76,7 @@
 
     dismissLanding() {
       store.isHelpDismissed = true;
-      $.cookie(COOKIE_NAME, true, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set(COOKIE_NAME, true);
     }
 
     initDropdown() {

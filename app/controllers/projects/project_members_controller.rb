@@ -25,6 +25,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def create
+    if params[:user_ids].blank?
+      return redirect_to(namespace_project_project_members_path(@project.namespace, @project), alert: 'No users or groups specified.')
+    end
+
     @project.team.add_users(
       params[:user_ids].split(','),
       params[:access_level],
@@ -32,22 +36,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       current_user: current_user
     )
 
-    if params[:group_ids].present?
-      group_ids = params[:group_ids].split(',')
-      groups = Group.where(id: group_ids)
-
-      groups.each do |group|
-        next unless can?(current_user, :read_group, group)
-
-        project.project_group_links.create(
-          group: group,
-          group_access: params[:access_level],
-          expires_at: params[:expires_at]
-        )
-      end
-    end
-
-    redirect_to namespace_project_project_members_path(@project.namespace, @project)
+    redirect_to namespace_project_project_members_path(@project.namespace, @project), notice: 'Users were successfully added.'
   end
 
   def update

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Compare = (function() {
     function Compare(opts) {

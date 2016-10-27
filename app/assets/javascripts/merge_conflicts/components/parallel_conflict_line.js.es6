@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
 
   global.mergeConflicts = global.mergeConflicts || {};

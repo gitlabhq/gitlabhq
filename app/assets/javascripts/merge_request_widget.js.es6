@@ -1,3 +1,4 @@
+/* eslint-disable */
  ((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -16,6 +17,12 @@
              <i class="fa fa-external-link"></i>
              View on <%- external_url_formatted %>
            </a>
+         </span>
+         <span class="stop-env-container js-stop-env-link">
+          <a href="<%- stop_url %>" class="close-evn-link" data-method="post" rel="nofollow" data-confirm="Are you sure you want to stop this environment?">
+            <i class="fa fa-stop-circle-o"/>
+            Stop environment
+          </a>
          </span>
        </div>
      </div>`;
@@ -205,6 +212,11 @@
         if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
         if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
+        
+        if (!environment.stop_url) {
+          $('.js-stop-env-link', $template).remove();
+        }
+        
         if (environment.deployed_at && environment.deployed_at_formatted) {
           environment.deployed_at = $.timeago(environment.deployed_at) + '.';
         } else {

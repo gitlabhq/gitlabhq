@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require abuse_reports */
 
 /*= require jquery */

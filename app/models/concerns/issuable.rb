@@ -145,8 +145,14 @@ module Issuable
     end
 
     def order_labels_priority(excluded_labels: [])
-      condition_field = "#{table_name}.id"
-      highest_priority = highest_label_priority(name, condition_field, excluded_labels: excluded_labels).to_sql
+      params = {
+        target_type: name,
+        target_column: "#{table_name}.id",
+        project_column: "#{table_name}.#{project_foreign_key}",
+        excluded_labels: excluded_labels
+      }
+
+      highest_priority = highest_label_priority(params).to_sql
 
       select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
         group(arel_table[:id]).
@@ -228,18 +234,6 @@ module Issuable
 
   def label_names
     labels.order('title ASC').pluck(:title)
-  end
-
-  def remove_labels
-    labels.delete_all
-  end
-
-  def add_labels_by_names(label_names)
-    label_names.each do |label_name|
-      label = project.labels.create_with(color: Label::DEFAULT_COLOR).
-        find_or_create_by(title: label_name.strip)
-      self.labels << label
-    end
   end
 
   # Convert this Issuable class name to a format usable by Ability definitions

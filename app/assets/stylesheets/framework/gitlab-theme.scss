@@ -25,7 +25,9 @@
       a {
         color: $color-light;
 
-        &:hover, &:focus, &:active {
+        &:hover,
+        &:focus,
+        &:active {
           background: $color-dark;
         }
 

@@ -45,9 +45,16 @@ class EventFilter
     when EventFilter.comments
       actions = [Event::COMMENTED]
     when EventFilter.team
-      actions = [Event::JOINED, Event::LEFT]
+      actions = [Event::JOINED, Event::LEFT, Event::EXPIRED]
     when EventFilter.all
-      actions = [Event::PUSHED, Event::MERGED, Event::COMMENTED, Event::JOINED, Event::LEFT]
+      actions = [
+        Event::PUSHED,
+        Event::MERGED,
+        Event::COMMENTED,
+        Event::JOINED,
+        Event::LEFT,
+        Event::EXPIRED
+      ]
     end
 
     events.where(action: actions)

@@ -1,3 +1,4 @@
+/* eslint-disable */
 class ListUser {
   constructor (user) {
     this.id = user.id;

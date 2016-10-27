@@ -1,46 +1,42 @@
 require 'spec_helper'
 
 describe Label, models: true do
-  let(:label) { create(:label) }
-
-  describe 'associations' do
-    it { is_expected.to belong_to(:project) }
-
-    it { is_expected.to have_many(:label_links).dependent(:destroy) }
-    it { is_expected.to have_many(:issues).through(:label_links).source(:target) }
-    it { is_expected.to have_many(:lists).dependent(:destroy) }
+  describe 'modules' do
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Subscribable) }
   end
 
-  describe 'modules' do
-    subject { described_class }
-
-    it { is_expected.to include_module(Referable) }
+  describe 'associations' do
+    it { is_expected.to have_many(:issues).through(:label_links).source(:target) }
+    it { is_expected.to have_many(:label_links).dependent(:destroy) }
+    it { is_expected.to have_many(:lists).dependent(:destroy) }
+    it { is_expected.to have_many(:priorities).class_name('LabelPriority') }
   end
 
   describe 'validation' do
-    it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_uniqueness_of(:title).scoped_to([:group_id, :project_id]) }
 
     it 'validates color code' do
-      expect(label).not_to allow_value('G-ITLAB').for(:color)
-      expect(label).not_to allow_value('AABBCC').for(:color)
-      expect(label).not_to allow_value('#AABBCCEE').for(:color)
-      expect(label).not_to allow_value('GGHHII').for(:color)
-      expect(label).not_to allow_value('#').for(:color)
-      expect(label).not_to allow_value('').for(:color)
+      is_expected.not_to allow_value('G-ITLAB').for(:color)
+      is_expected.not_to allow_value('AABBCC').for(:color)
+      is_expected.not_to allow_value('#AABBCCEE').for(:color)
+      is_expected.not_to allow_value('GGHHII').for(:color)
+      is_expected.not_to allow_value('#').for(:color)
+      is_expected.not_to allow_value('').for(:color)
 
-      expect(label).to allow_value('#AABBCC').for(:color)
-      expect(label).to allow_value('#abcdef').for(:color)
+      is_expected.to allow_value('#AABBCC').for(:color)
+      is_expected.to allow_value('#abcdef').for(:color)
     end
 
     it 'validates title' do
-      expect(label).not_to allow_value('G,ITLAB').for(:title)
-      expect(label).not_to allow_value('').for(:title)
+      is_expected.not_to allow_value('G,ITLAB').for(:title)
+      is_expected.not_to allow_value('').for(:title)
 
-      expect(label).to allow_value('GITLAB').for(:title)
-      expect(label).to allow_value('gitlab').for(:title)
-      expect(label).to allow_value('G?ITLAB').for(:title)
-      expect(label).to allow_value('G&ITLAB').for(:title)
-      expect(label).to allow_value("customer's request").for(:title)
+      is_expected.to allow_value('GITLAB').for(:title)
+      is_expected.to allow_value('gitlab').for(:title)
+      is_expected.to allow_value('G?ITLAB').for(:title)
+      is_expected.to allow_value('G&ITLAB').for(:title)
+      is_expected.to allow_value("customer's request").for(:title)
     end
   end
 
@@ -51,45 +47,59 @@ describe Label, models: true do
     end
   end
 
-  describe '#to_reference' do
-    context 'using id' do
-      it 'returns a String reference to the object' do
-        expect(label.to_reference).to eq "~#{label.id}"
-      end
-    end
+  describe 'priorization' do
+    subject(:label) { create(:label) }
 
-    context 'using name' do
-      it 'returns a String reference to the object' do
-        expect(label.to_reference(format: :name)).to eq %(~"#{label.name}")
-      end
+    let(:project) { label.project }
 
-      it 'uses id when name contains double quote' do
-        label = create(:label, name: %q{"irony"})
-        expect(label.to_reference(format: :name)).to eq "~#{label.id}"
-      end
-    end
+    describe '#prioritize!' do
+      context 'when label is not prioritized' do
+        it 'creates a label priority' do
+          expect { label.prioritize!(project, 1) }.to change(label.priorities, :count).by(1)
+        end
 
-    context 'using invalid format' do
-      it 'raises error' do
-        expect { label.to_reference(format: :invalid) }
-          .to raise_error StandardError, /Unknown format/
-      end
-    end
+        it 'sets label priority' do
+          label.prioritize!(project, 1)
 
-    context 'cross project reference' do
-      let(:project) { create(:project) }
-
-      context 'using name' do
-        it 'returns cross reference with label name' do
-          expect(label.to_reference(project, format: :name))
-            .to eq %Q(#{label.project.to_reference}~"#{label.name}")
+          expect(label.priorities.first.priority).to eq 1
         end
       end
 
-      context 'using id' do
-        it 'returns cross reference with label id' do
-          expect(label.to_reference(project, format: :id))
-            .to eq %Q(#{label.project.to_reference}~#{label.id})
+      context 'when label is prioritized' do
+        let!(:priority) { create(:label_priority, project: project, label: label, priority: 0) }
+
+        it 'does not create a label priority' do
+          expect { label.prioritize!(project, 1) }.not_to change(label.priorities, :count)
+        end
+
+        it 'updates label priority' do
+          label.prioritize!(project, 1)
+
+          expect(priority.reload.priority).to eq 1
+        end
+      end
+    end
+
+    describe '#unprioritize!' do
+      it 'removes label priority' do
+        create(:label_priority, project: project, label: label, priority: 0)
+
+        expect { label.unprioritize!(project) }.to change(label.priorities, :count).by(-1)
+      end
+    end
+
+    describe '#priority' do
+      context 'when label is not prioritized' do
+        it 'returns nil' do
+          expect(label.priority(project)).to be_nil
+        end
+      end
+
+      context 'when label is prioritized' do
+        it 'returns label priority' do
+          create(:label_priority, project: project, label: label, priority: 1)
+
+          expect(label.priority(project)).to eq 1
         end
       end
     end

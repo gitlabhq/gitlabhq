@@ -71,6 +71,10 @@ module API
       @project ||= find_project(params[:id])
     end
 
+    def available_labels
+      @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
+    end
+
     def find_project(id)
       project = Project.find_with_namespace(id) || Project.find_by(id: id)
 
@@ -118,7 +122,7 @@ module API
     end
 
     def find_project_label(id)
-      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
       label || not_found!('Label')
     end
 
@@ -197,16 +201,11 @@ module API
     def validate_label_params(params)
       errors = {}
 
-      if params[:labels].present?
-        params[:labels].split(',').each do |label_name|
-          label = user_project.labels.create_with(
-            color: Label::DEFAULT_COLOR).find_or_initialize_by(
-              title: label_name.strip)
+      params[:labels].to_s.split(',').each do |label_name|
+        label = available_labels.find_or_initialize_by(title: label_name.strip)
+        next if label.valid?
 
-          if label.invalid?
-            errors[label.title] = label.errors
-          end
-        end
+        errors[label.title] = label.errors
       end
 
       errors

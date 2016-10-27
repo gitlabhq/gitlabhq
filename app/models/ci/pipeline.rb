@@ -7,19 +7,19 @@ module Ci
 
     self.table_name = 'ci_commits'
 
-    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :project, foreign_key: :gl_project_id
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
-    has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
+    has_many :builds, foreign_key: :commit_id
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
     validates_presence_of :sha, unless: :importing?
     validates_presence_of :ref, unless: :importing?
     validates_presence_of :status, unless: :importing?
     validate :valid_commit_sha, unless: :importing?
 
-    after_save :keep_around_commits, unless: :importing?
+    after_create :keep_around_commits, unless: :importing?
 
     delegate :stages, to: :statuses
 
@@ -59,9 +59,6 @@ module Ci
 
       before_transition any => [:success, :failed, :canceled] do |pipeline|
         pipeline.finished_at = Time.now
-      end
-
-      before_transition do |pipeline|
         pipeline.update_duration
       end
 

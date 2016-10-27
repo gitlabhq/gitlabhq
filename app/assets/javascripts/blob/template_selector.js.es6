@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
     class TemplateSelector {
       constructor({ dropdown, data, pattern, wrapper, editor, fileEndpoint, $input } = {}) {
@@ -68,13 +69,9 @@
       // To be implemented on the extending class
       // e.g.
       // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
-      requestFileSuccess(file, { skipFocus, append } = {}) {
+      requestFileSuccess(file, { skipFocus } = {}) {
         const oldValue = this.editor.getValue();
         let newValue = file.content;
-
-        if (append && oldValue.length && oldValue !== newValue) {
-          newValue = oldValue + '\n\n' + newValue;
-        }
 
         this.editor.setValue(newValue, 1);
         if (!skipFocus) this.editor.focus();
@@ -99,4 +96,3 @@
 
     global.TemplateSelector = TemplateSelector;
   })(window.gl || ( window.gl = {}));
-

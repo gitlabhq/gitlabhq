@@ -1,6 +1,6 @@
 class BuildCoverageWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :default
+  include BuildQueue
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id)

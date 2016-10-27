@@ -10,7 +10,9 @@
 
 = render 'shared/issuable/filter', type: :boards
 
-.boards-list#board-app{ "v-cloak" => true, data: board_data }
-  .boards-app-loading.text-center{ "v-if" => "loading" }
-    = icon("spinner spin")
-  = render "projects/boards/components/board"
+#board-app.boards-app{ "v-cloak" => true, data: board_data }
+  .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
+    .boards-app-loading.text-center{ "v-if" => "loading" }
+      = icon("spinner spin")
+    = render "projects/boards/components/board"
+  = render "projects/boards/components/sidebar"

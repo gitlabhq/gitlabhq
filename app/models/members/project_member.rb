@@ -3,7 +3,7 @@ class ProjectMember < Member
 
   include Gitlab::ShellAdapter
 
-  belongs_to :project, class_name: 'Project', foreign_key: 'source_id'
+  belongs_to :project, foreign_key: 'source_id'
 
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
@@ -121,7 +121,11 @@ class ProjectMember < Member
   end
 
   def post_destroy_hook
-    event_service.leave_project(self.project, self.user)
+    if expired?
+      event_service.expired_leave_project(self.project, self.user)
+    else
+      event_service.leave_project(self.project, self.user)
+    end
 
     super
   end

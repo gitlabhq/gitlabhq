@@ -100,9 +100,15 @@ describe Issue, models: true do
     end
 
     it 'returns the merge request to close this issue' do
-      allow(mr).to receive(:closes_issue?).with(issue).and_return(true)
+      mr
 
       expect(issue.closed_by_merge_requests).to eq([mr])
+    end
+
+    it "returns an empty array when the merge request is closed already" do
+      closed_mr
+
+      expect(issue.closed_by_merge_requests).to eq([])
     end
 
     it "returns an empty array when the current issue is closed already" do

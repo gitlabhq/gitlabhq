@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Creates the variables for setting up GFM auto-completion
 (function() {
   if (window.GitLab == null) {

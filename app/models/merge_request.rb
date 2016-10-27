@@ -6,8 +6,8 @@ class MergeRequest < ActiveRecord::Base
   include Taskable
   include Importable
 
-  belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
-  belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
+  belongs_to :target_project, class_name: "Project"
+  belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy
@@ -135,6 +135,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.reference_valid?(reference)
     reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
+  end
+
+  def self.project_foreign_key
+    'target_project_id'
   end
 
   # Returns all the merge requests from an ActiveRecord:Relation.
@@ -322,21 +326,17 @@ class MergeRequest < ActiveRecord::Base
   def validate_fork
     return true unless target_project && source_project
     return true if target_project == source_project
-    return true unless forked_source_project_missing?
+    return true unless source_project_missing?
 
     errors.add :validate_fork,
                'Source project is not a fork of the target project'
   end
 
   def closed_without_fork?
-    closed? && forked_source_project_missing?
+    closed? && source_project_missing?
   end
 
-  def closed_without_source_project?
-    closed? && !source_project
-  end
-
-  def forked_source_project_missing?
+  def source_project_missing?
     return false unless for_fork?
     return true unless source_project
 
@@ -344,9 +344,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reopenable?
-    return false if closed_without_fork? || closed_without_source_project? || merged?
-
-    closed?
+    closed? && !source_project_missing? && source_branch_exists?
   end
 
   def ensure_merge_request_diff
@@ -658,7 +656,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_ci?
-    source_project.ci_service && commits.any?
+    source_project.try(:ci_service) && commits.any?
   end
 
   def branch_missing?
@@ -690,12 +688,9 @@ class MergeRequest < ActiveRecord::Base
 
     @environments ||=
       begin
-        environments = source_project.environments_for(
-          source_branch, diff_head_commit)
-        environments += target_project.environments_for(
-          target_branch, diff_head_commit, with_tags: true)
-
-        environments.uniq
+        envs = target_project.environments_for(target_branch, diff_head_commit, with_tags: true)
+        envs.concat(source_project.environments_for(source_branch, diff_head_commit)) if source_project
+        envs.uniq
       end
   end
 
@@ -787,21 +782,21 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines
     return unless source_project
 
-    @all_pipelines ||= begin
-      sha = if persisted?
-              all_commits_sha
-            else
-              diff_head_sha
-            end
-
-      source_project.pipelines.order(id: :desc).
-        where(sha: sha, ref: source_branch)
-    end
+    @all_pipelines ||= source_project.pipelines
+      .where(sha: all_commits_sha, ref: source_branch)
+      .order(id: :desc)
   end
 
   # Note that this could also return SHA from now dangling commits
+  #
   def all_commits_sha
-    merge_request_diffs.flat_map(&:commits_sha).uniq
+    if persisted?
+      merge_request_diffs.flat_map(&:commits_sha).uniq
+    elsif compare_commits
+      compare_commits.to_a.reverse.map(&:id)
+    else
+      [diff_head_sha]
+    end
   end
 
   def merge_commit

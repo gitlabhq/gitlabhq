@@ -32,8 +32,8 @@ class Project < ActiveRecord::Base
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   after_create :ensure_dir_exist
+  after_create :create_project_feature, unless: :project_feature
   after_save :ensure_dir_exist, if: :namespace_id_changed?
-  after_initialize :setup_project_feature
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -63,11 +63,11 @@ class Project < ActiveRecord::Base
   alias_attribute :title, :name
 
   # Relations
-  belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
+  belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
-  has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
+  has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
 
   # Project services
@@ -76,6 +76,7 @@ class Project < ActiveRecord::Base
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
   has_one :builds_email_service, dependent: :destroy
+  has_one :pipelines_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
@@ -106,7 +107,7 @@ class Project < ActiveRecord::Base
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
   has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy
+  has_many :labels,             dependent: :destroy, class_name: 'ProjectLabel'
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
@@ -115,7 +116,7 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
 
-  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :project_members
   has_many :users, through: :project_members
 
@@ -136,7 +137,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
 
-  has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
+  has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
   has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
@@ -386,6 +387,10 @@ class Project < ActiveRecord::Base
       Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
         Project.count
       end
+    end
+
+    def group_ids
+      joins(:namespace).where(namespaces: { type: 'Group' }).pluck(:namespace_id)
     end
   end
 
@@ -663,6 +668,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def issue_reference_pattern
+    issues_tracker.reference_pattern
+  end
+
   def default_issues_tracker?
     !external_issue_tracker
   end
@@ -718,7 +727,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          self.send :"create_#{service_name}_service"
+          public_send("create_#{service_name}_service")
         else
           Service.create_from_template(self.id, template)
         end
@@ -728,10 +737,8 @@ class Project < ActiveRecord::Base
 
   def create_labels
     Label.templates.each do |label|
-      label = label.dup
-      label.template = nil
-      label.project_id = self.id
-      label.save
+      params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
+      Labels::FindOrCreateService.new(owner, self, params).execute
     end
   end
 
@@ -1292,7 +1299,7 @@ class Project < ActiveRecord::Base
         environment_ids.where(ref: ref)
       end
 
-    environments.where(id: environment_ids).select do |environment|
+    environments.available.where(id: environment_ids).select do |environment|
       environment.includes_commit?(commit)
     end
   end
@@ -1301,11 +1308,6 @@ class Project < ActiveRecord::Base
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  # Prevents the creation of project_feature record for every project
-  def setup_project_feature
-    build_project_feature unless project_feature
   end
 
   def default_branch_protected?
@@ -1337,6 +1339,13 @@ class Project < ActiveRecord::Base
     shared_projects.any?
   end
 
+  # Similar to the normal callbacks that hook into the life cycle of an
+  # Active Record object, you can also define callbacks that get triggered
+  # when you add an object to an association collection. If any of these
+  # callbacks throw an exception, the object will not be added to the
+  # collection. Before you add a new board to the boards collection if you
+  # already have 1, 2, or n it will fail, but it if you have 0 that is lower
+  # than the number of permitted boards per project it won't fail.
   def validate_board_limit(board)
     raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end

@@ -74,6 +74,18 @@ describe MergeRequests::MergeService, services: true do
 
           service.execute(merge_request)
         end
+
+        context "wrong issue markdown" do
+          it 'does not close issues on JIRA issue tracker' do
+            jira_issue = ExternalIssue.new('#123', project)
+            commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
+            allow(merge_request).to receive(:commits).and_return([commit])
+
+            expect_any_instance_of(JiraService).not_to receive(:close_issue)
+
+            service.execute(merge_request)
+          end
+        end
       end
     end
 
@@ -120,13 +132,13 @@ describe MergeRequests::MergeService, services: true do
       let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
       it 'saves error if there is an exception' do
-        allow(service).to receive(:repository).and_raise("error")
+        allow(service).to receive(:repository).and_raise("error message")
 
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to eq("Something went wrong during merge")
+        expect(merge_request.merge_error).to eq("Something went wrong during merge: error message")
       end
 
       it 'saves error if there is an PreReceiveError exception' do

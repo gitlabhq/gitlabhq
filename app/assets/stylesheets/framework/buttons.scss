@@ -213,7 +213,8 @@
     top: 2px;
   }
 
-  svg, .fa {
+  svg,
+  .fa {
     &:not(:last-child) {
       margin-right: 3px;
     }

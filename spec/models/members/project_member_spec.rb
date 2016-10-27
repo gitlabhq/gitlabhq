@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ProjectMember, models: true do
   describe 'associations' do
-    it { is_expected.to belong_to(:project).class_name('Project').with_foreign_key(:source_id) }
+    it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end
 
   describe 'validations' do
@@ -52,6 +52,17 @@ describe ProjectMember, models: true do
     before do
       owner_todos
       master_todos
+    end
+
+    it "creates an expired event when left due to expiry" do
+      expired = create(:project_member, project: project, expires_at: Time.now - 6.days)
+      expired.destroy
+      expect(Event.first.action).to eq(Event::EXPIRED)
+    end
+
+    it "creates a left event when left due to leave" do
+      master.destroy
+      expect(Event.first.action).to eq(Event::LEFT)
     end
 
     it "destroys itself and delete associated todos" do

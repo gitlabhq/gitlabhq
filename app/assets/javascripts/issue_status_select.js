@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.IssueStatusSelect = (function() {
     function IssueStatusSelect() {

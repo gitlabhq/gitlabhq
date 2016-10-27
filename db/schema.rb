@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161012180455) do
+ActiveRecord::Schema.define(version: 20161024042317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -380,6 +380,7 @@ ActiveRecord::Schema.define(version: 20161012180455) do
     t.string "deployable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "on_stop"
   end
 
   add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree
@@ -404,6 +405,7 @@ ActiveRecord::Schema.define(version: 20161012180455) do
     t.datetime "updated_at"
     t.string "external_url"
     t.string "environment_type"
+    t.string "state", default: "available", null: false
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
@@ -517,6 +519,17 @@ ActiveRecord::Schema.define(version: 20161012180455) do
   add_index "label_links", ["label_id"], name: "index_label_links_on_label_id", using: :btree
   add_index "label_links", ["target_id", "target_type"], name: "index_label_links_on_target_id_and_target_type", using: :btree
 
+  create_table "label_priorities", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "label_id", null: false
+    t.integer "priority", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "label_priorities", ["priority"], name: "index_label_priorities_on_priority", using: :btree
+  add_index "label_priorities", ["project_id", "label_id"], name: "index_label_priorities_on_project_id_and_label_id", unique: true, using: :btree
+
   create_table "labels", force: :cascade do |t|
     t.string "title"
     t.string "color"
@@ -525,13 +538,13 @@ ActiveRecord::Schema.define(version: 20161012180455) do
     t.datetime "updated_at"
     t.boolean "template", default: false
     t.string "description"
-    t.integer "priority"
     t.text "description_html"
+    t.string "type"
+    t.integer "group_id"
   end
 
-  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
-  add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
-  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
+  add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
+  add_index "labels", ["group_id"], name: "index_labels_on_group_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -830,7 +843,7 @@ ActiveRecord::Schema.define(version: 20161012180455) do
     t.integer "builds_access_level"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repository_access_level",     default: 20, null: false
+    t.integer "repository_access_level", default: 20, null: false
   end
 
   add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree
@@ -1211,6 +1224,9 @@ ActiveRecord::Schema.define(version: 20161012180455) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
+  add_foreign_key "label_priorities", "labels", on_delete: :cascade
+  add_foreign_key "label_priorities", "projects", on_delete: :cascade
+  add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade

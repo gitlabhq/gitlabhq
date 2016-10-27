@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require d3 */
 
@@ -29,8 +30,7 @@
     ContributorsGraph.set_y_domain = function(data) {
       return ContributorsGraph.prototype.y_domain = [
         0, d3.max(data, function(d) {
-          var ref, ref1;
-          return d.commits = (ref = (ref1 = d.commits) != null ? ref1 : d.additions) != null ? ref : d.deletions;
+          return d.commits = d.commits || d.additions || d.deletions;
         })
       ];
     };
@@ -44,8 +44,7 @@
     ContributorsGraph.init_y_domain = function(data) {
       return ContributorsGraph.prototype.y_domain = [
         0, d3.max(data, function(d) {
-          var ref, ref1;
-          return d.commits = (ref = (ref1 = d.commits) != null ? ref1 : d.additions) != null ? ref : d.deletions;
+          return d.commits = d.commits || d.additions || d.deletions;
         })
       ];
     };
@@ -147,9 +146,8 @@
       return this.area = d3.svg.area().x(function(d) {
         return x(d.date);
       }).y0(this.height).y1(function(d) {
-        var ref, ref1, xa;
-        xa = d.commits = (ref = (ref1 = d.commits) != null ? ref1 : d.additions) != null ? ref : d.deletions;
-        return y(xa);
+        d.commits = d.commits || d.additions || d.deletions;
+        return y(d.commits);
       }).interpolate("basis");
     };
 

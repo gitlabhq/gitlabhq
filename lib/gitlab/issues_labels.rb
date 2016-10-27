@@ -18,8 +18,8 @@ module Gitlab
           { title: "enhancement", color: green }
         ]
 
-        labels.each do |label|
-          project.labels.create(label)
+        labels.each do |params|
+          ::Labels::FindOrCreateService.new(project.owner, project, params).execute
         end
       end
     end

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.GroupAvatar = (function() {
     function GroupAvatar() {
