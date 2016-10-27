@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
+  - gitlab:check rake task checks ES version according to requirements
 
 
 ## 8.13.1 (2016-10-25)
