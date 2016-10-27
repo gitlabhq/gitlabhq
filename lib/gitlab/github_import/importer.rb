@@ -132,8 +132,15 @@ module Gitlab
       end
 
       def apply_labels(issuable, raw_issuable)
-        if raw_issuable.labels.count > 0
-          label_ids = raw_issuable.labels
+        # GH returns labels for issues but not for pull requests!
+        labels = if issuable.is_a?(MergeRequest)
+                   client.labels_for_issue(repo, raw_issuable.number)
+                 else
+                   raw_issuable.labels
+                 end
+
+        if labels.count > 0
+          label_ids = labels
             .map { |attrs| @labels[attrs.name] }
             .compact
 
