@@ -98,6 +98,11 @@ ActiveRecord::Schema.define(version: 20161103171205) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "housekeeping_enabled", default: true, null: false
+    t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
+    t.integer "housekeeping_incremental_repack_period", default: 10, null: false
+    t.integer "housekeeping_full_repack_period", default: 50, null: false
+    t.integer "housekeeping_gc_period", default: 200, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|

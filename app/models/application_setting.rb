@@ -85,6 +85,18 @@ class ApplicationSetting < ActiveRecord::Base
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
 
+  validates :housekeeping_incremental_repack_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :housekeeping_full_repack_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: :housekeeping_incremental_repack_period }
+
+  validates :housekeeping_gc_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -168,6 +180,11 @@ class ApplicationSetting < ActiveRecord::Base
       container_registry_token_expire_delay: 5,
       repository_storages: ['default'],
       user_default_external: false,
+      housekeeping_enabled: true,
+      housekeeping_bitmaps_enabled: true,
+      housekeeping_incremental_repack_period: 10,
+      housekeeping_full_repack_period: 50,
+      housekeeping_gc_period: 200,
     )
   end
 
