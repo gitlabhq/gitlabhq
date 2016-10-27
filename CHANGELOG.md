@@ -24,6 +24,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
   - Update mail_room and enable sentinel support to Reply By Email (!7101)
   - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
+  - Added support for executing post deployment migrations
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix typo in framework css class. !7086 (Daniel Voogsgerd)
   - New issue board list dropdown stays open after adding a new list
