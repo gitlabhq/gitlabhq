@@ -51,7 +51,6 @@ class Commit
   end
 
   attr_accessor :raw
-  attr_reader :statuses
 
   def initialize(raw_commit, project)
     raise "Nil as raw commit passed" unless raw_commit
@@ -236,12 +235,12 @@ class Commit
   end
 
   def status_for(ref)
-    if statuses.key?(ref)
-      statuses[ref]
+    if @statuses.key?(ref)
+      @statuses[ref]
     elsif ref
-      statuses[ref] = pipelines.where(ref: ref).status
+      @statuses[ref] = pipelines.where(ref: ref).status
     else
-      statuses[ref] = pipelines.status
+      @statuses[ref] = pipelines.status
     end
   end
 
