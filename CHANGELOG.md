@@ -27,6 +27,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Show full status link on MR & commit pipelines
   - Fix documents and comments on Build API `scope`
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
+  - Shortened merge request modal to let clipboard button not overlap
 
 ## 8.13.1 (2016-10-25)
   - Fix branch protection API. !6215
@@ -255,7 +256,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix bug where 'Search results' repeated many times when a search in the emoji search form is cleared (Xavier Bick) (@zeiv)
   - Fix resolve discussion buttons endpoint path
   - Refactor remnants of CoffeeScript destructured opts and super !6261
-  - Shortened merge request modal to let clipboard button not overlap
   - Prevent running GfmAutocomplete setup for each diff note !6569
 
 ## 8.12.1
