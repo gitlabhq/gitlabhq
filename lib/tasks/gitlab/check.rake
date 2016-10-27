@@ -986,11 +986,12 @@ namespace :gitlab do
     client = Elasticsearch::Client.new(host: ApplicationSetting.current.elasticsearch_host,
                                        port: ApplicationSetting.current.elasticsearch_port)
 
-    print "Elasticsearch version >= 2.0? ... "
+    print "Elasticsearch version >= 2.4? ... "
 
     version = client.info["version"]["number"]
 
-    if version.starts_with?("2")
+    # The version is greater or equal to 2.4.0
+    if version.delete('.').to_i >= 240
       puts "yes (#{version})".color(:green)
     else
       puts "no".color(:red)
