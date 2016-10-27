@@ -11,6 +11,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Fix sidekiq stats in admin area (blackst0ne)
+  - API: Fix booleans not recognized as such when using the `to_boolean` helper
   - Removed delete branch tooltip !6954
   - Escape ref and path for relative links !6050 (winniehell)
   - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
