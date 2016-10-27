@@ -279,6 +279,10 @@
 #modal_merge_info .modal-dialog {
   width: 600px;
 
+  .dark {
+    margin-right: 40px;
+  }
+
   .btn-clipboard {
     @extend .pull-right;
 
