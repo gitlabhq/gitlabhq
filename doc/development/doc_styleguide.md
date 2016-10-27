@@ -93,6 +93,8 @@ merge request.
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request
+- Avoid adding things that show ephemeral statuses. For example, if a feature is
+  considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
   of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`,
