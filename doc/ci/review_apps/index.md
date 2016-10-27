@@ -105,7 +105,7 @@ And below is a soon to be added examples list:
 - Use on Heroku with dpl
 - Use with OpenShift/kubernetes
 
-[app-nginx]: nginx_guide.md
+[app-nginx]: https://gitlab.com/gitlab-examples/review-apps-nginx
 [ce-21971]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21971
 [dynamic environments]: ../environments.md#dynamic-environments
 [environments]: ../environments.md
