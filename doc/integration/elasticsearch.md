@@ -67,7 +67,7 @@ Configure Elasticsearch's host and port in **Admin > Settings**. Then create emp
     sudo gitlab-rake gitlab:elastic:create_empty_index
 
     # Installations from source
-    bundle exec rake gitlab:elastic:create_empty_index
+    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
     ```
 
 
@@ -219,7 +219,7 @@ To minimize downtime of the search feature we recommend the following:
     sudo gitlab-rake gitlab:elastic:create_empty_index
 
     # Installations from source
-    bundle exec rake gitlab:elastic:create_empty_index
+    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
     ```
 
 1. Index all repositories using the `gitlab:elastic:index_repositories` Rake
