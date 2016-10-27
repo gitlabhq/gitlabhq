@@ -203,7 +203,7 @@ module Gitlab
         # No matching resource in the collection, which means we got halted right on the end of the last page, so all good
         return unless cut_off_index
 
-        # Otherwise, remove the resouces we've already inserted
+        # Otherwise, remove the resources we've already inserted
         comments.shift(cut_off_index + 1)
       end
 

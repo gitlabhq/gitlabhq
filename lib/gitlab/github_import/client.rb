@@ -110,7 +110,7 @@ module Gitlab
         if block_given?
           yield data
           # api.last_response could change while we're yielding (e.g. fetching labels for each PR)
-          # so we cache our own last request
+          # so we cache our own last response
           each_response_page(last_response, &block)
         else
           each_response_page(last_response) { |page| data.concat(page) }
