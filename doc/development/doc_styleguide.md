@@ -102,6 +102,10 @@ merge request.
   live without an audit, thus preventing dead links and redirection issues when
   corrected
 - Leave exactly one newline after a heading
+- Generally, avoid removing headings that are no longer relevant to the
+  documentation in order to preserve links. If a change makes more sense than
+  carrying a wrong heading in the documentation forever, discuss the change with
+  the tech writing team and apply it.
 
 ## Links
 
