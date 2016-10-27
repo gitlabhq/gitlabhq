@@ -11,8 +11,6 @@
    * for more information.
    */
 
-  const Store = gl.environmentsList.EnvironmentsStore;
-
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
 

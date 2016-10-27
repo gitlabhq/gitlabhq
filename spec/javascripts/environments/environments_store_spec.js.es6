@@ -21,20 +21,16 @@
       });
 
       it('should count stopped environments and save the count in the state', () => {
-
-
         expect(gl.environmentsList.EnvironmentsStore.state.stoppedCounter).toBe(1);
       });
 
       it('should count available environments and save the count in the state', () => {
-
         expect(gl.environmentsList.EnvironmentsStore.state.availableCounter).toBe(2);
       });
 
       it('should store environments with same environment_type as sibilings', () => {
-
         expect(gl.environmentsList.EnvironmentsStore.state.environments.length).toBe(2);
-        
+
         const parentFolder = gl.environmentsList.EnvironmentsStore.state.environments.filter((env) => {
           return env.children && env.children.length > 0;
         });
