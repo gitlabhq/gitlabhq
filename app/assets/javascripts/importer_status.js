@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ImporterStatus = (function() {
     function ImporterStatus(jobs_url, import_url) {

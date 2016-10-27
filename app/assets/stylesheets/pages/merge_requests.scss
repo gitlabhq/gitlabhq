@@ -439,12 +439,12 @@
 }
 
 .merge-request-tabs-holder {
-  background-color: #fff;
+  background-color: $white-light;
 
   &.affix {
     top: 100px;
     left: 0;
-    z-index: 9;
+    z-index: 10;
     transition: right .15s;
   }
 

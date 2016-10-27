@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require ../blob/template_selector */
 
 ((global) => {
@@ -32,24 +33,22 @@
         this.currentTemplate = currentTemplate;
         if (err) return; // Error handled by global AJAX error handler
         this.stopLoadingSpinner();
-        this.setInputValueToTemplateContent(true);
+        this.setInputValueToTemplateContent();
       });
       return;
     }
 
-    setInputValueToTemplateContent(append) {
+    setInputValueToTemplateContent() {
       // `this.requestFileSuccess` sets the value of the description input field
-      // to the content of the template selected. If `append` is true, the
-      // template content will be appended to the previous value of the field,
-      // separated by a blank line if the previous value is non-empty.
+      // to the content of the template selected.
       if (this.titleInput.val() === '') {
         // If the title has not yet been set, focus the title input and
         // skip focusing the description input by setting `true` as the
         // `skipFocus` option to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, {skipFocus: true, append});
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: true});
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate, {skipFocus: false, append});
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: false});
       }
       return;
     }

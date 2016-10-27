@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require lib/utils/datetime_utility
 (() => {
   describe('Date time utils', () => {

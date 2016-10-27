@@ -1,14 +1,13 @@
 - is_playable = subject.playable? && can?(current_user, :update_build, @project)
 - if is_playable
   = link_to play_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, data: { toggle: 'tooltip', title: "#{subject.name} - play", container: '.pipeline-graph', placement: 'bottom' } do
-    = render_status_with_link('build', 'play')
+    = ci_icon_for_status('play')
     .ci-status-text= subject.name
 - elsif can?(current_user, :read_build, @project)
   = link_to namespace_project_build_path(subject.project.namespace, subject.project, subject), data: { toggle: 'tooltip', title: "#{subject.name} - #{subject.status}", container: '.pipeline-graph', placement: 'bottom' } do
     %span.ci-status-icon
-      = render_status_with_link('build', subject.status)
+      = ci_icon_for_status(subject.status)
     .ci-status-text= subject.name
 - else
   %span.ci-status-icon
-    = render_status_with_link('build', subject.status)
-  = ci_icon_for_status(subject.status)
+    = ci_icon_for_status(subject.status)

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
@@ -208,7 +209,7 @@
     FILTER_INPUT = '.dropdown-input .dropdown-input-field';
 
     function GitLabDropdown(el1, options) {
-      var ref, ref1, ref2, ref3, searchFields, selector, self;
+      var searchFields, selector, self;
       this.el = el1;
       this.options = options;
       this.updateLabel = bind(this.updateLabel, this);
@@ -219,7 +220,11 @@
       selector = $(this.el).data("target");
       this.dropdown = selector != null ? $(selector) : $(this.el).parent();
       // Set Defaults
-      ref = this.options, this.filterInput = (ref1 = ref.filterInput) != null ? ref1 : this.getElement(FILTER_INPUT), this.highlight = (ref2 = ref.highlight) != null ? ref2 : false, this.filterInputBlur = (ref3 = ref.filterInputBlur) != null ? ref3 : true;
+      this.filterInput = this.options.filterInput || this.getElement(FILTER_INPUT);
+      this.highlight = !!this.options.highlight
+      this.filterInputBlur = this.options.filterInputBlur != null
+        ? this.options.filterInputBlur
+        : true;
       // If no input is passed create a default one
       self = this;
       // If selector was passed
@@ -418,7 +423,9 @@
       var $target;
       if (this.options.multiSelect) {
         $target = $(e.target);
-        if ($target && !$target.hasClass('dropdown-menu-close') && !$target.hasClass('dropdown-menu-close-icon') && !$target.data('is-link')) {
+        if ($target && !$target.hasClass('dropdown-menu-close') &&
+                       !$target.hasClass('dropdown-menu-close-icon') &&
+                       !$target.data('is-link')) {
           e.stopPropagation();
           return false;
         } else {
@@ -549,6 +556,8 @@
           value = this.options.id ? this.options.id(data) : data.id;
           fieldName = this.options.fieldName;
 
+          if (value) { value = value.toString().replace(/'/g, '\\\'') };
+
           field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
           if (field.length) {
             selected = true;
@@ -620,8 +629,21 @@
           selectedObject = this.renderedData[selectedIndex];
         }
       }
+
+      if (this.options.vue) {
+        if (el.hasClass(ACTIVE_CLASS)) {
+          el.removeClass(ACTIVE_CLASS);
+        } else {
+          el.addClass(ACTIVE_CLASS);
+        }
+
+        return selectedObject;
+      }
+
       field = [];
-      value = this.options.id ? this.options.id(selectedObject, el) : selectedObject.id;
+      value = this.options.id
+        ? this.options.id(selectedObject, el)
+        : selectedObject.id;
       if (isInput) {
         field = $(this.el);
       } else if(value) {

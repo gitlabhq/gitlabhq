@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Star = (function() {
     function Star() {

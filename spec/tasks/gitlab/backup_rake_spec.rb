@@ -79,7 +79,7 @@ describe 'gitlab:app namespace rake task' do
     end
   end # backup_restore task
 
-  describe 'backup_create' do
+  describe 'backup' do
     def tars_glob
       Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
     end
@@ -96,6 +96,78 @@ describe 'gitlab:app namespace rake task' do
       $stdout = orig_stdout
 
       @backup_tar = tars_glob.first
+    end
+
+    def restore_backup
+      orig_stdout = $stdout
+      $stdout = StringIO.new
+      reenable_backup_sub_tasks
+      run_rake_task('gitlab:backup:restore')
+      reenable_backup_sub_tasks
+      $stdout = orig_stdout
+    end
+
+    describe 'backup creation and deletion using annex and custom_hooks' do
+      let(:project) { create(:project) }
+      let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
+
+      before(:each) do
+        @origin_cd = Dir.pwd
+
+        path = File.join(project.repository.path_to_repo, filename)
+        FileUtils.mkdir_p(path)
+        FileUtils.touch(File.join(path, "dummy.txt"))
+
+        # We need to use the full path instead of the relative one
+        allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(File.expand_path(Gitlab.config.gitlab_shell.path, Rails.root.to_s))
+
+        ENV["SKIP"] = "db"
+        create_backup
+      end
+
+      after(:each) do
+        ENV["SKIP"] = ""
+        FileUtils.rm(@backup_tar)
+        Dir.chdir(@origin_cd)
+      end
+
+      context 'project uses git-annex and successfully creates backup' do
+        let(:filename) { "annex" }
+
+        it 'creates annex.tar and project bundle' do
+          tar_contents, exit_status = Gitlab::Popen.popen(%W{tar -tvf #{@backup_tar}})
+
+          expect(exit_status).to eq(0)
+          expect(tar_contents).to match(user_backup_path)
+          expect(tar_contents).to match("#{user_backup_path}/annex.tar")
+          expect(tar_contents).to match("#{user_backup_path}.bundle")
+        end
+
+        it 'restores files correctly' do
+          restore_backup
+
+          expect(Dir.entries(File.join(project.repository.path, "annex"))).to include("dummy.txt")
+        end
+      end
+
+      context 'project uses custom_hooks and successfully creates backup' do
+        let(:filename) { "custom_hooks" }
+
+        it 'creates custom_hooks.tar and project bundle' do
+          tar_contents, exit_status = Gitlab::Popen.popen(%W{tar -tvf #{@backup_tar}})
+
+          expect(exit_status).to eq(0)
+          expect(tar_contents).to match(user_backup_path)
+          expect(tar_contents).to match("#{user_backup_path}/custom_hooks.tar")
+          expect(tar_contents).to match("#{user_backup_path}.bundle")
+        end
+
+        it 'restores files correctly' do
+          restore_backup
+
+          expect(Dir.entries(File.join(project.repository.path, "custom_hooks"))).to include("dummy.txt")
+        end
+      end
     end
 
     context 'tar creation' do

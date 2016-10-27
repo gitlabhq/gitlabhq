@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function (w) {
   class CreateLabelDropdown {
     constructor ($el, namespacePath, projectPath) {

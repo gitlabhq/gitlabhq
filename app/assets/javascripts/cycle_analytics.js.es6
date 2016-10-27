@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require vue
 
 ((global) => {
@@ -6,7 +7,7 @@
   const store = gl.cycleAnalyticsStore = {
     isLoading: true,
     hasError: false,
-    isHelpDismissed: $.cookie(COOKIE_NAME),
+    isHelpDismissed: Cookies.get(COOKIE_NAME),
     analytics: {}
   };
 
@@ -75,9 +76,7 @@
 
     dismissLanding() {
       store.isHelpDismissed = true;
-      $.cookie(COOKIE_NAME, true, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set(COOKIE_NAME, true);
     }
 
     initDropdown() {

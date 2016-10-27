@@ -1,9 +1,10 @@
+/* eslint-disable */
 // MergeRequestTabs
 //
 // Handles persisting and restoring the current tab selection and lazily-loading
 // content on the MergeRequests#show page.
 //
-/*= require jquery.cookie */
+/*= require js.cookie */
 
 //
 // ### Example Markup
@@ -368,7 +369,7 @@
 
     MergeRequestTabs.prototype.expandView = function() {
       var $gutterIcon;
-      if ($.cookie('collapsed_gutter') === 'true') {
+      if (Cookies.get('collapsed_gutter') === 'true') {
         return;
       }
       $gutterIcon = $('.js-sidebar-toggle i:visible');

@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require bootstrap */
 /*= require select2 */

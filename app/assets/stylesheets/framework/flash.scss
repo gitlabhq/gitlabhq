@@ -18,7 +18,8 @@
     margin: 0;
   }
 
-  .flash-notice, .flash-alert {
+  .flash-notice,
+  .flash-alert {
     border-radius: $border-radius-default;
 
     .container-fluid,
@@ -30,7 +31,8 @@
   &.flash-container-page {
     margin-bottom: 0;
 
-    .flash-notice, .flash-alert {
+    .flash-notice,
+    .flash-alert {
       border-radius: 0;
     }
   }

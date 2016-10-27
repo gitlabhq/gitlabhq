@@ -101,7 +101,8 @@ $colors: (
 
 
 @mixin color-scheme($color) {
-  .header.line_content, .diff-line-num {
+  .header.line_content,
+  .diff-line-num {
     &.origin {
       background-color: map-get($colors, #{$color}_header_origin_neutral);
       border-color: map-get($colors, #{$color}_header_origin_neutral);

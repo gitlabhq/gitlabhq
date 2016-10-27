@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require graphs/stat_graph_contributors_util
 
 describe("ContributorsStatGraphUtil", function () {
