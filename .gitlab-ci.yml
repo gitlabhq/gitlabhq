@@ -302,15 +302,20 @@ coverage:
     - coverage/assets/
 
 # Trigger docs build
+# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:
   stage: post-test
-  before_script: []
+  image: "alpine"
+  before_script:
+    - apk update && apk add curl
+  variables:
+    GIT_STRATEGY: none
   cache: {}
   artifacts: {}
   script:
-    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master https://gitlab.com/api/v3/projects/38069/trigger/builds"
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ee https://gitlab.com/api/v3/projects/38069/trigger/builds"
   only:
-    - master
+    - master@gitlab-org/gitlab-ee
 
 # Notify slack in the end
 

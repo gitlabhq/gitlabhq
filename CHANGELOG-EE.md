@@ -1,12 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-## 8.13.1
+## 8.14.0 (2016-11-22)
 
-  - Fix Elasticsearch::Transport::Transport::Errors::BadRequest when ES is enabled. #21036
-  - Hides multiple board actions if user doesnt have permissions
+
+## 8.13.1 (2016-10-25)
+  - Hide multiple board actions if user doesnt have permissions. !816
+  - Fix Elasticsearch::Transport::Transport::Errors::BadRequest when ES is enabled. !818
 
 ## 8.13.0 (2016-10-22)
-
   - Cache the last usage data to avoid unicorn timeouts
   - Add user activity table and service to query for active users
   - Fix 500 error updating mirror URLs for projects
