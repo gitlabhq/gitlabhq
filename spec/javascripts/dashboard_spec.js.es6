@@ -1,7 +1,7 @@
 /* eslint-disable */
 /*= require sidebar */
 /*= require jquery */
-/*= require jquery.cookie */
+/*= require js.cookie */
 /*= require lib/utils/text_utility */
 
 ((global) => {
