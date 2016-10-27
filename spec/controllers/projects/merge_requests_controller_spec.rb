@@ -292,7 +292,9 @@ describe Projects::MergeRequestsController do
         it 'sets the MR to merge when the build succeeds' do
           service = double(:merge_when_build_succeeds_service)
 
-          expect(MergeRequests::MergeWhenBuildSucceedsService).to receive(:new).with(project, anything, anything).and_return(service)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService)
+            .to receive(:new).with(project, anything, anything)
+            .and_return(service)
           expect(service).to receive(:execute).with(merge_request)
 
           merge_when_build_succeeds

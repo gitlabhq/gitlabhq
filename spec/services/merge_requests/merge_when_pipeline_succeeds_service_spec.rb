@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::MergeWhenBuildSucceedsService do
+describe MergeRequests::MergeWhenPipelineSucceedsService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -10,8 +10,14 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
                            source_project: project, target_project: project, state: "opened")
   end
 
-  let(:pipeline) { create(:ci_pipeline_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
-  let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, commit_message: 'Awesome message') }
+  let(:pipeline) do
+    create(:ci_pipeline_with_one_job, ref: mr_merge_if_green_enabled.source_branch,
+                                      project: project)
+  end
+
+  let(:service) do
+    described_class.new(project, user, commit_message: 'Awesome message')
+  end
 
   describe "#execute" do
     let(:merge_request) do
@@ -39,7 +45,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
     end
 
     context 'already approved' do
-      let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, new_key: true) }
+      let(:service) { described_class.new(project, user, new_key: true) }
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
 
       before do

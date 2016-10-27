@@ -205,11 +205,13 @@ module API
           }
 
           if params[:merge_when_build_succeeds] && merge_request.pipeline && merge_request.pipeline.active?
-            ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request)
+            ::MergeRequests::MergeWhenPipelineSucceedsService
+              .new(merge_request.target_project, current_user, merge_params)
+              .execute(merge_request)
           else
-            ::MergeRequests::MergeService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request)
+            ::MergeRequests::MergeService
+              .new(merge_request.target_project, current_user, merge_params)
+              .execute(merge_request)
           end
 
           present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
@@ -223,7 +225,9 @@ module API
 
           unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
 
-          ::MergeRequest::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user).cancel(merge_request)
+          ::MergeRequest::MergeWhenPipelineSucceedsService
+            .new(merge_request.target_project, current_user)
+            .cancel(merge_request)
         end
 
         desc 'Get the comments of a merge request' do
