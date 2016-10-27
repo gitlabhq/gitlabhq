@@ -3,6 +3,7 @@
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
 - can_admin_member = can?(current_user, action_member_permission(:update, member), member)
+- update_url = member.type == 'GroupMember' ? group_group_member_path(@group, member) : namespace_project_project_member_path(@project.namespace, @project, member)
 
 %li.member{ class: [dom_class(member), ("is-overriden" if member.override)], id: dom_id(member) }
   %span.list-item-name
@@ -78,7 +79,7 @@
                       %li.divider
                       %li
                         %a{ href: "javascript:void(0)",
-                          data: { revert: "true", endpoint: group_group_member_path(@group, member), id: dom_id(member) } }
+                          data: { revert: "true", endpoint: update_url, id: dom_id(member) } }
                           Revert to LDAP group sync settings
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member
@@ -128,7 +129,7 @@
     .controls
       %button.btn.btn-warning.js-ldap-override{ type: "button",
         "aria-label" => "Change LDAP member permissions",
-        data: { id: dom_id(member), endpoint: group_group_member_path(@group, member) } }
+        data: { id: dom_id(member), endpoint: update_url } }
         Change permissions
       %button.btn.btn-default.js-ldap-permissions{ type: "button",
         "aria-label" => "Close permissions override",
