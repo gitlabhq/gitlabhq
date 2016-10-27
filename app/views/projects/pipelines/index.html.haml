@@ -54,3 +54,9 @@
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 
       = paginate @pipelines, theme: 'gitlab'
+
+:javascript
+  var pipelines = JSON.parse('#{@pipelines.to_json}');
+  var count = JSON.parse('#{@pipelines_count.to_json}');
+
+  new gl.PollingPipelines(pipelines, count);
