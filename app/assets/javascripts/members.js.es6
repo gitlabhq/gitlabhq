@@ -41,7 +41,8 @@
 
     showLDAPPermissionsWarning (e) {
       const btn = e.currentTarget,
-            ldapPermissionsElement = this.getLDAPPermissionsElement(btn);
+            memberListItem = this.getMemberListItem(btn),
+            ldapPermissionsElement = memberListItem.nextElementSibling;
 
       if (ldapPermissionsElement.style.display === 'none') {
         ldapPermissionsElement.style.display = 'block';
@@ -50,8 +51,12 @@
       }
     }
 
-    getLDAPPermissionsElement (btn) {
-      return document.getElementById(btn.dataset.id).nextElementSibling;
+    getMemberListItem (btn) {
+      return document.getElementById(btn.dataset.id);
+    }
+
+    toggleMemberAccessToggle (el) {
+      const toggle = el.querySelectorAll('.dropdown-menu-toggle')[0];
     }
   }
 

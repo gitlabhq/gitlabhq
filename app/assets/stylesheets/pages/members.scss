@@ -54,6 +54,10 @@
   @media (min-width: $screen-sm-min) {
     width: 50%;
   }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
 }
 
 .member-access-text {
