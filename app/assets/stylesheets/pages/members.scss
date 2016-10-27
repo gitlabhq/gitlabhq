@@ -4,6 +4,12 @@
 }
 
 .member {
+  &.is-overriden {
+    .btn-ldap-override {
+      visibility: hidden;
+    }
+  }
+
   .list-item-name {
     @media (min-width: $screen-sm-min) {
       float: left;

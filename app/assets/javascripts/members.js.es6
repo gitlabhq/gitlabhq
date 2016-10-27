@@ -5,19 +5,48 @@
   class Members {
     constructor() {
       this.addListeners();
+      this.initGLDropdown();
     }
 
     addListeners() {
       const ldapPermissionsChangeBtns = document.querySelectorAll('.js-ldap-permissions');
+      const ldapOverrideBtns = document.querySelectorAll('.js-ldap-override');
 
       ldapPermissionsChangeBtns.forEach((btn) => {
         btn.addEventListener('click', this.showLDAPPermissionsWarning.bind(this));
+      });
+
+      ldapOverrideBtns.forEach((btn) => {
+        btn.addEventListener('click', this.toggleMemberAccessToggle.bind(this));
       });
 
       $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
       $('.js-member-update-control').off('change').on('change', this.formSubmit);
       $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess);
       gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
+    }
+
+    initGLDropdown () {
+      $('.js-member-permissions-dropdown').each((i, btn) => {
+        const $btn = $(btn);
+
+        $btn.glDropdown({
+          selectable: true,
+          fieldName: 'test',
+          id () {
+            return 1;
+          },
+          clicked: (selected, $el) => {
+            const $link = $($el);
+
+            if ($link.data('revert')) {
+              const memberListitem = this.getMemberListItem($link.get(0));
+
+              this.overrideLdap(memberListitem, $link.data('endpoint'), false);
+            }
+          }
+        });
+      });
     }
 
     removeRow(e) {
@@ -40,9 +69,9 @@
     }
 
     showLDAPPermissionsWarning (e) {
-      const btn = e.currentTarget,
-            memberListItem = this.getMemberListItem(btn),
-            ldapPermissionsElement = memberListItem.nextElementSibling;
+      const btn = e.currentTarget;
+      const memberListItem = this.getMemberListItem(btn);
+      const ldapPermissionsElement = memberListItem.nextElementSibling;
 
       if (ldapPermissionsElement.style.display === 'none') {
         ldapPermissionsElement.style.display = 'block';
@@ -55,8 +84,33 @@
       return document.getElementById(btn.dataset.id);
     }
 
-    toggleMemberAccessToggle (el) {
-      const toggle = el.querySelectorAll('.dropdown-menu-toggle')[0];
+    toggleMemberAccessToggle (e) {
+      const btn = e.currentTarget;
+      const memberListItem = this.getMemberListItem(btn);
+      const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
+
+      this.showLDAPPermissionsWarning(e);
+      toggle.removeAttribute('disabled');
+
+      this.overrideLdap(memberListItem, btn.dataset.endpoint, true);
+    }
+
+    overrideLdap (memberListitem, endpoint, override) {
+      if (override) {
+        memberListitem.classList.add('is-overriden');
+      } else {
+        memberListitem.classList.remove('is-overriden');
+      }
+
+      return $.ajax({
+        url: endpoint,
+        type: 'PATCH',
+        data: {
+          group_member: {
+            override
+          }
+        }
+      })
     }
   }
 

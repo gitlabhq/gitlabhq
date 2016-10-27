@@ -16,6 +16,6 @@ class GroupMemberPolicy < BasePolicy
       can! :destroy_group_member
     end
 
-    cannot! :update_group_member if @subject.ldap
+    # cannot! :update_group_member if @subject.ldap
   end
 end

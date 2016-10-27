@@ -4,7 +4,7 @@
 - source = member.source
 - can_admin_member = can?(current_user, action_member_permission(:update, member), member)
 
-%li.member{ class: dom_class(member), id: dom_id(member) }
+%li.member{ class: [dom_class(member), ("is-overriden" if member.override)], id: dom_id(member) }
   %span.list-item-name
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
@@ -53,7 +53,7 @@
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
             -# = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can_admin_member
             .member-form-control.dropdown.append-right-5
-              %button.dropdown-menu-toggle{ type: "button",
+              %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
                 disabled: member.ldap && !member.override,
                 data: { toggle: "dropdown" } }
                 = member.human_access
@@ -64,14 +64,15 @@
                   %ul
                     - Gitlab::Access.options.each do |role, role_id|
                       %li
-                        %a{ href: "#",
+                        %a{ href: "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id } }
                           = role
                     - if member.ldap
                       %li.divider
                       %li
-                        %a{ href: "#" }
+                        %a{ href: "javascript:void(0)",
+                          data: { revert: "true", endpoint: group_group_member_path(@group, member), id: dom_id(member) } }
                           Revert to LDAP group sync settings
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member
@@ -107,7 +108,7 @@
                 Delete
               = icon('trash', class: 'hidden-xs')
         - elsif member.ldap
-          %button.btn.btn-default.prepend-left-10.js-ldap-permissions{ type: "button",
+          %button.btn.btn-default.btn-ldap-override.prepend-left-10.js-ldap-permissions{ type: "button",
             "aria-label" => "Override LDAP settings",
             data: { name: user.name, id: dom_id(member) } }
             = icon("pencil")
@@ -119,8 +120,9 @@
       = user.name
       is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.
     .controls
-      %button.btn.btn-warning{ type: "button",
-        "aria-label" => "Change LDAP member permissions" }
+      %button.btn.btn-warning.js-ldap-override{ type: "button",
+        "aria-label" => "Change LDAP member permissions",
+        data: { id: dom_id(member), endpoint: group_group_member_path(@group, member) } }
         Change permissions
       %button.btn.btn-default.js-ldap-permissions{ type: "button",
         "aria-label" => "Close permissions override",

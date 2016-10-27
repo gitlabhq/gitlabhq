@@ -43,6 +43,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def update
     @group_member = @group.group_members.find(params[:id])
+    puts @group_member
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
@@ -81,7 +82,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   protected
 
   def member_params
-    params.require(:group_member).permit(:access_level, :user_id, :expires_at)
+    params.require(:group_member).permit(:access_level, :user_id, :expires_at, :override)
   end
 
   # MembershipActions concern
