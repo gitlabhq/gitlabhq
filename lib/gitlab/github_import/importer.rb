@@ -20,13 +20,14 @@ module Gitlab
       end
 
       def execute
-        import_labels        unless imported?(:labels)
-        import_milestones    unless imported?(:milestones)
-        import_issues        unless imported?(:issues)
-        import_pull_requests unless imported?(:pull_requests)
-        import_comments
+        import_labels
+        import_milestones
+        import_issues
+        import_pull_requests
+        import_comments(:issues)
+        import_comments(:pull_requests)
         import_wiki
-        import_releases      unless imported?(:releases)
+        import_releases
         handle_errors
 
         true
@@ -48,7 +49,7 @@ module Gitlab
       end
 
       def import_labels
-        client.labels(repo, page: current_page(:labels), per_page: 100) do |labels|
+        fetch_resources(:labels, repo, per_page: 100) do |labels|
           labels.each do |raw|
             begin
               label = LabelFormatter.new(project, raw).create!
@@ -57,15 +58,11 @@ module Gitlab
               errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
-
-          increment_page(:labels)
         end
-
-        imported!(:labels)
       end
 
       def import_milestones
-        client.milestones(repo, state: :all, page: current_page(:milestones), per_page: 100) do |milestones|
+        fetch_resources(:milestones, repo, state: :all, per_page: 100) do |milestones|
           milestones.each do |raw|
             begin
               MilestoneFormatter.new(project, raw).create!
@@ -73,15 +70,11 @@ module Gitlab
               errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
-
-          increment_page(:milestones)
         end
-
-        imported!(:milestones)
       end
 
       def import_issues
-        client.issues(repo, state: :all, sort: :created, direction: :asc, page: current_page(:issues), per_page: 100) do |issues|
+        fetch_resources(:issues, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |issues|
           issues.each do |raw|
             gh_issue = IssueFormatter.new(project, raw)
 
@@ -94,15 +87,11 @@ module Gitlab
               end
             end
           end
-
-          increment_page(:issues)
         end
-
-        imported!(:issues)
       end
 
       def import_pull_requests
-        client.pull_requests(repo, state: :all, sort: :created, direction: :asc, page: current_page(:pull_requests), per_page: 100) do |pull_requests|
+        fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
             pull_request = PullRequestFormatter.new(project, raw)
             next unless pull_request.valid?
@@ -119,13 +108,9 @@ module Gitlab
               clean_up_restored_branches(pull_request)
             end
           end
-
-          increment_page(:pull_requests)
         end
 
         project.repository.after_remove_branch
-
-        imported!(:pull_requests)
       end
 
       def restore_source_branch(pull_request)
@@ -164,35 +149,25 @@ module Gitlab
         end
       end
 
-      def import_comments
-        # We don't have a distinctive attribute for comments (unlike issues iid), so we fetch the last inserted note,
+      def import_comments(issuable_type)
+        resource_type = "#{issuable_type}_comments".to_sym
+
+        # Two notes here:
+        # 1. We don't have a distinctive attribute for comments (unlike issues iid), so we fetch the last inserted note,
         # compare it against every comment in the current imported page until we find match, and that's where start importing
-        last_note = Note.where(noteable_type: 'Issue').last
+        # 2. GH returns comments for _both_ issues and PRs through issues_comments API, while pull_requests_comments returns
+        # only comments on diffs, so select last note not based on noteable_type but on line_code
+        line_code_is = issuable_type == :pull_requests ? 'NOT NULL' : 'NULL'
+        last_note    = project.notes.where("line_code IS #{line_code_is}").last
 
-        client.issues_comments(repo, page: current_page(:issue_comments), per_page: 100) do |comments|
+        fetch_resources(resource_type, repo, per_page: 100) do |comments|
           if last_note
             discard_inserted_comments(comments, last_note)
             last_note = nil
           end
 
           create_comments(comments)
-          increment_page(:issue_comments)
-        end unless imported?(:issue_comments)
-
-        imported!(:issue_comments)
-
-        last_note = Note.where(noteable_type: 'MergeRequest').last
-        client.pull_requests_comments(repo, page: current_page(:pull_request_comments), per_page: 100) do |comments|
-          if last_note
-            discard_inserted_comments(comments, last_note)
-            last_note = nil
-          end
-
-          create_comments(comments)
-          increment_page(:pull_request_comments)
-        end unless imported?(:pull_request_comments)
-
-        imported!(:pull_request_comments)
+        end
       end
 
       def create_comments(comments)
@@ -247,7 +222,7 @@ module Gitlab
       end
 
       def import_releases
-        client.releases(repo, page: current_page(:releases), per_page: 100) do |releases|
+        fetch_resources(:releases, repo, per_page: 100) do |releases|
           releases.each do |raw|
             begin
               gh_release = ReleaseFormatter.new(project, raw)
@@ -256,11 +231,20 @@ module Gitlab
               errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
+        end
+      end
 
-          increment_page(:releases)
+      def fetch_resources(resource_type, *opts)
+        return if imported?(resource_type)
+
+        opts.last.merge!(page: current_page(resource_type))
+
+        client.public_send(resource_type, *opts) do |resources|
+          yield resources
+          increment_page(resource_type)
         end
 
-        imported!(:releases)
+        imported!(resource_type)
       end
 
       def imported?(resource_type)
