@@ -27,6 +27,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Show full status link on MR & commit pipelines
   - Fix documents and comments on Build API `scope`
   - Fix applying labels for GitHub-imported MRs
+  - Fix importing MR comments from GitHub
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 
 ## 8.13.1 (2016-10-25)

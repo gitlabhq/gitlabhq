@@ -150,21 +150,22 @@ module Gitlab
 
       def import_comments
         client.issues_comments(repo, per_page: 100) do |comments|
-          create_comments(comments, :issue)
+          create_comments(comments)
         end
 
         client.pull_requests_comments(repo, per_page: 100) do |comments|
-          create_comments(comments, :pull_request)
+          create_comments(comments)
         end
       end
 
-      def create_comments(comments, issuable_type)
+      def create_comments(comments)
         ActiveRecord::Base.no_touching do
           comments.each do |raw|
             begin
-              comment        = CommentFormatter.new(project, raw)
-              issuable_class = issuable_type == :issue ? Issue : MergeRequest
-              iid            = raw.send("#{issuable_type}_url").split('/').last # GH doesn't return parent ID directly
+              comment         = CommentFormatter.new(project, raw)
+              # GH does not return info about comment's parent, so we guess it by checking its URL!
+              *_, parent, iid = URI(raw.html_url).path.split('/')
+              issuable_class = parent == 'issues' ? Issue : MergeRequest
               issuable       = issuable_class.find_by_iid(iid)
               next unless issuable
 
