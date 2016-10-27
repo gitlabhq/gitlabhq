@@ -1,3 +1,4 @@
+/* eslint-disable */
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 

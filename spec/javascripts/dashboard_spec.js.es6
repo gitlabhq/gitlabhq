@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require sidebar */
 /*= require jquery */
 /*= require jquery.cookie */
