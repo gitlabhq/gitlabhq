@@ -14,6 +14,7 @@ feature 'Issue filtering by Weight', feature: true do
     visit_issues(project)
     filter_by_weight(Issue::WEIGHT_NONE)
 
+    expect(page).to have_css('.weight-filter .dropdown-toggle-text', text: Issue::WEIGHT_NONE)
     expect(page).to have_css('.issue', count: 1)
   end
 
@@ -21,6 +22,7 @@ feature 'Issue filtering by Weight', feature: true do
     visit_issues(project)
     filter_by_weight(Issue::WEIGHT_ANY)
 
+    expect(page).to have_css('.weight-filter .dropdown-toggle-text', text: Issue::WEIGHT_ANY)
     expect(page).to have_css('.issue', count: 2)
   end
 
@@ -28,6 +30,7 @@ feature 'Issue filtering by Weight', feature: true do
     visit_issues(project)
     filter_by_weight(weight_num)
 
+    expect(page).to have_css('.weight-filter .dropdown-toggle-text', text: weight_num)
     expect(page).to have_css('.issue', count: 2)
   end
 
@@ -35,6 +38,7 @@ feature 'Issue filtering by Weight', feature: true do
     visit_issues(project)
     filter_by_weight(Issue::WEIGHT_ALL)
 
+    expect(page).to have_css('.weight-filter .dropdown-toggle-text', text: Issue::WEIGHT_ALL)
     expect(page).to have_css('.issue', count: 3)
   end
 
