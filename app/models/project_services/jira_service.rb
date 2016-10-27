@@ -163,6 +163,21 @@ class JiraService < IssueTrackerService
     add_comment(data, issue_key)
   end
 
+  # reason why service cannot be tested
+  def disabled_title
+    "Please fill in Password and Username."
+  end
+
+  def can_test?
+    username.present? && password.present?
+  end
+
+  # JIRA does not need test data.
+  # We are requesting the project that belongs to the project key.
+  def test_data(user = nil, project = nil)
+    nil
+  end
+
   def test_settings
     return unless url.present?
     # Test settings by getting the project
