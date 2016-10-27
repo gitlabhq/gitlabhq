@@ -24,5 +24,16 @@ describe Gitlab::OptimisticLocking, lib: true do
         subject.drop
       end
     end
+
+    it 'raises exception when too many retries' do
+      expect(pipeline).to receive(:drop).twice.and_call_original
+
+      expect do
+        described_class.retry_lock(pipeline, 1) do |subject|
+          subject.lock_version = 100
+          subject.drop
+        end
+      end.to raise_error(ActiveRecord::StaleObjectError)
+    end
   end
 end

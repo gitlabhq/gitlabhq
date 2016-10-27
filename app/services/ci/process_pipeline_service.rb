@@ -31,8 +31,8 @@ module Ci
 
       if HasStatus::COMPLETED_STATUSES.include?(current_status)
         created_builds_in_stage(index).select do |build|
-          Gitlab::OptimisticLocking.retry_lock(build) do |build|
-            process_build(build, current_status)
+          Gitlab::OptimisticLocking.retry_lock(build) do |subject|
+            process_build(subject, current_status)
           end
         end
       end
