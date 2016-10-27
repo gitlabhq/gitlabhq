@@ -1,0 +1,4 @@
+---
+title: Rewrite git blame spinach feature tests to rspec feature tests
+merge_request: 7197
+author: Lisanne Fellinger
