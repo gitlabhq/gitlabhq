@@ -991,7 +991,7 @@ namespace :gitlab do
     version = client.info["version"]["number"]
 
     # The version is greater or equal to 2.4.0
-    if version.delete('.').to_i >= 240
+    if Gitlab::VersionInfo.parse(version) >= Gitlab::VersionInfo.new(2, 4, 0)
       puts "yes (#{version})".color(:green)
     else
       puts "no".color(:red)
