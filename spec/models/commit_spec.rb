@@ -210,7 +210,50 @@ eos
   end
 
   describe '#status' do
-    # TODO: kamil
+    shared_examples 'giving the status from pipeline' do
+      it do
+        expect(commit.status).to eq(Ci::Pipeline.status)
+      end
+    end
+
+    context 'with pipelines' do
+      let!(:pipeline) do
+        create(:ci_empty_pipeline, project: project, sha: commit.sha)
+      end
+
+      it_behaves_like 'giving the status from pipeline'
+    end
+
+    context 'without pipelines' do
+      it_behaves_like 'giving the status from pipeline'
+    end
+  end
+
+  describe '#status_for' do
+    let!(:pipeline_from_master) do
+      create(:ci_empty_pipeline,
+             project: project,
+             sha: commit.sha,
+             ref: 'master',
+             status: 'failed')
+    end
+
+    let!(:pipeline_from_fix) do
+      create(:ci_empty_pipeline,
+             project: project,
+             sha: commit.sha,
+             ref: 'fix',
+             status: 'success')
+    end
+
+    it 'gives pipelines from a particular branch' do
+      expect(commit.status_for('master')).to eq(pipeline_from_master.status)
+      expect(commit.status_for('fix')).to eq(pipeline_from_fix.status)
+    end
+
+    it 'gives compound status if ref is nil' do
+      expect(commit.status_for(nil)).to eq(commit.status)
+    end
   end
 
   describe '#participants' do
