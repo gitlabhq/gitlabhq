@@ -21,6 +21,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix typo in framework css class. !7086 (Daniel Voogsgerd)
   - New issue board list dropdown stays open after adding a new list
   - Fix: Backup restore doesn't clear cache
+  - Optimize Event queries by removing default order
   - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
   - Replace jquery.cookie plugin with js.cookie !7085
   - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method

@@ -20,7 +20,7 @@ describe Projects::MilestonesController do
       delete :destroy, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid, format: :js
       expect(response).to be_success
 
-      expect(Event.first.action).to eq(Event::DESTROYED)
+      expect(Event.recent.first.action).to eq(Event::DESTROYED)
 
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
       issue.reload
