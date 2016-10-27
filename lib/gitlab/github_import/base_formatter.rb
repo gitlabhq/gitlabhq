@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def create!
-        project.send(project_association).find_or_create_by!(find_condition) do |record|
+        project.public_send(project_association).find_or_create_by!(find_condition) do |record|
           record.attributes = attributes
         end
       end
