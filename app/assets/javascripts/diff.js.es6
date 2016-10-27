@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable class-methods-use-this, no-param-reassign */
 
 ((global) => {
   const UNFOLD_COUNT = 20;
@@ -29,7 +29,8 @@
       const newLineNumber = ref[1];
       const offset = newLineNumber - oldLineNumber;
       const bottom = $target.hasClass('js-unfold-bottom');
-      let since, to;
+      let since;
+      let to;
       let unfold = true;
 
       if (bottom) {
@@ -54,19 +55,19 @@
       const view = file.data('view');
 
       const params = { since, to, bottom, offset, unfold, view };
-      $.get(link, params, (response) => $target.parent().replaceWith(response));
+      $.get(link, params, response => $target.parent().replaceWith(response));
     }
 
     handleClickLineNum(event) {
       const hash = $(event.currentTarget).attr('href');
       event.preventDefault();
-      if (history.pushState) {
-        history.pushState(null, null, hash);
+      if (window.history.pushState) {
+        window.history.pushState(null, null, hash);
       } else {
         window.location.hash = hash;
       }
       this.highlighSelectedLine();
-    };
+    }
 
     diffViewType() {
       return $('.inline-parallel-buttons a.active').data('view-type');
@@ -76,10 +77,7 @@
       if (!line.children().length) {
         return [0, 0];
       }
-
-      return line.find('.diff-line-num').map(function() {
-        return parseInt($(this).data('linenumber'));
-      });
+      return line.find('.diff-line-num').map((i, elm) => parseInt($(elm).data('linenumber'), 10));
     }
 
     highlighSelectedLine() {
@@ -96,5 +94,4 @@
   }
 
   global.Diff = Diff;
-
 })(window.gl || (window.gl = {}));
