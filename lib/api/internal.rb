@@ -17,15 +17,25 @@ module API
       #
 
       helpers do
+        def project_path
+          @project_path ||= begin
+            project_path = params[:project].sub(/\.git\z/, '')
+
+            Gitlab.config.repositories.storages.each do |_, storage_path|
+              project_path.sub!(storage_path, '')
+            end
+
+            project_path
+          end
+        end
+
         def wiki?
-          @wiki ||= params[:project].end_with?('.wiki') &&
-            !Project.find_with_namespace(params[:project])
+          @wiki ||= project_path.end_with?('.wiki') &&
+            !Project.find_with_namespace(project_path)
         end
 
         def project
           @project ||= begin
-            project_path = params[:project]
-
             # Check for *.wiki repositories.
             # Strip out the .wiki from the pathname before finding the
             # project. This applies the correct project permissions to
