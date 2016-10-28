@@ -98,11 +98,9 @@ module EE
           # net-ldap only returns ASCII-8BIT and does not support UTF-8 out-of-the-box:
           # https://github.com/ruby-ldap/ruby-net-ldap/issues/4
           def clean_encoding(dn)
-            begin
               dn.force_encoding('UTF-8')
-            rescue
-              dn
-            end
+          rescue
+            dn
           end
 
           def member_uid_to_dn(uid)
