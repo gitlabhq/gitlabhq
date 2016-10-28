@@ -34,8 +34,7 @@ class ProjectsController < Projects::ApplicationController
 
       redirect_to(
         project_path(@project),
-        notice: "Project '#{@project.name}' was successfully created.",
-        flash: { new_project: true }
+        notice: "Project '#{@project.name}' was successfully created."
       )
     else
       render 'new'

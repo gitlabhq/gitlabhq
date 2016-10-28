@@ -18,7 +18,10 @@
     gl.boardService = new BoardService('/test/issue-boards/board', '1');
     gl.issueBoards.BoardsStore.create();
 
-    Cookies.set('issue_board_welcome_hidden', 'false');
+    Cookies.set('issue_board_welcome_hidden', 'false', {
+      expires: 365 * 10,
+      path: ''
+    });
   });
 
   describe('Store', () => {
