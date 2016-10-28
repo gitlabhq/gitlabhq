@@ -249,7 +249,7 @@ teaspoon:
     - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
     - apt-get install --assume-yes nodejs
     - npm install --global istanbul
-    - teaspoon
+    - rake teaspoon
   artifacts:
     name: coverage-javascript
     expire_in: 31d

@@ -157,6 +157,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
+  - Replace static issue fixtures by script !6059 (winniehell)
   - Append issue template to existing description !6149 (Joseph Frazier)
   - Trending projects now only show public projects and the list of projects is cached for a day
   - Memoize Gitlab Shell's secret token (!6599, Justin DiPierro)
