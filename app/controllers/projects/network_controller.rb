@@ -12,7 +12,9 @@ class Projects::NetworkController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        flash.now[:alert] = "Git revision '#{params[:extended_sha1]}' does not exist." if params[:extended_sha1].present? && !@commit
+        if params[:extended_sha1].present? && !@commit
+          flash.now[:alert] = "Git revision '#{params[:extended_sha1]}' does not exist."
+        end
       end
 
       format.json do
