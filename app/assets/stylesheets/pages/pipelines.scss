@@ -570,7 +570,7 @@
     .build {
       // Remove right connecting horizontal line from first build in last stage
       &:first-child {
-        &::after, &::before {
+        &::after {
           border: none;
         }
       }
