@@ -164,6 +164,18 @@
       padding-left: $sidebar_width;
     }
   }
+
+  .merge-request-tabs-holder.affix {
+    @media (min-width: $sidebar-breakpoint) {
+      left: $sidebar_width;
+    }
+  }
+
+  &.right-sidebar-expanded {
+    .line-resolve-all-container {
+      display: none;
+    }
+  }
 }
 
 header.header-sidebar-pinned {
