@@ -82,19 +82,7 @@ describe Import::GitlabController do
             to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
-          post :create, format: :js
-        end
-      end
-
-      context "when the GitLab.com user and GitLab server user's usernames don't match" do
-        let(:gitlab_username) { "someone_else" }
-
-        it "takes the current user's namespace" do
-          expect(Gitlab::GitlabImport::ProjectCreator).
-            to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
-            and_return(double(execute: true))
-
-          post :create, format: :js
+          post :create, target_namespace: gitlab_username, format: :js
         end
       end
     end
@@ -108,29 +96,27 @@ describe Import::GitlabController do
       end
 
       context "when a namespace with the GitLab.com user's username already exists" do
-        let!(:existing_namespace) { create(:namespace, name: other_username, owner: user) }
+        let!(:existing_namespace) { create(:group, name: other_username) }
 
         context "when the namespace is owned by the GitLab server user" do
+          before { existing_namespace.add_owner(user) }
+
           it "takes the existing namespace" do
             expect(Gitlab::GitlabImport::ProjectCreator).
               to receive(:new).with(gitlab_repo, existing_namespace, user, access_params).
               and_return(double(execute: true))
 
-            post :create, format: :js
+            post :create, target_namespace: existing_namespace.name, format: :js
           end
         end
 
         context "when the namespace is not owned by the GitLab server user" do
-          before do
-            existing_namespace.owner = create(:user)
-            existing_namespace.save
-          end
-
-          it "doesn't create a project" do
+          it "creates a project using user's namespace" do
             expect(Gitlab::GitlabImport::ProjectCreator).
-              not_to receive(:new)
+              to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
+              and_return(double(execute: true))
 
-            post :create, format: :js
+            post :create, target_namespace: existing_namespace.name, format: :js
           end
         end
       end
@@ -141,7 +127,7 @@ describe Import::GitlabController do
             expect(Gitlab::GitlabImport::ProjectCreator).
               to receive(:new).and_return(double(execute: true))
 
-            expect { post :create, format: :js }.to change(Namespace, :count).by(1)
+            expect { post :create, target_namespace: gitlab_repo[:path], format: :js }.to change(Namespace, :count).by(1)
           end
 
           it "takes the new namespace" do
@@ -149,7 +135,7 @@ describe Import::GitlabController do
               to receive(:new).with(gitlab_repo, an_instance_of(Group), user, access_params).
               and_return(double(execute: true))
 
-            post :create, format: :js
+            post :create, target_namespace: gitlab_repo[:path], format: :js
           end
         end
 
@@ -176,8 +162,13 @@ describe Import::GitlabController do
       end
 
       context 'user has chosen an existing nested namespace for the project' do
-        let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
-        let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }
+        let(:parent_namespace) { create(:group, name: 'foo') }
+        let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
+
+        before do
+          parent_namespace.add_owner(user)
+          nested_namespace.add_owner(user)
+        end
 
         it 'takes the selected namespace and name' do
           expect(Gitlab::GitlabImport::ProjectCreator).

@@ -1,16 +1,17 @@
 class Import::BaseController < ApplicationController
   private
 
-  def find_or_create_namespace(names, owner)
-    return current_user.namespace if names == owner
+  def find_or_create_namespace
+    path = params[:target_namespace]
+
+    return current_user.namespace if path == current_user.namespace_path
+
+    owned_namespace = current_user.owned_groups.find_by_full_path(path)
+    return owned_namespace if owned_namespace
+
     return current_user.namespace unless current_user.can_create_group?
 
-    names = params[:target_namespace].presence || names
-    full_path_namespace = Namespace.find_by_full_path(names)
-
-    return full_path_namespace if full_path_namespace
-
-    names.split('/').inject(nil) do |parent, name|
+    path.split('/').inject(nil) do |parent, name|
       begin
         namespace = Group.create!(name: name,
                                   path: name,
@@ -20,7 +21,8 @@ class Import::BaseController < ApplicationController
 
         namespace
       rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
-        Namespace.where(parent: parent).find_by_path_or_name(name)
+        # Namespace.where(parent: parent).find_by_path_or_name(name)
+        current_user.namespace
       end
     end
   end
