@@ -12,10 +12,8 @@ module Gitlab
       end
 
       def get
-        send(@stage).freeze if self.respond_to?(@stage)
+        public_send(@stage).freeze if self.respond_to?(@stage)
       end
-
-      private
 
       def issue
         { start_time_attrs: issue_table[:created_at],

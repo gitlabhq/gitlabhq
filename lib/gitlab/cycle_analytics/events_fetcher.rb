@@ -11,11 +11,9 @@ module Gitlab
         custom_query = "#{stage}_custom_query".to_sym
 
         @query.execute(stage) do |base_query|
-          send(custom_query, base_query) if self.respond_to?(custom_query)
+          public_send(custom_query, base_query) if self.respond_to?(custom_query)
         end
       end
-
-      private
 
       def issue_custom_query(base_query)
         base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id]))
