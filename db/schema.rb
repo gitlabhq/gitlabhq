@@ -189,6 +189,7 @@ ActiveRecord::Schema.define(version: 20161025231710) do
     t.text "yaml_variables"
     t.datetime "queued_at"
     t.string "token"
+    t.integer "lock_version"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -219,6 +220,7 @@ ActiveRecord::Schema.define(version: 20161025231710) do
     t.datetime "finished_at"
     t.integer "duration"
     t.integer "user_id"
+    t.integer "lock_version"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
