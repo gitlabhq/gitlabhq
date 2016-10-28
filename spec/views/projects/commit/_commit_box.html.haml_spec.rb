@@ -17,8 +17,8 @@ describe 'projects/commit/_commit_box.html.haml' do
   end
 
   it 'shows the last pipeline that ran for the commit' do
-    first_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success')
-    second_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'canceled')
+    create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success')
+    create(:ci_pipeline, project: project, sha: project.commit.id, status: 'canceled')
     third_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'failed')
 
     render
