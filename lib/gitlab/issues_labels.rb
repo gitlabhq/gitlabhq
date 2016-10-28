@@ -19,7 +19,7 @@ module Gitlab
         ]
 
         labels.each do |params|
-          ::Labels::FindOrCreateService.new(project.owner, project, params).execute
+          ::Labels::FindOrCreateService.new(nil, project, params).execute(skip_authorization: true)
         end
       end
     end
