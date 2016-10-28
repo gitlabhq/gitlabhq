@@ -57,10 +57,14 @@
   min-height: 58px;
   align-items: center;
 
+  .btn-inverted {
+    @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
+  }
+
   @media (max-width: $screen-sm-max) {
     padding-right: 40px;
 
-    .btn-primary {
+    .btn-inverted {
       display: none;
     }
   }
