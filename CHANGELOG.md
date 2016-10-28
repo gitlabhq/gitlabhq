@@ -44,6 +44,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix importing MR comments from GitHub !7139
   - Modify GitHub importer to be retryable !7003
   - Fix and improve `Sortable.highest_label_priority`
+  - Fixed sticky merge request tabs when sidebar is pinned
 
 ## 8.13.1 (2016-10-25)
   - Fix branch protection API. !6215
