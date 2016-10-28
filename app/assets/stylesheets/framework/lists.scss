@@ -38,7 +38,7 @@
 
     &.smoke { background-color: $background-color; }
 
-    &:hover {
+    &:not(.ui-sort-disabled):hover {
       background: $row-hover;
     }
 

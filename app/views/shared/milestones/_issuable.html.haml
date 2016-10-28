@@ -3,8 +3,9 @@
 - assignee = issuable.assignee
 - issuable_type = issuable.class.table_name
 - base_url_args = [project.namespace.becomes(Namespace), project, issuable_type]
+- can_update = can?(current_user, :"update_#{issuable.to_ability_name}", issuable)
 
-%li{ id: dom_id(issuable, 'sortable'),  class: "issuable-row", 'data-iid' => issuable.iid, 'data-url' => polymorphic_path(issuable) }
+%li{ id: dom_id(issuable, 'sortable'),  class: "issuable-row #{'ui-sort-disabled' unless can_update}", 'data-iid' => issuable.iid, 'data-url' => polymorphic_path(issuable) }
   %span
     - if show_project_name
       %strong #{project.name} &middot;
