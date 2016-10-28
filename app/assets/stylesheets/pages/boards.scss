@@ -71,19 +71,13 @@
   white-space: nowrap;
 
   @media (min-width: $screen-sm-min) {
-<<<<<<< HEAD
     height: 409px; // Needed for PhantomJS
     height: calc(100vh - 290px);
     min-height: 409px;
-=======
-    height: 475px; // Needed for PhantomJS
-    height: calc(100vh - 220px);
-    min-height: 475px;
 
     &.is-compact {
       width: calc(100% - 290px);
     }
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
   }
 }
 
@@ -291,7 +285,6 @@
   }
 }
 
-<<<<<<< HEAD
 .boards-title-holder {
   padding: 25px 13px $gl-padding;
 
@@ -325,7 +318,8 @@
 .board-delete-btns {
   padding-top: 12px;
   border-top: 1px solid $border-color;
-=======
+}
+
 .issue-boards-sidebar {
   &.right-sidebar {
     top: 153px;
@@ -369,5 +363,4 @@
       font-weight: 600;
     }
   }
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 }
