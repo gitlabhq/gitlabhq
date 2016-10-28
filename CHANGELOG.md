@@ -32,14 +32,14 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
   - Show full status link on MR & commit pipelines
   - Fix documents and comments on Build API `scope`
-  - Fix applying labels for GitHub-imported MRs
-  - Fix importing MR comments from GitHub
-  - Modify GitHub importer to be retryable
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
   - Shortened merge request modal to let clipboard button not overlap
 
 ## 8.13.2
   - Fix builds dropdown overlapping bug !7124
+  - Fix applying labels for GitHub-imported MRs !7139
+  - Fix importing MR comments from GitHub !7139
+  - Modify GitHub importer to be retryable !7003
   - Fix and improve `Sortable.highest_label_priority`
 
 ## 8.13.1 (2016-10-25)
