@@ -8,9 +8,9 @@ module Gitlab
         @from = from
       end
 
-      def execute(stage, config, &block)
+      def execute(stage, &block)
         @stage = stage
-        @config = config
+        @config = QueryConfig.get(stage)
         query = build_query(&block)
 
         ActiveRecord::Base.connection.execute(query.to_sql).to_a

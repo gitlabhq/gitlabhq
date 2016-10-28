@@ -1,0 +1,89 @@
+module Gitlab
+  module CycleAnalytics
+    class QueryConfig
+      include MetricsFetcher
+
+      def self.get(*args)
+        new(*args).get
+      end
+
+      def initialize(stage)
+        @stage = stage
+      end
+
+      def get
+        send(@stage).freeze if self.respond_to?(@stage)
+      end
+
+      private
+
+      def issue
+        { start_time_attrs: issue_table[:created_at],
+          end_time_attrs: [issue_metrics_table[:first_associated_with_milestone_at],
+                           issue_metrics_table[:first_added_to_board_at]],
+          projections: [issue_table[:title],
+                        issue_table[:iid],
+                        issue_table[:created_at],
+                        user_table[:name],
+                        user_table[:email]]
+        }
+      end
+
+      def plan
+        { start_time_attrs: issue_metrics_table[:first_associated_with_milestone_at],
+          end_time_attrs: [issue_metrics_table[:first_added_to_board_at],
+                           issue_metrics_table[:first_mentioned_in_commit_at]],
+          projections: [mr_diff_table[:st_commits].as('commits'),
+                        issue_metrics_table[:first_mentioned_in_commit_at]]
+        }
+      end
+
+      def code
+        { start_time_attrs: issue_metrics_table[:first_mentioned_in_commit_at],
+          end_time_attrs: mr_table[:created_at],
+          projections: [mr_table[:title], mr_table[:iid],
+                        mr_table[:created_at],
+                        user_table[:name],
+                        user_table[:email]],
+          order: mr_table[:created_at]
+        }
+      end
+
+      def test
+        { start_time_attrs: mr_metrics_table[:latest_build_started_at],
+          end_time_attrs: mr_metrics_table[:latest_build_finished_at],
+          projections: mr_metrics_table[:ci_commit_id],
+          order: mr_table[:created_at]
+        }
+      end
+
+      def review
+        { start_time_attrs: mr_table[:created_at],
+          end_time_attrs: mr_metrics_table[:merged_at],
+          projections: [mr_table[:title], mr_table[:iid],
+                        mr_table[:created_at],
+                        user_table[:name],
+                        user_table[:email]]
+        }
+      end
+
+      def staging
+        { start_time_attrs: mr_metrics_table[:merged_at],
+          end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
+          projections: mr_metrics_table[:ci_commit_id]
+        }
+      end
+
+      def production
+        { start_time_attrs: issue_table[:created_at],
+          end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
+          projections: [issue_table[:title],
+                        issue_table[:iid],
+                        issue_table[:created_at],
+                        user_table[:name],
+                        user_table[:email]]
+        }
+      end
+    end
+  end
+end
