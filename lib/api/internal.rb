@@ -20,12 +20,7 @@ module API
         def project_path
           @project_path ||= begin
             project_path = params[:project].sub(/\.git\z/, '')
-
-            Gitlab.config.repositories.storages.each do |_, storage_path|
-              project_path.sub!(storage_path, '')
-            end
-
-            project_path
+            Repository.remove_storage_from_path(project_path)
           end
         end
 
