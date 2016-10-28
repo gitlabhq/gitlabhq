@@ -6,6 +6,7 @@ module API
     SUDO_PARAM = :sudo
 
     def to_boolean(value)
+      return value if [true, false].include?(value)
       return true if value =~ /^(true|t|yes|y|1|on)$/i
       return false if value =~ /^(false|f|no|n|0|off)$/i
 

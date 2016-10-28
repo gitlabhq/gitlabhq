@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ProjectMember, models: true do
   describe 'associations' do
-    it { is_expected.to belong_to(:project).class_name('Project').with_foreign_key(:source_id) }
+    it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end
 
   describe 'validations' do

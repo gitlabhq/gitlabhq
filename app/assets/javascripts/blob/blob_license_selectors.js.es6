@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   class BlobLicenseSelectors {
     constructor({ $dropdowns, editor }) {

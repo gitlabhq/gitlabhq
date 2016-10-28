@@ -9,6 +9,7 @@
     "iid": { "type": "integer" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
+    "due_date": { "type": ["date", "null"] },
     "labels": {
       "type": "array",
       "items": {
@@ -42,7 +43,8 @@
       "name": { "type": "string" },
       "username": { "type": "string" },
       "avatar_url": { "type": "uri" }
-    }
+    },
+    "subscribed": { "type": ["boolean", "null"] }
   },
   "additionalProperties": false
 }

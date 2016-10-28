@@ -9,6 +9,18 @@ class ProjectCacheWorker
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
+  def self.lease_for(project_id)
+    Gitlab::ExclusiveLease.
+      new("project_cache_worker:#{project_id}", timeout: LEASE_TIMEOUT)
+  end
+
+  # Overwrite Sidekiq's implementation so we only schedule when actually needed.
+  def self.perform_async(project_id)
+    # If a lease for this project is still being held there's no point in
+    # scheduling a new job.
+    super unless lease_for(project_id).exists?
+  end
+
   def perform(project_id)
     if try_obtain_lease_for(project_id)
       Rails.logger.
@@ -37,8 +49,6 @@ class ProjectCacheWorker
   end
 
   def try_obtain_lease_for(project_id)
-    Gitlab::ExclusiveLease.
-      new("project_cache_worker:#{project_id}", timeout: LEASE_TIMEOUT).
-      try_obtain
+    self.class.lease_for(project_id).try_obtain
   end
 end

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*= require jquery */
 /*= require gl_dropdown */
 /*= require turbolinks */

@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, class_name: "Namespace"
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
 
   # Profile
   has_many :keys, dependent: :destroy
@@ -66,17 +66,17 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, class_name: 'ProjectMember'
+  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects,      dependent: :destroy
   has_many :starred_projects,         through: :users_star_projects, source: :project
 
-  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
+  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
-  has_many :events,                   dependent: :destroy, foreign_key: :author_id,   class_name: "Event"
+  has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
@@ -101,8 +101,10 @@ class User < ActiveRecord::Base
   #
   # Validations
   #
+  # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
-  validates :notification_email, presence: true, email: true
+  validates :notification_email, presence: true
+  validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -348,7 +350,7 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil)
+  def to_reference(_from_project = nil, _target_project = nil)
     "#{self.class.reference_prefix}#{username}"
   end
 

@@ -45,7 +45,7 @@
 
 @media (max-width: $screen-xs-max) {
   .timeline {
-    &:before {
+    &::before {
       background: none;
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((w) => {
   w.ResolveBtn = Vue.extend({
     props: {

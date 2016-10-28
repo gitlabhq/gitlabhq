@@ -5,33 +5,59 @@
     %h4.prepend-top-0
       = page_title
   .col-lg-9
-    %h5.prepend-top-0
-      Pipelines
     = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project) do |f|
       %fieldset.builds-feature
         - unless @repository.gitlab_ci_yml
           .form-group
             %p Pipelines need to be configured before you can begin using Continuous Integration.
             = link_to 'Get started with CI/CD Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
+            %hr
+        .form-group.append-bottom-default
+          = f.label :runners_token, "Runner token", class: 'label-light'
+          = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
+          %p.help-block The secure token used by the Runner to checkout the project
+
+        %hr
         .form-group
-          %p Get recent application code using the following command:
+          %h5.prepend-top-0
+            Git strategy for pipelines
+          %p
+            Choose between <code>clone</code> or <code>fetch</code> to get the recent application code
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'git-strategy')
           .radio
             = f.label :build_allow_git_fetch_false do
               = f.radio_button :build_allow_git_fetch, 'false'
               %strong git clone
               %br
-              %span.descr Slower but makes sure you have a clean dir before every build
+              %span.descr
+                Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job
           .radio
             = f.label :build_allow_git_fetch_true do
               = f.radio_button :build_allow_git_fetch, 'true'
               %strong git fetch
               %br
-              %span.descr Faster
+              %span.descr
+                Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)
 
+        %hr
         .form-group
           = f.label :build_timeout_in_minutes, 'Timeout', class: 'label-light'
           = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
-          %p.help-block per build in minutes
+          %p.help-block
+            Per job in minutes. If a job passes this threshold, it will be marked as failed.
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout')
+
+        %hr
+        .form-group
+          .checkbox
+            = f.label :public_builds do
+              = f.check_box :public_builds
+              %strong Public pipelines
+            .help-block
+              Allow everyone to access pipelines for public and internal projects
+              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines')
+
+        %hr
         .form-group
           = f.label :build_coverage_regex, "Test coverage parsing", class: 'label-light'
           .input-group
@@ -39,8 +65,9 @@
             = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
             %span.input-group-addon /
           %p.help-block
-            We will use this regular expression to find test coverage output in build trace.
-            Leave blank if you want to disable this feature
+            A regular expression that will be used to find the test coverage
+            output in the build trace. Leave blank to disable
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'test-coverage-parsing')
           .bs-callout.bs-callout-info
             %p Below are examples of regex for existing tools:
             %ul
@@ -57,9 +84,10 @@
                 gcovr (C/C++) -
                 %code ^TOTAL.*\s+(\d+\%)$
               %li
-                tap --coverage-report=text-summary (Node.js) -
+                tap --coverage-report=text-summary (NodeJS) -
                 %code ^Statements\s*:\s*([^%]+)
 
+<<<<<<< HEAD
         .form-group
           .checkbox
             = f.label :public_builds do
@@ -75,6 +103,8 @@
           = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
           %p.help-block The secure token used to checkout project.
 
+=======
+>>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
         = f.submit 'Save changes', class: "btn btn-save"
 
 %hr

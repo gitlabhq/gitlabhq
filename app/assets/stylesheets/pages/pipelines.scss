@@ -248,7 +248,8 @@
         font-size: 14px;
       }
 
-      svg, .fa {
+      svg,
+      .fa {
         margin-right: 0;
       }
     }
@@ -473,8 +474,8 @@
         }
 
         .arrow {
-          &:before,
-          &:after {
+          &::before,
+          &::after {
             content: '';
             display: inline-block;
             position: absolute;
@@ -485,14 +486,14 @@
             top: 18px;
           }
 
-          &:before {
+          &::before {
             left: -5px;
             margin-top: -6px;
             border-width: 7px 5px 7px 0;
             border-right-color: $border-color;
           }
 
-          &:after {
+          &::after {
             left: -4px;
             margin-top: -9px;
             border-width: 10px 7px 10px 0;
@@ -529,7 +530,8 @@
 
     // Connect each build (except for first) with curved lines
     &:not(:first-child) {
-      &::after, &::before {
+      &::after,
+      &::before {
         content: '';
         top: -49px;
         position: absolute;
@@ -555,7 +557,8 @@
 
     // Connect second build to first build with smaller curved line
     &:nth-child(2) {
-      &::after, &::before {
+      &::after,
+      &::before {
         height: 29px;
         top: -9px;
       }
@@ -570,7 +573,8 @@
     .build {
       // Remove right connecting horizontal line from first build in last stage
       &:first-child {
-        &::after, &::before {
+        &::after,
+        &::before {
           border: none;
         }
       }

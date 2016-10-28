@@ -94,14 +94,14 @@
           position: relative;
 
           &.old {
-            &:before {
+            &::before {
               content: '-';
               position: absolute;
             }
           }
 
           &.new {
-            &:before {
+            &::before {
               content: '+';
               position: absolute;
             }
@@ -124,7 +124,8 @@
       }
     }
 
-    .old_line, .new_line {
+    .old_line,
+    .new_line {
       margin: 0;
       padding: 0;
       border: none;
@@ -281,7 +282,8 @@
         position: relative;
       }
 
-      .frame.added, .frame.deleted {
+      .frame.added,
+      .frame.deleted {
         position: absolute;
         display: block;
         top: 0;
@@ -347,7 +349,8 @@
     text-align: center;
     background: #eee;
 
-    ul, li {
+    ul,
+    li {
       list-style: none;
       margin: 0;
       padding: 0;
@@ -468,7 +471,7 @@
 .file-holder {
   .diff-line-num:not(.js-unfold-bottom) {
     a {
-      &:before {
+      &::before {
         content: attr(data-linenumber);
       }
     }

@@ -10,23 +10,15 @@ describe JiraService, models: true do
     context 'when service is active' do
       before { subject.active = true }
 
-      it { is_expected.to validate_presence_of(:api_url) }
-      it { is_expected.to validate_presence_of(:project_url) }
-      it { is_expected.to validate_presence_of(:issues_url) }
-      it { is_expected.to validate_presence_of(:new_issue_url) }
-      it_behaves_like 'issue tracker service URL attribute', :api_url
-      it_behaves_like 'issue tracker service URL attribute', :project_url
-      it_behaves_like 'issue tracker service URL attribute', :issues_url
-      it_behaves_like 'issue tracker service URL attribute', :new_issue_url
+      it { is_expected.to validate_presence_of(:url) }
+      it { is_expected.to validate_presence_of(:project_key) }
+      it_behaves_like 'issue tracker service URL attribute', :url
     end
 
     context 'when service is inactive' do
       before { subject.active = false }
 
-      it { is_expected.not_to validate_presence_of(:api_url) }
-      it { is_expected.not_to validate_presence_of(:project_url) }
-      it { is_expected.not_to validate_presence_of(:issues_url) }
-      it { is_expected.not_to validate_presence_of(:new_issue_url) }
+      it { is_expected.not_to validate_presence_of(:url) }
     end
   end
 
@@ -50,23 +42,25 @@ describe JiraService, models: true do
         project_id: project.id,
         project: project,
         service_hook: true,
-        project_url: 'http://jira.example.com',
+        url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password'
       )
-      @jira_service.save # will build API URL, as api_url was not specified above
-      @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-      # https://github.com/bblimke/webmock#request-with-basic-authentication
-      @api_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
+
+      @jira_service.save
+
+      project_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123'
+      @transitions_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
       @comment_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
 
-      WebMock.stub_request(:post, @api_url)
+      WebMock.stub_request(:get, project_url)
+      WebMock.stub_request(:post, @transitions_url)
       WebMock.stub_request(:post, @comment_url)
     end
 
     it "calls JIRA API" do
-      @jira_service.execute(merge_request,
-                            ExternalIssue.new("JIRA-123", project))
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
       ).once
@@ -74,9 +68,9 @@ describe JiraService, models: true do
 
     it "calls the api with jira_issue_transition_id" do
       @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
-      @jira_service.execute(merge_request,
-                            ExternalIssue.new("JIRA-123", project))
-      expect(WebMock).to have_requested(:post, @api_url).with(
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      expect(WebMock).to have_requested(:post, @transitions_url).with(
         body: /this-is-a-custom-id/
       ).once
     end
@@ -90,7 +84,7 @@ describe JiraService, models: true do
         @jira_service = JiraService.create!(
           project: create(:project),
           properties: {
-            api_url: 'http://jira.example.com/rest/api/2',
+            url: 'http://jira.example.com/rest/api/2',
             username: 'mic',
             password: "password"
           }
@@ -98,7 +92,7 @@ describe JiraService, models: true do
       end
   
       it "reset password if url changed" do
-        @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+        @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.save
         expect(@jira_service.password).to be_nil
       end
@@ -110,16 +104,16 @@ describe JiraService, models: true do
       end
 
       it "does not reset password if new url is set together with password, even if it's the same password" do
-        @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+        @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.password = 'password'
         @jira_service.save
         expect(@jira_service.password).to eq("password")
-        expect(@jira_service.api_url).to eq("http://jira_edited.example.com/rest/api/2")
+        expect(@jira_service.url).to eq("http://jira_edited.example.com/rest/api/2")
       end
 
       it "resets password if url changed, even if setter called multiple times" do
-        @jira_service.api_url = 'http://jira1.example.com/rest/api/2'
-        @jira_service.api_url = 'http://jira1.example.com/rest/api/2'
+        @jira_service.url = 'http://jira1.example.com/rest/api/2'
+        @jira_service.url = 'http://jira1.example.com/rest/api/2'
         @jira_service.save
         expect(@jira_service.password).to be_nil
       end
@@ -130,18 +124,18 @@ describe JiraService, models: true do
         @jira_service = JiraService.create(
           project: create(:project),
           properties: {
-            api_url: 'http://jira.example.com/rest/api/2',
+            url: 'http://jira.example.com/rest/api/2',
             username: 'mic'
           }
         )
       end
 
       it "saves password if new url is set together with password" do
-        @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+        @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.password = 'password'
         @jira_service.save
         expect(@jira_service.password).to eq("password")
-        expect(@jira_service.api_url).to eq("http://jira_edited.example.com/rest/api/2")
+        expect(@jira_service.url).to eq("http://jira_edited.example.com/rest/api/2")
       end
     end
   end
@@ -152,9 +146,7 @@ describe JiraService, models: true do
         subject.active = true
       end
 
-      it { is_expected.to validate_presence_of :project_url }
-      it { is_expected.to validate_presence_of :issues_url }
-      it { is_expected.to validate_presence_of :new_issue_url }
+      it { is_expected.to validate_presence_of :url }
     end
   end
 
@@ -198,11 +190,18 @@ describe JiraService, models: true do
 
     context 'when gitlab.yml was initialized' do
       before do
+<<<<<<< HEAD
         settings = { "jira" => {
           "title" => "Jira",
           "project_url" => "http://jira.sample/projects/project_a",
           "issues_url" => "http://jira.sample/issues/:id",
           "new_issue_url" => "http://jira.sample/projects/project_a/issues/new"
+=======
+        settings = {
+          "jira" => {
+            "title" => "Jira",
+            "url" => "http://jira.sample/projects/project_a"
+>>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
           }
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
@@ -214,9 +213,8 @@ describe JiraService, models: true do
       end
 
       it 'is prepopulated with the settings' do
-        expect(@service.properties["project_url"]).to eq('http://jira.sample/projects/project_a')
-        expect(@service.properties["issues_url"]).to eq("http://jira.sample/issues/:id")
-        expect(@service.properties["new_issue_url"]).to eq("http://jira.sample/projects/project_a/issues/new")
+        expect(@service.properties["title"]).to eq('Jira')
+        expect(@service.properties["url"]).to eq('http://jira.sample/projects/project_a')
       end
     end
   end

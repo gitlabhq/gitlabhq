@@ -139,10 +139,9 @@ FactoryGirl.define do
       project.create_jira_service(
         active: true,
         properties: {
-          'title'         => 'JIRA tracker',
-          'project_url'   => 'http://jira.example/issues/?jql=project=A',
-          'issues_url'    => 'http://jira.example/browse/:id',
-          'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
+          title: 'JIRA tracker',
+          url: 'http://jira.example.net',
+          project_key: 'JIRA'
         }
       )
     end

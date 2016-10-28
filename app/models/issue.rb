@@ -301,10 +301,12 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
+      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user)
+
       if options.has_key?(:labels)
         json[:labels] = labels.as_json(
           project: project,
-          only: [:id, :title, :description, :color],
+          only: [:id, :title, :description, :color, :priority],
           methods: [:text_color]
         )
       end

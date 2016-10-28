@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -45,8 +46,8 @@
     };
 
     IssuableForm.prototype.handleSubmit = function() {
-      var ref, ref1;
-      if (((ref = parseInt((ref1 = this.issueMoveField) != null ? ref1.val() : void 0)) != null ? ref : 0) > 0) {
+      var fieldId = (this.issueMoveField != null) ? this.issueMoveField.val() : null;
+      if ((parseInt(fieldId) || 0) > 0) {
         if (!confirm(this.issueMoveConfirmMsg)) {
           return false;
         }

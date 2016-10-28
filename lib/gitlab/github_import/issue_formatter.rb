@@ -20,8 +20,12 @@ module Gitlab
         raw_data.comments > 0
       end
 
-      def klass
-        Issue
+      def project_association
+        :issues
+      end
+
+      def find_condition
+        { iid: number }
       end
 
       def number

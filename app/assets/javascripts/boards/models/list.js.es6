@@ -1,3 +1,4 @@
+/* eslint-disable */
 class List {
   constructor (obj) {
     this.id = obj.id;
