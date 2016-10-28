@@ -1,5 +1,47 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.0 (2016-11-22)
+  - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
+  - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
+  - Trim leading and trailing whitespace on project_path (Linus Thiel)
+  - Prevent award emoji via notes for issues/MRs authored by user (barthc)
+  - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
+  - Fix extra space on Build sidebar on Firefox !7060
+  - Fix mobile layout issues in admin user overview page !7087
+  - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Refactor Jira service to use jira-ruby gem
+  - Add hover to trash icon in notes !7008 (blackst0ne)
+  - Only show one error message for an invalid email !5905 (lycoperdon)
+  - Fix sidekiq stats in admin area (blackst0ne)
+  - API: Fix booleans not recognized as such when using the `to_boolean` helper
+  - Removed delete branch tooltip !6954
+  - Stop unauthorized users dragging on milestone page (blackst0ne)
+  - Restore issue boards welcome message when a project is created !6899
+  - Escape ref and path for relative links !6050 (winniehell)
+  - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
+  - Fix filtering of milestones with quotes in title (airatshigapov)
+  - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
+  - Update mail_room and enable sentinel support to Reply By Email (!7101)
+  - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix typo in framework css class. !7086 (Daniel Voogsgerd)
+  - New issue board list dropdown stays open after adding a new list
+  - Fix: Backup restore doesn't clear cache
+  - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
+  - Replace jquery.cookie plugin with js.cookie !7085
+  - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
+  - Show full status link on MR & commit pipelines
+  - Fix documents and comments on Build API `scope`
+  - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
+  - Shortened merge request modal to let clipboard button not overlap
+
+## 8.13.2
+  - Fix builds dropdown overlapping bug !7124
+  - Fix applying labels for GitHub-imported MRs !7139
+  - Fix importing MR comments from GitHub !7139
+  - Modify GitHub importer to be retryable !7003
+  - Fix and improve `Sortable.highest_label_priority`
+
 ## 8.13.1 (2016-10-25)
 
   - Fix branch protection API. !6215
