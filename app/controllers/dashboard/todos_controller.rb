@@ -4,10 +4,6 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def index
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
-
-    if @todos.empty? && current_user.todos.any?
-      @no_todos_message = Gitlab.config.gitlab.no_todos_messages.sample
-    end
   end
 
   def destroy

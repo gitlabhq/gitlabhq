@@ -84,7 +84,7 @@
       = render "shared/empty_states/todos_all_done.svg"
       - if todos_filter_empty?
         %h4.text-center
-          = no_todos_message
+          = Gitlab.config.gitlab.no_todos_messages.sample
         %p.text-center
           Are you looking for things to do? Take a look at
           = succeed "," do

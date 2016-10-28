@@ -138,20 +138,9 @@ module TodosHelper
     end
   end
 
-  def no_todos_message
-    message, author = @no_todos_message.values_at('message', 'author')
-
-    if author
-      message +=  " -- " + author
-    end
-    
-   message
-  end
-
   private
 
   def show_todo_state?(todo)
     (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
   end
-
 end
