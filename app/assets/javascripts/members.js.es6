@@ -37,7 +37,7 @@
             return $el.data('id');
           },
           toggleLabel (selected, $el) {
-            if ($link.data('revert')) {
+            if ($el.data('revert')) {
               return $btn.text();
             } else {
               return $el.text();
