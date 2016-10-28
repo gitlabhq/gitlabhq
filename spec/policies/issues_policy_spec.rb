@@ -5,6 +5,8 @@ describe IssuePolicy, models: true do
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
   let(:reporter) { create(:user) }
+  let(:group) { create(:group, :public) }
+  let(:reporter_from_group_link) { create(:user) }
 
   def permissions(user, issue)
     IssuePolicy.abilities(user, issue).to_set
@@ -21,6 +23,10 @@ describe IssuePolicy, models: true do
       project.team << [author, :guest]
       project.team << [assignee, :guest]
       project.team << [reporter, :reporter]
+
+      group.add_reporter(reporter_from_group_link)
+
+      create(:project_group_link, group: group, project: project)
     end
 
     it 'does not allow non-members to read issues' do
@@ -39,6 +45,11 @@ describe IssuePolicy, models: true do
     it 'allows reporters to read, update, and admin issues' do
       expect(permissions(reporter, issue)).to include(:read_issue, :update_issue, :admin_issue)
       expect(permissions(reporter, issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
+    end
+
+    it 'allows reporters from group links to read, update, and admin issues' do
+      expect(permissions(reporter_from_group_link, issue)).to include(:read_issue, :update_issue, :admin_issue)
+      expect(permissions(reporter_from_group_link, issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
     end
 
     it 'allows issue authors to read and update their issues' do
@@ -76,6 +87,11 @@ describe IssuePolicy, models: true do
         expect(permissions(reporter, confidential_issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
       end
 
+      it 'allows reporters from group links to read, update, and admin confidential issues' do
+        expect(permissions(reporter_from_group_link, confidential_issue)).to include(:read_issue, :update_issue, :admin_issue)
+        expect(permissions(reporter_from_group_link, confidential_issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
+      end
+
       it 'allows issue authors to read and update their confidential issues' do
         expect(permissions(author, confidential_issue)).to include(:read_issue, :update_issue)
         expect(permissions(author, confidential_issue)).not_to include(:admin_issue)
@@ -100,6 +116,10 @@ describe IssuePolicy, models: true do
     before do
       project.team << [guest, :guest]
       project.team << [reporter, :reporter]
+
+      group.add_reporter(reporter_from_group_link)
+
+      create(:project_group_link, group: group, project: project)
     end
 
     it 'allows guests to read issues' do
@@ -113,6 +133,11 @@ describe IssuePolicy, models: true do
     it 'allows reporters to read, update, and admin issues' do
       expect(permissions(reporter, issue)).to include(:read_issue, :update_issue, :admin_issue)
       expect(permissions(reporter, issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
+    end
+
+    it 'allows reporters from group links to read, update, and admin issues' do
+      expect(permissions(reporter_from_group_link, issue)).to include(:read_issue, :update_issue, :admin_issue)
+      expect(permissions(reporter_from_group_link, issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
     end
 
     it 'allows issue authors to read and update their issues' do
@@ -143,6 +168,11 @@ describe IssuePolicy, models: true do
       it 'allows reporters to read, update, and admin confidential issues' do
         expect(permissions(reporter, confidential_issue)).to include(:read_issue, :update_issue, :admin_issue)
         expect(permissions(reporter, confidential_issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
+      end
+
+      it 'allows reporter from group links to read, update, and admin confidential issues' do
+        expect(permissions(reporter_from_group_link, confidential_issue)).to include(:read_issue, :update_issue, :admin_issue)
+        expect(permissions(reporter_from_group_link, confidential_issue_no_assignee)).to include(:read_issue, :update_issue, :admin_issue)
       end
 
       it 'allows issue authors to read and update their confidential issues' do
