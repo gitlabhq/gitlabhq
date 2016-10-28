@@ -22,7 +22,7 @@ class LabelsFinder < UnionFinder
       label_ids << project.group.labels if project.group.present?
       label_ids << project.labels
     else
-      label_ids << Label.where(group_id: projects.group_ids)
+      label_ids << Label.where(group_id: projects.group_ids.uniq)
       label_ids << Label.where(project_id: projects.select(:id))
     end
 
