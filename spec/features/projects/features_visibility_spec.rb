@@ -41,6 +41,22 @@ describe 'Edit Project Settings', feature: true do
         end
       end
     end
+
+    context "pipelines subtabs" do
+      it "shows builds when enabled" do
+        visit namespace_project_pipelines_path(project.namespace, project)
+
+        expect(page).to have_selector(".shortcuts-builds")
+      end
+
+      it "hides builds when disabled" do
+        allow(Ability).to receive(:allowed?).with(member, :read_builds, project).and_return(false)
+
+        visit namespace_project_pipelines_path(project.namespace, project)
+
+        expect(page).not_to have_selector(".shortcuts-builds")
+      end
+    end
   end
 
   describe 'project features visibility pages' do

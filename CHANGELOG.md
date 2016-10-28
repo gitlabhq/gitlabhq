@@ -43,6 +43,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix applying labels for GitHub-imported MRs !7139
   - Fix importing MR comments from GitHub !7139
   - Modify GitHub importer to be retryable !7003
+  - Fix builds tab visibility
   - Fix and improve `Sortable.highest_label_priority`
   - Fixed sticky merge request tabs when sidebar is pinned
 

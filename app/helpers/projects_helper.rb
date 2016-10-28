@@ -174,8 +174,12 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if can?(current_user, :read_build, project)
+    if can?(current_user, :read_pipeline, project)
       nav_tabs << :pipelines
+    end
+
+    if can?(current_user, :read_build, project)
+      nav_tabs << :builds
     end
 
     if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
