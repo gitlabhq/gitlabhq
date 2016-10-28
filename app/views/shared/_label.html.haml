@@ -1,6 +1,7 @@
 - label_css_id = dom_id(label)
 - open_issues_count = label.open_issues_count(current_user)
 - open_merge_requests_count = label.open_merge_requests_count(current_user)
+- subject = local_assigns[:subject]
 
 %li{id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
@@ -12,10 +13,10 @@
     .dropdown-menu.dropdown-menu-align-right
       %ul
         %li
-          = link_to_label(label, subject: local_assigns[:subject], type: :merge_request) do
+          = link_to_label(label, subject: subject, type: :merge_request) do
             = pluralize open_merge_requests_count, 'merge request'
         %li
-          = link_to_label(label, subject: local_assigns[:subject]) do
+          = link_to_label(label, subject: subject) do
             = pluralize open_issues_count, 'open issue'
         - if current_user
           %li.label-subscription{ data: toggle_subscription_data(label) }
@@ -28,9 +29,9 @@
             = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, remote: true, data: {confirm: 'Remove this label? Are you sure?'}
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
-    = link_to_label(label, subject: local_assigns[:subject], type: :merge_request, css_class: 'btn btn-transparent btn-action') do
+    = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
       = pluralize open_merge_requests_count, 'merge request'
-    = link_to_label(label, subject: local_assigns[:subject], css_class: 'btn btn-transparent btn-action') do
+    = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
       = pluralize open_issues_count, 'open issue'
 
     - if current_user
