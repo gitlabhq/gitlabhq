@@ -178,17 +178,17 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I fill jira settings' do
-    fill_in 'Project url', with: 'http://jira.example'
+    fill_in 'URL', with: 'http://jira.example'
     fill_in 'Username', with: 'gitlab'
     fill_in 'Password', with: 'gitlab'
-    fill_in 'Api url', with: 'http://jira.example/rest/api/2'
+    fill_in 'Project Key', with: 'GITLAB'
     click_button 'Save'
   end
 
   step 'I should see jira service settings saved' do
-    expect(find_field('Project url').value).to eq 'http://jira.example'
+    expect(find_field('URL').value).to eq 'http://jira.example'
     expect(find_field('Username').value).to eq 'gitlab'
-    expect(find_field('Api url').value).to eq 'http://jira.example/rest/api/2'
+    expect(find_field('Project Key').value).to eq 'GITLAB'
   end
 
   step 'I click Atlassian Bamboo CI service link' do

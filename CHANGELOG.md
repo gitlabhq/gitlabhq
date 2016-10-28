@@ -9,6 +9,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix extra space on Build sidebar on Firefox !7060
   - Fix mobile layout issues in admin user overview page !7087
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Refactor Jira service to use jira-ruby gem
   - Add hover to trash icon in notes !7008 (blackst0ne)
   - Fix sidekiq stats in admin area (blackst0ne)
   - Removed delete branch tooltip !6954
