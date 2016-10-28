@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::Importer, lib: true do
   describe '#execute' do
+    before do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+    end
+
     context 'when an error occurs' do
       let(:project) { create(:project, import_url: 'https://github.com/octocat/Hello-World.git', wiki_access_level: ProjectFeature::DISABLED) }
       let(:octocat) { double(id: 123456, login: 'octocat') }
@@ -152,10 +156,9 @@ describe Gitlab::GithubImport::Importer, lib: true do
           message: 'The remote data could not be fully imported.',
           errors: [
             { type: :label, url: "https://api.github.com/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title can't be blank, Title is invalid" },
-            { type: :milestone, url: "https://api.github.com/repos/octocat/Hello-World/milestones/1", errors: "Validation failed: Title has already been taken" },
             { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank, Title is too short (minimum is 0 characters)" },
             { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
-            { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Validation failed: Validate branches Cannot Create: This merge request already exists: [\"New feature\"]" },
+            { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
             { type: :wiki, errors: "Gitlab::Shell::Error" },
             { type: :release, url: 'https://api.github.com/repos/octocat/Hello-World/releases/2', errors: "Validation failed: Description can't be blank" }
           ]

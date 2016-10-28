@@ -33,6 +33,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix documents and comments on Build API `scope`
   - Fix applying labels for GitHub-imported MRs
   - Fix importing MR comments from GitHub
+  - Modify GitHub importer to be retryable
   - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
   - Shortened merge request modal to let clipboard button not overlap
 

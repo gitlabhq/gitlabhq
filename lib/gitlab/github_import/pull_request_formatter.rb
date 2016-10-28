@@ -24,8 +24,12 @@ module Gitlab
         }
       end
 
-      def klass
-        MergeRequest
+      def project_association
+        :merge_requests
+      end
+
+      def find_condition
+        { iid: number }
       end
 
       def number
