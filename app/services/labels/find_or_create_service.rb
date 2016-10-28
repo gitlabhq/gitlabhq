@@ -2,21 +2,24 @@ module Labels
   class FindOrCreateService
     def initialize(current_user, project, params = {})
       @current_user = current_user
-      @group = project.group
       @project = project
       @params = params.dup
     end
 
-    def execute
+    def execute(skip_authorization: false)
+      @skip_authorization = skip_authorization
       find_or_create_label
     end
 
     private
 
-    attr_reader :current_user, :group, :project, :params
+    attr_reader :current_user, :project, :params, :skip_authorization
 
     def available_labels
-      @available_labels ||= LabelsFinder.new(current_user, project_id: project.id).execute
+      @available_labels ||= LabelsFinder.new(
+        current_user,
+        project_id: project.id
+      ).execute(skip_authorization: skip_authorization)
     end
 
     def find_or_create_label
