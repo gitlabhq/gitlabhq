@@ -84,14 +84,15 @@
   };
 
   // Disable button if text field is empty
-  window.disableButtonIfEmptyField = function(field_selector, button_selector) {
+  window.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
+    event_name = event_name || 'input';
     var closest_submit, field;
     field = $(field_selector);
     closest_submit = field.closest('form').find(button_selector);
     if (rstrip(field.val()) === "") {
       closest_submit.disable();
     }
-    return field.on('input', function() {
+    return field.on(event_name, function() {
       if (rstrip($(this).val()) === "") {
         return closest_submit.disable();
       } else {

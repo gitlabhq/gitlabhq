@@ -30,6 +30,10 @@ Use this if you've installed GitLab from source:
 ```
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
+If you are running GitLab within a Docker container, you can run the backup from the host:
+```
+docker -t exec <container name> gitlab-rake gitlab:backup:create
+```
 
 You can specify that portions of the application data be skipped using the
 environment variable `SKIP`. You can skip:

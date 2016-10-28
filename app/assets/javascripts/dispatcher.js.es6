@@ -117,6 +117,9 @@
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;
+        case 'projects:commit:builds':
+          new gl.Pipelines();
+          break;
         case 'projects:commits:show':
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
@@ -168,6 +171,8 @@
           shortcut_handler = new ShortcutsNavigation();
           new ShortcutsBlob(true);
           break;
+        case 'groups:labels:new':
+        case 'groups:labels:edit':
         case 'projects:labels:new':
         case 'projects:labels:edit':
           new Labels();

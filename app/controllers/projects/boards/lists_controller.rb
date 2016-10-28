@@ -76,9 +76,8 @@ module Projects
         resource.as_json(
           only: [:id, :list_type, :position],
           methods: [:title],
-          include: {
-            label: { only: [:id, :title, :description, :color, :priority] }
-          })
+          label: true
+        )
       end
     end
   end

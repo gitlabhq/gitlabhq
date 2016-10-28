@@ -58,7 +58,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:path_locks).dependent(:destroy) }
-    it { is_expected.to have_many(:labels).dependent(:destroy) }
+    it { is_expected.to have_many(:labels).class_name('ProjectLabel').dependent(:destroy) }
     it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
@@ -69,6 +69,14 @@ describe Project, models: true do
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
+
+    context 'after create' do
+      it "creates project feature" do
+        project = FactoryGirl.build(:project)
+
+        expect { project.save }.to change{ project.project_feature.present? }.from(false).to(true)
+      end
+    end
 
     describe '#members & #requesters' do
       let(:project) { create(:project, :public) }
@@ -610,9 +618,9 @@ describe Project, models: true do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project) { build(:project, wiki_enabled: false, has_external_wiki: false) }
-    let(:wiki_enabled_project) { build(:project) }
-    let(:external_wiki_project) { build(:project, has_external_wiki: true) }
+    let(:no_wiki_project)       { create(:project, wiki_access_level: ProjectFeature::DISABLED, has_external_wiki: false) }
+    let(:wiki_enabled_project)  { create(:project) }
+    let(:external_wiki_project) { create(:project, has_external_wiki: true) }
 
     it 'returns true if project is wiki enabled or has external wiki' do
       expect(wiki_enabled_project).to have_wiki
@@ -1482,6 +1490,7 @@ describe Project, models: true do
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
       allow(project).to receive(:repository_exists?).and_return(true)
+      allow_any_instance_of(Repository).to receive(:build_cache).and_return(true)
     end
 
     it 'imports a project' do

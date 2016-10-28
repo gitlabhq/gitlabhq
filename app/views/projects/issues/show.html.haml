@@ -1,4 +1,4 @@
-- page_title           "#{@issue.to_reference} #{@issue.title}", "Issues"
+- page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 
@@ -53,7 +53,7 @@
 
 
 .issue-details.issuable-details
-  .detail-page-description.content-block
+  .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
     %h2.title
       = markdown_field(@issue, :title)
     - if @issue.description.present?

@@ -14,72 +14,74 @@
 = render 'projects/last_push'
 = render "home_panel"
 
-%nav.project-stats{ class: (container_class) }
-  %ul.nav
-    %li
-      = link_to project_files_path(@project) do
-        Files (#{repository_size})
-    %li
-      = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
-        #{'Commit'.pluralize(@project.commit_count)} (#{number_with_delimiter(@project.commit_count)})
-    %li
-      = link_to namespace_project_branches_path(@project.namespace, @project) do
-        #{'Branch'.pluralize(@repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
-    %li
-      = link_to namespace_project_tags_path(@project.namespace, @project) do
-        #{'Tag'.pluralize(@repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
-
-    - if default_project_view != 'readme' && @repository.readme
+- if @project.feature_available?(:repository, current_user)
+  %nav.project-stats{ class: container_class }
+    %ul.nav
       %li
-        = link_to 'Readme', readme_path(@project)
-
-    - if @repository.changelog
+        = link_to project_files_path(@project) do
+          Files (#{repository_size})
       %li
-        = link_to 'Changelog', changelog_path(@project)
-
-    - if @repository.license_blob
+        = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
+          #{'Commit'.pluralize(@project.commit_count)} (#{number_with_delimiter(@project.commit_count)})
       %li
-        = link_to license_short_name(@project), license_path(@project)
-
-    - if @repository.contribution_guide
+        = link_to namespace_project_branches_path(@project.namespace, @project) do
+          #{'Branch'.pluralize(@repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
       %li
-        = link_to 'Contribution guide', contribution_guide_path(@project)
+        = link_to namespace_project_tags_path(@project.namespace, @project) do
+          #{'Tag'.pluralize(@repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
 
-    - if @repository.gitlab_ci_yml
-      %li
-        = link_to 'CI configuration', ci_configuration_path(@project)
+      - if default_project_view != 'readme' && @repository.readme
+        %li
+          = link_to 'Readme', readme_path(@project)
 
-    - if current_user && can_push_branch?(@project, @project.default_branch)
-      - unless @repository.changelog
-        %li.missing
-          = link_to add_special_file_path(@project, file_name: 'CHANGELOG') do
-            Add Changelog
-      - unless @repository.license_blob
-        %li.missing
-          = link_to add_special_file_path(@project, file_name: 'LICENSE') do
-            Add License
-      - unless @repository.contribution_guide
-        %li.missing
-          = link_to add_special_file_path(@project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide') do
-            Add Contribution guide
-      - unless @repository.gitlab_ci_yml
-        %li.missing
-          = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
-            Set Up CI
+      - if @repository.changelog
+        %li
+          = link_to 'Changelog', changelog_path(@project)
 
-    %li.project-repo-buttons-right
-      .project-repo-buttons.project-right-buttons
-        - if current_user
-          = render 'shared/members/access_request_buttons', source: @project
-          = render "projects/buttons/koding"
+      - if @repository.license_blob
+        %li
+          = link_to license_short_name(@project), license_path(@project)
 
-        = render 'projects/buttons/download', project: @project, ref: @ref
-        = render 'projects/buttons/dropdown'
+      - if @repository.contribution_guide
+        %li
+          = link_to 'Contribution guide', contribution_guide_path(@project)
 
-        = render 'shared/notifications/button', notification_setting: @notification_setting
-- if @repository.commit
-  .project-last-commit{ class: container_class }
-    = render 'projects/last_commit', commit: @repository.commit, project: @project
+      - if @repository.gitlab_ci_yml
+        %li
+          = link_to 'CI configuration', ci_configuration_path(@project)
+
+      - if current_user && can_push_branch?(@project, @project.default_branch)
+        - unless @repository.changelog
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: 'CHANGELOG') do
+              Add Changelog
+        - unless @repository.license_blob
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: 'LICENSE') do
+              Add License
+        - unless @repository.contribution_guide
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide') do
+              Add Contribution guide
+        - unless @repository.gitlab_ci_yml
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
+              Set Up CI
+
+      %li.project-repo-buttons-right
+        .project-repo-buttons.project-right-buttons
+          - if current_user
+            = render 'shared/members/access_request_buttons', source: @project
+            = render "projects/buttons/koding"
+
+          .btn-group.project-repo-btn-group
+            = render 'projects/buttons/download', project: @project, ref: @ref
+            = render 'projects/buttons/dropdown'
+
+          = render 'shared/notifications/button', notification_setting: @notification_setting
+  - if @repository.commit
+    .project-last-commit{ class: container_class }
+      = render 'projects/last_commit', commit: @repository.commit, project: @project
 
 %div{ class: container_class }
   - if @project.archived?
@@ -88,5 +90,7 @@
         = icon("exclamation-triangle fw")
         Archived project! Repository is read-only
 
-  %div{class: "project-show-#{default_project_view}"}
-    = render default_project_view
+  - view_path = default_project_view
+
+  %div{ class: project_child_container_class(view_path) }
+    = render view_path

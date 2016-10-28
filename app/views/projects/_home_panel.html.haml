@@ -28,5 +28,6 @@
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 
-      .project-clone-holder
-        = render "shared/clone_panel"
+      - if @project.feature_available?(:repository, current_user)
+        .project-clone-holder
+          = render "shared/clone_panel"

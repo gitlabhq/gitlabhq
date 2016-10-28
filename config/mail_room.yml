@@ -25,7 +25,7 @@
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
         :namespace: <%= Gitlab::Redis::SIDEKIQ_NAMESPACE %>
-        :queue: incoming_email
+        :queue: email_receiver
         :worker: EmailReceiverWorker
 
       :arbitration_method: redis

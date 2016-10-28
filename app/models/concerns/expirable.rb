@@ -5,11 +5,15 @@ module Expirable
     scope :expired, -> { where('expires_at <= ?', Time.current) }
   end
 
+  def expired?
+    expires? && expires_at <= Time.current
+  end
+
   def expires?
     expires_at.present?
   end
 
   def expires_soon?
-    expires_at < 7.days.from_now
+    expires? && expires_at < 7.days.from_now
   end
 end

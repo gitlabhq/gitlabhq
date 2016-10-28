@@ -120,6 +120,10 @@ class Repository
   end
 
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
+    unless exists? && has_visible_content? && query.present?
+      return []
+    end
+
     ref ||= root_ref
 
     args = %W(
@@ -128,9 +132,8 @@ class Repository
     )
     args = args.concat(%W(-- #{path})) if path.present?
 
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
-    commits = git_log_results.map { |c| commit(c) }
-    commits
+    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines
+    git_log_results.map { |c| commit(c.chomp) }.compact
   end
 
   def find_branch(name, fresh_repo: true)
@@ -475,6 +478,17 @@ class Repository
     @exists = nil
   end
 
+  # expire cache that doesn't depend on repository data (when expiring)
+  def expire_content_cache
+    expire_tags_cache
+    expire_tag_count_cache
+    expire_branches_cache
+    expire_branch_count_cache
+    expire_root_ref_cache
+    expire_emptiness_caches
+    expire_exists_cache
+  end
+
   # Runs code after a repository has been created.
   def after_create
     expire_exists_cache
@@ -490,14 +504,7 @@ class Repository
 
     expire_cache if exists?
 
-    # expire cache that don't depend on repository data (when expiring)
-    expire_tags_cache
-    expire_tag_count_cache
-    expire_branches_cache
-    expire_branch_count_cache
-    expire_root_ref_cache
-    expire_emptiness_caches
-    expire_exists_cache
+    expire_content_cache
 
     repository_event(:remove_repository)
   end
@@ -529,14 +536,13 @@ class Repository
   end
 
   def before_import
-    expire_emptiness_caches
-    expire_exists_cache
+    expire_content_cache
   end
 
   # Runs code after a repository has been forked/imported.
   def after_import
-    expire_emptiness_caches
-    expire_exists_cache
+    expire_content_cache
+    build_cache
   end
 
   # Runs code after a new commit has been pushed.

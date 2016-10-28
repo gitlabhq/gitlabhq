@@ -1,4 +1,5 @@
 class ProjectsController < Projects::ApplicationController
+  include IssuableCollections
   include ExtractsPath
 
   before_action :authenticate_user!, except: [:show, :activity, :refs]
@@ -104,16 +105,7 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
-
-        if @project.repository_exists?
-          if @project.empty_repo?
-            render 'projects/empty'
-          else
-            render :show
-          end
-        else
-          render 'projects/no_repo'
-        end
+        render_landing_page
       end
 
       format.atom do
@@ -286,6 +278,26 @@ class ProjectsController < Projects::ApplicationController
 
   private
 
+  # Render project landing depending of which features are available
+  # So if page is not availble in the list it renders the next page
+  #
+  # pages list order: repository readme, wiki home, issues list, customize workflow
+  def render_landing_page
+    if @project.feature_available?(:repository, current_user)
+      return render 'projects/no_repo' unless @project.repository_exists?
+      render 'projects/empty' if @project.empty_repo?
+    else
+      if @project.wiki_enabled?
+        @wiki_home = @project.wiki.find_page('home', params[:version_id])
+      elsif @project.feature_available?(:issues, current_user)
+        @issues = issues_collection
+        @issues = @issues.page(params[:page])
+      end
+
+      render :show
+    end
+  end
+
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
       'application'
@@ -309,7 +321,8 @@ class ProjectsController < Projects::ApplicationController
         project_feature_attributes:
           [
             :issues_access_level, :builds_access_level,
-            :wiki_access_level, :merge_requests_access_level, :snippets_access_level
+            :wiki_access_level, :merge_requests_access_level,
+            :snippets_access_level, :repository_access_level
           ]
       }
 

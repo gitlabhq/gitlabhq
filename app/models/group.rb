@@ -27,6 +27,7 @@ class Group < Namespace
   # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
   has_many :audit_events, -> { where(entity_type: Group) }, dependent: :destroy, foreign_key: 'entity_id'
   has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :labels, class_name: 'GroupLabel'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects

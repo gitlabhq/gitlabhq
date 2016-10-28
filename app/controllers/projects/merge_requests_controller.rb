@@ -41,7 +41,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
-    @labels = @project.labels.where(title: params[:label_name])
+    if params[:label_name].present?
+      labels_params = { project_id: @project.id, title: params[:label_name] }
+      @labels = LabelsFinder.new(current_user, labels_params).execute
+    end
 
     respond_to do |format|
       format.html
@@ -422,7 +425,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
       status ||= "preparing"
     else
-      ci_service = @merge_request.source_project.ci_service
+      ci_service = @merge_request.source_project.try(:ci_service)
       status = ci_service.commit_status(merge_request.diff_head_sha, merge_request.source_branch) if ci_service
 
       if ci_service.respond_to?(:commit_coverage)
@@ -449,10 +452,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           project = environment.project
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 
+          stop_url =
+            if environment.stoppable? && can?(current_user, :create_deployment, environment)
+              stop_namespace_project_environment_path(project.namespace, project, environment)
+            end
+
           {
             id: environment.id,
             name: environment.name,
             url: namespace_project_environment_path(project.namespace, project, environment),
+            stop_url: stop_url,
             external_url: environment.external_url,
             external_url_formatted: environment.formatted_external_url,
             deployed_at: deployment.try(:created_at),
@@ -522,13 +531,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @noteable = @merge_request
     @commits_count = @merge_request.commits.count
 
-    @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses.relevant if @pipeline
-
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
       @merge_request.close
     end
+
+    define_pipelines_vars
   end
 
   # Discussion tab data is rendered on html responses of actions
@@ -556,7 +564,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @pipeline = @merge_request.pipeline
-    @pipelines = [@pipeline].compact
   end
 
   def define_commit_vars
@@ -583,6 +590,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     )
   end
 
+  def define_pipelines_vars
+    @pipelines = @merge_request.all_pipelines
+
+    if @pipelines.present?
+      @pipeline = @pipelines.first
+      @statuses = @pipeline.statuses.relevant
+    end
+  end
+
   def define_new_vars
     @noteable = @merge_request
 
@@ -598,10 +614,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
 
-    @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses.relevant if @pipeline
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
+
+    @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+
+    define_pipelines_vars
   end
 
   def invalid_mr

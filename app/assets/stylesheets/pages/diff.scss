@@ -52,7 +52,6 @@
     background: #fff;
     color: #333;
     border-radius: 0 0 3px 3px;
-    -webkit-overflow-scrolling: auto;
 
     .unfold {
       cursor: pointer;
@@ -223,12 +222,12 @@
         top: 13px;
         right: 7px;
       }
- 
+
       .frame {
         top: 0;
         right: 0;
         position: absolute;
- 
+
         &.deleted {
           margin: 0;
           display: block;

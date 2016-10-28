@@ -24,11 +24,12 @@ feature "Pipelines settings", feature: true do
   context 'for master' do
     given(:role) { :master }
 
-    scenario 'be allowed to change' do
+    scenario 'be allowed to change', js: true do
       fill_in('Test coverage parsing', with: 'coverage_regex')
       click_on 'Save changes'
 
       expect(page.status_code).to eq(200)
+      expect(page).to have_button('Save changes', disabled: false)
       expect(page).to have_field('Test coverage parsing', with: 'coverage_regex')
     end
   end

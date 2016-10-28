@@ -1,5 +1,12 @@
 class HipchatService < Service
+  include ActionView::Helpers::SanitizeHelper
+
   MAX_COMMITS = 3
+  HIPCHAT_ALLOWED_TAGS = %w[
+    a b i strong em br img pre code
+    table th tr td caption colgroup col thead tbody tfoot
+    ul ol li dl dt dd
+  ]
 
   prop_accessor :token, :room, :server, :notify, :color, :api_version
   boolean_accessor :notify_only_broken_builds
@@ -88,6 +95,10 @@ class HipchatService < Service
     end
   end
 
+  def render_line(text)
+    markdown(text.lines.first.chomp, pipeline: :single_line) if text
+  end
+
   def create_push_message(push)
     ref_type = Gitlab::Git.tag_ref?(push[:ref]) ? 'tag' : 'branch'
     ref = Gitlab::Git.ref_name(push[:ref])
@@ -110,7 +121,7 @@ class HipchatService < Service
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|
-        message << "<br /> - #{commit[:message].lines.first} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
+        message << "<br /> - #{render_line(commit[:message])} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
       end
 
       if push[:commits].count > MAX_COMMITS
@@ -121,12 +132,22 @@ class HipchatService < Service
     message
   end
 
-  def format_body(body)
-    if body
-      body = body.truncate(200, separator: ' ', omission: '...')
-    end
+  def markdown(text, options = {})
+    return "" unless text
 
-    "<pre>#{body}</pre>"
+    context = {
+      project: project,
+      pipeline: :email
+    }
+
+    Banzai.render(text, context)
+
+    context.merge!(options)
+
+    html = Banzai.post_process(Banzai.render(text, context), context)
+    sanitized_html = sanitize(html, tags: HIPCHAT_ALLOWED_TAGS, attributes: %w[href title alt])
+
+    sanitized_html.truncate(200, separator: ' ', omission: '...')
   end
 
   def create_issue_message(data)
@@ -134,7 +155,7 @@ class HipchatService < Service
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
-    title = obj_attr[:title]
+    title = render_line(obj_attr[:title])
     state = obj_attr[:state]
     issue_iid = obj_attr[:iid]
     issue_url = obj_attr[:url]
@@ -143,10 +164,7 @@ class HipchatService < Service
     issue_link = "<a href=\"#{issue_url}\">issue ##{issue_iid}</a>"
     message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
-    if description
-      description = format_body(description)
-      message << description
-    end
+    message << "<pre>#{markdown(description)}</pre>"
 
     message
   end
@@ -159,26 +177,21 @@ class HipchatService < Service
     merge_request_iid = obj_attr[:iid]
     state = obj_attr[:state]
     description = obj_attr[:description]
-    title = obj_attr[:title]
+    title = render_line(obj_attr[:title])
     action = obj_attr[:action]
-
     state_or_action_text = (action == 'approved') ? action : state
-
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_iid}"
     merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_iid}</a>"
     message = "#{user_name} #{state_or_action_text} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
-    if description
-      description = format_body(description)
-      message << description
-    end
+    message << "<pre>#{markdown(description)}</pre>"
 
     message
   end
 
   def format_title(title)
-    "<b>" + title.lines.first.chomp + "</b>"
+    "<b>#{render_line(title)}</b>"
   end
 
   def create_note_message(data)
@@ -189,11 +202,13 @@ class HipchatService < Service
     note = obj_attr[:note]
     note_url = obj_attr[:url]
     noteable_type = obj_attr[:noteable_type]
+    commit_id = nil
 
     case noteable_type
     when "Commit"
       commit_attr = HashWithIndifferentAccess.new(data[:commit])
-      subject_desc = commit_attr[:id]
+      commit_id = commit_attr[:id]
+      subject_desc = commit_id
       subject_desc = Commit.truncate_sha(subject_desc)
       subject_type = "commit"
       title = format_title(commit_attr[:message])
@@ -221,10 +236,7 @@ class HipchatService < Service
     message = "#{user_name} commented on #{subject_html} in #{project_link}: "
     message << title
 
-    if note
-      note = format_body(note)
-      message << note
-    end
+    message << "<pre>#{markdown(note, ref: commit_id)}</pre>"
 
     message
   end

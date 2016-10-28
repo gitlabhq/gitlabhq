@@ -133,13 +133,17 @@ module Ci
       latest_builds.where('stage_idx < ?', stage_idx)
     end
 
-    def trace_html
-      trace_with_state[:html] || ''
+    def trace_html(**args)
+      trace_with_state(**args)[:html] || ''
     end
 
-    def trace_with_state(state = nil)
-      trace_with_state = Ci::Ansi2html::convert(trace, state) if trace.present?
-      trace_with_state || {}
+    def trace_with_state(state: nil, last_lines: nil)
+      trace_ansi = trace(last_lines: last_lines)
+      if trace_ansi.present?
+        Ci::Ansi2html.convert(trace_ansi, state)
+      else
+        {}
+      end
     end
 
     def timeout
@@ -222,9 +226,10 @@ module Ci
       raw_trace.present?
     end
 
-    def raw_trace
+    def raw_trace(last_lines: nil)
       if File.exist?(trace_file_path)
-        File.read(trace_file_path)
+        Gitlab::Ci::TraceReader.new(trace_file_path).
+          read(last_lines: last_lines)
       else
         # backward compatibility
         read_attribute :trace
@@ -239,8 +244,8 @@ module Ci
       project.ci_id && File.exist?(old_path_to_trace)
     end
 
-    def trace
-      hide_secrets(raw_trace)
+    def trace(last_lines: nil)
+      hide_secrets(raw_trace(last_lines: last_lines))
     end
 
     def trace_length

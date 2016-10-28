@@ -19,6 +19,24 @@ class Environment < ActiveRecord::Base
             allow_nil: true,
             addressable_url: true
 
+  delegate :stop_action, to: :last_deployment, allow_nil: true
+
+  scope :available, -> { with_state(:available) }
+  scope :stopped, -> { with_state(:stopped) }
+
+  state_machine :state, initial: :available do
+    event :start do
+      transition stopped: :available
+    end
+
+    event :stop do
+      transition available: :stopped
+    end
+
+    state :available
+    state :stopped
+  end
+
   def last_deployment
     deployments.last
   end
@@ -53,8 +71,8 @@ class Environment < ActiveRecord::Base
 
     return nil unless ref
 
-    deployment_id = ref.split('/').last
-    deployments.find(deployment_id)
+    deployment_iid = ref.split('/').last
+    deployments.find_by(iid: deployment_iid)
   end
 
   def ref_path
@@ -65,5 +83,15 @@ class Environment < ActiveRecord::Base
     return nil unless external_url
 
     external_url.gsub(/\A.*?:\/\//, '')
+  end
+
+  def stoppable?
+    available? && stop_action.present?
+  end
+
+  def stop!(current_user)
+    return unless stoppable?
+
+    stop_action.play(current_user)
   end
 end

@@ -109,6 +109,7 @@ module Ci
 
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
+        validate_job_environment!(name, job)
       end
     end
 
@@ -147,6 +148,35 @@ module Ci
         unless @stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
+      end
+    end
+
+    def validate_job_environment!(name, job)
+      return unless job[:environment]
+      return unless job[:environment].is_a?(Hash)
+
+      environment = job[:environment]
+      validate_on_stop_job!(name, environment, environment[:on_stop])
+    end
+
+    def validate_on_stop_job!(name, environment, on_stop)
+      return unless on_stop
+
+      on_stop_job = @jobs[on_stop.to_sym]
+      unless on_stop_job
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} is not defined"
+      end
+
+      unless on_stop_job[:environment]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} does not have environment defined"
+      end
+
+      unless on_stop_job[:environment][:name] == environment[:name]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} have different environment name"
+      end
+
+      unless on_stop_job[:environment][:action] == 'stop'
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} needs to have action stop defined"
       end
     end
 
