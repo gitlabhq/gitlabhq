@@ -1,6 +1,6 @@
 module Gitlab
   class RepositorySizeError
-    include ActionView::Helpers
+    include ActiveSupport::NumberHelper
 
     attr_reader :project
 
