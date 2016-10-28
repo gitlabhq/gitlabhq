@@ -235,7 +235,7 @@ In `/etc/gitlab/gitlab.rb`:
 ## Redis TCP support (will disable UNIX socket transport)
 redis['bind'] = '0.0.0.0' # or specify an IP to bind to a single one
 redis['port'] = 6379
-redis['requirepass'] = 'redis-password-goes-here'
+redis['password'] = 'redis-password-goes-here'
 redis['master_password'] = 'redis-password-goes-here'
 ```
 
@@ -249,7 +249,7 @@ with an additional `Slave` section as in the example below:
 ```ruby
 redis['bind'] = '0.0.0.0' # or specify an IP to bind to a single one
 redis['port'] = 6379
-redis['requirepass'] = 'redis-password-goes-here'
+redis['password'] = 'redis-password-goes-here'
 redis['master_password'] = 'redis-password-goes-here'
 
 ## Slave redis instance
@@ -327,27 +327,25 @@ To setup sentinel, you edit `/etc/gitlab/gitlab.rb` file:
 ```ruby
 
 ## When you install Sentinel in a separate machine, you need to control which
-## other services will be running in it. Take a look at the following variables
-## and enable or disable whenever it fits your strategy:
+## other services will be running in it.
+## We've simplified the choice using special "roles" settings:
 
-## Enabled Redis and Sentinel services
-redis['enable'] = true
-sentinel['enable'] = true
+## Enabled Sentinel and Redis Master services
+redis_sentinel_role['enable'] = true
+redis_master_role['enable'] = true
 
-# Disabled all other services
-bootstrap['enable'] = false
-nginx['enable'] = false
-postgresql['enable'] = false
-gitlab_rails['enable'] = false
-mailroom['enable'] = false
+## Enabled Sentinel and Redis Slave services
+redis_sentinel_role['enable'] = true
+redis_master_role['enable'] = true
 
 ## Configure Redis
 redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
 redis['master_ip'] = '10.0.0.1' # ip of the initial master redis instance
 redis['master_port'] = 6379 # port of the initial master redis instance
-redis['master_password'] = 'your-secure-password-here' # the same value defined in redis['password'] in the master instance
+redis['master_password'] = 'redis-password-goes-here' # the same value defined in redis['password'] in the master instance
 
 ## Configure Sentinel
+sentinel['bind'] = '0.0.0.0' # or specify an IP to bind to a single one
 # sentinel['port'] = 26379 # uncomment to change default port
 
 ## Quorum must reflect the amount of voting sentinels it take to start a failover.
@@ -388,6 +386,48 @@ sentinel['quorum'] = 2
 # sentinel['failover_timeout'] = 60000
 ```
 
+In the example above we've used `redis_sentinel_role` and `redis_master_role`
+which simplify the ammount of configuration changes.
+
+If you want more control, here is what each one sets for you automatically
+when enabled:
+
+```ruby
+## Redis Sentinel Role
+redis_sentinel_role['enable'] = true
+
+# When Sentinel Role is enabled, the following services are enabled/disabled:
+sentinel['enable'] = true
+
+# This others are disabled:
+redis['enable'] = false
+bootstrap['enable'] = false
+nginx['enable'] = false
+postgresql['enable'] = false
+gitlab_rails['enable'] = false
+mailroom['enable'] = false
+
+## Redis master/slave Role:
+redis_master_role['enable'] = true # enable only one of them
+redis_slave_role['enable'] = true # enable only one of them
+
+# When Redis Master or Slave role are enabled, the following services are enabled/disabled:
+# (Note that if redis and sentinel roles are combined both services will be enabled)
+
+# When Sentinel Role is enabled, the following services are enabled/disabled:
+redis['enable'] = true
+
+# This others are disabled:
+sentinel['enable'] = false
+bootstrap['enable'] = false
+nginx['enable'] = false
+postgresql['enable'] = false
+gitlab_rails['enable'] = false
+mailroom['enable'] = false
+
+# Redis Slave role also change this setting from default 'true' to 'false':
+redis['master'] = false
+```
 ---
 
 The final part is to inform the main GitLab application server of the Redis
