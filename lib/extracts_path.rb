@@ -125,9 +125,9 @@ module ExtractsPath
 
         request.format = :atom if @commit
       end
-    end
 
-    raise InvalidPathError unless @commit
+      raise InvalidPathError unless @commit
+    end
 
     @hex_path = Digest::SHA1.hexdigest(@path)
     @logs_path = logs_file_namespace_project_ref_path(@project.namespace,

@@ -11,7 +11,9 @@ class Projects::NetworkController < Projects::ApplicationController
     @commit_url = namespace_project_commit_path(@project.namespace, @project, 'ae45ca32').gsub("ae45ca32", "%s")
 
     respond_to do |format|
-      format.html
+      format.html do
+        flash.now[:alert] = "Git revision '#{params[:extended_sha1]}' does not exist." if params[:extended_sha1].present? && !@commit
+      end
 
       format.json do
         @graph = Network::Graph.new(project, @ref, @commit, @options[:filter_ref])
