@@ -111,7 +111,7 @@ class Member < ActiveRecord::Base
           current_user,
           id: member.id,
           access_level: access_level
-        ).execute
+        ).execute(force: ldap)
       else
         member.save
       end

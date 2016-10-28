@@ -4,10 +4,13 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
   include LdapHelpers
 
   let(:adapter) { ldap_adapter }
-  let(:sync_group) { described_class.new(group, proxy(adapter)) }
   let(:user) { create(:user) }
 
   before do
+    # We need to actually activate the LDAP config otherwise `Group#ldap_synced?`
+    # will always be false!
+    allow(Gitlab.config.ldap).to receive_messages(enabled: true)
+
     create(:identity, user: user, extern_uid: user_dn(user.username))
 
     stub_ldap_config(active_directory: false)
@@ -113,6 +116,9 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
   describe '#update_permissions' do
     before do
+      # Safe-check because some permissions are removed when `Group#ldap_synced?`
+      # is true (e.g. in `GroupPolicy`).
+      expect(group).to be_ldap_synced
       group.start_ldap_sync
     end
     after do
@@ -124,6 +130,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
              cn: 'ldap_group1',
              group_access: ::Gitlab::Access::DEVELOPER)
     end
+    let(:sync_group) { described_class.new(group, proxy(adapter)) }
 
     context 'with all functionality against one LDAP group type' do
       context 'with basic add/update actions' do
