@@ -32,6 +32,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.2
   - Fix builds dropdown overlapping bug !7124
+  - Fix and improve `Sortable.highest_label_priority`
 
 ## 8.13.1 (2016-10-25)
   - Fix branch protection API. !6215
