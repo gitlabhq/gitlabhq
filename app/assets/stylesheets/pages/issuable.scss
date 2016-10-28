@@ -421,3 +421,58 @@
     }
   }
 }
+
+#issuable-time-tracker {
+  .time-tracking-help-state {
+    padding: 10px 0;
+    margin-top: 10px;
+    border-top: 1px solid #dcdcdc;
+  }
+
+  .meter-container {
+    background: $gray-lighter;
+    border-radius: 2px;
+  }
+
+  .meter-fill {
+    max-width: 100%;
+    height: 4px;
+    background: $gl-text-green;
+  }
+
+  .help-button, .close-help-button {
+    cursor: pointer;
+  }
+  .over_estimate {
+    .meter-fill {
+      background: $red-light ;
+    }
+    .time-remaining, .compare-value.spent {
+      color: $red-light ;
+    }
+  }
+  .sidebar-collapsed-icon {
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: #999;
+    }
+  }
+
+  .within_estimate {
+    .meter-fill {
+      background: $gl-text-green;
+    }
+  }
+  .compare-display-container {
+    margin-top: 5px;
+  }
+  .compare-display {
+    font-size: 13px;
+    color: $gl-gray-light;
+
+    .compare-value {
+      color: $gl-gray;
+    }
+  }
+}

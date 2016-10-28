@@ -1,5 +1,5 @@
 - todo = issuable_todo(issuable)
-%aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
+%aside.right-sidebar{ class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
@@ -72,7 +72,10 @@
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
-
+      // TODO: Need to add check for time_estimated - if issuable.has_attribute?(:time_estimated) once hooked up to backend
+      - if issuable.has_attribute?(:due_date)
+        #issuable-time-tracker.block
+          %issuable-time-tracker{ ':time_estimated' => 'time_estimated', ':time_spent' => 'time_spent' }
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
@@ -195,6 +198,7 @@
           = clipboard_button(clipboard_text: project_ref)
 
     :javascript
+      gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
       new WeightSelect();

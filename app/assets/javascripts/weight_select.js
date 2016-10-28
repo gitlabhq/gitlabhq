@@ -12,6 +12,20 @@
         $value = $block.find('.value');
         abilityName = $dropdown.data('ability-name');
         $loading = $block.find('.block-loading').fadeOut();
+
+        var ajaxResource = gl.IssuableResource ? gl.IssuableResource.put.bind(gl.IssuableResource) : $.ajax;
+
+        var renderMethod = function(data) {
+          if (data.weight != null) {
+            $value.html(data.weight);
+          } else {
+            $value.html('None');
+          }
+          return $sidebarCollapsedValue.html(data.weight);
+        };
+
+        gl.IssuableResource && gl.IssuableResource.subscribe(renderMethod);
+
         updateWeight = function(selected) {
           var data;
           data = {};
@@ -19,7 +33,7 @@
           data[abilityName].weight = selected != null ? selected : null;
           $loading.fadeIn();
           $dropdown.trigger('loading.gl.dropdown');
-          return $.ajax({
+          return ajaxResource({
             type: 'PUT',
             dataType: 'json',
             url: updateUrl,
@@ -28,12 +42,7 @@
             $dropdown.trigger('loaded.gl.dropdown');
             $loading.fadeOut();
             $selectbox.hide();
-            if (data.weight != null) {
-              $value.html(data.weight);
-            } else {
-              $value.html('None');
-            }
-            return $sidebarCollapsedValue.html(data.weight);
+            renderMethod(data);
           });
         };
         return $dropdown.glDropdown({
