@@ -18,11 +18,8 @@
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */
-<<<<<<< HEAD
 /*= require jquery.tablesorter */
-=======
 /*= require js.cookie */
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 /*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */

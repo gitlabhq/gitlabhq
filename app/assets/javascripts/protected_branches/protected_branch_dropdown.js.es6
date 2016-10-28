@@ -1,16 +1,6 @@
-<<<<<<< HEAD
+/* eslint-disable */
 (global => {
   global.gl = global.gl || {};
-=======
-/* eslint-disable */
-class ProtectedBranchDropdown {
-  constructor(options) {
-    this.onSelect = options.onSelect;
-    this.$dropdown = options.$dropdown;
-    this.$dropdownContainer = this.$dropdown.parent();
-    this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
-    this.$protectedBranch = this.$dropdownContainer.find('.create-new-protected-branch');
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 
   class ProtectedBranchDropdown {
     constructor(options) {

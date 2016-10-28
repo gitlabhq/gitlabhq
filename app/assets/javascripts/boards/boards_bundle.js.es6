@@ -8,11 +8,8 @@
 //= require_tree ./mixins
 //= require_tree ./filters
 //= require ./components/board
-<<<<<<< HEAD
 //= require ./components/boards_selector
-=======
 //= require ./components/board_sidebar
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 //= require ./components/new_list_dropdown
 //= require ./vue_resource_interceptor
 
@@ -30,11 +27,8 @@ $(() => {
     el: $boardApp,
     components: {
       'board': gl.issueBoards.Board,
-<<<<<<< HEAD
-      'boards-selector': gl.issueBoards.BoardsSelector
-=======
+      'boards-selector': gl.issueBoards.BoardsSelector,
       'board-sidebar': gl.issueBoards.BoardSidebar
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
     },
     data: {
       state: Store.state,

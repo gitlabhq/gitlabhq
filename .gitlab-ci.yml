@@ -212,17 +212,6 @@ rake brakeman: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
-<<<<<<< HEAD
-=======
-rake ee_compat_check:
-  <<: *exec
-  only:
-    - branches
-  except:
-    - master
-    - tags
-  allow_failure: yes
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 
 rake db:migrate:reset:
   stage: test
@@ -336,15 +325,9 @@ trigger_docs:
   cache: {}
   artifacts: {}
   script:
-<<<<<<< HEAD
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ee https://gitlab.com/api/v3/projects/38069/trigger/builds"
   only:
     - master@gitlab-org/gitlab-ee
-=======
-    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/38069/trigger/builds"
-  only:
-    - master@gitlab-org/gitlab-ce
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 
 # Notify slack in the end
 

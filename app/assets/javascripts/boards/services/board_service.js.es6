@@ -1,12 +1,7 @@
 /* eslint-disable */
 class BoardService {
   constructor (root, boardId) {
-<<<<<<< HEAD
-    Vue.http.options.root = root;
-
     this.boards = Vue.resource(`${root}{/id}.json`);
-=======
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
