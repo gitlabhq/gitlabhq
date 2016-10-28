@@ -55,6 +55,11 @@
 /*= require fuzzaldrin-plus */
 
 (function() {
+
+  $(window).on('page:change', function() {
+    Turbolinks.pagesCached(0);
+  });
+
   window.slugify = function(text) {
     return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
   };
