@@ -88,7 +88,8 @@ See more details in the [Configure GitLab](configuration.md) step.
 
 ### Can I use Geo in a disaster recovery situation?
 
-There are limitations to what we replicate (see Current limitations).
+There are limitations to what we replicate (see
+[What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)).
 In an extreme data-loss situation you can make a secondary Geo into your
 primary, but this is not officially supported yet.
 
