@@ -10,7 +10,9 @@
     }
 
     .form-horizontal {
-      margin-right: 45px;
+      @media (min-width: $screen-sm-min) {
+        margin-right: 45px;
+      }
     }
   }
 
