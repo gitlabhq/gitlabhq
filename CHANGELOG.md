@@ -14,6 +14,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix sidekiq stats in admin area (blackst0ne)
   - API: Fix booleans not recognized as such when using the `to_boolean` helper
   - Removed delete branch tooltip !6954
+  - Stop unauthorized users dragging on milestone page (blackst0ne)
   - Escape ref and path for relative links !6050 (winniehell)
   - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
   - Fix filtering of milestones with quotes in title (airatshigapov)
