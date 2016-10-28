@@ -37,8 +37,11 @@
             return $el.data('id');
           },
           toggleLabel (selected, $el) {
-            console.log($el.text().trim());
-            return $el.text();
+            if ($link.data('revert')) {
+              return $btn.text();
+            } else {
+              return $el.text();
+            }
           },
           clicked: (selected, $el) => {
             const $link = $($el);

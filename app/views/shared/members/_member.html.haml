@@ -115,10 +115,12 @@
                 Delete
               = icon('trash', class: 'hidden-xs')
         - elsif member.ldap
-          %button.btn.btn-default.btn-ldap-override.prepend-left-10.js-ldap-permissions{ type: "button",
-            "aria-label" => "Override LDAP settings",
+          %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: "button",
+            "aria-label" => "Edit permissions",
             data: { name: user.name, id: dom_id(member) } }
-            = icon("pencil")
+            %span.visible-xs-block.visible-sm-block
+              Edit permissions
+            = icon("pencil", class: "hidden-xs hidden-sm")
       - else
         %span.member-access-text= member.human_access
 - if member.ldap

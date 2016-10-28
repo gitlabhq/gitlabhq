@@ -6,7 +6,11 @@
 .member {
   &.is-overriden {
     .btn-ldap-override {
-      visibility: hidden;
+      display: none!important;
+    }
+
+    .form-horizontal {
+      margin-right: 45px;
     }
   }
 
@@ -117,14 +121,36 @@
 
 .alert-member-ldap {
   background-color: #fff1e0;
-  line-height: 40px;
+
+  @media (min-width: $screen-sm-min) {
+    line-height: 40px;
+  }
 
   > p {
     float: left;
+    margin-bottom: 10px;
     color: $orange-normal;
 
     @media (min-width: $screen-sm-min) {
       padding-left: 55px;
+      margin-bottom: 0;
     }
+  }
+
+  .controls {
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: auto;
+    }
+  }
+}
+
+.btn-ldap-override {
+  width: 100%;
+
+  @media (min-width: $screen-sm-min) {
+    margin-left: 10px;
+    width: auto;
   }
 }
