@@ -22,6 +22,7 @@
 /*= require jquery.endless-scroll */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
+/*= require jquery.caret */
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */

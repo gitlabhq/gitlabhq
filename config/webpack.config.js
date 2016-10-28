@@ -14,7 +14,7 @@ var DEV_SERVER_PORT = 3808;
 var config = {
   context: ROOT_PATH,
   entry: {
-    bundle: './app/assets/javascripts/webpack/bundle.js'
+    application: './app/assets/javascripts/webpack/application.js'
   },
 
   output: {
@@ -31,6 +31,15 @@ var config = {
         test: /\.es6$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
+      },
+      {
+        test: /\.(js|es6)$/,
+        loader: 'imports-loader',
+        query: 'this=>window'
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   },
@@ -48,7 +57,14 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['', '.js', '.es6', '.js.es6']
+    extensions: ['', '.js', '.es6', '.js.es6'],
+    alias: {
+      'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
+      'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
+      'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
+      'vue$':           'vue/dist/vue.js',
+      'vue-resource$':  'vue-resource/dist/vue-resource.js'
+    }
   }
 }
 
