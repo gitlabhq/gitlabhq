@@ -10,6 +10,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix extra space on Build sidebar on Firefox !7060
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Refactor Jira service to use jira-ruby gem
 - Add hover to trash icon in notes !7008 (blackst0ne)
 - Only show one error message for an invalid email !5905 (lycoperdon)
