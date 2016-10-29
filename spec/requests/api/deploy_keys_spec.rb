@@ -3,22 +3,11 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
 
-<<<<<<< HEAD
   let(:user)  { create(:user) }
   let(:project) { create(:project, creator_id: user.id) }
+  let(:project2)    { create(:project, creator_id: user.id) }
   let!(:deploy_keys_project) { create(:deploy_keys_project, project: project) }
   let(:admin) { create(:admin) }
-=======
-  let(:user)        { create(:user) }
-  let(:admin)       { create(:admin) }
-  let(:project)     { create(:project, creator_id: user.id) }
-  let(:project2)    { create(:project, creator_id: user.id) }
-  let(:deploy_key)  { create(:deploy_key, public: true) }
-
-  let!(:deploy_keys_project) do
-    create(:deploy_keys_project, project: project, deploy_key: deploy_key)
-  end
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 
   describe 'GET /deploy_keys' do
     before { admin }
@@ -47,8 +36,6 @@ describe API::API, api: true  do
       end
     end
   end
-<<<<<<< HEAD
-=======
 
   describe 'GET /projects/:id/deploy_keys' do
     before { deploy_key }
@@ -183,5 +170,4 @@ describe API::API, api: true  do
       end
     end
   end
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
 end

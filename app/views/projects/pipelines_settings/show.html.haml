@@ -87,24 +87,6 @@
                 tap --coverage-report=text-summary (NodeJS) -
                 %code ^Statements\s*:\s*([^%]+)
 
-<<<<<<< HEAD
-        .form-group
-          .checkbox
-            = f.label :public_builds do
-              = f.check_box :public_builds
-              %strong Public builds
-            .help-block Allow everyone to access builds traces for Public and Internal projects
-
-        - if @project.mirror?
-          = render 'shared/mirror_trigger_builds_setting', f: f
-
-        .form-group.append-bottom-default
-          = f.label :runners_token, "Runners token", class: 'label-light'
-          = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
-          %p.help-block The secure token used to checkout project.
-
-=======
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
         = f.submit 'Save changes', class: "btn btn-save"
 
 %hr

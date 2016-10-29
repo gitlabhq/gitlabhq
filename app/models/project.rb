@@ -59,14 +59,9 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
   belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
-<<<<<<< HEAD
   has_one :push_rule, dependent: :destroy
-  has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
-  has_many :boards, dependent: :destroy
-=======
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
-  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
+  has_many :boards, dependent: :destroy
 
   # Project services
   has_many :services

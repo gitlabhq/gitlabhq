@@ -190,18 +190,10 @@ describe JiraService, models: true do
 
     context 'when gitlab.yml was initialized' do
       before do
-<<<<<<< HEAD
-        settings = { "jira" => {
-          "title" => "Jira",
-          "project_url" => "http://jira.sample/projects/project_a",
-          "issues_url" => "http://jira.sample/issues/:id",
-          "new_issue_url" => "http://jira.sample/projects/project_a/issues/new"
-=======
         settings = {
           "jira" => {
             "title" => "Jira",
             "url" => "http://jira.sample/projects/project_a"
->>>>>>> 144358e98ee1b25b61854a3471e21e100ace9db5
           }
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
