@@ -520,7 +520,7 @@ GEM
     rack (1.6.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-attack (4.3.1)
+    rack-attack (4.4.1)
       rack
     rack-cors (0.4.0)
     rack-mount (0.8.3)
@@ -929,7 +929,7 @@ DEPENDENCIES
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.0)
   pry-rails (~> 0.3.4)
-  rack-attack (~> 4.3.1)
+  rack-attack (~> 4.4.1)
   rack-cors (~> 0.4.0)
   rack-oauth2 (~> 1.2.1)
   rails (= 4.2.7.1)
