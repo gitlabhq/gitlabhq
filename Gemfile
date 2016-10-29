@@ -117,7 +117,7 @@ gem 'truncato',           '~> 0.7.8'
 gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
 
 # Diffs
-gem 'diffy', '~> 3.0.3'
+gem 'diffy', '~> 3.1.0'
 
 # Application server
 group :unicorn do
