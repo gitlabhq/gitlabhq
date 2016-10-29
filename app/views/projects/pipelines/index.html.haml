@@ -44,15 +44,11 @@
     - else
       .table-holder
         %table.table.ci-table
-          %thead
           %tbody.app
-  -#         = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
-
-      = paginate @pipelines, theme: 'gitlab'
 
 :javascript
   Vue.component('vue-pipelines', gl.VuePipeLines);
-  Vue.component('vue-pipeline', gl.VuePipeLine);
+  Vue.component('vue-runner-status', gl.VueRunnerStatus);
 
   new Vue({
     el: ".app",
