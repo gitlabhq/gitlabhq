@@ -42,7 +42,7 @@ class ChangelogOptionParser
       end
 
       opts.on('-h', '--help', 'Print help message') do
-        puts opts
+        $stdout.puts opts
         exit
       end
     end
@@ -72,6 +72,7 @@ class ChangelogEntry
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"
     $stdout.puts contents
+
     unless options.dry_run
       write
       amend_commit if options.amend
