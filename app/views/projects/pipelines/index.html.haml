@@ -47,17 +47,20 @@
           %tbody.app
 
 :javascript
-  Vue.component('vue-pipelines', gl.VuePipeLines);
-  Vue.component('vue-runner-status', gl.VueRunnerStatus);
+  Vue.use(VueResource);
 
-  new Vue({
+  var vm = new Vue({
     el: ".app",
     data:{
-      pipelines: JSON.parse('#{@pipelines.to_json}'),
-      count: JSON.parse('#{@pipeline_count.to_json}'),
+      scope: "#{@project.id}",
+      store: new gl.PipelineStore(),
+    },
+    components: {
+      'vue-commit-link': gl.VueCommitLink,
+      'vue-pipelines': gl.VuePipeLines,
     },
     template: ""
       + "<div>"
-      + "<vue-pipelines :pipelines='pipelines' :count='count'></vue-pipelines>"
+      + "<vue-pipelines :scope='scope' :store='store'></vue-pipelines>"
       + "</div>",
   })
