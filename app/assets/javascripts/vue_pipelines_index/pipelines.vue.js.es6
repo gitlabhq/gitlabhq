@@ -5,7 +5,6 @@
   gl.VuePipeLines = Vue.extend({
     data() {
       return {
-        endpoint: `/api/v3/projects/${this.scopeId}/pipelines`,
         pipelines: [],
         runnerStats: new gl.RunnerStats(),
       };
