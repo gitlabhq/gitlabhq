@@ -251,10 +251,14 @@ module SlashCommands
     desc 'Set estimate'
     params 'e.g: 3h 30m'
     condition do
-      issuable.persisted? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
+      begin
+        @updates[:estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+      rescue ChronicDuration::DurationParseError
+        # do nothing
+      end
     end
 
     def find_label_ids(labels_param)
