@@ -4,12 +4,17 @@
 ((gl) => {
   gl.PipelineStore = class {
     fetchData(Vue) {
-      this.$http.get(`/api/v3/projects/${this.scope}/pipelines`)
-        .then((response) => {
-            Vue.set(this, 'pipelines', JSON.parse(response.body));
+      const goFetch = vue =>
+        this.$http.get(`/api/v3/projects/${this.scope}/pipelines`)
+          .then((response) => {
+            vue.set(this, 'pipelines', JSON.parse(response.body));
           }, () => {
-            Vue.set(this, 'pipelines', []);
+            vue.set(this, 'pipelines', []);
           });
+
+      goFetch(Vue);
+
+      setInterval(() => { console.log('DID IT'); goFetch(Vue) }, 3000);
     }
   };
 })(window.gl || (window.gl = {}));
