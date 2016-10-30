@@ -9,7 +9,7 @@
           .then((response) => {
             vue.set(this, 'pipelines', JSON.parse(response.body));
           }, () => {
-            vue.set(this, 'pipelines', []);
+            console.error('API Error for Pipelines');
           });
 
       goFetch(Vue);
