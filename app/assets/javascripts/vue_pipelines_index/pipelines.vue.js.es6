@@ -11,7 +11,7 @@
     },
     props: ['scope', 'store'],
     created() {
-      this.store.fetchData.call(this, Vue);
+      this.store.fetchDataLoop.call(this, Vue);
     },
     methods: {
       shortSha(pipeline) {

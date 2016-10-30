@@ -3,7 +3,7 @@
 
 ((gl) => {
   gl.PipelineStore = class {
-    fetchData(Vue) {
+    fetchDataLoop(Vue) {
       const goFetch = vue =>
         this.$http.get(`/api/v3/projects/${this.scope}/pipelines`)
           .then((response) => {
