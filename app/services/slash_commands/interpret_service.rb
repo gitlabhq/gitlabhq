@@ -255,7 +255,7 @@ module SlashCommands
     end
     command :estimate do |raw_duration|
       begin
-        @updates[:estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+        @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
       rescue ChronicDuration::DurationParseError
         # do nothing
       end

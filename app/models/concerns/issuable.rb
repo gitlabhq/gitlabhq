@@ -303,4 +303,8 @@ module Issuable
     metrics = self.metrics || create_metrics
     metrics.record!
   end
+
+  def time_spent
+    timelogs.sum(:time_spent)
+  end
 end
