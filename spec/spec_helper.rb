@@ -9,7 +9,7 @@ require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'rspec/retry'
 
-if ENV['CI']
+if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end

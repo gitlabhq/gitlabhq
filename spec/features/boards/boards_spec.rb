@@ -347,6 +347,19 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.board', count: 5)
         end
 
+        it 'keeps dropdown open after adding new list' do
+          click_button 'Create new list'
+          wait_for_ajax
+
+          page.within('.dropdown-menu-issues-board-new') do
+            click_link done.title
+          end
+
+          wait_for_vue_resource
+
+          expect(find('.issue-boards-search')).to have_selector('.open')
+        end
+
         it 'moves issues from backlog into new list' do
           wait_for_board_cards(1, 6)
 

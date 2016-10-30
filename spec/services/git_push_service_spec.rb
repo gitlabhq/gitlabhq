@@ -451,11 +451,7 @@ describe GitPushService, services: true do
         # project.create_jira_service doesn't seem to invalidate the cache here
         project.has_external_issue_tracker = true
         jira_service_settings
-
-        WebMock.stub_request(:post, jira_api_transition_url)
-        WebMock.stub_request(:post, jira_api_comment_url)
-        WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        WebMock.stub_request(:get, jira_api_test_url)
+        stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
                                                     issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
@@ -475,9 +471,9 @@ describe GitPushService, services: true do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
         it "initiates one api call to jira server to mention the issue" do
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, user, @oldrev, @newrev, @ref)
 
-          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+          expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
             body: /mentioned this issue in/
           ).once
         end
@@ -485,22 +481,19 @@ describe GitPushService, services: true do
 
       context "closing an issue" do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
-        let(:transition_body) { { transition: { id: '2' } }.to_json }
         let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
 
         context "using right markdown" do
           it "initiates one api call to jira server to close the issue" do
             execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-            expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
-              body: transition_body
-            ).once
+            expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
           end
 
           it "initiates one api call to jira server to comment on the issue" do
             execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-            expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+            expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
               body: comment_body
             ).once
           end
@@ -512,15 +505,13 @@ describe GitPushService, services: true do
           it "does not initiates one api call to jira server to close the issue" do
             execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-            expect(WebMock).not_to have_requested(:post, jira_api_transition_url).with(
-              body: transition_body
-            )
+            expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
           end
 
           it "does not initiates one api call to jira server to comment on the issue" do
             execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-            expect(WebMock).not_to have_requested(:post, jira_api_comment_url).with(
+            expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
               body: comment_body
             ).once
           end

@@ -14,7 +14,7 @@
     border-bottom: 1px solid #eee;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-    &:after {
+    &::after {
       content: " ";
       display: table;
       clear: both;
@@ -38,7 +38,7 @@
 
     &.smoke { background-color: $background-color; }
 
-    &:hover {
+    &:not(.ui-sort-disabled):hover {
       background: $row-hover;
     }
 

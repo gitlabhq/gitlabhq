@@ -38,7 +38,8 @@
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
         .on('click', 'html, body', (e) => this.handleClickEvent(e))
-        .on('page:change', () => this.renderState());
+        .on('page:change', () => this.renderState())
+        .on('todo:toggle', (e, count) => this.updateTodoCount(count));
       this.renderState();
     }
 
@@ -51,6 +52,10 @@
           this.toggleSidebar();
         }
       }
+    }
+
+    updateTodoCount(count) {
+      $('.js-todos-count').text(gl.text.addDelimiter(count));
     }
 
     toggleSidebar() {

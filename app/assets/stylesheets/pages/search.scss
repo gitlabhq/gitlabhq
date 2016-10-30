@@ -72,7 +72,7 @@
       top: 0;
       color: $location-icon-color;
 
-      &:before {
+      &::before {
         font-family: FontAwesome;
         font-weight: normal;
         font-style: normal;

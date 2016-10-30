@@ -101,7 +101,7 @@ module Gitlab
             state:       raw_issue['state'] == 'closed' ? 'closed' : 'opened'
           )
 
-          issue_labels = ::LabelsFinder.new(project.owner, project_id: project.id, title: labels).execute
+          issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)
           issue.update_attribute(:label_ids, issue_labels.pluck(:id))
 
           import_issue_comments(issue, comments)
@@ -235,7 +235,7 @@ module Gitlab
 
       def create_label(name)
         params = { name: name, color: nice_label_color(name) }
-        ::Labels::FindOrCreateService.new(project.owner, project, params).execute
+        ::Labels::FindOrCreateService.new(nil, project, params).execute(skip_authorization: true)
       end
 
       def format_content(raw_content)

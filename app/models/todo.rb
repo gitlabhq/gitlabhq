@@ -53,7 +53,7 @@ class Todo < ActiveRecord::Base
     # Need to order by created_at last because of differences on Mysql and Postgres when joining by type "Merge_request/Issue"
     def order_by_labels_priority
       params = {
-        target_type: ['Issue', 'MergeRequest'],
+        target_type_column: "todos.target_type",
         target_column: "todos.target_id",
         project_column: "todos.project_id"
       }

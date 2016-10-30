@@ -185,6 +185,20 @@ again in the future.
 See [the Testing Standards and Style Guidelines](testing.md) for more
 information.
 
+### Running frontend tests
+
+`rake teaspoon` runs the frontend-only (JavaScript) tests.
+It consists of two subtasks:
+
+- `rake teaspoon:fixtures` (re-)generates fixtures
+- `rake teaspoon:tests` actually executes the tests
+
+As long as the fixtures don't change, `rake teaspoon:tests` is sufficient
+(and saves you some time).
+
+Please note: Not all of the frontend fixtures are generated. Some are still static
+files. These will not be touched by `rake teaspoon:fixtures`.
+
 ## Supported browsers
 
 For our currently-supported browsers, see our [requirements][requirements].
