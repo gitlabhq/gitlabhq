@@ -3,13 +3,19 @@
 
 ((gl) => {
   gl.VuePipeLines = Vue.extend({
+    components: {
+      'vue-running-pipeline': gl.VueRunningPipeline,
+    },
     data() {
       return {
         pipelines: [],
         runnerStats: new gl.RunnerStats(),
       };
     },
-    props: ['scope', 'store'],
+    props: [
+      'scope',
+      'store',
+    ],
     created() {
       this.store.fetchDataLoop.call(this, Vue);
     },
@@ -31,24 +37,15 @@
       </thead>
       <tbody v-for='pipeline in pipelines'>
         <tr class="commit">
-          <td class="commit-link">
-            <a href="pipelines/{{pipeline.id}}">
-              <div v-if="pipeline.status === 'running'">
-                <span class="ci-status ci-{{pipeline.status}}">
-                  running
-                </span>
-              </div>
-              <div v-if="pipeline.status === 'passed'">
-                <span class="ci-status ci-{{pipeline.status}}">
-                  passed
-                </span>
-              </div>
-            </a>
+          <td class="commit-link" v-if="pipeline.status === 'running'">
+            <vue-running-pipeline :pipe='pipeline'></vue-running-pipeline>
           </td>
           <td>
-          <a href="pipelines/{{pipeline.id}}"><span class="pipeline-id">#{{pipeline.id}}</span>
-          </a><span>by</span>
-          <span class="api monospace">{{pipeline.user}}</span>
+            <a href="pipelines/{{pipeline.id}}">
+              <span class="pipeline-id">#{{pipeline.id}}</span>
+            </a>
+            <span>by</span>
+            <span class="api monospace">{{pipeline.user}}</span>
           </td>
           <td class="branch-commit">
             <div class="icon-container">

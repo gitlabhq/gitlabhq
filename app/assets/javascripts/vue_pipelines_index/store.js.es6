@@ -13,7 +13,6 @@
           });
 
       goFetch(Vue);
-
       setInterval(() => {
         console.log('DID IT');
         goFetch(Vue);
