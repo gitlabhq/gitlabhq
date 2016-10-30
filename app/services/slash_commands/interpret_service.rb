@@ -249,13 +249,27 @@ module SlashCommands
     command :cc
 
     desc 'Set estimate'
-    params 'e.g: 3h 30m'
+    params 'e.g: 1w 3d 2h 14m'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
       begin
         @updates[:estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+      rescue ChronicDuration::DurationParseError
+        # do nothing
+      end
+    end
+
+    desc 'Enter current spent time'
+    params 'e.g: 3h 30m'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :spend do |raw_duration|
+      begin
+        @updates[:time_spent] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
       rescue ChronicDuration::DurationParseError
         # do nothing
       end

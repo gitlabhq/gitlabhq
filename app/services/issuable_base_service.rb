@@ -177,6 +177,7 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
+    change_spent_time(issuable)
     filter_params
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -225,6 +226,14 @@ class IssuableBaseService < BaseService
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done([todo], current_user) if todo
+    end
+  end
+
+  def change_spent_time(issuable)
+    time_spent = params.delete(:time_spent)
+
+    if time_spent
+      issuable.timelogs.new(time_spent: time_spent)
     end
   end
 
