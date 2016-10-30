@@ -14,7 +14,10 @@
 
       goFetch(Vue);
 
-      setInterval(() => { console.log('DID IT'); goFetch(Vue) }, 3000);
+      setInterval(() => {
+        console.log('DID IT');
+        goFetch(Vue);
+      }, 3000);
     }
   };
 })(window.gl || (window.gl = {}));
