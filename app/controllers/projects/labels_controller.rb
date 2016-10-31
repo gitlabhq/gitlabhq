@@ -125,6 +125,10 @@ class Projects::LabelsController < Projects::ApplicationController
   end
   alias_method :subscribable_resource, :label
 
+  def subscribable_project
+    @project
+  end
+
   def find_labels
     @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end

@@ -473,6 +473,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
+  def subscribable_project
+    merge_request.project
+  end
+
   def authorize_update_merge_request!
     return render_404 unless can?(current_user, :update_merge_request, @merge_request)
   end
