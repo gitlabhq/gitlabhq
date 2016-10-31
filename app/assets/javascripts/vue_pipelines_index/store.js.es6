@@ -10,7 +10,9 @@
         this.$http.get(`${api}/${this.scope}/pipelines?per_page=30&${pageNum}`)
           .then((response) => {
             Vue.set(this, 'pipelines', JSON.parse(response.body));
-          }, () => new Flash('Something went wrong on our end.'));
+          }, () => new Flash(
+            'Something went wrong on our end.'
+          ));
 
       // inital fetch and then start timeout loop
       goFetch();
