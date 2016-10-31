@@ -37,7 +37,7 @@ describe API::API, api: true  do
       end
     end
 
-    context "when authenticated as  admin" do
+    context "when authenticated as admin" do
       it "admin: returns an array of all groups" do
         get api("/groups", admin)
         expect(response).to have_http_status(200)
@@ -53,6 +53,17 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
+      end
+    end
+
+    context "when using all_available in request" do
+      it "returns all groups you have access to" do
+        public_group = create :group, :public
+        get api("/groups", user1), all_available: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(public_group.name)
       end
     end
   end

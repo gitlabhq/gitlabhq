@@ -8,11 +8,14 @@ module API
       #
       # Parameters:
       #   skip_groups (optional) - Array of group ids to exclude from list
+      #   all_available (optional, boolean) - Show all group that you have access to
       # Example Request:
       #  GET /groups
       get do
         @groups = if current_user.admin
                     Group.all
+                  elsif params[:all_available]
+                    GroupsFinder.new.execute(current_user)
                   else
                     current_user.groups
                   end
