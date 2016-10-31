@@ -22,9 +22,8 @@
     components: {
       'vue-pipelines': gl.VuePipeLines,
     },
-    template: ''
-      + '<div>'
-      + "<vue-pipelines :scope='scope' :store='store'></vue-pipelines>"
-      + '</div>',
+    template: `
+      <vue-pipelines :scope='scope' :store='store'></vue-pipelines>
+    `,
   });
 })();
