@@ -18,6 +18,9 @@
     "spyOnEvent": false,
     "Turbolinks": false,
     "window": false
+  },
+  "rules": {
+    "consistent-return": 0
   }
 }
 
