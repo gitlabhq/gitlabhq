@@ -13,7 +13,7 @@
             minimumInputLength: 0,
             query: function(query) {
               var group_result, project_result;
-              group_result = Api.groups(query.term, { skip_ldap: skip_ldap }, function(groups) {
+              group_result = Api.groups(query.term, {}, function(groups) {
                 return groups;
               });
               project_result = Api.projects(query.term, 'id', function(projects) {

@@ -35,9 +35,6 @@
         }
       });
     };
-    gl.utils.capitalize = function(str) {
-      return str[0].toUpperCase() + str.slice(1);
-    };
     gl.utils.getPagePath = function() {
       return $('body').data('page').split(':')[0];
     };
