@@ -11,11 +11,9 @@
           $this.parent().find('.star-count').text(data.star_count);
           if (isStarred) {
             $starSpan.removeClass('starred').text('Star');
-            gl.utils.updateTooltipTitle($this, 'Star project');
             $starIcon.removeClass('fa-star').addClass('fa-star-o');
           } else {
             $starSpan.addClass('starred').text('Unstar');
-            gl.utils.updateTooltipTitle($this, 'Unstar project');
             $starIcon.removeClass('fa-star-o').addClass('fa-star');
           }
         };
