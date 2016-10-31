@@ -60,7 +60,7 @@
             </div>
             <a
               class="commit-id monospace"
-              href="/gitlab-org/gitlab-ce/commit/{{pipeline.sha}}">{{shortSha(pipeline)}}
+              href="./commit/{{pipeline.sha}}">{{shortSha(pipeline)}}
             </a>
             <p class="commit-title">
               <a
@@ -76,7 +76,7 @@
               </a>
               <a
                 class="commit-row-message"
-                href="/gitlab-org/gitlab-ce/commit/{{pipeline.sha}}"
+                href="./commit/{{pipeline.sha}}"
               >
                 fix broken repo 500 errors in UI and added relevant specs
               </a>
