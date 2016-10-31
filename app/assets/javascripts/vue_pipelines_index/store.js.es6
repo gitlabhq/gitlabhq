@@ -12,11 +12,28 @@
             console.error('API Error for Pipelines');
           });
 
-      goFetch(Vue);
       setInterval(() => {
         console.log('DID IT');
         goFetch(Vue);
-      }, 3000);
+      }, 30000);
+    }
+
+    fetchCommits(vue) {
+      const goFetch = vueSet =>
+        this.$http.get(`/api/v3/projects/${this.scope}/pipelines`)
+          .then((response) => {
+            vueSet.set(this, 'pipelines', JSON.parse(response.body));
+          }, () => {
+            console.error('API Error for Pipelines');
+          });
+
+      this.$http.get(`/api/v3/projects/${this.scope}/repository/commits`)
+        .then((response) => {
+          vue.set(this, 'commits', JSON.parse(response.body));
+        }, () => {
+          console.error('API Error for Pipelines');
+        })
+        .then(() => goFetch(vue));
     }
   };
 })(window.gl || (window.gl = {}));
