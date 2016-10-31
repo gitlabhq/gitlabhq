@@ -1,6 +1,22 @@
 module API
   # Projects API
   class ProjectHooks < Grape::API
+    helpers do
+      params :project_hook_properties do
+        requires :url, type: String, desc: "The URL to send the request to"
+        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
+        optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
+        optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
+        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
+        optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
+        optional :build_events, type: Boolean, desc: "Trigger hook on build events"
+        optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
+        optional :wiki_events, type: Boolean, desc: "Trigger hook on wiki events"
+        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
+        optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
+      end
+    end
+
     before { authenticate! }
     before { authorize_admin_project }
 
@@ -32,17 +48,7 @@ module API
         success Entities::ProjectHook
       end
       params do
-        requires :url, type: String, desc: "The URL to send the request to"
-        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
-        optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
-        optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
-        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
-        optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
-        optional :build_events, type: Boolean, desc: "Trigger hook on build events"
-        optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
-        optional :wiki_events, type: Boolean, desc: "Trigger hook on wiki events"
-        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
-        optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
+        use :project_hook_properties
       end
       post ":id/hooks" do
         new_hook_params = declared(params, include_missing: false, include_parent_namespaces: false).to_h
@@ -62,39 +68,13 @@ module API
       end
       params do
         requires :hook_id, type: Integer, desc: "The ID of the hook to update"
-        requires :url, type: String, desc: "The URL to send the request to"
-        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
-        optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
-        optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
-        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
-        optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
-        optional :build_events, type: Boolean, desc: "Trigger hook on build events"
-        optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
-        optional :wiki_events, type: Boolean, desc: "Trigger hook on wiki events"
-        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
+        use :project_hook_properties
       end
       put ":id/hooks/:hook_id" do
-<<<<<<< HEAD
-        @hook = user_project.hooks.find(params[:hook_id])
-        required_attributes! [:url]
-        attrs = attributes_for_keys [
-          :url,
-          :push_events,
-          :issues_events,
-          :merge_requests_events,
-          :tag_push_events,
-          :note_events,
-          :build_events,
-          :pipeline_events,
-          :wiki_page_events,
-          :enable_ssl_verification,
-          :token
-        ]
-=======
         hook = user_project.hooks.find(params[:hook_id])
+
         new_params = declared(params, include_missing: false, include_parent_namespaces: false).to_h
         new_params.delete('hook_id')
->>>>>>> GrapeDSL for project hooks
 
         if hook.update_attributes(new_params)
           present hook, with: Entities::ProjectHook
