@@ -1,4 +1,4 @@
-- commit = @repository.commit(branch.target)
+- commit = @repository.commit(branch.dereferenced_target)
 - bar_graph_width_factor = @max_commits > 0 ? 100.0/@max_commits : 0
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]

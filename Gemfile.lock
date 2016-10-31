@@ -283,7 +283,7 @@ GEM
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
     gitlab-markup (1.5.0)
-    gitlab_git (10.6.8)
+    gitlab_git (10.7.0)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.7.3)
       github-linguist (~> 4.7.0)
@@ -867,7 +867,7 @@ DEPENDENCIES
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.0)
-  gitlab_git (~> 10.6.8)
+  gitlab_git (~> 10.7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)
@@ -994,4 +994,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.13.2
+   1.13.5

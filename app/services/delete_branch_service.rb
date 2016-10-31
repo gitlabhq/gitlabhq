@@ -42,7 +42,7 @@ class DeleteBranchService < BaseService
     Gitlab::DataBuilder::Push.build(
       project,
       current_user,
-      branch.target.sha,
+      branch.dereferenced_target.sha,
       Gitlab::Git::BLANK_SHA,
       "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch.name}",
       [])

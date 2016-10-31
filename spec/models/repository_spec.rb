@@ -68,8 +68,8 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now)
           double_last = double(committed_date: Time.now - 1.second)
 
-          allow(tag_a).to receive(:target).and_return(double_first)
-          allow(tag_b).to receive(:target).and_return(double_last)
+          allow(tag_a).to receive(:dereferenced_target).and_return(double_first)
+          allow(tag_b).to receive(:dereferenced_target).and_return(double_last)
           allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
@@ -83,8 +83,8 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
 
-          allow(tag_a).to receive(:target).and_return(double_last)
-          allow(tag_b).to receive(:target).and_return(double_first)
+          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
+          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
           allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
@@ -632,9 +632,9 @@ describe Repository, models: true do
 
       context "when the branch wasn't empty" do
         it 'updates the head' do
-          expect(repository.find_branch('feature').target.id).to eq(old_rev)
+          expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
           repository.update_branch_with_hooks(user, 'feature') { new_rev }
-          expect(repository.find_branch('feature').target.id).to eq(new_rev)
+          expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
         end
       end
     end
@@ -659,7 +659,7 @@ describe Repository, models: true do
     context 'when the update would remove commits from the target branch' do
       it 'raises an exception' do
         branch = 'master'
-        old_rev = repository.find_branch(branch).target.sha
+        old_rev = repository.find_branch(branch).dereferenced_target.sha
 
         # The 'master' branch is NOT an ancestor of new_rev.
         expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
