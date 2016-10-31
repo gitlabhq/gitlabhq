@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.WeightSelect = (function() {
     function WeightSelect() {

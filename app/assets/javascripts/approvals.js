@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   $(function() {
     $(".approver-list").on("click", ".unsaved-approvers.approver .btn-remove", function(ev) {

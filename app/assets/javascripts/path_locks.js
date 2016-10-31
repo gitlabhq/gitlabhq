@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.PathLocks = (function() {
     function PathLocks() {}

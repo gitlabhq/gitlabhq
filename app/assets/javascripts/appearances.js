@@ -1,4 +1,0 @@
-(function() {
-
-
-}).call(this);
