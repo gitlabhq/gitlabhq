@@ -6,15 +6,17 @@
 //= require ./store.js.es6
 //= require ./running_icon.vue.js.es6
 //= require ./running.vue.js.es6
+//= require ./stages.vue.js.es6
 //= require ./pipelines.vue.js.es6
 
 (() => {
   const project = document.querySelector('.table-holder');
 
   Vue.use(VueResource);
+  // Vue.config.silent = true;
 
   return new Vue({
-    el: '.vue-pipelines-index',
+    el: '#vue-pipelines-index',
     data: {
       scope: project.dataset.projectId,
       store: new gl.PipelineStore(),
