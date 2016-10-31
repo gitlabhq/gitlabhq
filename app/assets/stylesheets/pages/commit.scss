@@ -33,10 +33,8 @@
 
   &.commit-info-row-header {
     line-height: 34px;
-
-    @media (min-width: $screen-sm-min) {
-      margin-bottom: 0;
-    }
+    padding: 10px 0;
+    margin-bottom: 0;
 
     .commit-options-dropdown-caret {
       @media (max-width: $screen-sm) {
@@ -80,6 +78,58 @@
   }
 }
 
+.js-details-expand {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.commit-info-widget {
+  background: $background-color;
+  color: $gl-gray;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  .widget-row {
+    padding: $gl-padding;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $widget-inner-border;
+    }
+
+    &.branch-info {
+      .monospace,
+      .commit-info {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .icon-container {
+    display: inline-block;
+    margin-right: 8px;
+
+    svg {
+      position: relative;
+      top: 2px;
+      height: 16px;
+      width: 16px;
+    }
+
+    &.commit-icon {
+      svg {
+        path {
+          fill: $gl-text-color;
+        }
+      }
+    }
+  }
+
+  .label.label-gray {
+    background-color: $widget-expand-item;
+  }
+}
+
 .ci-status-link {
   svg {
     overflow: visible;
@@ -88,6 +138,7 @@
 
 .commit-box {
   border-top: 1px solid $border-color;
+  padding: $gl-padding 0;
 
   .commit-title {
     margin: 0;
@@ -138,6 +189,9 @@
 }
 
 .commit-action-buttons {
+  position: relative;
+  top: -1px;
+
   i {
     color: $gl-icon-color;
     font-size: 13px;
