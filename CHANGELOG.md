@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Disable reference Markdown for unavailable features.
 - Allow owners to fetch source code in CI builds. !6943
 - Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project. !7123
+- Fix builds tab visibility. !7178
 
 ## 8.13.3 (2016-11-02)
 
