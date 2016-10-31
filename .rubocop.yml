@@ -479,7 +479,7 @@ Style/WordArray:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 64
+  Max: 60
 
 # Avoid excessive block nesting.
 Metrics/BlockNesting:
@@ -494,7 +494,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 18
+  Max: 17
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
@@ -726,9 +726,6 @@ Performance/TimesMap:
 # Enables Rails cops.
 Rails:
   Enabled: true
-
-Rails/UniqBeforePluck:
-  Enabled: false
 
 # Enforces consistent use of action filter methods.
 Rails/ActionFilter:

@@ -222,7 +222,6 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
   - Fix errors importing project feature and milestone models using GitLab project import
   - Make JWT messages Docker-compatible
-  - Fix an issue with the "Commits" section of the cycle analytics summary. !6513
   - Fix duplicate branch entry in the merge request version compare dropdown
   - Respect the fork_project permission when forking projects
   - Only update issuable labels if they have been changed
