@@ -6,23 +6,23 @@
 
   gl.issueBoards.BoardsSelector = Vue.extend({
     components: {
-      'board-selector-form': gl.issueBoards.BoardSelectorForm
+      'board-selector-form': gl.issueBoards.BoardSelectorForm,
     },
     props: {
       currentBoard: Object,
-      endpoint: String
+      endpoint: String,
     },
-    data () {
+    data() {
       return {
         open: false,
         loading: true,
         boards: [],
         currentPage: '',
-        reload: false
+        reload: false,
       };
     },
     watch: {
-      reload () {
+      reload() {
         if (this.reload) {
           this.boards = [];
           this.loading = true;
@@ -30,32 +30,32 @@
 
           this.loadBoards(false);
         }
-      }
+      },
     },
     computed: {
-      showDelete () {
+      showDelete() {
         return this.boards.length > 1;
       },
-      title () {
+      title() {
         if (this.currentPage === 'edit') {
           return 'Edit board';
         } else if (this.currentPage === 'new') {
           return 'Create new board';
         } else if (this.currentPage === 'delete') {
           return 'Delete board';
-        } else {
-          return 'Go to a board';
         }
-      }
+
+        return 'Go to a board';
+      },
     },
     methods: {
-      showPage (page) {
+      showPage(page) {
         this.currentPage = page;
       },
-      toggleDropdown () {
+      toggleDropdown() {
         this.open = !this.open;
       },
-      loadBoards (toggleDropdown = true) {
+      loadBoards(toggleDropdown = true) {
         if (toggleDropdown) {
           this.toggleDropdown();
         }
@@ -66,7 +66,7 @@
             this.boards = resp.json();
           });
         }
-      }
-    }
+      },
+    },
   });
 })();

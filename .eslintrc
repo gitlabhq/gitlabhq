@@ -17,7 +17,7 @@
     "spyOn": false,
     "spyOnEvent": false,
     "Turbolinks": false,
-    "window": false
+    "window": false,
+    "Vue": false
   }
 }
-
