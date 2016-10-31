@@ -393,7 +393,7 @@ class NotificationService
     )
   end
 
-  # Build a list of users based on project notifcation settings
+  # Build a list of users based on project notification settings
   def select_project_member_setting(project, global_setting, users_global_level_watch)
     users = notification_settings_for(project, :watch)
 
