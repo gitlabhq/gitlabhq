@@ -138,7 +138,7 @@ module API
       expose :name
 
       expose :commit do |repo_branch, options|
-        options[:project].repository.commit(repo_branch.target)
+        options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
       expose :protected do |repo_branch, options|
@@ -523,7 +523,7 @@ module API
       expose :name, :message
 
       expose :commit do |repo_tag, options|
-        options[:project].repository.commit(repo_tag.target)
+        options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
       expose :release, using: Entities::Release do |repo_tag, options|
