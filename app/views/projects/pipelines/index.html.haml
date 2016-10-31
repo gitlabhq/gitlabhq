@@ -42,24 +42,8 @@
       %div
         .nothing-here-block No pipelines to show
     - else
-      .table-holder
+      .table-holder{"data-project-id": "#{@project.id}"}
         %table.table.ci-table
-          %tbody.app
+          %tbody.vue-pipelines-index
 
-:javascript
-  Vue.use(VueResource);
-
-  var vm = new Vue({
-    el: ".app",
-    data:{
-      scope: "#{@project.id}",
-      store: new gl.PipelineStore(),
-    },
-    components: {
-      'vue-pipelines': gl.VuePipeLines,
-    },
-    template: ""
-      + "<div>"
-      + "<vue-pipelines :scope='scope' :store='store'></vue-pipelines>"
-      + "</div>",
-  })
+= page_specific_javascript_tag('vue_pipelines_index/index.js')

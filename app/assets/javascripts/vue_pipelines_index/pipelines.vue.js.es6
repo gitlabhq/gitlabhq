@@ -10,6 +10,8 @@
       return {
         pipelines: [],
         commits: [],
+        currentPage: '',
+        intervalId: '',
       };
     },
     props: [
@@ -23,6 +25,11 @@
     methods: {
       shortSha(pipeline) {
         return pipeline.sha.slice(0, 8);
+      },
+      changePage() {
+        // clearInterval(this.intervalId);
+        // this.store.fetchCommits.call(this, Vue);
+        // this.store.fetchDataLoop.call(this, Vue);
       },
     },
     template: `
@@ -52,6 +59,7 @@
             <div class="icon-container">
               <i class="fa fa-code-fork"></i>
               </div>
+              <!-- I need to know which branch things are comming from -->
               <a class="monospace branch-name" href="/gitlab-org/gitlab-ce/commits/master">master</a>
               <div class="icon-container commit-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
