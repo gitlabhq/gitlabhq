@@ -1,25 +1,32 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
-  - gitlab:check rake task checks ES version according to requirements
-  - Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
+
+- gitlab:check rake task checks ES version according to requirements
+- Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
+
+## 8.13.2 (2016-10-31)
+
+- Don't pass a current user to Member#add_user in LDAP group sync. !830
 
 ## 8.13.1 (2016-10-25)
-  - Hide multiple board actions if user doesnt have permissions. !816
-  - Fix Elasticsearch::Transport::Transport::Errors::BadRequest when ES is enabled. !818
+
+- Hide multiple board actions if user doesnt have permissions. !816
+- Fix Elasticsearch::Transport::Transport::Errors::BadRequest when ES is enabled. !818
 
 ## 8.13.0 (2016-10-22)
-  - Cache the last usage data to avoid unicorn timeouts
-  - Add user activity table and service to query for active users
-  - Fix 500 error updating mirror URLs for projects
-  - Restrict protected branch access to specific groups !645
-  - Fix validations related to mirroring settings form. !773
-  - Add multiple issue boards. !782
-  - Fix Git access panel for Wikis when Kerberos authentication is enabled (Borja Aparicio)
-  - Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
-  - User groups (that can be assigned as approvers)
-  - Fix a search for non-default branches when ES is enabled
-  - Re-organized the Sidekiq queues for EE specific workers
+
+- Cache the last usage data to avoid unicorn timeouts
+- Add user activity table and service to query for active users
+- Fix 500 error updating mirror URLs for projects
+- Restrict protected branch access to specific groups !645
+- Fix validations related to mirroring settings form. !773
+- Add multiple issue boards. !782
+- Fix Git access panel for Wikis when Kerberos authentication is enabled (Borja Aparicio)
+- Decrease maximum time that GitLab waits for a mirror to finish !791 (Borja Aparicio)
+- User groups (that can be assigned as approvers)
+- Fix a search for non-default branches when ES is enabled
+- Re-organized the Sidekiq queues for EE specific workers
 
 ## 8.12.7
 
