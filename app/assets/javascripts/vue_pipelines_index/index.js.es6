@@ -13,7 +13,7 @@
 
   Vue.use(VueResource);
 
-  new Vue({
+  return new Vue({
     el: '.vue-pipelines-index',
     data: {
       scope: project.dataset.projectId,

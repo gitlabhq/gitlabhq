@@ -1,28 +1,24 @@
-/* global gl */
+/* global gl, Flash */
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
   const api = '/api/v3/projects';
 
   gl.PipelineStore = class {
-    fetchDataLoop(Vue) {
+    fetchDataLoop(Vue, pageNum) {
       const goFetch = () =>
-        this.$http.get(
-          `${api}/${this.scope}/pipelines?per_page=5&page=1`
-        )
+        this.$http.get(`${api}/${this.scope}/pipelines?per_page=30&${pageNum}`)
           .then((response) => {
             Vue.set(this, 'pipelines', JSON.parse(response.body));
-          }, () => {
-            console.error('API Error for Pipelines');
-          });
+          }, () => new Flash('Something went wrong on our end.'));
 
+      // inital fetch and then start timeout loop
       goFetch();
 
       // eventually clearInterval(this.intervalId)
       this.intervalId = setInterval(() => {
-        console.log('DID IT');
         goFetch();
-      }, 30000);
+      }, 60000);
     }
   };
 })(window.gl || (window.gl = {}));

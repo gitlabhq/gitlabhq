@@ -11,6 +11,7 @@
         pipelines: [],
         currentPage: '',
         intervalId: '',
+        pageNum: 'page=1',
       };
     },
     props: [
@@ -18,7 +19,10 @@
       'store',
     ],
     created() {
-      this.store.fetchDataLoop.call(this, Vue);
+      const url = window.location.href;
+      if (url.includes('?')) this.pageNum = url.split('?')[1];
+      // now fetch page appropriate data
+      this.store.fetchDataLoop.call(this, Vue, this.pageNum);
     },
     methods: {
       shortSha(pipeline) {
@@ -26,8 +30,7 @@
       },
       changePage() {
         // clearInterval(this.intervalId);
-        // this.store.fetchCommits.call(this, Vue);
-        // this.store.fetchDataLoop.call(this, Vue);
+        // this.store.fetchDataLoop.call(this, Vue, this.pageNum);
       },
     },
     template: `
