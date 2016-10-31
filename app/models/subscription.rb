@@ -5,7 +5,7 @@ class Subscription < ActiveRecord::Base
 
   validates :user, :project, :subscribable, presence: true
 
-  validates :user_id,
-            uniqueness: { scope: [:subscribable_id, :subscribable_type] },
+  validates :project_id,
+            uniqueness: { scope: [:subscribable_id, :subscribable_type, :user_id] },
             presence: true
 end
