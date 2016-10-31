@@ -713,13 +713,17 @@ pre.light-well {
   }
 }
 
-a.allowed-to-merge, a.allowed-to-push {
+a.allowed-to-merge,
+a.allowed-to-push {
   cursor: pointer;
   cursor: hand;
 }
 
-.protected-branch-push-access-list, .protected-branch-merge-access-list {
-  a { color: #fff; }
+.protected-branch-push-access-list,
+.protected-branch-merge-access-list {
+  a {
+    color: #fff;
+  }
 }
 
 .protected-branches-list {
