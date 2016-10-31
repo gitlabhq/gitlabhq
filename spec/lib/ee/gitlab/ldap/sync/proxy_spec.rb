@@ -25,6 +25,18 @@ describe EE::Gitlab::LDAP::Sync::Proxy, lib: true do
       expect(sync_proxy.dns_for_group_cn('ldap_group1')).to eq([])
     end
 
+    context 'with a valid LDAP group that contains ASCII-8BIT-encoded Unicode data' do
+      let(:username) { 'Méräy'.force_encoding('ASCII-8BIT') }
+      let(:dns) { [user_dn(username)] }
+
+      it 'return members DNs' do
+        ldap_group = ldap_group_entry(dns)
+        stub_ldap_group_find_by_cn('ldap_group1', ldap_group, adapter)
+
+        expect(sync_proxy.dns_for_group_cn('ldap_group1').first).to include("uid=Méräy")
+      end
+    end
+
     context 'with a valid LDAP group that contains members' do
       # Create some random usernames and DNs
       let(:usernames) { (1..4).map { FFaker::Internet.user_name } }
