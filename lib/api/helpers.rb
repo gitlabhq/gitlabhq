@@ -108,7 +108,7 @@ module API
       if id =~ /^\d+$/
         Group.find_by(id: id)
       else
-        Group.find_by(path: id)
+        Group.find_by_full_path(id)
       end
     end
 

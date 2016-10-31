@@ -474,35 +474,6 @@ describe Project, models: true do
     end
   end
 
-  describe '.find_with_namespace' do
-    context 'with namespace' do
-      before do
-        @group = create :group, name: 'gitlab'
-        @project = create(:project, name: 'gitlabhq', namespace: @group)
-      end
-
-      it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
-      it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
-      it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
-    end
-
-    context 'when multiple projects using a similar name exist' do
-      let(:group) { create(:group, name: 'gitlab') }
-
-      let!(:project1) do
-        create(:empty_project, name: 'gitlab1', path: 'gitlab', namespace: group)
-      end
-
-      let!(:project2) do
-        create(:empty_project, name: 'gitlab2', path: 'GITLAB', namespace: group)
-      end
-
-      it 'returns the row where the path matches literally' do
-        expect(Project.find_with_namespace('gitlab/GITLAB')).to eq(project2)
-      end
-    end
-  end
-
   describe '#to_param' do
     context 'with namespace' do
       before do
@@ -1540,39 +1511,6 @@ describe Project, models: true do
         end
 
         it_behaves_like 'it always returns false'
-      end
-    end
-  end
-
-  describe '.where_paths_in' do
-    context 'without any paths' do
-      it 'returns an empty relation' do
-        expect(Project.where_paths_in([])).to eq([])
-      end
-    end
-
-    context 'without any valid paths' do
-      it 'returns an empty relation' do
-        expect(Project.where_paths_in(%w[foo])).to eq([])
-      end
-    end
-
-    context 'with valid paths' do
-      let!(:project1) { create(:project) }
-      let!(:project2) { create(:project) }
-
-      it 'returns the projects matching the paths' do
-        projects = Project.where_paths_in([project1.path_with_namespace,
-                                           project2.path_with_namespace])
-
-        expect(projects).to contain_exactly(project1, project2)
-      end
-
-      it 'returns projects regardless of the casing of paths' do
-        projects = Project.where_paths_in([project1.path_with_namespace.upcase,
-                                           project2.path_with_namespace.upcase])
-
-        expect(projects).to contain_exactly(project1, project2)
       end
     end
   end
