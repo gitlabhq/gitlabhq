@@ -63,7 +63,8 @@
     display: inline-block;
   }
 
-  .btn-clipboard, .btn-transparent {
+  .btn-clipboard,
+  .btn-transparent {
     padding-left: 0;
     padding-right: 0;
   }
@@ -162,7 +163,8 @@
 .branch-commit {
   color: $gl-gray;
 
-  .commit-id, .commit-row-message {
+  .commit-id,
+  .commit-row-message {
     color: $gl-gray;
   }
 }

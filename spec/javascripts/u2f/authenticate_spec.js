@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require u2f/authenticate */
 /*= require u2f/util */

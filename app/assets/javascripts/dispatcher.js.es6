@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var Dispatcher;
 
@@ -116,6 +117,9 @@
           new Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
+          break;
+        case 'projects:commit:builds':
+          new gl.Pipelines();
           break;
         case 'projects:commits:show':
         case 'projects:activity':

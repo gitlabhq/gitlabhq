@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var issuable_created;
 
@@ -15,16 +16,61 @@
       return Issuable.labelRow = _.template('<% _.each(labels, function(label){ %> <span class="label-row btn-group" role="group" aria-label="<%- label.title %>" style="color: <%- label.text_color %>;"> <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%- label.color %>;" title="<%- label.description %>" data-container="body"> <%- label.title %> </a> <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%- label.color %>;" data-label="<%- label.title %>"> <i class="fa fa-times"></i> </button> </span> <% }); %>');
     },
     initSearch: function() {
-      // `immediate` param set to false debounces on the `trailing` edge, lets user finish typing
-      const debouncedExecSearch = _.debounce(Issuable.executeSearch, 500, false);
+      const $searchInput = $('#issuable_search');
 
-      $('#issuable_search').off('keyup').on('keyup', debouncedExecSearch);
+      Issuable.initSearchState($searchInput);
+
+      // `immediate` param set to false debounces on the `trailing` edge, lets user finish typing
+      const debouncedExecSearch = _.debounce(Issuable.executeSearch, 1000, false);
+
+      $searchInput.off('keyup').on('keyup', debouncedExecSearch);
 
       // ensures existing filters are preserved when manually submitted
-      $('#issue_search_form').on('submit', (e) => {
+      $('#issuable_search_form').on('submit', (e) => {
         e.preventDefault();
         debouncedExecSearch(e);
       });
+
+    },
+    initSearchState: function($searchInput) {
+      const currentSearchVal = $searchInput.val();
+
+      Issuable.searchState = {
+        elem: $searchInput,
+        current: currentSearchVal
+      };
+
+      Issuable.maybeFocusOnSearch();
+    },
+    accessSearchPristine: function(set) {
+      // store reference to previous value to prevent search on non-mutating keyup
+      const state = Issuable.searchState;
+      const currentSearchVal = state.elem.val();
+
+      if (set) {
+        state.current = currentSearchVal;
+      } else {
+        return state.current === currentSearchVal;
+      }
+    },
+    maybeFocusOnSearch: function() {
+      const currentSearchVal = Issuable.searchState.current;
+      if (currentSearchVal && currentSearchVal !== '') {
+        const queryLength = currentSearchVal.length;
+        const $searchInput = Issuable.searchState.elem;
+
+      /* The following ensures that the cursor is initially placed at
+        * the end of search input when focus is applied. It accounts
+        * for differences in browser implementations of `setSelectionRange`
+        * and cursor placement for elements in focus.
+      */
+        $searchInput.focus();
+        if ($searchInput.setSelectionRange) {
+          $searchInput.setSelectionRange(queryLength, queryLength);
+        } else {
+          $searchInput.val(currentSearchVal);
+        }
+      }
     },
     executeSearch: function(e) {
       const $search = $('#issuable_search');
@@ -32,6 +78,11 @@
       const $searchValue = $search.val();
       const $filtersForm = $('.js-filter-form');
       const $input = $(`input[name='${$searchName}']`, $filtersForm);
+      const isPristine = Issuable.accessSearchPristine();
+
+      if (isPristine) {
+        return;
+      }
 
       if (!$input.length) {
         $filtersForm.append(`<input type='hidden' name='${$searchName}' value='${_.escape($searchValue)}'/>`);

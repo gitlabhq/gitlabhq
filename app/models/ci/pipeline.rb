@@ -7,12 +7,12 @@ module Ci
 
     self.table_name = 'ci_commits'
 
-    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :project, foreign_key: :gl_project_id
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
-    has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
+    has_many :builds, foreign_key: :commit_id
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
     validates_presence_of :sha, unless: :importing?
     validates_presence_of :ref, unless: :importing?
@@ -30,23 +30,23 @@ module Ci
       end
 
       event :run do
-        transition any => :running
+        transition any - [:running] => :running
       end
 
       event :skip do
-        transition any => :skipped
+        transition any - [:skipped] => :skipped
       end
 
       event :drop do
-        transition any => :failed
+        transition any - [:failed] => :failed
       end
 
       event :succeed do
-        transition any => :success
+        transition any - [:success] => :success
       end
 
       event :cancel do
-        transition any => :canceled
+        transition any - [:canceled] => :canceled
       end
 
       # IMPORTANT
@@ -260,7 +260,7 @@ module Ci
     end
 
     def update_status
-      with_lock do
+      Gitlab::OptimisticLocking.retry_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run

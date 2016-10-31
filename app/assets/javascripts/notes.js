@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require autosave */
 /*= require autosize */

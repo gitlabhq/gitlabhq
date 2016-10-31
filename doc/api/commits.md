@@ -319,7 +319,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha`     | string  | yes | The commit SHA
-| `ref_name`| string  | no  | The name of a repository branch or tag or, if not given, the default branch
+| `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch
 | `stage`   | string  | no  | Filter by [build stage](../ci/yaml/README.md#stages), e.g., `test`
 | `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#jobs), e.g., `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones

@@ -40,8 +40,6 @@ feature 'Merge request created from fork' do
   end
 
   context 'pipeline present in source project' do
-    include WaitForAjax
-
     given(:pipeline) do
       create(:ci_pipeline,
              project: fork_project,
@@ -57,7 +55,6 @@ feature 'Merge request created from fork' do
     scenario 'user visits a pipelines page', js: true do
       visit_merge_request(merge_request)
       page.within('.merge-request-tabs') { click_link 'Builds' }
-      wait_for_ajax
 
       page.within('table.ci-table') do
         expect(page).to have_content 'rspec'

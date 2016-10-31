@@ -1,14 +1,80 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
+  - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
   - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
   - Trim leading and trailing whitespace on project_path (Linus Thiel)
+  - Prevent award emoji via notes for issues/MRs authored by user (barthc)
+  - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
+  - Fix extra space on Build sidebar on Firefox !7060
+  - Fix mobile layout issues in admin user overview page !7087
   - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+  - Refactor Jira service to use jira-ruby gem
+  - Add hover to trash icon in notes !7008 (blackst0ne)
+  - Only show one error message for an invalid email !5905 (lycoperdon)
+  - Fix sidekiq stats in admin area (blackst0ne)
+  - Created cycle analytics bundle JavaScript file
+  - API: Fix booleans not recognized as such when using the `to_boolean` helper
+  - Removed delete branch tooltip !6954
+  - Stop unauthorized users dragging on milestone page (blackst0ne)
+  - Restore issue boards welcome message when a project is created !6899
+  - Escape ref and path for relative links !6050 (winniehell)
+  - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
+  - Fix filtering of milestones with quotes in title (airatshigapov)
+  - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
+  - Update mail_room and enable sentinel support to Reply By Email (!7101)
+  - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
   - Simpler arguments passed to named_route on toggle_award_url helper method
+  - Fix typo in framework css class. !7086 (Daniel Voogsgerd)
+  - New issue board list dropdown stays open after adding a new list
+  - Fix: Backup restore doesn't clear cache
+  - Optimize Event queries by removing default order
+  - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
+  - Add job for removal of unreferenced LFS objects from both the database and the filesystem (Frank Groeneveld)
+  - Replace jquery.cookie plugin with js.cookie !7085
+  - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
+  - Show full status link on MR & commit pipelines
+  - Fix documents and comments on Build API `scope`
+  - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
+  - Shortened merge request modal to let clipboard button not overlap
+  - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
+
+## 8.13.2
+  - Fix builds dropdown overlapping bug !7124
+  - Fix applying labels for GitHub-imported MRs !7139
+  - Fix importing MR comments from GitHub !7139
+  - Modify GitHub importer to be retryable !7003
+  - Fix and improve `Sortable.highest_label_priority`
+  - Fixed sticky merge request tabs when sidebar is pinned
+
+## 8.13.1 (2016-10-25)
+  - Fix branch protection API. !6215
+  - Fix hidden pipeline graph on commit and MR page. !6895
+  - Fix Cycle analytics not showing correct data when filtering by date. !6906
+  - Ensure custom provider tab labels don't break layout. !6993
+  - Fix issue boards user link when in subdirectory. !7018
+  - Refactor and add new environment functionality to CI yaml reference. !7026
+  - Fix typo in project settings that prevents users from enabling container registry. !7037
+  - Fix events order in `users/:id/events` endpoint. !7039
+  - Remove extra line for empty issue description. !7045
+  - Don't append issue/MR templates to any existing text. !7050
+  - Fix error in generating labels. !7055
+  - Stop clearing the database cache on `rake cache:clear`. !7056
+  - Only show register tab if signup enabled. !7058
+  - Fix lightweight tags not processed correctly by GitTagPushService
+  - Expire and build repository cache after project import. !7064
+  - Fix bug where labels would be assigned to issues that were moved. !7065
+  - Fix reply-by-email not working due to queue name mismatch. !7068
+  - Fix 404 for group pages when GitLab setup uses relative url. !7071
+  - Fix `User#to_reference`. !7088
+  - Reduce overhead of `LabelFinder` by avoiding `#presence` call. !7094
+  - Fix unauthorized users dragging on issue boards. !7096
+  - Only schedule `ProjectCacheWorker` jobs when needed. !7099
 
 ## 8.13.0 (2016-10-22)
-
   - Fix save button on project pipeline settings page. (!6955)
+  - All Sidekiq workers now use their own queue
   - Avoid race condition when asynchronously removing expired artifacts. (!6881)
   - Improve Merge When Build Succeeds triggers and execute on pipeline success. (!6675)
   - Respond with 404 Not Found for non-existent tags (Linus Thiel)
@@ -32,6 +98,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Updating verbiage on git basics to be more intuitive
   - Fix project_feature record not generated on project creation
   - Clarify documentation for Runners API (Gennady Trafimenkov)
+  - Use optimistic locking for pipelines and builds
   - The instrumentation for Banzai::Renderer has been restored
   - Change user & group landing page routing from /u/:username to /:username
   - Added documentation for .gitattributes files
@@ -50,12 +117,14 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Don't include archived projects when creating group milestones. !4940 (Jeroen Jacobs)
   - Add tag shortcut from the Commit page. !6543
   - Keep refs for each deployment
+  - Close open tooltips on page navigation (Linus Thiel)
   - Allow browsing branches that end with '.atom'
   - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
   - Replace unique keyframes mixin with keyframe mixin with specific names (ClemMakesApps)
   - Add more tests for calendar contribution (ClemMakesApps)
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
+  - Add todo toggle event (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
@@ -77,12 +146,14 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add RTL support to markdown renderer (Ebrahim Byagowi)
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
+  - Make issues search less finicky
   - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
   - Remove redundant mixins (ClemMakesApps)
   - Added 'Download' button to the Snippets page (Justin DiPierro)
   - Add visibility level to project repository
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
+  - Fix showing commits from source project for merge request !6658
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
   - Add configurable email subject suffix (Fu Xu)
   - Use defined colour for a language when available !6748 (nilsding)
@@ -95,6 +166,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
+  - Replace static issue fixtures by script !6059 (winniehell)
   - Append issue template to existing description !6149 (Joseph Frazier)
   - Trending projects now only show public projects and the list of projects is cached for a day
   - Memoize Gitlab Shell's secret token (!6599, Justin DiPierro)
@@ -143,6 +215,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix buggy iOS tooltip layering behavior.
   - Make guests unable to view MRs on private projects
   - Fix broken Project API docs (Takuya Noguchi)
+  - Migrate invalid project members (owner -> master)
 
 ## 8.12.7
 

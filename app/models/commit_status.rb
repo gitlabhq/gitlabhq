@@ -5,7 +5,7 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
-  belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+  belongs_to :project, foreign_key: :gl_project_id
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 
@@ -73,16 +73,16 @@ class CommitStatus < ActiveRecord::Base
       transition [:created, :pending, :running] => :canceled
     end
 
-    after_transition created: [:pending, :running] do |commit_status|
-      commit_status.update_attributes queued_at: Time.now
+    before_transition created: [:pending, :running] do |commit_status|
+      commit_status.queued_at = Time.now
     end
 
-    after_transition [:created, :pending] => :running do |commit_status|
-      commit_status.update_attributes started_at: Time.now
+    before_transition [:created, :pending] => :running do |commit_status|
+      commit_status.started_at = Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.update_attributes finished_at: Time.now
+    before_transition any => [:success, :failed, :canceled] do |commit_status|
+      commit_status.finished_at = Time.now
     end
 
     after_transition do |commit_status, transition|

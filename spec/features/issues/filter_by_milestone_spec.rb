@@ -58,6 +58,22 @@ feature 'Issue filtering by Milestone', feature: true do
     expect(page).to have_css('.issue', count: 1)
   end
 
+  context 'when milestone has single quotes in title' do
+    background do
+      milestone.update(name: "rock 'n' roll")
+    end
+
+    scenario 'filters by a specific Milestone', js: true do
+      create(:issue, project: project, milestone: milestone)
+      create(:issue, project: project)
+
+      visit_issues(project)
+      filter_by_milestone(milestone.title)
+
+      expect(page).to have_css('.issue', count: 1)
+    end
+  end
+
   def visit_issues(project)
     visit namespace_project_issues_path(project.namespace, project)
   end

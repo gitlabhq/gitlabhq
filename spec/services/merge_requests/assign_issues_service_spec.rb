@@ -46,4 +46,16 @@ describe MergeRequests::AssignIssuesService, services: true do
   it 'assigns these to the merge request owner' do
     expect { service.execute }.to change { issue.reload.assignee }.to(user)
   end
+
+  it 'ignores external issues' do
+    external_issue = ExternalIssue.new('JIRA-123', project)
+    service = described_class.new(
+      project,
+      user,
+      merge_request: merge_request,
+      closes_issues: [external_issue]
+    )
+
+    expect(service.assignable_issues.count).to eq 0
+  end
 end

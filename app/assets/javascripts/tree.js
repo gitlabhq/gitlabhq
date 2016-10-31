@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.TreeView = (function() {
     function TreeView() {

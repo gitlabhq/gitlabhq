@@ -1,7 +1,6 @@
 class TrendingProjectsWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :trending_projects
+  include CronjobQueue
 
   def perform
     Rails.logger.info('Refreshing trending projects')

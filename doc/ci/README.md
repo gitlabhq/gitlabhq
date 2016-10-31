@@ -19,4 +19,5 @@
 - [Build permissions](../user/permissions.md#build-permissions)
 - [API](../api/ci/README.md)
 - [CI services (linked docker containers)](services/README.md)
+- [CI/CD pipelines settings](../user/project/pipelines/settings.md)
 - [**New CI build permissions model**](../user/project/new_ci_build_permissions_model.md) Read about what changed in GitLab 8.12 and how that affects your builds. There's a new way to access your Git submodules and LFS objects in builds.

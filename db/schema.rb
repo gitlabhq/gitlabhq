@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019213545) do
+ActiveRecord::Schema.define(version: 20161025231710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,7 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.text "yaml_variables"
     t.datetime "queued_at"
     t.string "token"
+    t.integer "lock_version"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -219,6 +220,7 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.datetime "finished_at"
     t.integer "duration"
     t.integer "user_id"
+    t.integer "lock_version"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
@@ -843,7 +845,7 @@ ActiveRecord::Schema.define(version: 20161019213545) do
     t.integer "builds_access_level"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repository_access_level",     default: 20, null: false
+    t.integer "repository_access_level", default: 20, null: false
   end
 
   add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree

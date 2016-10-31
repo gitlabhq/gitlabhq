@@ -41,7 +41,8 @@
     font-size: 13px;
   }
 
-  .login-box, .omniauth-container {
+  .login-box,
+  .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
@@ -143,6 +144,7 @@
 
       &:not(.active) {
         background-color: $gray-light;
+        border-left: 1px solid $border-color;
       }
 
       a {
@@ -170,9 +172,35 @@
     }
   }
 
+  // Ldap configurations may need more tabs & the tab labels are user generated (arbitrarily long).
+  // These styles prevent this from breaking the layout, and only applied when providers are configured.
+
+  .new-session-tabs.custom-provider-tabs {
+    flex-wrap: wrap;
+
+    li {
+      min-width: 85px;
+      flex-basis: auto;
+
+      // This styles tab elements that have wrapped to a second line. We cannot easily predict when this will happen.
+      // We are making somewhat of an assumption about the configuration here: that users do not have more than
+      // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
+      // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
+      // above one of the bottom row elements. If you know a better way, please implement it!
+      &:nth-child(n+5) {
+        border-top: 1px solid $border-color;
+      }
+    }
+
+    a {
+      font-size: 16px;
+    }
+  }
+
 
   .form-control {
-    &:active, &:focus {
+    &:active,
+    &:focus {
       background-color: #fff;
     }
   }
@@ -203,6 +231,7 @@
   .login-page {
     .col-sm-5.pull-right {
       float: none !important;
+      margin-bottom: 45px;
     }
   }
 }
@@ -234,7 +263,8 @@
     position: relative;
   }
 
-  .footer-container, hr.footer-fixed {
+  .footer-container,
+  hr.footer-fixed {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -244,7 +274,11 @@
   }
 
   .navless-container {
-    padding: 65px; // height of footer + bottom padding of email confirmation link
+    padding: 65px 15px; // height of footer + bottom padding of email confirmation link
+
+    @media (max-width: $screen-xs-max) {
+      padding: 0 15px 65px;
+    }
   }
 }
 
@@ -255,6 +289,13 @@
   .new_user {
     position: relative;
     padding-bottom: 35px;
+
+    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      .forgot-password {
+        float: none !important;
+        margin-top: 5px;
+      }
+    }
   }
 
   .move-submit-down {
@@ -263,3 +304,4 @@
     bottom: 0;
   }
 }
+

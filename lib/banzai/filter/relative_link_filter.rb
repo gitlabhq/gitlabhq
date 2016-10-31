@@ -52,8 +52,8 @@ module Banzai
           relative_url_root,
           context[:project].path_with_namespace,
           uri_type(file_path),
-          ref,
-          file_path
+          Addressable::URI.escape(ref),
+          Addressable::URI.escape(file_path)
         ].compact.join('/').squeeze('/').chomp('/')
 
         uri

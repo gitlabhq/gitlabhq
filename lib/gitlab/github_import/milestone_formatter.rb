@@ -14,8 +14,12 @@ module Gitlab
         }
       end
 
-      def klass
-        Milestone
+      def project_association
+        :milestones
+      end
+
+      def find_condition
+        { iid: raw_data.number }
       end
 
       private

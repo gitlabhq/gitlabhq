@@ -27,7 +27,7 @@ module Gitlab
   # on begin/ensure blocks to cancel a lease, because the 'ensure' does
   # not always run. Think of 'kill -9' from the Unicorn master for
   # instance.
-  # 
+  #
   # If you find that leases are getting in your way, ask yourself: would
   # it be enough to lower the lease timeout? Another thing that might be
   # appropriate is to only use a lease for bulk/automated operations, and
@@ -45,6 +45,13 @@ module Gitlab
       # Performing a single SET is atomic
       Gitlab::Redis.with do |redis|
         !!redis.set(redis_key, '1', nx: true, ex: @timeout)
+      end
+    end
+
+    # Returns true if the key for this lease is set.
+    def exists?
+      Gitlab::Redis.with do |redis|
+        redis.exists(redis_key)
       end
     end
 

@@ -57,7 +57,7 @@
                 = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
                   = icon('pencil', class: 'link-highlight')
                 = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button hidden-xs js-note-delete danger' do
-                  = icon('trash-o')
+                  = icon('trash-o', class: 'danger-highlight')
       .note-body{class: note_editable ? 'js-task-list-container' : ''}
         .note-text.md
           = preserve do

@@ -75,4 +75,4 @@
 
       - @runners.each do |runner|
         = render "admin/runners/runner", runner: runner
-  = paginate @runners
+  = paginate @runners, theme: "gitlab"

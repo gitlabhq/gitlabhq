@@ -105,18 +105,20 @@ module Gitlab
         data = api.send(method, *args)
         return data unless data.is_a?(Array)
 
+        last_response = api.last_response
+
         if block_given?
           yield data
-          each_response_page(&block)
+          # api.last_response could change while we're yielding (e.g. fetching labels for each PR)
+          # so we cache our own last response
+          each_response_page(last_response, &block)
         else
-          each_response_page { |page| data.concat(page) }
+          each_response_page(last_response) { |page| data.concat(page) }
           data
         end
       end
 
-      def each_response_page
-        last_response = api.last_response
-
+      def each_response_page(last_response)
         while last_response.rels[:next]
           sleep rate_limit_sleep_time if rate_limit_exceed?
           last_response = last_response.rels[:next].get

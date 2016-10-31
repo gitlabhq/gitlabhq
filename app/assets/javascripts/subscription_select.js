@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.SubscriptionSelect = (function() {
     function SubscriptionSelect() {

@@ -188,7 +188,7 @@ In order to do that, follow the steps:
         image = "docker:latest"
         privileged = false
         disable_cache = false
-        volumes = ["/var/run/docker.sock", "/cache"]
+        volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
       [runners.cache]
         Insecure = false
     ```
@@ -242,10 +242,10 @@ docker-in-docker on your runners, this is how your `.gitlab-ci.yml` could look:
      - docker push registry.example.com/group/project:latest
 ```
 
-You have to use the credentials of the special `gitlab-ci-token` user with its
-password stored in `$CI_BUILD_TOKEN` in order to push to the Registry connected
-to your project. This allows you to automate building and deployment of your
-Docker images.
+You have to use the special `gitlab-ci-token` user created for you in order to
+push to the Registry connected to your project. Its password is provided in the
+`$CI_BUILD_TOKEN` variable. This allows you to automate building and deployment
+of your Docker images.
 
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
 including two tests that run in parallel. The build is stored in the container

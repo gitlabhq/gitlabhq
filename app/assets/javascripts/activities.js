@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Activities = (function() {
     function Activities() {
@@ -24,9 +25,7 @@
       var filter = sender.attr("id").split("_")[0];
 
       $('.event-filter .active').removeClass("active");
-      $.cookie("event_filter", filter, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set("event_filter", filter);
 
       sender.closest('li').toggleClass("active");
     };

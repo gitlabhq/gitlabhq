@@ -846,7 +846,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /user/:id/block' do
+  describe 'PUT /users/:id/block' do
     before { admin }
     it 'blocks existing user' do
       put api("/users/#{user.id}/block", admin)
@@ -873,7 +873,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /user/:id/unblock' do
+  describe 'PUT /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
 
@@ -914,7 +914,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /user/:id/events' do
+  describe 'GET /users/:id/events' do
     let(:user) { create(:user) }
     let(:project) { create(:empty_project) }
     let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
@@ -956,6 +956,29 @@ describe API::API, api: true  do
           expect(joined_event['project_id'].to_i).to eq(project.id)
           expect(joined_event['author_username']).to eq(user.username)
           expect(joined_event['author']['name']).to eq(user.name)
+        end
+      end
+
+      context 'when there are multiple events from different projects' do
+        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:third_note) { create(:note_on_issue, project: project) }
+
+        before do
+          second_note.project.add_user(user, :developer)
+
+          [second_note, third_note].each do |note|
+            EventCreateService.new.leave_note(note, user)
+          end
+        end
+
+        it 'returns events in the correct order (from newest to oldest)' do
+          get api("/users/#{user.id}/events", user)
+
+          comment_events = json_response.select { |e| e['action_name'] == 'commented on' }
+
+          expect(comment_events[0]['target_id']).to eq(third_note.id)
+          expect(comment_events[1]['target_id']).to eq(second_note.id)
+          expect(comment_events[2]['target_id']).to eq(note.id)
         end
       end
     end
