@@ -57,12 +57,12 @@ describe ProjectMember, models: true do
     it "creates an expired event when left due to expiry" do
       expired = create(:project_member, project: project, expires_at: Time.now - 6.days)
       expired.destroy
-      expect(Event.first.action).to eq(Event::EXPIRED)
+      expect(Event.recent.first.action).to eq(Event::EXPIRED)
     end
 
     it "creates a left event when left due to leave" do
       master.destroy
-      expect(Event.first.action).to eq(Event::LEFT)
+      expect(Event.recent.first.action).to eq(Event::LEFT)
     end
 
     it "destroys itself and delete associated todos" do
