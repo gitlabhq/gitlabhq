@@ -9,7 +9,6 @@
     data() {
       return {
         pipelines: [],
-        commits: [],
         currentPage: '',
         intervalId: '',
       };
@@ -19,7 +18,6 @@
       'store',
     ],
     created() {
-      this.store.fetchCommits.call(this, Vue);
       this.store.fetchDataLoop.call(this, Vue);
     },
     methods: {
