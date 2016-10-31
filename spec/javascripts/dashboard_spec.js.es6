@@ -1,20 +1,27 @@
 /* eslint-disable no-new, padded-blocks */
 
 /*= require sidebar */
-/*= require jquery */
 /*= require js.cookie */
 /*= require lib/utils/text_utility */
+/* eslint-disable no-new */
 
 ((global) => {
   describe('Dashboard', () => {
     const fixtureTemplate = 'dashboard.html';
 
     function todosCountText() {
-      return $('.js-todos-count').text();
+      const countContainer = document.querySelector('.js-todos-count');
+
+      return countContainer !== null ? countContainer.textContent : '';
     }
 
     function triggerToggle(newCount) {
-      $(document).trigger('todo:toggle', newCount);
+      const event = new CustomEvent('todo:toggle', {
+        detail: {
+          count: newCount,
+        },
+      });
+      document.dispatchEvent(event);
     }
 
     fixture.preload(fixtureTemplate);
@@ -36,5 +43,4 @@
       expect(todosCountText()).toEqual('1,000,000');
     });
   });
-
 })(window.gl);

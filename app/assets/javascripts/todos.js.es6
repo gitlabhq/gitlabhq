@@ -101,7 +101,14 @@
     }
 
     updateBadges(data) {
-      $(document).trigger('todo:toggle', data.count);
+      const event = new CustomEvent('todo:toggle', {
+        detail: {
+          count: data.count,
+        },
+      });
+
+      document.dispatchEvent(event);
+
       $('.todos-pending .badge').text(data.count);
       return $('.todos-done .badge').text(data.done_count);
     }

@@ -84,7 +84,13 @@
     };
 
     Sidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
-      $(document).trigger('todo:toggle', data.count);
+      const event = new CustomEvent('todo:toggle', {
+        detail: {
+          count: data.count,
+        },
+      });
+
+      document.dispatchEvent(event);
 
       $btn.enable();
       $todoLoading.addClass('hidden');
