@@ -21,6 +21,8 @@
       - if diff_file.deleted_file
         deleted
 
+  = clipboard_button(clipboard_text: diff_file.new_path, class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy filename to clipboard')
+
   - if diff_file.mode_changed?
     %small
       = "#{diff_file.a_mode} → #{diff_file.b_mode}"

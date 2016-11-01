@@ -22,6 +22,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   end
 
   context 'internal reference' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:reference) { issue.to_reference }
 
     it 'ignores valid references when using non-default tracker' do
@@ -83,6 +85,20 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
       expect(link.attr('data-issue')).to eq issue.id.to_s
     end
 
+    it 'includes a data-original attribute' do
+      doc = reference_filter("See #{reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-original')
+      expect(link.attr('data-original')).to eq reference
+    end
+
+    it 'does not escape the data-original attribute' do
+      inner_html = 'element <code>node</code> inside'
+      doc = reference_filter(%{<a href="#{reference}">#{inner_html}</a>})
+      expect(doc.children.first.attr('data-original')).to eq inner_html
+    end
+
     it 'supports an :only_path context' do
       doc = reference_filter("Issue #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
@@ -101,6 +117,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   end
 
   context 'cross-project reference' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
@@ -141,6 +159,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   end
 
   context 'cross-project URL reference' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
@@ -160,39 +180,45 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   end
 
   context 'cross-project reference in link href' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { %Q{<a href="#{issue.to_reference(project)}">Reference</a>} }
+    let(:reference) { issue.to_reference(project) }
+    let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
 
     it 'links to a valid reference' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{reference_link}")
 
       expect(doc.css('a').first.attr('href')).
         to eq helper.url_for_issue(issue.iid, project2)
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Fixed (#{reference}.)")
+      doc = reference_filter("Fixed (#{reference_link}.)")
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
     end
   end
 
   context 'cross-project URL in link href' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { %Q{<a href="#{helper.url_for_issue(issue.iid, project2) + "#note_123"}">Reference</a>} }
+    let(:reference) { "#{helper.url_for_issue(issue.iid, project2) + "#note_123"}" }
+    let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
 
     it 'links to a valid reference' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{reference_link}")
 
       expect(doc.css('a').first.attr('href')).
         to eq helper.url_for_issue(issue.iid, project2) + "#note_123"
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Fixed (#{reference}.)")
+      doc = reference_filter("Fixed (#{reference_link}.)")
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
     end
   end

@@ -1,3 +1,4 @@
+/* eslint-disable */
 class BoardService {
   constructor (root, boardId) {
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {

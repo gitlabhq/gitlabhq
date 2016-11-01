@@ -5,10 +5,7 @@
 %tr.commit
   %td.commit-link
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
-      - if defined?(status_icon_only) && status_icon_only
-        = ci_icon_for_status(status)
-      - else
-        = ci_status_with_icon(status)
+      = ci_status_with_icon(status)
 
   %td
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
@@ -40,7 +37,7 @@
     %p.commit-title
       - if commit = pipeline.commit
         = author_avatar(commit, size: 20)
-        = link_to_gfm truncate(commit.title, length: 60), namespace_project_commit_path(pipeline.project.namespace, pipeline.project, commit.id), class: "commit-row-message"
+        = link_to_gfm truncate(commit.title, length: 60, escape: false), namespace_project_commit_path(pipeline.project.namespace, pipeline.project, commit.id), class: "commit-row-message"
       - else
         Cant find HEAD commit for this branch
 

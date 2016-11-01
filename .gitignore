@@ -37,6 +37,7 @@
 /doc/code/*
 /dump.rdb
 /log/*.log*
+/node_modules/
 /nohup.out
 /public/assets/
 /public/uploads.*

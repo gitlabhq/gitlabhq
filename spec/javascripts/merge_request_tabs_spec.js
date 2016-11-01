@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require merge_request_tabs */
 //= require breakpoints

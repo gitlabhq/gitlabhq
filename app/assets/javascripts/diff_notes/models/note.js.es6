@@ -1,3 +1,4 @@
+/* eslint-disable */
 class NoteModel {
   constructor (discussionId, noteId, canResolve, resolved, resolved_by) {
     this.discussionId = discussionId;

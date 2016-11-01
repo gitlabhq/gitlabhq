@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   const debounceTimeoutDuration = 1000;
   const invalidInputClass = 'gl-field-error-outline';

@@ -30,6 +30,11 @@ class Project < ActiveRecord::Base
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
+  default_value_for :issues_enabled, gitlab_config_features.issues
+  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
+  default_value_for :builds_enabled, gitlab_config_features.builds
+  default_value_for :wiki_enabled, gitlab_config_features.wiki
+  default_value_for :snippets_enabled, gitlab_config_features.snippets
 
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
@@ -390,7 +395,7 @@ class Project < ActiveRecord::Base
     end
 
     def group_ids
-      joins(:namespace).where(namespaces: { type: 'Group' }).pluck(:namespace_id)
+      joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
   end
 
@@ -738,7 +743,7 @@ class Project < ActiveRecord::Base
   def create_labels
     Label.templates.each do |label|
       params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
-      Labels::FindOrCreateService.new(owner, self, params).execute
+      Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
 

@@ -30,6 +30,8 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params).execute
 
     if @project.saved?
+      cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
+
       redirect_to(
         project_path(@project),
         notice: "Project '#{@project.name}' was successfully created."
@@ -287,7 +289,8 @@ class ProjectsController < Projects::ApplicationController
       render 'projects/empty' if @project.empty_repo?
     else
       if @project.wiki_enabled?
-        @wiki_home = @project.wiki.find_page('home', params[:version_id])
+        @project_wiki = @project.wiki
+        @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
         @issues = issues_collection
         @issues = @issues.page(params[:page])

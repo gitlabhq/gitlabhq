@@ -27,10 +27,25 @@
         :namespace: <%= Gitlab::Redis::SIDEKIQ_NAMESPACE %>
         :queue: email_receiver
         :worker: EmailReceiverWorker
+        <% if config[:sentinels] %>
+        :sentinels:
+          <% config[:sentinels].each do |sentinel| %>
+          -
+            :host: <%= sentinel[:host] %>
+            :port: <%= sentinel[:port] %>
+          <% end %>
+        <% end %>
 
       :arbitration_method: redis
       :arbitration_options:
         :redis_url: <%= config[:redis_url].to_json %>
         :namespace: <%= Gitlab::Redis::MAILROOM_NAMESPACE %>
-
+        <% if config[:sentinels] %>
+        :sentinels:
+          <% config[:sentinels].each do |sentinel| %>
+          -
+            :host: <%= sentinel[:host] %>
+            :port: <%= sentinel[:port] %>
+          <% end %>
+        <% end %>
   <% end %>

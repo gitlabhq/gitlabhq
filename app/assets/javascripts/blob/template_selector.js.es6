@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
     class TemplateSelector {
       constructor({ dropdown, data, pattern, wrapper, editor, fileEndpoint, $input } = {}) {

@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "eslint": "eslint --ext .js,.js.es6 .",
+    "eslint-fix": "eslint --fix --ext .js,.js.es6 ."
+  },
+  "devDependencies": {
+    "eslint": "^3.1.1",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1"
+  }
+}

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.AwardsHandler = (function() {
     const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
@@ -91,7 +92,7 @@
       css = {
         top: ($addBtn.offset().top + $addBtn.outerHeight()) + "px"
       };
-      if ((position != null) && position === 'right') {
+      if (position === 'right') {
         css.left = (($addBtn.offset().left - $menu.outerWidth()) + 20) + "px";
         $menu.addClass('is-aligned-right');
       } else {

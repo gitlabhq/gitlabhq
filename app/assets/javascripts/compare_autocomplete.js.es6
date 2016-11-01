@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.CompareAutocomplete = (function() {
     function CompareAutocomplete() {

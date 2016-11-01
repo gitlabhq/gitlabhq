@@ -1,7 +1,10 @@
+/* eslint-disable */
 
 /*= require right_sidebar */
 /*= require jquery */
 /*= require js.cookie */
+
+/*= require extensions/jquery.js */
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
@@ -55,12 +58,27 @@
       $labelsIcon.click();
       return assertSidebarState('expanded');
     });
-    return it('should collapse when the icon arrow clicked while it is floating on page', function() {
+    it('should collapse when the icon arrow clicked while it is floating on page', function() {
       $labelsIcon.click();
       assertSidebarState('expanded');
       $toggle.click();
       return assertSidebarState('collapsed');
     });
+
+    it('should broadcast todo:toggle event when add todo clicked', function() {
+      spyOn(jQuery, 'ajax').and.callFake(function() {
+        var d = $.Deferred();
+        var response = fixture.load('todos.json');
+        d.resolve(response);
+        return d.promise();
+      });
+
+      var todoToggleSpy = spyOnEvent(document, 'todo:toggle');
+
+      $('.js-issuable-todo').click();
+
+      expect(todoToggleSpy.calls.count()).toEqual(1);
+    })
   });
 
 }).call(this);

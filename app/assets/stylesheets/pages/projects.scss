@@ -193,7 +193,7 @@
     margin-left: 4px;
 
     .arrow {
-      &:before {
+      &::before {
         content: '';
         display: inline-block;
         position: absolute;
@@ -209,7 +209,7 @@
         pointer-events: none;
       }
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         width: 0;
@@ -351,7 +351,7 @@ a.deploy-project-label {
   line-height: 36px;
   margin: 0;
 
-  > li + li:before {
+  > li + li::before {
     padding: 0 3px;
     color: #999;
   }
@@ -790,7 +790,7 @@ pre.light-well {
     top: 7px;
     color: $location-icon-color;
 
-    &:before {
+    &::before {
       font-family: FontAwesome;
       font-weight: normal;
       font-style: normal;

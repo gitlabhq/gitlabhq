@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -81,16 +82,11 @@
     };
 
     Sidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
-      var $todoPendingCount;
-      $todoPendingCount = $('.todos-pending-count');
-      $todoPendingCount.text(data.count);
+      $(document).trigger('todo:toggle', data.count);
+
       $btn.enable();
       $todoLoading.addClass('hidden');
-      if (data.count === 0) {
-        $todoPendingCount.addClass('hidden');
-      } else {
-        $todoPendingCount.removeClass('hidden');
-      }
+
       if (data.delete_path != null) {
         $btn.attr('aria-label', $btn.data('mark-text')).attr('data-delete-path', data.delete_path);
         return $btnText.text($btn.data('mark-text'));

@@ -7,7 +7,7 @@
     = link_to dashboard_todos_path, title: 'Todos' do
       %span
         Todos
-        %span.count= number_with_delimiter(todos_pending_count)
+        %span.count.js-todos-count= number_with_delimiter(todos_pending_count)
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       %span

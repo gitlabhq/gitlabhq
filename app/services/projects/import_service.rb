@@ -29,7 +29,7 @@ module Projects
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
         create_repository
-      else
+      elsif !project.repository_exists?
         import_repository
       end
     end

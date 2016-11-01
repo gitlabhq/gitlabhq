@@ -265,29 +265,6 @@ describe API::Helpers, api: true do
     end
   end
 
-  describe '.to_boolean' do
-    it 'converts a valid string to a boolean' do
-      expect(to_boolean('true')).to be_truthy
-      expect(to_boolean('YeS')).to be_truthy
-      expect(to_boolean('t')).to be_truthy
-      expect(to_boolean('1')).to be_truthy
-      expect(to_boolean('ON')).to be_truthy
-      expect(to_boolean('FaLse')).to be_falsy
-      expect(to_boolean('F')).to be_falsy
-      expect(to_boolean('NO')).to be_falsy
-      expect(to_boolean('n')).to be_falsy
-      expect(to_boolean('0')).to be_falsy
-      expect(to_boolean('oFF')).to be_falsy
-    end
-
-    it 'converts an invalid string to nil' do
-      expect(to_boolean('fals')).to be_nil
-      expect(to_boolean('yeah')).to be_nil
-      expect(to_boolean('')).to be_nil
-      expect(to_boolean(nil)).to be_nil
-    end
-  end
-
   describe '.handle_api_exception' do
     before do
       allow_any_instance_of(self.class).to receive(:sentry_enabled?).and_return(true)
