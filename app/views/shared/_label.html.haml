@@ -18,8 +18,8 @@
         %li
           = link_to_label(label, subject: subject) do
             = pluralize open_issues_count, 'open issue'
-        - if current_user
-          %li.label-subscription{ data: toggle_subscription_data(label) }
+        - if current_user && defined?(@project)
+          %li.label-subscription{ data: toggle_subscription_data(label, @project) }
             %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label, @project) } }
               %span= label_subscription_toggle_button_text(label, @project)
         - if can?(current_user, :admin_label, label)
@@ -34,11 +34,11 @@
     = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
       = pluralize open_issues_count, 'open issue'
 
-    - if current_user
-      .label-subscription.inline{ data: toggle_subscription_data(label) }
+    - if current_user && defined?(@project)
+      .label-subscription.inline{ data: toggle_subscription_data(label, @project) }
         %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label, @project), data: { toggle: "tooltip", status: label_subscription_status(label, @project) } }
           %span.sr-only= label_subscription_toggle_button_text(label, @project)
-          = icon('eye', class: 'label-subscribe-button-icon', disabled: label.is_a?(GroupLabel))
+          = icon('eye', class: 'label-subscribe-button-icon')
           = icon('spinner spin', class: 'label-subscribe-button-loading')
 
     - if can?(current_user, :admin_label, label)
@@ -49,6 +49,6 @@
         %span.sr-only Delete
         = icon('trash-o')
 
-  - if current_user && label.is_a?(ProjectLabel)
+  - if current_user && defined?(@project)
     :javascript
       new Subscription('##{dom_id(label)} .label-subscription');

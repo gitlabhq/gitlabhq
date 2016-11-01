@@ -72,14 +72,8 @@ describe Projects::LabelsController do
   end
 
   describe 'POST #generate' do
-    let(:admin) { create(:admin) }
-
-    before do
-      sign_in(admin)
-    end
-
     context 'personal project' do
-      let(:personal_project) { create(:empty_project) }
+      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       it 'creates labels' do
         post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project.to_param
@@ -94,6 +88,24 @@ describe Projects::LabelsController do
 
         expect(response).to have_http_status(302)
       end
+    end
+  end
+
+  describe 'POST #toggle_subscription' do
+    it 'allows user to toggle subscription on project labels' do
+      label = create(:label, project: project)
+
+      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: label.id
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'allows user to toggle subscription on group labels' do
+      group_label = create(:group_label, group: group)
+
+      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: group_label.id
+
+      expect(response).to have_http_status(200)
     end
   end
 end
