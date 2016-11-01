@@ -1,17 +1,11 @@
 module API
   module Helpers
+    include Gitlab::Utils
+
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
-
-    def to_boolean(value)
-      return value if [true, false].include?(value)
-      return true if value =~ /^(true|t|yes|y|1|on)$/i
-      return false if value =~ /^(false|f|no|n|0|off)$/i
-
-      nil
-    end
 
     def private_token
       params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]

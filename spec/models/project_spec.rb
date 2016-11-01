@@ -67,11 +67,11 @@ describe Project, models: true do
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
-    context 'after create' do
-      it "creates project feature" do
+    context 'after initialized' do
+      it "has a project_feature" do
         project = FactoryGirl.build(:project)
 
-        expect { project.save }.to change{ project.project_feature.present? }.from(false).to(true)
+        expect(project.project_feature.present?).to be_present
       end
     end
 

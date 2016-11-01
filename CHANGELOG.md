@@ -47,6 +47,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Fix relative links in Markdown wiki when displayed in "Project" tab !7218
 - Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
+- Fix project features default values
 
 ## 8.13.2 (2016-10-31)
 
