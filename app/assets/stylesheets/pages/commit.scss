@@ -36,13 +36,17 @@
     padding: 10px 0;
     margin-bottom: 0;
 
-    .commitable-meta {
-      display: inline-block;
-      line-height: 18px;
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+      align-items: center;
+
+      .commit-meta {
+        flex: 1;
+      }
     }
 
     .commit-hash-full {
-      @media (max-width: $screen-md-min) {
+      @media (max-width: $screen-sm-max) {
         width: 80px;
         white-space: nowrap;
         overflow: hidden;
@@ -52,29 +56,22 @@
       }
     }
 
-    .commitable-actions {
-      @media (min-width: $screen-sm) {
-        float: right;
-        padding-top: 0;
+    .commit-action-buttons {
+      i {
+        color: $gl-icon-color;
+        font-size: 13px;
+        margin-right: 3px;
       }
 
-      .dropdown {
-        @media (max-width: $screen-sm) {
+      @media (max-width: $screen-xs-max) {
+        .dropdown {
           width: 100%;
           margin-top: 10px;
         }
-      }
 
-      .dropdown-toggle {
-        @media (max-width: $screen-sm) {
+        .dropdown-toggle {
           width: 100%;
         }
-      }
-    }
-
-    .commit-options-dropdown-caret {
-      @media (max-width: $screen-sm) {
-        margin-left: 0;
       }
     }
   }
@@ -221,17 +218,6 @@
     a {
       color: $gl-text-color;
     }
-  }
-}
-
-.commit-action-buttons {
-  position: relative;
-  top: -1px;
-
-  i {
-    color: $gl-icon-color;
-    font-size: 13px;
-    margin-right: 3px;
   }
 }
 
