@@ -24,6 +24,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning @all' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:reference) { User.reference_prefix + 'all' }
 
     before do
@@ -60,6 +62,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning a user' do
+    it_behaves_like 'a reference containing an element node'
+
     it 'links to a User' do
       doc = reference_filter("Hey #{reference}")
       expect(doc.css('a').first.attr('href')).to eq urls.user_url(user)
@@ -89,6 +93,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning a group' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:group)     { create(:group) }
     let(:reference) { group.to_reference }
 

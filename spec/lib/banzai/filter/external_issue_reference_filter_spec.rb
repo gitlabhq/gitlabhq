@@ -8,6 +8,8 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
   end
 
   shared_examples_for "external issue tracker" do
+    it_behaves_like 'a reference containing an element node'
+
     it 'requires project context' do
       expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
