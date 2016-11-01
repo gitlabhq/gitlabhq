@@ -96,8 +96,8 @@
 
   .project-avatar {
     float: none;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    border: none;
 
     &.identicon {
       border-radius: 50%;
