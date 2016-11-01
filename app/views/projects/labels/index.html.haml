@@ -22,14 +22,14 @@
         %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
           %p.empty-message{ class: ('hidden' unless @prioritized_labels.empty?) } No prioritized labels yet
           - if @prioritized_labels.present?
-            = render partial: 'shared/label', collection: @prioritized_labels, as: :label
+            = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
 
     .other-labels
       - if can?(current_user, :admin_label, @project)
         %h5{ class: ('hide' if hide) } Other Labels
       %ul.content-list.manage-labels-list.js-other-labels
         - if @labels.present?
-          = render partial: 'shared/label', collection: @labels, as: :label
+          = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
         = paginate @labels, theme: 'gitlab'
       - if @labels.blank?
         .nothing-here-block

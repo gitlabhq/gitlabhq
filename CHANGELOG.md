@@ -41,6 +41,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Shortened merge request modal to let clipboard button not overlap
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
 
+## 8.13.3
+
+- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
+
 ## 8.13.2 (2016-10-31)
 
 - Fix encoding issues on pipeline commits. !6832
