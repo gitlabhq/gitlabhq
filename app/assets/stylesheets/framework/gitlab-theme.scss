@@ -21,57 +21,66 @@
       background: $color-darker;
     }
 
-    .nav-sidebar li {
-      a {
-        color: $color-light;
+    .sidebar-header,
+    .sidebar-action-buttons {
+      color: $color-light;
+      background-color: lighten($color-darker, 5%);
+    }
 
-        &:hover,
-        &:focus,
-        &:active {
-          background: $color-dark;
-        }
-
-        i {
+    .nav-sidebar {
+      li {
+        a {
           color: $color-light;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: $color-dark;
+          }
+
+          i {
+            color: $color-light;
+          }
+
+          path,
+          polygon {
+            fill: $color-light;
+          }
+
+          .count {
+            color: $color-light;
+            background: $color-dark;
+          }
+
+          svg {
+            position: relative;
+            top: 3px;
+          }
         }
 
-        path,
-        polygon {
-          fill: $color-light;
+        &.separate-item {
+          border-top: 1px solid $color;
         }
 
-        .count {
-          color: $color-light;
-          background: $color-dark;
-        }
-
-        svg {
-          position: relative;
-          top: 3px;
-        }
-      }
-
-      &.separate-item {
-        border-top: 1px solid $color;
-      }
-
-      &.active a {
-        color: $white-light;
-        background: $color-dark;
-
-        &.no-highlight {
-          border: none;
-        }
-
-        i {
+        &.active a {
           color: $white-light;
-        }
+          background: $color-dark;
 
-        path,
-        polygon {
-          fill: $white-light;
+          &.no-highlight {
+            border: none;
+          }
+
+          i {
+            color: $white-light;
+          }
+
+          path,
+          polygon {
+            fill: $white-light;
+          }
         }
       }
+
     }
   }
 }
