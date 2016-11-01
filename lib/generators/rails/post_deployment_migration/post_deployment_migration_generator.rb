@@ -1,3 +1,5 @@
+require 'rails/generators'
+
 module Rails
   class PostDeploymentMigrationGenerator < Rails::Generators::NamedBase
     def create_migration_file
