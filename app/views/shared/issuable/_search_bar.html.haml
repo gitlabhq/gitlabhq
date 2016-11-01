@@ -1,0 +1,78 @@
+- finder = controller.controller_name == 'issues' || controller.controller_name == 'boards' ? issues_finder : merge_requests_finder
+- boards_page = controller.controller_name == 'boards'
+
+.issues-filters
+  .issues-details-filters.row-content-block.second-block
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
+      - if params[:search].present?
+        = hidden_field_tag :search, params[:search]
+      - if @bulk_edit
+        .check-all-holder
+          = check_box_tag "check_all_issues", nil, false,
+            class: "check_all_issues left"
+      .issues-other-filters.filtered-search-container
+        .filtered-search-input-container.form-control
+          = icon('filter')
+          %ul.fragment-list
+            %li.fragment-search
+              %input.filtered-search.transparent{ placeholder: 'Search or filter results...' }
+        .pull-right
+          - if boards_page
+            #js-boards-seach.issue-boards-search
+              %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
+              - if can?(current_user, :admin_list, @project)
+                .dropdown.pull-right
+                  %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                    Create new list
+                  .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                    = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
+                    - if can?(current_user, :admin_label, @project)
+                      = render partial: "shared/issuable/label_page_create"
+                    = dropdown_loading
+          - else
+            = render 'shared/sort_dropdown'
+
+    - if @bulk_edit
+      .issues_bulk_update.hide
+        = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: 'bulk-update'  do
+          .filter-item.inline
+            = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
+              %ul
+                %li
+                  %a{href: "#", data: {id: "reopen"}} Open
+                %li
+                  %a{href: "#", data: {id: "close"}} Closed
+          .filter-item.inline
+            = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
+          .filter-item.inline
+            = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
+          .filter-item.inline.labels-filter
+            = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
+          .filter-item.inline
+            = dropdown_tag("Subscription", options: { toggle_class: "js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]" } } ) do
+              %ul
+                %li
+                  %a{href: "#", data: {id: "subscribe"}} Subscribe
+                %li
+                  %a{href: "#", data: {id: "unsubscribe"}} Unsubscribe
+
+          = hidden_field_tag 'update[issuable_ids]', []
+          = hidden_field_tag :state_event, params[:state_event]
+          .filter-item.inline
+            = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
+  - has_labels = @labels && @labels.any?
+  .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }
+    - if has_labels
+      = render 'shared/labels_row', labels: @labels
+
+:javascript
+  new UsersSelect();
+  new LabelsSelect();
+  new MilestoneSelect();
+  new IssueStatusSelect();
+  new SubscriptionSelect();
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });

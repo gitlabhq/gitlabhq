@@ -6,6 +6,9 @@
 = content_for :sub_nav do
   = render "projects/issues/head"
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('filtered_search/filtered_search_bundle.js')
+
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
@@ -30,7 +33,7 @@
                                                      title: "New Issue",
                                                      id: "new_issue_link" do
             New Issue
-    = render 'shared/issuable/filter', type: :issues
+    = render 'shared/issuable/search_bar', type: :issues
 
     .issues-holder
       = render 'issues'

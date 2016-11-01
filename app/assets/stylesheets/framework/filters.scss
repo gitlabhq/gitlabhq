@@ -23,3 +23,60 @@
   }
 }
 
+.filtered-search-container {
+  display: flex;
+}
+
+.filtered-search-input-container {
+  display: flex;
+
+  .fa-filter {
+    color: #444;
+  }
+
+  .fragment-list {
+    margin: 0;
+    list-style-type: none;
+    padding-left: 5px;
+    flex: 1;
+  }
+}
+
+.fragment-list {
+  display: flex;
+
+  .fragment-token {
+    margin-right: 5px;
+  }
+
+  .fragment-key {
+    color: #959494;
+    background-color: #f5f5f5;
+    padding: 2px 5px;
+    margin-right: 3px;
+    border-radius: 2px;
+  }
+
+  .fragment-search {
+    flex: 1;
+  }
+
+  .filtered-search {
+    width: 100%;
+  }
+}
+
+.transparent {
+  border: none;
+
+  &:focus {
+    outline: none;
+    border: none;
+  }
+}
+
+.form-control {
+  &.focus {
+    @extend .form-control:focus
+  }
+}

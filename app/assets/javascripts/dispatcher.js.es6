@@ -31,6 +31,7 @@
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
+          new gl.FilteredSearchManager();
           Issuable.init();
           new gl.IssuableBulkActions();
           shortcut_handler = new ShortcutsNavigation();
