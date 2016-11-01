@@ -52,12 +52,7 @@ module Gitlab
       end
 
       def member_hash(member)
-        parsed_hash(member).merge('source_id' => @project.id, 'importing' => true)
-      end
-
-      def parsed_hash(member)
-        Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: member.deep_stringify_keys,
-                                                     relation_class: ProjectMember)
+        member.except('id').merge(source_id: @project.id, importing: true)
       end
 
       def find_project_user_query(member)
