@@ -20,7 +20,7 @@
       // eventually clearInterval(this.intervalId)
       this.intervalId = setInterval(() => {
         goFetch();
-      }, 60000);
+      }, 3000);
     }
   };
 })(window.gl || (window.gl = {}));

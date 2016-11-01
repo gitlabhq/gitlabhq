@@ -7,6 +7,7 @@
 //= require ./running_icon.vue.js.es6
 //= require ./running.vue.js.es6
 //= require ./stages.vue.js.es6
+//= require ./pipeline_actions.vue.js.es6
 //= require ./pipelines.vue.js.es6
 
 (() => {
@@ -15,7 +16,7 @@
   Vue.use(VueResource);
   // Vue.config.silent = true;
 
-  return new Vue({
+  window.vm = new Vue({
     el: '#vue-pipelines-index',
     data: {
       scope: project.dataset.projectId,
