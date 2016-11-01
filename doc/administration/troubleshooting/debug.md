@@ -107,7 +107,7 @@ downtime. Otherwise skip to the next section.
 1. To see the current threads, run:
 
     ```
-    apply all thread bt
+    thread apply all bt
     ```
 
 1. Once you're done debugging with `gdb`, be sure to detach from the process and exit:
