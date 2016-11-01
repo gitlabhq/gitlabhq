@@ -420,7 +420,7 @@ class Project < ActiveRecord::Base
     end
 
     def group_ids
-      joins(:namespace).where(namespaces: { type: 'Group' }).pluck(:namespace_id)
+      joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
   end
 
