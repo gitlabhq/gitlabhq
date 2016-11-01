@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 8.13.4
 
 - Honour issue and merge request visibility in their respective finders.
+- Disable reference Markdown for unavailable features.
 
 ## 8.13.3 (2016-11-02)
 
