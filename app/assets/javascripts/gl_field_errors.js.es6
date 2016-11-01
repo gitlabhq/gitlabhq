@@ -1,4 +1,7 @@
 /* eslint-disable */
+
+//= require gl_field_error
+
 ((global) => {
   const customValidationFlag = 'gl-field-error-ignore';
 
