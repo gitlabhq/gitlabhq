@@ -258,6 +258,24 @@ class User < ActiveRecord::Base
       )
     end
 
+    # searches user by given pattern
+    # it compares name, email, username fields and user's secondary emails with given pattern
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+
+    def search_with_secondary_emails(query)
+      table = arel_table
+      email_table = Email.arel_table
+      pattern = "%#{query}%"
+      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
+
+      where(
+        table[:name].matches(pattern).
+          or(table[:email].matches(pattern)).
+          or(table[:username].matches(pattern)).
+          or(table[:id].in(matched_by_emails_user_ids))
+      )
+    end
+
     def by_login(login)
       return nil unless login
 
