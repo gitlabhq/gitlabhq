@@ -15,6 +15,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Refactor Jira service to use jira-ruby gem
 - Improved todos empty state
 - Add hover to trash icon in notes !7008 (blackst0ne)
+- Hides project activity tabs when features are disabled
 - Only show one error message for an invalid email !5905 (lycoperdon)
 - Fix sidekiq stats in admin area (blackst0ne)
 - Created cycle analytics bundle JavaScript file
