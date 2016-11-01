@@ -36,6 +36,42 @@
     padding: 10px 0;
     margin-bottom: 0;
 
+    .commitable-meta {
+      display: inline-block;
+      line-height: 18px;
+    }
+
+    .commit-hash-full {
+      @media (max-width: $screen-md-min) {
+        width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: bottom;
+      }
+    }
+
+    .commitable-actions {
+      @media (min-width: $screen-sm) {
+        float: right;
+        padding-top: 0;
+      }
+
+      .dropdown{
+        @media (max-width: $screen-sm) {
+          width: 100%;
+          margin-top: 10px;
+        }
+      }
+
+      .dropdown-toggle {
+        @media (max-width: $screen-sm) {
+          width: 100%;
+        }
+      }
+    }
+
     .commit-options-dropdown-caret {
       @media (max-width: $screen-sm) {
         margin-left: 0;
