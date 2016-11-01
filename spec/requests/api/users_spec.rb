@@ -970,6 +970,29 @@ describe API::API, api: true  do
           expect(joined_event['author']['name']).to eq(user.name)
         end
       end
+
+      context 'when there are multiple events from different projects' do
+        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:third_note) { create(:note_on_issue, project: project) }
+
+        before do
+          second_note.project.add_user(user, :developer)
+
+          [second_note, third_note].each do |note|
+            EventCreateService.new.leave_note(note, user)
+          end
+        end
+
+        it 'returns events in the correct order (from newest to oldest)' do
+          get api("/users/#{user.id}/events", user)
+
+          comment_events = json_response.select { |e| e['action_name'] == 'commented on' }
+
+          expect(comment_events[0]['target_id']).to eq(third_note.id)
+          expect(comment_events[1]['target_id']).to eq(second_note.id)
+          expect(comment_events[2]['target_id']).to eq(note.id)
+        end
+      end
     end
 
     it 'returns a 404 error if not found' do

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   $(function() {
     $("body").on("click", ".js-details-target", function() {

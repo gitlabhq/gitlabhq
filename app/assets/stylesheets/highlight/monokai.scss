@@ -1,20 +1,25 @@
 /* https://github.com/richleland/pygments-css/blob/master/monokai.css */
 .code.monokai {
   // Line numbers
-  .line-numbers, .diff-line-num {
+  .line-numbers,
+  .diff-line-num {
     background-color: #272822;
   }
 
-  .diff-line-num, .diff-line-num a {
+  .diff-line-num,
+  .diff-line-num a {
     color: rgba(255, 255, 255, 0.3);
   }
 
   // Code itself
-  pre.code, .diff-line-num {
+  pre.code,
+  .diff-line-num {
     border-color: #555;
   }
 
-  &, pre.code, .line_holder .line_content {
+  &,
+  pre.code,
+  .line_holder .line_content {
     background-color: #272822;
     color: #f8f8f2;
   }
@@ -31,11 +36,13 @@
       border-color: darken(#49483e, 15%);
     }
 
-    .diff-line-num.new, .line_content.new {
+    .diff-line-num.new,
+    .line_content.new {
       @include diff_background(rgba(166, 226, 46, 0.1), rgba(166, 226, 46, 0.15), #808080);
     }
 
-    .diff-line-num.old, .line_content.old {
+    .diff-line-num.old,
+    .line_content.old {
       @include diff_background(rgba(254, 147, 140, 0.15), rgba(254, 147, 140, 0.2), #808080);
     }
 

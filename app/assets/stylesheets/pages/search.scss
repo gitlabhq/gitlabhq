@@ -65,13 +65,14 @@
   .search-input-wrap {
     width: 100%;
 
-    .search-icon, .clear-icon {
+    .search-icon,
+    .clear-icon {
       position: absolute;
       right: 5px;
       top: 0;
       color: $location-icon-color;
 
-      &:before {
+      &::before {
         font-family: FontAwesome;
         font-weight: normal;
         font-style: normal;
@@ -185,7 +186,8 @@
     padding-right: $gl-padding + 15px;
   }
 
-  .btn-search, .btn-new {
+  .btn-search,
+  .btn-new {
     width: 100%;
     margin-top: 5px;
 

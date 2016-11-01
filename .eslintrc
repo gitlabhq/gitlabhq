@@ -1,0 +1,23 @@
+{
+  "extends": "airbnb",
+  "globals": {
+    "$": false,
+    "_": false,
+    "beforeEach": false,
+    "d3": false,
+    "define": false,
+    "describe": false,
+    "document": false,
+    "expect": false,
+    "fixture": false,
+    "gl": false,
+    "it": false,
+    "jQuery": false,
+    "Mousetrap": false,
+    "spyOn": false,
+    "spyOnEvent": false,
+    "Turbolinks": false,
+    "window": false,
+    "Vue": false
+  }
+}

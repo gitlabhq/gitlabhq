@@ -9,8 +9,8 @@ module Gitlab
         }
       end
 
-      def klass
-        Label
+      def project_association
+        :labels
       end
 
       def create!

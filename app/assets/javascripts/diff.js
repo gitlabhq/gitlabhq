@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Diff = (function() {
     var UNFOLD_COUNT;

@@ -86,6 +86,10 @@ There are various other options to install GitLab, please refer to the [installa
 
 You can access a new installation with the login **`root`** and password **`5iveL!fe`**, after login you are required to set a unique password.
 
+## Contributing
+
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
+
 ## Install a development environment
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).

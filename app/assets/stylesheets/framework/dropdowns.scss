@@ -15,6 +15,7 @@
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
+      min-width: 240px;
     }
   }
 
@@ -279,7 +280,8 @@
   a {
     padding-left: 25px;
 
-    &.is-indeterminate, &.is-active {
+    &.is-indeterminate,
+    &.is-active {
       &::before {
         position: absolute;
         left: 5px;
@@ -377,7 +379,8 @@
   }
 }
 
-.dropdown-input-field, .default-dropdown-input {
+.dropdown-input-field,
+.default-dropdown-input {
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -406,7 +409,7 @@
 
 .dropdown-content {
   max-height: 215px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .dropdown-footer {
@@ -487,7 +490,7 @@
         font-size: 20px;
         text-indent: 0;
 
-        &:before {
+        &::before {
           display: block;
           position: relative;
           top: -2px;
@@ -519,7 +522,7 @@
         background-color: transparent;
         border: 0;
 
-        .ui-icon:before {
+        .ui-icon::before {
           color: $md-link-color;
         }
       }
@@ -528,7 +531,7 @@
     .ui-datepicker-prev {
       left: 0;
 
-      .ui-icon:before {
+      .ui-icon::before {
         content: '\f104';
         text-align: left;
       }
@@ -537,7 +540,7 @@
     .ui-datepicker-next {
       right: 0;
 
-      .ui-icon:before {
+      .ui-icon::before {
         content: '\f105';
         text-align: right;
       }

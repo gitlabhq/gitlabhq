@@ -3,7 +3,7 @@ class ProjectMember < Member
 
   include Gitlab::ShellAdapter
 
-  belongs_to :project, class_name: 'Project', foreign_key: 'source_id'
+  belongs_to :project, foreign_key: 'source_id'
 
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE

@@ -6,7 +6,8 @@
   }
 }
 
-.no-ssh-key-message, .project-limit-message {
+.no-ssh-key-message,
+.project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
@@ -192,7 +193,7 @@
     margin-left: 4px;
 
     .arrow {
-      &:before {
+      &::before {
         content: '';
         display: inline-block;
         position: absolute;
@@ -208,7 +209,7 @@
         pointer-events: none;
       }
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         width: 0;
@@ -350,7 +351,7 @@ a.deploy-project-label {
   line-height: 36px;
   margin: 0;
 
-  > li + li:before {
+  > li + li::before {
     padding: 0 3px;
     color: #999;
   }
@@ -385,7 +386,8 @@ a.deploy-project-label {
       text-align: center;
       width: 169px;
 
-      &:hover, &.forked {
+      &:hover,
+      &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
       }
@@ -711,13 +713,17 @@ pre.light-well {
   }
 }
 
-a.allowed-to-merge, a.allowed-to-push {
+a.allowed-to-merge,
+a.allowed-to-push {
   cursor: pointer;
   cursor: hand;
 }
 
-.protected-branch-push-access-list, .protected-branch-merge-access-list {
-  a { color: #fff; }
+.protected-branch-push-access-list,
+.protected-branch-merge-access-list {
+  a {
+    color: #fff;
+  }
 }
 
 .protected-branches-list {
@@ -743,7 +749,8 @@ a.allowed-to-merge, a.allowed-to-push {
   .table-bordered {
     border-radius: 1px;
 
-    th:not(:last-child), td:not(:last-child) {
+    th:not(:last-child),
+    td:not(:last-child) {
       border-right: solid 1px transparent;
     }
   }
@@ -770,7 +777,8 @@ a.allowed-to-merge, a.allowed-to-push {
   }
 }
 
-.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+.project-refs-form .dropdown-menu,
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {
@@ -815,7 +823,7 @@ a.allowed-to-merge, a.allowed-to-push {
     top: 7px;
     color: $location-icon-color;
 
-    &:before {
+    &::before {
       font-family: FontAwesome;
       font-weight: normal;
       font-style: normal;

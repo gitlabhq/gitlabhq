@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Disable an element and add the 'disabled' Bootstrap class
 (function() {
   $.fn.extend({

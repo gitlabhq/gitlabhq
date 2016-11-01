@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Requires Input behavior
 //
 // When called on a form with input fields with the `required` attribute, the

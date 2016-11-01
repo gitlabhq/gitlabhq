@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require jquery.waitforimages */
 /*= require task_list */

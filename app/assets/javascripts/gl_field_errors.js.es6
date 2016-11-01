@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   /*
    * This class overrides the browser's validation error bubbles, displaying custom
@@ -137,8 +138,11 @@
     }
 
     initValidators () {
-      // select all non-hidden inputs in form
-      this.state.inputs = this.form.find(':input:not([type=hidden])').toArray()
+      // register selectors here as needed
+      const validateSelectors = [':text', ':password', '[type=email]']
+        .map((selector) => `input${selector}`).join(',');
+
+      this.state.inputs = this.form.find(validateSelectors).toArray()
         .filter((input) => !input.classList.contains(customValidationFlag))
         .map((input) => new GlFieldError({ input, formErrors: this }));
 

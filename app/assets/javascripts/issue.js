@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require flash */
 /*= require jquery.waitforimages */

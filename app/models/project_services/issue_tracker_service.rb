@@ -1,6 +1,4 @@
 class IssueTrackerService < Service
-  validates :project_url, :issues_url, :new_issue_url, presence: true, url: true, if: :activated?
-
   default_value_for :category, 'issue_tracker'
 
   # Pattern used to extract links from comments
@@ -42,18 +40,24 @@ class IssueTrackerService < Service
     ]
   end
 
-  def initialize_properties
-    if properties.nil?
-      if enabled_in_gitlab_config
+  # Initialize with default properties values
+  # or receive a block with custom properties
+  def initialize_properties(&block)
+    return unless properties.nil?
+
+    if enabled_in_gitlab_config
+      if block_given?
+        yield
+      else
         self.properties = {
           title: issues_tracker['title'],
           project_url: issues_tracker['project_url'],
           issues_url: issues_tracker['issues_url'],
           new_issue_url: issues_tracker['new_issue_url']
         }
-      else
-        self.properties = {}
       end
+    else
+      self.properties = {}
     end
   end
 

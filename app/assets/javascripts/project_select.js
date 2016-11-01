@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ProjectSelect = (function() {
     function ProjectSelect() {

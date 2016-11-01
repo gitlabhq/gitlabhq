@@ -7,32 +7,32 @@
       type: String,
       currentBoard: Object,
       currentPage: String,
-      reload: Boolean
+      reload: Boolean,
     },
-    data () {
+    data() {
       return {
         board: {
           id: false,
-          name: ''
-        }
+          name: '',
+        },
       };
     },
-    ready () {
+    ready() {
       if (this.currentBoard && Object.keys(this.currentBoard).length) {
         this.board = Vue.util.extend({}, this.currentBoard);
       }
     },
     computed: {
-      buttonText () {
+      buttonText() {
         if (this.type === 'new') {
           return 'Create';
-        } else {
-          return 'Save';
         }
-      }
+
+        return 'Save';
+      },
     },
     methods: {
-      submit () {
+      submit() {
         gl.boardService.createBoard(this.board)
           .then(() => {
             if (this.currentBoard) {
@@ -46,7 +46,7 @@
             this.currentPage = '';
             this.reload = true;
           });
-      }
-    }
+      },
+    },
   });
 })();

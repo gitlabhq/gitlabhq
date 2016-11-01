@@ -279,6 +279,10 @@
 #modal_merge_info .modal-dialog {
   width: 600px;
 
+  .dark {
+    margin-right: 40px;
+  }
+
   .btn-clipboard {
     @extend .pull-right;
 
@@ -439,12 +443,12 @@
 }
 
 .merge-request-tabs-holder {
-  background-color: #fff;
+  background-color: $white-light;
 
   &.affix {
     top: 100px;
     left: 0;
-    z-index: 9;
+    z-index: 10;
     transition: right .15s;
   }
 

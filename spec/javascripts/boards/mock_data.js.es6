@@ -1,3 +1,4 @@
+/* eslint-disable */
 const listObj = {
   id: 1,
   position: 0,

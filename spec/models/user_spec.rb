@@ -15,11 +15,11 @@ describe User, models: true do
 
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
-    it { is_expected.to have_many(:snippets).class_name('Snippet').dependent(:destroy) }
+    it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
-    it { is_expected.to have_many(:events).class_name('Event').dependent(:destroy) }
+    it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }

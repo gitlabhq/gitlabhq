@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   (function(w) {
     var notificationGranted, notifyMe, notifyPermissions;

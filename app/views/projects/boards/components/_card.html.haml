@@ -7,8 +7,11 @@
   ":issue-link-base" => "issueLinkBase",
   ":disabled" => "disabled",
   "track-by" => "id" }
-  %li.card{ ":class" => "{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id }",
-    ":index" => "index" }
+  %li.card{ ":class" => "{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id, 'is-active': issueDetailVisible }",
+    ":index" => "index",
+    "@mousedown" => "mouseDown",
+    "@mouseMove" => "mouseMove",
+    "@mouseup" => "showIssue($event)" }
     %h4.card-title
       = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")
       %a{ ":href" => "issueLinkBase + '/' + issue.id",
@@ -18,6 +21,11 @@
       %span.card-number{ "v-if" => "issue.id" }
         = precede '#' do
           {{ issue.id }}
+      %a.has-tooltip{ ":href" => "'#{root_path}' + issue.assignee.username",
+        ":title" => "'Assigned to ' + issue.assignee.name",
+        "v-if" => "issue.assignee",
+        data: { container: 'body' } }
+        %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }
       %button.label.color-label.has-tooltip{ "v-for" => "label in issue.labels",
         type: "button",
         "v-if" => "(!list.label || label.id !== list.label.id)",
@@ -26,8 +34,3 @@
         ":title" => "label.description",
         data: { container: 'body' } }
         {{ label.title }}
-      %a.has-tooltip{ ":href" => "'#{root_path}' + issue.assignee.username",
-        ":title" => "'Assigned to ' + issue.assignee.name",
-        "v-if" => "issue.assignee",
-        data: { container: 'body' } }
-        %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }

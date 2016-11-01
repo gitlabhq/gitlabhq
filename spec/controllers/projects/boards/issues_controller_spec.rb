@@ -21,9 +21,11 @@ describe Projects::Boards::IssuesController do
     context 'with valid list id' do
       it 'returns issues that have the list label applied' do
         johndoe = create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
+        issue = create(:labeled_issue, project: project, labels: [planning])
         create(:labeled_issue, project: project, labels: [planning])
-        create(:labeled_issue, project: project, labels: [development])
+        create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
         create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
+        issue.subscribe(johndoe)
 
         list_issues user: user, board: board, list: list2
 

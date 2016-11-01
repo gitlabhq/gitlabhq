@@ -117,6 +117,22 @@ Click on **Authenticate via U2F Device** to complete the process.
 This will clear all your two-factor authentication registrations, including mobile
 applications and U2F devices.
 
+## Personal access tokens
+
+When 2FA is enabled, you can no longer use your normal account password to
+authenticate with Git over HTTPS on the command line, you must use a personal
+access token instead.
+
+1. Log in to your GitLab account.
+1. Go to your **Profile Settings**.
+1. Go to **Access Tokens**.
+1. Choose a name and expiry date for the token.
+1. Click on **Create Personal Access Token**. 
+1. Save the personal access token somewhere safe.
+
+When using git over HTTPS on the command line, enter the personal access token
+into the password field.
+
 ## Note to GitLab administrators
 
 You need to take special care to that 2FA keeps working after

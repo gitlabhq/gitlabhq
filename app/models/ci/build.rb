@@ -3,8 +3,8 @@ module Ci
     include TokenAuthenticatable
     include AfterCommitQueue
 
-    belongs_to :runner, class_name: 'Ci::Runner'
-    belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
+    belongs_to :runner
+    belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
     serialize :options

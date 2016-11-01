@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Autosave = (function() {
     function Autosave(field, key) {

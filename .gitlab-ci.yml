@@ -243,7 +243,7 @@ teaspoon:
     - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
     - apt-get install --assume-yes nodejs
     - npm install --global istanbul
-    - teaspoon
+    - rake teaspoon
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -274,16 +274,20 @@ bundler:audit:
 migration paths:
   stage: test
   <<: *use-db
+  variables:
+    SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
   script:
     - git checkout HEAD .
     - git fetch --tags
     - git checkout v8.5.9
-    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - cp config/resque.yml.example config/resque.yml
+    - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
     - rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_BUILD_REF
+    - source scripts/prepare_build.sh
     - rake db:migrate
 
 coverage:
@@ -300,6 +304,14 @@ coverage:
     paths:
     - coverage/index.html
     - coverage/assets/
+
+lint-javascript:
+  stage: test
+  image: "node:latest"
+  before_script:
+    - npm install
+  script:
+    - npm run eslint
 
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   (function(w) {
     var base;
@@ -46,6 +47,14 @@
       parser.href = url;
       return parser;
     };
+
+    gl.utils.cleanupBeforeFetch = function() {
+      // Unbind scroll events
+      $(document).off('scroll');
+      // Close any open tooltips
+      $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+    };
+
     return jQuery.timefor = function(time, suffix, expiredLabel) {
       var suffixFromNow, timefor;
       if (!time) {

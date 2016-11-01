@@ -538,53 +538,47 @@ describe SystemNoteService, services: true do
   include JiraServiceHelper
 
   describe 'JIRA integration' do
-    let(:project)    { create(:jira_project) }
-    let(:author)     { create(:user) }
-    let(:issue)      { create(:issue, project: project) }
-    let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
-    let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
-    let(:jira_tracker) { project.jira_service }
-    let(:commit)     { project.repository.commits('master').find { |commit| commit.id == '5937ac0a7beb003549fc5fd26fc247adbce4a52e' } }
+    let(:project)         { create(:jira_project) }
+    let(:author)          { create(:user) }
+    let(:issue)           { create(:issue, project: project) }
+    let(:mergereq)        { create(:merge_request, :simple, target_project: project, source_project: project) }
+    let(:jira_issue)      { ExternalIssue.new("JIRA-1", project)}
+    let(:jira_tracker)    { project.jira_service }
+    let(:commit)          { project.commit }
+    let(:comment_url)     { jira_api_comment_url(jira_issue.id) }
+    let(:success_message) { "JiraService SUCCESS: Successfully posted to http://jira.example.net." }
+
+    before { stub_jira_urls(jira_issue.id) }
 
     context 'in JIRA issue tracker' do
-      before do
-        jira_service_settings
-        WebMock.stub_request(:post, jira_api_comment_url)
-      end
+      before { jira_service_settings }
 
       describe "new reference" do
-        before do
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        end
-
         subject { described_class.cross_reference(jira_issue, commit, author) }
 
-        it { is_expected.to eq(jira_status_message) }
-      end
-
-      describe "existing reference" do
-        before do
-          message = %Q{[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\\n'#{commit.title}'}
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: %Q({"comments":[{"body":"#{message}"}]}))
-        end
-
-        subject { described_class.cross_reference(jira_issue, commit, author) }
-        it { is_expected.not_to eq(jira_status_message) }
+        it { is_expected.to eq(success_message) }
       end
     end
 
     context 'issue from an issue' do
       context 'in JIRA issue tracker' do
-        before do
-          jira_service_settings
-          WebMock.stub_request(:post, jira_api_comment_url)
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        end
+        before { jira_service_settings }
 
         subject { described_class.cross_reference(jira_issue, issue, author) }
 
-        it { is_expected.to eq(jira_status_message) }
+        it { is_expected.to eq(success_message) }
       end
+    end
+
+    describe "existing reference" do
+      before do
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title}'"
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
+      end
+
+      subject { described_class.cross_reference(jira_issue, commit, author) }
+
+      it { is_expected.not_to eq(success_message) }
     end
   end
 

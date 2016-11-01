@@ -18,7 +18,7 @@ module ServiceParams
                     :add_pusher, :send_from_committer_email, :disable_diffs,
                     :external_wiki_url, :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
-                    :jira_issue_transition_id,
+                    :jira_issue_transition_id, :url, :project_key,
 
                     ## EE Specific
                     :multiproject_enabled, :pass_unstable,
