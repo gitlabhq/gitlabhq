@@ -155,10 +155,10 @@ module LabelsHelper
     end
   end
 
-  def label_subscription_toggle_button_text(label)
+  def label_subscription_toggle_button_text(label, project)
     case label
     when GroupLabel then 'Subscribing to group labels is currently not supported.'
-    when ProjectLabel then label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
+    when ProjectLabel then label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
     end
   end
 
