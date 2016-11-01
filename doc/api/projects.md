@@ -1139,7 +1139,7 @@ Parameters:
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
-| `token` | string | no | Secret token to validate received payloads |
+| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
 ### Edit project hook
 
@@ -1165,7 +1165,7 @@ Parameters:
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
-| `token` | string | no | Secret token to validate received payloads |
+| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
 ### Delete project hook
 

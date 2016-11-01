@@ -36,7 +36,6 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['wiki_page_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
-        expect(json_response.first['token']).to eq('S3cr3t')
       end
     end
 
@@ -63,7 +62,6 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
-        expect(json_response['token']).to eq(hook.token)
       end
 
       it "returns a 404 error if hook id is not available" do
@@ -90,6 +88,7 @@ describe API::API, 'ProjectHooks', api: true do
       expect do
         post api("/projects/#{project.id}/hooks", user), url: "http://example.com", issues_events: true
       end.to change {project.hooks.count}.by(1)
+
       expect(response).to have_http_status(201)
       expect(json_response['url']).to eq('http://example.com')
       expect(json_response['issues_events']).to eq(true)
@@ -101,7 +100,24 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(false)
       expect(json_response['enable_ssl_verification']).to eq(true)
-      expect(json_response['token']).to eq('S3cr3t')
+      expect(json_response).not_to include('token')
+    end
+
+    it "adds the token without including it in the response" do
+      token = "secret token"
+
+      expect do
+        post api("/projects/#{project.id}/hooks", user), url: "http://example.com", token: token
+      end.to change {project.hooks.count}.by(1)
+
+      expect(response).to have_http_status(201)
+      expect(json_response["url"]).to eq("http://example.com")
+      expect(json_response).not_to include("token")
+
+      hook = project.hooks.find(json_response["id"])
+
+      expect(hook.url).to eq("http://example.com")
+      expect(hook.token).to eq(token)
     end
 
     it "returns a 400 error if url not given" do
@@ -130,7 +146,19 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
-      expect(json_response['token']).to eq(hook.token)
+    end
+
+    it "adds the token without including it in the response" do
+      token = "secret token"
+
+      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: "http://example.org", token: token
+
+      expect(response).to have_http_status(200)
+      expect(json_response["url"]).to eq("http://example.org")
+      expect(json_response).not_to include("token")
+
+      expect(hook.reload.url).to eq("http://example.org")
+      expect(hook.reload.token).to eq(token)
     end
 
     it "returns 404 error if hook id not found" do
