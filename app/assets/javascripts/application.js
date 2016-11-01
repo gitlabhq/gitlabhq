@@ -188,6 +188,7 @@
     // Close select2 on escape
     });
     // Initialize tooltips
+    $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
       placement: function(_, el) {
