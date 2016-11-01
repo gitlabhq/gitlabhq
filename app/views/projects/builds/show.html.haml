@@ -26,6 +26,13 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
+    - if @build.stage == 'deploy'
+      .prepend-top-default
+        .environment-information
+          = ci_icon_for_status(@build.status)
+          This build is the most recent deployment to
+          = link_to @build.environment, namespace_project_environment_path(@project.namespace, @project, @build.environment)
+
     .prepend-top-default
       - if @build.erased?
         .erased.alert.alert-warning
