@@ -61,8 +61,10 @@
             <div class="icon-container">
               <i class="fa fa-code-fork"></i>
               </div>
-              <!-- I need to know which branch things are comming from -->
-              <a class="monospace branch-name" href="/gitlab-org/gitlab-ce/commits/master">master</a>
+              <!--
+                I need to know which branch things are comming from
+              -->
+              <a class="monospace branch-name" href="./commits/master">master</a>
               <div class="icon-container commit-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
                 <path fill="#8F8F8F" fill-rule="evenodd" d="M28.7769836,18 C27.8675252,13.9920226 24.2831748,11 20,11 C15.7168252,11 12.1324748,13.9920226 11.2230164,18 L4.0085302,18 C2.90195036,18 2,18.8954305 2,20 C2,21.1122704 2.8992496,22 4.0085302,22 L11.2230164,22 C12.1324748,26.0079774 15.7168252,29 20,29 C24.2831748,29 27.8675252,26.0079774 28.7769836,22 L35.9914698,22 C37.0980496,22 38,21.1045695 38,20 C38,18.8877296 37.1007504,18 35.9914698,18 L28.7769836,18 L28.7769836,18 Z M20,25 C22.7614237,25 25,22.7614237 25,20 C25,17.2385763 22.7614237,15 20,15 C17.2385763,15 15,17.2385763 15,20 C15,22.7614237 17.2385763,25 20,25 L20,25 Z"></path>
@@ -76,6 +78,12 @@
               <a
                 href="mailto:james@jameslopez.es"
               >
+                <!--
+                  need Author Name
+                  need Plural Version of Author Name: Rails has this built in
+                  need gravatar HASH for author
+                  need authors email
+                -->
                 <img
                   class="avatar has-tooltip s20 hidden-xs"
                   alt="James Lopez's avatar"
@@ -88,11 +96,30 @@
                 class="commit-row-message"
                 href="./commit/{{pipeline.sha}}"
               >
+                <!--
+                  need commit message/title for SHA
+                -->
                 fix broken repo 500 errors in UI and added relevant specs
               </a>
             </p>
           </td>
           <td class="stage-cell">
+            <!--
+              Need Stages Array:
+                ex: stage status per element as well as build name
+
+                Why I need it:
+                  title="Prepare: failed" href="pipelines#prepare"
+                  title="Notify Build: success" href="pipelines#notify_build"
+                  title="Post Test: failed" href="pipelines#post-test"
+
+                How I would solve it once I have the data:
+                  title="Prepare: {{stage.status}}"
+                  href="pipelines#{{stage.title}}"
+
+              this way I can pass it as a prop to
+                ex: <vue-stages :stages='stages'>
+            -->
             <vue-stages></vue-stages>
           </td>
           <td></td>
@@ -108,7 +135,10 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-align-right">
             <li>
-            <a rel="nofollow" data-method="post" href="/gitlab-org/gitlab-ce/builds/449/play"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
+            <!--
+              Need builds ID
+            -->
+            <a rel="nofollow" data-method="post" href="./builds/449/play"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
               <path fill-rule="evenodd" d="m9.283 6.47l-7.564 4.254c-.949.534-1.719.266-1.719-.576v-9.292c0-.852.756-1.117 1.719-.576l7.564 4.254c.949.534.963 1.392 0 1.934"></path>
               </svg>
             <span>Production</span>
@@ -122,11 +152,14 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-align-right">
             <li>
-            <a rel="nofollow" href="/gitlab-org/gitlab-ce/builds/437/artifacts/download"><i class="fa fa-download"></i>
+            <!--
+              Need builds ID for OSX and LINUX
+            -->
+            <a rel="nofollow" href="./builds/437/artifacts/download"><i class="fa fa-download"></i>
             <span>Download 'build:osx' artifacts</span>
             </a></li>
             <li>
-            <a rel="nofollow" href="/gitlab-org/gitlab-ce/builds/436/artifacts/download"><i class="fa fa-download"></i>
+            <a rel="nofollow" href="./builds/436/artifacts/download"><i class="fa fa-download"></i>
             <span>Download 'build:linux' artifacts</span>
             </a></li>
             </ul>
