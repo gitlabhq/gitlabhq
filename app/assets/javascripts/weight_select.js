@@ -39,7 +39,6 @@
         return $dropdown.glDropdown({
           selectable: true,
           fieldName: $dropdown.data("field-name"),
-          showMenuAbove: $dropdown.is('.js-issuable-form-weight'),
           toggleLabel: function (selected, el) {
             return $(el).data("id");
           },
