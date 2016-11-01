@@ -454,7 +454,7 @@ module API
       end
 
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user])
+        label.subscribed?(options[:current_user], options[:project])
       end
     end
 
