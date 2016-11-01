@@ -7,7 +7,7 @@ describe SentNotificationsController, type: :controller do
 
   let(:issue) do
     create(:issue, project: project, author: user) do |issue|
-      issue.subscriptions.create(user: user, subscribed: true)
+      issue.subscriptions.create(user: user, project: project, subscribed: true)
     end
   end
 
@@ -85,7 +85,7 @@ describe SentNotificationsController, type: :controller do
       context 'when the force param is not passed' do
         let(:merge_request) do
           create(:merge_request, source_project: project, author: user) do |merge_request|
-            merge_request.subscriptions.create(user: user, subscribed: true)
+            merge_request.subscriptions.create(user: user, project: project, subscribed: true)
           end
         end
         let(:sent_notification) { create(:sent_notification, noteable: merge_request, recipient: user) }

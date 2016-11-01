@@ -267,7 +267,7 @@ describe Issuable::BulkUpdateService, services: true do
   describe 'unsubscribe from issues' do
     let(:issues) do
       create_list(:closed_issue, 2, project: project) do |issue|
-        issue.subscriptions.create(user: user, subscribed: true)
+        issue.subscriptions.create(user: user, project: project, subscribed: true)
       end
     end
 
