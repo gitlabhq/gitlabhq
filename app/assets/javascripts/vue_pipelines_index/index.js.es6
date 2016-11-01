@@ -16,7 +16,7 @@
   Vue.use(VueResource);
   // Vue.config.silent = true;
 
-  window.vm = new Vue({
+  return new Vue({
     el: '#vue-pipelines-index',
     data: {
       scope: project.dataset.projectId,
