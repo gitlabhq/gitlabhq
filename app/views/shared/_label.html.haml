@@ -20,8 +20,8 @@
             = pluralize open_issues_count, 'open issue'
         - if current_user
           %li.label-subscription{ data: toggle_subscription_data(label) }
-            %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
               %span= label_subscription_toggle_button_text(label)
+            %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label, @project) } }
         - if can?(current_user, :admin_label, label)
           %li
             = link_to 'Edit', edit_label_path(label)
@@ -36,8 +36,8 @@
 
     - if current_user
       .label-subscription.inline{ data: toggle_subscription_data(label) }
-        %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label), data: { toggle: "tooltip", status: label_subscription_status(label) } }
           %span.sr-only= label_subscription_toggle_button_text(label)
+        %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label, @project), data: { toggle: "tooltip", status: label_subscription_status(label, @project) } }
           = icon('eye', class: 'label-subscribe-button-icon', disabled: label.is_a?(GroupLabel))
           = icon('spinner spin', class: 'label-subscribe-button-loading')
 

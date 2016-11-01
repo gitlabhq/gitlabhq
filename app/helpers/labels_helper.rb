@@ -148,10 +148,10 @@ module LabelsHelper
     end
   end
 
-  def label_subscription_status(label)
+  def label_subscription_status(label, project)
     case label
     when GroupLabel then 'Subscribing to group labels is currently not supported.'
-    when ProjectLabel then label.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+    when ProjectLabel then label.subscribed?(current_user, project) ? 'subscribed' : 'unsubscribed'
     end
   end
 
