@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - gitlab:check rake task checks ES version according to requirements
 - Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
+- [Fix] Only owner can see "Projects" button in group edit menu
 
 ## 8.13.2 (2016-10-31)
 
