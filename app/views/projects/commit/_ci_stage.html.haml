@@ -10,6 +10,6 @@
         = stage.titleize
   = render statuses.latest_ci_stages, coverage: @project.build_coverage_enabled?, stage: false, ref: false, allow_retry: true
   = render statuses.retried_ci_stages, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
-  %tr
-    %td{colspan: 10}
-      &nbsp;
+%tr
+  %td{colspan: 10}
+    &nbsp;
