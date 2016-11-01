@@ -11,7 +11,7 @@
   .gap,
   .gap:hover {
     background-color: $gray-light;
-    padding: 6px;
+    padding: $gl-vert-padding;
     cursor: default;
   }
 }
