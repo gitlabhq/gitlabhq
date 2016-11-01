@@ -9,6 +9,14 @@ describe Banzai::ReferenceParser::SnippetParser, lib: true do
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }
 
+  describe '#nodes_visible_to_user' do
+    context 'when the link has a data-issue attribute' do
+      before { link['data-snippet'] = snippet.id.to_s }
+
+      it_behaves_like "referenced feature visibility", "snippets"
+    end
+  end
+
   describe '#referenced_by' do
     describe 'when the link has a data-snippet attribute' do
       context 'using an existing snippet ID' do

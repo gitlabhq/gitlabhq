@@ -22,6 +22,7 @@ feature 'Start new branch from an issue', feature: true do
         create(:note, :on_issue, :system, project: project,
                                           note: "Mentioned in !#{referenced_mr.iid}")
       end
+
       let(:referenced_mr) do
         create(:merge_request, :simple, source_project: project, target_project: project,
                                         description: "Fixes ##{issue.iid}", author: user)
