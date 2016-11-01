@@ -26,14 +26,14 @@ module Gitlab
 
       def verify_version!(version)
         if different_version?(version)
-          raise Gitlab::ImportExport::Error.new("Import version mismatch: Required #{Gitlab::ImportExport.version} but was #{version}")
+          raise Gitlab::ImportExport::Error.new("Import version mismatch: Required <= #{Gitlab::ImportExport.version} but was #{version}")
         else
           true
         end
       end
 
       def different_version?(version)
-        Gem::Version.new(version) != Gem::Version.new(Gitlab::ImportExport.version)
+        Gem::Version.new(version) > Gem::Version.new(Gitlab::ImportExport.version)
       rescue => e
         Rails.logger.error("Import/Export error: #{e.message}")
         raise Gitlab::ImportExport::Error.new('Incorrect VERSION format')
