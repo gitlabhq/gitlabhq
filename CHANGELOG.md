@@ -18,6 +18,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Hides project activity tabs when features are disabled
 - Only show one error message for an invalid email !5905 (lycoperdon)
 - Fix sidekiq stats in admin area (blackst0ne)
+- Added label description as tooltip to issue board list title
 - Created cycle analytics bundle JavaScript file
 - API: Fix booleans not recognized as such when using the `to_boolean` helper
 - Removed delete branch tooltip !6954
