@@ -1,69 +1,70 @@
 - page_title "Todos"
 - header_title "Todos", dashboard_todos_path
 
-.top-area
-  %ul.nav-links
-    - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
-    %li{class: "todos-pending #{todo_pending_active}"}
-      = link_to todos_filter_path(state: 'pending') do
-        %span
-          To do
-        %span.badge
-          = number_with_delimiter(todos_pending_count)
-    - todo_done_active = ('active' if params[:state] == 'done')
-    %li{class: "todos-done #{todo_done_active}"}
-      = link_to todos_filter_path(state: 'done') do
-        %span
-          Done
-        %span.badge
-          = number_with_delimiter(todos_done_count)
+- if current_user.todos.any?
+  .top-area
+    %ul.nav-links
+      - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
+      %li{class: "todos-pending #{todo_pending_active}"}
+        = link_to todos_filter_path(state: 'pending') do
+          %span
+            To do
+          %span.badge
+            = number_with_delimiter(todos_pending_count)
+      - todo_done_active = ('active' if params[:state] == 'done')
+      %li{class: "todos-done #{todo_done_active}"}
+        = link_to todos_filter_path(state: 'done') do
+          %span
+            Done
+          %span.badge
+            = number_with_delimiter(todos_done_count)
 
-  .nav-controls
-    - if @todos.any?(&:pending?)
-      = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete do
-        Mark all as done
-        = icon('spinner spin')
+    .nav-controls
+      - if @todos.any?(&:pending?)
+        = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete do
+          Mark all as done
+          = icon('spinner spin')
 
-.todos-filters
-  .row-content-block.second-block
-    = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
-      .filter-item.inline
-        - if params[:project_id].present?
-          = hidden_field_tag(:project_id, params[:project_id])
-        = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit', title: 'Filter by project', filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-          placeholder: 'Search projects', data: { data: todo_projects_options } })
-      .filter-item.inline
-        - if params[:author_id].present?
-          = hidden_field_tag(:author_id, params[:author_id])
-        = dropdown_tag(user_dropdown_label(params[:author_id], 'Author'), options: { toggle_class: 'js-user-search js-filter-submit js-author-search', title: 'Filter by author', filter: true, filterInput: 'input#author-search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit',
-          placeholder: 'Search authors', data: { any_user: 'Any Author', first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: 'Author' } })
-      .filter-item.inline
-        - if params[:type].present?
-          = hidden_field_tag(:type, params[:type])
-        = dropdown_tag(todo_types_dropdown_label(params[:type], 'Type'), options: { toggle_class: 'js-type-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
-          data: { data: todo_types_options } })
-      .filter-item.inline.actions-filter
-        - if params[:action_id].present?
-          = hidden_field_tag(:action_id, params[:action_id])
-        = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
-          data: { data: todo_actions_options }})
-      .pull-right
-        .dropdown.inline.prepend-left-10
-          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-            %span.light
-            - if @sort.present?
-              = sort_options_hash[@sort]
-            - else
-              = sort_title_recently_created
-            = icon('caret-down')
-          %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
-            %li
-              = link_to todos_filter_path(sort: sort_value_priority) do
-                = sort_title_priority
-              = link_to todos_filter_path(sort: sort_value_recently_created) do
+  .todos-filters
+    .row-content-block.second-block
+      = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
+        .filter-item.inline
+          - if params[:project_id].present?
+            = hidden_field_tag(:project_id, params[:project_id])
+          = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit', title: 'Filter by project', filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
+            placeholder: 'Search projects', data: { data: todo_projects_options } })
+        .filter-item.inline
+          - if params[:author_id].present?
+            = hidden_field_tag(:author_id, params[:author_id])
+          = dropdown_tag(user_dropdown_label(params[:author_id], 'Author'), options: { toggle_class: 'js-user-search js-filter-submit js-author-search', title: 'Filter by author', filter: true, filterInput: 'input#author-search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit',
+            placeholder: 'Search authors', data: { any_user: 'Any Author', first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: 'Author' } })
+        .filter-item.inline
+          - if params[:type].present?
+            = hidden_field_tag(:type, params[:type])
+          = dropdown_tag(todo_types_dropdown_label(params[:type], 'Type'), options: { toggle_class: 'js-type-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
+            data: { data: todo_types_options } })
+        .filter-item.inline.actions-filter
+          - if params[:action_id].present?
+            = hidden_field_tag(:action_id, params[:action_id])
+          = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
+            data: { data: todo_actions_options }})
+        .pull-right
+          .dropdown.inline.prepend-left-10
+            %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+              %span.light
+              - if @sort.present?
+                = sort_options_hash[@sort]
+              - else
                 = sort_title_recently_created
-              = link_to todos_filter_path(sort: sort_value_oldest_created) do
-                = sort_title_oldest_created
+              = icon('caret-down')
+            %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
+              %li
+                = link_to todos_filter_path(sort: sort_value_priority) do
+                  = sort_title_priority
+                = link_to todos_filter_path(sort: sort_value_recently_created) do
+                  = sort_title_recently_created
+                = link_to todos_filter_path(sort: sort_value_oldest_created) do
+                  = sort_title_oldest_created
 
 
 .prepend-top-default
@@ -78,5 +79,29 @@
         %ul.content-list.todos-list
           = render group[1]
     = paginate @todos, theme: "gitlab"
+  - elsif current_user.todos.any?
+    .todos-all-done
+      = render "shared/empty_states/todos_all_done.svg"
+      %h4.text-center
+        Good job! Looks like you don't have any todos left.
+      %p.text-center
+        Are you looking for things to do? Take a look at
+        = succeed "," do
+          = link_to "the opened issues", issues_dashboard_path
+        contribute to
+        = link_to "merge requests", merge_requests_dashboard_path
+        or mention someone in a comment to assign a new todo automatically.
   - else
-    .nothing-here-block You're all done!
+    .todos-empty
+      .todos-empty-hero
+        = render "shared/empty_states/todos_empty.svg"
+      .todos-empty-content
+        %h4
+          Todos let you see what you should do next.
+        %p
+          When an issue or merge request is assigned to you, or when you
+          %strong
+            @mention
+          in a comment, this will trigger a new item in your todo list, automatically.
+        %p
+          You will always know what to work on next.

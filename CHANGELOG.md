@@ -12,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
 - Refactor Jira service to use jira-ruby gem
+- Improved todos empty state
 - Add hover to trash icon in notes !7008 (blackst0ne)
 - Only show one error message for an invalid email !5905 (lycoperdon)
 - Fix sidekiq stats in admin area (blackst0ne)
