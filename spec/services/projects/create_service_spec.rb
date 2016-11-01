@@ -69,7 +69,7 @@ describe Projects::CreateService, services: true do
 
       context 'wiki_enabled false does not create wiki repository directory' do
         before do
-          @opts.merge!( { project_feature_attributes: { wiki_access_level: ProjectFeature::DISABLED } })
+          @opts.merge!(wiki_enabled: false)
           @project = create_project(@user, @opts)
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end

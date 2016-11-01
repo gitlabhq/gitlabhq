@@ -31,7 +31,7 @@ module ProjectFeaturesCompatibility
   def write_feature_attribute(field, value)
     build_project_feature unless project_feature
 
-    access_level = value == "true" ? ProjectFeature::ENABLED : ProjectFeature::DISABLED
+    access_level = Gitlab::Utils.to_boolean(value) ? ProjectFeature::ENABLED : ProjectFeature::DISABLED
     project_feature.update_attribute(field, access_level)
   end
 end
