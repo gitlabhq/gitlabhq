@@ -217,14 +217,6 @@ class ProjectPolicy < BasePolicy
     unless project.container_registry_enabled
       cannot!(*named_abilities(:container_image))
     end
-
-    # EE-only
-    if defined?(License) && License.block_changes?
-      cannot! :create_issue
-      cannot! :create_merge_request
-      cannot! :push_code
-      cannot! :push_code_to_protected_branches
-    end
   end
 
   def anonymous_rules
@@ -271,4 +263,19 @@ class ProjectPolicy < BasePolicy
       :"admin_#{name}"
     ]
   end
+
+  # EE-specific
+  module EeDisabledFeaturePermissions
+    def disabled_features!
+      super
+
+      if License.block_changes?
+        cannot! :create_issue
+        cannot! :create_merge_request
+        cannot! :push_code
+        cannot! :push_code_to_protected_branches
+      end
+    end
+  end
+  prepend EeDisabledFeaturePermissions
 end
