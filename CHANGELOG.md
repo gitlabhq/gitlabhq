@@ -41,6 +41,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
 - Show full status link on MR & commit pipelines
 - Fix documents and comments on Build API `scope`
+- Initialize Sidekiq with the list of queues used by GitLab
 - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 - Shortened merge request modal to let clipboard button not overlap
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
