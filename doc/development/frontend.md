@@ -227,14 +227,15 @@ class MyThing {
 gl.MyThing = new MyThing();
 
 // best
+
 let singleton;
 
 class MyThing {
   constructor() {
     if (!singleton) {
-       singleton = this;
-       singleton.init();
-     }
+      singleton = this;
+      singleton.init();
+    }
       return singleton;
   }
 
@@ -246,6 +247,7 @@ class MyThing {
 }
 
 gl.MyThing = MyThing;
+
 ```
 
 ## Supported browsers
