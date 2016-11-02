@@ -5,6 +5,7 @@
   gl.VuePipelineActions = Vue.extend({
     // props: ['builds'],
     template: `
+      <td class="pipeline-actions hidden-xs">
         <div class="controls pull-right">
           <div class="btn-group inline">
             <div class="btn-group">
@@ -71,6 +72,7 @@
             </a>
           </div>
         </div>
+      </td>
     `,
   });
 })(window.gl || (window.gl = {}));

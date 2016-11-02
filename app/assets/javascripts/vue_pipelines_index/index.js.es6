@@ -4,6 +4,8 @@
 //= require vue-resource
 
 //= require ./store.js.es6
+//= require ./pipeline_url.vue.js.es6
+//= require ./pipeline_head.vue.js.es6
 //= require ./running_icon.vue.js.es6
 //= require ./running.vue.js.es6
 //= require ./stages.vue.js.es6
