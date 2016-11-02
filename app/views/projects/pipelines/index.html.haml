@@ -36,14 +36,12 @@
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
 
-  %div.content-list.pipelines
+  %div.content-list.pipelines{"data-project-id": "#{@project.id}"}
     - stages = @pipelines.stages
     - if @pipelines.blank?
       %div
         .nothing-here-block No pipelines to show
     - else
-      .table-holder{"data-project-id": "#{@project.id}"}
-        %table.table.ci-table
-          %tbody#vue-pipelines-index
+      .vue-pipelines-index
 
 = page_specific_javascript_tag('vue_pipelines_index/index.js')

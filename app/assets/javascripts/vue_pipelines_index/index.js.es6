@@ -11,13 +11,13 @@
 //= require ./pipelines.vue.js.es6
 
 (() => {
-  const project = document.querySelector('.table-holder');
+  const project = document.querySelector('.pipelines');
 
   Vue.use(VueResource);
   // Vue.config.silent = true;
 
   return new Vue({
-    el: '#vue-pipelines-index',
+    el: '.vue-pipelines-index',
     data: {
       scope: project.dataset.projectId,
       store: new gl.PipelineStore(),
@@ -26,7 +26,9 @@
       'vue-pipelines': gl.VuePipeLines,
     },
     template: `
-      <vue-pipelines :scope='scope' :store='store'></vue-pipelines>
+      <div>
+        <vue-pipelines :scope='scope' :store='store'></vue-pipelines>
+      </div>
     `,
   });
 })();
