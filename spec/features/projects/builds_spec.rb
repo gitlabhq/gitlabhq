@@ -216,7 +216,9 @@ describe "Builds" do
         @build.run!
         visit namespace_project_build_path(@project.namespace, @project, @build)
         click_link 'Cancel'
-        click_link 'Retry'
+        page.within('.build-header') do
+          click_link 'Retry build'
+        end
       end
 
       it 'shows the right status and buttons' do
