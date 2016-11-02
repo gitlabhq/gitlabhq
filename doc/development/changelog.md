@@ -36,7 +36,7 @@ automatically.
 Its simplest usage is to provide the value for `title`:
 
 ```text
-$ bin/changelog Hey DZ, I added a feature to GitLab!
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!'
 create changelogs/unreleased/my-feature.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
@@ -85,7 +85,7 @@ Use the **`--merge-request`** or **`-m`** argument to provide the
 `merge_request` value:
 
 ```text
-$ bin/changelog Hey DZ, I added a feature to GitLab! -m 1983
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -m 1983
 create changelogs/unreleased/feature-hey-dz.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
@@ -118,7 +118,7 @@ Use the **`--git-username`** or **`-u`** argument to automatically fill in the
 $ git config user.name
 Jane Doe
 
-$ bin/changelog --u Hey DZ, I added a feature to GitLab!
+$ bin/changelog --u 'Hey DZ, I added a feature to GitLab!'
 create changelogs/unreleased/feature-hey-dz.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
