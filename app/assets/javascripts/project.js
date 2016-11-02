@@ -54,6 +54,11 @@
     };
 
     Project.prototype.initRefSwitcher = function() {
+      var refListItem = document.createElement('li'),
+          refLink = document.createElement('a');
+
+      refLink.href = '#';
+
       return $('.js-project-refs-dropdown').each(function() {
         var $dropdown, selected;
         $dropdown = $(this);
@@ -77,21 +82,24 @@
           filterByText: true,
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
-            var li = document.createElement('li');
+            var li = refListItem.cloneNode(false);
 
             if (ref.header != null) {
               li.className = 'dropdown-header';
               li.textContent = ref.header;
             } else {
-              var link = document.createElement('a');
-              link.href = '#';
-              link.className = ref.name === selected ? 'is-active' : '';
+              var link = refLink.cloneNode(false);
+
+              if (ref.name === selected) {
+                link.className = 'is-active';
+              }
+
               link.textContent = ref.name;
               link.dataset.ref = ref.name;
 
               li.appendChild(link);
             }
-            
+
             return li;
           },
           id: function(obj, $el) {
