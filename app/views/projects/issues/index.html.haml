@@ -23,7 +23,6 @@
             = icon('rss')
             %span.icon-label
               Subscribe
-        = render 'shared/issuable/search_form', path: namespace_project_issues_path(@project.namespace, @project)
         - if can? current_user, :create_issue, @project
           = link_to new_namespace_project_issue_path(@project.namespace,
                                                      @project,
