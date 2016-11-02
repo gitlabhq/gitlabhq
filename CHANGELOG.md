@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Honour issue and merge request visibility in their respective finders.
 - Disable reference Markdown for unavailable features.
+- Allow owners to fetch source code in CI builds.
 
 ## 8.13.3 (2016-11-02)
 
