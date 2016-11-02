@@ -4,7 +4,7 @@
 
 **Valid notification levels**
 
-The notification levels are defined in the `NotificationSetting::level` model enumeration. Currently, these levels are recognized:
+The notification levels are defined in the `NotificationSetting.level` model enumeration. Currently, these levels are recognized:
 
 ```
 disabled
@@ -28,6 +28,8 @@ reopen_merge_request
 close_merge_request
 reassign_merge_request
 merge_merge_request
+failed_pipeline
+success_pipeline
 ```
 
 ## Global notification settings
