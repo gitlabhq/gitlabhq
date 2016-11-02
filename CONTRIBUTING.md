@@ -19,7 +19,6 @@
         - [Technical debt](#technical-debt)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
-        - [Merge request description format](#merge-request-description-format)
         - [Contribution acceptance criteria](#contribution-acceptance-criteria)
     - [Changes for Stable Releases](#changes-for-stable-releases)
     - [Definition of done](#definition-of-done)
@@ -262,8 +261,11 @@ request is as follows:
 1. Submit a merge request (MR) to the `master` branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
-   used to achieve it, see the [merge request description format]
-   (#merge-request-description-format)
+   used to achieve it.
+  1. If you are contributing code, fill in the template already provided in the
+     "Description" field.
+  1. If you are contributing documentation, choose `Documentation` from the
+     "Choose a template" menu and fill in the template.
 1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
