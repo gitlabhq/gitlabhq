@@ -13,6 +13,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Refactor Jira service to use jira-ruby gem
 - Improved todos empty state
 - Add hover to trash icon in notes !7008 (blackst0ne)
