@@ -419,7 +419,11 @@ class Project < ActiveRecord::Base
 
     def reference_pattern
       name_pattern = Gitlab::Regex::NAMESPACE_REGEX_STR
-      %r{(?<project>#{name_pattern}/#{name_pattern})}
+
+      %r{
+        ((?<namespace>#{name_pattern})\/)?
+        (?<project>#{name_pattern})
+      }x
     end
 
     def trending
@@ -650,8 +654,20 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(_from_project = nil)
-    path_with_namespace
+  def to_reference(from_project = nil)
+    if cross_namespace_reference?(from_project)
+      path_with_namespace
+    elsif cross_project_reference?(from_project)
+      path
+    end
+  end
+
+  def to_human_reference(from_project = nil)
+    if cross_namespace_reference?(from_project)
+      name_with_namespace
+    elsif cross_project_reference?(from_project)
+      name
+    end
   end
 
   def web_url
@@ -1327,8 +1343,19 @@ class Project < ActiveRecord::Base
 
   private
 
+  # Check if a reference is being done cross-project
+  #
+  # from_project - Refering Project object
+  def cross_project_reference?(from_project)
+    from_project && self != from_project
+  end
+
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
+  end
+
+  def cross_namespace_reference?(from_project)
+    from_project && namespace != from_project.namespace
   end
 
   def default_branch_protected?

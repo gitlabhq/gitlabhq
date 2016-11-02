@@ -5,7 +5,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
 
   describe '#references_per_project' do
     it 'returns a Hash containing references grouped per project paths' do
-      doc = Nokogiri::HTML.fragment("#1 #{project.to_reference}#2")
+      doc = Nokogiri::HTML.fragment("#1 #{project.path_with_namespace}#2")
       filter = described_class.new(doc, project: project)
 
       expect(filter).to receive(:object_class).exactly(4).times.and_return(Issue)
@@ -14,7 +14,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
       refs = filter.references_per_project
 
       expect(refs).to be_an_instance_of(Hash)
-      expect(refs[project.to_reference]).to eq(Set.new(%w[1 2]))
+      expect(refs[project.path_with_namespace]).to eq(Set.new(%w[1 2]))
     end
   end
 

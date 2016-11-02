@@ -7,7 +7,7 @@ describe LabelsHelper do
 
     context 'without subject' do
       it "uses the label's project" do
-        expect(link_to_label(label)).to match %r{<a href="/#{label.project.to_reference}/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+        expect(link_to_label(label)).to match %r{<a href="/#{label.project.path_with_namespace}/issues\?label_name%5B%5D=#{label.name}">.*</a>}
       end
     end
 
@@ -32,7 +32,7 @@ describe LabelsHelper do
       ['issue', :issue, 'merge_request', :merge_request].each do |type|
         context "set to #{type}" do
           it 'links to correct page' do
-            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.to_reference}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
+            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.path_with_namespace}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
           end
         end
       end
