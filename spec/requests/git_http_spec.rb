@@ -115,6 +115,38 @@ describe 'Git HTTP requests', lib: true do
             end.to raise_error(JWT::DecodeError)
           end
         end
+
+        context 'when the repo is public' do
+          context 'but the repo is disabled' do
+            it 'does not allow to clone the repo' do
+              project = create(:project, :public, repository_access_level: ProjectFeature::DISABLED)
+
+              download("#{project.path_with_namespace}.git", {}) do |response|
+                expect(response).to have_http_status(:unauthorized)
+              end
+            end
+          end
+
+          context 'but the repo is enabled' do
+            it 'allows to clone the repo' do
+              project = create(:project, :public, repository_access_level: ProjectFeature::ENABLED)
+
+              download("#{project.path_with_namespace}.git", {}) do |response|
+                expect(response).to have_http_status(:ok)
+              end
+            end
+          end
+
+          context 'but only project members are allowed' do
+            it 'does not allow to clone the repo' do
+              project = create(:project, :public, repository_access_level: ProjectFeature::PRIVATE)
+
+              download("#{project.path_with_namespace}.git", {}) do |response|
+                expect(response).to have_http_status(:unauthorized)
+              end
+            end
+          end
+        end
       end
 
       context "when the project is private" do

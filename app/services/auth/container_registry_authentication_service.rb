@@ -76,7 +76,7 @@ module Auth
 
       case requested_action
       when 'pull'
-        requested_project.public? || build_can_pull?(requested_project) || user_can_pull?(requested_project)
+        build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
       else
