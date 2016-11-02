@@ -17,6 +17,10 @@ module Gitlab
             end
           end
 
+          def add_error(attribute, message)
+            errors.add(attribute, message)
+          end
+
           def self.name
             'Validator'
           end
