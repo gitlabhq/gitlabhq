@@ -168,7 +168,7 @@ module Banzai
     end
 
     def update_object(object, html_field, html)
-      object.update_column(html_field, html)
+      object.update_column(html_field, html) unless Gitlab::Geo.secondary?
     end
   end
 end
