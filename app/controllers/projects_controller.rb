@@ -270,12 +270,12 @@ class ProjectsController < Projects::ApplicationController
     branches = BranchesFinder.new(@repository, params).execute
 
     options = {
-      'Branches' => Kaminari.paginate_array(branches).page(params[:page]).per(100),
+      'Branches' => branches.take(100),
     }
 
     unless @repository.tag_count.zero?
       tags = TagsFinder.new(@repository, params).execute
-      options['Tags'] = Kaminari.paginate_array(tags).page(params[:page]).per(100)
+      options['Tags'] = tags.take(100)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
