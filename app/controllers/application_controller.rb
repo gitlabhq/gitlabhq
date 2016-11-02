@@ -232,12 +232,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def require_ldap_enabled
-    unless Gitlab.config.ldap.enabled
-      render_404 and return
-    end
-  end
-
   def set_filters_params
     set_default_sort
 
