@@ -59,6 +59,8 @@ module Gitlab
             end
           end
         end
+
+        ensure_labels_are_cached
       end
 
       def import_milestones
@@ -231,6 +233,14 @@ module Gitlab
               errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
+        end
+      end
+
+      def ensure_labels_are_cached
+        return unless @labels.empty?
+
+        project.labels.select(:id, :title).find_each do |label|
+          @labels[label.title] = label.id
         end
       end
 
