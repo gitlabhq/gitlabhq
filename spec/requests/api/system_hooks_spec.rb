@@ -48,6 +48,7 @@ describe API::API, api: true  do
 
     it "responds with 400 if url not given" do
       post api("/hooks", admin)
+
       expect(response).to have_http_status(400)
     end
 
@@ -57,7 +58,7 @@ describe API::API, api: true  do
       end.not_to change { SystemHook.count }
     end
 
-    it 'allows the events to be selected' do
+    it 'sets default values for events' do
       post api('/hooks', admin), url: 'http://mep.mep', enable_ssl_verification: true
 
       expect(response).to have_http_status(201)
