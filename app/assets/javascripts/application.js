@@ -51,6 +51,7 @@
 /*= require_directory ./extensions */
 /*= require_directory ./lib/utils */
 /*= require_directory ./u2f */
+/*= require_directory ./droplab */
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
 
