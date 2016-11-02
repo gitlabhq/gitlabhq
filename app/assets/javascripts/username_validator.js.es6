@@ -25,6 +25,7 @@
 
       this.inputElement.on('keyup.username_check', () => {
         const username = this.inputElement.val();
+
         this.state.valid = this.inputDomElement.validity.valid;
         this.state.empty = !username.length;
 
