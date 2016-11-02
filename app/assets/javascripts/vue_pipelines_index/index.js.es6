@@ -8,6 +8,7 @@
 //= require ./running.vue.js.es6
 //= require ./stages.vue.js.es6
 //= require ./pipeline_actions.vue.js.es6
+//= require ./branch_commit.vue.js.es6
 //= require ./pipelines.vue.js.es6
 
 (() => {
