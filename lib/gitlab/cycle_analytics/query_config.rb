@@ -50,7 +50,7 @@ module Gitlab
       def test
         { start_time_attrs: mr_metrics_table[:latest_build_started_at],
           end_time_attrs: mr_metrics_table[:latest_build_finished_at],
-          projections: mr_metrics_table[:ci_commit_id],
+          projections: [mr_metrics_table[:ci_commit_id]],
           order: mr_table[:created_at]
         }
       end
@@ -68,7 +68,7 @@ module Gitlab
       def staging
         { start_time_attrs: mr_metrics_table[:merged_at],
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
-          projections: mr_metrics_table[:ci_commit_id]
+          projections: [mr_metrics_table[:ci_commit_id]]
         }
       end
 

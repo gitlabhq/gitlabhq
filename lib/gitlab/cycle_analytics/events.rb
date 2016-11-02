@@ -9,8 +9,6 @@ module Gitlab
         @fetcher = EventsFetcher.new(project: project, from: from)
       end
 
-      # TODO: backend pagination - specially for commits, etc...
-
       def issue_events
         @fetcher.fetch(stage: :issue).each { |event| parse_event(event) }
       end
