@@ -39,15 +39,33 @@
     }
 
     checkTokens(event) {
-      const text = event.target.value.toLowerCase();
+      const value = event.target.value;
+
+      const split = value.toLowerCase().split(' ');
+      const text = split.length === 1 ? split[0] : split[split.length - 1];
       const hasColon = text[text.length - 1] === ':';
+      const token = text.slice(0, -1);
 
-      if (hasColon && TOKEN_KEYS.indexOf(text.slice(0, -1)) != -1) {
-        event.target.value = '';
+      if (hasColon && TOKEN_KEYS.indexOf(token) != -1) {
+        // One for the colon and one for the space before it
+        const textWithoutToken = value.substring(0, value.length - token.length - 2)
+        this.addTextToken(textWithoutToken, event.target);
 
-        const tokenKey = text.charAt(0).toUpperCase() + text.slice(1, -1);
+        const tokenKey = token.charAt(0).toUpperCase() + token.slice(1);
         this.addToken(tokenKey, event.target);
+
+        event.target.value = '';
       }
+    }
+
+    addTextToken(text, inputNode) {
+      const listItem = inputNode.parentNode;
+      const fragmentList = listItem.parentNode;
+
+      let fragmentToken = document.createElement('li');
+      fragmentToken.innerHTML = `<span>${text}</span>`
+
+      fragmentList.insertBefore(fragmentToken, listItem);
     }
 
     addToken(key, inputNode) {
@@ -56,12 +74,8 @@
 
       let fragmentToken = document.createElement('li');
       fragmentToken.classList.add('fragment-token');
+      fragmentToken.innerHTML = `<span class="fragment-key">${key}</span>`
 
-      let fragmentKey = document.createElement('span');
-      fragmentKey.classList.add('fragment-key');
-      fragmentKey.innerText = key;
-
-      fragmentToken.appendChild(fragmentKey);
       fragmentList.insertBefore(fragmentToken, listItem);
     }
 
