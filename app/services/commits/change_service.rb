@@ -55,7 +55,7 @@ module Commits
       return success if repository.find_branch(new_branch)
 
       result = CreateBranchService.new(@project, current_user)
-                                  .execute(new_branch, @target_branch, source_project: @source_project)
+                                  .execute(new_branch, @target_branch, source_project: @source_project, with_hooks: false)
 
       if result[:status] == :error
         raise ChangeError, "There was an error creating the source branch: #{result[:message]}"

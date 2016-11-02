@@ -74,7 +74,7 @@ module Files
     end
 
     def create_target_branch
-      result = CreateBranchService.new(project, current_user).execute(@target_branch, @source_branch, source_project: @source_project)
+      result = CreateBranchService.new(project, current_user).execute(@target_branch, @source_branch, source_project: @source_project, with_hooks: false)
 
       unless result[:status] == :success
         raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")
