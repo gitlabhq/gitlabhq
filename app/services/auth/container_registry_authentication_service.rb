@@ -16,7 +16,7 @@ module Auth
       { token: authorized_token(scope).encoded }
     end
 
-    def self.full_access_token(*names)
+    def self.full_access_token(names)
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
@@ -61,7 +61,12 @@ module Auth
     end
 
     def process_repository_access(type, name, actions)
-      requested_project = Project.find_by_full_path(name)
+      # Strips image name due to lack of
+      # per image authentication.
+      # Removes only last occurence in light
+      # of future nested groups
+      namespace, _ = ContainerImage::split_namespace(name)
+      requested_project = Project.find_by_full_path(namespace)
       return unless requested_project
 
       actions = actions.select do |action|

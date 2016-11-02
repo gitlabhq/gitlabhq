@@ -15,6 +15,10 @@ module ContainerRegistry
       @options = options
     end
 
+    def update_token(token)
+      @options[:token] = token
+    end
+
     def repository_tags(name)
       response_body faraday.get("/v2/#{name}/tags/list")
     end
