@@ -46,6 +46,12 @@
     border: 1px solid $border-color;
     padding: 12px $gl-padding;
     border-radius: $border-radius-default;
+
+    svg {
+      position: relative;
+      top: 1px;
+      margin-right: 5px;
+    }
   }
 }
 

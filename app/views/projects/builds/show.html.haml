@@ -26,12 +26,28 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
-    - if @build.stage == 'deploy'
+    - if @build.deploy
       .prepend-top-default
         .environment-information
           = ci_icon_for_status(@build.status)
-          This build is the most recent deployment to
-          = link_to @build.environment, namespace_project_environment_path(@project.namespace, @project, @build.environment)
+
+          - if @build.last_deployment
+            This build is the most recent deployment to
+            = link_to @build.environment, namespace_project_environment_path(@project.namespace, @project, @build.environment)
+          - else
+            - case @build.status
+            - when 'failed', 'canceled'
+              The deployment of this build to
+              = link_to @build.environment, namespace_project_environment_path(@project.namespace, @project, @build.environment)
+              did not complete
+            - when 'pending', 'running'
+              This build is creating a deployment to
+              = link_to @build.environment, namespace_project_environment_path(@project.namespace, @project, @build.environment)
+              and will overwrite the latest deployment
+            - when 'success'
+              This build is an out-of-date deployment to
+              = link_to @build.environment, namespace_project_environment_path(@project.namespace, @project, @build.environment)
+              View the most recent deployment #24869
 
     .prepend-top-default
       - if @build.erased?

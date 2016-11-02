@@ -125,6 +125,12 @@ module Ci
       !self.pipeline.statuses.latest.include?(self)
     end
 
+    def last_deployment
+      return @last_deployment if defined?(@last_deployment)
+
+      @last_deployment = Deployment.where(deployable: self).order(id: :desc).last
+    end
+
     def depends_on_builds
       # Get builds of the same type
       latest_builds = self.pipeline.builds.latest
