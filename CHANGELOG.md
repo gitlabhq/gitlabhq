@@ -26,6 +26,64 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
+## 8.14.0 (2016-11-22)
+- Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
+- Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
+- Adds user project membership expired event to clarify why user was removed (Callum Dryden)
+- Trim leading and trailing whitespace on project_path (Linus Thiel)
+- Prevent award emoji via notes for issues/MRs authored by user (barthc)
+- Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
+- Fix Markdown styling inside reference links (Jan Zdráhal)
+- Fix extra space on Build sidebar on Firefox !7060
+- Fail gracefully when creating merge request with non-existing branch (alexsanford)
+- Fix mobile layout issues in admin user overview page !7087
+- Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Refactor Jira service to use jira-ruby gem
+- Improved todos empty state
+- Add hover to trash icon in notes !7008 (blackst0ne)
+- Hides project activity tabs when features are disabled
+- Only show one error message for an invalid email !5905 (lycoperdon)
+- Fix sidekiq stats in admin area (blackst0ne)
+- Added label description as tooltip to issue board list title
+- Created cycle analytics bundle JavaScript file
+- API: Fix booleans not recognized as such when using the `to_boolean` helper
+- Removed delete branch tooltip !6954
+- Stop unauthorized users dragging on milestone page (blackst0ne)
+- Restore issue boards welcome message when a project is created !6899
+- Do not show tooltip for active element !7105 (winniehell)
+- Escape ref and path for relative links !6050 (winniehell)
+- Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
+- Fix filtering of milestones with quotes in title (airatshigapov)
+- Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
+- Update mail_room and enable sentinel support to Reply By Email (!7101)
+- Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
+- Simpler arguments passed to named_route on toggle_award_url helper method
+- Fix typo in framework css class. !7086 (Daniel Voogsgerd)
+- New issue board list dropdown stays open after adding a new list
+- Fix: Backup restore doesn't clear cache
+- Optimize Event queries by removing default order
+- Remove duplicate links from sidebar
+- API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
+- Add Rake task to create/repair GitLab Shell hooks symlinks !5634
+- Add job for removal of unreferenced LFS objects from both the database and the filesystem (Frank Groeneveld)
+- Replace jquery.cookie plugin with js.cookie !7085
+- Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
+- Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
+- Show full status link on MR & commit pipelines
+- Fix documents and comments on Build API `scope`
+- Initialize Sidekiq with the list of queues used by GitLab
+- Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
+- Shortened merge request modal to let clipboard button not overlap
+- In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
+- Improve search query parameter naming in /admin/users !7115 (YarNayar)
+- Fix table pagination to be responsive
+- Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
+
+## 8.13.3
+
+- Fix relative links in Markdown wiki when displayed in "Project" tab !7218
+- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
+- Fix project features default values
 
 ## 8.13.2 (2016-10-31)
 
