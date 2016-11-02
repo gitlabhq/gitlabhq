@@ -29,12 +29,16 @@
       } else {
         this.canDeleteTokenIfExists = false;
       }
+
+      if (event.key === 'Enter') {
+        this.search();
+        event.stopPropagation();
+        event.preventDefault();
+      }
     }
 
     inputKeyup(event) {
-      if (event.key === 'Enter') {
-        this.search();
-      } else if (this.canDeleteTokenIfExists) {
+      if (this.canDeleteTokenIfExists) {
         this.deleteToken(event.target);
       }
 
