@@ -1,7 +1,9 @@
 require 'spec_helper'
+require 'rails_helper'
 
-describe "Pipelines" do
+describe "Pipelines", feature: true, js: true do
   include GitlabRoutingHelper
+  include WaitForAjax
 
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
@@ -20,7 +22,11 @@ describe "Pipelines" do
 
         before { visit namespace_project_pipelines_path(project.namespace, project, scope: scope) }
 
-        it { expect(page).to have_content(pipeline.short_sha) }
+        it do
+          wait_for_ajax
+
+          expect(page).to have_content(pipeline.short_sha)
+        end
       end
     end
 

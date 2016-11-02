@@ -22,8 +22,10 @@
       'store',
     ],
     created() {
-      const url = window.location.href;
-      if (url.includes('?')) this.pageNum = url.split('?')[1];
+      // ** `.includes` does not work in PhantomJS
+
+      // const url = window.location.toString();
+      // if (url.includes('?')) this.pageNum = url.split('?')[1];
       // now fetch page appropriate data
       this.store.fetchDataLoop.call(this, Vue, this.pageNum);
     },
