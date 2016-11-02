@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rails_helper'
 
 describe "Pipelines", feature: true, js: true do
   include GitlabRoutingHelper
@@ -24,7 +23,6 @@ describe "Pipelines", feature: true, js: true do
 
         it do
           wait_for_ajax
-
           expect(page).to have_content(pipeline.short_sha)
         end
       end

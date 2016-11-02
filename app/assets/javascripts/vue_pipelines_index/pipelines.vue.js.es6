@@ -22,7 +22,7 @@
       'store',
     ],
     created() {
-      // ** `.includes` does not work in PhantomJS
+      // ** `.includes` does not work in PhantomJS **
 
       // const url = window.location.toString();
       // if (url.includes('?')) this.pageNum = url.split('?')[1];
