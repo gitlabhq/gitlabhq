@@ -13,7 +13,7 @@ describe 'Dashboard Todos', feature: true do
         visit dashboard_todos_path
       end
       it 'shows "All done" message' do
-        expect(page).to have_content "You're all done!"
+        expect(page).to have_content "Todos let you see what you should do next."
       end
     end
 
@@ -44,7 +44,7 @@ describe 'Dashboard Todos', feature: true do
         end
 
         it 'shows "All done" message' do
-          expect(page).to have_content("You're all done!")
+          expect(page).to have_content("Good job! Looks like you don't have any todos left.")
         end
       end
 
@@ -64,7 +64,7 @@ describe 'Dashboard Todos', feature: true do
           end
 
           it 'shows "All done" message' do
-            expect(page).to have_content("You're all done!")
+            expect(page).to have_content("Good job! Looks like you don't have any todos left.")
           end
         end
       end
@@ -132,7 +132,6 @@ describe 'Dashboard Todos', feature: true do
         end
 
         it 'shows "All done" message!' do
-          within('.todos-pending-count') { expect(page).to have_content '0' }
           expect(page).to have_content 'To do 0'
           expect(page).to have_content "You're all done!"
           expect(page).not_to have_selector('.gl-pagination')
@@ -153,7 +152,7 @@ describe 'Dashboard Todos', feature: true do
         within('.todos-pending-count') { expect(page).to have_content '0' }
         expect(page).to have_content 'To do 0'
         expect(page).to have_content 'Done 0'
-        expect(page).to have_content "You're all done!"
+        expect(page).to have_content "Good job! Looks like you don't have any todos left."
       end
     end
   end

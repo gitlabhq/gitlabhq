@@ -102,10 +102,10 @@ module Banzai
             end
 
           elsif element_node?(node)
-            yield_valid_link(node) do |link, text|
+            yield_valid_link(node) do |link, inner_html|
               if ref_pattern && link =~ /\A#{ref_pattern}\z/
                 replace_link_node_with_href(node, link) do
-                  object_link_filter(link, ref_pattern, link_text: text)
+                  object_link_filter(link, ref_pattern, link_content: inner_html)
                 end
 
                 next
@@ -113,9 +113,9 @@ module Banzai
 
               next unless link_pattern
 
-              if link == text && text =~ /\A#{link_pattern}/
+              if link == inner_html && inner_html =~ /\A#{link_pattern}/
                 replace_link_node_with_text(node, link) do
-                  object_link_filter(text, link_pattern)
+                  object_link_filter(inner_html, link_pattern)
                 end
 
                 next
@@ -123,7 +123,7 @@ module Banzai
 
               if link =~ /\A#{link_pattern}\z/
                 replace_link_node_with_href(node, link) do
-                  object_link_filter(link, link_pattern, link_text: text)
+                  object_link_filter(link, link_pattern, link_content: inner_html)
                 end
 
                 next
@@ -140,11 +140,11 @@ module Banzai
       #
       # text - String text to replace references in.
       # pattern - Reference pattern to match against.
-      # link_text - Original content of the link being replaced.
+      # link_content - Original content of the link being replaced.
       #
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
-      def object_link_filter(text, pattern, link_text: nil)
+      def object_link_filter(text, pattern, link_content: nil)
         references_in(text, pattern) do |match, id, project_ref, matches|
           project = project_from_ref_cached(project_ref)
 
@@ -152,7 +152,7 @@ module Banzai
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
-            data = data_attributes_for(link_text || match, project, object)
+            data = data_attributes_for(link_content || match, project, object)
 
             if matches.names.include?("url") && matches[:url]
               url = matches[:url]
@@ -160,11 +160,11 @@ module Banzai
               url = url_for_object_cached(object, project)
             end
 
-            text = link_text || object_link_text(object, matches)
+            content = link_content || object_link_text(object, matches)
 
             %(<a href="#{url}" #{data}
                  title="#{escape_once(title)}"
-                 class="#{klass}">#{escape_once(text)}</a>)
+                 class="#{klass}">#{content}</a>)
           else
             match
           end

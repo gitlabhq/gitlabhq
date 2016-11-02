@@ -1,3 +1,4 @@
+/* eslint-disable */
 // MarkdownPreview
 //
 // Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,

@@ -1,5 +1,6 @@
+/* eslint-disable */
 // This is a manifest file that'll be compiled into including all the files listed below.
-// Add new JavaScript/Coffee code in separate files in this directory and they'll automatically
+// Add new JavaScript code in separate files in this directory and they'll automatically
 // be included in the compiled file accessible from http://example.com/assets/application.js
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
@@ -11,13 +12,13 @@
 /*= require jquery-ui/effect-highlight */
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
-/*= require jquery.cookie */
 /*= require jquery.endless-scroll */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */
+/*= require js.cookie */
 /*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */
@@ -124,15 +125,11 @@
     return str.replace(/<(?:.|\n)*?>/gm, '');
   };
 
-  window.unbindEvents = function() {
-    return $(document).off('scroll');
-  };
-
   window.shiftWindow = function() {
     return scrollBy(0, -100);
   };
 
-  document.addEventListener("page:fetch", unbindEvents);
+  document.addEventListener("page:fetch", gl.utils.cleanupBeforeFetch);
 
   window.addEventListener("hashchange", shiftWindow);
 
@@ -149,6 +146,10 @@
     $document = $(document);
     $window = $(window);
     $body = $('body');
+
+    // Set the default path for all cookies to GitLab's root directory
+    Cookies.defaults.path = gon.relative_url_root || '/';
+
     gl.utils.preventDisabledButtons();
     bootstrapBreakpoint = bp.getBreakpointSize();
     $(".nav-sidebar").niceScroll({
@@ -187,6 +188,7 @@
     // Close select2 on escape
     });
     // Initialize tooltips
+    $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
       placement: function(_, el) {

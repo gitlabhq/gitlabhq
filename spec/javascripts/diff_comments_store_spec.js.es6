@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require vue
 //= require diff_notes/models/discussion
 //= require diff_notes/models/note

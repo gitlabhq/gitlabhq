@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
 
   // Matches everything but the file name

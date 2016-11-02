@@ -148,7 +148,7 @@
 
   a[href*="/uploads/"],
   a[href*="storage.googleapis.com/google-code-attachments/"] {
-    &:before {
+    &::before {
       margin-right: 4px;
 
       font: normal normal normal 14px/1 FontAwesome;
@@ -158,13 +158,13 @@
       content: "\f0c6";
     }
 
-    &:hover:before {
+    &:hover::before {
       text-decoration: none;
     }
   }
 
   a.no-attachment-icon {
-    &:before {
+    &::before {
       display: none;
     }
   }
@@ -183,13 +183,13 @@
       position: absolute;
       text-decoration: none;
 
-      &:after {
+      &::after {
         content: image-url('icon_anchor.svg');
         visibility: hidden;
       }
     }
 
-    &:hover > a.anchor:after {
+    &:hover > a.anchor::after {
       visibility: visible;
     }
   }

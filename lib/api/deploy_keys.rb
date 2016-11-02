@@ -49,18 +49,23 @@ module API
           attrs = attributes_for_keys [:title, :key]
           attrs[:key].strip! if attrs[:key]
 
+          # Check for an existing key joined to this project
           key = user_project.deploy_keys.find_by(key: attrs[:key])
-          present key, with: Entities::SSHKey if key
+          if key
+            present key, with: Entities::SSHKey
+            break
+          end
 
           # Check for available deploy keys in other projects
           key = current_user.accessible_deploy_keys.find_by(key: attrs[:key])
           if key
             user_project.deploy_keys << key
             present key, with: Entities::SSHKey
+            break
           end
 
+          # Create a new deploy key
           key = DeployKey.new attrs
-
           if key.valid? && user_project.deploy_keys << key
             present key, with: Entities::SSHKey
           else

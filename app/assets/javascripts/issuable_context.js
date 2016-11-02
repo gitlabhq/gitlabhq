@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.IssuableContext = (function() {
     function IssuableContext(currentUser) {

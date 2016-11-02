@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require ./board_card
 //= require ./board_new_issue
 

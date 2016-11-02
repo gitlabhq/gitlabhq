@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Admin = (function() {
     function Admin() {

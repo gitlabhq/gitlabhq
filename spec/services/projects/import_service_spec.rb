@@ -110,7 +110,7 @@ describe Projects::ImportService, services: true do
       end
 
       it 'expires existence cache after error' do
-        allow_any_instance_of(Project).to receive(:repository_exists?).and_return(true)
+        allow_any_instance_of(Project).to receive(:repository_exists?).and_return(false, true)
 
         expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_raise(Gitlab::Shell::Error.new('Failed to import the repository'))
         expect_any_instance_of(Repository).to receive(:expire_emptiness_caches).and_call_original

@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((global) => {
   let singleton;
 
@@ -28,7 +29,7 @@
     }
 
     init() {
-      this.isPinned = $.cookie(pinnedStateCookie) === 'true';
+      this.isPinned = Cookies.get(pinnedStateCookie) === 'true';
       this.isExpanded = (
         window.innerWidth >= sidebarBreakpoint &&
         $(pageSelector).hasClass(expandedPageClass)
@@ -37,7 +38,8 @@
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
         .on('click', 'html, body', (e) => this.handleClickEvent(e))
-        .on('page:change', () => this.renderState());
+        .on('page:change', () => this.renderState())
+        .on('todo:toggle', (e, count) => this.updateTodoCount(count));
       this.renderState();
     }
 
@@ -52,6 +54,10 @@
       }
     }
 
+    updateTodoCount(count) {
+      $('.js-todos-count').text(gl.text.addDelimiter(count));
+    }
+
     toggleSidebar() {
       this.isExpanded = !this.isExpanded;
       this.renderState();
@@ -62,10 +68,7 @@
       if (!this.isPinned) {
         this.isExpanded = false;
       }
-      $.cookie(pinnedStateCookie, this.isPinned ? 'true' : 'false', {
-        path: gon.relative_url_root || '/',
-        expires: 3650
-      });
+      Cookies.set(pinnedStateCookie, this.isPinned ? 'true' : 'false', { expires: 3650 });
       this.renderState();
     }
 

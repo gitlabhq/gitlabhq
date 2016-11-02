@@ -33,21 +33,22 @@
     color: $gl-dark-link-color;
   }
 
-  .text-expander {
-    display: inline-block;
-    background: $gray-light;
-    color: $gl-placeholder-color;
-    padding: 0 5px;
-    cursor: pointer;
-    border: 1px solid $border-gray-dark;
-    border-radius: $border-radius-default;
-    margin-left: 5px;
-    line-height: 1;
+}
 
-    &:hover {
-      background-color: darken($gray-light, 10%);
-      text-decoration: none;
-    }
+.text-expander {
+  display: inline-block;
+  background: $gray-light;
+  color: $gl-placeholder-color;
+  padding: 0 5px;
+  cursor: pointer;
+  border: 1px solid $border-gray-dark;
+  border-radius: $border-radius-default;
+  margin-left: 5px;
+  line-height: 1;
+
+  &:hover {
+    background-color: darken($gray-light, 10%);
+    text-decoration: none;
   }
 }
 

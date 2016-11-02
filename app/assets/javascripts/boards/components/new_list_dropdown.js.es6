@@ -1,3 +1,4 @@
+/* eslint-disable */
 $(() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -32,6 +33,7 @@ $(() => {
 			},
 			filterable: true,
       selectable: true,
+      multiSelect: true,
       clicked (label, $el, e) {
         e.preventDefault();
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // LineHighlighter
 //
 // Handles single- and multi-line selection and highlight for blob views.

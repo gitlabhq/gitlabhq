@@ -52,10 +52,25 @@
 
 .build-header {
   position: relative;
-  padding-right: 40px;
+  padding: 0;
+  display: flex;
+  min-height: 58px;
+  align-items: center;
 
-  @media (min-width: $screen-sm-min) {
-    padding-right: 0;
+  .btn-inverted {
+    @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
+  }
+
+  @media (max-width: $screen-sm-max) {
+    padding-right: 40px;
+
+    .btn-inverted {
+      display: none;
+    }
+  }
+
+  .header-content {
+    flex: 1;
   }
 
   a {
@@ -137,9 +152,14 @@
 
   .retry-link {
     color: $gl-link-color;
+    display: none;
 
     &:hover {
       text-decoration: underline;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      display: block;
     }
   }
 

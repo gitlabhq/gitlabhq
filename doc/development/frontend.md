@@ -185,6 +185,20 @@ again in the future.
 See [the Testing Standards and Style Guidelines](testing.md) for more
 information.
 
+### Running frontend tests
+
+`rake teaspoon` runs the frontend-only (JavaScript) tests.
+It consists of two subtasks:
+
+- `rake teaspoon:fixtures` (re-)generates fixtures
+- `rake teaspoon:tests` actually executes the tests
+
+As long as the fixtures don't change, `rake teaspoon:tests` is sufficient
+(and saves you some time).
+
+Please note: Not all of the frontend fixtures are generated. Some are still static
+files. These will not be touched by `rake teaspoon:fixtures`.
+
 ## Supported browsers
 
 For our currently-supported browsers, see our [requirements][requirements].
@@ -224,13 +238,18 @@ For our currently-supported browsers, see our [requirements][requirements].
 [scss-style-guide]: scss_styleguide.md
 [requirements]: ../install/requirements.md#supported-web-browsers
 
-## Common Errors
+## Gotchas
 
-### Rspec (Capybara/Poltergeist) chokes on general JavaScript errors
+### Phantom.JS (used by Teaspoon & Rspec) chokes, returning vague JavaScript errors
 
 If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being thrown in tests, but
 can't reproduce them manually, you may have included `ES6`-style JavaScript in files that don't
 have the `.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file you're
-working in (`git mv <file>.js> <file.js.es6>`).
+working in (`git mv <file.js> <file.js.es6>`). 
+
+Similar errors will be thrown if you're using 
+any of the [array methods introduced in ES6](http://www.2ality.com/2014/05/es6-array-methods.html)
+whether or not you've updated the file extension.
+
 
 

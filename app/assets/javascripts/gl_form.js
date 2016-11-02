@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.GLForm = (function() {
     function GLForm(form) {

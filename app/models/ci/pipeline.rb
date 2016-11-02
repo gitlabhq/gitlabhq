@@ -30,23 +30,23 @@ module Ci
       end
 
       event :run do
-        transition any => :running
+        transition any - [:running] => :running
       end
 
       event :skip do
-        transition any => :skipped
+        transition any - [:skipped] => :skipped
       end
 
       event :drop do
-        transition any => :failed
+        transition any - [:failed] => :failed
       end
 
       event :succeed do
-        transition any => :success
+        transition any - [:success] => :success
       end
 
       event :cancel do
-        transition any => :canceled
+        transition any - [:canceled] => :canceled
       end
 
       # IMPORTANT
@@ -271,7 +271,7 @@ module Ci
     end
 
     def update_status
-      with_lock do
+      Gitlab::OptimisticLocking.retry_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run

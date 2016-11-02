@@ -547,6 +547,10 @@ test:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+    jira:
+      title: "JIRA"
+      url: https://sample_company.atlasian.net
+      project_key: PROJECT
   ldap:
     enabled: false
     servers:

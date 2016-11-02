@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.BlobGitignoreSelectors = (function() {
     function BlobGitignoreSelectors(opts) {

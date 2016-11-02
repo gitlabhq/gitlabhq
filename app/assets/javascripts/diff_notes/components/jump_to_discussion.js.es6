@@ -1,3 +1,4 @@
+/* eslint-disable */
 (() => {
   JumpToDiscussion = Vue.extend({
     mixins: [DiscussionMixins],

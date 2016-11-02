@@ -11,7 +11,6 @@ Feature: Dashboard
     And I visit dashboard page
 
   Scenario: I should see projects list
-    Then I should see "New Project" link
     Then I should see "Shop" project link
     Then I should see "Shop" project CI status
 

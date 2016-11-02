@@ -49,11 +49,15 @@ header {
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
-        margin-left: 10px;
+        margin-left: 8px;
         height: 28px;
         min-width: 28px;
         line-height: 28px;
         text-align: center;
+
+        &.header-user-dropdown-toggle {
+          margin-left: 14px;
+        }
 
         &:hover,
         &:focus,
@@ -227,7 +231,7 @@ header {
       float: none !important;
 
       .visible-xs,
-      .visable-sm {
+      .visible-sm {
         display: table-cell !important;
       }
     }

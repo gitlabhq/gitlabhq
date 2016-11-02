@@ -8,6 +8,8 @@
 
 ## Styleguides
 
+- [API styleguide](api_styleguide.md) Use this styleguide if you are
+  contributing to the API.
 - [Documentation styleguide](doc_styleguide.md) Use this styleguide if you are
   contributing to documentation.
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
@@ -39,6 +41,7 @@
 
 - [What requires downtime?](what_requires_downtime.md)
 - [Adding database indexes](adding_database_indexes.md)
+- [Post Deployment Migrations](post_deployment_migrations.md)
 
 ## Compliance
 

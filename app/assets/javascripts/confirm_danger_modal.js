@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ConfirmDangerModal = (function() {
     function ConfirmDangerModal(form, text) {

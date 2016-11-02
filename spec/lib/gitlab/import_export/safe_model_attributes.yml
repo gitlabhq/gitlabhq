@@ -178,6 +178,7 @@ Ci::Pipeline:
 - finished_at
 - duration
 - user_id
+- lock_version
 CommitStatus:
 - id
 - project_id
@@ -217,6 +218,7 @@ CommitStatus:
 - yaml_variables
 - queued_at
 - token
+- lock_version
 Ci::Variable:
 - id
 - project_id

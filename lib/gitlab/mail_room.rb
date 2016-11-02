@@ -33,7 +33,12 @@ module Gitlab
         config[:mailbox] = 'inbox' if config[:mailbox].nil?
 
         if config[:enabled] && config[:address]
-          config[:redis_url] = Gitlab::Redis.new(rails_env).url
+          gitlab_redis = Gitlab::Redis.new(rails_env)
+          config[:redis_url] = gitlab_redis.url
+
+          if gitlab_redis.sentinels?
+            config[:sentinels] = gitlab_redis.sentinels
+          end
         end
 
         config

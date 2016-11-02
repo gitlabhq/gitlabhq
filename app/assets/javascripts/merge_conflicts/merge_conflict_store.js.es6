@@ -1,7 +1,8 @@
+/* eslint-disable */
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
-  const diffViewType = $.cookie('diff_view');
+  const diffViewType = Cookies.get('diff_view');
   const HEAD_HEADER_TEXT = 'HEAD//our changes';
   const ORIGIN_HEADER_TEXT = 'origin//their changes';
   const HEAD_BUTTON_TITLE = 'Use ours';
@@ -180,9 +181,7 @@
       this.state.diffView = viewType;
       this.state.isParallel = viewType === VIEW_TYPES.PARALLEL;
 
-      $.cookie('diff_view', viewType, {
-        path: gon.relative_url_root || '/'
-      });
+      Cookies.set('diff_view', viewType);
     },
 
     getHeadHeaderLine(id) {

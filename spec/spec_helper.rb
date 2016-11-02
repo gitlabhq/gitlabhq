@@ -9,7 +9,7 @@ require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'rspec/retry'
 
-if ENV['CI']
+if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
@@ -49,6 +49,12 @@ RSpec.configure do |config|
     Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
     example.run
     Rails.cache = caching_store
+  end
+
+  config.around(:each, :redis) do |example|
+    Gitlab::Redis.with(&:flushall)
+    example.run
+    Gitlab::Redis.with(&:flushall)
   end
 end
 

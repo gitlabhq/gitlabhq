@@ -23,6 +23,7 @@ following locations:
 - [Group Access Requests](access_requests.md)
 - [Group Members](members.md)
 - [Issues](issues.md)
+- [Issue Boards](boards.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Merge Requests](merge_requests.md)

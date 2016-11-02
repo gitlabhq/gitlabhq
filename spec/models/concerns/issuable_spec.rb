@@ -298,6 +298,20 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '.order_labels_priority' do
+    let(:label_1) { create(:label, title: 'label_1', project: issue.project, priority: 1) }
+    let(:label_2) { create(:label, title: 'label_2', project: issue.project, priority: 2) }
+
+    subject { Issue.order_labels_priority(excluded_labels: ['label_1']).first.highest_priority }
+
+    before do
+      issue.labels << label_1
+      issue.labels << label_2
+    end
+
+    it { is_expected.to eq(2) }
+  end
+
   describe ".with_label" do
     let(:project) { create(:project, :public) }
     let(:bug) { create(:label, project: project, title: 'bug') }
