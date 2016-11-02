@@ -63,7 +63,8 @@
             return $.ajax({
               url: $dropdown.data('refs-url'),
               data: {
-                ref: $dropdown.data('ref')
+                ref: $dropdown.data('ref'),
+                search: term
               },
               dataType: "json"
             }).done(function(refs) {
@@ -72,16 +73,26 @@
           },
           selectable: true,
           filterable: true,
+          filterRemote: true,
           filterByText: true,
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
-            var link;
+            var li = document.createElement('li');
+
             if (ref.header != null) {
-              return $('<li />').addClass('dropdown-header').text(ref.header);
+              li.className = 'dropdown-header';
+              li.textContent = ref.header;
             } else {
-              link = $('<a />').attr('href', '#').addClass(ref === selected ? 'is-active' : '').text(ref).attr('data-ref', ref);
-              return $('<li />').append(link);
+              var link = document.createElement('a');
+              link.href = '#';
+              link.className = ref.name === selected ? 'is-active' : '';
+              link.textContent = ref.name;
+              link.dataset.ref = ref.name;
+
+              li.appendChild(link);
             }
+            
+            return li;
           },
           id: function(obj, $el) {
             return $el.attr('data-ref');
