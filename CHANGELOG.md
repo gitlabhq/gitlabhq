@@ -29,6 +29,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Do not show tooltip for active element !7105 (winniehell)
 - Escape ref and path for relative links !6050 (winniehell)
 - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
+- Fix broken issue/merge request links in JIRA comments. !6143 (Brian Kintz)
 - Fix filtering of milestones with quotes in title (airatshigapov)
 - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
 - Update mail_room and enable sentinel support to Reply By Email (!7101)
