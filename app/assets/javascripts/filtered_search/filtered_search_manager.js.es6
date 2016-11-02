@@ -23,7 +23,8 @@
     }
 
     inputKeydown(event) {
-      if (event.key === 'Backspace' && event.target.value === '') {
+      const fragmentList = event.target.parentNode.parentNode;
+      if (event.key === 'Backspace' && event.target.value === '' && fragmentList.childElementCount > 1) {
         this.canDeleteTokenIfExists = true;
       } else {
         this.canDeleteTokenIfExists = false;
@@ -35,6 +36,11 @@
         this.search();
       } else if (this.canDeleteTokenIfExists) {
         this.deleteToken(event.target);
+      }
+
+      const fragmentList = event.target.parentNode.parentNode;
+      if (fragmentList.childElementCount === 1) {
+        event.target.placeholder = 'Search or filter results...';
       }
     }
 
@@ -55,6 +61,10 @@
         this.addToken(tokenKey, event.target);
 
         event.target.value = '';
+        event.target.placeholder = '';
+
+        event.target.nextElementSibling.innerHTML += `<li><span>test</span></li>`;
+        droplab.addHook(event.target);
       }
     }
 
