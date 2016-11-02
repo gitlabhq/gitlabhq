@@ -180,7 +180,7 @@ GEM
       railties
       rotp (~> 2.0)
     diff-lcs (1.2.5)
-    diffy (3.0.7)
+    diffy (3.1.0)
     docile (1.1.5)
     doorkeeper (4.2.0)
       railties (>= 4.2)
@@ -847,7 +847,7 @@ DEPENDENCIES
   default_value_for (~> 3.0.0)
   devise (~> 4.2)
   devise-two-factor (~> 3.0.0)
-  diffy (~> 3.0.3)
+  diffy (~> 3.1.0)
   doorkeeper (~> 4.2.0)
   dropzonejs-rails (~> 0.7.1)
   email_reply_parser (~> 0.5.8)
