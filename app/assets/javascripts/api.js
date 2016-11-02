@@ -10,6 +10,7 @@
     licensePath: "/api/:version/templates/licenses/:key",
     gitignorePath: "/api/:version/templates/gitignores/:key",
     gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
+    dockerfilePath: "/api/:version/dockerfiles/:key",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
     group: function(group_id, callback) {
       var url = Api.buildUrl(Api.groupPath)
@@ -118,6 +119,10 @@
       return $.get(url, function(file) {
         return callback(file);
       });
+    },
+    dockerfileYml: function(key, callback) {
+      var url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
+      $.get(url, callback);
     },
     issueTemplate: function(namespacePath, projectPath, key, type, callback) {
       var url = Api.buildUrl(Api.issuableTemplatePath)

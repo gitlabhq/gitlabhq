@@ -8,7 +8,8 @@ module API
       gitlab_ci_ymls: {
         klass: Gitlab::Template::GitlabCiYmlTemplate,
         gitlab_version: 8.9
-      }
+      },
+      dockerfiles:    Gitlab::Template::DockerfileTemplate
     }.freeze
     PROJECT_TEMPLATE_REGEX =
       /[\<\{\[]
@@ -51,7 +52,7 @@ module API
       end
       params do
         optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
-      end 
+      end
       get route do
         options = {
           featured: declared(params).popular.present? ? true : nil
@@ -69,7 +70,7 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the template'
-      end 
+      end
       get route, requirements: { name: /[\w\.-]+/ } do
         not_found!('License') unless Licensee::License.find(declared(params).name)
 
@@ -78,7 +79,7 @@ module API
         present template, with: Entities::RepoLicense
       end
     end
-      
+
     GLOBAL_TEMPLATE_TYPES.each do |template_type, properties|
       klass = properties[:klass]
       gitlab_version = properties[:gitlab_version]
@@ -104,7 +105,7 @@ module API
         end
         params do
           requires :name, type: String, desc: 'The name of the template'
-        end 
+        end
         get route do
           new_template = klass.find(declared(params).name)
 
