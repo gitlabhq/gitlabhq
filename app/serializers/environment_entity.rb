@@ -9,9 +9,17 @@ class EnvironmentEntity < Grape::Entity
     as: :deployment,
     using: API::Entities::Deployment
 
-  expose :environment_path
+  expose :gitlab_path do |environment|
+    namespace_project_environment_path(
+      environment.project.namespace,
+      environment.project,
+      environment
+    )
+  end
 
-  def environment_path
-    request.path
+  expose :can_read?
+
+  def can_read?
+    Ability.allowed?(request.user, :read_environment, @object)
   end
 end

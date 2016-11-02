@@ -1,8 +1,10 @@
 class ProjectEntity < Grape::Entity
+  include RequestAwareEntity
+
   expose :id
   expose :name
 
   expose :test do |project|
-    'something'
+    request.user.email
   end
 end
