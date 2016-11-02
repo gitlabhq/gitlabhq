@@ -246,13 +246,7 @@ request is as follows:
 1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch, branch away from `master`
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
-1. Add your changes to the [CHANGELOG.md](CHANGELOG.md):
-  1. If you are fixing a ~regression issue, you can add your entry to the next
-     patch release (e.g. `8.12.5` if current version is `8.12.4`)
-  1. Otherwise, add your entry to the next minor release (e.g. `8.13.0` if
-     current version is `8.12.4`
-  1. Please add your entry at a random place among the entries of the targeted
-     release
+1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
@@ -471,6 +465,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [contributor-covenant]: http://contributor-covenant.org
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
+[changelog]: doc/development/changelog.md "Generate a changelog entry"
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
