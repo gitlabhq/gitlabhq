@@ -25,6 +25,16 @@
 
 .filtered-search-container {
   display: flex;
+
+  &.focus {
+    .filtered-search-input-container {
+      @extend .form-control:focus
+    }
+
+    .fa-filter {
+      color: #444;
+    }
+  }
 }
 
 .filtered-search-input-container {
@@ -32,7 +42,7 @@
 
   .fa-filter {
     line-height: 21px;
-    color: #444;
+    color: $gray-darkest;
   }
 
   .fragment-list {
