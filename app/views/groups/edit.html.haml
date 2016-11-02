@@ -2,7 +2,7 @@
   .panel-heading
     Group settings
   .panel-body
-    = form_for @group, html: { multipart: true, class: "form-horizontal show-gl-field-errors" }, authenticity_token: true do |f|
+    = form_for @group, html: { multipart: true, class: "form-horizontal gl-show-field-errors" }, authenticity_token: true do |f|
       = form_errors(@group)
       = render 'shared/group_form', f: f
 

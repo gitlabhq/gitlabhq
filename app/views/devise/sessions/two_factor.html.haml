@@ -7,7 +7,7 @@
   .login-box
     .login-body
       - if @user.two_factor_otp_enabled?
-        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: 'edit_user show-gl-field-errors' }) do |f|
+        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: 'edit_user gl-show-field-errors' }) do |f|
           - resource_params = params[resource_name].presence || params
           = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
           %div

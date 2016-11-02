@@ -1,6 +1,6 @@
 #register-pane.login-box{ role: 'tabpanel', class: 'tab-pane' }
   .login-body
-    = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user show-gl-field-errors", "aria-live" => "assertive" }) do |f|
+    = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user gl-show-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors
         = devise_error_messages!
       %div.form-group

@@ -3,7 +3,7 @@
   /*
    * This class overrides the browser's validation error bubbles, displaying custom
    * error messages for invalid fields instead. To begin validating any form, add the
-   * class `show-gl-field-errors` to the form element, and ensure error messages are
+   * class `gl-show-field-errors` to the form element, and ensure error messages are
    * declared in each inputs' `title` attribute. If no title is declared for an invalid
    * field the user attempts to submit, "This field is required." will be shown by default.
    *
@@ -16,13 +16,13 @@
    *
    * Basic:
    *
-   * <form class='show-gl-field-errors'>
+   * <form class='gl-show-field-errors'>
    *  <input type='text' name='username' title='Username is required.'/>
    * </form>
    *
    * Ignore specific inputs (e.g. UsernameValidator):
    *
-   * <form class='show-gl-field-errors'>
+   * <form class='gl-show-field-errors'>
    *   <div class="form-group>
    *     <input type='text' class='gl-field-errors-ignore' pattern='[a-zA-Z0-9-_]+'/>
    *   </div>
@@ -33,7 +33,7 @@
    *
    * Custom Error Anchor (allows error message to be injected after specified element):
    *
-   * <form class='show-gl-field-errors'>
+   * <form class='gl-show-field-errors'>
    *  <div class="form-group gl-field-error-anchor">
    *    <input type='text' name='username' title='Username is required.'/>
    *    // Error message typically injected here
