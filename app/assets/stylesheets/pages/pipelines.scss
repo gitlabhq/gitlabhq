@@ -85,6 +85,11 @@
   }
 
   .commit-link {
+    a {
+      &:focus {
+        text-decoration: none;
+      }
+    }
 
     .ci-status {
 

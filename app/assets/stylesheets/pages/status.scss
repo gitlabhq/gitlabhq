@@ -6,7 +6,8 @@
     white-space: nowrap;
     border-radius: 4px;
 
-    &:hover {
+    &:hover,
+    &:focus {
       text-decoration: none;
     }
 
