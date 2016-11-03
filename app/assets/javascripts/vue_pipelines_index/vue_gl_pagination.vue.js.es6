@@ -3,11 +3,6 @@
 
 ((gl) => {
   gl.VueGlPagination = Vue.extend({
-    data() {
-      return {
-        last: Math.ceil(+this.count / 5),
-      };
-    },
     props: [
       'changepage',
       'pages',
@@ -21,6 +16,9 @@
       },
     },
     computed: {
+      last() {
+        return Math.ceil(+this.count / 5)
+      },
       lastpage() {
         return `pipelines?p=${this.last}`;
       },
@@ -38,10 +36,7 @@
     },
     template: `
       <div class="gl-pagination">
-        <ul
-          class="pagination clearfix"
-          v-for='n in upcount'
-        >
+        <ul class="pagination clearfix" v-for='n in upcount'>
           <li class="prev disabled" v-if='n === 1'>
             <span>Prev</span>
           </li>
