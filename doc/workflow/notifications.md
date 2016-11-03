@@ -66,6 +66,7 @@ Below is the table of events users can be notified of:
 In all of the below cases, the notification will be sent to:
 - Participants:
   - the author and assignee of the issue/merge request
+  - the author of the pipeline
   - authors of comments on the issue/merge request
   - anyone mentioned by `@username` in the issue/merge request title or description
   - anyone mentioned by `@username` in any of the comments on the issue/merge request
@@ -88,6 +89,8 @@ In all of the below cases, the notification will be sent to:
 | Reopen merge request   | |
 | Merge merge request    | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
+| Failed pipeline        | The author of the pipeline and watchers |
+| Successful pipeline    | The author of the pipeline and watchers |
 
 
 In addition, if the title or description of an Issue or Merge Request is
