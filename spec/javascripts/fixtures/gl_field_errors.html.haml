@@ -1,4 +1,4 @@
-%form.show-gl-field-errors{action: 'submit', method: 'post'}
+%form.gl-show-field-errors{action: 'submit', method: 'post'}
   .form-group
     %input.required-text{required: true, type: 'text'} Text
   .form-group
@@ -10,6 +10,6 @@
   .form-group
     %input.hidden{ type:'hidden' }
   .form-group
-    %input.custom.no-gl-field-errors{ type:'text' } Custom, do not validate
+    %input.custom.gl-field-error-ignore{ type:'text' } Custom, do not validate
   .form-group
   %input.submit{type: 'submit'} Submit

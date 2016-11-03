@@ -118,7 +118,8 @@
             Project avatar
           .form-group
             - if @project.avatar?
-              = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+              .image-container.s160
+                = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
             %p.light
               - if @project.avatar_in_git
                 Project avatar in repository: #{ @project.avatar_in_git }
@@ -180,6 +181,7 @@
           %ul
             %li Build traces and artifacts
             %li LFS objects
+            %li Container registry images
   %hr
   - if can? current_user, :archive_project, @project
     .row.prepend-top-default

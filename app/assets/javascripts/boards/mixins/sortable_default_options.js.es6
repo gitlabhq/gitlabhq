@@ -22,7 +22,7 @@
       fallbackClass: 'is-dragging',
       fallbackOnBody: true,
       ghostClass: 'is-ghost',
-      filter: '.has-tooltip, .btn',
+      filter: '.board-delete, .btn',
       delay: gl.issueBoards.touchEnabled ? 100 : 50,
       scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,

@@ -237,7 +237,7 @@ class JiraService < IssueTrackerService
   end
 
   def resource_url(resource)
-    "#{Settings.gitlab['url'].chomp("/")}#{resource}"
+    "#{Settings.gitlab.base_url.chomp("/")}#{resource}"
   end
 
   def build_entity_url(entity_name, entity_id)
