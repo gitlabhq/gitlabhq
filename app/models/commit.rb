@@ -57,7 +57,6 @@ class Commit
 
     @raw = raw_commit
     @project = project
-    @statuses = {}
   end
 
   def id
@@ -231,6 +230,8 @@ class Commit
   end
 
   def status(ref = nil)
+    @statuses ||= {}
+
     if @statuses.key?(ref)
       @statuses[ref]
     elsif ref
