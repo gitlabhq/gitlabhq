@@ -12,6 +12,10 @@ class ProjectLabel < Label
 
   alias_attribute :subject, :project
 
+  def subject_foreign_key
+    'project_id'
+  end
+
   def to_reference(target_project = nil, format: :id)
     super(project, target_project, format: format)
   end

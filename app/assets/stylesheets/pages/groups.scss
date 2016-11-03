@@ -3,6 +3,7 @@
 }
 
 .dashboard .side .panel .panel-heading .input-group {
+
   .form-control {
     height: 42px;
   }
@@ -14,6 +15,7 @@
 }
 
 .group-row {
+
   .stats {
     float: right;
     line-height: $list-text-height;
@@ -26,12 +28,14 @@
 }
 
 .ldap-group-links {
+
   .form-actions {
     margin-bottom: $gl-padding;
   }
 }
 
 .groups-cover-block {
+
   .container-fluid {
     position: relative;
   }
@@ -46,6 +50,10 @@
       background-color: $background-color;
     }
   }
+
+  .group-avatar {
+    border: 0;
+  }
 }
 
 .ldap-group-links {
@@ -55,6 +63,7 @@
 }
 
 .groups-header {
+
   @media (min-width: $screen-sm-min) {
     .nav-links {
       width: 35%;

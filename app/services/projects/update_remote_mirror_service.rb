@@ -60,7 +60,7 @@ module Projects
       @deleted_branches ||= remote_branches.each_with_object([]) do |(name, branch), branches|
         local_branch = local_branches[name]
 
-        if local_branch.nil? && project.commit(branch.target)
+        if local_branch.nil? && project.commit(branch.dereferenced_target)
           branches << name
         end
       end
@@ -72,7 +72,7 @@ module Projects
 
         if remote_branch.nil?
           branches << name
-        elsif branch.target == remote_branch.target
+        elsif branch.dereferenced_target == remote_branch.dereferenced_target
           # Already up to date
         elsif !repository.upstream_has_diverged?(name, mirror.ref_name)
           branches << name
@@ -112,7 +112,7 @@ module Projects
       @changed_tags ||= local_tags.each_with_object([]) do |(name, tag), tags|
         remote_tag = remote_tags[name]
 
-        if remote_tag.nil? || (tag.target != remote_tag.target)
+        if remote_tag.nil? || (tag.dereferenced_target != remote_tag.dereferenced_target)
           tags << name
         end
       end

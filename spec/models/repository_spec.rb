@@ -68,8 +68,8 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now)
           double_last = double(committed_date: Time.now - 1.second)
 
-          allow(tag_a).to receive(:target).and_return(double_first)
-          allow(tag_b).to receive(:target).and_return(double_last)
+          allow(tag_a).to receive(:dereferenced_target).and_return(double_first)
+          allow(tag_b).to receive(:dereferenced_target).and_return(double_last)
           allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
@@ -83,8 +83,8 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
 
-          allow(tag_a).to receive(:target).and_return(double_last)
-          allow(tag_b).to receive(:target).and_return(double_first)
+          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
+          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
           allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
@@ -632,9 +632,9 @@ describe Repository, models: true do
 
       context "when the branch wasn't empty" do
         it 'updates the head' do
-          expect(repository.find_branch('feature').target.id).to eq(old_rev)
+          expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
           repository.update_branch_with_hooks(user, 'feature') { new_rev }
-          expect(repository.find_branch('feature').target.id).to eq(new_rev)
+          expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
         end
       end
     end
@@ -659,7 +659,7 @@ describe Repository, models: true do
     context 'when the update would remove commits from the target branch' do
       it 'raises an exception' do
         branch = 'master'
-        old_rev = repository.find_branch(branch).target.sha
+        old_rev = repository.find_branch(branch).dereferenced_target.sha
 
         # The 'master' branch is NOT an ancestor of new_rev.
         expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
@@ -1527,7 +1527,7 @@ describe Repository, models: true do
 
   describe '#remote_tags' do
     it 'gets the remote tags' do
-      masterrev = repository.find_branch('master').target.id
+      masterrev = repository.find_branch('master').dereferenced_target.id
 
       expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
         with(repository.storage_path, repository.path_with_namespace, 'upstream').
@@ -1537,13 +1537,13 @@ describe Repository, models: true do
 
       expect(tags.first).to be_an_instance_of(Gitlab::Git::Tag)
       expect(tags.first.name).to eq('v0.0.1')
-      expect(tags.first.target.id).to eq(masterrev)
+      expect(tags.first.dereferenced_target.id).to eq(masterrev)
     end
   end
 
   describe '#local_branches' do
     it 'returns the local branches' do
-      masterrev = repository.find_branch('master').target
+      masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
       repository.add_branch(user, 'local_branch', masterrev)
 
@@ -1554,7 +1554,7 @@ describe Repository, models: true do
 
   describe '#remote_branches' do
     it 'returns the remote branches' do
-      masterrev = repository.find_branch('master').target
+      masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
       repository.add_branch(user, 'local_branch', masterrev)
 
@@ -1565,7 +1565,7 @@ describe Repository, models: true do
 
   describe '#upstream_branches' do
     it 'returns branches from the upstream remote' do
-      masterrev = repository.find_branch('master').target
+      masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('upstream', 'upstream_branch', masterrev)
 
       expect(repository.upstream_branches.size).to eq(1)
@@ -1614,6 +1614,16 @@ describe Repository, models: true do
         repository.update_ref!('refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
       end.to raise_error(Repository::CommitError)
     end
+  end
+
+  describe '#remove_storage_from_path' do
+    let(:storage_path) { project.repository_storage_path }
+    let(:project_path) { project.path_with_namespace }
+    let(:full_path) { File.join(storage_path, project_path) }
+
+    it { expect(Repository.remove_storage_from_path(full_path)).to eq(project_path) }
+    it { expect(Repository.remove_storage_from_path(project_path)).to eq(project_path) }
+    it { expect(Repository.remove_storage_from_path(storage_path)).to eq('') }
   end
 
   def create_remote_branch(remote_name, branch_name, target)

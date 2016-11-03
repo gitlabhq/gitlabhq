@@ -5,7 +5,6 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Referable
   include Sortable
-  include Taskable
   include Spammable
   include Elastic::IssuesSearch
   include FasterCacheKeys

@@ -59,6 +59,11 @@
     padding: 0 !important;
   }
 
+  .sidebar-header {
+    padding: 11px 22px 12px;
+    font-size: 20px;
+  }
+
   li {
     &.separate-item {
       padding-top: 10px;
@@ -162,6 +167,18 @@
   .layout-nav {
     @media (min-width: $sidebar-breakpoint) {
       padding-left: $sidebar_width;
+    }
+  }
+
+  .merge-request-tabs-holder.affix {
+    @media (min-width: $sidebar-breakpoint) {
+      left: $sidebar_width;
+    }
+  }
+
+  &.right-sidebar-expanded {
+    .line-resolve-all-container {
+      display: none;
     }
   }
 }

@@ -147,6 +147,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         expect(MergeWorker).not_to receive(:perform_async)
 
         build.success
+        test.reload
         test.drop
       end
 
@@ -154,6 +155,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         expect(MergeWorker).to receive(:perform_async)
 
         build.success
+        test.reload
         test.success
       end
     end

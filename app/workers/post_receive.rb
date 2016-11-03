@@ -17,7 +17,7 @@ class PostReceive
     post_received = Gitlab::GitPostReceive.new(repo_path, identifier, changes)
 
     if post_received.project.nil?
-      log("Triggered hook for non-existing project with full path \"#{repo_path} \"")
+      log("Triggered hook for non-existing project with full path \"#{repo_path}\"")
       return false
     end
 
@@ -29,7 +29,7 @@ class PostReceive
     elsif post_received.regular_project?
       process_project_changes(post_received)
     else
-      log("Triggered hook for unidentifiable repository type with full path \"#{repo_path} \"")
+      log("Triggered hook for unidentifiable repository type with full path \"#{repo_path}\"")
       false
     end
   end
@@ -41,7 +41,7 @@ class PostReceive
       @user ||= post_received.identify(newrev)
 
       unless @user
-        log("Triggered hook for non-existing user \"#{post_received.identifier} \"")
+        log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
         return false
       end
 

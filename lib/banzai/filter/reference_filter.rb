@@ -85,14 +85,14 @@ module Banzai
         @nodes ||= each_node.to_a
       end
 
-      # Yields the link's URL and text whenever the node is a valid <a> tag.
+      # Yields the link's URL and inner HTML whenever the node is a valid <a> tag.
       def yield_valid_link(node)
         link = CGI.unescape(node.attr('href').to_s)
-        text = node.text
+        inner_html = node.inner_html
 
         return unless link.force_encoding('UTF-8').valid_encoding?
 
-        yield link, text
+        yield link, inner_html
       end
 
       def replace_text_when_pattern_matches(node, pattern)

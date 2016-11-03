@@ -47,7 +47,8 @@ module API
           :build_events,
           :pipeline_events,
           :wiki_page_events,
-          :enable_ssl_verification
+          :enable_ssl_verification,
+          :token
         ]
         @hook = user_project.hooks.new(attrs)
 
@@ -82,7 +83,8 @@ module API
           :build_events,
           :pipeline_events,
           :wiki_page_events,
-          :enable_ssl_verification
+          :enable_ssl_verification,
+          :token
         ]
 
         if @hook.update_attributes attrs

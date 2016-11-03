@@ -292,13 +292,20 @@ message `Can't verify CSRF token authenticity`. This means that there is an erro
 the SAML request, but this error never reaches GitLab due to the CSRF check.
 
 To bypass this you can add `skip_before_action :verify_authenticity_token` to the
-`omniauth_callbacks_controller.rb` file. This will allow the error to hit GitLab,
-where it can then be seen in the usual logs, or as a flash message in the login
-screen.
+`omniauth_callbacks_controller.rb` file immediately after the `class` line and
+comment out the `protect_from_forgery` line using a `#` then restart Unicorn. This
+will allow the error to hit GitLab, where it can then be seen in the usual logs,
+or as a flash message on the login screen.
 
-That file is located at `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
-for Omnibus installations and by default on `/home/git/gitlab/app/controllers` for
-installations from source.
+That file is located in `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
+for Omnibus installations and by default in `/home/git/gitlab/app/controllers` for
+installations from source. Restart Unicorn using the `sudo gitlab-ctl restart unicorn`
+command on Omnibus installations and `sudo service gitlab restart` on installations
+from source.
+
+You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer)
+(Firefox) and [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
+(Chrome) browser extensions useful in your debugging.
 
 ### Invalid audience
 

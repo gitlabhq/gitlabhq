@@ -55,7 +55,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.6.8'
+gem 'gitlab_git', '~> 10.7.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -127,7 +127,7 @@ gem 'truncato',           '~> 0.7.8'
 gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
 
 # Diffs
-gem 'diffy', '~> 3.0.3'
+gem 'diffy', '~> 3.1.0'
 
 # Application server
 group :unicorn do
@@ -206,7 +206,7 @@ gem 'loofah', '~> 2.0.3'
 gem 'licensee', '~> 8.0.0'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 4.3.1'
+gem 'rack-attack', '~> 4.4.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 4.1.0'

@@ -101,11 +101,11 @@ module Ci
           it 'equalises number of running builds' do
             # after finishing the first build for project 1, get a second build from the same project
             expect(service.execute(shared_runner)).to eq(build1_project1)
-            build1_project1.success
+            build1_project1.reload.success
             expect(service.execute(shared_runner)).to eq(build2_project1)
 
             expect(service.execute(shared_runner)).to eq(build1_project2)
-            build1_project2.success
+            build1_project2.reload.success
             expect(service.execute(shared_runner)).to eq(build2_project2)
             expect(service.execute(shared_runner)).to eq(build1_project3)
             expect(service.execute(shared_runner)).to eq(build3_project1)

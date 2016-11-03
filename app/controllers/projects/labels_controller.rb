@@ -126,7 +126,7 @@ class Projects::LabelsController < Projects::ApplicationController
   alias_method :subscribable_resource, :label
 
   def find_labels
-    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute.includes(:priorities)
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
   def authorize_admin_labels!

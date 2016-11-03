@@ -45,3 +45,19 @@ end
 Sidekiq.configure_client do |config|
   config.redis = redis_config_hash
 end
+
+# The Sidekiq client API always adds the queue to the Sidekiq queue
+# list, but mail_room and gitlab-shell do not. This is only necessary
+# for monitoring.
+config = YAML.load_file(Rails.root.join('config', 'sidekiq_queues.yml').to_s)
+
+begin
+  Sidekiq.redis do |conn|
+    conn.pipelined do
+      config[:queues].each do |queue|
+        conn.sadd('queues', queue[0])
+      end
+    end
+  end
+rescue Redis::BaseError, SocketError
+end

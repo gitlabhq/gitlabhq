@@ -136,3 +136,35 @@ label {
   color: $red-normal;
 }
 
+.gl-show-field-errors {
+  .gl-field-success-outline {
+    border: 1px solid $green-normal;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 $green-normal;
+      border: 0 none;
+    }
+  }
+
+  .gl-field-error-outline {
+    border: 1px solid $red-normal;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 rgba(210, 40, 82, 0.6);
+      border: 0 none;
+    }
+  }
+
+  .gl-field-success-message {
+    color: $green-normal;
+  }
+
+  .gl-field-error-message {
+    color: $red-normal;
+  }
+
+  .gl-field-hint {
+    color: $gl-text-color;
+  }
+}
+

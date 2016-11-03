@@ -1,6 +1,6 @@
 class Event < ActiveRecord::Base
   include Sortable
-  default_scope { where.not(author_id: nil) }
+  default_scope { reorder(nil).where.not(author_id: nil) }
 
   CREATED   = 1
   UPDATED   = 2

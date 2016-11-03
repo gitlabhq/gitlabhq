@@ -1,4 +1,4 @@
-= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user show-gl-field-errors', 'aria-live' => 'assertive'}) do |f|
+= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors', 'aria-live' => 'assertive'}) do |f|
   %div.form-group
     = f.label "Username or email", for: :login
     = f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required."

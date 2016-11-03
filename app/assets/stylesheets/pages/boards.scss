@@ -12,6 +12,10 @@
   opacity: 1!important;
 
   * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     // !important to make sure no style can override this when dragging
     cursor: -webkit-grabbing!important;
     cursor: grabbing!important;
@@ -44,11 +48,6 @@
 .issue-boards-page {
   .page-with-sidebar {
     padding-bottom: 0;
-  }
-
-  .issues-filters {
-    position: relative;
-    z-index: 999999;
   }
 }
 

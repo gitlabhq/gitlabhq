@@ -284,7 +284,17 @@ describe 'Git LFS API and storage' do
           let(:authorization) { authorize_ci_project }
 
           shared_examples 'can download LFS only from own projects' do
-            context 'for own project' do
+            context 'for owned project' do
+              let(:project) { create(:empty_project, namespace: user.namespace) }
+
+              let(:update_permissions) do
+                project.lfs_objects << lfs_object
+              end
+
+              it_behaves_like 'responds with a file'
+            end
+
+            context 'for member of project' do
               let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
               let(:update_permissions) do

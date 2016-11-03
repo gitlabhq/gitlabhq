@@ -398,6 +398,9 @@ Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWork
 Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
 Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsWorker'
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
 
 #
 # GitLab Shell

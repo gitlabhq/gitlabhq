@@ -73,16 +73,16 @@ class CommitStatus < ActiveRecord::Base
       transition [:created, :pending, :running] => :canceled
     end
 
-    after_transition created: [:pending, :running] do |commit_status|
-      commit_status.update_attributes queued_at: Time.now
+    before_transition created: [:pending, :running] do |commit_status|
+      commit_status.queued_at = Time.now
     end
 
-    after_transition [:created, :pending] => :running do |commit_status|
-      commit_status.update_attributes started_at: Time.now
+    before_transition [:created, :pending] => :running do |commit_status|
+      commit_status.started_at = Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.update_attributes finished_at: Time.now
+    before_transition any => [:success, :failed, :canceled] do |commit_status|
+      commit_status.finished_at = Time.now
     end
 
     after_transition do |commit_status, transition|

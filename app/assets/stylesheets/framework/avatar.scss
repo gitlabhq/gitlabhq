@@ -1,11 +1,36 @@
-.avatar {
+@mixin avatar-size($size, $margin-right) {
+  width: $size;
+  height: $size;
+  margin-right: $margin-right;
+}
+
+.avatar-container {
   float: left;
-  margin-right: 12px;
+  margin-right: 15px;
+  border-radius: $avatar_radius;
+  border: 1px solid rgba(0, 0, 0, .1);
+  &.s16 { @include avatar-size(16px, 6px); }
+  &.s20 { @include avatar-size(20px, 7px); }
+  &.s24 { @include avatar-size(24px, 8px); }
+  &.s26 { @include avatar-size(26px, 8px); }
+  &.s32 { @include avatar-size(32px, 10px); }
+  &.s36 { @include avatar-size(36px, 10px); }
+  &.s40 { @include avatar-size(40px, 10px); }
+  &.s46 { @include avatar-size(46px, 15px); }
+  &.s48 { @include avatar-size(48px, 10px); }
+  &.s60 { @include avatar-size(60px, 12px); }
+  &.s70 { @include avatar-size(70px, 14px); }
+  &.s90 { @include avatar-size(90px, 15px); }
+  &.s110 { @include avatar-size(110px, 15px); }
+  &.s140 { @include avatar-size(140px, 15px); }
+  &.s160 { @include avatar-size(160px, 20px); }
+}
+
+.avatar {
+  @extend .avatar-container;
   width: 40px;
   height: 40px;
   padding: 0;
-  border-radius: $avatar_radius;
-  border: 1px solid rgba(0, 0, 0, .1);
 
   &.avatar-inline {
     float: none;
@@ -20,22 +45,6 @@
     border-radius: 0;
     border: none;
   }
-
-  &.s16 { width: 16px; height: 16px; margin-right: 6px; }
-  &.s20 { width: 20px; height: 20px; margin-right: 7px; }
-  &.s24 { width: 24px; height: 24px; margin-right: 8px; }
-  &.s26 { width: 26px; height: 26px; margin-right: 8px; }
-  &.s32 { width: 32px; height: 32px; margin-right: 10px; }
-  &.s36 { width: 36px; height: 36px; margin-right: 10px; }
-  &.s40 { width: 40px; height: 40px; margin-right: 10px; }
-  &.s46 { width: 46px; height: 46px; margin-right: 15px; }
-  &.s48 { width: 48px; height: 48px; margin-right: 10px; }
-  &.s60 { width: 60px; height: 60px; margin-right: 12px; }
-  &.s70 { width: 70px; height: 70px; margin-right: 14px; }
-  &.s90 { width: 90px; height: 90px; margin-right: 15px; }
-  &.s110 { width: 110px; height: 110px; margin-right: 15px; }
-  &.s140 { width: 140px; height: 140px; margin-right: 20px; }
-  &.s160 { width: 160px; height: 160px; margin-right: 20px; }
 }
 
 .identicon {
@@ -53,4 +62,18 @@
   &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
+}
+
+.image-container {
+  @extend .avatar-container;
+  overflow: hidden;
+  display: flex;
+
+  .avatar {
+    border-radius: 0;
+    border: none;
+    height: auto;
+    margin: 0;
+    align-self: center;
+  }
 }

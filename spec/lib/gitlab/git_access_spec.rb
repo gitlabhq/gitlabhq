@@ -138,6 +138,14 @@ describe Gitlab::GitAccess, lib: true do
     describe 'build authentication_abilities permissions' do
       let(:authentication_abilities) { build_authentication_abilities }
 
+      describe 'owner' do
+        let(:project) { create(:project, namespace: user.namespace) }
+
+        context 'pull code' do
+          it { expect(subject).to be_allowed }
+        end
+      end
+
       describe 'reporter user' do
         before { project.team << [user, :reporter] }
 
