@@ -128,10 +128,6 @@ class Projects::LabelsController < Projects::ApplicationController
     @available_labels.find(params[:id])
   end
 
-  def subscribable_project
-    @project
-  end
-
   def find_labels
     @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end

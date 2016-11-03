@@ -169,10 +169,6 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :awardable, :issue
   alias_method :spammable, :issue
 
-  def subscribable_project
-    issue.project
-  end
-
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)
   end

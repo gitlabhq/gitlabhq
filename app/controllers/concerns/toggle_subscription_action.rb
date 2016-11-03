@@ -12,7 +12,7 @@ module ToggleSubscriptionAction
   private
 
   def subscribable_project
-    raise NotImplementedError
+    @project || raise(NotImplementedError)
   end
 
   def subscribable_resource
