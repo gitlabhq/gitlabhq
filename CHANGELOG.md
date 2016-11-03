@@ -62,11 +62,10 @@ entry.
 - Fix table pagination to be responsive
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
 
-## 8.13.3
+## 8.13.3 (2016-11-02)
 
-- Fix relative links in Markdown wiki when displayed in "Project" tab !7218
-- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
-- Fix project features default values
+- Removes any symlinks before importing a project export file. CVE-2016-9086
+- Fixed Import/Export foreign key issue to do with project members.
 
 ## 8.13.2 (2016-10-31)
 
@@ -255,6 +254,11 @@ entry.
 - Make guests unable to view MRs on private projects
 - Fix broken Project API docs (Takuya Noguchi)
 - Migrate invalid project members (owner -> master)
+
+## 8.12.8 (2016-11-02)
+
+- Removes any symlinks before importing a project export file. CVE-2016-9086
+- Fixed Import/Export foreign key issue to do with project members.
 
 ## 8.12.7
 
@@ -515,6 +519,10 @@ entry.
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
 
+## 8.11.10 (2016-11-02)
+
+- Removes any symlinks before importing a project export file. CVE-2016-9086
+
 ## 8.11.9
 
   - Don't send Private-Token (API authentication) headers to Sentry
@@ -754,6 +762,10 @@ entry.
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+## 8.10.13 (2016-11-02)
+
+- Removes any symlinks before importing a project export file. CVE-2016-9086
 
 ## 8.10.12
 
