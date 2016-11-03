@@ -3,11 +3,12 @@
 
 ((gl) => {
   const api = '/api/v3/projects';
+  const paginate = '?per_page=5&page=';
 
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum) {
       const goFetch = () =>
-        this.$http.get(`${api}/${this.scope}/pipelines?per_page=30&${pageNum}`)
+        this.$http.get(`${api}/${this.scope}/pipelines${paginate}${pageNum}`)
           .then((response) => {
             Vue.set(this, 'pipelines', JSON.parse(response.body));
           }, () => new Flash(
@@ -20,7 +21,7 @@
       // eventually clearInterval(this.intervalId)
       this.intervalId = setInterval(() => {
         goFetch();
-      }, 3000);
+      }, 30000);
     }
   };
 })(window.gl || (window.gl = {}));
