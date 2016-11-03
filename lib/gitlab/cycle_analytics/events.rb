@@ -27,7 +27,7 @@ module Gitlab
       end
 
       def code_events
-        @fetcher.fetch(stage: :code).each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :code).each { |event| parse_event(event, entity: :merge_request) }
       end
 
       def test_events
@@ -54,8 +54,8 @@ module Gitlab
 
       private
 
-      def parse_event(event)
-        event['url'] = Gitlab::LightUrlBuilder.build(entity: :issue, project: @project, id: event['id'])
+      def parse_event(event, entity: :issue)
+        event['url'] = Gitlab::LightUrlBuilder.build(entity: entity, project: @project, id: event['id'])
         event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
         event['created_at'] = interval_in_words(event['created_at'])
         event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: event['author_username'])

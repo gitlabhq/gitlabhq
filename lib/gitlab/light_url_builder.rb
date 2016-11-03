@@ -25,6 +25,8 @@ module Gitlab
           user_avatar_url
         when :commit_url
           commit_url
+        when :merge_request
+          mr_url
         else
           raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
@@ -50,6 +52,14 @@ module Gitlab
                                      project_id: @project,
                                      id: @id
                                    }.merge!(@opts))
+    end
+
+    def mr_url
+      namespace_project_merge_request_url({
+                                            namespace_id: @project.namespace,
+                                            project_id: @project,
+                                            id: @id
+                                          }.merge!(@opts))
     end
   end
 end

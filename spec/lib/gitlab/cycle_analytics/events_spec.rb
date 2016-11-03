@@ -89,12 +89,16 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.code_events.first['created_at']).to end_with('ago')
     end
 
-    it "has the author's email" do
-      expect(subject.code_events.first['email']).to eq(context.author.email)
+    it "has the author's URL" do
+      expect(subject.code_events.first['author_profile_url']).not_to be_nil
+    end
+
+    it "has the author's avatar URL" do
+      expect(subject.code_events.first['author_avatar_url']).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.code_events.first['name']).to eq(context.author.name)
+      expect(subject.code_events.first['author_name']).to eq(context.author.name)
     end
   end
 

@@ -23,7 +23,6 @@ module Gitlab
                         issue_table[:iid],
                         issue_table[:id],
                         issue_table[:created_at],
-                        issue_table[:state],
                         user_table[:name].as('author_name'),
                         user_table[:username].as('author_username'),
                         user_table[:id].as('author_id')]
@@ -41,10 +40,14 @@ module Gitlab
       def code
         { start_time_attrs: issue_metrics_table[:first_mentioned_in_commit_at],
           end_time_attrs: mr_table[:created_at],
-          projections: [mr_table[:title], mr_table[:iid],
+          projections: [mr_table[:title],
+                        mr_table[:iid],
+                        mr_table[:id],
                         mr_table[:created_at],
-                        user_table[:name],
-                        user_table[:email]],
+                        mr_table[:state],
+                        user_table[:name].as('author_name'),
+                        user_table[:username].as('author_username'),
+                        user_table[:id].as('author_id')],
           order: mr_table[:created_at]
         }
       end
