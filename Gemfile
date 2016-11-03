@@ -260,9 +260,6 @@ group :development do
   gem 'better_errors', '~> 1.0.1'
   gem 'binding_of_caller', '~> 0.7.2'
 
-  # Docs generator
-  gem 'sdoc', '~> 0.3.20'
-
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
 end
