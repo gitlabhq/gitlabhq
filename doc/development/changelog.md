@@ -21,6 +21,9 @@ The `merge_request` value is a reference to a merge request that adds this
 entry, and the `author` key is used to give attribution to community
 contributors. Both are optional.
 
+Community contributors and core team members are encouraged to add their name to
+the `author` field. GitLab team members should not.
+
 If you're working on the GitLab EE repository, the entry will be added to
 `changelogs/unreleased-ee/` instead.
 
