@@ -38,7 +38,6 @@ entry.
 - Fix filtering of milestones with quotes in title (airatshigapov)
 - Fix issue boards dragging bug in Safari
 - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
-- Fix showing pipeline status for a given commit from correct branch !7034
 - Update mail_room and enable sentinel support to Reply By Email (!7101)
 - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
 - Simpler arguments passed to named_route on toggle_award_url helper method
