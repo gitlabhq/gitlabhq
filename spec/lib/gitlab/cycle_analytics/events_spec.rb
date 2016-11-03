@@ -4,6 +4,7 @@ describe Gitlab::CycleAnalytics::Events do
   let(:project) { create(:project) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
+  let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
   subject { described_class.new(project: project, from: from_date) }
 
@@ -12,8 +13,6 @@ describe Gitlab::CycleAnalytics::Events do
   end
 
   describe '#issue_events' do
-    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
-
     it 'has the total time' do
       expect(subject.issue_events.first['total_time']).to eq('2 days')
     end
@@ -44,20 +43,32 @@ describe Gitlab::CycleAnalytics::Events do
   end
 
   describe '#plan_events' do
-    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
+    it 'has a title' do
+      expect(subject.plan_events.first['title']).not_to be_nil
+    end
 
-    it 'has the first referenced commit' do
-      expect(subject.plan_events.first['commit'].message).to eq('commit message')
+    it 'has a sha short ID' do
+      expect(subject.plan_events.first['sha']).not_to be_nil
     end
 
     it 'has the total time' do
       expect(subject.plan_events.first['total_time']).to eq('less than a minute')
     end
+
+    it "has the author's URL" do
+      expect(subject.plan_events.first['author_profile_url']).not_to be_nil
+    end
+
+    it "has the author's avatar URL" do
+      expect(subject.plan_events.first['author_avatar_url']).not_to be_nil
+    end
+
+    it "has the author's name" do
+      expect(subject.plan_events.first['author_name']).not_to be_nil
+    end
   end
 
   describe '#code_events' do
-    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
-
     before do
       create_commit_referencing_issue(context)
     end
@@ -88,7 +99,6 @@ describe Gitlab::CycleAnalytics::Events do
   end
 
   describe '#test_events' do
-    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
     let(:merge_request) { MergeRequest.first }
     let!(:pipeline) do
       create(:ci_pipeline,
@@ -140,7 +150,6 @@ describe Gitlab::CycleAnalytics::Events do
   end
 
   describe '#staging_events' do
-    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
     let(:merge_request) { MergeRequest.first }
     let!(:pipeline) do
       create(:ci_pipeline,
@@ -152,6 +161,7 @@ describe Gitlab::CycleAnalytics::Events do
     before do
       pipeline.run!
       pipeline.succeed!
+
       merge_merge_requests_closing_issue(context)
       deploy_master
     end

@@ -23,8 +23,10 @@ module Gitlab
           user_url(@id)
         when :user_avatar_url
           user_avatar_url
+        when :commit_url
+          commit_url
         else
-        raise NotImplementedError.new("No URL builder defined for #{object.class}")
+          raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
     end
 
@@ -32,14 +34,22 @@ module Gitlab
 
     def issue_url
       namespace_project_issue_url({
-        namespace_id: @project.namespace,
-        project_id: @project,
-        id: @id
-      }.merge!(@opts))
+                                    namespace_id: @project.namespace,
+                                    project_id: @project,
+                                    id: @id
+                                  }.merge!(@opts))
     end
 
     def user_avatar_url
       User.find(@id).avatar_url
+    end
+
+    def commit_url
+      namespace_project_commit_url({
+                                     namespace_id: @project.namespace,
+                                     project_id: @project,
+                                     id: @id
+                                   }.merge!(@opts))
     end
   end
 end

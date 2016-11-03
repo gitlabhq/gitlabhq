@@ -1,40 +1,43 @@
 class Projects::CycleAnalytics::EventsController < Projects::ApplicationController
+  # TODO: fix authorization
   # before_action :authorize_read_cycle_analytics!
 
+  # TODO: refactor +event_hash+
+
   def issue
-    render_events(events.issue_events)
+    render_events(issues: events.issue_events)
   end
 
   def plan
-    render_events(events.plan_events)
+    render_events(commits: events.plan_events)
   end
 
   def code
-    render_events(events.code_events)
+    render_events(merge_requests: events.code_events)
   end
 
   def test
-    render_events(events.test_events)
+    render_events(builds: events.test_events)
   end
 
   def review
-    render_events(events.review_events)
+    render_events(merge_requests: events.review_events)
   end
 
   def staging
-    render_events(events.staging_events)
+    render_events(builds: events.staging_events)
   end
 
   def production
-    render_events(events.production_events)
+    render_events(issues: events.production_events)
   end
 
   private
 
-  def render_events(event_list)
+  def render_events(event_hash)
     respond_to do |format|
       format.html
-      format.json { render json: { events: event_list } }
+      format.json { render json: event_hash }
     end
   end
 

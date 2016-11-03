@@ -16,8 +16,13 @@ module Gitlab
       def plan_events
         @fetcher.fetch(stage: :plan).each do |event|
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
-          commits = event.delete('commits')
-          event['commit'] = first_time_reference_commit(commits, event)
+          commit = first_time_reference_commit(event.delete('commits'), event)
+          event['title'] = commit.title
+          event['url'] =  Gitlab::LightUrlBuilder.build(entity: :commit_url, project: @project, id: commit.id)
+          event['sha'] = commit.short_id
+          event['author_name'] = commit.author.name
+          event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: commit.author.username)
+          event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar_url, id: commit.author.id)
         end
       end
 
@@ -56,7 +61,7 @@ module Gitlab
         event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: event['author_username'])
         event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar_url, id: event['author_id'])
 
-        event.except('author_id', 'author_username')
+        event.except!('author_id', 'author_username')
       end
 
       def first_time_reference_commit(commits, event)
