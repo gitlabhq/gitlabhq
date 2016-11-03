@@ -22,7 +22,7 @@ class ChangelogOptionParser
     options = Options.new
 
     parser = OptionParser.new do |opts|
-      opts.banner = "Usage: #{__FILE__} [options]"
+      opts.banner = "Usage: #{__FILE__} [options] [title]\n\n"
 
       # Note: We do not provide a shorthand for this in order to match the `git
       # commit` interface

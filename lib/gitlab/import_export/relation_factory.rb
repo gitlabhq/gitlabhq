@@ -14,7 +14,7 @@ module Gitlab
                     priorities: :label_priorities,
                     label: :project_label }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id].freeze
 
       PROJECT_REFERENCES = %w[project_id source_project_id gl_project_id target_project_id].freeze
 
@@ -30,7 +30,7 @@ module Gitlab
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project_id:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('id', 'noteable_id').merge('project_id' => project_id)
+        @relation_hash = relation_hash.except('noteable_id').merge('project_id' => project_id)
         @members_mapper = members_mapper
         @user = user
         @imported_object_retries = 0
@@ -172,11 +172,8 @@ module Gitlab
       end
 
       def parsed_relation_hash
-        @parsed_relation_hash ||= begin
-          Gitlab::ImportExport::AttributeCleaner.clean!(relation_hash: @relation_hash)
-
-          @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
-        end
+        @parsed_relation_hash ||= Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
+                                                                               relation_class: relation_class)
       end
 
       def set_st_diffs

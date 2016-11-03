@@ -5,7 +5,7 @@
   New Group
 %hr
 
-= form_for @group, html: { class: 'group-form form-horizontal' } do |f|
+= form_for @group, html: { class: 'group-form form-horizontal gl-show-field-errors' } do |f|
   = form_errors(@group)
   = render 'shared/group_form', f: f, autofocus: true
 

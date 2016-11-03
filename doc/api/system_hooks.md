@@ -27,11 +27,14 @@ Example response:
 
 ```json
 [
-   {
-      "id" : 1,
-      "url" : "https://gitlab.example.com/hook",
-      "created_at" : "2015-11-04T20:07:35.874Z"
-   }
+  {
+    "id":1,
+    "url":"https://gitlab.example.com/hook",
+    "created_at":"2016-10-31T12:32:15.192Z",
+    "push_events":true,
+    "tag_push_events":false,
+    "enable_ssl_verification":true
+  }
 ]
 ```
 
@@ -48,6 +51,10 @@ POST /hooks
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url` | string | yes | The hook URL |
+| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
+| `push_events` | boolean |  no | When true, the hook will fire on push events |
+| `tag_push_events` | boolean | no | When true, the hook will fire on new tags being pushed |
+| `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 
 Example request:
 
@@ -59,11 +66,14 @@ Example response:
 
 ```json
 [
-   {
-      "id" : 2,
-      "url" : "https://gitlab.example.com/hook",
-      "created_at" : "2015-11-04T20:07:35.874Z"
-   }
+  {
+    "id":1,
+    "url":"https://gitlab.example.com/hook",
+    "created_at":"2016-10-31T12:32:15.192Z",
+    "push_events":true,
+    "tag_push_events":false,
+    "enable_ssl_verification":true
+  }
 ]
 ```
 
