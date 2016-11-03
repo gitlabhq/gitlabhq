@@ -50,7 +50,8 @@ describe 'cycle analytics events' do
 
       expect(json_response['events']).not_to be_empty
 
-      # TODO create builds
+      expect(json_response['events'].first['pipeline']).not_to be_empty
+
     end
 
     it 'lists the review events in the right order' do
@@ -68,7 +69,7 @@ describe 'cycle analytics events' do
 
       expect(json_response['events']).not_to be_empty
 
-      # TODO create builds
+      expect(json_response['events'].first['pipeline']).not_to be_empty
     end
 
     it 'lists the production events in the right order' do
@@ -90,8 +91,11 @@ describe 'cycle analytics events' do
     issue = create(:issue, project: project, created_at: 2.days.ago)
     milestone = create(:milestone, project: project)
     issue.update(milestone: milestone)
+    mr = create_merge_request_closing_issue(issue)
 
-    create_merge_request_closing_issue(issue)
+    pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha)
+    pipeline.run
+
     merge_merge_requests_closing_issue(issue)
   end
 end
