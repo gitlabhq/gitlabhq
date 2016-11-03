@@ -1,0 +1,12 @@
+// CI icon colors
+
+.ci-status-icon {
+  &-created g {
+    fill: $gray-darkest;
+  }
+
+  &-skipped g,
+  &-canceled g {
+    fill: $gl-text-color;
+  }
+}

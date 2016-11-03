@@ -45,6 +45,8 @@ entry.
 - New issue board list dropdown stays open after adding a new list
 - Fix: Backup restore doesn't clear cache
 - Optimize Event queries by removing default order
+- Add new icon for skipped builds
+- Show created icon in pipeline mini-graph
 - Remove duplicate links from sidebar
 - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
 - Add Rake task to create/repair GitLab Shell hooks symlinks !5634
