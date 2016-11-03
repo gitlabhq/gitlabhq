@@ -18,12 +18,12 @@
   const project = document.querySelector('.pipelines');
 
   Vue.use(VueResource);
-  // Vue.config.silent = true;
 
   return new Vue({
     el: '.vue-pipelines-index',
     data: {
       scope: project.dataset.projectId,
+      count: project.dataset.count,
       store: new gl.PipelineStore(),
     },
     components: {
@@ -31,7 +31,12 @@
     },
     template: `
       <div>
-        <vue-pipelines :scope='scope' :store='store'></vue-pipelines>
+        <vue-pipelines
+          :scope='scope'
+          :store='store'
+          :count='count'
+        >
+        </vue-pipelines>
       </div>
     `,
   });

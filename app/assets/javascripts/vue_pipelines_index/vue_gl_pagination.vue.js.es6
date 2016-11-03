@@ -6,7 +6,14 @@
     props: [
       'changepage',
       'pages',
+      'count',
     ],
+    computed: {
+      lastpage() {
+        const lastPage = Math.ceil(+this.count / 5);
+        return `pipelines?page=${lastPage}`;
+      },
+    },
     template: `
       <div class="gl-pagination">
         <ul class="pagination clearfix">
@@ -45,7 +52,7 @@
             </a>
           </li>
           <li class="last">
-            <a href="pipelines?page=936">Last »</a>
+            <a :href='lastpage'>Last »</a>
           </li>
         </ul>
       </div>

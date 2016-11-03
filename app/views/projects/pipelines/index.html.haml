@@ -36,7 +36,7 @@
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
 
-  %div.content-list.pipelines{"data-project-id": "#{@project.id}"}
+  %div.content-list.pipelines{"data-project-id": "#{@project.id}", "data-count": "#{@pipelines_count}"}
     - stages = @pipelines.stages
     - if @pipelines.blank?
       %div

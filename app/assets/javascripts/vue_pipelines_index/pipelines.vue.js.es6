@@ -23,6 +23,7 @@
     props: [
       'scope',
       'store',
+      'count',
     ],
     created() {
       const url = window.location.toString();
@@ -78,6 +79,7 @@
         <vue-gl-pagination
           :changepage='changepage'
           :pages='pipelines.length'
+          :count='count'
         >
         </vue-gl-pagination>
       </div>
