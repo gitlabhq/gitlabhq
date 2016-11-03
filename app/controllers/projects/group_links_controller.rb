@@ -7,7 +7,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
     @group_links = project.project_group_links.all
 
     @skip_groups = @group_links.pluck(:group_id)
-    @skip_groups << project.group.try(:id)
+    @skip_groups << project.namespace_id unless project.personal?
   end
 
   def create
