@@ -1,17 +1,17 @@
 class BaseSerializer
-  def initialize(request = {})
-    @request = EntityRequest.new(request)
+  def initialize(parameters = {})
+    @entity = self.class.entity_class
+    @request = EntityRequest.new(parameters)
     @opts = { request: @request }
   end
 
-  def set(opts)
-    @request.merge!(opts)
+  def set(parameters)
+    @request.merge!(parameters)
     self
   end
 
   def represent(resource, opts = {})
-    self.class.entity_class
-      .represent(resource, @opts.reverse_merge(opts))
+    @entity.represent(resource, @opts.reverse_merge(opts))
   end
 
   def self.entity(entity_class)

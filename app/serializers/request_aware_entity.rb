@@ -1,6 +1,10 @@
 module RequestAwareEntity
-  def request
-    options[:request] ||
-      raise(StandardError, 'Request not set!!')
+  attr_reader :request
+
+  def initialize(object, options = {})
+    super(object, options)
+
+    @request = options.fetch(:request)
+    @urls = Gitlab::Routing.url_helpers
   end
 end

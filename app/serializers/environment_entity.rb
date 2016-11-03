@@ -1,25 +1,21 @@
 class EnvironmentEntity < Grape::Entity
   include RequestAwareEntity
-  include Gitlab::Routing.url_helpers
 
   expose :id
   expose :name
+  expose :state
+  expose :external_url
+  expose :environment_type
   expose :project, with: ProjectEntity
-  expose :last_deployment,
-    as: :deployment,
-    using: API::Entities::Deployment
+  expose :last_deployment, using: DeploymentEntity
+  expose :stoppable?
 
-  expose :gitlab_path do |environment|
-    namespace_project_environment_path(
+  expose :environmenturl do |environment|
+    @urls.namespace_project_environment_url(
       environment.project.namespace,
       environment.project,
-      environment
-    )
+      environment)
   end
 
-  expose :can_read?
-
-  def can_read?
-    Ability.allowed?(request.user, :read_environment, @object)
-  end
+  expose :created_at, :updated_at
 end

@@ -2,17 +2,25 @@ require 'spec_helper'
 
 describe EnvironmentSerializer do
   let(:serializer) do
-    described_class.new(path: 'some path', user: user)
+    described_class
+      .new(user: user, project: project)
       .represent(resource)
   end
 
   let(:user) { create(:user) }
 
   context 'when there is a single object provided' do
-    let(:resource) { create(:environment) }
+    let(:deployment) do
+      create(:deployment, deployable: deployable,
+                          user: user)
+    end
+
+    let(:deployable) { create(:ci_build) }
+    let(:project) { deployment.project }
+    let(:resource) { deployment.environment }
 
     it 'shows json' do
-      puts serializer.as_json
+      pp serializer.as_json
     end
 
     it 'it generates payload for single object' do
@@ -21,6 +29,7 @@ describe EnvironmentSerializer do
   end
 
   context 'when there is a collection of objects provided' do
+    let(:project) { create(:empty_project) }
     let(:resource) { create_list(:environment, 2) }
 
     it 'shows json' do
