@@ -7,10 +7,7 @@
     props: {
       file: Object
     },
-    mixins: [global.mergeConflicts.utils],
-    components: {
-      'parallel-conflict-line': gl.mergeConflicts.parallelConflictLine
-    }
+    mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions]
   });
 
 })(window.gl || (window.gl = {}));
