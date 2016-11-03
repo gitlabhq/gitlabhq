@@ -94,8 +94,8 @@
                 link.className = 'is-active';
               }
 
-              link.textContent = ref.name;
-              link.dataset.ref = ref.name;
+              link.textContent = ref;
+              link.dataset.ref = ref;
 
               li.appendChild(link);
             }

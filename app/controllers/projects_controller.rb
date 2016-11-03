@@ -267,14 +267,15 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
-    branches = BranchesFinder.new(@repository, params).execute
+    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
     options = {
       'Branches' => branches.take(100),
     }
 
     unless @repository.tag_count.zero?
-      tags = TagsFinder.new(@repository, params).execute
+      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+
       options['Tags'] = tags.take(100)
     end
 
