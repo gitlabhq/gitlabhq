@@ -1,28 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
-  - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
-  - Trim leading and trailing whitespace on project_path (Linus Thiel)
-  - Prevent award emoji via notes for issues/MRs authored by user (barthc)
-  - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
-  - Fix extra space on Build sidebar on Firefox !7060
-  - Fix HipChat notifications rendering (airatshigapov, eisnerd)
-  - Add hover to trash icon in notes !7008 (blackst0ne)
-  - Fix sidekiq stats in admin area (blackst0ne)
-  - Escape ref and path for relative links !6050 (winniehell)
-  - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
-  - Fix filtering of milestones with quotes in title (airatshigapov)
-  - Simpler arguments passed to named_route on toggle_award_url helper method
-  - Fix typo in framework css class. !7086 (Daniel Voogsgerd)
-  - Fix: Backup restore doesn't clear cache
-  - Fix showing pipeline status for a given commit from correct branch !7034
-  - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
-  - Replace jquery.cookie plugin with js.cookie !7085
-  - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
-  - Fix Sign in page 'Forgot your password?' link overlaps on medium-large screens
-  - Fix documents and comments on Build API `scope`
-  - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
-
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
@@ -47,6 +25,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
 - Fix filtering of milestones with quotes in title (airatshigapov)
 - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
+- Fix showing pipeline status for a given commit from correct branch !7034
 - Update mail_room and enable sentinel support to Reply By Email (!7101)
 - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
 - Simpler arguments passed to named_route on toggle_award_url helper method
