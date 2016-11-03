@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.3 (2016-11-02)
+
+- Removes any symlinks before importing a project export file. CVE-2016-9086
+- Fixed Import/Export foreign key issue to do with project members.
+
 ## 8.13.2 (2016-10-31)
 
 - Fix encoding issues on pipeline commits. !6832
