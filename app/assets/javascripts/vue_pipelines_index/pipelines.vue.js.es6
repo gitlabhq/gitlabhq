@@ -17,7 +17,7 @@
         pipelines: [],
         currentPage: '',
         intervalId: '',
-        pageNum: 1,
+        pagenum: 1,
       };
     },
     props: [
@@ -27,19 +27,19 @@
     ],
     created() {
       const url = window.location.toString();
-      if (~url.indexOf('?')) this.pageNum = url.split('?')[1].split('=')[1];
-      this.store.fetchDataLoop.call(this, Vue, this.pageNum);
+      if (~url.indexOf('?')) this.pagenum = url.split('?')[1].split('=')[1];
+      this.store.fetchDataLoop.call(this, Vue, this.pagenum);
     },
     methods: {
       shortsha(pipeline) {
         return pipeline.sha.slice(0, 8);
       },
       changepage(event) {
-        this.pageNum = +event.target.innerText;
+        this.pagenum = +event.target.innerText;
         // use p instead of page to avoid rails tyring to make an actual request
-        window.history.pushState({}, null, `?p=${this.pageNum}`);
+        window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
-        this.store.fetchDataLoop.call(this, Vue, this.pageNum);
+        this.store.fetchDataLoop.call(this, Vue, this.pagenum);
       },
       pipelineurl(id) {
         return `pipelines/${id}`;
@@ -77,6 +77,7 @@
           </table>
         </div>
         <vue-gl-pagination
+          :pagenum='pagenum'
           :changepage='changepage'
           :pages='pipelines.length'
           :count='count'
