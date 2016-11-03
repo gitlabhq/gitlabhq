@@ -230,11 +230,7 @@ class Commit
     project.pipelines.where(sha: sha)
   end
 
-  def status
-    status_for(nil)
-  end
-
-  def status_for(ref)
+  def status(ref = nil)
     if @statuses.key?(ref)
       @statuses[ref]
     elsif ref

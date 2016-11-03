@@ -18,14 +18,14 @@
           %span.commit-row-message.visible-xs-inline
             &middot;
             = commit.short_id
-          - if commit.status_for(ref)
+          - if commit.status(ref)
             .visible-xs-inline
               = render_commit_status(commit, ref: ref)
           - if commit.description?
             %a.text-expander.hidden-xs.js-toggle-button ...
 
         .commit-actions.hidden-xs
-          - if commit.status_for(ref)
+          - if commit.status(ref)
             = render_commit_status(commit, ref: ref)
           = clipboard_button(clipboard_text: commit.id)
           = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"

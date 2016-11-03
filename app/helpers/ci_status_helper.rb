@@ -63,7 +63,7 @@ module CiStatusHelper
 
     render_status_with_link(
       'commit',
-      commit.status_for(ref),
+      commit.status(ref),
       path,
       tooltip_placement: tooltip_placement)
   end

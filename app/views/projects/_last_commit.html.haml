@@ -1,4 +1,4 @@
-- status = commit.status_for(ref)
+- status = commit.status(ref)
 - if status
   = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{status}" do
     = ci_icon_for_status(status)
