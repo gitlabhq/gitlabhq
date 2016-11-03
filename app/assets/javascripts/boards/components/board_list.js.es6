@@ -32,7 +32,7 @@
       filters: {
         handler () {
           this.list.loadingMore = false;
-          this.$els.list.scrollTop = 0;
+          this.$refs.list.scrollTop = 0;
         },
         deep: true
       },
@@ -53,13 +53,13 @@
     },
     methods: {
       listHeight () {
-        return this.$els.list.getBoundingClientRect().height;
+        return this.$refs.list.getBoundingClientRect().height;
       },
       scrollHeight () {
-        return this.$els.list.scrollHeight;
+        return this.$refs.list.scrollHeight;
       },
       scrollTop () {
-        return this.$els.list.scrollTop + this.listHeight();
+        return this.$refs.list.scrollTop + this.listHeight();
       },
       loadNextPage () {
         const getIssues = this.list.nextPage();
@@ -72,7 +72,7 @@
         }
       },
     },
-    ready () {
+    mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         group: 'issues',
         sort: false,
@@ -94,10 +94,10 @@
         }
       });
 
-      this.sortable = Sortable.create(this.$els.list, options);
+      this.sortable = Sortable.create(this.$refs.list, options);
 
       // Scroll event on list to load more
-      this.$els.list.onscroll = () => {
+      this.$refs.list.onscroll = () => {
         if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
           this.loadNextPage();
         }

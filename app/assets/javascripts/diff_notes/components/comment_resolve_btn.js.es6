@@ -35,7 +35,7 @@
         }
       }
     },
-    ready: function () {
+    mounted: function () {
       const $textarea = $(`#new-discussion-note-form-${this.discussionId} .note-textarea`);
       this.textareaIsEmpty = $textarea.val() === '';
 

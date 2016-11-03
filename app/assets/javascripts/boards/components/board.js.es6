@@ -61,7 +61,7 @@
         this.showIssueForm = !this.showIssueForm;
       }
     },
-    ready () {
+    mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         disabled: this.disabled,
         group: 'boards',
@@ -88,7 +88,8 @@
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
     beforeDestroy () {
-      Store.state.lists.$remove(this.list);
+      const index = Store.state.lists.indexOf(this.list);
+      Store.state.lists.splice(index, 1);
     }
   });
 })();

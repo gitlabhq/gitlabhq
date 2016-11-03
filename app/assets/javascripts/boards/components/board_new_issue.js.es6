@@ -17,7 +17,7 @@
     },
     watch: {
       showIssueForm () {
-        this.$els.input.focus();
+        this.$refs.input.focus();
       }
     },
     methods: {
@@ -37,13 +37,13 @@
         this.list.newIssue(issue)
           .then((data) => {
             // Need this because our jQuery very kindly disables buttons on ALL form submissions
-            $(this.$els.submitButton).enable();
+            $(this.$refs.submitButton).enable();
 
             Store.detail.issue = issue;
           })
           .catch(() => {
             // Need this because our jQuery very kindly disables buttons on ALL form submissions
-            $(this.$els.submitButton).enable();
+            $(this.$refs.submitButton).enable();
 
             // Remove the issue
             this.list.removeIssue(issue);

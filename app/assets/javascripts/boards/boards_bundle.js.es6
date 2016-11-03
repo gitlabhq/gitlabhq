@@ -37,7 +37,7 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       detailIssue: Store.detail
     },
-    init: Store.create.bind(Store),
+    beforeCreate: Store.create.bind(Store),
     computed: {
       detailIssueVisible () {
         return Object.keys(this.detailIssue.issue).length;
@@ -46,7 +46,7 @@ $(() => {
     created () {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
     },
-    ready () {
+    mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
