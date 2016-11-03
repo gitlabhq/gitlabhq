@@ -21,9 +21,12 @@ module Gitlab
                            issue_metrics_table[:first_added_to_board_at]],
           projections: [issue_table[:title],
                         issue_table[:iid],
+                        issue_table[:id],
                         issue_table[:created_at],
-                        user_table[:name],
-                        user_table[:email]]
+                        issue_table[:state],
+                        user_table[:name].as('author_name'),
+                        user_table[:username].as('author_username'),
+                        user_table[:id].as('author_id')]
         }
       end
 

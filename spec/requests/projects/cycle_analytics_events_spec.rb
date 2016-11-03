@@ -51,7 +51,6 @@ describe 'cycle analytics events' do
       expect(json_response['events']).not_to be_empty
 
       expect(json_response['events'].first['pipeline']).not_to be_empty
-
     end
 
     it 'lists the review events in the right order' do

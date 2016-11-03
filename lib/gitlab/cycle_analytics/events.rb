@@ -50,8 +50,13 @@ module Gitlab
       private
 
       def parse_event(event)
+        event['url'] = Gitlab::LightUrlBuilder.build(entity: :issue, project: @project, id: event['id'])
         event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
         event['created_at'] = interval_in_words(event['created_at'])
+        event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: event['author_username'])
+        event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar_url, id: event['author_id'])
+
+        event.except('author_id', 'author_username')
       end
 
       def first_time_reference_commit(commits, event)
