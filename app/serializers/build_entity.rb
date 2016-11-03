@@ -13,7 +13,7 @@ class BuildEntity < Grape::Entity
   end
 
   expose :play_url, if: ->(build, _) { build.manual? } do |build|
-    url_to(:retry_namespace_project_build, build)
+    url_to(:play_namespace_project_build, build)
   end
 
   private

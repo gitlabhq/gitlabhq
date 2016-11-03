@@ -8,6 +8,7 @@ describe EnvironmentSerializer do
   end
 
   let(:user) { create(:user) }
+  let(:project) { create(:project) }
 
   context 'when there is a single object provided' do
     before do
@@ -17,11 +18,12 @@ describe EnvironmentSerializer do
 
     let(:deployment) do
       create(:deployment, deployable: deployable,
-                          user: user)
+                          user: user,
+                          project: project,
+                          sha: project.commit.id)
     end
 
     let(:deployable) { create(:ci_build) }
-    let(:project) { deployment.project }
     let(:resource) { deployment.environment }
 
     it 'it generates payload for single object' do
