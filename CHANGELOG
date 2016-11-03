@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.10.13
+  - Removes any symlinks before importing a project export file. CVE-2016-9086
+
 v 8.10.12
   - Don't send Private-Token (API authentication) headers to Sentry
   - Share projects via the API only with groups the authenticated user can access
