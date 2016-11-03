@@ -1,0 +1,170 @@
+#!/usr/bin/env ruby
+#
+# Generate a changelog entry file in the correct location.
+#
+# Automatically stages the file and amends the previous commit if the `--amend`
+# argument is used.
+
+require 'optparse'
+require 'yaml'
+
+Options = Struct.new(
+  :amend,
+  :author,
+  :dry_run,
+  :force,
+  :merge_request,
+  :title
+)
+
+class ChangelogOptionParser
+  def self.parse(argv)
+    options = Options.new
+
+    parser = OptionParser.new do |opts|
+      opts.banner = "Usage: #{__FILE__} [options]"
+
+      # Note: We do not provide a shorthand for this in order to match the `git
+      # commit` interface
+      opts.on('--amend', 'Amend the previous commit') do |value|
+        options.amend = value
+      end
+
+      opts.on('-f', '--force', 'Overwrite an existing entry') do |value|
+        options.force = value
+      end
+
+      opts.on('-m', '--merge-request [integer]', Integer, 'Merge Request ID') do |value|
+        options.merge_request = value
+      end
+
+      opts.on('-n', '--dry-run', "Don't actually write anything, just print") do |value|
+        options.dry_run = value
+      end
+
+      opts.on('-u', '--git-username', 'Use Git user.name configuration as the author') do |value|
+        options.author = git_user_name if value
+      end
+
+      opts.on('-h', '--help', 'Print help message') do
+        $stdout.puts opts
+        exit
+      end
+    end
+
+    parser.parse!(argv)
+
+    # Title is everything that remains, but let's clean it up a bit
+    options.title = argv.join(' ').strip.squeeze(' ').tr("\r\n", '')
+
+    options
+  end
+
+  def self.git_user_name
+    %x{git config user.name}.strip
+  end
+end
+
+class ChangelogEntry
+  attr_reader :options
+
+  def initialize(options)
+    @options = options
+
+    assert_feature_branch!
+    assert_new_file!
+    assert_title!
+
+    $stdout.puts "\e[32mcreate\e[0m #{file_path}"
+    $stdout.puts contents
+
+    unless options.dry_run
+      write
+      amend_commit if options.amend
+    end
+  end
+
+  def contents
+    YAML.dump(
+      'title'         => title,
+      'merge_request' => options.merge_request,
+      'author'        => options.author
+    )
+  end
+
+  def write
+    File.write(file_path, contents)
+  end
+
+  def amend_commit
+    %x{git add #{file_path}}
+    exec("git commit --amend")
+  end
+
+  private
+
+  def fail_with(message)
+    $stderr.puts "\e[31merror\e[0m #{message}"
+    exit 1
+  end
+
+  def assert_feature_branch!
+    return unless branch_name == 'master'
+
+    fail_with "Create a branch first!"
+  end
+
+  def assert_new_file!
+    return unless File.exist?(file_path)
+    return if options.force
+
+    fail_with "#{file_path} already exists! Use `--force` to overwrite."
+  end
+
+  def assert_title!
+    return if options.title.length > 0 || options.amend
+
+    fail_with "Provide a title for the changelog entry or use `--amend`" \
+      " to use the title from the previous commit."
+  end
+
+  def title
+    if options.title.empty?
+      last_commit_subject
+    else
+      options.title
+    end
+  end
+
+  def last_commit_subject
+    %x{git log --format="%s" -1}.strip
+  end
+
+  def file_path
+    File.join(
+      unreleased_path,
+      branch_name.gsub(/[^\w-]/, '-') << '.yml'
+    )
+  end
+
+  def unreleased_path
+    File.join('changelogs', 'unreleased').tap do |path|
+      path << '-ee' if ee?
+    end
+  end
+
+  def ee?
+    @ee ||= File.exist?(File.expand_path('../CHANGELOG-EE.md', __dir__))
+  end
+
+  def branch_name
+    @branch_name ||= %x{git symbolic-ref HEAD}.strip.sub(%r{\Arefs/heads/}, '')
+  end
+end
+
+if $0 == __FILE__
+  options = ChangelogOptionParser.parse(ARGV)
+  ChangelogEntry.new(options)
+end
+
+# vim: ft=ruby

@@ -135,7 +135,7 @@ password as they will be needed when configuring GitLab in the next section.
 
 JIRA configuration in GitLab is done via a project's **Services**.
 
-#### GitLab 13.0 with JIRA v1000.x
+#### GitLab 8.13.0 with JIRA v1000.x
 
 To enable JIRA integration in a project, navigate to the project's
 and open the context menu clicking on the top right gear icon, then go to
@@ -160,7 +160,7 @@ with the linked JIRA project.
 
 #### GitLab 6.x-7.7 with JIRA v6.x
 
-_**Note:** GitLab versions 13.0 and up contain various integration improvements.
+_**Note:** GitLab versions 8.13.0 and up contain various integration improvements.
 We strongly recommend upgrading._
 
 In `gitlab.yml` enable the JIRA issue tracker section by

@@ -29,21 +29,25 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Better handle when no users were selected for adding to group or project. (Linus Thiel)
   - Only show register tab if signup enabled.
 
+- Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
 - Prevent award emoji via notes for issues/MRs authored by user (barthc)
+- Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix Markdown styling inside reference links (Jan Zdráhal)
 - Fix extra space on Build sidebar on Firefox !7060
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Refactor Jira service to use jira-ruby gem
 - Improved todos empty state
 - Add hover to trash icon in notes !7008 (blackst0ne)
 - Hides project activity tabs when features are disabled
 - Only show one error message for an invalid email !5905 (lycoperdon)
+- Added guide describing how to upgrade PostgreSQL using Slony
 - Fix sidekiq stats in admin area (blackst0ne)
 - Added label description as tooltip to issue board list title
 - Created cycle analytics bundle JavaScript file
@@ -51,10 +55,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Removed delete branch tooltip !6954
 - Stop unauthorized users dragging on milestone page (blackst0ne)
 - Restore issue boards welcome message when a project is created !6899
+- Check that JavaScript file names match convention !7238 (winniehell)
 - Do not show tooltip for active element !7105 (winniehell)
 - Escape ref and path for relative links !6050 (winniehell)
 - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
+- Fix broken issue/merge request links in JIRA comments. !6143 (Brian Kintz)
 - Fix filtering of milestones with quotes in title (airatshigapov)
+- Fix issue boards dragging bug in Safari
 - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
 - Update mail_room and enable sentinel support to Reply By Email (!7101)
 - Add task completion status in Issues and Merge Requests tabs: "X of Y tasks completed" (!6527, @gmesalazar)
@@ -65,6 +72,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Optimize Event queries by removing default order
 - Remove duplicate links from sidebar
 - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
+- Add Rake task to create/repair GitLab Shell hooks symlinks !5634
 - Add job for removal of unreferenced LFS objects from both the database and the filesystem (Frank Groeneveld)
 - Replace jquery.cookie plugin with js.cookie !7085
 - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method

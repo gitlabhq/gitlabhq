@@ -63,10 +63,10 @@ namespace :gitlab do
 
         # Launch installation process
         system(*%W(bin/install) + repository_storage_paths_args)
-
-        # (Re)create hooks
-        system(*%W(bin/create-hooks) + repository_storage_paths_args)
       end
+
+      # (Re)create hooks
+      Rake::Task['gitlab:shell:create_hooks'].invoke
 
       # Required for debian packaging with PKGR: Setup .ssh/environment with
       # the current PATH, so that the correct ruby version gets loaded
@@ -101,6 +101,15 @@ namespace :gitlab do
           end
         end
       end
+    end
+
+    desc 'Create or repair repository hooks symlink'
+    task create_hooks: :environment do
+      warn_user_is_not_gitlab
+
+      puts 'Creating/Repairing hooks symlinks for all repositories'
+      system(*%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
+      puts 'done'.color(:green)
     end
   end
 
