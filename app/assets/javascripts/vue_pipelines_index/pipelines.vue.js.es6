@@ -34,8 +34,9 @@
       shortsha(pipeline) {
         return pipeline.sha.slice(0, 8);
       },
-      changepage(event) {
-        this.pagenum = +event.target.innerText;
+      changepage(event, last) {
+        if (last) this.pagenum = +last;
+        if (!last) this.pagenum = +event.target.innerText;
         // use p instead of page to avoid rails tyring to make an actual request
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);

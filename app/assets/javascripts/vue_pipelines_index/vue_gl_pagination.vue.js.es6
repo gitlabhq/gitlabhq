@@ -48,17 +48,14 @@
           <li :class='pagenumberstatus(n)' v-else>
             <a @click='changepage($event)'>{{(n - 1)}}</a>
           </li>
-          <!--
-            still working on this bit
-            <li class="page" v-if='n === upcount - 1'>
-              <span class="page gap">…</span>
-            </li>
-          -->
+          <li class="page" v-if='n === upcount'>
+            <span class="page gap">…</span>
+          </li>
           <li class="next" v-if='n === upcount'>
             <a rel="next" :href='next'>Next</a>
           </li>
-          <li class="last" v-if='n === upcount'>
-            <a :href='lastpage'>Last »</a>
+          <li class="last" v-if='n === upcount && pagenum !== last'>
+            <a @click='changepage($event, last)'>Last »</a>
           </li>
         </ul>
       </div>
