@@ -5,16 +5,20 @@ class BuildEntity < Grape::Entity
   expose :name
 
   expose :build_url do |build|
-    @urls.namespace_project_build_url(
-      build.project.namespace,
-      build.project,
-      build)
+    url_to(:namespace_project_build, build)
   end
 
   expose :retry_url do |build|
-    @urls.retry_namespace_project_build_url(
-      build.project.namespace,
-      build.project,
-      build)
+    url_to(:retry_namespace_project_build, build)
+  end
+
+  expose :play_url, if: ->(build, _) { build.manual? } do |build|
+    url_to(:retry_namespace_project_build, build)
+  end
+
+  private
+
+  def url_to(route, build)
+    @urls.send("#{route}_url", build.project.namespace, build.project, build)
   end
 end
