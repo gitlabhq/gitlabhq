@@ -49,7 +49,7 @@ $(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $(conflictsEl.querySelectorAll('.js-syntax-highlight')).syntaxHighlight();
+            $('.js-syntax-highlight').syntaxHighlight();
           });
         });
     },
