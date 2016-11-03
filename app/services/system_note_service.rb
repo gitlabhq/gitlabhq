@@ -111,6 +111,26 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the estimated time of a Noteable is changed
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # milestone - Milestone being assigned, or nil
+  #
+  # Example Note text:
+  #
+  #   "Changed estimate of this issue to 3d 5h"
+  #
+  # Returns the created Note object
+
+  def change_time_estimate(noteable, project, author, time_estimate)
+    parsed_time = ChronicDuration.output(time_estimate, format: :short)
+    body = "Changed estimate of this #{noteable.to_ability_name} to #{parsed_time}"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the status of a Noteable is changed
   #
   # noteable - Noteable object

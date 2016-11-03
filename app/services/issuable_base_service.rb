@@ -36,6 +36,11 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def create_time_estimate_note(issuable)
+    SystemNoteService.change_time_estimate(
+      issuable, issuable.project, current_user, issuable.time_estimate)
+  end
+
   def filter_params(issuable_ability_name = :issue)
     filter_assignee
     filter_milestone
