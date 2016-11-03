@@ -6,7 +6,6 @@ class EnvironmentEntity < Grape::Entity
   expose :state
   expose :external_url
   expose :environment_type
-  expose :project, with: API::Entities::BasicProjectDetails
   expose :last_deployment, using: DeploymentEntity
   expose :stoppable?
 
