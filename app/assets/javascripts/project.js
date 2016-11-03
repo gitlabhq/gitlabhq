@@ -90,7 +90,7 @@
             } else {
               var link = refLink.cloneNode(false);
 
-              if (ref.name === selected) {
+              if (ref === selected) {
                 link.className = 'is-active';
               }
 
