@@ -269,7 +269,11 @@ module SlashCommands
     end
     command :spend do |raw_duration|
       begin
-        @updates[:time_spent] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+        reduce_time = raw_duration.gsub!(/\A-/, '')
+        time_spent  = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+        time_spent  = time_spent * -1 if reduce_time
+
+        @updates[:time_spent] = time_spent
       rescue ChronicDuration::DurationParseError
         # do nothing
       end
