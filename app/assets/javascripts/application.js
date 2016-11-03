@@ -46,6 +46,7 @@
 /*= require date.format */
 /*= require_directory ./behaviors */
 /*= require_directory ./blob */
+/*= require_directory ./directives */
 /*= require_directory ./templates */
 /*= require_directory ./commit */
 /*= require_directory ./extensions */
