@@ -57,6 +57,7 @@ entry.
 - Initialize Sidekiq with the list of queues used by GitLab
 - Refactor email, use setter method instead AR callbacks for email attribute (Semyon Pupkov)
 - Shortened merge request modal to let clipboard button not overlap
+- Adds JavaScript validation for group path editing field
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
 - Improve search query parameter naming in /admin/users !7115 (YarNayar)
 - Fix table pagination to be responsive
