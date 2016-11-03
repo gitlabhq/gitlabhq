@@ -80,7 +80,9 @@ describe JiraService, models: true do
       stub_config_setting(relative_url_root: '/gitlab')
       stub_config_setting(url: Settings.send(:build_gitlab_url))
 
-      Project.default_url_options[:script_name] = "/gitlab"
+      allow(JiraService).to receive(:default_url_options) do
+        { script_name: '/gitlab' }
+      end
 
       @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
 
