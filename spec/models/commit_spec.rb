@@ -205,10 +205,6 @@ eos
     end
   end
 
-  describe '#ci_commits' do
-    # TODO: kamil
-  end
-
   describe '#status' do
     context 'without arguments for compound status' do
       shared_examples 'giving the status from pipeline' do
