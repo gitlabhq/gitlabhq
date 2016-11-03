@@ -12,6 +12,7 @@ Options = Struct.new(
   :amend,
   :author,
   :dry_run,
+  :force,
   :merge_request,
   :title
 )
@@ -27,6 +28,10 @@ class ChangelogOptionParser
       # commit` interface
       opts.on('--amend', 'Amend the previous commit') do |value|
         options.amend = value
+      end
+
+      opts.on('-f', '--force', 'Overwrite an existing entry') do |value|
+        options.force = value
       end
 
       opts.on('-m', '--merge-request [integer]', Integer, 'Merge Request ID') do |value|
@@ -111,8 +116,9 @@ class ChangelogEntry
 
   def assert_new_file!
     return unless File.exist?(file_path)
+    return if options.force
 
-    fail_with "#{file_path} already exists!"
+    fail_with "#{file_path} already exists! Use `--force` to overwrite."
   end
 
   def assert_title!

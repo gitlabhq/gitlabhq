@@ -10,6 +10,18 @@ describe 'bin/changelog' do
       expect(options.amend).to eq true
     end
 
+    it 'parses --force' do
+      options = described_class.parse(%w[foo --force bar])
+
+      expect(options.force).to eq true
+    end
+
+    it 'parses -f' do
+      options = described_class.parse(%w[foo -f bar])
+
+      expect(options.force).to eq true
+    end
+
     it 'parses --merge-request' do
       options = described_class.parse(%w[foo --merge-request 1234 bar])
 
