@@ -11,7 +11,7 @@
     ],
     methods: {
       pagenumberstatus(n) {
-        if (n - 1 === +this.pagenum) return 'page active';
+        if (n - 1 === +this.pagenum) return 'active';
         return '';
       },
     },
@@ -43,8 +43,8 @@
           <li :class='pagenumberstatus(n)' v-else>
             <a @click='changepage($event)'>{{(n - 1)}}</a>
           </li>
-          <li class="page" v-if='n === upcount'>
-            <span class="page gap">…</span>
+          <li v-if='n === upcount'>
+            <span class="gap">…</span>
           </li>
           <li class="next" v-if='n === upcount'>
             <a rel="next" :href='next'>Next</a>
