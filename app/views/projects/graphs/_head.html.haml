@@ -5,8 +5,8 @@
       %ul{ class: (container_class) }
 
         - content_for :page_specific_javascripts do
-          = page_specific_javascript_tag('lib/chart.js')
-          = page_specific_javascript_tag('graphs/graphs_bundle.js')
+          = page_specific_javascript_bundle_tag('lib_chart')
+          = page_specific_javascript_bundle_tag('graphs')
         = nav_link(action: :show) do
           = link_to 'Contributors', namespace_project_graph_path
         = nav_link(action: :commits) do

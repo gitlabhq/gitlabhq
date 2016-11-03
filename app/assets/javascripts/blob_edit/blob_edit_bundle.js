@@ -2,7 +2,7 @@
 /* global EditBlob */
 /* global NewCommitForm */
 
-/*= require_tree . */
+require('./edit_blob');
 
 (function() {
   $(function() {

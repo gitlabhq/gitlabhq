@@ -2,10 +2,10 @@
 /* global Vue */
 /* global EnvironmentsService */
 
-//= require vue
-//= require vue-resource
-//= require_tree ../services/
-//= require ./environment_item
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('../services/environments_service');
+require('./environment_item');
 
 (() => {
   window.gl = window.gl || {};

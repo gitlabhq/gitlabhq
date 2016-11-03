@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 /* global Breakpoints */
 
-/*= require latinise */
-/*= require breakpoints */
-/*= require jquery.nicescroll */
+require('vendor/latinise');
+require('./breakpoints');
+require('vendor/jquery.nicescroll');
 
 ((global) => {
   const dasherize = str => str.replace(/[_\s]+/g, '-');

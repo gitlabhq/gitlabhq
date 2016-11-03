@@ -2,13 +2,9 @@
 /* global Network */
 /* global ShortcutsNetwork */
 
-// This is a manifest file that'll be compiled into including all the files listed below.
-// Add new JavaScript code in separate files in this directory and they'll automatically
-// be included in the compiled file accessible from http://example.com/assets/application.js
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
-/*= require_tree . */
+// require everything else in this directory
+function requireAll(context) { return context.keys().map(context); }
+requireAll(require.context('.', false, /^\.\/(?!network_bundle).*\.(js|es6)$/));
 
 (function() {
   $(function() {

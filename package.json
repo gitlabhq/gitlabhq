@@ -11,6 +11,7 @@
     "babel-core": "^5.8.38",
     "babel-loader": "^5.4.2",
     "bootstrap-sass": "3.3.6",
+    "d3": "3.5.11",
     "dropzone": "4.2.0",
     "exports-loader": "^0.6.3",
     "imports-loader": "^0.6.5",

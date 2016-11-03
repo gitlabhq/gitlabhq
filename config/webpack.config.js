@@ -12,9 +12,26 @@ var ROOT_PATH = path.resolve(__dirname, '..');
 var DEV_SERVER_PORT = 3808;
 
 var config = {
-  context: ROOT_PATH,
+  context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
-    application: './app/assets/javascripts/webpack/application.js'
+    application:          './application.js',
+    blob_edit:            './blob_edit/blob_edit_bundle.js',
+    boards:               './boards/boards_bundle.js',
+    boards_test:          './boards/test_utils/simulate_drag.js',
+    cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
+    diff_notes:           './diff_notes/diff_notes_bundle.js',
+    environments:         './environments/environments_bundle.js',
+    graphs:               './graphs/graphs_bundle.js',
+    merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
+    merge_request_widget: './merge_request_widget/ci_bundle.js',
+    network:              './network/network_bundle.js',
+    profile:              './profile/profile_bundle.js',
+    protected_branches:   './protected_branches/protected_branches_bundle.js',
+    snippet:              './snippet/snippet_bundle.js',
+    terminal:             './terminal/terminal_bundle.js',
+    users:                './users/users_bundle.js',
+    lib_chart:            './lib/chart.js',
+    lib_d3:               './lib/d3.js'
   },
 
   output: {

@@ -1,6 +1,6 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_tag('snippet/snippet_bundle.js')
+  = page_specific_javascript_bundle_tag('snippet')
 
 .snippet-form-holder
   = form_for @snippet, url: url, html: { class: "form-horizontal snippet-form js-requires-input" } do |f|
@@ -34,4 +34,3 @@
         = link_to "Cancel", namespace_project_snippets_path(@project.namespace, @project), class: "btn btn-cancel"
       - else
         = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
-

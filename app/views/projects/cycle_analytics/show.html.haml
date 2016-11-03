@@ -1,7 +1,7 @@
 - @no_container = true
 - page_title "Cycle Analytics"
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag("cycle_analytics/cycle_analytics_bundle.js")
+  = page_specific_javascript_bundle_tag('cycle_analytics')
 
 = render "projects/pipelines/head"
 

@@ -1,8 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, consistent-return, padded-blocks, max-len */
 /* global autosize */
 
-/*= require jquery.ba-resize */
-/*= require autosize */
+var autosize = require('vendor/autosize');
+require('vendor/jquery.ba-resize');
 
 (function() {
   $(function() {

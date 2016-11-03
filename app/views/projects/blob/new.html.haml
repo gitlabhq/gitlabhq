@@ -1,7 +1,7 @@
 - page_title "New File", @path.presence, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_tag('blob_edit/blob_edit_bundle.js')
+  = page_specific_javascript_bundle_tag('blob_edit')
 
 %h3.page-title
   New File

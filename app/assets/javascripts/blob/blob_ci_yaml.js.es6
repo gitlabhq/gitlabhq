@@ -1,7 +1,8 @@
 /* eslint-disable padded-blocks, no-param-reassign, comma-dangle */
 /* global Api */
 
-/*= require blob/template_selector */
+require('./template_selector');
+
 ((global) => {
 
   class BlobCiYamlSelector extends gl.TemplateSelector {
