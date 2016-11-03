@@ -161,7 +161,7 @@
 
       state.iterations += 1;
 
-      console.log(`SmartInterval Log: ${ JSON.stringify(state) } -- ${ now }`);
+      console.log('SmartInterval Log', state, now);
     }
   }
   gl.SmartInterval = SmartInterval;
