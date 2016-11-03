@@ -256,6 +256,20 @@ describe User, models: true do
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
       end
     end
+
+    describe '.todo_authors' do
+      it 'filters users' do
+        create :user
+        user_2 = create :user
+        user_3 = create :user
+        current_user = create :user
+        create(:todo, user: current_user, author: user_2, state: :done)
+        create(:todo, user: current_user, author: user_3, state: :pending)
+
+        expect(User.todo_authors(current_user.id, 'pending')).to eq [user_3]
+        expect(User.todo_authors(current_user.id, 'done')).to eq [user_2]
+      end
+    end
   end
 
   describe "Respond to" do
