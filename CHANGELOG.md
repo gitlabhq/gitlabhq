@@ -1,8 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
-
-- Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
@@ -22,6 +20,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Hides project activity tabs when features are disabled
 - Only show one error message for an invalid email !5905 (lycoperdon)
 - Added guide describing how to upgrade PostgreSQL using Slony
+- Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
 - Fix sidekiq stats in admin area (blackst0ne)
 - Added label description as tooltip to issue board list title
 - Created cycle analytics bundle JavaScript file
