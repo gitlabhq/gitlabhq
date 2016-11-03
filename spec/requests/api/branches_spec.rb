@@ -95,18 +95,6 @@ describe API::API, api: true  do
         expect(json_response['developers_can_push']).to eq(true)
         expect(json_response['developers_can_merge']).to eq(true)
       end
-
-      it 'protects a single branch and developers cannot push and merge' do
-        put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
-            developers_can_push: 'tru', developers_can_merge: 'tr'
-
-        expect(response).to have_http_status(200)
-        expect(json_response['name']).to eq(branch_name)
-        expect(json_response['commit']['id']).to eq(branch_sha)
-        expect(json_response['protected']).to eq(true)
-        expect(json_response['developers_can_push']).to eq(false)
-        expect(json_response['developers_can_merge']).to eq(false)
-      end
     end
 
     context 'for an existing protected branch' do

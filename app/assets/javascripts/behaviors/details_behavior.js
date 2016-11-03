@@ -15,6 +15,11 @@
     return $("body").on("click", ".js-details-expand", function(e) {
       $(this).next('.js-details-content').removeClass("hide");
       $(this).hide();
+
+      var truncatedItem = $(this).siblings('.js-details-short');
+      if (truncatedItem.length) {
+        truncatedItem.addClass("hide");
+      }
       return e.preventDefault();
     });
   });

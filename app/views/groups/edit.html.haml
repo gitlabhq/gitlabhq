@@ -8,7 +8,8 @@
 
       .form-group
         .col-sm-offset-2.col-sm-10
-          = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
+          .image-container.s160
+            = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
           %p.light
             - if @group.avatar?
               You can change your group avatar here

@@ -35,10 +35,10 @@ module Banzai
               user_link_filter(content)
             end
           elsif element_node?(node)
-            yield_valid_link(node) do |link, text|
+            yield_valid_link(node) do |link, inner_html|
               if link =~ ref_pattern_start
                 replace_link_node_with_href(node, link) do
-                  user_link_filter(link, link_text: text)
+                  user_link_filter(link, link_content: inner_html)
                 end
               end
             end
@@ -52,15 +52,16 @@ module Banzai
       # user's profile page.
       #
       # text - String text to replace references in.
+      # link_content - Original content of the link being replaced.
       #
       # Returns a String with `@user` references replaced with links. All links
       # have `gfm` and `gfm-project_member` class names attached for styling.
-      def user_link_filter(text, link_text: nil)
+      def user_link_filter(text, link_content: nil)
         self.class.references_in(text) do |match, username|
           if username == 'all'
-            link_to_all(link_text: link_text)
+            link_to_all(link_content: link_content)
           elsif namespace = namespaces[username]
-            link_to_namespace(namespace, link_text: link_text) || match
+            link_to_namespace(namespace, link_content: link_content) || match
           else
             match
           end
@@ -102,49 +103,49 @@ module Banzai
         reference_class(:project_member)
       end
 
-      def link_to_all(link_text: nil)
+      def link_to_all(link_content: nil)
         project = context[:project]
         author = context[:author]
 
         if author && !project.team.member?(author)
-          link_text
+          link_content
         else
           url = urls.namespace_project_url(project.namespace, project,
                                            only_path: context[:only_path])
 
           data = data_attribute(project: project.id, author: author.try(:id))
-          text = link_text || User.reference_prefix + 'all'
+          content = link_content || User.reference_prefix + 'all'
 
-          link_tag(url, data, text, 'All Project and Group Members')
+          link_tag(url, data, content, 'All Project and Group Members')
         end
       end
 
-      def link_to_namespace(namespace, link_text: nil)
+      def link_to_namespace(namespace, link_content: nil)
         if namespace.is_a?(Group)
-          link_to_group(namespace.path, namespace, link_text: link_text)
+          link_to_group(namespace.path, namespace, link_content: link_content)
         else
-          link_to_user(namespace.path, namespace, link_text: link_text)
+          link_to_user(namespace.path, namespace, link_content: link_content)
         end
       end
 
-      def link_to_group(group, namespace, link_text: nil)
+      def link_to_group(group, namespace, link_content: nil)
         url = urls.group_url(group, only_path: context[:only_path])
         data = data_attribute(group: namespace.id)
-        text = link_text || Group.reference_prefix + group
+        content = link_content || Group.reference_prefix + group
 
-        link_tag(url, data, text, namespace.name)
+        link_tag(url, data, content, namespace.name)
       end
 
-      def link_to_user(user, namespace, link_text: nil)
+      def link_to_user(user, namespace, link_content: nil)
         url = urls.user_url(user, only_path: context[:only_path])
         data = data_attribute(user: namespace.owner_id)
-        text = link_text || User.reference_prefix + user
+        content = link_content || User.reference_prefix + user
 
-        link_tag(url, data, text, namespace.owner_name)
+        link_tag(url, data, content, namespace.owner_name)
       end
 
-      def link_tag(url, data, text, title)
-        %(<a href="#{url}" #{data} class="#{link_class}" title="#{escape_once(title)}">#{escape_once(text)}</a>)
+      def link_tag(url, data, link_content, title)
+        %(<a href="#{url}" #{data} class="#{link_class}" title="#{escape_once(title)}">#{link_content}</a>)
       end
     end
   end

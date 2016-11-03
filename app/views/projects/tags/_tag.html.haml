@@ -1,4 +1,4 @@
-- commit = @repository.commit(tag.target)
+- commit = @repository.commit(tag.dereferenced_target)
 - release = @releases.find { |release| release.tag == tag.name }
 %li
   %div

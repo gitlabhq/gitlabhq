@@ -238,8 +238,11 @@
               _this.expandViewContainer();
             }
             _this.diffsLoaded = true;
-            _this.scrollToElement("#diffs");
-            _this.highlighSelectedLine();
+            var anchoredDiff = gl.utils.getLocationHash();
+            if (anchoredDiff) _this.openAnchoredDiff(anchoredDiff, function() {
+              _this.scrollToElement("#diffs");
+              _this.highlighSelectedLine();
+            });
             _this.filesCommentButton = $('.files .diff-file').filesCommentButton();
             return $(document).off('click', '.diff-line-num a').on('click', '.diff-line-num a', function(e) {
               e.preventDefault();
@@ -250,6 +253,17 @@
           };
         })(this)
       });
+    };
+
+    MergeRequestTabs.prototype.openAnchoredDiff = function(anchoredDiff, cb) {
+      var diffTitle = $('#file-path-' + anchoredDiff);
+      var diffFile = diffTitle.closest('.diff-file');
+      var nothingHereBlock = $('.nothing-here-block:visible', diffFile);
+      if (nothingHereBlock.length) {
+        diffFile.singleFileDiff(true, cb);
+      } else {
+        cb();
+      }
     };
 
     MergeRequestTabs.prototype.highlighSelectedLine = function() {

@@ -4,8 +4,7 @@
 = render "projects/commits/head"
 
 %div{ class: container_class }
-  .prepend-top-default
-    = render "commit_box"
+  = render "commit_box"
   - if @commit.status
     = render "ci_menu"
   - else

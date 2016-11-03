@@ -13,20 +13,8 @@ module MergeRequests
       merge_request.target_project ||= (project.forked_from_project || project)
       merge_request.target_branch ||= merge_request.target_project.default_branch
 
-      if merge_request.target_branch.blank? || merge_request.source_branch.blank?
-        message =
-          if params[:source_branch] || params[:target_branch]
-            "You must select source and target branch"
-          end
-
-        return build_failed(merge_request, message)
-      end
-
-      if merge_request.source_project == merge_request.target_project &&
-         merge_request.target_branch == merge_request.source_branch
-
-        return build_failed(merge_request, 'You must select different branches')
-      end
+      messages = validate_branches(merge_request)
+      return build_failed(merge_request, messages) unless messages.empty?
 
       compare = CompareService.new.execute(
         merge_request.source_project,
@@ -42,6 +30,34 @@ module MergeRequests
     end
 
     private
+
+    def validate_branches(merge_request)
+      messages = []
+
+      if merge_request.target_branch.blank? || merge_request.source_branch.blank?
+        messages <<
+          if params[:source_branch] || params[:target_branch]
+            "You must select source and target branch"
+          end
+      end
+
+      if merge_request.source_project == merge_request.target_project &&
+         merge_request.target_branch == merge_request.source_branch
+
+        messages << 'You must select different branches'
+      end
+
+      # See if source and target branches exist
+      unless merge_request.source_project.commit(merge_request.source_branch)
+        messages << "Source branch \"#{merge_request.source_branch}\" does not exist"
+      end
+
+      unless merge_request.target_project.commit(merge_request.target_branch)
+        messages << "Target branch \"#{merge_request.target_branch}\" does not exist"
+      end
+
+      messages
+    end
 
     # When your branch name starts with an iid followed by a dash this pattern will be
     # interpreted as the user wants to close that issue on this project.
@@ -91,8 +107,10 @@ module MergeRequests
       merge_request
     end
 
-    def build_failed(merge_request, message)
-      merge_request.errors.add(:base, message) unless message.nil?
+    def build_failed(merge_request, messages)
+      messages.compact.each do |message|
+        merge_request.errors.add(:base, message)
+      end
       merge_request.compare_commits = []
       merge_request.can_be_created = false
       merge_request
