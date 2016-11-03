@@ -80,7 +80,6 @@
         <vue-gl-pagination
           :pagenum='pagenum'
           :changepage='changepage'
-          :pages='pipelines.length'
           :count='count'
         >
         </vue-gl-pagination>

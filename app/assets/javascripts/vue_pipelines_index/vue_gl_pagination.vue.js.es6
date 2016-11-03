@@ -17,7 +17,7 @@
     },
     computed: {
       last() {
-        return Math.ceil(+this.count / 5)
+        return Math.ceil(+this.count / 5);
       },
       lastpage() {
         return `pipelines?p=${this.last}`;
@@ -43,6 +43,11 @@
           <li :class='pagenumberstatus(n)' v-else>
             <a @click='changepage($event)'>{{(n - 1)}}</a>
           </li>
+          <!--
+            take a slice of current array (up to 5)
+            if at end make dots dissapear
+            if in second slice or more make dots appear in the front
+          -->
           <li v-if='n === upcount'>
             <span class="gap">…</span>
           </li>

@@ -15,6 +15,7 @@
 //= require ./pipelines.vue.js.es6
 
 (() => {
+  if (~window.location.href.indexOf('scope')) return null;
   const project = document.querySelector('.pipelines');
 
   Vue.use(VueResource);
