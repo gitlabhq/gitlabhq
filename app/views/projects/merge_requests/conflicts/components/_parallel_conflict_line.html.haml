@@ -6,5 +6,4 @@
       {{line.buttonTitle}}
   %td.diff-line-num.old_line{":class" => "lineCssClass(line)", "v-if" => "!line.isHeader"}
     {{line.lineNumber}}
-  %td.line_content.parallel{":class" => "lineCssClass(line)", "v-if" => "!line.isHeader"}
-    {{{line.richText}}}
+  %td.line_content.parallel{":class" => "lineCssClass(line)", "v-if" => "!line.isHeader", "v-html" => "line.richText"}
