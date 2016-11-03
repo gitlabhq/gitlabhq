@@ -10,6 +10,11 @@ describe EnvironmentSerializer do
   let(:user) { create(:user) }
 
   context 'when there is a single object provided' do
+    before do
+      create(:ci_build, :manual, name: 'manual1',
+                                 pipeline: deployable.pipeline)
+    end
+
     let(:deployment) do
       create(:deployment, deployable: deployable,
                           user: user)
