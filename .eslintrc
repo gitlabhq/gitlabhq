@@ -4,7 +4,7 @@
     "filenames"
   ],
   "rules": {
-    "filenames/match-regex": [2, "^[a-z_]+$"]
+    "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"]
   },
   "globals": {
     "$": false,
