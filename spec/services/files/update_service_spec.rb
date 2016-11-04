@@ -6,7 +6,10 @@ describe Files::UpdateService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:file_path) { 'files/ruby/popen.rb' }
-  let(:new_contents) { "New Content" }
+  let(:new_contents) { 'New Content' }
+  let(:target_branch) { project.default_branch }
+  let(:last_commit_sha) { nil }
+
   let(:commit_params) do
     {
       file_path: file_path,
@@ -16,7 +19,7 @@ describe Files::UpdateService do
       last_commit_sha: last_commit_sha,
       source_project: project,
       source_branch: project.default_branch,
-      target_branch: project.default_branch,
+      target_branch: target_branch
     }
   end
 
@@ -54,18 +57,6 @@ describe Files::UpdateService do
     end
 
     context "when the last_commit_sha is not supplied" do
-      let(:commit_params) do
-        {
-          file_path: file_path,
-          commit_message: "Update File",
-          file_content: new_contents,
-          file_content_encoding: "text",
-          source_project: project,
-          source_branch: project.default_branch,
-          target_branch: project.default_branch,
-        }
-      end
-
       it "returns a hash with the :success status " do
         results = subject.execute
 
@@ -78,6 +69,16 @@ describe Files::UpdateService do
         results = project.repository.blob_at_branch(project.default_branch, file_path)
 
         expect(results.data).to eq(new_contents)
+      end
+    end
+
+    context 'when target branch is different than source branch' do
+      let(:target_branch) { "#{project.default_branch}-new" }
+
+      it 'fires hooks only once' do
+        expect(GitHooksService).to receive(:new).once.and_call_original
+
+        subject.execute
       end
     end
   end
