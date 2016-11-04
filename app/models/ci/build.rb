@@ -7,6 +7,8 @@ module Ci
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
+    has_many :deployments, as: :deployable
+
     serialize :options
     serialize :yaml_variables
 
@@ -125,10 +127,12 @@ module Ci
       !self.pipeline.statuses.latest.include?(self)
     end
 
-    def last_deployment
-      return @last_deployment if defined?(@last_deployment)
+    def deployable?
+      self.environment.present?
+    end
 
-      @last_deployment = Deployment.where(deployable: self).order(id: :desc).last
+    def last_deployment
+      deployments.order(id: :desc).last
     end
 
     def depends_on_builds
