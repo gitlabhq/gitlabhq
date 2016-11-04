@@ -23,3 +23,27 @@
   }
 }
 
+.filtered-search-container {
+  display: flex;
+}
+
+.filtered-search-input-container {
+  display: flex;
+  position: relative;
+  width: 100%;
+
+  .form-control {
+    padding-left: 25px;
+
+    &:focus ~ .fa-filter {
+      color: #444;
+    }
+  }
+
+  .fa-filter {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: $gray-darkest;
+  }
+}
