@@ -636,12 +636,35 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request_params
-    params.require(:merge_request).permit(
-      :title, :assignee_id, :source_project_id, :source_branch,
-      :target_project_id, :target_branch, :milestone_id, :approver_ids,
-      :state_event, :description, :task_num, :force_remove_source_branch,
-      :approvals_before_merge, :lock_version, :approver_group_ids, label_ids: []
-    )
+    params.require(:merge_request)
+      .permit(merge_request_params_ce + merge_request_params_ee)
+  end
+
+  def merge_request_params_ce
+    [
+      :assignee_id,
+      :description,
+      :force_remove_source_branch,
+      :lock_version,
+      :milestone_id,
+      :source_branch,
+      :source_project_id,
+      :state_event,
+      :target_branch,
+      :target_project_id,
+      :task_num,
+      :title,
+
+      label_ids: []
+    ]
+  end
+
+  def merge_request_params_ee
+    %i[
+      approvals_before_merge
+      approver_group_ids
+      approver_ids
+    ]
   end
 
   def clamp_approvals_before_merge(mr_params)
