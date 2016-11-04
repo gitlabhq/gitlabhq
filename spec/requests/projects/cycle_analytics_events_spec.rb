@@ -14,71 +14,78 @@ describe 'cycle analytics events' do
       login_as(user)
     end
 
-    it 'lists the issue events in the right order' do
+    it 'lists the issue events' do
       get namespace_project_cycle_analytics_issue_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['issues']).not_to be_empty
 
       first_issue_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
+      expect(json_response['issues'].first['iid']).to eq(first_issue_iid)
     end
 
-    it 'lists the plan events in the right order' do
+    it 'lists the plan events' do
       get namespace_project_cycle_analytics_plan_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['commits']).not_to be_empty
 
-      first_date = DateTime.parse(json_response['events'].first['commit']['authored_date'])
-      last_date = DateTime.parse(json_response['events'].last['commit']['authored_date'])
+      commits = []
 
-      expect(first_date).to be > last_date
+      MergeRequest.all.each do |mr|
+        mr.merge_request_diff.st_commits.each do |commit|
+          commits << { date: commit[:authored_date], sha: commit[:id] }
+        end
+      end
+
+      newest_sha = commits.sort_by { |k| k['date'] }.first[:sha][0...8]
+
+      expect(json_response['commits'].first['sha']).to eq(newest_sha)
     end
 
-    it 'lists the code events in the right order' do
+    it 'lists the code events' do
       get namespace_project_cycle_analytics_code_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['merge_requests']).not_to be_empty
 
       first_mr_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['events'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['merge_requests'].first['iid']).to eq(first_mr_iid)
     end
 
-    it 'lists the test events in the right order' do
+    it 'lists the test events' do
       get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['builds']).not_to be_empty
 
-      expect(json_response['events'].first['pipeline']).not_to be_empty
+      expect(json_response['builds'].first['date']).not_to be_empty
     end
 
-    it 'lists the review events in the right order' do
+    it 'lists the review events' do
       get namespace_project_cycle_analytics_review_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['merge_requests']).not_to be_empty
 
       first_mr_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['events'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['merge_requests'].first['iid']).to eq(first_mr_iid)
     end
 
-    it 'lists the staging events in the right order' do
+    it 'lists the staging events' do
       get namespace_project_cycle_analytics_staging_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['builds']).not_to be_empty
 
-      expect(json_response['events'].first['pipeline']).not_to be_empty
+      expect(json_response['builds'].first['date']).not_to be_empty
     end
 
-    it 'lists the production events in the right order' do
+    it 'lists the production events' do
       get namespace_project_cycle_analytics_production_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      expect(json_response['issues']).not_to be_empty
 
       first_issue_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
+      expect(json_response['issues'].first['iid']).to eq(first_issue_iid)
     end
   end
 
@@ -94,6 +101,9 @@ describe 'cycle analytics events' do
 
     pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha)
     pipeline.run
+
+    create(:ci_build, pipeline: pipeline, status: :success, author: user)
+    create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
     merge_merge_requests_closing_issue(issue)
   end
