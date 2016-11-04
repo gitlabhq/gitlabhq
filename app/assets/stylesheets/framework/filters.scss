@@ -95,4 +95,13 @@
 .droplab-menu {
   position: relative;
   top: 0;
+
+  li {
+    padding: 8px;
+  }
+
+  li:hover {
+    color: white;
+    background-color: $gl-link-color;
+  }
 }
