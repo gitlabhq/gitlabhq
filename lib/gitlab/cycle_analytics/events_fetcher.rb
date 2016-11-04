@@ -29,6 +29,10 @@ module Gitlab
       def review_custom_query(base_query)
         base_query.join(user_table).on(mr_table[:author_id].eq(user_table[:id]))
       end
+
+      def test_custom_query(base_query)
+        base_query.join(build_table).on(mr_metrics_table[:ci_commit_id].eq(build_table[:commit_id]))
+      end
     end
   end
 end

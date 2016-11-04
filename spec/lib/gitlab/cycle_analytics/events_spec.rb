@@ -112,16 +112,47 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     before do
+      create(:ci_build, pipeline: pipeline, status: :success)
+      create(:ci_build, pipeline: pipeline, status: :success)
+
       pipeline.run!
       pipeline.succeed!
     end
 
-    it 'has the build info as a pipeline' do
-      expect(subject.test_events.first['pipeline']).to eq(pipeline)
+    it 'has the name' do
+      expect(subject.test_events.first['name']).not_to be_nil
+    end
+
+    it 'has the ID' do
+      expect(subject.test_events.first['id']).not_to be_nil
+    end
+
+    it 'has the URL' do
+      expect(subject.test_events.first['url']).not_to be_nil
+    end
+
+    it 'has the branch name' do
+      expect(subject.test_events.first['branch']).not_to be_nil
+    end
+
+    it 'has the branch URL' do
+      expect(subject.test_events.first['branch_url']).not_to be_nil
+    end
+
+    it 'has the short SHA' do
+      expect(subject.test_events.first['sha']).not_to be_nil
+    end
+
+    it 'has the commit URL' do
+      expect(subject.test_events.first['commit_url']).not_to be_nil
+    end
+
+    it 'has the date' do
+      expect(subject.test_events.first['date']).not_to be_nil
     end
 
     it 'has the total time' do
-      expect(subject.test_events.first['total_time']).to eq('less than a minute')
+      expect(subject.test_events.first['total_time']).not_to be_nil
     end
   end
 

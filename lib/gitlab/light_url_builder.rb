@@ -16,6 +16,7 @@ module Gitlab
     end
 
     def url
+      #TODO refactor this
       case @entity
         when :issue
           issue_url
@@ -27,6 +28,10 @@ module Gitlab
           commit_url
         when :merge_request
           mr_url
+        when :build_url
+          namespace_project_build_url(@project.namespace, @project, @id)
+        when :branch_url
+          branch_url
         else
           raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
@@ -60,6 +65,19 @@ module Gitlab
                                             project_id: @project,
                                             id: @id
                                           }.merge!(@opts))
+    end
+
+
+    def pipeline_url
+      namespace_project_build_url({
+                                       namespace_id: @project.namespace,
+                                       project_id: @project,
+                                       id: @id
+                                     }.merge!(@opts))
+    end
+
+    def branch_url
+      "#{project_url(@project)}/commits/#{@id}"
     end
   end
 end

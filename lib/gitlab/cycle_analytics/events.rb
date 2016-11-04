@@ -32,8 +32,15 @@ module Gitlab
 
       def test_events
         @fetcher.fetch(stage: :test).each do |event|
-          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
-          event['pipeline'] = ::Ci::Pipeline.find_by_id(event['ci_commit_id']) # we may not have a pipeline
+          build = ::Ci::Build.find(event['id'])
+          event['name'] = build.name
+          event['url'] = Gitlab::LightUrlBuilder.build(entity: :build_url, project: @project, id: build.id)
+          event['branch'] = build.ref
+          event['branch_url'] = Gitlab::LightUrlBuilder.build(entity: :branch_url, project: @project, id: build.ref)
+          event['sha'] = build.short_sha
+          event['commit_url'] = Gitlab::LightUrlBuilder.build(entity: :commit_url, project: @project, id: build.sha)
+          event['date'] = build.started_at
+          event['total_time'] = build.duration
         end
       end
 
