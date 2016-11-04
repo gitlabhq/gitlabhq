@@ -21,6 +21,9 @@ The `merge_request` value is a reference to a merge request that adds this
 entry, and the `author` key is used to give attribution to community
 contributors. Both are optional.
 
+Community contributors and core team members are encouraged to add their name to
+the `author` field. GitLab team members should not.
+
 If you're working on the GitLab EE repository, the entry will be added to
 `changelogs/unreleased-ee/` instead.
 
@@ -46,13 +49,14 @@ author:
 
 The entry filename is based on the name of the current Git branch. If you run
 the command above on a branch called `feature/hey-dz`, it will generate a
-`changelogs/unreleased/feature-hey-dz` file.
+`changelogs/unreleased/feature-hey-dz.yml` file.
 
 ### Arguments
 
 | Argument          | Shorthand | Purpose                                       |
 | ----------------- | --------- | --------------------------------------------- |
 | `--amend`         |           | Amend the previous commit                     |
+| `--force`         | `-f`      | Overwrite an existing entry                   |
 | `--merge-request` | `-m`      | Merge Request ID                              |
 | `--dry-run`       | `-n`      | Don't actually write anything, just print     |
 | `--git-username`  | `-u`      | Use Git user.name configuration as the author |
@@ -76,6 +80,23 @@ create changelogs/unreleased/feature-hey-dz.yml
 ---
 title: Added an awesome new feature to GitLab
 merge_request:
+author:
+```
+
+#### `--force` or `-f`
+
+Use **`--force`** or **`-f`** to overwrite an existing changelog entry if it
+already exists.
+
+```text
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!'
+error changelogs/unreleased/feature-hey-dz.yml already exists! Use `--force` to overwrite.
+
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!' --force
+create changelogs/unreleased/feature-hey-dz.yml
+---
+title: Hey DZ, I added a feature to GitLab!
+merge_request: 1983
 author:
 ```
 

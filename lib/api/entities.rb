@@ -43,14 +43,13 @@ module API
     end
 
     class Hook < Grape::Entity
-      expose :id, :url, :created_at
+      expose :id, :url, :created_at, :push_events, :tag_push_events
+      expose :enable_ssl_verification
     end
 
     class ProjectHook < Hook
-      expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events
+      expose :project_id, :issues_events, :merge_requests_events
       expose :note_events, :build_events, :pipeline_events, :wiki_page_events
-      expose :enable_ssl_verification
     end
 
     class BasicProjectDetails < Grape::Entity
@@ -510,6 +509,7 @@ module API
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
       expose :repository_storage
+      expose :repository_storages
       expose :koding_enabled
       expose :koding_url
     end

@@ -102,7 +102,7 @@
                   = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
         - if Gitlab.config.registry.enabled
-          .form-group
+          .form-group.js-container-registry{ style: ("display: none;" if @project.project_feature.send(:repository_access_level) == 0) }
             .checkbox
               = f.label :container_registry_enabled do
                 = f.check_box :container_registry_enabled
