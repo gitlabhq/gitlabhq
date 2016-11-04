@@ -7,6 +7,7 @@ describe EnvironmentSerializer do
       .represent(resource)
   end
 
+  let(:json) { serializer.as_json }
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -27,16 +28,16 @@ describe EnvironmentSerializer do
     let(:resource) { deployment.environment }
 
     it 'it generates payload for single object' do
-      expect(serializer.as_json).to be_an_instance_of Hash
+      expect(json).to be_an_instance_of Hash
     end
 
     it 'contains important elements of environment' do
-      expect(serializer.as_json)
+      expect(json)
         .to include(:name, :external_url, :environment_url, :last_deployment)
     end
 
     it 'contains relevant information about last deployment' do
-      last_deployment = serializer.as_json.fetch(:last_deployment)
+      last_deployment = json.fetch(:last_deployment)
 
       expect(last_deployment)
         .to include(:ref, :user, :commit, :deployable, :manual_actions)
@@ -48,12 +49,12 @@ describe EnvironmentSerializer do
     let(:resource) { create_list(:environment, 2) }
 
     it 'contains important elements of environment' do
-      expect(serializer.as_json.first)
+      expect(json.first)
         .to include(:last_deployment, :name, :external_url)
     end
 
     it 'generates payload for collection' do
-      expect(serializer.as_json).to be_an_instance_of Array
+      expect(json).to be_an_instance_of Array
     end
   end
 end
