@@ -12,6 +12,7 @@ module API
       end
       get do
         hooks = SystemHook.all
+
         present hooks, with: Entities::Hook
       end
 
@@ -19,10 +20,14 @@ module API
         success Entities::Hook
       end
       params do
-        requires :url, type: String, desc: 'The URL for the system hook'
+        requires :url, type: String, desc: "The URL to send the request to"
+        optional :token, type: String, desc: 'The token used to validate payloads'
+        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
+        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
+        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
       end
       post do
-        hook = SystemHook.new declared(params).to_h
+        hook = SystemHook.new declared(params, include_missing: false).to_h
 
         if hook.save
           present hook, with: Entities::Hook

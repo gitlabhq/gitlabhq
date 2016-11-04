@@ -277,6 +277,7 @@ describe API::API, api: true do
 
       context 'with regular branch' do
         before do
+          pipeline.reload
           pipeline.update(ref: 'master',
                           sha: project.commit('master').sha)
 
@@ -288,6 +289,7 @@ describe API::API, api: true do
 
       context 'with branch name containing slash' do
         before do
+          pipeline.reload
           pipeline.update(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
         end

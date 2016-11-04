@@ -51,8 +51,8 @@ describe Projects::UpdateMirrorService do
 
         described_class.new(project, project.owner).execute
 
-        expect(project.repository.find_branch('existing-branch').target)
-          .to eq(project.repository.find_branch('master').target)
+        expect(project.repository.find_branch('existing-branch').dereferenced_target)
+          .to eq(project.repository.find_branch('master').dereferenced_target)
       end
 
       it "doesn't update diverged branches" do
@@ -60,8 +60,8 @@ describe Projects::UpdateMirrorService do
 
         described_class.new(project, project.owner).execute
 
-        expect(project.repository.find_branch('markdown').target)
-          .not_to eq(project.repository.find_branch('master').target)
+        expect(project.repository.find_branch('markdown').dereferenced_target)
+          .not_to eq(project.repository.find_branch('master').dereferenced_target)
       end
     end
 
@@ -102,7 +102,7 @@ describe Projects::UpdateMirrorService do
 
   def fetch_mirror(repository)
     rugged = repository.rugged
-    masterrev = repository.find_branch('master').target.id
+    masterrev = repository.find_branch('master').dereferenced_target.id
 
     parentrev = repository.commit(masterrev).parent_id
     rugged.references.create('refs/heads/existing-branch', parentrev)

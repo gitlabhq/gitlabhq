@@ -1,5 +1,9 @@
 - @no_container = true
 - page_title "Cycle Analytics"
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('cycle_analytics/cycle_analytics_bundle.js')
+
 = render "projects/pipelines/head"
 
 #cycle-analytics{class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) }}

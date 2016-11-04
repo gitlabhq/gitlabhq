@@ -27,8 +27,8 @@ class GitTagPushService < BaseService
       tag_name = Gitlab::Git.ref_name(params[:ref])
       tag = project.repository.find_tag(tag_name)
 
-      if tag && tag.object_sha == params[:newrev]
-        commit = project.commit(tag.target)
+      if tag && tag.target == params[:newrev]
+        commit = project.commit(tag.dereferenced_target)
         commits = [commit].compact
         message = tag.message
       end

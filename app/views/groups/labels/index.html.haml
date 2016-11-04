@@ -13,7 +13,7 @@
   .other-labels
     - if @labels.present?
       %ul.content-list.manage-labels-list.js-other-labels
-        = render partial: 'shared/label', collection: @labels, as: :label
+        = render partial: 'shared/label', subject: @group, collection: @labels, as: :label
         = paginate @labels, theme: 'gitlab'
     - else
       .nothing-here-block

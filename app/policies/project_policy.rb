@@ -2,11 +2,11 @@ class ProjectPolicy < BasePolicy
   def rules
     team_access!(user)
 
-    owner = user.admin? ||
-            project.owner == user ||
+    owner = project.owner == user ||
             (project.group && project.group.has_owner?(user))
 
-    owner_access! if owner
+    owner_access! if user.admin? || owner
+    team_member_owner_access! if owner
 
     if project.public? || (project.internal? && !user.external?)
       guest_access!
@@ -16,7 +16,7 @@ class ProjectPolicy < BasePolicy
       can! :read_build if project.public_builds?
 
       if project.request_access_enabled &&
-         !(owner || project.team.member?(user) || project_group_member?(user))
+         !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
       end
     end
@@ -147,6 +147,10 @@ class ProjectPolicy < BasePolicy
 
     # EE-only
     can! :remove_pages
+  end
+
+  def team_member_owner_access!
+    team_member_reporter_access!
   end
 
   # Push abilities on the users team role

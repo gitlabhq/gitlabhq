@@ -18,7 +18,7 @@ describe Milestones::CloseService, services: true do
     it { expect(milestone).to be_closed }
 
     describe :event do
-      let(:event) { Event.first }
+      let(:event) { Event.recent.first }
 
       it { expect(event.milestone).to be_truthy }
       it { expect(event.target).to eq(milestone) }

@@ -62,6 +62,7 @@ Libraries with the following licenses are unacceptable for use:
 
 - [GNU GPL][GPL] (version 1, [version 2][GPLv2], [version 3][GPLv3], or any future versions): GPL-licensed libraries cannot be linked to from non-GPL projects.
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
+- [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
 
 ## Notes
 
@@ -93,3 +94,5 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [AGPLv3]: http://choosealicense.com/licenses/agpl-3.0/
 [GNU-GPL-FAQ]: http://www.gnu.org/licenses/gpl-faq.html#IfLibraryIsGPL
 [OSI-GPL]: https://opensource.org/faq#linking-proprietary-code
+[OSL]: https://opensource.org/licenses/OSL-3.0
+[OSL-GNU]: https://www.gnu.org/licenses/license-list.en.html#OSL

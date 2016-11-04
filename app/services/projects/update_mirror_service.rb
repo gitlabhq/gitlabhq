@@ -36,11 +36,11 @@ module Projects
         local_branch = local_branches[name]
 
         if local_branch.nil?
-          result = CreateBranchService.new(project, current_user).execute(name, upstream_branch.target.sha)
+          result = CreateBranchService.new(project, current_user).execute(name, upstream_branch.dereferenced_target.sha)
           if result[:status] == :error
             errors << result[:message]
           end
-        elsif local_branch.target == upstream_branch.target
+        elsif local_branch.dereferenced_target == upstream_branch.dereferenced_target
           # Already up to date
         elsif repository.diverged_from_upstream?(name)
           # Cannot be updated
@@ -49,7 +49,7 @@ module Projects
           end
         else
           begin
-            repository.ff_merge(current_user, upstream_branch.target, name)
+            repository.ff_merge(current_user, upstream_branch.dereferenced_target, name)
           rescue GitHooksService::PreReceiveError, Repository::CommitError => e
             errors << e.message
           end
@@ -73,8 +73,8 @@ module Projects
 
       tags.each do |tag|
         old_tag = old_tags[tag.name]
-        tag_target = tag.target.sha
-        old_tag_target = old_tag ? old_tag.target.sha : Gitlab::Git::BLANK_SHA
+        tag_target = tag.dereferenced_target.sha
+        old_tag_target = old_tag ? old_tag.dereferenced_target.sha : Gitlab::Git::BLANK_SHA
 
         next if old_tag_target == tag_target
 
@@ -96,7 +96,7 @@ module Projects
     # In Git is possible to tag blob objects, and those blob objects don't point to a Git commit so those tags
     # have no target.
     def repository_tags_with_target
-      repository.tags.select(&:target)
+      repository.tags.select(&:dereferenced_target)
     end
   end
 end

@@ -5,7 +5,7 @@ describe 'projects/issues/_related_branches' do
 
   let(:project) { create(:project) }
   let(:branch) { project.repository.find_branch('feature') }
-  let!(:pipeline) { create(:ci_pipeline, project: project, sha: branch.target.id, ref: 'feature') }
+  let!(:pipeline) { create(:ci_pipeline, project: project, sha: branch.dereferenced_target.id, ref: 'feature') }
 
   before do
     assign(:project, project)

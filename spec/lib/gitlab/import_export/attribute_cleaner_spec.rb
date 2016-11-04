@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::AttributeCleaner, lib: true do
+  let(:relation_class){ double('relation_class').as_null_object }
   let(:unsafe_hash) do
     {
+      'id' => 101,
       'service_id' => 99,
       'moved_to_id' => 99,
       'namespace_id' => 99,
@@ -27,8 +29,9 @@ describe Gitlab::ImportExport::AttributeCleaner, lib: true do
   end
 
   it 'removes unwanted attributes from the hash' do
-    described_class.clean!(relation_hash: unsafe_hash)
+    # allow(relation_class).to receive(:attribute_method?).and_return(true)
+    parsed_hash = described_class.clean(relation_hash: unsafe_hash, relation_class: relation_class)
 
-    expect(unsafe_hash).to eq(post_safe_hash)
+    expect(parsed_hash).to eq(post_safe_hash)
   end
 end

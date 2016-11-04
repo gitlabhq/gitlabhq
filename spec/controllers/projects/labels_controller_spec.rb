@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::LabelsController do
   let(:group)   { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:empty_project, namespace: group) }
   let(:user)    { create(:user) }
 
   before do
@@ -73,16 +73,27 @@ describe Projects::LabelsController do
 
   describe 'POST #generate' do
     let(:admin) { create(:admin) }
-    let(:project) { create(:empty_project) }
 
     before do
       sign_in(admin)
     end
 
-    it 'creates labels' do
-      post :generate, namespace_id: project.namespace.to_param, project_id: project.to_param
+    context 'personal project' do
+      let(:personal_project) { create(:empty_project) }
 
-      expect(response).to have_http_status(302)
+      it 'creates labels' do
+        post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project.to_param
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'project belonging to a group' do
+      it 'creates labels' do
+        post :generate, namespace_id: project.namespace.to_param, project_id: project.to_param
+
+        expect(response).to have_http_status(302)
+      end
     end
   end
 end

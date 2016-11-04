@@ -11,6 +11,7 @@ feature 'Issue filtering by Milestone', feature: true do
     visit_issues(project)
     filter_by_milestone(Milestone::None.title)
 
+    expect(page).to have_css('.milestone-filter .dropdown-toggle-text', text: 'No Milestone')
     expect(page).to have_css('.issue', count: 1)
   end
 
@@ -22,6 +23,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
+      expect(page).to have_css('.milestone-filter .dropdown-toggle-text', text: 'Upcoming')
       expect(page).to have_css('.issue', count: 0)
     end
 
@@ -33,6 +35,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
+      expect(page).to have_css('.milestone-filter .dropdown-toggle-text', text: 'Upcoming')
       expect(page).to have_css('.issue', count: 1)
     end
 
@@ -44,6 +47,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
+      expect(page).to have_css('.milestone-filter .dropdown-toggle-text', text: 'Upcoming')
       expect(page).to have_css('.issue', count: 0)
     end
   end
@@ -55,6 +59,7 @@ feature 'Issue filtering by Milestone', feature: true do
     visit_issues(project)
     filter_by_milestone(milestone.title)
 
+    expect(page).to have_css('.milestone-filter .dropdown-toggle-text', text: milestone.title)
     expect(page).to have_css('.issue', count: 1)
   end
 
@@ -70,6 +75,7 @@ feature 'Issue filtering by Milestone', feature: true do
       visit_issues(project)
       filter_by_milestone(milestone.title)
 
+      expect(page).to have_css('.milestone-filter .dropdown-toggle-text', text: milestone.title)
       expect(page).to have_css('.issue', count: 1)
     end
   end

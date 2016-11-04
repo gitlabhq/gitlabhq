@@ -97,7 +97,11 @@
       return $.ajax({
         type: 'PATCH',
         url: $('form.js-issuable-update').attr('action'),
-        data: patchData
+        data: patchData,
+        success: function(mergeRequest) {
+          document.querySelector('#task_status').innerText = mergeRequest.task_status;
+          document.querySelector('#task_status_short').innerText = mergeRequest.task_status_short;
+        }
       });
     // TODO (rspeicher): Make the merge request description inline-editable like a
     // note so that we can re-use its form here

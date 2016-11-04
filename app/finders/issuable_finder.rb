@@ -127,7 +127,7 @@ class IssuableFinder
 
     @labels =
       if labels? && !filter_by_no_label?
-        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute
+        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute(skip_authorization: true)
       else
         Label.none
       end
@@ -274,7 +274,7 @@ class IssuableFinder
         items = items.with_label(label_names, params[:sort])
 
         if projects
-          label_ids = LabelsFinder.new(current_user, project_ids: projects).execute.select(:id)
+          label_ids = LabelsFinder.new(current_user, project_ids: projects).execute(skip_authorization: true).select(:id)
           items = items.where(labels: { id: label_ids })
         end
       end

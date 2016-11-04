@@ -180,7 +180,7 @@ GEM
       railties
       rotp (~> 2.0)
     diff-lcs (1.2.5)
-    diffy (3.0.7)
+    diffy (3.1.0)
     docile (1.1.5)
     doorkeeper (4.2.0)
       railties (>= 4.2)
@@ -305,7 +305,7 @@ GEM
       posix-spawn (~> 0.3)
     gitlab-license (1.0.0)
     gitlab-markup (1.5.0)
-    gitlab_git (10.6.8)
+    gitlab_git (10.7.0)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.7.3)
       github-linguist (~> 4.7.0)
@@ -544,7 +544,7 @@ GEM
     rack (1.6.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-attack (4.3.1)
+    rack-attack (4.4.1)
       rack
     rack-cors (0.4.0)
     rack-mount (0.8.3)
@@ -874,7 +874,7 @@ DEPENDENCIES
   default_value_for (~> 3.0.0)
   devise (~> 4.2)
   devise-two-factor (~> 3.0.0)
-  diffy (~> 3.0.3)
+  diffy (~> 3.1.0)
   doorkeeper (~> 4.2.0)
   dropzonejs-rails (~> 0.7.1)
   elasticsearch-model
@@ -901,7 +901,7 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 1.0)
   gitlab-markup (~> 1.5.0)
-  gitlab_git (~> 10.6.8)
+  gitlab_git (~> 10.7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)
@@ -962,7 +962,7 @@ DEPENDENCIES
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.0)
   pry-rails (~> 0.3.4)
-  rack-attack (~> 4.3.1)
+  rack-attack (~> 4.4.1)
   rack-cors (~> 0.4.0)
   rack-oauth2 (~> 1.2.1)
   rails (= 4.2.7.1)
@@ -1032,4 +1032,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.13.3
+   1.13.5

@@ -37,10 +37,10 @@ module Banzai
             end
 
           elsif element_node?(node)
-            yield_valid_link(node) do |link, text|
+            yield_valid_link(node) do |link, inner_html|
               if link =~ ref_start_pattern
                 replace_link_node_with_href(node, link) do
-                  issue_link_filter(link, link_text: text)
+                  issue_link_filter(link, link_content: inner_html)
                 end
               end
             end
@@ -54,10 +54,11 @@ module Banzai
       # issue's details page.
       #
       # text - String text to replace references in.
+      # link_content - Original content of the link being replaced.
       #
       # Returns a String with `JIRA-123` references replaced with links. All
       # links have `gfm` and `gfm-issue` class names attached for styling.
-      def issue_link_filter(text, link_text: nil)
+      def issue_link_filter(text, link_content: nil)
         project = context[:project]
 
         self.class.references_in(text, issue_reference_pattern) do |match, id|
@@ -69,11 +70,11 @@ module Banzai
           klass = reference_class(:issue)
           data  = data_attribute(project: project.id, external_issue: id)
 
-          text = link_text || match
+          content = link_content || match
 
           %(<a href="#{url}" #{data}
                title="#{escape_once(title)}"
-               class="#{klass}">#{escape_once(text)}</a>)
+               class="#{klass}">#{content}</a>)
         end
       end
 

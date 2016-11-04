@@ -20,7 +20,7 @@ describe TagsFinder do
 
         result = tags_finder.execute
         recently_updated_tag = repository.tags.max do |a, b|
-          repository.commit(a.target).committed_date <=> repository.commit(b.target).committed_date
+          repository.commit(a.dereferenced_target).committed_date <=> repository.commit(b.dereferenced_target).committed_date
         end
 
         expect(result.first.name).to eq(recently_updated_tag.name)
