@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe BuildEntity do
-  subject do
-    described_class.new(build, request: double).as_json
+  let(:entity) do
+    described_class.new(build, request: double)
   end
+
+  subject { entity.as_json }
 
   context 'when build is a regular job' do
     let(:build) { create(:ci_build) }
