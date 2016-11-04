@@ -54,10 +54,18 @@ module CiStatusHelper
     custom_icon(icon_name)
   end
 
-  def render_commit_status(commit, tooltip_placement: 'auto left')
+  def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')
     project = commit.project
-    path = pipelines_namespace_project_commit_path(project.namespace, project, commit)
-    render_status_with_link('commit', commit.status, path, tooltip_placement: tooltip_placement)
+    path = pipelines_namespace_project_commit_path(
+      project.namespace,
+      project,
+      commit)
+
+    render_status_with_link(
+      'commit',
+      commit.status(ref),
+      path,
+      tooltip_placement: tooltip_placement)
   end
 
   def render_pipeline_status(pipeline, tooltip_placement: 'auto left')

@@ -1,7 +1,9 @@
-- if commit.status
-  = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{commit.status}" do
-    = ci_icon_for_status(commit.status)
-    = ci_label_for_status(commit.status)
+- ref = local_assigns.fetch(:ref)
+- status = commit.status(ref)
+- if status
+  = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{status}" do
+    = ci_icon_for_status(status)
+    = ci_label_for_status(status)
 
 = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"
