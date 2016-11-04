@@ -573,8 +573,7 @@ In its simplest form, the `environment` keyword can be defined like:
 deploy to production:
   stage: deploy
   script: git push production HEAD:master
-  environment:
-    name: production
+  environment: production
 ```
 
 In the above example, the `deploy to production` job will be marked as doing a
@@ -674,61 +673,6 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `environment:name`
 - `environment:action`
 
-#### environment:name
-
-#### environment:url
-
-Optional.
-
-#### environment:on_stop
-
-> [Introduced][ce-6669] in GitLab 8.13.
-
-Closing environments can be achieved with the `on_stop` keyword defined under
-`environment`. It declares a different job that has to be run in order to close
-the environment.
-
-This job is required to have the following keywords defined:
-
-- `when` - [reference](#when)
-- `environment:name`
-- `environment:action` - reference below
-
-See below for an example.
-
-#### environment:action
-
-> [Introduced][ce-6669] in GitLab 8.13.
-
-The `action` keyword is to be used in conjunction with `on_stop` and is defined
-in the job that depends on the one that was called from.
-
-Take for instance:
-
-```yaml
-review:
-  stage: deploy
-  script: make deploy-app
-  environment:
-    name: review
-    on_stop: stop_review
-
-stop_review:
-  stage: deploy
-  script: make delete-app
-  when: manual
-  environment:
-    name: review
-    action: stop
-```
-
-In the above example we set up the `review` job to deploy to the `review`
-environment, and we also defined a new `stop_review` job under `on_stop`.
-Once the `review` job is successfully finished, it will trigger the `stop_review`
-job based on what is defined under `when`. In this case we set it up to `manual`
-so it will need a [manual action](#manual-actions) via GitLab's web interface
-in order to run.
-
 #### dynamic environments
 
 > [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
@@ -737,9 +681,7 @@ in order to run.
 These parameters can use any of the defined [CI variables](#variables)
 (including predefined, secure variables and `.gitlab-ci.yml` variables).
 
----
-
-**Example configurations**
+For example:
 
 ```
 deploy as review app:
