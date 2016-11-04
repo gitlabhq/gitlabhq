@@ -16,24 +16,24 @@ module Gitlab
     end
 
     def url
-      #TODO refactor this
+      # TODO refactor this
       case @entity
-        when :issue
-          issue_url
-        when :user
-          user_url(@id)
-        when :user_avatar_url
-          user_avatar_url
-        when :commit_url
-          commit_url
-        when :merge_request
-          mr_url
-        when :build_url
-          namespace_project_build_url(@project.namespace, @project, @id)
-        when :branch_url
-          branch_url
-        else
-          raise NotImplementedError.new("No URL builder defined for #{object.class}")
+      when :issue
+        issue_url
+      when :user
+        user_url(@id)
+      when :user_avatar_url
+        user_avatar_url
+      when :commit_url
+        commit_url
+      when :merge_request
+        mr_url
+      when :build_url
+        namespace_project_build_url(@project.namespace, @project, @id)
+      when :branch_url
+        branch_url
+      else
+        raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
     end
 
@@ -66,7 +66,6 @@ module Gitlab
                                             id: @id
                                           }.merge!(@opts))
     end
-
 
     def pipeline_url
       namespace_project_build_url({
