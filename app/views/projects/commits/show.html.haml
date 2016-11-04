@@ -35,7 +35,7 @@
 
   %div{id: dom_id(@project)}
     %ol#commits-list.list-unstyled.content_list
-      = render "commits", project: @project
+      = render 'commits', project: @project, ref: @ref
   = spinner
 
 :javascript
