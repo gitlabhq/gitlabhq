@@ -5,10 +5,6 @@ class EntityRequest
   # that is present in the controller (see  #20045).
   #
   def initialize(parameters)
-    merge!(parameters)
-  end
-
-  def merge!(parameters)
     parameters.each do |key, value|
       define_singleton_method(key) { value }
     end

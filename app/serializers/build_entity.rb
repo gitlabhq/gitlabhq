@@ -19,6 +19,6 @@ class BuildEntity < Grape::Entity
   private
 
   def url_to(route, build)
-    @urls.send("#{route}_url", build.project.namespace, build.project, build)
+    send("#{route}_url", build.project.namespace, build.project, build)
   end
 end

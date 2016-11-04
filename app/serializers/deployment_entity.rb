@@ -11,7 +11,7 @@ class DeploymentEntity < Grape::Entity
     end
 
     expose :ref_url do |deployment|
-      @urls.namespace_project_tree_url(
+      namespace_project_tree_url(
         deployment.project.namespace,
         deployment.project,
         id: deployment.ref)

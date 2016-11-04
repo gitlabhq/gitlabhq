@@ -4,9 +4,9 @@ class CommitEntity < API::Entities::RepoCommit
   expose :author, using: UserEntity
 
   expose :commit_url do |commit|
-    @urls.namespace_project_tree_url(
-      @request.project.namespace,
-      @request.project,
+    namespace_project_tree_url(
+      request.project.namespace,
+      request.project,
       id: commit.id)
   end
 end

@@ -10,7 +10,7 @@ class EnvironmentEntity < Grape::Entity
   expose :stoppable?
 
   expose :environment_url do |environment|
-    @urls.namespace_project_environment_url(
+    namespace_project_environment_url(
       environment.project.namespace,
       environment.project,
       environment)

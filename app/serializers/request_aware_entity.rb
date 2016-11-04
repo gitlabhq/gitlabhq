@@ -1,10 +1,11 @@
 module RequestAwareEntity
-  attr_reader :request
+  extend ActiveSupport::Concern
 
-  def initialize(object, options = {})
-    super(object, options)
+  included do
+    include Gitlab::Routing.url_helpers
+  end
 
-    @request = options.fetch(:request)
-    @urls = Gitlab::Routing.url_helpers
+  def request
+    @options.fetch(:request)
   end
 end
