@@ -50,6 +50,7 @@ module Gitlab
         repository_checks_enabled: true,
         container_registry_token_expire_delay: 5,
         user_default_external: false,
+        sidekiq_throttling_enabled: false,
       )
     end
 

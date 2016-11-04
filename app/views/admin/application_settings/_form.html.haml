@@ -284,6 +284,19 @@
           results in fewer but larger UDP packets being sent.
 
   %fieldset
+    %legend Background Jobs
+    %p
+      These settings require a restart to take effect.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :sidekiq_throttling_enabled do
+            = f.check_box :sidekiq_throttling_enabled
+            Enable Sidekiq Job Throttling
+          .help-block
+            Limit the amount of resources slow running jobs are assigned.
+
+  %fieldset
     %legend Spam and Anti-bot Protection
     .form-group
       .col-sm-offset-2.col-sm-10

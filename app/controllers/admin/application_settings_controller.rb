@@ -117,6 +117,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :send_user_confirmation_email,
       :container_registry_token_expire_delay,
       :enabled_git_access_protocol,
+      :sidekiq_throttling_enabled,
       :housekeeping_enabled,
       :housekeeping_bitmaps_enabled,
       :housekeeping_incremental_repack_period,

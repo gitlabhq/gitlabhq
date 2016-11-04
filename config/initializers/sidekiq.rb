@@ -1,3 +1,6 @@
+require 'gitlab/current_settings'
+include Gitlab::CurrentSettings
+
 # Custom Redis configuration
 redis_config_hash = Gitlab::Redis.params
 redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
@@ -28,6 +31,19 @@ Sidekiq.configure_server do |config|
     end
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
+
+  # allow it to fail: it may do so when create_from_defaults is executed before migrations are actually done
+  begin
+    throttling_enabled = current_application_settings.sidekiq_throttling_enabled
+  rescue
+    throttling_enabled = false
+  end
+
+  if throttling_enabled
+    { 'project_cache' => 0.1, 'pipeline' => 0.1 }.each do |queue, ratio|
+      Sidekiq::Queue[queue].limit = (ratio * Sidekiq.options[:concurrency]).ceil
+    end
+  end
 
   # Database pool should be at least `sidekiq_concurrency` + 2
   # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md

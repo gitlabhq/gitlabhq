@@ -180,6 +180,7 @@ class ApplicationSetting < ActiveRecord::Base
       container_registry_token_expire_delay: 5,
       repository_storages: ['default'],
       user_default_external: false,
+      sidekiq_throttling_enabled: false,
       housekeeping_enabled: true,
       housekeeping_bitmaps_enabled: true,
       housekeeping_incremental_repack_period: 10,
