@@ -353,9 +353,9 @@
   %fieldset
     %legend Repository Storage
     .form-group
-      = f.label :repository_storage, 'Storage path for new projects', class: 'control-label col-sm-2'
+      = f.label :repository_storages, 'Storage paths for new projects', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.select :repository_storage, repository_storage_options_for_select, {}, class: 'form-control'
+        = f.select :repository_storages, repository_storages_options_for_select, {include_hidden: false}, multiple: true, class: 'form-control'
         .help-block
           Manage repository storage paths. Learn more in the
           = succeed "." do
