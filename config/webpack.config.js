@@ -47,7 +47,13 @@ var config = {
       {
         test: /\.es6$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        query: {
+          // "use strict" was broken in sprockets-es6 due to sprockets concatination method.
+          // many es5 strict errors which were never caught ended up in our es6 assets as a result.
+          // this hack is necessary until they can be fixed.
+          blacklist: ["useStrict"]
+        }
       },
       {
         test: /\.(js|es6)$/,
