@@ -905,6 +905,7 @@ ActiveRecord::Schema.define(version: 20161103171205) do
     t.boolean "has_external_wiki"
     t.boolean "lfs_enabled"
     t.text "description_html"
+    t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
