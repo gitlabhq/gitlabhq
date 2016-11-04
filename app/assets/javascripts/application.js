@@ -13,6 +13,7 @@
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
 /*= require jquery.endless-scroll */
+/*= require jquery.timeago */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
