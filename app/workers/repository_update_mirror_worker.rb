@@ -4,7 +4,8 @@ class RepositoryUpdateMirrorWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  sidekiq_options queue: :gitlab_shell
+  # Retry not neccessary. It will try again at the next update interval.
+  sidekiq_options queue: :gitlab_shell, retry: false
 
   attr_accessor :project, :repository, :current_user
 
