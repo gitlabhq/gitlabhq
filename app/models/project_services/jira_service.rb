@@ -209,7 +209,7 @@ class JiraService < IssueTrackerService
     entity_title = data[:entity][:title]
     project_name = data[:project][:name]
 
-    message = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title}'"
+    message = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title.chomp}'"
 
     unless comment_exists?(issue_key, message)
       send_message(issue_key, message)
