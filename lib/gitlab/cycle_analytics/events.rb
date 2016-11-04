@@ -17,7 +17,7 @@ module Gitlab
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           commit = first_time_reference_commit(event.delete('commits'), event)
           event['title'] = commit.title
-          event['url'] =  Gitlab::LightUrlBuilder.build(entity: :commit_url, project: @project, id: commit.id)
+          event['url'] = Gitlab::LightUrlBuilder.build(entity: :commit_url, project: @project, id: commit.id)
           event['sha'] = commit.short_id
           event['author_name'] = commit.author.name
           event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: commit.author.username)

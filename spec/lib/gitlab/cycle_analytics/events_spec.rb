@@ -21,6 +21,10 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.issue_events.first['title']).to eq(context.title)
     end
 
+    it 'has the URL' do
+      expect(subject.issue_events.first['url']).not_to be_nil
+    end
+
     it 'has an iid' do
       expect(subject.issue_events.first['iid']).to eq(context.iid.to_s)
     end
@@ -216,7 +220,6 @@ describe Gitlab::CycleAnalytics::Events do
       deploy_master
     end
 
-
     it 'has the name' do
       expect(subject.staging_events.first['name']).not_to be_nil
     end
@@ -274,6 +277,10 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.production_events.first['title']).to eq(context.title)
     end
 
+    it 'has the URL' do
+      expect(subject.production_events.first['url']).not_to be_nil
+    end
+
     it 'has an iid' do
       expect(subject.production_events.first['iid']).to eq(context.iid.to_s)
     end
@@ -282,12 +289,16 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.production_events.first['created_at']).to end_with('ago')
     end
 
-    it "has the author's email" do
-      expect(subject.production_events.first['email']).to eq(context.author.email)
+    it "has the author's URL" do
+      expect(subject.production_events.first['author_profile_url']).not_to be_nil
+    end
+
+    it "has the author's avatar URL" do
+      expect(subject.production_events.first['author_avatar_url']).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.production_events.first['name']).to eq(context.author.name)
+      expect(subject.production_events.first['author_name']).to eq(context.author.name)
     end
   end
 

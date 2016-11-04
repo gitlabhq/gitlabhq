@@ -87,9 +87,11 @@ module Gitlab
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
           projections: [issue_table[:title],
                         issue_table[:iid],
+                        issue_table[:id],
                         issue_table[:created_at],
-                        user_table[:name],
-                        user_table[:email]]
+                        user_table[:name].as('author_name'),
+                        user_table[:username].as('author_username'),
+                        user_table[:id].as('author_id')]
         }
       end
     end
