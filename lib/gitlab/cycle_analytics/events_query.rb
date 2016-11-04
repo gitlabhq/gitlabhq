@@ -3,9 +3,10 @@ module Gitlab
     class EventsQuery
       include MetricsFetcher
 
-      def initialize(project:, from:)
+      def initialize(project:, options: {})
         @project = project
-        @from = from
+        @from = options[:from]
+        @branch = options[:branch]
       end
 
       def execute(stage, &block)

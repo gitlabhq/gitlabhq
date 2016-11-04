@@ -38,6 +38,8 @@ module Gitlab
           where(issue_table[:deleted_at].eq(nil)).
           where(issue_table[:created_at].gteq(@from))
 
+        query = query.where(build_table[:ref].eq(@branch)) if name == :test && @branch
+
         # Load merge_requests
         query = query.join(mr_table, Arel::Nodes::OuterJoin).
           on(mr_table[:id].eq(mr_closing_issues_table[:merge_request_id])).

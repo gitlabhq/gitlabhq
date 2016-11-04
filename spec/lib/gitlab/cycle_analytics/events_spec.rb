@@ -6,7 +6,7 @@ describe Gitlab::CycleAnalytics::Events do
   let(:user) { create(:user, :admin) }
   let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
-  subject { described_class.new(project: project, from: from_date) }
+  subject { described_class.new(project: project, options: { from: from_date }) }
 
   before do
     setup(context)

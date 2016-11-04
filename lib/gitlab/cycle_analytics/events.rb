@@ -3,10 +3,9 @@ module Gitlab
     class Events
       include ActionView::Helpers::DateHelper
 
-      def initialize(project:, from:)
+      def initialize(project:, options:)
         @project = project
-        @from = from
-        @fetcher = EventsFetcher.new(project: project, from: from)
+        @fetcher = EventsFetcher.new(project: project, options: options)
       end
 
       def issue_events

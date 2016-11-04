@@ -3,8 +3,8 @@ module Gitlab
     class EventsFetcher
       include MetricsFetcher
 
-      def initialize(project:, from:)
-        @query = EventsQuery.new(project: project, from: from)
+      def initialize(project:, options:)
+        @query = EventsQuery.new(project: project, options: options)
       end
 
       def fetch(stage:)

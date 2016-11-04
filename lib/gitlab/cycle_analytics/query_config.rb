@@ -56,7 +56,7 @@ module Gitlab
         { start_time_attrs: mr_metrics_table[:latest_build_started_at],
           end_time_attrs: mr_metrics_table[:latest_build_finished_at],
           projections: [build_table[:id]],
-          order: mr_table[:created_at]
+          order: build_table[:created_at]
         }
       end
 

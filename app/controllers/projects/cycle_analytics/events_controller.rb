@@ -17,6 +17,8 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   end
 
   def test
+    @opts = { from: start_date, branch: events_params[:branch_name] }
+
     render_events(builds: events.test_events)
   end
 
@@ -54,12 +56,16 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   end
 
   def events
-    @events ||= Gitlab::CycleAnalytics::Events.new(project: project, from: start_date)
+    @events ||= Gitlab::CycleAnalytics::Events.new(project: project, options: options)
+  end
+
+  def options
+    @opts ||= { from: start_date }
   end
 
   def events_params
     return {} unless params[:events].present?
 
-    { start_date: params[:events][:start_date] }
+    { start_date: params[:events][:start_date], branch_name: params[:events][:branch_name] }
   end
 end
