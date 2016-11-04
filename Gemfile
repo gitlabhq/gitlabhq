@@ -309,6 +309,8 @@ group :development, :test do
   gem 'knapsack', '~> 1.11.0'
 
   gem 'activerecord_sane_schema_dumper', '0.2'
+
+  gem 'stackprof', '~> 0.2.10'
 end
 
 group :test do
