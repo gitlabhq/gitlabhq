@@ -23,6 +23,8 @@
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
           options.showCurrentUser = $dropdown.data('current-user');
+          options.todoFilter = $dropdown.data('todo-filter');
+          options.todoStateFilter = $dropdown.data('todo-state-filter');
           showNullUser = $dropdown.data('null-user');
           showMenuAbove = $dropdown.data('showMenuAbove');
           showAnyUser = $dropdown.data('any-user');
@@ -394,6 +396,8 @@
           project_id: options.projectId || null,
           group_id: options.groupId || null,
           skip_ldap: options.skipLdap || null,
+          todo_filter: options.todoFilter || null,
+          todo_state_filter: options.todoStateFilter || null,
           current_user: options.showCurrentUser || null,
           push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
           author_id: options.authorId || null,
