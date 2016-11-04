@@ -82,7 +82,20 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
-    it 'returns 409 if label already exists' do
+    it 'returns 409 if label already exists in group' do
+      group = create(:group)
+      group_label = create(:group_label, group: group)
+      project.update(group: group)
+
+      post api("/projects/#{project.id}/labels", user),
+           name: group_label.name,
+           color: '#FFAABB'
+
+      expect(response).to have_http_status(409)
+      expect(json_response['message']).to eq('Label already exists')
+    end
+
+    it 'returns 409 if label already exists in project' do
       post api("/projects/#{project.id}/labels", user),
            name: 'label1',
            color: '#FFAABB'
