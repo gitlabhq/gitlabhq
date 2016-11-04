@@ -21,7 +21,20 @@
         event.target.value = '';
         event.target.placeholder = '';
 
-        event.target.nextElementSibling.innerHTML += `<li><span>test</span></li>`;
+        if (token === 'author') {
+
+          let ul = event.target.nextElementSibling;
+          ul.setAttribute('data-dynamic', true);
+
+          ul.innerHTML = `<li>
+            <img src="{{avatar_url}}" class="avatar" width="30">
+            <strong class="dropdown-menu-user-full-name"> {{name}} </strong>
+            <span class="dropdown-menu-user-username"> @{{username}} </span>
+          </li>`;
+          droplab.addData('filterDropdownInput', '/autocomplete/users.json?search=&per_page=20&active=true&project_id=2&group_id=&skip_ldap=&current_user=true&push_code_to_protected_branches=&author_id=&skip_users=');
+        }
+
+        // event.target.nextElementSibling.innerHTML += `<li><span>test</span></li>`;
         droplab.addHook(event.target);
       }
     }
