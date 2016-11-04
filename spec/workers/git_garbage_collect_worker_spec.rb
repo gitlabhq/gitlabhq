@@ -1,4 +1,3 @@
-require 'digest'
 require 'fileutils'
 
 require 'spec_helper'
