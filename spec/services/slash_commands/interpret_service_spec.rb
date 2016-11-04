@@ -210,6 +210,22 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'estimate command' do
+      it 'populates time_estimate: "3600" if content contains /estimate 1h' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(time_estimate: 3600)
+      end
+    end
+
+    shared_examples 'spend command' do
+      it 'populates time_spent: "3600" if content contains /spend 1h' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(time_spent: 3600)
+      end
+    end
+
     shared_examples 'empty command' do
       it 'populates {} if content contains an unsupported command' do
         _, updates = service.execute(content, issuable)
@@ -321,7 +337,7 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'multiple label with same argument' do
       let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
       let(:issuable) { issue }
-    end	
+    end
 
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
@@ -498,6 +514,16 @@ describe SlashCommands::InterpretService, services: true do
 
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'estimate command' do
+        let(:content) { '/estimate 1h' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'spend command' do
+        let(:content) { '/spend 1h' }
         let(:issuable) { issue }
       end
     end
