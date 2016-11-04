@@ -3,4 +3,4 @@ title: Add CI notifications. Who triggered a pipeline would receive an email aft
   the pipeline is succeeded or failed. Users could also update notification settings
   accordingly
 merge_request: 6342
-author: Lin Jen-Shin
+author:
