@@ -5,7 +5,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = CycleAnalytics.new(@project, from: parse_start_date)
+    @cycle_analytics = ::CycleAnalytics.new(@project, from: parse_start_date)
 
     respond_to do |format|
       format.html
