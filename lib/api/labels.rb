@@ -29,8 +29,8 @@ module API
         required_attributes! [:name, :color]
 
         attrs = attributes_for_keys [:name, :color, :description]
-        label = user_project.find_label(attrs[:name])
 
+        label = available_labels.find_by(title: attrs[:name])
         conflict!('Label already exists') if label
 
         label = user_project.labels.create(attrs)
@@ -54,7 +54,7 @@ module API
         authorize! :admin_label, user_project
         required_attributes! [:name]
 
-        label = user_project.find_label(params[:name])
+        label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
         label.destroy
@@ -75,7 +75,7 @@ module API
         authorize! :admin_label, user_project
         required_attributes! [:name]
 
-        label = user_project.find_label(params[:name])
+        label = user_project.labels.find_by(title: params[:name])
         not_found!('Label not found') unless label
 
         attrs = attributes_for_keys [:new_name, :color, :description]

@@ -1097,10 +1097,6 @@ class Project < ActiveRecord::Base
     forks.count
   end
 
-  def find_label(name)
-    labels.find_by(name: name)
-  end
-
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
   end

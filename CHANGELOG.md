@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Disable reference Markdown for unavailable features.
 - Fix lightweight tags not processed correctly by GitTagPushService. !6532
 - Allow owners to fetch source code in CI builds. !6943
+- Return conflict error in label API when title is taken by group label. !7014
 - Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project. !7123
 - Fix builds tab visibility. !7178
 - Fix project features default values. !7181
