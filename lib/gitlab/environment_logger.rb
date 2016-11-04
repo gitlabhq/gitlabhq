@@ -1,7 +1,7 @@
 module Gitlab
-  class ProductionLogger < Gitlab::Logger
+  class EnvironmentLogger < Gitlab::Logger
     def self.file_name_noext
-      'production'
+      Rails.env
     end
   end
 end
