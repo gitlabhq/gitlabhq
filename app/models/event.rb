@@ -49,6 +49,7 @@ class Event < ActiveRecord::Base
         update_all(updated_at: Time.now)
     end
 
+    # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type in (?) AND action in (?))",
             Event::PUSHED, ["MergeRequest", "Issue"],
@@ -62,7 +63,7 @@ class Event < ActiveRecord::Base
 
   def visible_to_user?(user = nil)
     if push?
-      true
+      Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
       true
     elsif created_project?
