@@ -254,11 +254,7 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
-      begin
-        @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
-      rescue ChronicDuration::DurationParseError
-        # do nothing
-      end
+      @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
     end
 
     desc 'Enter current spent time'
@@ -268,15 +264,11 @@ module SlashCommands
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     command :spend do |raw_duration|
-      begin
-        reduce_time = raw_duration.gsub!(/\A-/, '')
-        time_spent  = ChronicDuration.parse(raw_duration, default_unit: 'hours')
-        time_spent  = time_spent * -1 if reduce_time
+      reduce_time = raw_duration.gsub!(/\A-/, '')
+      time_spent  = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+      time_spent  = time_spent * -1 if reduce_time
 
-        @updates[:time_spent] = time_spent
-      rescue ChronicDuration::DurationParseError
-        # do nothing
-      end
+      @updates[:time_spent] = time_spent
     end
 
     def find_label_ids(labels_param)

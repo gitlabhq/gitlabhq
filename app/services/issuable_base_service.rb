@@ -41,6 +41,11 @@ class IssuableBaseService < BaseService
       issuable, issuable.project, current_user, issuable.time_estimate)
   end
 
+  def create_time_spent_note(issuable, time_spent)
+    SystemNoteService.change_time_spent(
+      issuable, issuable.project, current_user, time_spent)
+  end
+
   def filter_params(issuable_ability_name = :issue)
     filter_assignee
     filter_milestone
@@ -235,11 +240,13 @@ class IssuableBaseService < BaseService
   end
 
   def change_spent_time(issuable)
-    time_spent = params.delete(:time_spent)
-
     if time_spent
       issuable.timelogs.new(time_spent: time_spent)
     end
+  end
+
+  def time_spent
+    @time_spent ||= params.delete(:time_spent)
   end
 
   def has_changes?(issuable, old_labels: [])
@@ -261,6 +268,14 @@ class IssuableBaseService < BaseService
 
     if issuable.previous_changes.include?('description') && issuable.tasks?
       create_task_status_note(issuable)
+    end
+
+    if issuable.previous_changes.include?('time_estimate')
+      create_time_estimate_note(issuable)
+    end
+
+    if time_spent
+      create_time_spent_note(issuable, time_spent)
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels

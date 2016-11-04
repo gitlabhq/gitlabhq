@@ -28,10 +28,6 @@ module Issues
         create_confidentiality_note(issue)
       end
 
-      if issue.previous_changes.include?('time_estimate')
-        create_time_estimate_note(issue)
-      end
-
       added_labels = issue.labels - old_labels
       if added_labels.present?
         notification_service.relabeled_issue(issue, added_labels, current_user)
