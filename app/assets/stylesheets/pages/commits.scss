@@ -164,7 +164,22 @@
 .branch-commit {
   color: $gl-gray;
 
-  .commit-id,
+  .commit-icon {
+    text-align: center;
+    display: inline-block;
+
+    svg {
+      height: 14px;
+      width: 14px;
+      vertical-align: middle;
+      fill: $table-text-gray;
+    }
+  }
+
+  .commit-id {
+    color: $gl-link-color;
+  }
+
   .commit-row-message {
     color: $gl-gray;
   }

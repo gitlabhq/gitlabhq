@@ -77,9 +77,11 @@ describe 'Commits' do
             visit ci_status_path(pipeline)
           end
 
-          it { expect(page).to have_content pipeline.sha[0..7] }
-          it { expect(page).to have_content pipeline.git_commit_message }
-          it { expect(page).to have_content pipeline.git_author_name }
+          it 'shows pipeline`s data' do
+            expect(page).to have_content pipeline.sha[0..7]
+            expect(page).to have_content pipeline.git_commit_message
+            expect(page).to have_content pipeline.git_author_name
+          end
         end
 
         context 'Download artifacts' do

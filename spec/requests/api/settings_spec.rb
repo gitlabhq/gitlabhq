@@ -33,6 +33,7 @@ describe API::API, 'Settings', api: true  do
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey
         expect(json_response['repository_storage']).to eq('custom')
+        expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['koding_enabled']).to be_truthy
         expect(json_response['koding_url']).to eq('http://koding.example.com')
       end

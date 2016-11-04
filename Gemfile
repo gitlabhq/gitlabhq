@@ -104,7 +104,7 @@ gem 'deckar01-task_list', '1.0.5', require: 'task_list/railtie'
 gem 'gitlab-markup',      '~> 1.5.0'
 gem 'redcarpet',          '~> 3.3.3'
 gem 'RedCloth',           '~> 4.3.2'
-gem 'rdoc',               '~>3.6'
+gem 'rdoc',               '~> 4.2'
 gem 'org-ruby',           '~> 0.9.12'
 gem 'creole',             '~> 0.5.0'
 gem 'wikicloth',          '0.8.1'
@@ -259,9 +259,6 @@ group :development do
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
   gem 'binding_of_caller', '~> 0.7.2'
-
-  # Docs generator
-  gem 'sdoc', '~> 0.3.20'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'

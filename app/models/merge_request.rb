@@ -441,11 +441,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def should_remove_source_branch?
-    merge_params['should_remove_source_branch'].present?
+    Gitlab::Utils.to_boolean(merge_params['should_remove_source_branch'])
   end
 
   def force_remove_source_branch?
-    merge_params['force_remove_source_branch'].present?
+    Gitlab::Utils.to_boolean(merge_params['force_remove_source_branch'])
   end
 
   def remove_source_branch?

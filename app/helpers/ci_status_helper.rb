@@ -47,8 +47,10 @@ module CiStatusHelper
         'icon_play'
       when 'created'
         'icon_status_created'
+      when 'skipped'
+        'icon_status_skipped'
       else
-        'icon_status_cancel'
+        'icon_status_canceled'
       end
 
     custom_icon(icon_name)

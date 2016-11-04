@@ -509,6 +509,7 @@ module API
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
       expose :repository_storage
+      expose :repository_storages
       expose :koding_enabled
       expose :koding_url
     end

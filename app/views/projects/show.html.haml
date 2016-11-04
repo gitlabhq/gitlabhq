@@ -12,7 +12,7 @@
 = render 'projects/last_push'
 = render "home_panel"
 
-- if @project.feature_available?(:repository, current_user)
+- if current_user && can?(current_user, :download_code, @project)
   %nav.project-stats{ class: container_class }
     %ul.nav
       %li

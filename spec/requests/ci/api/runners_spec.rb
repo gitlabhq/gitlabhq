@@ -109,10 +109,12 @@ describe Ci::API::API do
   end
 
   describe "DELETE /runners/delete" do
-    let!(:runner) { FactoryGirl.create(:ci_runner) }
-    before { delete ci_api("/runners/delete"), token: runner.token }
+    it 'returns 200' do
+      runner = FactoryGirl.create(:ci_runner)
+      delete ci_api("/runners/delete"), token: runner.token
 
-    it { expect(response).to have_http_status 200 }
-    it { expect(Ci::Runner.count).to eq(0) }
+      expect(response).to have_http_status 200
+      expect(Ci::Runner.count).to eq(0)
+    end
   end
 end

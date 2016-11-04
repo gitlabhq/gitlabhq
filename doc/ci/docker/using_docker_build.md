@@ -226,7 +226,7 @@ e.g. `docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_ap
 > **Note:**
 This feature requires GitLab 8.8 and GitLab Runner 1.2.
 
-Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../container_registry/README.md). For example, if you're using
+Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../user/project/container_registry.md). For example, if you're using
 docker-in-docker on your runners, this is how your `.gitlab-ci.yml` could look:
 
 
