@@ -126,8 +126,8 @@
               }
               return {
                 username: m.username,
-                title: sanitize(title),
-                search: sanitize(m.username + " " + m.name)
+                title: gl.utils.sanitize(title),
+                search: gl.utils.sanitize(m.username + " " + m.name)
               };
             });
           }
@@ -159,7 +159,7 @@
               }
               return {
                 id: i.iid,
-                title: sanitize(i.title),
+                title: gl.utils.sanitize(i.title),
                 search: i.iid + " " + i.title
               };
             });
@@ -189,7 +189,7 @@
               }
               return {
                 id: m.iid,
-                title: sanitize(m.title),
+                title: gl.utils.sanitize(m.title),
                 search: "" + m.title
               };
             });
@@ -222,7 +222,7 @@
               }
               return {
                 id: m.iid,
-                title: sanitize(m.title),
+                title: gl.utils.sanitize(m.title),
                 search: m.iid + " " + m.title
               };
             });
@@ -240,9 +240,9 @@
             var sanitizeLabelTitle;
             sanitizeLabelTitle = function(title) {
               if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
-                return "\"" + (sanitize(title)) + "\"";
+                return "\"" + (gl.utils.sanitize(title)) + "\"";
               } else {
-                return sanitize(title);
+                return gl.utils.sanitize(title);
               }
             };
             return $.map(merges, function(m) {

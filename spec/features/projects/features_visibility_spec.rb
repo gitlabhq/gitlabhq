@@ -183,4 +183,19 @@ describe 'Edit Project Settings', feature: true do
       end
     end
   end
+
+  # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/24056
+  describe 'project statistic visibility' do
+    let!(:project) { create(:project, :private) }
+
+    before do
+      project.team << [member, :guest]
+      login_as(member)
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it "does not show project statistic for guest" do
+      expect(page).not_to have_selector('.project-stats')
+    end
+  end
 end

@@ -27,9 +27,9 @@
         height: 0;
         margin-left: 2px;
         vertical-align: middle;
-        border-top: $caret-width-base dashed;
-        border-right: $caret-width-base solid transparent;
-        border-left: $caret-width-base solid transparent;
+        border-top: 5px dashed;
+        border-right: 5px solid transparent;
+        border-left: 5px solid transparent;
         color: $gray-darkest;
       }
     }

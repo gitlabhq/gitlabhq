@@ -25,7 +25,7 @@ module API
       post ':id/labels' do
         authorize! :admin_label, user_project
 
-        label = user_project.find_label(params[:name])
+        label = available_labels.find_by(title: params[:name])
         conflict!('Label already exists') if label
 
         label = user_project.labels.create(declared(params, include_parent_namespaces: false).to_h)
@@ -46,7 +46,7 @@ module API
       delete ':id/labels' do
         authorize! :admin_label, user_project
 
-        label = user_project.find_label(params[:name])
+        label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
         present label.destroy, with: Entities::Label, current_user: current_user
@@ -65,7 +65,7 @@ module API
       put ':id/labels' do
         authorize! :admin_label, user_project
 
-        label = user_project.find_label(params[:name])
+        label = user_project.labels.find_by(title: params[:name])
         not_found!('Label not found') unless label
 
         update_params = declared(params,

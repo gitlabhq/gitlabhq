@@ -100,6 +100,7 @@ module API
       end
       expose :only_allow_merge_if_build_succeeds
       expose :request_access_enabled
+      expose :only_allow_merge_if_all_discussions_are_resolved
     end
 
     class Member < UserBasic
@@ -509,6 +510,7 @@ module API
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
       expose :repository_storage
+      expose :repository_storages
       expose :koding_enabled
       expose :koding_url
     end

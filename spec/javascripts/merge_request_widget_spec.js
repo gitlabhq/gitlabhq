@@ -1,6 +1,6 @@
 /* eslint-disable */
 /*= require merge_request_widget */
-/*= require lib/utils/jquery.timeago.js */
+/*= require jquery.timeago.js */
 
 (function() {
   describe('MergeRequestWidget', function() {

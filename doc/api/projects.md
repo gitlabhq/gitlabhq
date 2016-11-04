@@ -89,6 +89,7 @@ Parameters:
     "public_builds": true,
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   },
   {
@@ -151,6 +152,7 @@ Parameters:
     "public_builds": true,
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   }
 ]
@@ -429,6 +431,7 @@ Parameters:
     }
   ],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -602,6 +605,7 @@ Parameters:
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
@@ -634,6 +638,7 @@ Parameters:
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
@@ -665,6 +670,7 @@ Parameters:
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
@@ -752,6 +758,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -820,6 +827,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -908,6 +916,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -996,6 +1005,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
