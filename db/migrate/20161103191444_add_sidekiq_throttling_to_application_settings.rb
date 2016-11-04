@@ -25,5 +25,7 @@ class AddSidekiqThrottlingToApplicationSettings < ActiveRecord::Migration
 
   def change
     add_column :application_settings, :sidekiq_throttling_enabled, :boolean, default: false
+    add_column :application_settings, :sidekiq_throttling_queues, :string
+    add_column :application_settings, :sidekiq_throttling_factor, :decimal
   end
 end

@@ -19,6 +19,7 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
   serialize :repository_storages
+  serialize :sidekiq_throttling_queues
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -84,6 +85,15 @@ class ApplicationSetting < ActiveRecord::Base
   validates :domain_blacklist,
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
+
+  validates :sidekiq_throttling_factor,
+            numericality: { greater_than: 0, less_than: 1 },
+            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
+            if: :sidekiq_throttling_enabled?
+
+  validates :sidekiq_throttling_queues,
+            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
+            if: :sidekiq_throttling_enabled?
 
   validates :housekeeping_incremental_repack_period,
             presence: true,
