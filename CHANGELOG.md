@@ -67,6 +67,7 @@ entry.
 - Improve search query parameter naming in /admin/users !7115 (YarNayar)
 - Fix table pagination to be responsive
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
+- Updated commit SHA styling on the branches page.
 
 ## 8.13.3 (2016-11-02)
 
