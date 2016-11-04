@@ -1,3 +1,4 @@
+- ref = local_assigns.fetch(:ref)
 - commits, hidden = limited_commits(@commits)
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
