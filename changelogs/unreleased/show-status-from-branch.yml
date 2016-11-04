@@ -1,4 +1,4 @@
 ---
 title: Fix showing pipeline status for a given commit from correct branch
 merge_request: 7034
-author: Lin Jen-Shin
+author:
