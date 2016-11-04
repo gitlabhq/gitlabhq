@@ -171,16 +171,28 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.review_events.first['iid']).to eq(context.iid.to_s)
     end
 
-    it 'has a created_at timestamp' do
-      expect(subject.review_events.first['created_at']).to end_with('ago')
+    it 'has the URL' do
+      expect(subject.review_events.first['url']).not_to be_nil
     end
 
-    it "has the author's email" do
-      expect(subject.review_events.first['email']).to eq(MergeRequest.first.author.email)
+    it 'has a state' do
+      expect(subject.review_events.first['state']).not_to be_nil
+    end
+
+    it 'has a created_at timestamp' do
+      expect(subject.review_events.first['opened_at']).not_to be_nil
+    end
+
+    it "has the author's URL" do
+      expect(subject.review_events.first['author_profile_url']).not_to be_nil
+    end
+
+    it "has the author's avatar URL" do
+      expect(subject.review_events.first['author_avatar_url']).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.review_events.first['name']).to eq(MergeRequest.first.author.name)
+      expect(subject.review_events.first['author_name']).to eq(context.author.name)
     end
   end
 
@@ -194,6 +206,9 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     before do
+      create(:ci_build, pipeline: pipeline, status: :success, author: user)
+      create(:ci_build, pipeline: pipeline, status: :success, author: user)
+
       pipeline.run!
       pipeline.succeed!
 
@@ -201,12 +216,45 @@ describe Gitlab::CycleAnalytics::Events do
       deploy_master
     end
 
-    it 'has the build info as a pipeline' do
-      expect(subject.staging_events.first['pipeline']).to eq(pipeline)
+
+    it 'has the name' do
+      expect(subject.staging_events.first['name']).not_to be_nil
+    end
+
+    it 'has the ID' do
+      expect(subject.staging_events.first['id']).not_to be_nil
+    end
+
+    it 'has the URL' do
+      expect(subject.staging_events.first['url']).not_to be_nil
+    end
+
+    it 'has the branch name' do
+      expect(subject.staging_events.first['branch']).not_to be_nil
+    end
+
+    it 'has the branch URL' do
+      expect(subject.staging_events.first['branch_url']).not_to be_nil
+    end
+
+    it 'has the short SHA' do
+      expect(subject.staging_events.first['sha']).not_to be_nil
+    end
+
+    it 'has the commit URL' do
+      expect(subject.staging_events.first['commit_url']).not_to be_nil
+    end
+
+    it 'has the date' do
+      expect(subject.staging_events.first['date']).not_to be_nil
     end
 
     it 'has the total time' do
-      expect(subject.staging_events.first['total_time']).to eq('less than a minute')
+      expect(subject.staging_events.first['total_time']).not_to be_nil
+    end
+
+    it 'has the author name' do
+      expect(subject.staging_events.first['author_name']).not_to be_nil
     end
   end
 

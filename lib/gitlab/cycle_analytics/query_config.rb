@@ -63,17 +63,22 @@ module Gitlab
       def review
         { start_time_attrs: mr_table[:created_at],
           end_time_attrs: mr_metrics_table[:merged_at],
-          projections: [mr_table[:title], mr_table[:iid],
-                        mr_table[:created_at],
-                        user_table[:name],
-                        user_table[:email]]
+          projections: [mr_table[:title],
+                        mr_table[:iid],
+                        mr_table[:id],
+                        mr_table[:created_at].as('opened_at'),
+                        mr_table[:state],
+                        user_table[:name].as('author_name'),
+                        user_table[:username].as('author_username'),
+                        user_table[:id].as('author_id')]
         }
       end
 
       def staging
         { start_time_attrs: mr_metrics_table[:merged_at],
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
-          projections: [mr_metrics_table[:ci_commit_id]]
+          projections: [build_table[:id]],
+          order: build_table[:created_at]
         }
       end
 
