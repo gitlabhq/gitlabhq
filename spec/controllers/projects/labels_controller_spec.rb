@@ -95,7 +95,7 @@ describe Projects::LabelsController do
     it 'allows user to toggle subscription on project labels' do
       label = create(:label, project: project)
 
-      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: label.id
+      toggle_subscription(label)
 
       expect(response).to have_http_status(200)
     end
@@ -103,9 +103,13 @@ describe Projects::LabelsController do
     it 'allows user to toggle subscription on group labels' do
       group_label = create(:group_label, group: group)
 
-      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: group_label.id
+      toggle_subscription(group_label)
 
       expect(response).to have_http_status(200)
+    end
+
+    def toggle_subscription(label)
+      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: label.to_param
     end
   end
 end
