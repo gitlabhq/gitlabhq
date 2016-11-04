@@ -220,26 +220,33 @@ describe Ci::API::API do
       end
 
       context 'when request is valid' do
-        it { expect(response.status).to eq 202 }
+        it 'gets correct response' do
+          expect(response.status).to eq 202
+          expect(response.header).to have_key 'Range'
+          expect(response.header).to have_key 'Build-Status'
+        end
+
         it { expect(build.reload.trace).to eq 'BUILD TRACE appended' }
-        it { expect(response.header).to have_key 'Range' }
-        it { expect(response.header).to have_key 'Build-Status' }
       end
 
       context 'when content-range start is too big' do
         let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
 
-        it { expect(response.status).to eq 416 }
-        it { expect(response.header).to have_key 'Range' }
-        it { expect(response.header['Range']).to eq '0-11' }
+        it 'gets correct response' do
+          expect(response.status).to eq 416
+          expect(response.header).to have_key 'Range'
+          expect(response.header['Range']).to eq '0-11'
+        end
       end
 
       context 'when content-range start is too small' do
         let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
 
-        it { expect(response.status).to eq 416 }
-        it { expect(response.header).to have_key 'Range' }
-        it { expect(response.header['Range']).to eq '0-11' }
+        it 'gets correct response' do
+          expect(response.status).to eq 416
+          expect(response.header).to have_key 'Range'
+          expect(response.header['Range']).to eq '0-11'
+        end
       end
 
       context 'when Content-Range header is missing' do

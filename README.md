@@ -80,7 +80,7 @@ GitLab is a Ruby on Rails application that runs on the following software:
 - Redis 2.8+
 - MySQL or PostgreSQL
 
-For more information please see the [architecture documentation](http://doc.gitlab.com/ce/development/architecture.html).
+For more information please see the [architecture documentation](https://docs.gitlab.com/ce/development/architecture.html).
 
 ## Third-party applications
 
@@ -96,7 +96,7 @@ For upgrading information please see our [update page](https://about.gitlab.com/
 
 ## Documentation
 
-All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/).
+All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/ce/).
 
 ## Getting help
 

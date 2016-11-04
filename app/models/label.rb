@@ -92,16 +92,23 @@ class Label < ActiveRecord::Base
     nil
   end
 
-  def open_issues_count(user = nil, project = nil)
-    issues_count(user, project_id: project.try(:id) || project_id, state: 'opened')
+  def open_issues_count(user = nil)
+    issues_count(user, state: 'opened')
   end
 
-  def closed_issues_count(user = nil, project = nil)
-    issues_count(user, project_id: project.try(:id) || project_id, state: 'closed')
+  def closed_issues_count(user = nil)
+    issues_count(user, state: 'closed')
   end
 
-  def open_merge_requests_count(user = nil, project = nil)
-    merge_requests_count(user, project_id: project.try(:id) || project_id, state: 'opened')
+  def open_merge_requests_count(user = nil)
+    params = {
+      subject_foreign_key => subject.id,
+      label_name: title,
+      scope: 'all',
+      state: 'opened'
+    }
+
+    MergeRequestsFinder.new(user, params.with_indifferent_access).execute.count
   end
 
   def prioritize!(project, value)
@@ -167,15 +174,8 @@ class Label < ActiveRecord::Base
   end
 
   def issues_count(user, params = {})
-    IssuesFinder.new(user, params.reverse_merge(label_name: title, scope: 'all'))
-                .execute
-                .count
-  end
-
-  def merge_requests_count(user, params = {})
-    MergeRequestsFinder.new(user, params.reverse_merge(label_name: title, scope: 'all'))
-                       .execute
-                       .count
+    params.merge!(subject_foreign_key => subject.id, label_name: title, scope: 'all')
+    IssuesFinder.new(user, params.with_indifferent_access).execute.count
   end
 
   def label_format_reference(format = :id)

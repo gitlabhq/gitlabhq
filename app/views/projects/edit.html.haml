@@ -102,7 +102,7 @@
                   = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
         - if Gitlab.config.registry.enabled
-          .form-group
+          .form-group.js-container-registry{ style: ("display: none;" if @project.project_feature.send(:repository_access_level) == 0) }
             .checkbox
               = f.label :container_registry_enabled do
                 = f.check_box :container_registry_enabled
@@ -118,7 +118,8 @@
             Project avatar
           .form-group
             - if @project.avatar?
-              = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+              .image-container.s160
+                = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
             %p.light
               - if @project.avatar_in_git
                 Project avatar in repository: #{ @project.avatar_in_git }
@@ -180,6 +181,7 @@
           %ul
             %li Build traces and artifacts
             %li LFS objects
+            %li Container registry images
   %hr
   - if can? current_user, :archive_project, @project
     .row.prepend-top-default

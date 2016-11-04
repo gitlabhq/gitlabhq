@@ -2,7 +2,12 @@
 
 ## List groups
 
-Get a list of groups. (As user: my groups, as admin: all groups)
+Get a list of groups. (As user: my groups or all available, as admin: all groups).
+
+Parameters:
+
+- `all_available` (optional) - if passed, show all groups you have access to
+- `skip_groups` (optional)(array of group IDs) - if passed, skip groups
 
 ```
 GET /groups
@@ -20,7 +25,6 @@ GET /groups
 ```
 
 You can search for groups by name or path, see below.
-
 
 ## List a group's projects
 

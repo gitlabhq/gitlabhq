@@ -1,7 +1,7 @@
 /* eslint-disable */
 (function() {
   this.AwardsHandler = (function() {
-    const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
+    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {

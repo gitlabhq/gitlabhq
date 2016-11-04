@@ -6,6 +6,7 @@ describe ProjectPolicy, models: true do
   let(:dev) { create(:user) }
   let(:master) { create(:user) }
   let(:owner) { create(:user) }
+  let(:admin) { create(:admin) }
   let(:project) { create(:empty_project, :public, namespace: owner.namespace) }
 
   let(:guest_permissions) do
@@ -151,6 +152,19 @@ describe ProjectPolicy, models: true do
 
     context 'owner' do
       let(:current_user) { owner }
+
+      it do
+        is_expected.to include(*guest_permissions)
+        is_expected.to include(*reporter_permissions)
+        is_expected.to include(*team_member_reporter_permissions)
+        is_expected.to include(*developer_permissions)
+        is_expected.to include(*master_permissions)
+        is_expected.to include(*owner_permissions)
+      end
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
 
       it do
         is_expected.to include(*guest_permissions)

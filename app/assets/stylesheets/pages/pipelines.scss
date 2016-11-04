@@ -85,6 +85,11 @@
   }
 
   .commit-link {
+    a {
+      &:focus {
+        text-decoration: none;
+      }
+    }
 
     .ci-status {
 
@@ -439,7 +444,7 @@
       }
 
       .grouped-pipeline-dropdown {
-        padding: 8px 0;
+        padding: 0;
         width: 186px;
         left: auto;
         right: -197px;
@@ -448,6 +453,14 @@
         ul {
           max-height: 245px;
           overflow: auto;
+
+          li:first-child {
+            padding-top: 8px;
+          }
+
+          li:last-child {
+            padding-bottom: 8px;
+          }
         }
 
         a {

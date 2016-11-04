@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe JiraService, models: true do
+  include Gitlab::Routing.url_helpers
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -63,6 +65,29 @@ describe JiraService, models: true do
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
+      ).once
+    end
+
+    it "references the GitLab commit/merge request" do
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      expect(WebMock).to have_requested(:post, @comment_url).with(
+        body: /#{Gitlab.config.gitlab.url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
+      ).once
+    end
+
+    it "references the GitLab commit/merge request (relative URL)" do
+      stub_config_setting(relative_url_root: '/gitlab')
+      stub_config_setting(url: Settings.send(:build_gitlab_url))
+
+      allow(JiraService).to receive(:default_url_options) do
+        { script_name: '/gitlab' }
+      end
+
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      expect(WebMock).to have_requested(:post, @comment_url).with(
+        body: /#{Gitlab.config.gitlab.url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
       ).once
     end
 

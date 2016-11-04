@@ -245,6 +245,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
             it_behaves_like 'a pullable'
           end
+
+          context 'when you are owner' do
+            let(:project) { create(:empty_project, namespace: current_user.namespace) }
+
+            it_behaves_like 'a pullable'
+          end
         end
 
         context 'for private' do
@@ -266,6 +272,12 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
               it_behaves_like 'a pullable'
             end
+
+            context 'when you are owner' do
+              let(:project) { create(:empty_project, namespace: current_user.namespace) }
+
+              it_behaves_like 'a pullable'
+            end
           end
         end
       end
@@ -276,13 +288,21 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         context 'disallow for all' do
-          let(:project) { create(:empty_project, :public) }
+          context 'when you are member' do
+            let(:project) { create(:empty_project, :public) }
 
-          before do
-            project.team << [current_user, :developer]
+            before do
+              project.team << [current_user, :developer]
+            end
+
+            it_behaves_like 'an inaccessible'
           end
 
-          it_behaves_like 'an inaccessible'
+          context 'when you are owner' do
+            let(:project) { create(:empty_project, :public, namespace: current_user.namespace) }
+
+            it_behaves_like 'an inaccessible'
+          end
         end
       end
     end

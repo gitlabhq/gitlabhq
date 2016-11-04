@@ -164,5 +164,38 @@ describe 'Edit Project Settings', feature: true do
 
       expect(page).to have_content "Customize your workflow!"
     end
+
+    it "hides project activity tabs" do
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+      select "Disabled", from: "project_project_feature_attributes_issues_access_level"
+      select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
+
+      click_button "Save changes"
+      wait_for_ajax
+
+      visit activity_namespace_project_path(project.namespace, project)
+
+      page.within(".event-filter") do
+        expect(page).to have_selector("a", count: 2)
+        expect(page).not_to have_content("Push events")
+        expect(page).not_to have_content("Merge events")
+        expect(page).not_to have_content("Comments")
+      end
+    end
+  end
+
+  # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/24056
+  describe 'project statistic visibility' do
+    let!(:project) { create(:project, :private) }
+
+    before do
+      project.team << [member, :guest]
+      login_as(member)
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it "does not show project statistic for guest" do
+      expect(page).not_to have_selector('.project-stats')
+    end
   end
 end

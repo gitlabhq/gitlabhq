@@ -104,7 +104,7 @@ gem 'deckar01-task_list', '1.0.5', require: 'task_list/railtie'
 gem 'gitlab-markup',      '~> 1.5.0'
 gem 'redcarpet',          '~> 3.3.3'
 gem 'RedCloth',           '~> 4.3.2'
-gem 'rdoc',               '~>3.6'
+gem 'rdoc',               '~> 4.2'
 gem 'org-ruby',           '~> 0.9.12'
 gem 'creole',             '~> 0.5.0'
 gem 'wikicloth',          '0.8.1'
@@ -117,7 +117,7 @@ gem 'truncato',           '~> 0.7.8'
 gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
 
 # Diffs
-gem 'diffy', '~> 3.0.3'
+gem 'diffy', '~> 3.1.0'
 
 # Application server
 group :unicorn do
@@ -196,7 +196,7 @@ gem 'loofah', '~> 2.0.3'
 gem 'licensee', '~> 8.0.0'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 4.3.1'
+gem 'rack-attack', '~> 4.4.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 4.1.0'
@@ -259,9 +259,6 @@ group :development do
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
   gem 'binding_of_caller', '~> 0.7.2'
-
-  # Docs generator
-  gem 'sdoc', '~> 0.3.20'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'

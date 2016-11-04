@@ -432,7 +432,9 @@ production: &base
   ## Repositories settings
   repositories:
     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-    # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+    # IMPORTANT: None of the path components may be symlink, because
+    # gitlab-shell invokes Dir.pwd inside the repository path and that results
+    # real path not the symlink.
     storages: # You must have at least a `default` storage path.
       default: /home/git/repositories/
 

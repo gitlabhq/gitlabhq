@@ -45,7 +45,9 @@
     };
 
     ProjectNew.prototype.toggleRepoVisibility = function () {
-      var $repoAccessLevel = $('.js-repo-access-level select');
+      var $repoAccessLevel = $('.js-repo-access-level select'),
+          containerRegistry = document.querySelectorAll('.js-container-registry')[0],
+          containerRegistryCheckbox = document.getElementById('project_container_registry_enabled');
 
       this.$repoSelects.find("option[value='" + $repoAccessLevel.val() + "']")
         .nextAll()
@@ -70,8 +72,17 @@
 
           if (selectedVal) {
             this.$repoSelects.removeClass('disabled');
+
+            if (containerRegistry) {
+              containerRegistry.style.display = '';
+            }
           } else {
             this.$repoSelects.addClass('disabled');
+
+            if (containerRegistry) {
+              containerRegistry.style.display = 'none';
+              containerRegistryCheckbox.checked = false;
+            }
           }
         }.bind(this));
     };
