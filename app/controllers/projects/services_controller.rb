@@ -3,7 +3,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!
-  before_action :service, only: [:edit, :update, :test]
+  before_action :service, only: [:edit, :update, :test, :load_data]
 
   respond_to :html
 
@@ -41,6 +41,12 @@ class Projects::ServicesController < Projects::ApplicationController
     end
 
     redirect_back_or_default(options: message)
+  end
+
+  def load_data
+    data = @service.load_data
+
+    render json: data
   end
 
   private

@@ -132,6 +132,12 @@ class JiraService < IssueTrackerService
     end
   end
 
+  # Override on classes where you want
+  # load data directly from services
+  def load_data
+    {}
+  end
+
   def create_cross_reference_note(mentioned, noteable, author)
     issue_key = mentioned.id
     project = self.project
@@ -171,6 +177,10 @@ class JiraService < IssueTrackerService
   rescue Errno::ECONNREFUSED, JIRA::HTTPError => e
     Rails.logger.info "#{self.class.name} ERROR: #{e.message}. API URL: #{url}."
     false
+  end
+
+  def load_data(*args)
+    client.Status.all.map(&:attrs)
   end
 
   private
