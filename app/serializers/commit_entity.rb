@@ -1,7 +1,7 @@
 class CommitEntity < API::Entities::RepoCommit
   include RequestAwareEntity
 
-  expose :author, using: API::Entities::UserBasic
+  expose :author, using: UserEntity
 
   expose :commit_url do |commit|
     @urls.namespace_project_tree_url(

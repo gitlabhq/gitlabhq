@@ -20,7 +20,7 @@ class DeploymentEntity < Grape::Entity
 
   expose :tag
   expose :last?
-  expose :user, using: API::Entities::UserBasic
+  expose :user, using: UserEntity
   expose :commit, using: CommitEntity
   expose :deployable, using: BuildEntity
   expose :manual_actions, using: BuildEntity

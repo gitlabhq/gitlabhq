@@ -14,6 +14,11 @@ describe BuildEntity do
       expect(subject).to include(:build_url, :retry_url)
       expect(subject).not_to include(:play_url)
     end
+
+    it 'does not contain sensitive information' do
+      expect(subject).not_to include(/token/)
+      expect(subject).not_to include(/variables/)
+    end
   end
 
   context 'when build is a manual action' do
