@@ -84,6 +84,7 @@ module Gitlab
     config.webpack.config_file = "config/webpack.config.js"
     config.webpack.output_dir  = "public/assets/webpack"
     config.webpack.public_path = "assets/webpack"
+    config.webpack.dev_server.enabled = false
 
     # Enable the asset pipeline
     config.assets.enabled = true
