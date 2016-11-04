@@ -260,7 +260,7 @@ describe Issuable::BulkUpdateService, services: true do
     it 'subscribes the given user' do
       bulk_update(issues, subscription_event: 'subscribe')
 
-      expect(issues).to all(be_subscribed(user))
+      expect(issues).to all(be_subscribed(user, project))
     end
   end
 
@@ -275,7 +275,7 @@ describe Issuable::BulkUpdateService, services: true do
       bulk_update(issues, subscription_event: 'unsubscribe')
 
       issues.each do |issue|
-        expect(issue).not_to be_subscribed(user)
+        expect(issue).not_to be_subscribed(user, project)
       end
     end
   end

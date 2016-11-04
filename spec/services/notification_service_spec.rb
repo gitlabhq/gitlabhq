@@ -385,7 +385,7 @@ describe NotificationService, services: true do
         label = create(:label, project: project, issues: [issue])
         group_label = create(:group_label, group: group, issues: [issue])
         issue.reload
-        label.toggle_subscription(user_1)
+        label.toggle_subscription(user_1, project)
         group_label.toggle_subscription(user_2, project)
         group_label.toggle_subscription(user_3, another_project)
 
@@ -411,12 +411,12 @@ describe NotificationService, services: true do
 
           label = create(:label, project: project, issues: [confidential_issue])
           confidential_issue.reload
-          label.toggle_subscription(non_member)
-          label.toggle_subscription(author)
-          label.toggle_subscription(assignee)
-          label.toggle_subscription(member)
-          label.toggle_subscription(guest)
-          label.toggle_subscription(admin)
+          label.toggle_subscription(non_member, project)
+          label.toggle_subscription(author, project)
+          label.toggle_subscription(assignee, project)
+          label.toggle_subscription(member, project)
+          label.toggle_subscription(guest, project)
+          label.toggle_subscription(admin, project)
 
           reset_delivered_emails!
 
@@ -568,11 +568,11 @@ describe NotificationService, services: true do
       let(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }
       let(:label_1) { create(:label, project: project, title: 'Label 1', issues: [issue]) }
       let(:label_2) { create(:label, project: project, title: 'Label 2') }
-      let!(:subscriber_to_group_label_1) { create(:user).tap { |u| group_label_1.toggle_subscription(u, project) } }
-      let!(:subscriber_to_group_label_2) { create(:user).tap { |u| group_label_2.toggle_subscription(u, project) } }
-      let!(:subscriber_to_group_label_2_on_another_project) { create(:user).tap { |u| group_label_2.toggle_subscription(u, another_project) } }
-      let!(:subscriber_to_label_1) { create(:user).tap { |u| label_1.toggle_subscription(u) } }
-      let!(:subscriber_to_label_2) { create(:user).tap { |u| label_2.toggle_subscription(u) } }
+      let!(:subscriber_to_group_label_1) { create(:user) { |u| group_label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_to_group_label_2_on_another_project) { create(:user) { |u| group_label_2.toggle_subscription(u, another_project) } }
+      let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
       it "emails subscribers of the issue's added labels only" do
         notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
@@ -618,12 +618,12 @@ describe NotificationService, services: true do
           project.team << [member, :developer]
           project.team << [guest, :guest]
 
-          label_2.toggle_subscription(non_member)
-          label_2.toggle_subscription(author)
-          label_2.toggle_subscription(assignee)
-          label_2.toggle_subscription(member)
-          label_2.toggle_subscription(guest)
-          label_2.toggle_subscription(admin)
+          label_2.toggle_subscription(non_member, project)
+          label_2.toggle_subscription(author, project)
+          label_2.toggle_subscription(assignee, project)
+          label_2.toggle_subscription(member, project)
+          label_2.toggle_subscription(guest, project)
+          label_2.toggle_subscription(admin, project)
 
           reset_delivered_emails!
 
@@ -786,7 +786,7 @@ describe NotificationService, services: true do
         user_3 = create(:user)
         label = create(:label, project: project, merge_requests: [merge_request])
         group_label = create(:group_label, group: group, merge_requests: [merge_request])
-        label.toggle_subscription(user_1)
+        label.toggle_subscription(user_1, project)
         group_label.toggle_subscription(user_2, project)
         group_label.toggle_subscription(user_3, another_project)
 
@@ -892,11 +892,11 @@ describe NotificationService, services: true do
       let(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }
       let(:label_1) { create(:label, project: project, title: 'Label 1', merge_requests: [merge_request]) }
       let(:label_2) { create(:label, project: project, title: 'Label 2') }
-      let!(:subscriber_to_group_label_1) { create(:user).tap { |u| group_label_1.toggle_subscription(u, project) } }
-      let!(:subscriber_to_group_label_2) { create(:user).tap { |u| group_label_2.toggle_subscription(u, project) } }
-      let!(:subscriber_to_group_label_2_on_another_project) { create(:user).tap { |u| group_label_2.toggle_subscription(u, another_project) } }
-      let!(:subscriber_to_label_1) { create(:user).tap { |u| label_1.toggle_subscription(u) } }
-      let!(:subscriber_to_label_2) { create(:user).tap { |u| label_2.toggle_subscription(u) } }
+      let!(:subscriber_to_group_label_1) { create(:user) { |u| group_label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_to_group_label_2_on_another_project) { create(:user) { |u| group_label_2.toggle_subscription(u, another_project) } }
+      let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
       it "emails subscribers of the merge request's added labels only" do
         notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
