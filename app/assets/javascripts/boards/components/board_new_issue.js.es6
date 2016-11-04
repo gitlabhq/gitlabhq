@@ -7,18 +7,12 @@
   gl.issueBoards.BoardNewIssue = Vue.extend({
     props: {
       list: Object,
-      showIssueForm: Boolean
     },
     data() {
       return {
         title: '',
         error: false
       };
-    },
-    watch: {
-      showIssueForm () {
-        this.$refs.input.focus();
-      }
     },
     methods: {
       submit(e) {
@@ -50,15 +44,17 @@
 
             // Show error message
             this.error = true;
-            this.showIssueForm = true;
           });
 
         this.cancel();
       },
       cancel() {
-        this.showIssueForm = false;
         this.title = '';
+        this.$parent.showIssueForm = false;
       }
-    }
+    },
+    mounted() {
+      this.$refs.input.focus();
+    },
   });
 })();

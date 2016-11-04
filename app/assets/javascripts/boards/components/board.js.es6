@@ -10,6 +10,7 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.Board = Vue.extend({
+    template: '#js-board-template',
     components: {
       'board-list': gl.issueBoards.BoardList,
       'board-delete': gl.issueBoards.BoardDelete,
@@ -24,7 +25,6 @@
       return {
         detailIssue: Store.detail,
         filters: Store.state.filters,
-        showIssueForm: false
       };
     },
     watch: {
@@ -58,7 +58,7 @@
     },
     methods: {
       showNewIssueForm() {
-        this.showIssueForm = !this.showIssueForm;
+        this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
       }
     },
     mounted () {
@@ -72,13 +72,9 @@
 
           if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
             const order = this.sortable.toArray(),
-                  $board = this.$parent.$refs.board[e.oldIndex + 1],
-                  list = $board.list;
-
-            $board.$destroy(true);
+                  list = Store.findList('id', parseInt(e.item.dataset.id));
 
             this.$nextTick(() => {
-              Store.state.lists.splice(e.newIndex, 0, list);
               Store.moveList(list, order);
             });
           }
@@ -87,9 +83,5 @@
 
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
-    beforeDestroy () {
-      const index = Store.state.lists.indexOf(this.list);
-      Store.state.lists.splice(index, 1);
-    }
   });
 })();

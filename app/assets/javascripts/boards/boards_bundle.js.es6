@@ -22,6 +22,8 @@ $(() => {
     gl.IssueBoardsApp.$destroy(true);
   }
 
+  Store.create();
+
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
@@ -37,11 +39,10 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       detailIssue: Store.detail
     },
-    beforeCreate: Store.create.bind(Store),
     computed: {
       detailIssueVisible () {
         return Object.keys(this.detailIssue.issue).length;
-      }
+      },
     },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
@@ -70,6 +71,9 @@ $(() => {
     el: '#js-boards-seach',
     data: {
       filters: Store.state.filters
+    },
+    mounted () {
+      gl.issueBoards.newListDropdownInit();
     }
   });
 });

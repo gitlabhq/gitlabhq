@@ -39,6 +39,8 @@
           // Remove any new issues from the backlog
           // as they will be visible in the new list
           list.issues.forEach(backlogList.removeIssue.bind(backlogList));
+
+          this.state.lists = _.sortBy(this.state.lists, 'position');
         });
       this.removeBlankState();
     },
