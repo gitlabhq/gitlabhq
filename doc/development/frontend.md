@@ -196,6 +196,12 @@ It consists of two subtasks:
 As long as the fixtures don't change, `rake teaspoon:tests` is sufficient
 (and saves you some time).
 
+If you need to debug your tests and/or application code while they're
+running, navigate to [localhost:3000/teaspoon](http://localhost:3000/teaspoon)
+in your browser, open DevTools, and run tests for individual files by clicking 
+on them. This is also much faster than setting up and running tests from the 
+command line.
+
 Please note: Not all of the frontend fixtures are generated. Some are still static
 files. These will not be touched by `rake teaspoon:fixtures`.
 
