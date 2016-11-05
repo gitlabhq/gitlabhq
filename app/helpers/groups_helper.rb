@@ -48,4 +48,8 @@ module GroupsHelper
       "#{status.humanize} #{projects_lfs_status(group)}"
     end
   end
+
+  def group_issues(group)
+    IssuesFinder.new(current_user, group_id: group.id).execute
+  end
 end

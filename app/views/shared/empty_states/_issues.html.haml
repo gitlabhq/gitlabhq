@@ -1,0 +1,22 @@
+- button_path = local_assigns.fetch(:button_path, false)
+- project_select_button = local_assigns.fetch(:project_select_button, false)
+- has_button = button_path || project_select_button
+
+.row.empty-state
+  .pull-right.col-xs-12{ class: "#{'col-sm-6' if has_button}" }
+    .svg-content
+      = render 'shared/empty_states/icons/issues.svg'
+  .col-xs-12{ class: "#{'col-sm-6' if has_button}" }
+    .text-content
+      - if has_button
+        %h4
+          The Issue Tracker is a good place to add things that need to be improved or solved in a project!
+        %p
+          An issue can be a bug, a todo or a feature request that needs to be discussed in a project.
+          Besides, issues are searchable and filterable.
+        - if project_select_button
+          = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue'
+        - else
+          = link_to 'New issue', button_path, class: 'btn btn-new', title: 'New issue', id: 'new_issue_link'
+      - else
+        %h4.text-center There are no issues to show.
