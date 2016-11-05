@@ -158,7 +158,7 @@ Feature: Project Issues
     When I visit empty project page
     And I see empty project details with ssh clone info
     When I visit empty project's issues page
-    Given I click link "New Issue"
+    Given I click link "New _issue"
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
 
@@ -225,7 +225,7 @@ Feature: Project Issues
     Given public project "Community"
     When I visit project "Community" page
     And I visit project "Community" issues page
-    And I click link "New Issue"
+    And I click link "New _issue"
     And I should not see assignee field
     And I should not see milestone field
     And I should not see labels field

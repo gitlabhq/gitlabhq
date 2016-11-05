@@ -10,47 +10,50 @@
   - if current_user
     = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
 
-%div{ class: (container_class) }
-  - if @project.issues.any?
-    .top-area
-      = render 'shared/issuable/nav', type: :issues
-      .nav-controls
-        - if current_user
-          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10' do
-            = icon('rss')
-            %span.icon-label
-              Subscribe
-        = render 'shared/issuable/search_form', path: namespace_project_issues_path(@project.namespace, @project)
-        - if can? current_user, :create_issue, @project
-          = link_to new_namespace_project_issue_path(@project.namespace,
-                                                     @project,
-                                                     issue: { assignee_id: issues_finder.assignee.try(:id),
-                                                              milestone_id: issues_finder.milestones.first.try(:id) }),
-                                                     class: "btn btn-new",
-                                                     title: "New Issue",
-                                                     id: "new_issue_link" do
-            New Issue
-    = render 'shared/issuable/filter', type: :issues
+- if @project.issues.count.zero?
+  = render 'shared/empty_states/issues', button_path: new_namespace_project_issue_path(@project.namespace, @project)
+- else
+  %div{ class: (container_class) }
+    - if @project.issues.any?
+      .top-area
+        = render 'shared/issuable/nav', type: :issues
+        .nav-controls
+          - if current_user
+            = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10' do
+              = icon('rss')
+              %span.icon-label
+                Subscribe
+          = render 'shared/issuable/search_form', path: namespace_project_issues_path(@project.namespace, @project)
+          - if can? current_user, :create_issue, @project
+            = link_to new_namespace_project_issue_path(@project.namespace,
+                                                       @project,
+                                                       issue: { assignee_id: issues_finder.assignee.try(:id),
+                                                                milestone_id: issues_finder.milestones.first.try(:id) }),
+                                                       class: "btn btn-new",
+                                                       title: "New Issue",
+                                                       id: "new_issue_link" do
+              New Issue
+      = render 'shared/issuable/filter', type: :issues
 
-    .issues-holder
-      = render 'issues'
-      - if new_issue_email
-        = render 'issue_by_email', email: new_issue_email
-  - else
-    .blank-state.blank-state-welcome
-      %h2.blank-state-title.blank-state-welcome-title
-        Welcome to GitLab Issues
-      %p.blank-state-text
-        Code, test, and deploy together
-    .blank-state
-      .blank-state-icon
-        = custom_icon("issues", size: 50)
-      %h3.blank-state-title
-        You don't have any issues right now.
-      %p.blank-state-text
-        Issues are the best way to track your project progress
-      - if can? current_user, :create_issue, @project
-        = link_to new_namespace_project_issue_path(@project.namespace, @project), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
-          New Issue
+      .issues-holder
+        = render 'issues'
         - if new_issue_email
           = render 'issue_by_email', email: new_issue_email
+    - else
+      .blank-state.blank-state-welcome
+        %h2.blank-state-title.blank-state-welcome-title
+          Welcome to GitLab Issues
+        %p.blank-state-text
+          Code, test, and deploy together
+      .blank-state
+        .blank-state-icon
+          = custom_icon("issues", size: 50)
+        %h3.blank-state-title
+          You don't have any issues right now.
+        %p.blank-state-text
+          Issues are the best way to track your project progress
+        - if can? current_user, :create_issue, @project
+          = link_to new_namespace_project_issue_path(@project.namespace, @project), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
+            New Issue
+          - if new_issue_email
+            = render 'issue_by_email', email: new_issue_email

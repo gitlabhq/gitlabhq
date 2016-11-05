@@ -48,4 +48,8 @@ module GroupsHelper
       "#{status.humanize} #{projects_lfs_status(group)}"
     end
   end
+
+  def group_issues
+    Issue.where(project: @group.projects)
+  end
 end

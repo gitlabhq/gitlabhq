@@ -13,4 +13,4 @@
           = render 'projects/issues/issue', issue: issue
   = paginate @issues, theme: "gitlab"
 - else
-  .nothing-here-block No issues to show
+  = render 'shared/empty_states/issues'
