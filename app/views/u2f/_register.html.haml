@@ -23,7 +23,7 @@
 %script#js-register-u2f-error{ type: "text/template" }
   %div
     %p
-      %span <%= error_message %>
+      %span <%= error_message %> (error code: <%= error_code %>)
     %a.btn.btn-warning#js-u2f-try-again Try again?
 
 %script#js-register-u2f-registered{ type: "text/template" }

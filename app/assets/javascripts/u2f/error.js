@@ -7,7 +7,6 @@
       this.errorCode = errorCode;
       this.message = bind(this.message, this);
       this.httpsDisabled = window.location.protocol !== 'https:';
-      console.error("U2F Error Code: " + this.errorCode);
     }
 
     U2FError.prototype.message = function() {

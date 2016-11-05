@@ -85,7 +85,8 @@
 
     U2FAuthenticate.prototype.renderError = function(error) {
       this.renderTemplate('error', {
-        error_message: error.message()
+        error_message: error.message(),
+        error_code: error.errorCode
       });
       return this.container.find('#js-u2f-try-again').on('click', this.renderSetup);
     };
