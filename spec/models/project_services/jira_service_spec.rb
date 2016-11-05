@@ -69,6 +69,7 @@ describe JiraService, models: true do
   end
 
   describe "Execute" do
+    let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request) }
@@ -107,10 +108,12 @@ describe JiraService, models: true do
     end
 
     it "references the GitLab commit/merge request" do
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      stub_config_setting(base_url: custom_base_url)
+      stub_config_setting(url: custom_base_url)
 
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{Gitlab.config.gitlab.url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
+        body: /#{custom_base_url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
       ).once
     end
 
