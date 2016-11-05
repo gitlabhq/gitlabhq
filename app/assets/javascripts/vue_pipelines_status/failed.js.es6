@@ -2,17 +2,17 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  gl.VueFailedPipeline = Vue.extend({
+  gl.VueFailedScope = Vue.extend({
     components: {
       'vue-failed-icon': gl.VuePendingIcon,
     },
     props: [
-      'pipeline',
-      'pipelineurl',
+      'scope',
+      'scopeurl',
     ],
     template: `
       <td class="commit-link">
-        <a :href='pipelineurl(pipeline.id)'>
+        <a :href='scopeurl(scope.id)'>
           <span class="ci-status ci-failed">
             <vue-failed-icon></vue-failed-icon>
             &nbsp;failed

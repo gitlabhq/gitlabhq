@@ -2,36 +2,36 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  gl.VueStatusPipeline = Vue.extend({
+  gl.VueStatusScope = Vue.extend({
     components: {
-      'vue-running-pipeline': gl.VueRunningPipeline,
-      'vue-pending-pipeline': gl.VuePendingPipeline,
-      'vue-failed-pipeline': gl.VueFailedPipeline,
+      'vue-running-scope': gl.VueRunningScope,
+      'vue-pending-scope': gl.VuePendingScope,
+      'vue-failed-scope': gl.VueFailedScope,
     },
     props: [
-      'pipeline',
-      'pipelineurl',
+      'scope',
+      'scopeurl',
     ],
     template: `
       <td class="commit-link">
-        <vue-running-pipeline
-          v-if="pipeline.status === 'running'"
-          :pipeline='pipeline'
-          :pipelineurl='pipelineurl'
+        <vue-running-scope
+          v-if="scope.status === 'running'"
+          :scope='scope'
+          :scopeurl='scopeurl'
         >
-        </vue-running-pipeline>
-        <vue-pending-pipeline
-          v-if="pipeline.status === 'pending'"
-          :pipeline='pipeline'
-          :pipelineurl='pipelineurl'
+        </vue-running-scope>
+        <vue-pending-scope
+          v-if="scope.status === 'pending'"
+          :scope='scope'
+          :scopeurl='scopeurl'
         >
-        </vue-pending-pipeline>
-        <vue-failed-pipeline
-          v-if="pipeline.status === 'failed'"
-          :pipeline='pipeline'
-          :pipelineurl='pipelineurl'
+        </vue-pending-scope>
+        <vue-failed-scope
+          v-if="scope.status === 'failed'"
+          :scope='scope'
+          :scopeurl='scopeurl'
         >
-        </vue-failed-pipeline>
+        </vue-failed-scope>
       </td>
     `,
   });

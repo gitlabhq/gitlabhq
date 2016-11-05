@@ -2,17 +2,17 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  gl.VuePendingPipeline = Vue.extend({
+  gl.VuePendingScope = Vue.extend({
     components: {
       'vue-pending-icon': gl.VuePendingIcon,
     },
     props: [
-      'pipeline',
-      'pipelineurl',
+      'scope',
+      'scopeurl',
     ],
     template: `
       <td class="commit-link">
-        <a :href='pipelineurl(pipeline.id)'>
+        <a :href='scopeurl(scope.id)'>
           <span class="ci-status ci-pending">
             <vue-pending-icon></vue-pending-icon>
             &nbsp;pending
