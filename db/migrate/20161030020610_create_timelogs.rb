@@ -1,4 +1,8 @@
 class CreateTimelogs < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
+
   def change
     create_table :timelogs do |t|
       t.integer :time_spent, null: false

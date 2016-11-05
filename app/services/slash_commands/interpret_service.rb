@@ -251,7 +251,7 @@ module SlashCommands
     desc 'Set estimate'
     params 'e.g: 1w 3d 2h 14m'
     condition do
-      current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+      current_user.can?(:"update_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
       @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')

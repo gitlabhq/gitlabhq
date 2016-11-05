@@ -467,6 +467,16 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'estimate command' do
+      let(:content) { '/estimate 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command' do
+      let(:content) { '/spend 1h' }
+      let(:issuable) { issue }
+    end
+
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
@@ -514,16 +524,6 @@ describe SlashCommands::InterpretService, services: true do
 
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
-        let(:issuable) { issue }
-      end
-
-      it_behaves_like 'estimate command' do
-        let(:content) { '/estimate 1h' }
-        let(:issuable) { issue }
-      end
-
-      it_behaves_like 'spend command' do
-        let(:content) { '/spend 1h' }
         let(:issuable) { issue }
       end
     end

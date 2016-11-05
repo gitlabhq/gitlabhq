@@ -20,6 +20,7 @@ Issue:
 - lock_version
 - milestone_id
 - weight
+- time_estimate
 Event:
 - id
 - target_type
@@ -151,6 +152,7 @@ MergeRequest:
 - milestone_id
 - approvals_before_merge
 - rebase_commit_sha
+- time_estimate
 MergeRequestDiff:
 - id
 - state
@@ -344,5 +346,12 @@ LabelPriority:
 - project_id
 - label_id
 - priority
+- created_at
+- updated_at
+Timelog:
+- id
+- time_spent
+- trackable_id
+- trackable_type
 - created_at
 - updated_at
