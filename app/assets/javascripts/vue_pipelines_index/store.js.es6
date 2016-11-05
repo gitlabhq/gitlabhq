@@ -23,5 +23,14 @@
         goFetch();
       }, 60000);
     }
+
+    fetchSvg(type, icon) {
+      this.$http.get(`/shared/icons/${icon}`)
+        .then((response) => {
+          this[type] = JSON.parse(response.body);
+        }, () => new Flash(
+          'Something went wrong on our end.'
+        ));
+    }
   };
 })(window.gl || (window.gl = {}));

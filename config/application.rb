@@ -100,6 +100,8 @@ module Gitlab
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"
     config.assets.precompile << "vue_pipelines_index/index.js"
+    config.assets.precompile << "vue_pipelines_status/index.js"
+    config.assets.precompile << "vue_icons/index.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

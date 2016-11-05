@@ -1,21 +1,21 @@
 /* global Vue, VueResource, gl */
+/* eslint-disable no-bitwise*/
 
-//= require vue
 //= require vue-resource
 
 //= require ./store.js.es6
-//= require ./pipeline_url.vue.js.es6
-//= require ./vue_gl_pagination.vue.js.es6
-//= require ./pipeline_head.vue.js.es6
-//= require ./running_icon.vue.js.es6
-//= require ./running.vue.js.es6
-//= require ./stages.vue.js.es6
-//= require ./pipeline_actions.vue.js.es6
-//= require ./branch_commit.vue.js.es6
-//= require ./pipelines.vue.js.es6
+//= require ./pipeline_url.js.es6
+//= require ./gl_pagination.js.es6
+//= require ./pipeline_head.js.es6
+//= require ./stages.js.es6
+//= require ./pipeline_actions.js.es6
+//= require ./branch_commit.js.es6
+//= require ./pipelines.js.es6
 
 (() => {
-  if (~window.location.href.indexOf('scope')) return null;
+  const url = window.location.href;
+  if (~url.indexOf('scope')) return null;
+
   const project = document.querySelector('.pipelines');
 
   Vue.use(VueResource);

@@ -11,6 +11,7 @@
       'vue-pipeline-url': gl.VuePipelineUrl,
       'vue-pipeline-head': gl.VuePipelineHead,
       'vue-gl-pagination': gl.VueGlPagination,
+      'vue-status-pipeline': gl.VueStatusPipeline,
     },
     data() {
       return {
@@ -53,13 +54,11 @@
             <vue-pipeline-head></vue-pipeline-head>
             <tbody>
               <tr class="commit" v-for='pipeline in pipelines'>
-                <td class="commit-link" v-if="pipeline.status">
-                  <vue-running-pipeline
-                    :pipeline='pipeline'
-                    :pipelineurl='pipelineurl'
-                  >
-                  </vue-running-pipeline>
-                </td>
+                <vue-status-pipeline
+                  :pipeline='pipeline'
+                  :pipelineurl='pipelineurl'
+                >
+                </vue-status-pipeline>
                 <vue-pipeline-url
                   :pipeline='pipeline'
                   :pipelineurl='pipelineurl'
