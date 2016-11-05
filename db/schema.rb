@@ -1538,6 +1538,14 @@ ActiveRecord::Schema.define(version: 20170928100231) do
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
+  create_table "user_contributions", id: false, force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "user_id", null: false
+    t.integer "contributions", null: false
+  end
+
+  add_index "user_contributions", ["user_id", "date"], name: "index_user_contributions_on_user_id_and_date", unique: true, using: :btree
+
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1775,6 +1783,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_contributions", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade

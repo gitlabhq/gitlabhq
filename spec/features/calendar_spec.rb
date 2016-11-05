@@ -61,6 +61,8 @@ feature 'Contributions Calendar', :js do
     }
 
     Event.create(note_comment_params)
+
+    UserContribution.calculate_for(Date.today)
   end
 
   def selected_day_activities
@@ -142,6 +144,7 @@ feature 'Contributions Calendar', :js do
     describe '1 issue creation calendar activity' do
       before do
         Issues::CreateService.new(contributed_project, user, issue_params).execute
+        UserContribution.calculate_for(Date.today)
       end
 
       it_behaves_like 'a day with activity', contribution_count: 1
@@ -166,6 +169,7 @@ feature 'Contributions Calendar', :js do
     describe '10 calendar activities' do
       before do
         10.times { push_code_contribution }
+        UserContribution.calculate_for(Date.today)
       end
 
       it_behaves_like 'a day with activity', contribution_count: 10
@@ -178,6 +182,8 @@ feature 'Contributions Calendar', :js do
         Timecop.freeze(Date.yesterday) do
           Issues::CreateService.new(contributed_project, user, issue_params).execute
         end
+        UserContribution.calculate_for(Date.today)
+        UserContribution.calculate_for(Date.yesterday)
       end
       include_context 'visit user page'
 

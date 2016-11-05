@@ -53,11 +53,18 @@ describe Gitlab::ContributionsCalendar do
     )
   end
 
+  def create_contributions(day, count)
+    UserContribution.create!(
+      user: contributor,
+      contributions: count,
+      date: day
+    )
+  end
+
   describe '#activity_dates' do
     it "returns a hash of date => count" do
-      create_event(public_project, last_week)
-      create_event(public_project, last_week)
-      create_event(public_project, today)
+      create_contributions(last_week, 2)
+      create_contributions(today, 1)
 
       expect(calendar.activity_dates).to eq(last_week => 2, today => 1)
     end

@@ -53,6 +53,7 @@
   - [project_export, 1]
   - [web_hook, 1]
   - [repository_check, 1]
+  - [user_contribution, 1]
   - [git_garbage_collect, 1]
   - [reactive_caching, 1]
   - [cronjob, 1]
