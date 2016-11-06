@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103171205) do
+ActiveRecord::Schema.define(version: 20161106185620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -866,6 +866,8 @@ ActiveRecord::Schema.define(version: 20161103171205) do
     t.string "encrypted_credentials_iv"
     t.string "encrypted_credentials_salt"
   end
+
+  add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string "name"
