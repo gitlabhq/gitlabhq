@@ -66,6 +66,7 @@ content on the Users#show page.
       this.action = action || this.defaultAction;
       this.$parentEl = $(parentEl) || $(document);
       this._location = window.location;
+      this.initEmptyStates();
       this.$parentEl.find('.nav-links a')
         .each((i, navLink) => {
           this.loaded[$(navLink).attr('data-action')] = false;
@@ -83,6 +84,12 @@ content on the Users#show page.
     bindEvents() {
       return this.$parentEl.off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
         .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event));
+    }
+
+    initEmptyStates() {
+      this.emptyStates = {
+        snippets: document.querySelector('#js-user-snippets-empty-state'),
+      };
     }
 
     tabShown(event) {
@@ -113,6 +120,7 @@ content on the Users#show page.
     }
 
     loadTab(source, action) {
+      if (this.emptyStates[action]) this.emptyStates[action].classList.add('hidden');
       return $.ajax({
         beforeSend: () => this.toggleLoading(true),
         complete: () => this.toggleLoading(false),
@@ -121,11 +129,17 @@ content on the Users#show page.
         url: `${source}.json`,
         success: (data) => {
           const tabSelector = `div#${action}`;
+          if (!data.html) return this.showEmptyState(tabSelector, action);
           this.$parentEl.find(tabSelector).html(data.html);
           this.loaded[action] = true;
           return gl.utils.localTimeAgo($('.js-timeago', tabSelector));
         }
       });
+    }
+
+    showEmptyState(tabSelector, action) {
+      if (this.emptyStates[action]) this.emptyStates[action].classList.remove('hidden');
+      this.loaded[action] = true;
     }
 
     loadActivities(source) {

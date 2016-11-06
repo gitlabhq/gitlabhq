@@ -1,0 +1,15 @@
+- button_path = local_assigns.fetch(:button_path, false)
+
+.row.empty-state.snippets
+  .col-xs-12.pull-right{ class: "#{'col-sm-6' if button_path}" }
+    .svg-content
+      = render 'shared/empty_states/icons/snippets.svg'
+  .col-xs-12{ class: "#{'col-sm-6' if button_path}" }
+    .text-content
+      - if button_path
+        %h4
+          Snippets are small pieces of code or notes that you want to keep.
+          They can be either public or private.
+        = link_to 'New snippet', button_path, class: 'btn btn-new', title: 'New snippet', id: 'new_snippet_link'
+      - else
+        %h4.text-center There are no snippets to show.

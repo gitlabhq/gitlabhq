@@ -282,4 +282,10 @@
       width: 100%;
     }
   }
+
+  @media(min-width: $screen-xs-max) {
+    &.snippets .text-content {
+      margin-top: 100px;
+    }
+  }
 }
