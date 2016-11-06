@@ -37,8 +37,8 @@
       },
       changepage(event, page = {}) {
         if (page) this.pagenum = +event.target.innerText;
-        if (page.last) this.pagenum = +page.last;
-        if (page.where) this.pagenum = +page.next;
+        if (page.where) this.pagenum = +page.where;
+        if (page.where) this.pagenum = +page.where;
 
         // use p instead of page to avoid making an actual request
         window.history.pushState({}, null, `?p=${this.pagenum}`);

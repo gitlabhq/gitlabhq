@@ -3,14 +3,19 @@
 
 ((gl) => {
   gl.VueGlPagination = Vue.extend({
+    data() {
+      return {
+        nslice: +this.pagenum,
+      };
+    },
     props: [
       'changepage',
-      'pages',
       'count',
       'pagenum',
     ],
     methods: {
       pagenumberstatus(n) {
+        console.log(n, this.nslice);
         if (n - 1 === +this.pagenum) return 'active';
         return '';
       },
@@ -20,35 +25,46 @@
       },
     },
     computed: {
+      paginationsection() {
+        if (this.last < 6 && this.pagenum < 6) {
+          const pageArray = [...Array(6).keys()];
+          pageArray.shift();
+          return pageArray.slice(0, this.upcount);
+        }
+        const section = [...Array(this.upcount).keys()];
+        section.shift();
+        this.nslice = +this.pagenum;
+        return section.slice(+this.pagenum, +this.pagenum + 5);
+      },
       last() {
         return Math.ceil(+this.count / 5);
-      },
-      lastpage() {
-        return `pipelines?p=${this.last}`;
       },
       upcount() {
         return +this.last + 1;
       },
-      prev() {
-        if (this.pagenum === 1) return 1;
-        return this.pagenum - 1;
+      endspread() {
+        if (+this.pagenum < this.last && +this.pagenum > 5) return true;
+        return false
+      },
+      begspread() {
+        if (+this.pagenum > 5 && +this.pagenum < this.last) return true;
+        return false
       },
     },
     template: `
       <div class="gl-pagination">
-        <ul class="pagination clearfix" v-for='n in upcount'>
-          <li :class='prevstatus(n)' v-if='n === 1'>
+        <ul class="pagination clearfix" v-for='n in paginationsection'>
+          <li :class='prevstatus(n)' v-if='n === 1 || n - 1 === nslice'>
             <span @click='changepage($event, {where: pagenum - 1})'>Prev</span>
           </li>
-          <li :class='pagenumberstatus(n)' v-else>
+          <li :class='pagenumberstatus(n)' v-if='n >= 2'>
             <span @click='changepage($event)'>{{(n - 1)}}</span>
           </li>
           <!--
-            take a slice of current array (up to 5)
             if at end make dots dissapear
             if in second slice or more make dots appear in the front
           -->
-          <li v-if='n === upcount && upcount > 4'>
+          <li v-if='n === upcount && upcount > 4 && begspread'>
             <span class="gap">…</span>
           </li>
           <li class="next" v-if='n === upcount && pagenum !== last'>
@@ -56,8 +72,11 @@
               Next
             </span>
           </li>
+          <li v-if='n === upcount && upcount > 4 && endspread'>
+            <span class="gap">…</span>
+          </li>
           <li class="last" v-if='n === upcount && pagenum !== last'>
-            <span @click='changepage($event, {last: last})'>Last »</span>
+            <span @click='changepage($event, {where: last})'>Last »</span>
           </li>
         </ul>
       </div>
