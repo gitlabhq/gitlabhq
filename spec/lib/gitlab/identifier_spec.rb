@@ -65,7 +65,7 @@ describe Gitlab::Identifier do
       commit = double(:commit, author_email: user.email)
 
       expect(project).to receive(:commit).with('123').twice.and_return(commit)
-      expect(User).to receive(:find_by).once.and_call_original
+      expect(User).to receive(:find_by_any_email).once.and_call_original
 
       2.times do
         expect(identifier.identify_using_commit(project, '123')).to eq(user)
