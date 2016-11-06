@@ -35,10 +35,12 @@
       shortsha(pipeline) {
         return pipeline.sha.slice(0, 8);
       },
-      changepage(event, last) {
-        if (last) this.pagenum = +last;
-        if (!last) this.pagenum = +event.target.innerText;
-        // use p instead of page to avoid rails tyring to make an actual request
+      changepage(event, page = {}) {
+        if (page) this.pagenum = +event.target.innerText;
+        if (page.last) this.pagenum = +page.last;
+        if (page.where) this.pagenum = +page.next;
+
+        // use p instead of page to avoid making an actual request
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
         this.store.fetchDataLoop.call(this, Vue, this.pagenum);
