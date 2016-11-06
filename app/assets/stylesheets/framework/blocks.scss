@@ -277,4 +277,10 @@
   @media(max-width: $screen-xs-max) {
     margin-top: 0;
   }
+
+  @media(min-width: $screen-xs-max) {
+    &.snippets .text-content {
+      margin-top: 100px;
+    }
+  }
 }

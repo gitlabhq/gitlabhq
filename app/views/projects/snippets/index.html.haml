@@ -1,11 +1,14 @@
 - page_title "Snippets"
 
-.sub-header-block
-  - if can?(current_user, :create_project_snippet, @project)
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new btn-wide-on-sm pull-right", title: "New snippet" do
-      New snippet
+- if @project.snippets.count.zero?
+  = render 'shared/empty_states/snippets', button_path: new_namespace_project_snippet_path(@project.namespace, @project)
+- else
+  .sub-header-block
+    - if can?(current_user, :create_project_snippet, @project)
+      = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new btn-wide-on-sm pull-right", title: "New snippet" do
+        New snippet
 
-  .oneline
-    Share code pastes with others out of git repository
+    .oneline
+      Share code pastes with others out of git repository
 
-= render 'snippets/snippets'
+  = render 'snippets/snippets'

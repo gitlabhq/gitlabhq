@@ -120,6 +120,8 @@
 
       #snippets.tab-pane
         - # This tab is always loaded via AJAX
+        #js-user-snippets-empty-state.hidden
+          = render 'shared/empty_states/snippets', button_path: new_snippet_path
 
     .loading-status
       = spinner
