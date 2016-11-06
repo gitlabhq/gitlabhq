@@ -8,7 +8,7 @@
   .project-network
     .controls
       = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
-        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Git revision", class: 'search-input form-control input-mx-250 search-sha'
+        = text_field_tag :extended_sha1, params[:extended_sha1], placeholder: "Git revision", class: 'search-input form-control input-mx-250 search-sha'
         = button_tag class: 'btn btn-success' do
           = icon('search')
         .inline.prepend-left-20
