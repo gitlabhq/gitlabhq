@@ -15,7 +15,6 @@
     ],
     methods: {
       pagenumberstatus(n) {
-        console.log(n, this.nslice);
         if (n - 1 === +this.pagenum) return 'active';
         return '';
       },
@@ -68,7 +67,10 @@
           <li v-if='n === upcount && upcount > 4 && begspread'>
             <span class="gap">…</span>
           </li>
-          <li class="next" v-if='(n === upcount || n === endcount) && pagenum !== last'>
+          <li
+            class="next"
+            v-if='(n === upcount || n === endcount) && pagenum !== last'
+          >
             <span @click='changepage($event, {where: +pagenum + 1})'>
               Next
             </span>
@@ -76,7 +78,10 @@
           <li v-if='n === upcount && upcount > 4 && endspread'>
             <span class="gap">…</span>
           </li>
-          <li class="last" v-if='(n === upcount || n === endcount) && pagenum !== last'>
+          <li
+            class="last"
+            v-if='(n === upcount || n === endcount) && pagenum !== last'
+          >
             <span @click='changepage($event, {where: last})'>Last »</span>
           </li>
         </ul>
