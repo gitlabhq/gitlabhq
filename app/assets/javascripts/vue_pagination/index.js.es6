@@ -34,6 +34,7 @@
         const section = [...Array(this.upcount).keys()];
         section.shift();
         this.nslice = +this.pagenum;
+        this.endcount = +this.pagenum + 5;
         return section.slice(+this.pagenum, +this.pagenum + 5);
       },
       last() {
@@ -44,17 +45,17 @@
       },
       endspread() {
         if (+this.pagenum < this.last && +this.pagenum > 5) return true;
-        return false
+        return false;
       },
       begspread() {
         if (+this.pagenum > 5 && +this.pagenum < this.last) return true;
-        return false
+        return false;
       },
     },
     template: `
       <div class="gl-pagination">
         <ul class="pagination clearfix" v-for='n in paginationsection'>
-          <li :class='prevstatus(n)' v-if='n === 1 || n - 1 === nslice'>
+          <li :class='prevstatus(n)' v-if='n - 1 === nslice'>
             <span @click='changepage($event, {where: pagenum - 1})'>Prev</span>
           </li>
           <li :class='pagenumberstatus(n)' v-if='n >= 2'>
@@ -67,15 +68,15 @@
           <li v-if='n === upcount && upcount > 4 && begspread'>
             <span class="gap">…</span>
           </li>
-          <li class="next" v-if='n === upcount && pagenum !== last'>
-            <span @click='changepage($event, {where: pagenum + 1})'>
+          <li class="next" v-if='(n === upcount || n === endcount) && pagenum !== last'>
+            <span @click='changepage($event, {where: +pagenum + 1})'>
               Next
             </span>
           </li>
           <li v-if='n === upcount && upcount > 4 && endspread'>
             <span class="gap">…</span>
           </li>
-          <li class="last" v-if='n === upcount && pagenum !== last'>
+          <li class="last" v-if='(n === upcount || n === endcount) && pagenum !== last'>
             <span @click='changepage($event, {where: last})'>Last »</span>
           </li>
         </ul>
