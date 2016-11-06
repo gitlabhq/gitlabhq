@@ -114,6 +114,41 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
       expect(link).to eq(href)
     end
+
+    it 'processes references with "+" (rich reference verbosity) suffix' do
+      doc = reference_filter("See #{reference}+")
+      expect(doc.css('a').first.attr('href')).
+        to eq helper.url_for_issue(issue.iid, project)
+    end
+
+    it 'strips the "+" rich reference verbosity suffix from the link text' do
+      doc = reference_filter("See #{reference}+")
+      expect(doc.text).not_to include('+')
+    end
+
+    it 'adds a data-rich-ref-verbosity attribute for "+" suffix' do
+      doc = reference_filter("See #{reference}+")
+      link = doc.css('a').first
+      expect(link.attr('data-rich-ref-verbosity')).to eq('1')
+    end
+
+    it 'supports up to 3 "+" characters for rich reference verbosity' do
+      doc = reference_filter("See #{reference}+++")
+      link = doc.css('a').first
+      expect(link.attr('data-rich-ref-verbosity')).to eq('3')
+      expect(doc.text).not_to include('+')
+
+      doc = reference_filter("See #{reference}++++")
+      link = doc.css('a').first
+      expect(link.attr('data-rich-ref-verbosity')).to eq('3')
+      expect(doc.text).to match(/\+{1}/)
+    end
+
+    it 'does not add a data-rich-ref-verbosity attribute if there\'s no "+" suffix' do
+      doc = reference_filter("See #{reference}")
+      link = doc.css('a').first
+      expect(link.to_html).not_to include('data-rich-ref-verbosity')
+    end
   end
 
   context 'cross-project reference' do

@@ -3,7 +3,8 @@ module Banzai
     class RelativeLinkPipeline < BasePipeline
       def self.filters
         FilterArray[
-          Filter::RelativeLinkFilter
+          Filter::RelativeLinkFilter,
+          Filter::RichReferenceFilter
         ]
       end
     end

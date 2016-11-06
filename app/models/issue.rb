@@ -121,11 +121,13 @@ class Issue < ActiveRecord::Base
 
   # Pattern used to extract `#123` issue references from text
   #
-  # This pattern supports cross-project references.
+  # This pattern supports cross-project references. Takes rich reference
+  # suffixes (+) into consideration, so it matches `#123+++`.
   def self.reference_pattern
     @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<issue>\d+)
+      (?<rich_ref_verbosity>#{Regexp.escape(Banzai::Filter::RichReferenceFilter::VERBOSITY_CHAR)}{1,3})?
     }x
   end
 

@@ -152,8 +152,6 @@ module Banzai
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
-            data = data_attributes_for(link_content || match, project, object)
-
             if matches.names.include?("url") && matches[:url]
               url = matches[:url]
             else
@@ -161,8 +159,11 @@ module Banzai
             end
 
             content = link_content || object_link_text(object, matches)
+            rich_ref_verbosity = rich_ref_verbosity_for(matches)
+            data = data_attributes_for(link_content || match, project, object, rich_ref_verbosity)
 
-            %(<a href="#{url}" #{data}
+
+            %(<a href="#{url}" #{data} #{}
                  title="#{escape_once(title)}"
                  class="#{klass}">#{content}</a>)
           else
@@ -171,12 +172,20 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object)
-        data_attribute(
-          original:     text,
-          project:      project.id,
+      def data_attributes_for(text, project, object, rich_ref_verbosity)
+        attributes = {
+          original: text,
+          project: project.id,
+          rich_ref_verbosity: rich_ref_verbosity,
           object_sym => object.id
-        )
+        }
+
+        data_attribute(attributes.compact)
+      end
+
+      def rich_ref_verbosity_for(matches)
+        rich_ref_verbosity = matches.names.include?('rich_ref_verbosity') && matches[:rich_ref_verbosity]
+        { rich_ref_verbosity: rich_ref_verbosity.length } unless rich_ref_verbosity.blank?
       end
 
       def object_link_text_extras(object, matches)
