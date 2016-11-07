@@ -23,6 +23,7 @@
   class FilteredSearchManager {
     constructor() {
       this.bindEvents();
+      this.loadSearchParamsFromURL();
       this.clearTokens();
     }
 
@@ -36,6 +37,31 @@
     clearTokens() {
       this.tokens = [];
       this.searchToken = '';
+    }
+
+    loadSearchParamsFromURL() {
+      const params = window.location.search.split('&');
+      let inputValue = '';
+
+      params.forEach((p) => {
+        const split = p.split('=');
+        const key = split[0];
+        const value = split[1];
+
+        const match = validTokenKeys.find((t) => {
+          return key === `${t.key}_${t.param}`;
+        });
+
+        if (match) {
+          const sanitizedKey = key.slice(0, key.indexOf('_'));
+          inputValue += `${sanitizedKey}:${value} `;
+        } else if (!match && key === 'search') {
+          inputValue += `${value} `;
+        }
+      });
+
+      // Trim the last space value
+      document.querySelector('.filtered-search').value = inputValue.trim();
     }
 
     tokenize(event) {
