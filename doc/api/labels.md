@@ -26,7 +26,9 @@ Example response:
       "description": "Bug reported by user",
       "open_issues_count": 1,
       "closed_issues_count": 0,
-      "open_merge_requests_count": 1
+      "open_merge_requests_count": 1,
+      "subscribed": false,
+      "priority": 10
    },
    {
       "color" : "#d9534f",
@@ -34,7 +36,9 @@ Example response:
       "description": "Confirmed issue",
       "open_issues_count": 2,
       "closed_issues_count": 5,
-      "open_merge_requests_count": 0
+      "open_merge_requests_count": 0,
+      "subscribed": false,
+      "priority": null
    },
    {
       "name" : "critical",
@@ -42,7 +46,9 @@ Example response:
       "description": "Critical issue. Need fix ASAP",
       "open_issues_count": 1,
       "closed_issues_count": 3,
-      "open_merge_requests_count": 1
+      "open_merge_requests_count": 1,
+      "subscribed": false,
+      "priority": null
    },
    {
       "name" : "documentation",
@@ -50,7 +56,9 @@ Example response:
       "description": "Issue about documentation",
       "open_issues_count": 1,
       "closed_issues_count": 0,
-      "open_merge_requests_count": 2
+      "open_merge_requests_count": 2,
+      "subscribed": false,
+      "priority": null
    },
    {
       "color" : "#5cb85c",
@@ -58,7 +66,9 @@ Example response:
       "description": "Enhancement proposal",
       "open_issues_count": 1,
       "closed_issues_count": 0,
-      "open_merge_requests_count": 1
+      "open_merge_requests_count": 1,
+      "subscribed": false,
+      "priority": null
    }
 ]
 ```
@@ -80,6 +90,7 @@ POST /projects/:id/labels
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label in 6-digit hex notation with leading `#` sign |
 | `description` | string  | no       | The description of the label |
+| `priority`    | integer | no       | The priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
 ```bash
 curl --data "name=feature&color=#5843AD" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
@@ -91,7 +102,11 @@ Example response:
 {
    "name" : "feature",
    "color" : "#5843AD",
-   "description":null
+   "open_issues_count": 1,
+   "closed_issues_count": 0,
+   "open_merge_requests_count": 1,
+   "description": null,
+   "priority": null
 }
 ```
 
@@ -127,7 +142,8 @@ Example response:
    "template" : false,
    "project_id" : 1,
    "created_at" : "2015-11-03T21:22:30.737Z",
-   "id" : 9
+   "id" : 9,
+   "priority": null
 }
 ```
 
@@ -151,6 +167,8 @@ PUT /projects/:id/labels
 | `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
 | `color`         | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
 | `description`   | string  | no                                | The new description of the label |
+| `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
+
 
 ```bash
 curl --request PUT --data "name=documentation&new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
@@ -162,7 +180,11 @@ Example response:
 {
    "color" : "#8E44AD",
    "name" : "docs",
-   "description": "Documentation"
+   "description": "Documentation",
+   "open_issues_count": 1,
+   "closed_issues_count": 0,
+   "open_merge_requests_count": 1,
+   "priority": null
 }
 ```
 
@@ -197,7 +219,8 @@ Example response:
     "open_issues_count": 0,
     "closed_issues_count": 0,
     "open_merge_requests_count": 0,
-    "subscribed": true
+    "subscribed": true,
+    "priority": null
 }
 ```
 
@@ -232,6 +255,7 @@ Example response:
     "open_issues_count": 0,
     "closed_issues_count": 0,
     "open_merge_requests_count": 0,
-    "subscribed": false
+    "subscribed": false,
+    "priority": null
 }
 ```
