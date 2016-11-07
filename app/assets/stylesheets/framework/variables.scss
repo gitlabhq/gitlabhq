@@ -12,67 +12,71 @@ $sidebar-breakpoint: 1024px;
 /*
  * Color schema
  */
+$darken-normal-factor: 5%;
+$darken-dark-factor: 10%;
+$darken-border-factor: 4%;
+
 $white-light: #fff;
-$white-normal: #ededed;
-$white-dark: #ececec;
+$white-normal: darken($white-light, $darken-normal-factor);
+$white-dark: darken($white-light, $darken-dark-factor);
 
 $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
 $gray-lighter: #f9f9f9;
-$gray-normal: #f5f5f5;
-$gray-dark: #ededed;
+$gray-normal: darken($gray-light, $darken-normal-factor);
+$gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c9c9c9;
 
 $green-light: #38ae67;
-$green-normal: #2faa60;
-$green-dark: #2ca05b;
+$green-normal: darken($green-light, $darken-normal-factor);
+$green-dark: darken($green-light, $darken-dark-factor);
 
 $blue-light: #2ea8e5;
-$blue-normal: #2d9fd8;
-$blue-dark: #2897ce;
+$blue-normal: darken($blue-light, $darken-normal-factor);
+$blue-dark: darken($blue-light, $darken-dark-factor);
 
 $blue-medium-light: #3498cb;
-$blue-medium: #2f8ebf;
-$blue-medium-dark: #2d86b4;
+$blue-medium: darken($blue-medium-light, $darken-normal-factor);
+$blue-medium-dark: darken($blue-medium-light, $darken-dark-factor);
 
 $blue-light-transparent: rgba(44, 159, 216, 0.05);
 
 $orange-light: #fc8a51;
-$orange-normal: #e75e40;
-$orange-dark: #ce5237;
+$orange-normal: darken($orange-light, $darken-normal-factor);
+$orange-dark: darken($orange-light, $darken-dark-factor);
 
 $red-light: #e52c5a;
-$red-normal: #d22852;
-$red-dark: darken($red-normal, 5%);
+$red-normal: darken($red-light, $darken-normal-factor);
+$red-dark: darken($red-light, $darken-dark-factor);
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
 
-$border-white-light: #f1f2f4;
-$border-white-normal: #d6dae2;
-$border-white-dark: #c6cacf;
+$border-white-light: darken($white-light, $darken-border-factor);
+$border-white-normal: darken($white-normal, $darken-border-factor);
+$border-white-dark: darken($white-dark, $darken-border-factor);
 
-$border-gray-light: #dcdcdc;
-$border-gray-normal: #d7d7d7;
-$border-gray-dark: #c6cacf;
+$border-gray-light: darken($gray-light, $darken-border-factor);
+$border-gray-normal: darken($gray-normal, $darken-border-factor);
+$border-gray-dark: darken($gray-dark, $darken-border-factor);
 
 $border-green-extra-light: #9adb84;
-$border-green-light: #2faa60;
-$border-green-normal: #2ca05b;
-$border-green-dark: #279654;
+$border-green-light: darken($green-light, $darken-border-factor);
+$border-green-normal: darken($green-normal, $darken-border-factor);
+$border-green-dark: darken($green-dark, $darken-border-factor);
 
-$border-blue-light: #2d9fd8;
-$border-blue-normal: #2897ce;
-$border-blue-dark: #258dc1;
+$border-blue-light: darken($blue-light, $darken-border-factor);
+$border-blue-normal: darken($blue-normal, $darken-border-factor);
+$border-blue-dark: darken($blue-dark, $darken-border-factor);
 
-$border-orange-light: #fc6d26;
-$border-orange-normal: #ce5237;
-$border-orange-dark: #c14e35;
+$border-orange-light: darken($orange-light, $darken-border-factor);
+$border-orange-normal: darken($orange-normal, $darken-border-factor);
+$border-orange-dark: darken($orange-dark, $darken-border-factor);
 
-$border-red-light: #d22852;
-$border-red-normal: #ca264f;
-$border-red-dark: darken($border-red-normal, 5%);
+$border-red-light: darken($red-light, $darken-border-factor);
+$border-red-normal: darken($red-normal, $darken-border-factor);
+$border-red-dark: darken($red-dark, $darken-border-factor);
 
 $help-well-bg: $gray-light;
 $help-well-border: #e5e5e5;
