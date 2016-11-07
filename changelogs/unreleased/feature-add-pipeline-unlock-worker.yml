@@ -1,0 +1,4 @@
+---
+title: Add worker that is meant to unlock stuck pipelines to cron
+merge_request: 6988
+author: 
