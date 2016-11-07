@@ -84,15 +84,17 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+
     commit =
       if ref.is_a?(Gitlab::Git::Commit)
         ref
       else
         Gitlab::Git::Commit.find(raw_repository, ref)
       end
+
     commit = ::Commit.new(commit, @project) if commit
     commit
-  rescue Rugged::OdbError
+  rescue Rugged::OdbError,  Rugged::TreeError
     nil
   end
 
@@ -232,6 +234,8 @@ class Repository
 
   def ref_exists?(ref)
     rugged.references.exist?(ref)
+  rescue Rugged::ReferenceError
+    false
   end
 
   def update_ref!(name, newrev, oldrev)

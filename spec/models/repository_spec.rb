@@ -113,6 +113,26 @@ describe Repository, models: true do
     end
   end
 
+  describe '#ref_exists?' do
+    context 'when ref exists' do
+      it 'returns true' do
+        expect(repository.ref_exists?('refs/heads/master')).to be true
+      end
+    end
+
+    context 'when ref does not exist' do
+      it 'returns false' do
+        expect(repository.ref_exists?('refs/heads/non-existent')).to be false
+      end
+    end
+
+    context 'when ref format is incorrect' do
+      it 'returns false' do
+        expect(repository.ref_exists?('refs/heads/invalid:master')).to be false
+      end
+    end
+  end
+
   describe '#last_commit_for_path' do
     subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
@@ -194,6 +214,35 @@ describe Repository, models: true do
       subject { repository.merged_to_root_ref?('non_existent_branch') }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#commit' do
+    context 'when ref exists' do
+      it 'returns commit object' do
+        expect(repository.commit('master'))
+          .to be_an_instance_of Commit
+      end
+    end
+
+    context 'when ref does not exist' do
+      it 'returns nil' do
+        expect(repository.commit('non-existent-ref')).to be_nil
+      end
+    end
+
+    context 'when ref is not valid' do
+      context 'when preceding tree element exists' do
+        it 'returns nil' do
+          expect(repository.commit('master:ref')).to be_nil
+        end
+      end
+
+      context 'when preceding tree element does not exist' do
+        it 'returns nil' do
+          expect(repository.commit('non-existent:ref')).to be_nil
+        end
+      end
     end
   end
 
