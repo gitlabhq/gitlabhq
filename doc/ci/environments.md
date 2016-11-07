@@ -11,20 +11,21 @@ process as well.
 
 In case you use GitLab CI to not only test or build your project, but also
 deploy it in your infrastructure, GitLab provides a way to track your deployments
-so you always know what is currently being deployed on your servers. With
-environments you can control the Continuous Deployment of your software all
-within GitLab. All you need to do is define them in your project's
-[`.gitlab-ci.yml`][yaml]. GitLab provides a full history of your deployments per
-every environment.
+so you always know what is currently being deployed on your servers.
 
 ## Overview
 
+With environments, you can control the Continuous Deployment of your software all
+within GitLab. All you need to do is define them in your project's
+[`.gitlab-ci.yml`][yaml] as we will explore below. GitLab provides a full
+history of your deployments per every environment.
+
+Environments are like tags for your CI jobs, describing where code gets deployed.
 Deployments are created when [jobs] deploy versions of code to environments,
 so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
 servers.
 
-Environments are like tags for your CI jobs, describing where code gets deployed.
 CI/CD [Pipelines] usually have one or more [jobs] that deploy to an environment.
 You can think of names such as testing, staging or production.
 
