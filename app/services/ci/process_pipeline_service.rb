@@ -7,12 +7,9 @@ module Ci
 
       ensure_created_builds! # TODO, remove me in 9.0
 
-      new_builds = enqueue_builds!
-
-      pipeline.update_status
-      pipeline.touch
-
-      new_builds.flatten.any?
+      enqueue_builds!.flatten.any?.tap do
+        pipeline.update_status
+      end
     end
 
     private
