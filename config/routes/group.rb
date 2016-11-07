@@ -3,7 +3,7 @@ require 'constraints/group_url_constrainer'
 constraints(GroupUrlConstrainer.new) do
   scope(path: ':id',
         as: :group,
-        constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+        constraints: { id: Gitlab::Regex.namespace_route_regex },
         controller: :groups) do
     get '/', action: :show
     patch '/', action: :update
