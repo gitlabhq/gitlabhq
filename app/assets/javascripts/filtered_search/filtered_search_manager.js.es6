@@ -5,15 +5,19 @@
   const validTokenKeys = [{
     key: 'author',
     type: 'string',
+    param: 'id',
   },{
     key: 'assignee',
-    type: 'string'
+    type: 'string',
+    param: 'id',
   },{
     key: 'milestone',
-    type: 'string'
+    type: 'string',
+    param: 'title',
   },{
     key: 'label',
-    type: 'array'
+    type: 'array',
+    param: 'name%5B%5D',
   },];
 
   class FilteredSearchManager {
@@ -53,14 +57,14 @@
           const tokenValue = i.slice(colonIndex + 1);
 
           const match = validTokenKeys.filter((v) => {
-            return v.name === tokenKey;
+            return v.key === tokenKey;
           })[0];
 
-          if (match) {
-              this.tokens.push = {
-                key: match.key,
-                value: tokenValue,
-              };
+          if (match && tokenValue.length > 0) {
+            this.tokens.push({
+              key: match.key,
+              value: tokenValue,
+            });
           }
         } else {
           searchTerms += i + ' ';
@@ -72,8 +76,11 @@
     }
 
     printTokens() {
-      console.log(this.tokens);
-      console.log(this.searchToken);
+      console.log('tokens:')
+      this.tokens.forEach((token) => {
+        console.log(token);
+      })
+      console.log('search: ' + this.searchToken);
     }
 
     checkForEnter(event) {
@@ -88,8 +95,13 @@
       console.log('search');
       let path = '?scope=all&state=opened&utf8=✓';
 
-      this.tokens.foreach((token) => {
 
+      this.tokens.forEach((token) => {
+        const param = validTokenKeys.find((t) => {
+          return t.key === token.key;
+        }).param;
+
+        path += `&${token.key}_${param}=${token.value}`;
       });
 
       if (this.searchToken) {
