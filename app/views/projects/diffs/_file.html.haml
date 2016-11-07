@@ -9,7 +9,7 @@
             = icon('comment')
           \
           - if editable_diff?(diff_file)
-            - link_opts = @merge_request.id ? { from_merge_request_id: @merge_request.id } : {}
+            - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
             = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
 
