@@ -31,7 +31,7 @@ module LfsHelper
   def lfs_download_access?
     return false unless project.lfs_enabled?
 
-    project.public? || ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code?
+    ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code?
   end
 
   def user_can_download_code?
