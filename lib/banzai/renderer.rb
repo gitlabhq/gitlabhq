@@ -46,7 +46,7 @@ module Banzai
       return html if html.present?
 
       html = cacheless_render_field(object, field)
-      object.update_column(html_field, html) unless object.new_record? || object.destroyed?
+      update_object(object, html_field, html) unless object.new_record? || object.destroyed?
 
       html
     end
@@ -165,6 +165,10 @@ module Banzai
     def full_cache_multi_key(cache_key, pipeline_name)
       return unless cache_key
       Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
+    end
+
+    def update_object(object, html_field, html)
+      object.update_column(html_field, html)
     end
   end
 end

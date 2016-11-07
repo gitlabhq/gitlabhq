@@ -10,54 +10,38 @@ describe 'bin/changelog' do
       expect(options.amend).to eq true
     end
 
-    it 'parses --force' do
-      options = described_class.parse(%w[foo --force bar])
+    it 'parses --force and -f' do
+      %w[--force -f].each do |flag|
+        options = described_class.parse(%W[foo #{flag} bar])
 
-      expect(options.force).to eq true
+        expect(options.force).to eq true
+      end
     end
 
-    it 'parses -f' do
-      options = described_class.parse(%w[foo -f bar])
+    it 'parses --merge-request and -m' do
+      %w[--merge-request -m].each do |flag|
+        options = described_class.parse(%W[foo #{flag} 1234 bar])
 
-      expect(options.force).to eq true
+        expect(options.merge_request).to eq 1234
+      end
     end
 
-    it 'parses --merge-request' do
-      options = described_class.parse(%w[foo --merge-request 1234 bar])
+    it 'parses --dry-run and -n' do
+      %w[--dry-run -n].each do |flag|
+        options = described_class.parse(%W[foo #{flag} bar])
 
-      expect(options.merge_request).to eq 1234
+        expect(options.dry_run).to eq true
+      end
     end
 
-    it 'parses -m' do
-      options = described_class.parse(%w[foo -m 4321 bar])
-
-      expect(options.merge_request).to eq 4321
-    end
-
-    it 'parses --dry-run' do
-      options = described_class.parse(%w[foo --dry-run bar])
-
-      expect(options.dry_run).to eq true
-    end
-
-    it 'parses -n' do
-      options = described_class.parse(%w[foo -n bar])
-
-      expect(options.dry_run).to eq true
-    end
-
-    it 'parses --git-username' do
+    it 'parses --git-username and -u' do
       allow(described_class).to receive(:git_user_name).and_return('Jane Doe')
-      options = described_class.parse(%w[foo --git-username bar])
 
-      expect(options.author).to eq 'Jane Doe'
-    end
+      %w[--git-username -u].each do |flag|
+        options = described_class.parse(%W[foo #{flag} bar])
 
-    it 'parses -u' do
-      allow(described_class).to receive(:git_user_name).and_return('John Smith')
-      options = described_class.parse(%w[foo -u bar])
-
-      expect(options.author).to eq 'John Smith'
+        expect(options.author).to eq 'Jane Doe'
+      end
     end
 
     it 'parses -h' do

@@ -33,6 +33,41 @@ describe JiraService, models: true do
     end
   end
 
+  describe '#can_test?' do
+    let(:jira_service) { described_class.new }
+
+    it 'returns false if username is blank' do
+      allow(jira_service).to receive_messages(
+        url: 'http://jira.example.com',
+        username: '',
+        password: '12345678'
+      )
+
+      expect(jira_service.can_test?).to be_falsy
+    end
+
+    it 'returns false if password is blank' do
+      allow(jira_service).to receive_messages(
+        url: 'http://jira.example.com',
+        username: 'tester',
+        password: ''
+      )
+
+      expect(jira_service.can_test?).to be_falsy
+    end
+
+    it 'returns true if password and username are present' do
+      jira_service = described_class.new
+      allow(jira_service).to receive_messages(
+        url: 'http://jira.example.com',
+        username: 'tester',
+        password: '12345678'
+      )
+
+      expect(jira_service.can_test?).to be_truthy
+    end
+  end
+
   describe "Execute" do
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
@@ -46,16 +81,19 @@ describe JiraService, models: true do
         service_hook: true,
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
-        password: 'gitlab_jira_password'
+        password: 'gitlab_jira_password',
+        project_key: 'GitLabProject'
       )
 
       @jira_service.save
 
-      project_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123'
-      @transitions_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
-      @comment_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
+      project_issues_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123'
+      @project_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/project/GitLabProject'
+      @transitions_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
+      @comment_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
 
-      WebMock.stub_request(:get, project_url)
+      WebMock.stub_request(:get, @project_url)
+      WebMock.stub_request(:get, project_issues_url)
       WebMock.stub_request(:post, @transitions_url)
       WebMock.stub_request(:post, @comment_url)
     end
@@ -98,6 +136,14 @@ describe JiraService, models: true do
       expect(WebMock).to have_requested(:post, @transitions_url).with(
         body: /this-is-a-custom-id/
       ).once
+    end
+
+    context "when testing" do
+      it "tries to get jira project" do
+        @jira_service.execute(nil)
+
+        expect(WebMock).to have_requested(:get, @project_url)
+      end
     end
   end
 

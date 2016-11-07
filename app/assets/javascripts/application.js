@@ -56,53 +56,11 @@
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
 
-(function() {
-  window.slugify = function(text) {
-    return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
-  };
+(function () {
+  document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
+  window.addEventListener('hashchange', gl.utils.shiftWindow);
 
-  window.ajaxGet = function(url) {
-    return $.ajax({
-      type: "GET",
-      url: url,
-      dataType: "script"
-    });
-  };
-
-  window.split = function(val) {
-    return val.split(/,\s*/);
-  };
-
-  window.extractLast = function(term) {
-    return split(term).pop();
-  };
-
-  window.rstrip = function(val) {
-    if (val) {
-      return val.replace(/\s+$/, '');
-    } else {
-      return val;
-    }
-  };
-
-  // Disable button if text field is empty
-  window.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
-    event_name = event_name || 'input';
-    var closest_submit, field;
-    field = $(field_selector);
-    closest_submit = field.closest('form').find(button_selector);
-    if (rstrip(field.val()) === "") {
-      closest_submit.disable();
-    }
-    return field.on(event_name, function() {
-      if (rstrip($(this).val()) === "") {
-        return closest_submit.disable();
-      } else {
-        return closest_submit.enable();
-      }
-    });
-  };
-
+<<<<<<< HEAD
   // Disable button if any input field with given selector is empty
   window.disableButtonIfAnyEmptyField = function(form, form_selector, button_selector) {
     var closest_submit, updateButtons;
@@ -138,45 +96,51 @@
   $.timeago.settings.allowFuture = true;
 
   window.onload = function() {
+=======
+  window.onload = function () {
+>>>>>>> c392b0cc24ba40e3fed920c6c693cb24665193af
     // Scroll the window to avoid the topnav bar
     // https://github.com/twitter/bootstrap/issues/1768
     if (location.hash) {
-      return setTimeout(shiftWindow, 100);
+      return setTimeout(gl.utils.shiftWindow, 100);
     }
   };
 
-  $(function() {
-    var $body, $document, $sidebarGutterToggle, $window, bootstrapBreakpoint, checkInitialSidebarSize, fitSidebarForSize, flash;
-    $document = $(document);
-    $window = $(window);
-    $body = $('body');
+  $(function () {
+    var $body = $('body');
+    var $document = $(document);
+    var $window = $(window);
+    var $sidebarGutterToggle = $('.js-sidebar-toggle');
+    var $flash = $('.flash-container');
+    var bootstrapBreakpoint = bp.getBreakpointSize();
+    var checkInitialSidebarSize;
+    var fitSidebarForSize;
 
     // Set the default path for all cookies to GitLab's root directory
     Cookies.defaults.path = gon.relative_url_root || '/';
 
     gl.utils.preventDisabledButtons();
-    bootstrapBreakpoint = bp.getBreakpointSize();
-    $(".nav-sidebar").niceScroll({
+    $('.nav-sidebar').niceScroll({
       cursoropacitymax: '0.4',
       cursorcolor: '#FFF',
-      cursorborder: "1px solid #FFF"
+      cursorborder: '1px solid #FFF'
     });
-    $(".js-select-on-focus").on("focusin", function() {
-      return $(this).select().one('mouseup', function(e) {
+    $('.js-select-on-focus').on('focusin', function () {
+      return $(this).select().one('mouseup', function (e) {
         return e.preventDefault();
       });
     // Click a .js-select-on-focus field, select the contents
     // Prevent a mouseup event from deselecting the input
     });
-    $('.remove-row').bind('ajax:success', function() {
+    $('.remove-row').bind('ajax:success', function () {
       $(this).tooltip('destroy')
         .closest('li')
         .fadeOut();
     });
-    $('.js-remove-tr').bind('ajax:before', function() {
+    $('.js-remove-tr').bind('ajax:before', function () {
       return $(this).hide();
     });
-    $('.js-remove-tr').bind('ajax:success', function() {
+    $('.js-remove-tr').bind('ajax:success', function () {
       return $(this).closest('tr').fadeOut();
     });
     $('select.select2').select2({
@@ -184,8 +148,8 @@
       // Initialize select2 selects
       dropdownAutoWidth: true
     });
-    $('.js-select2').bind('select2-close', function() {
-      return setTimeout((function() {
+    $('.js-select2').bind('select2-close', function () {
+      return setTimeout((function () {
         $('.select2-container-active').removeClass('select2-container-active');
         return $(':focus').blur();
       }), 1);
@@ -195,24 +159,24 @@
     $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
-      placement: function(_, el) {
+      placement: function (_, el) {
         return $(el).data('placement') || 'bottom';
       }
     });
-    $('.trigger-submit').on('change', function() {
+    $('.trigger-submit').on('change', function () {
       return $(this).parents('form').submit();
     // Form submitter
     });
     gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
     // Flash
-    if ((flash = $(".flash-container")).length > 0) {
-      flash.click(function() {
+    if ($flash.length > 0) {
+      $flash.click(function () {
         return $(this).fadeOut();
       });
-      flash.show();
+      $flash.show();
     }
     // Disable form buttons while a form is submitting
-    $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function(e) {
+    $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
       var buttons;
       buttons = $('[type="submit"]', this);
       switch (e.type) {
@@ -223,36 +187,36 @@
           return buttons.enable();
       }
     });
-    $(document).ajaxError(function(e, xhrObj, xhrSetting, xhrErrorText) {
-      var ref;
+    $(document).ajaxError(function (e, xhrObj) {
+      var ref = xhrObj.status;
       if (xhrObj.status === 401) {
         return new Flash('You need to be logged in.', 'alert');
-      } else if ((ref = xhrObj.status) === 404 || ref === 500) {
+      } else if (ref === 404 || ref === 500) {
         return new Flash('Something went wrong on our end.', 'alert');
       }
     });
-    $('.account-box').hover(function() {
+    $('.account-box').hover(function () {
       // Show/Hide the profile menu when hovering the account box
       return $(this).toggleClass('hover');
     });
-    $document.on('click', '.diff-content .js-show-suppressed-diff', function() {
+    $document.on('click', '.diff-content .js-show-suppressed-diff', function () {
       var $container;
       $container = $(this).parent();
       $container.next('table').show();
       return $container.remove();
     // Commit show suppressed diff
     });
-    $('.navbar-toggle').on('click', function() {
+    $('.navbar-toggle').on('click', function () {
       $('.header-content .title').toggle();
       $('.header-content .header-logo').toggle();
       $('.header-content .navbar-collapse').toggle();
       return $('.navbar-toggle').toggleClass('active');
     });
     // Show/hide comments on diff
-    $body.on("click", ".js-toggle-diff-comments", function(e) {
+    $body.on('click', '.js-toggle-diff-comments', function (e) {
       var $this = $(this);
-      $this.toggleClass('active');
       var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+      $this.toggleClass('active');
       if ($this.hasClass('active')) {
         notesHolders.show().find('.hide').show();
       } else {
@@ -261,6 +225,7 @@
       $this.trigger('blur');
       return e.preventDefault();
     });
+<<<<<<< HEAD
     $document.off("click", '.js-confirm-danger');
     $document.on("click", '.js-confirm-danger', function(e) {
       var btn, form, text, warningMessage;
@@ -272,22 +237,29 @@
       return new ConfirmDangerModal(form, text, {
         warningMessage: warningMessage
       });
+=======
+    $document.off('click', '.js-confirm-danger');
+    $document.on('click', '.js-confirm-danger', function (e) {
+      var btn = $(e.target);
+      var form = btn.closest('form');
+      var text = btn.data('confirm-danger-message');
+      e.preventDefault();
+      return new ConfirmDangerModal(form, text);
+>>>>>>> c392b0cc24ba40e3fed920c6c693cb24665193af
     });
-    $document.on('click', 'button', function() {
+    $document.on('click', 'button', function () {
       return $(this).blur();
     });
-    $('input[type="search"]').each(function() {
-      var $this;
-      $this = $(this);
+    $('input[type="search"]').each(function () {
+      var $this = $(this);
       $this.attr('value', $this.val());
     });
-    $document.off('keyup', 'input[type="search"]').on('keyup', 'input[type="search"]', function(e) {
+    $document.off('keyup', 'input[type="search"]').on('keyup', 'input[type="search"]', function () {
       var $this;
       $this = $(this);
       return $this.attr('value', $this.val());
     });
-    $sidebarGutterToggle = $('.js-sidebar-toggle');
-    $document.off('breakpoint:change').on('breakpoint:change', function(e, breakpoint) {
+    $document.off('breakpoint:change').on('breakpoint:change', function (e, breakpoint) {
       var $gutterIcon;
       if (breakpoint === 'sm' || breakpoint === 'xs') {
         $gutterIcon = $sidebarGutterToggle.find('i');
@@ -296,7 +268,7 @@
         }
       }
     });
-    fitSidebarForSize = function() {
+    fitSidebarForSize = function () {
       var oldBootstrapBreakpoint;
       oldBootstrapBreakpoint = bootstrapBreakpoint;
       bootstrapBreakpoint = bp.getBreakpointSize();
@@ -304,13 +276,13 @@
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    checkInitialSidebarSize = function() {
+    checkInitialSidebarSize = function () {
       bootstrapBreakpoint = bp.getBreakpointSize();
-      if (bootstrapBreakpoint === "xs" || "sm") {
+      if (bootstrapBreakpoint === 'xs' || 'sm') {
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    $window.off("resize.app").on("resize.app", function(e) {
+    $window.off('resize.app').on('resize.app', function () {
       return fitSidebarForSize();
     });
     gl.awardsHandler = new AwardsHandler();

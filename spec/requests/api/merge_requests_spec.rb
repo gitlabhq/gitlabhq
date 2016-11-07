@@ -186,14 +186,14 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/commits' do
-    context 'valid merge request' do
-      before { get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user) }
-      let(:commit) { merge_request.commits.first }
+    it 'returns a 200 when merge request is valid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user)
+      commit = merge_request.commits.first
 
-      it { expect(response.status).to eq 200 }
-      it { expect(json_response.size).to eq(merge_request.commits.size) }
-      it { expect(json_response.first['id']).to eq(commit.id) }
-      it { expect(json_response.first['title']).to eq(commit.title) }
+      expect(response.status).to eq 200
+      expect(json_response.size).to eq(merge_request.commits.size)
+      expect(json_response.first['id']).to eq(commit.id)
+      expect(json_response.first['title']).to eq(commit.title)
     end
 
     it 'returns a 404 when merge_request_id not found' do

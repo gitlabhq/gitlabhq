@@ -187,6 +187,7 @@ class User < ActiveRecord::Base
   scope :with_provider, ->(provider) do
     joins(:identities).where(identities: { provider: provider })
   end
+  scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").

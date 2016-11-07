@@ -336,6 +336,7 @@ class ProjectsController < Projects::ApplicationController
       :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
       :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled,
+      :only_allow_merge_if_all_discussions_are_resolved,
       :lfs_enabled, project_feature_attributes,
 
       # EE-only

@@ -141,7 +141,8 @@ module API
                                      :shared_runners_enabled,
                                      :snippets_enabled,
                                      :visibility_level,
-                                     :wiki_enabled]
+                                     :wiki_enabled,
+                                     :only_allow_merge_if_all_discussions_are_resolved]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -197,7 +198,8 @@ module API
                                      :shared_runners_enabled,
                                      :snippets_enabled,
                                      :visibility_level,
-                                     :wiki_enabled]
+                                     :wiki_enabled,
+                                     :only_allow_merge_if_all_discussions_are_resolved]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -281,7 +283,8 @@ module API
                                      :shared_runners_enabled,
                                      :snippets_enabled,
                                      :visibility_level,
-                                     :wiki_enabled]
+                                     :wiki_enabled,
+                                     :only_allow_merge_if_all_discussions_are_resolved]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?

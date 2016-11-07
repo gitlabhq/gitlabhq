@@ -52,13 +52,14 @@ module Gitlab
         fetch_resources(:labels, repo, per_page: 100) do |labels|
           labels.each do |raw|
             begin
-              label = LabelFormatter.new(project, raw).create!
-              @labels[label.title] = label.id
+              LabelFormatter.new(project, raw).create!
             rescue => e
               errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
         end
+
+        cache_labels!
       end
 
       def import_milestones
@@ -231,6 +232,12 @@ module Gitlab
               errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
+        end
+      end
+
+      def cache_labels!
+        project.labels.select(:id, :title).find_each do |label|
+          @labels[label.title] = label.id
         end
       end
 

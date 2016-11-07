@@ -21,7 +21,7 @@
 
 %ul.blob-commit-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
-  = render blob_commit, project: @project
+  = render blob_commit, project: @project, ref: @ref
 
 %div#blob-content-holder.blob-content-holder
   %article.file-holder
