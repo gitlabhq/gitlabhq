@@ -217,22 +217,6 @@ module API
       end
     end
 
-    def issuable_order_by
-      if params["order_by"] == 'updated_at'
-        'updated_at'
-      else
-        'created_at'
-      end
-    end
-
-    def issuable_sort
-      if params["sort"] == 'asc'
-        :asc
-      else
-        :desc
-      end
-    end
-
     def filter_by_iid(items, iid)
       items.where(iid: iid)
     end
