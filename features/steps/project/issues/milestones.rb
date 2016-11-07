@@ -67,6 +67,6 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   end
 
   step 'I should see no milestones' do
-    expect(page).to have_content('No milestones to show')
+    expect(page).to have_selector('.empty-state.milestones')
   end
 end

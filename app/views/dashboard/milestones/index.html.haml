@@ -10,8 +10,7 @@
 .milestones
   %ul.content-list
     - if @milestones.blank?
-      %li
-        .nothing-here-block No milestones to show
+      = render 'shared/empty_states/milestones'
     - else
       - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone

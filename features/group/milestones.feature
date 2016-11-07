@@ -24,7 +24,7 @@ Feature: Group Milestones
 
   Scenario: Create multiple milestones with one form
     Given I visit group "Owned" milestones page
-    And I click new milestone button
+    And I click New Milestone button
     And I fill milestone name
     When I press create mileston button
     Then milestone in each project should be created

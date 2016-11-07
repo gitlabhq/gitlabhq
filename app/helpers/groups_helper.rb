@@ -52,4 +52,8 @@ module GroupsHelper
   def group_issues(group)
     IssuesFinder.new(current_user, group_id: group.id).execute
   end
+
+  def group_milestones(group)
+    MilestonesFinder.new.execute(group.projects, params)
+  end
 end

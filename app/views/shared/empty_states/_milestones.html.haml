@@ -1,0 +1,17 @@
+- button_path = local_assigns.fetch(:button_path, false)
+
+.row.empty-state.milestones
+  .pull-right.col-xs-12{ class: "#{'col-sm-6' if button_path}" }
+    .svg-content
+      = render 'shared/empty_states/icons/milestones.svg'
+  .col-xs-12{ class: "#{'col-sm-6' if button_path}" }
+    .text-content
+      - if button_path
+        %h4
+          Milestones allow you to organize issues and merge requests into a cohesive group, optionally setting a due date.
+        %p
+          A common use is keeping track of an upcoming software version. Milestones are created per-project.
+        = link_to 'New milestone', button_path, class: 'btn btn-new', title: 'New milestone', id: 'new_milestone_link'
+      - else
+        %h4.text-center
+          There are no milestones to show.

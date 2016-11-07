@@ -11,7 +11,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I should see group milestones index page has no milestones' do
-    expect(page).to have_content('No milestones to show')
+    expect(page).to have_selector('.empty-state.milestones')
   end
 
   step 'Group has projects with milestones' do
@@ -47,8 +47,8 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     fill_in 'milestone_title', with: 'v2.9.0'
   end
 
-  step 'I click new milestone button' do
-    click_link "New Milestone"
+  step 'I click New milestone button' do
+    page.has_link?('New Milestone') ? click_link('New Milestone') : click_link('New milestone')
   end
 
   step 'I press create mileston button' do
