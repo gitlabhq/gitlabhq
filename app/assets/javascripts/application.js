@@ -60,45 +60,7 @@
   document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
   window.addEventListener('hashchange', gl.utils.shiftWindow);
 
-<<<<<<< HEAD
-  // Disable button if any input field with given selector is empty
-  window.disableButtonIfAnyEmptyField = function(form, form_selector, button_selector) {
-    var closest_submit, updateButtons;
-    closest_submit = form.find(button_selector);
-    updateButtons = function() {
-      var filled;
-      filled = true;
-      form.find('input').filter(form_selector).each(function() {
-        return filled = rstrip($(this).val()) !== "" || !$(this).attr('required');
-      });
-      if (filled) {
-        return closest_submit.enable();
-      } else {
-        return closest_submit.disable();
-      }
-    };
-    updateButtons();
-    return form.keyup(updateButtons);
-  };
-
-  window.sanitize = function(str) {
-    return str.replace(/<(?:.|\n)*?>/gm, '');
-  };
-
-  window.shiftWindow = function() {
-    return scrollBy(0, -100);
-  };
-
-  document.addEventListener("page:fetch", gl.utils.cleanupBeforeFetch);
-
-  window.addEventListener("hashchange", shiftWindow);
-
-  $.timeago.settings.allowFuture = true;
-
-  window.onload = function() {
-=======
   window.onload = function () {
->>>>>>> c392b0cc24ba40e3fed920c6c693cb24665193af
     // Scroll the window to avoid the topnav bar
     // https://github.com/twitter/bootstrap/issues/1768
     if (location.hash) {
