@@ -5,11 +5,11 @@
   const validTokenKeys = [{
     key: 'author',
     type: 'string',
-    param: 'id',
+    param: 'username',
   },{
     key: 'assignee',
     type: 'string',
-    param: 'id',
+    param: 'username',
   },{
     key: 'milestone',
     type: 'string',
