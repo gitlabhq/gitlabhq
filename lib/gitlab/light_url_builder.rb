@@ -22,15 +22,15 @@ module Gitlab
         issue_url
       when :user
         user_url(@id)
-      when :user_avatar_url
+      when :user_avatar
         user_avatar_url
-      when :commit_url
+      when :commit
         commit_url
       when :merge_request
         mr_url
-      when :build_url
+      when :build
         namespace_project_build_url(@project.namespace, @project, @id)
-      when :branch_url
+      when :branch
         branch_url
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
@@ -65,14 +65,6 @@ module Gitlab
                                             project_id: @project,
                                             id: @id
                                           }.merge!(@opts))
-    end
-
-    def pipeline_url
-      namespace_project_build_url({
-                                       namespace_id: @project.namespace,
-                                       project_id: @project,
-                                       id: @id
-                                     }.merge!(@opts))
     end
 
     def branch_url

@@ -196,7 +196,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it "has the author's name" do
-      expect(subject.review_events.first['author_name']).to eq(context.author.name)
+      expect(subject.review_events.first['author_name']).to eq(MergeRequest.first.author.name)
     end
   end
 
