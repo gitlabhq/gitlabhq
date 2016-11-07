@@ -71,6 +71,7 @@ entry.
 - Fix applying GitHub-imported labels when importing job is interrupted
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
 - Updated commit SHA styling on the branches page.
+- Fix 404 when visit /projects page
 
 ## 8.13.3 (2016-11-02)
 
