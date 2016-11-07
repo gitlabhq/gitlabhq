@@ -187,27 +187,16 @@
       $this.trigger('blur');
       return e.preventDefault();
     });
-<<<<<<< HEAD
-    $document.off("click", '.js-confirm-danger');
-    $document.on("click", '.js-confirm-danger', function(e) {
-      var btn, form, text, warningMessage;
-      e.preventDefault();
-      btn = $(e.target);
-      text = btn.data("confirm-danger-message");
-      warningMessage = btn.data("warning-message");
-      form = btn.closest("form");
-      return new ConfirmDangerModal(form, text, {
-        warningMessage: warningMessage
-      });
-=======
     $document.off('click', '.js-confirm-danger');
     $document.on('click', '.js-confirm-danger', function (e) {
       var btn = $(e.target);
       var form = btn.closest('form');
       var text = btn.data('confirm-danger-message');
+      var warningMessage = btn.data("warning-message");
       e.preventDefault();
-      return new ConfirmDangerModal(form, text);
->>>>>>> c392b0cc24ba40e3fed920c6c693cb24665193af
+      return new ConfirmDangerModal(form, text, {
+        warningMessage: warningMessage
+      });
     });
     $document.on('click', 'button', function () {
       return $(this).blur();
