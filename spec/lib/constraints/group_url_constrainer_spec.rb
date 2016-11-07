@@ -1,10 +1,19 @@
 require 'spec_helper'
 
 describe GroupUrlConstrainer, lib: true do
-  let!(:username) { create(:group, path: 'gitlab-org') }
+  let!(:group) { create(:group, path: 'gitlab') }
 
-  describe '#find_resource' do
-    it { expect(!!subject.find_resource('gitlab-org')).to be_truthy }
-    it { expect(!!subject.find_resource('gitlab-com')).to be_falsey }
+  describe '#matches?' do
+    context 'root group' do
+      it { expect(subject.matches?(request '/gitlab')).to be_truthy }
+      it { expect(subject.matches?(request '/gitlab.atom')).to be_truthy }
+      it { expect(subject.matches?(request '/gitlab/edit')).to be_falsey }
+      it { expect(subject.matches?(request '/gitlab-ce')).to be_falsey }
+      it { expect(subject.matches?(request '/.gitlab')).to be_falsey }
+    end
+  end
+
+  def request(path)
+    OpenStruct.new(path: path)
   end
 end
