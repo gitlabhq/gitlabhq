@@ -5,7 +5,7 @@ class Projects::NetworkController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
-  before_action :assign_extended_sha1
+  before_action :assign_commit
 
   def show
     @url = namespace_project_network_path(@project.namespace, @project, @ref, @options.merge(format: :json))
@@ -24,7 +24,7 @@ class Projects::NetworkController < Projects::ApplicationController
     end
   end
 
-  def assign_extended_sha1
+  def assign_commit
     return if params[:extended_sha1].blank?
 
     @options[:extended_sha1] = params[:extended_sha1]
