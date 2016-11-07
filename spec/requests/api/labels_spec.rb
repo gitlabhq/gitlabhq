@@ -17,12 +17,18 @@ describe API::API, api: true  do
       group = create(:group)
       group_label = create(:group_label, group: group)
       project.update(group: group)
+      expected_keys = [
+        'id', 'name', 'color', 'description',
+        'open_issues_count', 'closed_issues_count', 'open_merge_requests_count',
+        'subscribed', 'priority'
+      ]
 
       get api("/projects/#{project.id}/labels", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
+      expect(json_response.first.keys).to match_array expected_keys
       expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, priority_label.name, label1.name])
       expect(json_response.last['name']).to eq(label1.name)
       expect(json_response.last['color']).to be_present

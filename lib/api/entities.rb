@@ -433,7 +433,7 @@ module API
     end
 
     class LabelBasic < Grape::Entity
-      expose :name, :color, :description
+      expose :id, :name, :color, :description
     end
 
     class Label < LabelBasic
