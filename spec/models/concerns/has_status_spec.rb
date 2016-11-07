@@ -6,7 +6,10 @@ describe HasStatus do
 
     shared_examples 'build status summary' do
       context 'all successful' do
-        let!(:statuses) { Array.new(2) { create(type, status: :success) } }
+        let!(:statuses) do
+          create_list(type, 2, status: :success)
+        end
+
         it { is_expected.to eq 'success' }
       end
 

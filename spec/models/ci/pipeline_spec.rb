@@ -1,10 +1,13 @@
 require 'spec_helper'
 
-describe Ci::Pipeline, models: true do
+describe Ci::Pipeline, :models do
   include EmailHelpers
 
-  let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
+  let(:project) { create :empty_project }
+
+  let(:pipeline) do
+    create(:ci_empty_pipeline, status: :created, project: project)
+  end
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -865,24 +868,38 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { FactoryGirl.create :project }
-    let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+    let(:project) { create(:project) }
+
+    let(:commit_id) do
+      project.repository.commit('master').id
+    end
+
+    let(:pipeline) do
+      create(:ci_empty_pipeline, status: 'created',
+                                 project: project,
+                                 ref: 'master',
+                                 sha: commit_id)
+    end
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
-      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+      merge_request = create(:merge_request, source_project: project,
+                                             source_branch: pipeline.ref)
 
       expect(pipeline.merge_requests).to eq([merge_request])
     end
 
     it "doesn't return merge requests whose source branch doesn't match the pipeline's ref" do
-      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
+      create(:merge_request, source_project: project,
+                             source_branch: 'feature',
+                             target_branch: 'master')
 
       expect(pipeline.merge_requests).to be_empty
     end
 
     it "doesn't return merge requests whose `diff_head_sha` doesn't match the pipeline's SHA" do
       create(:merge_request, source_project: project, source_branch: pipeline.ref)
-      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
+      allow_any_instance_of(MergeRequest)
+        .to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
       expect(pipeline.merge_requests).to be_empty
     end
@@ -962,6 +979,34 @@ describe Ci::Pipeline, models: true do
       end
 
       it_behaves_like 'not sending any notification'
+    end
+  end
+
+  describe 'scopes' do
+    before do
+      create(:ci_empty_pipeline, status: :created)
+      create(:ci_empty_pipeline, status: :running)
+      create(:ci_empty_pipeline, status: :pending)
+      create(:ci_empty_pipeline, status: :success)
+      create(:ci_empty_pipeline, status: :skipped)
+    end
+
+    describe '.running_or_pending' do
+      it 'returns pipelines running or pending' do
+        expect(described_class.running_or_pending.count).to eq 2
+      end
+    end
+
+    describe '.finished' do
+      it 'returns finished pipelines' do
+        expect(described_class.finished.count).to eq 2
+      end
+    end
+
+    describe '.unfinished' do
+      it 'returns unfinished pipelines' do
+        expect(described_class.unfinished.count).to eq 3
+      end
     end
   end
 end
