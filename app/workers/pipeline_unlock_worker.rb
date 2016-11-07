@@ -7,7 +7,10 @@ class PipelineUnlockWorker
       .where('updated_at < ?', 6.hours.ago)
       .find_each do |pipeline|
         PipelineProcessWorker.new.perform(pipeline.id)
-        pipeline.touch
+
+        Gitlab::OptimisticLocking.retry_lock(pipeline) do |pipeline|
+          pipeline.touch
+        end
       end
   end
 end
