@@ -54,14 +54,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I should see raw file content' do
     expect(source).to eq '' # Body is filled in by gitlab-workhorse
   end
-  
-  step 'I browse a csv file' do
-    visit namespace_project_blob_path(@project.namespace, @project, File.join(sample_csv_commit.id, sample_csv_blob.path))
-  end
-  
-  step 'I should see a table' do
-    expect(find(:css,'div.blob-content')).to have_css('table')
-  end
 
   step 'I click button "Edit"' do
     click_link 'Edit'

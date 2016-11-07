@@ -13,4 +13,7 @@
           = link_icon
           = i
   .blob-content{data: {blob_id: blob.id}}
-    = highlight(blob.path, blob.data, repository: repository, plain: blob.no_highlighting?)
+    - if blob.csv?
+      = render 'csv', csv: blob.data
+    - else
+      = highlight(blob.path, blob.data, repository: repository, plain: blob.no_highlighting?)

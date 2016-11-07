@@ -77,7 +77,6 @@ describe Blob do
         lfs_pointer?: false,
         svg?: false,
         text?: false,
-        csv?: false
       )
 
       described_class.decorate(double).tap do |blob|
@@ -103,12 +102,6 @@ describe Blob do
       expect(blob.to_partial_path).to eq 'image'
     end
 
-    it 'handles csv' do
-      blob = stubbed_blob(csv?: true)
-
-      expect(blob.to_partial_path).to eq 'csv'
-    end
-    
     it 'handles text' do
       blob = stubbed_blob(text?: true)
 

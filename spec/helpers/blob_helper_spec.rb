@@ -68,6 +68,27 @@ describe BlobHelper do
     end
   end
 
+  describe '#parse_csv' do
+    it 'parses CSV data' do
+      expect { |block| parse_csv("foo,bar\noof,rab", &block) }
+        .to yield_successive_args(%w(foo bar), %w(oof rab))
+    end
+
+    it 'passes options to CSV.parse' do
+      options = { foo: :foo, bar: :bar }
+
+      expect(CSV).to receive(:parse).with(anything, options)
+
+      parse_csv('foo', options)
+    end
+
+    it 'rescues MalformedCSVError' do
+      expect(CSV).to receive(:parse).and_raise(CSV::MalformedCSVError)
+
+      expect { parse_csv('') }.not_to raise_error
+    end
+  end
+
   describe "#edit_blob_link" do
     let(:namespace) { create(:namespace, name: 'gitlab' )}
     let(:project) { create(:project, namespace: namespace) }

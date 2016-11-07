@@ -10,9 +10,9 @@ module BlobHelper
     %w(credits changelog news copying copyright license authors)
   end
 
-  def blob_to_csv(blob, options = {})
+  def parse_csv(blob_data, options = {}, &block)
     begin
-      CSV.parse(blob.data, options)
+      CSV.parse(blob_data, options, &block)
     rescue CSV::MalformedCSVError
       nil
     end

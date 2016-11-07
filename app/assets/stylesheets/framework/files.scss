@@ -169,11 +169,13 @@
       padding: 0;
     }
 
-    table, th, td {
+    table.csv {
       border-collapse: collapse;
-      padding-top: 0;
-      padding-bottom: 5.5px;
-      line-height: 0.5;
+      display: inline;
+
+      th {
+        font-weight: bold;
+      }
     }
   }
 }

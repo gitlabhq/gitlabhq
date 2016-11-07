@@ -115,22 +115,4 @@ eos
       commits: commits
     )
   end
-  
-  def sample_csv_commit
-    OpenStruct.new(
-      id: 'b0343abfb4530c065cd57b74879ee52d1a540e99'
-    )
-  end
-  
-  def sample_csv_blob
-    OpenStruct.new(
-      path: "files/csv/Book1.csv"
-    )
-  end
-      
-  def invalid_csv_commit
-    OpenStruct.new(
-      id: '6ff234d2889b27d91c3442924ef6a100b1fc6f2b'
-    )
-  end
 end
