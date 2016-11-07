@@ -5,12 +5,12 @@ class RenameRepositoryStorageColumn < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
-  DOWNTIME = false
+  DOWNTIME = true
 
   # When a migration requires downtime you **must** uncomment the following
   # constant and define a short and easy to understand explanation as to why the
   # migration requires downtime.
-  # DOWNTIME_REASON = ''
+  DOWNTIME_REASON = 'Renaming the application_settings.repository_storage column'
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
   # you must disable the use of transactions as these methods can not run in an

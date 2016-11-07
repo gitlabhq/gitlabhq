@@ -202,11 +202,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def repository_storages
-    value = read_attribute(:repository_storages)
-    value = [value] if value.is_a?(String)
-    value = [] if value.nil?
-
-    value
+    Array(read_attribute(:repository_storages))
   end
 
   # repository_storage is still required in the API. Remove in 9.0
