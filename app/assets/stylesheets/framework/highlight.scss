@@ -17,7 +17,6 @@
     overflow-y: hidden;
     white-space: pre;
     word-wrap: normal;
-    border-left: 1px solid;
 
     code {
       display: inline-block;
@@ -42,6 +41,12 @@
     padding: 10px;
     text-align: right;
     float: left;
+
+    &.table-numbers {
+      a {
+        height: 38px;
+      }
+    }
 
     a {
       font-family: $monospace_font;

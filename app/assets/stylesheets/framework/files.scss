@@ -172,9 +172,21 @@
     table.csv {
       border-collapse: collapse;
       display: inline;
+      border: 0;
 
       th {
         font-weight: bold;
+        border-top: 0;
+      }
+
+      th,
+      td {
+        &:first-of-type {
+          border-left: 0;
+        }
+        &:last-of-type {
+          border-right: 0;
+        }
       }
     }
   }
@@ -190,4 +202,10 @@ span.idiff {
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
   }
+}
+
+.blob-content {
+  white-space: nowrap;
+  overflow: auto;
+  border-left: 1px solid $table-border-gray;
 }

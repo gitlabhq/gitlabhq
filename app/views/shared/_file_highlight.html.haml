@@ -1,7 +1,7 @@
 - repository = nil unless local_assigns.key?(:repository)
 
 .file-content.code.js-syntax-highlight
-  .line-numbers
+  .line-numbers{class: ('table-numbers' if blob.csv?)}
     - if blob.data.present?
       - link_icon = icon('link')
       - link = blob_link if defined?(blob_link)
