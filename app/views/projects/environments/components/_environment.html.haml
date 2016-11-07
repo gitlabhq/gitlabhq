@@ -2,7 +2,7 @@
   %tr
     %td{"v-bind:class" => "{ 'children-row': isChildren}" }
       %a.environment-name{ "v-if" => "!isFolder",
-        ":href" => "'#{namespace_project_environments_path(@project.namespace, @project)}/' + model.id" }
+        ":href" => "model.environment_url" }
         {{model.name}}
 
       %span.folder-name{ "v-if" => "isFolder",
@@ -25,7 +25,7 @@
         
         %span{ "v-if" => "model.last_deployment.user" }
           by
-          %a{":href" => "'/' + model.last_deployment.user.username" }
+          %a{":href" => "model.last_deployment.user.web_url" }
             %img.avatar.has_tooltip.s20{ ":src" => "model.last_deployment.user.avatar_url",
             ":alt" => "model.last_deployment.user.username + `'s avatar`",
             ":title" => "model.last_deployment.user.username",
@@ -34,7 +34,7 @@
 
     %td
       %a.build-link{ "v-if" => "!isFolder && model.last_deployment && model.last_deployment.deployable",
-        ":href" => "'#{namespace_project_builds_path(@project.namespace, @project)}/' + model.last_deployment.deployable.id" }
+        ":href" => "model.last_deployment.deployable.build_url" }
         {{model.last_deployment.deployable.name}}
         = precede "#" do
           {{model.last_deployment.deployable.id}}
@@ -47,7 +47,7 @@
 
     %td
       %span{ "v-if" => "!isFolder && model.last_deployment" }
-        {{model.last_deployment.created_at}}
+        {{model.created_at}}
 
     %td.hidden-xs
       .pull-right{ "v-if" => "!isFolder" }
