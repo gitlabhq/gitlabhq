@@ -12,9 +12,9 @@ $sidebar-breakpoint: 1024px;
 /*
  * Color schema
  */
-$darken-normal-factor: 5%;
+$darken-normal-factor: 7%;
 $darken-dark-factor: 10%;
-$darken-border-factor: 4%;
+$darken-border-factor: 5%;
 
 $white-light: #fff;
 $white-normal: darken($white-light, $darken-normal-factor);
