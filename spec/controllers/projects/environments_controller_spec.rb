@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
+  include ApiHelpers
+
   let(:environment) { create(:environment) }
   let(:project)     { environment.project }
   let(:user)        { create(:user) }
@@ -9,6 +11,27 @@ describe Projects::EnvironmentsController do
     project.team << [user, :master]
 
     sign_in(user)
+  end
+
+  describe 'GET index' do
+    context 'when standardrequest has been made' do
+      it 'responds with status code 200' do
+        get :index, environment_params
+
+        expect(response).to be_ok
+      end
+    end
+
+    context 'when requesting JSON response' do
+      it 'responds with correct JSON' do
+        get :index, environment_params(format: :json)
+
+        first_environment = json_response.first
+
+        expect(first_environment).not_to be_empty
+        expect(first_environment['name']). to eq environment.name
+      end
+    end
   end
 
   describe 'GET show' do
@@ -48,11 +71,9 @@ describe Projects::EnvironmentsController do
     end
   end
 
-  def environment_params
-    {
-      namespace_id: project.namespace,
-      project_id: project,
-      id: environment.id
-    }
+  def environment_params(opts = {})
+    opts.reverse_merge(namespace_id: project.namespace,
+                       project_id: project,
+                       id: environment.id)
   end
 end
