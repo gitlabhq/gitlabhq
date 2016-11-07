@@ -312,10 +312,6 @@ Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.n
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
 
-Settings.cron_jobs['cleanup_pending_delete_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['cleanup_pending_delete_worker']['cron'] = '25 */4 * * *'
-Settings.cron_jobs['cleanup_pending_delete_worker']['job_class'] = 'CleanupPendingDeleteWorker'
-
 #
 # GitLab Shell
 #
