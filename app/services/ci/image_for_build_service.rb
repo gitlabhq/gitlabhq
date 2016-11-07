@@ -12,7 +12,7 @@ module Ci
                           pipelines.latest
                         end.first
 
-      image_name = image_for_status(latest_pipeline.status)
+      image_name = image_for_status(latest_pipeline.try(:status))
 
       image_path = Rails.root.join('public/ci', image_name)
       OpenStruct.new(path: image_path, name: image_name)
