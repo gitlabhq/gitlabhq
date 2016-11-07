@@ -16,7 +16,8 @@ module Gitlab
       end
 
       def issue
-        { start_time_attrs: issue_table[:created_at],
+        {
+          start_time_attrs: issue_table[:created_at],
           end_time_attrs: [issue_metrics_table[:first_associated_with_milestone_at],
                            issue_metrics_table[:first_added_to_board_at]],
           projections: [issue_table[:title],
@@ -30,7 +31,8 @@ module Gitlab
       end
 
       def plan
-        { start_time_attrs: issue_metrics_table[:first_associated_with_milestone_at],
+        {
+          start_time_attrs: issue_metrics_table[:first_associated_with_milestone_at],
           end_time_attrs: [issue_metrics_table[:first_added_to_board_at],
                            issue_metrics_table[:first_mentioned_in_commit_at]],
           projections: [mr_diff_table[:st_commits].as('commits')]
@@ -38,7 +40,8 @@ module Gitlab
       end
 
       def code
-        { start_time_attrs: issue_metrics_table[:first_mentioned_in_commit_at],
+        {
+          start_time_attrs: issue_metrics_table[:first_mentioned_in_commit_at],
           end_time_attrs: mr_table[:created_at],
           projections: [mr_table[:title],
                         mr_table[:iid],
@@ -53,7 +56,8 @@ module Gitlab
       end
 
       def test
-        { start_time_attrs: mr_metrics_table[:latest_build_started_at],
+        {
+          start_time_attrs: mr_metrics_table[:latest_build_started_at],
           end_time_attrs: mr_metrics_table[:latest_build_finished_at],
           projections: [build_table[:id]],
           order: build_table[:created_at]
@@ -61,7 +65,8 @@ module Gitlab
       end
 
       def review
-        { start_time_attrs: mr_table[:created_at],
+        {
+          start_time_attrs: mr_table[:created_at],
           end_time_attrs: mr_metrics_table[:merged_at],
           projections: [mr_table[:title],
                         mr_table[:iid],
@@ -75,7 +80,8 @@ module Gitlab
       end
 
       def staging
-        { start_time_attrs: mr_metrics_table[:merged_at],
+        {
+          start_time_attrs: mr_metrics_table[:merged_at],
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
           projections: [build_table[:id]],
           order: build_table[:created_at]
@@ -83,7 +89,8 @@ module Gitlab
       end
 
       def production
-        { start_time_attrs: issue_table[:created_at],
+        {
+          start_time_attrs: issue_table[:created_at],
           end_time_attrs: mr_metrics_table[:first_deployed_to_production_at],
           projections: [issue_table[:title],
                         issue_table[:iid],

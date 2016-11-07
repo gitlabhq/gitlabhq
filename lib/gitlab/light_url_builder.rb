@@ -1,4 +1,6 @@
 module Gitlab
+  # Similar to UrlBuilder, but using IDs to avoid querying the DB for objects
+  # Useful for using in conjunction with Arel queries.
   class LightUrlBuilder
     include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
@@ -16,28 +18,11 @@ module Gitlab
     end
 
     def url
-      # TODO refactor this
-      case @entity
-      when :issue
-        issue_url
-      when :user
-        user_url(@id)
-      when :user_avatar
-        user_avatar_url
-      when :commit
-        commit_url
-      when :merge_request
-        mr_url
-      when :build
-        namespace_project_build_url(@project.namespace, @project, @id)
-      when :branch
-        branch_url
-      else
-        raise NotImplementedError.new("No URL builder defined for #{object.class}")
-      end
-    end
+      url_method = "#{@entity}_url"
+      raise NotImplementedError.new("No Light URL builder defined for #{@entity.to_s}") unless respond_to?(url_method)
 
-    private
+      public_send(url_method)
+    end
 
     def issue_url
       namespace_project_issue_url({
@@ -59,7 +44,7 @@ module Gitlab
                                    }.merge!(@opts))
     end
 
-    def mr_url
+    def merge_request_url
       namespace_project_merge_request_url({
                                             namespace_id: @project.namespace,
                                             project_id: @project,
@@ -69,6 +54,14 @@ module Gitlab
 
     def branch_url
       "#{project_url(@project)}/commits/#{@id}"
+    end
+
+    def user_url
+      Gitlab::Routing.url_helpers.user_url(@id)
+    end
+
+    def build_url
+      namespace_project_build_url(@project.namespace, @project, @id)
     end
   end
 end
