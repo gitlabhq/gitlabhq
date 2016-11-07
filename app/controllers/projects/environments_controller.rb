@@ -13,7 +13,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: serialize_as_json(@environments)
+        render json: EnvironmentSerializer
+          .new(project: @project)
+          .represent(@environments)
       end
     end
   end
@@ -62,20 +64,5 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
-  end
-  
-  def serialize_as_json(resource)
-    resource.as_json(
-      include: {
-        last_deployment: {
-          include: {
-            user: { only: [:id, :name, :username], methods: [:avatar_url] },
-            deployable: { only: [:id, :name, :ref, :tag] }
-          },
-          methods: [:short_sha, :commit_title, :commit]
-        },
-        project: { methods: [:namespace] }
-      }
-    )
   end
 end
