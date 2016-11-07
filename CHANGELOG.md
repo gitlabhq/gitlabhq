@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-## 8.13.4
+## 8.13.4 (2016-11-07)
 
 - Fix showing pipeline status for a given commit from correct branch. !7034
 - Only skip group when it's actually a group in the "Share with group" select. !7262
