@@ -1,25 +1,30 @@
 - page_title    'New Group'
 - header_title  "Groups", dashboard_groups_path
 
-%h3.page-title
-  New Group
-%hr
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      New Group
+    %p
+      A group is a collection of several projects.
+      Groups can be private, public or limited to any logged in users.
+      You can move existing projects to a group.
+  .col-lg-9
+    = form_for @group, html: { class: 'group-form form-horizontal gl-show-field-errors' } do |f|
+      = form_errors(@group)
+      = render 'shared/group_form', f: f, autofocus: true
 
-= form_for @group, html: { class: 'group-form form-horizontal gl-show-field-errors' } do |f|
-  = form_errors(@group)
-  = render 'shared/group_form', f: f, autofocus: true
+      .form-group.col-xs-12
+        = f.label :description, class: 'label-light' do
+          Group avatar
+        %br
+        = render 'shared/choose_group_avatar_button', f: f
 
-  .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
-    .col-sm-10
-      = render 'shared/choose_group_avatar_button', f: f
+      .form-group.col-xs-12.project-visibility-level-holder
+        = f.label :visibility_level, class: 'label-light' do
+          Visibility Level
+          = link_to icon('question-circle'), help_page_path("public_access/public_access")
+        = render('shared/visibility_radios', model_method: :visibility_level, form: f, can_change_visibility_level: true, selected_level: default_group_visibility, form_model: @group)
 
-  = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
-
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      = render 'shared/group_tips'
-
-  .form-actions
-    = f.submit 'Create group', class: "btn btn-create", tabindex: 3
-    = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'
+      = f.submit 'Create group', class: "btn btn-create", tabindex: 3
+      = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'
