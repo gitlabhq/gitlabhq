@@ -4,9 +4,9 @@
 //= require_tree ./services
 //= require ./components/environment_item
 //= require ../boards/vue_resource_interceptor
+/* globals Vue, EnvironmentsService */
+/* eslint-disable no-param-reassign */
 
-
-/* eslint-disable */
 $(() => {
   const environmentsListApp = document.getElementById('environments-list-view');
   const Store = gl.environmentsList.EnvironmentsStore;
@@ -20,26 +20,24 @@ $(() => {
   const filterState = state => environment => environment.state === state && environment;
 
   // recursiveMap :: (Function, Array) -> Array
-  const recursiveMap = (fn, arr) => {
-
-    return arr.map((item) => {
-      if (!item.children) { return fn(item); }
-
+  const recursiveMap = (fn, arr) => arr.map((item) => {
+    if (item.children) {
       const filteredChildren = recursiveMap(fn, item.children).filter(Boolean);
       if (filteredChildren.length) {
         item.children = filteredChildren;
         return item;
       }
+    }
+    return fn(item);
+  }).filter(Boolean);
 
-    }).filter(Boolean);
-  };
 
   gl.EnvironmentsListApp = new Vue({
 
     el: '#environments-list-view',
 
     components: {
-      item: gl.environmentsList.EnvironmentItem
+      item: gl.environmentsList.EnvironmentItem,
     },
 
     data: {
@@ -50,7 +48,7 @@ $(() => {
     },
 
     computed: {
-      filteredEnvironments (){
+      filteredEnvironments() {
         return recursiveMap(filterState(this.visibility), this.state.environments);
       },
     },
@@ -84,12 +82,12 @@ $(() => {
      * @param  {String} param
      * @returns {String}       The value of the requested parameter.
      */
-    getQueryParameter(param) {
+    getQueryParameter(parameter) {
       return window.location.search.substring(1).split('&').reduce((acc, param) => {
         const paramSplited = param.split('=');
         acc[paramSplited[0]] = paramSplited[1];
         return acc;
-      }, {})[param];
-    }
+      }, {})[parameter];
+    },
   });
 });

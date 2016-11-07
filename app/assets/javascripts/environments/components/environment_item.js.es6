@@ -1,5 +1,4 @@
 /* globals Vue */
-/* eslint-disable no-param-reassign, no-return-assign */
 (() => {
   /**
    * Envrionment Item Component
@@ -112,12 +111,28 @@
         return this.hasLastDeploymentKey && this.model.last_deployment && this.$options.hasKey(this.model.last_deployment, 'deployable');
       },
 
+      /**
+       * Human readable date.
+       *
+       * @returns {String}
+       */
       createdDate() {
         return $.timeago(this.model.created_at);
       },
 
+      /**
+       * Returns the manual actions with the name parsed.
+       *
+       * @returns {Array.<Object>}
+       */
       manualActions() {
-        this.model.manual_actions.map(action => action.name = gl.text.humanize(action.name));
+        return this.model.manual_actions.map((action) => {
+          const parsedAction = {
+            name: gl.text.humanize(action.name),
+            play_url: action.play_url,
+          };
+          return parsedAction;
+        });
       },
     },
 

@@ -1,6 +1,8 @@
+/* globals Vue */
+/* eslint-disable no-unused-vars, no-param-reassign */
 class EnvironmentsService {
 
-  constructor (root) {
+  constructor(root) {
     Vue.http.options.root = root;
 
     this.environments = Vue.resource(root);
@@ -11,7 +13,7 @@ class EnvironmentsService {
     });
   }
 
-  all () {
+  all() {
     return this.environments.get();
   }
-};
+}

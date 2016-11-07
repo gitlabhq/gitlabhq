@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 (() => {
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
