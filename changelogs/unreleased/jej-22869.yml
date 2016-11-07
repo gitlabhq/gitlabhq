@@ -1,0 +1,4 @@
+---
+title: 'Fix information disclosure in `Projects::BlobController#update`'
+merge_request:
+author:
