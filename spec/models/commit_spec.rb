@@ -206,23 +206,18 @@ eos
   end
 
   describe '#status' do
-    context 'without arguments for compound status' do
-      shared_examples 'giving the status from pipeline' do
-        it do
-          expect(commit.status).to eq(Ci::Pipeline.status)
+    context 'without arguments' do
+      before do
+        5.times do
+          create(:ci_empty_pipeline,
+                 project: project,
+                 sha: commit.sha,
+                 status: Ci::Pipeline.all_state_names.sample)
         end
       end
 
-      context 'with pipelines' do
-        let!(:pipeline) do
-          create(:ci_empty_pipeline, project: project, sha: commit.sha)
-        end
-
-        it_behaves_like 'giving the status from pipeline'
-      end
-
-      context 'without pipelines' do
-        it_behaves_like 'giving the status from pipeline'
+      it 'gives the status from latest pipeline' do
+        expect(commit.status).to eq(Ci::Pipeline.latest.first.status)
       end
     end
 
@@ -248,8 +243,8 @@ eos
         expect(commit.status('fix')).to eq(pipeline_from_fix.status)
       end
 
-      it 'gives compound status if ref is nil' do
-        expect(commit.status(nil)).to eq(commit.status)
+      it 'gives status from latest pipeline for whatever branch' do
+        expect(commit.status(nil)).to eq(Ci::Pipeline.latest.first.status)
       end
     end
   end

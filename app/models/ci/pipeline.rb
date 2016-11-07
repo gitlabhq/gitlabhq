@@ -83,9 +83,13 @@ module Ci
       end
     end
 
+    scope :latest, -> { order(id: :desc) }
+
     # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest_for, ->(ref) { where(ref: ref).latest }
+
     def self.latest_successful_for(ref)
-      where(ref: ref).order(id: :desc).success.first
+      latest_for(ref).success.first
     end
 
     def self.truncate_sha(sha)

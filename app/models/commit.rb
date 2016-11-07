@@ -232,13 +232,15 @@ class Commit
   def status(ref = nil)
     @statuses ||= {}
 
-    if @statuses.key?(ref)
-      @statuses[ref]
-    elsif ref
-      @statuses[ref] = pipelines.where(ref: ref).status
-    else
-      @statuses[ref] = pipelines.status
-    end
+    return @statuses[ref] if @statuses.key?(ref)
+
+    latest_pipeline = if ref
+                        pipelines.latest_for(ref)
+                      else
+                        pipelines.latest
+                      end.first
+
+    @statuses[ref] = latest_pipeline.try(:status)
   end
 
   def revert_branch_name
