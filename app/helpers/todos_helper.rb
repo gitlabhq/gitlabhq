@@ -61,6 +61,10 @@ module TodosHelper
     }
   end
 
+  def todos_filter_empty?
+    todos_filter_params.all? {|key, value| value.nil?}
+  end
+
   def todos_filter_path(options = {})
     without = options.delete(:without)
 
