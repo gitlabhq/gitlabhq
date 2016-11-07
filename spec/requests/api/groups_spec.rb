@@ -167,7 +167,7 @@ describe API::API, api: true  do
       end
 
       it 'returns 404 for a non existing group' do
-        put api('/groups/1328', user1)
+        put api('/groups/1328', user1), name: new_group_name
 
         expect(response).to have_http_status(404)
       end
