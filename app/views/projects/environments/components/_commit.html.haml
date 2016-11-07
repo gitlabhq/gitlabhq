@@ -1,30 +1,27 @@
 .branch-commit{"v-if" => "!isFolder && model.last_deployment"}
+  .icon-container{ "v-if" => "model.last_deployment.ref && model.last_deployment.tag" }
+    =icon("tag")
 
-  %div{ "v-if" => "model.last_deployment.ref" }
+  .icon-container{ "v-if" => "model.last_deployment.ref && !model.last_deployment.tag" }
+    =icon("code-fork")
 
-    .icon-container{ "v-if" => "model.last_deployment.tag" }
-      =icon("tag")
-
-    .icon-container{ "v-if" => "!model.last_deployment.tag" }
-      =icon("code-fork")
-
-    %a.monospace.branch-name{":href" => "'/' + model.project.namespace.name + '/' + model.project.name + '/commits/' +model.last_deployment.ref"}
-      {{model.last_deployment.ref}}
+  %a.monospace.branch-name{"v-if" => "model.last_deployment.ref", ":href" => "model.last_deployment.ref.ref_url"}
+    {{model.last_deployment.ref.name}}
     
   .icon-container.commit-icon
     = custom_icon("icon_commit")
 
-  %a.commit-id.monospace{":href" => "'/' + model.project.namespace.name + '/' + model.project.name + '/commit/' +model.last_deployment.sha"}
-    {{model.last_deployment.short_sha}}
+  %a.commit-id.monospace{":href" => "model.last_deployment.commit.commit_url"}
+    {{model.last_deployment.commit.short_id}}
     
   %p.commit-title
 
-    %span{ "v-if" => "model.last_deployment.commit_title"}
-    
-      -# need commit author username and avatar_url
-      commit author goes here
-      %a.commit-row-message{":href" => "'/' + model.project.namespace.name + '/' + model.project.name + '/commit/' +model.last_deployment.sha"}
-        {{model.last_deployment.commit_title}}
+    %span{ "v-if" => "model.last_deployment.commit && model.last_deployment.commit.title"}
+      %a{"v-if" => "model.last_deployment.commit.author", ":href" => "model.last_deployment.commit.author.web_url"}
+        %img.avatar.has-tooltip.s20{":title" => "model.last_deployment.commit.author.username",
+        ":src" => "model.last_deployment.commit.author.avatar_url"}
+      %a.commit-row-message{":href" => "model.last_deployment.commit.commit_url"}
+        {{model.last_deployment.commit.title}}
 
-    %span{ "v-if" => "!model.last_deployment.commit_title"}
+    %span{ "v-if" => "!model.last_deployment.commit.title"}
       Cant find HEAD commit for this branch

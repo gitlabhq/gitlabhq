@@ -20,8 +20,8 @@
           %span.badge.js-stopped-environments-count
             {{state.stoppedCounter}}
 
-    - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
-      .nav-controls
+    - if can?(current_user, :create_environment, @project)
+      .nav-controls{ "v-if" => "!loading" }
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: "btn btn-create" do
           New environment
 
