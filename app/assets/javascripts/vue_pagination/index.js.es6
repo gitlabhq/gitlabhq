@@ -29,7 +29,12 @@
         section.shift();
         this.nslice = +this.pagenum;
         this.endcount = +this.pagenum + 5;
-        return section.slice(+this.pagenum, +this.pagenum + 5);
+        if (+this.pagenum + 5 <= this.last) {
+          return section.slice(+this.pagenum, +this.pagenum + 5);
+        }
+        if (+this.pagenum + 5 > this.last) {
+          return section.slice(this.last - 5, this.last);
+        }
       },
       paginationsection() {
         if (this.last < 6 && this.pagenum < 6) {
@@ -46,7 +51,7 @@
         return +this.last + 1;
       },
       endspread() {
-        if (+this.pagenum < this.last && +this.pagenum > 5) return true;
+        if (+this.pagenum < this.last) return true;
         return false;
       },
       begspread() {
@@ -57,17 +62,19 @@
     template: `
       <div class="gl-pagination">
         <ul class="pagination clearfix" v-for='n in paginationsection'>
-          <li :class='prevstatus(n)' v-if='n - 1 === 1'>
+          <li
+            :class='prevstatus(n)'
+            v-if='n - 1 === 1 || n - 1 === nslice || n - 1 === this.last - 5'
+          >
             <span @click='changepage($event, {where: pagenum - 1})'>Prev</span>
+          </li>
+          <li v-if='n - 1 === last && upcount > 4 && begspread'>
+            <span class="gap">…</span>
           </li>
           <li :class='pagenumberstatus(n)' v-if='n >= 2'>
             <span @click='changepage($event)'>{{(n - 1)}}</span>
           </li>
-          <!--
-            if at end make dots dissapear
-            if in second slice or more make dots appear in the front
-          -->
-          <li v-if='n === upcount && upcount > 4 && begspread'>
+          <li v-if='(n === upcount || n === endcount) && +pagenum + 5 !== last'>
             <span class="gap">…</span>
           </li>
           <li
@@ -75,9 +82,6 @@
             v-if='(n === upcount || n === endcount) && pagenum !== last'
           >
             <span @click='changepage($event,{where: +pagenum+1})'>Next</span>
-          </li>
-          <li v-if='n === upcount && upcount > 4 && endspread'>
-            <span class="gap">…</span>
           </li>
           <li
             class="last"
