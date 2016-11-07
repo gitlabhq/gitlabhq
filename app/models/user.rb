@@ -444,6 +444,16 @@ class User < ActiveRecord::Base
     Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
 
+  # Returns the projects this user has reporter (or greater) access to, limited
+  # to at most the given projects.
+  #
+  # This method is useful when you have a list of projects and want to
+  # efficiently check to which of these projects the user has at least reporter
+  # access.
+  def projects_with_reporter_access_limited_to(projects)
+    authorized_projects(Gitlab::Access::REPORTER).where(id: projects)
+  end
+
   def viewable_starred_projects
     starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (#{projects_union.to_sql})",
                            [Project::PUBLIC, Project::INTERNAL])

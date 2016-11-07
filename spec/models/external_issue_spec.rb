@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ExternalIssue, models: true do
-  let(:project) { double('project', to_reference: 'namespace1/project1') }
+  let(:project) { double('project', id: 1, to_reference: 'namespace1/project1') }
   let(:issue)   { described_class.new('EXT-1234', project) }
 
   describe 'modules' do
@@ -34,6 +34,12 @@ describe ExternalIssue, models: true do
       it 'returns the issue ID prefixed by #' do
         expect(issue.reference_link_text).to eq '#1234'
       end
+    end
+  end
+
+  describe '#project_id' do
+    it 'returns the ID of the project' do
+      expect(issue.project_id).to eq(project.id)
     end
   end
 end
