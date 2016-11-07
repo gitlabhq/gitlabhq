@@ -1,57 +1,44 @@
 class Projects::CycleAnalytics::EventsController < Projects::ApplicationController
-  # TODO: fix authorization
-  # before_action :authorize_read_cycle_analytics!
+  include CycleAnalyticsParams
 
-  # TODO: refactor +event_hash+
+  before_action :authorize_read_cycle_analytics!
 
   def issue
-    render_events(issues: events.issue_events)
+    render_events(events.issue_events)
   end
 
   def plan
-    render_events(commits: events.plan_events)
+    render_events(events.plan_events)
   end
 
   def code
-    render_events(merge_requests: events.code_events)
+    render_events(events.code_events)
   end
 
   def test
-    @opts = { from: start_date, branch: events_params[:branch_name] }
+    @opts = { from: start_date(events_params), branch: events_params[:branch_name] }
 
-    render_events(builds: events.test_events)
+    render_events(events.test_events)
   end
 
   def review
-    render_events(merge_requests: events.review_events)
+    render_events(events.review_events)
   end
 
   def staging
-    render_events(builds: events.staging_events)
+    render_events(events.staging_events)
   end
 
   def production
-    render_events(issues: events.production_events)
+    render_events(events.production_events)
   end
 
   private
 
-  def render_events(event_hash)
+  def render_events(events)
     respond_to do |format|
       format.html
-      format.json { render json: event_hash }
-    end
-  end
-
-  # TODO refactor this
-  def start_date
-    case events_params[:start_date]
-    when '30' then
-      30.days.ago
-    when '90' then
-      90.days.ago
-    else
-      90.days.ago
+      format.json { render json: { items: events } }
     end
   end
 
@@ -60,7 +47,7 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   end
 
   def options
-    @opts ||= { from: start_date }
+    @opts ||= { from: start_date(events_params) }
   end
 
   def events_params

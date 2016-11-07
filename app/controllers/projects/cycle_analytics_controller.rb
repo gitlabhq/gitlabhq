@@ -1,11 +1,12 @@
 class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::TextHelper
+  include CycleAnalyticsParams
 
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = ::CycleAnalytics.new(@project, from: parse_start_date)
+    @cycle_analytics = ::CycleAnalytics.new(@project, from: start_date(cycle_analytics_params))
 
     respond_to do |format|
       format.html
@@ -14,14 +15,6 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   end
 
   private
-
-  def parse_start_date
-    case cycle_analytics_params[:start_date]
-    when '30' then 30.days.ago
-    when '90' then 90.days.ago
-    else 90.days.ago
-    end
-  end
 
   def cycle_analytics_params
     return {} unless params[:cycle_analytics].present?
