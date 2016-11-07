@@ -282,4 +282,10 @@
       width: 100%;
     }
   }
+
+  @media(min-width: $screen-xs-max) {
+    &.activities .text-content {
+      margin-top: 110px;
+    }
+  }
 }

@@ -108,6 +108,8 @@
 
         .content_list{ data: {href: user_path} }
         = spinner
+        #js-activities-empty-state.hidden
+          = render 'shared/empty_states/activities'
 
       #groups.tab-pane
         - # This tab is always loaded via AJAX

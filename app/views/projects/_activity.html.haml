@@ -12,6 +12,9 @@
   .content_list.project-activity{:"data-href" => activity_project_path(@project)}
   = spinner
 
+  #js-activities-empty-state.hidden
+    = render 'shared/empty_states/activities'
+
 :javascript
   var activity = new gl.Activities();
   $(document).on('page:restore', function (event) {

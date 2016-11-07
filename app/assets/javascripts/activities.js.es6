@@ -5,12 +5,18 @@
 ((global) => {
   class Activities {
     constructor() {
-      Pager.init(20, true, false, this.updateTooltips);
+      this.emptyState = document.querySelector('#js-activities-empty-state');
+      Pager.init(20, true, false, this.pagerCallback.bind(this));
       $('.event-filter-link').on('click', (e) => {
         e.preventDefault();
         this.toggleFilter(e.currentTarget);
         this.reloadActivities();
       });
+    }
+
+    pagerCallback(data) {
+      if (data.count === 0 && this.emptyState) this.emptyState.classList.remove('hidden');
+      this.updateTooltips();
     }
 
     updateTooltips() {
@@ -19,12 +25,14 @@
 
     reloadActivities() {
       $('.content_list').html('');
-      Pager.init(20, true, false, this.updateTooltips);
+      return Pager.init(20, true, false, this.pagerCallback.bind(this));
     }
 
     toggleFilter(sender) {
       const $sender = $(sender);
       const filter = $sender.attr('id').split('_')[0];
+
+      if (this.emptyState) this.emptyState.classList.add('hidden');
 
       $('.event-filter .active').removeClass('active');
       Cookies.set('event_filter', filter);

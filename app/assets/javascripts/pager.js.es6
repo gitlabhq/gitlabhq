@@ -26,7 +26,7 @@
         error: () => this.loading.hide(),
         success: (data) => {
           this.append(data.count, data.html);
-          this.callback();
+          this.callback(data);
 
           // keep loading until we've filled the viewport height
           if (!this.disable && !this.isScrollable()) {
