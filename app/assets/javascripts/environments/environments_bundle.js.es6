@@ -31,7 +31,6 @@ $(() => {
     return fn(item);
   }).filter(Boolean);
 
-
   gl.EnvironmentsListApp = new Vue({
 
     el: '#environments-list-view',

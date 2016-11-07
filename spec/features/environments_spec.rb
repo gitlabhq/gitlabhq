@@ -12,32 +12,14 @@ feature 'Environments', feature: true, js:true do
     login_as(user)
     project.team << [user, role]
   end
-  
-  describe 'Loading environments' do
-    given!(:environment) { }
-    given!(:deployment) { }
-    given!(:manual) { }
-
-    context 'loading environments' do
-      before do
-        visit namespace_project_environments_path(project.namespace, project)
-      end
-
-      scenario 'does show loading spinner' do
-        expect(page).to have_selector('.environments-list-loading')
-      end
-    end
-  end
 
   describe 'when showing environments' do
-
     before do
       visit namespace_project_environments_path(project.namespace, project)
       wait_for_vue_resource
     end
 
     context 'without environments' do
-
       scenario 'does show "Available" and "Stopped" tab with links' do
         expect(page).to have_link('Available')
         expect(page).to have_link('Stopped')

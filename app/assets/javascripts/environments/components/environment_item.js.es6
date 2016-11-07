@@ -86,7 +86,7 @@
        * Verifies is the given environment has manual actions.
        * Used to verify if we should render them or nor.
        *
-       * @returns {Boolean}  description
+       * @returns {Boolean}
        */
       hasManualActions() {
         return this.$options.hasKey(this.model, 'manual_actions') && this.model.manual_actions.length;
