@@ -1,11 +1,18 @@
 module Ci
   class ImageForBuildService
     def execute(project, opts)
-      sha = opts[:sha] || ref_sha(project, opts[:ref])
+      ref = opts[:ref]
+      sha = opts[:sha] || ref_sha(project, ref)
 
       pipelines = project.pipelines.where(sha: sha)
-      pipelines = pipelines.where(ref: opts[:ref]) if opts[:ref]
-      image_name = image_for_status(pipelines.status)
+
+      latest_pipeline = if ref
+                          pipelines.latest_for(ref)
+                        else
+                          pipelines.latest
+                        end.first
+
+      image_name = image_for_status(latest_pipeline.status)
 
       image_path = Rails.root.join('public/ci', image_name)
       OpenStruct.new(path: image_path, name: image_name)
