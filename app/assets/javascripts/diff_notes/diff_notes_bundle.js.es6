@@ -10,17 +10,18 @@
 $(() => {
   window.DiffNotesApp = new Vue({
     el: '#diff-notes-app',
-    components: {
-      'resolve-btn': ResolveBtn,
-      'resolve-discussion-btn': ResolveDiscussionBtn,
-      'comment-and-resolve-btn': CommentAndResolveBtn
-    },
     methods: {
       compileComponents: function () {
-        const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion');
+        const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn');
+
         if ($components.length) {
           $components.each(function () {
-            DiffNotesApp.$compile($(this).get(0));
+            const $this = $(this);
+            const tmp = Vue.extend({
+              template: $this.get(0).outerHTML,
+              parent: DiffNotesApp,
+            });
+            $this.replaceWith(new tmp().$mount().$el);
           });
         }
       }

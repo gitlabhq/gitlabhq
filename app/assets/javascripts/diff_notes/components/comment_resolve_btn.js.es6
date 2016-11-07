@@ -1,9 +1,13 @@
 /* eslint-disable */
-((w) => {
-  w.CommentAndResolveBtn = Vue.extend({
+(() => {
+  const CommentAndResolveBtn = Vue.extend({
     props: {
       discussionId: String,
-      textareaIsEmpty: Boolean
+    },
+    data() {
+      return {
+        textareaIsEmpty: true
+      }
     },
     computed: {
       discussion: function () {
@@ -47,4 +51,6 @@
       $(`#new-discussion-note-form-${this.discussionId} .note-textarea`).off('input.comment-and-resolve-btn');
     }
   });
+
+  Vue.component('comment-and-resolve-btn', CommentAndResolveBtn);
 })(window);

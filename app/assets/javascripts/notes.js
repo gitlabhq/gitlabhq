@@ -647,7 +647,8 @@
         var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
-        DiffNotesApp.$compile($commentBtn.get(0));
+
+        DiffNotesApp.compileComponents();
       }
 
       form.find(".js-note-text").focus();

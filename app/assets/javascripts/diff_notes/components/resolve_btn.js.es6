@@ -1,6 +1,6 @@
 /* eslint-disable */
-((w) => {
-  w.ResolveBtn = Vue.extend({
+(() => {
+  const ResolveBtn = Vue.extend({
     props: {
       noteId: Number,
       discussionId: String,
@@ -101,4 +101,6 @@
       CommentsStore.create(this.discussionId, this.noteId, this.canResolve, this.resolved, this.resolvedBy);
     }
   });
-})(window);
+
+  Vue.component('resolve-btn', ResolveBtn);
+})();
