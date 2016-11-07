@@ -1,13 +1,13 @@
 - if can?(current_user, :create_deployment, @project)
-  .inline{ "v-if" => "model.last_deployment && model.last_deployment.manual_actions && model.last_deployment.manual_actions.present"}
+  .inline{ "v-if" => "hasManualActions"}
     .dropdown
       %a.dropdown-new.btn.btn-default{type: "button", "data-toggle" => "dropdown"}
         = custom_icon('icon_play')
         = icon('caret-down')
         
         %ul.dropdown-menu.dropdown-menu-align-right
-          %li{ "v-for" => "action in model.last_deployment.manual_actions" }
-            %a{ ":ref" => "'#{namespace_project_path(@project.namespace, @project)}/' + action.id + '/play'",
+          %li{ "v-for" => "action in manualActions" }
+            %a{ ":ref" => "action.play_url",
             "data-method" => "post",
             "rel" => "nofollow" }
 

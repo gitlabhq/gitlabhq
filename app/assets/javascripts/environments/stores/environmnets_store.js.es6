@@ -5,7 +5,7 @@
   gl.environmentsList.EnvironmentsStore = {
     state: {},
 
-    create () {
+    create() {
       this.state.environments = [];
       this.state.stoppedCounter = 0;
       this.state.availableCounter = 0;
@@ -44,39 +44,23 @@
      * @returns {Array} Tree structured array with the received environments.
      */
     storeEnvironments(environments = []) {
-
       this.state.stoppedCounter = this.countByState(environments, 'stopped');
       this.state.availableCounter = this.countByState(environments, 'available');
 
       const environmentsTree = environments.reduce((acc, environment) => {
-
-        if (environment.last_deployment) {
-
-          //humanizes actions names if there are any actions
-          if (environment.last_deployment.manual_actions) {
-            environment.last_deployment.manual_actions = environment.last_deployment.manual_actions.map((action) => action.name = gl.text.humanize(action.name));
-          }
-
-          //transforms created date for deployment in a human readable format
-          if (environment.last_deployment.created_at) {
-            // TODO - how to do this without jquery
-          }
-        }
-
         if (environment.environment_type !== null) {
-          const occurs = acc.filter((element, index, array) => {
-            return element.children && element.name === environment.environment_type;
-          });
+          const occurs = acc.filter(element => element.children &&
+             element.name === environment.environment_type);
 
-          environment["vue-isChildren"] = true;
+          environment['vue-isChildren'] = true;
 
           if (occurs.length) {
             acc[acc.indexOf(occurs[0])].children.push(environment);
-            acc[acc.indexOf(occurs[0])].children.sort(this.sortByName)
+            acc[acc.indexOf(occurs[0])].children.sort(this.sortByName);
           } else {
             acc.push({
               name: environment.environment_type,
-              children: [environment]
+              children: [environment],
             });
           }
         } else {
@@ -100,7 +84,7 @@
      * @returns {Number}
      */
     countByState(environments, state) {
-      return environments.filter((env) => env.state === state).length;
+      return environments.filter(env => env.state === state).length;
     },
 
     /**
@@ -110,7 +94,7 @@
      * @param  {Object} b
      * @returns {Number}
      */
-    sortByName (a, b) {
+    sortByName(a, b) {
       const nameA = a.name.toUpperCase();
       const nameB = b.name.toUpperCase();
 
@@ -123,6 +107,6 @@
       }
 
       return 0;
-    }
-  }
+    },
+  };
 })();

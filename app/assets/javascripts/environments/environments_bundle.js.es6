@@ -5,8 +5,9 @@
 //= require ./components/environment_item
 //= require ../boards/vue_resource_interceptor
 
-$(() => {
 
+/* eslint-disable */
+$(() => {
   const environmentsListApp = document.getElementById('environments-list-view');
   const Store = gl.environmentsList.EnvironmentsStore;
 
@@ -16,10 +17,11 @@ $(() => {
     gl.EnvironmentsListApp.$destroy(true);
   }
 
-  const filterState = (state) => (environment) => environment.state === state && environment;
+  const filterState = state => environment => environment.state === state && environment;
 
   // recursiveMap :: (Function, Array) -> Array
   const recursiveMap = (fn, arr) => {
+
     return arr.map((item) => {
       if (!item.children) { return fn(item); }
 
@@ -37,20 +39,20 @@ $(() => {
     el: '#environments-list-view',
 
     components: {
-      'item': gl.environmentsList.EnvironmentItem
+      item: gl.environmentsList.EnvironmentItem
     },
 
     data: {
       state: Store.state,
       endpoint: environmentsListApp.dataset.endpoint,
       loading: true,
-      visibility: 'available'
+      visibility: 'available',
     },
 
     computed: {
-      filteredEnvironments () {
+      filteredEnvironments (){
         return recursiveMap(filterState(this.visibility), this.state.environments);
-      }
+      },
     },
 
     init: Store.create.bind(Store),

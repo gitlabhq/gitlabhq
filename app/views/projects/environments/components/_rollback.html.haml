@@ -1,10 +1,10 @@
 - if can?(current_user, :create_deployment, @project) 
-  %a.btn.btn-build{ "v-if" => "model.last_deployment && model.last_deployment.deployable",
-    ":href" => "'#{namespace_project_builds_path(@project.namespace, @project)}/' + model.last_deployment.deployable.id + '/retry'",
+  %a.btn.btn-build{ "v-if" => "canRetry",
+    ":href" => "model.last_deployment.deployable.retry_url",
     "data-method" => "post",
     "rel" => "nofollow" }
 
-    %span{ "v-if" => "model.last_deployment.last" }
+    %span{ "v-if" => "isLastDeployment" }
       Re-deploy
-    %span{ "v-if" => "!model.last_deployment.last" }
+    %span{ "v-if" => "!isLastDeployment" }
       Rollback

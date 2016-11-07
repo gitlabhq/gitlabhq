@@ -44,8 +44,8 @@
         No deployments yet
 
     %td
-      %span{ "v-if" => "!isFolder && model.last_deployment" }
-        {{model.last_deployment.created_at}}
+      %span.environment-created-date-timeago{ "v-if" => "!isFolder && model.last_deployment" }
+        {{createdDate}}
 
     %td.hidden-xs
       .pull-right{ "v-if" => "!isFolder" }

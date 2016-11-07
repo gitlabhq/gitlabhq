@@ -1,5 +1,6 @@
+/* globals Vue */
+/* eslint-disable no-param-reassign, no-return-assign */
 (() => {
-
   /**
    * Envrionment Item Component
    *
@@ -19,12 +20,12 @@
     template: '#environment-item-template',
 
     props: {
-      model: Object
+      model: Object,
     },
 
-    data () {
+    data() {
       return {
-        open: false
+        open: false,
       };
     },
 
@@ -37,8 +38,8 @@
        *
        * @returns {Boolean}
        */
-      isFolder () {
-        return this.model.children && this.model.children.length ? true : false;
+      isFolder() {
+        return this.$options.hasKey(this.model, 'children') && this.model.children.length > 0;
       },
 
       /**
@@ -47,7 +48,7 @@
        *
        * @returns {Boolean|undefined}
        */
-      isChildren () {
+      isChildren() {
         return this.model['vue-isChildren'];
       },
 
@@ -57,9 +58,79 @@
        *
        * @returns {Boolean}  The number of environments for the current folder
        */
-      childrenCounter () {
-        return this.model.children && this.model.children.length;
-      }
+      childrenCounter() {
+        return this.$options.hasKey(this.model, 'children') && this.model.children.length;
+      },
+
+      /**
+       * Returns the value of the `last?` key sent in the API.
+       * Used to know wich title to render when the environment can be re-deployed
+       *
+       * @returns {Boolean}
+       */
+      isLast() {
+        return this.$options.hasKey(this.model, 'last_deployment') && this.model.last_deployment['last?'];
+      },
+
+      /**
+       * Verifies if `last_deployment` key exists in the current Envrionment.
+       * This key is required to render most of the html - this method works has
+       * an helper.
+       *
+       * @returns {Boolean}
+       */
+      hasLastDeploymentKey() {
+        return this.$options.hasKey(this.model, 'last_deployment');
+      },
+
+      /**
+       * Verifies is the given environment has manual actions.
+       * Used to verify if we should render them or nor.
+       *
+       * @returns {Boolean}  description
+       */
+      hasManualActions() {
+        return this.$options.hasKey(this.model, 'manual_actions') && this.model.manual_actions.length;
+      },
+
+      /**
+       * Returns the value of the `stoppable?` key provided in the response.
+       *
+       * @returns {Boolean}
+       */
+      isStoppable() {
+        return this.model['stoppable?'];
+      },
+
+      /**
+       * Verifies if the `deployable` key is present in `last_deployment` key.
+       * Used to verify whether we should or not render the rollback partial.
+       *
+       * @returns {Boolean}
+       */
+      canRetry() {
+        return this.hasLastDeploymentKey && this.model.last_deployment && this.$options.hasKey(this.model.last_deployment, 'deployable');
+      },
+
+      createdDate() {
+        return $.timeago(this.model.created_at);
+      },
+
+      manualActions() {
+        this.model.manual_actions.map(action => action.name = gl.text.humanize(action.name));
+      },
+    },
+
+    /**
+     * Helper to verify if key is present in an object.
+     * Can be removed once we start using lodash.
+     *
+     * @param  {Object} obj
+     * @param  {String} key
+     * @returns {Boolean}
+     */
+    hasKey(obj, key) {
+      return {}.hasOwnProperty.call(obj, key);
     },
 
     methods: {
@@ -67,11 +138,11 @@
       /**
        * Toggles the visibility of a folders' children.
        */
-      toggle () {
+      toggle() {
         if (this.isFolder) {
           this.open = !this.open;
         }
-      }
-    }
-  })
+      },
+    },
+  });
 })();
