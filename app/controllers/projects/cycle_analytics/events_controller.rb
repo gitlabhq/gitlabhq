@@ -38,7 +38,7 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   def render_events(events)
     respond_to do |format|
       format.html
-      format.json { render json: { items: events } }
+      format.json { render json: { events: events } }
     end
   end
 
