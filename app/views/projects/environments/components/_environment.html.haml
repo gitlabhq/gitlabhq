@@ -27,7 +27,7 @@
           by
           %a{":href" => "'/' + model.last_deployment.user.username" }
             %img.avatar.has_tooltip.s20{ ":src" => "model.last_deployment.user.avatar_url",
-            ":alt" => "model.last_deployment.user.username + 'avatar'",
+            ":alt" => "model.last_deployment.user.username + `'s avatar`",
             ":title" => "model.last_deployment.user.username",
             data: {container: "body" },
             width: 20, height: 20}

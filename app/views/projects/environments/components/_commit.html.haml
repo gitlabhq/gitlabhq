@@ -18,6 +18,7 @@
     %span{ "v-if" => "model.last_deployment.commit && model.last_deployment.commit.title"}
       %a.avatar-image-container{"v-if" => "model.last_deployment.commit.author", ":href" => "model.last_deployment.commit.author.web_url"}
         %img.avatar.has-tooltip.s20{":title" => "model.last_deployment.commit.author.username",
+        ":alt" => "model.last_deployment.commit.author.username + `'s avatar`",
         ":src" => "model.last_deployment.commit.author.avatar_url"}
       %a.commit-row-message{":href" => "model.last_deployment.commit.commit_url"}
         {{model.last_deployment.commit.title}}
