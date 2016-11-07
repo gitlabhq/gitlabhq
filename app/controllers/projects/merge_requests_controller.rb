@@ -647,7 +647,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_request_params
     params.require(:merge_request)
-      .permit(merge_request_params_ce + merge_request_params_ee)
+      .permit(merge_request_params_ce << merge_request_params_ee)
   end
 
   def merge_request_params_ce
