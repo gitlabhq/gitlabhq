@@ -32,6 +32,7 @@
       const clearSearch = document.querySelector('.clear-search');
 
       input.addEventListener('input', this.tokenize.bind(this));
+      input.addEventListener('input', this.toggleClearSearchButton);
       input.addEventListener('keydown', this.checkForEnter.bind(this));
 
       clearSearch.addEventListener('click', this.clearSearch.bind(this));
@@ -42,10 +43,8 @@
       event.preventDefault();
 
       this.clearTokens();
-      const input = document.querySelector('.filtered-search');
-      input.value = '';
-
-      event.target.classList.add('hidden');
+      document.querySelector('.filtered-search').value = '';
+      document.querySelector('.clear-search').classList.add('hidden');
     }
 
     clearTokens() {
@@ -101,12 +100,19 @@
       }
     }
 
+    toggleClearSearchButton(event) {
+      const clearSearch = document.querySelector('.clear-search');
+
+      if (event.target.value) {
+        clearSearch.classList.remove('hidden');
+      } else {
+        clearSearch.classList.add('hidden');
+      }
+    }
+
     tokenize(event) {
       // Re-calculate tokens
       this.clearTokens();
-
-      // Enable clear button
-      document.querySelector('.clear-search').classList.remove('hidden');
 
       const input = event.target.value;
       const inputs = input.split(' ');
