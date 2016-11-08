@@ -76,10 +76,13 @@
       const inputs = input.split(' ');
       let searchTerms = '';
 
+      const addSearchTerm = function addSearchTerm(term) {
+        searchTerms += term + ' ';
+      }
+
       inputs.forEach((i) => {
         const colonIndex = i.indexOf(':');
 
-        // Check if text is a token
         if (colonIndex !== -1) {
           const tokenKey = i.slice(0, colonIndex).toLowerCase();
           const tokenValue = i.slice(colonIndex + 1);
@@ -93,9 +96,11 @@
               key: match.key,
               value: tokenValue,
             });
+          } else {
+            addSearchTerm(i);
           }
         } else {
-          searchTerms += i + ' ';
+          addSearchTerm(i);
         }
       }, this);
 
