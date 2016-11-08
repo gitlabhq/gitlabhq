@@ -8,23 +8,10 @@
       'count',
       'pagenum',
     ],
-    methods: {
-      pagestatus(n) {
-        if (this.getItems[1].prev) {
-          if (n === +this.pagenum) return true;
-        }
-        if (n - 1 === +this.pagenum) return true;
-        return false;
-      },
-      prevstatus(index) {
-        if (index > 0) return false;
-        if (+this.pagenum < 2) return true;
-        return false;
-      },
-      createSection(n) { return Array.from(Array(n)).map((e, i) => i); },
-    },
     computed: {
-      last() { return Math.ceil(+this.count / 5); },
+      last() {
+        return Math.ceil(+this.count / 5);
+      },
       getItems() {
         const total = +this.last;
         const page = +this.pagenum;
