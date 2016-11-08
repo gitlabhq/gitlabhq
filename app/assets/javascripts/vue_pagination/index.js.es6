@@ -1,5 +1,5 @@
 /* global Vue, gl */
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-plusplus */
 
 ((gl) => {
   gl.VueGlPagination = Vue.extend({
@@ -26,61 +26,64 @@
     computed: {
       last() { return Math.ceil(+this.count / 5); },
       getItems() {
+        const total = +this.count;
+        const page = +this.pagenum;
         const items = [];
-        const pages = this.createSection(+this.last + 1);
-        pages.shift();
 
-        if (+this.pagenum > 1) items.push({ text: 'First', first: true });
+        if (page > 1) {
+          items.push({ title: '<< First', where: 1 });
+        }
 
-        items.push({ text: 'Prev', prev: true, class: this.prevstatus() });
+        if (page > 1) {
+          items.push({ title: 'Prev', where: page - 1 });
+        } else {
+          items.push({ title: 'Prev', where: page - 1, disabled: true });
+        }
 
-        pages.forEach(i => items.push({ text: i, number: true }));
+        if (page > 6) {
+          items.push({ title: '...', separator: true });
+        }
 
-        let nextDisabled = false;
-        if (+this.pagenum === this.last) { nextDisabled = true; }
-        items.push({ text: 'Next', next: true, disabled: nextDisabled });
+        const start = Math.max(page - 4, 1);
+        const end = Math.min(page + 4, total);
 
-        if (+this.pagenum !== this.last) items.push({ text: 'Last »', last: true });
+        for (let i = start; i <= end; i++) {
+          const isActive = i === page;
+          items.push({ title: i, active: isActive, where: i });
+        }
+
+        if (total - page > 4) {
+          items.push({ title: '...', separator: true });
+        }
+
+        if (page === total) {
+          items.push({ title: 'Next', where: page + 1, disabled: true });
+        } else if (total - page >= 1) {
+          items.push({ title: 'Next', where: page + 1 });
+        }
+
+        if (total - page >= 1) {
+          items.push({ title: 'Last >>', where: total });
+        }
 
         return items;
       },
     },
     template: `
       <div class="gl-pagination">
-        <ul class="pagination clearfix" v-for='(item, i) in getItems'>
-          <!-- if defined as the first button, render first -->
+        <ul class="pagination clearfix" v-for='item in getItems'>
           <li
-            v-if='item.first'
+            :class='{
+              separator: item.separator,
+              active: item.active,
+              disabled: item.disabled
+            }'
           >
-            <span @click='changepage($event)'>{{item.text}}</span>
-          </li>
-          <!-- if defined as the prev button, render prev -->
-          <li
-            :class="{disabled: prevstatus(i)}"
-            v-if='item.prev'
-          >
-            <span @click='changepage($event)'>{{item.text}}</span>
-          </li>
-          <!-- if defined as the next button, render next -->
-          <li
-            v-if='item.next'
-            :class="{disabled: item.disabled}"
-          >
-            <span @click='changepage($event)'>{{item.text}}</span>
-          </li>
-          <!-- if defined as the last button, render last -->
-          <li
-            v-if='item.last'
-            :class="{disabled: item.disabled}"
-          >
-            <span @click='changepage($event, last)'>{{item.text}}</span>
-          </li>
-          <!-- if defined as the number button, render number -->
-          <li
-            :class="{active: pagestatus((i))}"
-            v-if='item.number'
-          >
-            <span @click='changepage($event)'>{{item.text}}</span>
+            <span
+              @click="changepage($event, item.where)"
+            >
+              {{item.title}}
+            </span>
           </li>
         </ul>
       </div>
