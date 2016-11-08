@@ -89,8 +89,8 @@ In all of the below cases, the notification will be sent to:
 | Reopen merge request   | |
 | Merge merge request    | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
-| Failed pipeline        | The author of the pipeline and watchers |
-| Successful pipeline    | The author of the pipeline and watchers |
+| Failed pipeline        | The above, plus the author of the pipeline |
+| Successful pipeline    | The above, plus the author of the pipeline |
 
 
 In addition, if the title or description of an Issue or Merge Request is
