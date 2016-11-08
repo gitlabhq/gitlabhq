@@ -107,6 +107,7 @@ module API
       expose :only_allow_merge_if_build_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :approvals_before_merge
     end
 
     class Member < UserBasic
@@ -263,9 +264,11 @@ module API
       expose :merge_status
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
+
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
+
       expose :user_notes_count
       expose :approvals_before_merge
       expose :should_remove_source_branch?, as: :should_remove_source_branch

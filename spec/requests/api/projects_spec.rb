@@ -981,6 +981,15 @@ describe API::API, api: true  do
         expect(json_response['request_access_enabled']).to eq(false)
       end
 
+      it 'updates approvals_before_merge' do
+        project_param = { approvals_before_merge: 3 }
+
+        put api("/projects/#{project.id}", user), project_param
+
+        expect(response).to have_http_status(200)
+        expect(json_response['approvals_before_merge']).to eq(3)
+      end
+
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
         put api("/projects/#{project3.id}", user), project_param
