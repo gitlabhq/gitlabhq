@@ -18,11 +18,6 @@ feature 'Environments', feature: true, js:true do
     login_as(user)
     project.team << [user, role]
   end
-  
-  before do
-    visit namespace_project_environments_path(project.namespace, project)
-    wait_for_vue_resource
-  end
 
   describe 'when showing environments' do
     before do
