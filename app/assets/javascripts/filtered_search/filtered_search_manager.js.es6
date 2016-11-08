@@ -55,12 +55,13 @@
 
     loadSearchParamsFromURL() {
       // We can trust that each param has one & since values containing & will be encoded
-      const params = window.location.search.split('&');
+      // Remove the first character of search as it is always ?
+      const params = window.location.search.slice(1).split('&');
       let inputValue = '';
 
       params.forEach((p) => {
         const split = p.split('=');
-        const key = split[0];
+        const key = decodeURIComponent(split[0]);
         const value = decodeURIComponent(split[1]);
 
         const match = validTokenKeys.find((t) => {
@@ -69,17 +70,24 @@
 
         if (match) {
           const sanitizedKey = key.slice(0, key.indexOf('_'));
-          let sanitizedValue = value;
+          const valueHasSpace = value.indexOf(' ') !== -1;
 
-          if (match && sanitizedKey === 'label') {
-            sanitizedValue = sanitizedValue.replace(/%20/g, ' ');
+          const preferredQuotations = '"';
+          let quotationsToUse = preferredQuotations;
+
+          if (valueHasSpace) {
+            // Prefer ", but use ' if required
+            quotationsToUse = value.indexOf(preferredQuotations) === -1 ? preferredQuotations : '\'';
           }
 
-          inputValue += `${sanitizedKey}:${sanitizedValue} `;
+          inputValue += valueHasSpace ? `${sanitizedKey}:${quotationsToUse}${value}${quotationsToUse}` : `${sanitizedKey}:${value}`;
+          inputValue += ' ';
+
         } else if (!match && key === 'search') {
           // Sanitize value as URL converts spaces into +
           const sanitizedValue = value.replace(/[+]/g, ' ');
-          inputValue += `${sanitizedValue} `;
+          inputValue += sanitizedValue;
+          inputValue += ' ';
         }
       });
 
