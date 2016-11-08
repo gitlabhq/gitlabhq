@@ -41,6 +41,7 @@
         if (text === 'Last »') this.pagenum = last;
         if (text === 'Next') this.pagenum = +this.pagenum + 1;
         if (text === 'Prev') this.pagenum = +this.pagenum - 1;
+        if (text === 'First') this.pagenum = 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
