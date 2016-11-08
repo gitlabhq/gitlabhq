@@ -8,56 +8,55 @@
     Build.state = null;
 
     function Build(options) {
-      this.page_url = options.page_url;
-      this.build_url = options.build_url;
-      this.build_status = options.build_status;
+      options = options || $('.js-build-options').data();
+      this.pageUrl = options.pageUrl;
+      this.buildUrl = options.buildUrl;
+      this.buildStatus = options.buildStatus;
       this.state = options.state1;
-      this.build_stage = options.build_stage;
-      this.hideSidebar = bind(this.hideSidebar, this);
-      this.toggleSidebar = bind(this.toggleSidebar, this);
+      this.buildStage = options.buildStage;
       this.updateDropdown = bind(this.updateDropdown, this);
       this.$document = $(document);
       clearInterval(Build.interval);
       // Init breakpoint checker
       this.bp = Breakpoints.get();
+
       this.initSidebar();
+      this.$buildScroll = $('#js-build-scroll');
 
-      this.populateJobs(this.build_stage);
-      this.updateStageDropdownText(this.build_stage);
+      this.populateJobs(this.buildStage);
+      this.updateStageDropdownText(this.buildStage);
+      this.sidebarOnResize();
 
-      $(window).off('resize.build').on('resize.build', this.hideSidebar);
+      this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
       this.$document.off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
-      $('#js-build-scroll > a').off('click').on('click', this.stepTrace);
+      $(window).off('resize.build').on('resize.build', this.sidebarOnResize.bind(this));
+      $('a', this.$buildScroll).off('click.stepTrace').on('click.stepTrace', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
-        this.initScrollButtons();
+        this.initScrollButtonAffix();
       }
-      if (this.build_status === "running" || this.build_status === "pending") {
+      if (this.buildStatus === "running" || this.buildStatus === "pending") {
+        // Bind autoscroll button to follow build output
         $('#autoscroll-button').on('click', function() {
           var state;
           state = $(this).data("state");
           if ("enabled" === state) {
             $(this).data("state", "disabled");
-            return $(this).text("enable autoscroll");
+            return $(this).text("Enable autoscroll");
           } else {
             $(this).data("state", "enabled");
-            return $(this).text("disable autoscroll");
+            return $(this).text("Disable autoscroll");
           }
-        //
-        // Bind autoscroll button to follow build output
-        //
         });
         Build.interval = setInterval((function(_this) {
+          // Check for new build output if user still watching build page
+          // Only valid for runnig build when output changes during time
           return function() {
-            if (window.location.href.split("#").first() === _this.page_url) {
+            if (_this.location() === _this.pageUrl) {
               return _this.getBuildTrace();
             }
           };
-        //
-        // Check for new build output if user still watching build page
-        // Only valid for runnig build when output changes during time
-        //
         })(this), 4000);
       }
     }
@@ -72,20 +71,23 @@
         top: this.sidebarTranslationLimits.max
       });
       this.$sidebar.niceScroll();
-      this.hideSidebar();
       this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       this.$document.off('scroll.translateSidebar').on('scroll.translateSidebar', this.translateSidebar.bind(this));
+    };
+
+    Build.prototype.location = function() {
+      return window.location.href.split("#")[0];
     };
 
     Build.prototype.getInitialBuildTrace = function() {
       var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
 
       return $.ajax({
-        url: this.build_url,
+        url: this.buildUrl,
         dataType: 'json',
-        success: function(build_data) {
-          $('.js-build-output').html(build_data.trace_html);
-          if (removeRefreshStatuses.indexOf(build_data.status) >= 0) {
+        success: function(buildData) {
+          $('.js-build-output').html(buildData.trace_html);
+          if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
             return $('.js-build-refresh').remove();
           }
         }
@@ -94,7 +96,7 @@
 
     Build.prototype.getBuildTrace = function() {
       return $.ajax({
-        url: this.page_url + "/trace.json?state=" + (encodeURIComponent(this.state)),
+        url: this.pageUrl + "/trace.json?state=" + (encodeURIComponent(this.state)),
         dataType: "json",
         success: (function(_this) {
           return function(log) {
@@ -108,8 +110,8 @@
                 $('.js-build-output').html(log.html);
               }
               return _this.checkAutoscroll();
-            } else if (log.status !== _this.build_status) {
-              return Turbolinks.visit(_this.page_url);
+            } else if (log.status !== _this.buildStatus) {
+              return Turbolinks.visit(_this.pageUrl);
             }
           };
         })(this)
@@ -122,12 +124,11 @@
       }
     };
 
-    Build.prototype.initScrollButtons = function() {
-      var $body, $buildScroll, $buildTrace;
-      $buildScroll = $('#js-build-scroll');
+    Build.prototype.initScrollButtonAffix = function() {
+      var $body, $buildTrace;
       $body = $('body');
       $buildTrace = $('#build-trace');
-      return $buildScroll.affix({
+      return this.$buildScroll.affix({
         offset: {
           bottom: function() {
             return $body.outerHeight() - ($buildTrace.outerHeight() + $buildTrace.offset().top);
@@ -136,16 +137,10 @@
       });
     };
 
-    Build.prototype.shouldHideSidebar = function() {
+    Build.prototype.shouldHideSidebarForViewport = function() {
       var bootstrapBreakpoint;
       bootstrapBreakpoint = this.bp.getBreakpointSize();
       return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
-    };
-
-    Build.prototype.toggleSidebar = function() {
-      if (this.shouldHideSidebar()) {
-        return this.$sidebar.toggleClass('right-sidebar-expanded right-sidebar-collapsed');
-      }
     };
 
     Build.prototype.translateSidebar = function(e) {
@@ -156,12 +151,20 @@
       });
     };
 
-    Build.prototype.hideSidebar = function() {
-      if (this.shouldHideSidebar()) {
-        return this.$sidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-      } else {
-        return this.$sidebar.removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-      }
+    Build.prototype.toggleSidebar = function(shouldHide) {
+      var shouldShow = typeof shouldHide === 'boolean' ? !shouldHide : undefined;
+      this.$buildScroll.toggleClass('sidebar-expanded', shouldShow)
+        .toggleClass('sidebar-collapsed', shouldHide);
+      this.$sidebar.toggleClass('right-sidebar-expanded', shouldShow)
+        .toggleClass('right-sidebar-collapsed', shouldHide);
+    };
+
+    Build.prototype.sidebarOnResize = function() {
+      this.toggleSidebar(this.shouldHideSidebarForViewport());
+    };
+
+    Build.prototype.sidebarOnClick = function() {
+      if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
     };
 
     Build.prototype.updateArtifactRemoveDate = function() {

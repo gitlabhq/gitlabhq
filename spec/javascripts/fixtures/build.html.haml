@@ -1,0 +1,57 @@
+.build-page
+  .prepend-top-default
+    .autoscroll-container
+      %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
+    #js-build-scroll.scroll-controls
+      %a.btn{href: '#build-trace'}
+        %i.fa.fa-angle-up
+      %a.btn{href: '#down-build-trace'}
+        %i.fa.fa-angle-down
+    %pre.build-trace#build-trace
+      %code.bash.js-build-output
+      %i.fa.fa-refresh.fa-spin.js-build-refresh
+
+%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
+  .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
+    Build
+    %strong #1
+    %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
+      %i.fa.fa-angle-double-right
+  .blocks-container
+    .dropdown.build-dropdown
+      .title Stage
+      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %span.stage-selection More
+        %i.fa.fa-caret-down
+      %ul.dropdown-menu
+        %li
+          %a.stage-item build
+        %li
+          %a.stage-item test
+        %li
+          %a.stage-item deploy
+  .builds-container
+    .build-job{data: {stage: 'build'}}
+      %a{href: 'http://example.com/root/test-build/builds/1'}
+        %i.fa.fa-check
+        %i.fa.fa-check-circle-o
+        %span
+          Setup
+    .build-job{data: {stage: 'test'}}
+      %a{href: 'http://example.com/root/test-build/builds/2'}
+        %i.fa.fa-check
+        %i.fa.fa-check-circle-o
+        %span
+          Tests
+    .build-job{data: {stage: 'deploy'}}
+      %a{href: 'http://example.com/root/test-build/builds/3'}
+        %i.fa.fa-check
+        %i.fa.fa-check-circle-o
+        %span
+          Deploy
+
+.js-build-options{ data: { page_url: 'http://example.com/root/test-build/builds/2',
+  build_url: 'http://example.com/root/test-build/builds/2.json',
+  build_status: 'passed',
+  build_stage: 'test',
+  state1: 'buildstate' }}
