@@ -29,7 +29,10 @@
     - if @build.deployable?
       .prepend-top-default
         .environment-information
-          = ci_icon_for_status(@build.status)
+          - if @build.status == 'success' && (!@build.last_deployment.try(:last?))
+            = ci_icon_for_status('success_with_warnings')
+          - else
+            = ci_icon_for_status(@build.status)
 
           - last_deployment = @build.last_deployment
           - if @build.complete?
@@ -38,18 +41,16 @@
                 This build is the most recent deployment to
                 = environment_link_for_build(@build.project, @build)
               - else
-                This build is an out-of-date deployment to
-                = environment_link_for_build(@build.project, @build)
-                View the most recent deployment
-                = deployment_link(@project, last_deployment)
+                This build is an out-of-date deployment to #{environment_link_for_build(@build.project, @build)}. View the most recent deployment #{deployment_link(@project, last_deployment)}.
             - else
               The deployment of this build to
               = environment_link_for_build(@build.project, @build)
-              did not complete
+              did not complete.
           - else
             This build is creating a deployment to
             = environment_link_for_build(@build.project, @build)
-            and will overwrite the latest deployment
+            and will overwrite the
+            = link_to "latest deployment.", deployment_link(@project, last_deployment)
 
     .prepend-top-default
       - if @build.erased?

@@ -17,6 +17,56 @@ describe 'projects/builds/show' do
     allow(view).to receive(:can?).and_return(true)
   end
 
+  describe 'environment info in build view' do
+    context 'build with latest deployment' do
+      let(:build) { create(:ci_build, :success, environment: 'staging') }
+      let(:environment) { create(:environment, name: 'staging') }
+      let!(:deployment) { create(:deployment, deployable: build) }
+
+      it 'shows deployment message' do
+        expect(rendered).to have_css('.environment-information', text: 'This build is the most recent deployment')
+      end
+    end
+
+    context 'build with outdated deployment' do
+      let(:build) { create(:ci_build, :success, environment: 'staging', pipeline: pipeline) }
+      let(:environment) { create(:environment, name: 'staging', project: project) }
+      let!(:deployment) { create(:deployment, environment: environment, deployable: build) }
+      let!(:newer_deployment) { create(:deployment, environment: environment, deployable: build) }
+
+      before do
+        assign(:build, build)
+        assign(:project, project)
+
+        allow(view).to receive(:can?).and_return(true)
+        render
+      end
+
+      it 'shows deployment message' do
+        expect(rendered).to have_css('.environment-information', text: "This build is an out-of-date deployment to #{environment.name}. View the most recent deployment #1")
+      end
+    end
+
+    context 'build failed to deploy' do
+      let(:build) { create(:ci_build, :failed, environment: 'staging') }
+      let!(:environment) { create(:environment, name: 'staging') }
+    end
+
+    context 'build will deploy' do
+      let(:build) { create(:ci_build, :running, environment: 'staging') }
+      let!(:environment) { create(:environment, name: 'staging') }
+    end
+
+    context 'build that failed to deploy and environment has not been created' do
+      let(:build) { create(:ci_build, :failed, environment: 'staging') }
+    end
+
+    context 'build that will deploy and environment has not been created' do
+      let(:build) { create(:ci_build, :running, environment: 'staging') }
+      let!(:environment) { create(:environment, name: 'staging') }
+    end
+  end
+
   context 'when build is running' do
     before do
       build.run!
