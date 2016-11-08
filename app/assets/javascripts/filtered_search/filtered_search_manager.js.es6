@@ -17,7 +17,7 @@
   },{
     key: 'label',
     type: 'array',
-    param: 'name%5B%5D',
+    param: 'name[]',
   },];
 
   class FilteredSearchManager {
@@ -54,13 +54,14 @@
     }
 
     loadSearchParamsFromURL() {
+      // We can trust that each param has one & since values containing & will be encoded
       const params = window.location.search.split('&');
       let inputValue = '';
 
       params.forEach((p) => {
         const split = p.split('=');
         const key = split[0];
-        const value = split[1];
+        const value = decodeURIComponent(split[1]);
 
         const match = validTokenKeys.find((t) => {
           return key === `${t.key}_${t.param}`;
@@ -200,11 +201,11 @@
           return t.key === token.key;
         }).param;
 
-        path += `&${token.key}_${param}=${token.value}`;
+        path += `&${token.key}_${param}=${encodeURIComponent(token.value)}`;
       });
 
       if (this.searchToken) {
-        path += '&search=' + this.searchToken.replace(/ /g, '+');
+        path += '&search=' + encodeURIComponent(this.searchToken.replace(/ /g, '+'));
       }
 
       window.location = path;
