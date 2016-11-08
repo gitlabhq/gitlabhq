@@ -8,25 +8,31 @@
 //= require_directory ./components
 
 $(() => {
-  window.DiffNotesApp = new Vue({
-    el: '#diff-notes-app',
-    methods: {
-      compileComponents: function () {
-        const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn');
+  window.gl = window.gl || {};
+  window.gl.diffNoteApps = {};
 
-        if ($components.length) {
-          $components.each(function () {
-            const $this = $(this);
-            const tmp = Vue.extend({
-              template: $this.get(0).outerHTML,
-              parent: DiffNotesApp,
-            });
-            $this.replaceWith(new tmp().$mount().$el);
-          });
+  gl.diffNotesCompileComponents = () => {
+    const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn');
+
+    if ($components) {
+      $components.each(function () {
+        const $this = $(this);
+        const noteId = $this.attr(':note-id');
+        const tmp = Vue.extend({
+          template: $this.get(0).outerHTML
+        });
+        const tmpApp = new tmp().$mount();
+
+        if (noteId) {
+          gl.diffNoteApps[`note_${noteId}`] = tmpApp;
         }
-      }
+
+        $this.replaceWith(tmpApp.$el);
+      });
     }
-  });
+  };
+
+  gl.diffNotesCompileComponents();
 
   new Vue({
     el: '#resolve-count-app',

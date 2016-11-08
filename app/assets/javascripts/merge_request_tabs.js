@@ -227,8 +227,8 @@
           return function(data) {
             $('#diffs').html(data.html);
 
-            if (typeof DiffNotesApp !== 'undefined') {
-              DiffNotesApp.compileComponents();
+            if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+              gl.diffNotesCompileComponents();
             }
 
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
