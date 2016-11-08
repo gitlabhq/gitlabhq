@@ -32,7 +32,7 @@ module API
         if hook.save
           present hook, with: Entities::Hook
         else
-          not_found!
+          render_validation_error!(hook)
         end
       end
 
