@@ -68,7 +68,13 @@
 
         if (match) {
           const sanitizedKey = key.slice(0, key.indexOf('_'));
-          inputValue += `${sanitizedKey}:${value} `;
+          let sanitizedValue = value;
+
+          if (match && sanitizedKey === 'label') {
+            sanitizedValue = sanitizedValue.replace(/%20/g, ' ');
+          }
+
+          inputValue += `${sanitizedKey}:${sanitizedValue} `;
         } else if (!match && key === 'search') {
           // Sanitize value as URL converts spaces into +
           const sanitizedValue = value.replace(/[+]/g, ' ');
@@ -91,26 +97,51 @@
       // Enable clear button
       document.querySelector('.clear-search').classList.remove('hidden');
 
-      // TODO: Current implementation does not support token values that have valid spaces in them
-      // Example/ label:community contribution
       const input = event.target.value;
       const inputs = input.split(' ');
       let searchTerms = '';
+      let lastQuotation = '';
+      let incompleteToken = false;
 
       const addSearchTerm = function addSearchTerm(term) {
         searchTerms += term + ' ';
       }
 
       inputs.forEach((i) => {
+        if (incompleteToken) {
+          const prevToken = this.tokens[this.tokens.length - 1];
+          prevToken.value += ` ${i}`;
+
+          // Remove last quotation
+          const lastQuotationRegex = new RegExp(lastQuotation, 'g');
+          prevToken.value = prevToken.value.replace(lastQuotationRegex, '');
+          this.tokens[this.tokens.length - 1] = prevToken;
+
+          // Check to see if this quotation completes the token value
+          if (i.indexOf(lastQuotation)) {
+            incompleteToken = !incompleteToken;
+          }
+
+          return;
+        }
+
         const colonIndex = i.indexOf(':');
 
         if (colonIndex !== -1) {
           const tokenKey = i.slice(0, colonIndex).toLowerCase();
           const tokenValue = i.slice(colonIndex + 1);
 
-          const match = validTokenKeys.filter((v) => {
+          const match = validTokenKeys.find((v) => {
             return v.key === tokenKey;
-          })[0];
+          });
+
+          if (tokenValue.indexOf('"') !== -1) {
+            lastQuotation = '"';
+            incompleteToken = true;
+          } else if (tokenValue.indexOf('\'') !== -1) {
+            lastQuotation = '\'';
+            incompleteToken = true;
+          }
 
           if (match && tokenValue.length > 0) {
             this.tokens.push({
