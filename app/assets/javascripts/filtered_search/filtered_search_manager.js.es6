@@ -147,7 +147,22 @@
 
     search() {
       console.log('search');
-      let path = '?scope=all&state=opened&utf8=✓';
+      let path = '?scope=all&utf8=✓';
+
+      // Check current state
+      const currentPath = window.location.search;
+      const stateIndex = currentPath.indexOf('state=');
+      const defaultState = 'opened';
+      let currentState = defaultState;
+
+      if (stateIndex !== -1) {
+        const remaining = currentPath.slice(stateIndex + 6);
+        const separatorIndex = remaining.indexOf('&');
+
+        currentState = separatorIndex === -1 ? remaining : remaining.slice(0, separatorIndex);
+      }
+
+      path += `&state=${currentState}`
 
       this.tokens.forEach((token) => {
         const param = validTokenKeys.find((t) => {
