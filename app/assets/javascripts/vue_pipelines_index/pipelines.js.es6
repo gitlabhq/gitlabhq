@@ -35,10 +35,12 @@
       shortsha(pipeline) {
         return pipeline.sha.slice(0, 8);
       },
-      changepage(event, page = {}) {
-        if (page) this.pagenum = +event.target.innerText;
-        if (page.where) this.pagenum = +page.where;
-        if (page.where) this.pagenum = +page.where;
+      changepage(event, last) {
+        const text = event.target.innerText;
+        if (typeof +text === 'number') this.pagenum = +text;
+        if (text === 'Last »') this.pagenum = last;
+        if (text === 'Next') this.pagnum = +this.pagenum + 1;
+        if (text === 'Prev') this.pagenum = +this.pagenum - 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);

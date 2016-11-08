@@ -4,7 +4,7 @@
 ((gl) => {
   gl.VueFailedScope = Vue.extend({
     components: {
-      'vue-failed-icon': gl.VuePendingIcon,
+      'vue-failed-icon': gl.VueFailedIcon,
     },
     props: [
       'scope',

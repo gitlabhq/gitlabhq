@@ -3,13 +3,6 @@
 
 ((gl) => {
   gl.VuePipelineHead = Vue.extend({
-    components: {
-      'vue-running-icon': gl.VueRunningIcon,
-    },
-    props: [
-      'pipeline',
-      'pipelineurl',
-    ],
     template: `
       <thead>
         <tr>

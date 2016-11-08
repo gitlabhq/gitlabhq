@@ -34,7 +34,7 @@
         <vue-pipelines
           :scope='scope'
           :store='store'
-          :count='90'
+          :count='count'
         >
         </vue-pipelines>
       </div>
