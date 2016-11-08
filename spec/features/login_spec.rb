@@ -257,6 +257,25 @@ feature 'Login', feature: true do
       end
     end
 
+    context 'when ldap is enabled', js: true do
+      before do
+        stub_application_setting(signup_enabled: true)
+        # Mock enable LDAP
+        @ldap_servers = [{ provider_name: 'ldapmain', label: 'ldapmain' }]
+        allow(page).to receive(:form_based_providers).and_return([:ldapmain])
+        allow(page).to receive(:ldap_enabled).and_return(true)
+        allow(page).to receive(:ldap_servers).and_return(@ldap_servers)
+        allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+        allow(Gitlab::LDAP::Config).to receive(:servers).and_return(@ldap_servers)
+
+        visit new_user_session_path
+      end
+
+      it 'correctly renders tabs and panes' do
+        ensure_tab_pane_correctness(false)
+      end
+    end
+
     def ensure_tab_pane_correctness(visit_path = true)
       if visit_path
         visit new_user_session_path
