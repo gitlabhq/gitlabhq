@@ -30,6 +30,33 @@ module IssuablesHelper
     end
   end
 
+  def can_add_template?(issuable)
+    names = issuable_templates(issuable)
+    names.empty? && can?(current_user, :push_code, @project) && !@project.private?
+  end
+
+  def template_dropdown_tag(issuable, &block)
+    title = selected_template(issuable) || "Choose a template"
+    options = {
+      toggle_class: 'js-issuable-selector',
+      title: title,
+      filter: true,
+      placeholder: 'Filter',
+      footer_content: true,
+      data: {
+        data: issuable_templates(issuable),
+        field_name: 'issuable_template',
+        selected: selected_template(issuable),
+        project_path: ref_project.path,
+        namespace_path: ref_project.namespace.path
+      }
+    }
+
+    dropdown_tag(title, options: options) do
+      capture(&block)
+    end
+  end
+
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
@@ -152,5 +179,29 @@ module IssuablesHelper
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
 
     hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
+  end
+
+  def issuable_templates(issuable)
+    @issuable_templates ||=
+      case issuable
+      when Issue
+        issue_template_names
+      when MergeRequest
+        merge_request_template_names
+      else
+        raise 'Unknown issuable type!'
+      end
+  end
+
+  def merge_request_template_names
+    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
+  end
+
+  def issue_template_names
+    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
+  end
+
+  def selected_template(issuable)
+    params[:issuable_template] if issuable_templates(issuable).include?(params[:issuable_template])
   end
 end

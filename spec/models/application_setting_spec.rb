@@ -98,6 +98,24 @@ describe ApplicationSetting, models: true do
         end
       end
     end
+
+    context 'housekeeping settings' do
+      it { is_expected.not_to allow_value(0).for(:housekeeping_incremental_repack_period) }
+
+      it 'wants the full repack period to be longer than the incremental repack period' do
+        subject.housekeeping_incremental_repack_period = 2
+        subject.housekeeping_full_repack_period = 1
+
+        expect(subject).not_to be_valid
+      end
+
+      it 'wants the gc period to be longer than the full repack period' do
+        subject.housekeeping_full_repack_period = 2
+        subject.housekeeping_gc_period = 1
+
+        expect(subject).not_to be_valid
+      end
+    end
   end
 
   context 'restricted signup domains' do

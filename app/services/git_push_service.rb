@@ -105,35 +105,11 @@ class GitPushService < BaseService
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
   # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.
   def process_commit_messages
-    is_default_branch = is_default_branch?
-
-    authors = Hash.new do |hash, commit|
-      email = commit.author_email
-      next hash[email] if hash.has_key?(email)
-
-      hash[email] = commit_user(commit)
-    end
+    default = is_default_branch?
 
     @push_commits.each do |commit|
-      # Keep track of the issues that will be actually closed because they are on a default branch.
-      # Hence, when creating cross-reference notes, the not-closed issues (on non-default branches)
-      # will also have cross-reference.
-      closed_issues = []
-
-      if is_default_branch
-        # Close issues if these commits were pushed to the project's default branch and the commit message matches the
-        # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
-        # a different branch.
-        closed_issues = commit.closes_issues(current_user)
-        closed_issues.each do |issue|
-          if can?(current_user, :update_issue, issue)
-            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit: commit)
-          end
-        end
-      end
-
-      commit.create_cross_references!(authors[commit], closed_issues)
-      update_issue_metrics(commit, authors)
+      ProcessCommitWorker.
+        perform_async(project.id, current_user.id, commit.id, default)
     end
   end
 
@@ -175,12 +151,5 @@ class GitPushService < BaseService
 
   def branch_name
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
-  end
-
-  def update_issue_metrics(commit, authors)
-    mentioned_issues = commit.all_references(authors[commit]).issues
-
-    Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil).
-      update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
 end

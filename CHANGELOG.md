@@ -6,6 +6,7 @@ entry.
 
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
+- Diff collapse won't shift when collapsing.
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
@@ -13,6 +14,7 @@ entry.
 - Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix Markdown styling inside reference links (Jan Zdráhal)
+- Create new issue board list after creating a new label
 - Fix extra space on Build sidebar on Firefox !7060
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
@@ -66,8 +68,10 @@ entry.
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
 - Improve search query parameter naming in /admin/users !7115 (YarNayar)
 - Fix table pagination to be responsive
+- Fix applying GitHub-imported labels when importing job is interrupted
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
 - Updated commit SHA styling on the branches page.
+- Fix 404 when visit /projects page
 
 ## 8.13.3 (2016-11-02)
 

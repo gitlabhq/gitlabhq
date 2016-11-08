@@ -4,7 +4,7 @@
   margin-right: $margin-right;
 }
 
-.avatar-container {
+.avatar-circle {
   float: left;
   margin-right: 15px;
   border-radius: $avatar_radius;
@@ -27,7 +27,7 @@
 }
 
 .avatar {
-  @extend .avatar-container;
+  @extend .avatar-circle;
   width: 40px;
   height: 40px;
   padding: 0;
@@ -64,8 +64,8 @@
   &.s160 { font-size: 96px; line-height: 158px; }
 }
 
-.image-container {
-  @extend .avatar-container;
+.avatar-container {
+  @extend .avatar-circle;
   overflow: hidden;
   display: flex;
 

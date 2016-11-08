@@ -117,7 +117,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I visit group "NonExistentGroup" page' do
-    visit group_path(-1)
+    visit group_path("NonExistentGroup")
   end
 
   step 'the archived project have some issues' do

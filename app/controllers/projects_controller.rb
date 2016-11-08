@@ -2,9 +2,9 @@ class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity, :refs]
-  before_action :project, except: [:new, :create]
-  before_action :repository, except: [:new, :create]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :project, except: [:index, :new, :create]
+  before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
 
@@ -158,6 +158,13 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.json { render json: @suggestions }
     end
+  end
+
+  def new_issue_address
+    return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
+
+    current_user.reset_incoming_email_token!
+    render json: { new_issue_address: @project.new_issue_address(current_user) }
   end
 
   def archive

@@ -32,7 +32,7 @@
       = link_to project_path(project), class: dom_class(project) do
         - if avatar
           .dash-project-avatar
-            .image-container.s40
+            .avatar-container.s40
               - if use_creator_avatar
                 = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
               - else

@@ -26,7 +26,7 @@ gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
-gem 'omniauth-gitlab',        '~> 1.0.0'
+gem 'omniauth-gitlab',        '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
 gem 'omniauth-saml',          '~> 1.7.0'
@@ -152,7 +152,7 @@ gem 'settingslogic', '~> 2.0.9'
 gem 'version_sorter', '~> 2.1.0'
 
 # Cache
-gem 'redis-rails', '~> 4.0.0'
+gem 'redis-rails', '~> 5.0.1'
 
 # Redis
 gem 'redis', '~> 3.2'

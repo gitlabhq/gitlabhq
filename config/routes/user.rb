@@ -14,31 +14,32 @@ end
 constraints(UserUrlConstrainer.new) do
   scope(path: ':username',
         as: :user,
-        constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
+        constraints: { username: Gitlab::Regex.namespace_route_regex },
         controller: :users) do
     get '/', action: :show
   end
 end
 
-scope(path: 'users/:username',
-      as: :user,
-      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
-      controller: :users) do
-  get :calendar
-  get :calendar_activities
-  get :groups
-  get :projects
-  get :contributed, as: :contributed_projects
-  get :snippets
-  get :exists
-  get '/', to: redirect('/%{username}')
-end
+scope(constraints: { username: Gitlab::Regex.namespace_route_regex }) do
+  scope(path: 'users/:username',
+        as: :user,
+        controller: :users) do
+    get :calendar
+    get :calendar_activities
+    get :groups
+    get :projects
+    get :contributed, as: :contributed_projects
+    get :snippets
+    get :exists
+    get '/', to: redirect('/%{username}')
+  end
 
-# Compatibility with old routing
-# TODO (dzaporozhets): remove in 10.0
-get '/u/:username', to: redirect('/%{username}'), constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
-# TODO (dzaporozhets): remove in 9.0
-get '/u/:username/groups', to: redirect('/users/%{username}/groups'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
-get '/u/:username/projects', to: redirect('/users/%{username}/projects'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
-get '/u/:username/snippets', to: redirect('/users/%{username}/snippets'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
-get '/u/:username/contributed', to: redirect('/users/%{username}/contributed'), constraints: { username: /[a-zA-Z.0-9_\-]+/ }
+  # Compatibility with old routing
+  # TODO (dzaporozhets): remove in 10.0
+  get '/u/:username', to: redirect('/%{username}')
+  # TODO (dzaporozhets): remove in 9.0
+  get '/u/:username/groups', to: redirect('/users/%{username}/groups')
+  get '/u/:username/projects', to: redirect('/users/%{username}/projects')
+  get '/u/:username/snippets', to: redirect('/users/%{username}/snippets')
+  get '/u/:username/contributed', to: redirect('/users/%{username}/contributed')
+end

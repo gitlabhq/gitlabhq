@@ -100,6 +100,32 @@ describe "Search", feature: true  do
 
       expect(page).to have_link(snippet.title)
     end
+
+    it 'finds a commit' do
+      visit namespace_project_path(project.namespace, project)
+
+      page.within '.search' do
+        fill_in 'search', with: 'add'
+        click_button 'Go'
+      end
+
+      click_link "Commits"
+
+      expect(page).to have_selector('.commit-row-description')
+    end
+
+    it 'finds a code' do
+      visit namespace_project_path(project.namespace, project)
+
+      page.within '.search' do
+        fill_in 'search', with: 'def'
+        click_button 'Go'
+      end
+
+      click_link "Code"
+
+      expect(page).to have_selector('.file-content .code')
+    end
   end
 
   describe 'Right header search field', feature: true do
