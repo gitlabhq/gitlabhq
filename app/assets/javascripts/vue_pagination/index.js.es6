@@ -11,6 +11,7 @@
     data() {
       return {
         nslice: +this.pagenum,
+        endcount: this.last,
       };
     },
     methods: {
@@ -20,12 +21,15 @@
       },
       prevstatus() {
         if (+this.pagenum > 1) return '';
-        return 'prev disabled';
+        return 'disabled';
+      },
+      createSection(n) {
+        return Array.from(Array(n)).map((e, i) => i);
       },
     },
     computed: {
       dynamicpage() {
-        const section = [...Array(this.upcount).keys()];
+        const section = this.createSection(this.upcount);
         section.shift();
         this.nslice = +this.pagenum;
         this.endcount = +this.pagenum + 5;
@@ -38,7 +42,7 @@
       },
       paginationsection() {
         if (this.last < 6 && this.pagenum < 6) {
-          const pageArray = [...Array(6).keys()];
+          const pageArray = this.createSection(6);
           pageArray.shift();
           return pageArray.slice(0, this.upcount);
         }
@@ -81,7 +85,7 @@
             class="next"
             v-if='(n === upcount || n === endcount) && pagenum !== last'
           >
-            <span @click='changepage($event,{where: +pagenum+1})'>Next</span>
+            <span @click='changepage($event,{where: +pagenum + 1})'>Next</span>
           </li>
           <li
             class="last"
@@ -92,5 +96,29 @@
         </ul>
       </div>
     `,
+    // render(createElement) {
+    //   return createElement('div', {
+    //     class: {
+    //       'gl-pagination': true,
+    //     },
+    //   }, [createElement('ul', {
+    //     class: {
+    //       pagination: true,
+    //       clearfix: true,
+    //     },
+    //   }, this.paginationsection.map((e, i) => {
+    //     if (!i) return createElement('li', [createElement('span', {
+    //       class: {
+    //         prev: this.prevstatus,
+    //       },
+    //     }, 'Prev')]);
+    //     if (i) {
+    //       return createElement('li',
+    //         [createElement('span', i)]
+    //       );
+    //     }
+    //   })),
+    //   ]);
+    // },
   });
 })(window.gl || (window.gl = {}));

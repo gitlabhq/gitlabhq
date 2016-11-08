@@ -40,7 +40,6 @@
         if (page.where) this.pagenum = +page.where;
         if (page.where) this.pagenum = +page.where;
 
-        // use p instead of page to avoid making an actual request
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
         this.store.fetchDataLoop.call(this, Vue, this.pagenum);
