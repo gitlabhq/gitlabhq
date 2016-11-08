@@ -7,7 +7,7 @@ class UserUrlConstrainer
     id = extract_resource_path(request.path)
 
     if id =~ Gitlab::Regex.namespace_regex
-      !!User.find_by('lower(username) = ?', id.downcase)
+      User.find_by('lower(username) = ?', id.downcase).present?
     else
       false
     end

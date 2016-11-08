@@ -14,6 +14,6 @@ describe GroupUrlConstrainer, lib: true do
   end
 
   def request(path)
-    OpenStruct.new(path: path)
+    double(:request, path: path)
   end
 end
