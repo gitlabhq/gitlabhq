@@ -610,7 +610,7 @@ POST /projects/:id/merge_requests/:merge_request_id/approve
   "updated_at": "2016-06-09T21:32:14.105Z",
   "merge_status": "can_be_merged",
   "approvals_required": 2,
-  "approvals_missing": 0,
+  "approvals_left": 0,
   "approved_by": [
     {
       "user": {

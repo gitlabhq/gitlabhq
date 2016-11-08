@@ -59,6 +59,7 @@
 (function () {
   document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
   window.addEventListener('hashchange', gl.utils.shiftWindow);
+  $.timeago.settings.allowFuture = true;
 
   window.onload = function () {
     // Scroll the window to avoid the topnav bar
@@ -192,7 +193,7 @@
       var btn = $(e.target);
       var form = btn.closest('form');
       var text = btn.data('confirm-danger-message');
-      var warningMessage = btn.data("warning-message");
+      var warningMessage = btn.data('warning-message');
       e.preventDefault();
       return new ConfirmDangerModal(form, text, {
         warningMessage: warningMessage

@@ -702,12 +702,18 @@ describe API::API, api: true  do
 
   describe 'GET :id/merge_requests/:merge_request_id/approvals' do
     it 'retrieves the approval status' do
+      approver = create :user
       project.update_attribute(:approvals_before_merge, 2)
+      project.team << [approver, :developer]
+      project.team << [create(:user), :developer]
+      merge_request.approvals.create(user: approver)
 
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user)
 
       expect(response.status).to eq(200)
       expect(json_response['approvals_required']).to eq 2
+      expect(json_response['approvals_left']).to eq 1
+      expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
     end
   end
 
