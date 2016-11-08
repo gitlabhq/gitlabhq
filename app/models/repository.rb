@@ -1064,6 +1064,10 @@ class Repository
   end
 
   def search_files(query, ref)
+    unless exists? && has_visible_content? && query.present?
+      return []
+    end
+
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
