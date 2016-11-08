@@ -7,6 +7,14 @@ class IssueTrackerService < Service
     @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
   end
 
+  # Pattern used to detect preceedings words to an issue refeence which
+  # should close a issue.
+  # Override this method on services that uses different patterns
+  def closing_pattern
+    @pattern ||= Gitlab.config.gitlab.issue_closing_pattern.
+      sub('%{issue_ref}', "(?:(?:#{link_pattern})|(?:#{Issue.reference_pattern}))")
+  end
+
   def default?
     default
   end

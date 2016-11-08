@@ -35,6 +35,14 @@ class JiraService < IssueTrackerService
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
+  def closing_pattern
+    @closing_pattern ||= begin
+
+    rescue Errno::ECONNREFUSED, JIRA::HTTPError => e
+      Rails.logger.info "#{self.class.name} ERROR: #{e.message}. API URL: #{url}."
+    end
+  end
+
   def initialize_properties
     super do
       self.properties = {
