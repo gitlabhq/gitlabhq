@@ -29,13 +29,7 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  if Gitlab::CurrentSettings.sidekiq_throttling_enabled?
-    factor = current_application_settings.sidekiq_throttling_factor
-
-    current_application_settings.sidekiq_throttling_queues.each do |queue|
-      Sidekiq::Queue[queue].limit = (factor * Sidekiq.options[:concurrency]).ceil
-    end
-  end
+  Gitlab::SidekiqThrottler.execute!
 
   # Database pool should be at least `sidekiq_concurrency` + 2
   # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md
