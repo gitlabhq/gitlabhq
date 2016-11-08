@@ -50,7 +50,9 @@ module PreferencesHelper
   end
 
   def default_project_view
-    return 'readme' unless current_user
+    unless current_user
+      return @repository.head_commit ? 'readme' : 'activity'
+    end
 
     user_view = current_user.project_view
 
