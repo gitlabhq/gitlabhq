@@ -19,7 +19,6 @@ that comes bundled with Omnibus GitLab packages.
   - [Prerequisites](#prerequisites)
   - [Redis setup](#redis-setup)
     - [Existing single-machine installation](#existing-single-machine-installation)
-    - [Installation from source](#installation-from-source)
     - [Omnibus packages](#omnibus-packages)
   - [Configuring Sentinel](#configuring-sentinel)
     - [How sentinel handles a failover](#how-sentinel-handles-a-failover)
@@ -31,7 +30,6 @@ that comes bundled with Omnibus GitLab packages.
   - [Redis replication](#redis-replication)
   - [Sentinel](#sentinel)
     - [Omnibus GitLab](#omnibus-gitlab)
-    - [Install from Source](#install-from-source)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -161,58 +159,6 @@ To disable redis in the single install, edit `/etc/gitlab/gitlab.rb`:
 redis['enable'] = false
 ```
 
-#### Installation from source
-
-**Configuring Master Redis instance**
-
-You need to make the following changes in `redis.conf`:
-
-1. Define a `bind` address pointing to a local IP that your other machines
-   can reach you. If you really need to bind to an external acessible IP, make
-   sure you add extra firewall rules to prevent unauthorized access:
-
-   ```conf
-   # By default, if no "bind" configuration directive is specified, Redis listens
-   # for connections from all the network interfaces available on the server.
-   # It is possible to listen to just one or multiple selected interfaces using
-   # the "bind" configuration directive, followed by one or more IP addresses.
-   #
-   # Examples:
-   #
-   # bind 192.168.1.100 10.0.0.1
-   # bind 127.0.0.1 ::1
-   bind 0.0.0.0 # This will bind to all interfaces
-   ```
-
-1. Define a `port` to force redis to listin on TCP so other machines can
-   connect to it:
-
-   ```conf
-   # Accept connections on the specified port, default is 6379 (IANA #815344).
-   # If port 0 is specified Redis will not listen on a TCP socket.
-   port 6379
-   ```
-
-1. Set up password authentication (use the same password in all nodes)
-
-    ```conf
-    requirepass "redis-password-goes-here"
-    masterauth "redis-password-goes-here"
-    ```
-
-1. Restart the Redis services for the changes to take effect.
-
-**Configuring Slave Redis instance**
-
-1. Follow same instructions from master, with the extra change in `redis.conf`:
-
-   ```conf
-   # IP and port of the master Redis server
-   slaveof 10.10.10.10 6379
-   ```
-
-1. Restart the Redis services for the changes to take effect.
-
 #### Omnibus packages
 
 You need to install the Omnibus GitLab package in `3` independent machines.
@@ -304,25 +250,16 @@ GitLab Enterprise Edition provides [automated way to setup and run](#sentinel-se
 #### Sentinel setup
 
 ##### Community Edition
+
 With GitLab Community Edition, you need to install, configure, execute and
 monitor Sentinel from source. Omnibus GitLab Community Edition package does
 not support Sentinel configuration.
 
-A minimal configuration file (`sentinel.conf`) should contain the following:
-
-```conf
-bind 0.0.0.0 # bind to all interfaces or change to a specific IP
-port 26379 # default sentinel port
-sentinel auth-pass gitlab-redis redis-password-goes-here
-sentinel monitor gitlab-redis 10.0.0.1 6379 2
-sentinel down-after-milliseconds gitlab-redis 10000
-sentinel config-epoch gitlab-redis 0
-sentinel leader-epoch gitlab-redis 0
-```
+See documentation for Source Install [here](redis_source.md).
 
 ##### Enterprise Edition
 
-To setup sentinel, you edit `/etc/gitlab/gitlab.rb` file:
+To setup sentinel, edit `/etc/gitlab/gitlab.rb` file:
 
 ```ruby
 
@@ -336,7 +273,7 @@ redis_master_role['enable'] = true
 
 ## Enabled Sentinel and Redis Slave services
 redis_sentinel_role['enable'] = true
-redis_master_role['enable'] = true
+redis_slave_role['enable'] = true
 
 ## Configure Redis
 redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
@@ -345,7 +282,7 @@ redis['master_port'] = 6379 # port of the initial master redis instance
 redis['master_password'] = 'redis-password-goes-here' # the same value defined in redis['password'] in the master instance
 
 ## Configure Sentinel
-sentinel['bind'] = '0.0.0.0' # or specify an IP to bind to a single one
+# sentinel['bind'] = '0.0.0.0' # bind to all interfaces, uncomment to specify an IP and bind to a single one
 # sentinel['port'] = 26379 # uncomment to change default port
 
 ## Quorum must reflect the amount of voting sentinels it take to start a failover.
@@ -435,24 +372,16 @@ master and the new sentinels servers.
 
 ### GitLab setup
 
-You can enable or disable sentinel support at any time in new or existing
+You can enable or disable Sentinel support at any time in new or existing
 installations. From the GitLab application perspective, all it requires is
-the correct credentials for the master Redis and for all Sentinel nodes.
+the correct credentials for the Sentinel nodes.
 
-It doesn't require a list of all Sentinel nodes, as in case of a failure,
-the application will need to query only one of them.
+While it doesn't require a list of all Sentinel nodes, in case of a failure,
+it needs to access at one of listed ones.
 
 >**Note:**
-The following steps should be performed in the [GitLab application server](gitlab.md).
-
-**For source based installations**
-
-1. Edit `/home/git/gitlab/config/resque.yml` following the example in
-   `/home/git/gitlab/config/resque.yml.example`, and uncomment the sentinels
-   line, changing to the correct server credentials.
-1. Restart GitLab for the changes to take effect.
-
-**For Omnibus installations**
+The following steps should be performed in the [GitLab application server](gitlab.md)
+which ideally should not have Redis or Sentinels in the same machine for a HA setup.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add/change the following lines:
 
@@ -466,7 +395,7 @@ The following steps should be performed in the [GitLab application server](gitla
     ]
     ```
 
-1. [Reconfigure] the GitLab for the changes to take effect.
+1. [Reconfigure] GitLab for the changes to take effect.
 
 ## Troubleshooting
 
@@ -548,42 +477,6 @@ The way the redis connector `redis-rb` works with sentinel is a bit
 non-intuitive. We try to hide the complexity in omnibus, but it still requires
 a few extra configs.
 
-#### Install from Source
-
-If you get an error like: `Redis::CannotConnectError: No sentinels available.`,
-there may be something wrong with your configuration files or it can be related
-to [this issue][gh-531].
-
-It's a bit non-intuitive the way you have to config `resque.yml` and
-`sentinel.conf`, otherwise `redis-rb` will not work properly.
-
-The `master-group-name` ('gitlab-redis') defined in (`sentinel.conf`)
-**must** be used as the hostname in GitLab (`resque.yml` for source installations
-or `gitlab-rails['redis_*']` in Omnibus):
-
-```conf
-# sentinel.conf:
-sentinel monitor gitlab-redis 10.10.10.10 6379 2
-sentinel down-after-milliseconds gitlab-redis 10000
-sentinel config-epoch gitlab-redis 0
-sentinel leader-epoch gitlab-redis 0
-```
-
-```yaml
-# resque.yaml
-production:
-  url: redis://:myredispassword@gitlab-redis/
-  sentinels:
-    -
-      host: slave1.example.com # or use ip
-      port: 26380 # point to sentinel, not to redis port
-    -
-      host: slave2.exampl.com # or use ip
-      port: 26381 # point to sentinel, not to redis port
-```
-
-When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel)
-
 ---
 
 To make sure your configuration is correct:
@@ -611,8 +504,8 @@ To make sure your configuration is correct:
 1. To simulate a failover on master Redis, SSH into the Redis server and run:
 
     ```bash
-    # port must match your master redis port
-     redis-cli -h localhost -p 6379 DEBUG sleep 60
+    # port must match your master redis port, and the sleep time must be a few seconds bigger than defined one
+     redis-cli -h localhost -p 6379 DEBUG sleep 20
     ```
 
 1. Then back in the Rails console from the first step, run:
