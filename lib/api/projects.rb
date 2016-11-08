@@ -261,6 +261,7 @@ module API
       #   public_builds (optional)
       #   repository_storage (optional)
       #   lfs_enabled (optional)
+      #   approvals_before_merge (optional) - how many approvers should approve merge request by default
       # Example Request
       #   PUT /projects/:id
       put ':id' do
@@ -281,7 +282,8 @@ module API
                                      :shared_runners_enabled,
                                      :snippets_enabled,
                                      :visibility_level,
-                                     :wiki_enabled]
+                                     :wiki_enabled,
+                                     :approvals_before_merge]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
