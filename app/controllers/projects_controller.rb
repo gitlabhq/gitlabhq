@@ -2,9 +2,9 @@ class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity, :refs]
-  before_action :project, except: [:new, :create]
-  before_action :repository, except: [:new, :create]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :project, except: [:index, :new, :create]
+  before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
 

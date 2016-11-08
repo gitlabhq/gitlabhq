@@ -7,6 +7,26 @@ describe ProjectsController do
   let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
+  describe 'GET index' do
+    context 'as a user' do
+      it 'redirects to root page' do
+        sign_in(user)
+
+        get :index
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'as a guest' do
+      it 'redirects to Explore page' do
+        get :index
+
+        expect(response).to redirect_to(explore_root_path)
+      end
+    end
+  end
+
   describe "GET show" do
     context "user not project member" do
       before { sign_in(user) }
