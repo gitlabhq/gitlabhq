@@ -811,8 +811,7 @@ describe Repository, models: true do
     end
 
     it 'returns false when a repository does not exist' do
-      expect(repository.raw_repository).to receive(:rugged).
-        and_raise(Gitlab::Git::Repository::NoRepository)
+      allow(repository).to receive(:refs_directory_exists?).and_return(false)
 
       expect(repository.exists?).to eq(false)
     end

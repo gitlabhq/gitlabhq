@@ -41,11 +41,7 @@ class Repository
     return @exists unless @exists.nil?
 
     @exists = cache.fetch(:exists?) do
-      begin
-        raw_repository && raw_repository.rugged ? true : false
-      rescue Gitlab::Git::Repository::NoRepository
-        false
-      end
+      refs_directory_exists?
     end
   end
 
@@ -1147,6 +1143,12 @@ class Repository
   end
 
   private
+
+  def refs_directory_exists?
+    return false unless path_with_namespace
+
+    File.exist?(File.join(path_to_repo, 'refs'))
+  end
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
