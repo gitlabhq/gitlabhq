@@ -218,42 +218,24 @@ describe ApplicationHelper do
     end
 
     it 'includes a default js-timeago class' do
-      expect(element.attr('class')).to eq 'js-timeago js-timeago-pending'
+      expect(element.attr('class')).to eq 'js-timeago'
     end
 
     it 'accepts a custom html_class' do
       expect(element(html_class: 'custom_class').attr('class')).
-        to eq 'js-timeago custom_class js-timeago-pending'
+        to eq 'js-timeago custom_class'
     end
 
     it 'accepts a custom tooltip placement' do
       expect(element(placement: 'bottom').attr('data-placement')).to eq 'bottom'
     end
 
-    it 're-initializes timeago Javascript' do
-      el = element.next_element
-
-      expect(el.name).to eq 'script'
-      expect(el.text).to include "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
-    end
-
-    it 'allows the script tag to be excluded' do
-      expect(element(skip_js: true)).not_to include 'script'
-    end
-
     it 'converts to Time' do
       expect { helper.time_ago_with_tooltip(Date.today) }.not_to raise_error
     end
 
-    it 'add class for the short format and includes inline script' do
+    it 'add class for the short format' do
       timeago_element = element(short_format: 'short')
-      expect(timeago_element.attr('class')).to eq 'js-short-timeago js-timeago-pending'
-      script_element = timeago_element.next_element
-      expect(script_element.name).to eq 'script'
-    end
-
-    it 'add class for the short format and does not include inline script' do
-      timeago_element = element(short_format: 'short', skip_js: true)
       expect(timeago_element.attr('class')).to eq 'js-short-timeago'
       expect(timeago_element.next_element).to eq nil
     end
