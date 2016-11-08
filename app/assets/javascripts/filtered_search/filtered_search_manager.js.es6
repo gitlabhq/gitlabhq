@@ -56,7 +56,9 @@
           const sanitizedKey = key.slice(0, key.indexOf('_'));
           inputValue += `${sanitizedKey}:${value} `;
         } else if (!match && key === 'search') {
-          inputValue += `${value} `;
+          // Sanitize value as URL converts spaces into %20
+          const sanitizedValue = value.replace('%20', ' ');
+          inputValue += `${sanitizedValue} `;
         }
       });
 
