@@ -29,11 +29,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers,   type: :controller
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers,          type: :feature
-<<<<<<< HEAD
-  config.include SearchHelpers,       type: :feature
-=======
   config.include SearchHelpers,         type: :feature
->>>>>>> ce/master
   config.include StubConfiguration
   config.include EmailHelpers
   config.include TestEnv

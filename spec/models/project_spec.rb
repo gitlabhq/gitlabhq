@@ -296,7 +296,6 @@ describe Project, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe "#kerberos_url_to_repo" do
     let(:project) { create(:empty_project, path: "somewhere") }
 
@@ -305,10 +304,7 @@ describe Project, models: true do
     end
   end
 
-  xdescribe "#new_issue_address" do
-=======
   describe "#new_issue_address" do
->>>>>>> ce/master
     let(:project) { create(:empty_project, path: "somewhere") }
     let(:user) { create(:user) }
 

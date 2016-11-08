@@ -338,16 +338,14 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
-<<<<<<< HEAD
       ## EE-specific
       resources :audit_events, only: [:index]
       ## EE-specific
-=======
+
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
->>>>>>> ce/master
     end
   end
 end
