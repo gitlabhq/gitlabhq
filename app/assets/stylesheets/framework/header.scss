@@ -152,7 +152,7 @@ header {
       padding-right: 20px;
       margin: 0;
       font-size: 19px;
-      max-width: 400px;
+      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -215,6 +215,14 @@ header {
 
   .impersonation i {
     color: $red-normal;
+  }
+}
+
+.page-sidebar-pinned.right-sidebar-expanded {
+  @media (max-width: $screen-lg-min) {
+    .header-content .title {
+      width: 300px;
+    }
   }
 }
 
