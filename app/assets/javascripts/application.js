@@ -193,9 +193,6 @@
       e.preventDefault();
       return new ConfirmDangerModal(form, text);
     });
-    $document.on('click', 'button', function () {
-      return $(this).blur();
-    });
     $('input[type="search"]').each(function () {
       var $this = $(this);
       $this.attr('value', $this.val());
