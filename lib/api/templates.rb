@@ -9,7 +9,10 @@ module API
         klass: Gitlab::Template::GitlabCiYmlTemplate,
         gitlab_version: 8.9
       },
-      dockerfiles:    Gitlab::Template::DockerfileTemplate
+      dockerfiles: {
+        klass: Gitlab::Template::DockerfileTemplate,
+        gitlab_version: 8.9
+      }
     }.freeze
     PROJECT_TEMPLATE_REGEX =
       /[\<\{\[]
