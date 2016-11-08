@@ -62,7 +62,11 @@
       params.forEach((p) => {
         const split = p.split('=');
         const key = decodeURIComponent(split[0]);
-        const value = decodeURIComponent(split[1]);
+        const value = split[1];
+
+        // Sanitize value since URL converts spaces into +
+        // Replace before decode so that we know what was originally + versus the encoded +
+        const sanitizedValue = value ? decodeURIComponent(value.replace(/[+]/g, ' ')) : value;
 
         const match = validTokenKeys.find((t) => {
           return key === `${t.key}_${t.param}`;
@@ -70,22 +74,20 @@
 
         if (match) {
           const sanitizedKey = key.slice(0, key.indexOf('_'));
-          const valueHasSpace = value.indexOf(' ') !== -1;
+          const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
 
           const preferredQuotations = '"';
           let quotationsToUse = preferredQuotations;
 
           if (valueHasSpace) {
             // Prefer ", but use ' if required
-            quotationsToUse = value.indexOf(preferredQuotations) === -1 ? preferredQuotations : '\'';
+            quotationsToUse = sanitizedValue.indexOf(preferredQuotations) === -1 ? preferredQuotations : '\'';
           }
 
-          inputValue += valueHasSpace ? `${sanitizedKey}:${quotationsToUse}${value}${quotationsToUse}` : `${sanitizedKey}:${value}`;
+          inputValue += valueHasSpace ? `${sanitizedKey}:${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${sanitizedValue}`;
           inputValue += ' ';
 
         } else if (!match && key === 'search') {
-          // Sanitize value as URL converts spaces into +
-          const sanitizedValue = value.replace(/[+]/g, ' ');
           inputValue += sanitizedValue;
           inputValue += ' ';
         }
@@ -213,7 +215,7 @@
       });
 
       if (this.searchToken) {
-        path += '&search=' + encodeURIComponent(this.searchToken.replace(/ /g, '+'));
+        path += '&search=' + encodeURIComponent(this.searchToken);
       }
 
       window.location = path;
