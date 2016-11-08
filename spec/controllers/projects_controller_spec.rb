@@ -284,6 +284,33 @@ describe ProjectsController do
     end
   end
 
+  describe 'PUT #new_issue_address' do
+    subject do
+      put :new_issue_address,
+        namespace_id: project.namespace.to_param,
+        id: project.to_param
+      user.reload
+    end
+
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+    end
+
+    it 'has http status 200' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'changes the user incoming email token' do
+      expect { subject }.to change { user.incoming_email_token }
+    end
+
+    it 'changes projects new issue address' do
+      expect { subject }.to change { project.new_issue_address(user) }
+    end
+  end
+
   describe "POST #toggle_star" do
     it "toggles star if user is signed in" do
       sign_in(user)

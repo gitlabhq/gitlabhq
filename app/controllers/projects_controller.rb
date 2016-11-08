@@ -160,6 +160,13 @@ class ProjectsController < Projects::ApplicationController
     end
   end
 
+  def new_issue_address
+    return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
+
+    current_user.reset_incoming_email_token!
+    render json: { new_issue_address: @project.new_issue_address(current_user) }
+  end
+
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
 

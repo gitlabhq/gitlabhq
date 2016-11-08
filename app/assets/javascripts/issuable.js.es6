@@ -10,6 +10,7 @@
       Issuable.initSearch();
       Issuable.initChecks();
       Issuable.initResetFilters();
+      Issuable.resetIncomingEmailToken();
       return Issuable.initLabelFilterRemove();
     },
     initTemplates: function() {
@@ -154,6 +155,27 @@
         this.issuableBulkActions.willUpdateLabels = false;
       }
       return true;
+    },
+
+    resetIncomingEmailToken: function() {
+      $('.incoming-email-token-reset').on('click', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+          type: 'PUT',
+          url: $('.incoming-email-token-reset').attr('href'),
+          dataType: 'json',
+          success: function(response) {
+            $('#issue_email').val(response.new_issue_address).focus();
+          },
+          beforeSend: function() {
+            $('.incoming-email-token-reset').text('resetting...');
+          },
+          complete: function() {
+            $('.incoming-email-token-reset').text('reset it');
+          }
+        });
+      });
     }
   };
 

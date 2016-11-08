@@ -1183,6 +1183,7 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
     t.string "organization"
+    t.string "incoming_email_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1192,6 +1193,7 @@ ActiveRecord::Schema.define(version: 20161106185620) do
   add_index "users", ["current_sign_in_at"], name: "index_users_on_current_sign_in_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
+  add_index "users", ["incoming_email_token"], name: "index_users_on_incoming_email_token", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
