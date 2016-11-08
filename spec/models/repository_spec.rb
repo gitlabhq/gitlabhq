@@ -1578,4 +1578,98 @@ describe Repository, models: true do
       end.to raise_error(Repository::CommitError)
     end
   end
+
+  describe '#contribution_guide', caching: true do
+    it 'returns and caches the output' do
+      expect(repository).to receive(:file_on_head).
+        with(:contributing).
+        and_return(Gitlab::Git::Tree.new(path: 'CONTRIBUTING.md')).
+        once
+
+      2.times do
+        expect(repository.contribution_guide).
+          to be_an_instance_of(Gitlab::Git::Tree)
+      end
+    end
+  end
+
+  describe '#changelog', caching: true do
+    it 'returns and caches the output' do
+      expect(repository).to receive(:file_on_head).
+        with(:changelog).
+        and_return(Gitlab::Git::Tree.new(path: 'CHANGELOG')).
+        once
+
+      2.times do
+        expect(repository.changelog).to be_an_instance_of(Gitlab::Git::Tree)
+      end
+    end
+  end
+
+  describe '#license_blob', caching: true do
+    it 'returns and caches the output' do
+      expect(repository).to receive(:file_on_head).
+        with(:license).
+        and_return(Gitlab::Git::Tree.new(path: 'LICENSE')).
+        once
+
+      2.times do
+        expect(repository.license_blob).to be_an_instance_of(Gitlab::Git::Tree)
+      end
+    end
+  end
+
+  describe '#license_key', caching: true do
+    it 'returns and caches the output' do
+      license = double(key: 'mit')
+
+      expect(Licensee).to receive(:license).
+        with(repository.path).
+        and_return(license).
+        once
+
+      2.times do
+        expect(repository.license_key).to eq('mit')
+      end
+    end
+  end
+
+  describe '#gitignore', caching: true do
+    it 'returns and caches the output' do
+      expect(repository).to receive(:file_on_head).
+        with(:gitignore).
+        and_return(Gitlab::Git::Tree.new(path: '.gitignore')).
+        once
+
+      2.times do
+        expect(repository.gitignore).to be_an_instance_of(Gitlab::Git::Tree)
+      end
+    end
+  end
+
+  describe '#koding_yml', caching: true do
+    it 'returns and caches the output' do
+      expect(repository).to receive(:file_on_head).
+        with(:koding).
+        and_return(Gitlab::Git::Tree.new(path: '.koding.yml')).
+        once
+
+      2.times do
+        expect(repository.koding_yml).to be_an_instance_of(Gitlab::Git::Tree)
+      end
+    end
+  end
+
+  describe '#gitlab_ci_yml', caching: true do
+    it 'returns and caches the output' do
+      expect(repository).to receive(:file_on_head).
+        with(:gitlab_ci).
+        and_return(Gitlab::Git::Tree.new(path: '.gitlab-ci.yml')).
+        once
+
+      2.times do
+        expect(repository.gitlab_ci_yml).to be_an_instance_of(Gitlab::Git::Tree)
+      end
+    end
+  end
 end

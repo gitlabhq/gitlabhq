@@ -321,7 +321,7 @@ class Repository
   def cache_keys
     %i(size commit_count
        readme version contribution_guide changelog
-       license_blob license_key gitignore koding_yml)
+       license_blob license_key gitignore koding_yml gitlab_ci_yml)
   end
 
   # Keys for data on branch/tag operations.
@@ -556,23 +556,19 @@ class Repository
 
   def version
     cache.fetch(:version) do
-      tree(:head).blobs.find do |file|
-        file.name.casecmp('version').zero?
-      end
+      file_on_head(:version)
     end
   end
 
   def contribution_guide
     cache.fetch(:contribution_guide) do
-      tree(:head).blobs.find do |file|
-        file.contributing?
-      end
+      file_on_head(:contributing)
     end
   end
 
   def changelog
     cache.fetch(:changelog) do
-      file_on_head(/\A(changelog|history|changes|news)/i)
+      file_on_head(:changelog)
     end
   end
 
@@ -580,7 +576,7 @@ class Repository
     return nil unless head_exists?
 
     cache.fetch(:license_blob) do
-      file_on_head(/\A(licen[sc]e|copying)(\..+|\z)/i)
+      file_on_head(:license)
     end
   end
 
@@ -596,7 +592,7 @@ class Repository
     return nil if !exists? || empty?
 
     cache.fetch(:gitignore) do
-      file_on_head(/\A\.gitignore\z/)
+      file_on_head(:gitignore)
     end
   end
 
@@ -604,15 +600,15 @@ class Repository
     return nil unless head_exists?
 
     cache.fetch(:koding_yml) do
-      file_on_head(/\A\.koding\.yml\z/)
+      file_on_head(:koding)
     end
   end
 
   def gitlab_ci_yml
     return nil unless head_exists?
 
-    @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
-      file.name == '.gitlab-ci.yml'
+    @gitlab_ci_yml ||= cache.fetch(:gitlab_ci_yml) do
+      file_on_head(:gitlab_ci)
     end
   rescue Rugged::ReferenceError
     # For unknow reason spinach scenario "Scenario: I change project path"
@@ -1160,8 +1156,10 @@ class Repository
     exists? && !empty? && !rugged.head_unborn?
   end
 
-  def file_on_head(regex)
-    tree(:head).blobs.find { |file| file.name =~ regex }
+  def file_on_head(type)
+    tree(:head).blobs.find do |file|
+      Gitlab::FileDetector.type_of(file.name) == type
+    end
   end
 
   def tags_sorted_by_committed_date
