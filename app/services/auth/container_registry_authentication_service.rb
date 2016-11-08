@@ -9,8 +9,8 @@ module Auth
 
       return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
 
-      unless current_user || project
-        return error('DENIED', status: 403, message: 'access forbidden') unless scope
+      unless scope || current_user || project
+        return error('DENIED', status: 403, message: 'access forbidden')
       end
 
       { token: authorized_token(scope).encoded }
@@ -92,23 +92,23 @@ module Auth
       # Build can:
       # 1. pull from its own project (for ex. a build)
       # 2. read images from dependent projects if creator of build is a team member
-      @authentication_abilities.include?(:build_read_container_image) &&
+      has_authentication_ability?(:build_read_container_image) &&
         (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
     end
 
     def user_can_pull?(requested_project)
-      @authentication_abilities.include?(:read_container_image) &&
+      has_authentication_ability?(:read_container_image) &&
         can?(current_user, :read_container_image, requested_project)
     end
 
     def build_can_push?(requested_project)
       # Build can push only to the project from which it originates
-      @authentication_abilities.include?(:build_create_container_image) &&
+      has_authentication_ability?(:build_create_container_image) &&
         requested_project == project
     end
 
     def user_can_push?(requested_project)
-      @authentication_abilities.include?(:create_container_image) &&
+      has_authentication_ability?(:create_container_image) &&
         can?(current_user, :create_container_image, requested_project)
     end
 
@@ -117,6 +117,10 @@ module Auth
         errors: [{ code: code, message: message }],
         http_status: status
       }
+    end
+
+    def has_authentication_ability?(capability)
+      (@authentication_abilities || []).include?(capability)
     end
   end
 end

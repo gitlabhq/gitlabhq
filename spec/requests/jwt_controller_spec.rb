@@ -20,7 +20,7 @@ describe JwtController do
     end
   end
 
-  context 'when using authorized request' do
+  context 'when using authenticated request' do
     context 'using CI token' do
       let(:build) { create(:ci_build, :running) }
       let(:project) { build.project }
@@ -65,7 +65,7 @@ describe JwtController do
           let(:access_token) { create(:personal_access_token, user: user) }
           let(:headers) { { authorization: credentials(user.username, access_token.token) } }
 
-          it 'rejects the authorization attempt' do
+          it 'accepts the authorization attempt' do
             expect(response).to have_http_status(200)
           end
         end
@@ -78,6 +78,20 @@ describe JwtController do
       subject! { get '/jwt/auth', parameters, headers }
 
       it { expect(response).to have_http_status(401) }
+    end
+  end
+
+  context 'when using unauthenticated request' do
+    it 'accepts the authorization attempt' do
+      get '/jwt/auth', parameters
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'allows read access' do
+      expect(service).to receive(:execute).with(authentication_abilities: Gitlab::Auth.read_authentication_abilities)
+
+      get '/jwt/auth', parameters
     end
   end
 
