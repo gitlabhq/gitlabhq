@@ -2,6 +2,9 @@
 redis_config_hash = Gitlab::Redis.params
 redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
 
+# Default is to retry 25 times with exponential backoff. That's too much.
+Sidekiq.default_worker_options = { retry: 3 }
+
 Sidekiq.configure_server do |config|
   config.redis = redis_config_hash
 
