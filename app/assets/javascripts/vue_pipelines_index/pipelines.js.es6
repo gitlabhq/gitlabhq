@@ -37,9 +37,9 @@
       },
       changepage(event, last) {
         const text = event.target.innerText;
-        if (typeof +text === 'number') this.pagenum = +text;
+        if (typeof text === 'number') this.pagenum = +text;
         if (text === 'Last »') this.pagenum = last;
-        if (text === 'Next') this.pagnum = +this.pagenum + 1;
+        if (text === 'Next') this.pagenum = +this.pagenum + 1;
         if (text === 'Prev') this.pagenum = +this.pagenum - 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
