@@ -7,6 +7,26 @@ describe ProjectsController do
   let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
+  describe 'GET index' do
+    context 'as a user' do
+      it 'redirects to root page' do
+        sign_in(user)
+
+        get :index
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'as a guest' do
+      it 'redirects to Explore page' do
+        get :index
+
+        expect(response).to redirect_to(explore_root_path)
+      end
+    end
+  end
+
   describe "GET show" do
     context "user not project member" do
       before { sign_in(user) }
@@ -282,6 +302,33 @@ describe ProjectsController do
 
         expect(merge_request.reload.state).to eq('closed')
       end
+    end
+  end
+
+  describe 'PUT #new_issue_address' do
+    subject do
+      put :new_issue_address,
+        namespace_id: project.namespace.to_param,
+        id: project.to_param
+      user.reload
+    end
+
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+    end
+
+    it 'has http status 200' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'changes the user incoming email token' do
+      expect { subject }.to change { user.incoming_email_token }
+    end
+
+    it 'changes projects new issue address' do
+      expect { subject }.to change { project.new_issue_address(user) }
     end
   end
 

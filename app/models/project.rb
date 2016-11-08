@@ -719,13 +719,12 @@ class Project < ActiveRecord::Base
   end
 
   def new_issue_address(author)
-    # This feature is disabled for the time being.
-    return nil
+    return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
-    if Gitlab::IncomingEmail.enabled? && author # rubocop:disable Lint/UnreachableCode
-      Gitlab::IncomingEmail.reply_address(
-        "#{path_with_namespace}+#{author.authentication_token}")
-    end
+    author.ensure_incoming_email_token!
+
+    Gitlab::IncomingEmail.reply_address(
+      "#{path_with_namespace}+#{author.incoming_email_token}")
   end
 
   def build_commit_note(commit)

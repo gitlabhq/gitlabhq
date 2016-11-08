@@ -8,6 +8,10 @@ module Gitlab
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
     end
 
+    def namespace_route_regex
+      @namespace_route_regex ||= /#{NAMESPACE_REGEX_STR}/.freeze
+    end
+
     def namespace_regex_message
       "can contain only letters, digits, '_', '-' and '.'. " \
       "Cannot start with '-' or end in '.', '.git' or '.atom'." \

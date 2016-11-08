@@ -21,6 +21,7 @@
   - [post_receive, 5]
   - [merge, 5]
   - [update_merge_requests, 3]
+  - [process_commit, 2]
   - [new_note, 2]
   - [build, 2]
   - [pipeline, 2]

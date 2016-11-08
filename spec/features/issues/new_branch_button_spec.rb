@@ -18,8 +18,8 @@ feature 'Start new branch from an issue', feature: true do
     end
 
     context "when there is a referenced merge request" do
-      let(:note) do
-        create(:note, :on_issue, :system, project: project,
+      let!(:note) do
+        create(:note, :on_issue, :system, project: project, noteable: issue,
                                           note: "Mentioned in !#{referenced_mr.iid}")
       end
       let(:referenced_mr) do
@@ -28,12 +28,13 @@ feature 'Start new branch from an issue', feature: true do
       end
 
       before do
-        issue.notes << note
+        referenced_mr.cache_merge_request_closes_issues!(user)
 
         visit namespace_project_issue_path(project.namespace, project, issue)
       end
 
       it "hides the new branch button", js: true do
+        expect(page).to have_css('#new-branch .unavailable')
         expect(page).not_to have_css('#new-branch .available')
         expect(page).to have_content /1 Related Merge Request/
       end

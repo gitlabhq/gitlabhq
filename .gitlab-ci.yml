@@ -325,7 +325,11 @@ trigger_docs:
   cache: {}
   artifacts: {}
   script:
+<<<<<<< HEAD
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ee https://gitlab.com/api/v3/projects/1794617/trigger/builds"
+=======
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
+>>>>>>> ce/master
   only:
     - master@gitlab-org/gitlab-ee
 

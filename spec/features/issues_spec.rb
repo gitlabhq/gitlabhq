@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Issues', feature: true do
   include IssueHelpers
   include SortingHelper
+  include WaitForAjax
 
   let(:project) { create(:project) }
 
@@ -368,6 +369,26 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'when I want to reset my incoming email token' do
+    let(:project1) { create(:project, namespace: @user.namespace) }
+
+    before do
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      project1.team << [@user, :master]
+      visit namespace_project_issues_path(@user.namespace, project1)
+    end
+
+    it 'changes incoming email address token', js: true do
+      find('.issue-email-modal-btn').click
+      previous_token = find('input#issue_email').value
+
+      find('.incoming-email-token-reset').click
+      wait_for_ajax
+
+      expect(find('input#issue_email').value).not_to eq(previous_token)
+    end
+  end
+
   describe 'update labels from issue#show', js: true do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
     let!(:label) { create(:label, project: project) }
@@ -574,7 +595,7 @@ describe 'Issues', feature: true do
     end
   end
 
-  xdescribe 'new issue by email' do
+  describe 'new issue by email' do
     shared_examples 'show the email in the modal' do
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")

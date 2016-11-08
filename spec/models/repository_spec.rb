@@ -362,6 +362,19 @@ describe Repository, models: true do
       expect(results.first).not_to start_with('fatal:')
     end
 
+    it 'properly handles when query is not present' do
+      results = repository.search_files('', 'master')
+
+      expect(results).to match_array([])
+    end
+
+    it 'properly handles query when repo is empty' do
+      repository = create(:empty_project).repository
+      results = repository.search_files('test', 'master')
+
+      expect(results).to match_array([])
+    end
+
     describe 'result' do
       subject { results.first }
 

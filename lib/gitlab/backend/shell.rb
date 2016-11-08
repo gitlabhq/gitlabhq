@@ -188,19 +188,6 @@ module Gitlab
                                    'rm-project', storage, "#{name}.git"])
     end
 
-    # Gc repository
-    #
-    # storage - project storage path
-    # path - project path with namespace
-    #
-    # Ex.
-    #   gc("/path/to/storage", "gitlab/gitlab-ci")
-    #
-    def gc(storage, path)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'gc',
-                                   storage, "#{path}.git"])
-    end
-
     # Add new key to gitlab-shell
     #
     # Ex.

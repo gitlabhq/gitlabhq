@@ -296,6 +296,7 @@ describe Project, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe "#kerberos_url_to_repo" do
     let(:project) { create(:empty_project, path: "somewhere") }
 
@@ -305,6 +306,9 @@ describe Project, models: true do
   end
 
   xdescribe "#new_issue_address" do
+=======
+  describe "#new_issue_address" do
+>>>>>>> ce/master
     let(:project) { create(:empty_project, path: "somewhere") }
     let(:user) { create(:user) }
 
@@ -314,8 +318,7 @@ describe Project, models: true do
       end
 
       it 'returns the address to create a new issue' do
-        token = user.authentication_token
-        address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end
