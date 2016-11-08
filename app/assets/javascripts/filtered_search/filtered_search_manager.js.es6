@@ -29,9 +29,23 @@
 
     bindEvents() {
       const input = document.querySelector('.filtered-search');
+      const clearSearch = document.querySelector('.clear-search');
 
       input.addEventListener('input', this.tokenize.bind(this));
       input.addEventListener('keydown', this.checkForEnter.bind(this));
+
+      clearSearch.addEventListener('click', this.clearSearch.bind(this));
+    }
+
+    clearSearch(event) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      this.clearTokens();
+      const input = document.querySelector('.filtered-search');
+      input.value = '';
+
+      event.target.classList.add('hidden');
     }
 
     clearTokens() {
@@ -64,11 +78,18 @@
 
       // Trim the last space value
       document.querySelector('.filtered-search').value = inputValue.trim();
+
+      if (inputValue.trim()) {
+        document.querySelector('.clear-search').classList.remove('hidden');
+      }
     }
 
     tokenize(event) {
       // Re-calculate tokens
       this.clearTokens();
+
+      // Enable clear button
+      document.querySelector('.clear-search').classList.remove('hidden');
 
       // TODO: Current implementation does not support token values that have valid spaces in them
       // Example/ label:community contribution
