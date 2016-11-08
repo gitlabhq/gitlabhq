@@ -9,9 +9,14 @@
       'pagenum',
     ],
     methods: {
-      pagenumberstatus(n) {
-        if (n - 1 === +this.pagenum) return 'active';
-        return '';
+      pagestatus(n) {
+        if (n - 1 === +this.pagenum) return true;
+        return false;
+      },
+      prevstatus(index) {
+        if (index > 0) return false;
+        if (+this.pagenum < 2) return true;
+        return false;
       },
       createSection(n) { return Array.from(Array(n)).map((e, i) => i); },
     },
@@ -22,7 +27,7 @@
         const pages = this.createSection(+this.last + 1);
         pages.shift();
 
-        if (+this.pagenum !== 1) items.push({ text: 'Prev' });
+        items.push({ text: 'Prev', class: this.prevstatus() });
 
         pages.forEach(i => items.push({ text: i }));
 
@@ -34,8 +39,8 @@
     },
     template: `
       <div class="gl-pagination">
-        <ul class="pagination clearfix" v-for='(item, index) in getItems'>
-          <li :class='pagenumberstatus(index + 1)'>
+        <ul class="pagination clearfix" v-for='(item, i) in getItems'>
+          <li :class="{active: pagestatus(i + 1), disabled: prevstatus(i)}">
             <span @click='changepage($event, last)'>{{item.text}}</span>
           </li>
         </ul>
