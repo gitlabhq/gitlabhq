@@ -13,7 +13,7 @@
         .location-badge= label
       .search-input-wrap
         .dropdown{ data: { url: search_autocomplete_path } }
-          = search_field_tag 'search', nil, placeholder: 'Search', class: 'search-input dropdown-menu-toggle js-search-dashboard-options', spellcheck: false, tabindex: '1', autocomplete: 'off', data: { toggle: 'dropdown', issues_path: issues_dashboard_url, mr_path: merge_requests_dashboard_url }
+          = search_field_tag 'search', nil, placeholder: 'Search', class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options', spellcheck: false, tabindex: '1', autocomplete: 'off', data: { toggle: 'dropdown', issues_path: issues_dashboard_url, mr_path: merge_requests_dashboard_url }
           .dropdown-menu.dropdown-select
             = dropdown_content do
               %ul
