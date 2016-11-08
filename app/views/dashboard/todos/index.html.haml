@@ -82,12 +82,9 @@
   - elsif current_user.todos.any?
     .todos-all-done
       = render "shared/empty_states/todos_all_done.svg"
-      %h4.text-center
-        - if todos_filter_empty?
-          Good job! Looks like you don't have any todos left.
-        - else
-          There are no Todos to show.
       - if todos_filter_empty?
+        %h4.text-center
+          Good job! Looks like you don't have any todos left.
         %p.text-center
           Are you looking for things to do? Take a look at
           = succeed "," do
@@ -95,6 +92,9 @@
           contribute to
           = link_to "merge requests", merge_requests_dashboard_path
           or mention someone in a comment to assign a new todo automatically.
+      - else
+        %h4.text-center
+          There are no todos to show.
   - else
     .todos-empty
       .todos-empty-hero
