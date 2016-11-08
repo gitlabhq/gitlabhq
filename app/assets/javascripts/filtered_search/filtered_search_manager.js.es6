@@ -70,8 +70,8 @@
           const sanitizedKey = key.slice(0, key.indexOf('_'));
           inputValue += `${sanitizedKey}:${value} `;
         } else if (!match && key === 'search') {
-          // Sanitize value as URL converts spaces into %20
-          const sanitizedValue = value.replace('%20', ' ');
+          // Sanitize value as URL converts spaces into +
+          const sanitizedValue = value.replace(/[+]/g, ' ');
           inputValue += `${sanitizedValue} `;
         }
       });
@@ -149,7 +149,6 @@
       console.log('search');
       let path = '?scope=all&state=opened&utf8=✓';
 
-
       this.tokens.forEach((token) => {
         const param = validTokenKeys.find((t) => {
           return t.key === token.key;
@@ -159,7 +158,7 @@
       });
 
       if (this.searchToken) {
-        path += '&search=' + this.searchToken;
+        path += '&search=' + this.searchToken.replace(/ /g, '+');
       }
 
       window.location = path;
