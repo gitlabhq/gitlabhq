@@ -1,16 +1,27 @@
-require 'spec_helper'
 require 'rails_helper'
 
 feature 'Environments', feature: true, js:true do
   include WaitForVueResource
   
-  given(:project) { create(:project) }
-  given(:user) { create(:user) }
-  given(:role) { :developer }
-
+  let(:json) { serializer.as_json }
+  let(:project) { create(:empty_project, :public) }
+  let(:user) { create(:user) }
+  let(:role) { :developer }
+  
+  let(:serializer) do
+    described_class
+      .new(user: user, project: project)
+      .represent(resource)
+  end
+  
   background do
     login_as(user)
     project.team << [user, role]
+  end
+  
+  before do
+    visit namespace_project_environments_path(project.namespace, project)
+    wait_for_vue_resource
   end
 
   describe 'when showing environments' do
@@ -36,15 +47,15 @@ feature 'Environments', feature: true, js:true do
     end
 
     context 'with environments' do
-      given!(:environment) { create(:environment, project: project) }
-    
+      let(:resource) { create_list(:environment, 2) } 
+      
       scenario 'does show "Available" and "Stopped" tab with links' do
         expect(page).to have_link('Stopped')
         expect(page).to have_link('Available')
       end
       
-      scenario 'does show environment name' do
-        expect(page).to have_link(environment.name)
+      scenario 'does show environments table' do
+        expect(page).to have_selector('.table-holder')
       end
       
       scenario 'does show number of available and stopped environments' do
@@ -53,20 +64,13 @@ feature 'Environments', feature: true, js:true do
       end
       
       context 'without deployments' do
-        
-        before do
-          visit namespace_project_environments_path(project.namespace, project)
-          wait_for_vue_resource
-        end
-        
         scenario 'does show no deployments' do
           expect(page).to have_content('No deployments yet')
         end
       end
-
+  
       context 'with deployments' do
-        let!(:environment) { create(:environment, project: project) }
-        given(:deployment) { create(:deployment, environment: environment) }
+        # TODO add environment with deployment
       
         scenario 'does show deployment SHA' do
           expect(page).to have_link(deployment.short_sha)
@@ -142,17 +146,12 @@ feature 'Environments', feature: true, js:true do
     end
     
     context 'can create new environment' do
-      before do
-        visit namespace_project_environments_path(project.namespace, project)
-        wait_for_vue_resource
-      end
-      
       scenario 'does have a New environment button' do
         expect(page).to have_link('New environment')
       end
     end
   end
-
+  
    describe 'when showing the environment' do
     given(:environment) { create(:environment, project: project) }
     given!(:deployment) { }
@@ -246,7 +245,7 @@ feature 'Environments', feature: true, js:true do
       end
     end
   end
-
+  
   describe 'when creating a new environment' do
     before do
       visit namespace_project_environments_path(project.namespace, project)
