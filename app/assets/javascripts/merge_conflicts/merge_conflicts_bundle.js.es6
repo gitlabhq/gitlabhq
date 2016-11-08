@@ -6,7 +6,6 @@
 //= require ./mixins/line_conflict_actions
 //= require ./components/diff_file_editor
 //= require ./components/inline_conflict_lines
-//= require ./components/parallel_conflict_line
 //= require ./components/parallel_conflict_lines
 
 $(() => {
