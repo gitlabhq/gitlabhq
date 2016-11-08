@@ -26,13 +26,11 @@
     computed: {
       last() { return Math.ceil(+this.count / 5); },
       getItems() {
-        const total = +this.count;
+        const total = +this.last;
         const page = +this.pagenum;
         const items = [];
 
-        if (page > 1) {
-          items.push({ title: '<< First', where: 1 });
-        }
+        if (page > 1) items.push({ title: '<< First', where: 1 });
 
         if (page > 1) {
           items.push({ title: 'Prev', where: page - 1 });
@@ -40,9 +38,7 @@
           items.push({ title: 'Prev', where: page - 1, disabled: true });
         }
 
-        if (page > 6) {
-          items.push({ title: '...', separator: true });
-        }
+        if (page > 6) items.push({ title: '...', separator: true });
 
         const start = Math.max(page - 4, 1);
         const end = Math.min(page + 4, total);
@@ -52,9 +48,7 @@
           items.push({ title: i, active: isActive, where: i });
         }
 
-        if (total - page > 4) {
-          items.push({ title: '...', separator: true });
-        }
+        if (total - page > 4) items.push({ title: '...', separator: true });
 
         if (page === total) {
           items.push({ title: 'Next', where: page + 1, disabled: true });
@@ -62,9 +56,7 @@
           items.push({ title: 'Next', where: page + 1 });
         }
 
-        if (total - page >= 1) {
-          items.push({ title: 'Last >>', where: total });
-        }
+        if (total - page >= 1) items.push({ title: 'Last >>', where: total });
 
         return items;
       },
