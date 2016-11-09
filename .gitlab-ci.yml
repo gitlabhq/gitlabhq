@@ -349,7 +349,7 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
-lint-javascript:
+lint:javascript:
   cache:
     paths:
       - node_modules/
@@ -358,7 +358,24 @@ lint-javascript:
   before_script:
     - npm install
   script:
-    - npm run eslint
+    - npm --silent run eslint
+
+lint:javascript:report:
+  cache:
+    paths:
+      - node_modules/
+  stage: post-test
+  image: "node:7.1"
+  before_script:
+    - npm install
+  script:
+    - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - npm --silent run eslint-report || true # ignore exit code
+  artifacts:
+    name: eslint-report
+    expire_in: 31d
+    paths:
+    - eslint-report.html
 
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
@@ -398,11 +415,13 @@ pages:
   dependencies:
     - coverage
     - teaspoon
+    - lint:javascript:report
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage public/coverage-ruby
     - mv coverage-javascript/default/ public/coverage-javascript/
+    - mv eslint-report.html public/
   artifacts:
     paths:
       - public
