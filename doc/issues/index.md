@@ -109,11 +109,11 @@ by clicking **Edit**:
 ## Comment
 
 Commenting in issues is what makes it most interesting. It's where you ask
-questions, give suggestions, approve or disapprove that discussion.
+questions, give suggestions, approve or deny that discussion.
 
 ## Add Emoji
 
-Award emoji, comment with emoji, or add it to the issue description.
+Award emoji, comment with emoji, or add it to the issue description. They are important to share a little bit of emotions through your text ;)
 
 ## @mentions
 
@@ -127,13 +127,39 @@ To change your notification settings navigate to **Profile Settings** > **Notifi
 
 ## Linking Issues
 
-## Link to Commit message
+### From Commit Messages
 
-<!-- GitLab Workflow - Cycle Analytics - commit message - link to issue -->
+Every time you mention an issue in your commit message, you're creating a relationship between the two stages of the development workflow: the issue itself and the first commit related to that issue.
 
-## Mentioning Related Issues
+If the issue and the code you're committing are both in the same project, you simply add `#xxx` to the commit message, where `xxx` is the issue number. If they are not in the same project, you can add the full URL to the issue (`https://gitlab.com/<username>/<projectname>/issues/<xxx>`).
 
-<!-- Useful - they appear in both trackers - easy to find them -->
+```shell
+git commit -m "this is my commit message. Ref #xxx"
+```
+
+or
+
+```shell
+git commit -m "this is my commit message. Related to https://gitlab.com/<username>/<projectname>/issues/<xxx>"
+```
+
+Of course, you can replace `gitlab.com` with the URL of your own GitLab instance.
+
+**Note:** Linking your first commit to your issue is going to be relevant for tracking your process far ahead with [GitLab Cycle Analytics][ca]. It will measure the time taken for planning the implementation of that issue, which is the time between creating an issue and making the first commit.
+
+### From Related Issues
+
+Mentioning related issues in merge requests and other issues is useful for your team members and collaborators to know that there are opened issues around that same idea.
+
+You do that as explained above, when [mentioning an issue from a commit message](#from-commit-messages)
+
+When mentioning the issue "A" in a issue "B", the issue "A" will also display a notification in its tracker. The same is valid for mentioning issues in merge requests.
+
+### From Merge Requests
+
+Mentioning issues in merge request comments work exactly the same way they do for [related issues](#from-related-issues). 
+
+When you mention an issue in a merge request description, you can either [close the issue as soon as the merge request is merged](#via-merge-request), or simply link both issue and merge request as described [above](#from-related-issues).
 
 # Closing Issues
 
@@ -260,6 +286,7 @@ the [administration documentation][closing-pattern-customize].
 
 [closing-pattern-customize]: https://docs.gitlab.com/ce/administration/issue_closing_pattern.html
 [doc-ee-issue-weight]: https://docs.gitlab.com/ee/issues/#issue-weight
+[GitLab Cycle Analytics][ca]: https://about.gitlab.com/solutions/cycle-analytics/
 [issue-post]: https://about.gitlab.com/2016/03/03/start-with-an-issue/
 [issues-api]: https://docs.gitlab.com/ee/api/issues.html
 [user-doc-closing-pattern]: https://docs.gitlab.com/ce/user/project/issues/automatic_issue_closing.html
@@ -269,5 +296,5 @@ the [administration documentation][closing-pattern-customize].
 [labels-docs-group]: #
 [mattermost-doc]: #
 [milestones-doc]: #
-[workflow-doc]: #
 [multiple-boards-doc]: #
+[workflow-doc]: #
