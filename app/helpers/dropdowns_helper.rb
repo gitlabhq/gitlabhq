@@ -47,7 +47,7 @@ module DropdownsHelper
     default_label = data_attr[:default_label]
     content_tag(:button, class: "dropdown-menu-toggle #{options[:toggle_class] if options.has_key?(:toggle_class)}", id: (options[:id] if options.has_key?(:id)), type: "button", data: data_attr) do
       output = content_tag(:span, toggle_text, class: "dropdown-toggle-text #{'is-default' if toggle_text == default_label}")
-      output << icon('chevron-down')
+      output << icon('caret-down')
       output.html_safe
     end
   end

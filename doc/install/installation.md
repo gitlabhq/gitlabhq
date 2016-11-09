@@ -406,7 +406,7 @@ If you are not using Linux you may have to run `gmake` instead of
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout v0.8.5
+    sudo -u git -H git checkout v1.0.0
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -482,10 +482,14 @@ Copy the example site config:
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
-Make sure to edit the config file to match your setup:
+Make sure to edit the config file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the 'git' user:
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
+    #
+    # Remember to match your paths to GitLab, especially
+    # if installing for a user other than 'git'.
+    #
     # If using Ubuntu default nginx install:
     # either remove the default_server from the listen line
     # or else sudo rm -f /etc/nginx/sites-enabled/default

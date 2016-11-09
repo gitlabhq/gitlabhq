@@ -14,14 +14,14 @@ describe API::API, 'MergeRequestDiffs', api: true  do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/versions' do
-    context 'valid merge request' do
-      before { get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions", user) }
-      let(:merge_request_diff) { merge_request.merge_request_diffs.first }
+    it 'returns 200 for a valid merge request' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions", user)
+      merge_request_diff = merge_request.merge_request_diffs.first
 
-      it { expect(response.status).to eq 200 }
-      it { expect(json_response.size).to eq(merge_request.merge_request_diffs.size) }
-      it { expect(json_response.first['id']).to eq(merge_request_diff.id) }
-      it { expect(json_response.first['head_commit_sha']).to eq(merge_request_diff.head_commit_sha) }
+      expect(response.status).to eq 200
+      expect(json_response.size).to eq(merge_request.merge_request_diffs.size)
+      expect(json_response.first['id']).to eq(merge_request_diff.id)
+      expect(json_response.first['head_commit_sha']).to eq(merge_request_diff.head_commit_sha)
     end
 
     it 'returns a 404 when merge_request_id not found' do
@@ -31,14 +31,14 @@ describe API::API, 'MergeRequestDiffs', api: true  do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id' do
-    context 'valid merge request' do
-      before { get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/#{merge_request_diff.id}", user) }
-      let(:merge_request_diff) { merge_request.merge_request_diffs.first }
+    it 'returns a 200 for a valid merge request' do
+      merge_request_diff = merge_request.merge_request_diffs.first
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/#{merge_request_diff.id}", user)
 
-      it { expect(response.status).to eq 200 }
-      it { expect(json_response['id']).to eq(merge_request_diff.id) }
-      it { expect(json_response['head_commit_sha']).to eq(merge_request_diff.head_commit_sha) }
-      it { expect(json_response['diffs'].size).to eq(merge_request_diff.diffs.size) }
+      expect(response.status).to eq 200
+      expect(json_response['id']).to eq(merge_request_diff.id)
+      expect(json_response['head_commit_sha']).to eq(merge_request_diff.head_commit_sha)
+      expect(json_response['diffs'].size).to eq(merge_request_diff.diffs.size)
     end
 
     it 'returns a 404 when merge_request_id not found' do

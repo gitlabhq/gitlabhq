@@ -22,7 +22,7 @@
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.empty?) }
       = multi_label_name(selected, "Labels")
-    = icon('chevron-down')
+    = icon('caret-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: dropdown_title, show_footer: show_footer, show_create: show_create }
     - if show_create && project && can?(current_user, :admin_label, project)

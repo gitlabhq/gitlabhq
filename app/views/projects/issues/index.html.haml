@@ -8,7 +8,7 @@
 
 = content_for :meta_tags do
   - if current_user
-    = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
+    = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
 
 %div{ class: (container_class) }
   - if @project.issues.any?
@@ -16,7 +16,7 @@
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
         - if current_user
-          = link_to namespace_project_issues_path(@project.namespace, @project, :atom, { private_token: current_user.private_token }), class: 'btn append-right-10' do
+          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10' do
             = icon('rss')
             %span.icon-label
               Subscribe

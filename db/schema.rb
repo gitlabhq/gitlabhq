@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025231710) do
+ActiveRecord::Schema.define(version: 20161103171205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 20161025231710) do
     t.boolean "elasticsearch_search", default: false, null: false
     t.string "elasticsearch_host", default: "localhost"
     t.string "elasticsearch_port", default: "9200"
-    t.string "repository_storage", default: "default"
+    t.string "repository_storages", default: "default"
     t.string "enabled_git_access_protocol"
     t.boolean "domain_blacklist_enabled", default: false
     t.text "domain_blacklist"
@@ -1042,6 +1042,7 @@ ActiveRecord::Schema.define(version: 20161025231710) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.integer "repository_size_limit"
+    t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

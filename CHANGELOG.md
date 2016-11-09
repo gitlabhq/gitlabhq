@@ -4,7 +4,9 @@ entry.
 
 ## 8.14.0 (2016-11-22)
 
+- Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
+- Diff collapse won't shift when collapsing.
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
@@ -12,6 +14,7 @@ entry.
 - Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix Markdown styling inside reference links (Jan Zdráhal)
+- Create new issue board list after creating a new label
 - Fix extra space on Build sidebar on Firefox !7060
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
@@ -27,6 +30,7 @@ entry.
 - Fix sidekiq stats in admin area (blackst0ne)
 - Added label description as tooltip to issue board list title
 - Created cycle analytics bundle JavaScript file
+- Hides container registry when repository is disabled
 - API: Fix booleans not recognized as such when using the `to_boolean` helper
 - Removed delete branch tooltip !6954
 - Stop unauthorized users dragging on milestone page (blackst0ne)
@@ -46,6 +50,8 @@ entry.
 - New issue board list dropdown stays open after adding a new list
 - Fix: Backup restore doesn't clear cache
 - Optimize Event queries by removing default order
+- Add new icon for skipped builds
+- Show created icon in pipeline mini-graph
 - Remove duplicate links from sidebar
 - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
 - Add Rake task to create/repair GitLab Shell hooks symlinks !5634
@@ -62,12 +68,18 @@ entry.
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
 - Improve search query parameter naming in /admin/users !7115 (YarNayar)
 - Fix table pagination to be responsive
+- Fix applying GitHub-imported labels when importing job is interrupted
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
+- Updated commit SHA styling on the branches page.
 
 ## 8.13.3 (2016-11-02)
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
+- Fix relative links in Markdown wiki when displayed in "Project" tab !7218
+- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
+- Fix project features default values
+- Changed build dropdown list length to be 6,5 builds long in the pipeline graph
 
 ## 8.13.2 (2016-10-31)
 

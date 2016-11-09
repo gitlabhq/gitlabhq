@@ -40,7 +40,7 @@ hit **Save** for the changes to take effect.
 
 ![Only allow merge if build succeeds settings](img/merge_when_build_succeeds_only_if_succeeds_settings.png)
 
-From now on, every time the pipelinefails you will not be able to merge the
+From now on, every time the pipeline fails you will not be able to merge the
 merge request from the UI, until you make all relevant builds pass.
 
-![Only allow merge if build succeeds msg](img/merge_when_build_succeeds_only_if_succeeds_msg.png)
+![Only allow merge if build succeeds message](img/merge_when_build_succeeds_only_if_succeeds_msg.png)

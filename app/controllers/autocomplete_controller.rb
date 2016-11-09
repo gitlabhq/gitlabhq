@@ -11,9 +11,13 @@ class AutocompleteController < ApplicationController
     @users = @users.reorder(:name)
     @users = load_users_by_ability || @users.page(params[:page])
 
+    if params[:todo_filter].present?
+      @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
+    end
+
     if params[:search].blank?
       # Include current user if available to filter by "Me"
-      if params[:current_user] && current_user
+      if params[:current_user].present? && current_user
         @users = [*@users, current_user]
       end
 

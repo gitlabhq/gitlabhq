@@ -36,7 +36,7 @@
   color: $dropdown-toggle-color;
   font-size: 15px;
   text-align: left;
-  border: 1px solid $dropdown-toggle-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
   outline: 0;
   text-overflow: ellipsis;
@@ -45,11 +45,9 @@
 
   .fa {
     position: absolute;
-    top: 50%;
-    right: 6px;
-    margin-top: -6px;
+    top: 10px;
+    right: 8px;
     color: $dropdown-toggle-icon-color;
-    font-size: 10px;
 
     &.fa-spinner {
       font-size: 16px;

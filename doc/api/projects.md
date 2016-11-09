@@ -89,6 +89,7 @@ Parameters:
     "public_builds": true,
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   },
   {
@@ -151,6 +152,7 @@ Parameters:
     "public_builds": true,
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   }
 ]
@@ -429,8 +431,9 @@ Parameters:
     }
   ],
   "repository_storage": "default",
-  "request_access_enabled": false,
-  "only_allow_merge_if_build_succeeds": false
+  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
+  "request_access_enabled": false
 }
 ```
 
@@ -604,6 +607,7 @@ Parameters:
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
@@ -637,6 +641,7 @@ Parameters:
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
@@ -669,6 +674,7 @@ Parameters:
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `repository_storage` | string | no | Change the storage shard for the repository. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
@@ -756,6 +762,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -824,6 +831,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -912,6 +920,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```
@@ -1000,6 +1009,7 @@ Example response:
   "public_builds": true,
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
 ```

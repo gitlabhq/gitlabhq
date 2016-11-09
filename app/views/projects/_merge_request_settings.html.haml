@@ -98,6 +98,10 @@
       .help-block
         Builds need to be configured to enable this feature.
         = link_to icon('question-circle'), help_page_path('user/project/merge_requests/merge_when_build_succeeds', anchor: 'only-allow-merge-requests-to-be-merged-if-the-build-succeeds')
+    .checkbox
+      = f.label :only_allow_merge_if_all_discussions_are_resolved do
+        = f.check_box :only_allow_merge_if_all_discussions_are_resolved
+        %strong Only allow merge requests to be merged if all discussions are resolved
 
 :javascript
   new UsersSelect();

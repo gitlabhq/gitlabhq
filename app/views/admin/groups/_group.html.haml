@@ -16,7 +16,7 @@
     %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group)}
       = visibility_level_icon(group.visibility_level, fw: false)
 
-  .image-container.s40
+  .avatar-container.s40
     = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
     = link_to [:admin, group], class: 'group-name' do

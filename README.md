@@ -110,7 +110,7 @@ GitLab is a Ruby on Rails application that runs on the following software:
 - Redis 2.8+
 - MySQL or PostgreSQL
 
-For more information please see the [architecture documentation](http://doc.gitlab.com/ce/development/architecture.html).
+For more information please see the [architecture documentation](https://docs.gitlab.com/ce/development/architecture.html).
 
 ## Third-party applications
 
