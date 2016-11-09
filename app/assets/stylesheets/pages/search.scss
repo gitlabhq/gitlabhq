@@ -31,7 +31,6 @@
     padding-right: 20px;
     border: none;
     font-size: 14px;
-    outline: none;
     padding: 0;
     margin-left: 5px;
     line-height: 25px;
@@ -229,6 +228,5 @@
   &:hover,
   &:focus {
     color: $gl-link-color;
-    outline: none;
   }
 }

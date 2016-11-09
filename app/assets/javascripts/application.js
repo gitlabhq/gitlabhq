@@ -13,7 +13,6 @@
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
 /*= require jquery.endless-scroll */
-/*= require jquery.timeago */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
@@ -194,9 +193,6 @@
       e.preventDefault();
       return new ConfirmDangerModal(form, text);
     });
-    $document.on('click', 'button', function () {
-      return $(this).blur();
-    });
     $('input[type="search"]').each(function () {
       var $this = $(this);
       $this.attr('value', $this.val());
@@ -238,8 +234,5 @@
 
     // bind sidebar events
     new gl.Sidebar();
-
-    // Custom time ago
-    gl.utils.shortTimeAgo($('.js-short-timeago'));
   });
 }).call(this);

@@ -16,3 +16,6 @@
       var url = "#{escape_javascript(@more_log_url)}";
       ajaxGet(url);
     }
+
+:plain
+  gl.utils.localTimeAgo($('.js-timeago', 'table.table_#{@hex_path} tbody'));

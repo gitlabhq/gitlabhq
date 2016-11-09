@@ -100,6 +100,7 @@ module API
       end
       expose :only_allow_merge_if_build_succeeds
       expose :request_access_enabled
+      expose :only_allow_merge_if_all_discussions_are_resolved
     end
 
     class Member < UserBasic
@@ -432,11 +433,14 @@ module API
     end
 
     class LabelBasic < Grape::Entity
-      expose :name, :color, :description
+      expose :id, :name, :color, :description
     end
 
     class Label < LabelBasic
       expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+      expose :priority do |label, options|
+        label.priority(options[:project])
+      end
 
       expose :subscribed do |label, options|
         label.subscribed?(options[:current_user])

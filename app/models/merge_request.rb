@@ -425,6 +425,7 @@ class MergeRequest < ActiveRecord::Base
     return false if work_in_progress?
     return false if broken?
     return false unless skip_ci_check || mergeable_ci_state?
+    return false unless mergeable_discussions_state?
 
     true
   end
@@ -491,6 +492,12 @@ class MergeRequest < ActiveRecord::Base
 
   def discussions_resolved?
     discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
+  end
+
+  def mergeable_discussions_state?
+    return true unless project.only_allow_merge_if_all_discussions_are_resolved?
+
+    discussions_resolved?
   end
 
   def hook_attrs

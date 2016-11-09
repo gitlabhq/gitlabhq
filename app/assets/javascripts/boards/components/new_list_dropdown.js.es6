@@ -2,6 +2,19 @@
 $(() => {
   const Store = gl.issueBoards.BoardsStore;
 
+  $(document).off('created.label').on('created.label', (e, label) => {
+    Store.new({
+      title: label.title,
+      position: Store.state.lists.length - 2,
+      list_type: 'label',
+      label: {
+        id: label.id,
+        title: label.title,
+        color: label.color
+      }
+    });
+  });
+
   $('.js-new-board-list').each(function () {
     const $this = $(this);
     new gl.CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('namespace-path'), $this.data('project-path'));

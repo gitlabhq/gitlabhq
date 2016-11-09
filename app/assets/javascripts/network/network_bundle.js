@@ -9,6 +9,8 @@
 
 (function() {
   $(function() {
+    if (!$(".network-graph").length) return;
+
     var network_graph;
     network_graph = new Network({
       url: $(".network-graph").attr('data-url'),

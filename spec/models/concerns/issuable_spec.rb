@@ -97,6 +97,11 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '.to_ability_name' do
+    it { expect(Issue.to_ability_name).to eq("issue") }
+    it { expect(MergeRequest.to_ability_name).to eq("merge_request") }
+  end
+
   describe "#today?" do
     it "returns true when created today" do
       # Avoid timezone differences and just return exactly what we want
@@ -339,6 +344,27 @@ describe Issue, "Issuable" do
 
     it 'finds the correct issues containing only both labels' do
       expect(Issue.with_label([bug.title, enhancement.title])).to match_array([issue2])
+    end
+  end
+
+  describe '#assignee_or_author?' do
+    let(:user) { build(:user, id: 1) }
+    let(:issue) { build(:issue) }
+
+    it 'returns true for a user that is assigned to an issue' do
+      issue.assignee = user
+
+      expect(issue.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns true for a user that is the author of an issue' do
+      issue.author = user
+
+      expect(issue.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(issue.assignee_or_author?(user)).to eq(false)
     end
   end
 end

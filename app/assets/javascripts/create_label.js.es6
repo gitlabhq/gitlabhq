@@ -115,6 +115,8 @@
             .show();
         } else {
           this.$dropdownBack.trigger('click');
+
+          $(document).trigger('created.label', label);
         }
       });
     }

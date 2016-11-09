@@ -92,7 +92,6 @@
     it('is unresolved with 2 notes', () => {
       const discussion = CommentsStore.state['a'];
       createDiscussion(2, false);
-      console.log(discussion.isResolved());
 
       expect(discussion.isResolved()).toBe(false);
     });

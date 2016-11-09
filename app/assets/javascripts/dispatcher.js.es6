@@ -29,6 +29,9 @@
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           break;
+        case 'projects:builds:show':
+          new Build();
+          break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();

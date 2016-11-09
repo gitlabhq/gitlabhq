@@ -14,18 +14,10 @@
     }
   }
 
-  .autoscroll-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 100;
-  }
-
   .scroll-controls {
-    &.affix-top {
-      position: absolute;
-      top: 10px;
-      right: 25px;
+    .scroll-step {
+      width: 31px;
+      margin: 0 0 0 auto;
     }
 
     &.affix-bottom {
@@ -34,13 +26,13 @@
     }
 
     &.affix {
-      right: 30px;
+      right: 25px;
       bottom: 15px;
       z-index: 1;
+    }
 
-      @media (min-width: $screen-md-min) {
-        right: 26%;
-      }
+    &.sidebar-expanded {
+      right: #{$gutter_width + ($gl-padding * 2)};
     }
 
     a {

@@ -92,20 +92,6 @@
 
         &.noteable_line {
           position: relative;
-
-          &.old {
-            &::before {
-              content: '-';
-              position: absolute;
-            }
-          }
-
-          &.new {
-            &::before {
-              content: '+';
-              position: absolute;
-            }
-          }
         }
 
         span {
@@ -151,14 +137,31 @@
     .line_content {
       display: block;
       margin: 0;
-      padding: 0 0.5em;
+      padding: 0 1.5em;
       border: none;
+      position: relative;
 
       &.parallel {
         display: table-cell;
 
         span {
           word-break: break-all;
+        }
+      }
+
+      &.old {
+        &::before {
+          content: '-';
+          position: absolute;
+          left: 0.5em;
+        }
+      }
+
+      &.new {
+        &::before {
+          content: '+';
+          position: absolute;
+          left: 0.5em;
         }
       }
     }
