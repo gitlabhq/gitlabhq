@@ -73,6 +73,28 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix 404 when visit /projects page
 
+## 8.13.5 (2016-11-08)
+
+- Restore unauthenticated access to public container registries
+
+## 8.13.4 (2016-11-07)
+
+- Fix showing pipeline status for a given commit from correct branch. !7034
+- Only skip group when it's actually a group in the "Share with group" select. !7262
+- Introduce round-robin project creation to spread load over multiple shards. !7266
+- Ensure merge request's "remove branch" accessors return booleans. !7267
+- Ensure external users are not able to clone disabled repositories.
+- Fix XSS issue in Markdown autolinker.
+- Respect event visibility in Gitlab::ContributionsCalendar.
+- Honour issue and merge request visibility in their respective finders.
+- Disable reference Markdown for unavailable features.
+- Fix lightweight tags not processed correctly by GitTagPushService. !6532
+- Allow owners to fetch source code in CI builds. !6943
+- Return conflict error in label API when title is taken by group label. !7014
+- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project. !7123
+- Fix builds tab visibility. !7178
+- Fix project features default values. !7181
+
 ## 8.13.3 (2016-11-02)
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
@@ -269,6 +291,10 @@ entry.
 - Make guests unable to view MRs on private projects
 - Fix broken Project API docs (Takuya Noguchi)
 - Migrate invalid project members (owner -> master)
+
+## 8.12.9 (2016-11-07)
+
+- Fix XSS issue in Markdown autolinker
 
 ## 8.12.8 (2016-11-02)
 
@@ -533,6 +559,10 @@ entry.
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
+
+## 8.11.11 (2016-11-07)
+
+- Fix XSS issue in Markdown autolinker
 
 ## 8.11.10 (2016-11-02)
 
