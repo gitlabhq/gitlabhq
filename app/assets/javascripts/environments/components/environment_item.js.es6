@@ -1,4 +1,6 @@
+/*= require vue_common_component/commit
 /* globals Vue */
+
 (() => {
   /**
    * Envrionment Item Component
@@ -16,7 +18,9 @@
 
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 
-    template: '#environment-item-template',
+    components: {
+      'commit-component': window.gl.commitComponent,
+    },
 
     props: {
       model: Object,
@@ -25,6 +29,9 @@
     data() {
       return {
         open: false,
+        rowClass: {
+          'children-row': this.model['vue-isChildren'],
+        },
       };
     },
 
@@ -38,7 +45,8 @@
        * @returns {Boolean}
        */
       isFolder() {
-        return this.$options.hasKey(this.model, 'children') && this.model.children.length > 0;
+        return this.$options.hasKey(this.model, 'children') &&
+          this.model.children.length > 0;
       },
 
       /**
@@ -58,7 +66,8 @@
        * @returns {Boolean}  The number of environments for the current folder
        */
       childrenCounter() {
-        return this.$options.hasKey(this.model, 'children') && this.model.children.length;
+        return this.$options.hasKey(this.model, 'children') &&
+          this.model.children.length;
       },
 
       /**
@@ -68,7 +77,8 @@
        * @returns {Boolean}
        */
       isLast() {
-        return this.$options.hasKey(this.model, 'last_deployment') && this.model.last_deployment['last?'];
+        return this.$options.hasKey(this.model, 'last_deployment') &&
+          this.model.last_deployment['last?'];
       },
 
       /**
@@ -89,7 +99,8 @@
        * @returns {Boolean}
        */
       hasManualActions() {
-        return this.$options.hasKey(this.model, 'manual_actions') && this.model.manual_actions.length;
+        return this.$options.hasKey(this.model, 'manual_actions') &&
+          this.model.manual_actions.length;
       },
 
       /**
@@ -108,7 +119,9 @@
        * @returns {Boolean}
        */
       canRetry() {
-        return this.hasLastDeploymentKey && this.model.last_deployment && this.$options.hasKey(this.model.last_deployment, 'deployable');
+        return this.hasLastDeploymentKey &&
+          this.model.last_deployment &&
+          this.$options.hasKey(this.model.last_deployment, 'deployable');
       },
 
       /**
@@ -134,6 +147,85 @@
           return parsedAction;
         });
       },
+
+      userImageAltDescription() {
+        return `${this.model.last_deployment.user.username}'s avatar'`;
+      },
+      
+      
+      /**
+       * If provided, returns the commit tag.
+       *
+       * @returns {String|Undefined}
+       */
+      commitTag() {
+        if (this.model.last_deployment && this.model.last_deployment.tag) {
+          return this.model.last_deployment.tag;
+        }
+      },
+
+      /**
+       * If provided, returns the commit ref.
+       *
+       * @returns {Object|Undefined}
+       */
+      commitRef() {
+        if (this.model.last_deployment && this.model.last_deployment.ref) {
+          return this.model.last_deployment.ref
+        }
+      },
+      
+      /**
+       * If provided, returns the commit url.
+       *
+       * @returns {String|Undefined}
+       */
+      commitUrl() {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.commit &&
+          this.model.last_deployment.commit.commit_url) {
+          return this.model.last_deployment.commit.commit_url;
+        }
+      },
+
+      /**
+       * If provided, returns the commit short sha.
+       *
+       * @returns {String|Undefined}
+       */
+      commitShortSha() {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.commit &&
+          this.model.last_deployment.commit.short_id) {
+          return this.model.last_deployment.commit.short_id
+        }
+      },
+
+      /**
+       * If provided, returns the commit title.
+       *
+       * @returns {String|Undefined}
+       */
+      commitTitle(){
+        if (this.model.last_deployment &&
+          this.model.last_deployment.commit &&
+          this.model.last_deployment.commit.title) {
+          return this.model.last_deployment.commit.title
+        }
+      },
+
+      /**
+       * If provided, returns the commit tag.
+       *
+       * @returns {Object|Undefined}
+       */
+      commitAuthor(){
+        if (this.model.last_deployment &&
+          this.model.last_deployment.commit &&
+          this.model.last_deployment.commit.author) {
+          return this.model.last_deployment.commit.author;
+        }
+      },
     },
 
     /**
@@ -149,7 +241,6 @@
     },
 
     methods: {
-
       /**
        * Toggles the visibility of a folders' children.
        */
@@ -159,5 +250,85 @@
         }
       },
     },
+
+    template: `
+      <tr>
+        <td v-bind:class="rowClass">
+          <a v-if="!isFolder" class="environment-name" :href="model.environment_url">
+            {{model.name}}
+          </a>
+          <span v-else v-on:click="toggle" class="folder-name">
+            <span class="folder-icon">
+              <i v-show="open" class="fa fa-caret-down"></i>
+              <i v-show="!open" class="fa fa-caret-right"></i>
+            </span>
+
+            {{model.name}}
+
+            <span class="badge">
+              {{childrenCounter}}
+            </span>
+          </span>
+        </td>
+
+        <td class="deployment-column">
+          <span v-if="!isFolder && model.last_deployment && model.last_deployment.iid">
+            #{{model.last_deployment.iid}}
+
+            <span v-if="model.last_deployment.user">
+              by
+              <a :href="model.last_deployment.user.web_url">
+                <img class="avatar has-tooltip s20"
+                  :src="model.last_deployment.user.avatar_url"
+                  :alt="userImageAltDescription"
+                  :title="model.last_deployment.user.username" />
+              </a>
+            </span>
+          </span>
+        </td>
+
+        <td>
+          <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
+            class="build-link"
+            :href="model.last_deployment.deployable.build_url">
+            {{model.last_deployment.deployable.name}} #{{model.last_deployment.deployable.id}}
+          </a>
+        </td>
+
+        <td>
+          <div v-if="!isFolder && model.last_deployment">
+            <commit-component
+              :tag="commitTag"
+              :ref="commitRef"
+              :commit_url="commitUrl"
+              :short_sha="commitShortSha"
+              :title="commitTitle"
+              :author="commitAuthor">
+            </commit-component>
+          </div>
+          <p v-if="!isFolder && !model.last_deployment" class="commit-title">
+            No deployments yet
+          </p>
+        </td>
+
+        <td>
+          <span v-if="!isFolder && model.last_deployment" class="environment-created-date-timeago">
+            {{createdDate}}
+          </span>
+        </td>
+
+        <td class="hidden-xs">
+          <div v-if="!isFolder">
+
+          </div>
+        </td>
+      </tr>
+
+      <tr v-if="open && isFolder"
+        is="environment-item"
+        v-for="model in model.children"
+        :model="model">
+      </tr>
+    `,
   });
 })();

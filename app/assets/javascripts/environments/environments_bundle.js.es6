@@ -68,8 +68,8 @@ $(() => {
      * Toggles loading property.
      */
     ready() {
-      gl.environmentsService.all().then((resp) => {
-        Store.storeEnvironments(resp.json());
+      gl.environmentsService.all().then(resp => resp.json()).then((json) => {
+        Store.storeEnvironments(json);
         this.loading = false;
       });
     },

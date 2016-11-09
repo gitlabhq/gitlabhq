@@ -40,7 +40,10 @@
       - if can?(current_user, :create_environment, @project)
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
-          
+
+    .commit-icon-svg.hidden
+      = custom_icon("icon_commit")
+
     .table-holder{ "v-if" => "!loading && state.environments.length" }
       %table.table.ci-table.environments
         %thead
@@ -53,4 +56,3 @@
         %tbody
           %tr{"is" => "environment-item", "v-for" => "model in filteredEnvironments", ":model" => "model"}
 
-=render "projects/environments/components/environment"

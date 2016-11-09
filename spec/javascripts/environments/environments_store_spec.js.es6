@@ -47,7 +47,7 @@
         expect(environments[1].name).toBe('review');
         expect(environments[1].children[0].name).toBe('test-environment');
         expect(environments[1].children[1].name).toBe('test-environment-1');
-        expect(environments[2].name).toBe('review_app')
+        expect(environments[2].name).toBe('review_app');
       });
     });
   });
