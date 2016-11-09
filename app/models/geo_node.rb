@@ -17,6 +17,7 @@ class GeoNode < ActiveRecord::Base
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
 
   after_initialize :build_dependents
+  after_create :backfill_repositories
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
   before_validation :update_dependents_attributes
@@ -120,5 +121,9 @@ class GeoNode < ActiveRecord::Base
     self.system_hook.url = geo_events_url if uri.present?
     self.system_hook.push_events = true
     self.system_hook.tag_push_events = true
+  end
+
+  def backfill_repositories
+    GeoScheduleBackfillWorker.perform_async(id) unless primary?
   end
 end

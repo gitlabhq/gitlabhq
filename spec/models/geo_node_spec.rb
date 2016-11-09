@@ -91,6 +91,30 @@ describe GeoNode, type: :model do
         expect(node.system_hook.push_events).to be_truthy
         expect(node.system_hook.tag_push_events).to be_truthy
       end
+
+      context 'backfill mechanism for a secondary node' do
+        before do
+          Sidekiq::Worker.clear_all
+        end
+
+        it 'schedules the scheduler worker' do
+          Sidekiq::Testing.fake! do
+            expect{ create(:geo_node, primary: false) }.to change(GeoScheduleBackfillWorker.jobs, :size).by(1)
+          end
+        end
+
+        it 'schedules the correct worker for the number of projects' do
+          Sidekiq::Testing.fake! do
+            2.times do
+              create(:project)
+            end
+
+            create(:geo_node, primary: false)
+
+            expect{ GeoScheduleBackfillWorker.drain }.to change(GeoBackfillWorker.jobs, :size).by(2)
+          end
+        end
+      end
     end
   end
 
