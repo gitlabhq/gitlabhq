@@ -274,11 +274,7 @@ class Repository
   end
 
   def kept_around?(sha)
-    begin
-      ref_exists?(keep_around_ref_name(sha))
-    rescue Rugged::ReferenceError
-      false
-    end
+    ref_exists?(keep_around_ref_name(sha))
   end
 
   def tag_names
