@@ -142,7 +142,7 @@ module IssuablesHelper
   end
 
   def cached_assigned_issuables_count(assignee, issuable_type, state)
-    cache_key = "#{assignee.id}_#{issuable_type}_#{state}"
+    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
     Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
       assigned_issuables_count(assignee, issuable_type, state)
     end
@@ -151,7 +151,7 @@ module IssuablesHelper
   private
 
   def assigned_issuables_count(assignee, issuable_type, state)
-    assignee.send("assigned_#{issuable_type}").send(state).count
+    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
   end
 
   def sidebar_gutter_collapsed?
