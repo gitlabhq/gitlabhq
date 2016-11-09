@@ -11,7 +11,7 @@
         = render 'projects/environments/external_url', environment: @environment
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
-        - if can?(current_user, :create_deployment, @environment) && @environment.stoppable?
+        - if can?(current_user, :create_deployment, @environment)
           = link_to 'Stop', stop_namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to stop this environment?' }, class: 'btn btn-danger', method: :post
 
   .deployments-container
