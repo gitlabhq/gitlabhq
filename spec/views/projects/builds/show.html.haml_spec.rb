@@ -1,14 +1,12 @@
 require 'spec_helper'
 
-describe 'projects/builds/show' do
-  include Devise::Test::ControllerHelpers
-
+describe 'projects/builds/show', :view do
   let(:project) { create(:project) }
-  let(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.id)
-  end
   let(:build) { create(:ci_build, pipeline: pipeline) }
+
+  let(:pipeline) do
+    create(:ci_pipeline, project: project, sha: project.commit.id)
+  end
 
   before do
     assign(:build, build)
@@ -19,31 +17,48 @@ describe 'projects/builds/show' do
 
   describe 'environment info in build view' do
     context 'build with latest deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'staging') }
-      let(:environment) { create(:environment, name: 'staging') }
-      let!(:deployment) { create(:deployment, deployable: build) }
+      let(:build) do
+        create(:ci_build, :success, environment: 'staging')
+      end
+
+      before do
+        create(:environment, name: 'staging')
+        create(:deployment, deployable: build)
+      end
 
       it 'shows deployment message' do
-        expect(rendered).to have_css('.environment-information', text: 'This build is the most recent deployment')
+        expected_text = 'This build is the most recent deployment'
+
+        render
+
+        expect(rendered).to have_css(
+          '.environment-information', text: expected_text)
       end
     end
 
     context 'build with outdated deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'staging', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'staging', project: project) }
-      let!(:deployment) { create(:deployment, environment: environment, deployable: build) }
-      let!(:newer_deployment) { create(:deployment, environment: environment, deployable: build) }
+      let(:build) do
+        create(:ci_build, :success, environment: 'staging', pipeline: pipeline)
+      end
 
-      before do
-        assign(:build, build)
-        assign(:project, project)
+      let(:environment) do
+        create(:environment, name: 'staging', project: project)
+      end
 
-        allow(view).to receive(:can?).and_return(true)
-        render
+      let!(:first_deployment) do
+        create(:deployment, environment: environment, deployable: build)
+      end
+
+      let!(:second_deployment) do
+        create(:deployment, environment: environment, deployable: build)
       end
 
       it 'shows deployment message' do
-        expect(rendered).to have_css('.environment-information', text: "This build is an out-of-date deployment to #{environment.name}. View the most recent deployment #1")
+        expected_text = 'This build is an out-of-date deployment ' \
+          "to staging. View the most recent deployment ##{first_deployment.id}"
+        render
+
+        expect(rendered).to have_css('.environment-information', text: expected_text)
       end
     end
 
