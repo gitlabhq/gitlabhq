@@ -144,16 +144,11 @@
         .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
           .sidebar-collapsed-icon
             = icon('rss')
-          .title.hide-collapsed
+          %span.issuable-header-text.hide-collapsed.pull-left
             Notifications
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+          %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
             %span= subscribed ? 'Unsubscribe' : 'Subscribe'
-          .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
-            .unsubscribed{class: ( 'hidden' if subscribed )}
-              You're not receiving notifications from this thread.
-            .subscribed{class: ( 'hidden' unless subscribed )}
-              You're receiving notifications because you're subscribed to this thread.
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
