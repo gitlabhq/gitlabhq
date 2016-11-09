@@ -9,23 +9,20 @@ module API
       'labels' => proc { |id| find_project_label(id) },
     }
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+      requires :subscribable_id, type: String, desc: 'The ID of a resource'
+    end
     resource :projects do
       subscribable_types.each do |type, finder|
         type_singularized = type.singularize
-        type_id_str = :"#{type_singularized}_id"
         entity_class = Entities.const_get(type_singularized.camelcase)
 
-        # Subscribe to a resource
-        #
-        # Parameters:
-        #   id (required) - The ID of a project
-        #   subscribable_id (required) - The ID of a resource
-        # Example Request:
-        #   POST /projects/:id/labels/:subscribable_id/subscription
-        #   POST /projects/:id/issues/:subscribable_id/subscription
-        #   POST /projects/:id/merge_requests/:subscribable_id/subscription
-        post ":id/#{type}/:#{type_id_str}/subscription" do
-          resource = instance_exec(params[type_id_str], &finder)
+        desc 'Subscribe to a resource' do
+          success entity_class
+        end
+        post ":id/#{type}/:subscribable_id/subscription" do
+          resource = instance_exec(params[:subscribable_id], &finder)
 
           if resource.subscribed?(current_user)
             not_modified!
@@ -35,17 +32,11 @@ module API
           end
         end
 
-        # Unsubscribe from a resource
-        #
-        # Parameters:
-        #   id (required) - The ID of a project
-        #   subscribable_id (required) - The ID of a resource
-        # Example Request:
-        #   DELETE /projects/:id/labels/:subscribable_id/subscription
-        #   DELETE /projects/:id/issues/:subscribable_id/subscription
-        #   DELETE /projects/:id/merge_requests/:subscribable_id/subscription
-        delete ":id/#{type}/:#{type_id_str}/subscription" do
-          resource = instance_exec(params[type_id_str], &finder)
+        desc 'Unsubscribe from a resource' do
+          success entity_class
+        end
+        delete ":id/#{type}/:subscribable_id/subscription" do
+          resource = instance_exec(params[:subscribable_id], &finder)
 
           if !resource.subscribed?(current_user)
             not_modified!
