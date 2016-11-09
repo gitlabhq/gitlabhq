@@ -3,7 +3,7 @@
 (() => {
   window.gl = window.gl || {};
 
-  window.gl.commitComponent = Vue.component('commit-component', {
+  window.gl.CommitComponent = Vue.component('commit-component', {
 
     props: {
       /**

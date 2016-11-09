@@ -1,4 +1,5 @@
 /*= require vue_common_component/commit
+/*= require ./environment_actions
 /* globals Vue, timeago */
 
 (() => {
@@ -19,7 +20,8 @@
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 
     components: {
-      'commit-component': window.gl.commitComponent,
+      'commit-component': window.gl.CommitComponent,
+      'actions-component': window.gl.environmentsList.ActionsComponent,
     },
 
     props: {
@@ -136,12 +138,23 @@
       },
 
       /**
+       * Verifies if the environment has any manual actions to be rendered.
+       *
+       * @returns {Boolean}
+       */
+      hasManualActions() {
+        return this.model.last_deployment &&
+          this.model.last_deployment.manual_actions &&
+          this.model.last_deployment.manual_actions.length > 0;
+      },
+
+      /**
        * Returns the manual actions with the name parsed.
        *
        * @returns {Array.<Object>}
        */
       manualActions() {
-        return this.model.manual_actions.map((action) => {
+        return this.model.last_deployment.manual_actions.map((action) => {
           const parsedAction = {
             name: gl.text.humanize(action.name),
             play_url: action.play_url,
@@ -327,7 +340,9 @@
 
         <td class="hidden-xs">
           <div v-if="!isFolder">
-
+            <div v-if="hasManualActions">
+              <actions-component :actions="manualActions"></actions-component>
+            </div>
           </div>
         </td>
       </tr>

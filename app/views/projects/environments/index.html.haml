@@ -43,6 +43,8 @@
 
     .commit-icon-svg.hidden
       = custom_icon("icon_commit")
+    .play-icon-svg.hidden
+      = custom_icon("icon_play")
 
     .table-holder{ "v-if" => "!loading && state.environments.length" }
       %table.table.ci-table.environments
