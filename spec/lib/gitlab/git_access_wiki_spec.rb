@@ -20,11 +20,7 @@ describe Gitlab::GitAccessWiki, lib: true do
         project.team << [user, :developer]
       end
 
-<<<<<<< HEAD
       subject { access.check('git-receive-pack', changes) }
-=======
-    subject { access.check('git-receive-pack', changes) }
->>>>>>> ce/master
 
       it { expect(subject.allowed?).to be_truthy }
 

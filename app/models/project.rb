@@ -223,11 +223,6 @@ class Project < ActiveRecord::Base
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
-<<<<<<< HEAD
-  scope :with_builds_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0') }
-  scope :with_issues_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.issues_access_level IS NULL or project_features.issues_access_level > 0') }
-  scope :with_wiki_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.wiki_access_level IS NULL or project_features.wiki_access_level > 0') }
-=======
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
 
   # "enabled" here means "not disabled". It includes private features!
@@ -244,6 +239,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_wiki_enabled, -> { with_project_feature(:wiki) }
 
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
@@ -260,7 +256,6 @@ class Project < ActiveRecord::Base
     union = Gitlab::SQL::Union.new([unconditional.select(:id), authorized.select(:id)])
     where(arel_table[:id].in(Arel::Nodes::SqlLiteral.new(union.to_sql)))
   end
->>>>>>> ce/master
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }

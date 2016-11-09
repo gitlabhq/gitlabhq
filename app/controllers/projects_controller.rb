@@ -327,11 +327,7 @@ class ProjectsController < Projects::ApplicationController
 
   def project_params
     params.require(:project)
-<<<<<<< HEAD
       .permit(project_params_ce << project_params_ee)
-=======
-      .permit(project_params_ce)
->>>>>>> ce/master
   end
 
   def project_params_ce
@@ -368,7 +364,6 @@ class ProjectsController < Projects::ApplicationController
         wiki_access_level
       ]
     ]
-<<<<<<< HEAD
   end
 
   def project_params_ee
@@ -385,8 +380,6 @@ class ProjectsController < Projects::ApplicationController
       repository_size_limit
       reset_approvals_on_push
     ]
-=======
->>>>>>> ce/master
   end
 
   def repo_exists?

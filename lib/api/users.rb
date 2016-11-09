@@ -23,12 +23,8 @@ module API
         else
           skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
           @users = User.all
-<<<<<<< HEAD
-          @users = @users.active if params[:active].present?
-          @users = @users.non_ldap if skip_ldap
-=======
           @users = @users.active if to_boolean(params[:active])
->>>>>>> ce/master
+          @users = @users.non_ldap if skip_ldap
           @users = @users.search(params[:search]) if params[:search].present?
           @users = @users.blocked if to_boolean(params[:blocked])
           @users = @users.external if to_boolean(params[:external]) && current_user.is_admin?

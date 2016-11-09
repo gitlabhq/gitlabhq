@@ -147,7 +147,6 @@ describe 'Git HTTP requests', lib: true do
             end
           end
         end
-<<<<<<< HEAD
       end
 
       context "when Kerberos token is provided" do
@@ -258,8 +257,6 @@ describe 'Git HTTP requests', lib: true do
             expect(response).to have_http_status(403)
           end
         end
-=======
->>>>>>> ce/master
       end
 
       context "when the project is private" do
