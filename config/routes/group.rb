@@ -47,15 +47,15 @@ scope(path: 'groups/:group_id', module: :groups, as: :group) do
   resource :notification_setting, only: [:update]
   resources :audit_events, only: [:index]
   ## EE-specific
-end
 
-## EE-specific
-resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ }, module: :groups do
-  member do
-    get :test
+  ## EE-specific
+  resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
+    member do
+      get :test
+    end
   end
+  ## EE-specific
 end
-## EE-specific
 
 # Must be last route in this file
 get 'groups/:id' => 'groups#show', as: :group_canonical
