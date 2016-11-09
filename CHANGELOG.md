@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.5 (2016-11-08)
+
+- Restore unauthenticated access to public container registries
+
 ## 8.13.4 (2016-11-07)
 
 - Fix showing pipeline status for a given commit from correct branch. !7034
