@@ -61,6 +61,8 @@ $(() => {
             }
           });
 
+          this.state.lists = _.sortBy(this.state.lists, 'position');
+
           Store.addBlankState();
           this.loading = false;
         });

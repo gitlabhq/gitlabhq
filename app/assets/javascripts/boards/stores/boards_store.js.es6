@@ -27,8 +27,6 @@
       const list = new List(listObj);
       this.state.lists.push(list);
 
-      this.state.lists = _.sortBy(this.state.lists, 'position');
-
       return list;
     },
     new (listObj) {
@@ -62,6 +60,8 @@
         title: 'Welcome to your Issue Board!',
         position: 0
       });
+
+      this.state.lists = _.sortBy(this.state.lists, 'position');
     },
     removeBlankState () {
       this.removeList('blank');

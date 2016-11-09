@@ -65,6 +65,8 @@
                 color: label.color
               }
             });
+
+            Store.state.lists = _.sortBy(Store.state.lists, 'position');
           }
         }
       });
