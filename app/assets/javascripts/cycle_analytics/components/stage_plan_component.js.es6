@@ -14,8 +14,8 @@
         <div class="events-description">
           Time before an issue starts implementation
         </div>
-        <ul class="event-list">
-          <li class="event-item" v-for="commit in items">
+        <ul class="stage-event-list">
+          <li class="stage-event-item" v-for="commit in items">
             <item-commit-component :commit="commit"></item-commit-component>
           </li>
         </ul>

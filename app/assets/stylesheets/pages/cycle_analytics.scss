@@ -327,5 +327,23 @@
         color: $gl-text-color;
       }
     }
+
+    .commit-author-link {
+      color: $gl-dark-link-color;
+    }
+
+    // Custom CSS for components
+    .item-conmmit-component {
+      .commit-icon {
+        position: relative;
+        top: 3px;
+        left: 1px;
+        display: inline-block;
+
+        svg {
+          float: left;
+        }
+      } 
+    }
   }
 }
