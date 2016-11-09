@@ -27,6 +27,8 @@
       const list = new List(listObj);
       this.state.lists.push(list);
 
+      this.state.lists = _.sortBy(this.state.lists, 'position');
+
       return list;
     },
     new (listObj) {

@@ -15,7 +15,7 @@
         return this.resolvedDiscussionCount === this.discussionCount;
       },
       resolvedCountText() {
-        return this.discussionCount === 0 ? 'discussion' : 'discussions';
+        return this.discussionCount === 1 ? 'discussion' : 'discussions';
       }
     }
   });
