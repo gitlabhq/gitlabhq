@@ -14,7 +14,7 @@ module Gitlab
         @config = QueryConfig.get(stage)
         query = build_query(&block)
 
-        ActiveRecord::Base.connection.execute(query.to_sql).to_a
+        ActiveRecord::Base.connection.exec_query(query.to_sql)
       end
 
       private

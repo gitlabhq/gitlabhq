@@ -19,7 +19,7 @@ module Gitlab
 
     def url
       url_method = "#{@entity}_url"
-      raise NotImplementedError.new("No Light URL builder defined for #{@entity.to_s}") unless respond_to?(url_method)
+      raise NotImplementedError.new("No Light URL builder defined for #{@entity}") unless respond_to?(url_method)
 
       public_send(url_method)
     end
