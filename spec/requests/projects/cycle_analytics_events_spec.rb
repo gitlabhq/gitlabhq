@@ -17,17 +17,17 @@ describe 'cycle analytics events' do
     it 'lists the issue events' do
       get namespace_project_cycle_analytics_issue_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
       first_issue_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['items'].first['iid']).to eq(first_issue_iid)
+      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
     end
 
     it 'lists the plan events' do
       get namespace_project_cycle_analytics_plan_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
       commits = []
 
@@ -39,53 +39,65 @@ describe 'cycle analytics events' do
 
       newest_sha = commits.sort_by { |k| k['date'] }.first[:sha][0...8]
 
-      expect(json_response['items'].first['sha']).to eq(newest_sha)
+      expect(json_response['events'].first['sha']).to eq(newest_sha)
     end
 
     it 'lists the code events' do
       get namespace_project_cycle_analytics_code_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
       first_mr_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['items'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
 
     it 'lists the test events' do
       get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
-      expect(json_response['items'].first['date']).not_to be_empty
+      expect(json_response['events'].first['date']).not_to be_empty
     end
 
     it 'lists the review events' do
       get namespace_project_cycle_analytics_review_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
       first_mr_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['items'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
 
     it 'lists the staging events' do
       get namespace_project_cycle_analytics_staging_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
-      expect(json_response['items'].first['date']).not_to be_empty
+      expect(json_response['events'].first['date']).not_to be_empty
     end
 
     it 'lists the production events' do
       get namespace_project_cycle_analytics_production_path(project.namespace, project, format: :json)
 
-      expect(json_response['items']).not_to be_empty
+      expect(json_response['events']).not_to be_empty
 
       first_issue_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
 
-      expect(json_response['items'].first['iid']).to eq(first_issue_iid)
+      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
+    end
+
+    context 'specific branch' do
+      it 'lists the test events' do
+        branch = MergeRequest.first.source_branch
+
+        get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json, branch: branch)
+
+        expect(json_response['events']).not_to be_empty
+
+        expect(json_response['events'].first['date']).not_to be_empty
+      end
     end
   end
 
