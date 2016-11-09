@@ -22,7 +22,7 @@ describe Issue, models: true do
     it { is_expected.to have_db_index(:deleted_at) }
   end
 
-  describe 'visible_to_user' do
+  describe '.visible_to_user' do
     let(:user) { create(:user) }
     let(:authorized_user) { create(:user) }
     let(:project) { create(:project, namespace: authorized_user.namespace) }
@@ -102,17 +102,17 @@ describe Issue, models: true do
     it 'returns the merge request to close this issue' do
       mr
 
-      expect(issue.closed_by_merge_requests).to eq([mr])
+      expect(issue.closed_by_merge_requests(mr.author)).to eq([mr])
     end
 
     it "returns an empty array when the merge request is closed already" do
       closed_mr
 
-      expect(issue.closed_by_merge_requests).to eq([])
+      expect(issue.closed_by_merge_requests(closed_mr.author)).to eq([])
     end
 
     it "returns an empty array when the current issue is closed already" do
-      expect(closed_issue.closed_by_merge_requests).to eq([])
+      expect(closed_issue.closed_by_merge_requests(closed_issue.author)).to eq([])
     end
   end
 
@@ -218,7 +218,7 @@ describe Issue, models: true do
                                                source_project: subject.project,
                                                source_branch: "#{subject.iid}-branch" })
       merge_request.create_cross_references!(user)
-      expect(subject.referenced_merge_requests).not_to be_empty
+      expect(subject.referenced_merge_requests(user)).not_to be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
 
@@ -314,23 +314,6 @@ describe Issue, models: true do
   end
 
   describe '#visible_to_user?' do
-    context 'with a user' do
-      let(:user) { build(:user) }
-      let(:issue) { build(:issue) }
-
-      it 'returns true when the issue is readable' do
-        expect(issue).to receive(:readable_by?).with(user).and_return(true)
-
-        expect(issue.visible_to_user?(user)).to eq(true)
-      end
-
-      it 'returns false when the issue is not readable' do
-        expect(issue).to receive(:readable_by?).with(user).and_return(false)
-
-        expect(issue.visible_to_user?(user)).to eq(false)
-      end
-    end
-
     context 'without a user' do
       let(:issue) { build(:issue) }
 
@@ -346,9 +329,40 @@ describe Issue, models: true do
         expect(issue.visible_to_user?).to eq(false)
       end
     end
-  end
 
-  describe '#readable_by?' do
+    context 'with a user' do
+      let(:user) { build(:user) }
+      let(:issue) { build(:issue) }
+
+      it 'returns true when the issue is readable' do
+        expect(issue).to receive(:readable_by?).with(user).and_return(true)
+
+        expect(issue.visible_to_user?(user)).to eq(true)
+      end
+
+      it 'returns false when the issue is not readable' do
+        expect(issue).to receive(:readable_by?).with(user).and_return(false)
+
+        expect(issue.visible_to_user?(user)).to eq(false)
+      end
+
+      it 'returns false when feature is disabled' do
+        expect(issue).not_to receive(:readable_by?)
+
+        issue.project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+        expect(issue.visible_to_user?(user)).to eq(false)
+      end
+
+      it 'returns false when restricted for members' do
+        expect(issue).not_to receive(:readable_by?)
+
+        issue.project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+
+        expect(issue.visible_to_user?(user)).to eq(false)
+      end
+    end
+
     describe 'with a regular user that is not a team member' do
       let(:user) { create(:user) }
 
@@ -358,13 +372,13 @@ describe Issue, models: true do
         it 'returns true for a regular issue' do
           issue = build(:issue, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
 
         it 'returns false for a confidential issue' do
           issue = build(:issue, project: project, confidential: true)
 
-          expect(issue).not_to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(false)
         end
       end
 
@@ -375,13 +389,13 @@ describe Issue, models: true do
           it 'returns true for a regular issue' do
             issue = build(:issue, project: project)
 
-            expect(issue).to be_readable_by(user)
+            expect(issue.visible_to_user?(user)).to eq(true)
           end
 
           it 'returns false for a confidential issue' do
             issue = build(:issue, :confidential, project: project)
 
-            expect(issue).not_to be_readable_by(user)
+            expect(issue.visible_to_user?(user)).to eq(false)
           end
         end
 
@@ -393,13 +407,13 @@ describe Issue, models: true do
           it 'returns false for a regular issue' do
             issue = build(:issue, project: project)
 
-            expect(issue).not_to be_readable_by(user)
+            expect(issue.visible_to_user?(user)).to eq(false)
           end
 
           it 'returns false for a confidential issue' do
             issue = build(:issue, :confidential, project: project)
 
-            expect(issue).not_to be_readable_by(user)
+            expect(issue.visible_to_user?(user)).to eq(false)
           end
         end
       end
@@ -410,26 +424,28 @@ describe Issue, models: true do
         it 'returns false for a regular issue' do
           issue = build(:issue, project: project)
 
-          expect(issue).not_to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(false)
         end
 
         it 'returns false for a confidential issue' do
           issue = build(:issue, :confidential, project: project)
 
-          expect(issue).not_to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(false)
         end
 
         context 'when the user is the project owner' do
+          before { project.team << [user, :master] }
+
           it 'returns true for a regular issue' do
             issue = build(:issue, project: project)
 
-            expect(issue).not_to be_readable_by(user)
+            expect(issue.visible_to_user?(user)).to eq(true)
           end
 
           it 'returns true for a confidential issue' do
             issue = build(:issue, :confidential, project: project)
 
-            expect(issue).not_to be_readable_by(user)
+            expect(issue.visible_to_user?(user)).to eq(true)
           end
         end
       end
@@ -447,13 +463,13 @@ describe Issue, models: true do
         it 'returns true for a regular issue' do
           issue = build(:issue, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
 
         it 'returns true for a confidential issue' do
           issue = build(:issue, :confidential, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
       end
 
@@ -467,13 +483,13 @@ describe Issue, models: true do
         it 'returns true for a regular issue' do
           issue = build(:issue, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
 
         it 'returns true for a confidential issue' do
           issue = build(:issue, :confidential, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
       end
 
@@ -487,13 +503,13 @@ describe Issue, models: true do
         it 'returns true for a regular issue' do
           issue = build(:issue, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
 
         it 'returns true for a confidential issue' do
           issue = build(:issue, :confidential, project: project)
 
-          expect(issue).to be_readable_by(user)
+          expect(issue.visible_to_user?(user)).to eq(true)
         end
       end
     end
@@ -505,13 +521,13 @@ describe Issue, models: true do
       it 'returns true for a regular issue' do
         issue = build(:issue, project: project)
 
-        expect(issue).to be_readable_by(user)
+        expect(issue.visible_to_user?(user)).to eq(true)
       end
 
       it 'returns true for a confidential issue' do
         issue = build(:issue, :confidential, project: project)
 
-        expect(issue).to be_readable_by(user)
+        expect(issue.visible_to_user?(user)).to eq(true)
       end
     end
   end
@@ -523,13 +539,13 @@ describe Issue, models: true do
       it 'returns true for a regular issue' do
         issue = build(:issue, project: project)
 
-        expect(issue).to be_publicly_visible
+        expect(issue).to be_truthy
       end
 
       it 'returns false for a confidential issue' do
         issue = build(:issue, :confidential, project: project)
 
-        expect(issue).not_to be_publicly_visible
+        expect(issue).not_to be_falsy
       end
     end
 
@@ -539,13 +555,13 @@ describe Issue, models: true do
       it 'returns false for a regular issue' do
         issue = build(:issue, project: project)
 
-        expect(issue).not_to be_publicly_visible
+        expect(issue).not_to be_falsy
       end
 
       it 'returns false for a confidential issue' do
         issue = build(:issue, :confidential, project: project)
 
-        expect(issue).not_to be_publicly_visible
+        expect(issue).not_to be_falsy
       end
     end
 
@@ -555,13 +571,13 @@ describe Issue, models: true do
       it 'returns false for a regular issue' do
         issue = build(:issue, project: project)
 
-        expect(issue).not_to be_publicly_visible
+        expect(issue).not_to be_falsy
       end
 
       it 'returns false for a confidential issue' do
         issue = build(:issue, :confidential, project: project)
 
-        expect(issue).not_to be_publicly_visible
+        expect(issue).not_to be_falsy
       end
     end
   end

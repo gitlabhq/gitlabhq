@@ -4,7 +4,7 @@
 
 **Valid notification levels**
 
-The notification levels are defined in the `NotificationSetting::level` model enumeration. Currently, these levels are recognized:
+The notification levels are defined in the `NotificationSetting.level` model enumeration. Currently, these levels are recognized:
 
 ```
 disabled
@@ -28,6 +28,8 @@ reopen_merge_request
 close_merge_request
 reassign_merge_request
 merge_merge_request
+failed_pipeline
+success_pipeline
 ```
 
 ## Global notification settings
@@ -77,6 +79,8 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `close_merge_request` | boolean | no | Enable/disable this notification |
 | `reassign_merge_request` | boolean | no | Enable/disable this notification |
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
+| `failed_pipeline` | boolean | no | Enable/disable this notification |
+| `success_pipeline` | boolean | no | Enable/disable this notification |
 
 Example response:
 
@@ -141,6 +145,8 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `close_merge_request` | boolean | no | Enable/disable this notification |
 | `reassign_merge_request` | boolean | no | Enable/disable this notification |
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
+| `failed_pipeline` | boolean | no | Enable/disable this notification |
+| `success_pipeline` | boolean | no | Enable/disable this notification |
 
 Example responses:
 
@@ -161,7 +167,9 @@ Example responses:
     "reopen_merge_request": false,
     "close_merge_request": false,
     "reassign_merge_request": false,
-    "merge_merge_request": false
+    "merge_merge_request": false,
+    "failed_pipeline": false,
+    "success_pipeline": false
   }
 }
 ```

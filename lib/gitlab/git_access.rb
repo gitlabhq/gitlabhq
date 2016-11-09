@@ -5,17 +5,17 @@ module Gitlab
     include PathLocksHelper
     UnauthorizedError = Class.new(StandardError)
 
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
-    PUSH_COMMANDS = %w{ git-receive-pack }
-    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
-    ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS + GIT_ANNEX_COMMANDS
-
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
       download: 'You are not allowed to download code from this project.',
       deploy_key: 'Deploy keys are not allowed to push code.',
       no_repo: 'A repository for this project does not exist yet.'
     }
+
+    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
+    PUSH_COMMANDS = %w{ git-receive-pack }
+    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
+    ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS + GIT_ANNEX_COMMANDS
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 

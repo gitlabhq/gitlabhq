@@ -103,6 +103,8 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
           it 'returns the nodes if the attribute value equals the current project ID' do
             link['data-project'] = project.id.to_s
 
+            # Ensure that we dont call for Ability.allowed?
+            # When project_id in the node is equal to current project ID
             expect(Ability).not_to receive(:allowed?)
 
             expect(subject.nodes_visible_to_user(user, [link])).to eq([link])

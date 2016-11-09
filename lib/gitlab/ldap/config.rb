@@ -105,6 +105,10 @@ module Gitlab
         options['external_groups']
       end
 
+      def has_auth?
+        options['password'] || options['bind_dn']
+      end
+
       protected
 
       def base_config
@@ -134,10 +138,6 @@ module Gitlab
             password: options['password']
           }
         }
-      end
-
-      def has_auth?
-        options['password'] || options['bind_dn']
       end
     end
   end

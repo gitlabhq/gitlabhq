@@ -35,6 +35,18 @@ GET /users
 ]
 ```
 
+In addition, you can filter users based on states eg. `blocked`, `active`
+This works only to filter users who are `blocked` or `active`.
+It does not support `active=false` or `blocked=false`.
+
+```
+GET /users?active=true
+```
+
+```
+GET /users?blocked=true
+```
+
 ### For admins
 
 ```
@@ -121,6 +133,8 @@ For example:
 ```
 GET /users?username=jack_smith
 ```
+
+You can search for users who are external with: `/users?external=true`
 
 ## Single user
 

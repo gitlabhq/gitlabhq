@@ -59,7 +59,7 @@
     - if pipeline.finished_at
       %p.finished-at
         = icon("calendar")
-        #{time_ago_with_tooltip(pipeline.finished_at, short_format: false, skip_js: true)}
+        #{time_ago_with_tooltip(pipeline.finished_at, short_format: false)}
 
   %td.pipeline-actions.hidden-xs
     .controls.pull-right

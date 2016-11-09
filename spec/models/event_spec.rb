@@ -27,13 +27,14 @@ describe Event, models: true do
   end
 
   describe "Push event" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :private) }
     let(:user) { project.owner }
     let(:event) { create_event(project, user) }
 
     it do
       expect(event.push?).to be_truthy
-      expect(event.visible_to_user?).to be_truthy
+      expect(event.visible_to_user?(user)).to be_truthy
+      expect(event.visible_to_user?(nil)).to be_falsey
       expect(event.tag?).to be_falsey
       expect(event.branch_name).to eq("master")
       expect(event.author).to eq(user)
