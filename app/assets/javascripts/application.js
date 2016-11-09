@@ -58,7 +58,6 @@
 (function () {
   document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
   window.addEventListener('hashchange', gl.utils.shiftWindow);
-  $.timeago.settings.allowFuture = true;
 
   window.onload = function () {
     // Scroll the window to avoid the topnav bar
