@@ -156,6 +156,26 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
       expect(reference_filter(act).to_html).to eq exp
     end
+
+    context 'with Redmine enabled on source project' do
+      let(:project) { create(:redmine_project, :public, namespace: namespace) }
+
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).to eq(helper.url_for_issue(issue.iid, issue.project))
+      end
+    end
+
+    context 'with JIRA enabled on source project' do
+      let(:project) { create(:jira_project, :public, namespace: namespace) }
+    end
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq(helper.url_for_issue(issue.iid, issue.project))
+    end
   end
 
   context 'cross-project URL reference' do
@@ -176,6 +196,12 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)<\/a>\.\)/)
+    end
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq(reference)
     end
   end
 

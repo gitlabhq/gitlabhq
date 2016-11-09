@@ -15,8 +15,10 @@ module Banzai
         Issue
       end
 
-      def uses_reference_pattern?
-        context[:project].default_issues_tracker?
+      # Don't use the reference pattern if the default tracker is disabled,
+      # unless this is a cross-project reference.
+      def uses_reference_pattern?(cross_reference_project = nil)
+        cross_reference_project.nil? && context[:project].default_issues_tracker?
       end
 
       def find_object(project, iid)

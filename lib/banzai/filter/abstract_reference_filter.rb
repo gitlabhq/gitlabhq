@@ -207,19 +207,13 @@ module Banzai
       def references_per_project
         @references_per_project ||= begin
           refs = Hash.new { |hash, key| hash[key] = Set.new }
-
-          regex =
-            if uses_reference_pattern?
-              Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
-            else
-              object_class.link_reference_pattern
-            end
+          regex = Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
 
           nodes.each do |node|
             node.to_html.scan(regex) do
               project = $~[:project] || current_project_path
               symbol = $~[object_sym]
-
+              # FIXME: apply uses_reference_pattern? correctly
               refs[project] << symbol if object_class.reference_valid?(symbol)
             end
           end
@@ -304,7 +298,10 @@ module Banzai
       # that should ignore reference pattern
       # eg: IssueReferenceFilter when using a external issues tracker
       # In those cases this method should be overridden on the filter subclass
-      def uses_reference_pattern?
+      #
+      # If the reference is a cross-project reference, the "other" project path
+      # is passed in
+      def uses_reference_pattern?(cross_reference_project = nil)
         true
       end
     end
