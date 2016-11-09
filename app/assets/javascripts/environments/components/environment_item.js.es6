@@ -1,5 +1,6 @@
 /*= require vue_common_component/commit
-/* globals Vue */
+/*= require timeago
+/* globals Vue, timeago */
 
 (() => {
   /**
@@ -153,8 +154,7 @@
       userImageAltDescription() {
         return `${this.model.last_deployment.user.username}'s avatar'`;
       },
-      
-      
+
       /**
        * If provided, returns the commit tag.
        *
@@ -164,6 +164,7 @@
         if (this.model.last_deployment && this.model.last_deployment.tag) {
           return this.model.last_deployment.tag;
         }
+        return undefined;
       },
 
       /**
@@ -173,10 +174,11 @@
        */
       commitRef() {
         if (this.model.last_deployment && this.model.last_deployment.ref) {
-          return this.model.last_deployment.ref
+          return this.model.last_deployment.ref;
         }
+        return undefined;
       },
-      
+
       /**
        * If provided, returns the commit url.
        *
@@ -188,6 +190,7 @@
           this.model.last_deployment.commit.commit_url) {
           return this.model.last_deployment.commit.commit_url;
         }
+        return undefined;
       },
 
       /**
@@ -199,8 +202,9 @@
         if (this.model.last_deployment &&
           this.model.last_deployment.commit &&
           this.model.last_deployment.commit.short_id) {
-          return this.model.last_deployment.commit.short_id
+          return this.model.last_deployment.commit.short_id;
         }
+        return undefined;
       },
 
       /**
@@ -208,12 +212,13 @@
        *
        * @returns {String|Undefined}
        */
-      commitTitle(){
+      commitTitle() {
         if (this.model.last_deployment &&
           this.model.last_deployment.commit &&
           this.model.last_deployment.commit.title) {
-          return this.model.last_deployment.commit.title
+          return this.model.last_deployment.commit.title;
         }
+        return undefined;
       },
 
       /**
@@ -221,12 +226,14 @@
        *
        * @returns {Object|Undefined}
        */
-      commitAuthor(){
+      commitAuthor() {
         if (this.model.last_deployment &&
           this.model.last_deployment.commit &&
           this.model.last_deployment.commit.author) {
           return this.model.last_deployment.commit.author;
         }
+
+        return undefined;
       },
     },
 
