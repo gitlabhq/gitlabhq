@@ -1,0 +1,5 @@
+---
+title: Ensure that autcomplete search input is populated with group/project text on
+  dropdown selection
+merge_request: 7384
+author: Bryce Johnson

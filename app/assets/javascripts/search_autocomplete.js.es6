@@ -69,6 +69,7 @@
         search: {
           fields: ['text']
         },
+        id: item => item.text,
         data: this.getData.bind(this),
         selectable: true,
         clicked: this.onClick.bind(this)
