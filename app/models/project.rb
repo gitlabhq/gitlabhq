@@ -1289,12 +1289,12 @@ class Project < ActiveRecord::Base
   end
 
   def environments_for(ref, commit: nil, with_tags: false)
-    environments_query = with_tags ? 'ref=? OR tag IS TRUE' : 'ref=?'
+    environments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
 
     environment_ids = deployments
       .group(:environment_id)
       .select(:environment_id)
-      .where(environments_query, ref)
+      .where(environments_query, ref.to_s)
 
     envs = environments.available.where(id: environment_ids)
 

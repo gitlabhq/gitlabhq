@@ -21,8 +21,6 @@ class DeleteBranchService < BaseService
       return error('You dont have push access to repo', 405)
     end
 
-    # StopEnvironmentService
-
     if repository.rm_branch(current_user, branch_name)
       success('Branch was removed')
     else

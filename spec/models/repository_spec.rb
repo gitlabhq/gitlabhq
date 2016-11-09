@@ -1182,7 +1182,18 @@ describe Repository, models: true do
     it 'flushes the visible content cache' do
       expect(repository).to receive(:expire_has_visible_content_cache)
 
-      repository.after_remove_branch
+      repository.after_remove_branch(user, 'master')
+    end
+
+    context 'when there is environment with review app available for branch' do
+      before do
+        create(:environment, :with_review_app, project: project)
+      end
+
+      it 'stops environment' do
+        expect_any_instance_of(Environment).to receive(:stop!)
+        repository.after_remove_branch(user, 'master')
+      end
     end
   end
 
