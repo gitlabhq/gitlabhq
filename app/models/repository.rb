@@ -94,7 +94,7 @@ class Repository
 
     commit = ::Commit.new(commit, @project) if commit
     commit
-  rescue Rugged::OdbError,  Rugged::TreeError
+  rescue Rugged::OdbError, Rugged::TreeError
     nil
   end
 
