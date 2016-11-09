@@ -40,7 +40,7 @@ further configuration instructions and details. Contributions are welcome.
 | Gemnasium | Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities |
 | [HipChat](hipchat.md) | Private group chat and IM |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
-| [JIRA](../integration/jira.md) | JIRA issue tracker |
+| [JIRA](jira.md) | JIRA issue tracker |
 | JetBrains TeamCity CI | A continuous integration and build server |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |

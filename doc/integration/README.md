@@ -5,7 +5,7 @@ trackers and external authentication.
 
 See the documentation below for details on how to configure these services.
 
-- [JIRA](jira.md) Integrate with the JIRA issue tracker
+- [Jira](../project_services/jira.md) Integrate with the JIRA issue tracker
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
