@@ -248,25 +248,24 @@ module SlashCommands
     params '@user'
     command :cc
 
-    desc 'Set estimate'
-    params 'e.g: 1w 3d 2h 14m'
+    desc 'Set time estimate'
+    params '<1w 3d 2h 14m>'
     condition do
-      current_user.can?(:"update_#{issuable.to_ability_name}", project)
+      current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
       @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
     end
 
     desc 'Enter current spent time'
-    params 'e.g: 3h 30m'
+    params '<1h 30m>'
     condition do
-      issuable.persisted? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     command :spend do |raw_duration|
-      reduce_time = raw_duration.gsub!(/\A-/, '')
+      reduce_time = raw_duration.sub!(/\A-/, '')
       time_spent  = ChronicDuration.parse(raw_duration, default_unit: 'hours')
-      time_spent  = time_spent * -1 if reduce_time
+      time_spent  *= -1 if reduce_time
 
       @updates[:time_spent] = time_spent
     end

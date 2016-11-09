@@ -124,9 +124,9 @@ module SystemNoteService
   #
   # Returns the created Note object
 
-  def change_time_estimate(noteable, project, author, time_estimate)
-    parsed_time = ChronicDuration.output(time_estimate, format: :short)
-    body = "Changed estimate of this #{noteable.to_ability_name} to #{parsed_time}"
+  def change_time_estimate(noteable, project, author)
+    parsed_time = ChronicDuration.output(noteable.time_estimate, format: :short)
+    body = "Changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -145,8 +145,9 @@ module SystemNoteService
   # Returns the created Note object
 
   def change_time_spent(noteable, project, author, time_spent)
-    parsed_time = ChronicDuration.output(time_spent, format: :short)
-    body = "Added #{parsed_time} of time spent on this #{noteable.to_ability_name}"
+    parsed_time = ChronicDuration.output(time_spent.abs, format: :short)
+    action = time_spent > 0 ? 'Added' : 'Substracted'
+    body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

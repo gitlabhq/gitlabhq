@@ -37,8 +37,7 @@ class IssuableBaseService < BaseService
   end
 
   def create_time_estimate_note(issuable)
-    SystemNoteService.change_time_estimate(
-      issuable, issuable.project, current_user, issuable.time_estimate)
+    SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
   end
 
   def create_time_spent_note(issuable, time_spent)
@@ -147,6 +146,7 @@ class IssuableBaseService < BaseService
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
     filter_params
+    change_spent_time(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -241,7 +241,7 @@ class IssuableBaseService < BaseService
 
   def change_spent_time(issuable)
     if time_spent
-      issuable.timelogs.new(time_spent: time_spent)
+      issuable.spend_time(time_spent)
     end
   end
 

@@ -674,7 +674,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       approvals_before_merge
       approver_group_ids
       approver_ids
-      time_estimate
     ]
   end
 
