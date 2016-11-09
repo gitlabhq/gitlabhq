@@ -77,9 +77,6 @@ entry.
 ## 8.13.5 (2016-11-08)
 
 - Restore unauthenticated access to public container registries
-
-## 8.13.4 (2016-11-07)
-
 - Fix showing pipeline status for a given commit from correct branch. !7034
 - Only skip group when it's actually a group in the "Share with group" select. !7262
 - Introduce round-robin project creation to spread load over multiple shards. !7266
@@ -96,13 +93,15 @@ entry.
 - Fix builds tab visibility. !7178
 - Fix project features default values. !7181
 
+## 8.13.4
+
+- Pulled due to packaging error.
+
 ## 8.13.3 (2016-11-02)
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
 - Fix relative links in Markdown wiki when displayed in "Project" tab !7218
-- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
-- Fix project features default values
 - Changed build dropdown list length to be 6,5 builds long in the pipeline graph
 
 ## 8.13.2 (2016-10-31)
