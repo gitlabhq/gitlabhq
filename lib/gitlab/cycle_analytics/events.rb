@@ -52,7 +52,7 @@ module Gitlab
       private
 
       def parse_event(event, entity: :issue)
-        event['url'] = Gitlab::LightUrlBuilder.build(entity: entity, project: @project, id: event['iid'])
+        event['url'] = Gitlab::LightUrlBuilder.build(entity: entity, project: @project, id: event['iid'].to_s)
         event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
         event['created_at'] = interval_in_words(event['created_at'])
         event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: event['author_username'])
