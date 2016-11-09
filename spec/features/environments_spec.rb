@@ -152,7 +152,9 @@ feature 'Environments', feature: true do
     end
 
     context 'with deployments' do
-      given(:deployment) { create(:deployment, environment: environment) }
+      given(:deployment) do
+        create(:deployment, environment: environment, deployable: nil)
+      end
 
       scenario 'does show deployment SHA' do
         expect(page).to have_link(deployment.short_sha)
