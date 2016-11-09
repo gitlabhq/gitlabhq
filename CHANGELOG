@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.12.9
+  - Fix XSS issue in Markdown autolinker.
+
 v 8.12.8
   - Removes any symlinks before importing a project export file. CVE-2016-9086
   - Fixed Import/Export foreign key issue to do with project members.
