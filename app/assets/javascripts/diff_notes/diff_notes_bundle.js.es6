@@ -8,11 +8,15 @@
 //= require_directory ./components
 
 $(() => {
+  const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn';
+
   window.gl = window.gl || {};
   window.gl.diffNoteApps = {};
 
   gl.diffNotesCompileComponents = () => {
-    const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn');
+    const $components = $(COMPONENT_SELECTOR).filter(function () {
+      return $(this).closest('resolve-count').length !== 1;
+    });
 
     if ($components) {
       $components.each(function () {
