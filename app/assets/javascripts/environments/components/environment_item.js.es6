@@ -1,5 +1,4 @@
 /*= require vue_common_component/commit
-/*= require timeago
 /* globals Vue, timeago */
 
 (() => {

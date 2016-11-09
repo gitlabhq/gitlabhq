@@ -41,7 +41,9 @@ $(() => {
 
     data: {
       state: Store.state,
-      endpoint: environmentsListApp.dataset.endpoint,
+      endpoint: environmentsListApp.dataset.environmentsDataEndpoint,
+      canCreateDeployment: environmentsListApp.dataset.canCreateDeployment,
+      canReadEnvironment: environmentsListApp.dataset.canReadEnvironment,
       loading: true,
       visibility: 'available',
     },

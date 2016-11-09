@@ -5,7 +5,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag("environments/environments_bundle.js")
   
-#environments-list-view{ data: environments_list_data, class: container_class }
+#environments-list-view{ data: { environments_data: environments_list_data, "can-create-deployment" => can?(current_user, :create_deployment, @environment), "can_read_environment" => can?(current_user, :read_environment, @project)}, class: container_class }
   .top-area
     %ul.nav-links{ "v-if" => "!loading" }
       %li{class: ('active' if @scope.nil?)}
