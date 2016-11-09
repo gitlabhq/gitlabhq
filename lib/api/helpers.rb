@@ -324,11 +324,6 @@ module API
     # Projects helpers
 
     def filter_projects(projects)
-      # If the archived parameter is passed, limit results accordingly
-      if params[:archived].present?
-        projects = projects.where(archived: to_boolean(params[:archived]))
-      end
-
       if params[:search].present?
         projects = projects.search(params[:search])
       end
@@ -337,25 +332,8 @@ module API
         projects = projects.search_by_visibility(params[:visibility])
       end
 
-      projects.reorder(project_order_by => project_sort)
-    end
-
-    def project_order_by
-      order_fields = %w(id name path created_at updated_at last_activity_at)
-
-      if order_fields.include?(params['order_by'])
-        params['order_by']
-      else
-        'created_at'
-      end
-    end
-
-    def project_sort
-      if params["sort"] == 'asc'
-        :asc
-      else
-        :desc
-      end
+      projects = projects.where(archived: params[:archived])
+      projects.reorder(params[:order_by] => params[:sort])
     end
 
     # file helpers
