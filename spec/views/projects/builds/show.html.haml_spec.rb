@@ -28,7 +28,6 @@ describe 'projects/builds/show', :view do
 
       it 'shows deployment message' do
         expected_text = 'This build is the most recent deployment'
-
         render
 
         expect(rendered).to have_css(
@@ -63,22 +62,75 @@ describe 'projects/builds/show', :view do
     end
 
     context 'build failed to deploy' do
-      let(:build) { create(:ci_build, :failed, environment: 'staging') }
-      let!(:environment) { create(:environment, name: 'staging') }
+      let(:build) do
+        create(:ci_build, :failed, environment: 'staging', pipeline: pipeline)
+      end
+
+      let!(:environment) do
+        create(:environment, name: 'staging', project: project)
+      end
+
+      it 'shows deployment message' do
+        expected_text = 'The deployment of this build to staging did not complete.'
+        render
+
+        expect(rendered).to have_css(
+          '.environment-information', text: expected_text)
+      end
     end
 
     context 'build will deploy' do
-      let(:build) { create(:ci_build, :running, environment: 'staging') }
-      let!(:environment) { create(:environment, name: 'staging') }
+      let(:build) do
+        create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
+      end
+
+      let!(:environment) do
+        create(:environment, name: 'staging', project: project)
+      end
+
+      it 'shows deployment message' do
+        expected_text = 'This build is creating a deployment to staging'
+        render
+
+        expect(rendered).to have_css(
+          '.environment-information', text: expected_text)
+      end
     end
 
     context 'build that failed to deploy and environment has not been created' do
-      let(:build) { create(:ci_build, :failed, environment: 'staging') }
+      let(:build) do
+        create(:ci_build, :failed, environment: 'staging', pipeline: pipeline)
+      end
+
+      let!(:environment) do
+        create(:environment, name: 'staging', project: project)
+      end
+
+      it 'shows deployment message' do
+        expected_text = 'The deployment of this build to staging did not complete'
+        render
+
+        expect(rendered).to have_css(
+          '.environment-information', text: expected_text)
+      end
     end
 
     context 'build that will deploy and environment has not been created' do
-      let(:build) { create(:ci_build, :running, environment: 'staging') }
-      let!(:environment) { create(:environment, name: 'staging') }
+      let(:build) do
+        create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
+      end
+
+      let!(:environment) do
+        create(:environment, name: 'staging', project: project)
+      end
+
+      it 'shows deployment message' do
+        expected_text = 'This build is creating a deployment to staging'
+        render
+
+        expect(rendered).to have_css(
+          '.environment-information', text: expected_text)
+      end
     end
   end
 

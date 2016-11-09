@@ -38,19 +38,14 @@
           - if @build.complete?
             - if @build.success?
               - if last_deployment.try(:last?)
-                This build is the most recent deployment to
-                = environment_link_for_build(@build.project, @build)
+                This build is the most recent deployment to #{environment_link_for_build(@build.project, @build)}.
               - else
                 This build is an out-of-date deployment to #{environment_link_for_build(@build.project, @build)}. View the most recent deployment #{deployment_link(@project, last_deployment)}.
             - else
-              The deployment of this build to
-              = environment_link_for_build(@build.project, @build)
-              did not complete.
+              The deployment of this build to #{environment_link_for_build(@build.project, @build)} did not complete.
           - else
-            This build is creating a deployment to
-            = environment_link_for_build(@build.project, @build)
-            and will overwrite the
-            = link_to "latest deployment.", deployment_link(@project, last_deployment)
+            This build is creating a deployment to #{environment_link_for_build(@build.project, @build)} and will overwrite the |
+            = link_to "latest deployment.", deployment_link(@project, last_deployment) |
 
     .prepend-top-default
       - if @build.erased?
