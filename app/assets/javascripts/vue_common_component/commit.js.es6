@@ -111,7 +111,7 @@
     },
 
     /**
-     * In order to reuse the svg instead of copy and paste in this template the html_safe
+     * In order to reuse the svg instead of copy and paste in this template
      * we need to render it outside this component using =custom_icon partial.
      * Make sure it has this structure:
      * .commit-icon-svg.hidden

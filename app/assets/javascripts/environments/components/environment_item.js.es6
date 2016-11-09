@@ -1,5 +1,6 @@
 /*= require vue_common_component/commit
 /*= require ./environment_actions
+/*= require ./environment_external_url
 /* globals Vue, timeago */
 
 (() => {
@@ -22,6 +23,7 @@
     components: {
       'commit-component': window.gl.CommitComponent,
       'actions-component': window.gl.environmentsList.ActionsComponent,
+      'external-url-component': window.gl.environmentsList.ExternalUrlComponent,
     },
 
     props: ['model', 'can-create-deployment', 'can-create-deployment', 'can-read-environment'],
@@ -247,11 +249,11 @@
       },
 
       canReadEnvironmentParsed() {
-        return convertToBoolean(this.canReadEnvironment);
+        return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
       },
 
       canCreateDeploymentParsed() {
-        return convertToBoolean(this.canCreateDeployment);
+        return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
       },
     },
 
@@ -289,10 +291,6 @@
           this.open = !this.open;
         }
       },
-    },
-
-    ready() {
-      debugger;
     },
 
     template: `
@@ -365,6 +363,12 @@
           <div v-if="!isFolder">
             <div v-if="hasManualActions && canCreateDeploymentParsed">
               <actions-component :actions="manualActions"></actions-component>
+            </div>
+            
+            <div v-if="model.external_url && canReadEnvironmentParsed">
+              <external-url-component 
+                :external_url="model.external_url">
+              </external_url-component>
             </div>
           </div>
         </td>
