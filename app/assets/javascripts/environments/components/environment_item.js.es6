@@ -1,6 +1,9 @@
 /*= require vue_common_component/commit
 /*= require ./environment_actions
 /*= require ./environment_external_url
+/*= require ./environment_stop
+/*= require ./environment_rollback
+
 /* globals Vue, timeago */
 
 (() => {
@@ -24,6 +27,8 @@
       'commit-component': window.gl.CommitComponent,
       'actions-component': window.gl.environmentsList.ActionsComponent,
       'external-url-component': window.gl.environmentsList.ExternalUrlComponent,
+      'stop-component': window.gl.environmentsList.StopComponent,
+      'rollback-component': window.gl.environmentsList.RollbackComponent,
     },
 
     props: ['model', 'can-create-deployment', 'can-create-deployment', 'can-read-environment'],
@@ -248,11 +253,26 @@
         return undefined;
       },
 
+      retryUrl() {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.deployable &&
+          this.model.last_deployment.deployable.retry_url) {
+          return this.model.last_deployment.deployable.retry_url;
+        }
+        return undefined;
+      },
+
+      isLastDeployment() {
+        return this.model.last_deployment && this.model.last_deployment['last?'];
+      },
+
       canReadEnvironmentParsed() {
+        return true;
         return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
       },
 
       canCreateDeploymentParsed() {
+        return true;
         return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
       },
     },
@@ -295,7 +315,7 @@
 
     template: `
       <tr>
-        <td v-bind:class="rowClass">
+        <td v-bind:class="{ 'children-row': isChildren}" class="col-sm-2">
           <a v-if="!isFolder" class="environment-name" :href="model.environment_url">
             {{model.name}}
           </a>
@@ -313,7 +333,7 @@
           </span>
         </td>
 
-        <td class="deployment-column">
+        <td class="deployment-column col-sm-2">
           <span v-if="!isFolder && model.last_deployment && model.last_deployment.iid">
             #{{model.last_deployment.iid}}
 
@@ -329,7 +349,7 @@
           </span>
         </td>
 
-        <td>
+        <td class="col-sm-2">
           <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
             class="build-link"
             :href="model.last_deployment.deployable.build_url">
@@ -337,7 +357,7 @@
           </a>
         </td>
 
-        <td>
+        <td class="col-sm-2">
           <div v-if="!isFolder && model.last_deployment">
             <commit-component
               :tag="commitTag"
@@ -353,22 +373,37 @@
           </p>
         </td>
 
-        <td>
+        <td class="col-sm-1">
           <span v-if="!isFolder && model.last_deployment" class="environment-created-date-timeago">
             {{createdDate}}
           </span>
         </td>
 
-        <td class="hidden-xs">
+        <td class="hidden-xs col-sm-3">
           <div v-if="!isFolder">
-            <div v-if="hasManualActions && canCreateDeploymentParsed">
-              <actions-component :actions="manualActions"></actions-component>
+            <div v-if="hasManualActions && canCreateDeploymentParsed" class="inline">
+              <actions-component 
+                :actions="manualActions">
+              </actions-component>
             </div>
-            
-            <div v-if="model.external_url && canReadEnvironmentParsed">
+
+            <div v-if="model.external_url && canReadEnvironmentParsed" class="inline">
               <external-url-component 
                 :external_url="model.external_url">
               </external_url-component>
+            </div>
+
+            <div v-if="isStoppable && canCreateDeploymentParsed" class="inline">
+              <stop-component 
+                :stop_url="model.environment_url">
+              </stop-component>
+            </div>
+
+            <div v-if="canRetry && canCreateDeploymentParsed" class="inline">
+              <rollback-component 
+                :is_last_deployment="isLastDeployment"
+                :retry_url="retryUrl">
+                </rollback-component>
             </div>
           </div>
         </td>

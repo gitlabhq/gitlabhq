@@ -47,7 +47,8 @@
     color: $gl-dark-link-color;
   }
 
-  .stop-env-link {
+  .stop-env-link,
+  .external-url {
     color: $table-text-gray;
 
     .stop-env-icon {
