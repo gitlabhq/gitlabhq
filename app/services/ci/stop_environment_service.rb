@@ -1,10 +1,11 @@
 module Ci
   class StopEnvironmentService < BaseService
-    def execute(ref)
-      @ref = ref
-      @commit = project.commit(ref)
+    attr_reader :ref
 
-      return unless has_ref_sha_pair?
+    def execute(branch_name)
+      @ref = branch_name
+
+      return unless has_ref_commit_pair?
       return unless has_environments?
 
       environments.each do |environment|
@@ -16,8 +17,12 @@ module Ci
 
     private
 
-    def has_ref_sha_pair?
-      @ref && @commit
+    def has_ref_commit_pair?
+      ref && commit
+    end
+
+    def commit
+      @commit ||= project.commit(ref)
     end
 
     def has_environments?
@@ -25,7 +30,7 @@ module Ci
     end
 
     def environments
-      @environments ||= project.environments_for(@ref, @commit)
+      @environments ||= project.environments_for(ref, commit)
     end
   end
 end
