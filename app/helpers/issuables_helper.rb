@@ -141,7 +141,18 @@ module IssuablesHelper
     html.html_safe
   end
 
+  def cached_assigned_issuables_count(assignee, issuable_type, state)
+    cache_key = "#{assignee.id}_#{issuable_type}_#{state}"
+    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      assigned_issuables_count(assignee, issuable_type, state)
+    end
+  end
+
   private
+
+  def assigned_issuables_count(assignee, issuable_type, state)
+    assignee.send("assigned_#{issuable_type}").send(state).count
+  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'

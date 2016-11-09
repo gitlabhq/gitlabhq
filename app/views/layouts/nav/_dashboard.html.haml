@@ -26,12 +26,12 @@
       = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
         %span
           Issues
-          %span.count= number_with_delimiter(current_user.assigned_issues.opened.count)
+          %span.count= number_with_delimiter(cached_assigned_issuables_count(current_user, :issues, :opened))
     = nav_link(path: 'dashboard#merge_requests') do
       = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
         %span
           Merge Requests
-          %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
+          %span.count= number_with_delimiter(cached_assigned_issuables_count(current_user, :merge_requests, :opened))
     = nav_link(controller: 'dashboard/snippets') do
       = link_to dashboard_snippets_path, title: 'Snippets' do
         %span
