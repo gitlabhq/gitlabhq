@@ -25,9 +25,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        render json: {
-          html: view_to_html_string("shared/groups/_list", groups: @groups)
-        }
+        render json: { html: @groups.blank? ? nil : view_to_html_string("shared/groups/_list", groups: @groups) }
       end
     end
   end

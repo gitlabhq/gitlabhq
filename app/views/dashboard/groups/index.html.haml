@@ -3,7 +3,7 @@
 = render 'dashboard/groups_head'
 
 - if @group_members.empty?
-  = render 'empty_state'
+  = render 'shared/empty_states/groups'
 - else
   %ul.content-list
     - @group_members.each do |group_member|

@@ -89,6 +89,7 @@ content on the Users#show page.
     initEmptyStates() {
       this.emptyStates = {
         snippets: document.querySelector('#js-user-snippets-empty-state'),
+        groups: document.querySelector('#js-user-groups-empty-state'),
       };
     }
 

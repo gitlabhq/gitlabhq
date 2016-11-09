@@ -111,6 +111,8 @@
 
       #groups.tab-pane
         - # This tab is always loaded via AJAX
+        #js-user-groups-empty-state.hidden
+          = render 'shared/empty_states/groups'
 
       #contributed.tab-pane
         - # This tab is always loaded via AJAX
