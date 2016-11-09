@@ -1,7 +1,0 @@
-- if can?(current_user, :create_deployment, @project)
-  .inline{ "v-if" => "isStoppable" }
-    %a.btn.stop-env-link{":href" => "model.environment_url", 
-      "method" => ":post", 
-      "rel" => "nofollow", 
-      "confirm" => "Are you sure you want to stop this environment?"}
-      = icon("stop", class: "stop-env-icon")
