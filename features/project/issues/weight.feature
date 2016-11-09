@@ -4,6 +4,7 @@ Feature: Project Issues Weight
     And I own project "Shop"
     Given I visit project "Shop" issues page
 
+  @javascript
   Scenario: I should see labels list
     Given I click link "New Issue"
     And I submit new issue "500 error on profile" with weight

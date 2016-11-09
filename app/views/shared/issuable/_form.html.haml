@@ -90,12 +90,23 @@
             = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false, show_menu_above: 'true' }, dropdown_title: "Select label"
 
       - if issuable.respond_to?(:weight)
+        - weight_options = Issue.weight_options
+        - weight_options.delete(Issue::WEIGHT_ALL)
+        - weight_options.delete(Issue::WEIGHT_ANY)
         .form-group
           = f.label :label_ids, class: "control-label #{"col-lg-4" if has_due_date}" do
             Weight
           .col-sm-10{ class: ("col-lg-8" if has_due_date) }
-            = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
-              { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
+            .issuable-form-select-holder
+              - if issuable.weight
+                = f.hidden_field :weight
+              = dropdown_tag(issuable.weight || "Weight", options: { title: "Select weight", toggle_class: 'js-weight-select js-issuable-form-weight', dropdown_class: "dropdown-menu-selectable dropdown-menu-weight",
+                placeholder: "Search weight", data: { field_name: "#{issuable.class.model_name.param_key}[weight]" , default_label: "Weight" } }) do
+                %ul
+                  - weight_options.each do |weight|
+                    %li
+                      %a{href: "#", data: { id: weight, none: weight === Issue::WEIGHT_NONE }, class: ("is-active" if issuable.weight == weight)}
+                        = weight
 
     - if has_due_date
       .col-lg-6

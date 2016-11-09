@@ -39,6 +39,9 @@
         return $dropdown.glDropdown({
           selectable: true,
           fieldName: $dropdown.data("field-name"),
+          toggleLabel: function (selected, el) {
+            return $(el).data("id");
+          },
           hidden: function(e) {
             $selectbox.hide();
             return $value.css('display', '');
@@ -46,11 +49,15 @@
           id: function(obj, el) {
             if ($(el).data("none") == null) {
               return $(el).data("id");
+            } else {
+              return '';
             }
           },
-          clicked: function(selected) {
+          clicked: function(selected, $el, e) {
             if ($(dropdown).is(".js-filter-submit")) {
               return $(dropdown).parents('form').submit();
+            } else if ($dropdown.is('.js-issuable-form-weight')) {
+              e.preventDefault();
             } else {
               selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
               return updateWeight(selected);
