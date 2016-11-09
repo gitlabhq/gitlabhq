@@ -328,7 +328,13 @@
       }
     }
 
-    .commit-author-link {
+    .issue-date {
+      color: $gl-text-color;
+    }
+    
+    .issue-link,
+    .commit-author-link,
+    .issue-author-link {
       color: $gl-dark-link-color;
     }
 

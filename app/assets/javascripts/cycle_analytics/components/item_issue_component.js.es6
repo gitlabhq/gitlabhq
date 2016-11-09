@@ -27,21 +27,21 @@
             {{ issue.title }}
           </a>
         </h5>
-      <a href="issue.url">
-      #{{issue.id}}
-      </a>
-      <span>
-        Opened
-        <a href="issue.url">
-          {{ issue.datetime }}
+        <a href="issue.url" class="issue-link">
+          #{{issue.id}}
         </a>
-      </span>
-      <span>
-      by
-      <a href="issue.profile">
-        {{ issue.author }}
-      </a>
-      </span>
+        <span>
+          Opened
+          <a href="issue.url" class="issue-date">
+            {{ issue.datetime }}
+          </a>
+        </span>
+        <span>
+        by
+        <a href="issue.profile" class="issue-author-link">
+          {{ issue.author }}
+        </a>
+        </span>
       </div>
       <div class="item-time">
         <span class="hours" v-if="issue.totalTime.hours">
