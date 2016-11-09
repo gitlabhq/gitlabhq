@@ -18,13 +18,21 @@
     param: 'name[]',
   }];
 
+  function clearSearch(event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    document.querySelector('.filtered-search').value = '';
+    document.querySelector('.clear-search').classList.add('hidden');
+  }
+
   function toggleClearSearchButton(event) {
-    const clearSearch = document.querySelector('.clear-search');
+    const clearSearchButton = document.querySelector('.clear-search');
 
     if (event.target.value) {
-      clearSearch.classList.remove('hidden');
+      clearSearchButton.classList.remove('hidden');
     } else {
-      clearSearch.classList.add('hidden');
+      clearSearchButton.classList.add('hidden');
     }
   }
 
@@ -74,105 +82,24 @@
 
   class FilteredSearchManager {
     constructor() {
+      this.tokenizer = new gl.FilteredSearchTokenizer(validTokenKeys);
       this.bindEvents();
       loadSearchParamsFromURL();
-      this.clearTokens();
     }
 
     bindEvents() {
-      const input = document.querySelector('.filtered-search');
-      const clearSearch = document.querySelector('.clear-search');
+      const filteredSearchInput = document.querySelector('.filtered-search');
 
-      input.addEventListener('input', this.tokenize.bind(this));
-      input.addEventListener('input', toggleClearSearchButton);
-      input.addEventListener('keydown', this.checkForEnter.bind(this));
+      filteredSearchInput.addEventListener('input', this.processInput.bind(this));
+      filteredSearchInput.addEventListener('input', toggleClearSearchButton);
+      filteredSearchInput.addEventListener('keydown', this.checkForEnter.bind(this));
 
-      clearSearch.addEventListener('click', this.clearSearch.bind(this));
+      document.querySelector('.clear-search').addEventListener('click', clearSearch);
     }
 
-    clearSearch(event) {
-      event.stopPropagation();
-      event.preventDefault();
-
-      this.clearTokens();
-      document.querySelector('.filtered-search').value = '';
-      document.querySelector('.clear-search').classList.add('hidden');
-    }
-
-    clearTokens() {
-      this.tokens = [];
-      this.searchToken = '';
-    }
-
-    tokenize(event) {
-      // Re-calculate tokens
-      this.clearTokens();
-
+    processInput(event) {
       const input = event.target.value;
-      const inputs = input.split(' ');
-      let searchTerms = '';
-      let lastQuotation = '';
-      let incompleteToken = false;
-
-      const addSearchTerm = function addSearchTerm(term) {
-        // Add space for next term
-        searchTerms += `${term} `;
-      };
-
-      inputs.forEach((i) => {
-        if (incompleteToken) {
-          const prevToken = this.tokens[this.tokens.length - 1];
-          prevToken.value += ` ${i}`;
-
-          // Remove last quotation
-          const lastQuotationRegex = new RegExp(lastQuotation, 'g');
-          prevToken.value = prevToken.value.replace(lastQuotationRegex, '');
-          this.tokens[this.tokens.length - 1] = prevToken;
-
-          // Check to see if this quotation completes the token value
-          if (i.indexOf(lastQuotation)) {
-            incompleteToken = !incompleteToken;
-          }
-
-          return;
-        }
-
-        const colonIndex = i.indexOf(':');
-
-        if (colonIndex !== -1) {
-          const tokenKey = i.slice(0, colonIndex).toLowerCase();
-          const tokenValue = i.slice(colonIndex + 1);
-          const match = validTokenKeys.find(v => v.key === tokenKey);
-
-          if (tokenValue.indexOf('"') !== -1) {
-            lastQuotation = '"';
-            incompleteToken = true;
-          } else if (tokenValue.indexOf('\'') !== -1) {
-            lastQuotation = '\'';
-            incompleteToken = true;
-          }
-
-          if (match && tokenValue.length > 0) {
-            this.tokens.push({
-              key: match.key,
-              value: tokenValue,
-            });
-          } else {
-            addSearchTerm(i);
-          }
-        } else {
-          addSearchTerm(i);
-        }
-      }, this);
-
-      this.searchToken = searchTerms.trim();
-      this.printTokens();
-    }
-
-    printTokens() {
-      console.log('tokens:');
-      this.tokens.forEach(token => console.log(token));
-      console.log(`search: ${this.searchToken}`);
+      this.tokenizer.processTokens(input);
     }
 
     checkForEnter(event) {
@@ -193,6 +120,9 @@
       const defaultState = 'opened';
       let currentState = defaultState;
 
+      const tokens = this.tokenizer.getTokens();
+      const searchToken = this.tokenizer.getSearchToken();
+
       if (stateIndex !== -1) {
         const remaining = currentPath.slice(stateIndex + 6);
         const separatorIndex = remaining.indexOf('&');
@@ -201,13 +131,13 @@
       }
 
       path += `&state=${currentState}`;
-      this.tokens.forEach((token) => {
+      tokens.forEach((token) => {
         const param = validTokenKeys.find(t => t.key === token.key).param;
         path += `&${token.key}_${param}=${encodeURIComponent(token.value)}`;
       });
 
-      if (this.searchToken) {
-        path += `&search=${encodeURIComponent(this.searchToken)}`;
+      if (searchToken) {
+        path += `&search=${encodeURIComponent(searchToken)}`;
       }
 
       window.location = path;
