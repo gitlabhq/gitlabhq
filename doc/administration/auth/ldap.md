@@ -40,6 +40,10 @@ of one hour.
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
 
+There is a Rake task to check LDAP configuration. After configuring LDAP
+using the documentation below, see [LDAP check Rake task](../raketasks/check.md#ldap-check)
+for information on the LDAP check Rake task.
+
 >**Note**: In GitLab EE, you can configure multiple LDAP servers to connect to
 one GitLab server.
 

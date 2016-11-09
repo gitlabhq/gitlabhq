@@ -61,7 +61,7 @@ describe DiffHelper do
 
   describe '#diff_line_content' do
     it 'returns non breaking space when line is empty' do
-      expect(diff_line_content(nil)).to eq(' &nbsp;')
+      expect(diff_line_content(nil)).to eq('&nbsp;')
     end
 
     it 'returns the line itself' do

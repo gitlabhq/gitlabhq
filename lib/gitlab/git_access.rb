@@ -2,6 +2,7 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
+<<<<<<< HEAD
     include PathLocksHelper
     UnauthorizedError = Class.new(StandardError)
 
@@ -16,6 +17,20 @@ module Gitlab
       deploy_key: 'Deploy keys are not allowed to push code.',
       no_repo: 'A repository for this project does not exist yet.'
     }
+=======
+    UnauthorizedError = Class.new(StandardError)
+
+    ERROR_MESSAGES = {
+      upload: 'You are not allowed to upload code for this project.',
+      download: 'You are not allowed to download code from this project.',
+      deploy_key: 'Deploy keys are not allowed to push code.',
+      no_repo: 'A repository for this project does not exist yet.'
+    }
+
+    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
+    PUSH_COMMANDS = %w{ git-receive-pack }
+    ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
+>>>>>>> ce/master
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 
@@ -32,16 +47,22 @@ module Gitlab
       check_active_user!
       check_project_accessibility!
       check_command_existence!(cmd)
+<<<<<<< HEAD
 
       check_geo_license!
+=======
+>>>>>>> ce/master
 
       case cmd
       when *DOWNLOAD_COMMANDS
         download_access_check
       when *PUSH_COMMANDS
         push_access_check(changes)
+<<<<<<< HEAD
       when *GIT_ANNEX_COMMANDS
         git_annex_access_check(project, changes)
+=======
+>>>>>>> ce/master
       end
 
       build_status_object(true)
@@ -52,7 +73,11 @@ module Gitlab
     def download_access_check
       if user
         user_download_access_check
+<<<<<<< HEAD
       elsif deploy_key.nil? && geo_node_key.nil? && !Guest.can?(:download_code, project)
+=======
+      elsif deploy_key.nil? && !Guest.can?(:download_code, project)
+>>>>>>> ce/master
         raise UnauthorizedError, ERROR_MESSAGES[:download]
       end
     end
@@ -100,6 +125,7 @@ module Gitlab
 
       unless project.repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
+<<<<<<< HEAD
       end
 
       if project.above_size_limit?
@@ -109,6 +135,8 @@ module Gitlab
       if ::License.block_changes?
         message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
         raise UnauthorizedError, message
+=======
+>>>>>>> ce/master
       end
 
       changes_list = Gitlab::ChangesList.new(changes)
@@ -121,6 +149,7 @@ module Gitlab
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
           raise UnauthorizedError, status.message
+<<<<<<< HEAD
         end
 
         if project.size_limit_enabled?
@@ -131,6 +160,10 @@ module Gitlab
       if project.changes_will_exceed_size_limit?(push_size_in_bytes.to_mb)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
+=======
+        end
+      end
+>>>>>>> ce/master
     end
 
     def change_access_check(change)
@@ -167,12 +200,15 @@ module Gitlab
       end
     end
 
+<<<<<<< HEAD
     def check_geo_license!
       if Gitlab::Geo.secondary? && !Gitlab::Geo.license_allows?
         raise UnauthorizedError, 'Your current license does not have GitLab Geo add-on enabled.'
       end
     end
 
+=======
+>>>>>>> ce/master
     def matching_merge_request?(newrev, branch_name)
       Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
     end
@@ -219,8 +255,11 @@ module Gitlab
         user_access.can_read_project?
       elsif deploy_key
         deploy_key_can_read_project?
+<<<<<<< HEAD
       elsif geo_node_key
         true
+=======
+>>>>>>> ce/master
       else
         Guest.can?(:read_project, project)
       end

@@ -10,6 +10,9 @@ module API
       #  GET /users
       #  GET /users?search=Admin
       #  GET /users?username=root
+      #  GET /users?active=true
+      #  GET /users?external=true
+      #  GET /users?blocked=true
       get do
         unless can?(current_user, :read_users_list, nil)
           render_api_error!("Not authorized.", 403)
@@ -20,9 +23,15 @@ module API
         else
           skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
           @users = User.all
+<<<<<<< HEAD
           @users = @users.active if params[:active].present?
           @users = @users.non_ldap if skip_ldap
+=======
+          @users = @users.active if to_boolean(params[:active])
+>>>>>>> ce/master
           @users = @users.search(params[:search]) if params[:search].present?
+          @users = @users.blocked if to_boolean(params[:blocked])
+          @users = @users.external if to_boolean(params[:external]) && current_user.is_admin?
           @users = paginate @users
         end
 

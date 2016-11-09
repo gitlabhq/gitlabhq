@@ -101,8 +101,13 @@ module Gitlab
         options['timeout'].to_i
       end
 
+<<<<<<< HEAD
       def external_groups
         options['external_groups']
+=======
+      def has_auth?
+        options['password'] || options['bind_dn']
+>>>>>>> ce/master
       end
 
       protected
@@ -134,10 +139,6 @@ module Gitlab
             password: options['password']
           }
         }
-      end
-
-      def has_auth?
-        options['password'] || options['bind_dn']
       end
     end
   end

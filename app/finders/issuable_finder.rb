@@ -62,31 +62,26 @@ class IssuableFinder
   def project
     return @project if defined?(@project)
 
-    if project?
-      @project = Project.find(params[:project_id])
+    project = Project.find(params[:project_id])
+    project = nil unless Ability.allowed?(current_user, :"read_#{klass.to_ability_name}", project)
 
-      unless Ability.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
-    else
-      @project = nil
-    end
-
-    @project
+    @project = project
   end
 
   def projects
     return @projects if defined?(@projects)
+    return @projects = project if project?
 
-    if project?
-      @projects = project
-    elsif current_user && params[:authorized_only].presence && !current_user_related?
-      @projects = current_user.authorized_projects.reorder(nil)
-    elsif group
-      @projects = GroupProjectsFinder.new(group).execute(current_user).reorder(nil)
-    else
-      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
-    end
+    projects =
+      if current_user && params[:authorized_only].presence && !current_user_related?
+        current_user.authorized_projects
+      elsif group
+        GroupProjectsFinder.new(group).execute(current_user)
+      else
+        ProjectsFinder.new.execute(current_user)
+      end
+
+    @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
   end
 
   def search

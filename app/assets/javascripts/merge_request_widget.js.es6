@@ -235,7 +235,7 @@
         }
 
         if (environment.deployed_at && environment.deployed_at_formatted) {
-          environment.deployed_at = $.timeago(environment.deployed_at) + '.';
+          environment.deployed_at = gl.utils.getTimeago(environment.deployed_at) + '.';
         } else {
           $('.js-environment-timeago', $template).remove();
           environment.name += '.';

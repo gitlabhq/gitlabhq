@@ -162,7 +162,7 @@
                 if (data.milestone != null) {
                   data.milestone.namespace = _this.currentProject.namespace;
                   data.milestone.path = _this.currentProject.path;
-                  data.milestone.remaining = $.timefor(data.milestone.due_date);
+                  data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
                 } else {

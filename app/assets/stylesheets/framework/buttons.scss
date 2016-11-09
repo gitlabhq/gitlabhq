@@ -6,7 +6,6 @@
 
   &:focus,
   &:active {
-    outline: none;
     background-color: $btn-active-gray;
     box-shadow: $gl-btn-active-background;
   }
@@ -264,10 +263,6 @@
     @include btn-middle;
 
     &:hover {
-      outline: none;
-    }
-
-    &:focus {
       outline: none;
     }
 

@@ -48,6 +48,17 @@ describe API::API, api: true  do
         end['username']).to eq(username)
       end
 
+      it "returns an array of blocked users" do
+        ldap_blocked_user
+        create(:user, state: 'blocked')
+
+        get api("/users?blocked=true", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response).to all(include('state' => /(blocked|ldap_blocked)/))
+      end
+
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
         expect(response).to have_http_status(200)
@@ -68,6 +79,16 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include 'two_factor_enabled'
         expect(json_response.first.keys).to include 'last_sign_in_at'
         expect(json_response.first.keys).to include 'confirmed_at'
+      end
+
+      it "returns an array of external users" do
+        create(:user, external: true)
+
+        get api("/users?external=true", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response).to all(include('external' => true))
       end
     end
 

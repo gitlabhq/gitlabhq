@@ -80,7 +80,8 @@
         success: function(html) {
           loading.hide();
           $target.html(html);
-          return $('.js-timeago', $target).timeago();
+          var className = '.' + $target[0].className.replace(' ', '.');
+          gl.utils.localTimeAgo($('.js-timeago', className));
         }
       });
     };

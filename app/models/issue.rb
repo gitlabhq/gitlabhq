@@ -264,29 +264,9 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
+    return false unless project.feature_available?(:issues, user)
+
     user ? readable_by?(user) : publicly_visible?
-  end
-
-  # Returns `true` if the given User can read the current Issue.
-  def readable_by?(user)
-    if user.admin?
-      true
-    elsif project.owner == user
-      true
-    elsif confidential?
-      author == user ||
-        assignee == user ||
-        project.team.member?(user, Gitlab::Access::REPORTER)
-    else
-      project.public? ||
-        project.internal? && !user.external? ||
-        project.team.member?(user)
-    end
-  end
-
-  # Returns `true` if this Issue is visible to everybody.
-  def publicly_visible?
-    project.public? && !confidential?
   end
 
   def overdue?
@@ -310,5 +290,33 @@ class Issue < ActiveRecord::Base
         )
       end
     end
+  end
+
+  private
+
+  # Returns `true` if the given User can read the current Issue.
+  #
+  # This method duplicates the same check of issue_policy.rb
+  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
+  # Make sure to sync this method with issue_policy.rb
+  def readable_by?(user)
+    if user.admin?
+      true
+    elsif project.owner == user
+      true
+    elsif confidential?
+      author == user ||
+        assignee == user ||
+        project.team.member?(user, Gitlab::Access::REPORTER)
+    else
+      project.public? ||
+        project.internal? && !user.external? ||
+        project.team.member?(user)
+    end
+  end
+
+  # Returns `true` if this Issue is visible to everybody.
+  def publicly_visible?
+    project.public? && !confidential?
   end
 end
