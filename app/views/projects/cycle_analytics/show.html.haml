@@ -94,14 +94,6 @@
           %template{ "v-if" => "state.items.length && !isLoadingStage && !isEmptyStage" }
             %component{ ":is" => "currentStage.component", ":items" => "state.items" }
 
-%script{ type: 'text/x-template', id: 'stage-plan-component' }
-  %div
-    .events-description
-      Time before an issue starts implementation
-    %ul.event-list
-      %li.event-item{ "v-for" => "commit in items" }
-        %item-commit-component{ ":commit" => "commit" }
-
 %script{ type: 'text/x-template', id: 'stage-code-component' }
   %div
     .events-description
