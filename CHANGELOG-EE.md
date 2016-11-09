@@ -2,10 +2,21 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
 
-- Weight dropdown in issue filter form does not stay selected !826
 - gitlab:check rake task checks ES version according to requirements
 - Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
 - [Fix] Only owner can see "Projects" button in group edit menu
+
+## 8.13.5 (2016-11-08)
+
+- No changes
+
+## 8.13.4 (2016-11-07)
+
+- Weight dropdown in issue filter form does not stay selected. !826
+
+## 8.13.3 (2016-11-02)
+
+- No changes
 
 ## 8.13.2 (2016-10-31)
 
@@ -29,6 +40,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - User groups (that can be assigned as approvers)
 - Fix a search for non-default branches when ES is enabled
 - Re-organized the Sidekiq queues for EE specific workers
+
+## 8.12.9 (2016-11-07)
+
+- No changes
+
+## 8.12.8 (2016-11-02)
+
+- No changes
 
 ## 8.12.7
 
@@ -74,6 +93,14 @@ Please view this file on the master branch, on stable branches it's out of date.
   - [ES] Global code search
   - [ES] Improve logging
   - Fix projects with remote mirrors asynchronously destruction
+
+## 8.11.11 (2016-11-07)
+
+- No changes
+
+## 8.11.10 (2016-11-02)
+
+- No changes
 
 ## 8.11.9
 
