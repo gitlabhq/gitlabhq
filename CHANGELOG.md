@@ -93,6 +93,7 @@ entry.
 - Return conflict error in label API when title is taken by group label. !7014
 - Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project. !7123
 - Fix builds tab visibility. !7178
+- Fix delete environment missing button. !7379
 - Fix project features default values. !7181
 
 ## 8.13.3 (2016-11-02)
