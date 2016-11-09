@@ -120,11 +120,11 @@
      * TODO: Find a better way to include SVG
      */
     ready() {
-      const commitIconContainer = document.querySelector('.branch-commit .commit-icon-container');
+      const commitIconContainer = this.$el.querySelector('.commit-icon-container');
       const commitIcon = document.querySelector('.commit-icon-svg.hidden svg');
 
       if (commitIconContainer && commitIcon) {
-        commitIconContainer.appendChild(commitIcon);
+        commitIconContainer.appendChild(commitIcon.cloneNode(true));
       }
     },
 
