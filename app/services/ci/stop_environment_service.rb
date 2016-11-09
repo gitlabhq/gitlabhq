@@ -5,7 +5,7 @@ module Ci
     def execute(branch_name)
       @ref = branch_name
 
-      return unless has_ref_commit_pair?
+      return unless has_ref?
       return unless has_environments?
 
       environments.each do |environment|
@@ -17,12 +17,8 @@ module Ci
 
     private
 
-    def has_ref_commit_pair?
-      ref && commit
-    end
-
-    def commit
-      @commit ||= project.commit(ref)
+    def has_ref?
+      @ref.present?
     end
 
     def has_environments?
@@ -30,7 +26,7 @@ module Ci
     end
 
     def environments
-      @environments ||= project.environments_for(ref, commit)
+      @environments ||= project.environments_for(@ref)
     end
   end
 end

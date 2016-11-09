@@ -1646,15 +1646,18 @@ describe Project, models: true do
       end
 
       it 'returns environment when with_tags is set' do
-        expect(project.environments_for('master', project.commit, with_tags: true)).to contain_exactly(environment)
+        expect(project.environments_for('master', commit: project.commit, with_tags: true))
+          .to contain_exactly(environment)
       end
 
       it 'does not return environment when no with_tags is set' do
-        expect(project.environments_for('master', project.commit)).to be_empty
+        expect(project.environments_for('master', commit: project.commit))
+          .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+        expect(project.environments_for('master', commit: project.commit('feature')))
+          .to be_empty
       end
     end
 
@@ -1664,15 +1667,23 @@ describe Project, models: true do
       end
 
       it 'returns environment when ref is set' do
-        expect(project.environments_for('master', project.commit)).to contain_exactly(environment)
+        expect(project.environments_for('master', commit: project.commit))
+          .to contain_exactly(environment)
       end
 
       it 'does not environment when ref is different' do
-        expect(project.environments_for('feature', project.commit)).to be_empty
+        expect(project.environments_for('feature', commit: project.commit))
+          .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+        expect(project.environments_for('master', commit: project.commit('feature')))
+          .to be_empty
+      end
+
+      it 'returns environment when commit constraint is not set' do
+        expect(project.environments_for('master'))
+          .to contain_exactly(environment)
       end
     end
   end

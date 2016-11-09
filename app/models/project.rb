@@ -1288,19 +1288,20 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
-  def environments_for(ref, commit, with_tags: false)
-    environment_ids = deployments.group(:environment_id).
-      select(:environment_id)
+  def environments_for(ref, commit: nil, with_tags: false)
+    environments_query = with_tags ? 'ref=? OR tag IS TRUE' : 'ref=?'
 
-    environment_ids =
-      if with_tags
-        environment_ids.where('ref=? OR tag IS TRUE', ref)
-      else
-        environment_ids.where(ref: ref)
-      end
+    environment_ids = deployments
+      .group(:environment_id)
+      .select(:environment_id)
+      .where(environments_query, ref)
 
-    environments.available.where(id: environment_ids).select do |environment|
-      environment.includes_commit?(commit)
+    envs = environments.available.where(id: environment_ids)
+
+    if commit
+      envs.select { |env| env.includes_commit?(commit) }
+    else
+      envs.to_a
     end
   end
 
