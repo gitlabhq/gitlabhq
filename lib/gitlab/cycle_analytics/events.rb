@@ -17,11 +17,11 @@ module Gitlab
           event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
           commit = first_time_reference_commit(event.delete('commits'), event)
           event['title'] = commit.title
-          event['url'] = Gitlab::LightUrlBuilder.build(entity: :commit_url, project: @project, id: commit.id)
+          event['url'] = Gitlab::LightUrlBuilder.build(entity: :commit, project: @project, id: commit.id)
           event['sha'] = commit.short_id
           event['author_name'] = commit.author.name
           event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: commit.author.username)
-          event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar_url, id: commit.author.id)
+          event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar, id: commit.author.id)
         end
       end
 
@@ -56,7 +56,7 @@ module Gitlab
         event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
         event['created_at'] = interval_in_words(event['created_at'])
         event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: event['author_username'])
-        event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar_url, id: event['author_id'])
+        event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar, id: event['author_id'])
 
         event.except!('author_id', 'author_username')
       end
@@ -66,9 +66,9 @@ module Gitlab
         event['name'] = build.name
         event['url'] = Gitlab::LightUrlBuilder.build(entity: :build, project: @project, id: build.id)
         event['branch'] = build.ref
-        event['branch'] = Gitlab::LightUrlBuilder.build(entity: :branch, project: @project, id: build.ref)
+        event['branch_url'] = Gitlab::LightUrlBuilder.build(entity: :branch, project: @project, id: build.ref)
         event['sha'] = build.short_sha
-        event['commit'] = Gitlab::LightUrlBuilder.build(entity: :commit, project: @project, id: build.sha)
+        event['commit_url'] = Gitlab::LightUrlBuilder.build(entity: :commit, project: @project, id: build.sha)
         event['date'] = build.started_at
         event['total_time'] = build.duration
         event['author_name'] = build.author.try(:name)
