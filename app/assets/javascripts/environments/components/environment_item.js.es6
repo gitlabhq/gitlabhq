@@ -24,9 +24,7 @@
       'actions-component': window.gl.environmentsList.ActionsComponent,
     },
 
-    props: {
-      model: Object,
-    },
+    props: ['model', 'can-create-deployment', 'can-create-deployment', 'can-read-environment'],
 
     data() {
       return {
@@ -247,6 +245,14 @@
 
         return undefined;
       },
+
+      canReadEnvironmentParsed() {
+        return convertToBoolean(this.canReadEnvironment);
+      },
+
+      canCreateDeploymentParsed() {
+        return convertToBoolean(this.canCreateDeployment);
+      },
     },
 
     /**
@@ -261,6 +267,19 @@
       return {}.hasOwnProperty.call(obj, key);
     },
 
+    /**
+     * Converts permission provided as strings to booleans.
+     * @param  {String} string
+     * @returns {Boolean}
+     */
+    convertPermissionToBoolean(string) {
+      if (string === 'true') {
+        return true;
+      }
+
+      return false;
+    },
+
     methods: {
       /**
        * Toggles the visibility of a folders' children.
@@ -270,6 +289,10 @@
           this.open = !this.open;
         }
       },
+    },
+
+    ready() {
+      debugger;
     },
 
     template: `
@@ -340,7 +363,7 @@
 
         <td class="hidden-xs">
           <div v-if="!isFolder">
-            <div v-if="hasManualActions">
+            <div v-if="hasManualActions && canCreateDeploymentParsed">
               <actions-component :actions="manualActions"></actions-component>
             </div>
           </div>
