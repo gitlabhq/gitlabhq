@@ -12,6 +12,7 @@ entry.
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
 - Prevent award emoji via notes for issues/MRs authored by user (barthc)
 - Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
+- Change auto selection behaviour of emoji and slash commands to be more UX/Type friendly (Yann Gravrand)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix Markdown styling inside reference links (Jan Zdráhal)
 - Create new issue board list after creating a new label
