@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe SystemNoteService, services: true do
+  include Gitlab::Routing.url_helpers
+
   let(:project)  { create(:project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
@@ -543,23 +545,55 @@ describe SystemNoteService, services: true do
 
     before { stub_jira_urls(jira_issue.id) }
 
-    context 'in JIRA issue tracker' do
+    context 'in issue' do
       before { jira_service_settings }
 
       describe "new reference" do
         subject { described_class.cross_reference(jira_issue, commit, author) }
 
         it { is_expected.to eq(success_message) }
+
+        it "creates remote link" do
+          subject
+
+          expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
+            body: hash_including(
+              GlobalID: "GitLab",
+              object: {
+                url: namespace_project_commit_url(project.namespace, project, commit),
+                title: "GitLab: Mentioned on commit - #{commit.title}",
+                icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+                status: { resolved: false }
+              }
+            )
+          ).once
+        end
       end
     end
 
-    context 'issue from an issue' do
+    context 'in commit' do
       context 'in JIRA issue tracker' do
         before { jira_service_settings }
 
         subject { described_class.cross_reference(jira_issue, issue, author) }
 
         it { is_expected.to eq(success_message) }
+
+        it "creates remote link" do
+          subject
+
+          expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
+            body: hash_including(
+              GlobalID: "GitLab",
+              object: {
+                url: namespace_project_issue_url(project.namespace, project, issue),
+                title: "GitLab: Mentioned on issue - #{issue.title}",
+                icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+                status: { resolved: false }
+              }
+            )
+          ).once
+        end
       end
     end
 
@@ -572,6 +606,13 @@ describe SystemNoteService, services: true do
       subject { described_class.cross_reference(jira_issue, commit, author) }
 
       it { is_expected.not_to eq(success_message) }
+
+      it 'does not try to create comment and remote link' do
+        subject
+
+        expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
+        expect(WebMock).not_to have_requested(:post, jira_api_remote_link_url(jira_issue))
+      end
     end
   end
 end

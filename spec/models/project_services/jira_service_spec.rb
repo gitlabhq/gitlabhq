@@ -85,17 +85,30 @@ describe JiraService, models: true do
         project_key: 'GitLabProject'
       )
 
+      # These stubs are needed to test JiraService#close_issue.
+      # We close the issue then do another request to API to check if it got closed.
+      # Here is stubbed the API return with a closed and an opened issues.
+      open_issue   = JIRA::Resource::Issue.new(@jira_service.client, attrs: { "id" => "JIRA-123" })
+      closed_issue = open_issue.dup
+      allow(open_issue).to receive(:resolution).and_return(false)
+      allow(closed_issue).to receive(:resolution).and_return(true)
+      allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
+
+      allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return("JIRA-123")
+
       @jira_service.save
 
       project_issues_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123'
       @project_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/project/GitLabProject'
       @transitions_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
       @comment_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
+      @remote_link_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/remotelink'
 
       WebMock.stub_request(:get, @project_url)
       WebMock.stub_request(:get, project_issues_url)
       WebMock.stub_request(:post, @transitions_url)
       WebMock.stub_request(:post, @comment_url)
+      WebMock.stub_request(:post, @remote_link_url)
     end
 
     it "calls JIRA API" do
@@ -104,6 +117,37 @@ describe JiraService, models: true do
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
       ).once
+    end
+
+    # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
+    # for more information
+    it "creates Remote Link reference in JIRA for comment" do
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      # Creates comment
+      expect(WebMock).to have_requested(:post, @comment_url)
+
+      # Creates Remote Link in JIRA issue fields
+      expect(WebMock).to have_requested(:post, @remote_link_url).with(
+        body: hash_including(
+          GlobalID: "GitLab",
+          object: {
+            url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{merge_request.diff_head_sha}",
+            title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
+            icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+            status: { resolved: true, icon: { url16x16: "http://www.openwebgraphics.com/resources/data/1768/16x16_apply.png", title: "Closed" } }
+          }
+        )
+      ).once
+    end
+
+    it "does not send comment or remote links to issues already closed" do
+      allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(true)
+
+      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      expect(WebMock).not_to have_requested(:post, @comment_url)
+      expect(WebMock).not_to have_requested(:post, @remote_link_url)
     end
 
     it "references the GitLab commit/merge request" do
