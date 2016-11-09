@@ -130,7 +130,9 @@
        * @returns {String}
        */
       createdDate() {
-        return $.timeago(this.model.created_at);
+        const timeagoInstance = new timeago();
+
+        return timeagoInstance.format(this.model.created_at);
       },
 
       /**
