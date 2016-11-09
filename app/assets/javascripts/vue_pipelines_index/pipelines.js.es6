@@ -12,6 +12,7 @@
       'vue-pipeline-head': gl.VuePipelineHead,
       'vue-gl-pagination': gl.VueGlPagination,
       'vue-status-scope': gl.VueStatusScope,
+      'vue-time-ago': gl.VueTimeAgo,
     },
     data() {
       return {
@@ -75,7 +76,7 @@
                 >
                 </vue-branch-commit>
                 <vue-stages></vue-stages>
-                <td></td>
+                <vue-time-ago :pipeline='pipeline'></vue-time-ago>
                 <vue-pipeline-actions></vue-pipeline-actions>
               </tr>
             </tbody>

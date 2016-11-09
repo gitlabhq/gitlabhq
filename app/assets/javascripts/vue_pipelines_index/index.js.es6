@@ -9,6 +9,7 @@
 //= require ./stages.js.es6
 //= require ./pipeline_actions.js.es6
 //= require ./branch_commit.js.es6
+//= require ./time_ago.js.es6
 //= require ./pipelines.js.es6
 
 (() => {

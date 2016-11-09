@@ -15,10 +15,8 @@
             'Something went wrong on our end.'
           ));
 
-      // inital fetch and then start timeout loop
       goFetch();
 
-      // eventually clearInterval(this.intervalId)
       this.intervalId = setInterval(() => {
         goFetch();
       }, 3000);

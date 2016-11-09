@@ -14,9 +14,6 @@
         <div class="icon-container">
           <i class="fa fa-code-fork"></i>
           </div>
-            <!--
-              I need to know which branch things are comming from
-            -->
           <a class="monospace branch-name" href="./commits/master">master</a>
           <div class="icon-container commit-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
