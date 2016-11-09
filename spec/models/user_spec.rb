@@ -1240,4 +1240,40 @@ describe User, models: true do
       expect(user.viewable_starred_projects).not_to include(private_project)
     end
   end
+
+  describe '#projects_with_reporter_access_limited_to' do
+    let(:project1) { create(:project) }
+    let(:project2) { create(:project) }
+    let(:user) { create(:user) }
+
+    before do
+      project1.team << [user, :reporter]
+      project2.team << [user, :guest]
+    end
+
+    it 'returns the projects when using a single project ID' do
+      projects = user.projects_with_reporter_access_limited_to(project1.id)
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'returns the projects when using an Array of project IDs' do
+      projects = user.projects_with_reporter_access_limited_to([project1.id])
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'returns the projects when using an ActiveRecord relation' do
+      projects = user.
+        projects_with_reporter_access_limited_to(Project.select(:id))
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'does not return projects you do not have reporter access to' do
+      projects = user.projects_with_reporter_access_limited_to(project2.id)
+
+      expect(projects).to be_empty
+    end
+  end
 end

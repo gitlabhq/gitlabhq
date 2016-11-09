@@ -134,10 +134,15 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :usage_ping_enabled,
       :enabled_git_access_protocol,
       :repository_size_limit,
+      :housekeeping_enabled,
+      :housekeeping_bitmaps_enabled,
+      :housekeeping_incremental_repack_period,
+      :housekeeping_full_repack_period,
+      :housekeeping_gc_period,
+      repository_storages: [],
       restricted_visibility_levels: [],
       import_sources: [],
-      disabled_oauth_sign_in_sources: [],
-      repository_storages: []
+      disabled_oauth_sign_in_sources: []
     )
   end
 end

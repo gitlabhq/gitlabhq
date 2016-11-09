@@ -14,8 +14,10 @@ describe Projects::HousekeepingService do
 
   describe '#execute' do
     it 'enqueues a sidekiq job' do
-      expect(subject).to receive(:try_obtain_lease).and_return(true)
-      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id)
+      expect(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
+      expect(subject).to receive(:lease_key).and_return(:the_lease_key)
+      expect(subject).to receive(:task).and_return(:the_task)
+      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :the_task, :the_lease_key, :the_uuid)
 
       subject.execute
       expect(project.reload.pushes_since_gc).to eq(0)
@@ -57,5 +59,27 @@ describe Projects::HousekeepingService do
         subject.increment!
       end.to change { project.pushes_since_gc }.from(0).to(1)
     end
+  end
+
+  it 'uses all three kinds of housekeeping we offer' do
+    allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
+    allow(subject).to receive(:lease_key).and_return(:the_lease_key)
+
+    # At push 200
+    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid).
+      exactly(1).times
+    # At push 50, 100, 150
+    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid).
+      exactly(3).times
+    # At push 10, 20, ... (except those above)
+    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid).
+      exactly(16).times
+
+    201.times do
+      subject.increment!
+      subject.execute if subject.needed?
+    end
+
+    expect(project.pushes_since_gc).to eq(1)
   end
 end

@@ -483,5 +483,44 @@
             Enable this option to include the name of the author of the issue,
             merge request or comment in the email body instead.
 
+  %fieldset
+    %legend Automatic Git repository housekeeping
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :housekeeping_enabled do
+            = f.check_box :housekeeping_enabled
+            Enable automatic repository housekeeping (git repack, git gc)
+          .help-block
+            If you keep automatic housekeeping disabled for a long time Git
+            repository access on your GitLab server will become slower and your
+            repositories will use more disk space. We recommend to always leave
+            this enabled.
+        .checkbox
+          = f.label :housekeeping_bitmaps_enabled do
+            = f.check_box :housekeeping_bitmaps_enabled
+            Enable Git pack file bitmap creation
+          .help-block
+            Creating pack file bitmaps makes housekeeping take a little longer but
+            bitmaps should accelerate 'git clone' performance.
+    .form-group
+      = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :housekeeping_incremental_repack_period, class: 'form-control'
+        .help-block
+          Number of Git pushes after which an incremental 'git repack' is run.
+    .form-group
+      = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :housekeeping_full_repack_period, class: 'form-control'
+        .help-block
+          Number of Git pushes after which a full 'git repack' is run.
+    .form-group
+      = f.label :housekeeping_gc_period, 'Git GC period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :housekeeping_gc_period, class: 'form-control'
+        .help-block
+          Number of Git pushes after which 'git gc' is run.
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
