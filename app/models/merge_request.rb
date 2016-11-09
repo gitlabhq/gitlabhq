@@ -785,7 +785,16 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def rebase_in_progress?
-    File.exist?(rebase_dir_path)
+    File.exist?(rebase_dir_path) && !clean_stuck_rebase
+  end
+
+  def clean_stuck_rebase
+    expiration_time = Time.now - 15.minutes
+
+    if File.new(rebase_dir_path).mtime < expiration_time
+      FileUtils.rm_rf(rebase_dir_path)
+      true
+    end
   end
 
   def diverged_commits_count

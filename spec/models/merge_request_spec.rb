@@ -751,6 +751,25 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
+  describe '#rebase_in_progress?' do
+    it 'return true' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:new).and_return(double(:file, mtime: Time.now))
+      expect(subject.rebase_in_progress?).to be_truthy
+    end
+
+    it 'return false' do
+      allow(File).to receive(:exist?).with(subject.rebase_dir_path).and_return(false)
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+
+    it 'return false if temporary file exists by is expired' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:new).and_return(double(:file, mtime: Time.now - 2.hours))
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+  end
+
   describe '#commits_sha' do
     let(:commit0) { double('commit0', sha: 'sha1') }
     let(:commit1) { double('commit1', sha: 'sha2') }
