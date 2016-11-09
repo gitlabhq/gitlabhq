@@ -152,30 +152,6 @@
       %li{ "v-for" => "issue in items" }
         %item-issue-component{ ":issue" => "issue" }
 
-%script{ type: 'text/x-template', id: 'item-issue-component' }
-  .item-details
-    %img.avatar{:src => "https://secure.gravatar.com/avatar/3731e7dd4f2b4fa8ae184c0a7519dd58?s=64&d=identicon"}/
-    %h5.item-title
-      %a{ :href => "issue.url" }
-        {{ issue.title }}
-    %a{ :href => "issue.url" }
-      = '#{{issue.id}}'
-    %span
-      Opened
-      %a{:href => "issue.url"}
-        {{ issue.datetime }}
-    %span
-      by
-      %a{:href => "issue.profile"}
-        {{ issue.author }}
-  .item-time
-    %span.hours{ "v-if" => "issue.totalTime.hours"}
-      {{ issue.totalTime.hours }}
-      %abbr{:title => "Hours"} hr
-    %span.minutes{ "v-if" => "issue.totalTime.minutes" }
-      {{ issue.totalTime.minutes }}
-      %abbr{:title => "Minutes"} mins
-
 %script{ type: 'text/x-template', id: 'item-commit-component' }
   %div
     %p
