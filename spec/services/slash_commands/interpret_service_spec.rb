@@ -472,8 +472,28 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'empty command' do
+      let(:content) { '/estimate' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/estimate abc' }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'spend command' do
       let(:content) { '/spend 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/spend' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/spend abc' }
       let(:issuable) { issue }
     end
 
