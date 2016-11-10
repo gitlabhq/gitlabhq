@@ -55,8 +55,8 @@
     %pre.commit-description
       = preserve(markdown(@commit.description, pipeline: :single_line, author: @commit.author))
 
-.commit-info-widget
-  .widget-row.branch-info
+.info-well
+  .well-segment.branch-info
     .icon-container.commit-icon
       = custom_icon("icon_commit")
     %span.cgray= pluralize(@commit.parents.count, "parent")
@@ -66,7 +66,7 @@
       %i.fa.fa-spinner.fa-spin
 
   - if @commit.status
-    .widget-row.pipeline-info
+    .well-segment.pipeline-info
       .icon-container
         = ci_icon_for_status(@commit.status)
       Pipeline
