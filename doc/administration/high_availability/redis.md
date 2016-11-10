@@ -1,73 +1,105 @@
 # Configuring Redis for GitLab HA
 
-High Availability with Redis is possible using a **Master** x **Slave**
-topology with **Sentinel** service to watch and automatically start
-failover proceedings.
+High Availability with [Redis] is possible using a **Master** x **Slave**
+topology with a [Redis Sentinel][sentinel] service to watch and automatically
+start failover proceedings.
 
 You can choose to install and manage Redis and Sentinel yourself, use
-a hosted, managed cloud solution or you can use or you can use the one
-that comes bundled with Omnibus GitLab packages.
+a hosted cloud solution or you can use the one that comes bundled with
+Omnibus GitLab packages.
 
-> **Note:** Redis requires authentication for High Availability. See
+> **Notes:**
+- Redis requires authentication for High Availability. See
   [Redis Security](http://redis.io/topics/security) documentation for more
   information. We recommend using a combination of a Redis password and tight
   firewall rules to secure your Redis service.
+- You are highly encouraged to read the [Redis Sentinel][sentinel] documentation
+  before configuring Redis HA with GitLab to fully understand the topology and
+  architecture.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Using an external Redis server](#using-an-external-redis-server)
-- [High Availability with Sentinel](#high-availability-with-sentinel)
-    - [Prerequisites](#prerequisites)
-    - [Redis setup](#redis-setup)
-    - [Sentinel setup](#sentinel-setup)
-    - [Recommended setup](#recommended-setup)
+- [Overview](#overview)
+  - [Available setups](#available-setups)
+  - [Using a non-Omnibus external Redis server](#using-a-non-omnibus-external-redis-server)
+  - [High Availability with Sentinel](#high-availability-with-sentinel)
+  - [Prerequisites](#prerequisites)
+  - [Recommended setup](#recommended-setup)
+- [Redis HA configuration](#redis-ha-configuration)
+  - [Redis setup](#redis-setup)
+  - [Sentinel setup](#sentinel-setup)
 - [Configuring instances using Omnibus](#configuring-instances-using-omnibus)
-    - [Existing single-machine installation](#existing-single-machine-installation)
-    - [Configuring Master Redis instance](#configuring-master-redis-instance)
-    - [Configuring Slave Redis instances](#configuring-slave-redis-instances)
-    - [Configuring Sentinel instances](#configuring-sentinel-instances)
-            - [Community Edition](#community-edition)
-            - [Enterprise Edition](#enterprise-edition)
-    - [GitLab setup](#gitlab-setup)
-- [Example Configurations](#example-configurations)
-    - [Configuration for Redis Master](#configuration-for-redis-master)
-    - [Configuration for Redis Slave](#configuration-for-redis-slave)
-    - [Configuration for Sentinel (EE only)](#configuration-for-sentinel-ee-only)
-    - [Control running services](#control-running-services)
+  - [Existing single-machine installation](#existing-single-machine-installation)
+  - [Configuring Master Redis instance](#configuring-master-redis-instance)
+  - [Configuring Slave Redis instances](#configuring-slave-redis-instances)
+  - [Configuring Sentinel instances](#configuring-sentinel-instances)
+      - [Community Edition](#community-edition)
+      - [Enterprise Edition](#enterprise-edition)
+  - [GitLab setup](#gitlab-setup)
+- [Minimal example configuration with 1 master, 2 slaves and 3 sentinels](#minimal-example-configuration-with-1-master-2-slaves-and-3-sentinels)
+  - [Configuration for Redis Master](#configuration-for-redis-master)
+  - [Configuration for Redis Slave](#configuration-for-redis-slave)
+  - [Configuration for Sentinel (EE only)](#configuration-for-sentinel-ee-only)
+  - [Control running services](#control-running-services)
 - [Troubleshooting](#troubleshooting)
-    - [Redis replication](#redis-replication)
-    - [Sentinel](#sentinel)
-        - [Omnibus GitLab](#omnibus-gitlab)
+  - [Redis replication](#redis-replication)
+  - [Sentinel](#sentinel)
+    - [Omnibus GitLab](#omnibus-gitlab)
 - [Changelog](#changelog)
-    - [Experimental Redis Sentinel support](#experimental-redis-sentinel-support)
+  - [Experimental Redis Sentinel support](#experimental-redis-sentinel-support)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Using an external Redis server
+
+## Overview
+
+Before diving into the details of setting up Redis and Redis Sentinel for HA,
+make sure you read this section to better understand the underline architecture.
+
+### Available setups
+
+Based on your infrastructure setup, there are multiple ways to setup Redis HA
+with GitLab. Omnibus GitLab packages have Redis and Redis Sentinel bundled with
+them to save you the hassle to install it yourself. Pick the one that suits your
+needs.
+
+- **Installations from source:** You need to install Redis and Redis Sentinel
+  yourself. Use the [Redis HA source install](redis_source.md) guide.
+- **Omnibus Community Edition (CE):** Redis is bundled so you can use the
+  package with only the Redis service enabled (works for both master and slave
+  setups).
+- **Omnibus Enterprise Edition (EE):** Both Redis and Redis Sentinel are bundled
+  in the Omnibus package so you can use only them to setup the whole Redis HA
+  infrastructure (master, slave and Sentinel).
+
+Note that with the Omnibus packages (both CE and EE), you can also use an
+[external Redis server](#using-a-non-omnibus-external-redis-server).
+
+### Using a non-Omnibus external Redis server
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for Redis. For example, AWS offers a managed ElastiCache service
 that runs Redis.
 
 Managed services can provide High Availability using their own proprietary
-technology and provide a transparent proxy, which means that GitLab doesn't
-need any additional change, or will use Sentinel and manage it for you.
+technology and provide a transparent proxy (which means that GitLab doesn't
+need any additional change) or they will use Sentinel and manage it for you.
 
-If your provider, uses Sentinel method, see [GitLab Setup](#gitlab-setup)
+If your provider, uses Sentinel, see [GitLab Setup](#gitlab-setup)
 to understand where you need to provide the list of servers and credentials.
 
 If you want to setup Redis by yourself, without using Omnibus, you can
-read our documentation: [Configuring Redis for GitLab HA (source install)](redis_source.md).
+read the documentation on [configuring Redis HA for source installs](redis_source.md).
 
-## High Availability with Sentinel
+### High Availability with Sentinel
 
-> Since GitLab `8.11`, you can configure a list of Redis Sentinel servers that
-will monitor a group of Redis servers to provide failover support.
-
-> With GitLab `8.14`, we bundled Redis Sentinel as part of Omnibus package and
-improved the way you use and configure it.
+>
+- Since GitLab `8.11`, you can configure a list of Redis Sentinel servers that
+  will monitor a group of Redis servers to provide failover support.
+- With GitLab `8.14`, we bundled Redis Sentinel as part of Omnibus package and
+  improved the way you use and configure it.
 
 High Availability with Redis requires a few things:
 
@@ -77,12 +109,12 @@ High Availability with Redis requires a few things:
 - Application support and visibility to all Sentinel and Redis instances
 
 Redis Sentinel can handle the most important tasks in a HA environment to help
-keep servers online with minimal to no downtime:
+keep servers online with minimal to no downtime. Redis Sentinel:
 
 - Monitors **Master** and **Slaves** instances to see if they are available
-- Promote a **Slave** to **Master** when the **Master** fails
-- Demote a **Master** to **Slave** when failed **Master** comes back online (to prevent
-  data-partitioning)
+- Promotes a **Slave** to **Master** when the **Master** fails
+- Demotes a **Master** to **Slave** when failed **Master** comes back online
+  (to prevent data-partitioning)
 - Can be queried by clients to always connect to the current **Master** server
 
 When a **Master** fails to respond, it's the client's responsibility to handle
@@ -93,24 +125,16 @@ the [Redis Sentinel documentation](http://redis.io/topics/sentinel) first, as
 failing to configure it correctly can lead to data loss, or can bring your
 whole cluster down, invalidating the failover effort.
 
-This documentation will provide you with a minimal and a recommended topology
-that can resist to some levels of failure. Usually the more Redis and Sentinel
-instances you have provisioned, the better will be your availability.
-
-The configuration consists of three parts:
-
-- Setup Redis Master and Slave nodes
-- Setup Sentinel nodes
-- Setup GitLab
-
 ### Prerequisites
 
 You need at least `3` independent machines: physical, or VMs running into
-distinct physical machines. They must be believed to fail in an
-independent way.
+distinct physical machines. It is essential that all master and Redis slaves
+run in different machines. If you fail to provision the machines in that
+specific way, any issue with the shared environment can bring your entire setup
+down.
 
-If you fail to provision the machines in that specific way, any issue with
-the shared environment can bring your entire setup down.
+It is OK to run a Sentinel along with a master or slave Redis instance.
+No more than one though.
 
 You also need to take in consideration the underlying network topology,
 making sure you have redundant connectivity between Redis / Sentinel and
@@ -118,6 +142,30 @@ GitLab instances, otherwise the networks will become a single point of
 failure.
 
 Read carefully how to configure the components below.
+
+### Recommended setup
+
+For a minimal setup, you will install the Omnibus GitLab package in `3`
+independent machines, both with **Redis** and **Sentinel**:
+
+- Redis Master + Sentinel
+- Redis Slave + Sentinel
+- Redis Slave + Sentinel
+
+Make sure you've read [Redis Setup](#redis-setup) and [Sentinel Setup](#sentinel-setup)
+before, to understand how and why the amount of nodes came from.
+
+For a recommended setup, that can resist more failures, you will install
+the Omnibus GitLab package in `5` independent machines, both with
+**Redis** and **Sentinel**:
+
+- Redis Master + Sentinel
+- Redis Slave + Sentinel
+- Redis Slave + Sentinel
+- Redis Slave + Sentinel
+- Redis Slave + Sentinel
+
+## Redis HA configuration
 
 ### Redis setup
 
@@ -156,14 +204,14 @@ Initial **Slave** nodes requires `redis['master']` defined to `false` and
 simplified configuration by enabling `redis_slave_role['enable']`, you
 just need to fill in the `redis['master_ip']`.
 
-This values doesn't have to be changed again in `/etc/gitlab/gitlab.rb` after
+This values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
 a failover, as the nodes will be managed by the Sentinels, and even after a
 `gitlab-ctl reconfigure`, they will get their configuration restored by
 the same Sentinels.
 
 ### Sentinel setup
 
-Sentinels watches both other sentinels and Redis nodes. Whenever a Sentinel
+Sentinels watch both other sentinels and Redis nodes. Whenever a Sentinel
 detects that a Redis node is not responding, it will announce that to the
 other sentinels. You have to reach the **quorum**, the minimum amount of
 sentinels that agrees that a node is down, to be able to start a failover.
@@ -222,33 +270,12 @@ official documentation:
   the slaves will be reconfigured by the Sentinels anyway, but not with
   the exact parallel-syncs progression as specified.
 
-### Recommended setup
-
-For a minimal setup, you will install the Omnibus GitLab package in `3`
-independent machines, both with **Redis** and **Sentinel**:
-
-- Redis Master + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
-
-Make sure you've read [Redis Setup](#redis-setup) and [Sentinel Setup](#sentinel-setup)
-before, to understand how and why the amount of nodes came from.
-
-For a recommended setup, that can resist more failures, you will install
-the Omnibus GitLab package in `5` independent machines, both with
-**Redis** and **Sentinel**:
-
-- Redis Master + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
-
 ## Configuring instances using Omnibus
 
 This is a summary of what are we going to do:
 
 1. Provision the required number of instances specified previously
+
    - You can opt to install Redis and Sentinel in the same machine or each in
      independent ones.
    - Don't install Redis and Sentinel in the same machines your GitLab instance
@@ -257,7 +284,7 @@ This is a summary of what are we going to do:
      connection over Redis (`6379`) and Sentinel (`26379`) ports.
    - GitLab machines must be able to access these machines and with the same
      permissions.
-   - Protected them from indiscriminating access from external networks (Internet),
+   - Protect them from access from external networks (Internet),
      to harden the security.
 
 1. Download/install Omnibus GitLab using **steps 1 and 2** from
@@ -394,7 +421,7 @@ which ideally should not have Redis or Sentinels in the same machine for a HA se
 
 See [example configuration](#configuration-for-gitlab) below.
 
-## Example Configurations
+## Minimal example configuration with 1 master, 2 slaves and 3 sentinels
 
 In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
@@ -836,3 +863,5 @@ Read more on high-availability configuration:
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [gh-534]: https://github.com/redis/redis-rb/issues/534
+[redis]: http://redis.io/
+[sentinel]: http://redis.io/topics/sentinel
