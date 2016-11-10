@@ -219,10 +219,10 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'spend command' do
-      it 'populates time_spent: "3600" if content contains /spend 1h' do
+      it 'populates spend_time: "3600" if content contains /spend 1h' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(time_spent: 3600)
+        expect(updates).to eq(spend_time: 3600)
       end
     end
 

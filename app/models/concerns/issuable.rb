@@ -13,6 +13,7 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
+  include TimeTrackable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
@@ -313,13 +314,5 @@ module Issuable
   def record_metrics
     metrics = self.metrics || create_metrics
     metrics.record!
-  end
-
-  def time_spent
-    timelogs.sum(:time_spent)
-  end
-
-  def spend_time(seconds)
-    timelogs.new(time_spent: seconds)
   end
 end

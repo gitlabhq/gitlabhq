@@ -40,9 +40,8 @@ class IssuableBaseService < BaseService
     SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
   end
 
-  def create_time_spent_note(issuable, time_spent)
-    SystemNoteService.change_time_spent(
-      issuable, issuable.project, current_user, time_spent)
+  def create_time_spent_note(issuable)
+    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
   end
 
   def filter_params(issuable_ability_name = :issue)
@@ -146,7 +145,6 @@ class IssuableBaseService < BaseService
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
     filter_params
-    change_spent_time(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -187,7 +185,6 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-    change_spent_time(issuable)
     filter_params
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -239,16 +236,6 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def change_spent_time(issuable)
-    if time_spent
-      issuable.spend_time(time_spent)
-    end
-  end
-
-  def time_spent
-    @time_spent ||= params.delete(:time_spent)
-  end
-
   def has_changes?(issuable, old_labels: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
@@ -274,8 +261,8 @@ class IssuableBaseService < BaseService
       create_time_estimate_note(issuable)
     end
 
-    if time_spent
-      create_time_spent_note(issuable, time_spent)
+    if issuable.time_spent?
+      create_time_spent_note(issuable)
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels

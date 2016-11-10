@@ -254,7 +254,11 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
-      @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+      time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours')
+
+      if time_spent
+        @updates[:time_estimate] = time_spent
+      end
     end
 
     desc 'Add or substract spent time'
@@ -264,10 +268,11 @@ module SlashCommands
     end
     command :spend do |raw_duration|
       reduce_time = raw_duration.sub!(/\A-/, '')
-      time_spent  = ChronicDuration.parse(raw_duration, default_unit: 'hours')
-      time_spent  *= -1 if reduce_time
+      time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours')
 
-      @updates[:time_spent] = time_spent
+      if time_spent
+        @updates[:spend_time] = reduce_time ? (time_spent * -1) : time_spent
+      end
     end
 
     def find_label_ids(labels_param)
