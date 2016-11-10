@@ -175,6 +175,30 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/owned' do
+    before do
+      project3
+      project4
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/projects/owned')
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated as project owner' do
+      it 'returns an array of projects the user owns' do
+        get api('/projects/owned', user4)
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(project4.name)
+        expect(json_response.first['owner']['username']).to eq(user4.username)
+      end
+    end
+  end
+
   describe 'GET /projects/visible' do
     let(:public_project) { create(:project, :public) }
 
