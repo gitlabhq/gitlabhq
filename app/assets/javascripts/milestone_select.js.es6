@@ -216,8 +216,8 @@
       // Swap out for vue resource.
       this.renderLoadingState();
       $.ajax({ type: 'PUT', url: issueUpdateURL, data: milestonePayload })
-        .done(data => {
-          this.handlePutSuccess(data);
+        .done(issuableData => {
+          this.handlePutSuccess(issuableData);
         });
     }
 
@@ -251,11 +251,11 @@
       return this.$el.form.submit();
     }
 
-    handlePutSuccess(data) {
+    handlePutSuccess(issuableData) {
       this.renderLoadedState();
 
-      data.milestone = this.parsePutValue(data);
-      this.writePutValue(data);
+      issuableData.milestone = this.parsePutValue(issuableData);
+      this.renderUpdatedState(issuableData);
     }
 
     parsePutValue(data) {
@@ -269,10 +269,10 @@
       return milestoneData;
     }
 
-    writePutValue(data) {
+    renderUpdatedState(issuableData) {
       const $valueDisplay = this.$el.valueDisplay;
       const $collapsedValue = this.$el.collapsedValue;
-      const milestoneData = data.milestone;
+      const milestoneData = issuableData.milestone;
 
       if (milestoneData != null) {
         $valueDisplay.html(this.templates.milestoneLink(milestoneData));
@@ -281,6 +281,10 @@
         $valueDisplay.html(this.templates.milestoneLinkNone);
         $collapsedValue.find('span').text('No');
       }
+    }
+
+    updateState(issuableData) {
+      this.renderUpdatedState(issuableData);
     }
   }
   global.MilestoneSelect = MilestoneSelect;
