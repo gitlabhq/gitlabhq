@@ -182,20 +182,6 @@ module API
       ActionController::Parameters.new(attrs).permit!
     end
 
-    # Helper method for validating all labels against its names
-    def validate_label_params(params)
-      errors = {}
-
-      params[:labels].to_s.split(',').each do |label_name|
-        label = available_labels.find_or_initialize_by(title: label_name.strip)
-        next if label.valid?
-
-        errors[label.title] = label.errors
-      end
-
-      errors
-    end
-
     # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
     # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
     #

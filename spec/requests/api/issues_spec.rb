@@ -697,6 +697,14 @@ describe API::API, api: true  do
         expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
       end
     end
+
+    context 'the user can only read the issue' do
+      it 'cannot create new labels' do
+        expect do
+          post api("/projects/#{project.id}/issues", non_member), title: 'new issue', labels: 'label, label2'
+        end.not_to change { project.labels.count }
+      end
+    end
   end
 
   describe 'POST /projects/:id/issues with spam filtering' do
@@ -839,8 +847,8 @@ describe API::API, api: true  do
     end
 
     it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user),
-          labels: ''
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), labels: ''
+
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([])
     end
@@ -892,8 +900,8 @@ describe API::API, api: true  do
         update_time = 2.weeks.ago
         put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label3', state_event: 'close', updated_at: update_time
-        expect(response).to have_http_status(200)
 
+        expect(response).to have_http_status(200)
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
