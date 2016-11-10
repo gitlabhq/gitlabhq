@@ -1,5 +1,5 @@
-/* eslint-disable */
-(function (global) {
+/* eslint-disable no-undef */
+(() => {
   class MilestoneSelect {
     constructor(currentProject) {
       this.$el = null;
@@ -50,11 +50,11 @@
       this.config.context = {
         isIssue,
         isMergeRequest,
-        isBoardSidebar:  $dropdown.hasClass('js-issue-board-sidebar'),
+        isBoardSidebar: $dropdown.hasClass('js-issue-board-sidebar'),
         isSubmittableNonIndex: $dropdown.hasClass('js-filter-submit'),
         isSubmittableIndex: $dropdown.hasClass('js-filter-submit') && (isIssue || isMergeRequest),
         isBoard: this.$el.html.hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar'),
-        shouldPreventSubmission:  $dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown'),
+        shouldPreventSubmission: $dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown'),
       };
 
       const dataset = this.config.dataset = this.$el.dropdown.get(0).dataset;
@@ -64,7 +64,7 @@
         showNo: dataset.showNo,
         showAny: dataset.showAny,
         showUpcoming: dataset.showUpcoming,
-        extraOptions: []
+        extraOptions: [],
       };
     }
 
@@ -83,7 +83,7 @@
               data-container='body' title='<%- remaining %>'><%- title %>
             </a>
           `),
-          milestoneLinkNone: `<span class='no-value'>None</span>`,
+          milestoneLinkNone: '<span class="no-value">None</span>',
           collapsedSidebarLabel: _.template(`
             <span class='has-tooltip' data-container='body' title='<%- remaining %>'
               data-placement='left'> <%- title %>
@@ -108,11 +108,11 @@
         defaultLabel: dataset.defaultLabel,
         vue: this.config.context.isBoardSidebar,
         showMenuAbove: this.config.display.showMenuAbove,
-        text: item => this.escapeText(item),
+        text: milestone => _.escape(milestone.title),
         hidden: () => this.renderDisplayState(),
         id: milestone => this.displaySelected(milestone),
         data: (term, callback) => this.fetchMilestones(term, callback),
-        toggleLabel: (selected, $el, e) => this.toggleLabel(selected, $el, e),
+        toggleLabel: (selected, $el) => this.toggleLabel(selected, $el),
         clicked: (selected, $el, e) => this.handleDropdownClick(selected, $el, e),
       });
 
@@ -127,7 +127,7 @@
     fetchMilestones(term, callback) {
       const milestonesUrl = this.config.dataset.milestones;
       return $.ajax({ url: milestonesUrl })
-        .done((milestones, callback) => this.handleFetchSuccess(milestones, callback));
+        .done(milestones => this.handleFetchSuccess(milestones, callback));
     }
 
     handleFetchSuccess(milestones, callback) {
@@ -176,15 +176,9 @@
       return this.putGeneric(selected, $el, e);
     }
 
-    toggleLabel(selected, $el, e) {
+    toggleLabel(selected, $el) {
       const defaultLabel = this.config.dataset.defaultLabel;
-
-      return (selected, el, e) => (selected && selected.id && el.hasClass('is-active')) ?
-        selected.title : defaultLabel;
-    }
-
-    escapeText(milestone) {
-      return _.escape(milestone.title);
+      return (selected && selected.id && $el.hasClass('is-active')) ? selected.title : defaultLabel;
     }
 
     renderDisplayState() {
@@ -206,7 +200,7 @@
       if (milestoneData != null) {
         $valueDisplay.html(this.templates.milestoneLink(milestoneData));
         $collapsedValue.find('span').html(this.templates.collapsedSidebarLabel(milestoneData));
-       } else {
+      } else {
         $valueDisplay.html(this.templates.milestoneLinkNone);
         $collapsedValue.find('span').text('No');
       }
@@ -228,7 +222,7 @@
       }
     }
 
-    putGeneric(selected, $el, e) {
+    putGeneric(selected) {
       const selectedMilestone = this.$el.dropdownSelectBox.find('input[type="hidden"]').val() || selected.id;
       const milestonePayload = {};
       const abilityName = this.config.dataset.abilityName;
@@ -237,16 +231,17 @@
       milestonePayload[abilityName].milestone_id = selectedMilestone;
 
       const issueUpdateURL = this.config.dataset.issueUpdate;
+
       // TODO: Use issuable pub/sub resource method to propagate changes
       this.renderLoadingState();
       $.ajax({ type: 'PUT', url: issueUpdateURL, data: milestonePayload })
-        .done(issuableData => {
-          this.handlePutSuccess(issuableData);
-        });
+        .done(issuableData => this.handlePutSuccess(issuableData));
     }
 
-    handlePutSuccess(issuableData) {
+    handlePutSuccess(data) {
       this.renderLoadedState();
+
+      const issuableData = data;
 
       issuableData.milestone = this.parsePutValue(issuableData);
       this.renderUpdatedState(issuableData);
@@ -263,17 +258,17 @@
       return milestoneData;
     }
 
-    putIssueBoardPage(selected, $el, e) {
+    putIssueBoardPage(selected, e) {
       gl.issueBoards.BoardsStore.state.filters[this.config.dataset.fieldName] = selected.name;
       gl.issueBoards.BoardsStore.updateFiltersUrl();
       e.preventDefault();
     }
 
-    putIssueBoardSidebar(selected, $el, e) {
+    putIssueBoardSidebar(selected) {
       if (selected.id !== -1) {
         Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'milestone', new ListMilestone({
           id: selected.id,
-          title: selected.name
+          title: selected.name,
         }));
       } else {
         Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'milestone');
@@ -282,17 +277,17 @@
       this.renderLoadingState();
 
       gl.issueBoards.BoardsStore.detail.issue.update(this.config.dataset.issueUpdate)
-        .then(() =>  this.renderLoadedState());
+        .then(() => this.renderLoadedState());
     }
 
-    putSubmittableIndex(selected, $el, e) {
+    putSubmittableIndex() {
       return Issuable.filterResults(this.$el.form);
     }
 
-    putSubmittableNonIndex(selected, $el, e) {
+    putSubmittableNonIndex() {
       return this.$el.form.submit();
     }
   }
-  global.MilestoneSelect = MilestoneSelect;
-})(window);
+  window.MilestoneSelect = MilestoneSelect;
+})();
 

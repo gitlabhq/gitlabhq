@@ -7,6 +7,7 @@
     "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"]
   },
   "globals": {
+    "Vue": false,
     "$": false,
     "_": false,
     "beforeEach": false,
