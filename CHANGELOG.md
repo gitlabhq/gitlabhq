@@ -35,9 +35,6 @@ entry.
 - Bump omniauth-gitlab to 1.0.2 to fix incompatibility with omniauth-oauth2.
 - Fix: Todos Filter Shows All Users.
 - Fix broken commits search.
-
-## 8.14.0 (2016-11-22)
-
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Diff collapse won't shift when collapsing.
