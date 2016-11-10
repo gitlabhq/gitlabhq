@@ -15,6 +15,6 @@
   "can-read-environment" => can?(current_user, :read_environment, @project),
   "can-create-environmnet" => can?(current_user, :create_environment, @project),
   "project-environments-path" => project_environments_path(@project),
-  "project-closed-environments-path" => project_environments_path(@project, scope: :stopped),
+  "project-stopped-environments-path" => project_environments_path(@project, scope: :stopped),
   "new-environment-path" => new_namespace_project_environment_path(@project.namespace, @project),
   "help-page-path" => help_page_path("ci/environments")}, class: container_class }

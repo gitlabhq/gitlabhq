@@ -43,6 +43,10 @@ feature 'Environments', feature: true, js:true do
 
     context 'with environments' do
       let(:resource) { create_list(:environment, 2) } 
+      before do
+        endpoint = namespace_project_environments_path(project.namespace, project)
+        stub_request(:any, endpoint).to_return(body: [{"name": "test"}])
+      end
       
       scenario 'does show "Available" and "Stopped" tab with links' do
         expect(page).to have_link('Stopped')

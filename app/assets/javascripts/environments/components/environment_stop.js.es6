@@ -13,12 +13,18 @@
       },
     },
 
+    methods: {
+      openConfirmDialog() {
+        return window.confirm('Are you sure you want to stop this environment?');
+      },
+    },
+
     template: `
-      <a class="btn stop-env-link" 
-        :href="stop_url" 
+      <a v-on:click="openConfirmDialog"
+        class="btn stop-env-link"
+        :href="stop_url"
         method="post"
-        rel="nofollow", 
-        data-confirm="Are you sure you want to stop this environment?">
+        rel="nofollow">
         <i class="fa fa-stop stop-env-icon"></i>
       </a>
     `,

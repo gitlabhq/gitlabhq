@@ -31,7 +31,7 @@
       'rollback-component': window.gl.environmentsList.RollbackComponent,
     },
 
-    props: ['model', 'can-create-deployment', 'can-create-deployment', 'can-read-environment'],
+    props: ['model', 'can-create-deployment', 'can-read-environment'],
 
     data() {
       return {
@@ -107,7 +107,7 @@
        */
       hasManualActions() {
         return this.$options.hasKey(this.model, 'manual_actions') &&
-          this.model.manual_actions.length;
+          this.model.manual_actions.length > 0;
       },
 
       /**
@@ -140,17 +140,6 @@
         const timeagoInstance = new timeago();
 
         return timeagoInstance.format(this.model.created_at);
-      },
-
-      /**
-       * Verifies if the environment has any manual actions to be rendered.
-       *
-       * @returns {Boolean}
-       */
-      hasManualActions() {
-        return this.model.last_deployment &&
-          this.model.last_deployment.manual_actions &&
-          this.model.last_deployment.manual_actions.length > 0;
       },
 
       /**
@@ -359,25 +348,25 @@
         <td class="hidden-xs col-sm-3">
           <div v-if="!isFolder">
             <div v-if="hasManualActions && canCreateDeployment" class="inline">
-              <actions-component 
+              <actions-component
                 :actions="manualActions">
               </actions-component>
             </div>
 
             <div v-if="model.external_url && canReadEnvironment" class="inline">
-              <external-url-component 
+              <external-url-component
                 :external_url="model.external_url">
               </external_url-component>
             </div>
 
             <div v-if="isStoppable && canCreateDeployment" class="inline">
-              <stop-component 
+              <stop-component
                 :stop_url="model.environment_url">
               </stop-component>
             </div>
 
             <div v-if="canRetry && canCreateDeployment" class="inline">
-              <rollback-component 
+              <rollback-component
                 :is_last_deployment="isLastDeployment"
                 :retry_url="retryUrl">
                 </rollback-component>
