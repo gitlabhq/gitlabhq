@@ -9,7 +9,7 @@
         return `mailto:${this.pipeline.commit.author_email}`;
       },
       alt() {
-        return `${this.pipeline.commit.author_name}'s avatar`
+        return `${this.pipeline.commit.author_name}'s avatar`;
       },
     },
     template: `

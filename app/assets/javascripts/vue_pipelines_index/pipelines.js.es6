@@ -20,12 +20,15 @@
         currentPage: '',
         intervalId: '',
         pagenum: 1,
+        count: {
+          all: 0,
+          running_or_pending: 0,
+        },
       };
     },
     props: [
       'scope',
       'store',
-      'count',
     ],
     created() {
       const url = window.location.toString();
@@ -65,9 +68,10 @@
           </table>
         </div>
         <vue-gl-pagination
+          v-if='count.all > 0'
           :pagenum='pagenum'
           :changepage='changepage'
-          :count='count'
+          :count='count.all'
         >
         </vue-gl-pagination>
       </div>

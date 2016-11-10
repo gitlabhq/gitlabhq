@@ -35,7 +35,7 @@
 
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
-  %div.content-list.pipelines{data: {url: namespace_project_pipelines_path(@project.namespace, @project, format: :json), "data-count": "#{@pipelines_count}"}}
+  %div.content-list.pipelines{data: {url: namespace_project_pipelines_path(@project.namespace, @project, format: :json)}}
     - if @pipelines.blank?
       %div
         .nothing-here-block No pipelines to show

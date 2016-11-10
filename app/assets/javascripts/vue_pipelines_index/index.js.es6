@@ -25,7 +25,6 @@
     el: '.vue-pipelines-index',
     data: {
       scope: project.dataset.url,
-      count: project.dataset.count,
       store: new gl.PipelineStore(),
     },
     components: {
@@ -36,7 +35,6 @@
         <vue-pipelines
           :scope='scope'
           :store='store'
-          :count='count'
         >
         </vue-pipelines>
       </div>

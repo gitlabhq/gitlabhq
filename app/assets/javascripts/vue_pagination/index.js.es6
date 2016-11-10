@@ -10,7 +10,7 @@
     ],
     computed: {
       last() {
-        return Math.ceil(+this.count / 5);
+        return Math.ceil(+this.count / 30);
       },
       getItems() {
         const total = +this.last;
