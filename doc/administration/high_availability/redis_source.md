@@ -153,7 +153,7 @@ outside (Internet).
 We will use the same `3` nodes with **Redis** + **Sentinel** topology
 discussed in the [Configuring Redis for GitLab HA](redis.md) documentation.
 
-Here is a list and description of each **machine** and the assined **ip**:
+Here is a list and description of each **machine** and the assigned **IP**:
 
 * `10.0.0.1`: Redis Master + Sentinel 1
 * `10.0.0.2`: Redis Slave 1 + Sentinel 2
@@ -170,7 +170,7 @@ or a failover promotes a different **Master** node.
 
 ### Configuring Redis Master
 
-`redis.conf`:
+**Example configation for Redis Master - `redis.conf`:**
 
 ```conf
 bind 10.0.0.1
@@ -181,7 +181,7 @@ masterauth redis-password-goes-here
 
 ### Configuring Redis Slaves
 
-**Slave 1 - `redis.conf`:**
+**Example configation for Slave 1 - `redis.conf`:**
 
 ```conf
 bind 10.0.0.2
@@ -193,7 +193,7 @@ masterauth redis-password-goes-here
 slaveof 10.0.0.1 6379
 ```
 
-**Slave 2 - `redis.conf`:**
+**Example configation for Slave 2 - `redis.conf`:**
 
 ```conf
 bind 10.0.0.3
@@ -211,7 +211,7 @@ For this example, **Sentinel 1** will be configured in the same machine as the
 **Redis Master**, **Sentinel 2** and **Sentinel 3** in the same machines as the
 **Slave 1** and **Slave 2** respectively.
 
-Sentinel 1 - `sentinel.conf`
+**Example configation for Sentinel 1 - `sentinel.conf`:**
 
 ```conf
 bind 10.0.0.1
@@ -222,7 +222,7 @@ sentinel down-after-milliseconds gitlab-redis 10000
 sentinel failover_timeout 30000
 ```
 
-Sentinel 2 - `sentinel.conf`
+**Example configation for Sentinel 2 - `sentinel.conf`:**
 
 ```conf
 bind 10.0.0.2
@@ -233,7 +233,7 @@ sentinel down-after-milliseconds gitlab-redis 10000
 sentinel failover_timeout 30000
 ```
 
-Sentinel 3 - `sentinel.conf`
+**Example configation for Sentinel 3 - `sentinel.conf`:**
 
 ```conf
 bind 10.0.0.3
