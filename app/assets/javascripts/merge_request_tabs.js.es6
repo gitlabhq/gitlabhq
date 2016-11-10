@@ -135,12 +135,14 @@
 
     scrollToElement(container) {
       if (location.hash) {
-        const navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + document.querySelector('.js-tabs-affix').offsetHeight;
+        const offset = 0 - (
+          $('.navbar-gitlab').outerHeight() +
+          $('.layout-nav').outerHeight() +
+          $('.js-tabs-affix').outerHeight()
+        );
         const $el = $(`${container} ${location.hash}:not(.match)`);
-        if ($el.length) {
-          $.scrollTo($el[0], {
-            offset: -navBarHeight,
-          });
+        if ($el.length > 0) {
+          $.scrollTo($el[0], { offset });
         }
       }
     }
