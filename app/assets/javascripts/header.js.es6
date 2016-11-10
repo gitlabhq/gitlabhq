@@ -1,6 +1,6 @@
-document.addEventListener('todo:toggle', (event) => {
+document.addEventListener('todo:toggle', (e) => {
   const todoPendingCount = document.querySelector('.todos-pending-count');
-  const count = event.detail.count;
+  const count = e.detail.count;
 
   if (todoPendingCount !== null) {
     todoPendingCount.textContent = gl.text.addDelimiter(count);

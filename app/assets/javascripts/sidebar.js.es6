@@ -42,8 +42,8 @@
         .on('click', 'html, body', (e) => this.handleClickEvent(e))
         .on('page:change', () => this.renderState());
 
-      document.addEventListener('todo:toggle', (event) => {
-        this.updateTodoCount(event.detail.count);
+      document.addEventListener('todo:toggle', (e) => {
+        this.updateTodoCount(e.detail.count);
       });
 
       this.renderState();

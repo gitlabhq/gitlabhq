@@ -16,12 +16,12 @@
     }
 
     function triggerToggle(newCount) {
-      const event = new CustomEvent('todo:toggle', {
+      const toggleTodoEvent = new CustomEvent('todo:toggle', {
         detail: {
           count: newCount,
         },
       });
-      document.dispatchEvent(event);
+      document.dispatchEvent(toggleTodoEvent);
     }
 
     fixture.preload(fixtureTemplate);
