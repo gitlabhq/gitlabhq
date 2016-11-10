@@ -3,21 +3,21 @@
   class MilestoneSelect {
     constructor(currentProject) {
       this.$el = {};
+      this.config = {};
       this.state = {};
       this.templates = {};
-      this.config = {};
 
-      this.storeDomRefs();
-      this.initConfig();
-      this.storePageContext();
+      this.storeElements();
+      this.storeConfig();
+      this.initState(currentProject);
       this.initTemplates();
       this.initDropdown();
     }
 
-    storeDomRefs() {
+    storeElements() {
       const $document = $(document);
       const $body = $document.find('body');
-      const $dropdown = $document.find('.js-milestone-select');
+      const $dropdown = $('.js-milestone-select');
       const $selectbox = $dropdown.closest('.selectbox');
       const $block = $selectbox.closest('.block');
       const $value = $block.find('.value');
@@ -30,43 +30,47 @@
         dropdown: $dropdown,
         dropdownSelectBox: $selectbox,
         containerBlock: $block,
-        valueDisplay: $value
+        valueDisplay: $value,
         loadingDisplay: $loading,
         collapsedValue: $collapsedValue
       });
     }
 
-    storePageContext() {
+    storeConfig() {
       const $dropdown = this.$el.dropdown;
       const currentPage = this.$el.body.data('page');
 
-      this.config.page = {
-        isIssueIndex: currentPage === 'projects:issues:index',
-        isMRIndex: currentPage === 'projects:merge_requests:index',
+      const isIssue = currentPage === 'projects:issues:index';
+      const isMergeRequest = currentPage === 'projects:merge_requests:index';
+
+      this.config.context = {
+        isIssue,
+        isMergeRequest,
         isBoardSidebar:  $dropdown.hasClass('js-issue-board-sidebar'),
         isSubmittableNonIndex: $dropdown.hasClass('js-filter-submit'),
-        isSubmittableIndex:  $dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex),
-        isBoardIndex:  $('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar'),
-        isInvalidMilestone:  this.dropdown.hasClass('js-filter-bulk-update') || this.dropdown.hasClass('js-issuable-form-dropdown'),
+        isSubmittableIndex: $dropdown.hasClass('js-filter-submit') && (isIssue || isMergeRequest),
+        isBoard:  $('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar'),
+        shouldPreventSubmission:  $dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown'),
       };
 
-      const dataset = this.config.dataset = this.$el.dropdown.dataset;
+      const dataset = this.config.dataset = this.$el.dropdown.get(0).dataset;
 
       this.config.display = {
-        showMenuAbove: dataset['showMenuAbove'],
-        showNo: dataset['showNo'],
-        showAny: dataset['showAny'],
-        showUpcoming: dataset['showUpcoming'],
+        showMenuAbove: dataset.showMenuAbove,
+        showNo: dataset.showNo,
+        showAny: dataset.showAny,
+        showUpcoming: dataset.showUpcoming,
         extraOptions: []
       };
     }
 
-    initState() {
+    initState(currentProject) {
       this.state.currentProject = currentProject ? JSON.parse(currentProject) : null;
+      this.state.selectedMilestone = this.config.dataset.selected;
     }
 
     initTemplates() {
-      if (this.dataset.issueUpdateURL) {
+      if (this.config.dataset.issueUpdateURL) {
         this.templates = {
           milestoneLink: _.template(`
             <a href='/<%- namespace %>/ <%- path %>/milestones/<%- iid %>' class='bold has-tooltip'
@@ -85,32 +89,34 @@
 
     initDropdown() {
       const dataset = this.config.dataset;
-      const selectedMilestone = dataset['selected'];
+      const selectedMilestone = dataset.selected;
       const searchFields = { fields: ['title'] };
       const isSelected = milestone => milestone.name === selectedMilestone;
 
-      $(this.dropdown).glDropdown({
+      this.$el.dropdown.glDropdown({
         isSelected,
         filterable: true,
         selectable: true,
         search: searchFields,
         defaultLabel: dataset.defaultLabel,
         fieldName: dataset.fieldName,
-        vue: this.config.page.isBoardSidebar,
+        vue: this.config.context.isBoardSidebar,
         showMenuAbove: this.config.display.showMenuAbove,
-        id: this.filterSelected,
-        data: this.fetchMilestones,
+        id: milestone => this.filterSelected(milestone),
+        data: (term, callback) => this.fetchMilestones(term, callback),
         text: this.escapeText,
-        hidden: this.renderDisplayState,
-        toggleLabel: this.toggleLabel,
-        clicked: this.handleDropdownClick,
+        hidden: () => this.renderDisplayState(),
+        toggleLabel: () => this.toggleLabel(),
+        clicked: (selected, $el, e) => this.handleDropdownClick(selected, $el, e),
       });
+
+      this.renderLoadedState();
     }
 
     renderDisplayState() {
-      $selectbox.hide();
+      this.$el.dropdownSelectBox.hide();
       // display:block overrides the hide-collapse rule
-      $value.css('display', '');
+      this.$el.valueDisplay.css('display', '');
 
     }
 
@@ -119,23 +125,23 @@
     }
 
     filterSelected(milestone) {
-      const useId = this.dataset['useId'];
+      const useId = this.config.dataset.useId;
       return (!useId && !this.$el.dropdown.is('.js-issuable-form-dropdown')) ? milestone.name : milestone.id;
     }
 
     fetchMilestones(term, callback) {
-      const milestonesUrl = this.dataset['milestonesUrl'];
-
+      const milestonesUrl = this.config.dataset.milestonesUrl;
       return $.ajax({ url: milestonesUrl })
         .done((data) => {
           this.prepExtraOptions();
-          callback(this.config.extraOptions.concat(data));
+          callback(this.config.display.extraOptions.concat(data));
           this.positionMenuAbove();
         });
     }
 
     toggleLabel() {
-      const defaultLabel = dropdownDataset['defaultLabel'];
+      const defaultLabel = this.config.dataset.defaultLabel;
+      const selected = this.state.selectedMilestone;
 
       return (selected, el, e) => (selected && selected.id && el.hasClass('is-active')) ?
         selected.title : defaultLabel;
@@ -148,32 +154,33 @@
     }
 
     prepExtraOptions() {
-      if (showAny) this.storeExtraDropdownOptions(0, '', 'Any Milestone');
-      if (showNo) this.storeExtraDropdownOptions(-1, 'No Milestone', 'No Milestone');
-      if (showUpcoming) this.storeExtraDropdownOptions(-2, '#upcoming', 'Upcoming');
-      if (extraOptions.length) this.storeExtraDropdownOptions('divider');
+      const displayConfig = this.config.display;
+      if (displayConfig.showAny) this.storeExtraDropdownOptions(0, '', 'Any Milestone');
+      if (displayConfig.showNo) this.storeExtraDropdownOptions(-1, 'No Milestone', 'No Milestone');
+      if (displayConfig.showUpcoming) this.storeExtraDropdownOptions(-2, '#upcoming', 'Upcoming');
+      if (displayConfig.extraOptions.length) this.storeExtraDropdownOptions('divider');
     }
 
     storeExtraDropdownOptions(id, name, title) {
       const divider = 'divider';
       const pushable = id === divider ? divider : { id, name, title };
-      this.extraOptions.push(pushable);
+      this.config.display.extraOptions.push(pushable);
     }
 
     renderLoadingState() {
       this.$el.loadingDisplay.fadeIn();
-      $dropdown.trigger('loading.gl.dropdown');
+      this.$el.dropdown.trigger('loading.gl.dropdown');
     }
 
     renderLoadedState() {
       this.$el.loadingDisplay.fadeOut();
-      $dropdown.trigger('loaded.gl.dropdown');
+      this.$el.dropdown.trigger('loaded.gl.dropdown');
     }
 
     handleDropdownClick(selected, $el, e) {
-      const pageConfig = this.config.page;
+      const pageConfig = this.config.context;
 
-      if (pageConfig.isInvalidMilestone) {
+      if (pageConfig.shouldPreventSubmission) {
         return e.preventDefault();
       }
 
@@ -193,20 +200,24 @@
         return this.putIssueBoardSidebar();
       }
 
-      return this.putGeneric();
+      return this.putGeneric(selected, $el);
     }
 
-    putGeneric() {
-      const abilityName = this.config.dataset['abilityName'];
+    putGeneric(selected, $el) {
+      const abilityName = this.config.dataset.abilityName;
       const milestone_id = this.$el.dropdownSelectBox.find('input[type="hidden"]').val();
       const milestonePayload = { [abilityName]: { milestone_id } };
+      const issueUpdateURL = this.config.dataset.issueUpdate;
       // Swap out for vue resource.
+          debugger;
       $.ajax({ type: 'PUT', url: issueUpdateURL, data: milestonePayload })
-        .done(data => this.handlePut);
+        .done(data => {
+          this.handleSuccess(data);
+        });
     }
 
     putIssueBoardPage() {
-      gl.issueBoards.BoardsStore.state.filters[this.dataset['fieldName']] = selected.name;
+      gl.issueBoards.BoardsStore.state.filters[this.config.dataset.fieldName] = selected.name;
       gl.issueBoards.BoardsStore.updateFiltersUrl();
       e.preventDefault();
     }
@@ -223,19 +234,20 @@
 
       this.renderLoadingState();
 
-      gl.issueBoards.BoardsStore.detail.issue.update(this.config.dataset('issueUpdate'))
+      gl.issueBoards.BoardsStore.detail.issue.update(this.config.dataset.issueUpdate)
         .then(() =>  this.renderLoadedState());
     }
 
     putSubmittableIndex() {
-      const selectedMilestone = this.dataset['selected'];
+      // THIS IS MISPLACED WILL BE NEED SOMEWHERe
+      let selectedMilestone = this.state.selected;
       // Pay attention here... looks like this is mutating selected milestone
       selectedMilestone = selected.name ? select.name : '';
       return Issuable.filterResults($dropdown.closest('form'));
     }
 
     putSubmittableNonIndex() {
-      return $dropdown.closest('form').submit();
+      return this.$el.dropdown.closest('form').submit();
     }
 
     handlePutSuccess(data) {
