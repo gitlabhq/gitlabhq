@@ -2,17 +2,14 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  const api = '/api/v3/projects';
-  const paginate = '?per_page=5&page=';
-
   gl.PipelineStore = class {
-    fetchDataLoop(Vue, pageNum) {
+    fetchDataLoop(Vue, pageNum, url) {
       const goFetch = () =>
-      // const url = `${api}/${this.scope}/pipelines${paginate}${pageNum}`
-        this.$http.get('/gitlab-org/gitlab-shell/pipelines.json?page=1')
+        this.$http.get(`${url}?page=${pageNum}`)
           .then((response) => {
             debugger
-            Vue.set(this, 'pipelines', JSON.parse(response.body));
+            const res = JSON.parse(response.body)
+            Vue.set(this, 'pipelines', res.pipelines);
           }, () => new Flash(
             'Something went wrong on our end.'
           ));

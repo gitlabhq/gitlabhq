@@ -30,12 +30,9 @@
     created() {
       const url = window.location.toString();
       if (~url.indexOf('?')) this.pagenum = url.split('?')[1].split('=')[1];
-      this.store.fetchDataLoop.call(this, Vue, this.pagenum);
+      this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
     },
     methods: {
-      shortsha(pipeline) {
-        return pipeline.sha.slice(0, 8);
-      },
       changepage(event, last) {
         const text = event.target.innerText;
         if (text === '...') return;
@@ -47,7 +44,8 @@
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
-        this.store.fetchDataLoop.call(this, Vue, this.pagenum);
+        debugger
+        this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
       pipelineurl(id) {
         return `pipelines/${id}`;
@@ -72,7 +70,7 @@
                 </vue-pipeline-url>
                 <vue-branch-commit
                   :pipeline='pipeline'
-                  :shortsha='shortsha'
+                  :shortsha='pipeline.commit.shortsha'
                 >
                 </vue-branch-commit>
                 <vue-stages></vue-stages>
