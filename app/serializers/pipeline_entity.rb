@@ -4,12 +4,14 @@ class PipelineEntity < Grape::Entity
   expose :id
   expose :user, if: -> (pipeline, opts) { created?(pipeline, opts) }, using: UserEntity
 
-  expose :status
-  expose :duration
-  expose :finished_at
-  expose :stages_with_statuses, as: :stages, if: -> (pipeline, opts) { updated?(pipeline, opts) }, using: PipelineStageEntity
-  expose :artifacts, if: -> (pipeline, opts) { updated?(pipeline, opts) }, using: PipelineArtifactEntity
-  expose :manual_actions, if: -> (pipeline, opts) { updated?(pipeline, opts) }, using: PipelineActionEntity
+  expose :details, if: -> (pipeline, opts) { updated?(pipeline, opts) } do
+    expose :status
+    expose :duration
+    expose :finished_at
+    expose :stages_with_statuses, as: :stages, using: PipelineStageEntity
+    expose :artifacts, using: PipelineArtifactEntity
+    expose :manual_actions, using: PipelineActionEntity
+  end
 
   expose :flags, if: -> (pipeline, opts) { created?(pipeline, opts) } do
     expose :latest?, as: :latest

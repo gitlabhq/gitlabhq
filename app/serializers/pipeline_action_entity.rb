@@ -7,8 +7,8 @@ class PipelineActionEntity < Grape::Entity
 
   expose :url do |build|
     play_namespace_project_build_path(
-      pipeline.project.namespace,
-      pipeline.project,
+      build.project.namespace,
+      build.project,
       build)
   end
 end

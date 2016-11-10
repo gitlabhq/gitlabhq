@@ -7,8 +7,8 @@ class PipelineArtifactEntity < Grape::Entity
 
   expose :url do |build|
     download_namespace_project_build_artifacts_path(
-      pipeline.project.namespace,
-      pipeline.project,
+      build.project.namespace,
+      build.project,
       build)
   end
 end
