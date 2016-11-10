@@ -23,6 +23,7 @@
       const $value = $block.find('.value');
       const $loading = $block.find('.block-loading');
       const $collapsedValue = $block.find('.sidebar-collapsed-icon');
+      const $form = $dropdown.closest('form');
 
       _.extend(this.$el, {
         body: $body,
@@ -32,7 +33,8 @@
         containerBlock: $block,
         valueDisplay: $value,
         loadingDisplay: $loading,
-        collapsedValue: $collapsedValue
+        collapsedValue: $collapsedValue,
+        form: $form
       });
     }
 
@@ -70,7 +72,7 @@
     }
 
     initTemplates() {
-      if (this.config.dataset.issueUpdateURL) {
+      if (this.config.dataset.issueUpdate) {
         this.templates = {
           milestoneLink: _.template(`
             <a href='/<%- namespace %>/ <%- path %>/milestones/<%- iid %>' class='bold has-tooltip'
@@ -106,7 +108,7 @@
         data: (term, callback) => this.fetchMilestones(term, callback),
         text: this.escapeText,
         hidden: () => this.renderDisplayState(),
-        toggleLabel: () => this.toggleLabel(),
+        toggleLabel: (selected, $el, e) => this.toggleLabel(selected, $el, e),
         clicked: (selected, $el, e) => this.handleDropdownClick(selected, $el, e),
       });
 
@@ -130,7 +132,7 @@
     }
 
     fetchMilestones(term, callback) {
-      const milestonesUrl = this.config.dataset.milestonesUrl;
+      const milestonesUrl = this.config.dataset.milestones;
       return $.ajax({ url: milestonesUrl })
         .done((data) => {
           this.prepExtraOptions();
@@ -139,9 +141,8 @@
         });
     }
 
-    toggleLabel() {
+    toggleLabel(selected, $el, e) {
       const defaultLabel = this.config.dataset.defaultLabel;
-      const selected = this.state.selectedMilestone;
 
       return (selected, el, e) => (selected && selected.id && el.hasClass('is-active')) ?
         selected.title : defaultLabel;
@@ -185,44 +186,48 @@
       }
 
       if (pageConfig.isBoardPage) {
-        return this.putIssueBoardPage();
+        return this.putIssueBoardPage(selected, $el, e);
       }
 
       if (pageConfig.isSubmittableIndex) {
-        return this.putSubmittableIndex();
+        return this.putSubmittableIndex(selected, $el, e);
       }
 
       if (pageConfig.isSubmittableNonIndex) {
-        return this.putSubmittableNonIndex();
+        return this.putSubmittableNonIndex(selected, $el, e);
       }
 
       if (pageConfig.isBoardSidebar) {
-        return this.putIssueBoardSidebar();
+        return this.putIssueBoardSidebar(selected, $el, e);
       }
 
-      return this.putGeneric(selected, $el);
+      return this.putGeneric(selected, $el, e);
     }
 
-    putGeneric(selected, $el) {
+    putGeneric(selected, $el, e) {
+      const selectedMilestone = this.$el.dropdownSelectBox.find('input[type="hidden"]').val() || selected.id;
+      const milestonePayload = {};
       const abilityName = this.config.dataset.abilityName;
-      const milestone_id = this.$el.dropdownSelectBox.find('input[type="hidden"]').val();
-      const milestonePayload = { [abilityName]: { milestone_id } };
+
+      milestonePayload[abilityName] = {};
+      milestonePayload[abilityName].milestone_id = selectedMilestone;
+
       const issueUpdateURL = this.config.dataset.issueUpdate;
       // Swap out for vue resource.
-          debugger;
+      this.renderLoadingState();
       $.ajax({ type: 'PUT', url: issueUpdateURL, data: milestonePayload })
         .done(data => {
-          this.handleSuccess(data);
+          this.handlePutSuccess(data);
         });
     }
 
-    putIssueBoardPage() {
+    putIssueBoardPage(selected, $el, e) {
       gl.issueBoards.BoardsStore.state.filters[this.config.dataset.fieldName] = selected.name;
       gl.issueBoards.BoardsStore.updateFiltersUrl();
       e.preventDefault();
     }
 
-    putIssueBoardSidebar() {
+    putIssueBoardSidebar(selected, $el, e) {
       if (selected.id !== -1) {
         Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'milestone', new ListMilestone({
           id: selected.id,
@@ -238,48 +243,46 @@
         .then(() =>  this.renderLoadedState());
     }
 
-    putSubmittableIndex() {
-      // THIS IS MISPLACED WILL BE NEED SOMEWHERe
-      let selectedMilestone = this.state.selected;
-      // Pay attention here... looks like this is mutating selected milestone
-      selectedMilestone = selected.name ? select.name : '';
-      return Issuable.filterResults($dropdown.closest('form'));
+    putSubmittableIndex(selected, $el, e) {
+      return Issuable.filterResults(this.$el.form);
     }
 
-    putSubmittableNonIndex() {
-      return this.$el.dropdown.closest('form').submit();
+    putSubmittableNonIndex(selected, $el, e) {
+      return this.$el.form.submit();
     }
 
     handlePutSuccess(data) {
       this.renderLoadedState();
-      this.$el.dropdownSelectBox.hide();
-      this.$el.selectedMilestone.css('display', '');
 
-      const newMilestone = this.parsePutValue();
-      this.writePutValue(newMilestone);
+      data.milestone = this.parsePutValue(data);
+      this.writePutValue(data);
     }
 
-    parsePutValue() {
-      if (data.milestone != null) {
-        data.milestone.namespace = this.currentProject.namespace;
-        data.milestone.path = this.currentProject.path;
-        data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
+    parsePutValue(data) {
+      const milestoneData = data.milestone;
+      if (milestoneData != null) {
+        const currentProject = this.state.currentProject;
+        milestoneData.namespace = currentProject.namespace;
+        milestoneData.path = currentProject.path;
+        milestoneData.remaining = gl.utils.timeFor(milestoneData.due_date);
       }
-      return data.milestone;
+      return milestoneData;
     }
 
-    writePutValue(newMilestone) {
+    writePutValue(data) {
       const $valueDisplay = this.$el.valueDisplay;
       const $collapsedValue = this.$el.collapsedValue;
+      const milestoneData = data.milestone;
 
-      if (newMilestone != null) {
-        $valueDisplay.html(this.templates.milestoneLink(data.milestone));
-        $sidebarCollapsedValue.find('span').html(this.templates.collapsedSidebarLabel(data.milestone));
+      if (milestoneData != null) {
+        $valueDisplay.html(this.templates.milestoneLink(milestoneData));
+        $collapsedValue.find('span').html(this.templates.collapsedSidebarLabel(milestoneData));
        } else {
         $valueDisplay.html(this.templates.milestoneLinkNone);
-        $sidebarCollapsedValue.find('span').text('No');
+        $collapsedValue.find('span').text('No');
       }
     }
   }
   global.MilestoneSelect = MilestoneSelect;
-})(window.gl || (window.gl = {}));
+})(window);
+
