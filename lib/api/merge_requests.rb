@@ -77,11 +77,6 @@ module API
 
         mr_params = declared_params
 
-        # Validate label names in advance
-        if (errors = validate_label_params(mr_params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
-
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
         if merge_request.valid?
@@ -156,11 +151,6 @@ module API
           authorize! :update_merge_request, merge_request
 
           mr_params = declared_params(include_missing: false)
-
-          # Validate label names in advance
-          if (errors = validate_label_params(mr_params)).any?
-            render_api_error!({ labels: errors }, 400)
-          end
 
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
