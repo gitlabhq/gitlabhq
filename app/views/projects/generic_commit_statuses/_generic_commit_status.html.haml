@@ -23,7 +23,7 @@
       - if generic_commit_status.pipeline.user
         = user_avatar(user: generic_commit_status.pipeline.user, size: 20)
       - else
-        %span.api.monospace API
+        %span.monospace API
 
   - if defined?(commit_sha) && commit_sha
     %td
