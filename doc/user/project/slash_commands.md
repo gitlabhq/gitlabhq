@@ -29,3 +29,5 @@ do.
 | <code>/due &lt;in 2 days &#124; this Friday &#124; December 31st&gt;</code> | Set due date |
 | `/remove_due_date`         | Remove due date |
 | `/wip`                     | Toggle the Work In Progress status |
+| <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate |
+| <code>/spend &lt;1h 30m &#124; -1h 5m&gt;</code> | Add or substract spent time |

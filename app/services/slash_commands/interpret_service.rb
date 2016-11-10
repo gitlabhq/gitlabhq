@@ -257,8 +257,8 @@ module SlashCommands
       @updates[:time_estimate] = ChronicDuration.parse(raw_duration, default_unit: 'hours')
     end
 
-    desc 'Enter current spent time'
-    params '<1h 30m>'
+    desc 'Add or substract spent time'
+    params '<1h 30m | -1h 30m>'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
