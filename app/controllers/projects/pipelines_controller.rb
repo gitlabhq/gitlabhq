@@ -17,8 +17,9 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.html
       format.json do
          render json: {
-           pipelines: PipelineSerializer.new(project: @project).
-            represent(@pipelines, current_user: current_user, last_updated: @last_updated),
+           pipelines: PipelineSerializer
+             .new(project: @project, user: @current_user)
+             .incremental(@pipelines, @last_updated),
            updated_at: Time.now,
            count: {
              all: @pipelines_count,

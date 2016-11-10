@@ -2,7 +2,8 @@ class PipelineEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
-  expose :user, if: -> (pipeline, opts) { created?(pipeline, opts) }, using: UserEntity
+  expose :user, if: proc { created_exposure? }, using: UserEntity
+
   expose :url do |pipeline|
     namespace_project_pipeline_path(
       pipeline.project.namespace,
@@ -10,7 +11,7 @@ class PipelineEntity < Grape::Entity
       pipeline)
   end
 
-  expose :details, if: -> (pipeline, opts) { updated?(pipeline, opts) } do
+  expose :details, if: proc { updated_exposure? } do
     expose :status
     expose :duration
     expose :finished_at
@@ -19,18 +20,20 @@ class PipelineEntity < Grape::Entity
     expose :manual_actions, using: PipelineActionEntity
   end
 
-  expose :flags, if: -> (pipeline, opts) { created?(pipeline, opts) } do
+  expose :flags, if: proc { created_exposure? } do
     expose :latest?, as: :latest
     expose :triggered?, as: :triggered
+
     expose :yaml_errors?, as: :yaml_errors do |pipeline|
       pipeline.yaml_errors.present?
     end
+
     expose :stuck?, as: :stuck do |pipeline|
       pipeline.builds.any?(&:stuck?)
     end
   end
 
-  expose :ref, if: -> (pipeline, opts) { created?(pipeline, opts) } do
+  expose :ref, if: proc { updated_exposure? } do
     expose :name do |pipeline|
       pipeline.ref
     end
@@ -45,31 +48,43 @@ class PipelineEntity < Grape::Entity
     expose :tag?
   end
 
-  expose :commit, if: -> (pipeline, opts) { created?(pipeline, opts) }, using: CommitEntity
+  expose :commit, if: proc { created_exposure? }, using: CommitEntity
 
-  expose :retry_url, if: -> (pipeline, opts) { updated?(pipeline, opts) } do |pipeline|
-    can?(current_user, :update_pipeline, pipeline.project) &&
+  expose :retry_url, if: proc { updated_exposure? } do |pipeline|
+    can?(request.user, :update_pipeline, pipeline.project) &&
       pipeline.retryable? &&
-      retry_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id)
+      retry_namespace_project_pipeline_path(pipeline.project.namespace,
+                                            pipeline.project, pipeline.id)
   end
 
-  expose :cancel_url, if: -> (pipeline, opts) { updated?(pipeline, opts) } do |pipeline|
-    can?(current_user, :update_pipeline, pipeline.project) &&
+  expose :cancel_url, if: proc { updated_exposure? } do |pipeline|
+    can?(request.user, :update_pipeline, pipeline.project) &&
       pipeline.cancelable? &&
-      cancel_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id)
+      cancel_namespace_project_pipeline_path(pipeline.project.namespace,
+                                             pipeline.project, pipeline.id)
   end
 
-  private
-
-  def last_updated(opts)
-    opts.fetch(:last_updated)
+  def created_exposure?
+    !incremental? || created?
   end
 
-  def created?(pipeline, opts)
-    !last_updated(opts) || pipeline.created_at > last_updated(opts)
+  def updated_exposure?
+    !incremental? || updated?
   end
 
-  def updated?(pipeline, opts)
-    !last_updated(opts) || pipeline.updated_at > last_updated(opts)
+  def incremental?
+    options[:incremental]
+  end
+
+  def last_updated
+    options.fetch(:last_updated)
+  end
+
+  def updated?
+    @object.updated_at > last_updated
+  end
+
+  def created?
+    @object.created_at > last_updated
   end
 end
