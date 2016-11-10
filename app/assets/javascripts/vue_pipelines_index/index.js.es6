@@ -6,6 +6,7 @@
 //= require ./store.js.es6
 //= require ./pipeline_url.js.es6
 //= require ./pipeline_head.js.es6
+//= require ./stage.js.es6
 //= require ./stages.js.es6
 //= require ./pipeline_actions.js.es6
 //= require ./branch_commit.js.es6

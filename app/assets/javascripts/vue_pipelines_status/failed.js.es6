@@ -7,12 +7,11 @@
       'vue-failed-icon': gl.VueFailedIcon,
     },
     props: [
-      'scope',
-      'scopeurl',
+      'pipeline',
     ],
     template: `
       <td class="commit-link">
-        <a :href='scopeurl(scope.id)'>
+        <a :href='pipeline.url'>
           <span class="ci-status ci-failed">
             <vue-failed-icon></vue-failed-icon>
             &nbsp;failed

@@ -24,7 +24,7 @@
       finishdate() {
         const date = new Date(
           new Date(
-            this.pipeline.finished_at
+            this.pipeline.details.finished_at
           ).getTime() - new Date(
             this.pipeline.started_at
           ).getTime()
@@ -51,7 +51,7 @@
 
         options.timeZoneName = 'short';
 
-        const finished = this.pipeline.finished_at;
+        const finished = this.pipeline.details.finished_at;
 
         if (!finished) return false;
 

@@ -9,27 +9,23 @@
       'vue-failed-scope': gl.VueFailedScope,
     },
     props: [
-      'scope',
-      'scopeurl',
+      'pipeline',
     ],
     template: `
       <td class="commit-link">
         <vue-running-scope
-          v-if="scope.status === 'running'"
-          :scope='scope'
-          :scopeurl='scopeurl'
+          v-if="pipeline.details.status === 'running'"
+          :pipeline='pipeline'
         >
         </vue-running-scope>
         <vue-pending-scope
-          v-if="scope.status === 'pending'"
-          :scope='scope'
-          :scopeurl='scopeurl'
+          v-if="pipeline.details.status === 'pending'"
+          :pipeline='pipeline'
         >
         </vue-pending-scope>
         <vue-failed-scope
-          v-if="scope.status === 'failed'"
-          :scope='scope'
-          :scopeurl='scopeurl'
+          v-if="pipeline.details.status === 'failed'"
+          :pipeline='pipeline'
         >
         </vue-failed-scope>
       </td>

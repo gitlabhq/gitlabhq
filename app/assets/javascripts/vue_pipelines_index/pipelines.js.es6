@@ -44,11 +44,7 @@
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
-        debugger
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
-      },
-      pipelineurl(id) {
-        return `pipelines/${id}`;
       },
     },
     template: `
@@ -58,22 +54,10 @@
             <vue-pipeline-head></vue-pipeline-head>
             <tbody>
               <tr class="commit" v-for='pipeline in pipelines'>
-                <vue-status-scope
-                  :scope='pipeline'
-                  :scopeurl='pipelineurl'
-                >
-                </vue-status-scope>
-                <vue-pipeline-url
-                  :pipeline='pipeline'
-                  :pipelineurl='pipelineurl'
-                >
-                </vue-pipeline-url>
-                <vue-branch-commit
-                  :pipeline='pipeline'
-                  :shortsha='pipeline.commit.shortsha'
-                >
-                </vue-branch-commit>
-                <vue-stages></vue-stages>
+                <vue-status-scope :pipeline='pipeline'></vue-status-scope>
+                <vue-pipeline-url :pipeline='pipeline'></vue-pipeline-url>
+                <vue-branch-commit :pipeline='pipeline'></vue-branch-commit>
+                <vue-stages :pipeline='pipeline'></vue-stages>
                 <vue-time-ago :pipeline='pipeline'></vue-time-ago>
                 <vue-pipeline-actions></vue-pipeline-actions>
               </tr>

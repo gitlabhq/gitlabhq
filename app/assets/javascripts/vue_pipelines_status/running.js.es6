@@ -7,12 +7,11 @@
       'vue-running-icon': gl.VueRunningIcon,
     },
     props: [
-      'scope',
-      'scopeurl',
+      'pipeline',
     ],
     template: `
       <td class="commit-link">
-        <a :href='scopeurl(scope.id)'>
+        <a :href='pipeline.url'>
           <span class="ci-status ci-running">
             <vue-running-icon></vue-running-icon>
             &nbsp;running

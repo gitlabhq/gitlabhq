@@ -8,15 +8,20 @@
     },
     props: [
       'pipeline',
-      'pipelineurl',
     ],
+    computed: {
+      user() {
+        if (!this.pipeline.user) return 'API';
+        return this.pipeline.user;
+      },
+    },
     template: `
       <td>
-        <a :href='pipelineurl(pipeline.id)'>
+        <a :href='pipeline.url'>
           <span class="pipeline-id">#{{pipeline.id}}</span>
         </a>
         <span>by</span>
-        <span class="api monospace">{{pipeline.user}}</span>
+        <span class="api monospace">{{user}}</span>
       </td>
     `,
   });

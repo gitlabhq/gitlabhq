@@ -7,12 +7,11 @@
       'vue-pending-icon': gl.VuePendingIcon,
     },
     props: [
-      'scope',
-      'scopeurl',
+      'pipeline',
     ],
     template: `
       <td class="commit-link">
-        <a :href='scopeurl(scope.id)'>
+        <a :href='pipeline.url'>
           <span class="ci-status ci-pending">
             <vue-pending-icon></vue-pending-icon>
             &nbsp;pending
