@@ -20,7 +20,10 @@ module Gitlab
       end
 
       def filtered_html
-        @filtered_html ||= (filter_replies!; document.inner_html)
+        @filtered_html ||= begin
+          filter_replies!
+          document.inner_html
+        end
       end
 
       def filtered_text
