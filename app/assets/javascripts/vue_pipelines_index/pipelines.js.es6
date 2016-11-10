@@ -17,8 +17,8 @@
     data() {
       return {
         pipelines: [],
-        currentPage: '',
         intervalId: '',
+        updatedAt: '',
         pagenum: 1,
         count: {
           all: 0,
