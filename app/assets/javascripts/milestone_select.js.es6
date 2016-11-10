@@ -2,10 +2,10 @@
 (function (global) {
   class MilestoneSelect {
     constructor(currentProject) {
-      this.$el = {};
-      this.config = {};
-      this.state = {};
-      this.templates = {};
+      this.$el = null;
+      this.config = null;
+      this.state = null;
+      this.templates = null;
 
       this.storeElements();
       this.storeConfig();
@@ -25,7 +25,7 @@
       const $collapsedValue = $block.find('.sidebar-collapsed-icon');
       const $form = $dropdown.closest('form');
 
-      _.extend(this.$el, {
+      this.$el = {
         body: $body,
         document: $document,
         dropdown: $dropdown,
@@ -34,8 +34,8 @@
         valueDisplay: $value,
         loadingDisplay: $loading,
         collapsedValue: $collapsedValue,
-        form: $form
-      });
+        form: $form,
+      };
     }
 
     storeConfig() {
@@ -67,8 +67,10 @@
     }
 
     initState(currentProject) {
-      this.state.currentProject = currentProject ? JSON.parse(currentProject) : null;
-      this.state.selectedMilestone = this.config.dataset.selected;
+      this.state = {
+        currentProject: currentProject ? JSON.parse(currentProject) : null,
+        selectedMilestone: this.config.dataset.selected,
+      };
     }
 
     initTemplates() {
@@ -104,21 +106,15 @@
         defaultLabel: dataset.defaultLabel,
         vue: this.config.context.isBoardSidebar,
         showMenuAbove: this.config.display.showMenuAbove,
-        id: milestone => this.filterSelected(milestone),
-        data: (term, callback) => this.fetchMilestones(term, callback),
         text: item => this.escapeText(item),
         hidden: () => this.renderDisplayState(),
+        id: milestone => this.filterSelected(milestone),
+        data: (term, callback) => this.fetchMilestones(term, callback),
         toggleLabel: (selected, $el, e) => this.toggleLabel(selected, $el, e),
         clicked: (selected, $el, e) => this.handleDropdownClick(selected, $el, e),
       });
 
       this.renderLoadedState();
-    }
-
-    renderDisplayState() {
-      this.$el.dropdownSelectBox.hide();
-      // display:block overrides the hide-collapse rule
-      this.$el.valueDisplay.css('display', '');
     }
 
     escapeText(milestone) {
@@ -147,40 +143,10 @@
         selected.title : defaultLabel;
     }
 
-    positionMenuAbove() {
-      if (this.config.display.showMenuAbove) {
-        this.$el.dropdown.positionMenuAbove();
-      }
-    }
-
-    prepExtraOptions() {
-      const displayConfig = this.config.display;
-      if (displayConfig.showAny) this.storeExtraDropdownOptions(0, '', 'Any Milestone');
-      if (displayConfig.showNo) this.storeExtraDropdownOptions(-1, 'No Milestone', 'No Milestone');
-      if (displayConfig.showUpcoming) this.storeExtraDropdownOptions(-2, '#upcoming', 'Upcoming');
-      if (displayConfig.extraOptions.length) this.storeExtraDropdownOptions('divider');
-    }
-
-    storeExtraDropdownOptions(id, name, title) {
-      const divider = 'divider';
-      const pushable = id === divider ? divider : { id, name, title };
-      this.config.display.extraOptions.push(pushable);
-    }
-
-    renderLoadingState() {
-      this.$el.loadingDisplay.fadeIn();
-      this.$el.dropdown.trigger('loading.gl.dropdown');
-    }
-
-    renderLoadedState() {
-      this.$el.loadingDisplay.fadeOut();
-      this.$el.dropdown.trigger('loaded.gl.dropdown');
-    }
-
     handleDropdownClick(selected, $el, e) {
       const pageConfig = this.config.context;
 
-      if (pageConfig.shouldPreventSubmission) {
+      if (pageConfig.shouldPrevntSubmission) {
         return e.preventDefault();
       }
 
@@ -203,6 +169,61 @@
       return this.putGeneric(selected, $el, e);
     }
 
+    renderDisplayState() {
+      this.$el.dropdownSelectBox.hide();
+      // display:block overrides the hide-collapse rule
+      this.$el.valueDisplay.css('display', '');
+    }
+
+    updateState(issuableData) {
+      // TODO: Pass this to a pub/sub resource to update async
+      this.renderUpdatedState(issuableData);
+    }
+
+    renderUpdatedState(issuableData) {
+      const $valueDisplay = this.$el.valueDisplay;
+      const $collapsedValue = this.$el.collapsedValue;
+      const milestoneData = issuableData.milestone;
+
+      if (milestoneData != null) {
+        $valueDisplay.html(this.templates.milestoneLink(milestoneData));
+        $collapsedValue.find('span').html(this.templates.collapsedSidebarLabel(milestoneData));
+       } else {
+        $valueDisplay.html(this.templates.milestoneLinkNone);
+        $collapsedValue.find('span').text('No');
+      }
+    }
+
+    renderLoadingState() {
+      this.$el.loadingDisplay.fadeIn();
+      this.$el.dropdown.trigger('loading.gl.dropdown');
+    }
+
+    renderLoadedState() {
+      this.$el.loadingDisplay.fadeOut();
+      this.$el.dropdown.trigger('loaded.gl.dropdown');
+    }
+
+    positionMenuAbove() {
+      if (this.config.display.showMenuAbove) {
+        this.$el.dropdown.positionMenuAbove();
+      }
+    }
+
+    prepExtraOptions() {
+      const displayConfig = this.config.display;
+      if (displayConfig.showAny) this.storeExtraDropdownOptions(0, '', 'Any Milestone');
+      if (displayConfig.showNo) this.storeExtraDropdownOptions(-1, 'No Milestone', 'No Milestone');
+      if (displayConfig.showUpcoming) this.storeExtraDropdownOptions(-2, '#upcoming', 'Upcoming');
+      if (displayConfig.extraOptions.length) this.storeExtraDropdownOptions('divider');
+    }
+
+    storeExtraDropdownOptions(id, name, title) {
+      const divider = 'divider';
+      const pushable = id === divider ? divider : { id, name, title };
+      this.config.display.extraOptions.push(pushable);
+    }
+
     putGeneric(selected, $el, e) {
       const selectedMilestone = this.$el.dropdownSelectBox.find('input[type="hidden"]').val() || selected.id;
       const milestonePayload = {};
@@ -218,6 +239,24 @@
         .done(issuableData => {
           this.handlePutSuccess(issuableData);
         });
+    }
+
+    handlePutSuccess(issuableData) {
+      this.renderLoadedState();
+
+      issuableData.milestone = this.parsePutValue(issuableData);
+      this.renderUpdatedState(issuableData);
+    }
+
+    parsePutValue(data) {
+      const milestoneData = data.milestone;
+      if (milestoneData != null) {
+        const currentProject = this.state.currentProject;
+        milestoneData.namespace = currentProject.namespace;
+        milestoneData.path = currentProject.path;
+        milestoneData.remaining = gl.utils.timeFor(milestoneData.due_date);
+      }
+      return milestoneData;
     }
 
     putIssueBoardPage(selected, $el, e) {
@@ -250,42 +289,7 @@
       return this.$el.form.submit();
     }
 
-    handlePutSuccess(issuableData) {
-      this.renderLoadedState();
 
-      issuableData.milestone = this.parsePutValue(issuableData);
-      this.renderUpdatedState(issuableData);
-    }
-
-    parsePutValue(data) {
-      const milestoneData = data.milestone;
-      if (milestoneData != null) {
-        const currentProject = this.state.currentProject;
-        milestoneData.namespace = currentProject.namespace;
-        milestoneData.path = currentProject.path;
-        milestoneData.remaining = gl.utils.timeFor(milestoneData.due_date);
-      }
-      return milestoneData;
-    }
-
-    renderUpdatedState(issuableData) {
-      const $valueDisplay = this.$el.valueDisplay;
-      const $collapsedValue = this.$el.collapsedValue;
-      const milestoneData = issuableData.milestone;
-
-      if (milestoneData != null) {
-        $valueDisplay.html(this.templates.milestoneLink(milestoneData));
-        $collapsedValue.find('span').html(this.templates.collapsedSidebarLabel(milestoneData));
-       } else {
-        $valueDisplay.html(this.templates.milestoneLinkNone);
-        $collapsedValue.find('span').text('No');
-      }
-    }
-
-    updateState(issuableData) {
-      // TODO: Pass this to a pub/sub resource to update async
-      this.renderUpdatedState(issuableData);
-    }
   }
   global.MilestoneSelect = MilestoneSelect;
 })(window);
