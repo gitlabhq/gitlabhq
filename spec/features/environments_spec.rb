@@ -149,6 +149,24 @@ feature 'Environments', feature: true do
       scenario 'does show no deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')
       end
+
+      context 'for available environment' do
+        given(:environment) { create(:environment, project: project, state: :available) }
+
+        scenario 'does allow to stop environment' do
+          click_link('Stop')
+
+          expect(page).to have_content(environment.name.titleize)
+        end
+      end
+
+      context 'for stopped environment' do
+        given(:environment) { create(:environment, project: project, state: :stopped) }
+
+        scenario 'does not shows stop button' do
+          expect(page).not_to have_link('Stop')
+        end
+      end
     end
 
     context 'with deployments' do
@@ -173,10 +191,6 @@ feature 'Environments', feature: true do
 
         scenario 'does show re-deploy button' do
           expect(page).to have_link('Re-deploy')
-        end
-
-        scenario 'does not show stop button' do
-          expect(page).not_to have_link('Stop')
         end
 
         context 'with manual action' do

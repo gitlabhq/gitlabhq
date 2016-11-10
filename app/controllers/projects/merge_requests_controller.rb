@@ -436,7 +436,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 
           stop_url =
-            if environment.stoppable? && can?(current_user, :create_deployment, environment)
+            if environment.can_run_stop_action? && can?(current_user, :create_deployment, environment)
               stop_namespace_project_environment_path(project.namespace, project, environment)
             end
 

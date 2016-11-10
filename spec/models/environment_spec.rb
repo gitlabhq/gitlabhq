@@ -99,8 +99,8 @@ describe Environment, models: true do
     end
   end
 
-  describe '#stoppable?' do
-    subject { environment.stoppable? }
+  describe '#can_run_stop_action?' do
+    subject { environment.can_run_stop_action? }
 
     context 'when no other actions' do
       it { is_expected.to be_falsey }
@@ -129,17 +129,39 @@ describe Environment, models: true do
     end
   end
 
-  describe '#stop!' do
+  describe '#run_stop!' do
     let(:user) { create(:user) }
 
-    subject { environment.stop!(user) }
+    subject { environment.run_stop!(user) }
 
     before do
-      expect(environment).to receive(:stoppable?).and_call_original
+      expect(environment).to receive(:available?).and_call_original
     end
 
     context 'when no other actions' do
-      it { is_expected.to be_nil }
+      context 'environment is available' do
+        before do
+          environment.update(state: :available)
+        end
+
+        it do
+          subject
+
+          expect(environment).to be_stopped
+        end
+      end
+
+      context 'environment is already stopped' do
+        before do
+          environment.update(state: :stopped)
+        end
+
+        it do
+          subject
+
+          expect(environment).to be_stopped
+        end
+      end
     end
 
     context 'when matching action is defined' do
