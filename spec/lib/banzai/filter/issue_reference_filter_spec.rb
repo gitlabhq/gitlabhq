@@ -169,12 +169,12 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
     context 'with JIRA enabled on source project' do
       let(:project) { create(:jira_project, :public, namespace: namespace) }
-    end
 
-    it 'links to a valid reference' do
-      doc = reference_filter("See #{reference}")
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq(helper.url_for_issue(issue.iid, issue.project))
+        expect(doc.css('a').first.attr('href')).to eq(helper.url_for_issue(issue.iid, issue.project))
+      end
     end
   end
 
