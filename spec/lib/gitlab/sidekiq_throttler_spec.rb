@@ -11,12 +11,6 @@ describe Gitlab::SidekiqThrottler do
     )
   end
 
-  describe '#set_limit' do
-    it 'returns the correct limit' do
-      expect(Gitlab::SidekiqThrottler.send(:set_limit)).to eq 4
-    end
-  end
-
   describe '#execute!' do
     it 'sets limits on the selected queues' do
       Gitlab::SidekiqThrottler.execute!

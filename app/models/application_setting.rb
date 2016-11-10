@@ -19,7 +19,7 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
   serialize :repository_storages
-  serialize :sidekiq_throttling_queues
+  serialize :sidekiq_throttling_queues, Array
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text

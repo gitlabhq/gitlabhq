@@ -304,9 +304,9 @@
     .form-group
       = f.label :sidekiq_throttling_factor, 'Throttling Factor', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.number_field :sidekiq_throttling_factor, class: 'form-control', min: '0', max: '0.99', step: '0.01'
+        = f.number_field :sidekiq_throttling_factor, class: 'form-control', min: '0.01', max: '0.99', step: '0.01'
         .help-block
-          The factor by which the queues should be throttled. A value between 0.1 and 0.9.
+          The factor by which the queues should be throttled. A value between 0.0 and 1.0, exclusive.
 
   %fieldset
     %legend Spam and Anti-bot Protection
