@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require blob/template_selector */
 
@@ -23,6 +24,6 @@
 
     return BlobLicenseSelector;
 
-  })(TemplateSelector);
+  })(gl.TemplateSelector);
 
 }).call(this);

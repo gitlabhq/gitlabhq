@@ -177,7 +177,7 @@ describe "Pipelines" do
         before { click_on 'Retry failed' }
 
         it { expect(page).not_to have_content('Retry failed') }
-        it { expect(page).to have_content('retried') }
+        it { expect(page).to have_selector('.retried') }
       end
     end
 
@@ -193,7 +193,11 @@ describe "Pipelines" do
     end
 
     context 'playing manual build' do
-      before { click_link('Play') }
+      before do
+        within '.pipeline-holder' do
+          click_link('Play')
+        end
+      end
 
       it { expect(@manual.reload).to be_pending }
     end

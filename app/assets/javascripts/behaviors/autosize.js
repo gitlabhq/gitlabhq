@@ -1,7 +1,6 @@
+/* eslint-disable */
 
 /*= require jquery.ba-resize */
-
-
 /*= require autosize */
 
 (function() {

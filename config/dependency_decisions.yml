@@ -101,6 +101,13 @@
     :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
     :versions: []
     :when: 2016-05-02 05:29:43.904715000 Z
+- - :blacklist
+  - OSL-3.0
+  - :who: Sean McGivern
+    :why: The OSL license is a copyleft license
+    :versions: []
+    :when: 2016-10-28 11:02:15.540105000 Z
+
 
 # GEM LICENSES
 - - :license

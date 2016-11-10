@@ -25,7 +25,7 @@ describe API::API, api: true  do
   let!(:cross_reference_note) do
     create :note,
     noteable: ext_issue, project: ext_proj,
-    note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
+    note: "Mentioned in issue #{private_issue.to_reference(ext_proj)}",
     system: true
   end
 
@@ -217,7 +217,27 @@ describe API::API, api: true  do
           expect(response).to have_http_status(201)
           expect(json_response['body']).to eq('hi!')
           expect(json_response['author']['username']).to eq(user.username)
-          expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'when the user is posting an award emoji on an issue created by someone else' do
+        let(:issue2) { create(:issue, project: project) }
+
+        it 'returns an award emoji' do
+          post api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
+
+          expect(response).to have_http_status(201)
+          expect(json_response['awardable_id']).to eq issue2.id
+        end
+      end
+
+      context 'when the user is posting an award emoji on his/her own issue' do
+        it 'creates a new issue note' do
+          post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: ':+1:'
+
+          expect(response).to have_http_status(201)
+          expect(json_response['body']).to eq(':+1:')
         end
       end
     end

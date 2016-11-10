@@ -1,30 +1,21 @@
-.caret {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  vertical-align: middle;
-  border-top: $caret-width-base dashed;
-  border-right: $caret-width-base solid transparent;
-  border-left: $caret-width-base solid transparent;
-}
-
-.btn-group {
-  .caret {
-    margin-left: 0;
-  }
-}
-
 .dropdown {
   position: relative;
+
+  .btn-link {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
     display: block;
+
     @media (max-width: $screen-xs-max) {
       width: 100%;
+      min-width: 240px;
     }
   }
 
@@ -45,24 +36,26 @@
   color: $dropdown-toggle-color;
   font-size: 15px;
   text-align: left;
-  border: 1px solid $dropdown-toggle-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
-  outline: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 
   .fa {
     position: absolute;
-    top: 50%;
-    right: 6px;
-    margin-top: -6px;
+    top: 10px;
+    right: 8px;
     color: $dropdown-toggle-icon-color;
-    font-size: 10px;
+
     &.fa-spinner {
       font-size: 16px;
       margin-top: -8px;
     }
+  }
+
+  &.no-outline {
+    outline: 0;
   }
 
   &:hover, {
@@ -83,6 +76,15 @@
     + .dropdown-select {
       width: 100%;
     }
+  }
+
+  // Allows dynamic-width text in the dropdown toggle.
+  // Resizes to allow long text without overflowing the container.
+  &.dynamic {
+    width: auto;
+    min-width: 160px;
+    max-width: 100%;
+    padding-right: 25px;
   }
 }
 
@@ -168,6 +170,13 @@
     &.dropdown-menu-user-link {
       line-height: 16px;
     }
+
+    .icon-play {
+      fill: $table-text-gray;
+      margin-right: 6px;
+      height: 12px;
+      width: 11px;
+    }
   }
 
   .dropdown-header {
@@ -179,6 +188,12 @@
 
   .separator + .dropdown-header {
     padding-top: 2px;
+  }
+
+  .unclickable {
+    cursor: not-allowed;
+    padding: 5px 8px;
+    color: $dropdown-header-color;
   }
 }
 
@@ -262,7 +277,8 @@
   a {
     padding-left: 25px;
 
-    &.is-indeterminate, &.is-active {
+    &.is-indeterminate,
+    &.is-active {
       &::before {
         position: absolute;
         left: 5px;
@@ -360,7 +376,8 @@
   }
 }
 
-.dropdown-input-field, .default-dropdown-input {
+.dropdown-input-field,
+.default-dropdown-input {
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -389,7 +406,7 @@
 
 .dropdown-content {
   max-height: 215px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .dropdown-footer {
@@ -470,7 +487,7 @@
         font-size: 20px;
         text-indent: 0;
 
-        &:before {
+        &::before {
           display: block;
           position: relative;
           top: -2px;
@@ -502,7 +519,7 @@
         background-color: transparent;
         border: 0;
 
-        .ui-icon:before {
+        .ui-icon::before {
           color: $md-link-color;
         }
       }
@@ -511,7 +528,7 @@
     .ui-datepicker-prev {
       left: 0;
 
-      .ui-icon:before {
+      .ui-icon::before {
         content: '\f104';
         text-align: left;
       }
@@ -520,7 +537,7 @@
     .ui-datepicker-next {
       right: 0;
 
-      .ui-icon:before {
+      .ui-icon::before {
         content: '\f105';
         text-align: right;
       }
@@ -575,4 +592,10 @@
 .dropdown-menu-inner-content {
   display: block;
   color: $gl-placeholder-color;
+}
+
+.dropdown-toggle-text {
+  &.is-default {
+    color: $gl-placeholder-color;
+  }
 }

@@ -12,7 +12,7 @@ module Gitlab
           author_id: author_id,
           assignee_id: assignee_id,
           created_at: raw_data.created_at,
-          updated_at: updated_at
+          updated_at: raw_data.updated_at
         }
       end
 
@@ -20,8 +20,12 @@ module Gitlab
         raw_data.comments > 0
       end
 
-      def klass
-        Issue
+      def project_association
+        :issues
+      end
+
+      def find_condition
+        { iid: number }
       end
 
       def number
@@ -40,7 +44,7 @@ module Gitlab
 
       def assignee_id
         if assigned?
-          gl_user_id(raw_data.assignee.id)
+          gitlab_user_id(raw_data.assignee.id)
         end
       end
 
@@ -49,7 +53,7 @@ module Gitlab
       end
 
       def author_id
-        gl_user_id(raw_data.user.id) || project.creator_id
+        gitlab_author_id || project.creator_id
       end
 
       def body
@@ -57,7 +61,11 @@ module Gitlab
       end
 
       def description
-        @formatter.author_line(author) + body
+        if gitlab_author_id
+          body
+        else
+          formatter.author_line(author) + body
+        end
       end
 
       def milestone
@@ -68,10 +76,6 @@ module Gitlab
 
       def state
         raw_data.state == 'closed' ? 'closed' : 'opened'
-      end
-
-      def updated_at
-        state == 'closed' ? raw_data.closed_at : raw_data.updated_at
       end
     end
   end

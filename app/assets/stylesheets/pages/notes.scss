@@ -28,7 +28,8 @@ ul.notes {
     }
   }
 
-  .note-created-ago, .note-updated-at {
+  .note-created-ago,
+  .note-updated-at {
     white-space: nowrap;
   }
 
@@ -104,11 +105,6 @@ ul.notes {
         padding: 2px;
         margin-top: 10px;
       }
-
-      .award-control {
-        font-size: 13px;
-        padding: 2px 5px;
-      }
     }
 
     .note-header {
@@ -147,9 +143,18 @@ ul.notes {
 
 // Diff code in discussion view
 .discussion-body .diff-file {
+  .file-title {
+    cursor: default;
+
+    &:hover {
+      background-color: $gray-light;
+    }
+  }
+
   .diff-header > span {
     margin-right: 10px;
   }
+
   .line_content {
     white-space: pre-wrap;
   }
@@ -281,19 +286,13 @@ ul.notes {
     font-size: 17px;
   }
 
-  &.js-note-delete {
-    i {
-      &:hover {
-        color: $gl-text-red;
-      }
+  &:hover {
+    .danger-highlight {
+      color: $gl-text-red;
     }
-  }
 
-  &.js-note-edit {
-    i {
-      &:hover {
-        color: $gl-link-color;
-      }
+    .link-highlight {
+      color: $gl-link-color;
     }
   }
 }
@@ -340,7 +339,7 @@ ul.notes {
 
   .add-diff-note {
     margin-top: -4px;
-    @include border-radius(40px);
+    border-radius: 40px;
     background: #fff;
     padding: 4px;
     font-size: 16px;
@@ -351,6 +350,7 @@ ul.notes {
     width: 32px;
     // "hide" it by default
     display: none;
+
     &:hover {
       background: $gl-info;
       color: #fff;
@@ -381,5 +381,82 @@ ul.notes {
 
   a {
     color: $gl-link-color;
+  }
+}
+
+.line-resolve-all-container {
+  .btn-group {
+    margin-top: -1px;
+    margin-left: -4px;
+  }
+
+  .discussion-next-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.line-resolve-all {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  &.has-next-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .line-resolve-btn {
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+}
+
+.line-resolve-text {
+  vertical-align: middle;
+}
+
+.line-resolve-btn {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: 0;
+
+  &.is-disabled {
+    cursor: default;
+  }
+
+  &:not(.is-disabled):hover,
+  &:not(.is-disabled):focus,
+  &.is-active {
+    color: $gl-text-green;
+
+    svg path {
+      fill: $gl-text-green;
+    }
+  }
+
+  svg {
+    position: relative;
+    color: $notes-action-color;
+
+    path {
+      fill: $notes-action-color;
+    }
+  }
+}
+
+.discussion-next-btn {
+  svg {
+    margin: 0;
+
+    path {
+      fill: $gray-darkest;
+    }
   }
 }

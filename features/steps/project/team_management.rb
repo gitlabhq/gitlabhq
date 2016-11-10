@@ -22,7 +22,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
-    click_button "Add users to project"
+    click_button "Add to project"
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
@@ -36,10 +36,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
 
   step 'I select "sjobs@apple.com" as "Reporter"' do
     page.within ".users-project-form" do
-      select2("sjobs@apple.com", from: "#user_ids", multiple: true)
+      find('#user_ids', visible: false).set('sjobs@apple.com')
       select "Reporter", from: "access_level"
     end
-    click_button "Add users to project"
+    click_button "Add to project"
   end
 
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
@@ -65,9 +65,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
     page.within "#project_member_#{project_member.id}" do
-      click_button "Edit access level"
-      select "Reporter", from: "project_member_access_level"
-      click_button "Save"
+      select "Reporter", from: "member_access_level_#{project_member.id}"
     end
   end
 
@@ -112,7 +110,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I click link "Import team from another project"' do
-    click_link "Import members from another project"
+    click_link "Import"
   end
 
   When 'I submit "Website" project for import team' do
@@ -144,8 +142,9 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Opensource" group user listing' do
-    expect(page).to have_content("Shared with OpenSource group, members with Master role (2)")
-    expect(page).to have_content(@os_user1.name)
-    expect(page).to have_content(@os_user2.name)
+    page.within '.project-members-groups' do
+      expect(page).to have_content('OpenSource')
+      expect(find('select').value).to eq('40')
+    end
   end
 end

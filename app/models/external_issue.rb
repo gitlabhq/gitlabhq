@@ -29,6 +29,10 @@ class ExternalIssue
     @project
   end
 
+  def project_id
+    @project.id
+  end
+
   # Pattern used to extract `JIRA-123` issue references from text
   def self.reference_pattern
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}

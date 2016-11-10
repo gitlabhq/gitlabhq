@@ -82,7 +82,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         end
 
         it 'returns the nodes if the user can read the group' do
-          expect(Ability.abilities).to receive(:allowed?).
+          expect(Ability).to receive(:allowed?).
             with(user, :read_group, group).
             and_return(true)
 
@@ -90,7 +90,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         end
 
         it 'returns an empty Array if the user can not read the group' do
-          expect(Ability.abilities).to receive(:allowed?).
+          expect(Ability).to receive(:allowed?).
             with(user, :read_group, group).
             and_return(false)
 
@@ -103,7 +103,9 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
           it 'returns the nodes if the attribute value equals the current project ID' do
             link['data-project'] = project.id.to_s
 
-            expect(Ability.abilities).not_to receive(:allowed?)
+            # Ensure that we dont call for Ability.allowed?
+            # When project_id in the node is equal to current project ID
+            expect(Ability).not_to receive(:allowed?)
 
             expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
           end
@@ -113,7 +115,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
             link['data-project'] = other_project.id.to_s
 
-            expect(Ability.abilities).to receive(:allowed?).
+            expect(Ability).to receive(:allowed?).
               with(user, :read_project, other_project).
               and_return(true)
 
@@ -125,7 +127,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
             link['data-project'] = other_project.id.to_s
 
-            expect(Ability.abilities).to receive(:allowed?).
+            expect(Ability).to receive(:allowed?).
               with(user, :read_project, other_project).
               and_return(false)
 

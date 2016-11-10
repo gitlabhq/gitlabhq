@@ -1,10 +1,9 @@
 class Import::GitlabProjectsController < Import::BaseController
   before_action :verify_gitlab_project_import_enabled
-  before_action :authenticate_admin!
 
   def new
-    @namespace_id = project_params[:namespace_id]
-    @namespace_name = Namespace.find(project_params[:namespace_id]).name
+    @namespace = Namespace.find(project_params[:namespace_id])
+    return render_404 unless current_user.can?(:create_projects, @namespace)
     @path = project_params[:path]
   end
 
@@ -47,9 +46,5 @@ class Import::GitlabProjectsController < Import::BaseController
     params.permit(
       :path, :namespace_id, :file
     )
-  end
-
-  def authenticate_admin!
-    render_404 unless current_user.is_admin?
   end
 end

@@ -11,24 +11,16 @@ module ApplicationSettingsHelper
     current_application_settings.signin_enabled?
   end
 
-  def extra_sign_in_text
-    current_application_settings.sign_in_text
-  end
-
-  def after_sign_up_text
-    current_application_settings.after_sign_up_text
-  end
-
-  def shared_runners_text
-    current_application_settings.shared_runners_text
-  end
-
   def user_oauth_applications?
     current_application_settings.user_oauth_applications
   end
 
   def askimet_enabled?
     current_application_settings.akismet_enabled?
+  end
+
+  def koding_enabled?
+    current_application_settings.koding_enabled?
   end
 
   def allowed_protocols_present?
@@ -101,11 +93,11 @@ module ApplicationSettingsHelper
     end
   end
 
-  def repository_storage_options_for_select
+  def repository_storages_options_for_select
     options = Gitlab.config.repositories.storages.map do |name, path|
       ["#{name} - #{path}", name]
     end
 
-    options_for_select(options, @application_setting.repository_storage)
+    options_for_select(options, @application_setting.repository_storages)
   end
 end

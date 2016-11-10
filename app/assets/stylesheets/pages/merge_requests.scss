@@ -6,10 +6,11 @@
   background: $background-color;
   color: $gl-gray;
   border: 1px solid $border-color;
-  @include border-radius(2px);
+  border-radius: 2px;
 
   form {
     margin-bottom: 0;
+
     .clearfix {
       margin-bottom: 0;
     }
@@ -46,6 +47,7 @@
 
       &.right {
         float: right;
+
         a {
           color: $gl-gray;
         }
@@ -58,7 +60,7 @@
   }
 
   .ci_widget {
-    border-bottom: 1px solid #eef0f2;
+    border-bottom: 1px solid $widget-inner-border;
 
     svg {
       margin-right: 4px;
@@ -70,7 +72,8 @@
     &.ci-success {
       color: $gl-success;
 
-      a.environment {
+      a.environment,
+      a.pipeline {
         color: inherit;
       }
     }
@@ -118,6 +121,10 @@
 
   .normal {
     color: #5c5d5e;
+  }
+
+  .js-deployment-link {
+    display: inline-block;
   }
 
   .mr-widget-body {
@@ -176,6 +183,15 @@
   .ci-coverage {
     float: right;
   }
+
+  .stop-env-container {
+    color: $gl-text-color;
+    float: right;
+
+    a {
+      color: $gl-text-color;
+    }
+  }
 }
 
 .mr_source_commit,
@@ -187,6 +203,7 @@
     padding-top: 2px;
     padding-bottom: 2px;
     list-style: none;
+
     &:hover {
       background: none;
     }
@@ -201,6 +218,19 @@
   font-size: 90%;
   margin: 0 3px;
   word-break: break-all;
+}
+
+.commits-empty {
+  text-align: center;
+
+  h4 {
+    padding-top: 20px;
+    padding-bottom: 10px;
+  }
+
+  svg {
+    width: 230px;
+  }
 }
 
 .mr-list {
@@ -231,10 +261,6 @@
   .merge-request-labels {
     display: inline-block;
   }
-
-  .merge-request-no-comments {
-    opacity: 0.5;
-  }
 }
 
 .merge-request-angle {
@@ -253,6 +279,10 @@
 #modal_merge_info .modal-dialog {
   width: 600px;
 
+  .dark {
+    margin-right: 40px;
+  }
+
   .btn-clipboard {
     @extend .pull-right;
 
@@ -265,12 +295,6 @@
 
 .mr-source-target {
   line-height: 31px;
-}
-
-.builds {
-  .table-holder {
-    overflow-x: scroll;
-  }
 }
 
 .panel-new-merge-request {
@@ -353,10 +377,14 @@
 .issuable-form-select-holder {
   display: inline-block;
   width: 250px;
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
 }
 
 .table-holder {
-  .builds {
+  .ci-table {
 
     th {
       background-color: $white-light;
@@ -372,5 +400,60 @@
     &:not(:last-child) {
       margin-right: 10px;
     }
+  }
+}
+
+.mr-version-controls {
+  background: $background-color;
+  border-bottom: 1px solid $border-color;
+  color: $gl-text-color;
+
+  .mr-version-menus-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .content-block {
+    border-top: 1px solid $border-color;
+    padding: $gl-padding-top $gl-padding;
+  }
+
+  .comments-disabled-notif {
+    .btn {
+      margin-left: 5px;
+    }
+  }
+
+  .mr-version-dropdown,
+  .mr-version-compare-dropdown {
+    margin: 0 7px;
+  }
+
+  .dropdown-title {
+    color: $gl-text-color;
+  }
+
+  .fa-info-circle {
+    color: $orange-normal;
+    padding-right: 5px;
+  }
+}
+
+.merge-request-tabs-holder {
+  background-color: $white-light;
+
+  &.affix {
+    top: 100px;
+    left: 0;
+    z-index: 10;
+    transition: right .15s;
+  }
+
+  &:not(.affix) .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
   }
 }

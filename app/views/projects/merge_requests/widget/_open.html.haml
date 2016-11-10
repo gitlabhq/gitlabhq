@@ -1,6 +1,12 @@
 .mr-state-widget
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
+    -# After conflicts are resolved, the user is redirected back to the MR page.
+    -# There is a short window before background workers run and GitLab processes
+    -# the new push and commits, during which it will think the conflicts still exist.
+    -# We send this param to get the widget to treat the MR as having no more conflicts.
+    - resolved_conflicts = params[:resolved_conflicts]
+
     - if @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
     - elsif @merge_request.commits.blank?
@@ -9,7 +15,7 @@
       = render 'projects/merge_requests/widget/open/missing_branch'
     - elsif @merge_request.unchecked?
       = render 'projects/merge_requests/widget/open/check'
-    - elsif @merge_request.cannot_be_merged?
+    - elsif @merge_request.cannot_be_merged? && !resolved_conflicts
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
@@ -17,9 +23,11 @@
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
       = render 'projects/merge_requests/widget/open/not_allowed'
-    - elsif !@merge_request.mergeable_ci_state? && @pipeline && @pipeline.failed?
+    - elsif !@merge_request.mergeable_ci_state?
       = render 'projects/merge_requests/widget/open/build_failed'
-    - elsif @merge_request.can_be_merged?
+    - elsif !@merge_request.mergeable_discussions_state?
+      = render 'projects/merge_requests/widget/open/unresolved_discussions'
+    - elsif @merge_request.can_be_merged? || resolved_conflicts
       = render 'projects/merge_requests/widget/open/accept'
 
   - if mr_closes_issues.present?
@@ -29,3 +37,4 @@
         Accepting this merge request will close #{"issue".pluralize(mr_closes_issues.size)}
         = succeed '.' do
           != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
+        = mr_assign_issues_link

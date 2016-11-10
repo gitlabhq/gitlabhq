@@ -12,10 +12,7 @@ module Gitlab
           @ref = ref
           @job = job
 
-          @pipeline = @project.pipelines
-            .where(ref: @ref)
-            .where(sha: @project.commit(@ref).try(:sha))
-            .first
+          @pipeline = @project.pipelines.latest_successful_for(@ref)
         end
 
         def entity

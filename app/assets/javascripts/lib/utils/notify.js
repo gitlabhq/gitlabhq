@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   (function(w) {
     var notificationGranted, notifyMe, notifyPermissions;
@@ -6,6 +7,7 @@
       notification = new Notification(message, opts);
       setTimeout(function() {
         return notification.close();
+      // Hide the notification after X amount of seconds
       }, 8000);
       if (onclick) {
         return notification.onclick = onclick;
@@ -22,12 +24,16 @@
         body: body,
         icon: icon
       };
+      // Let's check if the browser supports notifications
       if (!('Notification' in window)) {
 
+      // do nothing
       } else if (Notification.permission === 'granted') {
+        // If it's okay let's create a notification
         return notificationGranted(message, opts, onclick);
       } else if (Notification.permission !== 'denied') {
         return Notification.requestPermission(function(permission) {
+          // If the user accepts, let's create a notification
           if (permission === 'granted') {
             return notificationGranted(message, opts, onclick);
           }

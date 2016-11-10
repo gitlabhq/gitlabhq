@@ -5,32 +5,27 @@ module API
     helpers ::API::Helpers::MembersHelpers
 
     %w[group project].each do |source_type|
+      params do
+        requires :id, type: String, desc: "The #{source_type} ID"
+      end
       resource source_type.pluralize do
-        # Get a list of group/project access requests viewable by the authenticated user.
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #
-        # Example Request:
-        #  GET /groups/:id/access_requests
-        #  GET /projects/:id/access_requests
+        desc "Gets a list of access requests for a #{source_type}." do
+          detail 'This feature was introduced in GitLab 8.11.'
+          success Entities::AccessRequester
+        end
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
 
-          access_requesters = paginate(source.requesters.includes(:user))
+          access_requesters = AccessRequestsFinder.new(source).execute!(current_user)
+          access_requesters = paginate(access_requesters.includes(:user))
 
-          present access_requesters.map(&:user), with: Entities::AccessRequester, access_requesters: access_requesters
+          present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
         end
 
-        # Request access to the group/project
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #
-        # Example Request:
-        #  POST /groups/:id/access_requests
-        #  POST /projects/:id/access_requests
+        desc "Requests access for the authenticated user to a #{source_type}." do
+          detail 'This feature was introduced in GitLab 8.11.'
+          success Entities::AccessRequester
+        end
         post ":id/access_requests" do
           source = find_source(source_type, params[:id])
           access_requester = source.request_access(current_user)
@@ -42,47 +37,34 @@ module API
           end
         end
 
-        # Approve a group/project access request
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   user_id (required) - The user ID of the access requester
-        #   access_level (optional) - Access level
-        #
-        # Example Request:
-        #   PUT /groups/:id/access_requests/:user_id/approve
-        #   PUT /projects/:id/access_requests/:user_id/approve
+        desc 'Approves an access request for the given user.' do
+          detail 'This feature was introduced in GitLab 8.11.'
+          success Entities::Member
+        end
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+          optional :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, developer access level)'
+        end
         put ':id/access_requests/:user_id/approve' do
-          required_attributes! [:user_id]
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
 
-          member = source.requesters.find_by!(user_id: params[:user_id])
-          if params[:access_level]
-            member.update(access_level: params[:access_level])
-          end
-          member.accept_request
+          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared(params)).execute
 
           status :created
           present member.user, with: Entities::Member, member: member
         end
 
-        # Deny a group/project access request
-        #
-        # Parameters:
-        #   id (required) - The group/project ID
-        #   user_id (required) - The user ID of the access requester
-        #
-        # Example Request:
-        #   DELETE /groups/:id/access_requests/:user_id
-        #   DELETE /projects/:id/access_requests/:user_id
+        desc 'Denies an access request for the given user.' do
+          detail 'This feature was introduced in GitLab 8.11.'
+        end
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+        end
         delete ":id/access_requests/:user_id" do
-          required_attributes! [:user_id]
           source = find_source(source_type, params[:id])
 
-          access_requester = source.requesters.find_by!(user_id: params[:user_id])
-
-          ::Members::DestroyService.new(access_requester, current_user).execute
+          ::Members::DestroyService.new(source, current_user, params).
+            execute(:requesters)
         end
       end
     end

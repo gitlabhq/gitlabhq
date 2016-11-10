@@ -34,4 +34,8 @@ module WorkhorseHelper
     headers.store(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     head :ok
   end
+
+  def set_workhorse_internal_api_content_type
+    headers['Content-Type'] = Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+  end
 end

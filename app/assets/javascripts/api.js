@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Api = {
     groupsPath: "/api/:version/groups.json",
@@ -5,45 +6,41 @@
     namespacesPath: "/api/:version/namespaces.json",
     groupProjectsPath: "/api/:version/groups/:id/projects.json",
     projectsPath: "/api/:version/projects.json?simple=true",
-    labelsPath: "/api/:version/projects/:id/labels",
-    licensePath: "/api/:version/licenses/:key",
-    gitignorePath: "/api/:version/gitignores/:key",
-    gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key",
+    labelsPath: "/:namespace_path/:project_path/labels",
+    licensePath: "/api/:version/templates/licenses/:key",
+    gitignorePath: "/api/:version/templates/gitignores/:key",
+    gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
-
     group: function(group_id, callback) {
       var url = Api.buildUrl(Api.groupPath)
         .replace(':id', group_id);
       return $.ajax({
         url: url,
-        data: {
-          private_token: gon.api_token
-        },
         dataType: "json"
       }).done(function(group) {
         return callback(group);
       });
     },
-    groups: function(query, skip_ldap, callback) {
+    // Return groups list. Filtered by query
+    groups: function(query, options, callback) {
       var url = Api.buildUrl(Api.groupsPath);
       return $.ajax({
         url: url,
-        data: {
-          private_token: gon.api_token,
-          search: query,
-          per_page: 20
-        },
+        data: $.extend({
+                search: query,
+                per_page: 20
+              }, options),
         dataType: "json"
       }).done(function(groups) {
         return callback(groups);
       });
     },
+    // Return namespaces list. Filtered by query
     namespaces: function(query, callback) {
       var url = Api.buildUrl(Api.namespacesPath);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -52,12 +49,12 @@
         return callback(namespaces);
       });
     },
+    // Return projects list. Filtered by query
     projects: function(query, order, callback) {
       var url = Api.buildUrl(Api.projectsPath);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           order_by: order,
           per_page: 20
@@ -67,14 +64,14 @@
         return callback(projects);
       });
     },
-    newLabel: function(project_id, data, callback) {
+    newLabel: function(namespace_path, project_path, data, callback) {
       var url = Api.buildUrl(Api.labelsPath)
-        .replace(':id', project_id);
-      data.private_token = gon.api_token;
+        .replace(':namespace_path', namespace_path)
+        .replace(':project_path', project_path);
       return $.ajax({
         url: url,
         type: "POST",
-        data: data,
+        data: {'label': data},
         dataType: "json"
       }).done(function(label) {
         return callback(label);
@@ -82,13 +79,13 @@
         return callback(message.responseJSON);
       });
     },
+    // Return group projects list. Filtered by query
     groupProjects: function(group_id, query, callback) {
       var url = Api.buildUrl(Api.groupProjectsPath)
         .replace(':id', group_id);
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -97,6 +94,7 @@
         return callback(projects);
       });
     },
+    // Return text for a specific license
     licenseText: function(key, data, callback) {
       var url = Api.buildUrl(Api.licensePath)
         .replace(':key', key);

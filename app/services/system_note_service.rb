@@ -24,6 +24,7 @@ module SystemNoteService
     body = "Added #{commits_text}:\n\n"
     body << existing_commit_summary(noteable, existing_commits, oldrev)
     body << new_commit_summary(new_commits).join("\n")
+    body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -158,6 +159,12 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def self.resolve_all_discussions(merge_request, project, author)
+    body = "Resolved all discussions"
+
+    create_note(noteable: merge_request, project: project, author: author, note: body)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`
@@ -239,7 +246,7 @@ module SystemNoteService
         'deleted'
       end
 
-    body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
+    body = "#{verb} #{branch_type} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
@@ -248,8 +255,7 @@ module SystemNoteService
   #
   #   "Started branch `201-issue-branch-button`"
   def new_issue_branch(issue, project, author, branch)
-    h = Gitlab::Routing.url_helpers
-    link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
+    link = url_helpers.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
 
     body = "Started branch [`#{branch}`](#{link})"
     create_note(noteable: issue, project: project, author: author, note: body)
@@ -263,11 +269,11 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "mentioned in #1"
+  #   "Mentioned in #1"
   #
-  #   "mentioned in !2"
+  #   "Mentioned in !2"
   #
-  #   "mentioned in 54f7727c"
+  #   "Mentioned in 54f7727c"
   #
   # See cross_reference_note_content.
   #
@@ -302,7 +308,7 @@ module SystemNoteService
 
   # Check if a cross-reference is disallowed
   #
-  # This method prevents adding a "mentioned in !1" note on every single commit
+  # This method prevents adding a "Mentioned in !1" note on every single commit
   # in a merge request. Additionally, it prevents the creation of references to
   # external issues (which would fail).
   #
@@ -341,7 +347,7 @@ module SystemNoteService
       notes = notes.where(noteable_id: noteable.id)
     end
 
-    notes_for_mentioner(mentioner, noteable, notes).count > 0
+    notes_for_mentioner(mentioner, noteable, notes).exists?
   end
 
   # Build an Array of lines detailing each commit added in a merge request
@@ -411,7 +417,7 @@ module SystemNoteService
   end
 
   def cross_reference_note_prefix
-    'mentioned in '
+    'Mentioned in '
   end
 
   def cross_reference_note_content(gfm_reference)
@@ -459,5 +465,21 @@ module SystemNoteService
 
   def escape_html(text)
     Rack::Utils.escape_html(text)
+  end
+
+  def url_helpers
+    @url_helpers ||= Gitlab::Routing.url_helpers
+  end
+
+  def diff_comparison_url(merge_request, project, oldrev)
+    diff_id = merge_request.merge_request_diff.id
+
+    url_helpers.diffs_namespace_project_merge_request_url(
+      project.namespace,
+      project,
+      merge_request.iid,
+      diff_id: diff_id,
+      start_sha: oldrev
+    )
   end
 end

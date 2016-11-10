@@ -1,7 +1,9 @@
+- @gfm_form = true
+- supports_slash_commands = local_assigns.fetch(:supports_slash_commands, false)
 .zen-backdrop
   - classes << ' js-gfm-input js-autosize markdown-area'
   - if defined?(f) && f
-    = f.text_area attr, class: classes, placeholder: placeholder
+    = f.text_area attr, class: classes, placeholder: placeholder, data: { supports_slash_commands: supports_slash_commands }
   - else
     = text_area_tag attr, nil, class: classes, placeholder: placeholder
   %a.zen-control.zen-control-leave.js-zen-leave{ href: "#" }

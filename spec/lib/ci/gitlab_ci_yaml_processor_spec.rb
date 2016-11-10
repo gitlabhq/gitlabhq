@@ -754,6 +754,20 @@ module Ci
         it 'does return production' do
           expect(builds.size).to eq(1)
           expect(builds.first[:environment]).to eq(environment)
+          expect(builds.first[:options]).to include(environment: { name: environment, action: "start" })
+        end
+      end
+
+      context 'when hash is specified' do
+        let(:environment) do
+          { name: 'production',
+            url: 'http://production.gitlab.com' }
+        end
+
+        it 'does return production and URL' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to eq(environment[:name])
+          expect(builds.first[:options]).to include(environment: environment)
         end
       end
 
@@ -770,15 +784,62 @@ module Ci
         let(:environment) { 1 }
 
         it 'raises error' do
-          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error(
+            'jobs:deploy_to_production:environment config should be a hash or a string')
         end
       end
 
       context 'is not a valid string' do
-        let(:environment) { 'production staging' }
+        let(:environment) { 'production:staging' }
 
         it 'raises error' do
-          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error("jobs:deploy_to_production:environment name #{Gitlab::Regex.environment_name_regex_message}")
+        end
+      end
+
+      context 'when on_stop is specified' do
+        let(:review) { { stage: 'deploy', script: 'test', environment: { name: 'review', on_stop: 'close_review' } } }
+        let(:config) { { review: review, close_review: close_review }.compact }
+
+        context 'with matching job' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review', action: 'stop' } } }
+
+          it 'does return a list of builds' do
+            expect(builds.size).to eq(2)
+            expect(builds.first[:environment]).to eq('review')
+          end
+        end
+
+        context 'without matching job' do
+          let(:close_review) { nil  }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review is not defined')
+          end
+        end
+
+        context 'with close job without environment' do
+          let(:close_review) { { stage: 'deploy', script: 'test' } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review does not have environment defined')
+          end
+        end
+
+        context 'with close job for different environment' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: 'production' } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review have different environment name')
+          end
+        end
+
+        context 'with close job without stop action' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review' } } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review needs to have action stop defined')
+          end
         end
       end
     end
@@ -1247,6 +1308,41 @@ EOT
           file = File.read(file)
 
           expect { GitlabCiYamlProcessor.new(file) }.not_to raise_error
+        end
+      end
+    end
+
+    describe "#validation_message" do
+      context "when the YAML could not be parsed" do
+        it "returns an error about invalid configutaion" do
+          content = YAML.dump("invalid: yaml: test")
+
+          expect(GitlabCiYamlProcessor.validation_message(content))
+            .to eq "Invalid configuration format"
+        end
+      end
+
+      context "when the tags parameter is invalid" do
+        it "returns an error about invalid tags" do
+          content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
+
+          expect(GitlabCiYamlProcessor.validation_message(content))
+            .to eq "jobs:rspec tags should be an array of strings"
+        end
+      end
+
+      context "when YAML content is empty" do
+        it "returns an error about missing content" do
+          expect(GitlabCiYamlProcessor.validation_message(''))
+            .to eq "Please provide content of .gitlab-ci.yml"
+        end
+      end
+
+      context "when the YAML is valid" do
+        it "does not return any errors" do
+          content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+
+          expect(GitlabCiYamlProcessor.validation_message(content)).to be_nil
         end
       end
     end

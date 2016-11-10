@@ -3,10 +3,15 @@ FactoryGirl.define do
     title
     project
 
-    trait :closed do
-      state :closed
+    trait :active do
+      state "active"
     end
 
+    trait :closed do
+      state "closed"
+    end
+
+    factory :active_milestone, traits: [:active]
     factory :closed_milestone, traits: [:closed]
   end
 end

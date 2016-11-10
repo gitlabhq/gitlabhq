@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "required" : [
+    "iid",
+    "title",
+    "confidential"
+  ],
+  "properties" : {
+    "iid": { "type": "integer" },
+    "title": { "type": "string" },
+    "confidential": { "type": "boolean" },
+    "due_date": { "type": ["date", "null"] },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "color",
+          "description",
+          "title",
+          "priority"
+        ],
+        "properties": {
+          "id": { "type": "integer" },
+          "color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+          },
+          "description": { "type": ["string", "null"] },
+          "text_color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+          },
+          "title": { "type": "string" },
+          "priority": { "type": ["integer", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "assignee": {
+      "id": { "type": "integet" },
+      "name": { "type": "string" },
+      "username": { "type": "string" },
+      "avatar_url": { "type": "uri" }
+    },
+    "subscribed": { "type": ["boolean", "null"] }
+  },
+  "additionalProperties": false
+}

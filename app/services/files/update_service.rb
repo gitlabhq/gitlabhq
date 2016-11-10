@@ -8,7 +8,9 @@ module Files
       repository.update_file(current_user, @file_path, @file_content,
                              branch: @target_branch,
                              previous_path: @previous_path,
-                             message: @commit_message)
+                             message: @commit_message,
+                             author_email: @author_email,
+                             author_name: @author_name)
     end
 
     private
@@ -19,12 +21,6 @@ module Files
       if file_has_changed?
         raise FileChangedError.new("You are attempting to update a file that has changed since you started editing it.")
       end
-    end
-
-    def file_has_changed?
-      return false unless @last_commit_sha && last_commit
-
-      @last_commit_sha != last_commit.sha
     end
 
     def last_commit

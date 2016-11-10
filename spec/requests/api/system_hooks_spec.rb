@@ -13,6 +13,7 @@ describe API::API, api: true  do
     context "when no user" do
       it "returns authentication error" do
         get api("/hooks")
+
         expect(response).to have_http_status(401)
       end
     end
@@ -20,6 +21,7 @@ describe API::API, api: true  do
     context "when not an admin" do
       it "returns forbidden error" do
         get api("/hooks", user)
+
         expect(response).to have_http_status(403)
       end
     end
@@ -27,9 +29,12 @@ describe API::API, api: true  do
     context "when authenticated as admin" do
       it "returns an array of hooks" do
         get api("/hooks", admin)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
+        expect(json_response.first['push_events']).to be true
+        expect(json_response.first['tag_push_events']).to be false
       end
     end
   end
@@ -43,6 +48,13 @@ describe API::API, api: true  do
 
     it "responds with 400 if url not given" do
       post api("/hooks", admin)
+
+      expect(response).to have_http_status(400)
+    end
+
+    it "responds with 400 if url is invalid" do
+      post api("/hooks", admin), url: 'hp://mep.mep'
+
       expect(response).to have_http_status(400)
     end
 
@@ -50,6 +62,14 @@ describe API::API, api: true  do
       expect do
         post api("/hooks", admin)
       end.not_to change { SystemHook.count }
+    end
+
+    it 'sets default values for events' do
+      post api('/hooks', admin), url: 'http://mep.mep', enable_ssl_verification: true
+
+      expect(response).to have_http_status(201)
+      expect(json_response['enable_ssl_verification']).to be true
+      expect(json_response['tag_push_events']).to be false
     end
   end
 
@@ -73,9 +93,10 @@ describe API::API, api: true  do
       end.to change { SystemHook.count }.by(-1)
     end
 
-    it "returns success if hook id not found" do
-      delete api("/hooks/12345", admin)
-      expect(response).to have_http_status(200)
+    it 'returns 404 if the system hook does not exist' do
+      delete api('/hooks/12345', admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 end

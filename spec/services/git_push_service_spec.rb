@@ -184,8 +184,8 @@ describe GitPushService, services: true do
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
-        expect(project).to receive(:update_merge_requests).
-                               with(@blankrev, 'newrev', 'refs/heads/master', user)
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async).
+                                                with(project.id, user.id, @blankrev, 'newrev', 'refs/heads/master')
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end
@@ -253,6 +253,21 @@ describe GitPushService, services: true do
         expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
       end
 
+      it "when pushing a branch for the first time with an existing branch permission configured" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
+        expect(project).to receive(:execute_hooks)
+        expect(project.default_branch).to eq("master")
+        expect_any_instance_of(ProtectedBranches::CreateService).not_to receive(:execute)
+
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::NO_ACCESS])
+        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
@@ -286,6 +301,9 @@ describe GitPushService, services: true do
         author_name: commit_author.name,
         author_email: commit_author.email
       )
+
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
@@ -324,6 +342,46 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "issue metrics" do
+    let(:issue) { create :issue, project: project }
+    let(:commit_author) { create :user }
+    let(:commit) { project.commit }
+    let(:commit_time) { Time.now }
+
+    before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
+      allow(commit).to receive_messages(
+        safe_message: "this commit \n mentions #{issue.to_reference}",
+        references: [issue],
+        author_name: commit_author.name,
+        author_email: commit_author.email,
+        committed_date: commit_time
+      )
+
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(commit)
+
+      allow(project.repository).to receive(:commits_between).and_return([commit])
+    end
+
+    context "while saving the 'first_mentioned_in_commit_at' metric for an issue" do
+      it 'sets the metric for referenced issues' do
+        execute_service(project, user, @oldrev, @newrev, @ref)
+
+        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_like_time(commit_time)
+      end
+
+      it 'does not set the metric for non-referenced issues' do
+        non_referenced_issue = create(:issue, project: project)
+        execute_service(project, user, @oldrev, @newrev, @ref)
+
+        expect(non_referenced_issue.reload.metrics.first_mentioned_in_commit_at).to be_nil
+      end
+    end
+  end
+
   describe "closing issues from pushed commits containing a closing reference" do
     let(:issue) { create :issue, project: project }
     let(:other_issue) { create :issue, project: project }
@@ -340,6 +398,9 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(closing_commit)
 
       project.team << [commit_author, :master]
     end
@@ -363,7 +424,7 @@ describe GitPushService, services: true do
       it "doesn't close issues when external issue tracker is in use" do
         allow_any_instance_of(Project).to receive(:default_issues_tracker?).
           and_return(false)
-        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid)
+        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid, reference_pattern: project.issue_reference_pattern)
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
 
         # The push still shouldn't create cross-reference notes.
@@ -396,12 +457,10 @@ describe GitPushService, services: true do
       let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
 
       before do
+        # project.create_jira_service doesn't seem to invalidate the cache here
+        project.has_external_issue_tracker = true
         jira_service_settings
-
-        WebMock.stub_request(:post, jira_api_transition_url)
-        WebMock.stub_request(:post, jira_api_comment_url)
-        WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        WebMock.stub_request(:get, jira_api_test_url)
+        stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
                                                     issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
@@ -421,39 +480,50 @@ describe GitPushService, services: true do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
         it "initiates one api call to jira server to mention the issue" do
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, user, @oldrev, @newrev, @ref)
 
-          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+          expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
             body: /mentioned this issue in/
           ).once
         end
       end
 
       context "closing an issue" do
-        let(:message) { "this is some work.\n\ncloses JIRA-1" }
+        let(:message)         { "this is some work.\n\ncloses JIRA-1" }
+        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
 
-        it "initiates one api call to jira server to close the issue" do
-          transition_body = {
-            transition: {
-              id: '2'
-            }
-          }.to_json
+        context "using right markdown" do
+          it "initiates one api call to jira server to close the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-          execute_service(project, commit_author, @oldrev, @newrev, @ref )
-          expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
-            body: transition_body
-          ).once
+            expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
+          end
+
+          it "initiates one api call to jira server to comment on the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+              body: comment_body
+            ).once
+          end
         end
 
-        it "initiates one api call to jira server to comment on the issue" do
-          comment_body = {
-            body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
-          }.to_json
+        context "using wrong markdown" do
+          let(:message) { "this is some work.\n\ncloses #1" }
 
-          execute_service(project, commit_author, @oldrev, @newrev, @ref )
-          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
-            body: comment_body
-          ).once
+          it "does not initiates one api call to jira server to close the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+          end
+
+          it "does not initiates one api call to jira server to comment on the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+              body: comment_body
+            ).once
+          end
         end
       end
     end
@@ -477,7 +547,14 @@ describe GitPushService, services: true do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
+      # Flush any raw Redis data stored by the housekeeping code.
+      Gitlab::Redis.with { |conn| conn.flushall }
+
       allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    after do
+      Gitlab::Redis.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do

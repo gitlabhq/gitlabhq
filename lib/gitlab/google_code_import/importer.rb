@@ -92,19 +92,17 @@ module Gitlab
           end
 
           issue = Issue.create!(
-            project_id:   project.id,
-            title:        raw_issue["title"],
-            description:  body,
-            author_id:    project.creator_id,
-            assignee_id:  assignee_id,
-            state:        raw_issue["state"] == "closed" ? "closed" : "opened"
+            iid:         raw_issue['id'],
+            project_id:  project.id,
+            title:       raw_issue['title'],
+            description: body,
+            author_id:   project.creator_id,
+            assignee_id: assignee_id,
+            state:       raw_issue['state'] == 'closed' ? 'closed' : 'opened'
           )
 
-          issue.add_labels_by_names(labels)
-
-          if issue.iid != raw_issue["id"]
-            issue.update_attribute(:iid, raw_issue["id"])
-          end
+          issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)
+          issue.update_attribute(:label_ids, issue_labels.pluck(:id))
 
           import_issue_comments(issue, comments)
         end
@@ -236,8 +234,8 @@ module Gitlab
       end
 
       def create_label(name)
-        color = nice_label_color(name)
-        Label.create!(project_id: project.id, name: name, color: color)
+        params = { name: name, color: nice_label_color(name) }
+        ::Labels::FindOrCreateService.new(nil, project, params).execute(skip_authorization: true)
       end
 
       def format_content(raw_content)

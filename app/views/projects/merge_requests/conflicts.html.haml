@@ -1,0 +1,40 @@
+- page_title "Merge Conflicts", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('merge_conflicts/merge_conflicts_bundle.js')
+  = page_specific_javascript_tag('lib/ace.js')
+= render "projects/merge_requests/show/mr_title"
+
+.merge-request-details.issuable-details
+  = render "projects/merge_requests/show/mr_box"
+
+= render 'shared/issuable/sidebar', issuable: @merge_request
+
+#conflicts{"v-cloak" => "true", data: { conflicts_path: conflicts_namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request, format: :json),
+    resolve_conflicts_path: resolve_conflicts_namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request) } }
+  .loading{"v-if" => "isLoading"}
+    %i.fa.fa-spinner.fa-spin
+
+  .nothing-here-block{"v-if" => "hasError"}
+    {{conflictsData.errorMessage}}
+
+  = render partial: "projects/merge_requests/conflicts/commit_stats"
+
+  .files-wrapper{"v-if" => "!isLoading && !hasError"}
+    .files
+      .diff-file.file-holder.conflict{"v-for" => "file in conflictsData.files"}
+        .file-title
+          %i.fa.fa-fw{":class" => "file.iconClass"}
+          %strong {{file.filePath}}
+          = render partial: 'projects/merge_requests/conflicts/file_actions'
+        .diff-content.diff-wrap-lines
+          .diff-wrap-lines.code.file-content.js-syntax-highlight{"v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+            = render partial: "projects/merge_requests/conflicts/components/inline_conflict_lines"
+          .diff-wrap-lines.code.file-content.js-syntax-highlight{"v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+            = render partial: "projects/merge_requests/conflicts/components/parallel_conflict_lines"
+          %div{"v-show" => "file.resolveMode === 'edit' ||  file.type === 'text-editor'"}
+            = render partial: "projects/merge_requests/conflicts/components/diff_file_editor"
+
+    = render partial: "projects/merge_requests/conflicts/submit_form"
+
+-# Components
+= render partial: 'projects/merge_requests/conflicts/components/parallel_conflict_line'

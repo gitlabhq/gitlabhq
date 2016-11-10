@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -39,12 +40,13 @@
     FilesCommentButton.prototype.render = function(e) {
       var $currentTarget, buttonParentElement, lineContentElement, textFileElement;
       $currentTarget = $(e.currentTarget);
+
       buttonParentElement = this.getButtonParent($currentTarget);
-      if (!this.shouldRender(e, buttonParentElement)) {
-        return;
-      }
-      textFileElement = this.getTextFileElement($currentTarget);
+      if (!this.validateButtonParent(buttonParentElement)) return;
       lineContentElement = this.getLineContent($currentTarget);
+      if (!this.validateLineContent(lineContentElement)) return;
+
+      textFileElement = this.getTextFileElement($currentTarget);
       buttonParentElement.append(this.buildButton({
         noteableType: textFileElement.attr('data-noteable-type'),
         noteableID: textFileElement.attr('data-noteable-id'),
@@ -119,8 +121,12 @@
       return newButtonParent.is(this.getButtonParent($(e.currentTarget)));
     };
 
-    FilesCommentButton.prototype.shouldRender = function(e, buttonParentElement) {
+    FilesCommentButton.prototype.validateButtonParent = function(buttonParentElement) {
       return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS) && $(COMMENT_BUTTON_CLASS, buttonParentElement).length === 0;
+    };
+
+    FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
+      return lineContentElement.attr('data-discussion-id') && lineContentElement.attr('data-discussion-id') !== '';
     };
 
     return FilesCommentButton;

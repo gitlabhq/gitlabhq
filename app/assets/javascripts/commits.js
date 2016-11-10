@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.CommitsList = (function() {
     function CommitsList() {}
@@ -45,6 +46,7 @@
           CommitsList.content.html(data.html);
           return history.replaceState({
             page: commitsUrl
+          // Change url so if user reload a page - search results are saved
           }, document.title, commitsUrl);
         },
         dataType: "json"

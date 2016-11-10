@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Search = (function() {
     function Search() {
@@ -10,7 +11,7 @@
         filterable: true,
         fieldName: 'group_id',
         data: function(term, callback) {
-          return Api.groups(term, null, function(data) {
+          return Api.groups(term, {}, function(data) {
             data.unshift({
               name: 'Any'
             });

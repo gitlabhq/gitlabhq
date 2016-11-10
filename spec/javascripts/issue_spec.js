@@ -1,120 +1,163 @@
+/* eslint-disable */
 
 /*= require lib/utils/text_utility */
-
-
 /*= require issue */
 
 (function() {
+  var INVALID_URL = 'http://goesnowhere.nothing/whereami';
+  var $boxClosed, $boxOpen, $btnClose, $btnReopen;
+
+  fixture.preload('issues/closed-issue.html');
+  fixture.preload('issues/issue-with-task-list.html');
+  fixture.preload('issues/open-issue.html');
+
+  function expectErrorMessage() {
+    var $flashMessage = $('div.flash-alert');
+    expect($flashMessage).toExist();
+    expect($flashMessage).toBeVisible();
+    expect($flashMessage).toHaveText('Unable to update this issue at this time.');
+  }
+
+  function expectIssueState(isIssueOpen) {
+    expectVisibility($boxClosed, !isIssueOpen);
+    expectVisibility($boxOpen, isIssueOpen);
+
+    expectVisibility($btnClose, isIssueOpen);
+    expectVisibility($btnReopen, !isIssueOpen);
+  }
+
+  function expectPendingRequest(req, $triggeredButton) {
+    expect(req.type).toBe('PUT');
+    expect(req.url).toBe($triggeredButton.attr('href'));
+    expect($triggeredButton).toHaveProp('disabled', true);
+  }
+
+  function expectVisibility($element, shouldBeVisible) {
+    if (shouldBeVisible) {
+      expect($element).not.toHaveClass('hidden');
+    } else {
+      expect($element).toHaveClass('hidden');
+    }
+  }
+
+  function findElements() {
+      $boxClosed = $('div.status-box-closed');
+      expect($boxClosed).toExist();
+      expect($boxClosed).toHaveText('Closed');
+
+      $boxOpen = $('div.status-box-open');
+      expect($boxOpen).toExist();
+      expect($boxOpen).toHaveText('Open');
+
+      $btnClose = $('.btn-close.btn-grouped');
+      expect($btnClose).toExist();
+      expect($btnClose).toHaveText('Close issue');
+
+      $btnReopen = $('.btn-reopen.btn-grouped');
+      expect($btnReopen).toExist();
+      expect($btnReopen).toHaveText('Reopen issue');
+  }
+
   describe('Issue', function() {
-    return describe('task lists', function() {
-      fixture.preload('issues_show.html');
+    describe('task lists', function() {
+      fixture.load('issues/issue-with-task-list.html');
       beforeEach(function() {
-        fixture.load('issues_show.html');
-        return this.issue = new Issue();
+        this.issue = new Issue();
       });
+
       it('modifies the Markdown field', function() {
         spyOn(jQuery, 'ajax').and.stub();
         $('input[type=checkbox]').attr('checked', true).trigger('change');
-        return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
-      return it('submits an ajax request on tasklist:changed', function() {
+      
+      it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('/foo');
-          return expect(req.data.issue.description).not.toBe(null);
+          expect(req.url).toBe('https://fixture.invalid/namespace3/project3/issues/1.json');
+          expect(req.data.issue.description).not.toBe(null);
         });
-        return $('.js-task-list-field').trigger('tasklist:changed');
+
+        $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
   });
 
-  describe('reopen/close issue', function() {
-    fixture.preload('issues_show.html');
+  describe('close issue', function() {
     beforeEach(function() {
-      fixture.load('issues_show.html');
-      return this.issue = new Issue();
+      fixture.load('issues/open-issue.html');
+      findElements();
+      this.issue = new Issue();
+
+      expectIssueState(true);
     });
+
     it('closes an issue', function() {
-      var $btnClose, $btnReopen;
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://gitlab.com/issues/6/close');
-        return req.success({
+        expectPendingRequest(req, $btnClose);
+        req.success({
           id: 34
         });
       });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose.text()).toBe('Close');
-      expect(typeof $btnClose.prop('disabled')).toBe('undefined');
+
       $btnClose.trigger('click');
-      expect($btnReopen).toBeVisible();
-      expect($btnClose).toBeHidden();
-      expect($('div.status-box-closed')).toBeVisible();
-      return expect($('div.status-box-open')).toBeHidden();
+
+      expectIssueState(false);
+      expect($btnClose).toHaveProp('disabled', false);
     });
+
     it('fails to close an issue with success:false', function() {
-      var $btnClose, $btnReopen;
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://goesnowhere.nothing/whereami');
-        return req.success({
+        expectPendingRequest(req, $btnClose);
+        req.success({
           saved: false
         });
       });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      $btnClose.attr('href', 'http://goesnowhere.nothing/whereami');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose.text()).toBe('Close');
-      expect(typeof $btnClose.prop('disabled')).toBe('undefined');
+
+      $btnClose.attr('href', INVALID_URL);
       $btnClose.trigger('click');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose).toBeVisible();
-      expect($('div.status-box-closed')).toBeHidden();
-      expect($('div.status-box-open')).toBeVisible();
-      expect($('div.flash-alert')).toBeVisible();
-      return expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.');
+
+      expectIssueState(true);
+      expect($btnClose).toHaveProp('disabled', false);
+      expectErrorMessage();
     });
+
     it('fails to closes an issue with HTTP error', function() {
-      var $btnClose, $btnReopen;
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://goesnowhere.nothing/whereami');
-        return req.error();
+        expectPendingRequest(req, $btnClose);
+        req.error();
       });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      $btnClose.attr('href', 'http://goesnowhere.nothing/whereami');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose.text()).toBe('Close');
-      expect(typeof $btnClose.prop('disabled')).toBe('undefined');
+
+      $btnClose.attr('href', INVALID_URL);
       $btnClose.trigger('click');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose).toBeVisible();
-      expect($('div.status-box-closed')).toBeHidden();
-      expect($('div.status-box-open')).toBeVisible();
-      expect($('div.flash-alert')).toBeVisible();
-      return expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.');
+
+      expectIssueState(true);
+      expect($btnClose).toHaveProp('disabled', true);
+      expectErrorMessage();
     });
-    return it('reopens an issue', function() {
-      var $btnClose, $btnReopen;
+  });
+
+  describe('reopen issue', function() {
+    beforeEach(function() {
+      fixture.load('issues/closed-issue.html');
+      findElements();
+      this.issue = new Issue();
+
+      expectIssueState(false);
+    });
+
+    it('reopens an issue', function() {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://gitlab.com/issues/6/reopen');
-        return req.success({
+        expectPendingRequest(req, $btnReopen);
+        req.success({
           id: 34
         });
       });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      expect($btnReopen.text()).toBe('Reopen');
+
       $btnReopen.trigger('click');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose).toBeVisible();
-      expect($('div.status-box-open')).toBeVisible();
-      return expect($('div.status-box-closed')).toBeHidden();
+
+      expectIssueState(true);
+      expect($btnReopen).toHaveProp('disabled', false);
     });
   });
 

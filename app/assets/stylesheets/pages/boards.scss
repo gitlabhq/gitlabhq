@@ -1,0 +1,331 @@
+[v-cloak] {
+  display: none;
+}
+
+.user-can-drag {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.is-dragging {
+  // Important because plugin sets inline CSS
+  opacity: 1!important;
+
+  * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    // !important to make sure no style can override this when dragging
+    cursor: -webkit-grabbing!important;
+    cursor: grabbing!important;
+  }
+}
+
+.is-ghost {
+  opacity: 0.3;
+}
+
+.dropdown-menu-issues-board-new {
+  width: 320px;
+
+  .dropdown-content {
+    max-height: 150px;
+	}
+}
+
+.issue-board-dropdown-content {
+  margin: 0 8px 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $dropdown-divider-color;
+
+  > p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.issue-boards-page {
+  .page-with-sidebar {
+    padding-bottom: 0;
+  }
+}
+
+.boards-app {
+  position: relative;
+}
+
+.boards-app-loading {
+  width: 100%;
+  font-size: 34px;
+}
+
+.boards-list {
+  height: calc(100vh - 152px);
+  width: 100%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  padding-right: ($gl-padding / 2);
+  padding-left: ($gl-padding / 2);
+  overflow-x: scroll;
+  white-space: nowrap;
+
+  @media (min-width: $screen-sm-min) {
+    height: 475px; // Needed for PhantomJS
+    height: calc(100vh - 220px);
+    min-height: 475px;
+
+    &.is-compact {
+      width: calc(100% - 290px);
+    }
+  }
+}
+
+.board {
+  display: inline-block;
+  width: calc(85vw - 15px);
+  height: 100%;
+  padding-right: ($gl-padding / 2);
+  padding-left: ($gl-padding / 2);
+  white-space: normal;
+  vertical-align: top;
+
+  @media (min-width: $screen-sm-min) {
+    width: 400px;
+  }
+}
+
+.board-inner {
+  height: 100%;
+  font-size: $issue-boards-font-size;
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+}
+
+.board-header {
+  border-top-left-radius: $border-radius-default;
+  border-top-right-radius: $border-radius-default;
+
+  &.has-border {
+    border-top: 3px solid;
+
+    .board-title {
+      padding-top: ($gl-padding - 3px);
+    }
+  }
+}
+
+.board-inner-container {
+  border-bottom: 1px solid $border-color;
+  padding: $gl-padding;
+}
+
+.board-title {
+  position: relative;
+  margin: 0;
+  padding: $gl-padding;
+  font-size: 1em;
+  border-bottom: 1px solid $border-color;
+}
+
+.board-delete {
+  margin-right: 10px;
+  padding: 0;
+  color: $gray-darkest;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+}
+
+.board-blank-state {
+  height: calc(100% - 49px);
+  padding: $gl-padding;
+  background-color: #fff;
+}
+
+.board-blank-state-list {
+  list-style: none;
+
+  > li:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  .label-color {
+    position: relative;
+    top: 2px;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 3px;
+    border-radius: $border-radius-default;
+  }
+}
+
+.board-list {
+  height: calc(100% - 49px);
+  margin-bottom: 0;
+  padding: 5px;
+  list-style: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &.is-smaller {
+    height: calc(100% - 185px);
+  }
+}
+
+.board-list-loading {
+  margin-top: 10px;
+  font-size: (26px / $issue-boards-font-size) * 1em;
+}
+
+.card {
+  position: relative;
+  padding: 10px $gl-padding;
+  background: #fff;
+  border-radius: $border-radius-default;
+  box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
+  list-style: none;
+
+  &:not(:last-child) {
+    margin-bottom: 5px;
+  }
+
+  &.is-active {
+    background-color: $row-hover;
+  }
+
+  .label {
+    border: 0;
+    outline: 0;
+  }
+
+  .confidential-icon {
+    margin-right: 5px;
+  }
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1em;
+
+  a {
+    color: inherit;
+    word-wrap: break-word;
+  }
+}
+
+.card-footer {
+  margin-top: 5px;
+  line-height: 25px;
+
+  .label {
+    margin-right: 5px;
+    font-size: (14px / $issue-boards-font-size) * 1em;
+  }
+
+  .avatar {
+    margin-left: 0;
+  }
+}
+
+.card-number {
+  margin-right: 5px;
+}
+
+.issue-boards-search {
+  width: 335px;
+
+  .form-control {
+    display: inline-block;
+    width: 210px;
+  }
+}
+
+.board-list-count {
+  padding: 10px 0;
+  color: $gl-placeholder-color;
+  font-size: 13px;
+
+  > .fa {
+    margin-right: 5px;
+  }
+}
+
+.board-new-issue-form {
+  margin: 5px;
+}
+
+.board-issue-count-holder {
+  margin-top: -3px;
+
+  .btn {
+    line-height: 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.board-issue-count {
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 21px;
+  border-radius: $border-radius-base;
+  border: 1px solid $border-color;
+
+  &.has-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-width: 1px 0 1px 1px;
+  }
+}
+
+.issue-boards-sidebar {
+  &.right-sidebar {
+    top: 153px;
+    bottom: 0;
+
+    @media (min-width: $screen-sm-min) {
+      top: 220px;
+    }
+  }
+
+  .issuable-sidebar-header {
+    position: relative;
+  }
+
+  .gutter-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 15px;
+    right: 0;
+    width: 22px;
+    color: $gray-darkest;
+
+    svg {
+      position: absolute;
+      top: 50%;
+      margin-top: (-11px / 2);
+    }
+
+    &:hover {
+      path {
+        fill: $gray-darkest;
+      }
+    }
+  }
+
+  .issuable-header-text {
+    width: 100%;
+    padding-right: 35px;
+
+    > strong {
+      font-weight: 600;
+    }
+  }
+}

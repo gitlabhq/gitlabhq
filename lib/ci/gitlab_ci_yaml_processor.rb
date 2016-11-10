@@ -4,7 +4,7 @@ module Ci
 
     include Gitlab::Ci::Config::Node::LegacyValidationHelpers
 
-    attr_reader :path, :cache, :stages
+    attr_reader :path, :cache, :stages, :jobs
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -55,27 +55,34 @@ module Ci
       {
         stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
-        ##
-        # Refactoring note:
-        #  - before script behaves differently than after script
-        #  - after script returns an array of commands
-        #  - before script should be a concatenated command
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
+        commands: job[:commands],
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
-        environment: job[:environment],
+        environment: job[:environment_name],
         yaml_variables: yaml_variables(name),
         options: {
-          image: job[:image] || @image,
-          services: job[:services] || @services,
+          image: job[:image],
+          services: job[:services],
           artifacts: job[:artifacts],
-          cache: job[:cache] || @cache,
+          cache: job[:cache],
           dependencies: job[:dependencies],
-          after_script: job[:after_script] || @after_script,
+          after_script: job[:after_script],
+          environment: job[:environment],
         }.compact
       }
+    end
+
+    def self.validation_message(content)
+      return 'Please provide content of .gitlab-ci.yml' if content.blank?
+
+      begin
+        Ci::GitlabCiYamlProcessor.new(content)
+        nil
+      rescue ValidationError, Psych::SyntaxError => e
+        e.message
+      end
     end
 
     private
@@ -102,6 +109,7 @@ module Ci
 
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
+        validate_job_environment!(name, job)
       end
     end
 
@@ -140,6 +148,35 @@ module Ci
         unless @stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
+      end
+    end
+
+    def validate_job_environment!(name, job)
+      return unless job[:environment]
+      return unless job[:environment].is_a?(Hash)
+
+      environment = job[:environment]
+      validate_on_stop_job!(name, environment, environment[:on_stop])
+    end
+
+    def validate_on_stop_job!(name, environment, on_stop)
+      return unless on_stop
+
+      on_stop_job = @jobs[on_stop.to_sym]
+      unless on_stop_job
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} is not defined"
+      end
+
+      unless on_stop_job[:environment]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} does not have environment defined"
+      end
+
+      unless on_stop_job[:environment][:name] == environment[:name]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} have different environment name"
+      end
+
+      unless on_stop_job[:environment][:action] == 'stop'
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} needs to have action stop defined"
       end
     end
 

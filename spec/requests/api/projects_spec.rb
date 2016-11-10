@@ -73,7 +73,7 @@ describe API::API, api: true  do
       end
 
       it 'does not include open_issues_count' do
-        project.update_attributes( { issues_enabled: false } )
+        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
         get api('/projects', user)
         expect(response.status).to eq 200
@@ -175,6 +175,60 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/owned' do
+    before do
+      project3
+      project4
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/projects/owned')
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated as project owner' do
+      it 'returns an array of projects the user owns' do
+        get api('/projects/owned', user4)
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(project4.name)
+        expect(json_response.first['owner']['username']).to eq(user4.username)
+      end
+    end
+  end
+
+  describe 'GET /projects/visible' do
+    let(:public_project) { create(:project, :public) }
+
+    before do
+      public_project
+      project
+      project2
+      project3
+      project4
+    end
+
+    it 'returns the projects viewable by the user' do
+      get api('/projects/visible', user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).
+        to contain_exactly(public_project.id, project.id, project2.id, project3.id)
+    end
+
+    it 'shows only public projects when the user only has access to those' do
+      get api('/projects/visible', user2)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).
+        to contain_exactly(public_project.id)
+    end
+  end
+
   describe 'GET /projects/starred' do
     let(:public_project) { create(:project, :public) }
 
@@ -224,14 +278,24 @@ describe API::API, api: true  do
         description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        only_allow_merge_if_build_succeeds: false,
+        request_access_enabled: true,
+        only_allow_merge_if_all_discussions_are_resolved: false
       })
 
       post api('/projects', user), project
 
       project.each_pair do |k, v|
+        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
+
+      # Check feature permissions attributes
+      project = Project.find_by_path(project[:path])
+      expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
     end
 
     it 'sets a project as public' do
@@ -274,6 +338,34 @@ describe API::API, api: true  do
       post api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    it 'sets a project as allowing merge even if build fails' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
+      post api('/projects', user), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if build succeeds' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
+      post api('/projects', user), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
+    end
+
+    it 'sets a project as allowing merge even if discussions are unresolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if all discussions are resolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
 
     context 'when a visibility level is restricted' do
@@ -332,13 +424,14 @@ describe API::API, api: true  do
         description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        request_access_enabled: true
       })
 
       post api("/projects/user/#{user.id}", admin), project
 
       project.each_pair do |k, v|
-        next if k == :path
+        next if %i[has_external_issue_tracker path].include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
     end
@@ -383,6 +476,34 @@ describe API::API, api: true  do
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    it 'sets a project as allowing merge even if build fails' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
+      post api("/projects/user/#{user.id}", admin), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if build succeeds' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
+      post api("/projects/user/#{user.id}", admin), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
+    end
+
+    it 'sets a project as allowing merge even if discussions are unresolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if all discussions are resolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
   end
 
@@ -444,6 +565,8 @@ describe API::API, api: true  do
       expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
       expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
       expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+      expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_build_succeeds)
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
     end
 
     it 'returns a project by path name' do
@@ -523,37 +646,39 @@ describe API::API, api: true  do
       before do
         note = create(:note_on_issue, note: 'What an awesome day!', project: project)
         EventCreateService.new.leave_note(note, note.author)
+      end
+
+      it 'returns all events' do
         get api("/projects/#{project.id}/events", user)
-      end
 
-      it { expect(response).to have_http_status(200) }
+        expect(response).to have_http_status(200)
 
-      context 'joined event' do
-        let(:json_event) { json_response[1] }
+        first_event = json_response.first
 
-        it { expect(json_event['action_name']).to eq('joined') }
-        it { expect(json_event['project_id'].to_i).to eq(project.id) }
-        it { expect(json_event['author_username']).to eq(user3.username) }
-        it { expect(json_event['author']['name']).to eq(user3.name) }
-      end
+        expect(first_event['action_name']).to eq('commented on')
+        expect(first_event['note']['body']).to eq('What an awesome day!')
 
-      context 'comment event' do
-        let(:json_event) { json_response.first }
+        last_event = json_response.last
 
-        it { expect(json_event['action_name']).to eq('commented on') }
-        it { expect(json_event['note']['body']).to eq('What an awesome day!') }
+        expect(last_event['action_name']).to eq('joined')
+        expect(last_event['project_id'].to_i).to eq(project.id)
+        expect(last_event['author_username']).to eq(user3.username)
+        expect(last_event['author']['name']).to eq(user3.name)
       end
     end
 
     it 'returns a 404 error if not found' do
       get api('/projects/42/events', user)
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Project Not Found')
     end
 
     it 'returns a 404 error if user is not a member' do
       other_user = create(:user)
+
       get api("/projects/#{project.id}/events", other_user)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -726,13 +851,16 @@ describe API::API, api: true  do
     let(:group) { create(:group) }
 
     it "shares project with group" do
+      expires_at = 10.days.from_now.to_date
+
       expect do
-        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at
       end.to change { ProjectGroupLink.count }.by(1)
 
       expect(response.status).to eq 201
-      expect(json_response['group_id']).to eq group.id
-      expect(json_response['group_access']).to eq Gitlab::Access::DEVELOPER
+      expect(json_response['group_id']).to eq(group.id)
+      expect(json_response['group_access']).to eq(Gitlab::Access::DEVELOPER)
+      expect(json_response['expires_at']).to eq(expires_at.to_s)
     end
 
     it "returns a 400 error when group id is not given" do
@@ -749,6 +877,20 @@ describe API::API, api: true  do
       project.namespace.update(share_with_group_lock: true)
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
       expect(response.status).to eq 400
+    end
+
+    it 'returns a 404 error when user cannot read group' do
+      private_group = create(:group, :private)
+
+      post api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
+    end
+
+    it 'returns a 404 error when group does not exist' do
+      post api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response.status).to eq 404
     end
 
     it "returns a 409 error when wrong params passed" do
@@ -854,6 +996,15 @@ describe API::API, api: true  do
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
 
+      it 'updates request_access_enabled' do
+        project_param = { request_access_enabled: false }
+
+        put api("/projects/#{project.id}", user), project_param
+
+        expect(response).to have_http_status(200)
+        expect(json_response['request_access_enabled']).to eq(false)
+      end
+
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
         put api("/projects/#{project3.id}", user), project_param
@@ -915,7 +1066,8 @@ describe API::API, api: true  do
                           wiki_enabled: true,
                           snippets_enabled: true,
                           merge_requests_enabled: true,
-                          description: 'new description' }
+                          description: 'new description',
+                          request_access_enabled: true }
         put api("/projects/#{project.id}", user3), project_param
         expect(response).to have_http_status(403)
       end

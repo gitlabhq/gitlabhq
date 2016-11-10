@@ -1,5 +1,5 @@
 !!! 5
-%html{ lang: "en"}
+%html{ lang: "en", class: "#{page_class}" }
   = render "layouts/head"
   %body{class: "#{user_application_theme}", data: {page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}"}}
     = Gon::Base.render_data
@@ -11,3 +11,4 @@
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
     = yield :scripts_body
+    = render "layouts/init_auto_complete" if @gfm_form

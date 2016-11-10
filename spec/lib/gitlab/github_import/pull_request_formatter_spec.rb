@@ -27,7 +27,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       created_at: created_at,
       updated_at: updated_at,
       closed_at: nil,
-      merged_at: nil
+      merged_at: nil,
+      url: 'https://api.github.com/repos/octocat/Hello-World/pulls/1347'
     }
   end
 
@@ -61,8 +62,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when pull request is closed' do
-      let(:closed_at) { DateTime.strptime('2011-01-28T19:01:12Z') }
-      let(:raw_data) { double(base_data.merge(state: 'closed', closed_at: closed_at)) }
+      let(:raw_data) { double(base_data.merge(state: 'closed')) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -80,7 +80,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: closed_at
+          updated_at: updated_at
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -107,7 +107,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: merged_at
+          updated_at: updated_at
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -139,6 +139,12 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
 
         expect(pull_request.attributes.fetch(:author_id)).to eq gl_user.id
+      end
+
+      it 'returns description without created at tag line' do
+        create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(pull_request.attributes.fetch(:description)).to eq('Please pull these awesome changes')
       end
     end
 
@@ -227,6 +233,14 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       it 'returns true' do
         expect(pull_request.valid?).to eq true
       end
+    end
+  end
+
+  describe '#url' do
+    let(:raw_data) { double(base_data) }
+
+    it 'return raw url' do
+      expect(pull_request.url).to eq 'https://api.github.com/repos/octocat/Hello-World/pulls/1347'
     end
   end
 end

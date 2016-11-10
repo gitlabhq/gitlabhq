@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -6,39 +7,53 @@
 
     Build.state = null;
 
-    function Build(page_url, build_url, build_status, state1) {
-      this.page_url = page_url;
-      this.build_url = build_url;
-      this.build_status = build_status;
-      this.state = state1;
-      this.hideSidebar = bind(this.hideSidebar, this);
-      this.toggleSidebar = bind(this.toggleSidebar, this);
+    function Build(options) {
+      options = options || $('.js-build-options').data();
+      this.pageUrl = options.pageUrl;
+      this.buildUrl = options.buildUrl;
+      this.buildStatus = options.buildStatus;
+      this.state = options.state1;
+      this.buildStage = options.buildStage;
+      this.updateDropdown = bind(this.updateDropdown, this);
+      this.$document = $(document);
       clearInterval(Build.interval);
+      // Init breakpoint checker
       this.bp = Breakpoints.get();
-      this.hideSidebar();
-      $('.js-build-sidebar').niceScroll();
-      $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
-      $(window).off('resize.build').on('resize.build', this.hideSidebar);
+
+      this.initSidebar();
+      this.$buildScroll = $('#js-build-scroll');
+
+      this.populateJobs(this.buildStage);
+      this.updateStageDropdownText(this.buildStage);
+      this.sidebarOnResize();
+
+      this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
+      this.$document.off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      $(window).off('resize.build').on('resize.build', this.sidebarOnResize.bind(this));
+      $('a', this.$buildScroll).off('click.stepTrace').on('click.stepTrace', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
         this.initScrollButtonAffix();
       }
-      if (this.build_status === "running" || this.build_status === "pending") {
+      if (this.buildStatus === "running" || this.buildStatus === "pending") {
+        // Bind autoscroll button to follow build output
         $('#autoscroll-button').on('click', function() {
           var state;
           state = $(this).data("state");
           if ("enabled" === state) {
             $(this).data("state", "disabled");
-            return $(this).text("enable autoscroll");
+            return $(this).text("Enable autoscroll");
           } else {
             $(this).data("state", "enabled");
-            return $(this).text("disable autoscroll");
+            return $(this).text("Disable autoscroll");
           }
         });
         Build.interval = setInterval((function(_this) {
+          // Check for new build output if user still watching build page
+          // Only valid for runnig build when output changes during time
           return function() {
-            if (window.location.href.split("#").first() === _this.page_url) {
+            if (_this.location() === _this.pageUrl) {
               return _this.getBuildTrace();
             }
           };
@@ -46,13 +61,33 @@
       }
     }
 
+    Build.prototype.initSidebar = function() {
+      this.$sidebar = $('.js-build-sidebar');
+      this.sidebarTranslationLimits = {
+        min: $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight()
+      }
+      this.sidebarTranslationLimits.max = this.sidebarTranslationLimits.min + $('.scrolling-tabs-container').outerHeight();
+      this.$sidebar.css({
+        top: this.sidebarTranslationLimits.max
+      });
+      this.$sidebar.niceScroll();
+      this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
+      this.$document.off('scroll.translateSidebar').on('scroll.translateSidebar', this.translateSidebar.bind(this));
+    };
+
+    Build.prototype.location = function() {
+      return window.location.href.split("#")[0];
+    };
+
     Build.prototype.getInitialBuildTrace = function() {
+      var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
+
       return $.ajax({
-        url: this.build_url,
+        url: this.buildUrl,
         dataType: 'json',
-        success: function(build_data) {
-          $('.js-build-output').html(build_data.trace_html);
-          if (build_data.status === 'success' || build_data.status === 'failed') {
+        success: function(buildData) {
+          $('.js-build-output').html(buildData.trace_html);
+          if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
             return $('.js-build-refresh').remove();
           }
         }
@@ -61,7 +96,7 @@
 
     Build.prototype.getBuildTrace = function() {
       return $.ajax({
-        url: this.page_url + "/trace.json?state=" + (encodeURIComponent(this.state)),
+        url: this.pageUrl + "/trace.json?state=" + (encodeURIComponent(this.state)),
         dataType: "json",
         success: (function(_this) {
           return function(log) {
@@ -75,8 +110,8 @@
                 $('.js-build-output').html(log.html);
               }
               return _this.checkAutoscroll();
-            } else if (log.status !== _this.build_status) {
-              return Turbolinks.visit(_this.page_url);
+            } else if (log.status !== _this.buildStatus) {
+              return Turbolinks.visit(_this.pageUrl);
             }
           };
         })(this)
@@ -90,11 +125,10 @@
     };
 
     Build.prototype.initScrollButtonAffix = function() {
-      var $body, $buildScroll, $buildTrace;
-      $buildScroll = $('#js-build-scroll');
+      var $body, $buildTrace;
       $body = $('body');
       $buildTrace = $('#build-trace');
-      return $buildScroll.affix({
+      return this.$buildScroll.affix({
         offset: {
           bottom: function() {
             return $body.outerHeight() - ($buildTrace.outerHeight() + $buildTrace.offset().top);
@@ -103,24 +137,34 @@
       });
     };
 
-    Build.prototype.shouldHideSidebar = function() {
+    Build.prototype.shouldHideSidebarForViewport = function() {
       var bootstrapBreakpoint;
       bootstrapBreakpoint = this.bp.getBreakpointSize();
       return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
     };
 
-    Build.prototype.toggleSidebar = function() {
-      if (this.shouldHideSidebar()) {
-        return $('.js-build-sidebar').toggleClass('right-sidebar-expanded right-sidebar-collapsed');
-      }
+    Build.prototype.translateSidebar = function(e) {
+      var newPosition = this.sidebarTranslationLimits.max - (document.body.scrollTop || document.documentElement.scrollTop);
+      if (newPosition < this.sidebarTranslationLimits.min) newPosition = this.sidebarTranslationLimits.min;
+      this.$sidebar.css({
+        top: newPosition
+      });
     };
 
-    Build.prototype.hideSidebar = function() {
-      if (this.shouldHideSidebar()) {
-        return $('.js-build-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-      } else {
-        return $('.js-build-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-      }
+    Build.prototype.toggleSidebar = function(shouldHide) {
+      var shouldShow = typeof shouldHide === 'boolean' ? !shouldHide : undefined;
+      this.$buildScroll.toggleClass('sidebar-expanded', shouldShow)
+        .toggleClass('sidebar-collapsed', shouldHide);
+      this.$sidebar.toggleClass('right-sidebar-expanded', shouldShow)
+        .toggleClass('right-sidebar-collapsed', shouldHide);
+    };
+
+    Build.prototype.sidebarOnResize = function() {
+      this.toggleSidebar(this.shouldHideSidebarForViewport());
+    };
+
+    Build.prototype.sidebarOnClick = function() {
+      if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
     };
 
     Build.prototype.updateArtifactRemoveDate = function() {
@@ -128,8 +172,32 @@
       $date = $('.js-artifacts-remove');
       if ($date.length) {
         date = $date.text();
-        return $date.text($.timefor(new Date(date.replace(/-/g, '/')), ' '));
+        return $date.text(gl.utils.timefor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
       }
+    };
+
+    Build.prototype.populateJobs = function(stage) {
+      $('.build-job').hide();
+      $('.build-job[data-stage="' + stage + '"]').show();
+    };
+
+    Build.prototype.updateStageDropdownText = function(stage) {
+      $('.stage-selection').text(stage);
+    };
+
+    Build.prototype.updateDropdown = function(e) {
+      e.preventDefault();
+      var stage = e.currentTarget.text;
+      this.updateStageDropdownText(stage);
+      this.populateJobs(stage);
+    };
+
+    Build.prototype.stepTrace = function(e) {
+      e.preventDefault();
+      $currentTarget = $(e.currentTarget);
+      $.scrollTo($currentTarget.attr('href'), {
+        offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+      });
     };
 
     return Build;

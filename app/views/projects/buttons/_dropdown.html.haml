@@ -1,7 +1,8 @@
 - if current_user
-  .btn-group
+  .dropdown.inline.project-dropdown
     %a.btn.dropdown-toggle{href: '#', "data-toggle" => "dropdown"}
       = icon('plus')
+      = icon("caret-down")
     %ul.dropdown-menu.dropdown-menu-align-right.project-home-dropdown
       - can_create_issue = can?(current_user, :create_issue, @project)
       - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))

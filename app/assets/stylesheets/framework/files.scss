@@ -57,15 +57,17 @@
       margin-top: -3px;
     }
   }
+
   .file-content {
     background: #fff;
 
     &.image_file {
       background: #eee;
       text-align: center;
+
       img {
-        padding: 100px;
-        max-width: 50%;
+        padding: 20px;
+        max-width: 80%;
       }
     }
 
@@ -93,34 +95,29 @@
     &.blame {
       table {
         border: none;
-        box-shadow: none;
         margin: 0;
       }
+
       tr {
         border-bottom: 1px solid #eee;
       }
+
       td {
         &:first-child {
           border-left: none;
         }
+
         &:last-child {
           border-right: none;
         }
       }
-      img.avatar {
-        border: 0 none;
-        float: none;
-        margin: 0;
-        padding: 0;
-      }
-      td.blame-commit {
-        background: #f9f9f9;
-        min-width: 350px;
 
-        .commit-author-link {
-          color: #888;
-        }
+      td.blame-commit {
+        padding: 0 10px;
+        min-width: 400px;
+        background: $gray-light;
       }
+
       td.line-numbers {
         float: none;
         border-left: 1px solid #ddd;
@@ -130,14 +127,9 @@
           margin-right: 0;
         }
       }
+
       td.lines {
         padding: 0;
-        code {
-          font-family: $monospace_font;
-        }
-        pre {
-          margin: 0;
-        }
       }
     }
 
@@ -152,8 +144,10 @@
         border-left: 1px solid $border-color;
         margin-bottom: 0;
         background: white;
+
         li {
           color: #888;
+
           p {
             margin: 0;
             color: #333;
@@ -173,7 +167,6 @@
      */
     &.code {
       padding: 0;
-      -webkit-overflow-scrolling: auto; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
     }
   }
 }

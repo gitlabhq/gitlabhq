@@ -1,14 +1,13 @@
 @mixin btn-default {
-  @include border-radius(3px);
+  border-radius: 3px;
   font-size: $gl-font-size;
   font-weight: 500;
   padding: $gl-vert-padding $gl-btn-padding;
 
   &:focus,
   &:active {
-    outline: none;
     background-color: $btn-active-gray;
-    @include box-shadow($gl-btn-active-background);
+    box-shadow: $gl-btn-active-background;
   }
 }
 
@@ -25,7 +24,7 @@
   &:focus {
     background-color: $hover-background;
     color: $hover-text;
-    border-color: $hover-border;;
+    border-color: $hover-border;
   }
 }
 
@@ -43,7 +42,7 @@
 
   &:active,
   &.active {
-    @include box-shadow ($gl-btn-active-background);
+    box-shadow: $gl-btn-active-background;
 
     background-color: $dark;
     border-color: $border-dark;
@@ -152,7 +151,8 @@
     @include btn-blue-medium;
   }
 
-  &.btn-info {
+  &.btn-info,
+  &.btn-register {
     @include btn-blue;
   }
 
@@ -194,15 +194,29 @@
     pointer-events: none !important;
   }
 
-  .caret {
+  .fa-caret-down,
+  .fa-caret-up {
     margin-left: 5px;
+  }
+
+  &.dropdown-toggle {
+    .fa-caret-down {
+      margin-left: 3px;
+    }
   }
 
   svg {
     height: 15px;
-    width: auto;
+    width: 15px;
     position: relative;
     top: 2px;
+  }
+
+  svg,
+  .fa {
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
   }
 }
 
@@ -227,6 +241,7 @@
   width: 100%;
   margin: 0;
   margin-bottom: 15px;
+
   &.btn {
     padding: 6px 0;
   }
@@ -251,10 +266,6 @@
       outline: none;
     }
 
-    &:focus {
-      outline: none;
-    }
-
     &:active {
       outline: none;
     }
@@ -266,7 +277,7 @@
   }
 
   .active {
-    @include box-shadow($gl-btn-active-background);
+    box-shadow: $gl-btn-active-background;
 
     border: 1px solid #c6cacf !important;
     background-color: #e4e7ed !important;
@@ -308,6 +319,7 @@
 
 .btn-build {
   margin-left: 10px;
+
   i {
     color: $gl-icon-color;
   }
@@ -315,6 +327,7 @@
 
 .clone-dropdown-btn a {
   color: $dropdown-link-color;
+
   &:hover {
     text-decoration: none;
   }
@@ -324,9 +337,16 @@
   background-color: $background-color !important;
   border: 1px solid lightgrey;
   cursor: default;
+
   &:active {
     -moz-box-shadow: inset 0 0 0 white;
     -webkit-box-shadow: inset 0 0 0 white;
     box-shadow: inset 0 0 0 white;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .btn-wide-on-xs {
+    width: 100%;
   }
 }

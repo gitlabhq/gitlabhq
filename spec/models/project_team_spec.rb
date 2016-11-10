@@ -73,9 +73,71 @@ describe ProjectTeam, models: true do
     end
   end
 
-  describe '#find_member' do
+  describe '#fetch_members' do
     context 'personal project' do
       let(:project) { create(:empty_project) }
+
+      it 'returns project members' do
+        user = create(:user)
+        project.team << [user, :guest]
+
+        expect(project.team.members).to contain_exactly(user)
+      end
+
+      it 'returns project members of a specified level' do
+        user = create(:user)
+        project.team << [user, :reporter]
+
+        expect(project.team.guests).to be_empty
+        expect(project.team.reporters).to contain_exactly(user)
+      end
+
+      it 'returns invited members of a group' do
+        group_member = create(:group_member)
+
+        project.project_group_links.create!(
+          group: group_member.group,
+          group_access: Gitlab::Access::GUEST
+        )
+
+        expect(project.team.members).to contain_exactly(group_member.user)
+      end
+
+      it 'returns invited members of a group of a specified level' do
+        group_member = create(:group_member)
+
+        project.project_group_links.create!(
+          group: group_member.group,
+          group_access: Gitlab::Access::REPORTER
+        )
+
+        expect(project.team.guests).to be_empty
+        expect(project.team.reporters).to contain_exactly(group_member.user)
+      end
+    end
+
+    context 'group project' do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, group: group) }
+
+      it 'returns project members' do
+        group_member = create(:group_member, group: group)
+
+        expect(project.team.members).to contain_exactly(group_member.user)
+      end
+
+      it 'returns project members of a specified level' do
+        group_member = create(:group_member, :reporter, group: group)
+
+        expect(project.team.guests).to be_empty
+        expect(project.team.reporters).to contain_exactly(group_member.user)
+      end
+    end
+  end
+
+  describe '#find_member' do
+    context 'personal project' do
+      let(:project) { create(:empty_project, :public) }
       let(:requester) { create(:user) }
 
       before do
@@ -138,7 +200,7 @@ describe ProjectTeam, models: true do
     let(:requester) { create(:user) }
 
     context 'personal project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:empty_project, :public) }
 
       context 'when project is not shared with group' do
         before do

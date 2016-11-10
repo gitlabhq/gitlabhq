@@ -24,6 +24,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning @all' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:reference) { User.reference_prefix + 'all' }
 
     before do
@@ -31,13 +33,16 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     end
 
     it 'supports a special @all mention' do
+      project.team << [user, :developer]
       doc = reference_filter("Hey #{reference}", author: user)
+
       expect(doc.css('a').length).to eq 1
       expect(doc.css('a').first.attr('href'))
         .to eq urls.namespace_project_url(project.namespace, project)
     end
 
     it 'includes a data-author attribute when there is an author' do
+      project.team << [user, :developer]
       doc = reference_filter(reference, author: user)
 
       expect(doc.css('a').first.attr('data-author')).to eq(user.id.to_s)
@@ -48,9 +53,17 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(doc.css('a').first.has_attribute?('data-author')).to eq(false)
     end
+
+    it 'ignores reference to all when the user is not a project member' do
+      doc = reference_filter("Hey #{reference}", author: user)
+
+      expect(doc.css('a').length).to eq 0
+    end
   end
 
   context 'mentioning a user' do
+    it_behaves_like 'a reference containing an element node'
+
     it 'links to a User' do
       doc = reference_filter("Hey #{reference}")
       expect(doc.css('a').first.attr('href')).to eq urls.user_url(user)
@@ -80,6 +93,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning a group' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:group)     { create(:group) }
     let(:reference) { group.to_reference }
 
@@ -104,7 +119,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
   it 'includes default classes' do
     doc = reference_filter("Hey #{reference}")
-    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member'
+    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member has-tooltip'
   end
 
   it 'supports an :only_path context' do

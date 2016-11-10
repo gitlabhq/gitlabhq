@@ -5,7 +5,6 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Referable
   include Sortable
-  include Taskable
   include Spammable
   include FasterCacheKeys
 
@@ -23,6 +22,8 @@ class Issue < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
@@ -35,6 +36,8 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+
+  scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -134,6 +137,10 @@ class Issue < ActiveRecord::Base
     reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
+  def self.project_foreign_key
+    'project_id'
+  end
+
   def self.sort(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
@@ -203,7 +210,13 @@ class Issue < ActiveRecord::Base
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
+    merge_requests = ext.merge_requests.select(&:open?)
+    if merge_requests.any?
+      ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: id).pluck(:merge_request_id)
+      merge_requests.select { |mr| mr.id.in?(ids) }
+    else
+      []
+    end
   end
 
   def moved?
@@ -237,10 +250,41 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
+    return false unless project.feature_available?(:issues, user)
+
     user ? readable_by?(user) : publicly_visible?
   end
 
+  def overdue?
+    due_date.try(:past?) || false
+  end
+
+  # Only issues on public projects should be checked for spam
+  def check_for_spam?
+    project.public?
+  end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user)
+
+      if options.has_key?(:labels)
+        json[:labels] = labels.as_json(
+          project: project,
+          only: [:id, :title, :description, :color, :priority],
+          methods: [:text_color]
+        )
+      end
+    end
+  end
+
+  private
+
   # Returns `true` if the given User can read the current Issue.
+  #
+  # This method duplicates the same check of issue_policy.rb
+  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
+  # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
     if user.admin?
       true
@@ -260,14 +304,5 @@ class Issue < ActiveRecord::Base
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
     project.public? && !confidential?
-  end
-
-  def overdue?
-    due_date.try(:past?) || false
-  end
-
-  # Only issues on public projects should be checked for spam
-  def check_for_spam?
-    project.public?
   end
 end

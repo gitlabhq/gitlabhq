@@ -41,14 +41,80 @@ describe ApplicationSetting, models: true do
       subject { setting }
     end
 
-    context 'repository storages inclussion' do
+    # Upgraded databases will have this sort of content
+    context 'repository_storages is a String, not an Array' do
+      before { setting.__send__(:raw_write_attribute, :repository_storages, 'default') }
+
+      it { expect(setting.repository_storages_before_type_cast).to eq('default') }
+      it { expect(setting.repository_storages).to eq(['default']) }
+    end
+
+    context 'repository storages' do
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        storages = {
+          'custom1' => 'tmp/tests/custom_repositories_1',
+          'custom2' => 'tmp/tests/custom_repositories_2',
+          'custom3' => 'tmp/tests/custom_repositories_3',
+
+        }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
-      it { is_expected.to allow_value('custom').for(:repository_storage) }
-      it { is_expected.not_to allow_value('alternative').for(:repository_storage) }
+      describe 'inclusion' do
+        it { is_expected.to allow_value('custom1').for(:repository_storages) }
+        it { is_expected.to allow_value(['custom2', 'custom3']).for(:repository_storages) }
+        it { is_expected.not_to allow_value('alternative').for(:repository_storages) }
+        it { is_expected.not_to allow_value(['alternative', 'custom1']).for(:repository_storages) }
+      end
+
+      describe 'presence' do
+        it { is_expected.not_to allow_value([]).for(:repository_storages) }
+        it { is_expected.not_to allow_value("").for(:repository_storages) }
+        it { is_expected.not_to allow_value(nil).for(:repository_storages) }
+      end
+
+      describe '.pick_repository_storage' do
+        it 'uses Array#sample to pick a random storage' do
+          array = double('array', sample: 'random')
+          expect(setting).to receive(:repository_storages).and_return(array)
+
+          expect(setting.pick_repository_storage).to eq('random')
+        end
+
+        describe '#repository_storage' do
+          it 'returns the first storage' do
+            setting.repository_storages = ['good', 'bad']
+
+            expect(setting.repository_storage).to eq('good')
+          end
+        end
+
+        describe '#repository_storage=' do
+          it 'overwrites repository_storages' do
+            setting.repository_storage = 'overwritten'
+
+            expect(setting.repository_storages).to eq(['overwritten'])
+          end
+        end
+      end
+    end
+
+    context 'housekeeping settings' do
+      it { is_expected.not_to allow_value(0).for(:housekeeping_incremental_repack_period) }
+
+      it 'wants the full repack period to be longer than the incremental repack period' do
+        subject.housekeeping_incremental_repack_period = 2
+        subject.housekeeping_full_repack_period = 1
+
+        expect(subject).not_to be_valid
+      end
+
+      it 'wants the gc period to be longer than the full repack period' do
+        subject.housekeeping_full_repack_period = 2
+        subject.housekeeping_gc_period = 1
+
+        expect(subject).not_to be_valid
+      end
     end
   end
 

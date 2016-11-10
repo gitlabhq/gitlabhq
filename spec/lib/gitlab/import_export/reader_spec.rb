@@ -32,6 +32,12 @@ describe Gitlab::ImportExport::Reader, lib: true  do
       expect(described_class.new(shared: shared).project_tree).to match(include: [:issues])
     end
 
+    it 'generates the correct hash for a single project feature relation' do
+      setup_yaml(project_tree: [:project_feature])
+
+      expect(described_class.new(shared: shared).project_tree).to match(include: [:project_feature])
+    end
+
     it 'generates the correct hash for a multiple project relation' do
       setup_yaml(project_tree: [:issues, :snippets])
 

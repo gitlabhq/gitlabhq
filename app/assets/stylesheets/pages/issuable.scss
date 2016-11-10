@@ -27,6 +27,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
     display: inline-block;
+
     .color-label {
       padding: 6px 10px;
     }
@@ -128,7 +129,7 @@
   }
 
   .selectbox {
-    display: none
+    display: none;
   }
 
   .btn-clipboard {
@@ -199,14 +200,14 @@
     display: none;
     /* Small devices (tablets, 768px and up) */
     @media (min-width: $screen-sm-min) {
-      display: block
+      display: block;
     }
 
     width: $sidebar_collapsed_width;
     padding-top: 0;
 
     .block {
-      width: $sidebar_collapsed_width - 1px;
+      width: $sidebar_collapsed_width - 2px;
       margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
@@ -276,7 +277,7 @@
     }
 
     &.btn-primary {
-      @extend .btn-primary
+      @extend .btn-primary;
     }
   }
 
@@ -400,7 +401,23 @@
   .js-issuable-selector {
     width: 100%;
   }
+
   @media (max-width: $screen-sm-max) {
     margin-bottom: $gl-padding;
+  }
+}
+
+.issuable-list {
+  li {
+    .issue-check {
+      float: left;
+      padding-right: $gl-padding;
+      margin-bottom: 10px;
+      min-width: 15px;
+
+      .selected_issue {
+        vertical-align: text-top;
+      }
+    }
   }
 }

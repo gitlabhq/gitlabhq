@@ -17,6 +17,7 @@ describe MergeRequests::UpdateService, services: true do
   before do
     project.team << [user, :master]
     project.team << [user2, :developer]
+    project.team << [user3, :developer]
   end
 
   describe 'execute' do
@@ -104,6 +105,18 @@ describe MergeRequests::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Target branch changed from `master` to `target`'
       end
+
+      context 'when not including source branch removal options' do
+        before do
+          opts.delete(:force_remove_source_branch)
+        end
+
+        it 'maintains the original options' do
+          update_merge_request(opts)
+
+          expect(@merge_request.merge_params["force_remove_source_branch"]).to eq("1")
+        end
+      end
     end
 
     context 'todos' do
@@ -188,6 +201,11 @@ describe MergeRequests::UpdateService, services: true do
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
 
+      before do
+        project.team << [non_subscriber, :developer]
+        project.team << [subscriber, :developer]
+      end
+
       it 'sends notifications for subscribers of newly added labels' do
         opts = { label_ids: [label.id] }
 
@@ -226,6 +244,11 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    context 'updating mentions' do
+      let(:mentionable) { merge_request }
+      include_examples 'updating mentions', MergeRequests::UpdateService
+    end
+
     context 'when MergeRequest has tasks' do
       before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
 
@@ -256,6 +279,43 @@ describe MergeRequests::UpdateService, services: true do
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
         end
+      end
+    end
+
+    context 'while saving references to issues that the updated merge request closes' do
+      let(:first_issue) { create(:issue, project: project) }
+      let(:second_issue) { create(:issue, project: project) }
+
+      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+        issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
+        service = described_class.new(project, user, issue_closing_opts)
+        allow(service).to receive(:execute_hooks)
+        service.execute(merge_request)
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+      end
+
+      it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
+        opts = {
+          title: 'Awesome merge_request',
+          description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}",
+          source_branch: 'feature',
+          target_branch: 'master',
+          force_remove_source_branch: '1'
+        }
+
+        merge_request = MergeRequests::CreateService.new(project, user, opts).execute
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+
+        service = described_class.new(project, user, description: "not closing any issues")
+        allow(service).to receive(:execute_hooks)
+        service.execute(merge_request.reload)
+
+        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
+        expect(issue_ids).to be_empty
       end
     end
   end

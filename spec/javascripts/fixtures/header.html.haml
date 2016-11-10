@@ -1,0 +1,35 @@
+%header.navbar.navbar-fixed-top.navbar-gitlab.nav_header_class
+  .container-fluid
+    .header-content
+      %button.side-nav-toggle
+      %span.sr-only
+        Toggle navigation
+        %i.fa.fa-bars
+      %button.navbar-toggle
+        %span.sr-only
+        Toggle navigation
+        %i.fa.fa-ellipsis-v
+      .navbar-collapse.collapse
+        %ui.nav.navbar-nav
+          %li.hidden-sm.hidden-xs
+          %li.visible-sm.visible-xs
+          %li
+            %a
+              %i.fa.fa-bell.fa-fw
+              %span.badge.todos-pending-count
+          %li
+            %a
+              %i.fa.fa-plus.fa-fw
+          %li.header-user.dropdown
+            %a
+              %img
+              %span.caret
+            .dropdown-menu-nav
+            .dropdown-menu-align-right
+              %ul
+                %li
+                  %a.profile-link
+                %li
+                  %a
+                %li.divider
+                %li.sign-out-link

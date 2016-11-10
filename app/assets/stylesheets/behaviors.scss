@@ -5,6 +5,7 @@
     display: none;
     &.hide { display: block; }
   }
+
   &.open .content {
     display: block;
     &.hide { display: none; }
@@ -19,4 +20,9 @@
     .turn-on { display: none; }
     .turn-off { display: block; }
   }
+}
+
+// Hide element if Vue is still working on rendering it fully.
+[v-cloak="true"] {
+  display: none !important;
 }

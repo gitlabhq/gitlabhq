@@ -3,8 +3,6 @@ require 'spec_helper'
 describe Ci::ProcessPipelineService, services: true do
   let(:pipeline) { create(:ci_pipeline, ref: 'master') }
   let(:user) { create(:user) }
-  let(:all_builds) { pipeline.builds }
-  let(:builds) { all_builds.where.not(status: [:created, :skipped]) }
   let(:config) { nil }
 
   before do
@@ -12,7 +10,15 @@ describe Ci::ProcessPipelineService, services: true do
   end
 
   describe '#execute' do
-    def create_builds
+    def all_builds
+      pipeline.builds
+    end
+
+    def builds
+      all_builds.where.not(status: [:created, :skipped])
+    end
+
+    def process_pipeline
       described_class.new(pipeline.project, user).execute(pipeline)
     end
 
@@ -30,26 +36,26 @@ describe Ci::ProcessPipelineService, services: true do
       end
 
       it 'processes a pipeline' do
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         succeed_pending
         expect(builds.success.count).to eq(2)
 
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         succeed_pending
         expect(builds.success.count).to eq(4)
 
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         succeed_pending
         expect(builds.success.count).to eq(5)
 
-        expect(create_builds).to be_falsey
+        expect(process_pipeline).to be_falsey
       end
 
       it 'does not process pipeline if existing stage is running' do
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         expect(builds.pending.count).to eq(2)
-        
-        expect(create_builds).to be_falsey
+
+        expect(process_pipeline).to be_falsey
         expect(builds.pending.count).to eq(2)
       end
     end
@@ -61,7 +67,7 @@ describe Ci::ProcessPipelineService, services: true do
       end
 
       it 'automatically triggers a next stage when build finishes' do
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         expect(builds.pluck(:status)).to contain_exactly('pending')
 
         pipeline.builds.running_or_pending.each(&:drop)
@@ -82,7 +88,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when builds are successful' do
         it 'properly creates builds' do
-          expect(create_builds).to be_truthy
+          expect(process_pipeline).to be_truthy
           expect(builds.pluck(:name)).to contain_exactly('build')
           expect(builds.pluck(:status)).to contain_exactly('pending')
           pipeline.builds.running_or_pending.each(&:success)
@@ -107,7 +113,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when test job fails' do
         it 'properly creates builds' do
-          expect(create_builds).to be_truthy
+          expect(process_pipeline).to be_truthy
           expect(builds.pluck(:name)).to contain_exactly('build')
           expect(builds.pluck(:status)).to contain_exactly('pending')
           pipeline.builds.running_or_pending.each(&:success)
@@ -132,7 +138,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when test and test_failure jobs fail' do
         it 'properly creates builds' do
-          expect(create_builds).to be_truthy
+          expect(process_pipeline).to be_truthy
           expect(builds.pluck(:name)).to contain_exactly('build')
           expect(builds.pluck(:status)).to contain_exactly('pending')
           pipeline.builds.running_or_pending.each(&:success)
@@ -158,7 +164,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when deploy job fails' do
         it 'properly creates builds' do
-          expect(create_builds).to be_truthy
+          expect(process_pipeline).to be_truthy
           expect(builds.pluck(:name)).to contain_exactly('build')
           expect(builds.pluck(:status)).to contain_exactly('pending')
           pipeline.builds.running_or_pending.each(&:success)
@@ -183,7 +189,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when build is canceled in the second stage' do
         it 'does not schedule builds after build has been canceled' do
-          expect(create_builds).to be_truthy
+          expect(process_pipeline).to be_truthy
           expect(builds.pluck(:name)).to contain_exactly('build')
           expect(builds.pluck(:status)).to contain_exactly('pending')
           pipeline.builds.running_or_pending.each(&:success)
@@ -202,7 +208,7 @@ describe Ci::ProcessPipelineService, services: true do
       context 'when listing manual actions' do
         it 'returns only for skipped builds' do
           # currently all builds are created
-          expect(create_builds).to be_truthy
+          expect(process_pipeline).to be_truthy
           expect(manual_actions).to be_empty
 
           # succeed stage build
@@ -220,6 +226,103 @@ describe Ci::ProcessPipelineService, services: true do
 
         def manual_actions
           pipeline.manual_actions
+        end
+      end
+    end
+
+    context 'when there are manual/on_failure jobs in earlier stages' do
+      before do
+        builds
+        process_pipeline
+        builds.each(&:reload)
+      end
+
+      context 'when first stage has only manual jobs' do
+        let(:builds) do
+          [create_build('build', 0, 'manual'),
+           create_build('check', 1),
+           create_build('test', 2)]
+        end
+
+        it 'starts from the second stage' do
+          expect(builds.map(&:status)).to eq(%w[skipped pending created])
+        end
+      end
+
+      context 'when second stage has only manual jobs' do
+        let(:builds) do
+          [create_build('check', 0),
+           create_build('build', 1, 'manual'),
+           create_build('test', 2)]
+        end
+
+        it 'skips second stage and continues on third stage' do
+          expect(builds.map(&:status)).to eq(%w[pending created created])
+
+          builds.first.success
+          builds.each(&:reload)
+
+          expect(builds.map(&:status)).to eq(%w[success skipped pending])
+        end
+      end
+
+      context 'when second stage has only on_failure jobs' do
+        let(:builds) do
+          [create_build('check', 0),
+           create_build('build', 1, 'on_failure'),
+           create_build('test', 2)]
+        end
+
+        it 'skips second stage and continues on third stage' do
+          expect(builds.map(&:status)).to eq(%w[pending created created])
+
+          builds.first.success
+          builds.each(&:reload)
+
+          expect(builds.map(&:status)).to eq(%w[success skipped pending])
+        end
+      end
+
+      def create_build(name, stage_idx, when_value = nil)
+        create(:ci_build,
+               :created,
+               pipeline: pipeline,
+               name: name,
+               stage_idx: stage_idx,
+               when: when_value)
+      end
+    end
+
+    context 'when failed build in the middle stage is retried' do
+      context 'when failed build is the only unsuccessful build in the stage' do
+        before do
+          create(:ci_build, :created, pipeline: pipeline, name: 'build:1', stage_idx: 0)
+          create(:ci_build, :created, pipeline: pipeline, name: 'build:2', stage_idx: 0)
+          create(:ci_build, :created, pipeline: pipeline, name: 'test:1', stage_idx: 1)
+          create(:ci_build, :created, pipeline: pipeline, name: 'test:2', stage_idx: 1)
+          create(:ci_build, :created, pipeline: pipeline, name: 'deploy:1', stage_idx: 2)
+          create(:ci_build, :created, pipeline: pipeline, name: 'deploy:2', stage_idx: 2)
+        end
+
+        it 'does trigger builds in the next stage' do
+          expect(process_pipeline).to be_truthy
+          expect(builds.pluck(:name)).to contain_exactly('build:1', 'build:2')
+
+          pipeline.builds.running_or_pending.each(&:success)
+
+          expect(builds.pluck(:name))
+            .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
+
+          pipeline.builds.find_by(name: 'test:1').success
+          pipeline.builds.find_by(name: 'test:2').drop
+
+          expect(builds.pluck(:name))
+            .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
+
+          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2')).success
+
+          expect(builds.pluck(:name)).to contain_exactly(
+            'build:1', 'build:2', 'test:1', 'test:2', 'test:2', 'deploy:1', 'deploy:2')
         end
       end
     end
@@ -257,14 +360,14 @@ describe Ci::ProcessPipelineService, services: true do
         expect(all_builds.count).to eq(2)
 
         # Create builds will mark the created as pending
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         expect(builds.count).to eq(2)
         expect(all_builds.count).to eq(2)
 
         # When we builds succeed we will create a rest of pipeline from .gitlab-ci.yml
         # We will have 2 succeeded, 2 pending (from stage test), total 5 (one more build from deploy)
         succeed_pending
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         expect(builds.success.count).to eq(2)
         expect(builds.pending.count).to eq(2)
         expect(all_builds.count).to eq(5)
@@ -272,14 +375,14 @@ describe Ci::ProcessPipelineService, services: true do
         # When we succeed the 2 pending from stage test,
         # We will queue a deploy stage, no new builds will be created
         succeed_pending
-        expect(create_builds).to be_truthy
+        expect(process_pipeline).to be_truthy
         expect(builds.pending.count).to eq(1)
         expect(builds.success.count).to eq(4)
         expect(all_builds.count).to eq(5)
 
         # When we succeed last pending build, we will have a total of 5 succeeded builds, no new builds will be created
         succeed_pending
-        expect(create_builds).to be_falsey
+        expect(process_pipeline).to be_falsey
         expect(builds.success.count).to eq(5)
         expect(all_builds.count).to eq(5)
       end

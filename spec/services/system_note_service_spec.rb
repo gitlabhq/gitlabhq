@@ -40,6 +40,12 @@ describe SystemNoteService, services: true do
     describe 'note body' do
       let(:note_lines) { subject.note.split("\n").reject(&:blank?) }
 
+      describe 'comparison diff link line' do
+        it 'adds the comparison text' do
+          expect(note_lines[2]).to match "[Compare with previous version]"
+        end
+      end
+
       context 'without existing commits' do
         it 'adds a message header' do
           expect(note_lines[0]).to eq "Added #{new_commits.size} commits:"
@@ -48,7 +54,7 @@ describe SystemNoteService, services: true do
         it 'adds a message line for each commit' do
           new_commits.each_with_index do |commit, i|
             # Skip the header
-            expect(note_lines[i + 1]).to eq "* #{commit.short_id} - #{commit.title}"
+            expect(HTMLEntities.new.decode(note_lines[i + 1])).to eq "* #{commit.short_id} - #{commit.title}"
           end
         end
       end
@@ -75,7 +81,7 @@ describe SystemNoteService, services: true do
             end
 
             it 'includes a commit count' do
-              expect(summary_line).to end_with " - 2 commits from branch `feature`"
+              expect(summary_line).to end_with " - 26 commits from branch `feature`"
             end
           end
 
@@ -85,7 +91,7 @@ describe SystemNoteService, services: true do
             end
 
             it 'includes a commit count' do
-              expect(summary_line).to end_with " - 2 commits from branch `feature`"
+              expect(summary_line).to end_with " - 26 commits from branch `feature`"
             end
           end
 
@@ -330,13 +336,13 @@ describe SystemNoteService, services: true do
             let(:mentioner) { project2.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference(project)}"
+              expect(subject.note).to eq "Mentioned in commit #{mentioner.to_reference(project)}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference(project)}"
+              expect(subject.note).to eq "Mentioned in issue #{mentioner.to_reference(project)}"
             end
           end
         end
@@ -346,13 +352,13 @@ describe SystemNoteService, services: true do
             let(:mentioner) { project.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference}"
+              expect(subject.note).to eq "Mentioned in commit #{mentioner.to_reference}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference}"
+              expect(subject.note).to eq "Mentioned in issue #{mentioner.to_reference}"
             end
           end
         end
@@ -362,7 +368,7 @@ describe SystemNoteService, services: true do
 
   describe '.cross_reference?' do
     it 'is truthy when text begins with expected text' do
-      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
+      expect(described_class.cross_reference?('Mentioned in something')).to be_truthy
     end
 
     it 'is falsey when text does not begin with expected text' do
@@ -445,7 +451,7 @@ describe SystemNoteService, services: true do
     end
 
     context 'commit with cross-reference from fork' do
-      let(:author2) { create(:user) }
+      let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
       let(:forked_project) { Projects::ForkService.new(project, author2).execute }
       let(:commit2) { forked_project.commit }
 
@@ -525,61 +531,47 @@ describe SystemNoteService, services: true do
   include JiraServiceHelper
 
   describe 'JIRA integration' do
-    let(:project)    { create(:project) }
-    let(:author)     { create(:user) }
-    let(:issue)      { create(:issue, project: project) }
-    let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
-    let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
-    let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
-    let(:commit)     { project.commit }
+    let(:project)         { create(:jira_project) }
+    let(:author)          { create(:user) }
+    let(:issue)           { create(:issue, project: project) }
+    let(:mergereq)        { create(:merge_request, :simple, target_project: project, source_project: project) }
+    let(:jira_issue)      { ExternalIssue.new("JIRA-1", project)}
+    let(:jira_tracker)    { project.jira_service }
+    let(:commit)          { project.commit }
+    let(:comment_url)     { jira_api_comment_url(jira_issue.id) }
+    let(:success_message) { "JiraService SUCCESS: Successfully posted to http://jira.example.net." }
+
+    before { stub_jira_urls(jira_issue.id) }
 
     context 'in JIRA issue tracker' do
-      before do
-        jira_service_settings
-        WebMock.stub_request(:post, jira_api_comment_url)
-      end
-
-      after do
-        jira_tracker.destroy!
-      end
+      before { jira_service_settings }
 
       describe "new reference" do
-        before do
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        end
-
         subject { described_class.cross_reference(jira_issue, commit, author) }
 
-        it { is_expected.to eq(jira_status_message) }
-      end
-
-      describe "existing reference" do
-        before do
-          message = %Q{[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\\n'#{commit.title}'}
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: %Q({"comments":[{"body":"#{message}"}]}))
-        end
-
-        subject { described_class.cross_reference(jira_issue, commit, author) }
-        it { is_expected.not_to eq(jira_status_message) }
+        it { is_expected.to eq(success_message) }
       end
     end
 
     context 'issue from an issue' do
       context 'in JIRA issue tracker' do
-        before do
-          jira_service_settings
-          WebMock.stub_request(:post, jira_api_comment_url)
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        end
-
-        after do
-          jira_tracker.destroy!
-        end
+        before { jira_service_settings }
 
         subject { described_class.cross_reference(jira_issue, issue, author) }
 
-        it { is_expected.to eq(jira_status_message) }
+        it { is_expected.to eq(success_message) }
       end
+    end
+
+    describe "existing reference" do
+      before do
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title}'"
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
+      end
+
+      subject { described_class.cross_reference(jira_issue, commit, author) }
+
+      it { is_expected.not_to eq(success_message) }
     end
   end
 end

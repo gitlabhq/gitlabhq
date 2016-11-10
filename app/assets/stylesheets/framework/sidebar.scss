@@ -1,11 +1,10 @@
 .page-with-sidebar {
-  padding-top: $header-height;
-  padding-bottom: 25px;
+  padding: $header-height 0 25px;
   transition: padding $sidebar-transition-duration;
 
   &.page-sidebar-pinned {
     .sidebar-wrapper {
-      @include box-shadow(none);
+      box-shadow: none;
     }
   }
 
@@ -15,9 +14,10 @@
     bottom: 0;
     left: 0;
     height: 100%;
+    width: 0;
     overflow: hidden;
     transition: width $sidebar-transition-duration;
-    @include box-shadow(2px 0 16px 0 $black-transparent);
+    box-shadow: 2px 0 16px 0 $black-transparent;
   }
 }
 
@@ -59,6 +59,11 @@
     padding: 0 !important;
   }
 
+  .sidebar-header {
+    padding: 11px 22px 12px;
+    font-size: 20px;
+  }
+
   li {
     &.separate-item {
       padding-top: 10px;
@@ -78,7 +83,6 @@
       display: block;
       text-decoration: none;
       font-weight: normal;
-      outline: none;
 
       &:hover,
       &:active,
@@ -100,7 +104,7 @@
   .count {
     float: right;
     padding: 0 8px;
-    @include border-radius(6px);
+    border-radius: 6px;
   }
 }
 
@@ -128,10 +132,8 @@
 
     .fa {
       transition: transform .15s;
-    }
 
-    &.is-active {
-      .fa {
+      .page-sidebar-pinned & {
         transform: rotate(90deg);
       }
     }
@@ -144,19 +146,12 @@
   transition-duration: .3s;
   position: absolute;
   top: 0;
+  cursor: pointer;
 
   &:hover,
   &:focus {
     color: $white-light;
     text-decoration: none;
-  }
-}
-
-.page-sidebar-collapsed {
-  padding-left: 0;
-
-  .sidebar-wrapper {
-    width: 0;
   }
 }
 
@@ -173,9 +168,21 @@
       padding-left: $sidebar_width;
     }
   }
+
+  .merge-request-tabs-holder.affix {
+    @media (min-width: $sidebar-breakpoint) {
+      left: $sidebar_width;
+    }
+  }
+
+  &.right-sidebar-expanded {
+    .line-resolve-all-container {
+      display: none;
+    }
+  }
 }
 
-header.header-pinned-nav {
+header.header-sidebar-pinned {
   @media (min-width: $sidebar-breakpoint) {
     padding-left: ($sidebar_width + $gl-padding);
 
@@ -194,6 +201,10 @@ header.header-pinned-nav {
 
   @media (min-width: $screen-sm-min) {
     padding-right: $sidebar_collapsed_width;
+
+    .merge-request-tabs-holder.affix {
+      right: $sidebar_collapsed_width;
+    }
   }
 
   .sidebar-collapsed-icon {
@@ -216,9 +227,17 @@ header.header-pinned-nav {
 
   @media (min-width: $screen-md-min) {
     padding-right: $gutter_width;
+
+    .merge-request-tabs-holder.affix {
+      right: $gutter_width;
+    }
   }
 
   &.with-overlay {
     padding-right: $sidebar_collapsed_width;
   }
+}
+
+.right-sidebar {
+  border-left: 1px solid $border-color;
 }

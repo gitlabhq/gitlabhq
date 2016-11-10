@@ -1,8 +1,8 @@
 # Labels
 
 Labels provide an easy way to categorize the issues or merge requests based on
-descriptive titles like `bug`, `documentation` or any other text you feel like
-it. They can have different colors, a description, and are visible throughout
+descriptive titles like `bug`, `documentation` or any other text you feel like.
+They can have different colors, a description, and are visible throughout
 the issue tracker or inside each issue individually.
 
 With labels, you can navigate the issue tracker and filter any bloated

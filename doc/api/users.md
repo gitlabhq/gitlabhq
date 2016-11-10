@@ -20,7 +20,7 @@ GET /users
     "name": "John Smith",
     "state": "active",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
-    "web_url": "http://localhost:3000/u/john_smith"
+    "web_url": "http://localhost:3000/john_smith"
   },
   {
     "id": 2,
@@ -28,9 +28,21 @@ GET /users
     "name": "Jack Smith",
     "state": "blocked",
     "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
-    "web_url": "http://localhost:3000/u/jack_smith"
+    "web_url": "http://localhost:3000/jack_smith"
   }
 ]
+```
+
+In addition, you can filter users based on states eg. `blocked`, `active`
+This works only to filter users who are `blocked` or `active`.
+It does not support `active=false` or `blocked=false`.
+
+```
+GET /users?active=true
+```
+
+```
+GET /users?blocked=true
 ```
 
 ### For admins
@@ -48,7 +60,7 @@ GET /users
     "name": "John Smith",
     "state": "active",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
-    "web_url": "http://localhost:3000/u/john_smith",
+    "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
     "is_admin": false,
     "bio": null,
@@ -57,6 +69,7 @@ GET /users
     "linkedin": "",
     "twitter": "",
     "website_url": "",
+    "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
     "theme_id": 1,
@@ -80,7 +93,7 @@ GET /users
     "name": "Jack Smith",
     "state": "blocked",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
-    "web_url": "http://localhost:3000/u/jack_smith",
+    "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
     "is_admin": false,
     "bio": null,
@@ -89,6 +102,7 @@ GET /users
     "linkedin": "",
     "twitter": "",
     "website_url": "",
+    "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
     "theme_id": 1,
@@ -118,6 +132,8 @@ For example:
 GET /users?username=jack_smith
 ```
 
+You can search for users who are external with: `/users?external=true`
+
 ## Single user
 
 Get a single user.
@@ -139,7 +155,7 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
-  "web_url": "http://localhost:3000/u/john_smith",
+  "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -147,7 +163,8 @@ Parameters:
   "skype": "",
   "linkedin": "",
   "twitter": "",
-  "website_url": ""
+  "website_url": "",
+  "organization": ""
 }
 ```
 
@@ -169,7 +186,7 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
-  "web_url": "http://localhost:3000/u/john_smith",
+  "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -178,6 +195,7 @@ Parameters:
   "linkedin": "",
   "twitter": "",
   "website_url": "",
+  "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -214,6 +232,7 @@ Parameters:
 - `linkedin` (optional)         - LinkedIn
 - `twitter` (optional)          - Twitter account
 - `website_url` (optional)      - Website URL
+- `organization` (optional)     - Organization name
 - `projects_limit` (optional)   - Number of projects user can create
 - `extern_uid` (optional)       - External UID
 - `provider` (optional)         - External provider name
@@ -242,6 +261,7 @@ Parameters:
 - `linkedin`                    - LinkedIn
 - `twitter`                     - Twitter account
 - `website_url`                 - Website URL
+- `organization`                - Organization name
 - `projects_limit`              - Limit projects each user can create
 - `extern_uid`                  - External UID
 - `provider`                    - External provider name
@@ -287,7 +307,7 @@ GET /user
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
-  "web_url": "http://localhost:3000/u/john_smith",
+  "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": null,
@@ -296,6 +316,7 @@ GET /user
   "linkedin": "",
   "twitter": "",
   "website_url": "",
+  "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -310,8 +331,7 @@ GET /user
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false,
-  "private_token": "dd34asd13as"
+  "external": false
 }
 ```
 
@@ -621,3 +641,149 @@ Parameters:
 
 Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
+
+### Get user contribution events
+
+Get the contribution events for the specified user, sorted from newest to oldest.
+
+```
+GET /users/:id/events
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the user |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/users/:id/events
+```
+
+Example response:
+
+```json
+[
+  {
+    "title": null,
+    "project_id": 15,
+    "action_name": "closed",
+    "target_id": 830,
+    "target_type": "Issue",
+    "author_id": 1,
+    "data": null,
+    "target_title": "Public project search field",
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/root"
+    },
+    "author_username": "root"
+  },
+  {
+    "title": null,
+    "project_id": 15,
+    "action_name": "opened",
+    "target_id": null,
+    "target_type": null,
+    "author_id": 1,
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/root"
+    },
+    "author_username": "john",
+    "data": {
+      "before": "50d4420237a9de7be1304607147aec22e4a14af7",
+      "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "ref": "refs/heads/master",
+      "user_id": 1,
+      "user_name": "Dmitriy Zaporozhets",
+      "repository": {
+        "name": "gitlabhq",
+        "url": "git@dev.gitlab.org:gitlab/gitlabhq.git",
+        "description": "GitLab: self hosted Git management software. \r\nDistributed under the MIT License.",
+        "homepage": "https://dev.gitlab.org/gitlab/gitlabhq"
+      },
+      "commits": [
+        {
+          "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+          "message": "Add simple search to projects in public area",
+          "timestamp": "2013-05-13T18:18:08+00:00",
+          "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+          "author": {
+            "name": "Dmitriy Zaporozhets",
+            "email": "dmitriy.zaporozhets@gmail.com"
+          }
+        }
+      ],
+      "total_commits_count": 1
+    },
+    "target_title": null
+  },
+  {
+    "title": null,
+    "project_id": 15,
+    "action_name": "closed",
+    "target_id": 840,
+    "target_type": "Issue",
+    "author_id": 1,
+    "data": null,
+    "target_title": "Finish & merge Code search PR",
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/root"
+    },
+    "author_username": "root"
+  },
+  {
+    "title": null,
+    "project_id": 15,
+    "action_name": "commented on",
+    "target_id": 1312,
+    "target_type": "Note",
+    "author_id": 1,
+    "data": null,
+    "target_title": null,
+    "created_at": "2015-12-04T10:33:58.089Z",
+    "note": {
+      "id": 1312,
+      "body": "What an awesome day!",
+      "attachment": null,
+      "author": {
+        "name": "Dmitriy Zaporozhets",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+        "web_url": "http://localhost:3000/root"
+      },
+      "created_at": "2015-12-04T10:33:56.698Z",
+      "system": false,
+      "upvote": false,
+      "downvote": false,
+      "noteable_id": 377,
+      "noteable_type": "Issue"
+    },
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/root"
+    },
+    "author_username": "root"
+  }
+]
+```

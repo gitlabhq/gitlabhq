@@ -45,7 +45,6 @@
 .line_content {
   padding-left: 0.5em;
   padding-right: 0.5em;
-  white-space: pre;
 
   &.old {
     background-color: $line-removed;
@@ -71,11 +70,15 @@
   }
 }
 
+pre {
+  margin: 0;
+}
+
 span.highlight_word {
   background-color: #fafe3d !important;
 }
 
-.hll { background-color: #f8f8f8 }
+.hll { background-color: #f8f8f8; }
 .c { color: #998; font-style: italic; }
 .err { color: #a61717; background-color: #e3d2d2; }
 .k { font-weight: bold; }

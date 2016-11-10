@@ -2,6 +2,7 @@
   .stage {
     max-width: 90px;
     width: 90px;
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -19,8 +20,20 @@
     margin: 4px;
   }
 
-  .table.builds {
+  .table.ci-table {
     min-width: 1200px;
+
+    .pipeline-id {
+      color: $black;
+    }
+
+    .branch-commit {
+      width: 30%;
+
+      .branch-name {
+        max-width: 195px;
+      }
+    }
   }
 }
 
@@ -38,11 +51,18 @@
   overflow: auto;
 }
 
-.table.builds {
+.table.ci-table {
   min-width: 900px;
 
   &.pipeline {
     min-width: 650px;
+  }
+
+  &.builds-page {
+
+    tr {
+      height: 71px;
+    }
   }
 
   tr {
@@ -60,7 +80,16 @@
     border-top-width: 1px;
   }
 
+  .build.retried {
+    background-color: $gray-lightest;
+  }
+
   .commit-link {
+    a {
+      &:focus {
+        text-decoration: none;
+      }
+    }
 
     .ci-status {
 
@@ -73,6 +102,15 @@
     a:hover {
       text-decoration: none;
     }
+  }
+
+  .avatar {
+    margin-left: 0;
+    float: none;
+  }
+
+  .api {
+    color: $code-color;
   }
 
   .branch-commit {
@@ -96,12 +134,11 @@
 
     .fa {
       font-size: 12px;
-      color: $table-text-gray;
+      color: $gl-text-color;
     }
 
     .commit-id {
       color: $gl-link-color;
-      margin-right: 8px;
     }
 
     .commit-title {
@@ -110,10 +147,6 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
-
-    .avatar {
-      margin-left: 0;
     }
 
     .label {
@@ -131,31 +164,49 @@
 
   .icon-container {
     display: inline-block;
-    text-align: right;
-    width: 15px;
+    width: 10px;
 
-    .fa {
-      position: relative;
-      right: 3px;
-    }
-
-    svg {
-      position: relative;
-      right: 1px;
+    &.commit-icon {
+      width: 15px;
+      text-align: center;
     }
   }
 
   .stage-cell {
+    font-size: 0;
 
     svg {
       height: 18px;
       width: 18px;
+      position: relative;
+      z-index: 2;
       vertical-align: middle;
       overflow: visible;
     }
 
-    .light {
-      width: 3px;
+    .stage-container {
+      display: inline-block;
+      position: relative;
+      margin-right: 6px;
+
+      .tooltip {
+        white-space: nowrap;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          content: '';
+          width: 8px;
+          position: absolute;
+          right: -7px;
+          bottom: 8px;
+          border-bottom: 2px solid $border-color;
+        }
+      }
+
+      a {
+        display: block;
+      }
     }
   }
 
@@ -199,8 +250,12 @@
 
       .fa {
         color: $table-text-gray;
-        margin-right: 6px;
         font-size: 14px;
+      }
+
+      svg,
+      .fa {
+        margin-right: 0;
       }
     }
 
@@ -215,6 +270,13 @@
           border-color: $border-white-normal;
         }
       }
+
+      .btn {
+        .icon-play {
+          height: 13px;
+          width: 12px;
+        }
+      }
     }
   }
 
@@ -227,5 +289,413 @@
 
   .btn-group.open .dropdown-toggle {
     box-shadow: none;
+  }
+}
+
+// Pipeline visualization
+
+.toggle-pipeline-btn {
+  background-color: $gray-dark;
+
+  &.graph-collapsed {
+    background-color: $white-light;
+  }
+}
+
+.pipeline-graph {
+  width: 100%;
+  overflow: auto;
+  white-space: nowrap;
+  transition: max-height 0.3s, padding 0.3s;
+
+  &.graph-collapsed {
+    max-height: 0;
+    padding: 0 16px;
+  }
+}
+
+.pipeline-visualization {
+  position: relative;
+
+  ul {
+    padding: 0;
+  }
+}
+
+.stage-column {
+  display: inline-block;
+  vertical-align: top;
+
+  &:not(:last-child) {
+    margin-right: 44px;
+  }
+
+  &.left-margin {
+    &:not(:first-child) {
+      margin-left: 44px;
+
+      .left-connector {
+        &::before {
+          content: '';
+          position: absolute;
+          top: 48%;
+          left: -48px;
+          border-top: 2px solid $border-color;
+          width: 48px;
+          height: 1px;
+        }
+      }
+    }
+  }
+
+  &.no-margin {
+    margin: 0;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  .stage-name {
+    margin: 0 0 15px 10px;
+    font-weight: bold;
+    width: 176px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .build {
+    border: 1px solid $border-color;
+    position: relative;
+    padding: 7px 10px 8px;
+    border-radius: 30px;
+    width: 186px;
+    margin-bottom: 10px;
+
+    &:hover {
+      background-color: $gray-lighter;
+    }
+
+    &.playable {
+
+      svg {
+        height: 13px;
+        width: 20px;
+        position: relative;
+        top: 1px;
+
+        path {
+          fill: $layout-link-gray;
+        }
+      }
+    }
+
+    .build-content {
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      width: 164px;
+
+      .ci-status-icon {
+        svg {
+          height: 20px;
+          width: 20px;
+        }
+      }
+
+      .tooltip {
+        white-space: nowrap;
+
+        .tooltip-inner {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .ci-status-text {
+        width: 135px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        display: inline-block;
+        position: relative;
+        top: -1px;
+      }
+
+      a {
+        color: $gl-text-color-light;
+        text-decoration: none;
+      }
+
+      .dropdown-menu-toggle {
+        background-color: transparent;
+        border: none;
+        width: auto;
+        padding: 0;
+        color: $gl-text-color-light;
+        flex-grow: 1;
+
+        .ci-status-text {
+          max-width: 112px;
+          width: auto;
+        }
+      }
+
+      .grouped-pipeline-dropdown {
+        padding: 0;
+        width: 186px;
+        left: auto;
+        right: -197px;
+        top: -9px;
+
+        ul {
+          max-height: 245px;
+          overflow: auto;
+
+          li:first-child {
+            padding-top: 8px;
+          }
+
+          li:last-child {
+            padding-bottom: 8px;
+          }
+        }
+
+        a {
+          color: $gl-text-color;
+          padding: 7px 8px 8px;
+
+          &:hover {
+            background-color: $blue-light-transparent;
+            border-radius: 3px;
+
+            .ci-status-text {
+              text-decoration: none;
+            }
+          }
+        }
+
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+
+        .ci-status-text {
+          width: 112px;
+        }
+
+        .arrow {
+          &::before,
+          &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            top: 18px;
+          }
+
+          &::before {
+            left: -5px;
+            margin-top: -6px;
+            border-width: 7px 5px 7px 0;
+            border-right-color: $border-color;
+          }
+
+          &::after {
+            left: -4px;
+            margin-top: -9px;
+            border-width: 10px 7px 10px 0;
+            border-right-color: $white-light;
+          }
+        }
+      }
+
+      .badge {
+        background-color: $gray-darker;
+        color: $gl-text-color-light;
+        font-weight: normal;
+        margin-left: $btn-xs-side-margin;
+      }
+    }
+
+    svg {
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    // Connect first build in each stage with right horizontal line
+    &:first-child {
+      &::after {
+        content: '';
+        position: absolute;
+        top: 48%;
+        right: -48px;
+        border-top: 2px solid $border-color;
+        width: 48px;
+        height: 1px;
+      }
+    }
+
+    // Connect each build (except for first) with curved lines
+    &:not(:first-child) {
+      &::after,
+      &::before {
+        content: '';
+        top: -49px;
+        position: absolute;
+        border-bottom: 2px solid $border-color;
+        width: 25px;
+        height: 69px;
+      }
+
+      // Right connecting curves
+      &::after {
+        right: -25px;
+        border-right: 2px solid $border-color;
+        border-radius: 0 0 20px;
+      }
+
+      // Left connecting curves
+      &::before {
+        left: -25px;
+        border-left: 2px solid $border-color;
+        border-radius: 0 0 0 20px;
+      }
+    }
+
+    // Connect second build to first build with smaller curved line
+    &:nth-child(2) {
+      &::after,
+      &::before {
+        height: 29px;
+        top: -9px;
+      }
+
+      .curve {
+        display: block;
+      }
+    }
+  }
+
+  &:last-child {
+    .build {
+      // Remove right connecting horizontal line from first build in last stage
+      &:first-child {
+        &::after {
+          border: none;
+        }
+      }
+      // Remove right curved connectors from all builds in last stage
+      &:not(:first-child) {
+        &::after {
+          border: none;
+        }
+      }
+      // Remove opposite curve
+      .curve {
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &:first-child {
+    .build {
+      // Remove left curved connectors from all builds in first stage
+      &:not(:first-child) {
+        &::before {
+          border: none;
+        }
+      }
+      // Remove opposite curve
+      .curve {
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Curve first child connecting lines in opposite direction
+  .curve {
+    display: none;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 21px;
+      height: 25px;
+      position: absolute;
+      top: -32px;
+      border-top: 2px solid $border-color;
+    }
+
+    &::after {
+      left: -44px;
+      border-right: 2px solid $border-color;
+      border-radius: 0 20px;
+    }
+
+    &::before {
+      right: -44px;
+      border-left: 2px solid $border-color;
+      border-radius: 20px 0 0;
+    }
+  }
+}
+
+.pipeline-actions {
+  border-bottom: none;
+}
+
+.toggle-pipeline-btn {
+
+  .fa {
+    color: $dropdown-header-color;
+  }
+}
+
+.tab-pane {
+
+  &.pipelines {
+
+    .ci-table {
+      min-width: 900px;
+    }
+
+    .content-list.pipelines {
+      overflow: auto;
+    }
+
+    .stage {
+      max-width: 100px;
+      width: 100px;
+    }
+
+    .pipeline-actions {
+      min-width: initial;
+    }
+  }
+
+  &.builds {
+
+    .ci-table {
+      tr {
+        height: 71px;
+      }
+    }
+  }
+}
+
+.ci-status-icon-created {
+
+  svg {
+    fill: $gray-darkest;
   }
 }

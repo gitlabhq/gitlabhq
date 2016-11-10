@@ -1,6 +1,7 @@
 class Member < ActiveRecord::Base
   include Sortable
   include Importable
+  include Expirable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -27,17 +28,34 @@ class Member < ActiveRecord::Base
       allow_nil: true
     }
 
+  # This scope encapsulates (most of) the conditions a row in the member table
+  # must satisfy if it is a valid permission. Of particular note:
+  #
+  #   * Access requests must be excluded
+  #   * Blocked users must be excluded
+  #   * Invitations take effect immediately
+  #   * expires_at is not implemented. A background worker purges expired rows
+  scope :active, -> do
+    is_external_invite = arel_table[:user_id].eq(nil).and(arel_table[:invite_token].not_eq(nil))
+    user_is_active = User.arel_table[:state].eq(:active)
+
+    includes(:user).references(:users)
+      .where(is_external_invite.or(user_is_active))
+      .where(requested_at: nil)
+  end
+
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
-  scope :has_access, -> { where('access_level > 0') }
 
-  scope :guests, -> { where(access_level: GUEST) }
-  scope :reporters, -> { where(access_level: REPORTER) }
-  scope :developers, -> { where(access_level: DEVELOPER) }
-  scope :masters,  -> { where(access_level: MASTER) }
-  scope :owners,  -> { where(access_level: OWNER) }
-  scope :owners_and_masters,  -> { where(access_level: [OWNER, MASTER]) }
+  scope :has_access, -> { active.where('access_level > 0') }
+
+  scope :guests, -> { active.where(access_level: GUEST) }
+  scope :reporters, -> { active.where(access_level: REPORTER) }
+  scope :developers, -> { active.where(access_level: DEVELOPER) }
+  scope :masters,  -> { active.where(access_level: MASTER) }
+  scope :owners,  -> { active.where(access_level: OWNER) }
+  scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
@@ -62,48 +80,75 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-    # This method is used to find users that have been entered into the "Add members" field.
-    # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
-    def user_for_id(user_id)
-      return user_id if user_id.is_a?(User)
-
-      user = User.find_by(id: user_id)
-      user ||= User.find_by(email: user_id)
-      user ||= user_id
-      user
-    end
-
-    def add_user(members, user_id, access_level, current_user = nil)
-      user = user_for_id(user_id)
+    def add_user(source, user, access_level, current_user: nil, expires_at: nil)
+      user = retrieve_user(user)
+      access_level = retrieve_access_level(access_level)
 
       # `user` can be either a User object or an email to be invited
-      if user.is_a?(User)
-        member = members.find_or_initialize_by(user_id: user.id)
+      member =
+        if user.is_a?(User)
+          source.members.find_by(user_id: user.id) ||
+          source.requesters.find_by(user_id: user.id) ||
+          source.members.build(user_id: user.id)
+        else
+          source.members.build(invite_email: user)
+        end
+
+      return member unless can_update_member?(current_user, member)
+
+      member.attributes = {
+        created_by: member.created_by || current_user,
+        access_level: access_level,
+        expires_at: expires_at
+      }
+
+      if member.request?
+        ::Members::ApproveAccessRequestService.new(
+          source,
+          current_user,
+          id: member.id,
+          access_level: access_level
+        ).execute
       else
-        member = members.build
-        member.invite_email = user
-      end
-
-      if can_update_member?(current_user, member) || project_creator?(member, access_level)
-        member.created_by ||= current_user
-        member.access_level = access_level
-
         member.save
       end
+
+      member
+    end
+
+    def access_levels
+      Gitlab::Access.sym_options
     end
 
     private
 
-    def can_update_member?(current_user, member)
-      # There is no current user for bulk actions, in which case anything is allowed
-      !current_user ||
-        current_user.can?(:update_group_member, member) ||
-        current_user.can?(:update_project_member, member)
+    # This method is used to find users that have been entered into the "Add members" field.
+    # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
+    def retrieve_user(user)
+      return user if user.is_a?(User)
+
+      User.find_by(id: user) || User.find_by(email: user) || user
     end
 
-    def project_creator?(member, access_level)
-      member.new_record? && member.owner? &&
-        access_level.to_i == ProjectMember::MASTER
+    def retrieve_access_level(access_level)
+      access_levels.fetch(access_level) { access_level.to_i }
+    end
+
+    def can_update_member?(current_user, member)
+      # There is no current user for bulk actions, in which case anything is allowed
+      !current_user || current_user.can?(:"update_#{member.type.underscore}", member)
+    end
+
+    def add_users_to_source(source, users, access_level, current_user: nil, expires_at: nil)
+      users.each do |user|
+        add_user(
+          source,
+          user,
+          access_level,
+          current_user: current_user,
+          expires_at: expires_at
+        )
+      end
     end
   end
 

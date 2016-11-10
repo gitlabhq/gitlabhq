@@ -11,7 +11,7 @@
               = icon("bell", class: "js-notification-loading")
               = notification_title(notification_setting.level)
             %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting) } }
-              %span.caret
+              = icon('caret-down')
               .sr-only Toggle dropdown
           - else
             %button.dropdown-new.btn.btn-default.notifications-btn#notifications-button{ type: "button", data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting) } }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   (function(w) {
     if (w.gl == null) {

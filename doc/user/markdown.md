@@ -27,6 +27,7 @@
 * [Horizontal Rule](#horizontal-rule)
 * [Line Breaks](#line-breaks)
 * [Tables](#tables)
+* [Footnotes](#footnotes)
 
 **[Wiki-Specific Markdown](#wiki-specific-markdown)**
 
@@ -66,7 +67,7 @@ dependency to do so. Please see the [github-markup gem readme](https://github.co
 ## Newlines
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#newlines
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newlines
 
 GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
 
@@ -86,7 +87,7 @@ Sugar is sweet
 ## Multiple underscores in words
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#multiple-underscores-in-words
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiple-underscores-in-words
 
 It is not reasonable to italicize just _part_ of a word, especially when you're dealing with code and names that often appear with multiple underscores. Therefore, GFM ignores multiple underscores in words:
 
@@ -101,7 +102,7 @@ do_this_and_do_that_and_another_thing
 ## URL auto-linking
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#url-auto-linking
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#url-auto-linking
 
 GFM will autolink almost any URL you copy and paste into your text:
 
@@ -122,7 +123,7 @@ GFM will autolink almost any URL you copy and paste into your text:
 ## Multiline Blockquote
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#multiline-blockquote
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiline-blockquote
 
 On top of standard Markdown [blockquotes](#blockquotes), which require prepending `>` to quoted lines,
 GFM supports multiline blockquotes fenced by <code>>>></code>:
@@ -156,7 +157,7 @@ you can quote that without having to manually prepend `>` to every line!
 ## Code and Syntax Highlighting
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#code-and-syntax-highlighting
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting
 
 _GitLab uses the [Rouge Ruby library][rouge] for syntax highlighting. For a
 list of supported languages visit the Rouge website._
@@ -226,7 +227,7 @@ But let's throw in a <b>tag</b>.
 ## Inline Diff
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#inline-diff
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-diff
 
 With inline diffs tags you can display {+ additions +} or [- deletions -].
 
@@ -242,7 +243,7 @@ However the wrapping tags cannot be mixed as such:
 ## Emoji
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#emoji
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 
 	Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
@@ -307,7 +308,7 @@ GFM also recognizes certain cross-project references:
 ## Task Lists
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#task-lists
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#task-lists
 
 You can add task lists to issues, merge requests and comments. To create a task list, add a specially-formatted Markdown list, like so:
 
@@ -330,7 +331,7 @@ Task lists can only be created in descriptions, not in titles. Task item state c
 ## Videos
 
 > If this is not rendered correctly, see
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#videos
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#videos
 
 Image tags with a video extension are automatically converted to a video player.
 
@@ -500,6 +501,10 @@ There are two ways to create links, inline-style and reference-style.
     [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
     [I'm a relative reference to a repository file](LICENSE)
+    
+    [I am an absolute reference within the repository](/doc/user/markdown.md)
+    
+    [I link to the Milestones page](/../milestones)
 
     [You can use numbers for reference-style link definitions][1]
 
@@ -517,6 +522,10 @@ There are two ways to create links, inline-style and reference-style.
 
 [I'm a relative reference to a repository file](LICENSE)[^1]
 
+[I am an absolute reference within the repository](/doc/user/markdown.md)
+    
+[I link to the Milestones page](/../milestones)
+    
 [You can use numbers for reference-style link definitions][1]
 
 Or leave it empty and use the [link text itself][]
@@ -699,6 +708,15 @@ By including colons in the header row, you can align the text within that column
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 
+## Footnotes
+
+You can add footnotes to your text as follows.[^1]
+[^1]: This is my awesome footnote.
+
+```
+You can add footnotes to your text as follows.[^1]
+[^1]: This is my awesome footnote.
+```
 
 ## Wiki-specific Markdown
 
@@ -780,7 +798,7 @@ A link starting with a `/` is relative to the wiki root.
 - The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
 - [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
 
-[markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md
+[markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com

@@ -2,13 +2,13 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
 
-    LAST_CONTACT_TIME = 5.minutes.ago
+    LAST_CONTACT_TIME = 1.hour.ago
     AVAILABLE_SCOPES = %w[specific shared active paused online]
     FORM_EDITABLE = %i[description tag_list active run_untagged locked]
 
-    has_many :builds, class_name: 'Ci::Build'
-    has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
-    has_many :projects, through: :runner_projects, class_name: '::Project', foreign_key: :gl_project_id
+    has_many :builds
+    has_many :runner_projects, dependent: :destroy
+    has_many :projects, through: :runner_projects, foreign_key: :gl_project_id
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 

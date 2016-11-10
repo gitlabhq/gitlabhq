@@ -23,15 +23,21 @@ module Gitlab
             end
           end
 
-          private
+          def compose!(deps = nil)
+            return unless valid?
 
-          def compose!
             self.class.nodes.each do |key, factory|
               factory
                 .value(@config[key])
                 .with(key: key, parent: self)
 
               @entries[key] = factory.create!
+            end
+
+            yield if block_given?
+
+            @entries.each_value do |entry|
+              entry.compose!(deps)
             end
           end
 

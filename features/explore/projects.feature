@@ -128,6 +128,7 @@ Feature: Explore Projects
     And project "Archive" has comments
     And I sign in as a user
     And project "Community" has comments
+    And trending projects are refreshed
     When I visit the explore trending projects
     Then I should see project "Community"
     And I should not see project "Internal"

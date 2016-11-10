@@ -1,6 +1,7 @@
+- email = local_assigns.fetch(:email, false)
 - plain = local_assigns.fetch(:plain, false)
 - type = line.type
-- line_code = diff_file.line_code(line) unless plain
+- line_code = diff_file.line_code(line)
 %tr.line_holder{ plain ? { class: type} : { class: type, id: line_code } }
   - case type
   - when 'match'
@@ -22,4 +23,15 @@
         = link_text
       - else
         %a{href: "##{line_code}", data: { linenumber: link_text }}
-    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }= diff_line_content(line.text, type)
+    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }<
+      - if email
+        %pre= diff_line_content(line.text)
+      - else
+        = diff_line_content(line.text)
+
+- discussions = local_assigns.fetch(:discussions, nil)
+- if discussions && !line.meta?
+  - discussion = discussions[line_code]
+  - if discussion
+    - discussion_expanded = local_assigns.fetch(:discussion_expanded, discussion.expanded?)
+    = render "discussions/diff_discussion", discussion: discussion, expanded: discussion_expanded

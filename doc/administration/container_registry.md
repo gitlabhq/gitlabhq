@@ -1,42 +1,32 @@
-# GitLab Container Registry Administration
+# GitLab Container Registry administration
 
 > [Introduced][ce-4040] in GitLab 8.8.
 
-With the Docker Container Registry integrated into GitLab, every project can
-have its own space to store its Docker images.
-
-You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
-
 ---
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+> **Notes:**
+- Container Registry manifest `v1` support was added in GitLab 8.9 to support
+  Docker versions earlier than 1.10.
+- This document is about the admin guide. To learn how to use GitLab Container
+  Registry [user documentation](../user/project/container_registry.md).
 
-- [Enable the Container Registry](#enable-the-container-registry)
-- [Container Registry domain configuration](#container-registry-domain-configuration)
-    - [Configure Container Registry under an existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain)
-    - [Configure Container Registry under its own domain](#configure-container-registry-under-its-own-domain)
-- [Disable Container Registry site-wide](#disable-container-registry-site-wide)
-- [Disable Container Registry per project](#disable-container-registry-per-project)
-- [Disable Container Registry for new projects site-wide](#disable-container-registry-for-new-projects-site-wide)
-- [Container Registry storage path](#container-registry-storage-path)
-- [Container Registry storage driver](#container-registry-storage-driver)
-- [Storage limitations](#storage-limitations)
-- [Changelog](#changelog)
+With the Container Registry integrated into GitLab, every project can have its
+own space to store its Docker images.
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+You can read more about the Container Registry at
+https://docs.docker.com/registry/introduction/.
 
 ## Enable the Container Registry
 
 **Omnibus GitLab installations**
 
 All you have to do is configure the domain name under which the Container
-Registry will listen to. Read [#container-registry-domain-configuration](#container-registry-domain-configuration)
+Registry will listen to. Read
+[#container-registry-domain-configuration](#container-registry-domain-configuration)
 and pick one of the two options that fits your case.
 
 >**Note:**
-The container Registry works under HTTPS by default. Using HTTP is possible
+The container registry works under HTTPS by default. Using HTTP is possible
 but not recommended and out of the scope of this document.
 Read the [insecure Registry documentation][docker-insecure] if you want to
 implement this.
@@ -47,7 +37,7 @@ implement this.
 
 If you have installed GitLab from source:
 
-1. You will have to [install Docker Registry][registry-deploy] by yourself.
+1. You will have to [install Registry][registry-deploy] by yourself.
 1. After the installation is complete, you will have to configure the Registry's
    settings in `gitlab.yml` in order to enable it.
 1. Use the sample NGINX configuration file that is found under
@@ -80,11 +70,13 @@ where:
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation][token-config]. |
 
 >**Note:**
-GitLab does not ship with a Registry init file. Hence, [restarting GitLab][restart gitlab]
-will not restart the Registry should you modify its settings. Read the upstream
-documentation on how to achieve that.
+A Registry init file is not shipped with GitLab if you install it from source.
+Hence, [restarting GitLab][restart gitlab] will not restart the Registry should
+you modify its settings. Read the upstream documentation on how to achieve that.
 
-The Docker Registry configuration will need `container_registry` as the service and `https://gitlab.example.com/jwt/auth` as the realm:
+At the absolute minimum, make sure your [Registry configuration][registry-auth]
+has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
+as the realm:
 
 ```
 auth:
@@ -275,12 +267,6 @@ Registry application itself.
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-## Disable Container Registry per project
-
-If Registry is enabled in your GitLab instance, but you don't need it for your
-project, you can disable it from your project's settings. Read the user guide
-on how to achieve that.
-
 ## Disable Container Registry for new projects site-wide
 
 If the Container Registry is enabled, then it will be available on all new
@@ -406,7 +392,8 @@ To configure the storage driver in Omnibus:
       's3' => {
         'accesskey' => 's3-access-key',
         'secretkey' => 's3-secret-key-for-access-key',
-        'bucket' => 'your-s3-bucket'
+        'bucket' => 'your-s3-bucket',
+        'region' => 'your-s3-region'
       }
     }
     ```
@@ -428,11 +415,52 @@ storage:
     accesskey: 'AKIAKIAKI'
     secretkey: 'secret123'
     bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+    region: 'your-s3-region'
   cache:
     blobdescriptor: inmemory
   delete:
     enabled: true
 ```
+
+## Change the registry's internal port
+
+> **Note:**
+This is not to be confused with the port that GitLab itself uses to expose
+the Registry to the world.
+
+The Registry server listens on localhost at port `5000` by default,
+which is the address for which the Registry server should accept connections.
+In the examples below we set the Registry's port to `5001`.
+
+**Omnibus GitLab**
+
+1. Open `/etc/gitlab/gitlab.rb` and set `registry['registry_http_addr']`:
+
+    ```ruby
+    registry['registry_http_addr'] = "localhost:5001"
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**Installations from source**
+
+1. Open the configuration file of your Registry server and edit the
+   [`http:addr`][registry-http-config] value:
+
+    ```
+    http
+      addr: localhost:5001
+    ```
+
+1. Save the file and restart the Registry server.
+
+## Disable Container Registry per project
+
+If Registry is enabled in your GitLab instance, but you don't need it for your
+project, you can disable it from your project's settings. Read the user guide
+on how to achieve that.
 
 ## Storage limitations
 
@@ -453,6 +481,8 @@ configurable in future releases.
 [docker-insecure]: https://docs.docker.com/registry/insecure/
 [registry-deploy]: https://docs.docker.com/registry/deploying/
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
+[registry-http-config]: https://docs.docker.com/registry/configuration/#http
+[registry-auth]: https://docs.docker.com/registry/configuration/#auth
 [token-config]: https://docs.docker.com/registry/configuration/#token
 [8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl

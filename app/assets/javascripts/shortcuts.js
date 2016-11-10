@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -86,6 +87,7 @@
     var defaultStopCallback;
     defaultStopCallback = Mousetrap.stopCallback;
     return function(e, element, combo) {
+      // allowed shortcuts if textarea, input, contenteditable are focused
       if (['ctrl+shift+p', 'command+shift+p'].indexOf(combo) !== -1) {
         return false;
       } else {

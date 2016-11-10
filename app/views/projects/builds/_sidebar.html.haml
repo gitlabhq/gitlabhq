@@ -1,3 +1,5 @@
+- builds = @build.pipeline.builds.to_a
+
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
     Build
@@ -5,104 +7,132 @@
     %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
       = icon('angle-double-right')
   - if @build.coverage
-    .block.block-first
+    .block.coverage
       .title
         Test coverage
       %p.build-detail-row
         #{@build.coverage}%
 
-  - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
-    .block{ class: ("block-first" if !@build.coverage) }
+  .blocks-container
+    - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
+      .block{ class: ("block-first" if !@build.coverage) }
+        .title
+          Build artifacts
+        - if @build.artifacts_expired?
+          %p.build-detail-row
+            The artifacts were removed
+            #{time_ago_with_tooltip(@build.artifacts_expire_at)}
+        - elsif @build.artifacts_expire_at
+          %p.build-detail-row
+            The artifacts will be removed in
+            %span.js-artifacts-remove= @build.artifacts_expire_at
+
+        - if @build.artifacts?
+          .btn-group.btn-group-justified{ role: :group }
+            - if @build.artifacts_expire_at
+              = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
+                Keep
+
+            = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
+              Download
+
+            - if @build.artifacts_metadata?
+              = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
+                Browse
+
+    .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
       .title
-        Build artifacts
-      - if @build.artifacts_expired?
+        Build details
+        - if can?(current_user, :update_build, @build) && @build.retryable?
+          = link_to "Retry build", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right retry-link', method: :post
+      - if @build.merge_request
         %p.build-detail-row
-          The artifacts were removed
-          #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-      - elsif @build.artifacts_expire_at
+          %span.build-light-text Merge Request:
+          = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request)
+      - if @build.duration
         %p.build-detail-row
-          The artifacts will be removed in
-          %span.js-artifacts-remove= @build.artifacts_expire_at
-
-      - if @build.artifacts?
-        .btn-group.btn-group-justified{ role: :group }
-          - if @build.artifacts_expire_at
-            = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
-              Keep
-
-          = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
-            Download
-
-          - if @build.artifacts_metadata?
-            = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
-              Browse
-
-  .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
-    .title
-      Build details
-      - if can?(current_user, :update_build, @build) && @build.retryable?
-        = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right', method: :post
-    - if @build.merge_request
+          %span.build-light-text Duration:
+          = time_interval_in_words(@build.duration)
+      - if @build.finished_at
+        %p.build-detail-row
+          %span.build-light-text Finished:
+          #{time_ago_with_tooltip(@build.finished_at)}
+      - if @build.erased_at
+        %p.build-detail-row
+          %span.build-light-text Erased:
+          #{time_ago_with_tooltip(@build.erased_at)}
       %p.build-detail-row
-        %span.build-light-text Merge Request:
-        = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request)
-    - if @build.duration
-      %p.build-detail-row
-        %span.build-light-text Duration:
-        = time_interval_in_words(@build.duration)
-    - if @build.finished_at
-      %p.build-detail-row
-        %span.build-light-text Finished:
-        #{time_ago_with_tooltip(@build.finished_at)}
-    - if @build.erased_at
-      %p.build-detail-row
-        %span.build-light-text Erased:
-        #{time_ago_with_tooltip(@build.erased_at)}
-    %p.build-detail-row
-      %span.build-light-text Runner:
-      - if @build.runner && current_user && current_user.admin
-        = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
-      - elsif @build.runner
-        \##{@build.runner.id}
-    .btn-group.btn-group-justified{ role: :group }
-      - if @build.has_trace?
-        = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default'
-      - if @build.active?
-        = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post
-      - if can?(current_user, :update_build, @project) && @build.erasable?
-        = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
-                  class: "btn btn-sm btn-default", method: :post,
-                  data: { confirm: "Are you sure you want to erase this build?" } do
-          Erase
+        %span.build-light-text Runner:
+        - if @build.runner && current_user && current_user.admin
+          = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
+        - elsif @build.runner
+          \##{@build.runner.id}
+      .btn-group.btn-group-justified{ role: :group }
+        - if @build.has_trace_file?
+          = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default'
+        - if @build.active?
+          = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post
+        - if can?(current_user, :update_build, @project) && @build.erasable?
+          = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
+                    class: "btn btn-sm btn-default", method: :post,
+                    data: { confirm: "Are you sure you want to erase this build?" } do
+            Erase
 
-  - if @build.trigger_request
-    .build-widget
-      %h4.title
-        Trigger
+    - if @build.trigger_request
+      .build-widget
+        %h4.title
+          Trigger
 
-      %p
-        %span.build-light-text Token:
-        #{@build.trigger_request.trigger.short_token}
-
-      - if @build.trigger_request.variables
         %p
-          %span.build-light-text Variables:
+          %span.build-light-text Token:
+          #{@build.trigger_request.trigger.short_token}
+
+        - if @build.trigger_request.variables
+          %p
+            %button.btn.group.btn-group-justified.reveal-variables Reveal Variables
 
 
-        - @build.trigger_request.variables.each do |key, value|
-          %code
-            #{key}=#{value}
+          - @build.trigger_request.variables.each do |key, value|
+            .hide.js-build
+              .js-build-variable= key
+              .js-build-value= value
 
-  .block
-    .title
-      Commit title
-    %p.build-light-text.append-bottom-0
-      #{@build.pipeline.git_commit_title}
-
-  - if @build.tags.any?
     .block
       .title
-        Tags
-      - @build.tag_list.each do |tag|
-        %span.label.label-primary
-          = tag
+        Commit title
+      %p.build-light-text.append-bottom-0
+        #{@build.pipeline.git_commit_title}
+
+    - if @build.tags.any?
+      .block
+        .title
+          Tags
+        - @build.tag_list.each do |tag|
+          %span.label.label-primary
+            = tag
+
+    - if @build.pipeline.stages.many?
+      .dropdown.build-dropdown
+        .title Stage
+        %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+          %span.stage-selection More
+          = icon('caret-down')
+        %ul.dropdown-menu
+          - @build.pipeline.stages.each do |stage|
+            %li
+              %a.stage-item= stage
+
+  .builds-container
+    - HasStatus::ORDERED_STATUSES.each do |build_status|
+      - builds.select{|build| build.status == build_status}.each do |build|
+        .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
+          = link_to namespace_project_build_path(@project.namespace, @project, build) do
+            = icon('arrow-right')
+            = ci_icon_for_status(build.status)
+            %span
+              - if build.name
+                = build.name
+              - else
+                = build.id
+            - if build.retried?
+              %i.fa.fa-refresh.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'Build was retried'}

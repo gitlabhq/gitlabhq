@@ -1,0 +1,18 @@
+- @no_container = true
+- @content_class = "issue-boards-content"
+- page_title "Boards"
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('boards/boards_bundle.js')
+  = page_specific_javascript_tag('boards/test_utils/simulate_drag.js') if Rails.env.test?
+
+= render "projects/issues/head"
+
+= render 'shared/issuable/filter', type: :boards
+
+#board-app.boards-app{ "v-cloak" => true, data: board_data }
+  .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
+    .boards-app-loading.text-center{ "v-if" => "loading" }
+      = icon("spinner spin")
+    = render "projects/boards/components/board"
+  = render "projects/boards/components/sidebar"

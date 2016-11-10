@@ -31,6 +31,14 @@ class TodoService
     mark_pending_todos_as_done(issue, current_user)
   end
 
+  # When we destroy an issue we should:
+  #
+  #  * refresh the todos count cache for the current user
+  #
+  def destroy_issue(issue, current_user)
+    destroy_issuable(issue, current_user)
+  end
+
   # When we reassign an issue we should:
   #
   #  * create a pending todo for new assignee if issue is assigned
@@ -62,6 +70,14 @@ class TodoService
   #
   def close_merge_request(merge_request, current_user)
     mark_pending_todos_as_done(merge_request, current_user)
+  end
+
+  # When we destroy a merge request we should:
+  #
+  #  * refresh the todos count cache for the current user
+  #
+  def destroy_merge_request(merge_request, current_user)
+    destroy_issuable(merge_request, current_user)
   end
 
   # When we reassign a merge request we should:
@@ -142,9 +158,14 @@ class TodoService
 
   # When user marks some todos as done
   def mark_todos_as_done(todos, current_user)
-    todos = current_user.todos.where(id: todos.map(&:id)) unless todos.respond_to?(:update_all)
+    mark_todos_as_done_by_ids(todos.select(&:id), current_user)
+  end
 
-    marked_todos = todos.update_all(state: :done)
+  def mark_todos_as_done_by_ids(ids, current_user)
+    todos = current_user.todos.where(id: ids)
+
+    # Only return those that are not really on that state
+    marked_todos = todos.where.not(state: :done).update_all(state: :done)
     current_user.update_todos_count_cache
     marked_todos
   end
@@ -153,6 +174,10 @@ class TodoService
   def mark_todo(issuable, current_user)
     attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)
     create_todos(current_user, attributes)
+  end
+
+  def todo_exist?(issuable, current_user)
+    TodosFinder.new(current_user).execute.exists?(target: issuable)
   end
 
   private
@@ -176,6 +201,10 @@ class TodoService
     return if toggling_tasks?(issuable)
 
     create_mention_todos(issuable.project, issuable, author)
+  end
+
+  def destroy_issuable(issuable, user)
+    user.update_todos_count_cache
   end
 
   def toggling_tasks?(issuable)
@@ -244,12 +273,12 @@ class TodoService
   end
 
   def reject_users_without_access(users, project, target)
-    if target.is_a?(Note) && target.for_issue?
+    if target.is_a?(Note) && (target.for_issue? || target.for_merge_request?)
       target = target.noteable
     end
 
-    if target.is_a?(Issue)
-      select_users(users, :read_issue, target)
+    if target.is_a?(Issuable)
+      select_users(users, :"read_#{target.to_ability_name}", target)
     else
       select_users(users, :read_project, project)
     end

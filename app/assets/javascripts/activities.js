@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Activities = (function() {
     function Activities() {
@@ -12,25 +13,21 @@
     }
 
     Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '#activity'));
+      gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
     };
 
     Activities.prototype.reloadActivities = function() {
       $(".content_list").html('');
-      return Pager.init(20, true);
+      Pager.init(20, true, false, this.updateTooltips);
     };
 
     Activities.prototype.toggleFilter = function(sender) {
-      var event_filters, filter;
+      var filter = sender.attr("id").split("_")[0];
+
       $('.event-filter .active').removeClass("active");
-      event_filters = $.cookie("event_filter");
-      filter = sender.attr("id").split("_")[0];
-      $.cookie("event_filter", (event_filters !== filter ? filter : ""), {
-        path: '/'
-      });
-      if (event_filters !== filter) {
-        return sender.closest('li').toggleClass("active");
-      }
+      Cookies.set("event_filter", filter);
+
+      sender.closest('li').toggleClass("active");
     };
 
     return Activities;

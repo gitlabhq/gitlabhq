@@ -4,6 +4,11 @@ describe Projects::MergeRequestsController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let(:merge_request_with_conflicts) do
+    create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
+      mr.mark_as_unmergeable
+    end
+  end
 
   before do
     sign_in(user)
@@ -165,6 +170,35 @@ describe Projects::MergeRequestsController do
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
       end
+
+      it 'allows editing of a closed merge request' do
+        merge_request.close!
+
+        put :update,
+            namespace_id: project.namespace.path,
+            project_id: project.path,
+            id: merge_request.iid,
+            merge_request: {
+              title: 'New title'
+            }
+
+        expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
+        expect(merge_request.reload.title).to eq 'New title'
+      end
+
+      it 'does not allow to update target branch closed merge request' do
+        merge_request.close!
+
+        put :update,
+            namespace_id: project.namespace.path,
+            project_id: project.path,
+            id: merge_request.iid,
+            merge_request: {
+              target_branch: 'new_branch'
+            }
+
+        expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
+      end
     end
   end
 
@@ -263,6 +297,72 @@ describe Projects::MergeRequestsController do
           end
         end
       end
+
+      describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
+        let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
+
+        context 'when enabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+          end
+
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
+
+            it 'returns :failed' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:failed)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+        end
+
+        context 'when disabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+          end
+
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+        end
+      end
     end
   end
 
@@ -285,6 +385,12 @@ describe Projects::MergeRequestsController do
 
         expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
+      end
+
+      it 'delegates the update of the todos count cache to TodoService' do
+        expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
+
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
       end
     end
   end
@@ -520,6 +626,384 @@ describe Projects::MergeRequestsController do
 
         expect(response).to render_template('projects/merge_requests/show/_commits')
         expect(JSON.parse(response.body)).to have_key('html')
+      end
+    end
+  end
+
+  describe 'GET conflicts' do
+    let(:json_response) { JSON.parse(response.body) }
+
+    context 'when the conflicts cannot be resolved in the UI' do
+      before do
+        allow_any_instance_of(Gitlab::Conflict::Parser).
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+
+        get :conflicts,
+            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+            project_id: merge_request_with_conflicts.project.to_param,
+            id: merge_request_with_conflicts.iid,
+            format: 'json'
+      end
+
+      it 'returns a 200 status code' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns JSON with a message' do
+        expect(json_response.keys).to contain_exactly('message', 'type')
+      end
+    end
+
+    context 'with valid conflicts' do
+      before do
+        get :conflicts,
+            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+            project_id: merge_request_with_conflicts.project.to_param,
+            id: merge_request_with_conflicts.iid,
+            format: 'json'
+      end
+
+      it 'matches the schema' do
+        expect(response).to match_response_schema('conflicts')
+      end
+
+      it 'includes meta info about the MR' do
+        expect(json_response['commit_message']).to include('Merge branch')
+        expect(json_response['commit_sha']).to match(/\h{40}/)
+        expect(json_response['source_branch']).to eq(merge_request_with_conflicts.source_branch)
+        expect(json_response['target_branch']).to eq(merge_request_with_conflicts.target_branch)
+      end
+
+      it 'includes each file that has conflicts' do
+        filenames = json_response['files'].map { |file| file['new_path'] }
+
+        expect(filenames).to contain_exactly('files/ruby/popen.rb', 'files/ruby/regex.rb')
+      end
+
+      it 'splits files into sections with lines' do
+        json_response['files'].each do |file|
+          file['sections'].each do |section|
+            expect(section).to include('conflict', 'lines')
+
+            section['lines'].each do |line|
+              if section['conflict']
+                expect(line['type']).to be_in(['old', 'new'])
+                expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
+              else
+                if line['type'].nil?
+                  expect(line['old_line']).not_to eq(nil)
+                  expect(line['new_line']).not_to eq(nil)
+                else
+                  expect(line['type']).to eq('match')
+                  expect(line['old_line']).to eq(nil)
+                  expect(line['new_line']).to eq(nil)
+                end
+              end
+            end
+          end
+        end
+      end
+
+      it 'has unique section IDs across files' do
+        section_ids = json_response['files'].flat_map do |file|
+          file['sections'].map { |section| section['id'] }.compact
+        end
+
+        expect(section_ids.uniq).to eq(section_ids)
+      end
+    end
+  end
+
+  context 'POST remove_wip' do
+    it 'removes the wip status' do
+      merge_request.title = merge_request.wip_title
+      merge_request.save
+
+      post :remove_wip,
+           namespace_id: merge_request.project.namespace.to_param,
+           project_id: merge_request.project.to_param,
+           id: merge_request.iid
+
+      expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+    end
+  end
+
+  describe 'GET conflict_for_path' do
+    let(:json_response) { JSON.parse(response.body) }
+
+    def conflict_for_path(path)
+      get :conflict_for_path,
+          namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+          project_id: merge_request_with_conflicts.project.to_param,
+          id: merge_request_with_conflicts.iid,
+          old_path: path,
+          new_path: path,
+          format: 'json'
+    end
+
+    context 'when the conflicts cannot be resolved in the UI' do
+      before do
+        allow_any_instance_of(Gitlab::Conflict::Parser).
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+
+        conflict_for_path('files/ruby/regex.rb')
+      end
+
+      it 'returns a 404 status code' do
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when the file does not exist cannot be resolved in the UI' do
+      before { conflict_for_path('files/ruby/regexp.rb') }
+
+      it 'returns a 404 status code' do
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'with an existing file' do
+      let(:path) { 'files/ruby/regex.rb' }
+
+      before { conflict_for_path(path) }
+
+      it 'returns a 200 status code' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns the file in JSON format' do
+        content = merge_request_with_conflicts.conflicts.file_for_path(path, path).content
+
+        expect(json_response).to include('old_path' => path,
+                                         'new_path' => path,
+                                         'blob_icon' => 'file-text-o',
+                                         'blob_path' => a_string_ending_with(path),
+                                         'blob_ace_mode' => 'ruby',
+                                         'content' => content)
+      end
+    end
+  end
+
+  context 'POST resolve_conflicts' do
+    let(:json_response) { JSON.parse(response.body) }
+    let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }
+
+    def resolve_conflicts(files)
+      post :resolve_conflicts,
+           namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+           project_id: merge_request_with_conflicts.project.to_param,
+           id: merge_request_with_conflicts.iid,
+           format: 'json',
+           files: files,
+           commit_message: 'Commit message'
+    end
+
+    context 'with valid params' do
+      before do
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/popen.rb',
+            'old_path' => 'files/ruby/popen.rb',
+            'sections' => {
+              '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head'
+            }
+          }, {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
+      end
+
+      it 'creates a new commit on the branch' do
+        expect(original_head_sha).not_to eq(merge_request_with_conflicts.source_branch_head.sha)
+        expect(merge_request_with_conflicts.source_branch_head.message).to include('Commit message')
+      end
+
+      it 'returns an OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when sections are missing' do
+      before do
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/popen.rb',
+            'old_path' => 'files/ruby/popen.rb',
+            'sections' => {
+              '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head'
+            }
+          }, {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
+      end
+
+      it 'returns a 400 error' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'has a message with the name of the first missing section' do
+        expect(json_response['message']).to include('6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21')
+      end
+
+      it 'does not create a new commit' do
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+
+    context 'when files are missing' do
+      before do
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
+      end
+
+      it 'returns a 400 error' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'has a message with the name of the missing file' do
+        expect(json_response['message']).to include('files/ruby/popen.rb')
+      end
+
+      it 'does not create a new commit' do
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+
+    context 'when a file has identical content to the conflict' do
+      before do
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/popen.rb',
+            'old_path' => 'files/ruby/popen.rb',
+            'content' => merge_request_with_conflicts.conflicts.file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').content
+          }, {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
+      end
+
+      it 'returns a 400 error' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'has a message with the path of the problem file' do
+        expect(json_response['message']).to include('files/ruby/popen.rb')
+      end
+
+      it 'does not create a new commit' do
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+  end
+
+  describe 'POST assign_related_issues' do
+    let(:issue1) { create(:issue, project: project) }
+    let(:issue2) { create(:issue, project: project) }
+
+    def post_assign_issues
+      merge_request.update!(description: "Closes #{issue1.to_reference} and #{issue2.to_reference}",
+                            author: user,
+                            source_branch: 'feature',
+                            target_branch: 'master')
+
+      post :assign_related_issues,
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param,
+           id: merge_request.iid
+    end
+
+    it 'shows a flash message on success' do
+      post_assign_issues
+
+      expect(flash[:notice]).to eq '2 issues have been assigned to you'
+    end
+
+    it 'correctly pluralizes flash message on success' do
+      issue2.update!(assignee: user)
+
+      post_assign_issues
+
+      expect(flash[:notice]).to eq '1 issue has been assigned to you'
+    end
+
+    it 'calls MergeRequests::AssignIssuesService' do
+      expect(MergeRequests::AssignIssuesService).to receive(:new).
+        with(project, user, merge_request: merge_request).
+        and_return(double(execute: { count: 1 }))
+
+      post_assign_issues
+    end
+
+    it 'is skipped when not signed in' do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      sign_out(:user)
+
+      expect(MergeRequests::AssignIssuesService).not_to receive(:new)
+
+      post_assign_issues
+    end
+  end
+
+  describe 'GET ci_environments_status' do
+    context 'the environment is from a forked project' do
+      let!(:forked)       { create(:project) }
+      let!(:environment)  { create(:environment, project: forked) }
+      let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
+      let(:json_response) { JSON.parse(response.body) }
+      let(:admin)         { create(:admin) }
+
+      let(:merge_request) do
+        create(:forked_project_link, forked_to_project: forked,
+                                     forked_from_project: project)
+
+        create(:merge_request, source_project: forked, target_project: project)
+      end
+
+      before do
+        forked.team << [user, :master]
+
+        get :ci_environments_status,
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project.to_param,
+          id: merge_request.iid, format: 'json'
+      end
+
+      it 'links to the environment on that project' do
+        expect(json_response.first['url']).to match /#{forked.path_with_namespace}/
       end
     end
   end

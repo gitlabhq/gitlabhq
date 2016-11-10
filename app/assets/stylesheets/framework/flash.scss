@@ -3,7 +3,8 @@
   margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
-  z-index: 100;
+  position: relative;
+  z-index: 1;
 
   .flash-notice {
     @extend .alert;
@@ -17,10 +18,12 @@
     margin: 0;
   }
 
-  .flash-notice, .flash-alert {
+  .flash-notice,
+  .flash-alert {
     border-radius: $border-radius-default;
 
-    .container-fluid.container-limited.flash-text {
+    .container-fluid,
+    .container-fluid.container-limited {
       background: transparent;
     }
   }
@@ -28,7 +31,8 @@
   &.flash-container-page {
     margin-bottom: 0;
 
-    .flash-notice, .flash-alert {
+    .flash-notice,
+    .flash-alert {
       border-radius: 0;
     }
   }
@@ -41,4 +45,3 @@
     }
   }
 }
-

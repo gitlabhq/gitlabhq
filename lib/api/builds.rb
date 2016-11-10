@@ -3,15 +3,32 @@ module API
   class Builds < Grape::API
     before { authenticate! }
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
-      # Get a project builds
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
-      #                      if none provided showing all builds)
-      # Example Request:
-      #   GET /projects/:id/builds
+      helpers do
+        params :optional_scope do
+          optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
+                           values:  ['pending', 'running', 'failed', 'success', 'canceled'],
+                           coerce_with: ->(scope) {
+                             if scope.is_a?(String)
+                               [scope]
+                             elsif scope.is_a?(Hashie::Mash)
+                               scope.values
+                             else
+                               ['unknown']
+                             end
+                           }
+        end
+      end
+
+      desc 'Get a project builds' do
+        success Entities::Build
+      end
+      params do
+        use :optional_scope
+      end
       get ':id/builds' do
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
@@ -20,15 +37,13 @@ module API
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Get builds for a specific commit of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The SHA id of a commit
-      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
-      #                      if none provided showing all builds)
-      # Example Request:
-      #   GET /projects/:id/repository/commits/:sha/builds
+      desc 'Get builds for a specific commit of a project' do
+        success Entities::Build
+      end
+      params do
+        requires :sha,   type: String, desc: 'The SHA id of a commit'
+        use :optional_scope
+      end
       get ':id/repository/commits/:sha/builds' do
         authorize_read_builds!
 
@@ -42,13 +57,12 @@ module API
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Get a specific build of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   build_id (required) - The ID of a build
-      # Example Request:
-      #   GET /projects/:id/builds/:build_id
+      desc 'Get a specific build of a project' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       get ':id/builds/:build_id' do
         authorize_read_builds!
 
@@ -58,13 +72,12 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Download the artifacts file from build
-      #
-      # Parameters:
-      #   id (required) - The ID of a build
-      #   token (required) - The build authorization token
-      # Example Request:
-      #   GET /projects/:id/builds/:build_id/artifacts
+      desc 'Download the artifacts file from build' do
+        detail 'This feature was introduced in GitLab 8.5'
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       get ':id/builds/:build_id/artifacts' do
         authorize_read_builds!
 
@@ -73,14 +86,13 @@ module API
         present_artifacts!(build.artifacts_file)
       end
 
-      # Download the artifacts file from ref_name and job
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   ref_name (required) - The ref from repository
-      #   job (required) - The name for the build
-      # Example Request:
-      #   GET /projects/:id/builds/artifacts/:ref_name/download?job=name
+      desc 'Download the artifacts file from build' do
+        detail 'This feature was introduced in GitLab 8.10'
+      end
+      params do
+        requires :ref_name, type: String, desc: 'The ref from repository'
+        requires :job,      type: String, desc: 'The name for the build'
+      end
       get ':id/builds/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_read_builds!
@@ -91,17 +103,13 @@ module API
         present_artifacts!(latest_build.artifacts_file)
       end
 
-      # Get a trace of a specific build of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   build_id (required) - The ID of a build
-      # Example Request:
-      #   GET /projects/:id/build/:build_id/trace
-      #
       # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
+      desc 'Get a trace of a specific build of a project'
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       get ':id/builds/:build_id/trace' do
         authorize_read_builds!
 
@@ -115,13 +123,12 @@ module API
         body trace
       end
 
-      # Cancel a specific build of a project
-      #
-      # parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - the id of a build
-      # example request:
-      #   post /projects/:id/build/:build_id/cancel
+      desc 'Cancel a specific build of a project' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       post ':id/builds/:build_id/cancel' do
         authorize_update_builds!
 
@@ -133,13 +140,12 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Retry a specific build of a project
-      #
-      # parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - the id of a build
-      # example request:
-      #   post /projects/:id/build/:build_id/retry
+      desc 'Retry a specific build of a project' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       post ':id/builds/:build_id/retry' do
         authorize_update_builds!
 
@@ -152,13 +158,12 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Erase build (remove artifacts and build trace)
-      #
-      # Parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - the id of a build
-      # example Request:
-      #  post  /projects/:id/build/:build_id/erase
+      desc 'Erase build (remove artifacts and build trace)' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       post ':id/builds/:build_id/erase' do
         authorize_update_builds!
 
@@ -170,13 +175,12 @@ module API
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
-      # Keep the artifacts to prevent them from being deleted
-      #
-      # Parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - The ID of a build
-      # Example Request:
-      #   POST /projects/:id/builds/:build_id/artifacts/keep
+      desc 'Keep the artifacts to prevent them from being deleted' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       post ':id/builds/:build_id/artifacts/keep' do
         authorize_update_builds!
 
@@ -184,6 +188,27 @@ module API
         return not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
+
+        status 200
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+      end
+
+      desc 'Trigger a manual build' do
+        success Entities::Build
+        detail 'This feature was added in GitLab 8.11'
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a Build'
+      end
+      post ":id/builds/:build_id/play" do
+        authorize_read_builds!
+
+        build = get_build!(params[:build_id])
+
+        bad_request!("Unplayable Build") unless build.playable?
+
+        build.play(current_user)
 
         status 200
         present build, with: Entities::Build,
@@ -214,14 +239,6 @@ module API
         return builds if scope.nil? || scope.empty?
 
         available_statuses = ::CommitStatus::AVAILABLE_STATUSES
-        scope =
-          if scope.is_a?(String)
-            [scope]
-          elsif scope.is_a?(Hashie::Mash)
-            scope.values
-          else
-            ['unknown']
-          end
 
         unknown = scope - available_statuses
         render_api_error!('Scope contains invalid value(s)', 400) unless unknown.empty?

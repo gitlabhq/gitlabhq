@@ -62,6 +62,42 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
+  describe '#award_user_list' do
+    it "returns a comma-separated list of the first X users" do
+      user = build_stubbed(:user, name: 'Joe')
+      awards = Array.new(3, build_stubbed(:award_emoji, user: user))
+
+      expect(award_user_list(awards, nil, limit: 3))
+        .to eq('Joe, Joe, and Joe')
+    end
+
+    it "displays the current user's name as 'You'" do
+      user = build_stubbed(:user, name: 'Joe')
+      award = build_stubbed(:award_emoji, user: user)
+
+      expect(award_user_list([award], user)).to eq('You')
+      expect(award_user_list([award], nil)).to eq 'Joe'
+    end
+
+    it "truncates lists" do
+      user = build_stubbed(:user, name: 'Jane')
+      awards = Array.new(5, build_stubbed(:award_emoji, user: user))
+
+      expect(award_user_list(awards, nil, limit: 3))
+        .to eq('Jane, Jane, Jane, and 2 more.')
+    end
+
+    it "displays the current user in front of other users" do
+      current_user = build_stubbed(:user)
+      my_award = build_stubbed(:award_emoji, user: current_user)
+      award = build_stubbed(:award_emoji, user: build_stubbed(:user, name: 'Jane'))
+      awards = Array.new(5, award).push(my_award)
+
+      expect(award_user_list(awards, current_user, limit: 2)).
+        to eq("You, Jane, and 4 more.")
+    end
+  end
+
   describe '#award_active_class' do
     let!(:upvote) { create(:award_emoji) }
 

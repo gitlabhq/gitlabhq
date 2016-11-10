@@ -108,7 +108,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-_**Note:** The current supported Ruby versions are 2.1.x and 2.3.x. 2.3.x is preferred, and support for 2.1.x will be dropped in the future.
+**Note:** The current supported Ruby versions are 2.1.x and 2.3.x. 2.3.x is preferred, and support for 2.1.x will be dropped in the future.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
@@ -141,6 +141,9 @@ gitlab-git-http-server). This is a small daemon written in Go. To install
 gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
+
+    # Remove former Go installation folder
+    sudo rm -rf /usr/local/go
 
     curl --remote-name --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
     echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
@@ -268,9 +271,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-11-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-14-stable gitlab
 
-**Note:** You can change `8-11-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-14-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -331,6 +334,9 @@ sudo usermod -aG redis git
     # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
     sudo -u git -H git config --global gc.auto 0
 
+    # Enable packfile bitmaps
+    sudo -u git -H git config --global repack.writeBitmaps true
+
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
 
@@ -378,7 +384,7 @@ sudo usermod -aG redis git
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production SKIP_STORAGE_VALIDATION=true
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
@@ -397,7 +403,7 @@ If you are not using Linux you may have to run `gmake` instead of
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout v0.7.8
+    sudo -u git -H git checkout v1.0.0
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -473,10 +479,14 @@ Copy the example site config:
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
-Make sure to edit the config file to match your setup:
+Make sure to edit the config file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the 'git' user:
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
+    #
+    # Remember to match your paths to GitLab, especially
+    # if installing for a user other than 'git'.
+    #
     # If using Ubuntu default nginx install:
     # either remove the default_server from the listen line
     # or else sudo rm -f /etc/nginx/sites-enabled/default
@@ -560,7 +570,7 @@ Using a self-signed certificate is discouraged but if you must use it follow the
 
 ### Enable Reply by email
 
-See the ["Reply by email" documentation](../incoming_email/README.md) for more information on how to set this up.
+See the ["Reply by email" documentation](../administration/reply_by_email.md) for more information on how to set this up.
 
 ### LDAP Authentication
 

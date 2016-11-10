@@ -1,9 +1,10 @@
 class ProjectsController < Projects::ApplicationController
+  include IssuableCollections
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity, :refs]
-  before_action :project, except: [:new, :create]
-  before_action :repository, except: [:new, :create]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :project, except: [:index, :new, :create]
+  before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
 
@@ -29,6 +30,8 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params).execute
 
     if @project.saved?
+      cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
+
       redirect_to(
         project_path(@project),
         notice: "Project '#{@project.name}' was successfully created."
@@ -103,16 +106,7 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
-
-        if @project.repository_exists?
-          if @project.empty_repo?
-            render 'projects/empty'
-          else
-            render :show
-          end
-        else
-          render 'projects/no_repo'
-        end
+        render_landing_page
       end
 
       format.atom do
@@ -134,10 +128,22 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def autocomplete_sources
-    note_type = params['type']
-    note_id = params['type_id']
+    noteable =
+      case params[:type]
+      when 'Issue'
+        IssuesFinder.new(current_user, project_id: @project.id).
+          execute.find_by(iid: params[:type_id])
+      when 'MergeRequest'
+        MergeRequestsFinder.new(current_user, project_id: @project.id).
+          execute.find_by(iid: params[:type_id])
+      when 'Commit'
+        @project.commit(params[:type_id])
+      else
+        nil
+      end
+
     autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
-    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
+    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)
 
     @suggestions = {
       emojis: Gitlab::AwardEmoji.urls,
@@ -145,12 +151,20 @@ class ProjectsController < Projects::ApplicationController
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
       labels: autocomplete.labels,
-      members: participants
+      members: participants,
+      commands: autocomplete.commands(noteable, params[:type])
     }
 
     respond_to do |format|
       format.json { render json: @suggestions }
     end
+  end
+
+  def new_issue_address
+    return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
+
+    current_user.reset_incoming_email_token!
+    render json: { new_issue_address: @project.new_issue_address(current_user) }
   end
 
   def archive
@@ -272,6 +286,27 @@ class ProjectsController < Projects::ApplicationController
 
   private
 
+  # Render project landing depending of which features are available
+  # So if page is not availble in the list it renders the next page
+  #
+  # pages list order: repository readme, wiki home, issues list, customize workflow
+  def render_landing_page
+    if @project.feature_available?(:repository, current_user)
+      return render 'projects/no_repo' unless @project.repository_exists?
+      render 'projects/empty' if @project.empty_repo?
+    else
+      if @project.wiki_enabled?
+        @project_wiki = @project.wiki
+        @wiki_home = @project_wiki.find_page('home', params[:version_id])
+      elsif @project.feature_available?(:issues, current_user)
+        @issues = issues_collection
+        @issues = @issues.page(params[:page])
+      end
+
+      render :show
+    end
+  end
+
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
       'application'
@@ -290,18 +325,53 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(
-      :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :container_registry_enabled,
-      :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
-      :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled
-    )
+    params.require(:project)
+      .permit(project_params_ce)
+  end
+
+  def project_params_ce
+    [
+      :avatar,
+      :build_allow_git_fetch,
+      :build_coverage_regex,
+      :build_timeout_in_minutes,
+      :container_registry_enabled,
+      :default_branch,
+      :description,
+      :import_url,
+      :issues_tracker,
+      :issues_tracker_id,
+      :last_activity_at,
+      :lfs_enabled,
+      :name,
+      :namespace_id,
+      :only_allow_merge_if_all_discussions_are_resolved,
+      :only_allow_merge_if_build_succeeds,
+      :path,
+      :public_builds,
+      :request_access_enabled,
+      :runners_token,
+      :tag_list,
+      :visibility_level,
+
+      project_feature_attributes: %i[
+        builds_access_level
+        issues_access_level
+        merge_requests_access_level
+        repository_access_level
+        snippets_access_level
+        wiki_access_level
+      ]
+    ]
   end
 
   def repo_exists?
-    project.repository_exists? && !project.empty_repo?
+    project.repository_exists? && !project.empty_repo? && project.repo
+
+  rescue Gitlab::Git::Repository::NoRepository
+    project.repository.expire_exists_cache
+
+    false
   end
 
   def project_view_files?

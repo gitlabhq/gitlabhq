@@ -1,70 +1,53 @@
+- @no_container = true
 - page_title "#{@build.name} (##{@build.id})", "Builds"
-- trace_with_state = @build.trace_with_state
 - header_title project_title(@project, "Builds", project_builds_path(@project))
+= render "projects/pipelines/head", build_subnav: true
 
-.build-page
-  = render "header"
+%div{ class: container_class }
+  .build-page
+    = render "header"
 
-  - builds = @build.pipeline.builds.latest.to_a
-  - if builds.size > 1
-    %ul.nav-links.no-top.no-bottom
-      - builds.each do |build|
-        %li{class: ('active' if build == @build) }
-          = link_to namespace_project_build_path(@project.namespace, @project, build) do
-            = ci_icon_for_status(build.status)
-            %span
-              - if build.name
-                = build.name
-              - else
-                = build.id
+    - if @build.stuck?
+      - unless @build.any_runners_online?
+        .bs-callout.bs-callout-warning
+          %p
+            - if no_runners_for_project?(@build.project)
+              This build is stuck, because the project doesn't have any runners online assigned to it.
+            - elsif @build.tags.any?
+              This build is stuck, because you don't have any active runners online with any of these tags assigned to them:
+              - @build.tags.each do |tag|
+                %span.label.label-primary
+                  = tag
+            - else
+              This build is stuck, because you don't have any active runners that can run this build.
 
-      - if @build.retried?
-        %li.active
-          %a
-            Build ##{@build.id}
-            &middot;
-            %i.fa.fa-warning
-            This build was retried.
-  - if @build.stuck?
-    - unless @build.any_runners_online?
-      .bs-callout.bs-callout-warning
-        %p
-          - if no_runners_for_project?(@build.project)
-            This build is stuck, because the project doesn't have any runners online assigned to it.
-          - elsif @build.tags.any?
-            This build is stuck, because you don't have any active runners online with any of these tags assigned to them:
-            - @build.tags.each do |tag|
-              %span.label.label-primary
-                = tag
-          - else
-            This build is stuck, because you don't have any active runners that can run this build.
+            %br
+            Go to
+            = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
+              Runners page
 
-          %br
-          Go to
-          = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
-            Runners page
+    .prepend-top-default
+      - if @build.erased?
+        .erased.alert.alert-warning
+          - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
+          Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
+      - else
+        #js-build-scroll.scroll-controls
+          .scroll-step
+            = link_to '#build-trace', class: 'btn' do
+              %i.fa.fa-angle-up
+            = link_to '#down-build-trace', class: 'btn' do
+              %i.fa.fa-angle-down
+          - if @build.active?
+            .autoscroll-container
+              %button.btn.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}}
+                Enable autoscroll
+        %pre.build-trace#build-trace
+          %code.bash.js-build-output
+          = icon("refresh spin", class: "js-build-refresh")
 
-  .prepend-top-default
-    - if @build.active?
-      .autoscroll-container
-        %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
-    - if @build.erased?
-      .erased.alert.alert-warning
-        - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
-        Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
-    - else
-      #js-build-scroll.scroll-controls
-        = link_to '#build-trace', class: 'btn' do
-          %i.fa.fa-angle-up
-        = link_to '#down-build-trace', class: 'btn' do
-          %i.fa.fa-angle-down
-      %pre.build-trace#build-trace
-        %code.bash.js-build-output
-        = icon("refresh spin", class: "js-build-refresh")
+        #down-build-trace
 
-    #down-build-trace
+  = render "sidebar"
 
-= render "sidebar"
-
-:javascript
-  new Build("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}", "#{@build.status}", "#{trace_with_state[:state]}")
+.js-build-options{ data: javascript_build_options }

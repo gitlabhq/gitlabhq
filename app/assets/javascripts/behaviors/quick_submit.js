@@ -1,6 +1,21 @@
-
+/* eslint-disable */
+// Quick Submit behavior
+//
+// When a child field of a form with a `js-quick-submit` class receives a
+// "Meta+Enter" (Mac) or "Ctrl+Enter" (Linux/Windows) key combination, the form
+// is submitted.
+//
 /*= require extensions/jquery */
 
+//
+// ### Example Markup
+//
+//   <form action="/foo" class="js-quick-submit">
+//     <input type="text" />
+//     <textarea></textarea>
+//     <input type="submit" value="Submit" />
+//   </form>
+//
 (function() {
   var isMac, keyCodeIs;
 
@@ -17,6 +32,7 @@
 
   $(document).on('keydown.quick_submit', '.js-quick-submit', function(e) {
     var $form, $submit_button;
+    // Enter
     if (!keyCodeIs(e, 13)) {
       return;
     }
@@ -33,8 +49,11 @@
     return $form.submit();
   });
 
+  // If the user tabs to a submit button on a `js-quick-submit` form, display a
+  // tooltip to let them know they could've used the hotkey
   $(document).on('keyup.quick_submit', '.js-quick-submit input[type=submit], .js-quick-submit button[type=submit]', function(e) {
     var $this, title;
+    // Tab
     if (!keyCodeIs(e, 9)) {
       return;
     }

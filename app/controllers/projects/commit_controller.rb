@@ -10,10 +10,11 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!, except: [:cancel_builds, :retry_builds]
   before_action :authorize_update_build!, only: [:cancel_builds, :retry_builds]
+  before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :builds]
-  before_action :define_status_vars, only: [:show, :builds]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :builds, :pipelines]
+  before_action :define_status_vars, only: [:show, :builds, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
@@ -29,6 +30,9 @@ class Projects::CommitController < Projects::ApplicationController
 
   def diff_for_path
     render_diff_for_path(@commit.diffs(diff_options))
+  end
+
+  def pipelines
   end
 
   def builds
@@ -93,11 +97,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @project.commit(params[:id])
-  end
-
-  def pipelines
-    @pipelines ||= project.pipelines.where(sha: commit.sha)
+    @noteable = @commit ||= @project.commit(params[:id])
   end
 
   def ci_builds
@@ -134,8 +134,9 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_status_vars
-    @statuses = CommitStatus.where(pipeline: pipelines).relevant
-    @builds = Ci::Build.where(pipeline: pipelines).relevant
+    @ci_pipelines = project.pipelines.where(sha: commit.sha)
+    @statuses = CommitStatus.where(pipeline: @ci_pipelines).relevant
+    @builds = Ci::Build.where(pipeline: @ci_pipelines).relevant
   end
 
   def assign_change_commit_vars(mr_source_branch)

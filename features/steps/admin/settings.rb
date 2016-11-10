@@ -33,6 +33,7 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     page.check('Issue')
     page.check('Merge request')
     page.check('Build')
+    page.check('Pipeline')
     click_on 'Save'
   end
 

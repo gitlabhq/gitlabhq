@@ -6,18 +6,38 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:label1) { create(:label, title: 'label1', project: project) }
+  let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
   before do
     project.team << [user, :master]
   end
 
   describe 'GET /projects/:id/labels' do
-    it 'returns project labels' do
+    it 'returns all available labels to the project' do
+      group = create(:group)
+      group_label = create(:group_label, title: 'feature', group: group)
+      project.update(group: group)
+      expected_keys = [
+        'id', 'name', 'color', 'description',
+        'open_issues_count', 'closed_issues_count', 'open_merge_requests_count',
+        'subscribed', 'priority'
+      ]
+
       get api("/projects/#{project.id}/labels", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(1)
-      expect(json_response.first['name']).to eq(label1.name)
+      expect(json_response.size).to eq(3)
+      expect(json_response.first.keys).to match_array expected_keys
+      expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, priority_label.name, label1.name])
+      expect(json_response.last['name']).to eq(label1.name)
+      expect(json_response.last['color']).to be_present
+      expect(json_response.last['description']).to be_nil
+      expect(json_response.last['open_issues_count']).to eq(0)
+      expect(json_response.last['closed_issues_count']).to eq(0)
+      expect(json_response.last['open_merge_requests_count']).to eq(0)
+      expect(json_response.last['priority']).to be_nil
+      expect(json_response.last['subscribed']).to be_falsey
     end
   end
 
@@ -26,21 +46,39 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAABB',
-           description: 'test'
+           description: 'test',
+           priority: 2
+
       expect(response).to have_http_status(201)
       expect(json_response['name']).to eq('Foo')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to eq('test')
+      expect(json_response['priority']).to eq(2)
     end
 
     it 'returns created label when only required params' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo & Bar',
            color: '#FFAABB'
+
       expect(response.status).to eq(201)
       expect(json_response['name']).to eq('Foo & Bar')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to be_nil
+      expect(json_response['priority']).to be_nil
+    end
+
+    it 'creates a prioritized label' do
+      post api("/projects/#{project.id}/labels", user),
+           name: 'Foo & Bar',
+           color: '#FFAABB',
+           priority: 3
+
+      expect(response.status).to eq(201)
+      expect(json_response['name']).to eq('Foo & Bar')
+      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['description']).to be_nil
+      expect(json_response['priority']).to eq(3)
     end
 
     it 'returns a 400 bad request if name not given' do
@@ -77,7 +115,29 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
-    it 'returns 409 if label already exists' do
+    it 'returns 409 if label already exists in group' do
+      group = create(:group)
+      group_label = create(:group_label, group: group)
+      project.update(group: group)
+
+      post api("/projects/#{project.id}/labels", user),
+           name: group_label.name,
+           color: '#FFAABB'
+
+      expect(response).to have_http_status(409)
+      expect(json_response['message']).to eq('Label already exists')
+    end
+
+    it 'returns 400 for invalid priority' do
+      post api("/projects/#{project.id}/labels", user),
+           name: 'Foo',
+           color: '#FFAAFFFF',
+           priority: 'foo'
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'returns 409 if label already exists in project' do
       post api("/projects/#{project.id}/labels", user),
            name: 'label1',
            color: '#FFAABB'
@@ -137,11 +197,43 @@ describe API::API, api: true  do
 
     it 'returns 200 if description is changed' do
       put api("/projects/#{project.id}/labels", user),
-          name: 'label1',
+          name: 'bug',
           description: 'test'
+
       expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['name']).to eq(priority_label.name)
       expect(json_response['description']).to eq('test')
+      expect(json_response['priority']).to eq(3)
+    end
+
+    it 'returns 200 if priority is changed' do
+      put api("/projects/#{project.id}/labels", user),
+           name: 'bug',
+           priority: 10
+
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(priority_label.name)
+      expect(json_response['priority']).to eq(10)
+    end
+
+    it 'returns 200 if a priority is added' do
+      put api("/projects/#{project.id}/labels", user),
+           name: 'label1',
+           priority: 3
+
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['priority']).to eq(3)
+    end
+
+    it 'returns 200 if the priority is removed' do
+      put api("/projects/#{project.id}/labels", user),
+          name: priority_label.name,
+          priority: nil
+
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(priority_label.name)
+      expect(json_response['priority']).to be_nil
     end
 
     it 'returns 404 if label does not exist' do
@@ -154,14 +246,14 @@ describe API::API, api: true  do
     it 'returns 400 if no label name given' do
       put api("/projects/#{project.id}/labels", user), new_name: 'label2'
       expect(response).to have_http_status(400)
-      expect(json_response['message']).to eq('400 (Bad request) "name" not given')
+      expect(json_response['error']).to eq('name is missing')
     end
 
     it 'returns 400 if no new parameters given' do
       put api("/projects/#{project.id}/labels", user), name: 'label1'
       expect(response).to have_http_status(400)
-      expect(json_response['message']).to eq('Required parameters '\
-                                         '"new_name" or "color" missing')
+      expect(json_response['error']).to eq('new_name, color, description, priority are missing, '\
+                                           'at least one parameter must be provided')
     end
 
     it 'returns 400 for invalid name' do
@@ -187,6 +279,14 @@ describe API::API, api: true  do
            color: '#FFAAFFFF'
       expect(response).to have_http_status(400)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
+    end
+
+    it 'returns 400 for invalid priority' do
+      post api("/projects/#{project.id}/labels", user),
+           name: 'Foo',
+           priority: 'foo'
+
+      expect(response).to have_http_status(400)
     end
   end
 

@@ -1,18 +1,15 @@
 module JiraServiceHelper
+  JIRA_URL = "http://jira.example.net"
+  JIRA_API = JIRA_URL + "/rest/api/2"
+
   def jira_service_settings
     properties = {
-      "title" => "JIRA tracker",
-      "project_url" => "http://jira.example/issues/?jql=project=A",
-      "issues_url" => "http://jira.example/browse/JIRA-1",
-      "new_issue_url" => "http://jira.example/secure/CreateIssue.jspa",
-      "api_url" => "http://jira.example/rest/api/2"
+      title: "JIRA tracker",
+      url: JIRA_URL,
+      project_key: "JIRA"
     }
 
     jira_tracker.update_attributes(properties: properties, active: true)
-  end
-
-  def jira_status_message
-    "JiraService SUCCESS 200: Successfully posted to #{jira_api_comment_url}."
   end
 
   def jira_issue_comments
@@ -52,15 +49,32 @@ module JiraServiceHelper
       ]}"
   end
 
-  def jira_api_comment_url
-    'http://jira.example/rest/api/2/issue/JIRA-1/comment'
+  def jira_project_url
+    JIRA_API + "/project/#{jira_tracker.project_key}"
   end
 
-  def jira_api_transition_url
-    'http://jira.example/rest/api/2/issue/JIRA-1/transitions'
+  def jira_api_comment_url(issue_id)
+    JIRA_API + "/issue/#{issue_id}/comment"
+  end
+
+  def jira_api_transition_url(issue_id)
+    JIRA_API + "/issue/#{issue_id}/transitions"
   end
 
   def jira_api_test_url
-    'http://jira.example/rest/api/2/myself'
+    JIRA_API + "/myself"
+  end
+
+  def jira_issue_url(issue_id)
+    JIRA_API + "/issue/#{issue_id}"
+  end
+
+  def stub_jira_urls(issue_id)
+    WebMock.stub_request(:get, jira_project_url)
+    WebMock.stub_request(:get, jira_api_comment_url(issue_id)).to_return(body: jira_issue_comments)
+    WebMock.stub_request(:get, jira_issue_url(issue_id))
+    WebMock.stub_request(:get, jira_api_test_url)
+    WebMock.stub_request(:post, jira_api_comment_url(issue_id))
+    WebMock.stub_request(:post, jira_api_transition_url(issue_id))
   end
 end

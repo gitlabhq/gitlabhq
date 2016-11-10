@@ -19,7 +19,6 @@
         - [Technical debt](#technical-debt)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
-        - [Merge request description format](#merge-request-description-format)
         - [Contribution acceptance criteria](#contribution-acceptance-criteria)
     - [Changes for Stable Releases](#changes-for-stable-releases)
     - [Definition of done](#definition-of-done)
@@ -91,19 +90,7 @@ This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
 
 ## Implement design & UI elements
 
-### Design reference
-
-The GitLab design reference can be found in the [gitlab-design] project.
-The designs are made using Antetype (`.atype` files). You can use the
-[free Antetype viewer (Mac OSX only)] or grab an exported PNG from the design
-(the PNG is 1:1).
-
-The current designs can be found in the [`gitlab8.atype` file].
-
-### UI development kit
-
-Implemented UI elements can also be found at https://gitlab.com/help/ui. Please
-note that this page isn't comprehensive at this time.
+Please see the [UI Guide for building GitLab].
 
 ## Issue tracker
 
@@ -129,7 +116,7 @@ request that potentially fixes it.
 
 ### Feature proposals
 
-To create a feature proposal for CE and CI, open an issue on the
+To create a feature proposal for CE, open an issue on the
 [issue tracker of CE][ce-tracker].
 
 For feature proposals for EE, open an issue on the
@@ -144,16 +131,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-You are encouraged to use the template below for feature proposals.
-
-```
-## Description
-Include problem, use cases, benefits, and/or goals
-
-## Proposal
-
-## Links / references
-```
+Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -166,54 +144,10 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the following template in the issue description area.
+Please submit bugs using the ['Bug' issue template](.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
-
-```
-## Summary
-
-(Summarize your issue in one sentence - what goes wrong, what did you expect to happen)
-
-## Steps to reproduce
-
-(How one can reproduce the issue - this is very important)
-
-## Expected behavior
-
-(What you should see instead)
-
-## Relevant logs and/or screenshots
-
-(Paste any relevant logs - please use code blocks (```) to format console output,
-logs, and code as it's very hard to read otherwise.)
-
-## Output of checks
-
-### Results of GitLab Application Check
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:check SANITIZE=true)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true)
-
-(we will only investigate if the tests are passing)
-
-### Results of GitLab Environment Info
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:env:info)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production)
-
-## Possible fixes
-
-(If you can, link to the line of code that might be responsible for the problem)
-
-```
 
 ### Issue weight
 
@@ -291,8 +225,7 @@ a feedback issue (if there isn't one already) and leave a comment asking for it
 to be marked as `Accepting merge requests`. Please include screenshots or
 wireframes if the feature will also change the UI.
 
-Merge requests can be filed either at [GitLab.com][gitlab-mr-tracker] or at
-[github.com][github-mr-tracker].
+Merge requests should be opened at [GitLab.com][gitlab-mr-tracker].
 
 If you are new to GitLab development (or web development in general), see the
 [I want to contribute!](#i-want-to-contribute) section to get you started with
@@ -311,19 +244,23 @@ tests are least likely to receive timely feedback. The workflow to make a merge
 request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
-1. Create a feature branch, branch away from `master`.
+1. Create a feature branch, branch away from `master`
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
-1. Add your changes to the [CHANGELOG](CHANGELOG)
-1. If you are writing documentation, make sure to read the [documentation styleguide][doc-styleguide]
+1. [Generate a changelog entry with `bin/changelog`][changelog]
+1. If you are writing documentation, make sure to follow the
+   [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
    [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
-   used to achieve it, see the [merge request description format]
-   (#merge-request-description-format)
-1. If the MR changes the UI it should include before and after screenshots
+   used to achieve it.
+  1. If you are contributing code, fill in the template already provided in the
+     "Description" field.
+  1. If you are contributing documentation, choose `Documentation` from the
+     "Choose a template" menu and fill in the template.
+1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
 1. Link any relevant [issues][ce-tracker] in the merge request description and
@@ -335,11 +272,17 @@ request is as follows:
    [shell command guidelines](doc/development/shell_commands.md)
 1. If your code creates new files on disk please read the
    [shared files guidelines](doc/development/shared_files.md).
-1. When writing commit messages please follow [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [guidelines](http://chris.beams.io/posts/git-commit/).
+1. When writing commit messages please follow
+   [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
+   [guidelines](http://chris.beams.io/posts/git-commit/).
 1. If your merge request adds one or more migrations, make sure to execute all
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, do this again once the review is complete.
 1. For more complex migrations, write tests.
+1. Merge requests **must** adhere to the [merge request performance
+   guidelines](doc/development/merge_request_performance_guidelines.md).
+1. For tests that use Capybara or PhantomJS, see this [article on how
+   to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
@@ -366,35 +309,19 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](doc/development/code_review.md) into account.
 
-### Merge request description format
-
-Please submit merge requests using the following template in the merge request
-description area. Copy-paste it to retain the markdown format.
-
-```
-## What does this MR do?
-
-## Are there points in the code the reviewer needs to double check?
-
-## Why was this MR needed?
-
-## What are the relevant issue numbers?
-
-## Screenshots (if relevant)
-```
-
 ### Contribution acceptance criteria
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test
-   exposing a bug in existing code)
+   exposing a bug in existing code). Every new class should have corresponding
+   unit tests, even if the class is exercised at a higher level, such as a feature test.
 1. If you suspect a failing CI build is unrelated to your contribution, you may
    try and restart the failing CI job or ask a developer to fix the
    aforementioned failing test
 1. Your MR initially contains a single commit (please use `git rebase -i` to
    squash commits)
-1. Your changes can merge without problems (if not please merge `master`, never
-   rebase commits pushed to the remote server)
+1. Your changes can merge without problems (if not please rebase if you're the
+   only one working on your feature branch, otherwise, merge `master`)
 1. Does not break any existing functionality
 1. Fixes one specific issue or implements one specific feature (do not combine
    things, send separate merge requests if needed)
@@ -412,7 +339,10 @@ description area. Copy-paste it to retain the markdown format.
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
       refactoring modifications may leave style non-compliant.
-1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.), they should conform to our [Licensing guidelines][license-finder-doc]. See the instructions in that document for help if your MR fails the "license-finder" test with a "Dependencies that need approval" error.
+1. If the merge request adds any new libraries (gems, JavaScript libraries,
+   etc.), they should conform to our [Licensing guidelines][license-finder-doc].
+   See the instructions in that document for help if your MR fails the
+   "license-finder" test with a "Dependencies that need approval" error.
 
 ## Changes for Stable Releases
 
@@ -528,7 +458,6 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests
 [accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Accepting+Merge+Requests
 [gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
-[github-mr-tracker]: https://github.com/gitlabhq/gitlabhq/pulls
 [gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
 [git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
 [closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
@@ -536,10 +465,9 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [contributor-covenant]: http://contributor-covenant.org
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
+[changelog]: doc/development/changelog.md "Generate a changelog entry"
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
-[gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
-[free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
-[`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/
+[UI Guide for building GitLab]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/ui_guide.md
 [license-finder-doc]: doc/development/licensing.md

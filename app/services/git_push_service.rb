@@ -63,13 +63,12 @@ class GitPushService < BaseService
   protected
 
   def update_merge_requests
-    @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
+    UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
     EventCreateService.new.push(@project, current_user, build_push_data)
-    SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
     ProjectCacheWorker.perform_async(@project.id)
   end
 
@@ -87,7 +86,7 @@ class GitPushService < BaseService
     project.change_head(branch_name)
 
     # Set protection on the default branch if configured
-    if current_application_settings.default_branch_protection != PROTECTION_NONE
+    if current_application_settings.default_branch_protection != PROTECTION_NONE && !@project.protected_branch?(@project.default_branch)
 
       params = {
         name: @project.default_branch,
@@ -106,34 +105,11 @@ class GitPushService < BaseService
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
   # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.
   def process_commit_messages
-    is_default_branch = is_default_branch?
-
-    authors = Hash.new do |hash, commit|
-      email = commit.author_email
-      next hash[email] if hash.has_key?(email)
-
-      hash[email] = commit_user(commit)
-    end
+    default = is_default_branch?
 
     @push_commits.each do |commit|
-      # Keep track of the issues that will be actually closed because they are on a default branch.
-      # Hence, when creating cross-reference notes, the not-closed issues (on non-default branches)
-      # will also have cross-reference.
-      closed_issues = []
-
-      if is_default_branch
-        # Close issues if these commits were pushed to the project's default branch and the commit message matches the
-        # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
-        # a different branch.
-        closed_issues = commit.closes_issues(current_user)
-        closed_issues.each do |issue|
-          if can?(current_user, :update_issue, issue)
-            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit: commit)
-          end
-        end
-      end
-
-      commit.create_cross_references!(authors[commit], closed_issues)
+      ProcessCommitWorker.
+        perform_async(project.id, current_user.id, commit.id, default)
     end
   end
 
@@ -145,16 +121,6 @@ class GitPushService < BaseService
       params[:newrev],
       params[:ref],
       push_commits)
-  end
-
-  def build_push_data_system_hook
-    @push_data_system ||= Gitlab::DataBuilder::Push.build(
-      @project,
-      current_user,
-      params[:oldrev],
-      params[:newrev],
-      params[:ref],
-      [])
   end
 
   def push_to_existing_branch?

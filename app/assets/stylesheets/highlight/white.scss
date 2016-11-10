@@ -1,26 +1,41 @@
 /* https://github.com/aahan/pygments-github-style */
+
+@mixin matchLine {
+  color: $black-transparent;
+  background-color: $match-line;
+}
+
 .code.white {
   // Line numbers
-  .line-numbers, .diff-line-num {
+  .line-numbers,
+  .diff-line-num {
     background-color: $background-color;
   }
 
-  .diff-line-num, .diff-line-num a {
+  .diff-line-num,
+  .diff-line-num a {
     color: $black-transparent;
   }
 
   // Code itself
-  pre.code, .diff-line-num {
+  pre.code,
+  .diff-line-num {
     border-color: $table-border-gray;
   }
 
-  &, pre.code, .line_holder .line_content {
+  &,
+  pre.code,
+  .line_holder .line_content {
     background-color: #fff;
     color: #333;
   }
 
   // Diff line
   .line_holder {
+
+    &.match .line_content {
+      @include matchLine;
+    }
 
     .diff-line-num {
       &.old {
@@ -57,8 +72,7 @@
       }
 
       &.match {
-        color: $black-transparent;
-        background-color: $match-line;
+        @include matchLine;
       }
 
       &.hll:not(.empty-cell) {
@@ -77,7 +91,7 @@
     background-color: #fafe3d !important;
   }
 
-  .hll { background-color: #f8f8f8 }
+  .hll { background-color: #f8f8f8; }
   .c { color: #998; font-style: italic; }
   .err { color: #a61717; background-color: #e3d2d2; }
   .k { font-weight: bold; }

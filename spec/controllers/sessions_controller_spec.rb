@@ -109,6 +109,44 @@ describe SessionsController do
             end
           end
 
+          context 'when the user is on their last attempt' do
+            before do
+              user.update(failed_attempts: User.maximum_attempts.pred)
+            end
+
+            context 'when OTP is valid' do
+              it 'authenticates correctly' do
+                authenticate_2fa(otp_attempt: user.current_otp)
+
+                expect(subject.current_user).to eq user
+              end
+            end
+
+            context 'when OTP is invalid' do
+              before { authenticate_2fa(otp_attempt: 'invalid') }
+
+              it 'does not authenticate' do
+                expect(subject.current_user).not_to eq user
+              end
+
+              it 'warns about invalid login' do
+                expect(response).to set_flash.now[:alert]
+                  .to /Invalid Login or password/
+              end
+
+              it 'locks the user' do
+                expect(user.reload).to be_access_locked
+              end
+
+              it 'keeps the user locked on future login attempts' do
+                post(:create, user: { login: user.username, password: user.password })
+
+                expect(response)
+                  .to set_flash.now[:alert].to /Invalid Login or password/
+              end
+            end
+          end
+
           context 'when another user does not have 2FA enabled' do
             let(:another_user) { create(:user) }
 
@@ -134,6 +172,29 @@ describe SessionsController do
 
       def authenticate_2fa_u2f(user_params)
         post(:create, { user: user_params }, { otp_user_id: user.id })
+      end
+
+      context 'remember_me field' do
+        it 'sets a remember_user_token cookie when enabled' do
+          allow(U2fRegistration).to receive(:authenticate).and_return(true)
+          allow(controller).to receive(:find_user).and_return(user)
+          expect(controller).
+            to receive(:remember_me).with(user).and_call_original
+
+          authenticate_2fa_u2f(remember_me: '1', login: user.username, device_response: "{}")
+
+          expect(response.cookies['remember_user_token']).to be_present
+        end
+
+        it 'does nothing when disabled' do
+          allow(U2fRegistration).to receive(:authenticate).and_return(true)
+          allow(controller).to receive(:find_user).and_return(user)
+          expect(controller).not_to receive(:remember_me)
+
+          authenticate_2fa_u2f(remember_me: '0', login: user.username, device_response: "{}")
+
+          expect(response.cookies['remember_user_token']).to be_nil
+        end
       end
 
       it "creates an audit log record" do

@@ -102,15 +102,16 @@ describe Projects::CommitController do
     describe "as patch" do
       include_examples "export as", :patch
       let(:format) { :patch }
+      let(:commit2) { project.commit('498214de67004b1da3d820901307bed2a68a8ef6') }
 
       it "is a git email patch" do
-        go(id: commit.id, format: format)
+        go(id: commit2.id, format: format)
 
-        expect(response.body).to start_with("From #{commit.id}")
+        expect(response.body).to start_with("From #{commit2.id}")
       end
 
       it "contains a git diff" do
-        go(id: commit.id, format: format)
+        go(id: commit2.id, format: format)
 
         expect(response.body).to match(/^diff --git/)
       end
@@ -135,6 +136,8 @@ describe Projects::CommitController do
 
   describe "GET branches" do
     it "contains branch and tags information" do
+      commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+
       get(:branches,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
@@ -254,16 +257,17 @@ describe Projects::CommitController do
     end
 
     let(:existing_path) { '.gitmodules' }
+    let(:commit2) { project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
     context 'when the commit exists' do
       context 'when the user has access to the project' do
         context 'when the path exists in the diff' do
           it 'enables diff notes' do
-            diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
+            diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:comments_target)).to eq(noteable_type: 'Commit',
-                                                    commit_id: commit.id)
+                                                    commit_id: commit2.id)
           end
 
           it 'only renders the diffs for the path given' do
@@ -272,7 +276,7 @@ describe Projects::CommitController do
               meth.call(diffs)
             end
 
-            diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
+            diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
           end
         end
 

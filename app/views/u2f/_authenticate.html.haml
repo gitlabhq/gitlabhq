@@ -6,7 +6,7 @@
 %script#js-authenticate-u2f-setup{ type: "text/template" }
   %div
     %p Insert your security key (if you haven't already), and press the button below.
-    %a.btn.btn-info#js-login-u2f-device{ href: 'javascript:void(0)' } Login Via U2F Device
+    %a.btn.btn-info#js-login-u2f-device{ href: 'javascript:void(0)' } Sign in via U2F device
 
 %script#js-authenticate-u2f-in-progress{ type: "text/template" }
   %p Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.
@@ -20,6 +20,8 @@
   %div
     %p We heard back from your U2F device. Click this button to authenticate with the GitLab server.
     = form_tag(new_user_session_path, method: :post) do |f|
+      - resource_params = params[resource_name].presence || params
+      = hidden_field_tag 'user[remember_me]', resource_params.fetch(:remember_me, 0)
       = hidden_field_tag 'user[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
       = submit_tag "Authenticate via U2F Device", class: "btn btn-success"
 

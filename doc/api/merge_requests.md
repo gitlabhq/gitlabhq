@@ -68,9 +68,12 @@ Parameters:
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
     "subscribed" : false,
+    "sha": "8888888888888888888888888888888888888888",
+    "merge_commit_sha": null,
     "user_notes_count": 1,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1"
   }
 ]
 ```
@@ -134,9 +137,12 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -236,9 +242,12 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1",
   "changes": [
     {
     "old_path": "VERSION",
@@ -319,9 +328,12 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 0,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -393,9 +405,12 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -494,9 +509,12 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -563,9 +581,12 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -600,7 +621,7 @@ Example response when the GitLab issue tracker is used:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "web_url" : "https://gitlab.example.com/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -621,7 +642,7 @@ Example response when the GitLab issue tracker is used:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.example.com/root",
          "avatar_url" : null,
          "username" : "root"
       },
@@ -690,7 +711,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/leila"
+    "web_url": "https://gitlab.example.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -698,7 +719,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/carli"
+    "web_url": "https://gitlab.example.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -717,7 +738,9 @@ Example response:
   },
   "merge_when_build_succeeds": false,
   "merge_status": "cannot_be_merged",
-  "subscribed": true
+  "subscribed": true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null
 }
 ```
 
@@ -764,7 +787,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/leila"
+    "web_url": "https://gitlab.example.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -772,7 +795,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/carli"
+    "web_url": "https://gitlab.example.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -791,7 +814,9 @@ Example response:
   },
   "merge_when_build_succeeds": false,
   "merge_status": "cannot_be_merged",
-  "subscribed": false
+  "subscribed": false,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null
 }
 ```
 
@@ -833,7 +858,7 @@ Example response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/root"
+    "web_url": "https://gitlab.example.com/root"
   },
   "action_name": "marked",
   "target_type": "MergeRequest",
@@ -856,7 +881,7 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/francisca"
+      "web_url": "https://gitlab.example.com/francisca"
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",
@@ -864,7 +889,7 @@ Example response:
       "id": 4,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/733005fcd7e6df12d2d8580171ccb966?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/barrett.krajcik"
+      "web_url": "https://gitlab.example.com/barrett.krajcik"
     },
     "source_project_id": 3,
     "target_project_id": 3,
@@ -884,13 +909,125 @@ Example response:
     "merge_when_build_succeeds": false,
     "merge_status": "unchecked",
     "subscribed": true,
+    "sha": "8888888888888888888888888888888888888888",
+    "merge_commit_sha": null,
     "user_notes_count": 7,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",
   "state": "pending",
   "created_at": "2016-07-01T11:14:15.530Z"
+}
+```
+
+## Get MR diff versions
+
+Get a list of merge request diff versions.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/versions
+```
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | String  | yes      | The ID of the project |
+| `merge_request_id` | integer | yes | The ID of the merge request |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
+```
+
+Example response:
+
+```json
+[{
+  "id": 110,
+  "head_commit_sha": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
+  "base_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "start_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "created_at": "2016-07-26T14:44:48.926Z",
+  "merge_request_id": 105,
+  "state": "collected",
+  "real_size": "1"
+}, {
+  "id": 108,
+  "head_commit_sha": "3eed087b29835c48015768f839d76e5ea8f07a24",
+  "base_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "start_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "created_at": "2016-07-25T14:21:33.028Z",
+  "merge_request_id": 105,
+  "state": "collected",
+  "real_size": "1"
+}]
+```
+
+## Get a single MR diff version
+
+Get a single merge request diff version.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id
+```
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | String  | yes      | The ID of the project |
+| `merge_request_id` | integer | yes | The ID of the merge request |
+| `version_id` | integer | yes | The ID of the merge request diff version |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions/1
+```
+
+Example response:
+
+```json
+{
+  "id": 110,
+  "head_commit_sha": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
+  "base_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "start_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "created_at": "2016-07-26T14:44:48.926Z",
+  "merge_request_id": 105,
+  "state": "collected",
+  "real_size": "1",
+  "commits": [{
+    "id": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
+    "short_id": "33e2ee85",
+    "title": "Change year to 2018",
+    "author_name": "Administrator",
+    "author_email": "admin@example.com",
+    "created_at": "2016-07-26T17:44:29.000+03:00",
+    "message": "Change year to 2018"
+  }, {
+    "id": "aa24655de48b36335556ac8a3cd8bb521f977cbd",
+    "short_id": "aa24655d",
+    "title": "Update LICENSE",
+    "author_name": "Administrator",
+    "author_email": "admin@example.com",
+    "created_at": "2016-07-25T17:21:53.000+03:00",
+    "message": "Update LICENSE"
+  }, {
+    "id": "3eed087b29835c48015768f839d76e5ea8f07a24",
+    "short_id": "3eed087b",
+    "title": "Add license",
+    "author_name": "Administrator",
+    "author_email": "admin@example.com",
+    "created_at": "2016-07-25T17:21:20.000+03:00",
+    "message": "Add license"
+  }],
+  "diffs": [{
+    "old_path": "LICENSE",
+    "new_path": "LICENSE",
+    "a_mode": "0",
+    "b_mode": "100644",
+    "diff": "--- /dev/null\n+++ b/LICENSE\n@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
+    "new_file": true,
+    "renamed_file": false,
+    "deleted_file": false
+  }]
 }
 ```

@@ -4,7 +4,7 @@ class Projects::AvatarsController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:destroy]
 
   def show
-    @blob = @repository.blob_at_branch('master', @project.avatar_in_git)
+    @blob = @repository.blob_at_branch(@repository.root_ref, @project.avatar_in_git)
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
 

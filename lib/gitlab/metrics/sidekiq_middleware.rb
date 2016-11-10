@@ -11,6 +11,10 @@ module Gitlab
           # Old gitlad-shell messages don't provide enqueued_at/created_at attributes
           trans.set(:sidekiq_queue_duration, Time.now.to_f - (message['enqueued_at'] || message['created_at'] || 0))
           trans.run { yield }
+        rescue Exception => error # rubocop: disable Lint/RescueException
+          trans.add_event(:sidekiq_exception)
+
+          raise error
         ensure
           trans.finish
         end

@@ -4,10 +4,18 @@ describe Banzai::ObjectRenderer do
   let(:project) { create(:empty_project) }
   let(:user) { project.owner }
 
+  def fake_object(attrs = {})
+    object = double(attrs.merge("new_record?" => true, "destroyed?" => true))
+    allow(object).to receive(:markdown_cache_field_for).with(:note).and_return(:note_html)
+    allow(object).to receive(:banzai_render_context).with(:note).and_return(project: nil, author: nil)
+    allow(object).to receive(:update_column).with(:note_html, anything).and_return(true)
+    object
+  end
+
   describe '#render' do
     it 'renders and redacts an Array of objects' do
       renderer = described_class.new(project, user)
-      object = double(:object, note: 'hello', note_html: nil)
+      object = fake_object(note: 'hello', note_html: nil)
 
       expect(renderer).to receive(:render_objects).with([object], :note).
         and_call_original
@@ -16,7 +24,7 @@ describe Banzai::ObjectRenderer do
         with(an_instance_of(Array)).
         and_call_original
 
-      expect(object).to receive(:note_html=).with('<p>hello</p>')
+      expect(object).to receive(:redacted_note_html=).with('<p dir="auto">hello</p>')
       expect(object).to receive(:user_visible_reference_count=).with(0)
 
       renderer.render([object], :note)
@@ -25,7 +33,7 @@ describe Banzai::ObjectRenderer do
 
   describe '#render_objects' do
     it 'renders an Array of objects' do
-      object = double(:object, note: 'hello')
+      object = fake_object(note: 'hello', note_html: nil)
 
       renderer = described_class.new(project, user)
 
@@ -57,66 +65,42 @@ describe Banzai::ObjectRenderer do
   end
 
   describe '#context_for' do
-    let(:object) { double(:object, note: 'hello') }
+    let(:object) { fake_object(note: 'hello') }
     let(:renderer) { described_class.new(project, user) }
 
     it 'returns a Hash' do
       expect(renderer.context_for(object, :note)).to be_an_instance_of(Hash)
     end
 
-    it 'includes the cache key' do
+    it 'includes the banzai render context for the object' do
+      expect(object).to receive(:banzai_render_context).with(:note).and_return(foo: :bar)
       context = renderer.context_for(object, :note)
-
-      expect(context[:cache_key]).to eq([object, :note])
-    end
-
-    context 'when the object responds to "author"' do
-      it 'includes the author in the context' do
-        expect(object).to receive(:author).and_return('Alice')
-
-        context = renderer.context_for(object, :note)
-
-        expect(context[:author]).to eq('Alice')
-      end
-    end
-
-    context 'when the object does not respond to "author"' do
-      it 'does not include the author in the context' do
-        context = renderer.context_for(object, :note)
-
-        expect(context.key?(:author)).to eq(false)
-      end
+      expect(context).to have_key(:foo)
+      expect(context[:foo]).to eq(:bar)
     end
   end
 
   describe '#render_attributes' do
     it 'renders the attribute of a list of objects' do
-      objects = [double(:doc, note: 'hello'), double(:doc, note: 'bye')]
-      renderer = described_class.new(project, user, pipeline: :note)
+      objects = [fake_object(note: 'hello', note_html: nil), fake_object(note: 'bye', note_html: nil)]
+      renderer = described_class.new(project, user)
 
-      expect(Banzai).to receive(:cache_collection_render).
-        with([
-          { text: 'hello', context: renderer.context_for(objects[0], :note) },
-          { text: 'bye', context: renderer.context_for(objects[1], :note) }
-        ]).
-        and_call_original
+      objects.each do |object|
+        expect(Banzai).to receive(:render_field).with(object, :note).and_call_original
+      end
 
       docs = renderer.render_attributes(objects, :note)
 
       expect(docs[0]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
-      expect(docs[0].to_html).to eq('<p>hello</p>')
+      expect(docs[0].to_html).to eq('<p dir="auto">hello</p>')
 
       expect(docs[1]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
-      expect(docs[1].to_html).to eq('<p>bye</p>')
+      expect(docs[1].to_html).to eq('<p dir="auto">bye</p>')
     end
 
     it 'returns when no objects to render' do
       objects = []
       renderer = described_class.new(project, user, pipeline: :note)
-
-      expect(Banzai).to receive(:cache_collection_render).
-        with([]).
-        and_call_original
 
       expect(renderer.render_attributes(objects, :note)).to eq([])
     end
@@ -124,7 +108,7 @@ describe Banzai::ObjectRenderer do
 
   describe '#base_context' do
     let(:context) do
-      described_class.new(project, user, pipeline: :note).base_context
+      described_class.new(project, user, foo: :bar).base_context
     end
 
     it 'returns a Hash' do
@@ -132,7 +116,7 @@ describe Banzai::ObjectRenderer do
     end
 
     it 'includes the custom attributes' do
-      expect(context[:pipeline]).to eq(:note)
+      expect(context[:foo]).to eq(:bar)
     end
 
     it 'includes the current user' do

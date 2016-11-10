@@ -48,6 +48,17 @@ describe API::API, api: true  do
         end['username']).to eq(username)
       end
 
+      it "returns an array of blocked users" do
+        ldap_blocked_user
+        create(:user, state: 'blocked')
+
+        get api("/users?blocked=true", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response).to all(include('state' => /(blocked|ldap_blocked)/))
+      end
+
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
         expect(response).to have_http_status(200)
@@ -62,11 +73,22 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include 'email'
+        expect(json_response.first.keys).to include 'organization'
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
         expect(json_response.first.keys).to include 'two_factor_enabled'
         expect(json_response.first.keys).to include 'last_sign_in_at'
         expect(json_response.first.keys).to include 'confirmed_at'
+      end
+
+      it "returns an array of external users" do
+        create(:user, external: true)
+
+        get api("/users?external=true", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response).to all(include('external' => true))
       end
     end
   end
@@ -89,8 +111,9 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "returns a 404 if invalid ID" do
+    it "returns a 404 for invalid ID" do
       get api("/users/1ASDF", user)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -265,6 +288,14 @@ describe API::API, api: true  do
       expect(user.reload.bio).to eq('new test bio')
     end
 
+    it "updates user with organization" do
+      put api("/users/#{user.id}", admin), { organization: 'GitLab' }
+
+      expect(response).to have_http_status(200)
+      expect(json_response['organization']).to eq('GitLab')
+      expect(user.reload.organization).to eq('GitLab')
+    end
+
     it 'updates user with his own email' do
       put api("/users/#{user.id}", admin), email: user.email
       expect(response).to have_http_status(200)
@@ -331,8 +362,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 Not found')
     end
 
-    it "raises error for invalid ID" do
-      expect{put api("/users/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 if invalid ID" do
+      put api("/users/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
 
     it 'returns 400 error if user does not validate' do
@@ -484,8 +517,9 @@ describe API::API, api: true  do
       end.to change{ user.emails.count }.by(1)
     end
 
-    it "raises error for invalid ID" do
+    it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
+
       expect(response).to have_http_status(400)
     end
   end
@@ -516,9 +550,10 @@ describe API::API, api: true  do
         expect(json_response.first['email']).to eq(email.email)
       end
 
-      it "raises error for invalid ID" do
+      it "returns a 404 for invalid ID" do
         put api("/users/ASDF/emails", admin)
-        expect(response).to have_http_status(405)
+
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -557,8 +592,10 @@ describe API::API, api: true  do
         expect(json_response['message']).to eq('404 Email Not Found')
       end
 
-      it "raises error for invalid ID" do
-        expect{delete api("/users/ASDF/emails/bar", admin) }.to raise_error(ActionController::RoutingError)
+      it "returns a 404 for invalid ID" do
+        delete api("/users/ASDF/emails/bar", admin)
+
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -591,8 +628,10 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      delete api("/users/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -605,6 +644,7 @@ describe API::API, api: true  do
       expect(json_response['can_create_project']).to eq(user.can_create_project?)
       expect(json_response['can_create_group']).to eq(user.can_create_group?)
       expect(json_response['projects_limit']).to eq(user.projects_limit)
+      expect(json_response['private_token']).to be_blank
     end
 
     it "returns 401 error if user is unauthenticated" do
@@ -644,6 +684,7 @@ describe API::API, api: true  do
 
     it "returns 404 Not Found within invalid ID" do
       get api("/user/keys/42", user)
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Not found')
     end
@@ -659,6 +700,7 @@ describe API::API, api: true  do
 
     it "returns 404 for invalid ID" do
       get api("/users/keys/ASDF", admin)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -717,8 +759,10 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/keys/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      delete api("/users/keys/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -768,6 +812,7 @@ describe API::API, api: true  do
 
     it "returns 404 for invalid ID" do
       get api("/users/emails/ASDF", admin)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -815,12 +860,14 @@ describe API::API, api: true  do
       expect(response).to have_http_status(401)
     end
 
-    it "raises error for invalid ID" do
-      expect{delete api("/users/emails/ASDF", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      delete api("/users/emails/ASDF", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 
-  describe 'PUT /user/:id/block' do
+  describe 'PUT /users/:id/block' do
     before { admin }
     it 'blocks existing user' do
       put api("/users/#{user.id}/block", admin)
@@ -847,7 +894,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /user/:id/unblock' do
+  describe 'PUT /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
 
@@ -881,8 +928,87 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "raises error for invalid ID" do
-      expect{put api("/users/ASDF/block", admin) }.to raise_error(ActionController::RoutingError)
+    it "returns a 404 for invalid ID" do
+      put api("/users/ASDF/block", admin)
+
+      expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'GET /users/:id/events' do
+    let(:user) { create(:user) }
+    let(:project) { create(:empty_project) }
+    let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
+
+    before do
+      project.add_user(user, :developer)
+      EventCreateService.new.leave_note(note, user)
+    end
+
+    context "as a user than cannot see the event's project" do
+      it 'returns no events' do
+        other_user = create(:user)
+
+        get api("/users/#{user.id}/events", other_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context "as a user than can see the event's project" do
+      it_behaves_like 'a paginated resources' do
+        let(:request) { get api("/users/#{user.id}/events", user) }
+      end
+
+      context 'joined event' do
+        it 'returns the "joined" event' do
+          get api("/users/#{user.id}/events", user)
+
+          comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
+
+          expect(comment_event['project_id'].to_i).to eq(project.id)
+          expect(comment_event['author_username']).to eq(user.username)
+          expect(comment_event['note']['id']).to eq(note.id)
+          expect(comment_event['note']['body']).to eq('What an awesome day!')
+
+          joined_event = json_response.find { |e| e['action_name'] == 'joined' }
+
+          expect(joined_event['project_id'].to_i).to eq(project.id)
+          expect(joined_event['author_username']).to eq(user.username)
+          expect(joined_event['author']['name']).to eq(user.name)
+        end
+      end
+
+      context 'when there are multiple events from different projects' do
+        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:third_note) { create(:note_on_issue, project: project) }
+
+        before do
+          second_note.project.add_user(user, :developer)
+
+          [second_note, third_note].each do |note|
+            EventCreateService.new.leave_note(note, user)
+          end
+        end
+
+        it 'returns events in the correct order (from newest to oldest)' do
+          get api("/users/#{user.id}/events", user)
+
+          comment_events = json_response.select { |e| e['action_name'] == 'commented on' }
+
+          expect(comment_events[0]['target_id']).to eq(third_note.id)
+          expect(comment_events[1]['target_id']).to eq(second_note.id)
+          expect(comment_events[2]['target_id']).to eq(note.id)
+        end
+      end
+    end
+
+    it 'returns a 404 error if not found' do
+      get api('/users/42/events', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
   end
 end

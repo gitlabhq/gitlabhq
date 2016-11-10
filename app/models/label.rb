@@ -1,4 +1,5 @@
 class Label < ActiveRecord::Base
+  include CacheMarkdownField
   include Referable
   include Subscribable
 
@@ -8,36 +9,55 @@ class Label < ActiveRecord::Base
   None = LabelStruct.new('No Label', 'No Label')
   Any = LabelStruct.new('Any Label', '')
 
+  cache_markdown_field :description, pipeline: :single_line
+
   DEFAULT_COLOR = '#428BCA'
 
   default_value_for :color, DEFAULT_COLOR
 
-  belongs_to :project
+  has_many :lists, dependent: :destroy
+  has_many :priorities, class_name: 'LabelPriority'
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
-  validates :project, presence: true, unless: Proc.new { |service| service.template? }
 
   # Don't allow ',' for label titles
-  validates :title,
-            presence: true,
-            format: { with: /\A[^,]+\z/ },
-            uniqueness: { scope: :project_id }
-
-  before_save :nullify_priority
+  validates :title, presence: true, format: { with: /\A[^,]+\z/ }
+  validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   default_scope { order(title: :asc) }
 
-  scope :templates, ->  { where(template: true) }
+  scope :templates, -> { where(template: true) }
+  scope :with_title, ->(title) { where(title: title) }
 
-  def self.prioritized
-    where.not(priority: nil).reorder(:priority, :title)
+  def self.prioritized(project)
+    joins(:priorities)
+      .where(label_priorities: { project_id: project })
+      .reorder('label_priorities.priority ASC, labels.title ASC')
   end
 
-  def self.unprioritized
-    where(priority: nil)
+  def self.unprioritized(project)
+    labels = Label.arel_table
+    priorities = LabelPriority.arel_table
+
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
+                              on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id))).
+                              join_sources
+
+    joins(label_priorities).where(priorities[:priority].eq(nil))
+  end
+
+  def self.left_join_priorities
+    labels = Label.arel_table
+    priorities = LabelPriority.arel_table
+
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
+                              on(labels[:id].eq(priorities[:label_id])).
+                              join_sources
+
+    joins(label_priorities)
   end
 
   alias_attribute :name, :title
@@ -72,40 +92,37 @@ class Label < ActiveRecord::Base
     nil
   end
 
-  ##
-  # Returns the String necessary to reference this Label in Markdown
-  #
-  # format - Symbol format to use (default: :id, optional: :name)
-  #
-  # Examples:
-  #
-  #   Label.first.to_reference                # => "~1"
-  #   Label.first.to_reference(format: :name) # => "~\"bug\""
-  #   Label.first.to_reference(project)       # => "gitlab-org/gitlab-ce~1"
-  #
-  # Returns a String
-  #
-  def to_reference(from_project = nil, format: :id)
-    format_reference = label_format_reference(format)
-    reference = "#{self.class.reference_prefix}#{format_reference}"
-
-    if cross_project_reference?(from_project)
-      project.to_reference + reference
-    else
-      reference
-    end
-  end
-
   def open_issues_count(user = nil)
-    issues.visible_to_user(user).opened.count
+    issues_count(user, state: 'opened')
   end
 
   def closed_issues_count(user = nil)
-    issues.visible_to_user(user).closed.count
+    issues_count(user, state: 'closed')
   end
 
-  def open_merge_requests_count
-    merge_requests.opened.count
+  def open_merge_requests_count(user = nil)
+    params = {
+      subject_foreign_key => subject.id,
+      label_name: title,
+      scope: 'all',
+      state: 'opened'
+    }
+
+    MergeRequestsFinder.new(user, params.with_indifferent_access).execute.count
+  end
+
+  def prioritize!(project, value)
+    label_priority = priorities.find_or_initialize_by(project_id: project.id)
+    label_priority.priority = value
+    label_priority.save!
+  end
+
+  def unprioritize!(project)
+    priorities.where(project: project).delete_all
+  end
+
+  def priority(project)
+    priorities.find_by(project: project).try(:priority)
   end
 
   def template?
@@ -113,14 +130,53 @@ class Label < ActiveRecord::Base
   end
 
   def text_color
-    LabelsHelper::text_color_for_bg(self.color)
+    LabelsHelper.text_color_for_bg(self.color)
   end
 
   def title=(value)
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
+  ##
+  # Returns the String necessary to reference this Label in Markdown
+  #
+  # format - Symbol format to use (default: :id, optional: :name)
+  #
+  # Examples:
+  #
+  #   Label.first.to_reference                     # => "~1"
+  #   Label.first.to_reference(format: :name)      # => "~\"bug\""
+  #   Label.first.to_reference(project1, project2) # => "gitlab-org/gitlab-ce~1"
+  #
+  # Returns a String
+  #
+  def to_reference(source_project = nil, target_project = nil, format: :id)
+    format_reference = label_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
+
+    if cross_project_reference?(source_project, target_project)
+      source_project.to_reference + reference
+    else
+      reference
+    end
+  end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      json[:priority] = priority(options[:project]) if options.has_key?(:project)
+    end
+  end
+
   private
+
+  def cross_project_reference?(source_project, target_project)
+    source_project && target_project && source_project != target_project
+  end
+
+  def issues_count(user, params = {})
+    params.merge!(subject_foreign_key => subject.id, label_name: title, scope: 'all')
+    IssuesFinder.new(user, params.with_indifferent_access).execute.count
+  end
 
   def label_format_reference(format = :id)
     raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
@@ -130,10 +186,6 @@ class Label < ActiveRecord::Base
     else
       id
     end
-  end
-
-  def nullify_priority
-    self.priority = nil if priority.blank?
   end
 
   def sanitize_title(value)

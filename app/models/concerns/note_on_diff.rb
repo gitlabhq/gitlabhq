@@ -17,11 +17,19 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
+  def original_line_code
+    raise NotImplementedError
+  end
+
   def diff_attributes
     raise NotImplementedError
   end
 
   def can_be_award_emoji?
     false
+  end
+
+  def to_discussion
+    Discussion.new([self])
   end
 end

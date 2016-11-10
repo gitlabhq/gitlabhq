@@ -1,10 +1,13 @@
 class RepositoryForkWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
-
-  sidekiq_options queue: :gitlab_shell
+  include DedicatedSidekiqQueue
 
   def perform(project_id, forked_from_repository_storage_path, source_path, target_path)
+    Gitlab::Metrics.add_event(:fork_repository,
+                              source_path: source_path,
+                              target_path: target_path)
+
     project = Project.find_by_id(project_id)
 
     unless project.present?

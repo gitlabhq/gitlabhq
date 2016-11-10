@@ -108,15 +108,6 @@ class Commit
     @diff_line_count
   end
 
-  # Returns a string describing the commit for use in a link title
-  #
-  # Example
-  #
-  #   "Commit: Alex Denisov - Project git clone panel"
-  def link_title
-    "Commit: #{author_name} - #{title}"
-  end
-
   # Returns the commits title.
   #
   # Usually, the commit title is the first line of the commit message.
@@ -229,18 +220,25 @@ class Commit
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha: self.parent_id || self.sha,
+      base_sha: self.parent_id || Gitlab::Git::BLANK_SHA,
       head_sha: self.sha
     )
   end
 
   def pipelines
-    @pipeline ||= project.pipelines.where(sha: sha)
+    project.pipelines.where(sha: sha)
   end
 
-  def status
-    return @status if defined?(@status)
-    @status ||= pipelines.status
+  def status(ref = nil)
+    @statuses ||= {}
+
+    if @statuses.key?(ref)
+      @statuses[ref]
+    elsif ref
+      @statuses[ref] = pipelines.where(ref: ref).status
+    else
+      @statuses[ref] = pipelines.status
+    end
   end
 
   def revert_branch_name

@@ -9,8 +9,14 @@ module Gitlab
       end
 
       def restore
-        json = IO.read(@path)
-        @tree_hash = ActiveSupport::JSON.decode(json)
+        begin
+          json = IO.read(@path)
+          @tree_hash = ActiveSupport::JSON.decode(json)
+        rescue => e
+          Rails.logger.error("Import/Export error: #{e.message}")
+          raise Gitlab::ImportExport::Error.new('Incorrect JSON format')
+        end
+
         @project_members = @tree_hash.delete('project_members')
 
         ActiveRecord::Base.no_touching do
@@ -61,9 +67,15 @@ module Gitlab
       def restore_project
         return @project unless @tree_hash
 
-        project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
         @project.update(project_params)
         @project
+      end
+
+      def project_params
+        @tree_hash.reject do |key, value|
+          # return params that are not 1 to many or 1 to 1 relations
+          value.is_a?(Array) || key == key.singularize
+        end
       end
 
       # Given a relation hash containing one or more models and its relationships,
@@ -104,12 +116,17 @@ module Gitlab
       def create_relation(relation, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: relation_hash.merge('project_id' => restored_project.id),
+                                                       relation_hash: parsed_relation_hash(relation_hash),
                                                        members_mapper: members_mapper,
-                                                       user: @user)
+                                                       user: @user,
+                                                       project_id: restored_project.id)
         end
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
+      end
+
+      def parsed_relation_hash(relation_hash)
+        relation_hash.merge!('group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id)
       end
     end
   end

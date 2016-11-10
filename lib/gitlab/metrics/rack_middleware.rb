@@ -4,6 +4,17 @@ module Gitlab
     class RackMiddleware
       CONTROLLER_KEY = 'action_controller.instance'
       ENDPOINT_KEY   = 'api.endpoint'
+      CONTENT_TYPES = {
+        'text/html' => :html,
+        'text/plain' => :txt,
+        'application/json' => :json,
+        'text/js' => :js,
+        'application/atom+xml' => :atom,
+        'image/png' => :png,
+        'image/jpeg' => :jpeg,
+        'image/gif' => :gif,
+        'image/svg+xml' => :svg
+      }
 
       def initialize(app)
         @app = app
@@ -17,6 +28,10 @@ module Gitlab
         begin
           retval = trans.run { @app.call(env) }
 
+        rescue Exception => error # rubocop: disable Lint/RescueException
+          trans.add_event(:rails_exception)
+
+          raise error
         # Even in the event of an error we want to submit any metrics we
         # might've gathered up to this point.
         ensure
@@ -42,8 +57,15 @@ module Gitlab
       end
 
       def tag_controller(trans, env)
-        controller   = env[CONTROLLER_KEY]
-        trans.action = "#{controller.class.name}##{controller.action_name}"
+        controller = env[CONTROLLER_KEY]
+        action = "#{controller.class.name}##{controller.action_name}"
+        suffix = CONTENT_TYPES[controller.content_type]
+
+        if suffix && suffix != :html
+          action += ".#{suffix}"
+        end
+
+        trans.action = action
       end
 
       def tag_endpoint(trans, env)

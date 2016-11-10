@@ -4,15 +4,20 @@ module Gitlab
     class Metric
       JITTER_RANGE = 0.000001..0.001
 
-      attr_reader :series, :values, :tags
+      attr_reader :series, :values, :tags, :type
 
       # series - The name of the series (as a String) to store the metric in.
       # values - A Hash containing the values to store.
       # tags   - A Hash containing extra tags to add to the metrics.
-      def initialize(series, values, tags = {})
+      def initialize(series, values, tags = {}, type = :metric)
         @values = values
         @series = series
         @tags   = tags
+        @type   = type
+      end
+
+      def event?
+        type == :event
       end
 
       # Returns a Hash in a format that can be directly written to InfluxDB.

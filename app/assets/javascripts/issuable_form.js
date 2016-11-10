@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -44,8 +45,8 @@
     };
 
     IssuableForm.prototype.handleSubmit = function() {
-      var ref, ref1;
-      if (((ref = parseInt((ref1 = this.issueMoveField) != null ? ref1.val() : void 0)) != null ? ref : 0) > 0) {
+      var fieldId = (this.issueMoveField != null) ? this.issueMoveField.val() : null;
+      if ((parseInt(fieldId) || 0) > 0) {
         if (!confirm(this.issueMoveConfirmMsg)) {
           return false;
         }
@@ -102,20 +103,34 @@
     };
 
     IssuableForm.prototype.initMoveDropdown = function() {
-      var $moveDropdown;
+      var $moveDropdown, pageSize;
       $moveDropdown = $('.js-move-dropdown');
       if ($moveDropdown.length) {
+        pageSize = $moveDropdown.data('page-size');
         return $('.js-move-dropdown').select2({
           ajax: {
             url: $moveDropdown.data('projects-url'),
-            results: function(data) {
+            quietMillis: 125,
+            data: function(term, page, context) {
               return {
-                results: data
+                search: term,
+                offset_id: context
               };
             },
-            data: function(query) {
+            results: function(data) {
+              var context,
+                more;
+
+              if (data.length >= pageSize)
+                more = true;
+
+              if (data[data.length - 1])
+                context = data[data.length - 1].id;
+
               return {
-                search: query
+                results: data,
+                more: more,
+                context: context
               };
             }
           },

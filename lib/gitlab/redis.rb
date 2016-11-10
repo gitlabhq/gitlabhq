@@ -9,35 +9,45 @@ module Gitlab
     SIDEKIQ_NAMESPACE = 'resque:gitlab'
     MAILROOM_NAMESPACE = 'mail_room:gitlab'
     DEFAULT_REDIS_URL = 'redis://localhost:6379'
-
-    # To be thread-safe we must be careful when writing the class instance
-    # variables @url and @pool. Because @pool depends on @url we need two
-    # mutexes to prevent deadlock.
-    PARAMS_MUTEX = Mutex.new
-    POOL_MUTEX = Mutex.new
-    private_constant :PARAMS_MUTEX, :POOL_MUTEX
+    CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
     class << self
+      # Do NOT cache in an instance variable. Result may be mutated by caller.
       def params
-        @params || PARAMS_MUTEX.synchronize { @params = new.params }
+        new.params
       end
 
+      # Do NOT cache in an instance variable. Result may be mutated by caller.
       # @deprecated Use .params instead to get sentinel support
       def url
         new.url
       end
 
       def with
-        if @pool.nil?
-          POOL_MUTEX.synchronize do
-            @pool = ConnectionPool.new { ::Redis.new(params) }
-          end
-        end
+        @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }
         @pool.with { |redis| yield redis }
       end
 
-      def reset_params!
-        @params = nil
+      def pool_size
+        if Sidekiq.server?
+          # the pool will be used in a multi-threaded context
+          Sidekiq.options[:concurrency] + 5
+        else
+          # probably this is a Unicorn process, so single threaded
+          5
+        end
+      end
+
+      def _raw_config
+        return @_raw_config if defined?(@_raw_config)
+
+        begin
+          @_raw_config = File.read(CONFIG_FILE).freeze
+        rescue Errno::ENOENT
+          @_raw_config = false
+        end
+
+        @_raw_config
       end
     end
 
@@ -51,6 +61,14 @@ module Gitlab
 
     def url
       raw_config_hash[:url]
+    end
+
+    def sentinels
+      raw_config_hash[:sentinels]
+    end
+
+    def sentinels?
+      sentinels && !sentinels.empty?
     end
 
     private
@@ -83,12 +101,7 @@ module Gitlab
     end
 
     def fetch_config
-      file = config_file
-      File.exist?(file) ? YAML.load_file(file)[@rails_env] : false
-    end
-
-    def config_file
-      File.expand_path('../../../config/resque.yml', __FILE__)
+      self.class._raw_config ? YAML.load(self.class._raw_config)[@rails_env] : false
     end
   end
 end

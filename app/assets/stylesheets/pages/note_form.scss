@@ -8,9 +8,10 @@
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1.0;
-    filter: alpha(opacity=100);
+    filter: alpha(opacity = 100);
   }
 }
+
 .diff-file,
 .discussion {
   .new-note {
@@ -23,7 +24,8 @@
   display: none;
 }
 
-.new-note, .note-edit-form {
+.new-note,
+.note-edit-form {
   .note-form-actions {
     margin-top: $gl-padding;
   }
@@ -159,6 +161,32 @@
   }
 }
 
+.discussion-with-resolve-btn {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  table-layout: auto;
+
+  .btn-group {
+    display: table-cell;
+    float: none;
+    width: 1%;
+
+    &:first-child {
+      width: 100%;
+      padding-right: 5px;
+    }
+
+    &:last-child {
+      padding-left: 5px;
+    }
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
 .discussion-notes-count {
   font-size: 16px;
 }
@@ -168,6 +196,7 @@
     min-height: 140px;
     max-height: 500px;
   }
+
   .note-form-actions {
     background: transparent;
   }

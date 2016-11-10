@@ -5,11 +5,7 @@ module Gitlab
     def initialize(current_user, project, query, repository_ref = nil)
       @current_user = current_user
       @project = project
-      @repository_ref = if repository_ref.present?
-                          repository_ref
-                        else
-                          nil
-                        end
+      @repository_ref = repository_ref.presence
       @query = query
     end
 
@@ -26,11 +22,6 @@ module Gitlab
       else
         super
       end
-    end
-
-    def total_count
-      @total_count ||= issues_count + merge_requests_count + blobs_count +
-                       notes_count + wiki_blobs_count + commits_count
     end
 
     def blobs_count
@@ -52,37 +43,31 @@ module Gitlab
     private
 
     def blobs
-      if project.empty_repo? || query.blank?
-        []
-      else
-        project.repository.search_files(query, repository_ref)
-      end
+      @blobs ||= project.repository.search_files(query, repository_ref)
     end
 
     def wiki_blobs
-      if project.wiki_enabled? && query.present?
-        project_wiki = ProjectWiki.new(project)
+      @wiki_blobs ||= begin
+        if project.wiki_enabled? && query.present?
+          project_wiki = ProjectWiki.new(project)
 
-        unless project_wiki.empty?
-          project_wiki.search_files(query)
+          unless project_wiki.empty?
+            project_wiki.search_files(query)
+          else
+            []
+          end
         else
           []
         end
-      else
-        []
       end
     end
 
     def notes
-      project.notes.user.search(query, as_user: @current_user).order('updated_at DESC')
+      @notes ||= project.notes.user.search(query, as_user: @current_user).order('updated_at DESC')
     end
 
     def commits
-      if project.empty_repo? || query.blank?
-        []
-      else
-        project.repository.find_commits_by_message(query).compact
-      end
+      @commits ||= project.repository.find_commits_by_message(query)
     end
 
     def project_ids_relation

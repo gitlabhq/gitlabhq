@@ -2,13 +2,17 @@
   max-width: 90%;
 }
 
-li.milestone {
-  h4 {
-    font-weight: bold;
-  }
+.milestones {
+  .milestone {
+    padding: 10px 16px;
 
-  .progress {
-    height: 6px;
+    h4 {
+      font-weight: bold;
+    }
+
+    .progress {
+      height: 6px;
+    }
   }
 }
 
@@ -29,6 +33,7 @@ li.milestone {
     // Issue title
     span a {
       color: $gl-text-color;
+      word-wrap: break-word;
     }
   }
 }
@@ -45,7 +50,8 @@ li.milestone {
   }
 }
 
-.issues-sortable-list, .merge_requests-sortable-list {
+.issues-sortable-list,
+.merge_requests-sortable-list {
   .issuable-detail {
     display: block;
     margin-top: 7px;
@@ -54,6 +60,7 @@ li.milestone {
       color: $gl-placeholder-color;
       margin-right: 5px;
     }
+
     .avatar {
       float: none;
     }
@@ -63,4 +70,15 @@ li.milestone {
 .milestone-detail {
   border-bottom: 1px solid $border-color;
   padding: 20px 0;
+}
+
+@media (max-width: $screen-sm-min) {
+  .milestone-actions {
+    @include clearfix();
+    padding-top: $gl-vert-padding;
+
+    .btn:first-child {
+      margin-left: 0;
+    }
+  }
 }

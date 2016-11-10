@@ -8,7 +8,9 @@ module ServicesHelper
     when "note"
       "Event will be triggered when someone adds a comment"
     when "issue"
-      "Event will be triggered when an issue is created/updated/merged"
+      "Event will be triggered when an issue is created/updated/closed"
+    when "confidential_issue"
+      "Event will be triggered when a confidential issue is created/updated/closed"
     when "merge_request"
       "Event will be triggered when a merge request is created/updated/merged"
     when "build"
@@ -19,7 +21,7 @@ module ServicesHelper
   end
 
   def service_event_field_name(event)
-    event = event.pluralize if %w[merge_request issue].include?(event)
+    event = event.pluralize if %w[merge_request issue confidential_issue].include?(event)
     "#{event}_events"
   end
 end

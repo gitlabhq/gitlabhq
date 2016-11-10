@@ -1,7 +1,6 @@
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
+- can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
-- if diff_view == :parallel
-  - fluid_layout true
 
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
@@ -22,7 +21,7 @@
 - if diff_files.overflow?
   = render 'projects/diffs/warning', diff_files: diff_files
 
-.files{data: {can_create_note: (!@diff_notes_disabled && can?(current_user, :create_note, diffs.project))}}
+.files{ data: { can_create_note: can_create_note } }
   - diff_files.each_with_index do |diff_file, index|
     - diff_commit = commit_for_diff(diff_file)
     - blob = diff_file.blob(diff_commit)

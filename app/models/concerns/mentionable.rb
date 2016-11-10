@@ -43,19 +43,15 @@ module Mentionable
     self
   end
 
-  def all_references(current_user = nil, text = nil, extractor: nil)
+  def all_references(current_user = nil, extractor: nil)
     extractor ||= Gitlab::ReferenceExtractor.
       new(project, current_user)
 
-    if text
-      extractor.analyze(text, author: author)
-    else
-      self.class.mentionable_attrs.each do |attr, options|
-        text = __send__(attr)
-        options = options.merge(cache_key: [self, attr], author: author)
+    self.class.mentionable_attrs.each do |attr, options|
+      text    = __send__(attr)
+      options = options.merge(cache_key: [self, attr], author: author)
 
-        extractor.analyze(text, options)
-      end
+      extractor.analyze(text, options)
     end
 
     extractor
@@ -66,8 +62,8 @@ module Mentionable
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def referenced_mentionables(current_user = self.author, text = nil)
-    refs = all_references(current_user, text)
+  def referenced_mentionables(current_user = self.author)
+    refs = all_references(current_user)
     refs = (refs.issues + refs.merge_requests + refs.commits)
 
     # We're using this method instead of Array diffing because that requires
@@ -77,8 +73,8 @@ module Mentionable
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in the +mentionable_attrs+.
-  def create_cross_references!(author = self.author, without = [], text = nil)
-    refs = referenced_mentionables(author, text)
+  def create_cross_references!(author = self.author, without = [])
+    refs = referenced_mentionables(author)
 
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
@@ -97,10 +93,7 @@ module Mentionable
 
     return if changes.empty?
 
-    original_text = changes.collect { |_, vals| vals.first }.join(' ')
-
-    preexisting = referenced_mentionables(author, original_text)
-    create_cross_references!(author, preexisting)
+    create_cross_references!(author)
   end
 
   private

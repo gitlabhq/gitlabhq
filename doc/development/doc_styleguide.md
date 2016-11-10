@@ -6,7 +6,7 @@ it organized and easy to find.
 ## Location and naming of documents
 
 >**Note:**
-These guidelines derive from the discussion taken place in issue [#3349](ce-3349).
+These guidelines derive from the discussion taken place in issue [#3349][ce-3349].
 
 The documentation hierarchy can be vastly improved by providing a better layout
 and organization of directories.
@@ -93,12 +93,14 @@ merge request.
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request
+- Avoid adding things that show ephemeral statuses. For example, if a feature is
+  considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`,
-  `@dblessing`, `@ashleys`. This is to ensure that no document
-  with wrong heading is going live without an audit, thus preventing dead links
-  and redirection issues when corrected
+  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`,
+  `@SeanPackham`. This is to ensure that no document with wrong heading is going
+  live without an audit, thus preventing dead links and redirection issues when
+  corrected
 - Leave exactly one newline after a heading
 
 ## Links
@@ -155,15 +157,30 @@ Inside the document:
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note: `> Introduced in GitLab 8.3.`.
+  note:
+
+    ```
+    > Introduced in GitLab 8.3.
+    ```
+
 - If possible every feature should have a link to the MR that introduced it.
   The above note would be then transformed to:
-  `> [Introduced][ce-1242] in GitLab 8.3.`, where
-  the [link identifier](#links) is named after the repository (CE) and the MR
-  number.
-- If the feature is only in GitLab EE, don't forget to mention it, like:
-  `> Introduced in GitLab EE 8.3.`. Otherwise, leave
-  this mention out.
+
+    ```
+    > [Introduced][ce-1242] in GitLab 8.3.
+    ```
+
+    , where the [link identifier](#links) is named after the repository (CE) and
+    the MR number.
+
+- If the feature is only in GitLab Enterprise Edition, don't forget to mention
+  it, like:
+
+    ```
+    > Introduced in GitLab Enterprise Edition 8.3.
+    ```
+
+    Otherwise, leave this mention out.
 
 ## References
 
@@ -222,18 +239,26 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
     ```
 
 1. Find and replace any occurrences of the old location with the new one.
-   A quick way to find them is to use `grep`:
+   A quick way to find them is to use `git grep`. First go to the root directory
+   where you cloned the `gitlab-ce` repository and then do:
 
     ```
-    grep -nR "lfs_administration.md" doc/
+    git grep -n "workflow/lfs/lfs_administration"
+    git grep -n "lfs/lfs_administration"
     ```
 
-    The above command will search in the `doc/` directory for
-    `lfs_administration.md` recursively and will print the file and the line
-    where this file is mentioned. Note that we used just the filename
-    (`lfs_administration.md`) and not the whole the relative path
-    (`workflow/lfs/lfs_administration.md`).
+Things to note:
 
+- Since we also use inline documentation, except for the documentation itself,
+  the document might also be referenced in the views of GitLab (`app/`) which will
+  render when visiting `/help`, and sometimes in the testing suite (`spec/`).
+- The above `git grep` command will search recursively in the directory you run
+  it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
+  and will print the file and the line where this file is mentioned.
+  You may ask why the two greps. Since we use relative paths to link to
+  documentation, sometimes it might be useful to search a path deeper.
+- The `*.md` extension is not used when a document is linked to GitLab's
+  built-in help page, that's why we omit it in `git grep`.
 
 ## Configuration documentation for source and Omnibus installations
 
@@ -291,17 +316,34 @@ In this case:
 - different highlighting languages are used for each config in the code block
 - the [references](#references) guide is used for reconfigure/restart
 
+## Fake tokens
+
+There may be times where a token is needed to demonstrate an API call using
+cURL or a secret variable used in CI. It is strongly advised not to use real
+tokens in documentation even if the probability of a token being exploited is
+low.
+
+You can use the following fake tokens as examples.
+
+|     **Token type**    |           **Token value**         |
+| --------------------- | --------------------------------- |
+| Private user token    | `9koXpg98eAheJpvBs5tK`            |
+| Personal access token | `n671WNGecHugsdEDPsyo`            |
+| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
+| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
+| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`            |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`        |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`            |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`  |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`            |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`            |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`            |
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears
 on this document. Further explanation is given below.
 
-- Every method must be described using [Grape's DSL](https://github.com/ruby-grape/grape/tree/v0.13.0#describing-methods)
-  (see https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb
-  for a good example):
-  - `desc` for the method summary (you can pass it a block for additional details)
-  - `params` for the method params (this acts as description **and** validation
-    of the params)
 - Every method must have the REST API request. For example:
 
     ```
@@ -422,7 +464,8 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain
 
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
-[gfm]: http://docs.gitlab.com/ce/markdown/markdown.html#newlines "GitLab flavored markdown documentation"
+[gfm]: http://docs.gitlab.com/ce/user/markdown.html#newlines "GitLab flavored markdown documentation"
+[ce-1242]: https://gitlab.com/gitlab-org/gitlab-ce/issues/1242
 [doc-restart]: ../administration/restart_gitlab.md "GitLab restart documentation"
 [ce-3349]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3349 "Documentation restructure"
 [graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle

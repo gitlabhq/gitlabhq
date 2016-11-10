@@ -79,11 +79,8 @@
     padding-left: 15px !important;
   }
 
-  .issue-info, .merge-request-info {
-    display: none;
-  }
-
-  .nav-links, .nav-links {
+  .nav-links,
+  .nav-links {
     li a {
       font-size: 14px;
       padding: 19px 10px;
@@ -103,18 +100,21 @@
 
 @media (max-width: $screen-sm-max) {
   .issues-filters {
-    .milestone-filter, .labels-filter {
+    .milestone-filter,
+    .labels-filter {
       display: none;
     }
   }
 
   .page-title {
-    .note-created-ago, .new-issue-link {
+    .note-created-ago,
+    .new-issue-link {
       display: none;
     }
   }
 
-  .issue_edited_ago, .note_edited_ago {
+  .issue_edited_ago,
+  .note_edited_ago {
     display: none;
   }
 
@@ -137,5 +137,5 @@
   font-size: 20px;
   color: #777;
   z-index: 100;
-  @include box-shadow(0 1px 2px #ddd);
+  box-shadow: 0 1px 2px #ddd;
 }

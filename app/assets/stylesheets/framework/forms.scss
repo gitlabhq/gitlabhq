@@ -9,7 +9,7 @@ input {
 input[type='text'].danger {
   background: #f2dede!important;
   border-color: #d66;
-  text-shadow: 0 1px 1px #fff
+  text-shadow: 0 1px 1px #fff;
 }
 
 .datetime-controls {
@@ -19,7 +19,6 @@ input[type='text'].danger {
 }
 
 .form-actions {
-  margin: -$gl-padding;
   margin-top: 0;
   margin-bottom: -$gl-padding;
   padding: $gl-padding;
@@ -75,17 +74,17 @@ label {
 
 .form-control {
   @include box-shadow(none);
-  border-radius: 3px;
+  border-radius: 2px;
   padding: $gl-vert-padding $gl-input-padding;
 }
 
 .select-wrapper {
   position: relative;
 
-  .caret {
+  .fa-caret-down {
     position: absolute;
     right: 10px;
-    top: $gl-padding;
+    top: 10px;
     color: $gray-darkest;
     pointer-events: none;
   }
@@ -118,9 +117,11 @@ label {
     display: table-cell;
     width: 200px !important;
   }
+
   .input-group-addon {
     background-color: #f7f8fa;
   }
+
   .input-group-addon:not(:first-child):not(:last-child) {
     border-left: 0;
     border-right: 0;
@@ -130,3 +131,40 @@ label {
 .help-block {
   margin-bottom: 0;
 }
+
+.gl-field-error {
+  color: $red-normal;
+}
+
+.gl-show-field-errors {
+  .gl-field-success-outline {
+    border: 1px solid $green-normal;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 $green-normal;
+      border: 0 none;
+    }
+  }
+
+  .gl-field-error-outline {
+    border: 1px solid $red-normal;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 rgba(210, 40, 82, 0.6);
+      border: 0 none;
+    }
+  }
+
+  .gl-field-success-message {
+    color: $green-normal;
+  }
+
+  .gl-field-error-message {
+    color: $red-normal;
+  }
+
+  .gl-field-hint {
+    color: $gl-text-color;
+  }
+}
+

@@ -10,7 +10,7 @@ GET /projects/:id/repository/commits
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 | `since` | string | no | Only commits after or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `until` | string | no | Only commits before or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
@@ -46,6 +46,91 @@ Example response:
 ]
 ```
 
+## Create a commit with multiple files and actions
+
+> [Introduced][ce-6096] in GitLab 8.13.
+
+Create a commit by posting a JSON payload
+
+```
+POST /projects/:id/repository/commits
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME |
+| `branch_name` | string | yes | The name of a branch |
+| `commit_message` | string | yes | Commit message |
+| `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
+| `author_email` | string | no | Specify the commit author's email address |
+| `author_name` | string | no | Specify the commit author's name |
+
+
+| `actions[]` Attribute | Type | Required | Description |
+| --------------------- | ---- | -------- | ----------- |
+| `action` | string | yes | The action to perform, `create`, `delete`, `move`, `update` |
+| `file_path` | string | yes | Full path to the file. Ex. `lib/class.rb` |
+| `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb` |
+| `content` | string | no | File content, required for all except `delete`. Optional for `move` |
+| `encoding` | string | no | `text` or `base64`. `text` is default. |
+
+```bash
+PAYLOAD=$(cat << 'JSON'
+{
+  "branch_name": "master",
+  "commit_message": "some commit message",
+  "actions": [
+    {
+      "action": "create",
+      "file_path": "foo/bar",
+      "content": "some content"
+    },
+    {
+      "action": "delete",
+      "file_path": "foo/bar2",
+    },
+    {
+      "action": "move",
+      "file_path": "foo/bar3",
+      "previous_path": "foo/bar4",
+      "content": "some content"
+    },
+    {
+      "action": "update",
+      "file_path": "foo/bar5",
+      "content": "new content"
+    }
+  ]
+}
+JSON
+)
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v3/projects/1/repository/commits
+```
+
+Example response:
+```json
+{
+  "id": "ed899a2f4b50b4370feeea94676502b42383c746",
+  "short_id": "ed899a2f4b5",
+  "title": "some commit message",
+  "author_name": "Dmitriy Zaporozhets",
+  "author_email": "dzaporozhets@sphereconsultinginc.com",
+  "created_at": "2016-09-20T09:26:24.000-07:00",
+  "message": "some commit message",
+  "parent_ids": [
+    "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
+  ],
+  "committed_date": "2016-09-20T09:26:24.000-07:00",
+  "authored_date": "2016-09-20T09:26:24.000-07:00",
+  "stats": {
+    "additions": 2,
+    "deletions": 2,
+    "total": 4
+  },
+  "status": null
+}
+```
+
 ## Get a single commit
 
 Get a specific commit identified by the commit hash or name of a branch or tag.
@@ -58,7 +143,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
@@ -102,7 +187,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
@@ -138,7 +223,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
@@ -187,7 +272,7 @@ POST /projects/:id/repository/commits/:sha/comments
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`        | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha`       | string  | yes | The commit SHA or name of a repository branch or tag |
 | `note`      | string  | yes | The text of the comment |
 | `path`      | string  | no  | The file path relative to the repository |
@@ -203,7 +288,7 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/u/thedude",
+      "web_url" : "https://gitlab.example.com/thedude",
       "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
       "username" : "thedude",
       "state" : "active",
@@ -232,9 +317,9 @@ GET /projects/:id/repository/commits/:sha/statuses
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of a project
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha`     | string  | yes | The commit SHA
-| `ref_name`| string  | no  | The name of a repository branch or tag or, if not given, the default branch
+| `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch
 | `stage`   | string  | no  | Filter by [build stage](../ci/yaml/README.md#stages), e.g., `test`
 | `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#jobs), e.g., `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
@@ -258,7 +343,7 @@ Example response:
       "author" : {
          "username" : "thedude",
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/u/thedude",
+         "web_url" : "https://gitlab.example.com/thedude",
          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
          "id" : 28,
          "name" : "Jeff Lebowski"
@@ -285,7 +370,7 @@ Example response:
          "id" : 28,
          "name" : "Jeff Lebowski",
          "username" : "thedude",
-         "web_url" : "https://gitlab.example.com/u/thedude",
+         "web_url" : "https://gitlab.example.com/thedude",
          "state" : "active",
          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
       },
@@ -306,7 +391,7 @@ POST /projects/:id/statuses/:sha
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `sha`     | string  | yes   | The commit SHA
 | `state`   | string  | yes   | The state of the status. Can be one of the following: `pending`, `running`, `success`, `failed`, `canceled`
 | `ref`     | string  | no    | The `ref` (branch or tag) to which the status refers
@@ -323,7 +408,7 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/u/thedude",
+      "web_url" : "https://gitlab.example.com/thedude",
       "name" : "Jeff Lebowski",
       "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
       "username" : "thedude",
@@ -343,3 +428,5 @@ Example response:
    "finished_at" : "2016-01-19T09:05:50.365Z"
 }
 ```
+
+[ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"

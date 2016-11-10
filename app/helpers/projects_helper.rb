@@ -27,7 +27,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
@@ -61,7 +61,9 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
+      project_link << button_tag(type: 'button', class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" }) do
+        icon("chevron-down")
+      end
     end
 
     full_title = "#{namespace_link} / #{project_link}".html_safe
@@ -116,7 +118,50 @@ module ProjectsHelper
     license.nickname || license.name
   end
 
+  def last_push_event
+    return unless current_user
+
+    project_ids = [@project.id]
+    if fork = current_user.fork_of(@project)
+      project_ids << fork.id
+    end
+
+    current_user.recent_push(project_ids)
+  end
+
+  def project_feature_access_select(field)
+    # Don't show option "everyone with access" if project is private
+    options = project_feature_options
+
+    if @project.private?
+      level = @project.project_feature.send(field)
+      options.delete('Everyone with access')
+      highest_available_option = options.values.max if level == ProjectFeature::ENABLED
+    end
+
+    options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
+
+    content_tag(
+      :select,
+      options,
+      name: "project[project_feature_attributes][#{field}]",
+      id: "project_project_feature_attributes_#{field}",
+      class: "pull-right form-control #{repo_children_classes(field)}",
+      data: { field: field }
+    ).html_safe
+  end
+
   private
+
+  def repo_children_classes(field)
+    needs_repo_check = [:merge_requests_access_level, :builds_access_level]
+    return unless needs_repo_check.include?(field)
+
+    classes = "project-repo-select js-repo-select"
+    classes << " disabled" unless @project.feature_available?(:repository, current_user)
+
+    classes
+  end
 
   def get_project_nav_tabs(project, current_user)
     nav_tabs = [:home]
@@ -174,6 +219,18 @@ module ProjectsHelper
     end
 
     nav_tabs.flatten
+  end
+
+  def project_lfs_status(project)
+    if project.lfs_enabled?
+      content_tag(:span, class: 'lfs-enabled') do
+        'Enabled'
+      end
+    else
+      content_tag(:span, class: 'lfs-disabled') do
+        'Disabled'
+      end
+    end
   end
 
   def git_user_name
@@ -234,6 +291,60 @@ module ProjectsHelper
       file_name:      file_name,
       commit_message: commit_message || "Add #{file_name.downcase}"
     )
+  end
+
+  def add_koding_stack_path(project)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      project.default_branch || 'master',
+      file_name:      '.koding.yml',
+      commit_message: "Add Koding stack script",
+      content: <<-CONTENT.strip_heredoc
+        provider:
+          aws:
+            access_key: '${var.aws_access_key}'
+            secret_key: '${var.aws_secret_key}'
+        resource:
+          aws_instance:
+            #{project.path}-vm:
+              instance_type: t2.nano
+              user_data: |-
+
+                # Created by GitLab UI for :>
+
+                echo _KD_NOTIFY_@Installing Base packages...@
+
+                apt-get update -y
+                apt-get install git -y
+
+                echo _KD_NOTIFY_@Cloning #{project.name}...@
+
+                export KODING_USER=${var.koding_user_username}
+                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
+                export BRANCH=${var.koding_queryString_branch}
+
+                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
+
+                echo _KD_NOTIFY_@#{project.name} cloned.@
+      CONTENT
+    )
+  end
+
+  def koding_project_url(project = nil, branch = nil, sha = nil)
+    if project
+      import_path = "/Home/Stacks/import"
+
+      repo = project.path_with_namespace
+      branch ||= project.default_branch
+      sha ||= project.commit.short_id
+
+      path = "#{import_path}?repo=#{repo}&branch=#{branch}&sha=#{sha}"
+
+      return URI.join(current_application_settings.koding_url, path).to_s
+    end
+
+    current_application_settings.koding_url
   end
 
   def contribution_guide_path(project)
@@ -297,16 +408,6 @@ module ProjectsHelper
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
   end
 
-  def last_push_event
-    return unless current_user
-
-    if fork = current_user.fork_of(@project)
-      current_user.recent_push(fork.id)
-    else
-      current_user.recent_push(@project.id)
-    end
-  end
-
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')
@@ -344,5 +445,17 @@ module ProjectsHelper
     return '' unless message.present?
 
     message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
+  end
+
+  def project_feature_options
+    {
+      'Disabled' => ProjectFeature::DISABLED,
+      'Only team members' => ProjectFeature::PRIVATE,
+      'Everyone with access' => ProjectFeature::ENABLED
+    }
+  end
+
+  def project_child_container_class(view_path)
+    view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
   end
 end

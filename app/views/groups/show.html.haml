@@ -6,7 +6,8 @@
 
 .cover-block.groups-cover-block
   %div{ class: container_class }
-    = image_tag group_icon(@group), class: "avatar group-avatar s70 avatar-tile"
+    .avatar-container.s70.group-avatar
+      = image_tag group_icon(@group), class: "avatar s70 avatar-tile"
     .group-info
       .cover-title
         %h1
@@ -21,9 +22,9 @@
 
       - if @group.description.present?
         .cover-desc.description
-          = markdown(@group.description, pipeline: :description)
+          = markdown_field(@group, :description)
 
-%div{ class: container_class }
+%div.groups-header{ class: container_class }
   .top-area
     %ul.nav-links
       %li.active

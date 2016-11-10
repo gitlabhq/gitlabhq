@@ -39,6 +39,12 @@ module EventsHelper
     end
   end
 
+  def event_filter_visible(feature_key)
+    return true unless @project
+
+    @project.feature_available?(feature_key, current_user)
+  end
+
   def event_preposition(event)
     if event.push? || event.commented? || event.target
       "at"
@@ -154,7 +160,7 @@ module EventsHelper
   end
 
   def event_commit_title(message)
-    escape_once(truncate(message.split("\n").first, length: 70))
+    (message.split("\n").first || "").truncate(70)
   rescue
     "--broken encoding"
   end

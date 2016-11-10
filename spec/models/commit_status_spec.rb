@@ -7,7 +7,11 @@ describe CommitStatus, models: true do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
-  let(:commit_status) { create(:commit_status, pipeline: pipeline) }
+  let(:commit_status) { create_status }
+
+  def create_status(args = {})
+    create(:commit_status, args.merge(pipeline: pipeline))
+  end
 
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
@@ -40,7 +44,7 @@ describe CommitStatus, models: true do
       it { is_expected.to be_falsey }
     end
 
-    %w(running success failed).each do |status|
+    %w[running success failed].each do |status|
       context "if commit status is #{status}" do
         before { commit_status.status = status }
 
@@ -48,7 +52,7 @@ describe CommitStatus, models: true do
       end
     end
 
-    %w(pending canceled).each do |status|
+    %w[pending canceled].each do |status|
       context "if commit status is #{status}" do
         before { commit_status.status = status }
 
@@ -60,7 +64,7 @@ describe CommitStatus, models: true do
   describe '#active?' do
     subject { commit_status.active? }
 
-    %w(pending running).each do |state|
+    %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -68,7 +72,7 @@ describe CommitStatus, models: true do
       end
     end
 
-    %w(success failed canceled).each do |state|
+    %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -80,7 +84,7 @@ describe CommitStatus, models: true do
   describe '#complete?' do
     subject { commit_status.complete? }
 
-    %w(success failed canceled).each do |state|
+    %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -88,7 +92,7 @@ describe CommitStatus, models: true do
       end
     end
 
-    %w(pending running).each do |state|
+    %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
         before { commit_status.status = state }
 
@@ -125,32 +129,53 @@ describe CommitStatus, models: true do
   describe '.latest' do
     subject { CommitStatus.latest.order(:id) }
 
-    before do
-      @commit1 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'cc', status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'bb', status: 'success'
-      @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'success'
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running'),
+       create_status(name: 'cc', ref: 'cc', status: 'pending'),
+       create_status(name: 'aa', ref: 'cc', status: 'success'),
+       create_status(name: 'cc', ref: 'bb', status: 'success'),
+       create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
 
     it 'returns unique statuses' do
-      is_expected.to eq([@commit4, @commit5])
+      is_expected.to eq(statuses.values_at(3, 4))
     end
   end
 
   describe '.running_or_pending' do
     subject { CommitStatus.running_or_pending.order(:id) }
 
-    before do
-      @commit1 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: nil, status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'dd', ref: nil, status: 'failed'
-      @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'ee', ref: nil, status: 'canceled'
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running'),
+       create_status(name: 'cc', ref: 'cc', status: 'pending'),
+       create_status(name: 'aa', ref: nil, status: 'success'),
+       create_status(name: 'dd', ref: nil, status: 'failed'),
+       create_status(name: 'ee', ref: nil, status: 'canceled')]
     end
 
     it 'returns statuses that are running or pending' do
-      is_expected.to eq([@commit1, @commit2])
+      is_expected.to eq(statuses.values_at(0, 1))
+    end
+  end
+
+  describe '.exclude_ignored' do
+    subject { CommitStatus.exclude_ignored.order(:id) }
+
+    let(:statuses) do
+      [create_status(when: 'manual', status: 'skipped'),
+       create_status(when: 'manual', status: 'success'),
+       create_status(when: 'manual', status: 'failed'),
+       create_status(when: 'on_failure', status: 'skipped'),
+       create_status(when: 'on_failure', status: 'success'),
+       create_status(when: 'on_failure', status: 'failed'),
+       create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 2, 4, 5, 6, 8, 9))
     end
   end
 
@@ -187,7 +212,7 @@ describe CommitStatus, models: true do
       subject { CommitStatus.where(pipeline: pipeline).stages }
 
       it 'returns ordered list of stages' do
-        is_expected.to eq(%w(build test deploy))
+        is_expected.to eq(%w[build test deploy])
       end
     end
 
@@ -221,6 +246,35 @@ describe CommitStatus, models: true do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(commit_status.commit).to eq project.commit
+    end
+  end
+
+  describe '#group_name' do
+    subject { commit_status.group_name }
+
+    tests = {
+      'rspec:windows' => 'rspec:windows',
+      'rspec:windows 0' => 'rspec:windows 0',
+      'rspec:windows 0 test' => 'rspec:windows 0 test',
+      'rspec:windows 0 1' => 'rspec:windows',
+      'rspec:windows 0 1 name' => 'rspec:windows name',
+      'rspec:windows 0/1' => 'rspec:windows',
+      'rspec:windows 0/1 name' => 'rspec:windows name',
+      'rspec:windows 0:1' => 'rspec:windows',
+      'rspec:windows 0:1 name' => 'rspec:windows name',
+      'rspec:windows 10000 20000' => 'rspec:windows',
+      'rspec:windows 0 : / 1' => 'rspec:windows',
+      'rspec:windows 0 : / 1 name' => 'rspec:windows name',
+      '0 1 name ruby' => 'name ruby',
+      '0 :/ 1 name ruby' => 'name ruby'
+    }
+
+    tests.each do |name, group_name|
+      it "'#{name}' puts in '#{group_name}'" do
+        commit_status.name = name
+
+        is_expected.to eq(group_name)
+      end
     end
   end
 end

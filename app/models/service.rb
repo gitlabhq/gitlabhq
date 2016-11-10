@@ -7,10 +7,12 @@ class Service < ActiveRecord::Base
   default_value_for :active, false
   default_value_for :push_events, true
   default_value_for :issues_events, true
+  default_value_for :confidential_issues_events, true
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
   default_value_for :build_events, true
+  default_value_for :pipeline_events, true
   default_value_for :wiki_page_events, true
 
   after_initialize :initialize_properties
@@ -33,6 +35,7 @@ class Service < ActiveRecord::Base
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
   scope :issue_hooks, -> { where(issues_events: true, active: true) }
+  scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
@@ -100,7 +103,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue merge_request wiki_page)
+    %w(push tag_push issue confidential_issue merge_request wiki_page)
   end
 
   def execute(data)
@@ -133,6 +136,7 @@ class Service < ActiveRecord::Base
         end
 
         def #{arg}=(value)
+          self.properties ||= {}
           updated_properties['#{arg}'] = #{arg} unless #{arg}_changed?
           self.properties['#{arg}'] = value
         end
@@ -192,12 +196,13 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w(
+    %w[
       asana
       assembla
       bamboo
       buildkite
       builds_email
+      pipelines_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -214,7 +219,7 @@ class Service < ActiveRecord::Base
       redmine
       slack
       teamcity
-    )
+    ]
   end
 
   def self.create_from_template(project_id, template)

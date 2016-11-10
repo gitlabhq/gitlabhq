@@ -1,10 +1,11 @@
 class CommitStatus < ActiveRecord::Base
-  include Statuseable
+  include HasStatus
   include Importable
+  include AfterCommitQueue
 
   self.table_name = 'ci_builds'
 
-  belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+  belongs_to :project, foreign_key: :gl_project_id
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 
@@ -21,13 +22,35 @@ class CommitStatus < ActiveRecord::Base
 
     where(id: max_id.group(:name, :commit_id))
   end
+
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
-  scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
+
+  scope :failed_but_allowed, -> do
+    where(allow_failure: true, status: [:failed, :canceled])
+  end
+
+  scope :exclude_ignored, -> do
+    quoted_when = connection.quote_column_name('when')
+    # We want to ignore failed_but_allowed jobs
+    where("allow_failure = ? OR status IN (?)",
+      false, all_state_names - [:failed, :canceled]).
+      # We want to ignore skipped manual jobs
+      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
+      # We want to ignore skipped on_failure
+      where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+  end
+
+  scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
+  scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
 
   state_machine :status do
     event :enqueue do
       transition [:created, :skipped] => :pending
+    end
+
+    event :process do
+      transition skipped: :created
     end
 
     event :run do
@@ -50,35 +73,37 @@ class CommitStatus < ActiveRecord::Base
       transition [:created, :pending, :running] => :canceled
     end
 
-    after_transition created: [:pending, :running] do |commit_status|
-      commit_status.update_attributes queued_at: Time.now
+    before_transition created: [:pending, :running] do |commit_status|
+      commit_status.queued_at = Time.now
     end
 
-    after_transition [:created, :pending] => :running do |commit_status|
-      commit_status.update_attributes started_at: Time.now
+    before_transition [:created, :pending] => :running do |commit_status|
+      commit_status.started_at = Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.update_attributes finished_at: Time.now
-    end
-
-    # We use around_transition to process pipeline on next stages as soon as possible, before the `after_*` is executed
-    around_transition any => [:success, :failed, :canceled] do |commit_status, block|
-      block.call
-
-      commit_status.pipeline.try(:process!)
+    before_transition any => [:success, :failed, :canceled] do |commit_status|
+      commit_status.finished_at = Time.now
     end
 
     after_transition do |commit_status, transition|
-      commit_status.pipeline.try(:build_updated) unless transition.loopback?
-    end
+      next if transition.loopback?
 
-    after_transition [:created, :pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
+      commit_status.run_after_commit do
+        pipeline.try do |pipeline|
+          if complete?
+            PipelineProcessWorker.perform_async(pipeline.id)
+          else
+            PipelineUpdateWorker.perform_async(pipeline.id)
+          end
+        end
+      end
     end
 
     after_transition any => :failed do |commit_status|
-      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
+      commit_status.run_after_commit do
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(pipeline.project, nil).execute(self)
+      end
     end
   end
 
@@ -86,6 +111,10 @@ class CommitStatus < ActiveRecord::Base
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
+  end
+
+  def group_name
+    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
   def self.stages
@@ -102,18 +131,16 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def ignored?
+  def failed_but_allowed?
     allow_failure? && (failed? || canceled?)
   end
 
+  def playable?
+    false
+  end
+
   def duration
-    duration =
-      if started_at && finished_at
-        finished_at - started_at
-      elsif started_at
-        Time.now - started_at
-      end
-    duration
+    calculate_duration
   end
 
   def stuck?

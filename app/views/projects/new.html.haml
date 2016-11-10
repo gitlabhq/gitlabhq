@@ -27,6 +27,7 @@
                 - else
                   .input-group-addon.static-namespace
                     #{root_url}#{current_user.username}/
+                  = f.hidden_field :namespace_id, value: current_user.namespace_id
           .form-group.col-xs-12.col-sm-6.project-path
             = f.label :namespace_id, class: 'label-light' do
               %span
@@ -55,15 +56,10 @@
                       = render 'bitbucket_import_modal'
                 %div
                   - if gitlab_import_enabled?
-                    = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless bitbucket_import_configured?}" do
+                    = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}" do
                       = icon('gitlab', text: 'GitLab.com')
                     - unless gitlab_import_configured?
                       = render 'gitlab_import_modal'
-                %div
-                  - if gitorious_import_enabled?
-                    = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
-                      %i.icon-gitorious.icon-gitorious-small
-                      Gitorious.org
                 %div
                   - if google_code_import_enabled?
                     = link_to new_import_google_code_path, class: 'btn import_google_code' do
@@ -77,7 +73,7 @@
                     = link_to "#", class: 'btn js-toggle-button import_git' do
                       = icon('git', text: 'Repo by URL')
                 %div{ class: 'import_gitlab_project' }
-                  - if gitlab_project_import_enabled? && current_user.is_admin?
+                  - if gitlab_project_import_enabled?
                     = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
                       = icon('gitlab', text: 'GitLab export')
 
@@ -129,6 +125,11 @@
       event.preventDefault();
       new Flash("Please enter path and name for the project to be imported to.");
     }
+  });
+
+  $('#new_project').submit(function(){
+    var $path = $('#project_path');
+    $path.val($path.val().trim());
   });
 
   $('#project_path').keyup(function(){

@@ -6,10 +6,8 @@ gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
 
-# Specify a sprockets version due to increased performance
-# See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
-gem 'sprockets', '~> 3.6.0'
-gem 'sprockets-es6'
+gem 'sprockets', '~> 3.7.0'
+gem 'sprockets-es6', '~> 0.9.2'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.0.0'
@@ -19,19 +17,19 @@ gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 4.0'
-gem 'doorkeeper',             '~> 4.0'
+gem 'devise',                 '~> 4.2'
+gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
-gem 'omniauth-facebook',      '~> 3.0.0'
+gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
-gem 'omniauth-gitlab',        '~> 1.0.0'
+gem 'omniauth-gitlab',        '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
-gem 'omniauth-saml',          '~> 1.6.0'
+gem 'omniauth-saml',          '~> 1.7.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
@@ -53,7 +51,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.4.5'
+gem 'gitlab_git', '~> 10.7.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -77,7 +75,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem 'kaminari', '~> 0.17.0'
 
 # HAML
-gem 'hamlit', '~> 2.5'
+gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
 gem 'carrierwave', '~> 0.10.0'
@@ -97,36 +95,34 @@ gem 'fog-rackspace', '~> 0.1.1'
 # for aws storage
 gem 'unf', '~> 0.1.4'
 
-# Authorization
-gem 'six', '~> 0.2.0'
-
 # Seed data
 gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 1.11.0'
-gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
-gem 'github-markup', '~> 1.4'
-gem 'redcarpet',     '~> 3.3.3'
-gem 'RedCloth',      '~> 4.3.2'
-gem 'rdoc',          '~>3.6'
-gem 'org-ruby',      '~> 0.9.12'
-gem 'creole',        '~> 0.5.0'
-gem 'wikicloth',     '0.8.1'
-gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 2.0'
+gem 'html-pipeline',      '~> 1.11.0'
+gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
+gem 'gitlab-markup',      '~> 1.5.0'
+gem 'redcarpet',          '~> 3.3.3'
+gem 'RedCloth',           '~> 4.3.2'
+gem 'rdoc',               '~> 4.2'
+gem 'org-ruby',           '~> 0.9.12'
+gem 'creole',             '~> 0.5.0'
+gem 'wikicloth',          '0.8.1'
+gem 'asciidoctor',        '~> 1.5.2'
+gem 'rouge',              '~> 2.0'
+gem 'truncato',           '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
 gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
 
 # Diffs
-gem 'diffy', '~> 3.0.3'
+gem 'diffy', '~> 3.1.0'
 
 # Application server
 group :unicorn do
-  gem 'unicorn', '~> 4.9.0'
-  gem 'unicorn-worker-killer', '~> 0.4.2'
+  gem 'unicorn', '~> 5.1.0'
+  gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
 # State machine
@@ -135,11 +131,10 @@ gem 'state_machines-activerecord', '~> 0.4.0'
 gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 3.4'
+gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sinatra', '~> 1.4.4', require: false
-gem 'sidekiq', '~> 4.0'
+gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
 
@@ -157,7 +152,7 @@ gem 'settingslogic', '~> 2.0.9'
 gem 'version_sorter', '~> 2.1.0'
 
 # Cache
-gem 'redis-rails', '~> 4.0.0'
+gem 'redis-rails', '~> 5.0.1'
 
 # Redis
 gem 'redis', '~> 3.2'
@@ -165,6 +160,9 @@ gem 'connection_pool', '~> 2.0'
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
+
+# JIRA integration
+gem 'jira-ruby', '~> 1.1.2'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
@@ -198,10 +196,10 @@ gem 'loofah', '~> 2.0.3'
 gem 'licensee', '~> 8.0.0'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 4.3.1'
+gem 'rack-attack', '~> 4.4.1'
 
 # Ace editor
-gem 'ace-rails-ap', '~> 4.0.2'
+gem 'ace-rails-ap', '~> 4.1.0'
 
 # Keyboard shortcuts
 gem 'mousetrap-rails', '~> 1.4.6'
@@ -209,10 +207,14 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
-# Parse duration
+# Faster JSON
+gem 'oj', '~> 2.17.4'
+
+# Parse time & duration
+gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'sass-rails', '~> 5.0.0'
+gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
@@ -226,14 +228,14 @@ gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-ui-rails',    '~> 5.0.0'
-gem 'request_store',      '~> 1.3.0'
+gem 'request_store',      '~> 1.3'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 1.1.0'
+gem 'sentry-raven', '~> 2.0.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
@@ -257,9 +259,6 @@ group :development do
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
   gem 'binding_of_caller', '~> 0.7.2'
-
-  # Docs generator
-  gem 'sdoc', '~> 0.3.20'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
@@ -297,11 +296,11 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.41.2', require: false
+  gem 'rubocop', '~> 0.43.0', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
+  gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
-  gem 'flog', '~> 4.3.2', require: false
   gem 'flay', '~> 2.6.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
@@ -309,29 +308,29 @@ group :development, :test do
 
   gem 'license_finder', '~> 2.1.0', require: false
   gem 'knapsack', '~> 1.11.0'
+
+  gem 'activerecord_sane_schema_dumper', '0.2'
 end
 
 group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
+  gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
-end
-
-group :production do
-  gem 'gitlab_meta', '7.0'
+  gem 'timecop', '~> 0.8.0'
 end
 
 gem 'newrelic_rpm', '~> 3.16'
 
 gem 'octokit', '~> 4.3.0'
 
-gem 'mail_room', '~> 0.8'
+gem 'mail_room', '~> 0.9.0'
 
 gem 'email_reply_parser', '~> 0.5.8'
 
-gem 'ruby-prof', '~> 0.15.9'
+gem 'ruby-prof', '~> 0.16.2'
 
 ## CI
 gem 'activerecord-session_store', '~> 1.0.0'
@@ -344,8 +343,8 @@ gem 'oauth2', '~> 1.2.0'
 gem 'paranoia', '~> 2.0'
 
 # Health check
-gem 'health_check', '~> 2.1.0'
+gem 'health_check', '~> 2.2.0'
 
 # System information
-gem 'vmstat', '~> 2.1.1'
+gem 'vmstat', '~> 2.2'
 gem 'sys-filesystem', '~> 1.1.6'

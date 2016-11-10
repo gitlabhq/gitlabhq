@@ -1,7 +1,6 @@
 class NewNoteWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include DedicatedSidekiqQueue
 
   def perform(note_id, note_params)
     note = Note.find(note_id)

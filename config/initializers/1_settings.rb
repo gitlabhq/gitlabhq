@@ -186,6 +186,7 @@ Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].ni
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
@@ -212,7 +213,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
-Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project]
+Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project]
 Settings.gitlab['trusted_proxies'] ||= []
 
 #
@@ -293,6 +294,22 @@ Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'Impor
 Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'
+Settings.cron_jobs['remove_expired_members_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_expired_members_worker']['cron'] ||= '10 0 * * *'
+Settings.cron_jobs['remove_expired_members_worker']['job_class'] = 'RemoveExpiredMembersWorker'
+Settings.cron_jobs['remove_expired_group_links_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_expired_group_links_worker']['cron'] ||= '10 0 * * *'
+Settings.cron_jobs['remove_expired_group_links_worker']['job_class'] = 'RemoveExpiredGroupLinksWorker'
+Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
+Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
+
+Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
+Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsWorker'
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
 
 #
 # GitLab Shell

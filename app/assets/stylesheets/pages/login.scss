@@ -17,6 +17,7 @@
     line-height: 1.5;
 
     p {
+      font-size: 18px;
       color: #888;
     }
 
@@ -36,10 +37,15 @@
     }
   }
 
-  .login-box {
-    background: #fafafa;
-    border-radius: 10px;
-    box-shadow: 0 0 2px #ccc;
+  p {
+    font-size: 13px;
+  }
+
+  .login-box,
+  .omniauth-container {
+    box-shadow: 0 0 0 1px $border-color;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
     padding: 15px;
 
     .login-heading h3 {
@@ -58,40 +64,131 @@
 
     a.forgot {
       float: right;
-      padding-top: 6px
+      padding-top: 6px;
     }
 
     .nav .active a {
       background: transparent;
     }
+
+    // Styles the glowing border of focused input for username async validation
+    .login-body {
+      font-size: 13px;
+
+      input + p {
+        margin-top: 5px;
+      }
+
+      .username .validation-success {
+        color: $green-normal;
+      }
+
+      .username .validation-error {
+        color: $red-normal;
+      }
+    }
   }
 
+  .omniauth-container {
+    p {
+      margin: 0;
+    }
+  }
+
+  .new-session-tabs {
+    display: -webkit-flex;
+    display: flex;
+    box-shadow: 0 0 0 1px $border-color;
+    border-top-right-radius: $border-radius-default;
+    border-top-left-radius: $border-radius-default;
+
+    li {
+      flex: 1;
+      text-align: center;
+
+      &:first-of-type {
+        border-top-left-radius: $border-radius-default;
+      }
+
+      &:last-of-type {
+        border-left: 1px solid $border-color;
+        border-top-right-radius: $border-radius-default;
+      }
+
+      &:not(.active) {
+        background-color: $gray-light;
+        border-left: 1px solid $border-color;
+      }
+
+      a {
+        width: 100%;
+        font-size: 18px;
+
+        &:hover {
+          border: 1px solid transparent;
+        }
+      }
+
+      &.active {
+        border-bottom: 1px solid $border-color;
+
+        a {
+          border: none;
+          border-bottom: 2px solid $link-underline-blue;
+          color: $black;
+
+          &:hover {
+            border-bottom: 2px solid $link-underline-blue;
+          }
+        }
+      }
+    }
+  }
+
+  // Ldap configurations may need more tabs & the tab labels are user generated (arbitrarily long).
+  // These styles prevent this from breaking the layout, and only applied when providers are configured.
+
+  .new-session-tabs.custom-provider-tabs {
+    flex-wrap: wrap;
+
+    li {
+      min-width: 85px;
+      flex-basis: auto;
+
+      // This styles tab elements that have wrapped to a second line. We cannot easily predict when this will happen.
+      // We are making somewhat of an assumption about the configuration here: that users do not have more than
+      // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
+      // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
+      // above one of the bottom row elements. If you know a better way, please implement it!
+      &:nth-child(n+5) {
+        border-top: 1px solid $border-color;
+      }
+    }
+
+    a {
+      font-size: 16px;
+    }
+  }
+
+
   .form-control {
-    font-size: 14px;
-    padding: 10px 8px;
-    width: 100%;
-    height: auto;
-
-    &.top {
-      @include border-radius(5px 5px 0 0);
-      margin-bottom: 0;
-    }
-
-    &.bottom {
-      @include border-radius(0 0 5px 5px);
-      border-top: 0;
-      margin-bottom: 20px;
-    }
-
-    &.middle {
-      border-top: 0;
-      margin-bottom: 0;
-      @include border-radius(0);
-    }
-
-    &:active, &:focus {
+    &:active,
+    &:focus {
       background-color: #fff;
     }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  .submit-container {
+    margin-top: 16px;
+  }
+
+  input[type="submit"] {
+    @extend .btn-block;
+    margin-bottom: 0;
   }
 
   .devise-errors {
@@ -101,20 +198,13 @@
       color: #a00;
     }
   }
-
-  .remember-me {
-    margin-top: -10px;
-
-    label {
-      font-weight: normal;
-    }
-  }
 }
 
 @media (max-width: $screen-xs-max) {
   .login-page {
     .col-sm-5.pull-right {
       float: none !important;
+      margin-bottom: 45px;
     }
   }
 }
@@ -127,3 +217,64 @@
     height: 32px;
   }
 }
+
+.devise-layout-html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+// Fixes footer container to bottom of viewport
+.devise-layout-html body {
+  // offset height of fixed header + 1 to avoid scroll
+  height: calc(100% - 51px);
+  margin: 0;
+  padding: 0;
+
+  .page-wrap {
+    min-height: 100%;
+    position: relative;
+  }
+
+  .footer-container,
+  hr.footer-fixed {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: $white-light;
+  }
+
+  .navless-container {
+    padding: 65px 15px; // height of footer + bottom padding of email confirmation link
+
+    @media (max-width: $screen-xs-max) {
+      padding: 0 15px 65px;
+    }
+  }
+}
+
+// For sign in pane only, to improve tab order, the following removes the submit button from
+// normal document flow and pins it to the bottom of the form. For context, see !6867 & !6928
+
+.login-box {
+  .new_user {
+    position: relative;
+    padding-bottom: 35px;
+
+    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      .forgot-password {
+        float: none !important;
+        margin-top: 5px;
+      }
+    }
+  }
+
+  .move-submit-down {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+  }
+}
+

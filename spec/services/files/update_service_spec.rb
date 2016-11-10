@@ -41,7 +41,7 @@ describe Files::UpdateService do
       it "returns a hash with the :success status " do
         results = subject.execute
 
-        expect(results).to match({ status: :success })
+        expect(results[:status]).to match(:success)
       end
 
       it "updates the file with the new contents" do
@@ -69,7 +69,7 @@ describe Files::UpdateService do
       it "returns a hash with the :success status " do
         results = subject.execute
 
-        expect(results).to match({ status: :success })
+        expect(results[:status]).to match(:success)
       end
 
       it "updates the file with the new contents" do

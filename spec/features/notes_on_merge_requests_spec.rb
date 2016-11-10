@@ -141,7 +141,7 @@ describe 'Comments', feature: true do
     let(:project2) { create(:project, :private) }
     let(:issue) { create(:issue, project: project2) }
     let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'markdown') }
-    let!(:note) { create(:note_on_merge_request, :system, noteable: merge_request, project: project, note: "mentioned in #{issue.to_reference(project)}") }
+    let!(:note) { create(:note_on_merge_request, :system, noteable: merge_request, project: project, note: "Mentioned in #{issue.to_reference(project)}") }
 
     it 'shows the system note' do
       login_as :admin
@@ -239,6 +239,18 @@ describe 'Comments', feature: true do
           is_expected.to have_css('.notes_holder')
           is_expected.to have_css('.notes_holder .note', count: 1)
           is_expected.to have_button('Reply...')
+        end
+
+        it 'adds code to discussion' do
+          click_button 'Reply...'
+
+          page.within(first('.js-discussion-note-form')) do
+            fill_in 'note[note]', with: '```{{ test }}```'
+
+            click_button('Comment')
+          end
+
+          expect(page).to have_content('{{ test }}')
         end
       end
     end

@@ -37,12 +37,51 @@ describe API::API, api: true  do
       end
     end
 
-    context "when authenticated as  admin" do
+    context "when authenticated as admin" do
       it "admin: returns an array of all groups" do
         get api("/groups", admin)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
+      end
+    end
+
+    context "when using skip_groups in request" do
+      it "returns all groups excluding skipped groups" do
+        get api("/groups", admin), skip_groups: [group2.id]
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+      end
+    end
+
+    context "when using all_available in request" do
+      it "returns all groups you have access to" do
+        public_group = create :group, :public
+        get api("/groups", user1), all_available: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(public_group.name)
+      end
+    end
+  end
+
+  describe 'GET /groups/owned' do
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/groups/owned')
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated as group owner' do
+      it 'returns an array of groups the user owns' do
+        get api('/groups/owned', user2)
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(group2.name)
       end
     end
   end
@@ -120,10 +159,11 @@ describe API::API, api: true  do
 
     context 'when authenticated as the group owner' do
       it 'updates the group' do
-        put api("/groups/#{group1.id}", user1), name: new_group_name
+        put api("/groups/#{group1.id}", user1), name: new_group_name, request_access_enabled: true
 
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
+        expect(json_response['request_access_enabled']).to eq(true)
       end
 
       it 'returns 404 for a non existing group' do
@@ -238,8 +278,14 @@ describe API::API, api: true  do
 
     context "when authenticated as user with group permissions" do
       it "creates group" do
-        post api("/groups", user3), attributes_for(:group)
+        group = attributes_for(:group, { request_access_enabled: false })
+
+        post api("/groups", user3), group
         expect(response).to have_http_status(201)
+
+        expect(json_response["name"]).to eq(group[:name])
+        expect(json_response["path"]).to eq(group[:path])
+        expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
       end
 
       it "does not create group, duplicate" do
