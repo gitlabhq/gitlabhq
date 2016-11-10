@@ -234,6 +234,14 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'remove_time_spent command' do
+      it 'populates spend_time: "0" if content contains /remove_time_spent' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: 0)
+      end
+    end
+
     shared_examples 'empty command' do
       it 'populates {} if content contains an unsupported command' do
         _, updates = service.execute(content, issuable)
@@ -507,6 +515,11 @@ describe SlashCommands::InterpretService, services: true do
 
     it_behaves_like 'remove_estimation command' do
       let(:content) { '/remove_estimation' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'remove_time_spent command' do
+      let(:content) { '/remove_time_spent' }
       let(:issuable) { issue }
     end
 

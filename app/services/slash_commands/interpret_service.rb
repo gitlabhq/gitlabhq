@@ -284,6 +284,15 @@ module SlashCommands
       @updates[:time_estimate] = 0
     end
 
+    desc 'Remove the time spent'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :remove_time_spent do
+      @updates[:spend_time] = 0
+    end
+
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
       labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)

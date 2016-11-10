@@ -17,7 +17,9 @@ module TimeTrackable
   def spend_time=(seconds)
     return unless seconds
 
-    timelogs.new(time_spent: seconds)
+    new_time_spent = seconds.zero? ? -(total_time_spent) : seconds
+    timelogs.new(time_spent: new_time_spent)
+
     @time_spent = seconds
   end
 
