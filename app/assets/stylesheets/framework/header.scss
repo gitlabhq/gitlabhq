@@ -191,6 +191,10 @@ header {
         font-size: 10px;
         text-align: center;
         cursor: pointer;
+
+        &:hover {
+          color: darken($color: $gl-text-color, $amount: 50%);
+        }
       }
 
       .project-item-select {
