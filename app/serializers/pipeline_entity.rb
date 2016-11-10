@@ -3,6 +3,12 @@ class PipelineEntity < Grape::Entity
 
   expose :id
   expose :user, if: -> (pipeline, opts) { created?(pipeline, opts) }, using: UserEntity
+  expose :url do |pipeline|
+    namespace_project_pipeline_path(
+      pipeline.project.namespace,
+      pipeline.project,
+      pipeline)
+  end
 
   expose :details, if: -> (pipeline, opts) { updated?(pipeline, opts) } do
     expose :status
@@ -29,7 +35,7 @@ class PipelineEntity < Grape::Entity
       pipeline.ref
     end
 
-    expose :ref_url do |pipeline|
+    expose :url do |pipeline|
       namespace_project_tree_url(
         pipeline.project.namespace,
         pipeline.project,
@@ -39,24 +45,7 @@ class PipelineEntity < Grape::Entity
     expose :tag?
   end
 
-  expose :commit, if: -> (pipeline, opts) { created?(pipeline, opts) } do
-    expose :short_sha
-
-    expose :sha_url do |pipeline|
-      namespace_project_commit_path(
-        pipeline.project.namespace,
-        pipeline.project,
-        pipeline.sha)
-    end
-
-    expose :title do |pipeline|
-      pipeline.commit.try(:title)
-    end
-
-    expose :author, using: UserEntity do |pipeline|
-      pipeline.commit.try(:author)
-    end
-  end
+  expose :commit, if: -> (pipeline, opts) { created?(pipeline, opts) }, using: CommitEntity
 
   expose :retry_url, if: -> (pipeline, opts) { updated?(pipeline, opts) } do |pipeline|
     can?(current_user, :update_pipeline, pipeline.project) &&
