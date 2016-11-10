@@ -5,7 +5,7 @@ topology with **Sentinel** service to watch and automatically start
 failover proceedings.
 
 You can choose to install and manage Redis and Sentinel yourself, use
-a hosted, managed clouse solution or you can use or you can use the one
+a hosted, managed cloud solution or you can use or you can use the one
 that comes bundled with Omnibus GitLab packages.
 
 > **Note:** Redis requires authentication for High Availability. See
@@ -55,10 +55,10 @@ technology and provide a transparent proxy, which means that GitLab doesn't
 need any additional change, or will use Sentinel and manage it for you.
 
 If your provider, uses Sentinel method, see [GitLab Setup](#gitlab-setup)
-to understant where you need to provide the list of servers and credentials.
+to understand where you need to provide the list of servers and credentials.
 
 If you want to setup Redis by yourself, without using Omnibus, you can
-read our documentation: [Configuring Redis for GitLab HA (Source Install)](redis_source.md)
+read our documentation: [Configuring Redis for GitLab HA (source install)](redis_source.md).
 
 ## High Availability with Sentinel
 
@@ -73,19 +73,19 @@ High Availability with Redis requires a few things:
 - Multiple Redis instances
 - Run Redis in a **Master** x **Slave** topology
 - Multiple Sentinel instances
-- Application support and visiblity to all Sentinel and Redis instances
+- Application support and visibility to all Sentinel and Redis instances
 
 Redis Sentinel can handle the most important tasks in a HA environment to help
 keep servers online with minimal to no downtime:
 
 - Monitors **Master** and **Slaves** instances to see if they are available
-- Promote a **Slave** to **Master** when the **Master** fails.
+- Promote a **Slave** to **Master** when the **Master** fails
 - Demote a **Master** to **Slave** when failed **Master** comes back online (to prevent
-  data-partitioning).
-- Can be queried by clients to always connect to the current **Master** server.
+  data-partitioning)
+- Can be queried by clients to always connect to the current **Master** server
 
-When a **Master** fails to respond, it's the client responsability to handle timeout
-and reconnect (querying a **Sentinel** for a new **Master**).
+When a **Master** fails to respond, it's the client's responsibility to handle
+timeout and reconnect (querying a **Sentinel** for a new **Master**).
 
 To get a better understanding on how to correctly setup Sentinel, please read
 the [Redis Sentinel documentation](http://redis.io/topics/sentinel) first, as
@@ -113,7 +113,7 @@ the shared environment can bring your entire setup down.
 
 You also need to take in consideration the underlying network topology,
 making sure you have redundant connectivity between Redis / Sentinel and
-GitLab instances, otherwhise the networks will become a single point of
+GitLab instances, otherwise the networks will become a single point of
 failure.
 
 Read carefully how to configure the components below.
@@ -132,7 +132,7 @@ simultaneously down.
 
 Please note that there are different requirements for Sentinel nodes.
 If you host them in the same Redis machines, you may need to take
-that restrictions into consideration when calculating the ammount of
+that restrictions into consideration when calculating the amount of
 nodes to be provisioned. See [Sentinel setup](#sentinel-setup)
 documentation for more information.
 
@@ -171,10 +171,10 @@ the same Sentinels.
 
 Sentinels watches both other sentinels and Redis nodes. Whenever a Sentinel
 detects that a Redis node is not responding, it will announce that to the
-other sentinels. You have to reach the **quorum**, the minimum ammount of
+other sentinels. You have to reach the **quorum**, the minimum amount of
 sentinels that agrees that a node is down, to be able to start a failover.
 
-Whenver the **quorum** is met, you need the **majority** of all known
+Whenever the **quorum** is met, you need the **majority** of all known
 Sentinel nodes to be available and reachable, to elect the Sentinel **leader**
 who will take all the decisions to restore the service availability by:
 
@@ -238,7 +238,7 @@ independent machines, both with **Redis** and **Sentinel**:
 - Redis Slave + Sentinel
 
 Make sure you've read [Redis Setup](#redis-setup) and [Sentinel Setup](#sentinel-setup)
-before, to understant how and why the ammount of nodes came from.
+before, to understand how and why the amount of nodes came from.
 
 For a recommended setup, that can resist more failures, you will install
 the Omnibus GitLab package in `5` independent machines, both with
@@ -259,11 +259,11 @@ This is a summary of what are we going to do:
      independent ones.
    - Don't install Redis and Sentinel in the same machines your GitLab instance
      is running on.
-   - All machines must be able to talk to each other and accept incomming
+   - All machines must be able to talk to each other and accept incoming
      connection over Redis (`6379`) and Sentinel (`26379`) ports.
    - GitLab machines must be able to access these machines and with the same
      permissions.
-   - Protected them from indiscriminated access from external networks (Internet),
+   - Protected them from indiscriminating access from external networks (Internet),
      to harden the security.
 
 1. Download/install Omnibus GitLab using **steps 1 and 2** from
@@ -288,7 +288,7 @@ inside it.
 Your single-machine install will be the initial **Master**, and the `3` others
 should be configured as **Slave** pointing to this machine.
 
-After replication catchs-up, you will need to stop services in the
+After replication catches up, you will need to stop services in the
 single-machine install, to rotate the **Master** to one of the new nodes.
 
 Make the required changes in configuration and restart the new nodes again.
@@ -310,7 +310,7 @@ You will need to configure the following in `/etc/gitlab/gitlab.rb`:
 
 1. Define a `redis['bind']` address pointing to a local IP that your other machines
    can reach you.
-   - If you really need to bind to an external acessible IP, make
+   - If you really need to bind to an external accessible IP, make
    sure you add extra firewall rules to prevent unauthorized access.
    - You can also set bind to `0.0.0.0` which listen in all interfaces.
 
@@ -332,7 +332,7 @@ You will need to configure the following in `/etc/gitlab/gitlab.rb`:
 
 1. Define a `redis['bind']` address pointing to a local IP that your other machines
    can reach you.
-   - If you really need to bind to an external acessible IP, make
+   - If you really need to bind to an external accessible IP, make
    sure you add extra firewall rules to prevent unauthorized access.
    - You can also set bind to `0.0.0.0` which listen in all interfaces.
 
@@ -384,7 +384,7 @@ installations. From the GitLab application perspective, all it requires is
 the correct credentials for the Sentinel nodes.
 
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
-it needs to access at least one of listeds.
+it needs to access at least one of the listed.
 
 >**Note:**
 The following steps should be performed in the [GitLab application server](gitlab.md)
@@ -425,7 +425,7 @@ by the Sentinel nodes, the Redis nodes will be reconfigured and the **Master**
 will change permanently (including in `redis.conf`) from one node to the other,
 until a new failover is initiated again.
 
-The same thing will happen with `sentinel.conf` that will be overriten after the
+The same thing will happen with `sentinel.conf` that will be overridden after the
 initial execution, after any new sentinel node starts watching the **Master**,
 or a failover promotes a different **Master** node.
 
@@ -653,7 +653,7 @@ sentinel['quorum'] = 2
 ### Control running services
 
 In the example above we've used `redis_sentinel_role` and `redis_master_role`
-which simplify the ammount of configuration changes.
+which simplify the amount of configuration changes.
 
 If you want more control, here is what each one sets for you automatically
 when enabled:
