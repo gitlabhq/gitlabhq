@@ -63,6 +63,7 @@ header {
         &:focus,
         &:active {
           background-color: $background-color;
+          color: darken($gl-icon-color, 50%);
         }
 
         .fa-caret-down {

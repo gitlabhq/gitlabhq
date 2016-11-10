@@ -21,6 +21,11 @@
     padding: 4px;
     width: $search-input-width;
     line-height: 24px;
+
+    &:hover {
+      border-color: lighten($dropdown-input-focus-border, 20%);
+      box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
+    }
   }
 
   .location-text {
@@ -48,6 +53,12 @@
     background-color: $location-badge-bg;
     vertical-align: top;
     cursor: default;
+
+    &:hover {
+      color: $white-light;
+      background-color: lighten($location-badge-active-bg, 20%);
+      transition: all 0.15s;
+    }
   }
 
   .search-input-container {
@@ -153,6 +164,7 @@
       width: 68%;
     }
   }
+
 }
 
 .search-holder {
@@ -229,4 +241,5 @@
   &:focus {
     color: $gl-link-color;
   }
+
 }
