@@ -211,9 +211,11 @@ module Banzai
 
           nodes.each do |node|
             node.to_html.scan(regex) do
+              next unless uses_reference_pattern?($~[:project])
+
               project = $~[:project] || current_project_path
               symbol = $~[object_sym]
-              # FIXME: apply uses_reference_pattern? correctly
+
               refs[project] << symbol if object_class.reference_valid?(symbol)
             end
           end
