@@ -16,6 +16,7 @@
 
     storeElements() {
       const $document = $(document);
+      const $html = $document.find('html');
       const $body = $document.find('body');
       const $dropdown = $document.find('.js-milestone-select');
       const $selectbox = $dropdown.closest('.selectbox');
@@ -26,8 +27,9 @@
       const $form = $dropdown.closest('form');
 
       this.$el = {
-        body: $body,
         document: $document,
+        html: $html,
+        body: $body,
         dropdown: $dropdown,
         dropdownSelectBox: $selectbox,
         containerBlock: $block,
@@ -51,7 +53,7 @@
         isBoardSidebar:  $dropdown.hasClass('js-issue-board-sidebar'),
         isSubmittableNonIndex: $dropdown.hasClass('js-filter-submit'),
         isSubmittableIndex: $dropdown.hasClass('js-filter-submit') && (isIssue || isMergeRequest),
-        isBoard:  $('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar'),
+        isBoard: this.$el.html.hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar'),
         shouldPreventSubmission:  $dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown'),
       };
 
@@ -108,7 +110,7 @@
         showMenuAbove: this.config.display.showMenuAbove,
         text: item => this.escapeText(item),
         hidden: () => this.renderDisplayState(),
-        id: milestone => this.filterSelected(milestone),
+        id: milestone => this.displaySelected(milestone),
         data: (term, callback) => this.fetchMilestones(term, callback),
         toggleLabel: (selected, $el, e) => this.toggleLabel(selected, $el, e),
         clicked: (selected, $el, e) => this.handleDropdownClick(selected, $el, e),
@@ -117,11 +119,7 @@
       this.renderLoadedState();
     }
 
-    escapeText(milestone) {
-      return _.escape(milestone.title);
-    }
-
-    filterSelected(milestone) {
+    displaySelected(milestone) {
       const useId = this.config.dataset.useId;
       return (!useId && !this.$el.dropdown.is('.js-issuable-form-dropdown')) ? milestone.name : milestone.id;
     }
@@ -129,18 +127,27 @@
     fetchMilestones(term, callback) {
       const milestonesUrl = this.config.dataset.milestones;
       return $.ajax({ url: milestonesUrl })
-        .done((milestones) => {
-          this.prepExtraOptions();
-          callback(this.config.display.extraOptions.concat(milestones));
-          this.positionMenuAbove();
-        });
+        .done((milestones, callback) => this.handleFetchSuccess(milestones, callback));
     }
 
-    toggleLabel(selected, $el, e) {
-      const defaultLabel = this.config.dataset.defaultLabel;
+    handleFetchSuccess(milestones, callback) {
+      this.prepExtraOptions();
+      callback(this.config.display.extraOptions.concat(milestones));
+      this.positionMenuAbove();
+    }
 
-      return (selected, el, e) => (selected && selected.id && el.hasClass('is-active')) ?
-        selected.title : defaultLabel;
+    prepExtraOptions() {
+      const displayConfig = this.config.display;
+      if (displayConfig.showAny) this.storeExtraDropdownOptions(0, '', 'Any Milestone');
+      if (displayConfig.showNo) this.storeExtraDropdownOptions(-1, 'No Milestone', 'No Milestone');
+      if (displayConfig.showUpcoming) this.storeExtraDropdownOptions(-2, '#upcoming', 'Upcoming');
+      if (displayConfig.extraOptions.length) this.storeExtraDropdownOptions('divider');
+    }
+
+    storeExtraDropdownOptions(id, name, title) {
+      const divider = 'divider';
+      const pushable = id === divider ? divider : { id, name, title };
+      this.config.display.extraOptions.push(pushable);
     }
 
     handleDropdownClick(selected, $el, e) {
@@ -167,6 +174,17 @@
       }
 
       return this.putGeneric(selected, $el, e);
+    }
+
+    toggleLabel(selected, $el, e) {
+      const defaultLabel = this.config.dataset.defaultLabel;
+
+      return (selected, el, e) => (selected && selected.id && el.hasClass('is-active')) ?
+        selected.title : defaultLabel;
+    }
+
+    escapeText(milestone) {
+      return _.escape(milestone.title);
     }
 
     renderDisplayState() {
@@ -208,20 +226,6 @@
       if (this.config.display.showMenuAbove) {
         this.$el.dropdown.positionMenuAbove();
       }
-    }
-
-    prepExtraOptions() {
-      const displayConfig = this.config.display;
-      if (displayConfig.showAny) this.storeExtraDropdownOptions(0, '', 'Any Milestone');
-      if (displayConfig.showNo) this.storeExtraDropdownOptions(-1, 'No Milestone', 'No Milestone');
-      if (displayConfig.showUpcoming) this.storeExtraDropdownOptions(-2, '#upcoming', 'Upcoming');
-      if (displayConfig.extraOptions.length) this.storeExtraDropdownOptions('divider');
-    }
-
-    storeExtraDropdownOptions(id, name, title) {
-      const divider = 'divider';
-      const pushable = id === divider ? divider : { id, name, title };
-      this.config.display.extraOptions.push(pushable);
     }
 
     putGeneric(selected, $el, e) {
@@ -288,8 +292,6 @@
     putSubmittableNonIndex(selected, $el, e) {
       return this.$el.form.submit();
     }
-
-
   }
   global.MilestoneSelect = MilestoneSelect;
 })(window);
