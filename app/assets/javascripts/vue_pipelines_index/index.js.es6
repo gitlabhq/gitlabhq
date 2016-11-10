@@ -23,7 +23,7 @@
   return new Vue({
     el: '.vue-pipelines-index',
     data: {
-      scope: project.dataset.projectId,
+      scope: project.dataset.url,
       count: project.dataset.count,
       store: new gl.PipelineStore(),
     },
