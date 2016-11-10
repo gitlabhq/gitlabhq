@@ -3,7 +3,7 @@
 //= require_tree ./stores
 //= require_tree ./services
 //= require ./components/environment_item
-//= require ../boards/vue_resource_interceptor
+//= require ./vue_resource_interceptor
 /* globals Vue, EnvironmentsService */
 /* eslint-disable no-param-reassign */
 
@@ -44,6 +44,11 @@ $(() => {
       endpoint: environmentsListApp.dataset.environmentsDataEndpoint,
       canCreateDeployment: environmentsListApp.dataset.canCreateDeployment,
       canReadEnvironment: environmentsListApp.dataset.canReadEnvironment,
+      canCreateEnvironment: environmentsListApp.dataset.canCreateEnvironment,
+      projectEnvironmentsPath: environmentsListApp.dataset.projectEnvironmentsPath,
+      projectClosedEnvironmentsPath: environmentsListApp.dataset.projectClosedEnvironmentsPath,
+      newEnvironmentPath: environmentsListApp.dataset.newEnvironmentPath,
+      helpPagePath: environmentsListApp.dataset.helpPagePath,
       loading: true,
       visibility: 'available',
     },
@@ -51,6 +56,18 @@ $(() => {
     computed: {
       filteredEnvironments() {
         return recursiveMap(filterState(this.visibility), this.state.environments);
+      },
+
+      scope() {
+        return this.$options.getQueryParameter('scope');
+      },
+
+      canReadEnvironmentParsed() {
+        return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
+      },
+
+      canCreateDeploymentParsed() {
+        return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
       },
     },
 
@@ -90,5 +107,92 @@ $(() => {
         return acc;
       }, {})[parameter];
     },
+
+    /**
+     * Converts permission provided as strings to booleans.
+     * @param  {String} string
+     * @returns {Boolean}
+     */
+    convertPermissionToBoolean(string) {
+      if (string === 'true') {
+        return true;
+      }
+
+      return false;
+    },
+
+    template: `
+      <div>
+        <div class="top-area">
+          <ul v-if="!isLoading" class="nav-links">
+            <li v-bind:class="{ 'active': scope === undefined}">
+              <a :href="projectEnvironmentsPath">
+                Available
+                <span class="badge js-available-environments-count">
+                  {{state.availableCounter}}
+                </span>
+              </a>
+            </li>
+            <li v-bind:class="{ 'active': scope === 'stopped'}">
+              <a :href="projectClosedEnvironmentsPath">
+                Stopped
+                <span class="badge js-stopped-environments-count">
+                  {{state.stoppedCounter}}
+                </span>
+              </a>
+            </li>
+          </ul>
+          <div v-if="canCreateEnvironment && !loading" class="nav-controls">
+            <a :href="newEnvironmentPath" class="btn btn-create">
+              New envrionment
+            </a>
+          </div>
+        </div>
+        
+        <div class="environments-container">
+          <div class="environments-list-loading text-center" v-if="loading">
+            <i class="fa fa-spinner spin"></i>
+          </div>
+        
+          <div class="blank-state blank-state-no-icon" v-if="!loading && state.environments.length === 0">
+            <h2 class="blank-state-title">
+              You don't have any environments right now.
+            </h2>
+            <p class="blank-state-text">
+              Environments are places where code gets deployed, such as staging or production.
+              
+              <br />
+              
+              <a :href="helpPagePath">
+                Read more about environments
+              </a>
+              <a v-if="canCreateEnvironment" :href="newEnvironmentPath" class="btn btn-create">
+                New Environment
+              </a>
+            </p>
+          </div>
+          
+          <div class="table-holder" v-if="!loading && state.environments.length > 0">
+            <table class="table ci-table environments">
+              <thead>
+                <th>Environment</th>
+                <th>Last deployment</th>
+                <th>Build</th>
+                <th>Commit</th>
+                <th></th>
+                <th class="hidden-xs"></th>
+              </thead>
+              <tbody>
+                <tr is="environment-item"
+                  v-for="model in filteredEnvironments"
+                  :model="model"
+                  :can-create-deployment="canCreateDeploymentParsed"
+                  :can-read-environment="canReadEnvironmentParsed">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>  
+    `,
   });
 });

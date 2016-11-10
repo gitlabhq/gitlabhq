@@ -5,60 +5,16 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag("environments/environments_bundle.js")
   
-#environments-list-view{ data: { environments_data: environments_list_data, "can-create-deployment" => can?(current_user, :create_deployment, @environment), "can-read-environment" => can?(current_user, :read_environment, @project)}, class: container_class }
-  .top-area
-    %ul.nav-links{ "v-if" => "!loading" }
-      %li{class: ('active' if @scope.nil?)}
-        = link_to project_environments_path(@project) do
-          Available
-          %span.badge.js-available-environments-count
-            {{state.availableCounter}}
+.commit-icon-svg.hidden
+  = custom_icon("icon_commit")
+.play-icon-svg.hidden
+  = custom_icon("icon_play")
 
-      %li{class: ('active' if @scope == 'stopped')}
-        = link_to project_environments_path(@project, scope: :stopped) do
-          Stopped
-          %span.badge.js-stopped-environments-count
-            {{state.stoppedCounter}}
-
-    - if can?(current_user, :create_environment, @project)
-      .nav-controls{ "v-if" => "!loading" }
-        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: "btn btn-create" do
-          New environment
-
-  .environments-container
-    .environments-list-loading.text-center{ "v-if" => "loading" }
-      = icon("spinner spin")
-
-    .blank-state.blank-state-no-icon{ "v-if" => "!loading && !state.environments.length" }
-      %h2.blank-state-title
-        You don't have any environments right now.
-      %p.blank-state-text
-        Environments are places where code gets deployed, such as staging or production.
-        %br
-        = succeed "." do
-          = link_to "Read more about environments", help_page_path("ci/environments")
-      - if can?(current_user, :create_environment, @project)
-        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
-          New environment
-
-    .commit-icon-svg.hidden
-      = custom_icon("icon_commit")
-    .play-icon-svg.hidden
-      = custom_icon("icon_play")
-
-    .table-holder{ "v-if" => "!loading && state.environments.length" }
-      %table.table.ci-table.environments
-        %thead
-          %th Environment
-          %th Last Deployment
-          %th Build
-          %th Commit
-          %th
-          %th.hidden-xs
-        %tbody
-          %tr{"is" => "environment-item",
-            "v-for" => "model in filteredEnvironments",
-            ":model" => "model",
-            "can-create-deployment" => can?(current_user, :create_deployment, @environment),
-            "can-read-environment" => can?(current_user, :read_environment, @project)}
-
+#environments-list-view{ data: { environments_data: environments_list_data, 
+  "can-create-deployment" => can?(current_user, :create_deployment, @environment), 
+  "can-read-environment" => can?(current_user, :read_environment, @project),
+  "can-create-environmnet" => can?(current_user, :create_environment, @project),
+  "project-environments-path" => project_environments_path(@project),
+  "project-closed-environments-path" => project_environments_path(@project, scope: :stopped),
+  "new-environment-path" => new_namespace_project_environment_path(@project.namespace, @project),
+  "help-page-path" => help_page_path("ci/environments")}, class: container_class }

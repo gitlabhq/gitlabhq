@@ -265,16 +265,6 @@
       isLastDeployment() {
         return this.model.last_deployment && this.model.last_deployment['last?'];
       },
-
-      canReadEnvironmentParsed() {
-        return true;
-        return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
-      },
-
-      canCreateDeploymentParsed() {
-        return true;
-        return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
-      },
     },
 
     /**
@@ -287,19 +277,6 @@
      */
     hasKey(obj, key) {
       return {}.hasOwnProperty.call(obj, key);
-    },
-
-    /**
-     * Converts permission provided as strings to booleans.
-     * @param  {String} string
-     * @returns {Boolean}
-     */
-    convertPermissionToBoolean(string) {
-      if (string === 'true') {
-        return true;
-      }
-
-      return false;
     },
 
     methods: {
@@ -381,25 +358,25 @@
 
         <td class="hidden-xs col-sm-3">
           <div v-if="!isFolder">
-            <div v-if="hasManualActions && canCreateDeploymentParsed" class="inline">
+            <div v-if="hasManualActions && canCreateDeployment" class="inline">
               <actions-component 
                 :actions="manualActions">
               </actions-component>
             </div>
 
-            <div v-if="model.external_url && canReadEnvironmentParsed" class="inline">
+            <div v-if="model.external_url && canReadEnvironment" class="inline">
               <external-url-component 
                 :external_url="model.external_url">
               </external_url-component>
             </div>
 
-            <div v-if="isStoppable && canCreateDeploymentParsed" class="inline">
+            <div v-if="isStoppable && canCreateDeployment" class="inline">
               <stop-component 
                 :stop_url="model.environment_url">
               </stop-component>
             </div>
 
-            <div v-if="canRetry && canCreateDeploymentParsed" class="inline">
+            <div v-if="canRetry && canCreateDeployment" class="inline">
               <rollback-component 
                 :is_last_deployment="isLastDeployment"
                 :retry_url="retryUrl">
