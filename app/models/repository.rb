@@ -239,7 +239,7 @@ class Repository
     # offer 'compare and swap' ref updates. Without compare-and-swap we can
     # (and have!) accidentally reset the ref to an earlier state, clobbering
     # commits. See also https://github.com/libgit2/libgit2/issues/1534.
-    command = %w[git update-ref --stdin -z]
+    command = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
     _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
       stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
     end
