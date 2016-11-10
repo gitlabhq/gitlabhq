@@ -3,26 +3,12 @@
 
   class Pipelines {
     constructor() {
-      this.initGraphToggle();
       this.addMarginToBuildColumns();
     }
 
-    initGraphToggle() {
-      this.pipelineGraph = document.querySelector('.pipeline-graph');
-      this.toggleButton = document.querySelector('.toggle-pipeline-btn');
-      this.toggleButtonText = this.toggleButton.querySelector('.toggle-btn-text');
-      this.toggleButton.addEventListener('click', this.toggleGraph.bind(this));
-    }
-
-    toggleGraph() {
-      const graphCollapsed = this.pipelineGraph.classList.contains('graph-collapsed');
-      this.toggleButton.classList.toggle('graph-collapsed');
-      this.pipelineGraph.classList.toggle('graph-collapsed');
-      this.toggleButtonText.textContent = graphCollapsed ? 'Hide' : 'Expand';
-    }
-
     addMarginToBuildColumns() {
-      const secondChildBuildNodes = this.pipelineGraph.querySelectorAll('.build:nth-child(2)');
+      this.pipelineGraph = document.querySelector('.pipeline-graph');
+      const secondChildBuildNodes = document.querySelector('.pipeline-graph').querySelectorAll('.build:nth-child(2)');
       for (buildNodeIndex in secondChildBuildNodes) {
         const buildNode = secondChildBuildNodes[buildNodeIndex];
         const firstChildBuildNode = buildNode.previousElementSibling;
