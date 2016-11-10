@@ -50,7 +50,7 @@
       // Sanitize value since URL converts spaces into +
       // Replace before decode so that we know what was originally + versus the encoded +
       const sanitizedValue = value ? decodeURIComponent(value.replace(/[+]/g, ' ')) : value;
-      const match = validTokenKeys.find(t => key === `${t.key}_${t.param}`);
+      const match = validTokenKeys.filter(t => key === `${t.key}_${t.param}`)[0];
 
       if (match) {
         const sanitizedKey = key.slice(0, key.indexOf('_'));
@@ -103,7 +103,8 @@
     }
 
     checkForEnter(event) {
-      if (event.key === 'Enter') {
+      // Enter KeyCode
+      if (event.keyCode === 13) {
         event.stopPropagation();
         event.preventDefault();
         this.search();
@@ -132,7 +133,7 @@
 
       path += `&state=${currentState}`;
       tokens.forEach((token) => {
-        const param = validTokenKeys.find(t => t.key === token.key).param;
+        const param = validTokenKeys.filter(t => t.key === token.key)[0].param;
         path += `&${token.key}_${param}=${encodeURIComponent(token.value)}`;
       });
 

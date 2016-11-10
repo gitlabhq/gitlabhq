@@ -57,7 +57,7 @@
         if (colonIndex !== -1) {
           const tokenKey = i.slice(0, colonIndex).toLowerCase();
           const tokenValue = i.slice(colonIndex + 1);
-          const match = this.validTokenKeys.find(v => v.key === tokenKey);
+          const match = this.validTokenKeys.filter(v => v.key === tokenKey)[0];
 
           if (tokenValue.indexOf('"') !== -1) {
             lastQuotation = '"';
