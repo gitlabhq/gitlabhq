@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def document
-        @document ||= Nokogiri::HTML(raw_body)
+        @document ||= Nokogiri::HTML.parse(raw_body)
       end
 
       def filter_replies!
