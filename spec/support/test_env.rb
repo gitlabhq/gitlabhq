@@ -23,6 +23,7 @@ module TestEnv
     'binary-encoding'                    => '7b1cf43',
     'gitattributes'                      => '5a62481',
     'expand-collapse-diffs'              => '4842455',
+    'symlink-expand-diff'                => '81e6355',
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
