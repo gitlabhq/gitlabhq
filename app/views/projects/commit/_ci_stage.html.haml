@@ -8,8 +8,8 @@
       - if stage
         &nbsp;
         = stage.titleize
-  = render statuses.latest_ci_stages, coverage: @project.build_coverage_enabled?, stage: false, ref: false, allow_retry: true
-  = render statuses.retried_ci_stages, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
+  = render statuses.latest_ci_stages, coverage: @project.build_coverage_enabled?, stage: false, ref: false, pipeline_link: false, allow_retry: true
+  = render statuses.retried_ci_stages, coverage: @project.build_coverage_enabled?, stage: false, ref: false, pipeline_link: false, retried: true
 %tr
   %td{colspan: 10}
     &nbsp;

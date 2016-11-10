@@ -20,6 +20,6 @@
           %th Coverage
           %th
 
-      = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: admin || project.build_coverage_enabled?, admin: admin }
+      = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, pipeline_link: true, stage: true, allow_retry: true, coverage: admin || project.build_coverage_enabled?, admin: admin }
 
   = paginate builds, theme: 'gitlab'

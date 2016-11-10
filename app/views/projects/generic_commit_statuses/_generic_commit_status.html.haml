@@ -15,14 +15,15 @@
     - if defined?(retried) && retried
       = icon('warning', class: 'text-warning has-tooltip', title: 'Status was retried.')
 
-  %td
-    = link_to pipeline_path(generic_commit_status.pipeline) do
-      %span.pipeline-id ##{generic_commit_status.pipeline.id}
-    %span by
-    - if generic_commit_status.pipeline.user
-      = user_avatar(user: generic_commit_status.pipeline.user, size: 20)
-    - else
-      %span.api.monospace API
+  - if defined?(pipeline_link) && pipeline_link
+    %td
+      = link_to pipeline_path(generic_commit_status.pipeline) do
+        %span.pipeline-id ##{generic_commit_status.pipeline.id}
+      %span by
+      - if generic_commit_status.pipeline.user
+        = user_avatar(user: generic_commit_status.pipeline.user, size: 20)
+      - else
+        %span.api.monospace API
 
   - if defined?(commit_sha) && commit_sha
     %td

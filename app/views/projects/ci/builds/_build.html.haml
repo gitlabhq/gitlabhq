@@ -2,6 +2,7 @@
 - ref = local_assigns.fetch(:ref, nil)
 - commit_sha = local_assigns.fetch(:commit_sha, nil)
 - retried = local_assigns.fetch(:retried, false)
+- pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
@@ -51,14 +52,15 @@
       - if build.manual?
         %span.label.label-info manual
 
-  %td
-    = link_to pipeline_path(build.pipeline) do
-      %span.pipeline-id ##{build.pipeline.id}
-    %span by
-    - if build.pipeline.user
-      = user_avatar(user: build.pipeline.user, size: 20)
-    - else
-      %span.api.monospace API
+  - if pipeline_link
+    %td
+      = link_to pipeline_path(build.pipeline) do
+        %span.pipeline-id ##{build.pipeline.id}
+      %span by
+      - if build.pipeline.user
+        = user_avatar(user: build.pipeline.user, size: 20)
+      - else
+        %span.api.monospace API
 
   - if admin
     %td
