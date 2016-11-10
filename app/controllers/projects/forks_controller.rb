@@ -29,8 +29,12 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def new
-    @namespaces = current_user.manageable_namespaces
-    @namespaces.delete(@project.namespace)
+    if current_user.nil?
+      authenticate_user!
+    else
+      @namespaces = current_user.manageable_namespaces
+      @namespaces.delete(@project.namespace)
+    end
   end
 
   def create
