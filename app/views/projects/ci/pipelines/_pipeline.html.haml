@@ -43,9 +43,10 @@
 
   - stages_status = pipeline.statuses.latest.stages_status
   %td.stage-cell
-    - stages.each do |stage|
-      - status = stages_status[stage]
-      - tooltip = "#{stage.titleize}: #{status || 'not found'}"
+    - pipeline.statuses.latest.stages_status.each do |stage|
+      - name = stage.first
+      - status = stage.last
+      - tooltip = "#{name.titleize}: #{status || 'not found'}"
       - if status
         .stage-container
           = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do

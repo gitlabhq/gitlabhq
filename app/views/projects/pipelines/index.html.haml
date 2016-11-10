@@ -37,7 +37,6 @@
           %span CI Lint
 
   %div.content-list.pipelines{"data-project-id": "#{@project.id}", "data-count": "#{@pipelines_count}"}
-    - stages = @pipelines.stages
     - if @pipelines.blank?
       %div
         .nothing-here-block No pipelines to show
@@ -52,7 +51,7 @@
             %th
             %th.hidden-xs
 
-          = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
+          = render @pipelines, commit_sha: true, stage: true, allow_retry: true
       = paginate @pipelines, theme: 'gitlab'
     - else
       .vue-pipelines-index

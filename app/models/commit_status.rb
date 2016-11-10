@@ -119,16 +119,7 @@ class CommitStatus < ActiveRecord::Base
 
   def self.stages
     # We group by stage name, but order stages by theirs' index
-    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
-  end
-
-  def self.stages_status
-    # We execute subquery for each stage to calculate a stage status
-    statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
-    statuses.inject({}) do |h, k|
-      h[k.first] = k.last
-      h
-    end
+    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').select('sg.stage')
   end
 
   def failed_but_allowed?
