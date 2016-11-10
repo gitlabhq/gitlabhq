@@ -19,28 +19,29 @@ that comes bundled with Omnibus GitLab packages.
 
 - [Using an external Redis server](#using-an-external-redis-server)
 - [High Availability with Sentinel](#high-availability-with-sentinel)
-  - [Prerequisites](#prerequisites)
-  - [Redis setup](#redis-setup)
-  - [Experimental Redis Sentinel support](#experimental-redis-sentinel-support)
-  - [Sentinel setup](#sentinel-setup)
-  - [Recommended setup](#recommended-setup)
+    - [Prerequisites](#prerequisites)
+    - [Redis setup](#redis-setup)
+    - [Sentinel setup](#sentinel-setup)
+    - [Recommended setup](#recommended-setup)
 - [Configuring instances using Omnibus](#configuring-instances-using-omnibus)
-  - [Existing single-machine installation](#existing-single-machine-installation)
-  - [Configuring Master Redis instance](#configuring-master-redis-instance)
-  - [Configuring Slave Redis instances](#configuring-slave-redis-instances)
-  - [Configuring Sentinel instances](#configuring-sentinel-instances)
-      - [Community Edition](#community-edition)
-      - [Enterprise Edition](#enterprise-edition)
-  - [GitLab setup](#gitlab-setup)
+    - [Existing single-machine installation](#existing-single-machine-installation)
+    - [Configuring Master Redis instance](#configuring-master-redis-instance)
+    - [Configuring Slave Redis instances](#configuring-slave-redis-instances)
+    - [Configuring Sentinel instances](#configuring-sentinel-instances)
+            - [Community Edition](#community-edition)
+            - [Enterprise Edition](#enterprise-edition)
+    - [GitLab setup](#gitlab-setup)
 - [Example Configurations](#example-configurations)
-  - [Configuration for Redis Master](#configuration-for-redis-master)
-  - [Configuration for Redis Slave](#configuration-for-redis-slave)
-  - [Configuration for Sentinel (EE only)](#configuration-for-sentinel-ee-only)
-  - [Control running services](#control-running-services)
+    - [Configuration for Redis Master](#configuration-for-redis-master)
+    - [Configuration for Redis Slave](#configuration-for-redis-slave)
+    - [Configuration for Sentinel (EE only)](#configuration-for-sentinel-ee-only)
+    - [Control running services](#control-running-services)
 - [Troubleshooting](#troubleshooting)
-  - [Redis replication](#redis-replication)
-  - [Sentinel](#sentinel)
-    - [Omnibus GitLab](#omnibus-gitlab)
+    - [Redis replication](#redis-replication)
+    - [Sentinel](#sentinel)
+        - [Omnibus GitLab](#omnibus-gitlab)
+- [Changelog](#changelog)
+    - [Experimental Redis Sentinel support](#experimental-redis-sentinel-support)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -159,13 +160,6 @@ This values doesn't have to be changed again in `/etc/gitlab/gitlab.rb` after
 a failover, as the nodes will be managed by the Sentinels, and even after a
 `gitlab-ctl reconfigure`, they will get their configuration restored by
 the same Sentinels.
-
-### Experimental Redis Sentinel support
-
-   > Experimental Redis Sentinel support was [Introduced][ce-1877] in GitLab 8.11.
-     Starting with 8.14, Redis Sentinel is no longer experimental.
-     If you used with versions `< 8.14` before, please check the updated
-     documentation here.
 
 ### Sentinel setup
 
@@ -814,6 +808,19 @@ To make sure your configuration is correct:
 
     You should see a different port after a few seconds delay
     (the failover/reconnect time).
+
+
+## Changelog
+
+Changes to Redis HA over time.
+
+### Experimental Redis Sentinel support
+
+>
+Experimental Redis Sentinel support was [Introduced][ce-1877] in GitLab 8.11.
+Starting with 8.14, Redis Sentinel is no longer experimental.
+If you used with versions `< 8.14` before, please check the updated
+documentation here.
 
 ---
 
