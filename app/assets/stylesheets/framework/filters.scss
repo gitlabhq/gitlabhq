@@ -24,10 +24,12 @@
 }
 
 .filtered-search-container {
+  display: -webkit-flex;
   display: flex;
 }
 
 .filtered-search-input-container {
+  display: -webkit-flex;
   display: flex;
   position: relative;
   width: 100%;
