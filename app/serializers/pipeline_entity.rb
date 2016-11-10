@@ -73,7 +73,7 @@ class PipelineEntity < Grape::Entity
   end
 
   def incremental?
-    options[:incremental]
+    options[:incremental] && last_updated
   end
 
   def last_updated
