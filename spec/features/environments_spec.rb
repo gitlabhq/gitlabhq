@@ -239,6 +239,14 @@ feature 'Environments', feature: true do
               end
             end
           end
+          
+          context 'whitout stop action'do
+            scenario 'does allow to stop environment' do
+              click_link('Stop')
+
+              expect(page).to have_content(environment.name.capitalize)
+            end
+          end
         end
       end
     end
