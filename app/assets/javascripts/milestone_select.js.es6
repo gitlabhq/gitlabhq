@@ -17,7 +17,7 @@
     storeElements() {
       const $document = $(document);
       const $body = $document.find('body');
-      const $dropdown = $('.js-milestone-select');
+      const $dropdown = $document.find('.js-milestone-select');
       const $selectbox = $dropdown.closest('.selectbox');
       const $block = $selectbox.closest('.block');
       const $value = $block.find('.value');
@@ -100,13 +100,13 @@
         filterable: true,
         selectable: true,
         search: searchFields,
-        defaultLabel: dataset.defaultLabel,
         fieldName: dataset.fieldName,
+        defaultLabel: dataset.defaultLabel,
         vue: this.config.context.isBoardSidebar,
         showMenuAbove: this.config.display.showMenuAbove,
         id: milestone => this.filterSelected(milestone),
         data: (term, callback) => this.fetchMilestones(term, callback),
-        text: this.escapeText,
+        text: item => this.escapeText(item),
         hidden: () => this.renderDisplayState(),
         toggleLabel: (selected, $el, e) => this.toggleLabel(selected, $el, e),
         clicked: (selected, $el, e) => this.handleDropdownClick(selected, $el, e),
@@ -119,7 +119,6 @@
       this.$el.dropdownSelectBox.hide();
       // display:block overrides the hide-collapse rule
       this.$el.valueDisplay.css('display', '');
-
     }
 
     escapeText(milestone) {
@@ -134,9 +133,9 @@
     fetchMilestones(term, callback) {
       const milestonesUrl = this.config.dataset.milestones;
       return $.ajax({ url: milestonesUrl })
-        .done((data) => {
+        .done((milestones) => {
           this.prepExtraOptions();
-          callback(this.config.display.extraOptions.concat(data));
+          callback(this.config.display.extraOptions.concat(milestones));
           this.positionMenuAbove();
         });
     }
@@ -213,7 +212,7 @@
       milestonePayload[abilityName].milestone_id = selectedMilestone;
 
       const issueUpdateURL = this.config.dataset.issueUpdate;
-      // Swap out for vue resource.
+      // TODO: Use issuable pub/sub resource method to propagate changes
       this.renderLoadingState();
       $.ajax({ type: 'PUT', url: issueUpdateURL, data: milestonePayload })
         .done(issuableData => {
@@ -284,6 +283,7 @@
     }
 
     updateState(issuableData) {
+      // TODO: Pass this to a pub/sub resource to update async
       this.renderUpdatedState(issuableData);
     }
   }
