@@ -19,6 +19,15 @@ module API
       def filter_issues_milestone(issues, milestone)
         issues.includes(:milestone).where('milestones.title' => milestone)
       end
+
+      def issue_params
+        new_params = declared(params, include_parent_namespace: false, include_missing: false).to_h
+        new_params = new_params.with_indifferent_access
+        new_params.delete(:id)
+        new_params.delete(:issue_id)
+
+        new_params
+      end
     end
 
     resource :issues do
@@ -84,6 +93,10 @@ module API
 
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
+    end
+
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
     end
 
     resource :projects do
@@ -152,16 +165,9 @@ module API
       post ':id/issues' do
         required_attributes! [:title]
 
-        keys = [:title, :description, :assignee_id, :milestone_id, :due_date, :confidential]
+        keys = [:title, :description, :assignee_id, :milestone_id, :due_date, :confidential, :labels]
         keys << :created_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
-
-        # Validate label names in advance
-        if (errors = validate_label_params(params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
-
-        attrs[:labels] = params[:labels] if params[:labels]
 
         # Convert and filter out invalid confidential flags
         attrs['confidential'] = to_boolean(attrs['confidential'])
@@ -180,41 +186,35 @@ module API
         end
       end
 
-      # Update an existing issue
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   issue_id (required) - The ID of a project issue
-      #   title (optional) - The title of an issue
-      #   description (optional) - The description of an issue
-      #   assignee_id (optional) - The ID of a user to assign issue
-      #   milestone_id (optional) - The ID of a milestone to assign issue
-      #   labels (optional) - The labels of an issue
-      #   state_event (optional) - The state event of an issue (close|reopen)
-      #   updated_at (optional) - Date time string, ISO 8601 formatted
-      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
-      #   confidential (optional) - Boolean parameter if the issue should be confidential
-      # Example Request:
-      #   PUT /projects/:id/issues/:issue_id
+      desc 'Update an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+        requires :issue_id, type: Integer, desc: "The ID of a project issue"
+        optional :title, type: String, desc: 'The new title of the issue'
+        optional :description, type: String, desc: 'The description of an issue'
+        optional :assignee_id, type: Integer, desc: 'The ID of a user to assign issue'
+        optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
+        optional :labels, type: String, desc: 'The labels of an issue'
+        optional :state_event, type: String, values: ['close', 'reopen'], desc: 'The state event of an issue'
+        # TODO 9.0, use the Grape DateTime type here
+        optional :updated_at, type: String, desc: 'Date time string, ISO 8601 formatted'
+        optional :due_date, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
+        # TODO 9.0, use the Grape boolean type here
+        optional :confidential, type: String, desc: 'Boolean parameter if the issue should be confidential'
+      end
       put ':id/issues/:issue_id' do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        keys = [:title, :description, :assignee_id, :milestone_id, :state_event, :due_date, :confidential]
-        keys << :updated_at if current_user.admin? || user_project.owner == current_user
-        attrs = attributes_for_keys(keys)
-
-        # Validate label names in advance
-        if (errors = validate_label_params(params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
-
-        attrs[:labels] = params[:labels] if params[:labels]
 
         # Convert and filter out invalid confidential flags
-        attrs['confidential'] = to_boolean(attrs['confidential'])
-        attrs.delete('confidential') if attrs['confidential'].nil?
+        params[:confidential] = to_boolean(params[:confidential])
+        params.delete(:confidential) if params[:confidential].nil?
 
-        issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
+        params.delete(:updated_at) unless current_user.admin? || user_project.owner == current_user
+
+        issue = ::Issues::UpdateService.new(user_project, current_user, issue_params).execute(issue)
 
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user

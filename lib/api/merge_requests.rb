@@ -79,12 +79,7 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id]
-
-        # Validate label names in advance
-        if (errors = validate_label_params(params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id, :labels]
 
         attrs[:labels] = params[:labels] if params[:labels]
 
@@ -112,6 +107,9 @@ module API
       # Routing "merge_request/:merge_request_id/..." is DEPRECATED and WILL BE REMOVED in version 9.0
       # Use "merge_requests/:merge_request_id/..." instead.
       #
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+      end
       [":id/merge_request/:merge_request_id", ":id/merge_requests/:merge_request_id"].each do |path|
         # Show MR
         #
@@ -162,23 +160,20 @@ module API
           present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
         end
 
-        # Update MR
-        #
-        # Parameters:
-        #   id (required)               - The ID of a project
-        #   merge_request_id (required) - ID of MR
-        #   target_branch               - The target branch
-        #   assignee_id                 - Assignee user ID
-        #   title                       - Title of MR
-        #   state_event                 - Status of MR. (close|reopen|merge)
-        #   description                 - Description of MR
-        #   labels (optional)           - Labels for a MR as a comma-separated list
-        #   milestone_id (optional)     - Milestone ID
-        # Example:
-        #   PUT /projects/:id/merge_requests/:merge_request_id
-        #
+        desc 'Update a merge request' do
+          success Entities::MergeRequest
+        end
+        params do
+          requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
+          optional :target_branch, type: String, desc: 'The new target branch'
+          optional :assignee_id, type: Integer, desc: 'The assignees user ID'
+          optional :title, type: String, desc: 'The new title for the merge request'
+          optional :state_event, type: String, values: ['close', 'reopen', 'merge'], desc: 'The state of the merge request'
+          optional :description, type: String, desc: 'The description, with markdown support'
+          optional :labels, type: String, desc: 'Labels for a MR as a comma-separated list'
+          optional :milestone_id, type: Integer, desc: 'The ID of the new milestone'
+        end
         put path do
-          attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description, :milestone_id]
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           authorize! :update_merge_request, merge_request
 
@@ -187,14 +182,10 @@ module API
             render_api_error!('Source branch cannot be changed', 400)
           end
 
-          # Validate label names in advance
-          if (errors = validate_label_params(params)).any?
-            render_api_error!({ labels: errors }, 400)
-          end
+          mr_params = declared(params, include_missing: false, include_parent_namespace: false).with_indifferent_access
+          mr_params.delete(:merge_request_id)
 
-          attrs[:labels] = params[:labels] if params[:labels]
-
-          merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)
+          merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
           if merge_request.valid?
             present merge_request, with: Entities::MergeRequest, current_user: current_user

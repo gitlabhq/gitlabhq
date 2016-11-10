@@ -85,14 +85,15 @@ class IssuableBaseService < BaseService
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
+
     return unless labels
 
-    params[:label_ids] = labels.split(',').map do |label_name|
+    params[:label_ids] = labels.split(",").map do |label_name|
       service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
       label   = service.execute
 
-      label.id
-    end
+      label.try(:id)
+    end.compact
   end
 
   def process_label_ids(attributes, existing_label_ids: nil)
@@ -140,6 +141,7 @@ class IssuableBaseService < BaseService
 
     params.delete(:state_event)
     params[:author] ||= current_user
+
     label_ids = process_label_ids(params)
 
     issuable.assign_attributes(params)
