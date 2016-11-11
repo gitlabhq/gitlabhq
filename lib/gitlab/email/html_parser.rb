@@ -15,8 +15,8 @@ module Gitlab
       end
 
       def filter_replies!
-        document.xpath('//blockquote').each { |n| n.replace('&gt; ') }
-        document.xpath('//table').each { |n| n.remove }
+        document.xpath('//blockquote').each(&:remove)
+        document.xpath('//table').each(&:remove)
       end
 
       def filtered_html
