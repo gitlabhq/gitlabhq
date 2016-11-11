@@ -29,11 +29,11 @@
           :pipeline='pipeline'
         >
         </vue-failed-scope>
-        <vue-failed-scope
+        <vue-created-scope
           v-if="pipeline.details.status === 'created'"
           :pipeline='pipeline'
         >
-        </vue-failed-scope>
+        </vue-created-scope>
       </td>
     `,
   });
