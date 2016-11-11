@@ -111,7 +111,7 @@ module Gitlab
           end
         end
 
-        project.repository.expire_branch_cache_after_removal
+        project.repository.after_remove_branch
       end
 
       def restore_source_branch(pull_request)

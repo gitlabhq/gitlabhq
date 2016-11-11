@@ -21,7 +21,7 @@ class GitPushService < BaseService
     @project.repository.after_push_commit(branch_name, params[:newrev])
 
     if push_remove_branch?
-      @project.repository.after_remove_branch(current_user, branch_name)
+      @project.repository.after_remove_branch
       @push_commits = []
     elsif push_to_new_branch?
       @project.repository.after_create_branch

@@ -203,7 +203,7 @@ class Repository
       update_ref!(ref, newrev, oldrev)
     end
 
-    after_remove_branch(user, branch_name)
+    after_remove_branch
     true
   end
 
@@ -524,12 +524,7 @@ class Repository
   end
 
   # Runs code after an existing branch has been removed.
-  def after_remove_branch(user, branch_name)
-    expire_branch_cache_after_removal
-    stop_environments_for_branch(user, branch_name)
-  end
-
-  def expire_branch_cache_after_removal
+  def after_remove_branch
     expire_has_visible_content_cache
     expire_branch_count_cache
     expire_branches_cache
@@ -1169,11 +1164,5 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
-  end
-
-  def stop_environments_for_branch(user, branch_name)
-    Ci::StopEnvironmentService
-      .new(@project, user)
-      .execute(branch_name)
   end
 end
