@@ -88,8 +88,6 @@ describe Gitlab::Email::ReplyParser, lib: true do
       expect(test_parse_body(fixture_file("emails/inline_reply.eml"))).
         to eq(
           <<-BODY.strip_heredoc.chomp
-            On Wed, Oct 8, 2014 at 11:12 AM, techAPJ <info@unconfigured.discourse.org> wrote:
-
             >     techAPJ <https://meta.discourse.org/users/techapj>
             > November 28
             >
@@ -158,7 +156,7 @@ describe Gitlab::Email::ReplyParser, lib: true do
           <<-BODY.strip_heredoc.chomp
             ### this is a reply from iOS default mail
 
-            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. 
 
             Here's some **bold** markdown text.
 
