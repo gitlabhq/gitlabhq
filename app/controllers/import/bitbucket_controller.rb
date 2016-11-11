@@ -17,11 +17,10 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def status
-    client = Bitbucket::Client.new(credentials)
-    repos  = client.repos
+    bitbucket_client = Bitbucket::Client.new(credentials)
+    repos = bitbucket_client.repos
 
-    @repos = repos.select(&:valid?)
-    @incompatible_repos = repos.reject(&:valid?)
+    @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
 
     @already_added_projects = current_user.created_projects.where(import_type: 'bitbucket')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
@@ -36,15 +35,15 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def create
-    client = Bitbucket::Client.new(credentials)
+    bitbucket_client = Bitbucket::Client.new(credentials)
 
     @repo_id = params[:repo_id].to_s
     name = @repo_id.gsub('___', '/')
-    repo = client.repo(name)
+    repo = bitbucket_client.repo(name)
     @project_name = params[:new_name].presence || repo.name
 
     repo_owner = repo.owner
-    repo_owner = current_user.username if repo_owner == client.user.username
+    repo_owner = current_user.username if repo_owner == bitbucket_client.user.username
     @target_namespace = params[:new_namespace].presence || repo_owner
 
     namespace = find_or_create_namespace(@target_namespace, repo_owner)
