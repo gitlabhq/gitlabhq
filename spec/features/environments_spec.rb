@@ -240,7 +240,7 @@ feature 'Environments', feature: true do
             end
           end
           
-          context 'whitout stop action'do
+          context 'whitout stop action' do
             scenario 'does allow to stop environment' do
               click_link('Stop')
 
