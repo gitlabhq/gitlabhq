@@ -55,7 +55,6 @@ entry.
 - Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Cleaned up global namespace JS !19661 (Jose Ivan Vargas)
 - Refactor Jira service to use jira-ruby gem
-- Show random messages when the To Do list is empty. !13823 (jllaneras)
 - Improved todos empty state
 - Add hover to trash icon in notes !7008 (blackst0ne)
 - Hides project activity tabs when features are disabled
