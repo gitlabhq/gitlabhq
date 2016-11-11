@@ -3,7 +3,14 @@
 
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({
-    // props: ['builds'],
+    props: [
+      'pipeline',
+    ],
+    methods: {
+      download(name) {
+        return `Download ${name} artifacts`;
+      },
+    },
     template: `
       <td class="pipeline-actions hidden-xs">
         <div class="controls pull-right">
@@ -20,11 +27,8 @@
               <i class="fa fa-caret-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-align-right">
-              <li>
-              <!--
-                Need builds ID for Play
-              -->
-                <a rel="nofollow" data-method="post" href="./builds/449/play">
+              <li v-for='action in pipeline.details.manual_actions'>
+                <a rel="nofollow" data-method="post" :href='action.url'>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
                     <path
                       fill-rule="evenodd"
@@ -32,7 +36,7 @@
                     >
                     </path>
                   </svg>
-                  <span>Production</span>
+                  <span>{{action.name}}</span>
                 </a>
               </li>
             </ul>
@@ -43,19 +47,13 @@
                 <i class="fa fa-caret-down"></i>
               </a>
               <ul class="dropdown-menu dropdown-menu-align-right">
-                <li>
-                  <!--
-                    Need builds ID for OSX and LINUX
-                  -->
-                  <a rel="nofollow" href="./builds/437/artifacts/download">
+                <li v-for='artifact in pipeline.details.artifacts'>
+                  <a
+                    rel="nofollow"
+                    :href='artifact.url'
+                  >
                     <i class="fa fa-download"></i>
-                    <span>Download 'build:osx' artifacts</span>
-                  </a>
-                </li>
-                <li>
-                  <a rel="nofollow" href="./builds/436/artifacts/download">
-                    <i class="fa fa-download"></i>
-                    <span>Download 'build:linux' artifacts</span>
+                    <span>{{download(artifact.name)}}</span>
                   </a>
                 </li>
               </ul>
@@ -63,12 +61,25 @@
           </div>
           <div class="cancel-retry-btns inline">
             <a
+              v-if='!pipeline.cancel_url'
               class="btn has-tooltip"
               title="Retry"
               rel="nofollow"
               data-method="post"
-              href="pipelines/retry">
+              :href='pipeline.retry_url'
+            >
               <i class="fa fa-repeat"></i>
+            </a>
+            <a
+              v-if='pipeline.cancel_url'
+              class="btn btn-remove has-tooltip"
+              title=""
+              rel="nofollow"
+              data-method="post"
+              href="/gitlab-org/gitlab-ce/pipelines/4950216/cancel"
+              data-original-title="Cancel"
+            >
+              <i class="fa fa-remove"></i>
             </a>
           </div>
         </div>

@@ -21,6 +21,7 @@
           <a
             class="monospace branch-name"
             :href='pipeline.commit.commit_url'
+          >
             {{pipeline.ref.name}}
           </a>
           <div class="icon-container commit-icon">

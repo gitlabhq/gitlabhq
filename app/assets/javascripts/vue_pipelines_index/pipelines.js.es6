@@ -4,15 +4,15 @@
 ((gl) => {
   gl.VuePipeLines = Vue.extend({
     components: {
-      'vue-running-pipeline': gl.VueRunningPipeline,
-      'vue-stages': gl.VueStages,
-      'vue-pipeline-actions': gl.VuePipelineActions,
-      'vue-branch-commit': gl.VueBranchCommit,
-      'vue-pipeline-url': gl.VuePipelineUrl,
-      'vue-pipeline-head': gl.VuePipelineHead,
-      'vue-gl-pagination': gl.VueGlPagination,
-      'vue-status-scope': gl.VueStatusScope,
-      'vue-time-ago': gl.VueTimeAgo,
+      'running-pipeline': gl.VueRunningPipeline,
+      'stages': gl.VueStages,
+      'pipeline-actions': gl.VuePipelineActions,
+      'branch-commit': gl.VueBranchCommit,
+      'pipeline-url': gl.VuePipelineUrl,
+      'pipeline-head': gl.VuePipelineHead,
+      'gl-pagination': gl.VueGlPagination,
+      'status-scope': gl.VueStatusScope,
+      'time-ago': gl.VueTimeAgo,
     },
     data() {
       return {
@@ -54,26 +54,26 @@
       <div>
         <div class="table-holder">
           <table class="table ci-table">
-            <vue-pipeline-head></vue-pipeline-head>
+            <pipeline-head></pipeline-head>
             <tbody>
               <tr class="commit" v-for='pipeline in pipelines'>
-                <vue-status-scope :pipeline='pipeline'></vue-status-scope>
-                <vue-pipeline-url :pipeline='pipeline'></vue-pipeline-url>
-                <vue-branch-commit :pipeline='pipeline'></vue-branch-commit>
-                <vue-stages :pipeline='pipeline'></vue-stages>
-                <vue-time-ago :pipeline='pipeline'></vue-time-ago>
-                <vue-pipeline-actions></vue-pipeline-actions>
+                <status-scope :pipeline='pipeline'></status-scope>
+                <pipeline-url :pipeline='pipeline'></pipeline-url>
+                <branch-commit :pipeline='pipeline'></branch-commit>
+                <stages :pipeline='pipeline'></stages>
+                <time-ago :pipeline='pipeline'></time-ago>
+                <pipeline-actions :pipeline='pipeline'></pipeline-actions>
               </tr>
             </tbody>
           </table>
         </div>
-        <vue-gl-pagination
+        <gl-pagination
           v-if='count.all > 0'
           :pagenum='pagenum'
           :changepage='changepage'
           :count='count.all'
         >
-        </vue-gl-pagination>
+        </gl-pagination>
       </div>
     `,
   });
