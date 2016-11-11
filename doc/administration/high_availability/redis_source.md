@@ -8,7 +8,8 @@ If you are building packages for a specific distro, or trying to build some
 internal automation, you can check this documentation to learn about the
 minimal setup, required changes, etc.
 
-If you want to see the documentation for Omnibus GitLab Install, please [read it here](redis.md).
+If you want to see the documentation for Omnibus GitLab Install, please
+[read it here](redis.md).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -38,7 +39,7 @@ You will also need to define equal password for slave password definition
 
 To configure Redis to use TCP connection you need to define both
 `bind` and `port`. You can bind to all interfaces (`0.0.0.0`) or specify the
-ip of the desired interface (for ex. one from an internal network).
+IP of the desired interface (for ex. one from an internal network).
 
 
 ### Configuring Master Redis instance
@@ -46,7 +47,7 @@ ip of the desired interface (for ex. one from an internal network).
 You need to make the following changes in `redis.conf`:
 
 1. Define a `bind` address pointing to a local IP that your other machines
-   can reach you. If you really need to bind to an external acessible IP, make
+   can reach you. If you really need to bind to an external accessible IP, make
    sure you add extra firewall rules to prevent unauthorized access:
 
 1. Define a `port` to force redis to listen on TCP so other machines can
@@ -79,7 +80,7 @@ starting with `sentinel` prefix.
 You will need to define the initial configs to enable connectivity:
 
 1. Define a `bind` address pointing to a local IP that your other machines
-   can reach you. If you really need to bind to an external acessible IP, make
+   can reach you. If you really need to bind to an external accessible IP, make
    sure you add extra firewall rules to prevent unauthorized access:
 
 1. Define a `port` to force sentinel to listen on TCP so other machines can
@@ -95,7 +96,7 @@ And the sentinel specific ones:
    If you need more information to understand about quorum, please
    read the detailed explanation in the [HA documentation for Omnibus Installs](redis.md).
 
-1. Define with `sentinel down-after-milliseconds` the ammount in `ms` of time
+1. Define with `sentinel down-after-milliseconds` the amount in `ms` of time
    that an unresponsive server will be considered down.
 
 1. Define a value for `sentinel failover_timeout` in `ms`. This has multiple
@@ -164,7 +165,7 @@ by the Sentinel nodes, the Redis nodes will be reconfigured and the **Master**
 will change permanently (including in `redis.conf`) from one node to the other,
 until a new failover is initiated again.
 
-The same thing will happen with `sentinel.conf` that will be overriten after the
+The same thing will happen with `sentinel.conf` that will be overridden after the
 initial execution, after any new sentinel node starts watching the **Master**,
 or a failover promotes a different **Master** node.
 
@@ -284,3 +285,5 @@ production:
 ```
 
 When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel)
+
+[gh-531]: https://github.com/redis/redis-rb/issues/531
