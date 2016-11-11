@@ -24,7 +24,12 @@
         <div class="controls pull-right">
           <div class="btn-group inline">
             <div class="btn-group">
-            <a class="dropdown-toggle btn btn-default" data-toggle="dropdown" type="button">
+            <a
+              v-if='pipeline.details.manual_actions.length > 0'
+              class="dropdown-toggle btn btn-default"
+              data-toggle="dropdown"
+              type="button"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
                 <path
                   fill-rule="evenodd"
@@ -50,7 +55,12 @@
             </ul>
             </div>
             <div class="btn-group">
-              <a class="dropdown-toggle btn btn-default build-artifacts" data-toggle="dropdown" type="button">
+              <a
+                v-if='pipeline.details.artifacts.length > 0'
+                class="dropdown-toggle btn btn-default build-artifacts"
+                data-toggle="dropdown"
+                type="button"
+              >
                 <i class="fa fa-download"></i>
                 <i class="fa fa-caret-down"></i>
               </a>

@@ -22,6 +22,22 @@
         </a>
         <span>by</span>
         <span class="api monospace">{{user}}</span>
+        <span
+          v-if='pipeline.flags.latest === true'
+          class="label label-success has-tooltip"
+          title=""
+          data-original-title="Latest build for this branch"
+        >
+          latest
+        </span>
+        <span
+          v-if='pipeline.flags.yaml_errors === true'
+          class="label label-danger has-tooltip"
+          title=""
+          data-original-title="Undefined yaml error"
+        >
+          yaml invalid
+        </span>
       </td>
     `,
   });
