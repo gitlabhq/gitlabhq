@@ -27,6 +27,7 @@
 * [Horizontal Rule](#horizontal-rule)
 * [Line Breaks](#line-breaks)
 * [Tables](#tables)
+* [Footnotes](#footnotes)
 
 **[Wiki-Specific Markdown](#wiki-specific-markdown)**
 
@@ -500,6 +501,10 @@ There are two ways to create links, inline-style and reference-style.
     [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
     [I'm a relative reference to a repository file](LICENSE)
+    
+    [I am an absolute reference within the repository](/doc/user/markdown.md)
+    
+    [I link to the Milestones page](/../milestones)
 
     [You can use numbers for reference-style link definitions][1]
 
@@ -517,6 +522,10 @@ There are two ways to create links, inline-style and reference-style.
 
 [I'm a relative reference to a repository file](LICENSE)[^1]
 
+[I am an absolute reference within the repository](/doc/user/markdown.md)
+    
+[I link to the Milestones page](/../milestones)
+    
 [You can use numbers for reference-style link definitions][1]
 
 Or leave it empty and use the [link text itself][]
@@ -699,6 +708,15 @@ By including colons in the header row, you can align the text within that column
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 
+## Footnotes
+
+You can add footnotes to your text as follows.[^1]
+[^1]: This is my awesome footnote.
+
+```
+You can add footnotes to your text as follows.[^1]
+[^1]: This is my awesome footnote.
+```
 
 ## Wiki-specific Markdown
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require blob/template_selector */
 
@@ -18,6 +19,6 @@
 
     return BlobGitignoreSelector;
 
-  })(TemplateSelector);
+  })(gl.TemplateSelector);
 
 }).call(this);

@@ -124,8 +124,8 @@ describe Import::GithubController do
       context "when the GitHub user and GitLab user's usernames match" do
         it "takes the current user's namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, user.namespace, user, access_params).
-            and_return(double(execute: true))
+            to receive(:new).with(github_repo, github_repo.name, user.namespace, user, access_params).
+              and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -136,8 +136,8 @@ describe Import::GithubController do
 
         it "takes the current user's namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, user.namespace, user, access_params).
-            and_return(double(execute: true))
+            to receive(:new).with(github_repo, github_repo.name, user.namespace, user, access_params).
+              and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -158,8 +158,8 @@ describe Import::GithubController do
         context "when the namespace is owned by the GitLab user" do
           it "takes the existing namespace" do
             expect(Gitlab::GithubImport::ProjectCreator).
-              to receive(:new).with(github_repo, existing_namespace, user, access_params).
-              and_return(double(execute: true))
+              to receive(:new).with(github_repo, github_repo.name, existing_namespace, user, access_params).
+                and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -171,9 +171,10 @@ describe Import::GithubController do
             existing_namespace.save
           end
 
-          it "doesn't create a project" do
+          it "creates a project using user's namespace" do
             expect(Gitlab::GithubImport::ProjectCreator).
-              not_to receive(:new)
+              to receive(:new).with(github_repo, github_repo.name, user.namespace, user, access_params).
+                and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -181,21 +182,63 @@ describe Import::GithubController do
       end
 
       context "when a namespace with the GitHub user's username doesn't exist" do
-        it "creates the namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).and_return(double(execute: true))
+        context "when current user can create namespaces" do
+          it "creates the namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).and_return(double(execute: true))
 
-          post :create, format: :js
+            expect { post :create, target_namespace: github_repo.name, format: :js }.to change(Namespace, :count).by(1)
+          end
 
-          expect(Namespace.where(name: other_username).first).not_to be_nil
+          it "takes the new namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).with(github_repo, github_repo.name, an_instance_of(Group), user, access_params).
+              and_return(double(execute: true))
+
+            post :create, target_namespace: github_repo.name, format: :js
+          end
         end
 
-        it "takes the new namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, an_instance_of(Group), user, access_params).
-            and_return(double(execute: true))
+        context "when current user can't create namespaces" do
+          before do
+            user.update_attribute(:can_create_group, false)
+          end
 
-          post :create, format: :js
+          it "doesn't create the namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).and_return(double(execute: true))
+
+            expect { post :create, format: :js }.not_to change(Namespace, :count)
+          end
+
+          it "takes the current user's namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).with(github_repo, github_repo.name, user.namespace, user, access_params).
+              and_return(double(execute: true))
+
+            post :create, format: :js
+          end
+        end
+      end
+
+      context 'user has chosen a namespace and name for the project' do
+        let(:test_namespace) { create(:namespace, name: 'test_namespace', owner: user) }
+        let(:test_name) { 'test_name' }
+
+        it 'takes the selected namespace and name' do
+          expect(Gitlab::GithubImport::ProjectCreator).
+            to receive(:new).with(github_repo, test_name, test_namespace, user, access_params).
+              and_return(double(execute: true))
+
+          post :create, { target_namespace: test_namespace.name, new_name: test_name, format: :js }
+        end
+
+        it 'takes the selected name and default namespace' do
+          expect(Gitlab::GithubImport::ProjectCreator).
+            to receive(:new).with(github_repo, test_name, user.namespace, user, access_params).
+              and_return(double(execute: true))
+
+          post :create, { new_name: test_name, format: :js }
         end
       end
     end

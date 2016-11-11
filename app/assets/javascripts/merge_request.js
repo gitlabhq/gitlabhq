@@ -1,10 +1,7 @@
+/* eslint-disable */
 
 /*= require jquery.waitforimages */
-
-
 /*= require task_list */
-
-
 /*= require merge_request_tabs */
 
 (function() {
@@ -12,6 +9,11 @@
 
   this.MergeRequest = (function() {
     function MergeRequest(opts) {
+      // Initialize MergeRequest behavior
+      //
+      // Options:
+      //   action - String, current controller action
+      //
       this.opts = opts != null ? opts : {};
       this.submitNoteForm = bind(this.submitNoteForm, this);
       this.$el = $('.merge-request');
@@ -21,6 +23,7 @@
         };
       })(this));
       this.initTabs();
+      // Prevent duplicate event bindings
       this.disableTaskList();
       this.initMRBtnListeners();
       if ($("a.btn-close").length) {
@@ -28,16 +31,16 @@
       }
     }
 
+    // Local jQuery finder
     MergeRequest.prototype.$ = function(selector) {
       return this.$el.find(selector);
     };
 
     MergeRequest.prototype.initTabs = function() {
-      if (this.opts.action !== 'new') {
-        window.mrTabs = new MergeRequestTabs(this.opts);
-      } else {
-        return $('.merge-request-tabs a[data-toggle="tab"]:first').tab('show');
+      if (window.mrTabs) {
+        window.mrTabs.unbindEvents();
       }
+      window.mrTabs = new MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {
@@ -94,8 +97,14 @@
       return $.ajax({
         type: 'PATCH',
         url: $('form.js-issuable-update').attr('action'),
-        data: patchData
+        data: patchData,
+        success: function(mergeRequest) {
+          document.querySelector('#task_status').innerText = mergeRequest.task_status;
+          document.querySelector('#task_status_short').innerText = mergeRequest.task_status_short;
+        }
       });
+    // TODO (rspeicher): Make the merge request description inline-editable like a
+    // note so that we can re-use its form here
     };
 
     return MergeRequest;

@@ -2,22 +2,24 @@ module Ci
   class Pipeline < ActiveRecord::Base
     extend Ci::Model
     include HasStatus
+    include Importable
+    include AfterCommitQueue
 
     self.table_name = 'ci_commits'
 
-    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :project, foreign_key: :gl_project_id
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
-    has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
+    has_many :builds, foreign_key: :commit_id
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
-    validates_presence_of :sha
-    validates_presence_of :ref
-    validates_presence_of :status
-    validate :valid_commit_sha
+    validates_presence_of :sha, unless: :importing?
+    validates_presence_of :ref, unless: :importing?
+    validates_presence_of :status, unless: :importing?
+    validate :valid_commit_sha, unless: :importing?
 
-    after_save :keep_around_commits
+    after_create :keep_around_commits, unless: :importing?
 
     delegate :stages, to: :statuses
 
@@ -28,24 +30,28 @@ module Ci
       end
 
       event :run do
-        transition any => :running
+        transition any - [:running] => :running
       end
 
       event :skip do
-        transition any => :skipped
+        transition any - [:skipped] => :skipped
       end
 
       event :drop do
-        transition any => :failed
+        transition any - [:failed] => :failed
       end
 
       event :succeed do
-        transition any => :success
+        transition any - [:success] => :success
       end
 
       event :cancel do
-        transition any => :canceled
+        transition any - [:canceled] => :canceled
       end
+
+      # IMPORTANT
+      # Do not add any operations to this state_machine
+      # Create a separate worker for each new operation
 
       before_transition [:created, :pending] => :running do |pipeline|
         pipeline.started_at = Time.now
@@ -53,20 +59,39 @@ module Ci
 
       before_transition any => [:success, :failed, :canceled] do |pipeline|
         pipeline.finished_at = Time.now
-      end
-
-      before_transition do |pipeline|
         pipeline.update_duration
       end
 
+      after_transition [:created, :pending] => :running do |pipeline|
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+      end
+
+      after_transition any => [:success] do |pipeline|
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+      end
+
+      after_transition [:created, :pending, :running] => :success do |pipeline|
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
+      end
+
       after_transition do |pipeline, transition|
-        pipeline.execute_hooks unless transition.loopback?
+        next if transition.loopback?
+
+        pipeline.run_after_commit do
+          PipelineHooksWorker.perform_async(id)
+        end
+      end
+
+      after_transition any => [:success, :failed] do |pipeline|
+        pipeline.run_after_commit do
+          PipelineNotificationWorker.perform_async(pipeline.id)
+        end
       end
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest_successful_for, ->(ref = default_branch) do
-      where(ref: ref).success.order(id: :desc).limit(1)
+    def self.latest_successful_for(ref)
+      where(ref: ref).order(id: :desc).success.first
     end
 
     def self.truncate_sha(sha)
@@ -88,6 +113,11 @@ module Ci
 
     def project_id
       project.id
+    end
+
+    # For now the only user who participates is the user who triggered
+    def participants(_current_user = nil)
+      Array(user)
     end
 
     def valid_commit_sha
@@ -132,7 +162,7 @@ module Ci
 
     def retryable?
       builds.latest.any? do |build|
-        build.failed? && build.retryable?
+        (build.failed? || build.canceled?) && build.retryable?
       end
     end
 
@@ -185,7 +215,7 @@ module Ci
     end
 
     def has_warnings?
-      builds.latest.ignored.any?
+      builds.latest.failed_but_allowed.any?
     end
 
     def config_processor
@@ -240,14 +270,16 @@ module Ci
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
-    def build_updated
-      case latest_builds_status
-      when 'pending' then enqueue
-      when 'running' then run
-      when 'success' then succeed
-      when 'failed' then drop
-      when 'canceled' then cancel
-      when 'skipped' then skip
+    def update_status
+      Gitlab::OptimisticLocking.retry_lock(self) do
+        case latest_builds_status
+        when 'pending' then enqueue
+        when 'running' then run
+        when 'success' then succeed
+        when 'failed' then drop
+        when 'canceled' then cancel
+        when 'skipped' then skip
+        end
       end
     end
 
@@ -257,14 +289,31 @@ module Ci
       ]
     end
 
+    def queued_duration
+      return unless started_at
+
+      seconds = (started_at - created_at).to_i
+      seconds unless seconds.zero?
+    end
+
     def update_duration
-      self.duration = calculate_duration
+      return unless started_at
+
+      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
     end
 
     def execute_hooks
       data = pipeline_data
       project.execute_hooks(data, :pipeline_hooks)
       project.execute_services(data, :pipeline_hooks)
+    end
+
+    # Merge requests for which the current pipeline is running against
+    # the merge request's latest commit.
+    def merge_requests
+      @merge_requests ||= project.merge_requests
+        .where(source_branch: self.ref)
+        .select { |merge_request| merge_request.pipeline.try(:id) == self.id }
     end
 
     private

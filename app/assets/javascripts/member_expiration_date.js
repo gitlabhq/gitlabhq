@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   // Add datepickers to all `js-access-expiration-date` elements. If those elements are
   // children of an element with the `clearable-input` class, and have a sibling
@@ -14,14 +15,18 @@
     inputs.datepicker({
       dateFormat: 'yy-mm-dd',
       minDate: 1,
-      onSelect: toggleClearInput
+      onSelect: function () {
+        $(this).trigger('change');
+        toggleClearInput.call(this);
+      }
     });
 
     inputs.next('.js-clear-input').on('click', function(event) {
       event.preventDefault();
 
       var input = $(this).closest('.clearable-input').find('.js-access-expiration-date');
-      input.datepicker('setDate', null);
+      input.datepicker('setDate', null)
+        .trigger('change');
       toggleClearInput.call(input);
     });
 

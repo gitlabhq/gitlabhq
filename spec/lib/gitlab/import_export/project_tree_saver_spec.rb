@@ -111,6 +111,30 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['issues'].first['label_links'].first['label']).not_to be_empty
       end
 
+      it 'has project and group labels' do
+        label_types = saved_project_json['issues'].first['label_links'].map { |link| link['label']['type']}
+
+        expect(label_types).to match_array(['ProjectLabel', 'GroupLabel'])
+      end
+
+      it 'has priorities associated to labels' do
+        priorities = saved_project_json['issues'].first['label_links'].map { |link| link['label']['priorities']}
+
+        expect(priorities.flatten).not_to be_empty
+      end
+
+      it 'saves the correct service type' do
+        expect(saved_project_json['services'].first['type']).to eq('CustomIssueTrackerService')
+      end
+
+      it 'has project feature' do
+        project_feature = saved_project_json['project_feature']
+        expect(project_feature).not_to be_empty
+        expect(project_feature["issues_access_level"]).to eq(ProjectFeature::DISABLED)
+        expect(project_feature["wiki_access_level"]).to eq(ProjectFeature::ENABLED)
+        expect(project_feature["builds_access_level"]).to eq(ProjectFeature::PRIVATE)
+      end
+
       it 'does not complain about non UTF-8 characters in MR diffs' do
         ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
 
@@ -123,15 +147,20 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     issue = create(:issue, assignee: user)
     snippet = create(:project_snippet)
     release = create(:release)
+    group = create(:group)
 
     project = create(:project,
                      :public,
                      issues: [issue],
                      snippets: [snippet],
-                     releases: [release]
+                     releases: [release],
+                     group: group
                     )
-    label = create(:label, project: project)
-    create(:label_link, label: label, target: issue)
+    project_label = create(:label, project: project)
+    group_label = create(:group_label, group: group)
+    create(:label_link, label: project_label, target: issue)
+    create(:label_link, label: group_label, target: issue)
+    create(:label_priority, label: group_label, priority: 1)
     milestone = create(:milestone, project: project)
     merge_request = create(:merge_request, source_project: project, milestone: milestone)
     commit_status = create(:commit_status, project: project)
@@ -153,6 +182,11 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
            commit_id: ci_pipeline.sha)
 
     create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
+
+    project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+    project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
+    project.project_feature.update_attribute(:builds_access_level, ProjectFeature::PRIVATE)
 
     project
   end

@@ -2,18 +2,26 @@ require 'spec_helper'
 
 feature 'Merge When Build Succeeds', feature: true, js: true do
   let(:user) { create(:user) }
+  let(:project) { create(:project, :public) }
 
-  let(:project)       { create(:project, :public) }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
-
-  before do
-    project.team << [user, :master]
-    project.enable_ci
+  let(:merge_request) do
+    create(:merge_request_with_diffs, source_project: project,
+                                      author: user,
+                                      title: 'Bug NS-04')
   end
 
-  context "Active build for Merge Request" do
-    let!(:pipeline) { create(:ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, pipeline: pipeline) }
+  let(:pipeline) do
+    create(:ci_pipeline, project: project,
+                         sha: merge_request.diff_head_sha,
+                         ref: merge_request.source_branch)
+  end
+
+  before { project.team << [user, :master] }
+
+  context 'when there is active build for merge request' do
+    background do
+      create(:ci_build, pipeline: pipeline)
+    end
 
     before do
       login_as user
@@ -41,26 +49,30 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
   end
 
-  context 'When it is enabled' do
+  context 'when merge when build succeeds is enabled' do
     let(:merge_request) do
-      create(:merge_request_with_diffs, :simple,  source_project: project, author: user,
-                                                  merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
+      create(:merge_request_with_diffs, :simple,  source_project: project,
+                                                  author: user,
+                                                  merge_user: user,
+                                                  title: 'MepMep',
+                                                  merge_when_build_succeeds: true)
     end
 
-    let!(:pipeline) { create(:ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch) }
-    let!(:ci_build) { create(:ci_build, pipeline: pipeline) }
+    let!(:build) do
+      create(:ci_build, pipeline: pipeline)
+    end
 
     before do
       login_as user
       visit_merge_request(merge_request)
     end
 
-    it 'cancels the automatic merge' do
+    it 'allows to cancel the automatic merge' do
       click_link "Cancel Automatic Merge"
 
       expect(page).to have_button "Merge When Build Succeeds"
 
-      visit_merge_request(merge_request) # Needed to refresh the page
+      visit_merge_request(merge_request) # refresh the page
       expect(page).to have_content "Canceled the automatic merge"
     end
 
@@ -70,15 +82,26 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       click_link "Remove Source Branch When Merged"
       expect(page).to have_content "The source branch will be removed"
     end
+
+    context 'when build succeeds' do
+      background { build.success }
+
+      it 'merges merge request' do
+        visit_merge_request(merge_request) # refresh the page
+
+        expect(page).to have_content 'The changes were merged'
+        expect(merge_request.reload).to be_merged
+      end
+    end
   end
 
-  context 'Build is not active' do
-    it "does not allow for enabling" do
+  context 'when build is not active' do
+    it "does not allow to enable merge when build succeeds" do
       visit_merge_request(merge_request)
       expect(page).not_to have_link "Merge When Build Succeeds"
     end
   end
-
+  
   def visit_merge_request(merge_request)
     visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
   end

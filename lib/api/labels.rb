@@ -3,97 +3,97 @@ module API
   class Labels < Grape::API
     before { authenticate! }
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
-      # Get all labels of the project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/labels
+      desc 'Get all labels of the project' do
+        success Entities::Label
+      end
       get ':id/labels' do
-        present user_project.labels, with: Entities::Label, current_user: current_user
+        present available_labels, with: Entities::Label, current_user: current_user, project: user_project
       end
 
-      # Creates a new label
-      #
-      # Parameters:
-      #   id    (required)       - The ID of a project
-      #   name  (required)       - The name of the label to be created
-      #   color (required)       - Color of the label given in 6-digit hex
-      #                            notation with leading '#' sign (e.g. #FFAABB)
-      #   description (optional) - The description of label to be created
-      # Example Request:
-      #   POST /projects/:id/labels
+      desc 'Create a new label' do
+        success Entities::Label
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the label to be created'
+        requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB)"
+        optional :description, type: String, desc: 'The description of label to be created'
+        optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
+      end
       post ':id/labels' do
         authorize! :admin_label, user_project
-        required_attributes! [:name, :color]
 
-        attrs = attributes_for_keys [:name, :color, :description]
-        label = user_project.find_label(attrs[:name])
-
+        label = available_labels.find_by(title: params[:name])
         conflict!('Label already exists') if label
 
-        label = user_project.labels.create(attrs)
+        priority = params.delete(:priority)
+        label_params = declared(params,
+                                include_parent_namespaces: false,
+                                include_missing: false).to_h
+        label = user_project.labels.create(label_params)
 
         if label.valid?
-          present label, with: Entities::Label, current_user: current_user
+          label.prioritize!(user_project, priority) if priority
+          present label, with: Entities::Label, current_user: current_user, project: user_project
         else
           render_validation_error!(label)
         end
       end
 
-      # Deletes an existing label
-      #
-      # Parameters:
-      #   id    (required) - The ID of a project
-      #   name  (required) - The name of the label to be deleted
-      #
-      # Example Request:
-      #   DELETE /projects/:id/labels
+      desc 'Delete an existing label' do
+        success Entities::Label
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the label to be deleted'
+      end
       delete ':id/labels' do
         authorize! :admin_label, user_project
-        required_attributes! [:name]
 
-        label = user_project.find_label(params[:name])
+        label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
-        label.destroy
+        present label.destroy, with: Entities::Label, current_user: current_user, project: user_project
       end
 
-      # Updates an existing label. At least one optional parameter is required.
-      #
-      # Parameters:
-      #   id        (required)   - The ID of a project
-      #   name      (required)   - The name of the label to be deleted
-      #   new_name  (optional)   - The new name of the label
-      #   color     (optional)   - Color of the label given in 6-digit hex
-      #                            notation with leading '#' sign (e.g. #FFAABB)
-      #   description (optional) - The description of label to be created
-      # Example Request:
-      #   PUT /projects/:id/labels
+      desc 'Update an existing label. At least one optional parameter is required.' do
+        success Entities::Label
+      end
+      params do
+        requires :name,  type: String, desc: 'The name of the label to be updated'
+        optional :new_name, type: String, desc: 'The new name of the label'
+        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB)"
+        optional :description, type: String, desc: 'The new description of label'
+        optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
+        at_least_one_of :new_name, :color, :description, :priority
+      end
       put ':id/labels' do
         authorize! :admin_label, user_project
-        required_attributes! [:name]
 
-        label = user_project.find_label(params[:name])
+        label = user_project.labels.find_by(title: params[:name])
         not_found!('Label not found') unless label
 
-        attrs = attributes_for_keys [:new_name, :color, :description]
-
-        if attrs.empty?
-          render_api_error!('Required parameters "new_name" or "color" ' \
-                            'missing',
-                            400)
-        end
-
+        update_priority = params.key?(:priority)
+        priority = params.delete(:priority)
+        label_params = declared(params,
+                                include_parent_namespaces: false,
+                                include_missing: false).to_h
         # Rename new name to the actual label attribute name
-        attrs[:name] = attrs.delete(:new_name) if attrs.key?(:new_name)
+        label_params[:name] = label_params.delete('new_name') if label_params.key?('new_name')
 
-        if label.update(attrs)
-          present label, with: Entities::Label, current_user: current_user
-        else
-          render_validation_error!(label)
+        render_validation_error!(label) unless label.update(label_params)
+
+        if update_priority
+          if priority.nil?
+            label.unprioritize!(user_project)
+          else
+            label.prioritize!(user_project, priority)
+          end
         end
+
+        present label, with: Entities::Label, current_user: current_user, project: user_project
       end
     end
   end

@@ -1,15 +1,21 @@
 # Model relationships to be included in the project import/export
 project_tree:
+  - labels:
+      :priorities
+  - milestones:
+    - :events
   - issues:
     - :events
     - notes:
       - :author
       - :events
     - label_links:
-      - :label
+      - label:
+          :priorities
     - milestone:
       - :events
   - snippets:
+    - :award_emoji
     - notes:
         :author
   - :releases
@@ -22,7 +28,8 @@ project_tree:
     - :merge_request_diff
     - :events
     - label_links:
-      - :label
+      - label:
+          :priorities
     - milestone:
       - :events
   - pipelines:
@@ -35,19 +42,15 @@ project_tree:
   - :deploy_keys
   - :services
   - :hooks
-  - :protected_branches
-  - :labels
-  - milestones:
-    - :events
+  - protected_branches:
+    - :merge_access_levels
+    - :push_access_levels
+  - :project_feature
 
 # Only include the following attributes for the models specified.
 included_attributes:
   project:
     - :description
-    - :issues_enabled
-    - :merge_requests_enabled
-    - :wiki_enabled
-    - :snippets_enabled
     - :visibility_level
     - :archived
   user:
@@ -67,9 +70,17 @@ excluded_attributes:
     - :milestone_id
   merge_requests:
     - :milestone_id
+  award_emoji:
+    - :awardable_id
 
 methods:
+  labels:
+    - :type
+  label:
+    - :type
   statuses:
+    - :type
+  services:
     - :type
   merge_request_diff:
     - :utf8_st_diffs

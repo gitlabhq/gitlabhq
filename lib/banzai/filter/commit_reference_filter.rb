@@ -28,10 +28,6 @@ module Banzai
                                         only_path: context[:only_path])
       end
 
-      def object_link_title(commit)
-        commit.link_title
-      end
-
       def object_link_text_extras(object, matches)
         extras = super
 

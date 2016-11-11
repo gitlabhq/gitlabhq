@@ -63,12 +63,7 @@ module Banzai
         nodes.select do |node|
           if node.has_attribute?(project_attr)
             node_id = node.attr(project_attr).to_i
-
-            if project && project.id == node_id
-              true
-            else
-              can?(user, :read_project, projects[node_id])
-            end
+            can_read_reference?(user, projects[node_id])
           else
             true
           end
@@ -79,7 +74,11 @@ module Banzai
       def referenced_by(nodes)
         ids = unique_attribute_values(nodes, self.class.data_attribute)
 
-        references_relation.where(id: ids)
+        if ids.empty?
+          references_relation.none
+        else
+          references_relation.where(id: ids)
+        end
       end
 
       # Returns the ActiveRecord::Relation to use for querying references in the
@@ -211,7 +210,7 @@ module Banzai
       end
 
       def can?(user, permission, subject)
-        Ability.abilities.allowed?(user, permission, subject)
+        Ability.allowed?(user, permission, subject)
       end
 
       def find_projects_for_hash_keys(hash)
@@ -221,6 +220,15 @@ module Banzai
       private
 
       attr_reader :current_user, :project
+
+      # When a feature is disabled or visible only for
+      # team members we should not allow team members
+      # see reference comments.
+      # Override this method on subclasses
+      # to check if user can read resource
+      def can_read_reference?(user, ref_project)
+        raise NotImplementedError
+      end
 
       def lazy(&block)
         Gitlab::Lazy.new(&block)

@@ -67,8 +67,10 @@ if Gitlab::Metrics.enabled?
       ['app', 'finders']                    => ['app', 'finders'],
       ['app', 'mailers', 'emails']          => ['app', 'mailers'],
       ['app', 'services', '**']             => ['app', 'services'],
+      ['lib', 'gitlab', 'conflicts']        => ['lib'],
       ['lib', 'gitlab', 'diff']             => ['lib'],
-      ['lib', 'gitlab', 'email', 'message'] => ['lib']
+      ['lib', 'gitlab', 'email', 'message'] => ['lib'],
+      ['lib', 'gitlab', 'checks']           => ['lib']
     }
 
     paths_to_instrument.each do |(path, prefix)|

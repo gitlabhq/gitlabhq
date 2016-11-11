@@ -3,21 +3,19 @@
     = page_specific_javascript_tag('u2f.js')
 
 %div
+  = render 'devise/shared/tab_single', tab_title: 'Two-Factor Authentication'
   .login-box
-    .login-heading
-      %h3 Two-Factor Authentication
     .login-body
       - if @user.two_factor_otp_enabled?
-        %h5 Authenticate via Two-Factor App
-        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
+        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: 'edit_user gl-show-field-errors' }) do |f|
           - resource_params = params[resource_name].presence || params
           = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
-          = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-Factor Authentication code', required: true, autofocus: true, autocomplete: 'off'
-          %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
-          .prepend-top-20
-            = f.submit "Verify code", class: "btn btn-save"
+          %div
+            = f.label 'Two-Factor Authentication code', name:  :otp_attempt
+            = f.text_field :otp_attempt, class: 'form-control', required: true, autofocus: true, autocomplete: 'off', title: 'This field is required.'
+            %p.help-block.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
+            .prepend-top-20
+              = f.submit "Verify code", class: "btn btn-save"
 
       - if @user.two_factor_u2f_enabled?
-
-        %hr
-        = render "u2f/authenticate"
+        = render "u2f/authenticate", locals: { params: params, resource: resource, resource_name: resource_name }

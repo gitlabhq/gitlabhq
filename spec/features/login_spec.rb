@@ -29,7 +29,7 @@ feature 'Login', feature: true do
 
   describe 'with two-factor authentication' do
     def enter_code(code)
-      fill_in 'Two-Factor Authentication code', with: code
+      fill_in 'user_otp_attempt', with: code
       click_button 'Verify code'
     end
 
@@ -213,6 +213,71 @@ feature 'Login', feature: true do
         expect(current_path).to eq profile_two_factor_auth_path
         expect(page).to have_content('You must enable Two-Factor Authentication for your account.')
       end
+    end
+  end
+
+  describe 'UI tabs and panes' do
+    context 'when no defaults are changed' do
+      it 'correctly renders tabs and panes' do
+        ensure_tab_pane_correctness
+      end
+    end
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting(signup_enabled: false)
+      end
+
+      it 'correctly renders tabs and panes' do
+        ensure_tab_pane_correctness
+      end
+    end
+
+    context 'when ldap is enabled' do
+      before do
+        visit new_user_session_path
+        allow(page).to receive(:form_based_providers).and_return([:ldapmain])
+        allow(page).to receive(:ldap_enabled).and_return(true)
+      end
+
+      it 'correctly renders tabs and panes' do
+        ensure_tab_pane_correctness(false)
+      end
+    end
+
+    context 'when crowd is enabled' do
+      before do
+        visit new_user_session_path
+        allow(page).to receive(:form_based_providers).and_return([:crowd])
+        allow(page).to receive(:crowd_enabled?).and_return(true)
+      end
+
+      it 'correctly renders tabs and panes' do
+        ensure_tab_pane_correctness(false)
+      end
+    end
+
+    def ensure_tab_pane_correctness(visit_path = true)
+      if visit_path
+        visit new_user_session_path
+      end
+
+      ensure_tab_pane_counts
+      ensure_one_active_tab
+      ensure_one_active_pane
+    end
+
+    def ensure_tab_pane_counts
+      tabs_count = page.all('[role="tab"]').size
+      expect(page).to have_selector('[role="tabpanel"]', count: tabs_count)
+    end
+
+    def ensure_one_active_tab
+      expect(page).to have_selector('.nav-tabs > li.active', count: 1)
+    end
+
+    def ensure_one_active_pane
+      expect(page).to have_selector('.tab-pane.active', count: 1)
     end
   end
 end

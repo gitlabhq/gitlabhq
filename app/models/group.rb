@@ -6,7 +6,7 @@ class Group < Namespace
   include AccessRequestable
   include Referable
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :owners,
@@ -19,6 +19,7 @@ class Group < Namespace
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :labels, class_name: 'GroupLabel'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
@@ -67,7 +68,7 @@ class Group < Namespace
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.group_url(self)
+    Gitlab::Routing.url_helpers.group_canonical_url(self)
   end
 
   def human_name
@@ -95,40 +96,51 @@ class Group < Namespace
     end
   end
 
-  def add_users(user_ids, access_level, current_user: nil, expires_at: nil)
-    user_ids.each do |user_id|
-      Member.add_user(
-        self.group_members,
-        user_id,
-        access_level,
-        current_user: current_user,
-        expires_at: expires_at
-      )
-    end
+  def lfs_enabled?
+    return false unless Gitlab.config.lfs.enabled
+    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+
+    self[:lfs_enabled]
+  end
+
+  def add_users(users, access_level, current_user: nil, expires_at: nil)
+    GroupMember.add_users_to_group(
+      self,
+      users,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at
+    )
   end
 
   def add_user(user, access_level, current_user: nil, expires_at: nil)
-    add_users([user], access_level, current_user: current_user, expires_at: expires_at)
+    GroupMember.add_user(
+      self,
+      user,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at
+    )
   end
 
   def add_guest(user, current_user = nil)
-    add_user(user, Gitlab::Access::GUEST, current_user: current_user)
+    add_user(user, :guest, current_user: current_user)
   end
 
   def add_reporter(user, current_user = nil)
-    add_user(user, Gitlab::Access::REPORTER, current_user: current_user)
+    add_user(user, :reporter, current_user: current_user)
   end
 
   def add_developer(user, current_user = nil)
-    add_user(user, Gitlab::Access::DEVELOPER, current_user: current_user)
+    add_user(user, :developer, current_user: current_user)
   end
 
   def add_master(user, current_user = nil)
-    add_user(user, Gitlab::Access::MASTER, current_user: current_user)
+    add_user(user, :master, current_user: current_user)
   end
 
   def add_owner(user, current_user = nil)
-    add_user(user, Gitlab::Access::OWNER, current_user: current_user)
+    add_user(user, :owner, current_user: current_user)
   end
 
   def has_owner?(user)

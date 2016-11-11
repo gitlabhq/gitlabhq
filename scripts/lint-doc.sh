@@ -10,6 +10,15 @@ then
   exit 1
 fi
 
+# Ensure that the CHANGELOG.md does not contain duplicate versions
+DUPLICATE_CHANGELOG_VERSIONS=$(grep --extended-regexp '^## .+' CHANGELOG.md | sed -E 's| \(.+\)||' | sort -r | uniq -d)
+if [ "${DUPLICATE_CHANGELOG_VERSIONS}" != "" ]
+then
+  echo '✖ ERROR: Duplicate versions in CHANGELOG.md:' >&2
+  echo "${DUPLICATE_CHANGELOG_VERSIONS}" >&2
+  exit 1
+fi
+
 echo "✔ Linting passed"
 exit 0
 

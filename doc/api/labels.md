@@ -20,46 +20,61 @@ Example response:
 
 ```json
 [
-   {
-      "name" : "bug",
-      "color" : "#d9534f",
-      "description": "Bug reported by user",
-      "open_issues_count": 1,
-      "closed_issues_count": 0,
-      "open_merge_requests_count": 1
-   },
-   {
-      "color" : "#d9534f",
-      "name" : "confirmed",
-      "description": "Confirmed issue",
-      "open_issues_count": 2,
-      "closed_issues_count": 5,
-      "open_merge_requests_count": 0
-   },
-   {
-      "name" : "critical",
-      "color" : "#d9534f",
-      "description": "Critical issue. Need fix ASAP",
-      "open_issues_count": 1,
-      "closed_issues_count": 3,
-      "open_merge_requests_count": 1
-   },
-   {
-      "name" : "documentation",
-      "color" : "#f0ad4e",
-      "description": "Issue about documentation",
-      "open_issues_count": 1,
-      "closed_issues_count": 0,
-      "open_merge_requests_count": 2
-   },
-   {
-      "color" : "#5cb85c",
-      "name" : "enhancement",
-      "description": "Enhancement proposal",
-      "open_issues_count": 1,
-      "closed_issues_count": 0,
-      "open_merge_requests_count": 1
-   }
+  {
+    "id" : 1,
+    "name" : "bug",
+    "color" : "#d9534f",
+    "description": "Bug reported by user",
+    "open_issues_count": 1,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 1,
+    "subscribed": false,
+    "priority": 10
+  },
+  {
+    "id" : 4,
+    "color" : "#d9534f",
+    "name" : "confirmed",
+    "description": "Confirmed issue",
+    "open_issues_count": 2,
+    "closed_issues_count": 5,
+    "open_merge_requests_count": 0,
+    "subscribed": false,
+    "priority": null
+  },
+  {
+    "id" : 7,
+    "name" : "critical",
+    "color" : "#d9534f",
+    "description": "Critical issue. Need fix ASAP",
+    "open_issues_count": 1,
+    "closed_issues_count": 3,
+    "open_merge_requests_count": 1,
+    "subscribed": false,
+    "priority": null
+  },
+  {
+    "id" : 8,
+    "name" : "documentation",
+    "color" : "#f0ad4e",
+    "description": "Issue about documentation",
+    "open_issues_count": 1,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 2,
+    "subscribed": false,
+    "priority": null
+  },
+  {
+    "id" : 9,
+    "color" : "#5cb85c",
+    "name" : "enhancement",
+    "description": "Enhancement proposal",
+    "open_issues_count": 1,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 1,
+    "subscribed": true,
+    "priority": null
+  }
 ]
 ```
 
@@ -80,6 +95,7 @@ POST /projects/:id/labels
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label in 6-digit hex notation with leading `#` sign |
 | `description` | string  | no       | The description of the label |
+| `priority`    | integer | no       | The priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
 ```bash
 curl --data "name=feature&color=#5843AD" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
@@ -89,9 +105,15 @@ Example response:
 
 ```json
 {
-   "name" : "feature",
-   "color" : "#5843AD",
-   "description":null
+  "id" : 10,
+  "name" : "feature",
+  "color" : "#5843AD",
+  "description":null,
+  "open_issues_count": 0,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 0,
+  "subscribed": false,
+  "priority": null
 }
 ```
 
@@ -120,14 +142,15 @@ Example response:
 
 ```json
 {
-   "title" : "feature",
-   "color" : "#5843AD",
-   "description": "New feature proposal",
-   "updated_at" : "2015-11-03T21:22:30.737Z",
-   "template" : false,
-   "project_id" : 1,
-   "created_at" : "2015-11-03T21:22:30.737Z",
-   "id" : 9
+  "id" : 1,
+  "name" : "bug",
+  "color" : "#d9534f",
+  "description": "Bug reported by user",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 1,
+  "subscribed": false,
+  "priority": null
 }
 ```
 
@@ -148,9 +171,11 @@ PUT /projects/:id/labels
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`            | integer | yes                               | The ID of the project            |
 | `name`          | string  | yes                               | The name of the existing label   |
-| `new_name`      | string  | yes if `color` if not provided    | The new name of the label        |
+| `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
 | `color`         | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
 | `description`   | string  | no                                | The new description of the label |
+| `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
+
 
 ```bash
 curl --request PUT --data "name=documentation&new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
@@ -160,9 +185,15 @@ Example response:
 
 ```json
 {
-   "color" : "#8E44AD",
-   "name" : "docs",
-   "description": "Documentation"
+  "id" : 8,
+  "name" : "docs",
+  "color" : "#8E44AD",
+  "description": "Documentation",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 2,
+  "subscribed": false,
+  "priority": null
 }
 ```
 
@@ -191,13 +222,15 @@ Example response:
 
 ```json
 {
-    "name": "Docs",
-    "color": "#cc0033",
-    "description": "",
-    "open_issues_count": 0,
-    "closed_issues_count": 0,
-    "open_merge_requests_count": 0,
-    "subscribed": true
+  "id" : 1,
+  "name" : "bug",
+  "color" : "#d9534f",
+  "description": "Bug reported by user",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 1,
+  "subscribed": true,
+  "priority": null
 }
 ```
 
@@ -226,12 +259,14 @@ Example response:
 
 ```json
 {
-    "name": "Docs",
-    "color": "#cc0033",
-    "description": "",
-    "open_issues_count": 0,
-    "closed_issues_count": 0,
-    "open_merge_requests_count": 0,
-    "subscribed": false
+  "id" : 1,
+  "name" : "bug",
+  "color" : "#d9534f",
+  "description": "Bug reported by user",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 1,
+  "subscribed": false,
+  "priority": null
 }
 ```

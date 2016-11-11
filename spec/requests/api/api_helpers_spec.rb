@@ -10,7 +10,8 @@ describe API::Helpers, api: true do
   let(:key) { create(:key, user: user) }
 
   let(:params) { {} }
-  let(:env) { {} }
+  let(:env) { { 'REQUEST_METHOD' => 'GET' } }
+  let(:request) { Rack::Request.new(env) }
 
   def set_env(token_usr, identifier)
     clear_env
@@ -36,11 +37,62 @@ describe API::Helpers, api: true do
     params.delete(API::Helpers::SUDO_PARAM)
   end
 
+  def warden_authenticate_returns(value)
+    warden = double("warden", authenticate: value)
+    env['warden'] = warden
+  end
+
+  def doorkeeper_guard_returns(value)
+    allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ value }
+  end
+
   def error!(message, status)
     raise Exception
   end
 
   describe ".current_user" do
+    subject { current_user }
+
+    describe "Warden authentication" do
+      before { doorkeeper_guard_returns false }
+
+      context "with invalid credentials" do
+        context "GET request" do
+          before { env['REQUEST_METHOD'] = 'GET' }
+          it { is_expected.to be_nil }
+        end
+      end
+
+      context "with valid credentials" do
+        before { warden_authenticate_returns user }
+
+        context "GET request" do
+          before { env['REQUEST_METHOD'] = 'GET' }
+          it { is_expected.to eq(user) }
+        end
+
+        context "HEAD request" do
+          before { env['REQUEST_METHOD'] = 'HEAD' }
+          it { is_expected.to eq(user) }
+        end
+
+        context "PUT request" do
+          before { env['REQUEST_METHOD'] = 'PUT' }
+          it { is_expected.to be_nil }
+        end
+
+        context "POST request" do
+          before { env['REQUEST_METHOD'] = 'POST' }
+          it { is_expected.to be_nil }
+        end
+
+        context "DELETE request" do
+          before { env['REQUEST_METHOD'] = 'DELETE' }
+          it { is_expected.to be_nil }
+        end
+      end
+    end
+
     describe "when authenticating using a user's private token" do
       it "returns nil for an invalid token" do
         env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
@@ -210,29 +262,6 @@ describe API::Helpers, api: true do
       expect(sudo_identifier).to eq('hello')
       set_param(admin, ' 123')
       expect(sudo_identifier).to eq(' 123')
-    end
-  end
-
-  describe '.to_boolean' do
-    it 'converts a valid string to a boolean' do
-      expect(to_boolean('true')).to be_truthy
-      expect(to_boolean('YeS')).to be_truthy
-      expect(to_boolean('t')).to be_truthy
-      expect(to_boolean('1')).to be_truthy
-      expect(to_boolean('ON')).to be_truthy
-      expect(to_boolean('FaLse')).to be_falsy
-      expect(to_boolean('F')).to be_falsy
-      expect(to_boolean('NO')).to be_falsy
-      expect(to_boolean('n')).to be_falsy
-      expect(to_boolean('0')).to be_falsy
-      expect(to_boolean('oFF')).to be_falsy
-    end
-
-    it 'converts an invalid string to nil' do
-      expect(to_boolean('fals')).to be_nil
-      expect(to_boolean('yeah')).to be_nil
-      expect(to_boolean('')).to be_nil
-      expect(to_boolean(nil)).to be_nil
     end
   end
 

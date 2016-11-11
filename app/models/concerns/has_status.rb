@@ -5,34 +5,36 @@ module HasStatus
   STARTED_STATUSES = %w[running success failed skipped]
   ACTIVE_STATUSES = %w[pending running]
   COMPLETED_STATUSES = %w[success failed canceled]
+  ORDERED_STATUSES = %w[failed pending running canceled success skipped]
 
   class_methods do
     def status_sql
-      scope = all.relevant
+      scope = if respond_to?(:exclude_ignored)
+                exclude_ignored
+              else
+                all
+              end
       builds = scope.select('count(*)').to_sql
+      created = scope.created.select('count(*)').to_sql
       success = scope.success.select('count(*)').to_sql
-      ignored = scope.ignored.select('count(*)').to_sql if scope.respond_to?(:ignored)
-      ignored ||= '0'
       pending = scope.pending.select('count(*)').to_sql
       running = scope.running.select('count(*)').to_sql
-      canceled = scope.canceled.select('count(*)').to_sql
       skipped = scope.skipped.select('count(*)').to_sql
+      canceled = scope.canceled.select('count(*)').to_sql
 
-      deduce_status = "(CASE
-        WHEN (#{builds})=0 THEN NULL
-        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
-        WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'success'
-        WHEN (#{builds})=(#{pending})+(#{skipped}) THEN 'pending'
-        WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored})+(#{skipped}) THEN 'canceled'
-        WHEN (#{running})+(#{pending})>0 THEN 'running'
+      "(CASE
+        WHEN (#{builds})=(#{success}) THEN 'success'
+        WHEN (#{builds})=(#{created}) THEN 'created'
+        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'skipped'
+        WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
+        WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
+        WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
-
-      deduce_status
     end
 
     def status
-      all.pluck(self.status_sql).first
+      all.pluck(status_sql).first
     end
 
     def started_at
@@ -41,6 +43,10 @@ module HasStatus
 
     def finished_at
       all.maximum(:finished_at)
+    end
+
+    def all_state_names
+      state_machines.values.flat_map(&:states).flat_map { |s| s.map(&:name) }
     end
   end
 

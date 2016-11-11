@@ -65,7 +65,8 @@ describe Gitlab::Ci::Config::Node::Factory do
           .value(nil)
           .create!
 
-        expect(entry).to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
+        expect(entry)
+          .to be_an_instance_of Gitlab::Ci::Config::Node::Unspecified
       end
     end
 

@@ -116,13 +116,20 @@ module SlashCommands
     desc 'Add label(s)'
     params '~label1 ~"label 2"'
     condition do
+      available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
+
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
-        project.labels.any?
+        available_labels.any?
     end
     command :label do |labels_param|
       label_ids = find_label_ids(labels_param)
 
-      @updates[:add_label_ids] = label_ids unless label_ids.empty?
+      if label_ids.any?
+        @updates[:add_label_ids] ||= []
+        @updates[:add_label_ids] += label_ids
+
+        @updates[:add_label_ids].uniq!
+      end
     end
 
     desc 'Remove all or specific label(s)'
@@ -136,7 +143,12 @@ module SlashCommands
       if labels_param.present?
         label_ids = find_label_ids(labels_param)
 
-        @updates[:remove_label_ids] = label_ids unless label_ids.empty?
+        if label_ids.any?
+          @updates[:remove_label_ids] ||= []
+          @updates[:remove_label_ids] += label_ids
+
+          @updates[:remove_label_ids].uniq!
+        end
       else
         @updates[:label_ids] = []
       end
@@ -152,7 +164,12 @@ module SlashCommands
     command :relabel do |labels_param|
       label_ids = find_label_ids(labels_param)
 
-      @updates[:label_ids] = label_ids unless label_ids.empty?
+      if label_ids.any?
+        @updates[:label_ids] ||= []
+        @updates[:label_ids] += label_ids
+
+        @updates[:label_ids].uniq!
+      end
     end
 
     desc 'Add a todo'
@@ -195,7 +212,7 @@ module SlashCommands
     params '<in 2 days | this Friday | December 31st>'
     condition do
       issuable.respond_to?(:due_date) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :due do |due_date_param|
       due_date = Chronic.parse(due_date_param).try(:to_date)
@@ -208,10 +225,22 @@ module SlashCommands
       issuable.persisted? &&
         issuable.respond_to?(:due_date) &&
         issuable.due_date? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_due_date do
       @updates[:due_date] = nil
+    end
+
+    desc do
+      "Toggle the Work In Progress status"
+    end
+    condition do
+      issuable.persisted? &&
+        issuable.respond_to?(:work_in_progress?) &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :wip do
+      @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
     # This is a dummy command, so that it appears in the autocomplete commands
@@ -221,7 +250,7 @@ module SlashCommands
 
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
-      labels_ids_by_name = @project.labels.where(name: labels_param.split).select(:id)
+      labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)
 
       label_ids_by_reference | labels_ids_by_name
     end

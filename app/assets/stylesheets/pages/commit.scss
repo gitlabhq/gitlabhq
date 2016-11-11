@@ -2,14 +2,16 @@
   display: block;
 }
 
-.commit-author, .commit-committer {
+.commit-author,
+.commit-committer {
   display: block;
   color: #999;
   font-weight: normal;
   font-style: italic;
 }
 
-.commit-author strong, .commit-committer strong {
+.commit-author strong,
+.commit-committer strong {
   font-weight: bold;
   font-style: normal;
 }
@@ -31,14 +33,45 @@
 
   &.commit-info-row-header {
     line-height: 34px;
+    padding: 10px 0;
+    margin-bottom: 0;
 
     @media (min-width: $screen-sm-min) {
-      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+
+      .commit-meta {
+        flex: 1;
+      }
     }
 
-    .commit-options-dropdown-caret {
-      @media (max-width: $screen-sm) {
-        margin-left: 0;
+    .commit-hash-full {
+      @media (max-width: $screen-sm-max) {
+        width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: bottom;
+      }
+    }
+
+    .commit-action-buttons {
+      i {
+        color: $gl-icon-color;
+        font-size: 13px;
+        margin-right: 3px;
+      }
+
+      @media (max-width: $screen-xs-max) {
+        .dropdown {
+          width: 100%;
+          margin-top: 10px;
+        }
+
+        .dropdown-toggle {
+          width: 100%;
+        }
       }
     }
   }
@@ -51,6 +84,7 @@
       margin-left: 4px;
     }
   }
+
   .commit-committer-link,
   .commit-author-link {
     color: $gl-gray;
@@ -77,6 +111,58 @@
   }
 }
 
+.js-details-expand {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.commit-info-widget {
+  background: $background-color;
+  color: $gl-gray;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  .widget-row {
+    padding: $gl-padding;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $widget-inner-border;
+    }
+
+    &.branch-info {
+      .monospace,
+      .commit-info {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .icon-container {
+    display: inline-block;
+    margin-right: 8px;
+
+    svg {
+      position: relative;
+      top: 2px;
+      height: 16px;
+      width: 16px;
+    }
+
+    &.commit-icon {
+      svg {
+        path {
+          fill: $gl-text-color;
+        }
+      }
+    }
+  }
+
+  .label.label-gray {
+    background-color: $widget-expand-item;
+  }
+}
+
 .ci-status-link {
   svg {
     overflow: visible;
@@ -85,6 +171,7 @@
 
 .commit-box {
   border-top: 1px solid $border-color;
+  padding: $gl-padding 0;
 
   .commit-title {
     margin: 0;
@@ -108,33 +195,29 @@
       line-height: 20px;
     }
   }
+
   .new-file {
     a {
       color: $gl-text-green;
     }
   }
+
   .renamed-file {
     a {
       color: $gl-text-orange;
     }
   }
+
   .deleted-file {
     a {
       color: $gl-text-red;
     }
   }
+
   .edit-file {
     a {
       color: $gl-text-color;
     }
-  }
-}
-
-.commit-action-buttons {
-  i {
-    color: $gl-icon-color;
-    font-size: 13px;
-    margin-right: 3px;
   }
 }
 
@@ -158,6 +241,7 @@
     position: absolute;
     z-index: 1;
   }
+
   > textarea {
     background-color: rgba(0, 0, 0, 0.0);
     font-family: inherit;

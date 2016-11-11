@@ -1,9 +1,8 @@
-image: "ruby:2.3.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
 
 cache:
   key: "ruby-231"
   paths:
-  - vendor/apt
   - vendor/ruby
 
 variables:
@@ -12,7 +11,7 @@ variables:
   RSPEC_RETRY_RETRY_COUNT: "3"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
-  USE_DB: "true"
+  SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
@@ -23,7 +22,7 @@ before_script:
   - bundle --version
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
   - retry gem install knapsack
-  - '[ "$USE_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate'
+  - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate add_limits_mysql'
 
 stages:
 - prepare
@@ -35,7 +34,7 @@ stages:
 .knapsack-state: &knapsack-state
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   cache:
     key: "knapsack"
@@ -82,7 +81,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack rspec
+    - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
     paths:
@@ -100,7 +99,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack spinach "-r rerun" || retry '[ ! -e tmp/spinach-rerun.txt ] || bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
     paths:
@@ -141,14 +140,13 @@ spinach 9 10: *spinach-knapsack
 
 # Execute all testing suites against Ruby 2.1
 .ruby-21: &ruby-21
-  image: "ruby:2.1"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
     - master
   cache:
     key: "ruby21"
     paths:
-      - vendor/apt
       - vendor/ruby
 
 .rspec-knapsack-ruby21: &rspec-knapsack-ruby21
@@ -196,7 +194,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
 .exec: &exec
@@ -206,18 +204,56 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
     - bundle exec $CI_BUILD_NAME
 
 rubocop: *exec
+rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
-rake flog: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
+rake ee_compat_check:
+  <<: *exec
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab/gitlabhq
+  except:
+    - master
+    - tags
+    - /^[\d-]+-stable(-ee)?$/
+  allow_failure: yes
+  cache:
+    key: "ruby231-ee_compat_check_repo"
+    paths:
+      - ee_compat_check/repo/
+      - vendor/ruby
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}_${CI_BUILD_REF}"
+    when: on_failure
+    expire_in: 10d
+    paths:
+      - ee_compat_check/patches/*.patch
 
 rake db:migrate:reset:
   stage: test
   <<: *use-db
   script:
     - rake db:migrate:reset
+
+rake db:seed_fu:
+  stage: test
+  <<: *use-db
+  variables:
+    SIZE: "1"
+    SETUP_DB: "false"
+    RAILS_ENV: "development"
+  script:
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - bundle exec rake db:setup db:seed_fu
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 teaspoon:
   stage: test
@@ -226,7 +262,7 @@ teaspoon:
     - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
     - apt-get install --assume-yes nodejs
     - npm install --global istanbul
-    - teaspoon
+    - rake teaspoon
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -240,6 +276,12 @@ lint-doc:
   script:
     - scripts/lint-doc.sh
 
+bundler:check:
+ stage: test
+ <<: *ruby-static-analysis
+ script:
+   - bundle check
+
 bundler:audit:
   stage: test
   <<: *ruby-static-analysis
@@ -248,11 +290,30 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+migration paths:
+  stage: test
+  <<: *use-db
+  variables:
+    SETUP_DB: "false"
+  only:
+    - master@gitlab-org/gitlab-ce
+  script:
+    - git checkout HEAD .
+    - git fetch --tags
+    - git checkout v8.5.9
+    - cp config/resque.yml.example config/resque.yml
+    - sed -i 's/localhost/redis/g' config/resque.yml
+    - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
+    - rake db:drop db:create db:schema:load db:seed_fu
+    - git checkout $CI_BUILD_REF
+    - source scripts/prepare_build.sh
+    - rake db:migrate
+
 coverage:
   stage: post-test
   services: []
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
@@ -263,13 +324,36 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
+lint-javascript:
+  stage: test
+  image: "node:latest"
+  before_script:
+    - npm install
+  script:
+    - npm run eslint
+
+# Trigger docs build
+# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
+trigger_docs:
+  stage: post-test
+  image: "alpine"
+  before_script:
+    - apk update && apk add curl
+  variables:
+    GIT_STRATEGY: none
+  cache: {}
+  artifacts: {}
+  script:
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
+  only:
+    - master@gitlab-org/gitlab-ce
 
 # Notify slack in the end
 
 notify:slack:
   stage: post-test
   variables:
-    USE_DB: "false"
+    SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
@@ -296,3 +380,16 @@ pages:
       - public
   only:
     - master
+
+# Insurance in case a gem needed by one of our releases gets yanked from
+# rubygems.org in the future.
+cache gems:
+  only:
+    - tags
+  variables:
+    SETUP_DB: "false"
+  script:
+    - bundle package --all --all-platforms
+  artifacts:
+    paths:
+      - vendor/cache

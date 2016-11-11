@@ -1,13 +1,26 @@
+.environments-container,
+.deployments-container {
+  width: 100%;
+  overflow: auto;
+}
+
 .environments {
+  .deployment-column {
+    .avatar {
+      float: none;
+    }
+  }
 
   .commit-title {
     margin: 0;
   }
 
-  .fa-play {
-    font-size: 14px;
+  .icon-play {
+    height: 13px;
+    width: 12px;
   }
 
+  .external-url,
   .dropdown-new {
     color: $table-text-gray;
   }
@@ -20,16 +33,43 @@
     }
   }
 
+  .build-link,
   .branch-name {
     color: $gl-dark-link-color;
   }
+
+  .stop-env-link {
+    color: $table-text-gray;
+
+    .stop-env-icon {
+      font-size: 14px;
+    }
+  }
+
+  .deployment {
+    .build-column {
+
+      .build-link {
+        color: $gl-dark-link-color;
+      }
+
+      .avatar {
+        float: none;
+      }
+    }
+  }
 }
 
-.table.builds.environments {
-  min-width: 500px;
+.table.ci-table.environments {
 
   .icon-container {
     width: 20px;
     text-align: center;
+  }
+
+  .branch-commit {
+    .commit-id {
+      margin-right: 0;
+    }
   }
 }

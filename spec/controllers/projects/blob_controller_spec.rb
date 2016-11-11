@@ -5,7 +5,6 @@ describe Projects::BlobController do
   let(:user)    { create(:user) }
 
   before do
-    user = create(:user)
     project.team << [user, :master]
 
     sign_in(user)

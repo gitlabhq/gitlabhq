@@ -17,6 +17,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
     visit_merge_requests(project)
     filter_by_milestone(Milestone::None.title)
 
+    expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
     expect(page).to have_css('.merge-request', count: 1)
   end
 
@@ -39,6 +40,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
       visit_merge_requests(project)
       filter_by_milestone(Milestone::Upcoming.title)
 
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_css('.merge-request', count: 1)
     end
 
@@ -61,7 +63,25 @@ feature 'Merge Request filtering by Milestone', feature: true do
     visit_merge_requests(project)
     filter_by_milestone(milestone.title)
 
+    expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
     expect(page).to have_css('.merge-request', count: 1)
+  end
+
+  context 'when milestone has single quotes in title' do
+    background do
+      milestone.update(name: "rock 'n' roll")
+    end
+
+    scenario 'filters by a specific Milestone', js: true do
+      create(:merge_request, :with_diffs, source_project: project, milestone: milestone)
+      create(:merge_request, :simple, source_project: project)
+
+      visit_merge_requests(project)
+      filter_by_milestone(milestone.title)
+
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
+      expect(page).to have_css('.merge-request', count: 1)
+    end
   end
 
   def visit_merge_requests(project)

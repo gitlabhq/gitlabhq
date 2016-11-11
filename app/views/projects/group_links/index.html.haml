@@ -8,15 +8,15 @@
   .col-lg-9
     %h5.prepend-top-0
       Set a group to share
-    = form_tag namespace_project_group_links_path(@project.namespace, @project), method: :post do
+    = form_tag namespace_project_group_links_path(@project.namespace, @project), class: 'js-requires-input', method: :post do
       .form-group
         = label_tag :link_group_id, "Group", class: "label-light"
-        = groups_select_tag(:link_group_id, skip_group: @project.group.try(:path))
+        = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, required: true)
       .form-group
         = label_tag :link_group_access, "Max access level", class: "label-light"
         .select-wrapper
           = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
-          %span.caret
+          = icon('caret-down')
       .form-group
         = label_tag :expires_at, 'Access expiration date', class: 'label-light'
         .clearable-input

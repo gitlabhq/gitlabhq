@@ -1,13 +1,10 @@
+/* eslint-disable */
 ((w) => {
   w.ResolveBtn = Vue.extend({
-    mixins: [
-      ButtonMixins
-    ],
     props: {
       noteId: Number,
       discussionId: String,
       resolved: Boolean,
-      namespacePath: String,
       projectPath: String,
       canResolve: Boolean,
       resolvedBy: String
@@ -69,10 +66,10 @@
 
         if (this.isResolved) {
           promise = ResolveService
-            .unresolve(this.namespace, this.noteId);
+            .unresolve(this.projectPath, this.noteId);
         } else {
           promise = ResolveService
-            .resolve(this.namespace, this.noteId);
+            .resolve(this.projectPath, this.noteId);
         }
 
         promise.then((response) => {

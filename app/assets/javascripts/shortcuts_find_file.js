@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require shortcuts_navigation */
 
@@ -14,8 +15,10 @@
       ShortcutsFindFile.__super__.constructor.call(this);
       _oldStopCallback = Mousetrap.stopCallback;
       Mousetrap.stopCallback = (function(_this) {
+        // override to fire shortcuts action when focus in textbox
         return function(event, element, combo) {
           if (element === _this.projectFindFile.inputElement[0] && (combo === 'up' || combo === 'down' || combo === 'esc' || combo === 'enter')) {
+            // when press up/down key in textbox, cusor prevent to move to home/end
             event.preventDefault();
             return false;
           }

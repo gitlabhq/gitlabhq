@@ -11,7 +11,6 @@ Feature: Dashboard
     And I visit dashboard page
 
   Scenario: I should see projects list
-    Then I should see "New Project" link
     Then I should see "Shop" project link
     Then I should see "Shop" project CI status
 
@@ -30,19 +29,6 @@ Feature: Dashboard
     Then I should see last push widget
     And I click "Create Merge Request" link
     Then I see prefilled new Merge Request page
-
-  @javascript
-  Scenario: I should see User joined Project event
-    Given user with name "John Doe" joined project "Shop"
-    When I visit dashboard activity page
-    Then I should see "John Doe joined project Shop" event
-
-  @javascript
-  Scenario: I should see User left Project event
-    Given user with name "John Doe" joined project "Shop"
-    And user with name "John Doe" left project "Shop"
-    When I visit dashboard activity page
-    Then I should see "John Doe left project Shop" event
 
   @javascript
   Scenario: Sorting Issues

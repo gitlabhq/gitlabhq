@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     slice = [].slice;
@@ -9,16 +10,23 @@
       this.usersPath = "/autocomplete/users.json";
       this.userPath = "/autocomplete/users/:id.json";
       if (currentUser != null) {
-        this.currentUser = JSON.parse(currentUser);
+        if (typeof currentUser === 'object') {
+          this.currentUser = currentUser;
+        } else {
+          this.currentUser = JSON.parse(currentUser);
+        }
       }
       $('.js-user-search').each((function(_this) {
         return function(i, dropdown) {
           var options = {};
-          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser;
+          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
           options.showCurrentUser = $dropdown.data('current-user');
+          options.todoFilter = $dropdown.data('todo-filter');
+          options.todoStateFilter = $dropdown.data('todo-state-filter');
           showNullUser = $dropdown.data('null-user');
+          showMenuAbove = $dropdown.data('showMenuAbove');
           showAnyUser = $dropdown.data('any-user');
           firstUser = $dropdown.data('first-user');
           options.authorId = $dropdown.data('author-id');
@@ -31,9 +39,30 @@
           $value = $block.find('.value');
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
+
+          var updateIssueBoardsIssue = function () {
+            $loading.fadeIn();
+            gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
+              .then(function () {
+                $loading.fadeOut();
+              });
+          };
+
           $block.on('click', '.js-assign-yourself', function(e) {
             e.preventDefault();
-            return assignTo(_this.currentUser.id);
+
+            if ($dropdown.hasClass('js-issue-board-sidebar')) {
+              Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
+                id: _this.currentUser.id,
+                username: _this.currentUser.username,
+                name: _this.currentUser.name,
+                avatar_url: _this.currentUser.avatar_url
+              }));
+
+              updateIssueBoardsIssue();
+            } else {
+              return assignTo(_this.currentUser.id);
+            }
           });
           assignTo = function(selected) {
             var data;
@@ -70,9 +99,10 @@
               return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
             });
           };
-          collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/u/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
-          assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/u/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
+          collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
+          assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
           return $dropdown.glDropdown({
+            showMenuAbove: showMenuAbove,
             data: function(term, callback) {
               var isAuthorFilter;
               isAuthorFilter = $('.js-author-search');
@@ -81,6 +111,7 @@
                 if (term.length === 0) {
                   showDivider = 0;
                   if (firstUser) {
+                    // Move current user to the front of the list
                     for (index = j = 0, len = users.length; j < len; index = ++j) {
                       obj = users[index];
                       if (obj.username === firstUser) {
@@ -115,7 +146,11 @@
                 if (showDivider) {
                   users.splice(showDivider, 0, "divider");
                 }
-                return callback(users);
+
+                callback(users);
+                if (showMenuAbove) {
+                  $dropdown.data('glDropdown').positionMenuAbove();
+                }
               });
             },
             filterable: true,
@@ -125,8 +160,8 @@
             },
             selectable: true,
             fieldName: $dropdown.data('field-name'),
-            toggleLabel: function(selected) {
-              if (selected && 'id' in selected) {
+            toggleLabel: function(selected, el) {
+              if (selected && 'id' in selected && $(el).hasClass('is-active')) {
                 if (selected.text) {
                   return selected.text;
                 } else {
@@ -136,20 +171,25 @@
                 return defaultLabel;
               }
             },
+            defaultLabel: defaultLabel,
             inputId: 'issue_assignee_id',
             hidden: function(e) {
               $selectbox.hide();
+              // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },
+            vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(user, $el, e) {
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
               isMRIndex = (page === page && page === 'projects:merge_requests:index');
-              if ($dropdown.hasClass('js-filter-bulk-update')) {
+              if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
+                e.preventDefault();
+                selectedId = user.id;
                 return;
               }
-              if (page === 'projects:boards:show') {
+              if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
                 selectedId = user.id;
                 gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
                 gl.issueBoards.BoardsStore.updateFiltersUrl();
@@ -159,10 +199,26 @@
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
+              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
+                if (user.id) {
+                  Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    avatar_url: user.avatar_url
+                  }));
+                } else {
+                  Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'assignee');
+                }
+
+                updateIssueBoardsIssue();
               } else {
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
+            },
+            id: function (user) {
+              return user.id;
             },
             renderRow: function(user) {
               var avatar, img, listClosingTags, listWithName, listWithUserName, selected, username;
@@ -177,6 +233,7 @@
                   img = "<img src='" + avatar + "' class='avatar avatar-inline' width='30' />";
                 }
               }
+              // split into three parts so we can remove the username section if nessesary
               listWithName = "<li> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
               listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
               listClosingTags = "</a> </li>";
@@ -215,6 +272,7 @@
                 };
                 if (query.term.length === 0) {
                   if (firstUser) {
+                    // Move current user to the front of the list
                     ref = data.results;
                     for (index = j = 0, len = ref.length; j < len; index = ++j) {
                       obj = ref[index];
@@ -245,10 +303,11 @@
                   }
                 }
                 if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
+                  var trimmed = query.term.trim();
                   emailUser = {
                     name: "Invite \"" + query.term + "\"",
-                    username: query.term,
-                    id: query.term
+                    username: trimmed,
+                    id: trimmed
                   };
                   data.results.unshift(emailUser);
                 }
@@ -271,6 +330,7 @@
               return _this.formatSelection.apply(_this, args);
             },
             dropdownCssClass: "ajax-users-dropdown",
+            // we do not want to escape markup since we are displaying html in results
             escapeMarkup: function(m) {
               return m;
             }
@@ -307,6 +367,10 @@
     };
 
     UsersSelect.prototype.user = function(user_id, callback) {
+      if(!/^\d+$/.test(user_id)) {
+        return false;
+      }
+
       var url;
       url = this.buildUrl(this.userPath);
       url = url.replace(':id', user_id);
@@ -318,6 +382,8 @@
       });
     };
 
+    // Return users list. Filtered by query
+    // Only active users retrieved
     UsersSelect.prototype.users = function(query, options, callback) {
       var url;
       url = this.buildUrl(this.usersPath);
@@ -330,6 +396,8 @@
           project_id: options.projectId || null,
           group_id: options.groupId || null,
           skip_ldap: options.skipLdap || null,
+          todo_filter: options.todoFilter || null,
+          todo_state_filter: options.todoStateFilter || null,
           current_user: options.showCurrentUser || null,
           push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
           author_id: options.authorId || null,

@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :abilities, :can?, :current_application_settings
+  helper_method :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
@@ -43,6 +43,10 @@ class ApplicationController < ActionController::Base
 
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
+  end
+
+  def not_found
+    render_404
   end
 
   protected
@@ -97,12 +101,8 @@ class ApplicationController < ActionController::Base
     current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can?(object, action, subject)
-    abilities.allowed?(object, action, subject)
+    Ability.allowed?(object, action, subject)
   end
 
   def access_denied!
@@ -118,7 +118,12 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render file: Rails.root.join("public", "404"), layout: false, status: "404"
+    respond_to do |format|
+      format.html do
+        render file: Rails.root.join("public", "404"), layout: false, status: "404"
+      end
+      format.any { head :not_found }
+    end
   end
 
   def no_cache_headers
@@ -177,7 +182,8 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
+    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
+    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
   end
 
@@ -186,9 +192,10 @@ class ApplicationController < ActionController::Base
   end
 
   # JSON for infinite scroll via Pager object
-  def pager_json(partial, count)
+  def pager_json(partial, count, locals = {})
     html = render_to_string(
       partial,
+      locals: locals,
       layout: false,
       formats: [:html]
     )

@@ -1,12 +1,14 @@
 .suggest-colors {
   margin-top: 5px;
+
   a {
-    @include border-radius(4px);
+    border-radius: 4px;
     width: 30px;
     height: 30px;
     display: inline-block;
     margin-right: 10px;
     margin-bottom: 10px;
+    text-decoration: none;
   }
 
   &.suggest-colors-dropdown {
@@ -16,7 +18,7 @@
     overflow: hidden;
 
     a {
-      @include border-radius(0);
+      border-radius: 0;
       width: (100% / 7);
       margin-right: 0;
       margin-bottom: -5px;
@@ -57,6 +59,27 @@
     @media (min-width: $screen-sm-min) {
       width: 200px;
       margin-bottom: 0;
+    }
+
+    .label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      max-width: 100%;
+    }
+  }
+
+  .label-type {
+    display: block;
+    margin-bottom: 10px;
+    margin-left: 50px;
+
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 100px;
+      margin-left: 10px;
+      margin-bottom: 0;
+      vertical-align: middle;
     }
   }
 
@@ -200,6 +223,13 @@
 }
 
 .label-subscribe-button {
+  .label-subscribe-button-icon {
+    &[disabled] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+
   .label-subscribe-button-loading {
     display: none;
   }

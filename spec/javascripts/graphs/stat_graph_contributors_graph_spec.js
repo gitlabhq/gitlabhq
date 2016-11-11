@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require graphs/stat_graph_contributors_graph
 
 describe("ContributorsGraph", function () {
@@ -7,7 +8,7 @@ describe("ContributorsGraph", function () {
      expect(ContributorsGraph.prototype.x_domain).toEqual(20)
     })
   })
-  
+
   describe("#set_y_domain", function () {
     it("sets the y_domain", function () {
       ContributorsGraph.set_y_domain([{commits: 30}])
@@ -89,7 +90,7 @@ describe("ContributorsGraph", function () {
 })
 
 describe("ContributorsMasterGraph", function () {
-  
+
   // TODO: fix or remove
   //describe("#process_dates", function () {
     //it("gets and parses dates", function () {
@@ -103,7 +104,7 @@ describe("ContributorsMasterGraph", function () {
       //expect(graph.get_dates).toHaveBeenCalledWith(data)
       //expect(ContributorsGraph.set_dates).toHaveBeenCalledWith("get")
     //})
-  //}) 
+  //})
 
   describe("#get_dates", function () {
     it("plucks the date field from data collection", function () {
@@ -124,5 +125,5 @@ describe("ContributorsMasterGraph", function () {
     })
   })
 
-  
+
 })

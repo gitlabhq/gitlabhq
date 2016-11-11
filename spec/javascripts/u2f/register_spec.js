@@ -1,16 +1,9 @@
+/* eslint-disable */
 
 /*= require u2f/register */
-
-
 /*= require u2f/util */
-
-
 /*= require u2f/error */
-
-
 /*= require u2f */
-
-
 /*= require ./mock_u2f_device */
 
 (function() {

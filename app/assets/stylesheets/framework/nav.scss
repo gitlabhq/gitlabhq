@@ -8,10 +8,7 @@
   height: 30px;
   transition-duration: .3s;
   -webkit-transform: translateZ(0);
-  background: -webkit-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: -o-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: -moz-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
+  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
 
   &.scrolling {
     visibility: visible;
@@ -57,9 +54,10 @@
       color: #959494;
       border-bottom: 2px solid transparent;
 
-      &:hover, &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         text-decoration: none;
-        outline: none;
       }
     }
 
@@ -102,8 +100,7 @@
 
 .top-area {
   @include clearfix;
-
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $btn-gray-hover;
 
   .nav-text {
     padding-top: 16px;
@@ -141,7 +138,7 @@
     }
 
     li a {
-      padding: 16px 10px 11px;
+      padding: 16px 15px 11px;
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
@@ -211,16 +208,15 @@
       }
     }
 
-    .project-filter-form {
-      input {
-        background-color: $background-color;
-      }
-    }
-
     @media (max-width: $screen-xs-max) {
       padding-bottom: 0;
       width: 100%;
-      .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
+
+      .btn,
+      form,
+      .dropdown,
+      .dropdown-menu-toggle,
+      .form-control {
         margin: 0 0 10px;
         display: block;
         width: 100%;
@@ -254,7 +250,8 @@
   }
 
   &.adjust {
-    .nav-text, .nav-controls {
+    .nav-text,
+    .nav-controls {
       width: auto;
     }
   }
@@ -318,13 +315,15 @@
         padding-top: 10px;
       }
 
-      a, i {
+      a,
+      i {
         color: $layout-link-gray;
       }
 
       &.active {
 
-        a, i {
+        a,
+        i {
           color: $black;
         }
 
@@ -337,7 +336,8 @@
       }
 
       &:hover {
-        a, i {
+        a,
+        i {
           color: $black;
         }
       }

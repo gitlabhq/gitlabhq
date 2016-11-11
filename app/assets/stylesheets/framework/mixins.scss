@@ -1,23 +1,4 @@
 /**
- * Generic mixins
- */
-@mixin box-shadow($shadow) {
-  box-shadow: $shadow;
-}
-
-@mixin border-radius($radius) {
-  border-radius: $radius;
-}
-
-@mixin transition($transition) {
-  -webkit-transition: $transition;
-  -moz-transition: $transition;
-  -ms-transition: $transition;
-  -o-transition: $transition;
-  transition: $transition;
-}
-
-/**
  * Prefilled mixins
  * Mixins with fixed values
  */
@@ -52,7 +33,8 @@
     }
 
     &.active {
-      background: #f9f9f9;
+      background: $gray-light;
+
       a {
         font-weight: 600;
       }
@@ -92,4 +74,21 @@
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
+}
+
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin include-keyframes($animation-name) {
+  @include webkit-prefix(animation-name, $animation-name);
+  @include keyframes($animation-name) {
+    @content;
+  }
 }

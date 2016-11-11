@@ -47,7 +47,7 @@
             Repository
 
     - if project_nav_tab? :pipelines
-      = nav_link(controller: [:pipelines, :builds, :environments]) do
+      = nav_link(controller: [:pipelines, :builds, :environments, :cycle_analytics]) do
         = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
           %span
             Pipelines
@@ -113,3 +113,7 @@
       %li.hidden
         = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
           Commits
+
+    -# Shortcut to issue boards
+    %li.hidden
+      = link_to 'Issue Boards', namespace_project_boards_path(@project.namespace, @project), title: 'Issue Boards', class: 'shortcuts-issue-boards'

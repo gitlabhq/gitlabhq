@@ -13,16 +13,19 @@
     color: #5c5d5e;
   }
 
-  .issue_created_ago, .author_link {
+  .issue_created_ago,
+  .author_link {
     white-space: nowrap;
   }
 }
 
 .detail-page-description {
   .title {
-    margin: 0;
-    font-size: 23px;
+    margin: 0 0 16px;
+    font-size: 2em;
     color: $gl-gray-dark;
+    padding: 0 0 0.3em;
+    border-bottom: 1px solid $white-dark;
   }
 
   .description {

@@ -1,8 +1,10 @@
+/* eslint-disable */
 (function (w) {
   class CreateLabelDropdown {
-    constructor ($el, projectId) {
+    constructor ($el, namespacePath, projectPath) {
       this.$el = $el;
-      this.projectId = projectId;
+      this.namespacePath = namespacePath;
+      this.projectPath = projectPath;
       this.$dropdownBack = $('.dropdown-menu-back', this.$el.closest('.dropdown'));
       this.$cancelButton = $('.js-cancel-label-btn', this.$el);
       this.$newLabelField = $('#new_label_name', this.$el);
@@ -91,8 +93,8 @@
       e.preventDefault();
       e.stopPropagation();
 
-      Api.newLabel(this.projectId, {
-        name: this.$newLabelField.val(),
+      Api.newLabel(this.namespacePath, this.projectPath, {
+        title: this.$newLabelField.val(),
         color: this.$newColorField.val()
       }, (label) => {
         this.$newLabelCreateButton.enable();
@@ -113,6 +115,8 @@
             .show();
         } else {
           this.$dropdownBack.trigger('click');
+
+          $(document).trigger('created.label', label);
         }
       });
     }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 ((w) => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -21,8 +22,8 @@
       fallbackClass: 'is-dragging',
       fallbackOnBody: true,
       ghostClass: 'is-ghost',
-      filter: '.has-tooltip',
-      delay: gl.issueBoards.touchEnabled ? 100 : 0,
+      filter: '.board-delete, .btn',
+      delay: gl.issueBoards.touchEnabled ? 100 : 50,
       scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,
       onStart: gl.issueBoards.onStart,

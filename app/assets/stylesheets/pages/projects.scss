@@ -6,56 +6,79 @@
   }
 }
 
-.no-ssh-key-message, .project-limit-message {
+.no-ssh-key-message,
+.project-limit-message {
   background-color: #f28d35;
   margin-bottom: 0;
 }
 
 .new_project,
 .edit-project {
+
   fieldset {
-    &.features .control-label {
-      font-weight: normal;
+
+    &.features {
+
+      .label-light {
+        margin-bottom: 0;
+      }
+
+      .help-block {
+        margin-top: 0;
+      }
     }
+
     .form-group {
       margin-bottom: 5px;
     }
+
     &> .form-group {
       padding-left: 0;
     }
   }
+
   .help-block {
     margin-bottom: 10px;
   }
+
   .project-path {
     padding-right: 0;
+
     .form-control {
       border-radius: $border-radius-base;
     }
   }
+
   .input-group > div {
+
     &:last-child {
       padding-right: 0;
     }
   }
+
   @media (max-width: $screen-xs-max) {
     .input-group > div {
+
       margin-bottom: 14px;
+
       &:last-child {
         margin-bottom: 0;
       }
     }
+
     fieldset > .form-group:first-child {
       padding-right: 0;
     }
   }
 
   .input-group-addon {
+
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
       border: 1px solid #e5e5e5;
     }
+
     &+ .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
@@ -73,8 +96,8 @@
 
   .project-avatar {
     float: none;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    border: none;
 
     &.identicon {
       border-radius: 50%;
@@ -146,7 +169,8 @@
   }
 
   .project-repo-btn-group,
-  .notification-dropdown {
+  .notification-dropdown,
+  .project-dropdown {
     margin-left: 10px;
   }
 
@@ -169,7 +193,7 @@
     margin-left: 4px;
 
     .arrow {
-      &:before {
+      &::before {
         content: '';
         display: inline-block;
         position: absolute;
@@ -185,7 +209,7 @@
         pointer-events: none;
       }
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         width: 0;
@@ -200,6 +224,7 @@
         pointer-events: none;
       }
     }
+
     .count {
       @include btn-gray;
       display: inline-block;
@@ -311,6 +336,14 @@ a.deploy-project-label {
   color: $gl-success;
 }
 
+.lfs-enabled {
+  color: $gl-success;
+}
+
+.lfs-disabled {
+  color: $gl-warning;
+}
+
 .breadcrumb.repo-breadcrumb {
   padding: 0;
   background: transparent;
@@ -318,13 +351,17 @@ a.deploy-project-label {
   line-height: 36px;
   margin: 0;
 
-  > li + li:before {
+  > li + li::before {
     padding: 0 3px;
     color: #999;
   }
 
   a {
     color: $gl-dark-link-color;
+  }
+
+  .dropdown-menu {
+    width: 240px;
   }
 }
 
@@ -341,35 +378,41 @@ a.deploy-project-label {
     justify-content: flex-start;
 
     .fork-thumbnail {
-      @include border-radius($border-radius-base);
+      border-radius: $border-radius-base;
       background-color: $white-light;
       border: 1px solid $border-white-light;
       height: 202px;
       margin: $gl-padding;
       text-align: center;
       width: 169px;
-      &:hover, &.forked {
+
+      &:hover,
+      &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
       }
+
       .no-avatar {
         width: 100px;
         height: 100px;
         background-color: $gray-light;
         border: 1px solid $gray-dark;
         margin: 0 auto;
-        @include border-radius(50%);
+        border-radius: 50%;
+
         i {
           font-size: 100px;
           color: $gray-dark;
         }
       }
+
       a {
         display: block;
         width: 100%;
         height: 100%;
         padding-top: $gl-padding;
         color: $gl-gray;
+
         .caption {
           min-height: 30px;
           padding: $gl-padding 0;
@@ -377,7 +420,7 @@ a.deploy-project-label {
       }
 
       img {
-        @include border-radius(50%);
+        border-radius: 50%;
         max-width: 100px;
       }
     }
@@ -483,7 +526,7 @@ pre.light-well {
   }
 
   .light-well {
-    @include border-radius (2px);
+    border-radius: 2px;
 
     color: #5b6169;
     font-size: 13px;
@@ -600,18 +643,25 @@ pre.light-well {
   }
 }
 
-.project-show-readme .readme-holder {
-  padding: $gl-padding 0;
-  border-top: 0;
-
-  .edit-project-readme {
-    z-index: 2;
-    position: relative;
+.project-show-readme {
+  .row-content-block {
+    background-color: inherit;
+    border: none;
   }
 
-  .wiki h1 {
-    border-bottom: none;
-    padding: 0;
+  .readme-holder {
+    padding: $gl-padding 0;
+    border-top: 0;
+
+    .edit-project-readme {
+      z-index: 2;
+      position: relative;
+    }
+
+    .wiki h1 {
+      border-bottom: none;
+      padding: 0;
+    }
   }
 }
 
@@ -624,6 +674,7 @@ pre.light-well {
 
   .clone-options {
     display: table-cell;
+
     a.btn {
       width: 100%;
     }
@@ -685,7 +736,8 @@ pre.light-well {
   .table-bordered {
     border-radius: 1px;
 
-    th:not(:last-child), td:not(:last-child) {
+    th:not(:last-child),
+    td:not(:last-child) {
       border-right: solid 1px transparent;
     }
   }
@@ -708,9 +760,16 @@ pre.light-well {
   }
 }
 
-.project-refs-form {
-  .dropdown-menu {
-    width: 300px;
+.project-refs-form .dropdown-menu,
+.dropdown-menu-projects {
+  width: 300px;
+
+  @media (min-width: $screen-sm-min) {
+    width: 500px;
+  }
+
+  a {
+    white-space: normal;
   }
 }
 
@@ -731,7 +790,7 @@ pre.light-well {
     top: 7px;
     color: $location-icon-color;
 
-    &:before {
+    &::before {
       font-family: FontAwesome;
       font-weight: normal;
       font-style: normal;
@@ -743,5 +802,43 @@ pre.light-well {
       cursor: pointer;
       display: block;
     }
+  }
+}
+
+.project-path {
+  .form-control {
+    min-width: 100px;
+  }
+
+  .select2-choice {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.project-home-empty {
+  border-top: 0;
+
+  .container-fluid {
+    background: none;
+  }
+
+  p {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 650px;
+  }
+}
+
+.project-feature-nested {
+  @media (min-width: $screen-sm-min) {
+    padding-left: 45px;
+  }
+}
+
+.project-repo-select {
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 }

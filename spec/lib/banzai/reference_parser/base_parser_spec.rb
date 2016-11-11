@@ -27,41 +27,12 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     let(:link) { empty_html_link }
 
     context 'when the link has a data-project attribute' do
-      it 'returns the nodes if the attribute value equals the current project ID' do
+      it 'checks if user can read the resource' do
         link['data-project'] = project.id.to_s
 
-        expect(Ability.abilities).not_to receive(:allowed?)
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
-      end
+        expect(subject).to receive(:can_read_reference?).with(user, project)
 
-      it 'returns the nodes if the user can read the project' do
-        other_project = create(:empty_project, :public)
-
-        link['data-project'] = other_project.id.to_s
-
-        expect(Ability.abilities).to receive(:allowed?).
-          with(user, :read_project, other_project).
-          and_return(true)
-
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
-      end
-
-      it 'returns an empty Array when the attribute value is empty' do
-        link['data-project'] = ''
-
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([])
-      end
-
-      it 'returns an empty Array when the user can not read the project' do
-        other_project = create(:empty_project, :public)
-
-        link['data-project'] = other_project.id.to_s
-
-        expect(Ability.abilities).to receive(:allowed?).
-          with(user, :read_project, other_project).
-          and_return(false)
-
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([])
+        subject.nodes_visible_to_user(user, [link])
       end
     end
 
@@ -221,7 +192,7 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     it 'delegates the permissions check to the Ability class' do
       user = double(:user)
 
-      expect(Ability.abilities).to receive(:allowed?).
+      expect(Ability).to receive(:allowed?).
         with(user, :read_project, project)
 
       subject.can?(user, :read_project, project)

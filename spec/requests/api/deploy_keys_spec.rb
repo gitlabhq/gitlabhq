@@ -6,6 +6,7 @@ describe API::API, api: true  do
   let(:user)        { create(:user) }
   let(:admin)       { create(:admin) }
   let(:project)     { create(:project, creator_id: user.id) }
+  let(:project2)    { create(:project, creator_id: user.id) }
   let(:deploy_key)  { create(:deploy_key, public: true) }
 
   let!(:deploy_keys_project) do
@@ -95,6 +96,22 @@ describe API::API, api: true  do
       expect do
         post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
       end.to change{ project.deploy_keys.count }.by(1)
+    end
+
+    it 'returns an existing ssh key when attempting to add a duplicate' do
+      expect do
+        post api("/projects/#{project.id}/deploy_keys", admin), { key: deploy_key.key, title: deploy_key.title }
+      end.not_to change { project.deploy_keys.count }
+
+      expect(response).to have_http_status(201)
+    end
+
+    it 'joins an existing ssh key to a new project' do
+      expect do
+        post api("/projects/#{project2.id}/deploy_keys", admin), { key: deploy_key.key, title: deploy_key.title }
+      end.to change { project2.deploy_keys.count }.by(1)
+
+      expect(response).to have_http_status(201)
     end
   end
 

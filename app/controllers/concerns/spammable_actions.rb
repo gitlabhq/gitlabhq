@@ -7,7 +7,7 @@ module SpammableActions
 
   def mark_as_spam
     if SpamService.new(spammable).mark_as_spam!
-      redirect_to spammable, notice: "#{spammable.class.to_s} was submitted to Akismet successfully."
+      redirect_to spammable, notice: "#{spammable.class} was submitted to Akismet successfully."
     else
       redirect_to spammable, alert: 'Error with Akismet. Please check the logs for more info.'
     end

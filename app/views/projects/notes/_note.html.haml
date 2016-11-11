@@ -1,6 +1,5 @@
 - return unless note.author
 - return if note.cross_reference_not_visible_for?(current_user)
-- can_resolve = can?(current_user, :resolve_note, note)
 
 - note_editable = note_editable?(note)
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
@@ -24,13 +23,13 @@
               %span.note-role.hidden-xs= access
 
             - if note.resolvable?
-              %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
-                  ":project-path" => "'#{note.project.path}'",
-                  ":discussion-id" => "'#{note.discussion_id}'",
+              - can_resolve = can?(current_user, :resolve_note, note)
+              %resolve-btn{ "project-path" => "#{project_path(note.project)}",
+                  "discussion-id" => "#{note.discussion_id}",
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
                   ":can-resolve" => can_resolve,
-                  ":resolved-by" => "'#{note.resolved_by.try(:name)}'",
+                  "resolved-by" => "#{note.resolved_by.try(:name)}",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
                   "v-ref:note_#{note.id}" => true }
@@ -58,11 +57,11 @@
                 = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
                   = icon('pencil', class: 'link-highlight')
                 = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button hidden-xs js-note-delete danger' do
-                  = icon('trash-o')
+                  = icon('trash-o', class: 'danger-highlight')
       .note-body{class: note_editable ? 'js-task-list-container' : ''}
         .note-text.md
           = preserve do
-            = note.note_html
+            = note.redacted_note_html
           = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
           = render 'projects/notes/edit_form', note: note

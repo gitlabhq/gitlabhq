@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Diff = (function() {
     var UNFOLD_COUNT;
@@ -7,6 +8,9 @@
     function Diff() {
       $('.files .diff-file').singleFileDiff();
       this.filesCommentButton = $('.files .diff-file').filesCommentButton();
+      if (this.diffViewType() === 'parallel') {
+        $('.content-wrapper .container-fluid').removeClass('container-limited');
+      }
       $(document).off('click', '.js-unfold');
       $(document).on('click', '.js-unfold', (function(_this) {
         return function(event) {
@@ -39,7 +43,6 @@
             bottom: unfoldBottom,
             offset: offset,
             unfold: unfold,
-            indent: 1,
             view: file.data('view')
           };
           return $.get(link, params, function(response) {
@@ -47,6 +50,10 @@
           });
         };
       })(this));
+    }
+
+    Diff.prototype.diffViewType = function() {
+      return $('.inline-parallel-buttons a.active').data('view-type');
     }
 
     Diff.prototype.lineNumbers = function(line) {

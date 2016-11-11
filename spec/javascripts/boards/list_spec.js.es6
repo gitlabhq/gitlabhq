@@ -1,6 +1,7 @@
+/* eslint-disable */
 //= require jquery
 //= require jquery_ujs
-//= require jquery.cookie
+//= require js.cookie
 //= require vue
 //= require vue-resource
 //= require lib/utils/url_utility
@@ -16,10 +17,15 @@ describe('List model', () => {
   let list;
 
   beforeEach(() => {
-    gl.boardService = new BoardService('/test/issue-boards/board');
+    Vue.http.interceptors.push(boardsMockInterceptor);
+    gl.boardService = new BoardService('/test/issue-boards/board', '1');
     gl.issueBoards.BoardsStore.create();
 
     list = new List(listObj);
+  });
+
+  afterEach(() => {
+    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
   });
 
   it('gets issues when created', (done) => {
@@ -58,15 +64,6 @@ describe('List model', () => {
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
       done();
     }, 0);
-  });
-
-  it('can\'t search when not backlog', () => {
-    expect(list.canSearch()).toBe(false);
-  });
-
-  it('can search when backlog', () => {
-    list.type = 'backlog';
-    expect(list.canSearch()).toBe(true);
   });
 
   it('gets issue from list', (done) => {

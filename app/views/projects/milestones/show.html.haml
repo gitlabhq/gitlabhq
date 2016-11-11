@@ -1,49 +1,52 @@
+- @no_container = true
 - page_title       @milestone.title, "Milestones"
 - page_description @milestone.description
+= render "projects/issues/head"
 
-.detail-page-header
-  .status-box{ class: status_box_class(@milestone) }
-    - if @milestone.closed?
-      Closed
-    - elsif @milestone.expired?
-      Past due
-    - else
-      Open
-  %span.identifier
-    Milestone ##{@milestone.iid}
-  - if @milestone.expires_at
-    %span.creator
-      &middot;
-      = @milestone.expires_at
-  .pull-right
-    - if can?(current_user, :admin_milestone, @project)
-      - if @milestone.active?
-        = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
+%div{ class: container_class }
+  .detail-page-header
+    .status-box{ class: status_box_class(@milestone) }
+      - if @milestone.closed?
+        Closed
+      - elsif @milestone.expired?
+        Past due
       - else
-        = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
+        Open
+    %span.identifier
+      Milestone ##{@milestone.iid}
+    - if @milestone.expires_at
+      %span.creator
+        &middot;
+        = @milestone.expires_at
+    .pull-right
+      - if can?(current_user, :admin_milestone, @project)
+        - if @milestone.active?
+          = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
+        - else
+          = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
 
-      = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped btn-nr" do
-        Edit
+        = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped btn-nr" do
+          Edit
 
-      = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
-        Delete
+        = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
+          Delete
 
-.detail-page-description.milestone-detail
-  %h2.title
-    = markdown escape_once(@milestone.title), pipeline: :single_line
-  %div
-    - if @milestone.description.present?
-      .description
-        .wiki
-          = preserve do
-            = markdown @milestone.description
+  .detail-page-description.milestone-detail{ class: ('hide-bottom-border' unless @milestone.description.present? ) }
+    %h2.title
+      = markdown_field(@milestone, :title)
+    %div
+      - if @milestone.description.present?
+        .description
+          .wiki
+            = preserve do
+              = markdown_field(@milestone, :description)
 
-- if @milestone.total_items_count(current_user).zero?
-  .alert.alert-success.prepend-top-default
-    %span Assign some issues to this milestone.
-- elsif @milestone.complete?(current_user) && @milestone.active?
-  .alert.alert-success.prepend-top-default
-    %span All issues for this milestone are closed. You may close this milestone now.
+  - if @milestone.total_items_count(current_user).zero?
+    .alert.alert-success.prepend-top-default
+      %span Assign some issues to this milestone.
+  - elsif @milestone.complete?(current_user) && @milestone.active?
+    .alert.alert-success.prepend-top-default
+      %span All issues for this milestone are closed. You may close this milestone now.
 
-= render 'shared/milestones/summary', milestone: @milestone, project: @project
-= render 'shared/milestones/tabs', milestone: @milestone
+  = render 'shared/milestones/summary', milestone: @milestone, project: @project
+  = render 'shared/milestones/tabs', milestone: @milestone

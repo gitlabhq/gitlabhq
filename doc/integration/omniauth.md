@@ -102,8 +102,8 @@ To change these settings:
         block_auto_created_users: true
     ```
 
-Now we can choose one or more of the Supported Providers listed above to continue
-the configuration process.
+Now we can choose one or more of the [Supported Providers](#supported-providers)
+listed above to continue the configuration process.
 
 ## Enable OmniAuth for an Existing User
 

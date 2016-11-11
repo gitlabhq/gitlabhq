@@ -1,10 +1,7 @@
+/* eslint-disable */
 
 /*= require flash */
-
-
 /*= require jquery.waitforimages */
-
-
 /*= require task_list */
 
 (function() {
@@ -13,6 +10,7 @@
   this.Issue = (function() {
     function Issue() {
       this.submitNoteForm = bind(this.submitNoteForm, this);
+      // Prevent duplicate event bindings
       this.disableTaskList();
       if ($('a.btn-close').length) {
         this.initTaskList();
@@ -97,8 +95,14 @@
       return $.ajax({
         type: 'PATCH',
         url: $('form.js-issuable-update').attr('action'),
-        data: patchData
+        data: patchData,
+        success: function(issue) {
+          document.querySelector('#task_status').innerText = issue.task_status;
+          document.querySelector('#task_status_short').innerText = issue.task_status_short;
+        }
       });
+    // TODO (rspeicher): Make the issue description inline-editable like a note so
+    // that we can re-use its form here
     };
 
     Issue.prototype.initMergeRequests = function() {
@@ -127,7 +131,9 @@
 
     Issue.prototype.initCanCreateBranch = function() {
       var $container;
-      $container = $('div#new-branch');
+      $container = $('#new-branch');
+      // If the user doesn't have the required permissions the container isn't
+      // rendered at all.
       if ($container.length === 0) {
         return;
       }
@@ -139,7 +145,6 @@
         if (data.can_create_branch) {
           $container.find('.checking').hide();
           $container.find('.available').show();
-          return $container.find('a').attr('disabled', false);
         } else {
           $container.find('.checking').hide();
           return $container.find('.unavailable').show();

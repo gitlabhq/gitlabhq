@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ProjectSelect = (function() {
     function ProjectSelect() {
@@ -23,7 +24,7 @@
                   data = groups.concat(projects);
                   return finalCallback(data);
                 };
-                return Api.groups(term, false, groupsCallback);
+                return Api.groups(term, {}, groupsCallback);
               };
             } else {
               projectsCallback = finalCallback;
@@ -72,7 +73,7 @@
                     data = groups.concat(projects);
                     return finalCallback(data);
                   };
-                  return Api.groups(query.term, false, groupsCallback);
+                  return Api.groups(query.term, {}, groupsCallback);
                 };
               } else {
                 projectsCallback = finalCallback;

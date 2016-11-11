@@ -1,44 +1,48 @@
+- @no_container = true
 - page_title "Blame", @blob.path, @ref
+= render "projects/commits/head"
 
-%h3.page-title Blame view
+%div{ class: container_class }
+  %h3.page-title Blame view
 
-#blob-content-holder.tree-holder
-  .file-holder
-    .file-title
-      = blob_icon @blob.mode, @blob.name
-      %strong
-        = @path
-      %small= number_to_human_size @blob.size
-      .file-actions
-        = render "projects/blob/actions"
-    .file-content.blame.code.js-syntax-highlight
-      %table
-        - current_line = 1
-        - @blame_groups.each do |blame_group|
-          %tr
-            %td.blame-commit
-              .commit
-                - commit = blame_group[:commit]
-                .commit-row-title
-                  %strong
-                    = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
-                  .pull-right
-                    = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "monospace"
-                  &nbsp;
-                .light
-                  = commit_author_link(commit, avatar: false)
-                  authored
-                  #{time_ago_with_tooltip(commit.committed_date, skip_js: true)}
-            %td.line-numbers
-              - line_count = blame_group[:lines].count
-              - (current_line...(current_line + line_count)).each do |i|
-                %a.diff-line-num{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
-                  = icon("link")
-                  = i
-                \
-              - current_line += line_count
-            %td.lines
-              %pre.code.highlight
-                %code
-                  - blame_group[:lines].each do |line|
-                    #{line}
+  #blob-content-holder.tree-holder
+    .file-holder
+      .file-title
+        = blob_icon @blob.mode, @blob.name
+        %strong
+          = @path
+        %small= number_to_human_size @blob.size
+        .file-actions
+          = render "projects/blob/actions"
+      .table-responsive.file-content.blame.code.js-syntax-highlight
+        %table
+          - current_line = 1
+          - @blame_groups.each do |blame_group|
+            %tr
+              %td.blame-commit
+                .commit
+                  - commit = blame_group[:commit]
+                  = author_avatar(commit, size: 36)
+                  .commit-row-title
+                    %strong
+                      = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
+                    .pull-right
+                      = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "monospace"
+                    &nbsp;
+                  .light
+                    = commit_author_link(commit, avatar: false)
+                    authored
+                    #{time_ago_with_tooltip(commit.committed_date)}
+              %td.line-numbers
+                - line_count = blame_group[:lines].count
+                - (current_line...(current_line + line_count)).each do |i|
+                  %a.diff-line-num{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
+                    = icon("link")
+                    = i
+                  \
+                - current_line += line_count
+              %td.lines
+                %pre.code.highlight
+                  %code
+                    - blame_group[:lines].each do |line|
+                      #{line}

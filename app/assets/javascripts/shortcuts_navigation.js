@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require shortcuts */
 
@@ -33,6 +34,9 @@
       });
       Mousetrap.bind('g i', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-issues');
+      });
+      Mousetrap.bind('g l', function() {
+        ShortcutsNavigation.findAndFollowLink('.shortcuts-issue-boards');
       });
       Mousetrap.bind('g m', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-merge_requests');

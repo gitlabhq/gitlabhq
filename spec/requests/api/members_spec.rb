@@ -30,18 +30,27 @@ describe API::Members, api: true  do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
       end
 
-      context 'when authenticated as a non-member' do
-        %i[access_requester stranger].each do |type|
-          context "as a #{type}" do
-            it 'returns 200' do
-              user = public_send(type)
-              get api("/#{source_type.pluralize}/#{source.id}/members", user)
+      %i[master developer access_requester stranger].each do |type|
+        context "when authenticated as a #{type}" do
+          it 'returns 200' do
+            user = public_send(type)
+            get api("/#{source_type.pluralize}/#{source.id}/members", user)
 
-              expect(response).to have_http_status(200)
-              expect(json_response.size).to eq(2)
-            end
+            expect(response).to have_http_status(200)
+            expect(json_response.size).to eq(2)
+            expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
           end
         end
+      end
+
+      it 'does not return invitees' do
+        create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
+
+        get api("/#{source_type.pluralize}/#{source.id}/members", developer)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
       end
 
       it 'finds members with query string' do
@@ -88,7 +97,10 @@ describe API::Members, api: true  do
   shared_examples 'POST /:sources/:id/members' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { post api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
+        let(:route) do
+          post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
+               user_id: access_requester.id, access_level: Member::MASTER
+        end
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
@@ -96,7 +108,8 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              post api("/#{source_type.pluralize}/#{source.id}/members", user)
+              post api("/#{source_type.pluralize}/#{source.id}/members", user),
+                   user_id: access_requester.id, access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
             end
@@ -165,7 +178,10 @@ describe API::Members, api: true  do
   shared_examples 'PUT /:sources/:id/members/:user_id' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
+        let(:route) do
+          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
+              access_level: Member::MASTER
+        end
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
@@ -173,7 +189,8 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
+              put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
+                  access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
             end
@@ -310,5 +327,16 @@ describe API::Members, api: true  do
 
   it_behaves_like 'DELETE /:sources/:id/members/:user_id', 'group' do
     let(:source) { group }
+  end
+
+  context 'Adding owner to project' do
+    it 'returns 403' do
+      expect do
+        post api("/projects/#{project.id}/members", master),
+             user_id: stranger.id, access_level: Member::OWNER
+
+        expect(response).to have_http_status(422)
+      end.to change { project.members.count }.by(0)
+    end
   end
 end

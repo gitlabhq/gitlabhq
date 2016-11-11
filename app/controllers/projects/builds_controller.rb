@@ -35,7 +35,11 @@ class Projects::BuildsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @build.to_json(methods: :trace_html)
+        render json: {
+          id: @build.id,
+          status: @build.status,
+          trace_html: @build.trace_html
+        }
       end
     end
   end
@@ -43,7 +47,9 @@ class Projects::BuildsController < Projects::ApplicationController
   def trace
     respond_to do |format|
       format.json do
-        render json: @build.trace_with_state(params[:state].presence).merge!(id: @build.id, status: @build.status)
+        state = params[:state].presence
+        render json: @build.trace_with_state(state: state).
+          merge!(id: @build.id, status: @build.status)
       end
     end
   end
@@ -74,12 +80,12 @@ class Projects::BuildsController < Projects::ApplicationController
   def erase
     @build.erase(erased_by: current_user)
     redirect_to namespace_project_build_path(project.namespace, project, @build),
-                notice: "Build has been sucessfully erased!"
+                notice: "Build has been successfully erased!"
   end
 
   def raw
-    if @build.has_trace?
-      send_file @build.path_to_trace, type: 'text/plain; charset=utf-8', disposition: 'inline'
+    if @build.has_trace_file?
+      send_file @build.trace_file_path, type: 'text/plain; charset=utf-8', disposition: 'inline'
     else
       render_404
     end

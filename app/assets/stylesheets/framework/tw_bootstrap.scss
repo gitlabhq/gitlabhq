@@ -48,31 +48,40 @@
 .clearfix {
   @include clearfix();
 }
+
 .center-block {
   @include center-block();
 }
+
 .pull-right {
   float: right !important;
 }
+
 .pull-left {
   float: left !important;
 }
+
 .hide {
   display: none;
 }
+
 .show {
   display: block !important;
 }
+
 .invisible {
   visibility: hidden;
 }
+
 .text-hide {
   @include text-hide();
 }
+
 .hidden {
   display: none !important;
   visibility: hidden !important;
 }
+
 .affix {
   position: fixed;
 }
@@ -117,7 +126,8 @@
   box-shadow: none;
 
   .panel-body {
-    form, pre {
+    form,
+    pre {
       margin: 0;
     }
 
@@ -146,6 +156,7 @@
       padding: 6px 15px;
       font-size: 13px;
       font-weight: normal;
+
       a {
         color: #777;
       }

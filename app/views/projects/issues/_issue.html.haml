@@ -1,7 +1,7 @@
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id } }
-  - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
+  - if @bulk_edit
     .issue-check
-      = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
+      = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
 
   .issue-title.title
     %span.issue-title-text
@@ -29,7 +29,7 @@
 
       - note_count = issue.notes.user.count
       %li
-        = link_to issue_path(issue, anchor: 'notes'), class: ('issue-no-comments' if note_count.zero?) do
+        = link_to issue_path(issue, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
           = icon('comments')
           = note_count
 
@@ -50,7 +50,7 @@
     - if issue.labels.any?
       &nbsp;
       - issue.labels.each do |label|
-        = link_to_label(label, project: issue.project)
+        = link_to_label(label, subject: issue.project)
     - if issue.tasks?
       &nbsp;
       %span.task-status

@@ -7,6 +7,8 @@
 #
 module Projects
   class HousekeepingService < BaseService
+    include Gitlab::CurrentSettings
+
     LEASE_TIMEOUT = 3600
 
     class LeaseTaken < StandardError
@@ -20,42 +22,77 @@ module Projects
     end
 
     def execute
-      raise LeaseTaken unless try_obtain_lease
+      lease_uuid = try_obtain_lease
+      raise LeaseTaken unless lease_uuid.present?
 
-      execute_gitlab_shell_gc
+      execute_gitlab_shell_gc(lease_uuid)
     end
 
     def needed?
-      @project.pushes_since_gc >= 10
+      pushes_since_gc > 0 && period_match? && housekeeping_enabled?
     end
 
     def increment!
-      if Gitlab::ExclusiveLease.new("project_housekeeping:increment!:#{@project.id}", timeout: 60).try_obtain
-        Gitlab::Metrics.measure(:increment_pushes_since_gc) do
-          update_pushes_since_gc(@project.pushes_since_gc + 1)
-        end
+      Gitlab::Metrics.measure(:increment_pushes_since_gc) do
+        @project.increment_pushes_since_gc
       end
     end
 
     private
 
-    def execute_gitlab_shell_gc
-      GitGarbageCollectWorker.perform_async(@project.id)
+    def execute_gitlab_shell_gc(lease_uuid)
+      GitGarbageCollectWorker.perform_async(@project.id, task, lease_key, lease_uuid)
     ensure
-      Gitlab::Metrics.measure(:reset_pushes_since_gc) do
-        update_pushes_since_gc(0)
+      if pushes_since_gc >= gc_period
+        Gitlab::Metrics.measure(:reset_pushes_since_gc) do
+          @project.reset_pushes_since_gc
+        end
       end
-    end
-
-    def update_pushes_since_gc(new_value)
-      @project.update_column(:pushes_since_gc, new_value)
     end
 
     def try_obtain_lease
       Gitlab::Metrics.measure(:obtain_housekeeping_lease) do
-        lease = ::Gitlab::ExclusiveLease.new("project_housekeeping:#{@project.id}", timeout: LEASE_TIMEOUT)
+        lease = ::Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
         lease.try_obtain
       end
+    end
+
+    def lease_key
+      "project_housekeeping:#{@project.id}"
+    end
+
+    def pushes_since_gc
+      @project.pushes_since_gc
+    end
+
+    def task
+      if pushes_since_gc % gc_period == 0
+        :gc
+      elsif pushes_since_gc % full_repack_period == 0
+        :full_repack
+      else
+        :incremental_repack
+      end
+    end
+
+    def period_match?
+      [gc_period, full_repack_period, repack_period].any? { |period| pushes_since_gc % period == 0 }
+    end
+
+    def housekeeping_enabled?
+      current_application_settings.housekeeping_enabled
+    end
+
+    def gc_period
+      current_application_settings.housekeeping_gc_period
+    end
+
+    def full_repack_period
+      current_application_settings.housekeeping_full_repack_period
+    end
+
+    def repack_period
+      current_application_settings.housekeeping_incremental_repack_period
     end
   end
 end

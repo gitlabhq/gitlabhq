@@ -101,11 +101,11 @@ module Ci
           it 'equalises number of running builds' do
             # after finishing the first build for project 1, get a second build from the same project
             expect(service.execute(shared_runner)).to eq(build1_project1)
-            build1_project1.success
+            build1_project1.reload.success
             expect(service.execute(shared_runner)).to eq(build2_project1)
 
             expect(service.execute(shared_runner)).to eq(build1_project2)
-            build1_project2.success
+            build1_project2.reload.success
             expect(service.execute(shared_runner)).to eq(build2_project2)
             expect(service.execute(shared_runner)).to eq(build1_project3)
             expect(service.execute(shared_runner)).to eq(build3_project1)
@@ -149,6 +149,25 @@ module Ci
           it { expect(build).to be_valid }
           it { expect(build).to be_running }
           it { expect(build.runner).to eq(specific_runner) }
+        end
+      end
+
+      context 'disallow when builds are disabled' do
+        before do
+          project.update(shared_runners_enabled: true)
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+        end
+
+        context 'and uses shared runner' do
+          let(:build) { service.execute(shared_runner) }
+
+          it { expect(build).to be_nil }
+        end
+
+        context 'and uses specific runner' do
+          let(:build) { service.execute(specific_runner) }
+
+          it { expect(build).to be_nil }
         end
       end
     end

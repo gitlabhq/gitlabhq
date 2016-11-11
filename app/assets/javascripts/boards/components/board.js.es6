@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require ./board_blank_state
 //= require ./board_delete
 //= require ./board_list
@@ -21,31 +22,43 @@
     },
     data () {
       return {
-        query: '',
-        filters: Store.state.filters
+        detailIssue: Store.detail,
+        filters: Store.state.filters,
+        showIssueForm: false
       };
     },
     watch: {
-      query () {
-        this.list.filters = this.getFilterData();
-        this.list.getIssues(true);
-      },
       filters: {
         handler () {
           this.list.page = 1;
           this.list.getIssues(true);
         },
         deep: true
+      },
+      detailIssue: {
+        handler () {
+          if (!Object.keys(this.detailIssue.issue).length) return;
+
+          const issue = this.list.findIssue(this.detailIssue.issue.id);
+
+          if (issue) {
+            const boardsList = document.querySelectorAll('.boards-list')[0];
+            const right = (this.$el.offsetLeft + this.$el.offsetWidth) - boardsList.offsetWidth;
+            const left = boardsList.scrollLeft - this.$el.offsetLeft;
+
+            if (right - boardsList.scrollLeft > 0) {
+              boardsList.scrollLeft = right;
+            } else if (left > 0) {
+              boardsList.scrollLeft = this.$el.offsetLeft;
+            }
+          }
+        },
+        deep: true
       }
     },
     methods: {
-      getFilterData () {
-        const filters = this.filters;
-        let queryData = { search: this.query };
-
-        Object.keys(filters).forEach((key) => { queryData[key] = filters[key]; });
-
-        return queryData;
+      showNewIssueForm() {
+        this.showIssueForm = !this.showIssueForm;
       }
     },
     ready () {

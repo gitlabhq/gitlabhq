@@ -28,6 +28,11 @@ FactoryGirl.define do
           diff_refs: noteable.diff_refs
         )
       end
+
+      trait :resolved do
+        resolved_at { Time.now }
+        resolved_by { create(:user) }
+      end
     end
 
     factory :diff_note_on_commit, traits: [:on_commit], class: DiffNote do

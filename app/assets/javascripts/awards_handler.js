@@ -1,6 +1,7 @@
+/* eslint-disable */
 (function() {
   this.AwardsHandler = (function() {
-    const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
+    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
@@ -86,10 +87,12 @@
     AwardsHandler.prototype.positionMenu = function($menu, $addBtn) {
       var css, position;
       position = $addBtn.data('position');
+      // The menu could potentially be off-screen or in a hidden overflow element
+      // So we position the element absolute in the body
       css = {
         top: ($addBtn.offset().top + $addBtn.outerHeight()) + "px"
       };
-      if ((position != null) && position === 'right') {
+      if (position === 'right') {
         css.left = (($addBtn.offset().left - $menu.outerWidth()) + 20) + "px";
         $menu.addClass('is-aligned-right');
       } else {
@@ -255,12 +258,12 @@
     };
 
     AwardsHandler.prototype.animateEmoji = function($emoji) {
-      var className;
-      className = 'pulse animated';
+      var className = 'pulse animated once short';
       $emoji.addClass(className);
-      return setTimeout((function() {
-        return $emoji.removeClass(className);
-      }), 321);
+
+      $emoji.on('webkitAnimationEnd animationEnd', function() {
+        $(this).removeClass(className);
+      });
     };
 
     AwardsHandler.prototype.createEmoji = function(votesBlock, emoji) {
@@ -284,6 +287,7 @@
       if (emojiIcon.length > 0) {
         unicodeName = emojiIcon.data('unicode-name');
       } else {
+        // Find by alias
         unicodeName = $(".emoji-menu-content [data-aliases*=':" + emoji + ":']").data('unicode-name');
       }
       return "emoji-" + unicodeName;
@@ -319,21 +323,18 @@
       var frequentlyUsedEmojis;
       frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
       frequentlyUsedEmojis.push(emoji);
-      return $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
-        path: gon.relative_url_root || '/',
-        expires: 365
-      });
+      Cookies.set('frequently_used_emojis', frequentlyUsedEmojis.join(','), { expires: 365 });
     };
 
     AwardsHandler.prototype.getFrequentlyUsedEmojis = function() {
       var frequentlyUsedEmojis;
-      frequentlyUsedEmojis = ($.cookie('frequently_used_emojis') || '').split(',');
+      frequentlyUsedEmojis = (Cookies.get('frequently_used_emojis') || '').split(',');
       return _.compact(_.uniq(frequentlyUsedEmojis));
     };
 
     AwardsHandler.prototype.renderFrequentlyUsedBlock = function() {
       var emoji, frequentlyUsedEmojis, i, len, ul;
-      if ($.cookie('frequently_used_emojis')) {
+      if (Cookies.get('frequently_used_emojis')) {
         frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
         ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>");
         for (i = 0, len = frequentlyUsedEmojis.length; i < len; i++) {
@@ -350,9 +351,11 @@
         return function(ev) {
           var found_emojis, h5, term, ul;
           term = $(ev.target).val();
+          // Clean previous search results
           $('ul.emoji-menu-search, h5.emoji-search').remove();
           if (term) {
-            h5 = $('<h5>').text('Search results');
+            // Generate a search result block
+            h5 = $('<h5 class="emoji-search" />').text('Search results');
             found_emojis = _this.searchEmojis(term).show();
             ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis);
             $('.emoji-menu-content ul, .emoji-menu-content h5').hide();

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Issues', feature: true do
   include IssueHelpers
   include SortingHelper
+  include WaitForAjax
 
   let(:project) { create(:project) }
 
@@ -51,9 +52,8 @@ describe 'Issues', feature: true do
 
       expect(page).to have_content "Assignee #{@user.name}"
 
-      first('#s2id_issue_assignee_id').click
-      sleep 2 # wait for ajax stuff to complete
-      first('.user-result').click
+      first('.js-user-search').click
+      click_link 'Unassigned'
 
       click_button 'Save changes'
 
@@ -144,7 +144,7 @@ describe 'Issues', feature: true do
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
       expect(page).to have_content 'foobar'
-      expect(page.all('.issue-no-comments').first.text).to eq "0"
+      expect(page.all('.no-comments').first.text).to eq "0"
     end
   end
 
@@ -369,6 +369,44 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'when I want to reset my incoming email token' do
+    let(:project1) { create(:project, namespace: @user.namespace) }
+
+    before do
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      project1.team << [@user, :master]
+      visit namespace_project_issues_path(@user.namespace, project1)
+    end
+
+    it 'changes incoming email address token', js: true do
+      find('.issue-email-modal-btn').click
+      previous_token = find('input#issue_email').value
+
+      find('.incoming-email-token-reset').click
+      wait_for_ajax
+
+      expect(find('input#issue_email').value).not_to eq(previous_token)
+    end
+  end
+
+  describe 'update labels from issue#show', js: true do
+    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+    let!(:label) { create(:label, project: project) }
+
+    before do
+      visit namespace_project_issue_path(project.namespace, project, issue)
+    end
+
+    it 'will not send ajax request when no data is changed' do
+      page.within '.labels' do
+        click_link 'Edit'
+        first('.dropdown-menu-close').click
+
+        expect(page).not_to have_selector('.block-loading')
+      end
+    end
+  end
+
   describe 'update assignee from issue#show' do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 
@@ -536,7 +574,7 @@ describe 'Issues', feature: true do
     end
   end
 
-  xdescribe 'new issue by email' do
+  describe 'new issue by email' do
     shared_examples 'show the email in the modal' do
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")

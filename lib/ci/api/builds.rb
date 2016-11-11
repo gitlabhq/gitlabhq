@@ -12,10 +12,9 @@ module Ci
         #   POST /builds/register
         post "register" do
           authenticate_runner!
-          update_runner_last_contact
-          update_runner_info
           required_attributes! [:token]
           not_found! unless current_runner.active?
+          update_runner_info
 
           build = Ci::RegisterBuildService.new.execute(current_runner)
 
@@ -27,7 +26,7 @@ module Ci
           else
             Gitlab::Metrics.add_event(:build_not_found)
 
-            not_found!
+            build_not_found!
           end
         end
 
@@ -41,9 +40,10 @@ module Ci
         #   PUT /builds/:id
         put ":id" do
           authenticate_runner!
-          update_runner_last_contact
           build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
           forbidden!('Build has been erased!') if build.erased?
+
+          update_runner_info
 
           build.update_attributes(trace: params[:trace]) if params[:trace]
 
@@ -101,6 +101,7 @@ module Ci
         #   POST /builds/:id/artifacts/authorize
         post ":id/artifacts/authorize" do
           require_gitlab_workhorse!
+          Gitlab::Workhorse.verify_api_request!(headers)
           not_allowed! unless Gitlab.config.artifacts.enabled
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
@@ -113,7 +114,8 @@ module Ci
           end
 
           status 200
-          { TempPath: ArtifactUploader.artifacts_upload_path }
+          content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+          Gitlab::Workhorse.artifact_upload_ok
         end
 
         # Upload artifacts to build - Runners only

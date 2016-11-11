@@ -40,4 +40,13 @@ describe 'Gitlab::Popen', lib: true, no_db: true do
     it { expect(@status).to be_zero }
     it { expect(@output).to include('spec') }
   end
+
+  context 'use stdin' do
+    before do
+      @output, @status = @klass.new.popen(%w[cat]) { |stdin| stdin.write 'hello' }
+    end
+  
+    it { expect(@status).to be_zero }
+    it { expect(@output).to eq('hello') }
+  end
 end

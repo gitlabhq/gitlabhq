@@ -56,7 +56,7 @@ Example of response
         "state": "active",
         "twitter": "",
         "username": "root",
-        "web_url": "http://localhost:3000/u/root",
+        "web_url": "http://localhost:3000/root",
         "website_url": ""
       }
     },
@@ -75,7 +75,7 @@ Example of response
       "name": "Administrator",
       "state": "active",
       "username": "root",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     }
   },
   {
@@ -114,7 +114,7 @@ Example of response
         "state": "active",
         "twitter": "",
         "username": "root",
-        "web_url": "http://localhost:3000/u/root",
+        "web_url": "http://localhost:3000/root",
         "website_url": ""
       }
     },
@@ -133,7 +133,7 @@ Example of response
       "name": "Administrator",
       "state": "active",
       "username": "root",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     }
   }
 ]
@@ -169,7 +169,7 @@ Example of response
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "environment": {
     "id": 9,
@@ -193,7 +193,7 @@ Example of response
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/u/root",
+      "web_url": "http://localhost:3000/root",
       "created_at": "2016-08-11T07:09:20.351Z",
       "is_admin": true,
       "bio": null,

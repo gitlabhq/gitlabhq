@@ -1,9 +1,12 @@
+- finder = controller.controller_name == 'issues' || controller.controller_name == 'boards' ? issues_finder : merge_requests_finder
+- boards_page = controller.controller_name == 'boards'
+
 .issues-filters
   .issues-details-filters.row-content-block.second-block
-    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search]), method: :get, class: 'filter-form js-filter-form' do
-      - if params[:issue_search].present?
-        = hidden_field_tag :issue_search, params[:issue_search]
-      - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
+      - if params[:search].present?
+        = hidden_field_tag :search, params[:search]
+      - if @bulk_edit
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
             class: "check_all_issues left"
@@ -12,36 +15,43 @@
           - if params[:author_id].present?
             = hidden_field_tag(:author_id, params[:author_id])
           = dropdown_tag(user_dropdown_label(params[:author_id], "Author"), options: { toggle_class: "js-user-search js-filter-submit js-author-search", title: "Filter by author", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit",
-            placeholder: "Search authors", data: { any_user: "Any Author", first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: "author_id", default_label: "Author" } })
+            placeholder: "Search authors", data: { any_user: "Any Author", first_user: current_user.try(:username), current_user: true, project_id: @project.try(:id), selected: params[:author_id], field_name: "author_id", default_label: "Author" } })
 
         .filter-item.inline
           - if params[:assignee_id].present?
             = hidden_field_tag(:assignee_id, params[:assignee_id])
           = dropdown_tag(user_dropdown_label(params[:assignee_id], "Assignee"), options: { toggle_class: "js-user-search js-filter-submit js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
-            placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: (@project.id if @project), selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
+            placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: current_user.try(:username), null_user: true, current_user: true, project_id: @project.try(:id), selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
 
         .filter-item.inline.milestone-filter
-          = render "shared/issuable/milestone_dropdown"
+          = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true
 
         .filter-item.inline.labels-filter
-          = render "shared/issuable/label_dropdown"
+          = render "shared/issuable/label_dropdown", selected: finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
+
+        - if issuable_filters_present
+          .filter-item.inline.reset-filters
+            %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search])} Reset filters
 
         .pull-right
-          - if controller.controller_name == 'boards' && can?(current_user, :admin_list, @project)
-            .dropdown
-              %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, project_id: @project.try(:id) } }
-                Create new list
-              .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
-                = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
-                - if can?(current_user, :admin_label, @project)
-                  = render partial: "shared/issuable/label_page_create"
-                = dropdown_loading
+          - if boards_page
+            #js-boards-seach.issue-boards-search
+              %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
+              - if can?(current_user, :admin_list, @project)
+                .dropdown.pull-right
+                  %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                    Create new list
+                  .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                    = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
+                    - if can?(current_user, :admin_label, @project)
+                      = render partial: "shared/issuable/label_page_create"
+                    = dropdown_loading
           - else
             = render 'shared/sort_dropdown'
 
-    - if controller.controller_name == 'issues'
+    - if @bulk_edit
       .issues_bulk_update.hide
-        = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post, class: 'bulk-update'  do
+        = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: 'bulk-update'  do
           .filter-item.inline
             = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
@@ -64,15 +74,14 @@
                 %li
                   %a{href: "#", data: {id: "unsubscribe"}} Unsubscribe
 
-          = hidden_field_tag 'update[issues_ids]', []
+          = hidden_field_tag 'update[issuable_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
-            = button_tag "Update issues", class: "btn update_selected_issues btn-save"
-
-  - if !@labels.nil?
-    .row-content-block.second-block.filtered-labels{ class: ("hidden" if !@labels.any?) }
-      - if @labels.any?
-        = render "shared/labels_row", labels: @labels
+            = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
+  - has_labels = @labels && @labels.any?
+  .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }
+    - if has_labels
+      = render 'shared/labels_row', labels: @labels
 
 :javascript
   new UsersSelect();

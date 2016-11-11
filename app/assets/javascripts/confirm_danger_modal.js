@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.ConfirmDangerModal = (function() {
     function ConfirmDangerModal(form, text) {
@@ -11,7 +12,7 @@
       submit.disable();
       $('.js-confirm-danger-input').off('input');
       $('.js-confirm-danger-input').on('input', function() {
-        if (rstrip($(this).val()) === project_path) {
+        if (gl.utils.rstrip($(this).val()) === project_path) {
           return submit.enable();
         } else {
           return submit.disable();

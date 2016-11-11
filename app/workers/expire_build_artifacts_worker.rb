@@ -1,13 +1,13 @@
 class ExpireBuildArtifactsWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   def perform
-    Rails.logger.info 'Cleaning old build artifacts'
+    Rails.logger.info 'Scheduling removal of build artifacts'
 
-    builds = Ci::Build.with_expired_artifacts
-    builds.find_each(batch_size: 50).each do |build|
-      Rails.logger.debug "Removing artifacts build #{build.id}..."
-      build.erase_artifacts!
-    end
+    build_ids = Ci::Build.with_expired_artifacts.pluck(:id)
+    build_ids = build_ids.map { |build_id| [build_id] }
+
+    Sidekiq::Client.push_bulk('class' => ExpireBuildInstanceArtifactsWorker, 'args' => build_ids )
   end
 end

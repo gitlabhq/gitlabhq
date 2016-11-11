@@ -59,6 +59,10 @@ module Banzai
             html_safe
         end
       end
+
+      def object_link_title(object)
+        nil
+      end
     end
   end
 end

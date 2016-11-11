@@ -1,3 +1,4 @@
+- ref = local_assigns.fetch(:ref)
 - if @note_counts
   - note_count = @note_counts.fetch(commit.id, 0)
 - else
@@ -5,9 +6,9 @@
   - note_count = notes.user.count
 
 - cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
-- cache_key.push(commit.status) if commit.status
+- cache_key.push(commit.status(ref)) if commit.status(ref)
 
-= cache(cache_key) do
+= cache(cache_key, expires_in: 1.day) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     = author_avatar(commit, size: 36)
 
@@ -18,22 +19,22 @@
           %span.commit-row-message.visible-xs-inline
             &middot;
             = commit.short_id
-          - if commit.status
+          - if commit.status(ref)
             .visible-xs-inline
-              = render_commit_status(commit)
+              = render_commit_status(commit, ref: ref)
           - if commit.description?
             %a.text-expander.hidden-xs.js-toggle-button ...
 
         .commit-actions.hidden-xs
-          - if commit.status
-            = render_commit_status(commit)
+          - if commit.status(ref)
+            = render_commit_status(commit, ref: ref)
           = clipboard_button(clipboard_text: commit.id)
           = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"
           = link_to_browse_code(project, commit)
 
       - if commit.description?
         %pre.commit-row-description.js-toggle-content
-          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
+          = preserve(markdown(commit.description, pipeline: :single_line, author: commit.author))
 
       .commit-row-info
         = commit_author_link(commit, avatar: false, size: 24)

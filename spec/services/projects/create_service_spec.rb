@@ -85,7 +85,7 @@ describe Projects::CreateService, services: true do
 
       context 'global builds_enabled false does not enable CI by default' do
         before do
-          @opts.merge!(builds_enabled: false)
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
         end
 
         it { is_expected.to be_falsey }
@@ -93,7 +93,7 @@ describe Projects::CreateService, services: true do
 
       context 'global builds_enabled true does enable CI by default' do
         before do
-          @opts.merge!(builds_enabled: true)
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
         end
 
         it { is_expected.to be_truthy }

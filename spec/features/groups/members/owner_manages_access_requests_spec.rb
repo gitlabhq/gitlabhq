@@ -41,7 +41,7 @@ feature 'Groups > Members > Owner manages access requests', feature: true do
 
   def expect_visible_access_request(group, user)
     expect(group.requesters.exists?(user_id: user)).to be_truthy
-    expect(page).to have_content "#{group.name} access requests 1"
+    expect(page).to have_content "Users requesting access to #{group.name} 1"
     expect(page).to have_content user.name
   end
 end

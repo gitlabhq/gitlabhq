@@ -11,8 +11,15 @@ module MergeRequests
       params.except!(:target_project_id)
       params.except!(:source_branch)
 
-      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      if merge_request.closed_without_fork?
+        params.except!(:target_branch, :force_remove_source_branch)
+      end
 
+      if params[:force_remove_source_branch].present?
+        merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      end
+
+      handle_wip_event(merge_request)
       update(merge_request)
     end
 
@@ -72,6 +79,23 @@ module MergeRequests
 
     def close_service
       MergeRequests::CloseService
+    end
+
+    def after_update(issuable)
+      issuable.cache_merge_request_closes_issues!(current_user)
+    end
+
+    private
+
+    def handle_wip_event(merge_request)
+      if wip_event = params.delete(:wip_event)
+        # We update the title that is provided in the params or we use the mr title
+        title = params[:title] || merge_request.title
+        params[:title] = case wip_event
+                         when 'wip' then MergeRequest.wip_title(title)
+                         when 'unwip' then MergeRequest.wipless_title(title)
+                         end
+      end
     end
   end
 end

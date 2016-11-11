@@ -45,40 +45,38 @@
   }
 
   h1 {
-    font-size: 2em;
+    font-size: 1.75em;
     font-weight: 600;
-    margin: 1em 0 10px;
+    margin: 16px 0 10px;
     padding: 0 0 0.3em;
-    border-bottom: 1px solid $btn-default-border;
+    border-bottom: 1px solid $white-dark;
     color: $gl-gray-dark;
   }
 
   h2 {
-    font-size: 1.6em;
+    font-size: 1.5em;
     font-weight: 600;
-    margin: 1em 0 10px;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid $btn-default-border;
+    margin: 16px 0 10px;
     color: $gl-gray-dark;
   }
 
   h3 {
-    margin: 1em 0 10px;
-    font-size: 1.4em;
+    margin: 16px 0 10px;
+    font-size: 1.3em;
   }
 
   h4 {
-    margin: 1em 0 10px;
-    font-size: 1.25em;
+    margin: 16px 0 10px;
+    font-size: 1.2em;
   }
 
   h5 {
-    margin: 1em 0 10px;
+    margin: 16px 0 10px;
     font-size: 1em;
   }
 
   h6 {
-    margin: 1em 0 10px;
+    margin: 16px 0 10px;
     font-size: 0.95em;
   }
 
@@ -87,7 +85,12 @@
     font-size: inherit;
     padding: 8px 21px;
     margin: 12px 0;
-    border-left: 3px solid #e7e9ed;
+    border-left: 3px solid $white-dark;
+  }
+
+  blockquote:dir(rtl) {
+    border-left: 0;
+    border-right: 3px solid $white-dark;
   }
 
   blockquote p {
@@ -106,9 +109,14 @@
     @extend .table-bordered;
     margin: 12px 0;
     color: #5c5d5e;
+
     th {
       background: #f8fafc;
     }
+  }
+
+  table:dir(rtl) th {
+    text-align: right;
   }
 
   pre {
@@ -116,24 +124,31 @@
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
-    @include border-radius(2px);
+    border-radius: 2px;
   }
 
   p > code {
     font-weight: inherit;
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding: 0;
     margin: 3px 0 3px 28px !important;
+  }
+
+  ul:dir(rtl),
+  ol:dir(rtl) {
+    margin: 3px 28px 3px 0 !important;
   }
 
   li {
     line-height: 1.6em;
   }
 
-  a[href*="/uploads/"], a[href*="storage.googleapis.com/google-code-attachments/"] {
-    &:before {
+  a[href*="/uploads/"],
+  a[href*="storage.googleapis.com/google-code-attachments/"] {
+    &::before {
       margin-right: 4px;
 
       font: normal normal normal 14px/1 FontAwesome;
@@ -143,41 +158,39 @@
       content: "\f0c6";
     }
 
-    &:hover:before {
+    &:hover::before {
       text-decoration: none;
     }
   }
 
   a.no-attachment-icon {
-    &:before {
+    &::before {
       display: none;
     }
   }
 
   /* Link to current header. */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     position: relative;
 
     a.anchor {
-      // Setting `display: none` would prevent the anchor being scrolled to, so
-      // instead we set the height to 0 and it gets updated on hover.
-      height: 0;
+      left: -16px;
+      position: absolute;
+      text-decoration: none;
+
+      &::after {
+        content: image-url('icon_anchor.svg');
+        visibility: hidden;
+      }
     }
 
-    &:hover > a.anchor {
-      $size: 14px;
-      position: absolute;
-      right: 100%;
-      top: 50%;
-      margin-top: -11px;
-      margin-right: 0;
-      padding-right: 15px;
-      display: inline-block;
-      width: $size;
-      height: $size;
-      background-image: image-url("icon-link.png");
-      background-size: contain;
-      background-repeat: no-repeat;
+    &:hover > a.anchor::after {
+      visibility: visible;
     }
   }
 }
@@ -210,8 +223,13 @@ body {
   margin: 12px 7px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: $gl-header-color;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $gl-title-color;
   font-weight: 600;
 }
 
@@ -268,7 +286,10 @@ a > code {
   text-decoration: line-through;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   small {
     color: $gl-gray;
   }

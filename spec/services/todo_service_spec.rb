@@ -145,6 +145,14 @@ describe TodoService, services: true do
       end
     end
 
+    describe '#destroy_issue' do
+      it 'refresh the todos count cache for the user' do
+        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+        service.destroy_issue(issue, john_doe)
+      end
+    end
+
     describe '#reassigned_issue' do
       it 'creates a pending todo for new assignee' do
         unassigned_issue.update_attribute(:assignee, john_doe)
@@ -337,7 +345,7 @@ describe TodoService, services: true do
         service.new_merge_request(mr_assigned, author)
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-        should_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
@@ -349,7 +357,7 @@ describe TodoService, services: true do
         service.update_merge_request(mr_assigned, author)
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-        should_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
@@ -373,6 +381,7 @@ describe TodoService, services: true do
           should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
           should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
           should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
         end
 
         it 'does not raise an error when description not change' do
@@ -391,6 +400,14 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
+      end
+    end
+
+    describe '#destroy_merge_request' do
+      it 'refresh the todos count cache for the user' do
+        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+        service.destroy_merge_request(mr_assigned, john_doe)
       end
     end
 
@@ -414,6 +431,11 @@ describe TodoService, services: true do
 
         should_create_todo(user: john_doe, target: mr_assigned, author: john_doe, action: Todo::ASSIGNED)
       end
+
+      it 'does not create a todo for guests' do
+        service.reassigned_merge_request(mr_assigned, author)
+        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
+      end
     end
 
     describe '#merge_merge_request' do
@@ -424,6 +446,11 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
+      end
+
+      it 'does not create todo for guests' do
+        service.merge_merge_request(mr_assigned, john_doe)
+        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
       end
     end
 
@@ -478,6 +505,13 @@ describe TodoService, services: true do
         service.new_note(legacy_diff_note_on_merge_request, author)
 
         should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: legacy_diff_note_on_merge_request)
+      end
+
+      it 'does not create todo for guests' do
+        note_on_merge_request = create :note_on_merge_request, project: project, noteable: mr_assigned, note: mentions
+        service.new_note(note_on_merge_request, author)
+
+        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
       end
     end
   end

@@ -9,7 +9,7 @@ require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'rspec/retry'
 
-if ENV['CI']
+if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
@@ -26,9 +26,10 @@ RSpec.configure do |config|
   config.verbose_retry = true
   config.display_try_failure_messages = true
 
-  config.include Devise::TestHelpers, type: :controller
-  config.include LoginHelpers,        type: :feature
-  config.include LoginHelpers,        type: :request
+  config.include Devise::Test::ControllerHelpers,   type: :controller
+  config.include Warden::Test::Helpers, type: :request
+  config.include LoginHelpers,          type: :feature
+  config.include SearchHelpers,         type: :feature
   config.include StubConfiguration
   config.include EmailHelpers
   config.include TestEnv
@@ -49,6 +50,12 @@ RSpec.configure do |config|
     Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
     example.run
     Rails.cache = caching_store
+  end
+
+  config.around(:each, :redis) do |example|
+    Gitlab::Redis.with(&:flushall)
+    example.run
+    Gitlab::Redis.with(&:flushall)
   end
 end
 

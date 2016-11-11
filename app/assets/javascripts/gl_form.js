@@ -1,14 +1,18 @@
+/* eslint-disable */
 (function() {
   this.GLForm = (function() {
     function GLForm(form) {
       this.form = form;
       this.textarea = this.form.find('textarea.js-gfm-input');
+      // Before we start, we should clean up any previous data for this form
       this.destroy();
+      // Setup the form
       this.setupForm();
       this.form.data('gl-form', this);
     }
 
     GLForm.prototype.destroy = function() {
+      // Clean form listeners
       this.clearEventListeners();
       return this.form.data('gl-form', null);
     };
@@ -20,13 +24,16 @@
       if (isNewForm) {
         this.form.find('.div-dropzone').remove();
         this.form.addClass('gfm-form');
-        disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button'));
+        // remove notify commit author checkbox for non-commit notes
+        gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button'));
         GitLab.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
         new DropzoneInput(this.form);
         autosize(this.textarea);
+        // form and textarea event listeners
         this.addEventListeners();
         gl.text.init(this.form);
       }
+      // hide discard button
       this.form.find('.js-note-discard').hide();
       return this.form.show();
     };

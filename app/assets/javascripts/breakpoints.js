@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Breakpoints = (function() {
     var BreakpointInstance, instance;
@@ -23,6 +24,7 @@
         if ($(allDeviceSelector.join(",")).length) {
           return;
         }
+        // Create all the elements
         els = $.map(BREAKPOINTS, function(breakpoint) {
           return "<div class='device-" + breakpoint + " visible-" + breakpoint + "'></div>";
         });
@@ -40,6 +42,7 @@
       BreakpointInstance.prototype.getBreakpointSize = function() {
         var $visibleDevice;
         $visibleDevice = this.visibleDevice;
+        // the page refreshed via turbolinks
         if (!$visibleDevice().length) {
           this.setup();
         }

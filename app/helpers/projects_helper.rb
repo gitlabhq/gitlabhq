@@ -27,7 +27,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
@@ -61,7 +61,9 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
+      project_link << button_tag(type: 'button', class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" }) do
+        icon("chevron-down")
+      end
     end
 
     full_title = "#{namespace_link} / #{project_link}".html_safe
@@ -127,7 +129,39 @@ module ProjectsHelper
     current_user.recent_push(project_ids)
   end
 
+  def project_feature_access_select(field)
+    # Don't show option "everyone with access" if project is private
+    options = project_feature_options
+
+    if @project.private?
+      level = @project.project_feature.send(field)
+      options.delete('Everyone with access')
+      highest_available_option = options.values.max if level == ProjectFeature::ENABLED
+    end
+
+    options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
+
+    content_tag(
+      :select,
+      options,
+      name: "project[project_feature_attributes][#{field}]",
+      id: "project_project_feature_attributes_#{field}",
+      class: "pull-right form-control #{repo_children_classes(field)}",
+      data: { field: field }
+    ).html_safe
+  end
+
   private
+
+  def repo_children_classes(field)
+    needs_repo_check = [:merge_requests_access_level, :builds_access_level]
+    return unless needs_repo_check.include?(field)
+
+    classes = "project-repo-select js-repo-select"
+    classes << " disabled" unless @project.feature_available?(:repository, current_user)
+
+    classes
+  end
 
   def get_project_nav_tabs(project, current_user)
     nav_tabs = [:home]
@@ -185,6 +219,18 @@ module ProjectsHelper
     end
 
     nav_tabs.flatten
+  end
+
+  def project_lfs_status(project)
+    if project.lfs_enabled?
+      content_tag(:span, class: 'lfs-enabled') do
+        'Enabled'
+      end
+    else
+      content_tag(:span, class: 'lfs-disabled') do
+        'Disabled'
+      end
+    end
   end
 
   def git_user_name
@@ -399,5 +445,17 @@ module ProjectsHelper
     return '' unless message.present?
 
     message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
+  end
+
+  def project_feature_options
+    {
+      'Disabled' => ProjectFeature::DISABLED,
+      'Only team members' => ProjectFeature::PRIVATE,
+      'Everyone with access' => ProjectFeature::ENABLED
+    }
+  end
+
+  def project_child_container_class(view_path)
+    view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
   end
 end

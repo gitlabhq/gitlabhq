@@ -46,6 +46,10 @@ module GitlabRoutingHelper
     namespace_project_environments_path(project.namespace, project, *args)
   end
 
+  def project_cycle_analytics_path(project, *args)
+    namespace_project_cycle_analytics_path(project.namespace, project, *args)
+  end
+
   def project_builds_path(project, *args)
     namespace_project_builds_path(project.namespace, project, *args)
   end
@@ -64,6 +68,10 @@ module GitlabRoutingHelper
 
   def runner_path(runner, *args)
     namespace_project_runner_path(@project.namespace, @project, runner, *args)
+  end
+
+  def environment_path(environment, *args)
+    namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
   end
 
   def issue_path(entity, *args)
@@ -86,6 +94,22 @@ module GitlabRoutingHelper
     namespace_project_merge_request_url(entity.project.namespace, entity.project, entity, *args)
   end
 
+  def pipeline_url(pipeline, *args)
+    namespace_project_pipeline_url(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
+  end
+
+  def pipeline_build_url(pipeline, build, *args)
+    namespace_project_build_url(pipeline.project.namespace, pipeline.project, build.id, *args)
+  end
+
+  def commits_url(entity, *args)
+    namespace_project_commits_url(entity.project.namespace, entity.project, entity.ref, *args)
+  end
+
+  def commit_url(entity, *args)
+    namespace_project_commit_url(entity.project.namespace, entity.project, entity.sha, *args)
+  end
+
   def project_snippet_url(entity, *args)
     namespace_project_snippet_url(entity.project.namespace, entity.project, entity, *args)
   end
@@ -96,6 +120,14 @@ module GitlabRoutingHelper
     else
       toggle_subscription_namespace_project_merge_request_path(entity.project.namespace, entity.project, entity)
     end
+  end
+
+  def toggle_award_emoji_personal_snippet_path(*args)
+    toggle_award_emoji_snippet_path(*args)
+  end
+
+  def toggle_award_emoji_namespace_project_project_snippet_path(*args)
+    toggle_award_emoji_namespace_project_snippet_path(*args)
   end
 
   ## Members
@@ -148,5 +180,21 @@ module GitlabRoutingHelper
 
   def resend_invite_group_member_path(group_member, *args)
     resend_invite_group_group_member_path(group_member.source, group_member)
+  end
+
+  # Artifacts
+
+  def artifacts_action_path(path, project, build)
+    action, path_params = path.split('/', 2)
+    args = [project.namespace, project, build, path_params]
+
+    case action
+    when 'download'
+      download_namespace_project_build_artifacts_path(*args)
+    when 'browse'
+      browse_namespace_project_build_artifacts_path(*args)
+    when 'file'
+      file_namespace_project_build_artifacts_path(*args)
+    end
   end
 end

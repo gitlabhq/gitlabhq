@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Gitlab::Gfm::ReferenceRewriter do
   let(:text) { 'some text' }
-  let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:old_project) { create(:project, name: 'old') }
+  let(:new_project) { create(:project, name: 'new') }
   let(:user) { create(:user) }
 
-  before { old_project.team << [user, :guest] }
+  before { old_project.team << [user, :reporter] }
 
   describe '#rewrite' do
     subject do
@@ -62,7 +62,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
           it { is_expected.to eq "#{ref}, `#1`, #{ref}, `#1`" }
         end
 
-        context 'description with labels' do
+        context 'description with project labels' do
           let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
           let(:project_ref) { old_project.to_reference }
 
@@ -74,6 +74,26 @@ describe Gitlab::Gfm::ReferenceRewriter do
           context 'label referenced by text' do
             let(:text) { '#1 and ~"test"' }
             it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+          end
+        end
+
+        context 'description with group labels' do
+          let(:old_group) { create(:group) }
+          let!(:group_label) { create(:group_label, id: 321, name: 'group label', group: old_group) }
+          let(:project_ref) { old_project.to_reference }
+
+          before do
+            old_project.update(namespace: old_group)
+          end
+
+          context 'label referenced by id' do
+            let(:text) { '#1 and ~321' }
+            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
+          end
+
+          context 'label referenced by text' do
+            let(:text) { '#1 and ~"group label"' }
+            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
           end
         end
       end

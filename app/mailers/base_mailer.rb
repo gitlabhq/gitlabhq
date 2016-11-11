@@ -1,6 +1,6 @@
 class BaseMailer < ActionMailer::Base
-  add_template_helper ApplicationHelper
-  add_template_helper GitlabMarkdownHelper
+  helper ApplicationHelper
+  helper GitlabMarkdownHelper
 
   attr_accessor :current_user
   helper_method :current_user, :can?
@@ -9,7 +9,7 @@ class BaseMailer < ActionMailer::Base
   default reply_to: Proc.new { default_reply_to_address.format }
 
   def can?
-    Ability.abilities.allowed?(current_user, action, subject)
+    Ability.allowed?(current_user, action, subject)
   end
 
   private

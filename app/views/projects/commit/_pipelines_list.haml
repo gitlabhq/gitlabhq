@@ -4,14 +4,12 @@
       .nothing-here-block No pipelines to show
   - else
     .table-holder
-      %table.table.builds
+      %table.table.ci-table
         %tbody
           %th Status
+          %th Pipeline
           %th Commit
-          - pipelines.stages.each do |stage|
-            %th.stage
-              %span.has-tooltip{ title: "#{stage.titleize}" }
-                = stage.titleize
+          %th Stages
           %th
           %th
-        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: pipelines.stages, status_icon_only: true, hide_branch: true
+        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: pipelines.stages, show_commit: false

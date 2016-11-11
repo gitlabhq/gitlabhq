@@ -4,16 +4,18 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
   include ReferenceParserHelpers
 
   let(:project) { create(:empty_project, :public) }
-  let(:user) { create(:user) }
-  let(:issue) { create(:issue, project: project) }
-  subject { described_class.new(project, user) }
-  let(:link) { empty_html_link }
+  let(:user)    { create(:user) }
+  let(:issue)   { create(:issue, project: project) }
+  let(:link)    { empty_html_link }
+  subject       { described_class.new(project, user) }
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
       before do
         link['data-issue'] = issue.id.to_s
       end
+
+      it_behaves_like "referenced feature visibility", "issues"
 
       it 'returns the nodes when the user can read the issue' do
         expect(Ability).to receive(:issues_readable_by_user).

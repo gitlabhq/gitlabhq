@@ -1,22 +1,15 @@
-- if can?(current_user, :create_deployment, deployment) && deployment.deployable
-  .pull-right
-    - actions = deployment.manual_actions
-    - if actions.present?
-      .inline
-        .dropdown
-          %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
-            = icon("play")
-            %b.caret
-          %ul.dropdown-menu.dropdown-menu-align-right
-            - actions.each do |action|
-              %li
-                = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
-                  = icon("play")
-                  %span= action.name.humanize
+- if can?(current_user, :create_deployment, deployment)
+  - actions = deployment.manual_actions
+  - if actions.present?
+    .inline
+      .dropdown
+        %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+          = custom_icon('icon_play')
+          = icon('caret-down')
+        %ul.dropdown-menu.dropdown-menu-align-right
+          - actions.each do |action|
+            %li
+              = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
+                = custom_icon('icon_play')
+                %span= action.name.humanize
 
-    - if local_assigns.fetch(:allow_rollback, false)
-      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
-        - if deployment.last?
-          Re-deploy
-        - else
-          Rollback

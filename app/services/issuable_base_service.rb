@@ -45,10 +45,12 @@ class IssuableBaseService < BaseService
 
     unless can?(current_user, ability, project)
       params.delete(:milestone_id)
+      params.delete(:labels)
       params.delete(:add_label_ids)
       params.delete(:remove_label_ids)
       params.delete(:label_ids)
       params.delete(:assignee_id)
+      params.delete(:due_date)
     end
   end
 
@@ -72,12 +74,25 @@ class IssuableBaseService < BaseService
     filter_labels_in_param(:add_label_ids)
     filter_labels_in_param(:remove_label_ids)
     filter_labels_in_param(:label_ids)
+    find_or_create_label_ids
   end
 
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
-    params[key] = project.labels.where(id: params[key]).pluck(:id)
+    params[key] = available_labels.where(id: params[key]).pluck(:id)
+  end
+
+  def find_or_create_label_ids
+    labels = params.delete(:labels)
+    return unless labels
+
+    params[:label_ids] = labels.split(',').map do |label_name|
+      service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
+      label   = service.execute
+
+      label.id
+    end
   end
 
   def process_label_ids(attributes, existing_label_ids: nil)
@@ -95,6 +110,10 @@ class IssuableBaseService < BaseService
     end
 
     new_label_ids
+  end
+
+  def available_labels
+    LabelsFinder.new(current_user, project_id: @project.id).execute
   end
 
   def merge_slash_commands_into_params!(issuable)
@@ -144,6 +163,10 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
+  def after_update(issuable)
+    # To be overridden by subclasses
+  end
+
   def update_issuable(issuable, attributes)
     issuable.with_transaction_returning_status do
       issuable.update(attributes.merge(updated_by: current_user))
@@ -162,8 +185,14 @@ class IssuableBaseService < BaseService
 
     if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache
-      handle_common_system_notes(issuable, old_labels: old_labels)
+
+      # We do not touch as it will affect a update on updated_at field
+      ActiveRecord::Base.no_touching do
+        handle_common_system_notes(issuable, old_labels: old_labels)
+      end
+
       handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
+      after_update(issuable)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
     end

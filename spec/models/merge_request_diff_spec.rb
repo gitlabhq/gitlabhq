@@ -6,9 +6,9 @@ describe MergeRequestDiff, models: true do
 
     it { expect(subject).to be_valid }
     it { expect(subject).to be_persisted }
-    it { expect(subject.commits.count).to eq(5) }
-    it { expect(subject.diffs.count).to eq(8) }
-    it { expect(subject.head_commit_sha).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    it { expect(subject.commits.count).to eq(29) }
+    it { expect(subject.diffs.count).to eq(20) }
+    it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
   end
@@ -44,6 +44,16 @@ describe MergeRequestDiff, models: true do
       end
     end
 
+    context 'when the raw diffs have invalid content' do
+      before { mr_diff.update_attributes(st_diffs: ["--broken-diff"]) }
+
+      it 'returns an empty DiffCollection' do
+        expect(mr_diff.raw_diffs.to_a).to be_empty
+        expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+        expect(mr_diff.raw_diffs).to be_empty
+      end
+    end
+
     context 'when the raw diffs exist' do
       it 'returns the diffs' do
         expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
@@ -63,6 +73,44 @@ describe MergeRequestDiff, models: true do
           diffs
         end
       end
+    end
+  end
+
+  describe '#commits_sha' do
+    shared_examples 'returning all commits SHA' do
+      it 'returns all commits SHA' do
+        commits_sha = subject.commits_sha
+
+        expect(commits_sha).to eq(subject.commits.map(&:sha))
+      end
+    end
+
+    context 'when commits were loaded' do
+      before do
+        subject.commits
+      end
+
+      it_behaves_like 'returning all commits SHA'
+    end
+
+    context 'when commits were not loaded' do
+      it_behaves_like 'returning all commits SHA'
+    end
+  end
+
+  describe '#compare_with' do
+    subject { create(:merge_request, source_branch: 'fix').merge_request_diff }
+
+    it 'delegates compare to the service' do
+      expect(CompareService).to receive(:new).and_call_original
+
+      subject.compare_with(nil)
+    end
+
+    it 'uses git diff A..B approach by default' do
+      diffs = subject.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
+
+      expect(diffs.size).to eq(3)
     end
   end
 end

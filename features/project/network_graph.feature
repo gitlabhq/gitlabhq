@@ -43,4 +43,4 @@ Feature: Project Network Graph
 
   Scenario: I should fail to look for a commit
     When I look for a commit by ";"
-    Then page status code should be 404
+    Then I should see non-existent git revision error message

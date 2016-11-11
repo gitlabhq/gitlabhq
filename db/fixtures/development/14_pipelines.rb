@@ -3,16 +3,21 @@ class Gitlab::Seeder::Pipelines
   BUILDS = [
     { name: 'build:linux', stage: 'build', status: :success },
     { name: 'build:osx', stage: 'build', status: :success },
-    { name: 'rspec:linux', stage: 'test', status: :success },
-    { name: 'rspec:windows', stage: 'test', status: :success },
-    { name: 'rspec:windows', stage: 'test', status: :success },
+    { name: 'rspec:linux 0 3', stage: 'test', status: :success },
+    { name: 'rspec:linux 1 3', stage: 'test', status: :success },
+    { name: 'rspec:linux 2 3', stage: 'test', status: :success },
+    { name: 'rspec:windows 0 3', stage: 'test', status: :success },
+    { name: 'rspec:windows 1 3', stage: 'test', status: :success },
+    { name: 'rspec:windows 2 3', stage: 'test', status: :success },
+    { name: 'rspec:windows 2 3', stage: 'test', status: :success },
     { name: 'rspec:osx', stage: 'test', status_event: :success },
     { name: 'spinach:linux', stage: 'test', status: :success },
     { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true},
     { name: 'env:alpha', stage: 'deploy', environment: 'alpha', status: :pending },
     { name: 'env:beta', stage: 'deploy', environment: 'beta', status: :running },
     { name: 'env:gamma', stage: 'deploy', environment: 'gamma', status: :canceled },
-    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success },
+    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success, options: { environment: { on_stop: 'stop staging' } } },
+    { name: 'stop staging', stage: 'deploy', environment: 'staging', when: 'manual', status: :skipped },
     { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :skipped },
     { name: 'slack', stage: 'notify', when: 'manual', status: :created },
   ]
@@ -30,7 +35,7 @@ class Gitlab::Seeder::Pipelines
       rescue ActiveRecord::RecordInvalid
         print 'F'
       ensure
-        pipeline.build_updated
+        pipeline.update_status
       end
     end
   end

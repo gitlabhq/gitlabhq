@@ -7,38 +7,41 @@ module API
     end
 
     resource :hooks do
-      # Get the list of system hooks
-      #
-      # Example Request:
-      #   GET /hooks
+      desc 'Get the list of system hooks' do
+        success Entities::Hook
+      end
       get do
-        @hooks = SystemHook.all
-        present @hooks, with: Entities::Hook
+        hooks = SystemHook.all
+
+        present hooks, with: Entities::Hook
       end
 
-      # Create new system hook
-      #
-      # Parameters:
-      #   url (required) - url for system hook
-      # Example Request
-      #   POST /hooks
+      desc 'Create a new system hook' do
+        success Entities::Hook
+      end
+      params do
+        requires :url, type: String, desc: "The URL to send the request to"
+        optional :token, type: String, desc: 'The token used to validate payloads'
+        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
+        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
+        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
+      end
       post do
-        attrs = attributes_for_keys [:url]
-        required_attributes! [:url]
-        @hook = SystemHook.new attrs
-        if @hook.save
-          present @hook, with: Entities::Hook
+        hook = SystemHook.new declared(params, include_missing: false).to_h
+
+        if hook.save
+          present hook, with: Entities::Hook
         else
-          not_found!
+          render_validation_error!(hook)
         end
       end
 
-      # Test a hook
-      #
-      # Example Request
-      #   GET /hooks/:id
+      desc 'Test a hook'
+      params do
+        requires :id, type: Integer, desc: 'The ID of the system hook'
+      end
       get ":id" do
-        @hook = SystemHook.find(params[:id])
+        hook = SystemHook.find(params[:id])
         data = {
           event_name: "project_create",
           name: "Ruby",
@@ -47,23 +50,21 @@ module API
           owner_name: "Someone",
           owner_email: "example@gitlabhq.com"
         }
-        @hook.execute(data, 'system_hooks')
+        hook.execute(data, 'system_hooks')
         data
       end
 
-      # Delete a hook. This is an idempotent function.
-      #
-      # Parameters:
-      #   id (required) - ID of the hook
-      # Example Request:
-      #   DELETE /hooks/:id
+      desc 'Delete a hook' do
+        success Entities::Hook
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the system hook'
+      end
       delete ":id" do
-        begin
-          @hook = SystemHook.find(params[:id])
-          @hook.destroy
-        rescue
-          # SystemHook raises an Error if no hook with id found
-        end
+        hook = SystemHook.find_by(id: params[:id])
+        not_found!('System hook') unless hook
+
+        present hook.destroy, with: Entities::Hook
       end
     end
   end

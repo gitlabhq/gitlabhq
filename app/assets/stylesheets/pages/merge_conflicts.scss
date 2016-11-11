@@ -16,7 +16,7 @@ $colors: (
   white_button_origin_chosen  : #268ced,
 
   white_header_not_chosen     : #f0f0f0,
-  white_line_not_chosen       : #f9f9f9,
+  white_line_not_chosen       : $gray-light,
 
 
   dark_header_head_neutral   : rgba(#3f3, .2),
@@ -101,7 +101,8 @@ $colors: (
 
 
 @mixin color-scheme($color) {
-  .header.line_content, .diff-line-num {
+  .header.line_content,
+  .diff-line-num {
     &.origin {
       background-color: map-get($colors, #{$color}_header_origin_neutral);
       border-color: map-get($colors, #{$color}_header_origin_neutral);
@@ -131,6 +132,7 @@ $colors: (
         }
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_header_head_neutral);
       border-color: map-get($colors, #{$color}_header_head_neutral);
@@ -174,6 +176,7 @@ $colors: (
         background-color: map-get($colors, #{$color}_line_not_chosen);
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_line_head_neutral);
 
@@ -225,7 +228,6 @@ $colors: (
       position: absolute;
       right: 10px;
       padding: 0;
-      outline: none;
       color: #fff;
       width: 75px; // static width to make 2 buttons have same width
       height: 19px;
@@ -234,5 +236,52 @@ $colors: (
 
   .btn-success .fa-spinner {
     color: #fff;
+  }
+
+  .editor-wrap {
+    &.is-loading {
+      .editor {
+        display: none;
+      }
+
+      .loading {
+        display: block;
+      }
+    }
+
+    &.saved {
+      .editor {
+        border-top: solid 2px $border-green-extra-light;
+      }
+    }
+
+    .editor {
+      pre {
+        height: 350px;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .loading {
+      display: none;
+    }
+  }
+
+  .discard-changes-alert {
+    background-color: $background-color;
+    text-align: right;
+    padding: $gl-padding-top $gl-padding;
+    color: $gl-text-color;
+
+    .discard-actions {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  }
+
+  .resolve-conflicts-form {
+    padding-top: $gl-padding;
   }
 }

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
-  before_action :user
+  before_action :user, except: [:exists]
   before_action :authorize_read_user!, only: [:show]
 
   def show
@@ -65,7 +65,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("snippets/_snippets", collection: @snippets)
+          html: view_to_html_string("snippets/_snippets", collection: @snippets, remote: true)
         }
       end
     end
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
 
   def calendar
     calendar = contributions_calendar
-    @timestamps = calendar.timestamps
+    @activity_dates = calendar.activity_dates
 
     render 'calendar', layout: false
   end
@@ -83,6 +83,10 @@ class UsersController < ApplicationController
     @events = contributions_calendar.events_by_date(@calendar_date)
 
     render 'calendar_activities', layout: false
+  end
+
+  def exists
+    render json: { exists: Namespace.where(path: params[:username].downcase).any? }
   end
 
   private
@@ -100,8 +104,7 @@ class UsersController < ApplicationController
   end
 
   def contributions_calendar
-    @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects, user)
+    @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
 
   def load_events

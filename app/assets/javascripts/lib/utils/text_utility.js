@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   (function(w) {
     var base;
@@ -6,6 +7,9 @@
     }
     if ((base = w.gl).text == null) {
       base.text = {};
+    }
+    gl.text.addDelimiter = function(text) {
+      return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
     }
     gl.text.randomString = function() {
       return Math.random().toString(36).substring(7);
@@ -29,6 +33,7 @@
       lineBefore = this.lineBefore(text, textArea);
       lineAfter = this.lineAfter(text, textArea);
       if (lineBefore === blockTag && lineAfter === blockTag) {
+        // To remove the block tag we have to select the line before & after
         if (blockTag != null) {
           textArea.selectionStart = textArea.selectionStart - (blockTag.length + 1);
           textArea.selectionEnd = textArea.selectionEnd + (blockTag.length + 1);
@@ -63,11 +68,11 @@
       if (!inserted) {
         try {
           document.execCommand("ms-beginUndoUnit");
-        } catch (undefined) {}
+        } catch (error) {}
         textArea.value = this.replaceRange(text, textArea.selectionStart, textArea.selectionEnd, insertText);
         try {
           document.execCommand("ms-endUndoUnit");
-        } catch (undefined) {}
+        } catch (error) {}
       }
       return this.moveCursor(textArea, tag, wrap);
     };

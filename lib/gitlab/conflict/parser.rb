@@ -1,6 +1,17 @@
 module Gitlab
   module Conflict
     class Parser
+      class UnresolvableError < StandardError
+      end
+
+      class UnmergeableFile < UnresolvableError
+      end
+
+      class UnsupportedEncoding < UnresolvableError
+      end
+
+      # Recoverable errors - the conflict can be resolved in an editor, but not with
+      # sections.
       class ParserError < StandardError
       end
 
@@ -10,15 +21,9 @@ module Gitlab
       class MissingEndDelimiter < ParserError
       end
 
-      class UnmergeableFile < ParserError
-      end
-
-      class UnsupportedEncoding < ParserError
-      end
-
       def parse(text, our_path:, their_path:, parent_file: nil)
         raise UnmergeableFile if text.blank? # Typically a binary file
-        raise UnmergeableFile if text.length > 102400
+        raise UnmergeableFile if text.length > 200.kilobytes
 
         begin
           text.to_json

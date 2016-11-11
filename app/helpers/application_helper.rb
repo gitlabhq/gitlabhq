@@ -110,7 +110,7 @@ module ApplicationHelper
     project = event.project
 
     # Skip if project repo is empty or MR disabled
-    return false unless project && !project.empty_repo? && project.merge_requests_enabled
+    return false unless project && !project.empty_repo? && project.feature_available?(:merge_requests, current_user)
 
     # Skip if user already created appropriate MR
     return false if project.merge_requests.where(source_branch: event.branch_name).opened.any?
@@ -151,7 +151,6 @@ module ApplicationHelper
   # time       - Time object
   # placement  - Tooltip placement String (default: "top")
   # html_class - Custom class for `time` element (default: "time_ago")
-  # skip_js    - When true, exclude the `script` tag (default: false)
   #
   # By default also includes a `script` element with Javascript necessary to
   # initialize the `timeago` jQuery extension. If this method is called many
@@ -163,22 +162,19 @@ module ApplicationHelper
   # `html_class` argument is provided.
   #
   # Returns an HTML-safe String
-  def time_ago_with_tooltip(time, placement: 'top', html_class: '', skip_js: false, short_format: false)
+  def time_ago_with_tooltip(time, placement: 'top', html_class: '', short_format: false)
     css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
     css_classes << " #{html_class}" unless html_class.blank?
-    css_classes << ' js-timeago-pending' unless skip_js
 
     element = content_tag :time, time.to_s,
       class: css_classes,
-      datetime: time.to_time.getutc.iso8601,
       title: time.to_time.in_time_zone.to_s(:medium),
-      data: { toggle: 'tooltip', placement: placement, container: 'body' }
-
-    unless skip_js
-      element << javascript_tag(
-        "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
-      )
-    end
+      datetime: time.to_time.getutc.iso8601,
+      data: {
+        toggle: 'tooltip',
+        placement: placement,
+        container: 'body'
+      }
 
     element
   end
@@ -249,7 +245,7 @@ module ApplicationHelper
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
-      issue_search: params[:issue_search],
+      search: params[:search],
       label_name: params[:label_name]
     }
 
@@ -278,32 +274,6 @@ module ApplicationHelper
     else
       profile_key_path(key)
     end
-  end
-
-  def state_filters_text_for(entity, project)
-    titles = {
-      opened: "Open"
-    }
-
-    entity_title = titles[entity] || entity.to_s.humanize
-
-    count =
-      if project.nil?
-        nil
-      elsif current_controller?(:issues)
-        project.issues.visible_to_user(current_user).send(entity).count
-      elsif current_controller?(:merge_requests)
-        project.merge_requests.send(entity).count
-      end
-
-    html = content_tag :span, entity_title
-
-    if count.present?
-      html += " "
-      html += content_tag :span, number_with_delimiter(count), class: 'badge'
-    end
-
-    html.html_safe
   end
 
   def truncate_first_line(message, length = 50)

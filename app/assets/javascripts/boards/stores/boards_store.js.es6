@@ -1,3 +1,4 @@
+/* eslint-disable */
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -5,6 +6,9 @@
   gl.issueBoards.BoardsStore = {
     disabled: false,
     state: {},
+    detail: {
+      issue: {}
+    },
     moving: {
       issue: {},
       list: {}
@@ -15,7 +19,8 @@
         author_id: gl.utils.getParameterValues('author_id')[0],
         assignee_id: gl.utils.getParameterValues('assignee_id')[0],
         milestone_title: gl.utils.getParameterValues('milestone_title')[0],
-        label_name: gl.utils.getParameterValues('label_name[]')
+        label_name: gl.utils.getParameterValues('label_name[]'),
+        search: ''
       };
     },
     addList (listObj) {
@@ -57,12 +62,13 @@
     removeBlankState () {
       this.removeList('blank');
 
-      $.cookie('issue_board_welcome_hidden', 'true', {
-        expires: 365 * 10
+      Cookies.set('issue_board_welcome_hidden', 'true', {
+        expires: 365 * 10,
+        path: ''
       });
     },
     welcomeIsHidden () {
-      return $.cookie('issue_board_welcome_hidden') === 'true';
+      return Cookies.get('issue_board_welcome_hidden') === 'true';
     },
     removeList (id, type = 'blank') {
       const list = this.findList('id', id, type);

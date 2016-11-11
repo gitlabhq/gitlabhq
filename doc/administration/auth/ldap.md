@@ -35,6 +35,10 @@ of one hour.
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
 
+There is a Rake task to check LDAP configuration. After configuring LDAP
+using the documentation below, see [LDAP check Rake task](../raketasks/check.md#ldap-check)
+for information on the LDAP check Rake task.
+
 >**Note**: In GitLab EE, you can configure multiple LDAP servers to connect to
 one GitLab server.
 
@@ -275,3 +279,9 @@ If you are getting 'Connection Refused' errors when trying to connect to the
 LDAP server please double-check the LDAP `port` and `method` settings used by
 GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
 `method: 'ssl'` and `port: 636`.
+
+### Login with valid credentials rejected
+
+If there is an unexpected error while authenticating the user with the LDAP
+backend, the login is rejected and details about the error are logged to
+`production.log`.

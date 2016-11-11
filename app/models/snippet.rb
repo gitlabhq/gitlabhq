@@ -1,9 +1,20 @@
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Linguist::BlobHelper
+  include CacheMarkdownField
   include Participable
   include Referable
   include Sortable
+  include Awardable
+
+  cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :content
+
+  # If file_name changes, it invalidates content
+  alias_method :default_content_html_invalidator, :content_html_invalidated?
+  def content_html_invalidated?
+    default_content_html_invalidator || file_name_changed?
+  end
 
   default_value_for :visibility_level, Snippet::PRIVATE
 

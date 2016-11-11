@@ -35,6 +35,30 @@ module MilestonesHelper
     milestone.issues.with_label(label.title).send(state).size
   end
 
+  # Returns count of milestones for different states
+  # Uses explicit hash keys as the 'opened' state URL params differs from the db value
+  # and we need to add the total
+  def milestone_counts(milestones)
+    counts = milestones.reorder(nil).group(:state).count
+
+    {
+      opened: counts['active'] || 0,
+      closed: counts['closed'] || 0,
+      all: counts.values.sum || 0
+    }
+  end
+
+  # Show 'active' class if provided GET param matches check
+  # `or_blank` allows the function to return 'active' when given an empty param
+  # Could be refactored to be simpler but that may make it harder to read
+  def milestone_class_for_state(param, check, match_blank_param = false)
+    if match_blank_param
+      'active' if param.blank? || param == check
+    else
+      'active' if param == check
+    end
+  end
+
   def milestone_progress_bar(milestone)
     options = {
       class: 'progress-bar progress-bar-success',
@@ -47,8 +71,9 @@ module MilestonesHelper
   end
 
   def milestones_filter_dropdown_path
-    if @project
-      namespace_project_milestones_path(@project.namespace, @project, :json)
+    project = @target_project || @project
+    if project
+      namespace_project_milestones_path(project.namespace, project, :json)
     else
       dashboard_milestones_path(:json)
     end

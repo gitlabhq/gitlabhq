@@ -10,7 +10,7 @@
 
 (What you should see instead)
 
-### Actual behaviour
+### Actual behavior
 
 (What actually happens)
 

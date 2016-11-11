@@ -53,7 +53,7 @@ describe "User Feed", feature: true  do
       end
 
       it 'has XHTML summaries in issue descriptions' do
-        expect(body).to match /we have a bug!<\/p>\n\n<hr ?\/>\n\n<p>I guess/
+        expect(body).to match /we have a bug!<\/p>\n\n<hr ?\/>\n\n<p dir="auto">I guess/
       end
 
       it 'has XHTML summaries in notes' do

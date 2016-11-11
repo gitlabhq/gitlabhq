@@ -6,15 +6,55 @@ module Gitlab
 
     KeyAdder = Struct.new(:io) do
       def add_key(id, key)
-        key.gsub!(/[[:space:]]+/, ' ').strip!
+        key = Gitlab::Shell.strip_key(key)
+        # Newline and tab are part of the 'protocol' used to transmit id+key to the other end
+        if key.include?("\t") || key.include?("\n")
+          raise Error.new("Invalid key: #{key.inspect}")
+        end
+
         io.puts("#{id}\t#{key}")
       end
     end
 
     class << self
+      def secret_token
+        @secret_token ||= begin
+          File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+        end
+      end
+
+      def ensure_secret_token!
+        return if File.exist?(File.join(Gitlab.config.gitlab_shell.path, '.gitlab_shell_secret'))
+
+        generate_and_link_secret_token
+      end
+
       def version_required
         @version_required ||= File.read(Rails.root.
                                         join('GITLAB_SHELL_VERSION')).strip
+      end
+
+      def strip_key(key)
+        key.split(/ /)[0, 2].join(' ')
+      end
+
+      private
+
+      # Create (if necessary) and link the secret token file
+      def generate_and_link_secret_token
+        secret_file = Gitlab.config.gitlab_shell.secret_file
+        shell_path = Gitlab.config.gitlab_shell.path
+
+        unless File.size?(secret_file)
+          # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
+          @secret_token = SecureRandom.hex(16)
+          File.write(secret_file, @secret_token)
+        end
+
+        link_path = File.join(shell_path, '.gitlab_shell_secret')
+        if File.exist?(shell_path) && !File.exist?(link_path)
+          FileUtils.symlink(secret_file, link_path)
+        end
       end
     end
 
@@ -87,19 +127,6 @@ module Gitlab
                                    'rm-project', storage, "#{name}.git"])
     end
 
-    # Gc repository
-    #
-    # storage - project storage path
-    # path - project path with namespace
-    #
-    # Ex.
-    #   gc("/path/to/storage", "gitlab/gitlab-ci")
-    #
-    def gc(storage, path)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'gc',
-                                   storage, "#{path}.git"])
-    end
-
     # Add new key to gitlab-shell
     #
     # Ex.
@@ -107,7 +134,7 @@ module Gitlab
     #
     def add_key(key_id, key_content)
       Gitlab::Utils.system_silent([gitlab_shell_keys_path,
-                                   'add-key', key_id, key_content])
+                                   'add-key', key_id, self.class.strip_key(key_content)])
     end
 
     # Batch-add keys to authorized_keys
@@ -190,21 +217,6 @@ module Gitlab
     #
     def exists?(storage, dir_name)
       File.exist?(full_path(storage, dir_name))
-    end
-
-    # Create (if necessary) and link the secret token file
-    def generate_and_link_secret_token
-      secret_file = Gitlab.config.gitlab_shell.secret_file
-      unless File.exist? secret_file
-        # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
-        token = SecureRandom.hex(16)
-        File.write(secret_file, token)
-      end
-
-      link_path = File.join(gitlab_shell_path, '.gitlab_shell_secret')
-      if File.exist?(gitlab_shell_path) && !File.exist?(link_path)
-        FileUtils.symlink(secret_file, link_path)
-      end
     end
 
     protected

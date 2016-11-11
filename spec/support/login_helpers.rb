@@ -75,6 +75,7 @@ module LoginHelpers
   def logout
     find(".header-user-dropdown-toggle").click
     click_link "Sign out"
+    expect(page).to have_content('Signed out successfully')
   end
 
   # Logout without JavaScript driver

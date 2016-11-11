@@ -3,6 +3,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
 
   before_action :require_lfs_enabled!
   before_action :lfs_check_access!
+  before_action :verify_workhorse_api!, only: [:upload_authorize]
 
   def download
     lfs_object = LfsObject.find_by_oid(oid)
@@ -15,14 +16,8 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def upload_authorize
-    render(
-      json: {
-        StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
-        LfsOid: oid,
-        LfsSize: size,
-      },
-      content_type: 'application/json; charset=utf-8'
-    )
+    set_workhorse_internal_api_content_type
+    render json: Gitlab::Workhorse.lfs_upload_ok(oid, size)
   end
 
   def upload_finalize

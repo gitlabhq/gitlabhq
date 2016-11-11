@@ -1,3 +1,5 @@
+/* eslint-disable */
+// Creates the variables for setting up GFM auto-completion
 (function() {
   if (window.GitLab == null) {
     window.GitLab = {};
@@ -8,18 +10,22 @@
     dataLoaded: false,
     cachedData: {},
     dataSource: '',
+    // Emoji
     Emoji: {
       template: '<li>${name} <img alt="${name}" height="20" src="${path}" width="20" /></li>'
     },
+    // Team Members
     Members: {
       template: '<li>${username} <small>${title}</small></li>'
     },
     Labels: {
       template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
     },
+    // Issues and MergeRequests
     Issues: {
       template: '<li><small>${id}</small> ${title}</li>'
     },
+    // Milestones
     Milestones: {
       template: '<li>${title}</li>'
     },
@@ -28,6 +34,8 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
+        // Highlight first item only if at least one char was typed
+        this.setting.highlightFirst = query.length > 0;
         if ((items[0].name != null) && items[0].name === 'loading') {
           return items;
         }
@@ -67,30 +75,29 @@
         }
       }
     },
-    setup: function(input) {
+    setup: _.debounce(function(input) {
+      // Add GFM auto-completion to all input fields, that accept GFM input.
       this.input = input || $('.js-gfm-input');
+      // destroy previous instances
       this.destroyAtWho();
+      // set up instances
       this.setupAtWho();
-      if (this.dataSource) {
-        if (!this.dataLoading && !this.cachedData) {
-          this.dataLoading = true;
-          setTimeout((function(_this) {
-            return function() {
-              var fetch;
-              fetch = _this.fetchData(_this.dataSource);
-              return fetch.done(function(data) {
-                _this.dataLoading = false;
-                return _this.loadData(data);
-              });
-            };
-          })(this), 1000);
-        }
-        if (this.cachedData != null) {
-          return this.loadData(this.cachedData);
-        }
+
+      if (this.dataSource && !this.dataLoading && !this.cachedData) {
+        this.dataLoading = true;
+        return this.fetchData(this.dataSource)
+          .done((data) => {
+            this.dataLoading = false;
+            this.loadData(data);
+          });
+        };
+
+      if (this.cachedData != null) {
+        return this.loadData(this.cachedData);
       }
-    },
+    }, 1000),
     setupAtWho: function() {
+      // Emoji
       this.input.atwho({
         at: ':',
         displayTpl: (function(_this) {
@@ -112,6 +119,7 @@
           matcher: this.DefaultOptions.matcher
         }
       });
+      // Team Members
       this.input.atwho({
         at: '@',
         displayTpl: (function(_this) {
@@ -144,8 +152,8 @@
               }
               return {
                 username: m.username,
-                title: sanitize(title),
-                search: sanitize(m.username + " " + m.name)
+                title: gl.utils.sanitize(title),
+                search: gl.utils.sanitize(m.username + " " + m.name)
               };
             });
           }
@@ -179,7 +187,7 @@
               }
               return {
                 id: i.iid,
-                title: sanitize(i.title),
+                title: gl.utils.sanitize(i.title),
                 search: i.iid + " " + i.title
               };
             });
@@ -204,6 +212,7 @@
         startWithSpace: false,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(milestones) {
             return $.map(milestones, function(m) {
               if (m.title == null) {
@@ -211,7 +220,7 @@
               }
               return {
                 id: m.iid,
-                title: sanitize(m.title),
+                title: gl.utils.sanitize(m.title),
                 search: "" + m.title
               };
             });
@@ -246,7 +255,7 @@
               }
               return {
                 id: m.iid,
-                title: sanitize(m.title),
+                title: gl.utils.sanitize(m.title),
                 search: m.iid + " " + m.title
               };
             });
@@ -262,13 +271,14 @@
         startWithSpace: false,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(merges) {
             var sanitizeLabelTitle;
             sanitizeLabelTitle = function(title) {
               if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
-                return "\"" + (sanitize(title)) + "\"";
+                return "\"" + (gl.utils.sanitize(title)) + "\"";
               } else {
-                return sanitize(title);
+                return gl.utils.sanitize(title);
               }
             };
             return $.map(merges, function(m) {
@@ -353,13 +363,22 @@
     loadData: function(data) {
       this.cachedData = data;
       this.dataLoaded = true;
+      // load members
       this.input.atwho('load', '@', data.members);
+      // load issues
       this.input.atwho('load', 'issues', data.issues);
+      // load milestones
       this.input.atwho('load', 'milestones', data.milestones);
+      // load merge requests
       this.input.atwho('load', 'mergerequests', data.mergerequests);
+      // load emojis
       this.input.atwho('load', ':', data.emojis);
+      // load labels
       this.input.atwho('load', '~', data.labels);
+      // load commands
       this.input.atwho('load', '/', data.commands);
+      // This trigger at.js again
+      // otherwise we would be stuck with loading until the user types
       return $(':focus').trigger('keyup');
     }
   };

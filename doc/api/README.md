@@ -10,22 +10,28 @@ following locations:
 
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
+- [Broadcast Messages](broadcast_messages.md)
 - [Builds](builds.md)
-- [Build triggers](build_triggers.md)
+- [Build Triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
 - [Commits](commits.md)
+- [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
+- [Gitignores templates](templates/gitignores.md)
+- [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
 - [Group Access Requests](access_requests.md)
 - [Group Members](members.md)
 - [Issues](issues.md)
+- [Issue Boards](boards.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Merge Requests](merge_requests.md)
 - [Milestones](milestones.md)
-- [Open source license templates](licenses.md)
+- [Open source license templates](templates/licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
@@ -40,8 +46,10 @@ following locations:
 - [Sidekiq metrics](sidekiq_metrics.md)
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
-- [Users](users.md)
 - [Todos](todos.md)
+- [Users](users.md)
+- [Validate CI configuration](ci/lint.md)
+- [Version](version.md)
 
 ### Internal CI API
 
@@ -52,11 +60,12 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 ## Authentication
 
-All API requests require authentication via a token. There are three types of tokens
-available: private tokens, OAuth 2 tokens, and personal access tokens.
+All API requests require authentication via a session cookie or token. There are
+three types of tokens available: private tokens, OAuth 2 tokens, and personal
+access tokens.
 
-If a token is invalid or omitted, an error message will be returned with
-status code `401`:
+If authentication information is invalid or omitted, an error message will be
+returned with status code `401`:
 
 ```json
 {
@@ -94,6 +103,13 @@ that needs access to the GitLab API.
 
 Once you have your token, pass it to the API using either the `private_token`
 parameter or the `PRIVATE-TOKEN` header.
+
+
+### Session Cookie
+
+When signing in to GitLab as an ordinary user, a `_gitlab_session` cookie is
+set. The API will use this cookie for authentication if it is present, but using
+the API to generate a new session cookie is currently not supported.
 
 ## Basic Usage
 
@@ -342,6 +358,19 @@ follows:
     }
 }
 ```
+
+## Unknown route
+
+When you try to access an API URL that does not exist you will receive 404 Not Found.
+
+```
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+{
+    "error": "404 Not Found"
+}
+```
+
 
 ## Clients
 

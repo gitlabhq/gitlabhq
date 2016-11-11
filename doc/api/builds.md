@@ -11,10 +11,10 @@ GET /projects/:id/builds
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
-| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
+| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all builds if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v3/projects/1/builds?scope%5B0%5D=pending&scope%5B1%5D=running'
 ```
 
 Example of response
@@ -40,6 +40,12 @@ Example of response
     "finished_at": "2015-12-24T17:54:27.895Z",
     "id": 7,
     "name": "teaspoon",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending"
+    }
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -58,7 +64,7 @@ Example of response
       "state": "active",
       "twitter": "",
       "username": "root",
-      "web_url": "http://gitlab.dev/u/root",
+      "web_url": "http://gitlab.dev/root",
       "website_url": ""
     }
   },
@@ -78,6 +84,12 @@ Example of response
     "finished_at": "2015-12-24T17:54:24.921Z",
     "id": 6,
     "name": "spinach:other",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending"
+    }
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -96,7 +108,7 @@ Example of response
       "state": "active",
       "twitter": "",
       "username": "root",
-      "web_url": "http://gitlab.dev/u/root",
+      "web_url": "http://gitlab.dev/root",
       "website_url": ""
     }
   }
@@ -120,10 +132,10 @@ GET /projects/:id/repository/commits/:sha/builds
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
 | `sha`     | string  | yes      | The SHA id of a commit |
-| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
+| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all builds if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v3/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds?scope%5B0%5D=pending&scope%5B1%5D=running'
 ```
 
 Example of response
@@ -146,6 +158,12 @@ Example of response
     "finished_at": "2016-01-11T10:14:09.526Z",
     "id": 69,
     "name": "rubocop",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending"
+    }
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -170,6 +188,12 @@ Example of response
     "finished_at": "2015-12-24T17:54:33.913Z",
     "id": 9,
     "name": "brakeman",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending"
+    }
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -188,7 +212,7 @@ Example of response
       "state": "active",
       "twitter": "",
       "username": "root",
-      "web_url": "http://gitlab.dev/u/root",
+      "web_url": "http://gitlab.dev/root",
       "website_url": ""
     }
   }
@@ -231,6 +255,12 @@ Example of response
   "finished_at": "2015-12-24T17:54:31.198Z",
   "id": 8,
   "name": "rubocop",
+  "pipeline": {
+    "id": 6,
+    "ref": "master",
+    "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+    "status": "pending"
+  }
   "ref": "master",
   "runner": null,
   "stage": "test",
@@ -249,7 +279,7 @@ Example of response
     "state": "active",
     "twitter": "",
     "username": "root",
-    "web_url": "http://gitlab.dev/u/root",
+    "web_url": "http://gitlab.dev/root",
     "website_url": ""
   }
 }

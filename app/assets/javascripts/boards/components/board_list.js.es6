@@ -1,4 +1,6 @@
+/* eslint-disable */
 //= require ./board_card
+//= require ./board_new_issue
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -8,19 +10,22 @@
 
   gl.issueBoards.BoardList = Vue.extend({
     components: {
-      'board-card': gl.issueBoards.BoardCard
+      'board-card': gl.issueBoards.BoardCard,
+      'board-new-issue': gl.issueBoards.BoardNewIssue
     },
     props: {
       disabled: Boolean,
       list: Object,
       issues: Array,
       loading: Boolean,
-      issueLinkBase: String
+      issueLinkBase: String,
+      showIssueForm: Boolean
     },
     data () {
       return {
         scrollOffset: 250,
-        filters: Store.state.filters
+        filters: Store.state.filters,
+        showCount: false
       };
     },
     watch: {
@@ -30,6 +35,20 @@
           this.$els.list.scrollTop = 0;
         },
         deep: true
+      },
+      issues () {
+        this.$nextTick(() => {
+          if (this.scrollHeight() <= this.listHeight() && this.list.issuesSize > this.list.issues.length) {
+            this.list.page++;
+            this.list.getIssues(false);
+          }
+
+          if (this.scrollHeight() > this.listHeight()) {
+            this.showCount = true;
+          } else {
+            this.showCount = false;
+          }
+        });
       }
     },
     methods: {
@@ -58,6 +77,7 @@
         group: 'issues',
         sort: false,
         disabled: this.disabled,
+        filter: '.board-list-count, .is-disabled',
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 

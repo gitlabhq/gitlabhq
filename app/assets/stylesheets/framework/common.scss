@@ -1,31 +1,31 @@
 /** COLORS **/
 .cgray { color: $gl-gray; }
-.clgray { color: #bbb }
+.clgray { color: #bbb; }
 .cred { color: $gl-text-red; }
 .cgreen { color: $gl-text-green; }
-.cdark { color: #444 }
+.cdark { color: #444; }
 
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-5 { margin-top: 5px; }
-.prepend-top-10 { margin-top: 10px }
+.prepend-top-10 { margin-top: 10px; }
 .prepend-top-default { margin-top: $gl-padding !important; }
-.prepend-top-20 { margin-top: 20px }
-.prepend-left-5 { margin-left: 5px }
-.prepend-left-10 { margin-left: 10px }
+.prepend-top-20 { margin-top: 20px; }
+.prepend-left-5 { margin-left: 5px; }
+.prepend-left-10 { margin-left: 10px; }
 .prepend-left-default { margin-left: $gl-padding; }
-.prepend-left-20 { margin-left: 20px }
-.append-right-5 { margin-right: 5px }
-.append-right-10 { margin-right: 10px }
+.prepend-left-20 { margin-left: 20px; }
+.append-right-5 { margin-right: 5px; }
+.append-right-10 { margin-right: 10px; }
 .append-right-default { margin-right: $gl-padding; }
-.append-right-20 { margin-right: 20px }
-.append-bottom-0 { margin-bottom: 0 }
-.append-bottom-10 { margin-bottom: 10px }
-.append-bottom-15 { margin-bottom: 15px }
-.append-bottom-20 { margin-bottom: 20px }
+.append-right-20 { margin-right: 20px; }
+.append-bottom-0 { margin-bottom: 0; }
+.append-bottom-10 { margin-bottom: 10px; }
+.append-bottom-15 { margin-bottom: 15px; }
+.append-bottom-20 { margin-bottom: 20px; }
 .append-bottom-default { margin-bottom: $gl-padding; }
-.inline { display: inline-block }
-.center { text-align: center }
+.inline { display: inline-block; }
+.center { text-align: center; }
 
 .underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: #999; }
@@ -53,7 +53,7 @@ pre {
 
   &.well-pre {
     border: 1px solid #eee;
-    background: #f9f9f9;
+    background: $gray-light;
     border-radius: 0;
     color: #555;
   }
@@ -97,6 +97,7 @@ span.update-author {
   color: #999;
   font-weight: normal;
   font-style: italic;
+
   strong {
     font-weight: bold;
     font-style: normal;
@@ -128,7 +129,7 @@ p.time {
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
-  img { max-width: 100% }
+  img { max-width: 100%; }
   .note-title {
     li {
       border-bottom: none !important;
@@ -142,7 +143,8 @@ li.note {
   }
 }
 
-.wiki_content code, .readme code {
+.wiki_content code,
+.readme code {
   background-color: inherit;
 }
 
@@ -172,6 +174,7 @@ li.note {
   @extend .col-md-6;
   text-align: left;
   margin-top: 40px;
+
   pre {
     background: white;
     border: none;
@@ -197,6 +200,7 @@ li.note {
   background: #c67;
   color: #fff;
   font-weight: bold;
+
   a {
     color: #fff;
     text-decoration: underline;
@@ -225,8 +229,9 @@ li.note {
 
 .milestone {
   &.milestone-closed {
-    background: #f9f9f9;
+    background: $gray-light;
   }
+
   .progress {
     margin-bottom: 0;
     margin-top: 4px;
@@ -286,6 +291,7 @@ table {
 
 .footer-links {
   margin-bottom: 20px;
+
   a {
     margin-right: 15px;
   }
@@ -345,7 +351,8 @@ table {
   margin-right: 10px;
 }
 
-.alert, .progress {
+.alert,
+.progress {
   margin-bottom: $gl-padding;
 }
 
@@ -367,3 +374,5 @@ table {
   margin-right: -$gl-padding;
   border-top: 1px solid $border-color;
 }
+
+.hide-bottom-border { border-bottom: none !important; }

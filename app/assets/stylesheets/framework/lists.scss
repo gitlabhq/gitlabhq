@@ -14,7 +14,7 @@
     border-bottom: 1px solid #eee;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-    &:after {
+    &::after {
       content: " ";
       display: table;
       clear: both;
@@ -38,7 +38,7 @@
 
     &.smoke { background-color: $background-color; }
 
-    &:hover {
+    &:not(.ui-sort-disabled):hover {
       background: $row-hover;
     }
 
@@ -60,6 +60,7 @@
       padding-top: 1px;
       margin: 0;
       color: $gray-dark;
+
       img {
         position: relative;
         top: 3px;
@@ -75,14 +76,16 @@
 
 
 /** light list with border-bottom between li **/
-ul.bordered-list, ul.unstyled-list {
+ul.bordered-list,
+ul.unstyled-list {
   @include basic-list;
 
   &.top-list {
     li:first-child {
       padding-top: 0;
 
-      h4, h5 {
+      h4,
+      h5 {
         margin-top: 0;
       }
     }
@@ -128,15 +131,15 @@ ul.content-list {
       color: $gl-dark-link-color;
     }
 
+    .member-group-link {
+      color: $blue-normal;
+    }
+
     .description {
       p {
         @include str-truncated;
         margin-bottom: 0;
       }
-    }
-
-    .avatar {
-      margin-right: 15px;
     }
 
     .controls {
@@ -161,6 +164,18 @@ ul.content-list {
         &:last-child {
           margin-right: 0;
         }
+      }
+
+      .no-comments {
+        opacity: .5;
+      }
+    }
+
+    .member-controls {
+      float: none;
+
+      @media (min-width: $screen-sm-min) {
+        float: right;
       }
     }
 

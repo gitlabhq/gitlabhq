@@ -1,3 +1,10 @@
+/* eslint-disable */
+// This is a manifest file that'll be compiled into including all the files listed below.
+// Add new JavaScript code in separate files in this directory and they'll automatically
+// be included in the compiled file accessible from http://example.com/assets/application.js
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
 /*= require jquery2 */
 /*= require jquery-ui/autocomplete */
 /*= require jquery-ui/datepicker */
@@ -5,13 +12,13 @@
 /*= require jquery-ui/effect-highlight */
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
-/*= require jquery.cookie */
 /*= require jquery.endless-scroll */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */
+/*= require js.cookie */
 /*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */
@@ -47,149 +54,89 @@
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
 
-(function() {
-  window.slugify = function(text) {
-    return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
-  };
+(function () {
+  document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
+  window.addEventListener('hashchange', gl.utils.shiftWindow);
 
-  window.ajaxGet = function(url) {
-    return $.ajax({
-      type: "GET",
-      url: url,
-      dataType: "script"
-    });
-  };
-
-  window.split = function(val) {
-    return val.split(/,\s*/);
-  };
-
-  window.extractLast = function(term) {
-    return split(term).pop();
-  };
-
-  window.rstrip = function(val) {
-    if (val) {
-      return val.replace(/\s+$/, '');
-    } else {
-      return val;
-    }
-  };
-
-  window.disableButtonIfEmptyField = function(field_selector, button_selector) {
-    var closest_submit, field;
-    field = $(field_selector);
-    closest_submit = field.closest('form').find(button_selector);
-    if (rstrip(field.val()) === "") {
-      closest_submit.disable();
-    }
-    return field.on('input', function() {
-      if (rstrip($(this).val()) === "") {
-        return closest_submit.disable();
-      } else {
-        return closest_submit.enable();
-      }
-    });
-  };
-
-  window.disableButtonIfAnyEmptyField = function(form, form_selector, button_selector) {
-    var closest_submit, updateButtons;
-    closest_submit = form.find(button_selector);
-    updateButtons = function() {
-      var filled;
-      filled = true;
-      form.find('input').filter(form_selector).each(function() {
-        return filled = rstrip($(this).val()) !== "" || !$(this).attr('required');
-      });
-      if (filled) {
-        return closest_submit.enable();
-      } else {
-        return closest_submit.disable();
-      }
-    };
-    updateButtons();
-    return form.keyup(updateButtons);
-  };
-
-  window.sanitize = function(str) {
-    return str.replace(/<(?:.|\n)*?>/gm, '');
-  };
-
-  window.unbindEvents = function() {
-    return $(document).off('scroll');
-  };
-
-  window.shiftWindow = function() {
-    return scrollBy(0, -100);
-  };
-
-  document.addEventListener("page:fetch", unbindEvents);
-
-  window.addEventListener("hashchange", shiftWindow);
-
-  window.onload = function() {
+  window.onload = function () {
+    // Scroll the window to avoid the topnav bar
+    // https://github.com/twitter/bootstrap/issues/1768
     if (location.hash) {
-      return setTimeout(shiftWindow, 100);
+      return setTimeout(gl.utils.shiftWindow, 100);
     }
   };
 
-  $(function() {
-    var $body, $document, $sidebarGutterToggle, $window, bootstrapBreakpoint, checkInitialSidebarSize, fitSidebarForSize, flash;
-    $document = $(document);
-    $window = $(window);
-    $body = $('body');
+  $(function () {
+    var $body = $('body');
+    var $document = $(document);
+    var $window = $(window);
+    var $sidebarGutterToggle = $('.js-sidebar-toggle');
+    var $flash = $('.flash-container');
+    var bootstrapBreakpoint = bp.getBreakpointSize();
+    var checkInitialSidebarSize;
+    var fitSidebarForSize;
+
+    // Set the default path for all cookies to GitLab's root directory
+    Cookies.defaults.path = gon.relative_url_root || '/';
+
     gl.utils.preventDisabledButtons();
-    bootstrapBreakpoint = bp.getBreakpointSize();
-    $(".nav-sidebar").niceScroll({
+    $('.nav-sidebar').niceScroll({
       cursoropacitymax: '0.4',
       cursorcolor: '#FFF',
-      cursorborder: "1px solid #FFF"
+      cursorborder: '1px solid #FFF'
     });
-    $(".js-select-on-focus").on("focusin", function() {
-      return $(this).select().one('mouseup', function(e) {
+    $('.js-select-on-focus').on('focusin', function () {
+      return $(this).select().one('mouseup', function (e) {
         return e.preventDefault();
       });
+    // Click a .js-select-on-focus field, select the contents
+    // Prevent a mouseup event from deselecting the input
     });
-    $('.remove-row').bind('ajax:success', function() {
+    $('.remove-row').bind('ajax:success', function () {
       $(this).tooltip('destroy')
         .closest('li')
         .fadeOut();
     });
-    $('.js-remove-tr').bind('ajax:before', function() {
+    $('.js-remove-tr').bind('ajax:before', function () {
       return $(this).hide();
     });
-    $('.js-remove-tr').bind('ajax:success', function() {
+    $('.js-remove-tr').bind('ajax:success', function () {
       return $(this).closest('tr').fadeOut();
     });
     $('select.select2').select2({
       width: 'resolve',
+      // Initialize select2 selects
       dropdownAutoWidth: true
     });
-    $('.js-select2').bind('select2-close', function() {
-      return setTimeout((function() {
+    $('.js-select2').bind('select2-close', function () {
+      return setTimeout((function () {
         $('.select2-container-active').removeClass('select2-container-active');
         return $(':focus').blur();
       }), 1);
+    // Close select2 on escape
     });
+    // Initialize tooltips
+    $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
-      placement: function(_, el) {
-        var $el;
-        $el = $(el);
-        return $el.data('placement') || 'bottom';
+      placement: function (_, el) {
+        return $(el).data('placement') || 'bottom';
       }
     });
-    $('.trigger-submit').on('change', function() {
+    $('.trigger-submit').on('change', function () {
       return $(this).parents('form').submit();
+    // Form submitter
     });
     gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
-    if ((flash = $(".flash-container")).length > 0) {
-      flash.click(function() {
+    // Flash
+    if ($flash.length > 0) {
+      $flash.click(function () {
         return $(this).fadeOut();
       });
-      flash.show();
+      $flash.show();
     }
-    $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function(e) {
+    // Disable form buttons while a form is submitting
+    $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
       var buttons;
       buttons = $('[type="submit"]', this);
       switch (e.type) {
@@ -200,64 +147,62 @@
           return buttons.enable();
       }
     });
-    $(document).ajaxError(function(e, xhrObj, xhrSetting, xhrErrorText) {
-      var ref;
+    $(document).ajaxError(function (e, xhrObj) {
+      var ref = xhrObj.status;
       if (xhrObj.status === 401) {
         return new Flash('You need to be logged in.', 'alert');
-      } else if ((ref = xhrObj.status) === 404 || ref === 500) {
+      } else if (ref === 404 || ref === 500) {
         return new Flash('Something went wrong on our end.', 'alert');
       }
     });
-    $('.account-box').hover(function() {
+    $('.account-box').hover(function () {
+      // Show/Hide the profile menu when hovering the account box
       return $(this).toggleClass('hover');
     });
-    $document.on('click', '.diff-content .js-show-suppressed-diff', function() {
+    $document.on('click', '.diff-content .js-show-suppressed-diff', function () {
       var $container;
       $container = $(this).parent();
       $container.next('table').show();
       return $container.remove();
+    // Commit show suppressed diff
     });
-    $('.navbar-toggle').on('click', function() {
+    $('.navbar-toggle').on('click', function () {
       $('.header-content .title').toggle();
       $('.header-content .header-logo').toggle();
       $('.header-content .navbar-collapse').toggle();
       return $('.navbar-toggle').toggleClass('active');
     });
-    $body.on("click", ".js-toggle-diff-comments", function(e) {
+    // Show/hide comments on diff
+    $body.on('click', '.js-toggle-diff-comments', function (e) {
       var $this = $(this);
-      $this.toggleClass('active');
       var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+      $this.toggleClass('active');
       if ($this.hasClass('active')) {
-        notesHolders.show();
+        notesHolders.show().find('.hide').show();
       } else {
         notesHolders.hide();
       }
+      $this.trigger('blur');
       return e.preventDefault();
     });
-    $document.off("click", '.js-confirm-danger');
-    $document.on("click", '.js-confirm-danger', function(e) {
-      var btn, form, text;
+    $document.off('click', '.js-confirm-danger');
+    $document.on('click', '.js-confirm-danger', function (e) {
+      var btn = $(e.target);
+      var form = btn.closest('form');
+      var text = btn.data('confirm-danger-message');
       e.preventDefault();
-      btn = $(e.target);
-      text = btn.data("confirm-danger-message");
-      form = btn.closest("form");
       return new ConfirmDangerModal(form, text);
     });
-    $document.on('click', 'button', function() {
-      return $(this).blur();
-    });
-    $('input[type="search"]').each(function() {
-      var $this;
-      $this = $(this);
+    $('input[type="search"]').each(function () {
+      var $this = $(this);
       $this.attr('value', $this.val());
     });
-    $document.off('keyup', 'input[type="search"]').on('keyup', 'input[type="search"]', function(e) {
+    $document.off('keyup', 'input[type="search"]').on('keyup', 'input[type="search"]', function () {
       var $this;
       $this = $(this);
       return $this.attr('value', $this.val());
     });
-    $sidebarGutterToggle = $('.js-sidebar-toggle');
-    $document.off('breakpoint:change').on('breakpoint:change', function(e, breakpoint) {
+    $document.off('breakpoint:change').on('breakpoint:change', function (e, breakpoint) {
       var $gutterIcon;
       if (breakpoint === 'sm' || breakpoint === 'xs') {
         $gutterIcon = $sidebarGutterToggle.find('i');
@@ -266,7 +211,7 @@
         }
       }
     });
-    fitSidebarForSize = function() {
+    fitSidebarForSize = function () {
       var oldBootstrapBreakpoint;
       oldBootstrapBreakpoint = bootstrapBreakpoint;
       bootstrapBreakpoint = bp.getBreakpointSize();
@@ -274,56 +219,20 @@
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    checkInitialSidebarSize = function() {
+    checkInitialSidebarSize = function () {
       bootstrapBreakpoint = bp.getBreakpointSize();
-      if (bootstrapBreakpoint === "xs" || "sm") {
+      if (bootstrapBreakpoint === 'xs' || 'sm') {
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    $window.off("resize.app").on("resize.app", function(e) {
+    $window.off('resize.app').on('resize.app', function () {
       return fitSidebarForSize();
     });
     gl.awardsHandler = new AwardsHandler();
     checkInitialSidebarSize();
     new Aside();
-    if ($window.width() < 1024 && $.cookie('pin_nav') === 'true') {
-      $.cookie('pin_nav', 'false', {
-        path: gon.relative_url_root || '/',
-        expires: 365 * 10
-      });
-      $('.page-with-sidebar').toggleClass('page-sidebar-collapsed page-sidebar-expanded').removeClass('page-sidebar-pinned');
-      $('.navbar-fixed-top').removeClass('header-pinned-nav');
-    }
-    $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
-      var $page, $pinBtn, $tooltip, $topNav, doPinNav, tooltipText;
-      e.preventDefault();
-      $pinBtn = $(e.currentTarget);
-      $page = $('.page-with-sidebar');
-      $topNav = $('.navbar-fixed-top');
-      $tooltip = $("#" + ($pinBtn.attr('aria-describedby')));
-      doPinNav = !$page.is('.page-sidebar-pinned');
-      tooltipText = 'Pin navigation';
-      $(this).toggleClass('is-active');
-      if (doPinNav) {
-        $page.addClass('page-sidebar-pinned');
-        $topNav.addClass('header-pinned-nav');
-      } else {
-        $tooltip.remove();
-        $page.removeClass('page-sidebar-pinned').toggleClass('page-sidebar-collapsed page-sidebar-expanded');
-        $topNav.removeClass('header-pinned-nav').toggleClass('header-collapsed header-expanded');
-      }
-      $.cookie('pin_nav', doPinNav, {
-        path: gon.relative_url_root || '/',
-        expires: 365 * 10
-      });
-      if ($.cookie('pin_nav') === 'true' || doPinNav) {
-        tooltipText = 'Unpin navigation';
-      }
-      $tooltip.find('.tooltip-inner').text(tooltipText);
-      return $pinBtn.attr('title', tooltipText).tooltip('fixTitle');
-    });
 
-    // Custom time ago
-    gl.utils.shortTimeAgo($('.js-short-timeago'));
+    // bind sidebar events
+    new gl.Sidebar();
   });
 }).call(this);

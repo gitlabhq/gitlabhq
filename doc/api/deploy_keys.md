@@ -2,7 +2,7 @@
 
 ## List all deploy keys
 
-Get a list of all deploy keys across all projects.
+Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires admin access.
 
 ```
 GET /deploy_keys

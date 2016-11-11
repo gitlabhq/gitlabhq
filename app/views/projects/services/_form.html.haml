@@ -12,6 +12,9 @@
       = form.submit 'Save changes', class: 'btn btn-save'
       &nbsp;
       - if @service.valid? && @service.activated?
-        - disabled = @service.can_test? ? '':'disabled'
-        = link_to 'Test settings', test_namespace_project_service_path(@project.namespace, @project, @service), class: "btn #{disabled}", title: @service.disabled_title
+        - unless @service.can_test?
+          - disabled_class = 'disabled'
+          - disabled_title = @service.disabled_title
+
+        = link_to 'Test settings', test_namespace_project_service_path(@project.namespace, @project, @service), class: "btn #{disabled_class}", title: disabled_title
       = link_to "Cancel", namespace_project_services_path(@project.namespace, @project), class: "btn btn-cancel"

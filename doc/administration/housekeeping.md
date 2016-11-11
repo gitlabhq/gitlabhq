@@ -3,6 +3,14 @@
 > [Introduced][ce-2371] in GitLab 8.4.
 
 ---
+## Automatic housekeeping
+
+GitLab automatically runs `git gc` and `git repack` on repositories
+after Git pushes. If needed you can change how often this happens, or
+to turn it off, go to **Admin area > Settings**
+(`/admin/application_settings`).
+
+## Manual housekeeping
 
 The housekeeping function runs `git gc` ([man page][man]) on the current
 project Git repository.
@@ -12,7 +20,7 @@ revisions (to reduce disk space and increase performance) and removing
 unreachable objects which may have been created from prior invocations of
 `git add`.
 
-You can find this option under your **[Project] > Settings**.
+You can find this option under your **[Project] > Edit Project**.
 
 ---
 

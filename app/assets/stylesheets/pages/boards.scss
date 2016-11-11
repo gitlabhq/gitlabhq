@@ -10,12 +10,20 @@
 .is-dragging {
   // Important because plugin sets inline CSS
   opacity: 1!important;
-  
+
   * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     // !important to make sure no style can override this when dragging
     cursor: -webkit-grabbing!important;
     cursor: grabbing!important;
   }
+}
+
+.is-ghost {
+  opacity: 0.3;
 }
 
 .dropdown-menu-issues-board-new {
@@ -34,47 +42,17 @@
   > p {
     margin: 0;
     font-size: 14px;
-    color: #9c9c9c;
   }
 }
 
 .issue-boards-page {
-  .content-wrapper {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-  }
-
-  .sub-nav,
-  .issues-filters {
-    -webkit-flex: none;
-    flex: none;
-  }
-
   .page-with-sidebar {
-    display: -webkit-flex;
-    display: flex;
-    min-height: 100vh;
-    max-height: 100vh;
     padding-bottom: 0;
   }
+}
 
-  .issue-boards-content {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex: 1;
-    flex: 1;
-    width: 100%;
-
-    .content {
-      display: -webkit-flex;
-      display: flex;
-      -webkit-flex-direction: column;
-      flex-direction: column;
-      width: 100%;
-    }
-  }
+.boards-app {
+  position: relative;
 }
 
 .boards-app-loading {
@@ -83,46 +61,42 @@
 }
 
 .boards-list {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex: 1;
-  flex: 1;
-  -webkit-flex-basis: 0;
-  flex-basis: 0;
-  min-height: calc(100vh - 152px);
-  max-height: calc(100vh - 152px);
+  height: calc(100vh - 152px);
+  width: 100%;
   padding-top: 25px;
+  padding-bottom: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
   overflow-x: scroll;
+  white-space: nowrap;
 
   @media (min-width: $screen-sm-min) {
+    height: 475px; // Needed for PhantomJS
+    height: calc(100vh - 220px);
     min-height: 475px;
-    max-height: none;
+
+    &.is-compact {
+      width: calc(100% - 290px);
+    }
   }
 }
 
 .board {
-  display: -webkit-flex;
-  display: flex;
-  min-width: calc(85vw - 15px);
-  max-width: calc(85vw - 15px);
-  margin-bottom: 25px;
+  display: inline-block;
+  width: calc(85vw - 15px);
+  height: 100%;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
+  white-space: normal;
+  vertical-align: top;
 
   @media (min-width: $screen-sm-min) {
-    min-width: 400px;
-    max-width: 400px;
+    width: 400px;
   }
 }
 
 .board-inner {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  width: 100%;
+  height: 100%;
   font-size: $issue-boards-font-size;
   background: $background-color;
   border: 1px solid $border-color;
@@ -142,11 +116,6 @@
   }
 }
 
-.board-header-loading-spinner {
-  margin-right: 10px;
-  color: $gray-darkest;
-}
-
 .board-inner-container {
   border-bottom: 1px solid $border-color;
   padding: $gl-padding;
@@ -158,40 +127,6 @@
   padding: $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
-}
-
-.board-search-container {
-  position: relative;
-  background-color: #fff;
-
-  .form-control {
-    padding-right: 30px;
-  }
-}
-
-.board-search-icon,
-.board-search-clear-btn {
-  position: absolute;
-  right: $gl-padding + 10px;
-  top: 50%;
-  margin-top: -7px;
-  font-size: 14px;
-}
-
-.board-search-icon {
-  color: $gl-placeholder-color;
-}
-
-.board-search-clear-btn {
-  padding: 0;
-  line-height: 1;
-  background: transparent;
-  border: 0;
-  outline: 0;
-
-  &:hover {
-    color: $gl-link-color;
-  }
 }
 
 .board-delete {
@@ -208,7 +143,7 @@
 }
 
 .board-blank-state {
-  height: 100%;
+  height: calc(100% - 49px);
   padding: $gl-padding;
   background-color: #fff;
 }
@@ -232,43 +167,37 @@
 }
 
 .board-list {
-  -webkit-flex: 1;
-  flex: 1;
-  height: 400px;
+  height: calc(100% - 49px);
   margin-bottom: 0;
   padding: 5px;
+  list-style: none;
   overflow-y: scroll;
   overflow-x: hidden;
+
+  &.is-smaller {
+    height: calc(100% - 185px);
+  }
 }
 
 .board-list-loading {
   margin-top: 10px;
-  font-size: 26px;
-}
-
-.is-ghost {
-  opacity: 0.3;
+  font-size: (26px / $issue-boards-font-size) * 1em;
 }
 
 .card {
   position: relative;
-  width: 100%;
   padding: 10px $gl-padding;
   background: #fff;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
   list-style: none;
 
-  &.user-can-drag {
-    padding-left: $gl-padding;
-  }
-
   &:not(:last-child) {
     margin-bottom: 5px;
   }
 
-  a {
-    cursor: pointer;
+  &.is-active {
+    background-color: $row-hover;
   }
 
   .label {
@@ -287,6 +216,7 @@
 
   a {
     color: inherit;
+    word-wrap: break-word;
   }
 }
 
@@ -295,12 +225,107 @@
   line-height: 25px;
 
   .label {
-    margin-right: 4px;
+    margin-right: 5px;
     font-size: (14px / $issue-boards-font-size) * 1em;
+  }
+
+  .avatar {
+    margin-left: 0;
   }
 }
 
 .card-number {
-  margin-right: 8px;
-  font-weight: 500;
+  margin-right: 5px;
+}
+
+.issue-boards-search {
+  width: 335px;
+
+  .form-control {
+    display: inline-block;
+    width: 210px;
+  }
+}
+
+.board-list-count {
+  padding: 10px 0;
+  color: $gl-placeholder-color;
+  font-size: 13px;
+
+  > .fa {
+    margin-right: 5px;
+  }
+}
+
+.board-new-issue-form {
+  margin: 5px;
+}
+
+.board-issue-count-holder {
+  margin-top: -3px;
+
+  .btn {
+    line-height: 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.board-issue-count {
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 21px;
+  border-radius: $border-radius-base;
+  border: 1px solid $border-color;
+
+  &.has-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-width: 1px 0 1px 1px;
+  }
+}
+
+.issue-boards-sidebar {
+  &.right-sidebar {
+    top: 153px;
+    bottom: 0;
+
+    @media (min-width: $screen-sm-min) {
+      top: 220px;
+    }
+  }
+
+  .issuable-sidebar-header {
+    position: relative;
+  }
+
+  .gutter-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 15px;
+    right: 0;
+    width: 22px;
+    color: $gray-darkest;
+
+    svg {
+      position: absolute;
+      top: 50%;
+      margin-top: (-11px / 2);
+    }
+
+    &:hover {
+      path {
+        fill: $gray-darkest;
+      }
+    }
+  }
+
+  .issuable-header-text {
+    width: 100%;
+    padding-right: 35px;
+
+    > strong {
+      font-weight: 600;
+    }
+  }
 }

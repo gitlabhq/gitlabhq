@@ -5,8 +5,10 @@
 
   %p.prepend-top-default
     %span
-      To register a new runner you should enter the following registration token.
-      With this token the runner will request a unique runner token and use that for future communication.
+      To register a new Runner you should enter the following registration
+      token.
+      With this token the Runner will request a unique Runner token and use
+      that for future communication.
       %br
       Registration token is
       %code{ id: 'runners-token' } #{current_application_settings.runners_registration_token}
@@ -24,27 +26,27 @@
 
   .bs-callout
     %p
-      A 'runner' is a process which runs a build.
-      You can setup as many runners as you need.
+      A 'Runner' is a process which runs a build.
+      You can setup as many Runners as you need.
       %br
-      Runners can be placed on separate users, servers, and even on your local machine.
+      Runners can be placed on separate users, servers, even on your local machine.
       %br
 
     %div
-      %span Each runner can be in one of the following states:
+      %span Each Runner can be in one of the following states:
       %ul
         %li
           %span.label.label-success shared
-          \- run builds from all unassigned projects
+          \- Runner runs builds from all unassigned projects
         %li
           %span.label.label-info specific
-          \- run builds from assigned projects
+          \- Runner runs builds from assigned projects
         %li
           %span.label.label-warning locked
-          \- runner cannot be assigned to other projects
+          \- Runner cannot be assigned to other projects
         %li
           %span.label.label-danger paused
-          \- runner will not receive any new builds
+          \- Runner will not receive any new builds
 
   .append-bottom-20.clearfix
     .pull-left
@@ -73,4 +75,4 @@
 
       - @runners.each do |runner|
         = render "admin/runners/runner", runner: runner
-  = paginate @runners
+  = paginate @runners, theme: "gitlab"

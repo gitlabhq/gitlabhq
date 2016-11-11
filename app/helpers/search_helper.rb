@@ -7,8 +7,10 @@ module SearchHelper
       projects_autocomplete(term)
     ].flatten
 
+    search_pattern = Regexp.new(Regexp.escape(term), "i")
+
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
-    generic_results.select! { |result| result[:label] =~ Regexp.new(term, "i") }
+    generic_results.select! { |result| result[:label] =~ search_pattern }
 
     [
       resources_results,
@@ -26,6 +28,37 @@ module SearchHelper
     count = collection.total_count
 
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
+  end
+
+  def parse_search_result(result)
+    ref = nil
+    filename = nil
+    basename = nil
+    startline = 0
+
+    result.each_line.each_with_index do |line, index|
+      if line =~ /^.*:.*:\d+:/
+        ref, filename, startline = line.split(':')
+        startline = startline.to_i - index
+        extname = Regexp.escape(File.extname(filename))
+        basename = filename.sub(/#{extname}$/, '')
+        break
+      end
+    end
+
+    data = ""
+
+    result.each_line do |line|
+      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+    end
+
+    OpenStruct.new(
+      filename: filename,
+      basename: basename,
+      ref: ref,
+      startline: startline,
+      data: data
+    )
   end
 
   private
@@ -120,8 +153,18 @@ module SearchHelper
     search_path(options)
   end
 
-  # Sanitize html generated after parsing markdown from issue description or comment
-  def search_md_sanitize(html)
+  # Sanitize a HTML field for search display. Most tags are stripped out and the
+  # maximum length is set to 200 characters.
+  def search_md_sanitize(object, field)
+    html = markdown_field(object, field)
+    html = Truncato.truncate(
+      html,
+      count_tags: false,
+      count_tail: false,
+      max_length: 200
+    )
+
+    # Truncato's filtered_tags and filtered_attributes are not quite the same
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 end

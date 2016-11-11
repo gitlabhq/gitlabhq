@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require shortcuts_issuable */
 
@@ -10,6 +11,7 @@
     });
     return describe('#replyWithSelectedText', function() {
       var stubSelection;
+      // Stub window.getSelection to return the provided String.
       stubSelection = function(text) {
         return window.getSelection = function() {
           return text;

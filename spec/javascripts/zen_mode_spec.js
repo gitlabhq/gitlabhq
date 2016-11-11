@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /*= require zen_mode */
 
@@ -14,8 +15,10 @@
             return true;
           }
         };
+      // Stub Dropzone.forElement(...).enable()
       });
       this.zen = new ZenMode();
+      // Set this manually because we can't actually scroll the window
       return this.zen.scroll_position = 456;
     });
     describe('on enter', function() {
@@ -60,7 +63,7 @@
     return $('a.js-zen-enter').click();
   };
 
-  exitZen = function() {
+  exitZen = function() { // Ohmmmmmmm
     return $('a.js-zen-leave').click();
   };
 

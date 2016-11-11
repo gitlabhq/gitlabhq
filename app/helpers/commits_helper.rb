@@ -25,9 +25,11 @@ module CommitsHelper
     end
   end
 
-  def commit_to_html(commit, project, inline = true)
-    template = inline ? "inline_commit" : "commit"
-    render "projects/commits/#{template}", commit: commit, project: project unless commit.nil?
+  def commit_to_html(commit, ref, project)
+    render 'projects/commits/commit',
+      commit: commit,
+      ref: ref,
+      project: project
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path

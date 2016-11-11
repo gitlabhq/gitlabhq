@@ -24,7 +24,7 @@ namespace you can use the `configure` class method. This method simply yields
 the supplied block while passing `Gitlab::Metrics::Instrumentation` as its
 argument. An example:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_method(Foo, :bar)
   conf.instrument_method(Foo, :baz)
@@ -41,7 +41,7 @@ Method instrumentation should be added in the initializer
 
 Instrumenting a single method:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_method(User, :find_by)
 end
@@ -49,7 +49,7 @@ end
 
 Instrumenting an entire class hierarchy:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_class_hierarchy(ActiveRecord::Base)
 end
@@ -57,7 +57,7 @@ end
 
 Instrumenting all public class methods:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_methods(User)
 end
@@ -68,7 +68,7 @@ end
 The easiest way to check if a method has been instrumented is to check its
 source location. For example:
 
-```
+```ruby
 method = Rugged::TagCollection.instance_method(:[])
 
 method.source_location
@@ -137,3 +137,18 @@ end
 ```
 
 Here the final value of `sleep_real_time` will be `3`, _not_ `1`.
+
+## Tracking Custom Events
+
+Besides instrumenting code GitLab Performance Monitoring also supports tracking
+of custom events. This is primarily intended to be used for tracking business
+metrics such as the number of Git pushes, repository imports, and so on.
+
+To track a custom event simply call `Gitlab::Metrics.add_event` passing it an
+event name and a custom set of (optional) tags. For example:
+
+```ruby
+Gitlab::Metrics.add_event(:user_login, email: current_user.email)
+```
+
+Event names should be verbs such as `push_repository` and `remove_branch`.

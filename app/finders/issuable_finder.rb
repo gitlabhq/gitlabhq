@@ -61,31 +61,26 @@ class IssuableFinder
   def project
     return @project if defined?(@project)
 
-    if project?
-      @project = Project.find(params[:project_id])
+    project = Project.find(params[:project_id])
+    project = nil unless Ability.allowed?(current_user, :"read_#{klass.to_ability_name}", project)
 
-      unless Ability.abilities.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
-    else
-      @project = nil
-    end
-
-    @project
+    @project = project
   end
 
   def projects
     return @projects if defined?(@projects)
+    return @projects = project if project?
 
-    if project?
-      @projects = project
-    elsif current_user && params[:authorized_only].presence && !current_user_related?
-      @projects = current_user.authorized_projects.reorder(nil)
-    elsif group
-      @projects = GroupProjectsFinder.new(group).execute(current_user).reorder(nil)
-    else
-      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
-    end
+    projects =
+      if current_user && params[:authorized_only].presence && !current_user_related?
+        current_user.authorized_projects
+      elsif group
+        GroupProjectsFinder.new(group).execute(current_user)
+      else
+        ProjectsFinder.new.execute(current_user)
+      end
+
+    @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
   end
 
   def search
@@ -124,15 +119,12 @@ class IssuableFinder
   def labels
     return @labels if defined?(@labels)
 
-    if labels? && !filter_by_no_label?
-      @labels = Label.where(title: label_names)
-
-      if projects
-        @labels = @labels.where(project: projects)
+    @labels =
+      if labels? && !filter_by_no_label?
+        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute(skip_authorization: true)
+      else
+        Label.none
       end
-    else
-      @labels = Label.none
-    end
   end
 
   def assignee?
@@ -183,17 +175,12 @@ class IssuableFinder
   end
 
   def by_state(items)
-    case params[:state]
-    when 'closed'
-      items.closed
-    when 'merged'
-      items.respond_to?(:merged) ? items.merged : items.closed
-    when 'all'
-      items
-    when 'opened'
-      items.opened
+    params[:state] ||= 'all'
+
+    if items.respond_to?(params[:state])
+      items.public_send(params[:state])
     else
-      raise 'You must specify default state'
+      items
     end
   end
 
@@ -216,7 +203,14 @@ class IssuableFinder
   end
 
   def by_search(items)
-    items = items.search(search) if search
+    if search
+      items =
+        if search =~ iid_pattern
+          items.where(iid: $~[:iid])
+        else
+          items.full_search(search)
+        end
+    end
 
     items
   end
@@ -272,8 +266,10 @@ class IssuableFinder
         items = items.without_label
       else
         items = items.with_label(label_names, params[:sort])
+
         if projects
-          items = items.where(labels: { project_id: projects })
+          label_ids = LabelsFinder.new(current_user, project_ids: projects).execute(skip_authorization: true).select(:id)
+          items = items.where(labels: { id: label_ids })
         end
       end
     end

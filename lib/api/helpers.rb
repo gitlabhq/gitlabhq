@@ -1,24 +1,39 @@
 module API
   module Helpers
+    include Gitlab::Utils
+
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
-    def to_boolean(value)
-      return true if value =~ /^(true|t|yes|y|1|on)$/i
-      return false if value =~ /^(false|f|no|n|0|off)$/i
+    def private_token
+      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+    end
 
-      nil
+    def warden
+      env['warden']
+    end
+
+    # Check the Rails session for valid authentication details
+    #
+    # Until CSRF protection is added to the API, disallow this method for
+    # state-changing endpoints
+    def find_user_from_warden
+      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
     end
 
     def find_user_by_private_token
-      token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+      token = private_token
+      return nil unless token.present?
+
+      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
     end
 
     def current_user
-      @current_user ||= (find_user_by_private_token || doorkeeper_guard)
+      @current_user ||= find_user_by_private_token
+      @current_user ||= doorkeeper_guard
+      @current_user ||= find_user_from_warden
 
       unless @current_user && Gitlab::UserAccess.new(@current_user).allowed?
         return nil
@@ -49,6 +64,10 @@ module API
 
     def user_project
       @project ||= find_project(params[:id])
+    end
+
+    def available_labels
+      @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
 
     def find_project(id)
@@ -98,7 +117,7 @@ module API
     end
 
     def find_project_label(id)
-      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
       label || not_found!('Label')
     end
 
@@ -129,7 +148,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize!(action, subject)
+    def authorize!(action, subject = nil)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -148,7 +167,7 @@ module API
     end
 
     def can?(object, action, subject)
-      abilities.allowed?(object, action, subject)
+      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash
@@ -177,16 +196,11 @@ module API
     def validate_label_params(params)
       errors = {}
 
-      if params[:labels].present?
-        params[:labels].split(',').each do |label_name|
-          label = user_project.labels.create_with(
-            color: Label::DEFAULT_COLOR).find_or_initialize_by(
-              title: label_name.strip)
+      params[:labels].to_s.split(',').each do |label_name|
+        label = available_labels.find_or_initialize_by(title: label_name.strip)
+        next if label.valid?
 
-          if label.invalid?
-            errors[label.title] = label.errors
-          end
-        end
+        errors[label.title] = label.errors
       end
 
       errors
@@ -267,6 +281,10 @@ module API
 
     def not_modified!
       render_api_error!('304 Not Modified', 304)
+    end
+
+    def no_content!
+      render_api_error!('204 No Content', 204)
     end
 
     def render_validation_error!(model)
@@ -408,16 +426,8 @@ module API
       links.join(', ')
     end
 
-    def abilities
-      @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
-    end
-
     def secret_token
-      File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+      Gitlab::Shell.secret_token
     end
 
     def send_git_blob(repository, blob)

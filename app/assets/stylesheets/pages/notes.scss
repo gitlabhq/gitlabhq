@@ -28,7 +28,8 @@ ul.notes {
     }
   }
 
-  .note-created-ago, .note-updated-at {
+  .note-created-ago,
+  .note-updated-at {
     white-space: nowrap;
   }
 
@@ -104,11 +105,6 @@ ul.notes {
         padding: 2px;
         margin-top: 10px;
       }
-
-      .award-control {
-        font-size: 13px;
-        padding: 2px 5px;
-      }
     }
 
     .note-header {
@@ -147,9 +143,18 @@ ul.notes {
 
 // Diff code in discussion view
 .discussion-body .diff-file {
+  .file-title {
+    cursor: default;
+
+    &:hover {
+      background-color: $gray-light;
+    }
+  }
+
   .diff-header > span {
     margin-right: 10px;
   }
+
   .line_content {
     white-space: pre-wrap;
   }
@@ -334,7 +339,7 @@ ul.notes {
 
   .add-diff-note {
     margin-top: -4px;
-    @include border-radius(40px);
+    border-radius: 40px;
     background: #fff;
     padding: 4px;
     font-size: 16px;
@@ -345,6 +350,7 @@ ul.notes {
     width: 32px;
     // "hide" it by default
     display: none;
+
     &:hover {
       background: $gl-info;
       color: #fff;
@@ -448,7 +454,7 @@ ul.notes {
 .discussion-next-btn {
   svg {
     margin: 0;
-    
+
     path {
       fill: $gray-darkest;
     }

@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe SlashCommands::InterpretService, services: true do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let(:project) { create(:empty_project, :public) }
+  let(:developer) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
 
   before do
-    project.team << [user, :developer]
+    project.team << [developer, :developer]
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, user) }
+    let(:service) { described_class.new(project, developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     shared_examples 'reopen command' do
@@ -45,13 +45,13 @@ describe SlashCommands::InterpretService, services: true do
       it 'fetches assignee and populates assignee_id if content contains /assign' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(assignee_id: user.id)
+        expect(updates).to eq(assignee_id: developer.id)
       end
     end
 
     shared_examples 'unassign command' do
       it 'populates assignee_id: nil if content contains /unassign' do
-        issuable.update(assignee_id: user.id)
+        issuable.update(assignee_id: developer.id)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(assignee_id: nil)
@@ -86,12 +86,40 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'multiple label command' do
+      it 'fetches label ids and populates add_label_ids if content contains multiple /label' do
+        bug # populate the label
+        inprogress # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(add_label_ids: [inprogress.id, bug.id])
+      end
+    end
+
+    shared_examples 'multiple label with same argument' do
+      it 'prevents duplicate label ids and populates add_label_ids if content contains multiple /label' do
+        inprogress # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(add_label_ids: [inprogress.id])
+      end
+    end
+
     shared_examples 'unlabel command' do
       it 'fetches label ids and populates remove_label_ids if content contains /unlabel' do
         issuable.update(label_ids: [inprogress.id]) # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(remove_label_ids: [inprogress.id])
+      end
+    end
+
+    shared_examples 'multiple unlabel command' do
+      it 'fetches label ids and populates remove_label_ids if content contains  mutiple /unlabel' do
+        issuable.update(label_ids: [inprogress.id, bug.id]) # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(remove_label_ids: [inprogress.id, bug.id])
       end
     end
 
@@ -124,7 +152,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'done command' do
       it 'populates todo_event: "done" if content contains /done' do
-        TodoService.new.mark_todo(issuable, user)
+        TodoService.new.mark_todo(issuable, developer)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(todo_event: 'done')
@@ -141,7 +169,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unsubscribe command' do
       it 'populates subscription_event: "unsubscribe" if content contains /unsubscribe' do
-        issuable.subscribe(user)
+        issuable.subscribe(developer)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(subscription_event: 'unsubscribe')
@@ -162,6 +190,23 @@ describe SlashCommands::InterpretService, services: true do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(due_date: nil)
+      end
+    end
+
+    shared_examples 'wip command' do
+      it 'returns wip_event: "wip" if content contains /wip' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(wip_event: 'wip')
+      end
+    end
+
+    shared_examples 'unwip command' do
+      it 'returns wip_event: "unwip" if content contains /wip' do
+        issuable.update(title: issuable.wip_title)
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(wip_event: 'unwip')
       end
     end
 
@@ -209,12 +254,12 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     it_behaves_like 'assign command' do
-      let(:content) { "/assign @#{user.username}" }
+      let(:content) { "/assign @#{developer.username}" }
       let(:issuable) { issue }
     end
 
     it_behaves_like 'assign command' do
-      let(:content) { "/assign @#{user.username}" }
+      let(:content) { "/assign @#{developer.username}" }
       let(:issuable) { merge_request }
     end
 
@@ -268,6 +313,16 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'multiple label command' do
+      let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{bug.title}) }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'multiple label with same argument' do
+      let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
+      let(:issuable) { issue }
+    end	
+
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
       let(:issuable) { issue }
@@ -276,6 +331,11 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
       let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'multiple unlabel command' do
+      let(:content) { %(/unlabel ~"#{inprogress.title}" \n/unlabel ~#{bug.title}) }
+      let(:issuable) { issue }
     end
 
     it_behaves_like 'unlabel command with no argument' do
@@ -376,9 +436,70 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'wip command' do
+      let(:content) { '/wip' }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'unwip command' do
+      let(:content) { '/wip' }
+      let(:issuable) { merge_request }
+    end
+
     it_behaves_like 'empty command' do
       let(:content) { '/remove_due_date' }
       let(:issuable) { merge_request }
+    end
+
+    context 'when current_user cannot :admin_issue' do
+      let(:visitor) { create(:user) }
+      let(:issue) { create(:issue, project: project, author: visitor) }
+      let(:service) { described_class.new(project, visitor) }
+
+      it_behaves_like 'empty command' do
+        let(:content) { "/assign @#{developer.username}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/unassign' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/remove_milestone' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~unknown) }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { %(/unlabel ~"#{inprogress.title}") }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { %(/relabel ~"#{inprogress.title}") }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/due tomorrow' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/remove_due_date' }
+        let(:issuable) { issue }
+      end
     end
   end
 end

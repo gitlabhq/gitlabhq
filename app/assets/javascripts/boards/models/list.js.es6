@@ -1,3 +1,4 @@
+/* eslint-disable */
 class List {
   constructor (obj) {
     this.id = obj.id;
@@ -11,6 +12,7 @@ class List {
     this.loading = true;
     this.loadingMore = false;
     this.issues = [];
+    this.issuesSize = 0;
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
@@ -51,15 +53,11 @@ class List {
   }
 
   nextPage () {
-    if (Math.floor(this.issues.length / 20) === this.page) {
+    if (this.issuesSize > this.issues.length) {
       this.page++;
 
       return this.getIssues(false);
     }
-  }
-
-  canSearch () {
-    return this.type === 'backlog';
   }
 
   getIssues (emptyIssues = true) {
@@ -80,12 +78,24 @@ class List {
       .then((resp) => {
         const data = resp.json();
         this.loading = false;
+        this.issuesSize = data.size;
 
         if (emptyIssues) {
           this.issues = [];
         }
 
-        this.createIssues(data);
+        this.createIssues(data.issues);
+      });
+  }
+
+  newIssue (issue) {
+    this.addIssue(issue);
+    this.issuesSize++;
+
+    return gl.boardService.newIssue(this.id, issue)
+      .then((resp) => {
+        const data = resp.json();
+        issue.id = data.iid;
       });
   }
 
@@ -96,14 +106,20 @@ class List {
   }
 
   addIssue (issue, listFrom) {
-    this.issues.push(issue);
+    if (!this.findIssue(issue.id)) {
+      this.issues.push(issue);
 
-    if (this.label) {
-      issue.addLabel(this.label);
-    }
+      if (this.label) {
+        issue.addLabel(this.label);
+      }
 
-    if (listFrom) {
-      gl.boardService.moveIssue(issue.id, listFrom.id, this.id);
+      if (listFrom) {
+        this.issuesSize++;
+        gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
+          .then(() => {
+            listFrom.getIssues(false);
+          });
+      }
     }
   }
 
@@ -116,6 +132,7 @@ class List {
       const matchesRemove = removeIssue.id === issue.id;
 
       if (matchesRemove) {
+        this.issuesSize--;
         issue.removeLabel(this.label);
       }
 

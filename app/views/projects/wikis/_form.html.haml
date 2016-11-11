@@ -24,7 +24,7 @@
 
         = succeed '.' do
           More examples are in the
-          = link_to 'documentation', help_page_path("user/project/markdown", anchor: "wiki-specific-markdown")
+          = link_to 'documentation', help_page_path("user/markdown", anchor: "wiki-specific-markdown")
 
   .form-group
     = f.label :commit_message, class: 'control-label'
@@ -33,7 +33,12 @@
   .form-actions
     - if @page && @page.persisted?
       = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel"
+      .pull-right
+        - if can?(current_user, :admin_wiki, @project)
+          = link_to namespace_project_wiki_path(@project.namespace, @project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-danger btn-grouped" do
+            Delete
+        = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel btn-grouped"
     - else
       = f.submit 'Create page', class: "btn-create btn"
-      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
+      .pull-right
+        = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"

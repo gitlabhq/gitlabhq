@@ -1,0 +1,4 @@
+image: ruby:2.3-alpine
+
+test:
+  script: ruby verify_templates.rb

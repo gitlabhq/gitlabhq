@@ -1,6 +1,6 @@
 class Event < ActiveRecord::Base
   include Sortable
-  default_scope { where.not(author_id: nil) }
+  default_scope { reorder(nil).where.not(author_id: nil) }
 
   CREATED   = 1
   UPDATED   = 2
@@ -12,6 +12,9 @@ class Event < ActiveRecord::Base
   JOINED    = 8 # User joined project
   LEFT      = 9 # User left project
   DESTROYED = 10
+  EXPIRED   = 11 # User left project due to expiry
+
+  RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -46,6 +49,7 @@ class Event < ActiveRecord::Base
         update_all(updated_at: Time.now)
     end
 
+    # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type in (?) AND action in (?))",
             Event::PUSHED, ["MergeRequest", "Issue"],
@@ -59,15 +63,17 @@ class Event < ActiveRecord::Base
 
   def visible_to_user?(user = nil)
     if push?
-      true
+      Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
       true
     elsif created_project?
       true
     elsif issue? || issue_note?
-      Ability.abilities.allowed?(user, :read_issue, note? ? note_target : target)
+      Ability.allowed?(user, :read_issue, note? ? note_target : target)
+    elsif merge_request? || merge_request_note?
+      Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
     else
-      ((merge_request? || note?) && target.present?) || milestone?
+      milestone?
     end
   end
 
@@ -111,6 +117,10 @@ class Event < ActiveRecord::Base
     action == LEFT
   end
 
+  def expired?
+    action == EXPIRED
+  end
+
   def destroyed?
     action == DESTROYED
   end
@@ -120,7 +130,7 @@ class Event < ActiveRecord::Base
   end
 
   def membership_changed?
-    joined? || left?
+    joined? || left? || expired?
   end
 
   def created_project?
@@ -180,6 +190,8 @@ class Event < ActiveRecord::Base
       'joined'
     elsif left?
       'left'
+    elsif expired?
+      'removed due to membership expiration from'
     elsif destroyed?
       'destroyed'
     elsif commented?
@@ -278,6 +290,10 @@ class Event < ActiveRecord::Base
     note? && target && target.for_issue?
   end
 
+  def merge_request_note?
+    note? && target && target.for_merge_request?
+  end
+
   def project_snippet_note?
     target.for_snippet?
   end
@@ -324,8 +340,22 @@ class Event < ActiveRecord::Base
   end
 
   def reset_project_activity
-    if project && Gitlab::ExclusiveLease.new("project:update_last_activity_at:#{project.id}", timeout: 60).try_obtain
-      project.update_column(:last_activity_at, self.created_at)
-    end
+    return unless project
+
+    # Don't bother updating if we know the project was updated recently.
+    return if recent_update?
+
+    # At this point it's possible for multiple threads/processes to try to
+    # update the project. Only one query should actually perform the update,
+    # hence we add the extra WHERE clause for last_activity_at.
+    Project.unscoped.where(id: project_id).
+      where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
+      update_all(last_activity_at: created_at)
+  end
+
+  private
+
+  def recent_update?
+    project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
   end
 end

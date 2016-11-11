@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function() {
   this.Pager = {
     init: function(limit, preload, disable, callback) {

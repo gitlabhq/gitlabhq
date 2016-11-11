@@ -31,7 +31,6 @@
     padding-right: 20px;
     border: none;
     font-size: 14px;
-    outline: none;
     padding: 0;
     margin-left: 5px;
     line-height: 25px;
@@ -65,13 +64,14 @@
   .search-input-wrap {
     width: 100%;
 
-    .search-icon, .clear-icon {
+    .search-icon,
+    .clear-icon {
       position: absolute;
       right: 5px;
       top: 0;
       color: $location-icon-color;
 
-      &:before {
+      &::before {
         font-family: FontAwesome;
         font-weight: normal;
         font-style: normal;
@@ -80,7 +80,7 @@
 
     .search-icon {
       @extend .fa-search;
-      @include transition(color .15s);
+      transition: color 0.15s;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -103,7 +103,7 @@
 
     // Custom dropdown positioning
     .dropdown-menu {
-      top: 30px;
+      top: 37px;
       left: -5px;
       padding: 0;
 
@@ -125,7 +125,7 @@
     }
 
     .location-badge {
-      @include transition(all .15s);
+      transition: all 0.15s;
       background-color: $location-badge-active-bg;
       color: $white-light;
     }
@@ -185,7 +185,8 @@
     padding-right: $gl-padding + 15px;
   }
 
-  .btn-search, .btn-new {
+  .btn-search,
+  .btn-new {
     width: 100%;
     margin-top: 5px;
 
@@ -227,6 +228,5 @@
   &:hover,
   &:focus {
     color: $gl-link-color;
-    outline: none;
   }
 }

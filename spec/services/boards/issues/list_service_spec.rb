@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Boards::Issues::ListService, services: true do
   describe '#execute' do
     let(:user)    { create(:user) }
-    let(:project) { create(:project_with_board) }
-    let(:board)   { project.board }
+    let(:project) { create(:empty_project) }
+    let(:board)   { create(:board, project: project) }
 
     let(:bug) { create(:label, project: project, name: 'Bug') }
     let(:development) { create(:label, project: project, name: 'Development') }
@@ -30,14 +30,14 @@ describe Boards::Issues::ListService, services: true do
     let!(:closed_issue1) { create(:labeled_issue, :closed, project: project, labels: [bug]) }
     let!(:closed_issue2) { create(:labeled_issue, :closed, project: project, labels: [p3]) }
     let!(:closed_issue3) { create(:issue, :closed, project: project) }
-    let!(:closed_issue4) { create(:labeled_issue, :closed, project: project, labels: [p1, development]) }
+    let!(:closed_issue4) { create(:labeled_issue, :closed, project: project, labels: [p1]) }
 
     before do
       project.team << [user, :developer]
     end
 
     it 'delegates search to IssuesFinder' do
-      params = { id: list1.id }
+      params = { board_id: board.id, id: list1.id }
 
       expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
 
@@ -46,7 +46,7 @@ describe Boards::Issues::ListService, services: true do
 
     context 'sets default order to priority' do
       it 'returns opened issues when listing issues from Backlog' do
-        params = { id: backlog.id }
+        params = { board_id: board.id, id: backlog.id }
 
         issues = described_class.new(project, user, params).execute
 
@@ -54,19 +54,36 @@ describe Boards::Issues::ListService, services: true do
       end
 
       it 'returns closed issues when listing issues from Done' do
-        params = { id: done.id }
+        params = { board_id: board.id, id: done.id }
 
         issues = described_class.new(project, user, params).execute
 
-        expect(issues).to eq [closed_issue2, closed_issue3, closed_issue1]
+        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue3, closed_issue1]
       end
 
-      it 'returns opened/closed issues that have label list applied when listing issues from a label list' do
-        params = { id: list1.id }
+      it 'returns opened issues that have label list applied when listing issues from a label list' do
+        params = { board_id: board.id, id: list1.id }
 
         issues = described_class.new(project, user, params).execute
 
-        expect(issues).to eq [closed_issue4, list1_issue3, list1_issue1, list1_issue2]
+        expect(issues).to eq [list1_issue3, list1_issue1, list1_issue2]
+      end
+    end
+
+    context 'with list that does not belong to the board' do
+      it 'raises an error' do
+        list = create(:list)
+        service = described_class.new(project, user, board_id: board.id, id: list.id)
+
+        expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'with invalid list id' do
+      it 'raises an error' do
+        service = described_class.new(project, user, board_id: board.id, id: nil)
+
+        expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

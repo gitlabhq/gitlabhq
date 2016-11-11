@@ -7,6 +7,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedMarkdown
   include SharedDiffNote
   include SharedUser
+  include WaitForAjax
+
+  after do
+    wait_for_ajax if javascript_test?
+  end
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -31,7 +36,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    click_link "Closed"
+    page.within('.issues-state-filters') do
+      click_link "Closed"
+    end
   end
 
   step 'I should see merge request "Wiki Feature"' do
@@ -88,6 +95,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click button "Unsubscribe"' do
     click_on "Unsubscribe"
+    wait_for_ajax
   end
 
   step 'I click link "Close"' do
@@ -112,7 +120,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            source_project: project,
            target_project: project,
            source_branch: 'fix',
-           target_branch: 'master',
+           target_branch: 'merge-test',
            author: project.users.first,
            description: "# Description header"
           )
@@ -135,7 +143,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            title: "Bug NS-05",
            source_project: project,
            target_project: project,
-           author: project.users.first)
+           author: project.users.first,
+           source_branch: 'merge-test')
   end
 
   step 'project "Shop" have "Feature NS-05" merged merge request' do
@@ -491,7 +500,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill in merge request search with "Fe"' do
-    fill_in 'issue_search', with: "Fe"
+    fill_in 'issuable_search', with: "Fe"
   end
 
   step 'I click the "Target branch" dropdown' do
@@ -506,7 +515,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see new target branch changes' do
     expect(page).to have_content 'Request to merge fix into feature'
-    expect(page).to have_content 'Target branch changed from master to feature'
+    expect(page).to have_content 'Target branch changed from merge-test to feature'
+    wait_for_ajax
   end
 
   step 'I click on "Email Patches"' do
