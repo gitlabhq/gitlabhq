@@ -138,7 +138,7 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
-    # The mailbox where incoming mail will end up. Usually "inbox".
+    # The IDLE command timeout.
     idle_timeout: 60
 
   ## Build Artifacts
