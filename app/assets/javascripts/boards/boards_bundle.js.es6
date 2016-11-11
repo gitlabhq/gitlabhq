@@ -22,6 +22,8 @@ $(() => {
     gl.IssueBoardsApp.$destroy(true);
   }
 
+  Store.create();
+
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
@@ -37,16 +39,15 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       detailIssue: Store.detail
     },
-    init: Store.create.bind(Store),
     computed: {
       detailIssueVisible () {
         return Object.keys(this.detailIssue.issue).length;
-      }
+      },
     },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
     },
-    ready () {
+    mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
@@ -60,6 +61,8 @@ $(() => {
             }
           });
 
+          this.state.lists = _.sortBy(this.state.lists, 'position');
+
           Store.addBlankState();
           this.loading = false;
         });
@@ -70,6 +73,9 @@ $(() => {
     el: '#js-boards-seach',
     data: {
       filters: Store.state.filters
+    },
+    mounted () {
+      gl.issueBoards.newListDropdownInit();
     }
   });
 });
