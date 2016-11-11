@@ -2,9 +2,10 @@
 
 (function(global) {
   class DueDateSelect {
-    constructor({ $dropdown, $loading } = {}) {
+    constructor({ $dropdown, $loading, $context } = {}) {
       const $dropdownParent = $dropdown.closest('.dropdown');
       const $block = $dropdown.closest('.block');
+      this.$context = $context || $('body');
       this.$loading = $loading;
       this.$dropdown = $dropdown;
       this.$dropdownParent = $dropdownParent;
@@ -80,9 +81,12 @@
     }
 
     parseSelectedDate() {
-      this.rawSelectedDate = $("input[name='" + this.fieldName + "']").val();
+      this.rawSelectedDate = this.$context.find(`input[name='${this.fieldName}']`).val();
+
       if (this.rawSelectedDate.length) {
-        let dateObj = new Date(this.rawSelectedDate);
+        // Avoid time zone inconsistency using the utils.createDateObject
+        // method, instead of the native Date object.
+        const dateObj = gl.utils.createDateObject(this.rawSelectedDate);
         this.displayedDate = $.datepicker.formatDate('M d, yy', dateObj);
       } else {
         this.displayedDate = 'No due date';
@@ -176,5 +180,6 @@
   }
 
   global.DueDateSelectors = DueDateSelectors;
+  global.DueDateSelect = DueDateSelect;
 
 })(window.gl || (window.gl = {}));

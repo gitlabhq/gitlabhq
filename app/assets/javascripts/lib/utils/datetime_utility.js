@@ -16,6 +16,19 @@
     }
     w.gl.utils.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+    // createDateObject must be used instead of using native Date object
+    // to create a new Date instance using string as param - '2016-11-10' or
+    // '2016/11/10' in order to avoid time zone inconsistency.
+    w.gl.utils.createDateObject = function(string) {
+      var dateSeparator = string.indexOf('-') > -1 ? '-' : '/';
+
+      var dateArray = string.split(dateSeparator).map(function(dateItem) {
+        return parseInt(dateItem, 10);
+      });
+
+      return new Date(dateArray[0],  dateArray[1] - 1, dateArray[2]);
+    }
+
     w.gl.utils.formatDate = function(datetime) {
       return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
     };
