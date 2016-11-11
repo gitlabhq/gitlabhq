@@ -41,6 +41,4 @@ Correct file will look like this:
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 17" enable-background="new 0 0 16 17"><path d="m15.1 1h-2.1v-1h-2v1h-6v-1h-2v1h-2.1c-.5 0-.9.5-.9 1v14c0 .6.4 1 .9 1h14.2c.5 0 .9-.4.9-1v-14c0-.5-.4-1-.9-1m-1.1 14h-12v-9h12v9m0-11h-12v-1h12v1"/><path d="m5.4 11.6l1.5 1.2c.4.3 1.1.3 1.4-.1l2.5-3c.3-.4.3-1.1-.1-1.4-.5-.4-1.1-.3-1.5.1l-1.8 2.2-.8-.6c-.4-.3-1.1-.3-1.4.2-.3.4-.3 1 .2 1.4"/></svg>
 ```
 
->>>
-TODO: Checkout [https://github.com/svg/svgo](https://github.com/svg/svgo)
->>>
+> TODO: Checkout [https://github.com/svg/svgo](https://github.com/svg/svgo)

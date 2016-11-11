@@ -10,14 +10,10 @@
 
 ---
 
-<br>
-
 ## Responsive
 GitLab is a responsive experience that works well across all screen sizes, from mobile devices to large monitors. In order to provide a great user experience, the core functionality (browsing files, creating issues, writing comments, etc.) must be available at all resolutions. However, due to size limitations, some secondary functionality may be hidden on smaller screens. Please keep this functionality limited to rare actions that aren't expected to be needed on small devices.
 
 ---
-
-<br>
 
 ## Typography
 ### Primary typeface
@@ -35,8 +31,6 @@ This is the typeface used for code blocks. GitLab uses the OS default font.
 ![Monospace font sample](img/monospacefont-sample.png)
 
 ---
-
-<br>
 
 ## Icons
 GitLab uses Font Awesome icons throughout our interface.
@@ -62,13 +56,9 @@ An 'x' is used for closing UI elements such as dropdowns.
 ![Add icon](img/icon-add.png)
 A plus is used when creating new objects, such as issues, projects, etc.
 
->>>
-TODO: update this section, add more general guidance to icon usage and personality, etc.
->>>
+> TODO: update this section, add more general guidance to icon usage and personality, etc.
 
 ---
-
-<br>
 
 ## Color
 
@@ -87,25 +77,17 @@ Red is reserved for delete and other destructive commands
 ![Grey](img/color-grey.png)
 Grey, and white (depending on context) is used for netral, secondary elements
 
->>>
-TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
->>>
+> TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
 
 ---
-
-<br>
 
 ## Motion
 
 Motion is a tool to help convey important relationships, changes or transitions between elements. It should be used sparingly and intentionally, highlighting the right elements at the right moment.
 
->>>
-TODO: Determine a more concrete perspective on motion, create consistent easing/timing curves to follow.
->>>
+> TODO: Determine a more concrete perspective on motion, create consistent easing/timing curves to follow.
 
 ---
-
-<br>
 
 ## Voice and tone
 

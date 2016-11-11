@@ -30,8 +30,6 @@ The [GitLab Product Map](https://gitlab.com/gitlab-org/gitlab-design/raw/master/
 
 ---
 
-<br>
-
 ## Filtering
 
 Today, lists are filtered by a series of dropdowns. Some of these dropdowns allow multiselect (labels), while others allow you to filter to one option (milestones). However, we are currently implementing a [new model](https://gitlab.com/gitlab-org/gitlab-ce/issues/21747) for this, and will update the guide when it is ready.
@@ -39,8 +37,6 @@ Today, lists are filtered by a series of dropdowns. Some of these dropdowns allo
 ![Filters](img/features-filters.png)
 
 ---
-
-<br>
 
 ## Search results
 
@@ -53,8 +49,6 @@ Today, lists are filtered by a series of dropdowns. Some of these dropdowns allo
 There are several core lists in the GitLab experience, such as the Issue list and the Merge Request list. You are also able to [filter and search these lists](https://gitlab.com/gitlab-org/gitlab-ce/issues?utf8=%E2%9C%93&search=mobile). This UI will be updated with the [new filtering model](https://gitlab.com/gitlab-org/gitlab-ce/issues/21747).
 
 ---
-
-<br>
 
 ## Empty states
 

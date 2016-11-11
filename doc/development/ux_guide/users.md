@@ -1,8 +1,6 @@
 # Users
 
->>>
-TODO: Create personas. Understand the similarities and differences across the below spectrums.
->>>
+> TODO: Create personas. Understand the similarities and differences across the below spectrums.
 
 ## Users by organization
 

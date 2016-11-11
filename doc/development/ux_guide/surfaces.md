@@ -16,8 +16,6 @@ This menu is to navigate to pages that contain content global to GitLab.
 
 ---
 
-<br>
-
 ## Header
 
 The header contains 3 main elements: Project switching and searching, user account avatar and settings, and a contextual menu that changes based on the current page.
@@ -26,15 +24,11 @@ The header contains 3 main elements: Project switching and searching, user accou
 
 ---
 
-<br>
-
 ## Side pane
 
 The side pane holds supporting information and meta data for the information in the content area.
 
 ---
-
-<br>
 
 ## Content area
 

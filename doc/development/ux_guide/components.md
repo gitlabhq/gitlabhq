@@ -17,8 +17,6 @@
 
 ---
 
-<br>
-
 ## Tooltips
 
 ### Usage
@@ -32,8 +30,6 @@ By default, tooltips should be placed below the element that they refer to. Howe
 ![Tooltip placement location](img/tooltip-placement.png)
 
 ---
-
-<br>
 
 ## Anchor links
 
@@ -56,8 +52,6 @@ The focus state should match the hover state.
 ![Anchor link states ](img/components-anchorlinks.png)
 
 ---
-
-<br>
 
 ## Buttons
 
@@ -87,8 +81,6 @@ Follow the color guidance on the [basics](basics.md#color) page. The default col
 
 ---
 
-<br>
-
 ## Dropdowns
 
 Dropdowns are used to allow users to choose one (or many) options from a list of options. If this list of options is more 20, there should generally be a way to search through and filter the options (see the complex filter dropdowns below.)
@@ -103,8 +95,6 @@ TODO: Will update this section when the new filters UI is implemented.
 
 ---
 
-<br>
-
 ## Counts
 
 A count element is used in navigation contexts where it is helpful to indicate the count, or number of items, in a list. Always use the [`number_with_delimiter`][number_with_delimiter] helper to display counts in the UI.
@@ -114,8 +104,6 @@ A count element is used in navigation contexts where it is helpful to indicate t
 [number_with_delimiter]: http://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_with_delimiter
 
 ---
-
-<br>
 
 ## Lists
 
@@ -141,8 +129,6 @@ List inside panel
 
 ---
 
-<br>
-
 ## Tables
 
 When the information is too complex for a list, with multiple columns of information, a table can be used. For example, the [pipelines page](https://gitlab.com/gitlab-org/gitlab-ce/pipelines) uses a table.
@@ -150,8 +136,6 @@ When the information is too complex for a list, with multiple columns of informa
 ![Table](img/components-table.png)
 
 ---
-
-<br>
 
 ## Blocks
 
@@ -178,8 +162,6 @@ Cover blocks are generally used to create a heading element for a page, such as 
 
 ---
 
-<br>
-
 ## Panels
 
 >>>
@@ -190,8 +172,6 @@ TODO: Catalog how we are currently using panels and rationalize how they relate 
 
 ---
 
-<br>
-
 ## Alerts
 
 >>>
@@ -201,8 +181,6 @@ TODO: Catalog how we are currently using alerts
 ![Alerts](img/components-alerts.png)
 
 ---
-
-<br>
 
 ## Forms
 
@@ -224,16 +202,12 @@ Horizontal form (`form.horizontal-form`) with label rendered inline with input.
 
 ---
 
-<br>
-
 ## File holders
 A file holder (`.file-holder`) is used to show the contents of a file inline on a page of GitLab.
 
 ![File Holder component](img/components-fileholder.png)
 
 ---
-
-<br>
 
 ## Data formats
 
@@ -277,6 +251,4 @@ Referencing GitLab items depends on a symbol for each type of item. Typing that 
 
 ![People reference](img/components-referencepeople.png)
 
->>>
-Open issue: Some commit references use monospace fonts, but others don't. Need to standardize this.
->>>
+> TODO: Open issue: Some commit references use monospace fonts, but others don't. Need to standardize this.
