@@ -1334,6 +1334,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def only_allow_merge_if_all_discussions_are_resolved
+    super || false
+  end
+
   private
 
   def pushes_since_gc_redis_key
