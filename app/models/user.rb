@@ -83,7 +83,6 @@ class User < ActiveRecord::Base
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
-  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
@@ -109,6 +108,11 @@ class User < ActiveRecord::Base
 
   has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
+
+  # Issues that a user owns are expected to be moved to the "ghost" user before
+  # the user is destroyed. If the user owns any issues during deletion, this
+  # should be treated as an exceptional condition.
+  has_many :issues,                   dependent: :restrict_with_exception, foreign_key: :author_id
 
   #
   # Validations
@@ -192,6 +196,8 @@ class User < ActiveRecord::Base
           "administrator if you think this is an error."
       end
     end
+
+    state :ghost
   end
 
   mount_uploader :avatar, AvatarUploader
@@ -361,6 +367,30 @@ class User < ActiveRecord::Base
         #{Regexp.escape(reference_prefix)}
         (?<user>#{Gitlab::Regex::NAMESPACE_REF_REGEX_STR})
       }x
+    end
+
+    # Return (create if necessary) the ghost user. The ghost user
+    # owns records previously belonging to deleted users.
+    def ghost
+      ghost_user = User.with_state(:ghost).first
+
+      ghost_user ||
+        begin
+          users = Enumerator.new do |y|
+            n = nil
+            loop do
+              user = User.new(
+                username: "ghost#{n}", password: Devise.friendly_token,
+                email: "ghost#{n}@example.com", name: "Ghost User", state: :ghost
+              )
+
+              y.yield(user)
+              n = n ? n.next : 0
+            end
+          end
+
+          users.lazy.select { |user| user.valid? }.first.tap(&:save!)
+        end
     end
   end
 
