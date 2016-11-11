@@ -254,6 +254,10 @@ Devise.setup do |config|
         end
       end
 
+      if provider['name'] == 'shibboleth'
+        provider['args'][:fail_with_empty_uid] = true
+      end
+
       # A Hash from the configuration will be passed as is.
       provider_arguments << provider['args'].symbolize_keys
     end
