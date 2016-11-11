@@ -138,14 +138,17 @@ module Gitlab
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
-        status = Checks::ChangeAccess.new(change,
-                                          user_access: user_access,
-                                          project: project).exec
+        status = check_single_change_access(change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
           raise UnauthorizedError, status.message
         end
       end
+    end
+
+    def check_single_change_access(change)
+      Checks::ChangeAccess.new(
+        change, user_access: user_access, project: project).exec
     end
 
     def matching_merge_request?(newrev, branch_name)
