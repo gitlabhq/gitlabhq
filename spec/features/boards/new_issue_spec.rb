@@ -46,7 +46,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
         click_button 'Cancel'
 
-        expect(page).to have_selector('.board-new-issue-form', visible: false)
+        expect(page).not_to have_selector('.board-new-issue-form')
       end
     end
 

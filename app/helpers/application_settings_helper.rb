@@ -100,4 +100,8 @@ module ApplicationSettingsHelper
 
     options_for_select(options, @application_setting.repository_storages)
   end
+
+  def sidekiq_queue_options_for_select
+    options_for_select(Sidekiq::Queue.all.map(&:name), @application_setting.sidekiq_throttling_queues)
+  end
 end
