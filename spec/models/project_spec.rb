@@ -76,7 +76,7 @@ describe Project, models: true do
     end
 
     describe '#members & #requesters' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do

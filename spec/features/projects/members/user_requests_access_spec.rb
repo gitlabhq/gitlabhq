@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Projects > Members > User requests access', feature: true do
   let(:user) { create(:user) }
   let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   background do
     project.team << [master, :master]
