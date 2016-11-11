@@ -257,7 +257,7 @@
 
 // For sign in pane only, to improve tab order, the following removes the submit button from
 // normal document flow and pins it to the bottom of the form. For context, see !6867 & !6928
-
+/*
 .login-box {
   .new_user {
     position: relative;
@@ -277,4 +277,4 @@
     bottom: 0;
   }
 }
-
+*/
