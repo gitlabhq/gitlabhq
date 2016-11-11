@@ -3,6 +3,7 @@
 
 //= require vue-resource
 
+//= require ./object_assign.js.es6
 //= require ./store.js.es6
 //= require ./pipeline_url.js.es6
 //= require ./pipeline_head.js.es6
