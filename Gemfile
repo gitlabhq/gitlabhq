@@ -137,6 +137,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
+gem 'sidekiq-limit_fetch', '~> 3.4'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'

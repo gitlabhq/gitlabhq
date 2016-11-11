@@ -98,6 +98,9 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
