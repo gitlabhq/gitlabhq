@@ -32,10 +32,10 @@
         this.$http.get(`${url}?page=${pageNum}`)
           .then((response) => {
             const res = JSON.parse(response.body);
-            debugger
             Vue.set(this, 'updatedAt', res.updated_at);
             Vue.set(this, 'pipelines', res.pipelines);
             Vue.set(this, 'count', res.count);
+            this.pageRequest = false;
           }, () => new Flash(
             'Something went wrong on our end.'
           ));

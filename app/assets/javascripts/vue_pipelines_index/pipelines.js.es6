@@ -4,15 +4,15 @@
 ((gl) => {
   gl.VuePipeLines = Vue.extend({
     components: {
-      'running-pipeline': gl.VueRunningPipeline,
-      'stages': gl.VueStages,
-      'pipeline-actions': gl.VuePipelineActions,
-      'branch-commit': gl.VueBranchCommit,
-      'pipeline-url': gl.VuePipelineUrl,
-      'pipeline-head': gl.VuePipelineHead,
-      'gl-pagination': gl.VueGlPagination,
-      'status-scope': gl.VueStatusScope,
-      'time-ago': gl.VueTimeAgo,
+      runningPipeline: gl.VueRunningPipeline,
+      pipelineActions: gl.VuePipelineActions,
+      stages: gl.VueStages,
+      branchCommit: gl.VueBranchCommit,
+      pipelineUrl: gl.VuePipelineUrl,
+      pipelineHead: gl.VuePipelineHead,
+      glPagination: gl.VueGlPagination,
+      statusScope: gl.VueStatusScope,
+      timeAgo: gl.VueTimeAgo,
     },
     data() {
       return {
@@ -24,6 +24,7 @@
           all: 0,
           running_or_pending: 0,
         },
+        pageRequest: false,
       };
     },
     props: [
@@ -47,12 +48,16 @@
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);
+        this.pageRequest = true;
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
     },
     template: `
       <div>
-        <div class="table-holder">
+        <div class="pipeline-loading-status" v-if='pipelines.length < 1'>
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+        <div class="table-holder" v-if='pipelines.length > 0'>
           <table class="table ci-table">
             <pipeline-head></pipeline-head>
             <tbody>
@@ -66,6 +71,9 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="pipeline-loading-status" v-if='pageRequest'>
+          <i class="fa fa-spinner fa-spin"></i>
         </div>
         <gl-pagination
           v-if='count.all > 0'
