@@ -39,9 +39,9 @@ class Import::BitbucketController < Import::BaseController
     client = Bitbucket::Client.new(credentials)
 
     @repo_id = params[:repo_id].to_s
-    name = @repo_id.to_s.gsub('___', '/')
+    name = @repo_id.gsub('___', '/')
     repo = client.repo(name)
-    @project_name = repo.name
+    @project_name = params[:new_name].presence || repo.name
 
     repo_owner = repo.owner
     repo_owner = current_user.username if repo_owner == client.user.username
@@ -50,7 +50,7 @@ class Import::BitbucketController < Import::BaseController
     namespace = find_or_create_namespace(@target_namespace, repo_owner)
 
     if current_user.can?(:create_projects, namespace)
-      @project = Gitlab::BitbucketImport::ProjectCreator.new(repo, namespace, current_user, credentials).execute
+      @project = Gitlab::BitbucketImport::ProjectCreator.new(repo, @project_name, namespace, current_user, credentials).execute
     else
       render 'unauthorized'
     end
