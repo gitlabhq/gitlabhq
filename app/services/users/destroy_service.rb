@@ -26,12 +26,26 @@ module Users
         ::Projects::DestroyService.new(project, current_user, skip_repo: true).async_execute
       end
 
+      move_issues_to_ghost_user(user)
+
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       namespace = user.namespace
       user_data = user.destroy
       namespace.really_destroy!
 
       user_data
+    end
+
+    private
+
+    def move_issues_to_ghost_user(user)
+      ghost_user = User.ghost
+
+      Issue.transaction do
+        user.issues.each { |issue| issue.update!(author: ghost_user) }
+      end
+
+      user.reload
     end
   end
 end
