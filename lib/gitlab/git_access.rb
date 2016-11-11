@@ -7,7 +7,7 @@ module Gitlab
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
       download: 'You are not allowed to download code from this project.',
-      deploy_key: 'Deploy keys are not allowed to push code.',
+      deploy_key: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.'
     }
 
@@ -46,22 +46,18 @@ module Gitlab
     def download_access_check
       if user
         user_download_access_check
-      elsif deploy_key.nil? && !Guest.can?(:download_code, project)
+      elsif !Guest.can?(:download_code, project)
         raise UnauthorizedError, ERROR_MESSAGES[:download]
       end
     end
 
     def push_access_check(changes)
-      unless project.repository.exists?
-        return build_status_object(false, "A repository for this project does not exist yet.")
-      end
-
-      if user
-        user_push_access_check(changes)
-      elsif deploy_key
+      if deploy_key
         deploy_key_push_access_check(changes)
+      elsif user
+        user_push_access_check(changes)
       else
-        raise UnauthorizedError, ERROR_MESSAGES[deploy_key ? :deploy_key : :upload]
+        raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
     end
 
@@ -88,32 +84,17 @@ module Gitlab
         return # Allow access.
       end
 
-      unless project.repository.exists?
-        raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
-      end
-
-      changes_list = Gitlab::ChangesList.new(changes)
-
-      # Iterate over all changes to find if user allowed all of them to be applied
-      changes_list.each do |change|
-        status = change_access_check(change)
-        unless status.allowed?
-          # If user does not have access to make at least one change - cancel all push
-          raise UnauthorizedError, status.message
-        end
-      end
+      check_repository_existence!
+      check_change_access!(changes)
     end
 
     def deploy_key_push_access_check(changes)
-      if actor.can_push?
-        build_status_object(true)
+      if deploy_key.can_push?
+        check_repository_existence!
+        check_change_access!(changes)
       else
-        build_status_object(false, "The deploy key does not have write access to the project.")
+        raise UnauthorizedError, ERROR_MESSAGES[:deploy_key]
       end
-    end
-
-    def change_access_check(change)
-      Checks::ChangeAccess.new(change, user_access: user_access, project: project).exec
     end
 
     def protocol_allowed?
@@ -146,6 +127,27 @@ module Gitlab
       end
     end
 
+    def check_repository_existence!
+      unless project.repository.exists?
+        raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
+      end
+    end
+
+    def check_change_access!(changes)
+      changes_list = Gitlab::ChangesList.new(changes)
+
+      # Iterate over all changes to find if user allowed all of them to be applied
+      changes_list.each do |change|
+        status = Checks::ChangeAccess.new(change,
+                                          user_access: user_access,
+                                          project: project).exec
+        unless status.allowed?
+          # If user does not have access to make at least one change - cancel all push
+          raise UnauthorizedError, status.message
+        end
+      end
+    end
+
     def matching_merge_request?(newrev, branch_name)
       Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
     end
@@ -154,20 +156,11 @@ module Gitlab
       actor if actor.is_a?(DeployKey)
     end
 
-    def deploy_key_can_read_project?
-      if deploy_key
-        return true if project.public?
-        deploy_key.projects.include?(project)
-      else
-        false
-      end
-    end
-
     def can_read_project?
-      if user
+      if deploy_key
+        project.public? || deploy_key.projects.include?(project)
+      elsif user
         user_access.can_read_project?
-      elsif deploy_key
-        deploy_key_can_read_project?
       else
         Guest.can?(:read_project, project)
       end
@@ -182,8 +175,6 @@ module Gitlab
         case actor
         when User
           actor
-        when DeployKey
-          nil
         when Key
           actor.user
         end
