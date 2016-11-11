@@ -31,8 +31,6 @@ The previous building blocks are combined into complete features in the GitLab U
 
 ---
 
-<br>
-
 ## Research
 
 ---
@@ -41,8 +39,6 @@ The previous building blocks are combined into complete features in the GitLab U
 How we think about the variety of users of GitLab, from small to large teams, comparing opensource usage to enterprise, etc.
 
 ---
-
-<br>
 
 ## Other
 
@@ -55,5 +51,3 @@ Tips for exporting assets, and other guidance.
 
 ### [Resources](resources.md)
 Resources for GitLab UX
-
----
