@@ -50,9 +50,7 @@ module PreferencesHelper
   end
 
   def default_project_view
-    unless current_user
-      return @repository.head_commit ? 'readme' : 'activity'
-    end
+    return annonymous_project_view unless current_user
 
     user_view = current_user.project_view
 
@@ -67,5 +65,9 @@ module PreferencesHelper
     else
       "customize_workflow"
     end
+  end
+
+  def annonymous_project_view
+    @project.empty_repo? ? 'empty' : 'readme'
   end
 end

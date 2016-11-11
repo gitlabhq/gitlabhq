@@ -554,8 +554,6 @@ class Repository
   end
 
   def readme
-    return unless head_commit
-
     cache.fetch(:readme) { tree(:head).readme }
   end
 

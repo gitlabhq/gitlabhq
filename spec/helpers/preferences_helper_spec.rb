@@ -90,19 +90,16 @@ describe PreferencesHelper do
     let(:project) { create(:project) }
 
     context 'user not signed in' do
-      before do
-        stub_user
-        @repository = project.repository
-      end
+      before { stub_user }
 
       it 'returns readme view if repository is not empty' do
         expect(helper.default_project_view).to eq('readme')
       end
 
       it 'returns activity if repository is empty' do
-        expect(@repository).to receive(:head_commit).and_return(nil)
+        expect(project).to receive(:empty_repo?).and_return(true)
 
-        expect(helper.default_project_view).to eq('activity')
+        expect(helper.default_project_view).to eq('empty')
       end
     end
   end
