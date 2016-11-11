@@ -879,7 +879,6 @@ entry.
   - Restore "Largest repository" sort option on Admin > Projects page. !5797
   - Fix privilege escalation via project export.
   - Require administrator privileges to perform a project import.
-  - Allow to add deploy keys with write-access !5807 (Ali Ibrahim)
 
 ## 8.10.5
 
