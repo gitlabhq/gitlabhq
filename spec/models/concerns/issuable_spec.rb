@@ -384,4 +384,36 @@ describe Issue, "Issuable" do
       expect(issue.assignee_or_author?(user)).to eq(false)
     end
   end
+
+  describe '#spend_time' do
+    let(:issue) { create(:issue) }
+
+    context 'adding time' do
+      it 'should update the total time spent' do
+        issue.update_attributes!(spend_time: 1800)
+
+        expect(issue.total_time_spent).to eq(1800)
+      end
+    end
+
+    context 'substracting time' do
+      before do
+        issue.update_attributes!(spend_time: 1800)
+      end
+
+      it 'should update the total time spent' do
+        issue.update_attributes!(spend_time: -900)
+
+        expect(issue.total_time_spent).to eq(900)
+      end
+
+      context 'when time to substract exceeds the total time spent' do
+        it 'should not alter the total time spent' do
+          issue.update_attributes!(spend_time: -3600)
+
+          expect(issue.total_time_spent).to eq(1800)
+        end
+      end
+    end
+  end
 end

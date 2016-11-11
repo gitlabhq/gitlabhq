@@ -15,7 +15,7 @@ module TimeTrackable
   end
 
   def spend_time=(seconds)
-    return unless seconds
+    return if invalid_time_spent?(seconds)
 
     new_time_spent = seconds.zero? ? -(total_time_spent) : seconds
     timelogs.new(time_spent: new_time_spent)
@@ -25,5 +25,15 @@ module TimeTrackable
 
   def total_time_spent
     timelogs.sum(:time_spent)
+  end
+
+  private
+
+  def invalid_time_spent?(seconds)
+    return true unless seconds
+    # time to subtract exceeds the total time spent
+    return true if seconds < 0 && (seconds.abs > total_time_spent)
+
+    false
   end
 end

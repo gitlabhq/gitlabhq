@@ -226,6 +226,14 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'spend command with negative time' do
+      it 'populates spend_time: "-1800" if content contains /spend -30m' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: -1800)
+      end
+    end
+
     shared_examples 'remove_estimation command' do
       it 'populates time_estimate: "0" if content contains /remove_estimation' do
         _, updates = service.execute(content, issuable)
@@ -500,6 +508,11 @@ describe SlashCommands::InterpretService, services: true do
 
     it_behaves_like 'spend command' do
       let(:content) { '/spend 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with negative time' do
+      let(:content) { '/spend -30m' }
       let(:issuable) { issue }
     end
 
