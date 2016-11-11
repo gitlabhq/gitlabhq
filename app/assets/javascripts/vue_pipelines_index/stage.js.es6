@@ -8,16 +8,20 @@
       'pending-icon': gl.VuePendingIcon,
       'failed-icon': gl.VueFailedIcon,
       'success-icon': gl.VueSuccessIcon,
+      'created-icon': gl.VueCreatedIcon,
     },
     props: ['stage'],
     computed: {
       buildStatus() {
         return `Build: ${this.stage.status}`;
       },
+      tooltip() {
+        return `has-tooltip ci-status-icon-${this.stage.status}`;
+      },
     },
     template: `
       <a
-        class="has-tooltip ci-status-icon-failed"
+        :class='tooltip'
         :title='buildStatus'
         :href='stage.url'
       >
@@ -25,6 +29,7 @@
         <success-icon v-if='stage.status === "success"'></success-icon>
         <failed-icon v-if='stage.status === "failed"'></failed-icon>
         <pending-icon v-if='stage.status === "pending"'></pending-icon>
+        <created-icon v-if='stage.status === "created"'></created-icon>
       </a>
     `,
   });
