@@ -15,8 +15,7 @@
     updatePipelines(apiResponse) {
       const update = this.pipelines.map(e => e);
       apiResponse.pipelines.forEach((newPipe) => {
-        if (Object.keys(newPipe).length <= 2) return;
-        if (Object.keys(newPipe).length > 3) {
+        if (newPipe.commit) {
           update.unshift(newPipe);
         } else {
           this.updateClone(update, newPipe);
