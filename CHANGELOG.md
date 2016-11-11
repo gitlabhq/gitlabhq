@@ -4,6 +4,37 @@ entry.
 
 ## 8.14.0 (2016-11-22)
 
+- Use separate email-token for incoming email and revert back the inactive feature. !5914
+- Replace jQuery.timeago with timeago.js. !6274 (ClemMakesApps)
+- Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
+- Finer-grained Git gargage collection. !6588
+- Introduce better credential and error checking to `rake gitlab:ldap:check`. !6601
+- Process commits using a dedicated Sidekiq worker. !6802
+- Fix showing pipeline status for a given commit from correct branch. !7034
+- Add query param to filter users by external & blocked type. !7109 (Yatish Mehta)
+- Issues atom feed url reflect filters on dashboard. !7114 (Lucas Deschamps)
+- Add setting to only allow merge requests to be merged when all discussions are resolved. !7125 (Rodolfo Arruda)
+- Remove an extra leading space from diff paste data. !7133 (Hiroyuki Sato)
+- Fix 404 on network page when entering non-existent git revision. !7172 (Hiroyuki Sato)
+- Rewrite git blame spinach feature tests to rspec feature tests. !7197 (Lisanne Fellinger)
+- Only skip group when it's actually a group in the "Share with group" select. !7262
+- Introduce round-robin project creation to spread load over multiple shards. !7266
+- Ensure merge request's "remove branch" accessors return booleans. !7267
+- Expose label IDs in API. !7275 (Rares Sfirlogea)
+- Fix invalid filename validation on eslint. !7281
+- API: Ability to retrieve version information. !7286 (Robert Schilling)
+- Set default Sidekiq retries to 3. !7294
+- Return 400 when creating a system hook fails. !7350 (Robert Schilling)
+- Use the Gitlab Workhorse HTTP header in the admin dashboard. (Chris Wright)
+- Add an index for project_id in project_import_data to improve performance.
+- Fix broken link to observatory cli on Frontend Dev Guide. (Sam Rose)
+- Faster search inside Project.
+- Clicking "force remove source branch" label now toggles the checkbox again.
+- Allow to test JIRA service settings without having a repository.
+- Fix: Guest sees some repository details and gets 404.
+- Bump omniauth-gitlab to 1.0.2 to fix incompatibility with omniauth-oauth2.
+- Fix: Todos Filter Shows All Users.
+- Fix broken commits search.
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Diff collapse won't shift when collapsing.
@@ -77,9 +108,6 @@ entry.
 ## 8.13.5 (2016-11-08)
 
 - Restore unauthenticated access to public container registries
-
-## 8.13.4 (2016-11-07)
-
 - Fix showing pipeline status for a given commit from correct branch. !7034
 - Only skip group when it's actually a group in the "Share with group" select. !7262
 - Introduce round-robin project creation to spread load over multiple shards. !7266
@@ -96,13 +124,15 @@ entry.
 - Fix builds tab visibility. !7178
 - Fix project features default values. !7181
 
+## 8.13.4
+
+- Pulled due to packaging error.
+
 ## 8.13.3 (2016-11-02)
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
 - Fix relative links in Markdown wiki when displayed in "Project" tab !7218
-- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
-- Fix project features default values
 - Changed build dropdown list length to be 6,5 builds long in the pipeline graph
 
 ## 8.13.2 (2016-10-31)

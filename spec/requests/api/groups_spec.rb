@@ -68,6 +68,24 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /groups/owned' do
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/groups/owned')
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated as group owner' do
+      it 'returns an array of groups the user owns' do
+        get api('/groups/owned', user2)
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(group2.name)
+      end
+    end
+  end
+
   describe "GET /groups/:id" do
     context "when authenticated as user" do
       it "returns one of user1's groups" do

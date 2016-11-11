@@ -15,7 +15,7 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/labels' do
     it 'returns all available labels to the project' do
       group = create(:group)
-      group_label = create(:group_label, group: group)
+      group_label = create(:group_label, title: 'feature', group: group)
       project.update(group: group)
       expected_keys = [
         'id', 'name', 'color', 'description',
