@@ -127,19 +127,30 @@
     return $(document).off('scroll');
   };
 
-  window.shiftWindow = function() {
-    return scrollBy(0, -100);
-  };
-
   document.addEventListener("page:fetch", unbindEvents);
 
-  window.addEventListener("hashchange", shiftWindow);
+  // automatically adjust scroll position for hash urls taking the height of the navbar into account
+  // https://github.com/twitter/bootstrap/issues/1768
+  window.adjustScroll = function() {
+    var navbar = document.querySelector('.navbar-gitlab');
+    var subnav = document.querySelector('.layout-nav');
+    var fixedTabs = document.querySelector('.js-tabs-affix');
 
-  window.onload = function() {
+    adjustment = 0;
+    if (navbar) adjustment -= navbar.offsetHeight;
+    if (subnav) adjustment -= subnav.offsetHeight;
+    if (fixedTabs) adjustment -= fixedTabs.offsetHeight;
+
+    return scrollBy(0, adjustment);
+  };
+
+  window.addEventListener("hashchange", adjustScroll);
+
+  window.onload = function () {
     // Scroll the window to avoid the topnav bar
     // https://github.com/twitter/bootstrap/issues/1768
     if (location.hash) {
-      return setTimeout(shiftWindow, 100);
+      return setTimeout(adjustScroll, 100);
     }
   };
 
