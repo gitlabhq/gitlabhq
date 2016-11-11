@@ -117,6 +117,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :send_user_confirmation_email,
       :container_registry_token_expire_delay,
       :enabled_git_access_protocol,
+      :sidekiq_throttling_enabled,
+      :sidekiq_throttling_factor,
       :housekeeping_enabled,
       :housekeeping_bitmaps_enabled,
       :housekeeping_incremental_repack_period,
@@ -125,7 +127,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       repository_storages: [],
       restricted_visibility_levels: [],
       import_sources: [],
-      disabled_oauth_sign_in_sources: []
+      disabled_oauth_sign_in_sources: [],
+      sidekiq_throttling_queues: []
     )
   end
 end

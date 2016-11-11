@@ -1,6 +1,6 @@
 - left_align = local_assigns[:left_align]
 - if notification_setting
-  .dropdown.notification-dropdown.pull-right
+  .dropdown.notification-dropdown
     = form_for notification_setting, remote: true, html: { class: "inline notification-form" } do |f|
       = hidden_setting_source_input(notification_setting)
       = f.hidden_field :level, class: "notification_setting_level"

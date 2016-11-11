@@ -226,7 +226,7 @@ describe API::Runners, api: true  do
     context 'authorized user' do
       context 'when runner is shared' do
         it 'does not update runner' do
-          put api("/runners/#{shared_runner.id}", user)
+          put api("/runners/#{shared_runner.id}", user), description: 'test'
 
           expect(response).to have_http_status(403)
         end
@@ -234,7 +234,7 @@ describe API::Runners, api: true  do
 
       context 'when runner is not shared' do
         it 'does not update runner without access to it' do
-          put api("/runners/#{specific_runner.id}", user2)
+          put api("/runners/#{specific_runner.id}", user2), description: 'test'
 
           expect(response).to have_http_status(403)
         end

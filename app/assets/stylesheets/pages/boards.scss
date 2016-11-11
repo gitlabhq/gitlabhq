@@ -166,8 +166,12 @@
   }
 }
 
-.board-list {
+.board-list-component {
   height: calc(100% - 49px);
+}
+
+.board-list {
+  height: 100%;
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
@@ -175,7 +179,7 @@
   overflow-x: hidden;
 
   &.is-smaller {
-    height: calc(100% - 185px);
+    height: calc(100% - 136px);
   }
 }
 

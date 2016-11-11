@@ -51,6 +51,7 @@ entry.
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Removed unneeded "Builds" and "Environments" link from project titles
 - Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Cleaned up global namespace JS !19661 (Jose Ivan Vargas)
 - Refactor Jira service to use jira-ruby gem
