@@ -360,6 +360,14 @@ describe API::API, api: true  do
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
 
+    it 'sets a project as allowing merge if only_allow_merge_if_all_discussions_are_resolved is nil' do
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: nil)
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
     it 'sets a project as allowing merge only if all discussions are resolved' do
       project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
 
