@@ -1,6 +1,4 @@
-# GitLab Geo database replication for Omnibus installations
-
-For installations from source, go to [source database replication](source-database.md).
+# GitLab Geo database replication for Source installations
 
 This document describes the minimal steps you have to take in order to
 replicate your GitLab database into another server. You may have to change
@@ -30,8 +28,11 @@ and `secondary` as either `slave` or `standby` server (read-only).
 
 The following guide assumes that:
 
-- You have a primary server already set up, and you  have a new secondary server
-  set up on the same OS. Make sure the GitLab version is the same on all nodes.
+- You are using PostgreSQL 9.1 or later which includes the
+  [`pg_basebackup` tool][pgback]. As of this writing, the latest Omnibus
+  packages (8.5) have version 9.2.
+- You have a primary server already set up, running PostgreSQL 9.2.x, and you
+  have a new secondary server set up on the same OS and PostgreSQL version.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
   secondary's IP will be `5.6.7.8`.
 
@@ -39,55 +40,53 @@ The following guide assumes that:
 
 ### PostgreSQL - Configure the primary server
 
-1. Omnibus GitLab has already a replicator user called `gitlab_replicator`.
-   You must set its password manually:
+1. Login as root and create a replication user:
 
     ```bash
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql \
-         -d template1 \
-         -c "ALTER USER gitlab_replicator WITH ENCRYPTED PASSWORD 'thepassword'"
+    sudo -u postgres psql -c "CREATE USER gitlab_replicator REPLICATION ENCRYPTED PASSWORD 'thepassword';"
     ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+1. Edit `postgresql.conf` to configure the primary server for streaming replication
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
 
-    ```ruby
-    postgresql['listen_address'] = "1.2.3.4"
-    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-    postgresql['sql_replication_user'] = "gitlab_replicator"
-    postgresql['wal_level'] = "hot_standby"
-    postgresql['max_wal_senders'] = 10
-    postgresql['wal_keep_segments'] = 10
-    postgresql['hot_standby'] = "on"
+    ```bash
+    listen_address = '1.2.3.4'
+    wal_level = hot_standby
+    max_wal_senders = 5
+    checkpoint_segments = 10
+    wal_keep_segments = 10
+    hot_standby = on
+    ```
+
+    Edit the `wal` values as you see fit.
+
+1. Set the access control on the primary to allow TCP connections using the
+   server's public IP and set the connection from the secondary to require a
+   password.  Edit `pg_hba.conf` (for Debian/Ubuntu that would be
+   `/etc/postgresql/9.2/main/pg_hba.conf`):
+
+    ```bash
+    host    all             all                      127.0.0.1/32    trust
+    host    all             all                      1.2.3.4/32      trust
+    host    replication     gitlab_replicator        5.6.7.8/32      md5
     ```
 
     Where `1.2.3.4` is the public IP address of the primary server, and `5.6.7.8`
     the public IP address of the secondary one.
 
-    Edit the `wal` values as you see fit.
-
-1. Run `sudo gitlab-ctl reconfigure` for the changes to take effect.
+1. Restart PostgreSQL for the changes to take effect
 
 ---
 
 Now that the PostgreSQL server is set up to accept remote connections, run
 `netstat -plnt` to make sure that PostgreSQL is listening to the server's
-public IP. If it worked, one of the lines should look like this, with your
-IP address instead of our example `1.2.3.4`:
-
-```
-tcp        0      0 1.2.3.4:5432          0.0.0.0:*               LISTEN      -
-```
-
-This next step requires that `sudo gitlab-ctl reconfigure` has run at least once
-on the secondary server.
+public IP.
 
 Test that the remote connection works by going to the secondary server and
 running:
 
 ```
-sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d gitlabhq_production -W
-
+sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d gitlabhq_production -W
 ```
 
 When prompted enter the password you set in the first step for the
@@ -96,16 +95,22 @@ prompt. Run `\q` to exit.
 
 ### PostgreSQL - Configure the secondary server
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+**For installations from source**
 
-    ```ruby
-    postgresql['wal_level'] = "hot_standby"
-    postgresql['max_wal_senders'] = 10
-    postgresql['wal_keep_segments'] = 10
-    postgresql['hot_standby'] = "on"
+1. Edit `postgresql.conf` to configure the secondary for streaming replication
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
+
+    ```bash
+    wal_level = hot_standby
+    max_wal_senders = 5
+    checkpoint_segments = 10
+    wal_keep_segments = 10
+    hot_standby = on
     ```
 
-1. Run `sudo gitlab-ctl reconfigure` for the changes to take effect.
+1. Restart PostgreSQL for the changes to take effect
+
+---
 
 ### PostgreSQL - Initiate the replication process
 
