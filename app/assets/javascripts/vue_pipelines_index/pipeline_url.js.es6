@@ -38,6 +38,12 @@
         >
           yaml invalid
         </span>
+        <span
+        v-if='pipeline.flags.stuck === true'
+          class="label label-warning"
+        >
+          stuck
+        </span>
       </td>
     `,
   });
