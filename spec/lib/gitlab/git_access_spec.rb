@@ -366,7 +366,7 @@ describe Gitlab::GitAccess, lib: true do
       context 'to public project' do
         let(:project) { create(:project, :public) }
 
-        it { expect(subject).to be_allowed }
+        it { expect(subject).not_to be_allowed }
       end
 
       context 'to internal project' do
