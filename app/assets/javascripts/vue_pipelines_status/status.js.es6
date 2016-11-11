@@ -7,6 +7,7 @@
       'vue-running-scope': gl.VueRunningScope,
       'vue-pending-scope': gl.VuePendingScope,
       'vue-failed-scope': gl.VueFailedScope,
+      'vue-created-scope': gl.VueCreatedScope,
     },
     props: [
       'pipeline',
@@ -25,6 +26,11 @@
         </vue-pending-scope>
         <vue-failed-scope
           v-if="pipeline.details.status === 'failed'"
+          :pipeline='pipeline'
+        >
+        </vue-failed-scope>
+        <vue-failed-scope
+          v-if="pipeline.details.status === 'created'"
           :pipeline='pipeline'
         >
         </vue-failed-scope>
