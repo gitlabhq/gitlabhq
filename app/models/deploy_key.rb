@@ -20,4 +20,8 @@ class DeployKey < Key
   def destroyed_when_orphaned?
     self.private?
   end
+
+  def can_push_to?(project)
+    can_push? && projects.include?(project)
+  end
 end

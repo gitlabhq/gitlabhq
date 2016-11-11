@@ -353,13 +353,13 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  shared_examples 'can not push code' do
+  shared_examples 'pushing code' do |can|
     subject { access.check('git-receive-pack', '_any') }
 
     context 'when project is authorized' do
       before { authorize }
 
-      it { expect(subject).not_to be_allowed }
+      it { expect(subject).public_send(can, be_allowed) }
     end
 
     context 'when unauthorized' do
@@ -383,10 +383,20 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
+  describe 'full authentication abilities' do
+    let(:authentication_abilities) { full_authentication_abilities }
+
+    it_behaves_like 'pushing code', :to do
+      def authorize
+        project.team << [user, :developer]
+      end
+    end
+  end
+
   describe 'build authentication abilities' do
     let(:authentication_abilities) { build_authentication_abilities }
 
-    it_behaves_like 'can not push code' do
+    it_behaves_like 'pushing code', :not_to do
       def authorize
         project.team << [user, :reporter]
       end
@@ -394,12 +404,26 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe 'deploy key permissions' do
-    let(:key) { create(:deploy_key) }
+    let(:key) { create(:deploy_key, can_push: can_push) }
     let(:actor) { key }
 
-    it_behaves_like 'can not push code' do
-      def authorize
-        key.projects << project
+    context 'when deploy_key can push' do
+      let(:can_push) { true }
+
+      it_behaves_like 'pushing code', :to do
+        def authorize
+          key.projects << project
+        end
+      end
+    end
+
+    context 'when deploy_key cannot push' do
+      let(:can_push) { false }
+
+      it_behaves_like 'pushing code', :not_to do
+        def authorize
+          key.projects << project
+        end
       end
     end
   end

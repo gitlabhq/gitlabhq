@@ -89,7 +89,7 @@ module Gitlab
     end
 
     def deploy_key_push_access_check(changes)
-      if deploy_key.can_push?
+      if deploy_key.can_push_to?(project)
         check_repository_existence!
         check_change_access!(changes) if user
       else
