@@ -82,7 +82,7 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
-    describe 'without acccess to project' do
+    describe 'without access to project' do
       context 'pull code' do
         it { expect(subject.allowed?).to be_falsey }
       end
