@@ -7,25 +7,27 @@ feature 'Issue filtering by Labels', feature: true, js: true do
   let!(:user)   { create(:user) }
   let!(:label)  { create(:label, project: project) }
 
+  let!(:bug) { create(:label, project: project, title: 'bug') }
+  let!(:feature) { create(:label, project: project, title: 'feature') }
+  let!(:enhancement) { create(:label, project: project, title: 'enhancement') }
+
+  let!(:mr1) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "bugfix1") }
+  let!(:mr2) { create(:merge_request, title:"Bugfix2", source_project: project, target_project: project, source_branch: "bugfix2") }
+  let!(:mr3) { create(:merge_request, title: "Feature1", source_project: project, target_project: project, source_branch: "feature1") }
+
   before do
-    bug = create(:label, project: project, title: 'bug')
-    feature = create(:label, project: project, title: 'feature')
-    enhancement = create(:label, project: project, title: 'enhancement')
+    mr1.labels << bug
 
-    issue1 = create(:issue, title: "Bugfix1", project: project)
-    issue1.labels << bug
+    mr2.labels << bug
+    mr2.labels << enhancement
 
-    issue2 = create(:issue, title: "Bugfix2", project: project)
-    issue2.labels << bug
-    issue2.labels << enhancement
-
-    issue3 = create(:issue, title: "Feature1", project: project)
-    issue3.labels << feature
+    mr3.title = "Feature1"
+    mr3.labels << feature
 
     project.team << [user, :master]
     login_as(user)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit namespace_project_merge_requests_path(project.namespace, project)
   end
 
   context 'filter by label bug' do
