@@ -1,4 +1,4 @@
-/* global Vue, gl */
+/* global Vue, Flash, gl */
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
@@ -10,6 +10,14 @@
       download(name) {
         return `Download ${name} artifacts`;
       },
+      // retry(e) {
+      //   e.preventDefault();
+      //   this.$http.post(this.pipeline.retry_url, {
+      //     pipeline: { id: this.pipeline.id },
+      //   })
+      //     .then(() => {})
+      //     .catch(() => new Flash('Something went wrong on our end.'));
+      // },
     },
     template: `
       <td class="pipeline-actions hidden-xs">
@@ -60,6 +68,7 @@
             </div>
           </div>
           <div class="cancel-retry-btns inline">
+            <!-- @click='retry($event)' -->
             <a
               v-if='!pipeline.cancel_url'
               class="btn has-tooltip"
