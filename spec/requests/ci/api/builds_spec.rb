@@ -759,15 +759,12 @@ describe Ci::API::Builds do
 
         context 'build has artifacts' do
           let(:build) { create(:ci_build, :artifacts) }
-          let(:download_headers) do
-            { 'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-          end
 
           shared_examples 'having downloadable artifacts' do
             it 'download artifacts' do
               expect(response).to have_http_status(200)
-              expect(response.headers).to include download_headers
+              expect(response.headers['Content-Transfer-Encoding']).to eq('binary')
+              expect(response.headers['Content-Disposition']).to eq('attachment; filename=ci_build_artifacts.zip')
             end
           end
 

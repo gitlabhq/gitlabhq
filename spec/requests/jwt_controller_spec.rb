@@ -29,7 +29,7 @@ describe JwtController do
       context 'project with enabled CI' do
         subject! { get '/jwt/auth', parameters, headers }
 
-        it { expect(service_class).to have_received(:new).with(project, nil, parameters) }
+        it { expect(service_class).to have_received(:new).with(project, nil, ActionController::Parameters.new(parameters).permit(:service)) }
       end
 
       context 'project with disabled CI' do
@@ -49,7 +49,7 @@ describe JwtController do
 
       subject! { get '/jwt/auth', parameters, headers }
 
-      it { expect(service_class).to have_received(:new).with(nil, user, parameters) }
+      it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit(:service)) }
 
       context 'when user has 2FA enabled' do
         let(:user) { create(:user, :two_factor) }
