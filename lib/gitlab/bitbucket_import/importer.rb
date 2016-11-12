@@ -43,7 +43,7 @@ module Gitlab
             title: issue.title,
             description: description,
             state: issue.state,
-            author_id: gl_user_id(project, issue.author),
+            author_id: gitlab_user_id(project, issue.author),
             created_at: issue.created_at,
             updated_at: issue.updated_at
           )
@@ -56,7 +56,7 @@ module Gitlab
               issue.notes.create!(
                 project: project,
                 note: note,
-                author_id: gl_user_id(project, comment.author),
+                author_id: gitlab_user_id(project, comment.author),
                 created_at: comment.created_at,
                 updated_at: comment.updated_at
               )
@@ -93,7 +93,7 @@ module Gitlab
               target_branch: pull_request.target_branch_name,
               target_branch_sha: pull_request.target_branch_sha,
               state: pull_request.state,
-              author_id: gl_user_id(project, pull_request.author),
+              author_id: gitlab_user_id(project, pull_request.author),
               assignee_id: nil,
               created_at: pull_request.created_at,
               updated_at: pull_request.updated_at
