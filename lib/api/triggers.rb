@@ -1,19 +1,18 @@
 module API
-  # Triggers API
   class Triggers < Grape::API
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
-      # Trigger a GitLab project build
-      #
-      # Parameters:
-      #   id (required) - The ID of a CI project
-      #   ref (required) - The name of project's branch or tag
-      #   token (required) - The uniq token of trigger
-      #   variables (optional) - The list of variables to be injected into build
-      # Example Request:
-      #   POST /projects/:id/trigger/builds
+      desc 'Trigger a GitLab project build' do
+        success Entities::TriggerRequest
+      end
+      params do
+        requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
+        requires :token, type: String, desc: 'The unique token of trigger'
+        optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
+      end
       post ":id/trigger/builds" do
-        required_attributes! [:ref, :token]
-
         project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
         trigger = Ci::Trigger.find_by_token(params[:token].to_s)
         not_found! unless project && trigger
@@ -22,10 +21,6 @@ module API
         # validate variables
         variables = params[:variables]
         if variables
-          unless variables.is_a?(Hash)
-            render_api_error!('variables needs to be a hash', 400)
-          end
-
           unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
             render_api_error!('variables needs to be a map of key-valued strings', 400)
           end
@@ -44,31 +39,24 @@ module API
         end
       end
 
-      # Get triggers list
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   page (optional) - The page number for pagination
-      #   per_page (optional) - The value of items per page to show
-      # Example Request:
-      #   GET /projects/:id/triggers
+      desc 'Get triggers list' do
+        success Entities::Trigger
+      end
       get ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
 
         triggers = user_project.triggers.includes(:trigger_requests)
-        triggers = paginate(triggers)
 
-        present triggers, with: Entities::Trigger
+        present paginate(triggers), with: Entities::Trigger
       end
 
-      # Get specific trigger of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   token (required) - The `token` of a trigger
-      # Example Request:
-      #   GET /projects/:id/triggers/:token
+      desc 'Get specific trigger of a project' do
+        success Entities::Trigger
+      end
+      params do
+        requires :token, type: String, desc: 'The unique token of trigger'
+      end
       get ':id/triggers/:token' do
         authenticate!
         authorize! :admin_build, user_project
@@ -79,12 +67,9 @@ module API
         present trigger, with: Entities::Trigger
       end
 
-      # Create trigger
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   POST /projects/:id/triggers
+      desc 'Create a trigger' do
+        success Entities::Trigger
+      end
       post ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
@@ -94,13 +79,12 @@ module API
         present trigger, with: Entities::Trigger
       end
 
-      # Delete trigger
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   token (required) - The `token` of a trigger
-      # Example Request:
-      #   DELETE /projects/:id/triggers/:token
+      desc 'Delete a trigger' do
+        success Entities::Trigger
+      end
+      params do
+        requires :token, type: String, desc: 'The unique token of trigger'
+      end
       delete ':id/triggers/:token' do
         authenticate!
         authorize! :admin_build, user_project

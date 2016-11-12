@@ -212,6 +212,30 @@ rake brakeman: *exec
 rake flay: *exec
 license_finder: *exec
 rake downtime_check: *exec
+<<<<<<< HEAD
+=======
+rake ee_compat_check:
+  <<: *exec
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab/gitlabhq
+  except:
+    - master
+    - tags
+    - /^[\d-]+-stable(-ee)?$/
+  allow_failure: yes
+  cache:
+    key: "ruby231-ee_compat_check_repo"
+    paths:
+      - ee_compat_check/repo/
+      - vendor/ruby
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}_${CI_BUILD_REF}"
+    when: on_failure
+    expire_in: 10d
+    paths:
+      - ee_compat_check/patches/*.patch
+>>>>>>> ce/master
 
 rake db:migrate:reset:
   stage: test

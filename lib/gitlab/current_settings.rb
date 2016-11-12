@@ -23,6 +23,10 @@ module Gitlab
       settings || fake_application_settings
     end
 
+    def sidekiq_throttling_enabled?
+      current_application_settings.sidekiq_throttling_enabled
+    end
+
     def fake_application_settings
       OpenStruct.new(
         default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -49,11 +53,16 @@ module Gitlab
         akismet_enabled: false,
         repository_checks_enabled: true,
         container_registry_token_expire_delay: 5,
+<<<<<<< HEAD
         elasticsearch_search: false,
         elasticsearch_indexing: false,
         elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
         elasticsearch_port: ENV['ELASTIC_PORT'] || '9200',
         user_default_external: false
+=======
+        user_default_external: false,
+        sidekiq_throttling_enabled: false,
+>>>>>>> ce/master
       )
     end
 

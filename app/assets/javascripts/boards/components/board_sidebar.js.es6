@@ -41,7 +41,7 @@
         this.detail.issue = {};
       }
     },
-    ready () {
+    mounted () {
       new IssuableContext(this.currentUser);
       new MilestoneSelect();
       new gl.DueDateSelectors();

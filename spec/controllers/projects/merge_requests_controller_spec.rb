@@ -39,6 +39,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
+<<<<<<< HEAD
   describe 'POST #create' do
     def create_merge_request(overrides = {})
       params = {
@@ -122,6 +123,16 @@ describe Projects::MergeRequestsController do
       it 'shows the #new form' do
         expect(create_merge_request(title: nil)).to render_template(:new)
       end
+=======
+  shared_examples "loads labels" do |action|
+    it "loads labels into the @labels variable" do
+      get action,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: 'html'
+      expect(assigns(:labels)).not_to be_nil
+>>>>>>> ce/master
     end
   end
 
@@ -136,6 +147,8 @@ describe Projects::MergeRequestsController do
 
         expect(response).to be_success
       end
+
+      it_behaves_like "loads labels", :show
 
       it "generates it" do
         expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
@@ -537,6 +550,8 @@ describe Projects::MergeRequestsController do
       get :diffs, params.merge(extra_params)
     end
 
+    it_behaves_like "loads labels", :diffs
+
     context 'with default params' do
       context 'as html' do
         before { go(format: 'html') }
@@ -743,6 +758,8 @@ describe Projects::MergeRequestsController do
           format: format
     end
 
+    it_behaves_like "loads labels", :commits
+
     context 'as html' do
       it 'renders the show template' do
         go
@@ -759,6 +776,14 @@ describe Projects::MergeRequestsController do
         expect(JSON.parse(response.body)).to have_key('html')
       end
     end
+  end
+
+  describe 'GET builds' do
+    it_behaves_like "loads labels", :builds
+  end
+
+  describe 'GET pipelines' do
+    it_behaves_like "loads labels", :pipelines
   end
 
   describe 'GET conflicts' do

@@ -45,15 +45,15 @@
         this.content.hide();
         this.$toggleIcon.addClass('fa-caret-right').removeClass('fa-caret-down');
         this.collapsedContent.show();
-        if (typeof DiffNotesApp !== 'undefined') {
-          DiffNotesApp.compileComponents();
+        if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+          gl.diffNotesCompileComponents();
         }
       } else if (this.content) {
         this.collapsedContent.hide();
         this.content.show();
         this.$toggleIcon.addClass('fa-caret-down').removeClass('fa-caret-right');
-        if (typeof DiffNotesApp !== 'undefined') {
-          DiffNotesApp.compileComponents();
+        if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+          gl.diffNotesCompileComponents();
         }
       } else {
         this.$toggleIcon.addClass('fa-caret-down').removeClass('fa-caret-right');
@@ -76,8 +76,8 @@
           }
           _this.collapsedContent.after(_this.content);
 
-          if (typeof DiffNotesApp !== 'undefined') {
-            DiffNotesApp.compileComponents();
+          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+            gl.diffNotesCompileComponents();
           }
 
           if (cb) cb();
