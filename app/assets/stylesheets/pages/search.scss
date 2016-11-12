@@ -53,12 +53,6 @@
     background-color: $location-badge-bg;
     vertical-align: top;
     cursor: default;
-
-    &:hover {
-      color: $white-light;
-      background-color: lighten($location-badge-active-bg, 20%);
-      transition: all 0.15s;
-    }
   }
 
   .search-input-container {
