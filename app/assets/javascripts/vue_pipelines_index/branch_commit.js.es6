@@ -20,7 +20,7 @@
           <!-- ** will need branch_url for this branch ** -->
           <a
             class="monospace branch-name"
-            :href='pipeline.commit.commit_url'
+            :href='pipeline.ref.url'
           >
             {{pipeline.ref.name}}
           </a>

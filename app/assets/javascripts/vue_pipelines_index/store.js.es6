@@ -53,8 +53,12 @@
       goFetch();
 
       this.intervalId = setInterval(() => {
-        goUpdate();
+        if (this.updatedAt) goUpdate();
       }, 3000);
+
+      window.onbeforeunload = function removePipelineInterval() {
+        clearInterval(this.intervalId);
+      };
     }
   };
 })(window.gl || (window.gl = {}));

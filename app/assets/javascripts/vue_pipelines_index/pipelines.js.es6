@@ -37,8 +37,8 @@
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
     },
     methods: {
-      changepage(event, last) {
-        const text = event.target.innerText;
+      changepage(e, last) {
+        const text = e.target.innerText;
         if (text === '...') return;
         if (/^-?[\d.]+(?:e-?\d+)?$/.test(text)) this.pagenum = +text;
         if (text === 'Last >>') this.pagenum = last;

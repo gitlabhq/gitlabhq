@@ -80,7 +80,7 @@
           <div class="cancel-retry-btns inline">
             <!-- @click='retry($event)' -->
             <a
-              v-if='!pipeline.cancel_url'
+              v-if='!pipeline.cancel_url || pipeline.details.status !== "cancelled"'
               class="btn has-tooltip"
               title="Retry"
               rel="nofollow"
@@ -95,7 +95,7 @@
               title=""
               rel="nofollow"
               data-method="post"
-              href="/gitlab-org/gitlab-ce/pipelines/4950216/cancel"
+              :href='pipeline.cancel_url'
               data-original-title="Cancel"
             >
               <i class="fa fa-remove"></i>
