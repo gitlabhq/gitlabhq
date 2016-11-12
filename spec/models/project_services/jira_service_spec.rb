@@ -109,7 +109,6 @@ describe JiraService, models: true do
 
     it "references the GitLab commit/merge request" do
       stub_config_setting(base_url: custom_base_url)
-      stub_config_setting(url: custom_base_url)
 
       @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
 
