@@ -943,6 +943,17 @@ describe 'Git LFS API and storage' do
             end
           end
 
+          context 'and project has limit enabled but will stay under the limit' do
+            before do
+              allow_any_instance_of(Project).to receive_messages(actual_size_limit: 200, size_limit_enabled?: true)
+              put_finalize
+            end
+
+            it 'responds with status 200' do
+              expect(response).to have_http_status(200)
+            end
+          end
+
           context 'invalid tempfiles' do
             it 'rejects slashes in the tempfile name (path traversal' do
               put_finalize('foo/bar')
