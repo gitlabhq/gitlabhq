@@ -29,6 +29,7 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def new
+    return authenticate_user! unless current_user
     @namespaces = current_user.manageable_namespaces
     @namespaces.delete(@project.namespace)
   end
