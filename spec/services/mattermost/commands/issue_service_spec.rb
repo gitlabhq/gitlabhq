@@ -56,6 +56,19 @@ describe Mattermost::Commands::IssueService do
         end
       end
     end
+
+    context 'create as subcommand' do
+      let(:title)  { 'my new issue' }
+      let(:params) { { text: "issue create #{title}" } }
+
+      it 'return the new issue' do
+        expect(subject).to be_a Issue
+      end
+
+      it 'creates a new issue' do
+        expect { subject }.to change { Issue.count }.by(1)
+      end
+    end
   end
 
   describe 'help_message' do

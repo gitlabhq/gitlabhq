@@ -24,7 +24,7 @@ module Mattermost
     private
 
     def command
-      params[:text].match(/\A(?<command>\S+)/)[:command]
+      params[:text].split.first
     end
 
     def present(result)
