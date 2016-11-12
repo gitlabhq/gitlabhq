@@ -21,8 +21,8 @@
       },
     },
     computed: {
+      // need started_at or created_at for finish and running
       finishdate() {
-        // need started_at or created_at here
         const date = new Date(
           new Date(
             this.pipeline.details.finished_at
@@ -35,7 +35,6 @@
         );
       },
       runningdate() {
-        // need started_at or created_at at here
         const date = new Date(
           new Date().getTime() - new Date(this.pipeline.started_at).getTime()
         );
