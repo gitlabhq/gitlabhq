@@ -45,8 +45,7 @@ module Bitbucket
       @expires_at    = response.expires_at
       @expires_in    = response.expires_in
       @refresh_token = response.refresh_token
-
-      @connection = OAuth2::AccessToken.new(@client, @token, refresh_token: @refresh_token, expires_at: @expires_at, expires_in: @expires_in)
+      @connection = nil
     end
 
     private
