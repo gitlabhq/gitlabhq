@@ -286,6 +286,12 @@
       width: 100%;
     }
   }
+
+  @media(min-width: $screen-xs-max) {
+    &.wikis .text-content {
+      margin-top: 70px;
+    }
+  }
 }
 
 .flex-container-block {

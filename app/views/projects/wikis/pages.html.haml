@@ -1,6 +1,10 @@
 - @no_container = true
 - page_title "Pages", "Wiki"
 
+- if @wiki_pages.count.zero?
+  = render 'shared/empty_states/wikis', button_path: namespace_project_wiki_path(@project.namespace, @project, :home)
+= render 'nav'
+
 %div{ class: container_class }
   .wiki-page-header
 
