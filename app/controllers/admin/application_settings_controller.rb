@@ -133,12 +133,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :elasticsearch_port,
       :usage_ping_enabled,
       :enabled_git_access_protocol,
-<<<<<<< HEAD
       :repository_size_limit,
-=======
       :sidekiq_throttling_enabled,
       :sidekiq_throttling_factor,
->>>>>>> ce/master
       :housekeeping_enabled,
       :housekeeping_bitmaps_enabled,
       :housekeeping_incremental_repack_period,

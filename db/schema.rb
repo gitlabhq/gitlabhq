@@ -1051,12 +1051,8 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.boolean "repository_read_only"
     t.boolean "lfs_enabled"
     t.text "description_html"
-<<<<<<< HEAD
     t.integer "repository_size_limit"
-    t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
-=======
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
->>>>>>> ce/master
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
