@@ -41,4 +41,8 @@ describe CommitEntity do
 
     subject
   end
+
+  it 'exposes gravatar url that belongs to author' do
+    expect(subject.fetch(:author_gravatar_url)).to match /gravatar/
+  end
 end
