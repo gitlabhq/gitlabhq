@@ -32,7 +32,7 @@ module OmniAuth
       end
 
       def primary_email
-        primary = emails.find{ |i| i['is_primary'] && i['is_confirmed'] }
+        primary = emails.find { |i| i['is_primary'] && i['is_confirmed'] }
         primary && primary['email'] || nil
       end
 
