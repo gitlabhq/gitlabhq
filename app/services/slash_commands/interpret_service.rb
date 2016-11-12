@@ -271,7 +271,10 @@ module SlashCommands
       time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
 
       if time_spent
-        @updates[:spend_time] = reduce_time ? (time_spent * -1) : time_spent
+        @updates[:spend_time] = {
+          seconds: reduce_time ? (time_spent * -1) : time_spent,
+          user: current_user
+        }
       end
     end
 
@@ -290,7 +293,7 @@ module SlashCommands
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_time_spent do
-      @updates[:spend_time] = 0
+      @updates[:spend_time] = { seconds: 0, user: current_user }
     end
 
     def find_label_ids(labels_param)

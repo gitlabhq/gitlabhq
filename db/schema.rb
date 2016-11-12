@@ -1257,11 +1257,13 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.integer "time_spent", null: false
     t.integer "trackable_id"
     t.string "trackable_type"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   add_index "timelogs", ["trackable_type", "trackable_id"], name: "index_timelogs_on_trackable_type_and_trackable_id", using: :btree
+  add_index "timelogs", ["user_id"], name: "index_timelogs_on_user_id", using: :btree
 
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false

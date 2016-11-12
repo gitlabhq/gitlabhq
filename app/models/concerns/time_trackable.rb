@@ -14,11 +14,13 @@ module TimeTrackable
     alias_method :time_spent?, :time_spent
   end
 
-  def spend_time=(seconds)
-    return if invalid_time_spent?(seconds)
+  def spend_time=(args)
+    return unless valid_spend_time_args?(args)
 
+    seconds = args[:seconds]
     new_time_spent = seconds.zero? ? -(total_time_spent) : seconds
-    timelogs.new(time_spent: new_time_spent)
+
+    timelogs.new(user: args[:user], time_spent: new_time_spent)
 
     @time_spent = seconds
   end
@@ -29,11 +31,13 @@ module TimeTrackable
 
   private
 
-  def invalid_time_spent?(seconds)
-    return true unless seconds
-    # time to subtract exceeds the total time spent
-    return true if seconds < 0 && (seconds.abs > total_time_spent)
+  def valid_spend_time_args?(args)
+    return false unless [:seconds, :user].all? { |k| args.key?(k) }
 
-    false
+    # time to subtract exceeds the total time spent
+    seconds = args[:seconds]
+    return false if seconds < 0 && (seconds.abs > total_time_spent)
+
+    true
   end
 end
