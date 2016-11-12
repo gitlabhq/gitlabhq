@@ -64,6 +64,8 @@ class PipelineEntity < Grape::Entity
                                              pipeline.project, pipeline.id)
   end
 
+  expose :created_at, :updated_at
+
   def created_exposure?
     !incremental? || created?
   end

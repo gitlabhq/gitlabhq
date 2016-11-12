@@ -9,10 +9,6 @@ module RequestAwareEntity
     @options.fetch(:request)
   end
 
-  def current_user
-    @options.fetch(:current_user)
-  end
-
   def can?(object, action, subject)
     Ability.allowed?(object, action, subject)
   end
