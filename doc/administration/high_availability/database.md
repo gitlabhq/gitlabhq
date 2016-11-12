@@ -102,7 +102,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 1. Exit the database prompt by typing `\q` and Enter.
 1. Exit the `gitlab-psql` user by running `exit` twice.
 1. Run `sudo gitlab-ctl reconfigure` a final time.
-1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
+1. Run `sudo touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 
