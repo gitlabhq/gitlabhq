@@ -112,6 +112,7 @@ describe JiraService, models: true do
       stub_config_setting(url: custom_base_url)
 
       @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /#{custom_base_url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
       ).once
