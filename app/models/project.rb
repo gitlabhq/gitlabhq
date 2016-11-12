@@ -25,7 +25,7 @@ class Project < ActiveRecord::Base
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?, 
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature, 
-           allow_nil: true
+                                                       allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level

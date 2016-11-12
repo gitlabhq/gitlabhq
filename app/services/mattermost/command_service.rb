@@ -32,7 +32,7 @@ module Mattermost
 
       if result.respond_to?(:count)
         if count > 1
-          #TODO
+          # TODO
           return resource_list(result)
         else
           result = result.first

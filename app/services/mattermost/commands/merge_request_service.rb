@@ -39,7 +39,7 @@ module Mattermost
         subcommand = split[1]
         args = split[2..-1]
 
-        return subcommand, args
+        [subcommand, args]
       end
     end
   end

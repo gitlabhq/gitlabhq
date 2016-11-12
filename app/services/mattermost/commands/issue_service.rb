@@ -20,7 +20,7 @@ module Mattermost
 
       private
 
-      #TODO implement create
+      # TODO implement create
       def subcommands
         %w[creates search show]
       end
@@ -42,7 +42,7 @@ module Mattermost
         subcommand = split[1]
         args = split[2..-1]
 
-        return subcommand, args
+        [subcommand, args]
       end
     end
   end
