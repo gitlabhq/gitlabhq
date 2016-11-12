@@ -4,10 +4,6 @@ entry.
 
 ## 8.14.0 (2016-11-22)
 
-- No changes.
-
-## 8.14.0 (2016-11-22)
-
 - Use separate email-token for incoming email and revert back the inactive feature. !5914
 - Replace jQuery.timeago with timeago.js. !6274 (ClemMakesApps)
 - Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
@@ -39,9 +35,6 @@ entry.
 - Bump omniauth-gitlab to 1.0.2 to fix incompatibility with omniauth-oauth2.
 - Fix: Todos Filter Shows All Users.
 - Fix broken commits search.
-
-## 8.14.0 (2016-11-22)
-
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Diff collapse won't shift when collapsing.
@@ -58,6 +51,7 @@ entry.
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Removed unneeded "Builds" and "Environments" link from project titles
 - Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Cleaned up global namespace JS !19661 (Jose Ivan Vargas)
 - Refactor Jira service to use jira-ruby gem
