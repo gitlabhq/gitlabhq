@@ -82,6 +82,10 @@ module GitlabRoutingHelper
     namespace_project_merge_request_path(entity.project.namespace, entity.project, entity, *args)
   end
 
+  def pipeline_path(pipeline, *args)
+    namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
+  end
+
   def milestone_path(entity, *args)
     namespace_project_milestone_path(entity.project.namespace, entity.project, entity, *args)
   end
