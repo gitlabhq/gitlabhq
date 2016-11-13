@@ -75,7 +75,7 @@ describe Projects::ForksController do
         sign_out(user)
 
         get :new,
-	  namespace_id: project.namespace.to_param,
+          namespace_id: project.namespace.to_param,
           project_id: project.to_param
 
         expect(response).to redirect_to(root_path + 'users/sign_in')
