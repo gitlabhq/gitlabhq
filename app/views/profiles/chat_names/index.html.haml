@@ -1,0 +1,49 @@
+- page_title "Chat"
+= render 'profiles/head'
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      You can see your Chat integrations.
+
+  .col-lg-9
+    %h5 Active chat names (#{@chat_names.length})
+
+    - if @chat_names.present?
+      .table-responsive
+        %table.table.chat-names
+          %thead
+            %tr
+              %th Project
+              %th Service
+              %th Team domain
+              %th Nickname
+              %th Created
+              %th
+          %tbody
+            - @chat_names.each do |chat_name|
+              - service = chat_name.service
+              - project = service.project
+              %tr
+                %td
+                  %strong
+                    - if can?(current_user, :read_project, project)
+                      = link_to project.name_with_namespace, project_path(project)
+                    - else
+                      .light N/A
+                %td
+                  %strong
+                    - if can?(current_user, :admin_project, project)
+                      = link_to service.title, edit_namespace_project_service_path(project.namespace, project, service)
+                    - else
+                      = chat_name.service.title
+                %td= chat_name.team_domain
+                %td= chat_name.chat_name
+                %td= chat_name.created_at
+                %td= link_to "Remove", profile_chat_name_path(chat_name), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this nickname?" }
+
+    - else
+      .settings-message.text-center
+        You don't have any active chat names.
