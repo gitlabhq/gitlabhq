@@ -70,10 +70,9 @@ describe Projects::ForksController do
 
   describe 'GET new' do
     context 'when user is not logged in' do
+      before { sign_out(user) }
 
       it 'redirects to the sign-in page' do
-        sign_out(user)
-
         get :new,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param
