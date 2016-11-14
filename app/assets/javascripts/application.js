@@ -84,7 +84,6 @@
     var $sidebarGutterToggle = $('.js-sidebar-toggle');
     var $flash = $('.flash-container');
     var bootstrapBreakpoint = bp.getBreakpointSize();
-    var checkInitialSidebarSize;
     var fitSidebarForSize;
 
     // Set the default path for all cookies to GitLab's root directory
@@ -246,19 +245,19 @@
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    checkInitialSidebarSize = function () {
-      bootstrapBreakpoint = bp.getBreakpointSize();
-      if (bootstrapBreakpoint === 'xs' || 'sm') {
-        return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
-      }
-    };
     $window.off('resize.app').on('resize.app', function () {
       return fitSidebarForSize();
     });
-    gl.awardsHandler = new AwardsHandler();
-    checkInitialSidebarSize();
-    new Aside();
+    window.addEventListener('beforeunload', function() {
+      // collapsed_gutter cookie hides the sidebar
+      var bpBreakpoint = bp.getBreakpointSize();
+      if (bpBreakpoint === 'xs' || bpBreakpoint === 'sm') {
+        Cookies.set('collapsed_gutter', true);
+      }
+    });
 
+    gl.awardsHandler = new AwardsHandler();
+    new Aside();
     // bind sidebar events
     new gl.Sidebar();
   });

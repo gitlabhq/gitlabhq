@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
-  include WaitForAjax
+  include WaitForAjax, MobileHelpers
 
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
@@ -55,6 +55,30 @@ feature 'Issue Sidebar', feature: true do
 
         page.within('.block.labels') do
           expect(page).to have_content 'Create new'
+        end
+      end
+    end
+
+    context 'sidebar', js: true do
+      it 'changes size when the screen size is smaller' do
+        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+        # Resize the window
+        resize_screen_sm
+        # Make sure the sidebar is collapsed
+        expect(page).to have_css(sidebar_selector)
+        # Once is collapsed let's open the sidebard and reload
+        page.within(sidebar_selector) do
+          find('.js-sidebar-toggle').click
+          # we wait a bit so the sidebar finishes it's animation
+          sleep 1
+        end
+        refresh
+        expect(page).to have_css(sidebar_selector)
+        # Restore the window size as it was including the sidebar
+        restore_window_size
+        page.within(sidebar_selector) do
+          find('.js-sidebar-toggle').click
+          sleep 1
         end
       end
     end
