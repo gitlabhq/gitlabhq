@@ -1,10 +1,10 @@
 module API
   # Projects API
   class Services < Grape::API
-    before { authenticate! }
-    before { authorize_admin_project }
-
     resource :projects do
+      before { authenticate! }
+      before { authorize_admin_project }
+
       # Set <service_slug> service for project
       #
       # Example Request:
@@ -57,6 +57,29 @@ module API
       #
       get ':id/services/:service_slug' do
         present project_service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+      end
+    end
+
+    resource :projects do
+      post ':id/services/:service_slug/trigger' do
+        project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
+
+        underscored_service = params[:service_slug].underscore
+
+        not_found!('Service') unless Service.available_services_names.include?(underscored_service)
+        service_method = "#{underscored_service}_service"
+
+        service = project.public_send(service_method)
+
+        result = if service.try(:active?) && service.respond_to?(:trigger)
+          service.trigger(params)
+        end
+
+        if result
+          present result, status: result[:status] || 200
+        else
+          not_found!('Service')
+        end
       end
     end
   end

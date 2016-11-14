@@ -23,8 +23,8 @@ class Project < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, 
-           :merge_requests_enabled?, :issues_enabled?, to: :project_feature, 
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
 
   default_value_for :archived, false
@@ -91,6 +91,7 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
+  has_one :mattermost_chat_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy

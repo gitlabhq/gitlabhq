@@ -214,6 +214,7 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jira
+      mattermost_chat
       pivotaltracker
       pushover
       redmine
