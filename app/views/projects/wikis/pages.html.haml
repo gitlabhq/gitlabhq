@@ -1,9 +1,15 @@
 - @no_container = true
 - page_title "Pages", "Wiki"
 
-= render 'nav'
-
 %div{ class: container_class }
+  .top-area
+    %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+      = icon('angle-double-left')
+
+    .nav-text
+      %strong
+        Wiki Pages
+
   %ul.content-list
     - @wiki_pages.each do |wiki_page|
       %li
@@ -12,3 +18,5 @@
         .pull-right
           %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
   = paginate @wiki_pages, theme: 'gitlab'
+
+= render 'sidebar'

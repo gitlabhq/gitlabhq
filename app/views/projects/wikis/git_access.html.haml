@@ -1,9 +1,11 @@
 - @no_container = true
 - page_title "Git Access", "Wiki"
 
-= render 'nav'
 %div{ class: container_class }
-  .sub-header-block
+  .top-area.sub-header-block
+    %button.btn.btn-default.visible-xs.visible-sm.pull-right.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+      = icon('angle-double-left')
+
     %span.oneline
       Git access for
       %strong= @project_wiki.path_with_namespace
@@ -32,3 +34,5 @@
           >> Thin web server (v1.5.0 codename Knife)
           >> Maximum connections set to 1024
           >> Listening on 0.0.0.0:4567, CTRL+C to stop
+
+= render 'sidebar'

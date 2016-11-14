@@ -262,7 +262,7 @@
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new Wikis();
+              new gl.Wikis();
               shortcut_handler = new ShortcutsNavigation();
               new ZenMode();
               new GLForm($('.wiki-form'));

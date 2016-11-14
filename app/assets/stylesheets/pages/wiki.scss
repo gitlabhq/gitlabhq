@@ -4,3 +4,74 @@
   margin-right: auto;
   padding-right: 7px;
 }
+
+.top-area {
+  position: relative;
+
+  &.sub-header-block {
+    padding-right: 40px;
+  }
+
+  button.sidebar-toggle {
+    position: absolute;
+    right: 0;
+    top: 11px;
+    display: block;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    padding-right: 40px;
+  }
+
+  @media (min-width: $screen-md-min) {
+    &,
+    &.sub-header-block {
+      padding-right: 0;
+    }
+
+    button.sidebar-toggle {
+      display: none;
+    }
+  }
+}
+
+.right-sidebar.wiki-sidebar {
+  padding: $gl-padding 0;
+
+  &.right-sidebar-collapsed {
+    display: none;
+  }
+
+  .blocks-container {
+    padding: 0 $gl-padding;
+  }
+
+  .block {
+    width: 100%;
+  }
+
+  a {
+    color: $layout-link-gray;
+
+    &:hover,
+    &.active {
+      color: $black;
+    }
+  }
+
+  ul.wiki-pages,
+  ul.wiki-pages li {
+    list-style: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  .wiki-sidebar-header {
+    padding: 0 $gl-padding $gl-padding;
+
+    .gutter-toggle {
+      margin-top: 0;
+    }
+  }
+}

@@ -1,9 +1,11 @@
 - @no_container = true
 - page_title "Edit", @page.title.capitalize, "Wiki"
-= render 'nav'
 
 %div{ class: container_class }
   .top-area
+    %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+      = icon('angle-double-left')
+
     .nav-text
       %strong
         - if @page.persisted?
@@ -21,3 +23,5 @@
             New Page
 
   = render 'form'
+
+= render 'sidebar'
