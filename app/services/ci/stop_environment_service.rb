@@ -10,6 +10,7 @@ module Ci
 
       environments.each do |environment|
         next unless environment.stoppable?
+        next unless can?(current_user, :create_deployment, project)
 
         environment.stop!(current_user)
       end
