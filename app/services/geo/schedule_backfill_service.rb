@@ -9,7 +9,7 @@ module Geo
     def execute
       return if geo_node_id.nil?
 
-      Project.all.select(&:valid_repo?).each do |project|
+      Project.all.select(&:valid_repo?).find_each(batch_size: 100) do |project|
         GeoBackfillWorker.perform_async(geo_node_id, project.id)
       end
     end

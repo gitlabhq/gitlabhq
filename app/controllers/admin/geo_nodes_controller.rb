@@ -38,6 +38,17 @@ class Admin::GeoNodesController < Admin::ApplicationController
     redirect_to admin_geo_nodes_path
   end
 
+  def backfill_repositories
+    @node = GeoNode.find(params[:id])
+    if @node.primary?
+      redirect_to admin_geo_nodes_path, notice: 'This is the primary node. Please run this action with a secondary node.'
+    else
+      @node.backfill_repositories
+
+      redirect_to admin_geo_nodes_path, notice: 'Backfill scheduled successfully.'
+    end
+  end
+
   private
 
   def geo_node_params
