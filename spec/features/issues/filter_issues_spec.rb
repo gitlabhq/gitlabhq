@@ -82,13 +82,19 @@ describe 'Filter issues', feature: true do
     multiple_words_label_issue = create(:issue, title: "Issue with multiple words label", project: project)
     multiple_words_label_issue.labels << multiple_words_label
 
+    future_milestone = create(:milestone, title: "future", project: project, due_date: Time.now + 1.month)
+    issue_with_future_milestone = create(:issue,
+      title: "Issue with future milestone",
+      milestone: future_milestone,
+      project: project)
+
     visit namespace_project_issues_path(project.namespace, project)
   end
 
   describe 'filter issues by author' do
     context 'only author', js: true do
       it 'filters issues by searched author' do
-        input_filtered_search("author:#{user.username}")
+        input_filtered_search("author:@#{user.username}")
         expect_issues_list_count(5)
       end
 
@@ -103,22 +109,22 @@ describe 'Filter issues', feature: true do
 
     context 'author with other filters', js: true do
       it 'filters issues by searched author and text' do
-        input_filtered_search("author:#{user.username} issue")
+        input_filtered_search("author:@#{user.username} issue")
         expect_issues_list_count(3)
       end
 
       it 'filters issues by searched author, assignee and text' do
-        input_filtered_search("author:#{user.username} assignee:#{user.username} issue")
+        input_filtered_search("author:@#{user.username} assignee:@#{user.username} issue")
         expect_issues_list_count(3)
       end
 
       it 'filters issues by searched author, assignee, label, and text' do
-        input_filtered_search("author:#{user.username} assignee:#{user.username} label:#{caps_sensitive_label.title} issue")
+        input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} issue")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched author, assignee, label, milestone and text' do
-        input_filtered_search("author:#{user.username} assignee:#{user.username} label:#{caps_sensitive_label.title} milestone:#{milestone.title} issue")
+        input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} issue")
         expect_issues_list_count(1)
       end
     end
@@ -131,12 +137,13 @@ describe 'Filter issues', feature: true do
   describe 'filter issues by assignee' do
     context 'only assignee', js: true do
       it 'filters issues by searched assignee' do
-        input_filtered_search("assignee:#{user.username}")
+        input_filtered_search("assignee:@#{user.username}")
         expect_issues_list_count(5)
       end
 
       it 'filters issues by no assignee' do
-        # TODO
+        input_filtered_search("assignee:none")
+        expect_issues_list_count(8)
       end
 
       it 'filters issues by invalid assignee' do
@@ -148,27 +155,27 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'assignee with other filters', js: true do
-      it 'filters issues by searched assignee and text' do
-        input_filtered_search("assignee:#{user.username} searchTerm")
-        expect_issues_list_count(2)
-      end
+    # context 'assignee with other filters', js: true do
+    #   it 'filters issues by searched assignee and text' do
+    #     input_filtered_search("assignee:@#{user.username} searchTerm")
+    #     expect_issues_list_count(2)
+    #   end
 
-      it 'filters issues by searched assignee, author and text' do
-        input_filtered_search("assignee:#{user.username} author:#{user.username} searchTerm")
-        expect_issues_list_count(2)
-      end
+    #   it 'filters issues by searched assignee, author and text' do
+    #     input_filtered_search("assignee:@#{user.username} author:@#{user.username} searchTerm")
+    #     expect_issues_list_count(2)
+    #   end
 
-      it 'filters issues by searched assignee, author, label, text' do
-        input_filtered_search("assignee:#{user.username} author:#{user.username} label:#{caps_sensitive_label.title} searchTerm")
-        expect_issues_list_count(1)
-      end
+    #   it 'filters issues by searched assignee, author, label, text' do
+    #     input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} searchTerm")
+    #     expect_issues_list_count(1)
+    #   end
 
-      it 'filters issues by searched assignee, author, label, milestone and text' do
-        input_filtered_search("assignee:#{user.username} author:#{user.username} label:#{caps_sensitive_label.title} milestone:#{milestone.title} searchTerm")
-        expect_issues_list_count(1)
-      end
-    end
+    #   it 'filters issues by searched assignee, author, label, milestone and text' do
+    #     input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} searchTerm")
+    #     expect_issues_list_count(1)
+    #   end
+    # end
 
     context 'sorting', js: true do
       # TODO
@@ -178,12 +185,13 @@ describe 'Filter issues', feature: true do
   describe 'filter issues by label' do
     context 'only label', js: true do
       it 'filters issues by searched label' do
-        input_filtered_search("label:#{bug_label.title}")
+        input_filtered_search("label:~#{bug_label.title}")
         expect_issues_list_count(2)
       end
 
       it 'filters issues by no label' do
-        # TODO
+        input_filtered_search("label:none")
+        expect_issues_list_count(9)
       end
 
       it 'filters issues by invalid label' do
@@ -191,7 +199,7 @@ describe 'Filter issues', feature: true do
       end
 
       it 'filters issues by multiple labels' do
-        input_filtered_search("label:#{bug_label.title} label:#{caps_sensitive_label.title}")
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title}")
         expect_issues_list_count(1)
       end
 
@@ -199,13 +207,13 @@ describe 'Filter issues', feature: true do
         special_label = create(:label, project: project, title: '!@#{$%^&*()-+[]<>?/:{}|\}')
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
-        input_filtered_search("label:#{special_label.title}")
+        input_filtered_search("label:~#{special_label.title}")
         expect_issues_list_count(1)
       end
 
       it 'does not show issues' do
         new_label = create(:label, project: project, title: "new_label")
-        input_filtered_search("label:#{new_label.title}")
+        input_filtered_search("label:~#{new_label.title}")
         expect_no_issues_list()
       end
     end
@@ -216,17 +224,17 @@ describe 'Filter issues', feature: true do
         special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
         special_multiple_issue.labels << special_multiple_label
 
-        input_filtered_search("label:'#{special_multiple_label.title}'")
+        input_filtered_search("label:~'#{special_multiple_label.title}'")
         expect_issues_list_count(1)
       end
 
       it 'single quotes' do
-        input_filtered_search("label:'#{multiple_words_label.title}'")
+        input_filtered_search("label:~'#{multiple_words_label.title}'")
         expect_issues_list_count(1)
       end
 
       it 'double quotes' do
-        input_filtered_search("label:\"#{multiple_words_label.title}\"")
+        input_filtered_search("label:~\"#{multiple_words_label.title}\"")
         expect_issues_list_count(1)
       end
 
@@ -246,51 +254,51 @@ describe 'Filter issues', feature: true do
         single_quotes_label_issue = create(:issue, title: "Issue with single quotes label", project: project)
         single_quotes_label_issue.labels << single_quotes_label
 
-        input_filtered_search("label:\"#{single_quotes_label.title}\"")
+        input_filtered_search("label:~\"#{single_quotes_label.title}\"")
         expect_issues_list_count(1)
       end
     end
 
     context 'label with other filters', js: true do
       it 'filters issues by searched label and text' do
-        input_filtered_search("label:#{caps_sensitive_label.title} bug")
+        input_filtered_search("label:~#{caps_sensitive_label.title} bug")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched label, author and text' do
-        input_filtered_search("label:#{caps_sensitive_label.title} author:#{user.username} bug")
+        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} bug")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched label, author, assignee and text' do
-        input_filtered_search("label:#{caps_sensitive_label.title} author:#{user.username} assignee:#{user.username} bug")
+        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} bug")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched label, author, assignee, milestone and text' do
-        input_filtered_search("label:#{caps_sensitive_label.title} author:#{user.username} assignee:#{user.username} milestone:#{milestone.title} bug")
+        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} bug")
         expect_issues_list_count(1)
       end
     end
 
     context 'multiple labels with other filters', js: true do
       it 'filters issues by searched label, label2, and text' do
-        input_filtered_search("label:#{bug_label.title} label:#{caps_sensitive_label.title} bug")
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} bug")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched label, label2, author and text' do
-        input_filtered_search("label:#{bug_label.title} label:#{caps_sensitive_label.title} author:#{user.username} bug")
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} bug")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched label, label2, author, assignee and text' do
-        input_filtered_search("label:#{bug_label.title} label:#{caps_sensitive_label.title} author:#{user.username} assignee:#{user.username} bug")
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} bug")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
-        input_filtered_search("label:#{bug_label.title} label:#{caps_sensitive_label.title} author:#{user.username} assignee:#{user.username} milestone:#{milestone.title} bug")
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} bug")
         expect_issues_list_count(1)
       end
     end
@@ -309,16 +317,18 @@ describe 'Filter issues', feature: true do
   describe 'filter issues by milestone' do
     context 'only milestone', js: true do
       it 'filters issues by searched milestone' do
-        input_filtered_search("milestone:#{milestone.title}")
+        input_filtered_search("milestone:%#{milestone.title}")
         expect_issues_list_count(5)
       end
 
       it 'filters issues by no milestone' do
-        # TODO
+        input_filtered_search("milestone:none")
+        expect_issues_list_count(7)
       end
 
       it 'filters issues by upcoming milestones' do
-        # TODO
+        input_filtered_search("milestone:upcoming")
+        expect_issues_list_count(1)
       end
 
       it 'filters issues by invalid milestones' do
@@ -332,13 +342,13 @@ describe 'Filter issues', feature: true do
       it 'filters issues by milestone containing special characters' do
         special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
         create(:issue, title: "Issue with special character milestone", project: project, milestone: special_milestone)
-        input_filtered_search('milestone:!@\#{$%^&*()}')
+        input_filtered_search('milestone:%!@\#{$%^&*()}')
         expect_issues_list_count(1)
       end
 
       it 'does not show issues' do
         new_milestone = create(:milestone, title: "new", project: project)
-        input_filtered_search("milestone:#{new_milestone}")
+        input_filtered_search("milestone:%#{new_milestone}")
         expect_no_issues_list()
       end
     end
@@ -402,57 +412,57 @@ describe 'Filter issues', feature: true do
 
     context 'searched text with other filters', js: true do
       it 'filters issues by searched text and author' do
-        input_filtered_search("bug author:#{user.username}")
+        input_filtered_search("bug author:@#{user.username}")
         expect_issues_list_count(2)
       end
 
       it 'filters issues by searched text, author and more text' do
-        input_filtered_search("bug author:#{user.username} report")
+        input_filtered_search("bug author:@#{user.username} report")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched text, author and assignee' do
-        input_filtered_search("bug author:#{user.username} assignee:#{user.username}")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username}")
         expect_issues_list_count(2)
       end
 
       it 'filters issues by searched text, author, more text and assignee' do
-        input_filtered_search("bug author:#{user.username} report assignee:#{user.username}")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username}")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched text, author, more text, assignee and even more text' do
-        input_filtered_search("bug author:#{user.username} report assignee:#{user.username} with")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched text, author, assignee and label' do
-        input_filtered_search("bug author:#{user.username} assignee:#{user.username} label:#{bug_label.title}")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title}")
         expect_issues_list_count(2)
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label and text' do
-        input_filtered_search("bug author:#{user.username} report assignee:#{user.username} with label:#{bug_label.title} everything")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched text, author, assignee, label and milestone' do
-        input_filtered_search("bug author:#{user.username} assignee:#{user.username} label:#{bug_label.title} milestone:#{milestone.title}")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title}")
         expect_issues_list_count(2)
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label, text, milestone and text' do
-        input_filtered_search("bug author:#{user.username} report assignee:#{user.username} with label:#{bug_label.title} everything milestone:#{milestone.title} you")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything milestone:%#{milestone.title} you")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched text, author, assignee, multiple labels and milestone' do
-        input_filtered_search("bug author:#{user.username} assignee:#{user.username} label:#{bug_label.title} label:#{caps_sensitive_label.title} milestone:#{milestone.title}")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title}")
         expect_issues_list_count(1)
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:#{user.username} report assignee:#{user.username} with label:#{bug_label.title} everything label:#{caps_sensitive_label.title} you milestone:#{milestone.title} thought")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything label:~#{caps_sensitive_label.title} you milestone:%#{milestone.title} thought")
         expect_issues_list_count(1)
       end
     end
@@ -462,31 +472,33 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  it 'updates atom feed link for project issues' do
-    visit namespace_project_issues_path(project.namespace, project, milestone_title: '', assignee_id: user.id)
-    link = find('.nav-controls a', text: 'Subscribe')
-    params = CGI::parse(URI.parse(link[:href]).query)
-    auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-    auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
-    expect(params).to include('private_token' => [user.private_token])
-    expect(params).to include('milestone_title' => [''])
-    expect(params).to include('assignee_id' => [user.id.to_s])
-    expect(auto_discovery_params).to include('private_token' => [user.private_token])
-    expect(auto_discovery_params).to include('milestone_title' => [''])
-    expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
-  end
+  describe 'RSS feeds' do
+    it 'updates atom feed link for project issues' do
+      visit namespace_project_issues_path(project.namespace, project, milestone_title: '', assignee_id: user.id)
+      link = find('.nav-controls a', text: 'Subscribe')
+      params = CGI::parse(URI.parse(link[:href]).query)
+      auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
+      auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
+      expect(params).to include('private_token' => [user.private_token])
+      expect(params).to include('milestone_title' => [''])
+      expect(params).to include('assignee_id' => [user.id.to_s])
+      expect(auto_discovery_params).to include('private_token' => [user.private_token])
+      expect(auto_discovery_params).to include('milestone_title' => [''])
+      expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+    end
 
-  it 'updates atom feed link for group issues' do
-    visit issues_group_path(group, milestone_title: '', assignee_id: user.id)
-    link = find('.nav-controls a', text: 'Subscribe')
-    params = CGI::parse(URI.parse(link[:href]).query)
-    auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-    auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
-    expect(params).to include('private_token' => [user.private_token])
-    expect(params).to include('milestone_title' => [''])
-    expect(params).to include('assignee_id' => [user.id.to_s])
-    expect(auto_discovery_params).to include('private_token' => [user.private_token])
-    expect(auto_discovery_params).to include('milestone_title' => [''])
-    expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+    it 'updates atom feed link for group issues' do
+      visit issues_group_path(group, milestone_title: '', assignee_id: user.id)
+      link = find('.nav-controls a', text: 'Subscribe')
+      params = CGI::parse(URI.parse(link[:href]).query)
+      auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
+      auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
+      expect(params).to include('private_token' => [user.private_token])
+      expect(params).to include('milestone_title' => [''])
+      expect(params).to include('assignee_id' => [user.id.to_s])
+      expect(auto_discovery_params).to include('private_token' => [user.private_token])
+      expect(auto_discovery_params).to include('milestone_title' => [''])
+      expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+    end
   end
 end
