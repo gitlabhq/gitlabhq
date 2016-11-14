@@ -901,10 +901,15 @@ class Repository
       branch,
       source_branch: source_branch) do |ref|
       index = rugged.index
+      branch_commit = find_branch(ref)
 
-      last_commit = find_branch(ref).dereferenced_target
-      index.read_tree(last_commit.raw_commit.tree)
-      parents = [last_commit.sha]
+      parents = if branch_commit
+                  last_commit = branch_commit.dereferenced_target
+                  index.read_tree(last_commit.raw_commit.tree)
+                  [last_commit.sha]
+                else
+                  []
+                end
 
       actions.each do |action|
         case action[:action]
