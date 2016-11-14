@@ -38,7 +38,6 @@ module Issuable
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy
-    has_many :timelogs, as: :trackable, dependent: :destroy
 
     has_one :metrics
 

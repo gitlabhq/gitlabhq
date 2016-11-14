@@ -12,6 +12,8 @@ module TimeTrackable
     attr_reader :time_spent
 
     alias_method :time_spent?, :time_spent
+
+    has_many :timelogs, as: :trackable, dependent: :destroy
   end
 
   def spend_time=(args)
@@ -32,7 +34,7 @@ module TimeTrackable
   private
 
   def valid_spend_time_args?(args)
-    return false unless [:seconds, :user].all? { |k| args.key?(k) }
+    return false if [:seconds, :user].any? { |k| args[k].blank? }
 
     # time to subtract exceeds the total time spent
     seconds = args[:seconds]
