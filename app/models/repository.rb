@@ -1128,7 +1128,7 @@ class Repository
       raise CommitError.new('Failed to create commit')
     end
 
-    if rugged.lookup(newrev).parent_ids.empty?
+    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
       oldrev = Gitlab::Git::BLANK_SHA
     else
       oldrev = rugged.merge_base(newrev, target_branch.dereferenced_target.sha)
@@ -1219,8 +1219,7 @@ class Repository
 
       [find_branch(branch_name), true]
     else
-      raise CommitError.new(
-        "Cannot find branch #{branch_name} and source_branch is not set")
+      [nil, true] # Empty branch
     end
   end
 end
