@@ -3,7 +3,14 @@ require_relative "base_service"
 module Files
   class CreateDirService < Files::BaseService
     def commit
-      repository.commit_dir(current_user, @file_path, @commit_message, @target_branch, author_email: @author_email, author_name: @author_name)
+      repository.commit_dir(
+        current_user,
+        @file_path,
+        @commit_message,
+        @target_branch,
+        author_email: @author_email,
+        author_name: @author_name,
+        source_branch: @source_branch)
     end
 
     def validate

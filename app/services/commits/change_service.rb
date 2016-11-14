@@ -29,7 +29,7 @@ module Commits
       tree_id = repository.public_send("check_#{action}_content", @commit, @target_branch)
 
       if tree_id
-        create_target_branch(into) if @create_merge_request
+        validate_target_branch(into) if @create_merge_request
 
         repository.public_send(action, current_user, @commit, into, tree_id)
         success
@@ -50,12 +50,12 @@ module Commits
       true
     end
 
-    def create_target_branch(new_branch)
+    def validate_target_branch(new_branch)
       # Temporary branch exists and contains the change commit
-      return success if repository.find_branch(new_branch)
+      return if repository.find_branch(new_branch)
 
-      result = CreateBranchService.new(@project, current_user)
-                                  .execute(new_branch, @target_branch, source_project: @source_project)
+      result = ValidateNewBranchService.new(@project, current_user).
+        execute(new_branch)
 
       if result[:status] == :error
         raise ChangeError, "There was an error creating the source branch: #{result[:message]}"

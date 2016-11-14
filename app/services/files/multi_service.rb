@@ -11,7 +11,8 @@ module Files
         message: @commit_message,
         actions: params[:actions],
         author_email: @author_email,
-        author_name: @author_name
+        author_name: @author_name,
+        source_branch: @source_branch
       )
     end
 

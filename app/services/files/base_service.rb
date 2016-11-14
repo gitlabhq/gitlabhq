@@ -23,9 +23,7 @@ module Files
       validate
 
       # Create new branch if it different from source_branch
-      if different_branch?
-        create_target_branch
-      end
+      validate_target_branch if different_branch?
 
       result = commit
       if result
@@ -73,10 +71,11 @@ module Files
       end
     end
 
-    def create_target_branch
-      result = CreateBranchService.new(project, current_user).execute(@target_branch, @source_branch, source_project: @source_project)
+    def validate_target_branch
+      result = ValidateNewBranchService.new(project, current_user).
+        execute(@target_branch)
 
-      unless result[:status] == :success
+      if result[:status] == :error
         raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")
       end
     end

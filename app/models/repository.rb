@@ -786,8 +786,12 @@ class Repository
     @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
-  def commit_dir(user, path, message, branch, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
+  def commit_dir(user, path, message, branch,
+    author_email: nil, author_name: nil, source_branch: nil)
+    update_branch_with_hooks(
+      user,
+      branch,
+      source_branch: source_branch) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -802,8 +806,12 @@ class Repository
     end
   end
 
-  def commit_file(user, path, content, message, branch, update, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
+  def commit_file(user, path, content, message, branch, update,
+    author_email: nil, author_name: nil, source_branch: nil)
+    update_branch_with_hooks(
+      user,
+      branch,
+      source_branch: source_branch) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -823,8 +831,13 @@ class Repository
     end
   end
 
-  def update_file(user, path, content, branch:, previous_path:, message:, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
+  def update_file(user, path, content,
+    branch:, previous_path:, message:,
+    author_email: nil, author_name: nil, source_branch: nil)
+    update_branch_with_hooks(
+      user,
+      branch,
+      source_branch: source_branch) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -849,8 +862,12 @@ class Repository
     end
   end
 
-  def remove_file(user, path, message, branch, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
+  def remove_file(user, path, message, branch,
+    author_email: nil, author_name: nil, source_branch: nil)
+    update_branch_with_hooks(
+      user,
+      branch,
+      source_branch: source_branch) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -868,17 +885,18 @@ class Repository
     end
   end
 
-  def multi_action(user:, branch:, message:, actions:, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
+  def multi_action(user:, branch:, message:, actions:,
+    author_email: nil, author_name: nil, source_branch: nil)
+    update_branch_with_hooks(
+      user,
+      branch,
+      source_branch: source_branch) do |ref|
       index = rugged.index
       parents = []
-      branch = find_branch(ref)
 
-      if branch
-        last_commit = branch.dereferenced_target
-        index.read_tree(last_commit.raw_commit.tree)
-        parents = [last_commit.sha]
-      end
+      last_commit = find_branch(ref).dereferenced_target
+      index.read_tree(last_commit.raw_commit.tree)
+      parents = [last_commit.sha]
 
       actions.each do |action|
         case action[:action]
@@ -967,7 +985,10 @@ class Repository
 
     return false unless revert_tree_id
 
-    update_branch_with_hooks(user, base_branch) do
+    update_branch_with_hooks(
+      user,
+      base_branch,
+      source_branch: revert_tree_id) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.revert_message,
@@ -984,7 +1005,10 @@ class Repository
 
     return false unless cherry_pick_tree_id
 
-    update_branch_with_hooks(user, base_branch) do
+    update_branch_with_hooks(
+      user,
+      base_branch,
+      source_branch: cherry_pick_tree_id) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.message,
@@ -1082,11 +1106,11 @@ class Repository
     fetch_ref(path_to_repo, ref, ref_path)
   end
 
-  def update_branch_with_hooks(current_user, branch)
+  def update_branch_with_hooks(current_user, branch, source_branch: nil)
     update_autocrlf_option
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
-    target_branch = find_branch(branch)
+    target_branch, new_branch_added = raw_ensure_branch(branch, source_branch)
     was_empty = empty?
 
     # Make commit
@@ -1096,7 +1120,7 @@ class Repository
       raise CommitError.new('Failed to create commit')
     end
 
-    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
+    if rugged.lookup(newrev).parent_ids.empty?
       oldrev = Gitlab::Git::BLANK_SHA
     else
       oldrev = rugged.merge_base(newrev, target_branch.dereferenced_target.sha)
@@ -1105,11 +1129,9 @@ class Repository
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
       update_ref!(ref, newrev, oldrev)
 
-      if was_empty || !target_branch
-        # If repo was empty expire cache
-        after_create if was_empty
-        after_create_branch
-      end
+      # If repo was empty expire cache
+      after_create if was_empty
+      after_create_branch if was_empty || new_branch_added
     end
 
     newrev
@@ -1168,5 +1190,29 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+  end
+
+  def raw_ensure_branch(branch_name, source_branch)
+    old_branch = find_branch(branch_name)
+
+    if old_branch
+      [old_branch, false]
+    elsif source_branch
+      oldrev = Gitlab::Git::BLANK_SHA
+      ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+      target = commit(source_branch).try(:id)
+
+      unless target
+        raise CommitError.new(
+          "Cannot find branch #{branch_name} nor #{source_branch}")
+      end
+
+      update_ref!(ref, target, oldrev)
+
+      [find_branch(branch_name), true]
+    else
+      raise CommitError.new(
+        "Cannot find branch #{branch_name} and source_branch is not set")
+    end
   end
 end
