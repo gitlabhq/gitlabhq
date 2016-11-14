@@ -53,7 +53,7 @@ module Gitlab
     end
 
     def branch_url
-      "#{project_url(@project)}/commits/#{@id}"
+      namespace_project_commit_url(@project.namespace, @project, @id)
     end
 
     def user_url

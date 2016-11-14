@@ -35,10 +35,10 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
 
   private
 
-  def render_events(events)
+  def render_events(events_list)
     respond_to do |format|
       format.html
-      format.json { render json: { events: events } }
+      format.json { render json: { events: events_list } }
     end
   end
 

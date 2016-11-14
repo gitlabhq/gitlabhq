@@ -63,15 +63,8 @@ module Gitlab
 
       def parse_build_event(event)
         build = ::Ci::Build.find(event['id'])
-        event['name'] = build.name
-        event['url'] = Gitlab::LightUrlBuilder.build(entity: :build, project: @project, id: build.id)
-        event['branch'] = build.ref
-        event['branch_url'] = Gitlab::LightUrlBuilder.build(entity: :branch, project: @project, id: build.ref)
-        event['sha'] = build.short_sha
-        event['commit_url'] = Gitlab::LightUrlBuilder.build(entity: :commit, project: @project, id: build.sha)
-        event['date'] = build.started_at
-        event['total_time'] = build.duration
-        event['author_name'] = build.author.try(:name)
+
+        #event['author_name'] = build.author.try(:name)
       end
 
       def first_time_reference_commit(commits, event)
