@@ -382,18 +382,21 @@ describe NotificationService, services: true do
         user_1 = create(:user)
         user_2 = create(:user)
         user_3 = create(:user)
+        user_4 = create(:user)
         label = create(:label, project: project, issues: [issue])
         group_label = create(:group_label, group: group, issues: [issue])
         issue.reload
         label.toggle_subscription(user_1, project)
         group_label.toggle_subscription(user_2, project)
         group_label.toggle_subscription(user_3, another_project)
+        group_label.toggle_subscription(user_4)
 
         notification.new_issue(issue, @u_disabled)
 
         should_email(user_1)
         should_email(user_2)
         should_not_email(user_3)
+        should_email(user_4)
       end
 
       context 'confidential issues' do
@@ -569,7 +572,8 @@ describe NotificationService, services: true do
       let(:label_1) { create(:label, project: project, title: 'Label 1', issues: [issue]) }
       let(:label_2) { create(:label, project: project, title: 'Label 2') }
       let!(:subscriber_to_group_label_1) { create(:user) { |u| group_label_1.toggle_subscription(u, project) } }
-      let!(:subscriber_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_1_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_2_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u) } }
       let!(:subscriber_to_group_label_2_on_another_project) { create(:user) { |u| group_label_2.toggle_subscription(u, another_project) } }
       let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
       let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
@@ -580,7 +584,8 @@ describe NotificationService, services: true do
         should_not_email(subscriber_to_label_1)
         should_not_email(subscriber_to_group_label_1)
         should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_to_group_label_2)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
       end
 
@@ -599,7 +604,8 @@ describe NotificationService, services: true do
         should_not_email(subscriber_to_label_1)
         should_not_email(subscriber_to_group_label_1)
         should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_to_group_label_2)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
       end
 
@@ -784,17 +790,20 @@ describe NotificationService, services: true do
         user_1 = create(:user)
         user_2 = create(:user)
         user_3 = create(:user)
+        user_4 = create(:user)
         label = create(:label, project: project, merge_requests: [merge_request])
         group_label = create(:group_label, group: group, merge_requests: [merge_request])
         label.toggle_subscription(user_1, project)
         group_label.toggle_subscription(user_2, project)
         group_label.toggle_subscription(user_3, another_project)
+        group_label.toggle_subscription(user_4)
 
         notification.new_merge_request(merge_request, @u_disabled)
 
         should_email(user_1)
         should_email(user_2)
         should_not_email(user_3)
+        should_email(user_4)
       end
 
       context 'participating' do
@@ -893,7 +902,8 @@ describe NotificationService, services: true do
       let(:label_1) { create(:label, project: project, title: 'Label 1', merge_requests: [merge_request]) }
       let(:label_2) { create(:label, project: project, title: 'Label 2') }
       let!(:subscriber_to_group_label_1) { create(:user) { |u| group_label_1.toggle_subscription(u, project) } }
-      let!(:subscriber_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_1_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_2_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u) } }
       let!(:subscriber_to_group_label_2_on_another_project) { create(:user) { |u| group_label_2.toggle_subscription(u, another_project) } }
       let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
       let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
@@ -904,7 +914,8 @@ describe NotificationService, services: true do
         should_not_email(subscriber_to_label_1)
         should_not_email(subscriber_to_group_label_1)
         should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_to_group_label_2)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
       end
 
@@ -923,7 +934,8 @@ describe NotificationService, services: true do
         should_not_email(subscriber_to_label_1)
         should_not_email(subscriber_to_group_label_1)
         should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_to_group_label_2)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
       end
     end

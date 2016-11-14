@@ -8,7 +8,6 @@ describe Subscription, models: true do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:subscribable) }
     it { is_expected.to validate_presence_of(:user) }
 
