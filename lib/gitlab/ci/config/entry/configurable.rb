@@ -48,8 +48,8 @@ module Gitlab
 
             private # rubocop:disable Lint/UselessAccessModifier
 
-            def node(key, node, metadata)
-              factory = Entry::Factory.new(node)
+            def entry(key, entry, metadata)
+              factory = Entry::Factory.new(entry)
                 .with(description: metadata[:description])
 
               (@nodes ||= {}).merge!(key.to_sym => factory)

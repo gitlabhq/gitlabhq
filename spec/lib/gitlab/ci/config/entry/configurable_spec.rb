@@ -39,10 +39,10 @@ describe Gitlab::Ci::Config::Entry::Configurable do
     end
   end
 
-  describe 'configured nodes' do
+  describe 'configured entries' do
     before do
       entry.class_eval do
-        node :object, Object, description: 'test object'
+        entry :object, Object, description: 'test object'
       end
     end
 

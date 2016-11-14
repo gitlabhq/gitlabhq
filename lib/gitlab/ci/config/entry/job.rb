@@ -34,43 +34,43 @@ module Gitlab
             end
           end
 
-          node :before_script, Entry::Script,
+          entry :before_script, Entry::Script,
             description: 'Global before script overridden in this job.'
 
-          node :script, Entry::Commands,
+          entry :script, Entry::Commands,
             description: 'Commands that will be executed in this job.'
 
-          node :stage, Entry::Stage,
+          entry :stage, Entry::Stage,
             description: 'Pipeline stage this job will be executed into.'
 
-          node :type, Entry::Stage,
+          entry :type, Entry::Stage,
             description: 'Deprecated: stage this job will be executed into.'
 
-          node :after_script, Entry::Script,
+          entry :after_script, Entry::Script,
             description: 'Commands that will be executed when finishing job.'
 
-          node :cache, Entry::Cache,
+          entry :cache, Entry::Cache,
             description: 'Cache definition for this job.'
 
-          node :image, Entry::Image,
+          entry :image, Entry::Image,
             description: 'Image that will be used to execute this job.'
 
-          node :services, Entry::Services,
+          entry :services, Entry::Services,
             description: 'Services that will be used to execute this job.'
 
-          node :only, Entry::Trigger,
+          entry :only, Entry::Trigger,
             description: 'Refs policy this job will be executed for.'
 
-          node :except, Entry::Trigger,
+          entry :except, Entry::Trigger,
             description: 'Refs policy this job will be executed for.'
 
-          node :variables, Entry::Variables,
+          entry :variables, Entry::Variables,
             description: 'Environment variables available for this job.'
 
-          node :artifacts, Entry::Artifacts,
+          entry :artifacts, Entry::Artifacts,
             description: 'Artifacts configuration for this job.'
 
-          node :environment, Entry::Environment,
+          entry :environment, Entry::Environment,
                description: 'Environment configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,

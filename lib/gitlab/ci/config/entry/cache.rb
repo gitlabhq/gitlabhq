@@ -14,13 +14,13 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS
           end
 
-          node :key, Entry::Key,
+          entry :key, Entry::Key,
             description: 'Cache key used to define a cache affinity.'
 
-          node :untracked, Entry::Boolean,
+          entry :untracked, Entry::Boolean,
             description: 'Cache all untracked files.'
 
-          node :paths, Entry::Paths,
+          entry :paths, Entry::Paths,
             description: 'Specify which paths should be cached across builds.'
         end
       end
