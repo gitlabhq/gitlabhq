@@ -12,7 +12,7 @@ feature 'Issue filtering by Labels', feature: true, js: true do
   let!(:enhancement) { create(:label, project: project, title: 'enhancement') }
 
   let!(:mr1) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "bugfix1") }
-  let!(:mr2) { create(:merge_request, title:"Bugfix2", source_project: project, target_project: project, source_branch: "bugfix2") }
+  let!(:mr2) { create(:merge_request, title: "Bugfix2", source_project: project, target_project: project, source_branch: "bugfix2") }
   let!(:mr3) { create(:merge_request, title: "Feature1", source_project: project, target_project: project, source_branch: "feature1") }
 
   before do

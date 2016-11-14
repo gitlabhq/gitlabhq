@@ -15,6 +15,7 @@ describe 'Filter issues', feature: true do
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CAPS_sensitive') }
   let!(:milestone) { create(:milestone, title: "8", project: project) }
+  let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
   def input_filtered_search(search_term)
     filtered_search = find('.filtered-search')
@@ -77,6 +78,9 @@ describe 'Filter issues', feature: true do
       assignee: user)
     issue_with_everything.labels << bug_label
     issue_with_everything.labels << caps_sensitive_label
+
+    multiple_words_label_issue = create(:issue, title: "Issue with multiple words label", project: project)
+    multiple_words_label_issue.labels << multiple_words_label
 
     visit namespace_project_issues_path(project.namespace, project)
   end
@@ -190,6 +194,61 @@ describe 'Filter issues', feature: true do
         input_filtered_search("label:#{bug_label.title} label:#{caps_sensitive_label.title}")
         expect_issues_list_count(1)
       end
+
+      it 'filters issues by label containing special characters' do
+        special_label = create(:label, project: project, title: '!@#{$%^&*()-+[]<>?/:{}|\}')
+        special_issue = create(:issue, title: "Issue with special character label", project: project)
+        special_issue.labels << special_label
+        input_filtered_search("label:#{special_label.title}")
+        expect_issues_list_count(1)
+      end
+
+      it 'does not show issues' do
+        new_label = create(:label, project: project, title: "new_label")
+        input_filtered_search("label:#{new_label.title}")
+        expect_no_issues_list()
+      end
+    end
+
+    context 'label with multiple words', js: true do
+      it 'special characters' do
+        special_multiple_label = create(:label, project: project, title: "Utmost |mp0rt@nce")
+        special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
+        special_multiple_issue.labels << special_multiple_label
+
+        input_filtered_search("label:'#{special_multiple_label.title}'")
+        expect_issues_list_count(1)
+      end
+
+      it 'single quotes' do
+        input_filtered_search("label:'#{multiple_words_label.title}'")
+        expect_issues_list_count(1)
+      end
+
+      it 'double quotes' do
+        input_filtered_search("label:\"#{multiple_words_label.title}\"")
+        expect_issues_list_count(1)
+      end
+
+      it 'single quotes containing double quotes' do
+        # TODO: Actual bug
+
+        # double_quotes_label = create(:label, project: project, title: 'won"t fix')
+        # double_quotes_label_issue = create(:issue, title: "Issue with double quotes label", project: project)
+        # double_quotes_label_issue.labels << double_quotes_label
+
+        # input_filtered_search("label:'#{double_quotes_label.title}'")
+        # expect_issues_list_count(1)
+      end
+
+      it 'double quotes containing single quotes' do
+        single_quotes_label = create(:label, project: project, title: "won't fix")
+        single_quotes_label_issue = create(:issue, title: "Issue with single quotes label", project: project)
+        single_quotes_label_issue.labels << single_quotes_label
+
+        input_filtered_search("label:\"#{single_quotes_label.title}\"")
+        expect_issues_list_count(1)
+      end
     end
 
     context 'label with other filters', js: true do
@@ -268,6 +327,19 @@ describe 'Filter issues', feature: true do
 
       it 'filters issues by multiple milestones' do
         # YOLO
+      end
+
+      it 'filters issues by milestone containing special characters' do
+        special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
+        create(:issue, title: "Issue with special character milestone", project: project, milestone: special_milestone)
+        input_filtered_search('milestone:!@\#{$%^&*()}')
+        expect_issues_list_count(1)
+      end
+
+      it 'does not show issues' do
+        new_milestone = create(:milestone, title: "new", project: project)
+        input_filtered_search("milestone:#{new_milestone}")
+        expect_no_issues_list()
       end
     end
 
