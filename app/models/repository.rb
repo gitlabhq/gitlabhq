@@ -162,18 +162,14 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
-  def add_branch(user, branch_name, target, with_hooks: true)
+  def add_branch(user, branch_name, target)
     oldrev = Gitlab::Git::BLANK_SHA
     ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     target = commit(target).try(:id)
 
     return false unless target
 
-    if with_hooks
-      GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-        update_ref!(ref, target, oldrev)
-      end
-    else
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
       update_ref!(ref, target, oldrev)
     end
 

@@ -1,7 +1,7 @@
 require_relative 'base_service'
 
 class CreateBranchService < BaseService
-  def execute(branch_name, ref, source_project: @project, with_hooks: true)
+  def execute(branch_name, ref, source_project: @project)
     valid_branch = Gitlab::GitRefValidator.validate(branch_name)
 
     unless valid_branch
@@ -26,7 +26,7 @@ class CreateBranchService < BaseService
 
                    repository.find_branch(branch_name)
                  else
-                   repository.add_branch(current_user, branch_name, ref, with_hooks: with_hooks)
+                   repository.add_branch(current_user, branch_name, ref)
                  end
 
     if new_branch
