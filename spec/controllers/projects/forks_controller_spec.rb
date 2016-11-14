@@ -69,15 +69,64 @@ describe Projects::ForksController do
   end
 
   describe 'GET new' do
-    context 'when user is not logged in' do
-      before { sign_out(user) }
+    def get_new
+      get :new,
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param
+    end
+
+    context 'when user is signed in' do
+
+      it 'responds with status 200' do
+        sign_in(user)
+
+        get_new
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user is not signed in' do
 
       it 'redirects to the sign-in page' do
-        get :new,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param
+        sign_out(user)
 
-        expect(response).to redirect_to(root_path + 'users/sign_in')
+        get_new
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'POST create' do
+    def post_create
+      post :create,
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        namespace_key: user.namespace.id
+    end
+
+    context 'when user is signed in' do
+
+      it 'responds with status 302' do
+        sign_in(user)
+
+        post_create
+
+        expect(response).to have_http_status(302)
+        expected_import_url = namespace_project_import_url(user.namespace, project)
+        expect(response.headers['Location']).to eq(expected_import_url)
+      end
+    end
+
+    context 'when user is not signed in' do
+
+      it 'redirects to the sign-in page' do
+        sign_out(user)
+
+        post_create
+
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end

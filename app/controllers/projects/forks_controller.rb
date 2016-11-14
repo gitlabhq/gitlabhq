@@ -4,6 +4,7 @@ class Projects::ForksController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
+  before_action :authenticate_user!, only: [:new, :create]
 
   def index
     base_query = project.forks.includes(:creator)
@@ -29,8 +30,6 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def new
-    return authenticate_user! unless current_user
-
     @namespaces = current_user.manageable_namespaces
     @namespaces.delete(@project.namespace)
   end
