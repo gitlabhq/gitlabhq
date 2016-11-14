@@ -109,7 +109,7 @@ describe('Build', () => {
         expect($.ajax.calls.count()).toBe(2);
         let [{ url, dataType, success, context }] = $.ajax.calls.argsFor(1);
         expect(url).toBe(
-          `${BUILD_URL}/trace.json?state=${encodeURIComponent(INITIAL_BUILD_TRACE_STATE)}`
+          `${BUILD_URL}/trace.json?state=${encodeURIComponent(INITIAL_BUILD_TRACE_STATE)}`,
         );
         expect(dataType).toBe('json');
         expect(success).toEqual(jasmine.any(Function));
