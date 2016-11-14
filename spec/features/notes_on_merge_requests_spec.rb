@@ -70,10 +70,8 @@ describe 'Comments', feature: true do
     end
 
     describe 'when editing a note', js: true do
-      it 'contains the hidden edit form' do
-        page.within("#note_#{note.id}") do
-          is_expected.to have_css('.note-edit-form', visible: false)
-        end
+      it 'there should be a hidden edit form' do
+        is_expected.to have_css('.note-edit-form', visible: false, count: 1)
       end
 
       describe 'editing the note' do
