@@ -162,7 +162,8 @@ class Projects::NotesController < Projects::ApplicationController
         discussion_id: note.discussion_id,
         html: note_html(note),
         award: false,
-        note: note.note
+        note: note.note,
+        commands_executed: note.commands_executed
       }
 
       if note.diff_note?
@@ -194,6 +195,7 @@ class Projects::NotesController < Projects::ApplicationController
       {
         valid: false,
         award: false,
+        commands_executed: note.commands_executed,
         errors: note.errors
       }
     end
