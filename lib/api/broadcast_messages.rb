@@ -36,8 +36,7 @@ module API
         optional :font,      type: String,   desc: 'Foreground color'
       end
       post do
-        create_params = declared(params, include_missing: false).to_h
-        message = BroadcastMessage.create(create_params)
+        message = BroadcastMessage.create(declared_params(include_missing: false))
 
         if message.persisted?
           present message, with: Entities::BroadcastMessage
@@ -73,9 +72,8 @@ module API
       end
       put ':id' do
         message = find_message
-        update_params = declared(params, include_missing: false).to_h
 
-        if message.update(update_params)
+        if message.update(declared_params(include_missing: false))
           present message, with: Entities::BroadcastMessage
         else
           render_validation_error!(message)

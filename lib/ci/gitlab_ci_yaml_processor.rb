@@ -2,7 +2,7 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
-    include Gitlab::Ci::Config::Node::LegacyValidationHelpers
+    include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
     attr_reader :path, :cache, :stages, :jobs
 

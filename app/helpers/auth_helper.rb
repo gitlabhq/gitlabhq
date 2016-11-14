@@ -3,7 +3,7 @@ module AuthHelper
   FORM_BASED_PROVIDERS = [/\Aldap/, 'kerberos', 'crowd'].freeze
 
   def ldap_enabled?
-    Gitlab.config.ldap.enabled
+    Gitlab::LDAP::Config.enabled?
   end
 
   def kerberos_enabled?

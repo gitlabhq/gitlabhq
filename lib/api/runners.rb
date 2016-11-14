@@ -57,9 +57,7 @@ module API
         runner = get_runner(params.delete(:id))
         authenticate_update_runner!(runner)
 
-        runner_params = declared(params, include_missing: false)
-
-        if runner.update(runner_params)
+        if runner.update(declared_params(include_missing: false))
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)

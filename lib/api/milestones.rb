@@ -62,9 +62,8 @@ module API
       end
       post ":id/milestones" do
         authorize! :admin_milestone, user_project
-        milestone_params = declared(params, include_parent_namespaces: false)
 
-        milestone = ::Milestones::CreateService.new(user_project, current_user, milestone_params).execute
+        milestone = ::Milestones::CreateService.new(user_project, current_user, declared_params).execute
 
         if milestone.valid?
           present milestone, with: Entities::Milestone
@@ -86,9 +85,9 @@ module API
       end
       put ":id/milestones/:milestone_id" do
         authorize! :admin_milestone, user_project
-        milestone_params = declared(params, include_parent_namespaces: false, include_missing: false)
+        milestone = user_project.milestones.find(params.delete(:milestone_id))
 
-        milestone = user_project.milestones.find(milestone_params.delete(:milestone_id))
+        milestone_params = declared_params(include_missing: false)
         milestone = ::Milestones::UpdateService.new(user_project, current_user, milestone_params).execute(milestone)
 
         if milestone.valid?
