@@ -1,3 +1,4 @@
+- board = local_assigns.fetch(:board, nil)
 - @no_container = true
 - @content_class = "issue-boards-content"
 - page_title "Boards"
@@ -15,6 +16,7 @@
 = render 'shared/issuable/filter', type: :boards
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
+  = render "title", board: board
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
