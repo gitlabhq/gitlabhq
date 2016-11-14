@@ -95,15 +95,17 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+
     commit =
       if ref.is_a?(Gitlab::Git::Commit)
         ref
       else
         Gitlab::Git::Commit.find(raw_repository, ref)
       end
+
     commit = ::Commit.new(commit, @project) if commit
     commit
-  rescue Rugged::OdbError
+  rescue Rugged::OdbError, Rugged::TreeError
     nil
   end
 
@@ -289,6 +291,8 @@ class Repository
 
   def ref_exists?(ref)
     rugged.references.exist?(ref)
+  rescue Rugged::ReferenceError
+    false
   end
 
   def update_ref!(name, newrev, oldrev)
@@ -296,7 +300,7 @@ class Repository
     # offer 'compare and swap' ref updates. Without compare-and-swap we can
     # (and have!) accidentally reset the ref to an earlier state, clobbering
     # commits. See also https://github.com/libgit2/libgit2/issues/1534.
-    command = %w[git update-ref --stdin -z]
+    command = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
     _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
       stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
     end
@@ -327,11 +331,7 @@ class Repository
   end
 
   def kept_around?(sha)
-    begin
-      ref_exists?(keep_around_ref_name(sha))
-    rescue Rugged::ReferenceError
-      false
-    end
+    ref_exists?(keep_around_ref_name(sha))
   end
 
   def tag_names

@@ -546,6 +546,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.close
     end
 
+    labels
     define_pipelines_vars
   end
 

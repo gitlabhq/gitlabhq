@@ -26,6 +26,15 @@ GET /groups
 
 You can search for groups by name or path, see below.
 
+=======
+## List owned groups
+
+Get a list of groups which are owned by the authenticated user.
+
+```
+GET /groups/owned
+```
+
 ## List a group's projects
 
 Get a list of projects in this group.

@@ -8,7 +8,7 @@
     .clearfix.prepend-top-10
       %button.btn.btn-primary.pull-left{ type: "submit",
         ":disabled" => "board.name === ''",
-        "v-el:submit-btn" => true }
+        "ref" => "'submit-btn'" }
         {{ buttonText }}
       %button.btn.btn-default.pull-right{ type: "button",
         "@click.stop.prevent" => "currentPage = ''" }

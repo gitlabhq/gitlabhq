@@ -123,6 +123,15 @@ describe API::API, api: true  do
       expect(json_response['title']).to eq('updated title')
     end
 
+    it 'removes a due date if nil is passed' do
+      milestone.update!(due_date: "2016-08-05")
+
+      put api("/projects/#{project.id}/milestones/#{milestone.id}", user), due_date: nil
+
+      expect(response).to have_http_status(200)
+      expect(json_response['due_date']).to be_nil
+    end
+
     it 'returns a 404 error if milestone id not found' do
       put api("/projects/#{project.id}/milestones/1234", user),
         title: 'updated title'
