@@ -4,18 +4,37 @@
     key: 'author',
     type: 'string',
     param: 'username',
+    symbol: '@',
   }, {
     key: 'assignee',
     type: 'string',
     param: 'username',
+    symbol: '@',
+    conditions: [{
+      keyword: 'none',
+      url: 'assignee_id=0',
+    }]
   }, {
     key: 'milestone',
     type: 'string',
     param: 'title',
+    symbol: '%',
+    conditions: [{
+      keyword: 'none',
+      url: 'milestone_title=No+Milestone',
+    }, {
+      keyword: 'upcoming',
+      url: 'milestone_title=%23upcoming',
+    }]
   }, {
     key: 'label',
     type: 'array',
     param: 'name[]',
+    symbol: '~',
+    conditions: [{
+      keyword: 'none',
+      url: 'label_name[]=No+Label',
+    }]
   }];
 
   function clearSearch(e) {
@@ -47,28 +66,42 @@
       const key = decodeURIComponent(split[0]);
       const value = split[1];
 
-      // Sanitize value since URL converts spaces into +
-      // Replace before decode so that we know what was originally + versus the encoded +
-      const sanitizedValue = value ? decodeURIComponent(value.replace(/[+]/g, ' ')) : value;
-      const match = validTokenKeys.filter(t => key === `${t.key}_${t.param}`)[0];
-
-      if (match) {
-        const sanitizedKey = key.slice(0, key.indexOf('_'));
-        const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
-
-        const preferredQuotations = '"';
-        let quotationsToUse = preferredQuotations;
-
-        if (valueHasSpace) {
-          // Prefer ", but use ' if required
-          quotationsToUse = sanitizedValue.indexOf(preferredQuotations) === -1 ? preferredQuotations : '\'';
+      // Check if it matches edge conditions listed in validTokenKeys
+      let conditionIndex = 0;
+      const validCondition = validTokenKeys.filter(v => v.conditions && v.conditions.filter((c, index) => {
+        if (c.url === p) {
+          conditionIndex = index;
         }
+        return c.url === p;
+      })[0])[0];
 
-        inputValue += valueHasSpace ? `${sanitizedKey}:${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${sanitizedValue}`;
-        inputValue += ' ';
-      } else if (!match && key === 'search') {
-        inputValue += sanitizedValue;
-        inputValue += ' ';
+      if (validCondition) {
+        inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
+      } else {
+        // Sanitize value since URL converts spaces into +
+        // Replace before decode so that we know what was originally + versus the encoded +
+        const sanitizedValue = value ? decodeURIComponent(value.replace(/[+]/g, ' ')) : value;
+        const match = validTokenKeys.filter(t => key === `${t.key}_${t.param}`)[0];
+
+        if (match) {
+          const sanitizedKey = key.slice(0, key.indexOf('_'));
+          const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
+          const symbol = match.symbol;
+
+          const preferredQuotations = '"';
+          let quotationsToUse = preferredQuotations;
+
+          if (valueHasSpace) {
+            // Prefer ", but use ' if required
+            quotationsToUse = sanitizedValue.indexOf(preferredQuotations) === -1 ? preferredQuotations : '\'';
+          }
+
+          inputValue += valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`;
+          inputValue += ' ';
+        } else if (!match && key === 'search') {
+          inputValue += sanitizedValue;
+          inputValue += ' ';
+        }
       }
     });
 
@@ -133,8 +166,23 @@
 
       path += `&state=${currentState}`;
       tokens.forEach((token) => {
-        const param = validTokenKeys.filter(t => t.key === token.key)[0].param;
-        path += `&${token.key}_${param}=${encodeURIComponent(token.value)}`;
+        const match = validTokenKeys.filter(t => t.key === token.key)[0];
+        let tokenPath = '';
+
+        if (token.wildcard && match.conditions) {
+          const condition = match.conditions.filter(c => c.keyword === token.value.toLowerCase())[0];
+
+          if (condition) {
+            tokenPath = `${condition.url}`;
+          }
+        } else if (!token.wildcard) {
+          // Remove the wildcard token
+          tokenPath = `${token.key}_${match.param}=${encodeURIComponent(token.value.slice(1))}`;
+        } else {
+          tokenPath = `${token.key}_${match.param}=${encodeURIComponent(token.value)}`;
+        }
+
+        path += `&${tokenPath}`;
       });
 
       if (searchToken) {

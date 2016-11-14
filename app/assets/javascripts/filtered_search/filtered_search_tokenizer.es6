@@ -57,7 +57,10 @@
         if (colonIndex !== -1) {
           const tokenKey = i.slice(0, colonIndex).toLowerCase();
           const tokenValue = i.slice(colonIndex + 1);
-          const match = this.validTokenKeys.filter(v => v.key === tokenKey)[0];
+          const tokenSymbol = tokenValue[0];
+          console.log(tokenSymbol)
+          const keyMatch = this.validTokenKeys.filter(v => v.key === tokenKey)[0];
+          const symbolMatch = this.validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
 
           if (tokenValue.indexOf('"') !== -1) {
             lastQuotation = '"';
@@ -67,10 +70,11 @@
             incompleteToken = true;
           }
 
-          if (match && tokenValue.length > 0) {
+          if (keyMatch && tokenValue.length > 0) {
             this.tokens.push({
-              key: match.key,
+              key: keyMatch.key,
               value: tokenValue,
+              wildcard: symbolMatch ? false : true,
             });
 
             return;
