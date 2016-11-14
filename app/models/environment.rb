@@ -92,6 +92,7 @@ class Environment < ActiveRecord::Base
   def stop!(current_user)
     return unless stoppable?
 
+    stop
     stop_action.play(current_user)
   end
 end

@@ -6,8 +6,8 @@ feature 'Environments', feature: true do
   given(:role) { :developer }
 
   background do
-    login_as(user)
     project.team << [user, role]
+    login_as(user)
   end
 
   describe 'when showing environments' do
@@ -16,7 +16,7 @@ feature 'Environments', feature: true do
     given!(:manual) { }
 
     before do
-      visit namespace_project_environments_path(project.namespace, project)
+      visit_environments(project)
     end
 
     context 'shows two tabs' do
@@ -142,7 +142,7 @@ feature 'Environments', feature: true do
     given!(:manual) { }
 
     before do
-      visit namespace_project_environment_path(project.namespace, project, environment)
+      visit_environment(environment)
     end
 
     context 'without deployments' do
@@ -234,7 +234,7 @@ feature 'Environments', feature: true do
 
   describe 'when creating a new environment' do
     before do
-      visit namespace_project_environments_path(project.namespace, project)
+      visit_environments(project)
     end
 
     context 'when logged as developer' do
@@ -272,5 +272,39 @@ feature 'Environments', feature: true do
         expect(page).not_to have_link('New environment')
       end
     end
+  end
+
+  feature 'auto-close environment when branch deleted' do
+    given(:project) { create(:project) }
+
+    given!(:environment) do
+      create(:environment, :with_review_app, project: project,
+                                             ref: 'feature')
+    end
+
+    scenario 'user visits environment page' do
+      visit_environment(environment)
+
+      expect(page).to have_link('Stop')
+    end
+
+    scenario 'user deletes the branch with running environment' do
+      visit namespace_project_branches_path(project.namespace, project)
+
+      page.within('.js-branch-feature') { find('a.btn-remove').click }
+      visit_environment(environment)
+
+      expect(page).to have_no_link('Stop')
+    end
+  end
+
+  def visit_environments(project)
+    visit namespace_project_environments_path(project.namespace, project)
+  end
+
+  def visit_environment(environment)
+    visit namespace_project_environment_path(environment.project.namespace,
+                                             environment.project,
+                                             environment)
   end
 end
