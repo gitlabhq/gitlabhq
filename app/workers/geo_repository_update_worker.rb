@@ -9,6 +9,7 @@ class GeoRepositoryUpdateWorker
     @project = Project.find(project_id)
 
     fetch_repository(clone_url)
+    ProjectCacheWorker.perform_async(@project.id)
   end
 
   private
