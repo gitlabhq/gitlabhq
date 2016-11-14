@@ -988,7 +988,8 @@ class Repository
   end
 
   def revert(user, commit, base_branch, revert_tree_id = nil)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
+    source_sha = raw_ensure_branch(base_branch, source_commit: commit).
+      first.dereferenced_target.sha
     revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
@@ -1008,7 +1009,8 @@ class Repository
   end
 
   def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
+    source_sha = raw_ensure_branch(base_branch, source_commit: commit).
+      first.dereferenced_target.sha
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
 
     return false unless cherry_pick_tree_id
@@ -1118,7 +1120,8 @@ class Repository
     update_autocrlf_option
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
-    target_branch, new_branch_added = raw_ensure_branch(branch, source_branch)
+    target_branch, new_branch_added =
+      raw_ensure_branch(branch, source_branch: source_branch)
     was_empty = empty?
 
     # Make commit
@@ -1200,19 +1203,19 @@ class Repository
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
   end
 
-  def raw_ensure_branch(branch_name, source_branch)
+  def raw_ensure_branch(branch_name, source_commit: nil, source_branch: nil)
     old_branch = find_branch(branch_name)
 
     if old_branch
       [old_branch, false]
-    elsif source_branch
+    elsif source_commit || source_branch
       oldrev = Gitlab::Git::BLANK_SHA
       ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-      target = commit(source_branch).try(:id)
+      target = (source_commit || commit(source_branch)).try(:sha)
 
       unless target
         raise CommitError.new(
-          "Cannot find branch #{branch_name} nor #{source_branch}")
+          "Cannot find branch #{branch_name} nor #{source_commit.try(:sha) ||source_branch}")
       end
 
       update_ref!(ref, target, oldrev)
