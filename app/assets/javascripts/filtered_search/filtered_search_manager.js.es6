@@ -18,22 +18,22 @@
     param: 'name[]',
   }];
 
-  function clearSearch(event) {
-    event.stopPropagation();
-    event.preventDefault();
+  function clearSearch(e) {
+    e.stopPropagation();
+    e.preventDefault();
 
     document.querySelector('.filtered-search').value = '';
     document.querySelector('.clear-search').classList.add('hidden');
   }
 
-  function toggleClearSearchButton(event) {
+  function toggleClearSearchButton(e) {
     const clearSearchButton = document.querySelector('.clear-search');
 
     if (event.target.value) {
-      clearSearchButton.classList.remove('hidden');
-    } else {
-      clearSearchButton.classList.add('hidden');
-    }
+       clearSearchButton.classList.remove('hidden');
+     } else {
+       clearSearchButton.classList.add('hidden');
+     }
   }
 
   function loadSearchParamsFromURL() {
@@ -97,16 +97,16 @@
       document.querySelector('.clear-search').addEventListener('click', clearSearch);
     }
 
-    processInput(event) {
-      const input = event.target.value;
+    processInput(e) {
+      const input = e.target.value;
       this.tokenizer.processTokens(input);
     }
 
-    checkForEnter(event) {
+    checkForEnter(e) {
       // Enter KeyCode
-      if (event.keyCode === 13) {
-        event.stopPropagation();
-        event.preventDefault();
+      if (e.keyCode === 13) {
+        e.stopPropagation();
+        e.preventDefault();
         this.search();
       }
     }
