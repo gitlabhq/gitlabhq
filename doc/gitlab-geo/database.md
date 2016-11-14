@@ -41,8 +41,6 @@ The following guide assumes that:
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
   secondary's IP will be `5.6.7.8`.
 
-[pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
-
 ### Step 1. Configure the primary server
 
 **For Omnibus installations**
@@ -92,12 +90,11 @@ The following guide assumes that:
    public IP.
 1. Continue to [set up the secondary server](#step-2-configure-the-secondary-server).
 
-
 ---
 
 **For installations from source**
 
-1. SSH into your GitLab primary server and login as root:
+1. SSH into your database primary server and login as root:
 
     ```
     sudo -i
@@ -155,7 +152,7 @@ The following guide assumes that:
 
 **For Omnibus installations**
 
-1. SSH into your GitLab primary server and login as root:
+1. SSH into your GitLab secondary server and login as root:
 
     ```
     sudo -i
@@ -176,6 +173,7 @@ The following guide assumes that:
     ```
     \q
     ```
+
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
@@ -192,7 +190,7 @@ The following guide assumes that:
 
 **For installations from source**
 
-1. SSH into your database primary server and login as root:
+1. SSH into your database secondary server and login as root:
 
     ```
     sudo -i
@@ -241,7 +239,7 @@ see fit replacing the directories and paths.
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
-1. SSH into your database primary server and login as root:
+1. SSH into your GitLab secondary server and login as root:
 
     ```
     sudo -i
@@ -294,7 +292,8 @@ data before running `pg_basebackup`.
     bash /tmp/replica.sh
     ```
 
-    When prompted, enter the password you set up for the `gitlab_replicator` user.
+    When prompted, enter the password you set up for the `gitlab_replicator`
+    user in the first step.
 
 The replication process is now over.
 
@@ -302,4 +301,5 @@ The replication process is now over.
 
 We don't support MySQL replication for GitLab Geo.
 
+[pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
