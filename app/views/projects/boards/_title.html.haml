@@ -31,10 +31,9 @@
           %p
             Are you sure you want to delete this board?
           .board-delete-btns.clearfix
-            = link_to "",
+            = link_to namespace_project_board_path(@project.namespace, @project, board),
               class: "btn btn-danger pull-left",
-              method: :delete,
-              ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + board.id" do
+              method: :delete do
               Delete
             %button.btn.btn-default.pull-right{ type: "button",
               "@click.stop.prevent" => "currentPage = ''" }
