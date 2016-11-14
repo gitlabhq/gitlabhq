@@ -466,9 +466,7 @@
       var $html, $note_li;
       // Convert returned HTML to a jQuery object so we can modify it further
       $html = $(note.html);
-
-      $('.note-edit-form').insertBefore('.notes-form');
-
+      this.revertNoteEditForm();
       gl.utils.localTimeAgo($('.js-timeago', $html));
       $html.renderGFM();
       $html.find('.js-task-list-container').taskList('enable');
@@ -528,28 +526,21 @@
         }
       }
 
-      var note = $(e.target).closest('.note');
       var $editForm = $('.note-edit-form');
-      var $originalContentEl = note.find('.original-note-content');
+      var $note = $(e.target).closest('.note');
+
+      $editForm.insertAfter($note.find('.note-text'));
+
+      var $noteText = $editForm.find('.js-note-text');
+      var $originalContentEl = $note.find('.original-note-content');
       var originalContent = $originalContentEl.text().trim();
       var postUrl = $originalContentEl.data('post-url');
-      var form = note.find('.note-edit-form');
-      var $noteText = form.find('.js-note-text');
-      var noteTextVal = $noteText.val(); // Neat little trick to put the cursor at the end
-
-      note.addClass('is-editting');
-      $editForm.insertAfter(note.find('.note-text'));
-      $editForm.find('.js-note-text').val(originalContent);
+      $note.addClass('is-editting');
       $editForm.find('form').attr('action', postUrl);
-
-      form.addClass('current-note-edit-form');
-      note.find('.js-note-attachment-delete').show(); // Show the attachment delete link
-      new GLForm(form);
-
-      $noteText.focus();
-      // Store the original note text in a data attribute to retrieve if a user cancels edit.
-      form.find('form.edit-note').data('original-note', noteTextVal);
-      $noteText.val('').val(noteTextVal);
+      $editForm.addClass('current-note-edit-form');
+      $note.find('.js-note-attachment-delete').show(); // Show the attachment delete link
+      new GLForm($editForm.find('form'));
+      $editForm.find('.js-note-text').focus().val(originalContent);
     };
 
 
@@ -564,9 +555,16 @@
       var note = $(e.target).closest('.note');
       note.find('.js-edit-warning').hide();
       note.find('.js-md-write-button').trigger('click');
-      $('.note-edit-form').insertBefore('.notes-form');
+      this.revertNoteEditForm();
       return this.removeNoteEditForm(note);
     };
+
+    Notes.prototype.revertNoteEditForm = function() {
+      var $editForm = $('.note-edit-form');
+
+      $editForm.insertBefore('.notes-form');
+      $editForm.find('.js-comment-button').enable();
+    }
 
 
     Notes.prototype.removeNoteEditForm = function(note) {
