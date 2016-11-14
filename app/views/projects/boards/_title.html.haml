@@ -3,7 +3,7 @@
   .boards-title-holder.dropdown
     %button.boards-switcher{ "@click" => "loadBoards",
       data: { toggle: "dropdown" } }
-      {{ currentBoard.name }}
+      {{ board.name }}
       = icon("caret-down")
     .dropdown-menu{ ":class" => "{ 'is-loading': loading }" }
       .dropdown-title
@@ -25,17 +25,7 @@
         = icon("spin spinner")
       - if can?(current_user, :admin_board, @project)
         %board-selector-form{ "inline-template" => true,
-          "v-if" => "currentPage === 'edit'",
-          "type" => "edit",
-          ":current-board.sync" => "currentBoard",
-          ":current-page.sync" => "currentPage",
-          ":reload.sync" => "reload" }
-          = render "projects/boards/components/form"
-        %board-selector-form{ "inline-template" => true,
-          "v-if" => "currentPage === 'new'",
-          "type" => "new",
-          ":current-page.sync" => "currentPage",
-          ":reload.sync" => "reload" }
+          "v-if" => "currentPage === 'new' || currentPage === 'edit'" }
           = render "projects/boards/components/form"
         .dropdown-content.board-selector-page-two{ "v-if" => "currentPage === 'delete'" }
           %p
@@ -44,7 +34,7 @@
             = link_to "",
               class: "btn btn-danger pull-left",
               method: :delete,
-              ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + currentBoard.id" do
+              ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + board.id" do
               Delete
             %button.btn.btn-default.pull-right{ type: "button",
               "@click.stop.prevent" => "currentPage = ''" }
