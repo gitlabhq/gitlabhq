@@ -118,6 +118,18 @@ describe Project, models: true do
     it { is_expected.to include_module(Sortable) }
   end
 
+  describe 'scopes' do
+    context '#with_wiki_enabled' do
+      it 'returns a project' do
+        project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
+        project1 = create(:project, wiki_access_level: ProjectFeature::DISABLED)
+
+        expect(Project.with_wiki_enabled).to include(project)
+        expect(Project.with_wiki_enabled).not_to include(project1)
+      end
+    end
+  end
+
   describe 'validation' do
     let!(:project) { create(:project) }
 

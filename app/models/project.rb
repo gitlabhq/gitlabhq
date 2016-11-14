@@ -239,7 +239,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
-  scope :with_wiki_enabled, -> { with_project_feature(:wiki) }
+  scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
