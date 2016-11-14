@@ -1,5 +1,5 @@
 module Ci
-  class StopEnvironmentService < BaseService
+  class StopEnvironmentsService < BaseService
     attr_reader :ref
 
     def execute(branch_name)
