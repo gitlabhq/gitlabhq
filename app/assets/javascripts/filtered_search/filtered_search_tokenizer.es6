@@ -36,7 +36,7 @@
 
       inputs.forEach((i) => {
         if (incompleteToken) {
-          const prevToken = this.tokens[this.tokens.length - 1];
+          const prevToken = this.tokens.last();
           prevToken.value += ` ${i}`;
 
           // Remove last quotation

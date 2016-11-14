@@ -1,4 +1,3 @@
- /* eslint-disable */
  // This is a manifest file that'll be compiled into including all the files listed below.
  // Add new JavaScript code in separate files in this directory and they'll automatically
  // be included in the compiled file accessible from http://example.com/assets/application.js
@@ -6,8 +5,3 @@
  // the compiled file.
  //
  /*= require_tree . */
- 
- (function() {
- 
- }).call(this);
- 
