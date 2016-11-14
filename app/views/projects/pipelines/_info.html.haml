@@ -1,5 +1,5 @@
-.commit-info-row.commit-info-row-header
-  .commit-meta
+.page-content-header
+  .header-main-content
     = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do
       = ci_icon_for_status(@pipeline.status)
       = ci_label_for_status(@pipeline.status)
@@ -7,12 +7,12 @@
     triggered #{time_ago_with_tooltip(@commit.authored_date)} by
     = author_avatar(@commit, size: 24)
     = commit_author_link(@commit)
-  .commit-action-buttons
+  .header-action-buttons
     - if can?(current_user, :update_pipeline, @pipeline.project)
       - if @pipeline.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn btn-grouped retry-build-btn', method: :post
+        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn retry-build-btn', method: :post
       - if @pipeline.builds.running_or_pending.any?
-        = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-grouped btn-danger', method: :post
+        = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
 - if @commit
   .commit-box
@@ -29,7 +29,7 @@
         = ci_icon_for_status(@commit.status)
       = pluralize @pipeline.statuses.count(:id), "build"
       - if @pipeline.ref
-        for
+        from
         = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
       - if @pipeline.duration
         in
@@ -40,5 +40,10 @@
   .well-segment.branch-info
     .icon-container.commit-icon
       = custom_icon("icon_commit")
-    = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace"
-    = clipboard_button(clipboard_text: @pipeline.sha)
+    = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace js-details-short"
+    = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
+      %span.text-expander
+        \...
+    %span.js-details-content.hide
+      = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace commit-hash-full"
+    = clipboard_button(clipboard_text: @pipeline.sha, title: "Copy commit SHA to clipboard")
