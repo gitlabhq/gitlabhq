@@ -8,6 +8,7 @@
       'vue-pending-scope': gl.VuePendingScope,
       'vue-failed-scope': gl.VueFailedScope,
       'vue-created-scope': gl.VueCreatedScope,
+      'vue-canceled-scope': gl.VueCanceledScope,
     },
     props: [
       'pipeline',
@@ -34,6 +35,11 @@
           :pipeline='pipeline'
         >
         </vue-created-scope>
+        <vue-canceled-scope
+          v-if="pipeline.details.status === 'canceled'"
+          :pipeline='pipeline'
+        >
+        </vue-canceled-scope>
       </td>
     `,
   });
