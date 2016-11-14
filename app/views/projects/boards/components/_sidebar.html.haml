@@ -1,5 +1,5 @@
 %board-sidebar{ "inline-template" => true,
-  ":current-user" => "#{current_user.to_json(only: [:username, :id, :name], methods: [:avatar_url]) if current_user}" }
+  ":current-user" => "#{current_user ? current_user.to_json(only: [:username, :id, :name], methods: [:avatar_url]) : {}}" }
   %aside.right-sidebar.right-sidebar-expanded.issue-boards-sidebar{ "v-show" => "showSidebar" }
     .issuable-sidebar
       .block.issuable-sidebar-header
