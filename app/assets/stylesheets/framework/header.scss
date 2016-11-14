@@ -63,6 +63,7 @@ header {
         &:focus,
         &:active {
           background-color: $background-color;
+          color: darken($gl-icon-color, 50%);
         }
 
         .fa-caret-down {
@@ -152,7 +153,7 @@ header {
       padding-right: 20px;
       margin: 0;
       font-size: 19px;
-      max-width: 400px;
+      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -191,6 +192,10 @@ header {
         font-size: 10px;
         text-align: center;
         cursor: pointer;
+
+        &:hover {
+          color: darken($color: $gl-text-color, $amount: 50%);
+        }
       }
 
       .project-item-select {
@@ -215,6 +220,14 @@ header {
 
   .impersonation i {
     color: $red-normal;
+  }
+}
+
+.page-sidebar-pinned.right-sidebar-expanded {
+  @media (max-width: $screen-lg-min) {
+    .header-content .title {
+      width: 300px;
+    }
   }
 }
 

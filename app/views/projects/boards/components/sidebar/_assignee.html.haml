@@ -1,8 +1,8 @@
 .block.assignee
   .title.hide-collapsed
     Assignee
-    = icon("spinner spin", class: "block-loading")
     - if can?(current_user, :admin_issue, @project)
+      = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value.hide-collapsed
     %span.assign-yourself.no-value{ "v-if" => "!issue.assignee" }
