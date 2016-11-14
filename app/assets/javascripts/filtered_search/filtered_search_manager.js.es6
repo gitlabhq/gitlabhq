@@ -13,7 +13,7 @@
     conditions: [{
       keyword: 'none',
       url: 'assignee_id=0',
-    }]
+    }],
   }, {
     key: 'milestone',
     type: 'string',
@@ -25,7 +25,7 @@
     }, {
       keyword: 'upcoming',
       url: 'milestone_title=%23upcoming',
-    }]
+    }],
   }, {
     key: 'label',
     type: 'array',
@@ -34,7 +34,7 @@
     conditions: [{
       keyword: 'none',
       url: 'label_name[]=No+Label',
-    }]
+    }],
   }];
 
   function clearSearch(e) {
@@ -48,11 +48,11 @@
   function toggleClearSearchButton(e) {
     const clearSearchButton = document.querySelector('.clear-search');
 
-    if (event.target.value) {
-       clearSearchButton.classList.remove('hidden');
-     } else {
-       clearSearchButton.classList.add('hidden');
-     }
+    if (e.target.value) {
+      clearSearchButton.classList.remove('hidden');
+    } else {
+      clearSearchButton.classList.add('hidden');
+    }
   }
 
   function loadSearchParamsFromURL() {
@@ -68,12 +68,13 @@
 
       // Check if it matches edge conditions listed in validTokenKeys
       let conditionIndex = 0;
-      const validCondition = validTokenKeys.filter(v => v.conditions && v.conditions.filter((c, index) => {
-        if (c.url === p) {
-          conditionIndex = index;
-        }
-        return c.url === p;
-      })[0])[0];
+      const validCondition = validTokenKeys
+        .filter(v => v.conditions && v.conditions.filter((c, index) => {
+          if (c.url === p) {
+            conditionIndex = index;
+          }
+          return c.url === p;
+        })[0])[0];
 
       if (validCondition) {
         inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
@@ -170,7 +171,8 @@
         let tokenPath = '';
 
         if (token.wildcard && match.conditions) {
-          const condition = match.conditions.filter(c => c.keyword === token.value.toLowerCase())[0];
+          const condition = match.conditions
+            .filter(c => c.keyword === token.value.toLowerCase())[0];
 
           if (condition) {
             tokenPath = `${condition.url}`;
