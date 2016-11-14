@@ -291,8 +291,12 @@ class User < ActiveRecord::Base
       end
     end
 
+    def find_by_username(username)
+      iwhere(username: username).take
+    end
+
     def find_by_username!(username)
-      find_by!('lower(username) = ?', username.downcase)
+      iwhere(username: username).take!
     end
 
     def find_by_personal_access_token(token_string)
