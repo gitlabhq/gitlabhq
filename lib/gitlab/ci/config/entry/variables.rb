@@ -1,7 +1,7 @@
 module Gitlab
   module Ci
     class Config
-     module Entry
+      module Entry
         ##
         # Entry that represents environment variables.
         #
