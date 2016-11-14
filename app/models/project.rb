@@ -988,6 +988,17 @@ class Project < ActiveRecord::Base
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
+  def fetch_ref(source_project, branch_name, ref)
+    repository.fetch_ref(
+      source_project.repository.path_to_repo,
+      "refs/heads/#{ref}",
+      "refs/heads/#{branch_name}"
+    )
+
+    repository.after_create_branch
+    repository.find_branch(branch_name)
+  end
+
   # Expires various caches before a project is renamed.
   def expire_caches_before_rename(old_path)
     repo = Repository.new(old_path, self)

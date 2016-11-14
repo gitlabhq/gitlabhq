@@ -7,15 +7,7 @@ class CreateBranchService < BaseService
     return failure if failure
 
     new_branch = if source_project != @project
-                   repository.fetch_ref(
-                     source_project.repository.path_to_repo,
-                     "refs/heads/#{ref}",
-                     "refs/heads/#{branch_name}"
-                   )
-
-                   repository.after_create_branch
-
-                   repository.find_branch(branch_name)
+                   @project.fetch_ref(source_project, branch_name, ref)
                  else
                    repository.add_branch(current_user, branch_name, ref)
                  end

@@ -23,7 +23,7 @@ module Files
       validate
 
       # Create new branch if it different from source_branch
-      validate_target_branch if different_branch?
+      ensure_target_branch if different_branch?
 
       result = commit
       if result
@@ -68,6 +68,14 @@ module Files
             raise_error('Branch with such name already exists. You need to switch to this branch in order to make changes')
           end
         end
+      end
+    end
+
+    def ensure_target_branch
+      validate_target_branch
+
+      if @source_project != project
+        @project.fetch_ref(@source_project, @target_branch, @source_branch)
       end
     end
 
