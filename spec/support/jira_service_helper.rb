@@ -6,7 +6,8 @@ module JiraServiceHelper
     properties = {
       title: "JIRA tracker",
       url: JIRA_URL,
-      project_key: "JIRA"
+      project_key: "JIRA",
+      jira_issue_transition_id: '1'
     }
 
     jira_tracker.update_attributes(properties: properties, active: true)

@@ -8,6 +8,7 @@ class Service < ActiveRecord::Base
   default_value_for :push_events, true
   default_value_for :issues_events, true
   default_value_for :confidential_issues_events, true
+  default_value_for :commit_events, true
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
