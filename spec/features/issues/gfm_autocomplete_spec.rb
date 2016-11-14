@@ -20,7 +20,7 @@ feature 'GFM autocomplete', feature: true, js: true do
       find('#note_note').native.send_keys('@')
     end
 
-    expect(page).to have_selector('.atwho-view')
+    expect(page).to have_selector('.atwho-container')
   end
 
   it 'opens autocomplete menu when field is prefixed with non-text character' do
@@ -29,7 +29,7 @@ feature 'GFM autocomplete', feature: true, js: true do
       find('#note_note').native.send_keys('@')
     end
 
-    expect(page).to have_selector('.atwho-view')
+    expect(page).to have_selector('.atwho-container')
   end
 
   it 'doesnt open autocomplete menu character is prefixed with text' do
