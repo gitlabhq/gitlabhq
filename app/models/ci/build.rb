@@ -276,8 +276,7 @@ module Ci
 
     def update_coverage
       return unless project
-      coverage_regex = project.build_coverage_regex
-      return unless coverage_regex
+      return unless coverage_regex = self.coverage_regex
       coverage = extract_coverage(trace, coverage_regex)
 
       if coverage.is_a? Numeric
@@ -520,6 +519,10 @@ module Ci
 
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
+    end
+
+    def coverage_regex
+      read_attribute(:coverage_regex) || build_attributes_from_config[:coverage] || project.build_coverage_regex
     end
 
     def when

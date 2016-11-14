@@ -54,6 +54,16 @@ module Gitlab
             end
           end
 
+          class RegexpValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_regexp(value)
+                record.errors.add(attribute, 'must be a regular expression')
+              end
+            end
+          end
+
           class TypeValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
               type = options[:with]
