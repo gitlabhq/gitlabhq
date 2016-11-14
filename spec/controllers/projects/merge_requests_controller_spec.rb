@@ -133,7 +133,6 @@ describe Projects::MergeRequestsController do
           id: merge_request.iid,
           format: 'html'
       expect(assigns(:labels)).not_to be_nil
->>>>>>> ce/master
     end
   end
 
