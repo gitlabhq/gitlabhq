@@ -8,16 +8,21 @@ FactoryGirl.define do
     trait :with_review_app do |environment|
       project
 
+      transient do
+        ref 'master'
+      end
+
       # At this point `review app` is an ephemeral concept related to
       # deployments being deployed for given environment. There is no
       # first-class `review app` available so we need to create set of
       # interconnected objects to simulate a review app.
       #
-      after(:create) do |environment|
+      after(:create) do |environment, evaluator|
         deployment = create(:deployment,
                             environment: environment,
                             project: environment.project,
-                            sha: environment.project.commit.id)
+                            ref: evaluator.ref,
+                            sha: environment.project.commit(evaluator.ref).id)
 
         teardown_build = create(:ci_build, :manual,
                                 name: "#{deployment.environment.name}:teardown",

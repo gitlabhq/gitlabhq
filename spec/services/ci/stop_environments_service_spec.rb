@@ -9,7 +9,8 @@ describe Ci::StopEnvironmentsService, services: true do
   describe '#execute' do
     context 'when environment with review app exists' do
       before do
-        create(:environment, :with_review_app, project: project)
+        create(:environment, :with_review_app, project: project,
+                                               ref: 'feature')
       end
 
       context 'when user has permission to stop environment' do
@@ -17,8 +18,16 @@ describe Ci::StopEnvironmentsService, services: true do
           project.team << [user, :developer]
         end
 
-        it 'stops environment' do
-          expect_environment_stopped_on('master')
+        context 'when environment is associated with removed branch' do
+          it 'stops environment' do
+            expect_environment_stopped_on('feature')
+          end
+        end
+
+        context 'when environment is associated with different branch' do
+          it 'does not stop environment' do
+            expect_environment_not_stopped_on('master')
+          end
         end
 
         context 'when specified branch does not exist' do
@@ -40,7 +49,7 @@ describe Ci::StopEnvironmentsService, services: true do
           end
 
           it 'does not stop environment' do
-            expect_environment_not_stopped_on('master')
+            expect_environment_not_stopped_on('feature')
           end
         end
       end
