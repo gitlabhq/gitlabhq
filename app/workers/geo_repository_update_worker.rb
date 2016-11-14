@@ -16,6 +16,9 @@ class GeoRepositoryUpdateWorker
 
   def fetch_repository(remote_url)
     @project.create_repository unless @project.repository_exists?
+    @project.repository.after_create if @project.empty_repo?
+
     @project.repository.fetch_geo_mirror(remote_url)
+    @project.repository.after_import
   end
 end
