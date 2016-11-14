@@ -66,6 +66,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context 'pull code' do
         it { expect(subject.allowed?).to be_falsey }
+        it { expect(subject.message).to match(/You are not allowed to download code/) }
       end
     end
 
@@ -77,12 +78,36 @@ describe Gitlab::GitAccess, lib: true do
 
       context 'pull code' do
         it { expect(subject.allowed?).to be_falsey }
+        it { expect(subject.message).to match(/Your account has been blocked/) }
       end
     end
 
     describe 'without acccess to project' do
       context 'pull code' do
         it { expect(subject.allowed?).to be_falsey }
+      end
+
+      context 'when project is public' do
+        let(:public_project) { create(:project, :public) }
+        let(:guest_access) { Gitlab::GitAccess.new(nil, public_project, 'web', authentication_abilities: []) }
+        subject { guest_access.check('git-upload-pack', '_any') }
+
+        context 'when repository is enabled' do
+          it 'give access to download code' do
+            public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::ENABLED)
+
+            expect(subject.allowed?).to be_truthy
+          end
+        end
+
+        context 'when repository is disabled' do
+          it 'does not give access to download code' do
+            public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+
+            expect(subject.allowed?).to be_falsey
+            expect(subject.message).to match(/You are not allowed to download code/)
+          end
+        end
       end
     end
 

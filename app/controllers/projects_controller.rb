@@ -2,9 +2,9 @@ class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity, :refs]
-  before_action :project, except: [:new, :create]
-  before_action :repository, except: [:new, :create]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :project, except: [:index, :new, :create]
+  before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
 
@@ -158,6 +158,13 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.json { render json: @suggestions }
     end
+  end
+
+  def new_issue_address
+    return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
+
+    current_user.reset_incoming_email_token!
+    render json: { new_issue_address: @project.new_issue_address(current_user) }
   end
 
   def archive
@@ -318,25 +325,44 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params
-    project_feature_attributes =
-      {
-        project_feature_attributes:
-          [
-            :issues_access_level, :builds_access_level,
-            :wiki_access_level, :merge_requests_access_level,
-            :snippets_access_level, :repository_access_level
-          ]
-      }
+    params.require(:project)
+      .permit(project_params_ce)
+  end
 
-    params.require(:project).permit(
-      :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
+  def project_params_ce
+    [
+      :avatar,
+      :build_allow_git_fetch,
+      :build_coverage_regex,
+      :build_timeout_in_minutes,
       :container_registry_enabled,
-      :issues_tracker_id, :default_branch,
-      :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
-      :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled,
-      :lfs_enabled, project_feature_attributes
-    )
+      :default_branch,
+      :description,
+      :import_url,
+      :issues_tracker,
+      :issues_tracker_id,
+      :last_activity_at,
+      :lfs_enabled,
+      :name,
+      :namespace_id,
+      :only_allow_merge_if_all_discussions_are_resolved,
+      :only_allow_merge_if_build_succeeds,
+      :path,
+      :public_builds,
+      :request_access_enabled,
+      :runners_token,
+      :tag_list,
+      :visibility_level,
+
+      project_feature_attributes: %i[
+        builds_access_level
+        issues_access_level
+        merge_requests_access_level
+        repository_access_level
+        snippets_access_level
+        wiki_access_level
+      ]
+    ]
   end
 
   def repo_exists?

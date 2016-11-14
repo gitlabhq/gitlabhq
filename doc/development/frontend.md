@@ -228,7 +228,7 @@ For our currently-supported browsers, see our [requirements][requirements].
 [page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
 [chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
 [audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
-[observatory-cli]: https://github.com/mozilla/http-observatory-cli)
+[observatory-cli]: https://github.com/mozilla/http-observatory-cli
 [qualys-ssl]: https://www.ssllabs.com/ssltest/analyze.html
 [secure_headers]: https://github.com/twitter/secureheaders
 [mdn-csp]: https://developer.mozilla.org/en-US/docs/Web/Security/CSP

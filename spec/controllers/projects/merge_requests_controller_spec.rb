@@ -39,6 +39,17 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  shared_examples "loads labels" do |action|
+    it "loads labels into the @labels variable" do
+      get action,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: 'html'
+      expect(assigns(:labels)).not_to be_nil
+    end
+  end
+
   describe "GET show" do
     shared_examples "export merge as" do |format|
       it "does generally work" do
@@ -50,6 +61,8 @@ describe Projects::MergeRequestsController do
 
         expect(response).to be_success
       end
+
+      it_behaves_like "loads labels", :show
 
       it "generates it" do
         expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
@@ -297,6 +310,72 @@ describe Projects::MergeRequestsController do
           end
         end
       end
+
+      describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
+        let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
+
+        context 'when enabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+          end
+
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
+
+            it 'returns :failed' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:failed)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+        end
+
+        context 'when disabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+          end
+
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+        end
+      end
     end
   end
 
@@ -339,6 +418,8 @@ describe Projects::MergeRequestsController do
 
       get :diffs, params.merge(extra_params)
     end
+
+    it_behaves_like "loads labels", :diffs
 
     context 'with default params' do
       context 'as html' do
@@ -546,6 +627,8 @@ describe Projects::MergeRequestsController do
           format: format
     end
 
+    it_behaves_like "loads labels", :commits
+
     context 'as html' do
       it 'renders the show template' do
         go
@@ -562,6 +645,14 @@ describe Projects::MergeRequestsController do
         expect(JSON.parse(response.body)).to have_key('html')
       end
     end
+  end
+
+  describe 'GET builds' do
+    it_behaves_like "loads labels", :builds
+  end
+
+  describe 'GET pipelines' do
+    it_behaves_like "loads labels", :pipelines
   end
 
   describe 'GET conflicts' do

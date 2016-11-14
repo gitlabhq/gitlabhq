@@ -104,8 +104,7 @@ class UsersController < ApplicationController
   end
 
   def contributions_calendar
-    @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects, user)
+    @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
 
   def load_events

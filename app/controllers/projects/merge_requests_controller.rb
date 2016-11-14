@@ -352,13 +352,23 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def branch_from
     # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
-    @commit = @repository.commit(params[:ref]) if params[:ref].present?
+
+    if params[:ref].present?
+      @ref = params[:ref]
+      @commit = @repository.commit(@ref)
+    end
+
     render layout: false
   end
 
   def branch_to
     @target_project = selected_target_project
-    @commit = @target_project.commit(params[:ref]) if params[:ref].present?
+
+    if params[:ref].present?
+      @ref = params[:ref]
+      @commit = @target_project.commit(@ref)
+    end
+
     render layout: false
   end
 
@@ -497,6 +507,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.close
     end
 
+    labels
     define_pipelines_vars
   end
 
@@ -589,12 +600,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request_params
-    params.require(:merge_request).permit(
-      :title, :assignee_id, :source_project_id, :source_branch,
-      :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, :task_num, :force_remove_source_branch,
-      :lock_version, label_ids: []
-    )
+    params.require(:merge_request)
+      .permit(merge_request_params_ce)
+  end
+
+  def merge_request_params_ce
+    [
+      :assignee_id,
+      :description,
+      :force_remove_source_branch,
+      :lock_version,
+      :milestone_id,
+      :source_branch,
+      :source_project_id,
+      :state_event,
+      :target_branch,
+      :target_project_id,
+      :task_num,
+      :title,
+
+      label_ids: []
+    ]
   end
 
   def merge_params

@@ -380,6 +380,25 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_board_cards(1, 5)
         end
+
+        it 'creates new list from a new label' do
+          click_button 'Create new list'
+
+          wait_for_ajax
+
+          click_link 'Create new label'
+
+          fill_in('new_label_name', with: 'Testing New Label')
+
+          first('.suggest-colors a').click
+
+          click_button 'Create'
+
+          wait_for_ajax
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.board', count: 5)
+        end
       end
     end
 
@@ -638,6 +657,10 @@ describe 'Issue Boards', feature: true, js: true do
       logout
       visit namespace_project_board_path(project.namespace, project, board)
       wait_for_vue_resource
+    end
+
+    it 'displays lists' do
+      expect(page).to have_selector('.board')
     end
 
     it 'does not show create new list' do

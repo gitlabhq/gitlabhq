@@ -23,6 +23,7 @@ module TestEnv
     'binary-encoding'                    => '7b1cf43',
     'gitattributes'                      => '5a62481',
     'expand-collapse-diffs'              => '4842455',
+    'symlink-expand-diff'                => '81e6355',
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
@@ -204,20 +205,18 @@ module TestEnv
   end
 
   def set_repo_refs(repo_path, branch_sha)
+    instructions = branch_sha.map {|branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
+    update_refs = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
+    reset = proc do
+      IO.popen(update_refs, "w") {|io| io.write(instructions) }
+      $?.success?
+    end
+
     Dir.chdir(repo_path) do
-      branch_sha.each do |branch, sha|
-        # Try to reset without fetching to avoid using the network.
-        reset = %W(#{Gitlab.config.git.bin_path} update-ref refs/heads/#{branch} #{sha})
-        unless system(*reset)
-          if system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
-            unless system(*reset)
-              raise 'The fetched test seed '\
-              'does not contain the required revision.'
-            end
-          else
-            raise 'Could not fetch test seed repository.'
-          end
-        end
+      # Try to reset without fetching to avoid using the network.
+      unless reset.call
+        raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
+        raise 'The fetched test seed does not contain the required revision.' unless reset.call
       end
     end
   end

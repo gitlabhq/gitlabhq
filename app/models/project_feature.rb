@@ -20,6 +20,15 @@ class ProjectFeature < ActiveRecord::Base
 
   FEATURES = %i(issues merge_requests wiki snippets builds repository)
 
+  class << self
+    def access_level_attribute(feature)
+      feature = feature.model_name.plural.to_sym if feature.respond_to?(:model_name)
+      raise ArgumentError, "invalid project feature: #{feature}" unless FEATURES.include?(feature)
+
+      "#{feature}_access_level".to_sym
+    end
+  end
+
   # Default scopes force us to unscope here since a service may need to check
   # permissions for a project in pending_delete
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
@@ -35,26 +44,19 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
-    raise ArgumentError, 'invalid project feature' unless FEATURES.include?(feature)
-
-    get_permission(user, public_send("#{feature}_access_level"))
+    access_level = public_send(ProjectFeature.access_level_attribute(feature))
+    get_permission(user, access_level)
   end
 
   def builds_enabled?
-    return true unless builds_access_level
-
     builds_access_level > DISABLED
   end
 
   def wiki_enabled?
-    return true unless wiki_access_level
-
     wiki_access_level > DISABLED
   end
 
   def merge_requests_enabled?
-    return true unless merge_requests_access_level
-
     merge_requests_access_level > DISABLED
   end
 

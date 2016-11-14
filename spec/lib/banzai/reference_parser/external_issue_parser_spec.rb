@@ -8,6 +8,14 @@ describe Banzai::ReferenceParser::ExternalIssueParser, lib: true do
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }
 
+  describe '#nodes_visible_to_user' do
+    context 'when the link has a data-issue attribute' do
+      before { link['data-external-issue'] = 123 }
+
+      it_behaves_like "referenced feature visibility", "issues"
+    end
+  end
+
   describe '#referenced_by' do
     context 'when the link has a data-project attribute' do
       before do

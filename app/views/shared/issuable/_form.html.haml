@@ -1,4 +1,5 @@
 - project = @target_project || @project
+
 = form_errors(issuable)
 
 - if @conflict
@@ -11,23 +12,9 @@
 .form-group
   = f.label :title, class: 'control-label'
 
-  - issuable_template_names = issuable_templates(issuable)
+  = render 'shared/issuable/form/template_selector', issuable: issuable
 
-  - if issuable_template_names.any?
-    .col-sm-3.col-lg-2
-      .js-issuable-selector-wrap{ data: { issuable_type: issuable.class.to_s.underscore.downcase } }
-        - title = selected_template(issuable) || "Choose a template"
-
-        = dropdown_tag(title, options: { toggle_class: 'js-issuable-selector',
-          title: title, filter: true, placeholder: 'Filter', footer_content: true,
-          data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: ref_project.path, namespace_path: ref_project.namespace.path } } ) do
-          %ul.dropdown-footer-list
-            %li
-              %a.no-template
-                No template
-              %a.reset-template
-                Reset template
-  %div{ class: issuable_template_names.any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
+  %div{ class: issuable_templates(issuable).any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad', required: true
 
@@ -142,7 +129,7 @@
       .col-sm-10.col-sm-offset-2
         .checkbox
           = label_tag 'merge_request[force_remove_source_branch]' do
-            = hidden_field_tag 'merge_request[force_remove_source_branch]', '0'
+            = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
             = check_box_tag 'merge_request[force_remove_source_branch]', '1', @merge_request.force_remove_source_branch?
             Remove source branch when merge request is accepted.
 

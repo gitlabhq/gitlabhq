@@ -175,6 +175,30 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/owned' do
+    before do
+      project3
+      project4
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/projects/owned')
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated as project owner' do
+      it 'returns an array of projects the user owns' do
+        get api('/projects/owned', user4)
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(project4.name)
+        expect(json_response.first['owner']['username']).to eq(user4.username)
+      end
+    end
+  end
+
   describe 'GET /projects/visible' do
     let(:public_project) { create(:project, :public) }
 
@@ -256,7 +280,8 @@ describe API::API, api: true  do
         merge_requests_enabled: false,
         wiki_enabled: false,
         only_allow_merge_if_build_succeeds: false,
-        request_access_enabled: true
+        request_access_enabled: true,
+        only_allow_merge_if_all_discussions_are_resolved: false
       })
 
       post api('/projects', user), project
@@ -325,6 +350,30 @@ describe API::API, api: true  do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
       post api('/projects', user), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
+    end
+
+    it 'sets a project as allowing merge even if discussions are unresolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge if only_allow_merge_if_all_discussions_are_resolved is nil' do
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: nil)
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if all discussions are resolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
 
     context 'when a visibility level is restricted' do
@@ -448,6 +497,22 @@ describe API::API, api: true  do
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
     end
+
+    it 'sets a project as allowing merge even if discussions are unresolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if all discussions are resolved' do
+      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
+    end
   end
 
   describe "POST /projects/:id/uploads" do
@@ -509,6 +574,7 @@ describe API::API, api: true  do
       expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
       expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
       expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_build_succeeds)
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
     end
 
     it 'returns a project by path name' do

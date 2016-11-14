@@ -82,6 +82,10 @@ GitLab is a Ruby on Rails application that runs on the following software:
 
 For more information please see the [architecture documentation](https://docs.gitlab.com/ce/development/architecture.html).
 
+## UX design
+
+Please adhere to the [UX Guide](doc/development/ux_guide/readme.md) when creating designs and implementing code.
+
 ## Third-party applications
 
 There are a lot of [third-party applications integrating with GitLab](https://about.gitlab.com/applications/). These include GUI Git clients, mobile applications and API wrappers for various languages.

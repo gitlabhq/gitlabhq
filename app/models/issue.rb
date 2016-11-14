@@ -250,10 +250,41 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
+    return false unless project.feature_available?(:issues, user)
+
     user ? readable_by?(user) : publicly_visible?
   end
 
+  def overdue?
+    due_date.try(:past?) || false
+  end
+
+  # Only issues on public projects should be checked for spam
+  def check_for_spam?
+    project.public?
+  end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user) && options[:user]
+
+      if options.has_key?(:labels)
+        json[:labels] = labels.as_json(
+          project: project,
+          only: [:id, :title, :description, :color, :priority],
+          methods: [:text_color]
+        )
+      end
+    end
+  end
+
+  private
+
   # Returns `true` if the given User can read the current Issue.
+  #
+  # This method duplicates the same check of issue_policy.rb
+  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
+  # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
     if user.admin?
       true
@@ -273,28 +304,5 @@ class Issue < ActiveRecord::Base
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
     project.public? && !confidential?
-  end
-
-  def overdue?
-    due_date.try(:past?) || false
-  end
-
-  # Only issues on public projects should be checked for spam
-  def check_for_spam?
-    project.public?
-  end
-
-  def as_json(options = {})
-    super(options).tap do |json|
-      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user)
-
-      if options.has_key?(:labels)
-        json[:labels] = labels.as_json(
-          project: project,
-          only: [:id, :title, :description, :color, :priority],
-          methods: [:text_color]
-        )
-      end
-    end
   end
 end

@@ -10,7 +10,6 @@
 }
 
 .group-row {
-
   .stats {
     float: right;
     line-height: $list-text-height;
@@ -23,36 +22,18 @@
 }
 
 .ldap-group-links {
-
   .form-actions {
     margin-bottom: $gl-padding;
   }
 }
 
-.groups-cover-block {
-
-  .container-fluid {
-    position: relative;
-  }
-
-  .group-right-buttons {
-    position: absolute;
-    right: 16px;
-
-    .btn {
-      @include btn-gray;
-      padding: 3px 10px;
-      background-color: $background-color;
-    }
-  }
-
-  .group-avatar {
-    border: 0;
+.group-buttons {
+  .notification-dropdown {
+    display: inline-block;
   }
 }
 
 .groups-header {
-
   @media (min-width: $screen-sm-min) {
     .nav-links {
       width: 35%;

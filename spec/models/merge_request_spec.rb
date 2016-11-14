@@ -825,12 +825,19 @@ describe MergeRequest, models: true do
     end
 
     context 'when failed' do
-      before { allow(subject).to receive(:broken?) { false } }
-
-      context 'when project settings restrict to merge only if build succeeds and build failed' do
+      context 'when #mergeable_ci_state? is false' do
         before do
-          project.only_allow_merge_if_build_succeeds = true
           allow(subject).to receive(:mergeable_ci_state?) { false }
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+      end
+
+      context 'when #mergeable_discussions_state? is false' do
+        before do
+          allow(subject).to receive(:mergeable_discussions_state?) { false }
         end
 
         it 'returns false' do
@@ -887,7 +894,49 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#environments' do
+  describe '#mergeable_discussions_state?' do
+    let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project) }
+
+    context 'when project.only_allow_merge_if_all_discussions_are_resolved == true' do
+      let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: true) }
+
+      context 'with all discussions resolved' do
+        before do
+          merge_request.discussions.each { |d| d.resolve!(merge_request.author) }
+        end
+
+        it 'returns true' do
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
+        end
+      end
+
+      context 'with unresolved discussions' do
+        before do
+          merge_request.discussions.each(&:unresolve!)
+        end
+
+        it 'returns false' do
+          expect(merge_request.mergeable_discussions_state?).to be_falsey
+        end
+      end
+    end
+
+    context 'when project.only_allow_merge_if_all_discussions_are_resolved == false' do
+      let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: false) }
+
+      context 'with unresolved discussions' do
+        before do
+          merge_request.discussions.each(&:unresolve!)
+        end
+
+        it 'returns true' do
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe "#environments" do
     let(:project)       { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 

@@ -27,5 +27,5 @@
                       %label{ for: field_id }
                         = check_box("notification_setting", event, id: field_id, class: "js-custom-notification-event", checked: notification_setting.events[event])
                         %strong
-                          = event.to_s.humanize
+                          = notification_event_name(event)
                           = icon("spinner spin", class: "custom-notification-event-loading")

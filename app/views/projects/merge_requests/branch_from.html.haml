@@ -1,1 +1,2 @@
-= commit_to_html(@commit, @source_project, false)
+- if @commit
+  = commit_to_html(@commit, @ref, @source_project)

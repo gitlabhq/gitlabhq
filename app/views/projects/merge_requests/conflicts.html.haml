@@ -30,11 +30,8 @@
           .diff-wrap-lines.code.file-content.js-syntax-highlight{"v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
             = render partial: "projects/merge_requests/conflicts/components/inline_conflict_lines"
           .diff-wrap-lines.code.file-content.js-syntax-highlight{"v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
-            = render partial: "projects/merge_requests/conflicts/components/parallel_conflict_lines"
+            %parallel-conflict-lines{ ":file" => "file" }
           %div{"v-show" => "file.resolveMode === 'edit' ||  file.type === 'text-editor'"}
             = render partial: "projects/merge_requests/conflicts/components/diff_file_editor"
 
     = render partial: "projects/merge_requests/conflicts/submit_form"
-
--# Components
-= render partial: 'projects/merge_requests/conflicts/components/parallel_conflict_line'

@@ -200,7 +200,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ## 4. <a name="external"></a>  External Articles
 
-1. [2011 WSJ article by Mark Andreeson - Software is Eating the World](http://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
+1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](http://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
 1. [2014 Blog post by Chris Dixon - Software eats software development](http://cdixon.org/2014/04/13/software-eats-software-development/)
 1. [2015 Venture Beat article - Actually, Open Source is Eating the World](http://venturebeat.com/2015/12/06/its-actually-open-source-software-thats-eating-the-world/)
 
@@ -212,5 +212,8 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [Support Path](support/README.md)
 1. [Sales Path (redirect to sales handbook)](https://about.gitlab.com/handbook/sales-onboarding/)
+1. [User Training](training/user_training.md)
+1. [GitLab Flow Training](training/gitlab_flow.md)
+1. [Training Topics](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/university/training/topics/)
 1. [GitLab architecture for noobs](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/development/architecture.md)
 1. [Client Assessment of GitLab versus GitHub](https://docs.google.com/a/gitlab.com/spreadsheets/d/18cRF9Y5I6I7Z_ab6qhBEW55YpEMyU4PitZYjomVHM-M/edit?usp=sharing)

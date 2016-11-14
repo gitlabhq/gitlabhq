@@ -4,19 +4,54 @@ entry.
 
 ## 8.14.0 (2016-11-22)
 
+- Use separate email-token for incoming email and revert back the inactive feature. !5914
+- Replace jQuery.timeago with timeago.js. !6274 (ClemMakesApps)
+- Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
+- Finer-grained Git gargage collection. !6588
+- Introduce better credential and error checking to `rake gitlab:ldap:check`. !6601
+- Process commits using a dedicated Sidekiq worker. !6802
+- Fix showing pipeline status for a given commit from correct branch. !7034
+- Add query param to filter users by external & blocked type. !7109 (Yatish Mehta)
+- Issues atom feed url reflect filters on dashboard. !7114 (Lucas Deschamps)
+- Add setting to only allow merge requests to be merged when all discussions are resolved. !7125 (Rodolfo Arruda)
+- Remove an extra leading space from diff paste data. !7133 (Hiroyuki Sato)
+- Fix 404 on network page when entering non-existent git revision. !7172 (Hiroyuki Sato)
+- Rewrite git blame spinach feature tests to rspec feature tests. !7197 (Lisanne Fellinger)
+- Only skip group when it's actually a group in the "Share with group" select. !7262
+- Introduce round-robin project creation to spread load over multiple shards. !7266
+- Ensure merge request's "remove branch" accessors return booleans. !7267
+- Expose label IDs in API. !7275 (Rares Sfirlogea)
+- Fix invalid filename validation on eslint. !7281
+- API: Ability to retrieve version information. !7286 (Robert Schilling)
+- Set default Sidekiq retries to 3. !7294
+- Return 400 when creating a system hook fails. !7350 (Robert Schilling)
+- Use the Gitlab Workhorse HTTP header in the admin dashboard. (Chris Wright)
+- Add an index for project_id in project_import_data to improve performance.
+- Fix broken link to observatory cli on Frontend Dev Guide. (Sam Rose)
+- Faster search inside Project.
+- Clicking "force remove source branch" label now toggles the checkbox again.
+- Allow to test JIRA service settings without having a repository.
+- Fix: Guest sees some repository details and gets 404.
+- Bump omniauth-gitlab to 1.0.2 to fix incompatibility with omniauth-oauth2.
+- Fix: Todos Filter Shows All Users.
+- Fix broken commits search.
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
+- Diff collapse won't shift when collapsing.
 - Backups do not fail anymore when using tar on annex and custom_hooks only. !5814
 - Adds user project membership expired event to clarify why user was removed (Callum Dryden)
 - Trim leading and trailing whitespace on project_path (Linus Thiel)
 - Prevent award emoji via notes for issues/MRs authored by user (barthc)
 - Adds support for the `token` attribute in project hooks API (Gauvain Pocentek)
+- Change auto selection behaviour of emoji and slash commands to be more UX/Type friendly (Yann Gravrand)
 - Adds an optional path parameter to the Commits API to filter commits by path (Luis HGO)
 - Fix Markdown styling inside reference links (Jan Zdráhal)
+- Create new issue board list after creating a new label
 - Fix extra space on Build sidebar on Firefox !7060
 - Fail gracefully when creating merge request with non-existing branch (alexsanford)
 - Fix mobile layout issues in admin user overview page !7087
 - Fix HipChat notifications rendering (airatshigapov, eisnerd)
+- Removed unneeded "Builds" and "Environments" link from project titles
 - Remove 'Edit' button from wiki edit view !7143 (Hiroyuki Sato)
 - Cleaned up global namespace JS !19661 (Jose Ivan Vargas)
 - Refactor Jira service to use jira-ruby gem
@@ -66,16 +101,39 @@ entry.
 - In all filterable drop downs, put input field in focus only after load is complete (Ido @leibo)
 - Improve search query parameter naming in /admin/users !7115 (YarNayar)
 - Fix table pagination to be responsive
+- Fix applying GitHub-imported labels when importing job is interrupted
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
 - Updated commit SHA styling on the branches page.
+- Fix 404 when visit /projects page
+
+## 8.13.5 (2016-11-08)
+
+- Restore unauthenticated access to public container registries
+- Fix showing pipeline status for a given commit from correct branch. !7034
+- Only skip group when it's actually a group in the "Share with group" select. !7262
+- Introduce round-robin project creation to spread load over multiple shards. !7266
+- Ensure merge request's "remove branch" accessors return booleans. !7267
+- Ensure external users are not able to clone disabled repositories.
+- Fix XSS issue in Markdown autolinker.
+- Respect event visibility in Gitlab::ContributionsCalendar.
+- Honour issue and merge request visibility in their respective finders.
+- Disable reference Markdown for unavailable features.
+- Fix lightweight tags not processed correctly by GitTagPushService. !6532
+- Allow owners to fetch source code in CI builds. !6943
+- Return conflict error in label API when title is taken by group label. !7014
+- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project. !7123
+- Fix builds tab visibility. !7178
+- Fix project features default values. !7181
+
+## 8.13.4
+
+- Pulled due to packaging error.
 
 ## 8.13.3 (2016-11-02)
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
 - Fix relative links in Markdown wiki when displayed in "Project" tab !7218
-- Reduce the overhead to calculate number of open/closed issues and merge requests within the group or project
-- Fix project features default values
 - Changed build dropdown list length to be 6,5 builds long in the pipeline graph
 
 ## 8.13.2 (2016-10-31)
@@ -265,6 +323,10 @@ entry.
 - Make guests unable to view MRs on private projects
 - Fix broken Project API docs (Takuya Noguchi)
 - Migrate invalid project members (owner -> master)
+
+## 8.12.9 (2016-11-07)
+
+- Fix XSS issue in Markdown autolinker
 
 ## 8.12.8 (2016-11-02)
 
@@ -529,6 +591,10 @@ entry.
   - Fix Import/Export issues importing protected branches and some specific models
   - Fix non-master branch readme display in tree view
   - Add UX improvements for merge request version diffs
+
+## 8.11.11 (2016-11-07)
+
+- Fix XSS issue in Markdown autolinker
 
 ## 8.11.10 (2016-11-02)
 

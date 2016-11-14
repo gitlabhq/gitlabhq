@@ -26,7 +26,7 @@ gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
-gem 'omniauth-gitlab',        '~> 1.0.0'
+gem 'omniauth-gitlab',        '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
 gem 'omniauth-saml',          '~> 1.7.0'
@@ -100,7 +100,7 @@ gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
 gem 'html-pipeline',      '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.5', require: 'task_list/railtie'
+gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
 gem 'gitlab-markup',      '~> 1.5.0'
 gem 'redcarpet',          '~> 3.3.3'
 gem 'RedCloth',           '~> 4.3.2'
@@ -137,6 +137,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
+gem 'sidekiq-limit_fetch', '~> 3.4'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -152,7 +153,7 @@ gem 'settingslogic', '~> 2.0.9'
 gem 'version_sorter', '~> 2.1.0'
 
 # Cache
-gem 'redis-rails', '~> 4.0.0'
+gem 'redis-rails', '~> 5.0.1'
 
 # Redis
 gem 'redis', '~> 3.2'

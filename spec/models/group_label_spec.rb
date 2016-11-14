@@ -18,7 +18,7 @@ describe GroupLabel, models: true do
   end
 
   describe '#to_reference' do
-    let(:label) { create(:group_label) }
+    let(:label) { create(:group_label, title: 'feature') }
 
     context 'using id' do
       it 'returns a String reference to the object' do

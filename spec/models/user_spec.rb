@@ -256,6 +256,20 @@ describe User, models: true do
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
       end
     end
+
+    describe '.todo_authors' do
+      it 'filters users' do
+        create :user
+        user_2 = create :user
+        user_3 = create :user
+        current_user = create :user
+        create(:todo, user: current_user, author: user_2, state: :done)
+        create(:todo, user: current_user, author: user_3, state: :pending)
+
+        expect(User.todo_authors(current_user.id, 'pending')).to eq [user_3]
+        expect(User.todo_authors(current_user.id, 'done')).to eq [user_2]
+      end
+    end
   end
 
   describe "Respond to" do
@@ -1189,6 +1203,42 @@ describe User, models: true do
 
     it 'returns only starred projects the user can view' do
       expect(user.viewable_starred_projects).not_to include(private_project)
+    end
+  end
+
+  describe '#projects_with_reporter_access_limited_to' do
+    let(:project1) { create(:project) }
+    let(:project2) { create(:project) }
+    let(:user) { create(:user) }
+
+    before do
+      project1.team << [user, :reporter]
+      project2.team << [user, :guest]
+    end
+
+    it 'returns the projects when using a single project ID' do
+      projects = user.projects_with_reporter_access_limited_to(project1.id)
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'returns the projects when using an Array of project IDs' do
+      projects = user.projects_with_reporter_access_limited_to([project1.id])
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'returns the projects when using an ActiveRecord relation' do
+      projects = user.
+        projects_with_reporter_access_limited_to(Project.select(:id))
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'does not return projects you do not have reporter access to' do
+      projects = user.projects_with_reporter_access_limited_to(project2.id)
+
+      expect(projects).to be_empty
     end
   end
 end
