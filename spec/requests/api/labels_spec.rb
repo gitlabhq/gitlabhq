@@ -33,9 +33,9 @@ describe API::API, api: true  do
       expect(json_response.first.keys).to match_array expected_keys
       expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, priority_label.name, label1.name])
 
-      label1_response = json_response.select{|l| l['name'] == label1.title}.first
-      group_label_response = json_response.select{|l| l['name'] == group_label.title}.first
-      priority_label_response = json_response.select{|l| l['name'] == priority_label.title}.first
+      label1_response = json_response.select{ |l| l['name'] == label1.title }.first
+      group_label_response = json_response.select{ |l| l['name'] == group_label.title }.first
+      priority_label_response = json_response.select{ |l| l['name'] == priority_label.title }.first
 
       expect(label1_response['open_issues_count']).to eq(0)
       expect(label1_response['closed_issues_count']).to eq(1)
