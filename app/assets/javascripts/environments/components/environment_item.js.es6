@@ -31,11 +31,10 @@
       'rollback-component': window.gl.environmentsList.RollbackComponent,
     },
 
-    props: ['model', 'can-create-deployment', 'can-read-environment'],
+    props: ['model', 'toggleRow', 'can-create-deployment', 'can-read-environment'],
 
     data() {
       return {
-        open: false,
         rowClass: {
           'children-row': this.model['vue-isChildren'],
         },
@@ -282,30 +281,19 @@
       return {}.hasOwnProperty.call(obj, key);
     },
 
-    methods: {
-      /**
-       * Toggles the visibility of a folders' children.
-       */
-      toggle() {
-        if (this.isFolder) {
-          this.open = !this.open;
-        }
-      },
-    },
-
     template: `
       <tr>
-        <td v-bind:class="{ 'children-row': isChildren}" class="col-sm-2">
+        <td v-bind:class="{ 'children-row': isChildren}">
           <a
             v-if="!isFolder"
             class="environment-name"
             :href="model.environment_url"
             v-html="model.name">
           </a>
-          <span v-else v-on:click="toggle" class="folder-name">
+          <span v-else v-on:click="toggleRow(model)" class="folder-name">
             <span class="folder-icon">
-              <i v-show="open" class="fa fa-caret-down"></i>
-              <i v-show="!open" class="fa fa-caret-right"></i>
+              <i v-show="model.isOpen" class="fa fa-caret-down"></i>
+              <i v-show="!model.isOpen" class="fa fa-caret-right"></i>
             </span>
 
             <span v-html="model.name"></span>
@@ -314,7 +302,7 @@
           </span>
         </td>
 
-        <td class="deployment-column col-sm-2">
+        <td class="deployment-column">
           <span v-if="!isFolder && model.last_deployment && model.last_deployment.iid" v-html="deploymentInternalId">
 
             <span v-if="model.last_deployment.user">
@@ -329,7 +317,7 @@
           </span>
         </td>
 
-        <td class="col-sm-2">
+        <td>
           <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
             class="build-link"
             :href="model.last_deployment.deployable.build_url"
@@ -337,7 +325,7 @@
           </a>
         </td>
 
-        <td class="col-sm-2">
+        <td>
           <div v-if="!isFolder && model.last_deployment">
             <commit-component
               :tag="commitTag"
@@ -353,7 +341,7 @@
           </p>
         </td>
 
-        <td class="col-sm-1">
+        <td>
           <span
             v-if="!isFolder && model.last_deployment"
             class="environment-created-date-timeago"
@@ -361,7 +349,7 @@
           </span>
         </td>
 
-        <td class="hidden-xs col-sm-3">
+        <td class="hidden-xs">
           <div v-if="!isFolder">
             <div v-if="hasManualActions && canCreateDeployment" class="inline">
               <actions-component
@@ -389,12 +377,6 @@
             </div>
           </div>
         </td>
-      </tr>
-
-      <tr v-if="open && isFolder"
-        is="environment-item"
-        v-for="model in model.children"
-        :model="model">
       </tr>
     `,
   });

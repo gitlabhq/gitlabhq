@@ -81,7 +81,9 @@ $(() => {
      * Toggles loading property.
      */
     mounted() {
-      window.gl.environmentsService.all().then(resp => resp.json()).then((json) => {
+      window.gl.environmentsService.all()
+      .then(resp => resp.json())
+      .then((json) => {
         this.store.storeEnvironments(json);
         this.loading = false;
       });
@@ -114,20 +116,30 @@ $(() => {
       return false;
     },
 
+    methods: {
+      toggleRow(model) {
+        return this.store.toggleFolder(model.name);
+      },
+    },
+
     template: `
-      <div>
+      <div class="container-fluid container-limited">
         <div class="top-area">
           <ul v-if="!isLoading" class="nav-links">
             <li v-bind:class="{ 'active': scope === undefined}">
               <a :href="projectEnvironmentsPath">
                 Available
-                <span class="badge js-available-environments-count" v-html="state.availableCounter"></span>
+                <span
+                  class="badge js-available-environments-count"
+                  v-html="state.availableCounter"></span>
               </a>
             </li>
-            <li v-bind:class="{ 'active': scope === 'stopped'}">
+            <li v-bind:class="{ 'active' : scope === 'stopped'}">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
-                <span class="badge js-stopped-environments-count" v-html="state.stoppedCounter"></span>
+                <span
+                  class="badge js-stopped-environments-count"
+                  v-html="state.stoppedCounter"></span>
               </a>
             </li>
           </ul>
@@ -143,7 +155,9 @@ $(() => {
             <i class="fa fa-spinner spin"></i>
           </div>
 
-          <div class="blank-state blank-state-no-icon" v-if="!loading && state.environments.length === 0">
+          <div
+            class="blank-state blank-state-no-icon"
+            v-if="!loading && state.environments.length === 0">
             <h2 class="blank-state-title">
               You don't have any environments right now.
             </h2>
@@ -155,28 +169,48 @@ $(() => {
               <a :href="helpPagePath">
                 Read more about environments
               </a>
-              <a v-if="canCreateEnvironment" :href="newEnvironmentPath" class="btn btn-create">
+              <a
+                v-if="canCreateEnvironment"
+                :href="newEnvironmentPath"
+                class="btn btn-create">
                 New Environment
               </a>
             </p>
           </div>
 
-          <div class="table-holder" v-if="!loading && state.environments.length > 0">
+          <div
+            class="table-holder"
+            v-if="!loading && state.environments.length > 0">
             <table class="table ci-table environments">
               <thead>
-                <th>Environment</th>
-                <th>Last deployment</th>
-                <th>Build</th>
-                <th>Commit</th>
-                <th></th>
-                <th class="hidden-xs"></th>
+                <tr>
+                  <th>Environment</th>
+                  <th>Last deployment</th>
+                  <th>Build</th>
+                  <th>Commit</th>
+                  <th></th>
+                  <th class="hidden-xs"></th>
+                </tr>
               </thead>
               <tbody>
-                <tr is="environment-item"
-                  v-for="model in filteredEnvironments"
-                  :model="model"
-                  :can-create-deployment="canCreateDeploymentParsed"
-                  :can-read-environment="canReadEnvironmentParsed"></tr>
+                <template v-for="model in filteredEnvironments"
+                  v-bind:model="model">
+
+                  <tr
+                    is="environment-item"
+                    :model="model"
+                    :toggleRow="toggleRow.bind(model)"
+                    :can-create-deployment="canCreateDeploymentParsed"
+                    :can-read-environment="canReadEnvironmentParsed"></tr>
+
+                  <tr v-if="model.isOpen && model.children && model.children.length > 0"
+                    is="environment-item"
+                    v-for="children in model.children"
+                    :model="children"
+                    :toggleRow="toggleRow.bind(children)">
+                    </tr>
+
+                </template>
               </tbody>
             </table>
           </div>

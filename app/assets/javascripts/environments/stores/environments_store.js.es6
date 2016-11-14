@@ -64,6 +64,8 @@
             acc.push({
               name: environment.environment_type,
               children: [environment],
+              isOpen: false,
+              'vue-isChildren': environment['vue-isChildren'],
             });
           }
         } else {
@@ -76,6 +78,28 @@
       this.state.environments = environmentsTree;
 
       return environmentsTree;
+    },
+
+    /**
+     * Toggles folder open property given the environment type.
+     *
+     * @param  {String} envType
+     * @return {Array}
+     */
+    toggleFolder(envType) {
+      const environments = this.state.environments;
+
+      const environmnetsCopy = environments.map((env) => {
+        if (env['vue-isChildren'] === true && env.name === envType) {
+          env.isOpen = !env.isOpen;
+        }
+
+        return env;
+      });
+
+      this.state.environments = environmnetsCopy;
+
+      return environmnetsCopy;
     },
 
     /**
