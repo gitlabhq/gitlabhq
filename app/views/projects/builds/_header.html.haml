@@ -3,6 +3,9 @@
     = ci_status_with_icon(@build.status)
     Build
     %strong ##{@build.id}
+    in pipeline
+    = link_to pipeline_path(@build.pipeline) do
+      %strong ##{@build.pipeline.id}
     for commit
     = link_to ci_status_path(@build.pipeline) do
       %strong= @build.pipeline.short_sha

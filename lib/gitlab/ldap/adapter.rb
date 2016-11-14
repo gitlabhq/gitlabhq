@@ -95,9 +95,7 @@ module Gitlab
       end
 
       def user_filter(filter = nil)
-        if config.user_filter.present?
-          user_filter = Net::LDAP::Filter.construct(config.user_filter)
-        end
+        user_filter = config.constructed_user_filter if config.user_filter.present?
 
         if user_filter && filter
           Net::LDAP::Filter.join(filter, user_filter)

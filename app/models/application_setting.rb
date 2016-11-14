@@ -222,6 +222,10 @@ class ApplicationSetting < ActiveRecord::Base
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end
 
+  def sidekiq_throttling_column_exists?
+    ActiveRecord::Base.connection.column_exists?(:application_settings, :sidekiq_throttling_enabled)
+  end
+
   def domain_whitelist_raw
     self.domain_whitelist.join("\n") unless self.domain_whitelist.nil?
   end
@@ -273,6 +277,12 @@ class ApplicationSetting < ActiveRecord::Base
 
   def health_check_access_token
     ensure_health_check_access_token!
+  end
+
+  def sidekiq_throttling_enabled?
+    return false unless sidekiq_throttling_column_exists?
+
+    sidekiq_throttling_enabled
   end
 
   private

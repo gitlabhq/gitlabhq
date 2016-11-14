@@ -24,7 +24,7 @@ module Gitlab
     end
 
     def sidekiq_throttling_enabled?
-      current_application_settings.sidekiq_throttling_enabled
+      current_application_settings.sidekiq_throttling_enabled?
     end
 
     def fake_application_settings

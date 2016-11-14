@@ -17,7 +17,7 @@ module Gitlab
       end
 
       def self.providers
-        servers.map {|server| server['provider_name'] }
+        servers.map { |server| server['provider_name'] }
       end
 
       def self.valid_provider?(provider)
@@ -43,13 +43,31 @@ module Gitlab
       end
 
       def adapter_options
-        {
-          host: options['host'],
-          port: options['port'],
-          encryption: encryption
-        }.tap do |options|
-          options.merge!(auth_options) if has_auth?
+        opts = base_options.merge(
+          encryption: encryption,
+        )
+
+        opts.merge!(auth_options) if has_auth?
+
+        opts
+      end
+
+      def omniauth_options
+        opts = base_options.merge(
+          base: base,
+          method: options['method'],
+          filter: omniauth_user_filter,
+          name_proc: name_proc
+        )
+
+        if has_auth?
+          opts.merge!(
+            bind_dn: options['bind_dn'],
+            password: options['password']
+          )
         end
+
+        opts
       end
 
       def base
@@ -75,6 +93,10 @@ module Gitlab
 
       def user_filter
         options['user_filter']
+      end
+
+      def constructed_user_filter
+        @constructed_user_filter ||= Net::LDAP::Filter.construct(user_filter)
       end
 
       def group_base
@@ -109,7 +131,26 @@ module Gitlab
         options['password'] || options['bind_dn']
       end
 
+      def allow_username_or_email_login
+        options['allow_username_or_email_login']
+      end
+
+      def name_proc
+        if allow_username_or_email_login
+          Proc.new { |name| name.gsub(/@.*\z/, '') }
+        else
+          Proc.new { |name| name }
+        end
+      end
+
       protected
+
+      def base_options
+        {
+          host: options['host'],
+          port: options['port']
+        }
+      end
 
       def base_config
         Gitlab.config.ldap
@@ -138,6 +179,16 @@ module Gitlab
             password: options['password']
           }
         }
+      end
+
+      def omniauth_user_filter
+        uid_filter = Net::LDAP::Filter.eq(uid, '%{username}')
+
+        if user_filter.present?
+          Net::LDAP::Filter.join(uid_filter, constructed_user_filter).to_s
+        else
+          uid_filter.to_s
+        end
       end
     end
   end

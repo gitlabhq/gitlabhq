@@ -337,7 +337,7 @@ module API
         requires :id, type: String, desc: 'The user ID'
       end
       get ':id/events' do
-        user = User.find_by(id: declared(params).id)
+        user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
         events = user.events.
