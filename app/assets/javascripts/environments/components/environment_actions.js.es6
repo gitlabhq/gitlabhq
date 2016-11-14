@@ -22,7 +22,7 @@
      * TODO: Remove this when webpack is merged.
      *
      */
-    ready() {
+    mounted() {
       const playIcon = document.querySelector('.play-icon-svg.hidden svg');
 
       const dropdownContainer = this.$el.querySelector('.dropdown-play-icon-container');
@@ -52,9 +52,7 @@
               <span class="action-play-icon-container">
                 <!-- svg goes here -->
               </span>
-                <span>
-                  {{action.name}}
-                </span>
+              <span v-html="action.name"></span>
               </a>
             </li>
           </ul>

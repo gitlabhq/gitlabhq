@@ -254,6 +254,20 @@
       isLastDeployment() {
         return this.model.last_deployment && this.model.last_deployment['last?'];
       },
+
+      buildName() {
+        if (this.model.last_deployment && this.model.last_deployment.deployable) {
+          return `${this.model.last_deployment.deployable.name} #${this.model.last_deployment.deployable.id}`;
+        }
+        return undefined;
+      },
+
+      deploymentInternalId() {
+        if (this.model.last_deployment) {
+          return `#${this.model.last_deployment.iid}`;
+        }
+        return '';
+      },
     },
 
     /**
@@ -282,8 +296,11 @@
     template: `
       <tr>
         <td v-bind:class="{ 'children-row': isChildren}" class="col-sm-2">
-          <a v-if="!isFolder" class="environment-name" :href="model.environment_url">
-            {{model.name}}
+          <a
+            v-if="!isFolder"
+            class="environment-name"
+            :href="model.environment_url"
+            v-html="model.name">
           </a>
           <span v-else v-on:click="toggle" class="folder-name">
             <span class="folder-icon">
@@ -291,17 +308,14 @@
               <i v-show="!open" class="fa fa-caret-right"></i>
             </span>
 
-            {{model.name}}
+            <span v-html="model.name"></span>
 
-            <span class="badge">
-              {{childrenCounter}}
-            </span>
+            <span class="badge" v-html="childrenCounter"></span>
           </span>
         </td>
 
         <td class="deployment-column col-sm-2">
-          <span v-if="!isFolder && model.last_deployment && model.last_deployment.iid">
-            #{{model.last_deployment.iid}}
+          <span v-if="!isFolder && model.last_deployment && model.last_deployment.iid" v-html="deploymentInternalId">
 
             <span v-if="model.last_deployment.user">
               by
@@ -318,8 +332,8 @@
         <td class="col-sm-2">
           <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
             class="build-link"
-            :href="model.last_deployment.deployable.build_url">
-            {{model.last_deployment.deployable.name}} #{{model.last_deployment.deployable.id}}
+            :href="model.last_deployment.deployable.build_url"
+            v-html="buildName">
           </a>
         </td>
 
@@ -340,8 +354,10 @@
         </td>
 
         <td class="col-sm-1">
-          <span v-if="!isFolder && model.last_deployment" class="environment-created-date-timeago">
-            {{createdDate}}
+          <span
+            v-if="!isFolder && model.last_deployment"
+            class="environment-created-date-timeago"
+            v-html="createdDate">
           </span>
         </td>
 

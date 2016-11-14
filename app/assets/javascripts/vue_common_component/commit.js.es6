@@ -119,7 +119,7 @@
      *
      * TODO: Find a better way to include SVG
      */
-    ready() {
+    mounted() {
       const commitIconContainer = this.$el.querySelector('.commit-icon-container');
       const commitIcon = document.querySelector('.commit-icon-svg.hidden svg');
 
@@ -136,22 +136,27 @@
           <i v-else class="fa fa-code-fork"></i>
         </div>
 
-        <a v-if="hasRef" class="monospace branch-name" :href="ref.ref_url">
-          {{ref.name}}
+        <a v-if="hasRef"
+          class="monospace branch-name"
+          :href="ref.ref_url"
+          v-html="ref.name">
         </a>
 
         <div class="icon-container commit-icon commit-icon-container">
           <!-- svg goes here -->
         </div>
 
-        <a class="commit-id monospace" :href="commit_url">
-          {{short_sha}}
+        <a class="commit-id monospace"
+          :href="commit_url"
+          v-html="short_sha">
         </a>
 
         <p class="commit-title">
           <span v-if="title">
             <!-- commit author info-->
-            <a v-if="hasAuthor" class="avatar-image-container" :href="author.web_url">
+            <a v-if="hasAuthor"
+              class="avatar-image-container"
+              :href="author.web_url">
               <img
               class="avatar has-tooltip s20"
                 :src="author.avatar_url"
@@ -159,8 +164,8 @@
                 :title="author.username" />
             </a>
 
-            <a class="commit-row-message" :href="commit_url">
-              {{title}}
+            <a class="commit-row-message"
+              :href="commit_url" v-html="title">
             </a>
           </span>
           <span v-else>

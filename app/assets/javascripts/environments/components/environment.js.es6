@@ -45,6 +45,7 @@ $(() => {
         helpPagePath: environmentsListApp.dataset.helpPagePath,
         loading: true,
         visibility: 'available',
+        isLoading: this.loading,
       };
     },
 
@@ -79,7 +80,7 @@ $(() => {
      * Fetches all the environmnets and stores them.
      * Toggles loading property.
      */
-    ready() {
+    mounted() {
       window.gl.environmentsService.all().then(resp => resp.json()).then((json) => {
         this.store.storeEnvironments(json);
         this.loading = false;
@@ -120,17 +121,13 @@ $(() => {
             <li v-bind:class="{ 'active': scope === undefined}">
               <a :href="projectEnvironmentsPath">
                 Available
-                <span class="badge js-available-environments-count">
-                  {{state.availableCounter}}
-                </span>
+                <span class="badge js-available-environments-count" v-html="state.availableCounter"></span>
               </a>
             </li>
             <li v-bind:class="{ 'active': scope === 'stopped'}">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
-                <span class="badge js-stopped-environments-count">
-                  {{state.stoppedCounter}}
-                </span>
+                <span class="badge js-stopped-environments-count" v-html="state.stoppedCounter"></span>
               </a>
             </li>
           </ul>
@@ -179,7 +176,7 @@ $(() => {
                   v-for="model in filteredEnvironments"
                   :model="model"
                   :can-create-deployment="canCreateDeploymentParsed"
-                  :can-read-environment="canReadEnvironmentParsed">
+                  :can-read-environment="canReadEnvironmentParsed"></tr>
               </tbody>
             </table>
           </div>
