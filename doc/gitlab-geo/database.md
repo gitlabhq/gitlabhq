@@ -4,6 +4,21 @@ This document describes the minimal steps you have to take in order to
 replicate your GitLab database into another server. You may have to change
 some values according to your database setup, how big it is, etc.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [PostgreSQL replication](#postgresql-replication)
+  - [Prerequisites](#prerequisites)
+  - [Step 1. Configure the primary server](#step-1-configure-the-primary-server)
+  - [Step 2. Configure the secondary server](#step-2-configure-the-secondary-server)
+  - [Step 3. Initiate the replication process](#step-3-initiate-the-replication-process)
+- [MySQL replication](#mysql-replication)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## PostgreSQL replication
+
 The GitLab primary node where the write operations happen will connect to
 `primary` database server, and the secondary ones which are read-only will
 connect to `secondary` database servers (which are read-only too).
@@ -12,19 +27,7 @@ connect to `secondary` database servers (which are read-only too).
 In many databases documentation you will see `primary` being references as `master`
 and `secondary` as either `slave` or `standby` server (read-only).
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-- [PostgreSQL replication](#postgresql-replication)
-  - [Step 1. Configure the primary server](#step-1-configure-the-primary-server)
-  - [Step 2 - Configure the secondary server](#step-2---configure-the-secondary-server)
-  - [Step 3 - Initiate the replication process](#step-3---initiate-the-replication-process)
-- [MySQL replication](#mysql-replication)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## PostgreSQL replication
+### Prerequisites
 
 The following guide assumes that:
 
