@@ -80,7 +80,7 @@
           <div class="cancel-retry-btns inline">
             <!-- @click='retry($event)' -->
             <a
-              v-if='!pipeline.cancel_url || pipeline.details.status !== "cancelled"'
+              v-if='pipeline.retry_url'
               class="btn has-tooltip"
               title="Retry"
               rel="nofollow"

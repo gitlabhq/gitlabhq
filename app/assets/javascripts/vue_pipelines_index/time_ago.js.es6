@@ -19,7 +19,6 @@
       seconds(date) {
         return this.formatSection(date.getSeconds());
       },
-      // need created_at or created_at for finish and running
       finishdate() {
         const date = new Date(
           new Date(
