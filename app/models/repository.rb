@@ -998,7 +998,7 @@ class Repository
       base_branch,
       source_branch: revert_tree_id) do
       committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged,
+      Rugged::Commit.create(rugged,
         message: commit.revert_message,
         author: committer,
         committer: committer,
@@ -1018,7 +1018,7 @@ class Repository
       base_branch,
       source_branch: cherry_pick_tree_id) do
       committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged,
+      Rugged::Commit.create(rugged,
         message: commit.message,
         author: {
           email: commit.author_email,
