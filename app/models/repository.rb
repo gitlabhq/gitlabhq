@@ -786,7 +786,8 @@ class Repository
     @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
-  def commit_dir(user, path, message, branch,
+  def commit_dir(
+    user, path, message, branch,
     author_email: nil, author_name: nil, source_branch: nil)
     update_branch_with_hooks(
       user,
@@ -806,7 +807,9 @@ class Repository
     end
   end
 
-  def commit_file(user, path, content, message, branch, update,
+  # rubocop:disable Metrics/ParameterLists
+  def commit_file(
+    user, path, content, message, branch, update,
     author_email: nil, author_name: nil, source_branch: nil)
     update_branch_with_hooks(
       user,
@@ -830,8 +833,11 @@ class Repository
       Gitlab::Git::Blob.commit(raw_repository, options)
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
-  def update_file(user, path, content,
+  # rubocop:disable Metrics/ParameterLists
+  def update_file(
+    user, path, content,
     branch:, previous_path:, message:,
     author_email: nil, author_name: nil, source_branch: nil)
     update_branch_with_hooks(
@@ -861,8 +867,10 @@ class Repository
       end
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
-  def remove_file(user, path, message, branch,
+  def remove_file(
+    user, path, message, branch,
     author_email: nil, author_name: nil, source_branch: nil)
     update_branch_with_hooks(
       user,
@@ -885,14 +893,14 @@ class Repository
     end
   end
 
-  def multi_action(user:, branch:, message:, actions:,
+  def multi_action(
+    user:, branch:, message:, actions:,
     author_email: nil, author_name: nil, source_branch: nil)
     update_branch_with_hooks(
       user,
       branch,
       source_branch: source_branch) do |ref|
       index = rugged.index
-      parents = []
 
       last_commit = find_branch(ref).dereferenced_target
       index.read_tree(last_commit.raw_commit.tree)
