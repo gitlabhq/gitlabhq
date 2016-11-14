@@ -12,9 +12,9 @@
     template: `
       <td class="commit-link">
         <a :href='pipeline.url'>
-          <span class="ci-status ci-cancelled">
+          <span class="ci-status ci-canceled">
             <vue-canceled-icon></vue-canceled-icon>
-            &nbsp;cancelled
+            &nbsp;canceled
           </span>
         </a>
       </td>
