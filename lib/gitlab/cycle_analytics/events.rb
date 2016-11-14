@@ -30,7 +30,7 @@ module Gitlab
       end
 
       def test_events
-        @fetcher.fetch(stage: :test).each do |event|
+        @fetcher.fetch(stage: :test).map do |event|
           parse_build_event(event)
         end
       end
@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def staging_events
-        @fetcher.fetch(stage: :staging).each do |event|
+        @fetcher.fetch(stage: :staging).map do |event|
           parse_build_event(event)
         end
       end
@@ -64,7 +64,7 @@ module Gitlab
       def parse_build_event(event)
         build = ::Ci::Build.find(event['id'])
 
-        #event['author_name'] = build.author.try(:name)
+        AnalyticsBuildSerializer.new(project: @project).represent(build).as_json
       end
 
       def first_time_reference_commit(commits, event)

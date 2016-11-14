@@ -6,12 +6,17 @@ describe AnalyticsBuildEntity do
   end
 
   context 'when build is a regular job' do
-    let(:build) { create(:ci_build) }
+    let(:user) { create(:user) }
+    let(:build) { create(:ci_build, author: user) }
 
     subject { entity.as_json }
 
-    it 'contains url to build page and retry action' do
+    it 'contains URLs' do
       expect(subject).to include(:url, :branch_url, :commit_url)
+    end
+
+    it 'contains the author' do
+      expect(subject).to include(:author)
     end
 
     it 'does not contain sensitive information' do
