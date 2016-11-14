@@ -1215,7 +1215,7 @@ class Repository
 
       unless target
         raise CommitError.new(
-          "Cannot find branch #{branch_name} nor #{source_commit.try(:sha) ||source_branch}")
+          "Cannot find branch #{branch_name} nor #{source_commit.try(:sha) || source_branch}")
       end
 
       update_ref!(ref, target, oldrev)
