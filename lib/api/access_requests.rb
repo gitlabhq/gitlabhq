@@ -48,7 +48,7 @@ module API
         put ':id/access_requests/:user_id/approve' do
           source = find_source(source_type, params[:id])
 
-          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared(params)).execute
+          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared_params).execute
 
           status :created
           present member.user, with: Entities::Member, member: member
