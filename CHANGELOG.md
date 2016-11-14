@@ -797,7 +797,6 @@ entry.
 ## 8.11.0 (2016-08-22)
 
   - Use test coverage value from the latest successful pipeline in badge. !5862
-  - Add git diff context to notifications of new notes on merge requests !5855 (hoopes)
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Add Koding (online IDE) integration
