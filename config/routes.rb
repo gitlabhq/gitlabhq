@@ -68,11 +68,6 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
-  # For slash commands to POST
-  namespace :chat_ops do
-    post :trigger
-  end
-
   draw :import
   draw :uploads
   draw :explore

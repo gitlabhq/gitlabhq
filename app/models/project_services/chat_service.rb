@@ -1,4 +1,5 @@
 # Base class for Chat services
+# This class is not meant to be used directly, but only to inherrit from.
 class ChatService < Service
   default_value_for :category, 'chat'
 
@@ -12,7 +13,7 @@ class ChatService < Service
   end
 
   def trigger(params)
-    # implement inside child
+    raise NotImplementedError
   end
 
   def chat_user_params(params)
