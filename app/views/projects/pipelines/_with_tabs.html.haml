@@ -1,9 +1,9 @@
 .tabs-holder
   %ul.nav-links.no-top.no-bottom
     %li.active
-      = link_to "Pipeline", "#js-tab-pipeline", data: { target: '#js-tab-pipeline', action: 'pipeline', toggle: 'tab' }
+      = link_to "Pipeline", "#js-tab-pipeline", data: { target: '#js-tab-pipeline', action: 'pipeline', toggle: 'tab' }, class: 'pipeline-tab'
     %li
-      = link_to "#js-tab-builds", data: { target: '#js-tab-builds', action: 'build', toggle: 'tab' } do
+      = link_to "#js-tab-builds", data: { target: '#js-tab-builds', action: 'build', toggle: 'tab' }, class: 'builds-tab' do
         Builds
         %span.badge= pipeline.statuses.count
 

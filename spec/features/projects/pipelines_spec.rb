@@ -146,7 +146,8 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines/:id' do
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+    let(:project) { create(:project) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
       @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
@@ -156,10 +157,7 @@ describe "Pipelines" do
       @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
     end
 
-    before do
-      visit namespace_project_pipeline_path(project.namespace, project, pipeline)
-      find('.builds-tab').click
-    end
+    before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
 
     it 'shows a list of builds' do
       expect(page).to have_content('Test')
