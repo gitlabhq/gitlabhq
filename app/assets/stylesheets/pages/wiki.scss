@@ -5,8 +5,38 @@
   padding-right: 7px;
 }
 
-.top-area {
+.wiki-page-header {
+  @extend .top-area;
   position: relative;
+
+  .wiki-page-title {
+    margin: 0;
+    font-size: 22px;
+  }
+
+  .wiki-last-edit-by {
+    color: $gl-gray-light;
+
+    strong {
+      color: $gl-text-color;
+    }
+  }
+
+  .light {
+    font-weight: normal;
+    color: $gl-gray-light;
+  }
+
+  .git-access-header {
+    padding: 16px 0 11px;
+    line-height: 28px;
+    font-size: 18px;
+  }
+
+  .git-clone-holder {
+    width: 100%;
+    padding-bottom: 40px;
+  }
 
   button.sidebar-toggle {
     position: absolute;
@@ -17,6 +47,10 @@
 
   @media (min-width: $screen-sm-min) {
     padding-right: 40px;
+
+    .git-clone-holder {
+      width: 480px;
+    }
   }
 
   @media (min-width: $screen-md-min) {
@@ -24,27 +58,6 @@
 
     button.sidebar-toggle {
       display: none;
-    }
-  }
-}
-
-.wiki-page-header {
-  @extend .top-area;
-
-  .git-access-header {
-    padding: 16px 0 11px;
-    line-height: 28px;
-    font-size: 18px;
-  }
-
-  .git-clone-holder {
-    width: 480px;
-    padding-bottom: 40px;
-  }
-
-  @media (max-width: $screen-xs-max) {
-    .git-clone-holder {
-      width: 100%;
     }
   }
 }

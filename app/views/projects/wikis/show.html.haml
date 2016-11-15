@@ -2,16 +2,18 @@
 - page_title @page.title.capitalize, "Wiki"
 
 %div{ class: container_class }
-  .top-area
+  .wiki-page-header
     %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
       = icon('angle-double-left')
 
     .nav-text
-      %strong= @page.title.capitalize
+      %h2.wiki-page-title= @page.title.capitalize
 
       %span.wiki-last-edit-by
-        &middot;
-        last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+        Last edited by
+        %strong
+          #{@page.commit.author.name}
+        #{time_ago_with_tooltip(@page.commit.authored_date)}
 
     .nav-controls
       = render 'main_links'
@@ -20,7 +22,6 @@
     .warning_message
       This is an old version of this page.
       You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
-
 
   .wiki-holder.prepend-top-default.append-bottom-default
     .wiki
