@@ -67,16 +67,7 @@ function getRandomInt(min, max) {
       }
     },
     computed: {
-      parsedEstimate() {
-        return this.parseSeconds(this.time_estimate);
-      },
-      parsedSpent() {
-        return this.parseSeconds(this.time_spent);
-      },
-      parsedRemaining() {
-        const diffSeconds = this.time_estimate - this.time_spent;
-        return this.parseSeconds(diffSeconds);
-      },
+      /* Select panels to show */
       showComparison() {
         return !!this.time_estimate && !!this.time_spent;
       },
@@ -92,6 +83,18 @@ function getRandomInt(min, max) {
       showHelp() {
         return !!this.displayHelp;
       },
+      /* Parsed time values */
+      parsedEstimate() {
+        return this.parseSeconds(this.time_estimate);
+      },
+      parsedSpent() {
+        return this.parseSeconds(this.time_spent);
+      },
+      parsedRemaining() {
+        const diffSeconds = this.time_estimate - this.time_spent;
+        return this.parseSeconds(diffSeconds);
+      },
+      /* Human readable time values */
       estimatedPretty() {
         return this.stringifyTime(this.parsedEstimate);
       },
@@ -105,6 +108,7 @@ function getRandomInt(min, max) {
         const prefix = this.diffMinutes < 0 ? 'Over by' : 'Time remaining:';
         return `${prefix} ${this.remainingPretty}`;
       },
+      /* Diff values for comparison meter */
       diffMinutes () {
         const time_estimate = this.time_estimate;
         const time_spent = this.time_spent;
