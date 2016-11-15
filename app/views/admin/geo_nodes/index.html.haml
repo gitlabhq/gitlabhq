@@ -3,7 +3,7 @@
   Geo Nodes
 
 %p.light
-  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo', 'README'), class: 'vlink'} you can install a special
+  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo/README'), class: 'vlink'} you can install a special
   read-only and replicated instance anywhere.
 
 %hr
@@ -31,7 +31,7 @@
         = fg.text_area :key, class: 'form-control thin_area', rows: 5
         %p.help-block
           Paste a machine public key here for the GitLab user this node runs on. Read more about how to generate it
-          = link_to "here", help_page_path("ssh", "README")
+          = link_to "here", help_page_path("ssh/README")
 
   .form-actions
     = f.submit 'Add Node', class: 'btn btn-create'
