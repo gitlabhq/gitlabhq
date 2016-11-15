@@ -1,6 +1,6 @@
 - @no_container = true
 - page_title "#{@build.name} (##{@build.id})", "Builds"
-- header_title project_title(@project, "Builds", project_builds_path(@project))
+- trace_with_state = @build.trace_with_state
 = render "projects/pipelines/head", build_subnav: true
 
 %div{ class: container_class }

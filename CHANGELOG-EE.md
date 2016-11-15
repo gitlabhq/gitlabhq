@@ -6,6 +6,22 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
 
+- No changes.
+
+## 8.14.0 (2016-11-22)
+
+- No changes.
+
+## 8.14.0 (2016-11-22)
+
+- Gracefully recover from previously failed rebase.
+
+## 8.14.0 (2016-11-22)
+
+- No changes.
+
+## 8.14.0 (2016-11-22)
+
 - Disable retries for remote mirror update worker. !848
 - Fix Approvals API documentation.
 - Add ability to set approvals_before_merge for project through the API.

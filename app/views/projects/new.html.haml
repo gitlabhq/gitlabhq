@@ -90,7 +90,8 @@
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
             = link_to "(?)", help_page_path("public_access/public_access")
-          = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
+          = render 'shared/visibility_level', f: f, visibility_level: default_project_visibility, can_change_visibility_level: true, form_model: @project
+
 
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
         = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'

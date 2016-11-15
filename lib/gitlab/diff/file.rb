@@ -126,7 +126,7 @@ module Gitlab
         repository.blob_at(commit.id, file_path)
       end
 
-      def cache_key
+      def file_identifier
         "#{file_path}-#{new_file}-#{deleted_file}-#{renamed_file}"
       end
     end

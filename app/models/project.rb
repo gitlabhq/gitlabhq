@@ -239,7 +239,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
-  scope :with_wiki_enabled, -> { with_project_feature(:wiki) }
+  scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
@@ -1606,6 +1606,10 @@ class Project < ActiveRecord::Base
     environments.available.where(id: environment_ids).select do |environment|
       environment.includes_commit?(commit)
     end
+  end
+
+  def only_allow_merge_if_all_discussions_are_resolved
+    super || false
   end
 
   private

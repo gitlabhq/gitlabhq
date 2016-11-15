@@ -19,6 +19,7 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
   serialize :repository_storages
+  serialize :sidekiq_throttling_queues, Array
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -96,6 +97,15 @@ class ApplicationSetting < ActiveRecord::Base
   validates :domain_blacklist,
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
+
+  validates :sidekiq_throttling_factor,
+            numericality: { greater_than: 0, less_than: 1 },
+            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
+            if: :sidekiq_throttling_enabled?
+
+  validates :sidekiq_throttling_queues,
+            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
+            if: :sidekiq_throttling_enabled?
 
   validates :housekeeping_incremental_repack_period,
             presence: true,
@@ -195,6 +205,7 @@ class ApplicationSetting < ActiveRecord::Base
       usage_ping_enabled: true,
       repository_storages: ['default'],
       user_default_external: false,
+      sidekiq_throttling_enabled: false,
       housekeeping_enabled: true,
       housekeeping_bitmaps_enabled: true,
       housekeeping_incremental_repack_period: 10,
@@ -209,6 +220,10 @@ class ApplicationSetting < ActiveRecord::Base
 
   def home_page_url_column_exist
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+  end
+
+  def sidekiq_throttling_column_exists?
+    ActiveRecord::Base.connection.column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def domain_whitelist_raw
@@ -262,6 +277,12 @@ class ApplicationSetting < ActiveRecord::Base
 
   def health_check_access_token
     ensure_health_check_access_token!
+  end
+
+  def sidekiq_throttling_enabled?
+    return false unless sidekiq_throttling_column_exists?
+
+    sidekiq_throttling_enabled
   end
 
   private

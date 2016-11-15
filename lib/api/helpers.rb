@@ -23,6 +23,11 @@ module API
       warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
     end
 
+    def declared_params(options = {})
+      options = { include_parent_namespaces: false }.merge(options)
+      declared(params, options).to_h.symbolize_keys
+    end
+
     def find_user_by_private_token
       token = private_token
       return nil unless token.present?

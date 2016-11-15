@@ -143,6 +143,12 @@ Other LDAP servers should work, too.
 Active Directory also supports nested groups. Group sync will recursively
 resolve membership if `active_directory: true` is set in the configuration file.
 
+> **Note:** Nested group membership will only be resolved if the nested group
+  also falls within the configured `group_base`. For example, if GitLab sees a
+  nested group with DN `cn=nested_group,ou=special_groups,dc=example,dc=com` but
+  the configured `group_base` is `ou=groups,dc=example,dc=com`, `cn=nested_group`
+  will be ignored.
+
 ### Queries
 
 - Each LDAP group is queried a maximum of one time with base `group_base` and

@@ -4,6 +4,10 @@
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
+  const Store = gl.issueBoards.BoardsStore;
+
+  Store.createNewListDropdownData();
+
   gl.issueBoards.BoardsSelector = Vue.extend({
     components: {
       'board-selector-form': gl.issueBoards.BoardSelectorForm,
@@ -17,8 +21,7 @@
         open: false,
         loading: true,
         boards: [],
-        currentPage: '',
-        reload: false,
+        state: Store.state,
       };
     },
     watch: {
@@ -33,6 +36,15 @@
       },
     },
     computed: {
+      currentPage() {
+        return this.state.currentPage;
+      },
+      reload() {
+        return this.state.reload;
+      },
+      board() {
+        return this.state.currentBoard;
+      },
       showDelete() {
         return this.boards.length > 1;
       },
@@ -50,7 +62,7 @@
     },
     methods: {
       showPage(page) {
-        this.currentPage = page;
+        this.state.currentPage = page;
       },
       toggleDropdown() {
         this.open = !this.open;
@@ -67,6 +79,9 @@
           });
         }
       },
+    },
+    created() {
+      this.state.currentBoard = this.currentBoard;
     },
   });
 })();

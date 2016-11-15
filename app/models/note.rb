@@ -8,6 +8,7 @@ class Note < ActiveRecord::Base
   include Importable
   include FasterCacheKeys
   include CacheMarkdownField
+  include AfterCommitQueue
 
   cache_markdown_field :note, pipeline: :note
 

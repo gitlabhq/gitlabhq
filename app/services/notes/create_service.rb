@@ -26,9 +26,12 @@ module Notes
         note.note = content
       end
 
-      if !only_commands && note.save
+      note.run_after_commit do
         # Finish the harder work in the background
-        NewNoteWorker.perform_in(2.seconds, note.id, params)
+        NewNoteWorker.perform_async(note.id)
+      end
+
+      if !only_commands && note.save
         todo_service.new_note(note, current_user)
       end
 

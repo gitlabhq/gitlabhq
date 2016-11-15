@@ -9,7 +9,7 @@
     - if !project.repository.diffable?(blob)
       .nothing-here-block This diff was suppressed by a .gitattributes entry.
     - elsif diff_file.collapsed?
-      - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path))
+      - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
       .nothing-here-block.diff-collapsed{data: { diff_for_path: url } }
         This diff is collapsed.
         %a.click-to-expand

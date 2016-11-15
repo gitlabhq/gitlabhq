@@ -32,7 +32,7 @@
                   "resolved-by" => "#{note.resolved_by.try(:name)}",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
-                  "v-ref:note_#{note.id}" => true }
+                  "ref" => "note_#{note.id}" }
 
                 .note-action-button
                   = icon("spin spinner", "v-show" => "loading")
@@ -43,7 +43,7 @@
                       "@click" => "resolve",
                       ":title" => "buttonText",
                       "v-show" => "!loading",
-                      "v-el:button" => true }
+                      ":ref" => "'button'" }
 
                     = render "shared/icons/icon_status_success.svg"
 

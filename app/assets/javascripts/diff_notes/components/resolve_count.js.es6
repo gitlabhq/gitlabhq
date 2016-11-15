@@ -13,6 +13,9 @@
     computed: {
       allResolved: function () {
         return this.resolvedDiscussionCount === this.discussionCount;
+      },
+      resolvedCountText() {
+        return this.discussionCount === 1 ? 'discussion' : 'discussions';
       }
     }
   });

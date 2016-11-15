@@ -46,7 +46,7 @@ This [resource](http://kb.kerio.com/product/kerio-connect/server-configuration/s
 has all the information you need to add a certificate to the main trusted chain.
 
 This [answer](http://superuser.com/questions/437330/how-do-you-add-a-certificate-authority-ca-to-ubuntu)
-at SuperUser also has relevant information.
+at Super User also has relevant information.
 
 **Omnibus Trusted Chain**
 

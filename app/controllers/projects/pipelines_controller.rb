@@ -18,7 +18,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create
-    @pipeline = Ci::CreatePipelineService.new(project, current_user, create_params).execute(ignore_skip_ci: true, save_on_errors: false)
+    @pipeline = Ci::CreatePipelineService
+      .new(project, current_user, create_params)
+      .execute(ignore_skip_ci: true, save_on_errors: false)
     unless @pipeline.persisted?
       render 'new'
       return

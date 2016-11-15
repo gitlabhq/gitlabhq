@@ -23,6 +23,11 @@
         search: ''
       };
     },
+    createNewListDropdownData() {
+      this.state.currentBoard = {};
+      this.state.currentPage = '';
+      this.state.reload = false;
+    },
     addList (listObj) {
       const list = new List(listObj);
       this.state.lists.push(list);
@@ -39,6 +44,8 @@
           // Remove any new issues from the backlog
           // as they will be visible in the new list
           list.issues.forEach(backlogList.removeIssue.bind(backlogList));
+
+          this.state.lists = _.sortBy(this.state.lists, 'position');
         });
       this.removeBlankState();
     },
@@ -58,6 +65,8 @@
         title: 'Welcome to your Issue Board!',
         position: 0
       });
+
+      this.state.lists = _.sortBy(this.state.lists, 'position');
     },
     removeBlankState () {
       this.removeList('blank');

@@ -48,14 +48,14 @@ Redis.
     redis['password'] = 'Redis Password'
     ```
 
-1. Run `sudo gitlab-ctl reconfigure` to install and configure PostgreSQL.
+1. Run `sudo touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
+   from running on upgrade. Only the primary GitLab application server should
+   handle migrations.
+
+1. Run `sudo gitlab-ctl reconfigure` to install and configure Redis.
 
     > **Note**: This `reconfigure` step will result in some errors.
       That's OK - don't be alarmed.
-
-1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
-   from running on upgrade. Only the primary GitLab application server should
-   handle migrations.
 
 ## Experimental Redis Sentinel support
 
