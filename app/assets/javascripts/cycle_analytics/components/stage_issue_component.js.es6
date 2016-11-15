@@ -8,11 +8,12 @@
     },
     props: {
       items: Array,
+      stage: Object,
     },
     template: `
       <div>
         <div class="events-description">
-          Time before an issue get scheluded
+          {{ stage.shortDescription }}
         </div>
         <ul class="stage-event-list">
           <li class="stage-event-item" v-for="issue in items">

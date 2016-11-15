@@ -8,11 +8,12 @@
     },
     props: {
       items: Array,
+      stage: Object,
     },
     template: `
       <div>
         <div class="events-description">
-          The total time taken from idea to production
+          {{ stage.shortDescription }}
         </div>
         <ul>
           <li v-for="issue in items">

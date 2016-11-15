@@ -92,4 +92,4 @@
           %template{ "v-if" => "isEmptyStage" }
             %p No results
           %template{ "v-if" => "state.items.length && !isLoadingStage && !isEmptyStage" }
-            %component{ ":is" => "currentStage.component", ":items" => "state.items" }
+            %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.items" }
