@@ -11,13 +11,17 @@
       alt() {
         return `${this.pipeline.commit.author_name}'s avatar`;
       },
+      avatarUrl() {
+        const author = this.pipeline.commit.author;
+        if (author) return author.avatar_url;
+        return this.pipeline.commit.author_gravatar_url;
+      },
     },
     template: `
       <td class="branch-commit">
         <div class="icon-container">
           <i class="fa fa-code-fork"></i>
           </div>
-          <!-- ** will need branch_url for this branch ** -->
           <a
             class="monospace branch-name"
             :href='pipeline.ref.url'
@@ -45,7 +49,7 @@
               :alt='alt'
               :title='pipeline.commit.author_name'
               data-container="body"
-              src="http://www.gravatar.com/avatar/80d3b651b4be1f1db39435c2d11f1f23?s=40&amp;d=identicon"
+              :src='avatarUrl'
             >
           </a>
           <a

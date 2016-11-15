@@ -10,14 +10,6 @@
       download(name) {
         return `Download ${name} artifacts`;
       },
-      // retry(e) {
-      //   e.preventDefault();
-      //   this.$http.post(this.pipeline.retry_url, {
-      //     pipeline: { id: this.pipeline.id },
-      //   })
-      //     .then(() => {})
-      //     .catch(() => new Flash('Something went wrong on our end.'));
-      // },
     },
     template: `
       <td class="pipeline-actions hidden-xs">
@@ -41,7 +33,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-align-right">
               <li v-for='action in pipeline.details.manual_actions'>
-                <a rel="nofollow" data-method="post" :href='action.url'>
+                <a rel="nofollow" data-method="post" :href='action.url' title="Manual build">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
                     <path
                       fill-rule="evenodd"
@@ -78,9 +70,8 @@
             </div>
           </div>
           <div class="cancel-retry-btns inline">
-            <!-- @click='retry($event)' -->
             <a
-              v-if='!pipeline.cancel_url || pipeline.details.status !== "cancelled"'
+              v-if='pipeline.retry_url'
               class="btn has-tooltip"
               title="Retry"
               rel="nofollow"
@@ -92,7 +83,7 @@
             <a
               v-if='pipeline.cancel_url'
               class="btn btn-remove has-tooltip"
-              title=""
+              title="Cancel"
               rel="nofollow"
               data-method="post"
               :href='pipeline.cancel_url'

@@ -8,6 +8,8 @@
       'vue-pending-scope': gl.VuePendingScope,
       'vue-failed-scope': gl.VueFailedScope,
       'vue-created-scope': gl.VueCreatedScope,
+      'vue-canceled-scope': gl.VueCanceledScope,
+      'vue-unstable-scope': gl.VueUnstableScope,
     },
     props: [
       'pipeline',
@@ -34,6 +36,16 @@
           :pipeline='pipeline'
         >
         </vue-created-scope>
+        <vue-canceled-scope
+          v-if="pipeline.details.status === 'canceled'"
+          :pipeline='pipeline'
+        >
+        </vue-canceled-scope>
+        <vue-unstable-scope
+          v-if="pipeline.details.status === 'unstable'"
+          :pipeline='pipeline'
+        >
+        </vue-unstable-scope>
       </td>
     `,
   });

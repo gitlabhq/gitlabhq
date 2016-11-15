@@ -9,6 +9,7 @@
       'failed-icon': gl.VueFailedIcon,
       'success-icon': gl.VueSuccessIcon,
       'created-icon': gl.VueCreatedIcon,
+      'canceled-icon': gl.VueCanceledIcon,
     },
     props: ['stage'],
     computed: {
@@ -30,6 +31,7 @@
         <failed-icon v-if='stage.status === "failed"'></failed-icon>
         <pending-icon v-if='stage.status === "pending"'></pending-icon>
         <created-icon v-if='stage.status === "created"'></created-icon>
+        <canceled-icon v-if='stage.status === "canceled"'></canceled-icon>
       </a>
     `,
   });

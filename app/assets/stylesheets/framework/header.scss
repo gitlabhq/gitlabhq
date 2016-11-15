@@ -63,6 +63,7 @@ header {
         &:focus,
         &:active {
           background-color: $background-color;
+          color: darken($gl-icon-color, 50%);
         }
 
         .fa-caret-down {
@@ -191,6 +192,10 @@ header {
         font-size: 10px;
         text-align: center;
         cursor: pointer;
+
+        &:hover {
+          color: darken($color: $gl-text-color, $amount: 50%);
+        }
       }
 
       .project-item-select {
