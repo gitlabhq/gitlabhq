@@ -13,6 +13,7 @@ some values according to your database setup, how big it is, etc.
   - [Step 1. Configure the primary server](#step-1-configure-the-primary-server)
   - [Step 2. Configure the secondary server](#step-2-configure-the-secondary-server)
   - [Step 3. Initiate the replication process](#step-3-initiate-the-replication-process)
+  - [Next steps](#next-steps)
 - [MySQL replication](#mysql-replication)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -45,7 +46,7 @@ The following guide assumes that:
 
 **For Omnibus installations**
 
-1. SSH into your GitLab primary server and login as root:
+1. SSH into your GitLab **primary** server and login as root:
 
     ```
     sudo -i
@@ -94,7 +95,7 @@ The following guide assumes that:
 
 **For installations from source**
 
-1. SSH into your database primary server and login as root:
+1. SSH into your database **primary** server and login as root:
 
     ```
     sudo -i
@@ -107,7 +108,7 @@ The following guide assumes that:
     ```
 
 1. Edit `postgresql.conf` to configure the primary server for streaming replication
-   (for Debian/Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.x/main/postgresql.conf`):
 
     ```bash
     listen_address = '1.2.3.4'
@@ -123,7 +124,7 @@ The following guide assumes that:
 1. Set the access control on the primary to allow TCP connections using the
    server's public IP and set the connection from the secondary to require a
    password.  Edit `pg_hba.conf` (for Debian/Ubuntu that would be
-   `/etc/postgresql/9.2/main/pg_hba.conf`):
+   `/etc/postgresql/9.x/main/pg_hba.conf`):
 
     ```bash
     host    all             all                      127.0.0.1/32    trust
@@ -152,7 +153,7 @@ The following guide assumes that:
 
 **For Omnibus installations**
 
-1. SSH into your GitLab secondary server and login as root:
+1. SSH into your GitLab **secondary** server and login as root:
 
     ```
     sudo -i
@@ -190,7 +191,7 @@ The following guide assumes that:
 
 **For installations from source**
 
-1. SSH into your database secondary server and login as root:
+1. SSH into your database **secondary** server and login as root:
 
     ```
     sudo -i
@@ -213,7 +214,7 @@ The following guide assumes that:
     ```
 
 1. Edit `postgresql.conf` to configure the secondary for streaming replication
-   (for Debian/Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.x/main/postgresql.conf`):
 
     ```bash
     wal_level = hot_standby
@@ -239,7 +240,7 @@ see fit replacing the directories and paths.
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
-1. SSH into your GitLab secondary server and login as root:
+1. SSH into your GitLab **secondary** server and login as root:
 
     ```
     sudo -i
@@ -252,23 +253,27 @@ data before running `pg_basebackup`.
 
     PORT="5432"
     USER="gitlab_replicator"
-    echo Enter ip of primary postgresql server
+    echo ---------------------------------------------------------------
+    echo WARNING: Make sure this scirpt is run from the secondary server
+    echo ---------------------------------------------------------------
+    echo
+    echo Enter the IP of the primary PostgreSQL server
     read HOST
-    echo Enter password for $USER@$HOST
+    echo Enter the password for $USER@$HOST
     read -s PASSWORD
 
-    echo Stopping PostgreSQL
+    echo Stopping PostgreSQL and all GitLab services
     gitlab-ctl stop
 
-    echo Backup postgresql.conf
+    echo Backing up postgresql.conf
     sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
 
     echo Cleaning up old cluster directory
     sudo -u gitlab-psql rm -rf /var/opt/gitlab/postgresql/data
     rm -f /tmp/postgresql.trigger
 
-    echo Starting base backup as replicator
-    echo Enter password for $USER@$HOST
+    echo Starting base backup as the replicator user
+    echo Enter the password for $USER@$HOST
     sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
 
     echo Writing recovery.conf file
@@ -279,10 +284,10 @@ data before running `pg_basebackup`.
     _EOF1_
     "
 
-    echo Restore postgresql.conf
+    echo Restoring postgresql.conf
     sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
 
-    echo Starting PostgreSQL
+    echo Starting PostgreSQL and all GitLab services
     gitlab-ctl start
     ```
 
@@ -296,6 +301,12 @@ data before running `pg_basebackup`.
     user in the first step.
 
 The replication process is now over.
+
+### Next steps
+
+Now that the database replication is done, the next step is to configure GitLab.
+
+[➤ GitLab Geo configuration](configuration.md)
 
 ## MySQL replication
 
