@@ -59,12 +59,19 @@
     }
   }
 
+  .active > a {
+    color: $black;
+  }
+
   ul.wiki-pages,
   ul.wiki-pages li {
     list-style: none;
-    display: block;
     padding: 0;
     margin: 0;
+  }
+
+  ul.wiki-pages li {
+    margin: 5px 0 10px;
   }
 
   .wiki-sidebar-header {

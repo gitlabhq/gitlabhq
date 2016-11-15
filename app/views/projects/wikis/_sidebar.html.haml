@@ -3,7 +3,8 @@
     %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-wiki-toggle{ href: "#" }
       = icon('angle-double-right')
 
-    = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
+    - git_access_url = namespace_project_wikis_git_access_path(@project.namespace, @project)
+    = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
       = succeed '&nbsp;' do
         = icon('cloud-download')
       Clone repository
@@ -11,9 +12,10 @@
   .blocks-container
     .block.block-first
       %ul.wiki-pages
-        %li
+        %li{ class: params[:id] == 'home' ? 'active' : '' }
           = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
-        %li
+
+        %li{ class: active_nav_link?(path: 'wikis#pages') ? 'active' : '' }
           = link_to 'Pages', namespace_project_wikis_pages_path(@project.namespace, @project)
 
 = render 'projects/wikis/new'
