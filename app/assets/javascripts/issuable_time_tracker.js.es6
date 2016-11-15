@@ -141,7 +141,7 @@ function getRandomInt(min, max) {
 
         let unorderedMinutes = this.secondsToMinutes(seconds);
 
-        return _.mapObject(timePeriodConstraints, (minutesPerPeriod, periodName ) => {
+        return _.mapObject(timePeriodConstraints, (minutesPerPeriod) => {
           const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
 
           unorderedMinutes -= (periodCount * minutesPerPeriod);
