@@ -11,6 +11,10 @@ membership syncing.
 The information on this page is relevent for both GitLab CE and EE. For more
 details about EE-specific LDAP features, see [LDAP EE Documentation](ldap-ee.md).
 
+[//]: # (Do *NOT* modify this file in EE documentation. All changes in this)
+[//]: # (file should happen in CE, too. If the change is EE-specific, put)
+[//]: # (it in `ldap-ee.md`.)
+
 ## Security
 
 GitLab assumes that LDAP users are not able to change their LDAP 'mail', 'email'
@@ -206,28 +210,6 @@ production:
         # snip...
 ```
 
-### External Groups
-
->**Note:** External Groups configuration is only available in GitLab EE Version
-8.9 and above.
-
-Using the `external_groups` setting will allow you to mark all users belonging
-to these groups as [external users](../../user/permissions.md). Group membership is
-checked periodically through the `LdapGroupSync` background task.
-
-**Configuration**
-
-```yaml
-# An array of CNs of groups containing users that should be considered external
-#
-#   Ex. ['interns', 'contractors']
-#
-#   Note: Not `cn=interns` or the full DN
-#
-external_groups: []
-```
-
-
 ## Using an LDAP filter to limit access to your GitLab server
 
 If you want to limit all GitLab access to a subset of the LDAP users on your
@@ -278,6 +260,23 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
+## Limitations
+
+### TLS Client Authentication
+
+Not implemented by `Net::LDAP`.
+You should disable anonymous LDAP authentication and enable simple or SASL
+authentication. The TLS client authentication setting in your LDAP server cannot
+be mandatory and clients cannot be authenticated with the TLS protocol.
+
+### TLS Server Authentication
+
+Not supported by GitLab's configuration options.
+When setting `method: ssl`, the underlying authentication method used by
+`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with
+the LDAP server before any LDAP-protocol data is exchanged but no validation of
+the LDAP server's SSL certificate is performed.
+
 ## Troubleshooting
 
 ### Debug LDAP user filter with ldapsearch
@@ -287,7 +286,7 @@ following query returns the login names of the users that will be allowed to
 log in to GitLab if you configure your own user_filter.
 
 ```
-ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "(&(ObjectClass=User)($user_filter))" sAMAccountName
+ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "$user_filter" sAMAccountName
 ```
 
 - Variables beginning with a `$` refer to a variable from the LDAP section of
@@ -296,6 +295,7 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
   Port `389` is the default `ldap://` port and `636` is the default `ldaps://`
   port.
 - We are assuming the password for the bind_dn user is in bind_dn_password.txt.
+
 
 ### Invalid credentials when logging in
 
