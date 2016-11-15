@@ -12,10 +12,9 @@
   .blocks-container
     .block.block-first
       %ul.wiki-pages
-        %li{ class: params[:id] == 'home' ? 'active' : '' }
-          = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
-
-        %li{ class: active_nav_link?(path: 'wikis#pages') ? 'active' : '' }
-          = link_to 'Pages', namespace_project_wikis_pages_path(@project.namespace, @project)
+        - @project_wiki.pages.each do |wiki_page|
+          %li{ class: params[:id] == wiki_page.slug ? 'active' : '' }
+            = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_page) do
+              = wiki_page.title.capitalize
 
 = render 'projects/wikis/new'
