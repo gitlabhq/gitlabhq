@@ -1,12 +1,20 @@
 module Mattermost
   module Commands
-    class IssueShowService < Mattermost::Commands::BaseService
+    class IssueCreateService < IssueService
       def execute
-        return Mattermost::Messages::Issues.not_available unless available?
+        title, description = parse_command
 
-        issue = find_by_iid(iid)
+        present Issues::CreateService.new(project, current_user, title: title, description: description).execute
+      end
 
-        present issue
+      private
+
+      def parse_command
+        match = params[:text].match(/\Aissue create (?<title>.*)\n*/)
+        title = match[:title]
+        description = match.post_match
+
+        [title, description]
       end
     end
   end

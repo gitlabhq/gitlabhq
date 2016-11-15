@@ -1,8 +1,8 @@
 module Mattermost
   module Commands
     class MergeRequestService < Mattermost::Commands::BaseService
-      def available?
-        project.issues_enabled? && project.default_issues_tracker?
+      def self.available?(project)
+        project.merge_requests_enabled?
       end
 
       def collection
@@ -11,10 +11,6 @@ module Mattermost
 
       def readable?(_)
         can?(current_user, :read_merge_request, project)
-      end
-
-      def present
-        Mattermost::Presenter.merge_request
       end
     end
   end

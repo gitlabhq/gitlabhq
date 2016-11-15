@@ -1,7 +1,7 @@
 module Mattermost
   module Commands
     class IssueService < Mattermost::Commands::BaseService
-      def available?
+      def self.available?(project)
         project.issues_enabled? && project.default_issues_tracker?
       end
 
@@ -11,10 +11,6 @@ module Mattermost
 
       def readable?(issue)
         can?(current_user, :read_issue, issue)
-      end
-
-      def present
-        Mattermost::Presenter.issue
       end
     end
   end

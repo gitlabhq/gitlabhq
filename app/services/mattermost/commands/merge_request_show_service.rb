@@ -1,11 +1,8 @@
 module Mattermost
   module Commands
-    class MergeRequestShowService < Mattermost::Commands::BaseService
+    class MergeRequestShowService < MergeRequestService
       def execute
-        return Mattermost::Messages.not_available unless available?
-
-        merge_request = find_by_iid(iid)
-        present merge_request
+        present find_by_iid
       end
     end
   end

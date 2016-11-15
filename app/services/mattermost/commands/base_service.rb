@@ -17,13 +17,17 @@ module Mattermost
 
       private
 
-      def find_by_iid(iid)
+      def present(resource)
+        Mattermost::Presenter.present(resource)
+      end
+
+      def find_by_iid
         resource = collection.find_by(iid: iid)
 
         readable?(resource) ? resource : nil
       end
 
-      def search
+      def search_results
         collection.search(query).limit(QUERY_LIMIT).select do |resource|
           readable?(resource)
         end

@@ -32,53 +32,59 @@ module Mattermost
           text: "404 not found! GitLab couldn't find what your were looking for! :boom:",
         }
       end
-    end
 
-    attr_reader :result
+      def present(resource)
+        return not_found unless resource
 
-    def initialize(result)
-      @result = result
-    end
-
-    def present
-      if result.respond_to?(:count)
-        if result.count > 1
-          return respond_collection(result)
-        elsif result.count == 0
-          return not_found
-        else
-          result = result.first
+        if resource.respond_to?(:count)
+          if resource.count > 1
+            return multiple_resources(resource)
+          elsif resource.count == 0
+            return not_found
+          else
+            resource = resource.first
+          end
         end
+
+        single_resource(resource)
       end
 
-      single_resource
-    end
+      private
 
-    private
+      def single_resource(resource)
+        message = title(resource)
+        message << "\n\n#{resource.description}" if resource.description
 
-    def single_resource
-      message = title(resource)
-      message << "\n\n#{resource.description}" if resource.description
+        {
+          response_type: :in_channel,
+          text: message
+        }
+      end
 
-      {
-        response_type: :in_channel,
-        text: message
-      }
-    end
+      def multiple_resources(resources)
+        message = "Multiple results were found:\n"
+        message << resources.map { |resource| "  #{title(resource)}" }.join("\n")
 
-    def multiple_resources(resources)
-      message = "Multiple results were found:\n"
-      message << resource.map { |resource| "  #{title(resource)}" }.join("\n")
+        {
+          response_type: :ephemeral,
+          text: message
+        }
+      end
 
-      {
-        response_type: :ephemeral,
-        text: message
-      }
-    end
+      def title(resource)
+        "### [#{resource.to_reference} #{resource.title}](#{url(resource)})"
+      end
 
-    def title(resource)
-      url = url_for([resource.project.namespace.becomes(Namespace), resource.project, resource])
-      "### [#{resource.to_reference} #{resource.title}](#{url})"
+      def url(resource)
+        helper = Rails.application.routes.url_helpers
+
+        case resource
+        when Issue
+          helper.namespace_project_issue_url(resource.project.namespace.becomes(Namespace), resource.project, resource)
+        when MergeRequest
+          helper.namespace_project_merge_request_url(resource.project.namespace.becomes(Namespace), resource.project, resource)
+        end
+      end
     end
   end
 end

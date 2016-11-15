@@ -1,10 +1,8 @@
 module Mattermost
   module Commands
-    class MergeRequestService < Mattermost::Commands::BaseService
+    class MergeRequestSearchService < MergeRequestService
       def execute
-        return Mattermost::Messages::MergeRequests.not_available unless available?
-
-        Mattermost::Messages::IssuePresenter.present search_results
+        present search_results
       end
     end
   end
