@@ -68,12 +68,6 @@ module LabelsHelper
     end
   end
 
-  def toggle_subscription_data(label, project)
-    {
-      url: toggle_subscription_namespace_project_label_path(project.namespace, project, label)
-    }
-  end
-
   def render_colored_label(label, label_suffix = '', tooltip: true)
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
