@@ -5,12 +5,12 @@ class GeoRepositoryUpdateWorker
 
   attr_accessor :project
 
-  def perform(project_id, clone_url, push_data)
+  def perform(project_id, clone_url, push_data = nil)
     @project = Project.find(project_id)
     @push_data = push_data
 
     fetch_repository(clone_url)
-    process_hooks
+    process_hooks if push_data # we should be compatible with old unprocessed data
   end
 
   private
@@ -23,7 +23,7 @@ class GeoRepositoryUpdateWorker
 
   def process_hooks
     if @push_data['type'] == 'push'
-      branch = Gitlab::Git.branch_ref?(@push_data['ref'])
+      branch = Gitlab::Git.ref_name(@push_data['ref'])
       process_push(branch, @push_data['after'])
     end
   end
