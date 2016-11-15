@@ -79,7 +79,7 @@
   - if current_user && defined?(@project)
     - if label.is_a?(ProjectLabel)
       :javascript
-        new gl.LabelSubscription('##{dom_id(label)} .label-subscription');
+        new gl.ProjectLabelSubscription('##{dom_id(label)} .label-subscription');
     - else
       :javascript
         new gl.GroupLabelSubscription('##{dom_id(label)} .label-subscription');

@@ -1,6 +1,6 @@
 /* eslint-disable */
 (function(global) {
-  class LabelSubscription {
+  class ProjectLabelSubscription {
     constructor(container) {
       this.$container = $(container);
       this.$buttons = this.$container.find('.js-subscribe-button');
@@ -48,6 +48,6 @@
     }
   }
 
-  global.LabelSubscription = LabelSubscription;
+  global.ProjectLabelSubscription = ProjectLabelSubscription;
 
 })(window.gl || (window.gl = {}));
