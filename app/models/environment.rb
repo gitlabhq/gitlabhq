@@ -37,6 +37,10 @@ class Environment < ActiveRecord::Base
     state :stopped
   end
 
+  def recently_updated_on?(ref)
+    ref.to_s == last_deployment.ref
+  end
+
   def last_deployment
     deployments.last
   end

@@ -1299,9 +1299,9 @@ class Project < ActiveRecord::Base
     envs = environments.available.where(id: environment_ids)
 
     if commit
-      envs.select { |env| env.includes_commit?(commit) }
+      envs.select { |environment| env.includes_commit?(commit) }
     else
-      envs.to_a
+      envs.select { |environment| env.recently_updated_on?(ref) }
     end
   end
 
