@@ -90,7 +90,7 @@
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
-      width: 35%;
+      width: 30%;
       margin-left: 10px;
       margin-bottom: 0;
       vertical-align: middle;
@@ -220,6 +220,14 @@
 
 .label-options-toggle {
   width: 100%;
+}
+
+.label-subscription {
+  vertical-align: middle;
+
+  .dropdown-group-label a {
+    cursor: pointer;
+  }
 }
 
 .label-subscribe-button {

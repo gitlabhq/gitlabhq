@@ -33,21 +33,40 @@ module Subscribable
   end
 
   def toggle_subscription(user, project = nil)
+    unsubscribe_from_other_levels(user, project)
+
     find_or_initialize_subscription(user, project).
       update(subscribed: !subscribed?(user, project))
   end
 
   def subscribe(user, project = nil)
-    find_or_initialize_subscription(user, project).
-      update(subscribed: true)
+    unsubscribe_from_other_levels(user, project)
+
+    find_or_initialize_subscription(user, project)
+      .update(subscribed: true)
   end
 
   def unsubscribe(user, project = nil)
-    find_or_initialize_subscription(user, project).
-      update(subscribed: false)
+    unsubscribe_from_other_levels(user, project)
+
+    find_or_initialize_subscription(user, project)
+      .update(subscribed: false)
   end
 
   private
+
+  def unsubscribe_from_other_levels(user, project)
+    other_subscriptions = subscriptions.where(user: user)
+
+    other_subscriptions =
+      if project.blank?
+        other_subscriptions.where.not(project: nil)
+      else
+        other_subscriptions.where(project: nil)
+      end
+
+    other_subscriptions.update_all(subscribed: false)
+  end
 
   def find_or_initialize_subscription(user, project)
     subscriptions.
