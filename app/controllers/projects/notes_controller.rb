@@ -147,10 +147,9 @@ class Projects::NotesController < Projects::ApplicationController
 
   def note_json(note)
     if note.is_a?(AwardEmoji)
-      {
+      attrs = {
         valid:  note.valid?,
         award:  true,
-        id:     note.id,
         name:   note.name
       }
     elsif note.persisted?
@@ -158,12 +157,9 @@ class Projects::NotesController < Projects::ApplicationController
 
       attrs = {
         valid: true,
-        id: note.id,
         discussion_id: note.discussion_id,
         html: note_html(note),
-        award: false,
-        note: note.note,
-        commands_executed: note.commands_executed
+        note: note.note
       }
 
       if note.diff_note?
@@ -189,16 +185,18 @@ class Projects::NotesController < Projects::ApplicationController
           attrs[:original_discussion_id] = note.original_discussion_id
         end
       end
-
-      attrs
     else
-      {
+      attrs = {
         valid: false,
-        award: false,
-        commands_executed: note.commands_executed,
         errors: note.errors
       }
     end
+
+    attrs[:award] ||= false
+    attrs[:id] = note.id
+    attrs[:commands_changes] = note.commands_changes
+
+    attrs
   end
 
   def authorize_admin_note!

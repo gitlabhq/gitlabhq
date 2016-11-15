@@ -19,8 +19,8 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Flag used to indicate that a Note contains slash commands and they have been executed.
-  attr_accessor :commands_executed
+  # Attributes used to store the attributes that have ben changed by slash commands.
+  attr_accessor :commands_changes
 
   default_value_for :system, false
 
