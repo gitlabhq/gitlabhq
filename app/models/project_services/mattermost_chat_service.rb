@@ -33,31 +33,10 @@ class MattermostChatService < ChatService
   end
 
   def trigger(params)
-    return nil unless valid_token?(params[:token])
-
-    user = find_chat_user(params)
-    return authorize_chat_name(params) unless user
+    user = ChatNames::FindUserService.new(chat_names, params).execute
+    return Mattermost::Presenter.authorize_chat_name(params) unless user
 
     Mattermost::CommandService.new(project, user, params.slice(:command, :text)).
       execute
-  end
-
-  private
-
-  def find_chat_user(params)
-    params = params.slice(:team_id, :user_id)
-    ChatNames::FindUserService.
-      new(chat_names, params).
-      execute
-  end
-
-  def authorize_chat_name(params)
-    params = params.slice(:team_id, :team_domain, :user_id, :user_name)
-    url = ChatNames::AuthorizeUserService.new(self, params).execute
-
-    {
-      response_type: :ephemeral,
-      message: "You are not authorized. Click this [link](#{url}) to authorize."
-    }
   end
 end
