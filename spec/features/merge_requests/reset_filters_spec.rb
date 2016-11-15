@@ -9,7 +9,7 @@ feature 'Issues filter reset button', feature: true, js: true do
   let!(:milestone)  { create(:milestone, project: project) }
   let!(:bug)        { create(:label, project: project, name: 'bug')}
   let!(:mr1) { create(:merge_request, title: "Feature", source_project: project, target_project: project, source_branch: "Feature", milestone: milestone, author: user, assignee: user) }
-  let!(:mr2) { create(:merge_request, title:"Bugfix1", source_project: project, target_project: project, source_branch: "Bugfix1") }
+  let!(:mr2) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "Bugfix1") }
 
   let(:merge_request_css) { '.merge-request' }  
 
