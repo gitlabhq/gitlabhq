@@ -12,6 +12,13 @@
       };
     }
 
+    currentPageSlicer(update) {
+      const length = update.length;
+      if (this.pipelines.length === update.length) return update;
+      if (update.length <= 30) return update;
+      return update.slice(0, (length - 1));
+    }
+
     updatePipelines(apiResponse) {
       const update = this.pipelines.map(e => e);
       apiResponse.pipelines.forEach((newPipe) => {
@@ -21,8 +28,7 @@
           this.updateClone(update, newPipe);
         }
       });
-      this.pipelines = update;
-      return this.pipelines;
+      return this.currentPageSlicer(update);
     }
   }
 
