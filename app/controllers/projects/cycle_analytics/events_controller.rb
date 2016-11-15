@@ -2,7 +2,7 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   include CycleAnalyticsParams
 
   before_action :authorize_read_cycle_analytics!
-  before_action :authorize_read_builds!, only: [:test, :staging]
+  before_action :authorize_builds!, only: [:test, :staging]
 
   def issue
     render_events(events.issue_events)
@@ -55,5 +55,9 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
     return {} unless params[:events].present?
 
     params[:events].slice(:start_date, :branch_name)
+  end
+
+  def authorize_builds!
+    return access_denied! unless current_user.can?(:read_build, project)
   end
 end

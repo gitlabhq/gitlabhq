@@ -39,7 +39,7 @@ describe 'cycle analytics events' do
 
       newest_sha = commits.sort_by { |k| k['date'] }.first[:sha][0...8]
 
-      expect(json_response['events'].first['sha']).to eq(newest_sha)
+      expect(json_response['events'].first['short_sha']).to eq(newest_sha)
     end
 
     it 'lists the code events' do
@@ -97,6 +97,30 @@ describe 'cycle analytics events' do
         expect(json_response['events']).not_to be_empty
 
         expect(json_response['events'].first['date']).not_to be_empty
+      end
+    end
+
+    context 'with private project and builds' do
+      before do
+        ProjectMember.first.update(access_level: Gitlab::Access::GUEST)
+      end
+
+      it 'does not list the test events' do
+        get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not list the staging events' do
+        get namespace_project_cycle_analytics_staging_path(project.namespace, project, format: :json)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'lists the issue events' do
+        get namespace_project_cycle_analytics_issue_path(project.namespace, project, format: :json)
+
+        expect(response).to have_http_status(:ok)
       end
     end
   end
