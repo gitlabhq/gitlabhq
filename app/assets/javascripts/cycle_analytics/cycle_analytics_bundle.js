@@ -18,6 +18,7 @@ $(() => {
       isLoading: false,
       isLoadingStage: false,
       isEmptyStage: false,
+      hasError: false,
       startDate: 30,
       isEmptyDialogDismissed: Cookies.get(EMPTY_DIALOG_COOKIE),
       isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
