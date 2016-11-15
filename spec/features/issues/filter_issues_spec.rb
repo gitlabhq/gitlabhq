@@ -501,7 +501,9 @@ describe 'Filter issues', feature: true do
   describe 'retains filter when switching issue states', js: true do
     before do
       input_filtered_search('bug')
-      expect_issues_list_count(4, 1)
+
+      # Wait for search results to load
+      sleep 1
     end
 
     it 'open state' do
