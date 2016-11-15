@@ -21,8 +21,6 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
-    delegate :stages, to: :statuses
-
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -102,15 +100,19 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def stages
+    def stages_query
       statuses.group('stage').select(:stage)
         .order('max(stage_idx)')
+    end
+
+    def stages
+      self.stages_query.pluck(:stage)
     end
 
     def stages_with_statuses
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      stages_with_statuses = CommitStatus.from(self.stages, :sg).
+      stages_with_statuses = CommitStatus.from(self.stages_query, :sg).
         pluck('sg.stage', status_sql)
 
       stages_with_statuses.map do |stage|
