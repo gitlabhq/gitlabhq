@@ -22,10 +22,13 @@ function getRandomInt(min, max) {
         issuable: issuableData,
       },
       methods: {
+        fetchIssuable() {
+           return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
+        },
         initPolling() {
-          new gl. TODO:SmartInterval({
+          new gl.SmartInterval({
             callback: this.fetchIssuable,
-            startingInterval: 1000,
+            startingInterval: 4000,
             maxInterval: 10000,
             incrementByFactorOf: 2,
             lazyStart: false,
@@ -40,20 +43,125 @@ function getRandomInt(min, max) {
         },
       },
       created() {
-        $(document).on('ajax:success', '.gfm-form', (e) => {
-          // TODO: check if slash command was included.
-          this.fetchIssuable();
-        });
+        this.fetchIssuable();
       },
       mounted() {
         gl.IssuableResource.subscribe(data => this.updateState(data));
         this.initPolling();
+
+        $(document).on('ajax:success', '.gfm-form', (e) => {
+          // TODO: check if slash command was updated.
+          this.fetchIssuable();
+        });
       }
     });
   });
 
   Vue.component('issuable-time-tracker', {
-    props: ['time_estimated', 'time_spent'],
+    name: 'issuable-time-tracker',
+    props: { time_estimate: { type: Number, default: '' },  time_spent: { type: Number, default: ''}  },
+    data: function() {
+      return {
+        displayHelp: false,
+        loading: false,
+      }
+    },
+    computed: {
+      parsedEstimate() {
+        return this.parseSeconds(this.time_estimate);
+      },
+      parsedSpent() {
+        return this.parseSeconds(this.time_spent);
+      },
+      parsedRemaining() {
+        const diffSeconds = this.time_estimate - this.time_spent;
+        return this.parseSeconds(diffSeconds);
+      },
+      showComparison() {
+        return !!this.time_estimate && !!this.time_spent;
+      },
+      showEstimateOnly() {
+        return !!this.time_estimate && !this.time_spent;
+      },
+      showSpentOnly() {
+        return !!this.time_spent && !this.time_estimate;
+      },
+      showNoTimeTracking() {
+        return !this.time_estimate && !this.time_spent;
+      },
+      showHelp() {
+        return !!this.displayHelp;
+      },
+      estimatedPretty() {
+        return this.stringifyTime(this.parsedEstimate);
+      },
+      spentPretty() {
+        return this.stringifyTime(this.parsedSpent);
+      },
+      remainingPretty() {
+        return this.stringifyTime(this.parsedRemaining);
+      },
+      remainingTooltipPretty() {
+        const prefix = this.diffMinutes < 0 ? 'Over by' : 'Time remaining:';
+        return `${prefix} ${this.remainingPretty}`;
+      },
+      diffMinutes () {
+        const time_estimate = this.time_estimate;
+        const time_spent = this.time_spent;
+        return time_estimate - time_spent;
+      },
+      diffPercent() {
+        const estimate = this.time_estimate;
+        return Math.floor((this.time_spent / this.time_estimate * 100)) + '%';
+      },
+      diffStatusClass() {
+        return this.time_estimate >= this.time_spent ? 'within_estimate' : 'over_estimate';
+      }
+    },
+    methods: {
+      secondsToMinutes(seconds) {
+        return Math.abs(seconds / 60);
+      },
+      parseSeconds (seconds) {
+        const DAYS_PER_WEEK = 5, HOURS_PER_DAY = 8, MINUTES_PER_HOUR = 60;
+        const MINUTES_PER_WEEK =  DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
+        const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
+
+        const timePeriodConstraints = [
+          [ 'weeks', MINUTES_PER_WEEK ],
+          [ 'days', MINUTES_PER_DAY ],
+          [ 'hours', MINUTES_PER_HOUR ],
+          [ 'minutes', 1 ]
+        ];
+
+        // Seee if you can just MAP that ^^ to the result
+        const parsedTime = {};
+
+        let unorderedMinutes = this.secondsToMinutes(seconds);
+
+        timePeriodConstraints.forEach((period, idx, collection) => {
+          const periodName = period[0];
+          const minutesPerPeriod = period[1];
+          const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
+
+          unorderedMinutes -= (periodCount * minutesPerPeriod);
+          parsedTime[periodName] = periodCount;
+        });
+
+        return parsedTime;
+      },
+      abbreviateTime(value) {
+        return value.split(' ')[0];
+      },
+      toggleHelpState(show) {
+        this.displayHelp = show;
+      },
+      stringifyTime(obj) {
+        return _.reduce(obj, (memo, val, key) => {
+          return memo + `${val}${key.charAt(0)} `;
+        }, '').trim();
+      },
+    },
     template: `
         <div class='time-tracking-component-wrap'>
           <div class='sidebar-collapsed-icon'>
@@ -79,7 +187,7 @@ function getRandomInt(min, max) {
           </div>
           <div class='time-tracking-content hide-collapsed'>
             <div class='time-tracking-pane-compare' v-if='showComparison'>
-              <div class='compare-meter' data-toggle='tooltip' data-placement='top' v-tooltip-title='remainingTooltipPretty' >
+              <div class='compare-meter' data-toggle='tooltip' data-placement='top' v-tooltip-title='remainingTooltipPretty' :class='diffStatusClass' >
                 <div class='meter-container'>
                   <div :style='{ width: diffPercent }' class='meter-fill'></div>
                 </div>
@@ -125,90 +233,5 @@ function getRandomInt(min, max) {
           </div>
         </div>
     `,
-    data: function() {
-      return {
-        displayHelp: false,
-        loading: false,
-      }
-    },
-    computed: {
-      showComparison() {
-        return !!this.time_estimated && !!this.time_spent;
-      },
-      showEstimateOnly() {
-        return !!this.time_estimated && !this.time_spent;
-      },
-      showSpentOnly() {
-        return !!this.time_spent && !this.time_estimated;
-      },
-      showNoTimeTracking() {
-        return !this.time_estimated && !this.time_spent;
-      },
-      showHelp() {
-        return !!this.displayHelp;
-      },
-      estimatedPretty() {
-        return this.stringifyTime(this.time_estimated);
-      },
-      spentPretty() {
-        return this.stringifyTime(this.time_spent);
-      },
-      remainingPretty() {
-        return this.stringifyTime(this.parsedDiff);
-      },
-      remainingTooltipPretty() {
-        const prefix = this.diffMinutes < 0 ? 'Over by' : 'Time remaining:';
-        return `${prefix} ${this.remainingPretty}`;
-      },
-      parsedDiff () {
-        const MAX_DAYS = 5, MAX_HOURS = 8, MAX_MINUTES = 60;
-        const timePeriodConstraints = [
-          [ 'weeks', MAX_HOURS * MAX_DAYS ],
-          [ 'days', MAX_MINUTES * MAX_HOURS ],
-          [ 'hours', MAX_MINUTES ],
-          [ 'minutes', 1 ]
-        ];
-
-        const parsedDiff = {};
-
-        let unorderedMinutes = Math.abs(this.diffMinutes);
-
-        timePeriodConstraints.forEach((period, idx, collection) => {
-          const periodName = period[0];
-          const minutesPerPeriod = period[1];
-          const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
-
-          unorderedMinutes -= (periodCount * minutesPerPeriod);
-          parsedDiff[periodName] = periodCount;
-        });
-
-        return parsedDiff;
-      },
-      diffMinutes () {
-        const time_estimated = this.time_estimated;
-        const time_spent = this.time_spent;
-        return time_estimated.totalMinutes - time_spent.totalMinutes;
-      },
-      diffPercent() {
-        const estimate = this.estimate;
-        return Math.floor((this.time_spent.totalMinutes / this.time_estimated.totalMinutes * 100)) + '%';
-      },
-      diffStatus() {
-        return this.time_estimated.totalMinutes >= this.time_spent.totalMinutes ? 'within_estimate' : 'over_estimate';
-      }
-    },
-    methods: {
-      abbreviateTime(value) {
-        return value.split(' ')[0];
-      },
-      toggleHelpState(show) {
-        this.displayHelp = show;
-      },
-      stringifyTime(obj) {
-        return _.reduce(obj, (memo, val, key) => {
-          return (key !== 'totalMinutes' && val !== 0) ? (memo + `${val}${key.charAt(0)} `) : memo;
-        }, '').trim();
-      },
-    },
   });
 }) (window.gl || (window.gl = {}));
