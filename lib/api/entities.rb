@@ -210,6 +210,7 @@ module API
 
     class Milestone < ProjectEntity
       expose :due_date
+      expose :start_date
     end
 
     class Issue < ProjectEntity
