@@ -156,7 +156,10 @@ describe "Pipelines" do
       @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
     end
 
-    before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    before do
+      visit namespace_project_pipeline_path(project.namespace, project, pipeline)
+      find('.builds-tab').click
+    end
 
     it 'shows a list of builds' do
       expect(page).to have_content('Test')
