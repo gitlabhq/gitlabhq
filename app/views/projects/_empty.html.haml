@@ -1,3 +1,58 @@
 .row-content-block.second-block.center
   %h3.page-title
     The repository for this project is empty
+  - if can?(current_user, :push_code, @project)
+    %p
+      If you already have files you can push them using command line instructions below.
+    %p
+      Otherwise you can start with adding a
+      = succeed ',' do
+        = link_to "README", new_readme_path, class: 'underlined-link'
+      a
+      = succeed ',' do
+        = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
+      or a
+      = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore'), class: 'underlined-link'
+      to this project.
+    %p
+      You will need to be owner or have the master permission level for the initial push, as the master branch is automatically protected.
+
+- if can?(current_user, :push_code, @project)
+  %div{ class: container_class }
+    .prepend-top-20
+    .empty_wrapper
+      %h3.page-title-empty
+        Command line instructions
+      %div.git-empty
+        %fieldset
+          %h5 Git global setup
+          %pre.light-well
+            :preserve
+              git config --global user.name "#{h git_user_name}"
+              git config --global user.email "#{h git_user_email}"
+
+        %fieldset
+          %h5 Create a new repository
+          %pre.light-well
+            :preserve
+              git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              cd #{h @project.path}
+              touch README.md
+              git add README.md
+              git commit -m "add README"
+              git push -u origin master
+
+        %fieldset
+          %h5 Existing folder or Git repository
+          %pre.light-well
+            :preserve
+              cd existing_folder
+              git init
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git add .
+              git commit
+              git push -u origin master
+
+          - if can? current_user, :remove_project, @project
+            .prepend-top-20
+              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
