@@ -43,18 +43,14 @@ Keep in mind that:
 
 ## Setup instructions
 
-GitLab Geo requires some additional work installing and configuring your
-instance, than a normal setup.
+In order to set up one or more GitLab Geo instances, follow the steps below in
+this **exact order**:
 
-There are a couple of things you need to do in order to have one or more GitLab
-Geo instances. Follow the steps below in the **exact order** that they appear:
-
-1. Follow the instructions to [install GitLab Enterprise Edition][install-ee]
-   on the server that will serve as the secondary Geo node, but don't further
-   configure GitLab as authentication will be handled by the primary node (more
-   on this in the configuration step).
-1. [Setup a database replication](database.md) in `primary <-> secondary (read-only)` topology.
-1. [Configure GitLab](configuration.md) and set the primary and secondary nodes.
+1. Follow the first 3 steps to [install GitLab Enterprise Edition][install-ee]
+   on the server that will serve as the secondary Geo node. Do not login or
+   set up anything else in the secondary node for the moment.
+1. [Setup the database replication](database.md)  (`primary <-> secondary (read-only)` topology)
+1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 
 ## After setup
 
