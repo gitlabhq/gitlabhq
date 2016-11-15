@@ -20,7 +20,7 @@ class Projects::PipelinesController < Projects::ApplicationController
            pipelines: PipelineSerializer
              .new(project: @project, user: @current_user)
              .incremental(@pipelines, @last_updated),
-           updated_at: Time.now,
+           updated_at: Time.now.utc,
            count: {
              all: @pipelines_count,
              running_or_pending: @running_or_pending_count
