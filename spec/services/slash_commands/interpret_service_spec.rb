@@ -222,7 +222,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'populates spend_time: { seconds: 3600, user: user } if content contains /spend 1h' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: { seconds: 3600, user: developer })
+        expect(updates).to eq(spend_time: 3600)
       end
     end
 
@@ -230,12 +230,12 @@ describe SlashCommands::InterpretService, services: true do
       it 'populates spend_time: { seconds: -1800, user: user } if content contains /spend -30m' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: { seconds: -1800, user: developer })
+        expect(updates).to eq(spend_time: -1800)
       end
     end
 
-    shared_examples 'remove_estimation command' do
-      it 'populates time_estimate: "0" if content contains /remove_estimation' do
+    shared_examples 'remove_estimate command' do
+      it 'populates time_estimate: "0" if content contains /remove_estimate' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(time_estimate: 0)
@@ -243,10 +243,10 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'remove_time_spent command' do
-      it 'populates spend_time: "0" if content contains /remove_time_spent' do
+      it 'populates spend_time: ":reset" if content contains /remove_time_spent' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: { seconds: 0, user: developer })
+        expect(updates).to eq(spend_time: :reset)
       end
     end
 
@@ -526,8 +526,8 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'remove_estimation command' do
-      let(:content) { '/remove_estimation' }
+    it_behaves_like 'remove_estimate command' do
+      let(:content) { '/remove_estimate' }
       let(:issuable) { issue }
     end
 

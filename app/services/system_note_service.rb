@@ -151,7 +151,7 @@ module SystemNoteService
   def change_time_spent(noteable, project, author)
     time_spent = noteable.time_spent
 
-    if time_spent.zero?
+    if time_spent == :reset
       body = "Removed time spent on this #{noteable.human_class_name}"
     else
       parsed_time = ChronicDuration.output(time_spent.abs, format: :short)

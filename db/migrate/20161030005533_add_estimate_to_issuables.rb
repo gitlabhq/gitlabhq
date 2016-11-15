@@ -24,8 +24,8 @@ class AddEstimateToIssuables < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def up
-    add_column_with_default :issues, :time_estimate, :integer, default: 0
-    add_column_with_default :merge_requests, :time_estimate, :integer, default: 0
+    add_column :issues, :time_estimate, :integer
+    add_column :merge_requests, :time_estimate, :integer
   end
 
   def down
