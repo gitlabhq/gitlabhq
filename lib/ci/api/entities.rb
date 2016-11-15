@@ -50,6 +50,10 @@ module Ci
 
         expose :variables
         expose :depends_on_builds, using: Build
+
+        expose :registry_url, if: ->(_, _) { Gitlab.config.registry.enabled } do |_|
+          Gitlab.config.registry.host_port
+        end
       end
 
       class Runner < Grape::Entity
