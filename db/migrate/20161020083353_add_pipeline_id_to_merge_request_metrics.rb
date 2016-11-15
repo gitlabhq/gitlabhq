@@ -24,6 +24,8 @@ class AddPipelineIdToMergeRequestMetrics < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    add_reference :merge_request_metrics, :ci_commit, index: true, foreign_key: { on_delete: :cascade }
+    add_column :merge_request_metrics, :pipeline_id, :integer
+    add_index :merge_request_metrics, :pipeline_id
+    add_foreign_key :merge_request_metrics, :ci_commits, column: :pipeline_id, on_delete: :cascade
   end
 end

@@ -20,7 +20,7 @@ module Gitlab
       end
 
       def test_custom_query(base_query)
-        base_query.join(build_table).on(mr_metrics_table[:ci_commit_id].eq(build_table[:commit_id]))
+        base_query.join(build_table).on(mr_metrics_table[:pipeline_id].eq(build_table[:commit_id]))
       end
 
       alias_method :staging_custom_query, :test_custom_query

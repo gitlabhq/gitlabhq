@@ -2,6 +2,7 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   include CycleAnalyticsParams
 
   before_action :authorize_read_cycle_analytics!
+  before_action :authorize_read_builds!, only: [:test, :staging]
 
   def issue
     render_events(events.issue_events)
@@ -16,7 +17,7 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   end
 
   def test
-    @opts = { from: start_date(events_params), branch: events_params[:branch_name] }
+    @options = { from: start_date(events_params), branch: events_params[:branch_name] }
 
     render_events(events.test_events)
   end
@@ -47,12 +48,12 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
   end
 
   def options
-    @opts ||= { from: start_date(events_params) }
+    @options ||= { from: start_date(events_params) }
   end
 
   def events_params
     return {} unless params[:events].present?
 
-    { start_date: params[:events][:start_date], branch_name: params[:events][:branch_name] }
+    params[:events].slice(:start_date, :branch_name)
   end
 end
