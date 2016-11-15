@@ -148,7 +148,19 @@
   }
 }
 
-.atwho-view small.description {
-  float: right;
-  padding: 3px 5px;
+.atwho-view {
+  small.description {
+    float: right;
+    padding: 3px 5px;
+  }
+
+  .avatar-inline {
+    margin-bottom: 0;
+  }
+
+  .cur {
+    .avatar {
+      border: 1px solid $white-light;
+    }
+  }
 }
