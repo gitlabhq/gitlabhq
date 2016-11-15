@@ -117,6 +117,41 @@ production:
 
 [Restart GitLab][restart] for the changes to take effect.
 
+
+## External Groups
+
+>**Note:** External Groups configuration is only available in GitLab EE Version
+8.9 and above.
+
+Using the `external_groups` setting will allow you to mark all users belonging
+to these groups as [external users](../../user/permissions.md). Group membership is
+checked periodically through the `LdapGroupSync` background task.
+
+**Omnibus configuration**
+
+```ruby
+gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+main:
+  # snip...
+  external_groups: ['interns', 'contractors']
+EOS
+```
+
+[Reconfigure GitLab][reconfigure] for the changes to take effect.
+
+**Source configuration**
+
+```yaml
+production:
+  ldap:
+    servers:
+      main:
+        # snip...
+        external_groups: ['interns', 'contractors']
+```
+
+[Restart GitLab][restart] for the changes to take effect.
+
 ## Group Sync Technical Details
 
 There is a lot going on with group sync 'under the hood'. This section
