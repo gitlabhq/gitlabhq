@@ -2,7 +2,10 @@
 (function(global) {
   class LabelSubscription {
     constructor(container) {
-      $(container).on('click', '.js-subscribe-button', this.toggleSubscription);
+      this.$container = $(container);
+      this.$buttons = this.$container.find('.js-subscribe-button');
+
+      this.$buttons.on('click', this.toggleSubscription.bind(this));
     }
 
     toggleSubscription(event) {
@@ -28,11 +31,19 @@
           [newStatus, newAction] = ['subscribed', 'Unsubscribe'];
         }
 
-        $span.text(newAction);
         $span.toggleClass('hidden');
         $btn.removeClass('disabled');
-        $btn.tooltip('hide').attr('data-original-title', newAction).tooltip('fixTitle');
-        $btn.attr('data-status', newStatus);
+
+        this.$buttons.attr('data-status', newStatus);
+        this.$buttons.find('> span').text(newAction);
+
+        for (let button of this.$buttons) {
+          let $button = $(button);
+
+          if ($button.attr('data-original-title')) {
+            $button.tooltip('hide').attr('data-original-title', newAction).tooltip('fixTitle');
+          }
+        }
       });
     }
   }

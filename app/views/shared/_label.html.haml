@@ -20,8 +20,18 @@
             = pluralize open_issues_count, 'open issue'
         - if current_user && defined?(@project)
           %li.label-subscription
-            %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', data: { toggle: 'tooltip', status: label_subscription_status(label, @project), url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
-              %span= label_subscription_toggle_button_text(label, @project)
+            - if label.is_a?(ProjectLabel)
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', data: { status: label_subscription_status(label, @project), url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                %span= label_subscription_toggle_button_text(label, @project)
+            - else
+              - status = group_label_subscription_status(label, @project).inquiry
+              %a.js-unsubscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' if status.unsubscribed?), data: { url: group_label_unsubscribe_path(label, @project) } }
+                %span Unsubscribe
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                %span Subscribe at project level
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
+                %span Subscribe at group level
+
         - if can?(current_user, :admin_label, label)
           %li
             = link_to 'Edit', edit_label_path(label)
