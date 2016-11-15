@@ -90,6 +90,6 @@
           %template{ "v-if" => "isLoadingStage" }
             = icon("spinner spin", "v-show" => "isLoadingStage")
           %template{ "v-if" => "isEmptyStage" }
-            %p No results
+            = render partial: "empty_stage"
           %template{ "v-if" => "state.items.length && !isLoadingStage && !isEmptyStage" }
             %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.items" }

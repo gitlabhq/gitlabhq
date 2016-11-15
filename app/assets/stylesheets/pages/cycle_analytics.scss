@@ -352,4 +352,23 @@
       } 
     }
   }
+
+  .empty-stage {
+    text-align: center;
+    width: 75%;
+    margin: 0 auto;
+    padding-top: 130px;
+    color: $gl-text-color-light;
+
+    .icon-no-data {
+      height: 36px;
+      width: 78px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      color: $gl-text-color;
+    }
+  }
 }

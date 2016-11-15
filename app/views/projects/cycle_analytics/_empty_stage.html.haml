@@ -1,0 +1,12 @@
+.empty-stage-container
+  .empty-stage
+    .icon-no-data
+      = render "shared/icons/icon_no_data.svg"
+    %h4 We don’t have enough data to show this stage.
+    %p
+      The test phase measures the median time to run the entire pipeline for that project.
+      It’s related to the time GitLab CI takes to run every job for the commits pushed
+      to that merge request defined in the previous stage.
+      Learn more about the
+      %a{ :href => "https://docs.gitlab.com/ce/user/project/cycle_analytics.html" }
+        expected workflow and calculations.
