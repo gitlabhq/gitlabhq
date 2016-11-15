@@ -51,8 +51,7 @@ module API
         use :project_hook_properties
       end
       post ":id/hooks" do
-        new_hook_params = declared(params, include_missing: false, include_parent_namespaces: false).to_h
-        hook = user_project.hooks.new(new_hook_params)
+        hook = user_project.hooks.new(declared_params(include_missing: false))
 
         if hook.save
           present hook, with: Entities::ProjectHook
@@ -71,12 +70,9 @@ module API
         use :project_hook_properties
       end
       put ":id/hooks/:hook_id" do
-        hook = user_project.hooks.find(params[:hook_id])
+        hook = user_project.hooks.find(params.delete(:hook_id))
 
-        new_params = declared(params, include_missing: false, include_parent_namespaces: false).to_h
-        new_params.delete('hook_id')
-
-        if hook.update_attributes(new_params)
+        if hook.update_attributes(declared_params(include_missing: false))
           present hook, with: Entities::ProjectHook
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?

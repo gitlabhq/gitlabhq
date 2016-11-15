@@ -33,10 +33,9 @@
   }
 
   .search-input {
-    padding-right: 20px;
     border: none;
     font-size: 14px;
-    padding: 0;
+    padding: 0 20px 0 0;
     margin-left: 5px;
     line-height: 25px;
     width: 98%;
@@ -158,7 +157,6 @@
       width: 68%;
     }
   }
-
 }
 
 .search-holder {
@@ -235,5 +233,4 @@
   &:focus {
     color: $gl-link-color;
   }
-
 }

@@ -631,7 +631,7 @@ class Repository
     @head_tree ||= Tree.new(self, head_commit.sha, nil)
   end
 
-  def tree(sha = :head, path = nil)
+  def tree(sha = :head, path = nil, recursive: false)
     if sha == :head
       if path.nil?
         return head_tree
@@ -640,7 +640,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path)
+    Tree.new(self, sha, path, recursive: recursive)
   end
 
   def blob_at_branch(branch_name, path)

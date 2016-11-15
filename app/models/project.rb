@@ -35,6 +35,7 @@ class Project < ActiveRecord::Base
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
@@ -1332,10 +1333,6 @@ class Project < ActiveRecord::Base
     environments.available.where(id: environment_ids).select do |environment|
       environment.includes_commit?(commit)
     end
-  end
-
-  def only_allow_merge_if_all_discussions_are_resolved
-    super || false
   end
 
   private
