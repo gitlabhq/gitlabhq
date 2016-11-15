@@ -15,9 +15,19 @@
   */
 
   global.cycleAnalytics.ItemMergeRequestComponent = Vue.extend({
-    template: '#item-merge-request-component',
     props: {
       mergeRequest: Object,
-    }
+    },
+    template: `
+      <div>
+        <p>
+          <h5>
+            <a href="mergeRequest.url">
+              {{ mergeRequest.title }}
+            </a>
+          </h5>
+        </p>
+      </div>
+    `,
   });
 }(window.gl || (window.gl = {})));

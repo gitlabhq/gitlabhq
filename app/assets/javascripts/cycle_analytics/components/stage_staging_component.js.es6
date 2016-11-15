@@ -9,7 +9,19 @@
     },
     props: {
       items: Array,
-    }
+    },
+    template: `
+      <div>
+        <div class="events-description">
+          The time taken in staging
+        </div>
+        <ul>
+          <li v-for="build in items">
+            <item-build-component :build="build"></item-build-component>
+          </li>
+        </ul>
+      </div>
+    `,
   });
 
 })(window.gl || (window.gl = {}));

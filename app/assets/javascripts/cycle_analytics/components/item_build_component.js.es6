@@ -16,9 +16,19 @@
   */
 
   global.cycleAnalytics.ItemBuildComponent = Vue.extend({
-    template: '#item-build-component',
     props: {
       build: Object,
-    }
+    },
+    template: `
+      <div>
+        <p>
+          <h5>
+            <a href="build.url">
+              {{ build.title }}
+            </a>
+          </h5>
+        </p>
+      </div>
+    `,
   });
 }(window.gl || (window.gl = {})));
