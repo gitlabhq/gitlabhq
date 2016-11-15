@@ -1,5 +1,5 @@
 /* global Vue, VueResource, gl */
-/* eslint-disable no-bitwise*/
+/* eslint-disable no-bitwise, no-plusplus*/
 
 //= require vue-resource
 
