@@ -15,16 +15,6 @@ class Repository
     Gitlab.config.repositories.storages
   end
 
-  def self.remove_storage_from_path(repo_path)
-    storages.find do |_, storage_path|
-      if repo_path.start_with?(storage_path)
-        return repo_path.sub(storage_path, '')
-      end
-    end
-
-    repo_path
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
