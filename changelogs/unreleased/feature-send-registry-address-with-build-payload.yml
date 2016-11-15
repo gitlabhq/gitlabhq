@@ -1,0 +1,4 @@
+---
+title: Send registry_url with build data to GitLab Runner
+merge_request: 7474
+author:
