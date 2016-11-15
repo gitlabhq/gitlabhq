@@ -52,7 +52,11 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has a sha short ID' do
-      expect(subject.plan_events.first[:sha]).not_to be_nil
+      expect(subject.plan_events.first[:short_sha]).not_to be_nil
+    end
+
+    it 'has the URL' do
+      expect(subject.plan_events.first[:commit_url]).not_to be_nil
     end
 
     it 'has the total time' do
@@ -68,7 +72,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it "has the author's name" do
-      expect(subject.plan_events.first[:author][:name]).to eq(context.author.name)
+      expect(subject.plan_events.first[:author][:name]).not_to be_nil
     end
   end
 

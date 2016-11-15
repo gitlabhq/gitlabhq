@@ -7,55 +7,46 @@ module Gitlab
       end
 
       def issue_events
-        @fetcher.fetch(stage: :issue).map { |event| parse_event(event) }
+        @fetcher.fetch(stage: :issue).map { |event| serialize_event(event) }
       end
 
       def plan_events
-        @fetcher.fetch(stage: :plan).each do |event|
-          event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
+        @fetcher.fetch(stage: :plan).map do |event|
           commit = first_time_reference_commit(event.delete('commits'), event)
-          event['title'] = commit.title
-          event['url'] = Gitlab::LightUrlBuilder.build(entity: :commit, project: @project, id: commit.id)
-          event['sha'] = commit.short_id
-          event['author_name'] = commit.author.name
-          event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: commit.author.username)
-          event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar, id: commit.author.id)
+
+          AnalyticsCommitSerializer.new(project: @project, total_time: event['total_time']).represent(commit).as_json
         end
       end
 
       def code_events
-        @fetcher.fetch(stage: :code).map { |event| parse_event(event, entity: :merge_request) }
+        @fetcher.fetch(stage: :code).map { |event| serialize_event(event, entity: :merge_request) }
       end
 
       def test_events
-        @fetcher.fetch(stage: :test).map do |event|
-          parse_build_event(event)
-        end
+        @fetcher.fetch(stage: :test).map { |event| serialize_build_event(event) }
       end
 
       def review_events
-        @fetcher.fetch(stage: :review).map { |event| parse_event(event, entity: :merge_request) }
+        @fetcher.fetch(stage: :review).map { |event| serialize_event(event, entity: :merge_request) }
       end
 
       def staging_events
-        @fetcher.fetch(stage: :staging).map do |event|
-          parse_build_event(event)
-        end
+        @fetcher.fetch(stage: :staging).map { |event| serialize_build_event(event) }
       end
 
       def production_events
-        @fetcher.fetch(stage: :production).map { |event| parse_event(event) }
+        @fetcher.fetch(stage: :production).map { |event| serialize_event(event) }
       end
 
       private
 
-      def parse_event(event, entity: :issue)
+      def serialize_event(event, entity: :issue)
         event['author'] = User.find(event.delete('author_id'))
 
         AnalyticsGenericSerializer.new(project: @project, entity: entity).represent(event).as_json
       end
 
-      def parse_build_event(event)
+      def serialize_build_event(event)
         build = ::Ci::Build.find(event['id'])
 
         AnalyticsBuildSerializer.new.represent(build).as_json
