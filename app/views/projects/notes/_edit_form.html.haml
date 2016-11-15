@@ -1,5 +1,8 @@
 .note-edit-form
   = form_tag '#', method: :put, remote: true, class: 'edit-note common-note-form js-quick-submit' do
+    = hidden_field_tag :authenticity_token, form_authenticity_token
+    = hidden_field_tag :target_id, '', class: 'formTargetId'
+    = hidden_field_tag :target_type, '', class: 'formTargetType'
     = render layout: 'projects/md_preview', locals: { preview_class: 'md-preview' } do
       = render 'projects/zen', attr: 'note[note]', classes: 'note-textarea js-note-text js-task-list-field', placeholder: "Write a comment or drag your files here..."
       = render 'projects/notes/hints'

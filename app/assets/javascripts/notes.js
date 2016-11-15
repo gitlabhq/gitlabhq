@@ -517,7 +517,11 @@
     Notes.prototype.showEditForm = function(e, scrollTo, myLastNote) {
       e.preventDefault();
 
+      var $target = $(e.target);
+      var $editForm = $('.note-edit-form');
+      var $note = $target.closest('.note');
       var $currentlyEditing = $('.note.is-editting');
+
       if ($currentlyEditing.length) {
         var isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
 
@@ -526,21 +530,10 @@
         }
       }
 
-      var $editForm = $('.note-edit-form');
-      var $note = $(e.target).closest('.note');
-
-      $editForm.insertAfter($note.find('.note-text'));
-
-      var $noteText = $editForm.find('.js-note-text');
-      var $originalContentEl = $note.find('.original-note-content');
-      var originalContent = $originalContentEl.text().trim();
-      var postUrl = $originalContentEl.data('post-url');
-      $note.addClass('is-editting');
-      $editForm.find('form').attr('action', postUrl);
-      $editForm.addClass('current-note-edit-form');
       $note.find('.js-note-attachment-delete').show(); // Show the attachment delete link
-      new GLForm($editForm.find('form'));
-      $editForm.find('.js-note-text').focus().val(originalContent);
+      $editForm.addClass('current-note-edit-form');
+      $note.addClass('is-editting');
+      this.putEditFormInPlace($target);
     };
 
 
@@ -865,15 +858,41 @@
 
     Notes.prototype.initTaskList = function() {
       this.enableTaskList();
-      return $(document).on('tasklist:changed', '.note .js-task-list-container', this.updateTaskList);
+      return $(document).on('tasklist:changed', '.note .js-task-list-container', this.updateTaskList.bind(this));
     };
 
     Notes.prototype.enableTaskList = function() {
       return $('.note .js-task-list-container').taskList('enable');
     };
 
-    Notes.prototype.updateTaskList = function() {
-      return $('form', this).submit();
+    Notes.prototype.putEditFormInPlace = function($el) {
+      var $editForm = $('.note-edit-form');
+      var $note = $el.closest('.note');
+
+      $editForm.insertAfter($note.find('.note-text'));
+
+      var $originalContentEl = $note.find('.original-note-content');
+      var originalContent = $originalContentEl.text().trim();
+      var postUrl = $originalContentEl.data('post-url');
+      var targetId = $originalContentEl.data('target-id');
+      var targetType = $originalContentEl.data('target-type');
+
+      new GLForm($editForm.find('form'));
+
+      $editForm.find('form').attr('action', postUrl);
+      $editForm.find('.formTargetId').val(targetId);
+      $editForm.find('.formTargetType').val(targetType);
+      $editForm.find('.js-note-text').focus().val(originalContent);
+    }
+
+    Notes.prototype.updateTaskList = function(e) {
+      var $list = $(e.target).closest('.js-task-list-container');
+      var $editForm = $('.note-edit-form');
+      var $note = $list.closest('.note');
+
+      this.putEditFormInPlace($list);
+      $editForm.find('#note_note').val($note.find('.original-task-list').val());
+      $('form', $list).submit();
     };
 
     Notes.prototype.updateNotesCount = function(updateCount) {
