@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def review_events
-        @fetcher.fetch(stage: :review).map { |event| parse_event(event) }
+        @fetcher.fetch(stage: :review).map { |event| parse_event(event, entity: :merge_request) }
       end
 
       def staging_events
@@ -44,7 +44,7 @@ module Gitlab
       end
 
       def production_events
-        @fetcher.fetch(stage: :production).each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :production).map { |event| parse_event(event) }
       end
 
       private

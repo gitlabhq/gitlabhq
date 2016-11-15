@@ -60,15 +60,15 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it "has the author's URL" do
-      expect(subject.plan_events.first[:author_profile_url]).not_to be_nil
+      expect(subject.plan_events.first[:author][:web_url]).not_to be_nil
     end
 
     it "has the author's avatar URL" do
-      expect(subject.plan_events.first[:author_avatar_url]).not_to be_nil
+      expect(subject.plan_events.first[:author][:avatar_url]).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.plan_events.first[:author_name]).not_to be_nil
+      expect(subject.plan_events.first[:author][:name]).to eq(context.author.name)
     end
   end
 
@@ -94,15 +94,15 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it "has the author's URL" do
-      expect(subject.code_events.first[:author_profile_url]).not_to be_nil
+      expect(subject.code_events.first[:author][:web_url]).not_to be_nil
     end
 
     it "has the author's avatar URL" do
-      expect(subject.code_events.first[:author_avatar_url]).not_to be_nil
+      expect(subject.code_events.first[:author][:avatar_url]).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.code_events.first[:author_name]).to eq(context.author.name)
+      expect(subject.code_events.first[:author][:name]).to eq(MergeRequest.first.author.name)
     end
   end
 
@@ -184,19 +184,19 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has a created_at timestamp' do
-      expect(subject.review_events.first[:opened_at]).not_to be_nil
+      expect(subject.review_events.first[:created_at]).not_to be_nil
     end
 
     it "has the author's URL" do
-      expect(subject.review_events.first[:author_profile_url]).not_to be_nil
+      expect(subject.review_events.first[:author][:web_url]).not_to be_nil
     end
 
     it "has the author's avatar URL" do
-      expect(subject.review_events.first[:author_avatar_url]).not_to be_nil
+      expect(subject.review_events.first[:author][:avatar_url]).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.review_events.first[:author_name]).to eq(MergeRequest.first.author.name)
+      expect(subject.review_events.first[:author][:name]).to eq(MergeRequest.first.author.name)
     end
   end
 
@@ -237,11 +237,11 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the branch URL' do
-      expect(subject.staging_events.first[:branch_url]).not_to be_nil
+      expect(subject.staging_events.first[:branch][:url]).not_to be_nil
     end
 
     it 'has the short SHA' do
-      expect(subject.staging_events.first[:sha]).not_to be_nil
+      expect(subject.staging_events.first[:short_sha]).not_to be_nil
     end
 
     it 'has the commit URL' do
@@ -256,8 +256,16 @@ describe Gitlab::CycleAnalytics::Events do
       expect(subject.staging_events.first[:total_time]).not_to be_nil
     end
 
-    it 'has the author name' do
-      expect(subject.staging_events.first[:author_name]).not_to be_nil
+    it "has the author's URL" do
+      expect(subject.staging_events.first[:author][:web_url]).not_to be_nil
+    end
+
+    it "has the author's avatar URL" do
+      expect(subject.staging_events.first[:author][:avatar_url]).not_to be_nil
+    end
+
+    it "has the author's name" do
+      expect(subject.staging_events.first[:author][:name]).to eq(MergeRequest.first.author.name)
     end
   end
 
@@ -290,15 +298,15 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it "has the author's URL" do
-      expect(subject.production_events.first[:author_profile_url]).not_to be_nil
+      expect(subject.production_events.first[:author][:web_url]).not_to be_nil
     end
 
     it "has the author's avatar URL" do
-      expect(subject.production_events.first[:author_avatar_url]).not_to be_nil
+      expect(subject.production_events.first[:author][:avatar_url]).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.production_events.first[:author_name]).to eq(context.author.name)
+      expect(subject.production_events.first[:author][:name]).to eq(context.author.name)
     end
   end
 

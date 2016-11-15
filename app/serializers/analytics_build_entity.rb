@@ -1,13 +1,20 @@
 class AnalyticsBuildEntity < Grape::Entity
   include RequestAwareEntity
+  include EntityDateHelper
 
   expose :name
   expose :id
   expose :ref, as: :branch
   expose :short_sha
-  expose :started_at, as: :date
-  expose :duration, as: :total_time
   expose :author, using: UserEntity
+
+  expose :started_at, as: :date do |build|
+    interval_in_words(build[:started_at])
+  end
+
+  expose :duration, as: :total_time do |build|
+    distance_of_time_in_words(build[:duration].to_f)
+  end
 
   expose :branch do
     expose :ref, as: :name

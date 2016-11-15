@@ -1,10 +1,10 @@
 class AnalyticsGenericEntity < Grape::Entity
   include RequestAwareEntity
-  include ActionView::Helpers::DateHelper
-
+  include EntityDateHelper
 
   expose :title
   expose :iid
+  expose :state, if: ->(_instance, options) { options[:request].entity == :merge_request }
   expose :author, using: UserEntity
 
   expose :total_time do |object|
@@ -23,9 +23,5 @@ class AnalyticsGenericEntity < Grape::Entity
 
   def url_to(route, id)
     public_send("#{route}_url", request.project.namespace, request.project, id)
-  end
-
-  def interval_in_words(diff)
-    "#{distance_of_time_in_words(diff.to_f)} ago"
   end
 end
