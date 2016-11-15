@@ -15,10 +15,10 @@ This is the final step you need to follow in order to setup a Geo node.
   - [Step 3. Copying the database encryption key](#step-3-copying-the-database-encryption-key)
   - [Step 4. Enabling the secondary GitLab node](#step-4-enabling-the-secondary-gitlab-node)
   - [Step 5. Replicating the repositories data](#step-5-replicating-the-repositories-data)
-  - [Step 6. Regenerating the authorized keys](#step-6-regenerating-the-authorized-keys)
+  - [Step 6. Regenerating the authorized keys in the secondary node](#step-6-regenerating-the-authorized-keys-in-the-secondary-node)
   - [Next steps](#next-steps)
-- [Additional information for the SSH key pairs](#additional-information-for-the-ssh-key-pairs)
 - [Adding another secondary Geo node](#adding-another-secondary-geo-node)
+- [Additional information for the SSH key pairs](#additional-information-for-the-ssh-key-pairs)
 - [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
