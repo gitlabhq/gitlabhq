@@ -82,4 +82,14 @@ describe Key, models: true do
       @key.destroy
     end
   end
+
+  describe '#key=' do
+    let(:valid_key) do
+      "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0= dummy@gitlab.com"
+    end
+
+    it 'strips white spaces' do
+      expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
+    end
+  end
 end
