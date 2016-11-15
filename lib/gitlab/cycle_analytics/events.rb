@@ -49,10 +49,10 @@ module Gitlab
 
       private
 
-      def parse_event(event)
+      def parse_event(event, entity: :issue)
         event['author'] = User.find(event.remove('author_id'))
 
-        AnalyticsGenericSerializer.new(project: @project).represent(event).as_json
+        AnalyticsGenericSerializer.new(project: @project, entity: entity).represent(event).as_json
       end
 
       def parse_build_event(event)

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AnalyticsGenericSerializer do
   let(:serializer) do
     described_class
-      .new(project: project)
+      .new(project: project, entity: :merge_request)
       .represent(resource)
   end
 
@@ -18,7 +18,6 @@ describe AnalyticsGenericSerializer do
       id: "1",
       created_at: "2016-11-12 15:04:02.948604",
       author: user,
-      entity: :merge_request
     }
   }
 

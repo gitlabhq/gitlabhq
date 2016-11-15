@@ -10,14 +10,14 @@ describe AnalyticsGenericEntity do
       id: "1",
       created_at: "2016-11-12 15:04:02.948604",
       author: user,
-      entity: :merge_request
     }
   }
 
   let(:project) { create(:empty_project) }
+  let(:request) { EntityRequest.new(project: project, entity: :merge_request) }
 
   let(:entity) do
-    described_class.new(entity_hash, request: double, project: project)
+    described_class.new(entity_hash, request: request, project: project)
   end
 
   context 'generic entity' do

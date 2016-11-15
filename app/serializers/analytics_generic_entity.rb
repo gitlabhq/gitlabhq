@@ -17,7 +17,7 @@ class AnalyticsGenericEntity < Grape::Entity
   end
 
   expose :url do |object|
-    url_to("namespace_project_#{object[:entity]}".to_sym, id: object[:iid].to_s)
+    url_to("namespace_project_#{request.entity}".to_sym, id: object[:iid].to_s)
   end
 
   private
