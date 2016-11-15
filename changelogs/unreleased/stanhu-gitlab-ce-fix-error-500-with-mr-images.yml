@@ -1,0 +1,4 @@
+---
+title: Fix Error 500 when creating a merge request that contains an image that was deleted and added
+merge_request: 7457
+author:
