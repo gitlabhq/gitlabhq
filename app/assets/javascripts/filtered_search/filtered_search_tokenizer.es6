@@ -62,10 +62,20 @@
           const keyMatch = this.validTokenKeys.filter(v => v.key === tokenKey)[0];
           const symbolMatch = this.validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
 
-          if (tokenValue.indexOf('"') !== -1) {
+          const doubleQuoteIndex = tokenValue.indexOf('"');
+          const singleQuoteIndex = tokenValue.indexOf('\'');
+
+          const doubleQuoteExist = doubleQuoteIndex !== -1;
+          const singleQuoteExist = singleQuoteIndex !== -1;
+
+          if ((doubleQuoteExist && !singleQuoteExist) ||
+            (doubleQuoteExist && singleQuoteExist && doubleQuoteIndex < singleQuoteIndex)) {
+            // " is found and is in front of ' (if any)
             lastQuotation = '"';
             incompleteToken = true;
-          } else if (tokenValue.indexOf('\'') !== -1) {
+          } else if ((singleQuoteExist && !doubleQuoteExist) ||
+           (doubleQuoteExist && singleQuoteExist && singleQuoteIndex < doubleQuoteIndex)) {
+            // ' is found and is in front of " (if any)
             lastQuotation = '\'';
             incompleteToken = true;
           }
