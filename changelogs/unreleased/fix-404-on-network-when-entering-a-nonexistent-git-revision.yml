@@ -1,0 +1,4 @@
+---
+title: Fix 404 on network page when entering non-existent git revision
+merge_request: 7172
+author: Hiroyuki Sato
