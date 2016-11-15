@@ -11,8 +11,8 @@
     ],
     computed: {
       user() {
-        if (!this.pipeline.user) return 'API';
-        return this.pipeline.user;
+        if (!this.pipeline.user === null) return true;
+        return false;
       },
     },
     template: `
@@ -21,7 +21,24 @@
           <span class="pipeline-id">#{{pipeline.id}}</span>
         </a>
         <span>by</span>
-        <span class="api monospace">{{user}}</span>
+        <a
+          v-if='user'
+          :href='pipeline.user.url'
+        >
+          <img
+            v-if='user'
+            class="avatar has-tooltip s20 "
+            :title='pipeline.user.name'
+            data-container="body"
+            :src='pipeline.user.avatar_url || pipeline.user.gravatar'
+          >
+        </a>
+        <span
+          v-if='!user'
+          class="api monospace"
+        >
+          API
+        </span>
         <span
           v-if='pipeline.flags.latest === true'
           class="label label-success has-tooltip"

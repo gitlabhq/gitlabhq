@@ -1,8 +1,9 @@
 require 'spec_helper'
+require 'rails_helper'
 
 describe "Pipelines", feature: true, js: true do
   include GitlabRoutingHelper
-  include WaitForAjax
+  include WaitForVueResource
 
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
@@ -12,19 +13,31 @@ describe "Pipelines", feature: true, js: true do
     project.team << [user, :developer]
   end
 
-  describe 'GET /:project/pipelines' do
+  describe 'GET /:project/pipelines', feature: true, js: true do
+    include WaitForVueResource
+
     let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running') }
 
-    [:all, :running, :branches].each do |scope|
+    [:pipelines].each do |scope|
       context "displaying #{scope}" do
         let(:project) { create(:project) }
 
         before { visit namespace_project_pipelines_path(project.namespace, project, scope: scope) }
 
         it do
-          wait_for_ajax
+          wait_for_vue_resource
           expect(page).to have_content(pipeline.short_sha)
         end
+      end
+    end
+
+    [:running, :branches].each do |scope|
+      context "displaying #{scope}" do
+        let(:project) { create(:project) }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project, scope: scope) }
+
+        it { expect(page).to have_content(pipeline.short_sha) }
       end
     end
 
@@ -42,14 +55,31 @@ describe "Pipelines", feature: true, js: true do
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
-      it { expect(page).to have_link('Cancel') }
-      it { expect(page).to have_selector('.ci-running') }
+      it do
+        wait_for_vue_resource
+        expect(page).to have_link('Cancel')
+      end
+
+      it do
+        wait_for_vue_resource
+        expect(page).to have_selector('.ci-running')
+      end
 
       context 'when canceling' do
-        before { click_link('Cancel') }
+        before do
+          wait_for_vue_resource
+          click_link('Cancel')
+        end
 
-        it { expect(page).not_to have_link('Cancel') }
-        it { expect(page).to have_selector('.ci-canceled') }
+        it do
+          wait_for_vue_resource
+          expect(page).not_to have_link('Cancel')
+        end
+
+        it do
+          wait_for_vue_resource
+          expect(page).to have_selector('.ci-canceled')
+        end
       end
     end
 
@@ -77,12 +107,21 @@ describe "Pipelines", feature: true, js: true do
 
       before { visit namespace_project_pipelines_path(project.namespace, project) }
 
-      it { expect(page).to have_link('Manual build') }
+      it do
+        wait_for_vue_resource
+        expect(page).to have_link('Manual build')
+      end
 
       context 'when playing' do
-        before { click_link('Manual build') }
+        before do
+          wait_for_vue_resource
+          click_link('Manual build')
+        end
 
-        it { expect(manual.reload).to be_pending }
+        it do
+          wait_for_vue_resource
+          expect(manual.reload).to be_pending
+        end
       end
     end
 
@@ -127,8 +166,15 @@ describe "Pipelines", feature: true, js: true do
 
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
-        it { expect(page).to have_selector('.build-artifacts') }
-        it { expect(page).to have_link(with_artifacts.name) }
+        it do
+          wait_for_vue_resource
+          expect(page).to have_selector('.build-artifacts')
+        end
+
+        it do
+          wait_for_vue_resource
+          expect(page).to have_link(with_artifacts.name)
+        end
       end
 
       context 'with artifacts expired' do
@@ -149,7 +195,7 @@ describe "Pipelines", feature: true, js: true do
     end
   end
 
-  describe 'GET /:project/pipelines/:id' do
+  describe 'GET /:project/pipelines/:id', feature: true, js: true do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
 
     before do
@@ -207,7 +253,7 @@ describe "Pipelines", feature: true, js: true do
     end
   end
 
-  describe 'POST /:project/pipelines' do
+  describe 'POST /:project/pipelines', feature: true, js: true do
     let(:project) { create(:project) }
 
     before { visit new_namespace_project_pipeline_path(project.namespace, project) }
@@ -238,7 +284,7 @@ describe "Pipelines", feature: true, js: true do
     end
   end
 
-  describe 'Create pipelines', feature: true do
+  describe 'Create pipelines', feature: true, js: true do
     let(:project) { create(:project) }
 
     before do

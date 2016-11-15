@@ -16,7 +16,7 @@
 
 (() => {
   const url = window.location.href;
-  if (~url.indexOf('scope')) return null;
+  if (~url.indexOf('scope') && !~url.indexOf('scope=pipelines')) return null;
 
   const project = document.querySelector('.pipelines');
 

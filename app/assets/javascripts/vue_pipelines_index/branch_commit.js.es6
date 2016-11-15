@@ -46,7 +46,6 @@
             <!-- ** will still need gravatar url ** -->
             <img
               class="avatar has-tooltip s20 hidden-xs"
-              :alt='alt'
               :title='pipeline.commit.author_name'
               data-container="body"
               :src='avatarUrl'

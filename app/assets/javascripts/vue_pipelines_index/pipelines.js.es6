@@ -33,7 +33,9 @@
     ],
     created() {
       const url = window.location.toString();
-      if (~url.indexOf('?')) this.pagenum = url.split('?')[1].split('=')[1];
+      if (~url.indexOf('?') && !~url.indexOf('scope=pipelines')) {
+        this.pagenum = url.split('?')[1].split('=')[1];
+      }
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
     },
     methods: {
