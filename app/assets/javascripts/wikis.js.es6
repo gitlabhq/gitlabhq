@@ -17,8 +17,8 @@
       $(this.sidebarEl).niceScroll();
 
       const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
-      for (const toggle of sidebarToggles) {
-        toggle.addEventListener('click', e => this.handleToggleSidebar(e));
+      for (let i = 0; i < sidebarToggles.length; i += 1) {
+        sidebarToggles[i].addEventListener('click', e => this.handleToggleSidebar(e));
       }
 
       this.newWikiForm = document.querySelector('form.new-wiki-page');
