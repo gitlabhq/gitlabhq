@@ -1,3 +1,5 @@
+/*= require lib/utils/timeago
+/*= require lib/utils/text_utility
 /*= require vue_common_component/commit
 /*= require ./environment_actions
 /*= require ./environment_external_url
@@ -31,7 +33,30 @@
       'rollback-component': window.gl.environmentsList.RollbackComponent,
     },
 
-    props: ['model', 'toggleRow', 'can-create-deployment', 'can-read-environment'],
+    props: {
+      model: {
+        type: Object,
+        required: true,
+        default: () => ({}),
+      },
+
+      toggleRow: {
+        type: Function,
+        required: false,
+      },
+
+      canCreateDeployment: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+
+      canReadEnvironment: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+    },
 
     data() {
       return {
@@ -48,10 +73,10 @@
        * Folder items have different behaviours - it is possible to toggle
        * them and show their children.
        *
-       * @returns {Boolean}
+       * @returns {Boolean|Undefined}
        */
       isFolder() {
-        return this.$options.hasKey(this.model, 'children') &&
+        return this.model.children &&
           this.model.children.length > 0;
       },
 
@@ -69,22 +94,11 @@
        * Counts the number of environments in each folder.
        * Used to show a badge with the counter.
        *
-       * @returns {Boolean}  The number of environments for the current folder
+       * @returns {Number|Undefined}  The number of environments for the current folder.
        */
       childrenCounter() {
-        return this.$options.hasKey(this.model, 'children') &&
+        return this.model.children &&
           this.model.children.length;
-      },
-
-      /**
-       * Returns the value of the `last?` key sent in the API.
-       * Used to know wich title to render when the environment can be re-deployed
-       *
-       * @returns {Boolean}
-       */
-      isLast() {
-        return this.$options.hasKey(this.model, 'last_deployment') &&
-          this.model.last_deployment['last?'];
       },
 
       /**
@@ -95,18 +109,21 @@
        * @returns {Boolean}
        */
       hasLastDeploymentKey() {
-        return this.$options.hasKey(this.model, 'last_deployment');
+        if (this.model.last_deployment && this.model.last_deployment !== {}) {
+          return true;
+        }
+        return false;
       },
 
       /**
        * Verifies is the given environment has manual actions.
        * Used to verify if we should render them or nor.
        *
-       * @returns {Boolean}
+       * @returns {Boolean|Undefined}
        */
       hasManualActions() {
-        return this.$options.hasKey(this.model, 'manual_actions') &&
-          this.model.manual_actions.length > 0;
+        return this.model.last_deployment && this.model.last_deployment.manual_actions &&
+          this.model.last_deployment.manual_actions.length > 0;
       },
 
       /**
@@ -122,12 +139,12 @@
        * Verifies if the `deployable` key is present in `last_deployment` key.
        * Used to verify whether we should or not render the rollback partial.
        *
-       * @returns {Boolean}
+       * @returns {Boolean|Undefined}
        */
       canRetry() {
         return this.hasLastDeploymentKey &&
           this.model.last_deployment &&
-          this.$options.hasKey(this.model.last_deployment, 'deployable');
+          this.model.last_deployment.deployable;
       },
 
       /**
@@ -144,20 +161,33 @@
       /**
        * Returns the manual actions with the name parsed.
        *
-       * @returns {Array.<Object>}
+       * @returns {Array.<Object>|Undefined}
        */
       manualActions() {
-        return this.model.last_deployment.manual_actions.map((action) => {
-          const parsedAction = {
-            name: gl.text.humanize(action.name),
-            play_url: action.play_url,
-          };
-          return parsedAction;
-        });
+        if (this.hasManualActions) {
+          return this.model.last_deployment.manual_actions.map((action) => {
+            const parsedAction = {
+              name: gl.text.humanize(action.name),
+              play_url: action.play_url,
+            };
+            return parsedAction;
+          });
+        }
+        return [];
       },
 
+      /**
+       * Builds the string used in the user image alt attribute.
+       *
+       * @returns {String}
+       */
       userImageAltDescription() {
-        return `${this.model.last_deployment.user.username}'s avatar'`;
+        if (this.model.last_deployment &&
+          this.model.last_deployment.user &&
+          this.model.last_deployment.user.username) {
+          return `${this.model.last_deployment.user.username}'s avatar'`;
+        }
+        return '';
       },
 
       /**
@@ -166,7 +196,8 @@
        * @returns {String|Undefined}
        */
       commitTag() {
-        if (this.model.last_deployment && this.model.last_deployment.tag) {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.tag) {
           return this.model.last_deployment.tag;
         }
         return undefined;
@@ -178,7 +209,8 @@
        * @returns {Object|Undefined}
        */
       commitRef() {
-        if (this.model.last_deployment && this.model.last_deployment.ref) {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.ref) {
           return this.model.last_deployment.ref;
         }
         return undefined;
@@ -241,6 +273,11 @@
         return undefined;
       },
 
+      /**
+       * Verifies if the `retry_url` key is present and returns its value.
+       *
+       * @returns {String|Undefined}
+       */
       retryUrl() {
         if (this.model.last_deployment &&
           this.model.last_deployment.deployable &&
@@ -250,35 +287,66 @@
         return undefined;
       },
 
+      /**
+       * Verifies if the `last?` key is present and returns its value.
+       *
+       * @returns {Boolean|Undefined}
+       */
       isLastDeployment() {
         return this.model.last_deployment && this.model.last_deployment['last?'];
       },
 
+      /**
+       * Builds the name of the builds needed to display both the name and the id.
+       *
+       * @returns {String}
+       */
       buildName() {
-        if (this.model.last_deployment && this.model.last_deployment.deployable) {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.deployable) {
           return `${this.model.last_deployment.deployable.name} #${this.model.last_deployment.deployable.id}`;
         }
-        return undefined;
+        return '';
       },
 
+      /**
+       * Builds the needed string to show the internal id.
+       *
+       * @returns {String}
+       */
       deploymentInternalId() {
-        if (this.model.last_deployment) {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.iid) {
           return `#${this.model.last_deployment.iid}`;
         }
         return '';
       },
-    },
 
-    /**
-     * Helper to verify if key is present in an object.
-     * Can be removed once we start using lodash.
-     *
-     * @param  {Object} obj
-     * @param  {String} key
-     * @returns {Boolean}
-     */
-    hasKey(obj, key) {
-      return {}.hasOwnProperty.call(obj, key);
+      /**
+       * Verifies if the user object is present under last_deployment object.
+       *
+       * @returns {Boolean}
+       */
+      deploymentHasUser() {
+        if (this.model.last_deployment &&
+          this.model.last_deployment.user) {
+          return true;
+        }
+        return false;
+      },
+
+      /**
+       * Returns the user object nested with the last_deployment object.
+       * Used to render the template.
+       *
+       * @returns {Object}
+       */
+      deploymentUser() {
+        if (this.model.last_deployment && this.model.last_deployment.user) {
+          return this.model.last_deployment.user;
+        }
+        return {};
+      },
     },
 
     template: `
@@ -303,17 +371,19 @@
         </td>
 
         <td class="deployment-column">
-          <span v-if="!isFolder && model.last_deployment && model.last_deployment.iid" v-html="deploymentInternalId">
+          <span
+            v-if="!isFolder && model.last_deployment && model.last_deployment.iid"
+            v-html="deploymentInternalId">
+          </span>
 
-            <span v-if="model.last_deployment.user">
-              by
-              <a :href="model.last_deployment.user.web_url">
-                <img class="avatar has-tooltip s20"
-                  :src="model.last_deployment.user.avatar_url"
-                  :alt="userImageAltDescription"
-                  :title="model.last_deployment.user.username" />
-              </a>
-            </span>
+          <span v-if="!isFolder && deploymentHasUser">
+            by
+            <a :href="deploymentUser.web_url" class="js-deploy-user-container">
+              <img class="avatar has-tooltip s20"
+                :src="deploymentUser.avatar_url"
+                :alt="userImageAltDescription"
+                :title="deploymentUser.username" />
+            </a>
           </span>
         </td>
 
@@ -326,7 +396,7 @@
         </td>
 
         <td>
-          <div v-if="!isFolder && model.last_deployment">
+          <div v-if="!isFolder && hasLastDeploymentKey" class="js-commit-component">
             <commit-component
               :tag="commitTag"
               :ref="commitRef"
@@ -336,7 +406,7 @@
               :author="commitAuthor">
             </commit-component>
           </div>
-          <p v-if="!isFolder && !model.last_deployment" class="commit-title">
+          <p v-if="!isFolder && !hasLastDeploymentKey" class="commit-title">
             No deployments yet
           </p>
         </td>
@@ -351,25 +421,25 @@
 
         <td class="hidden-xs">
           <div v-if="!isFolder">
-            <div v-if="hasManualActions && canCreateDeployment" class="inline">
+            <div v-if="hasManualActions && canCreateDeployment" class="inline js-manual-actions-container">
               <actions-component
                 :actions="manualActions">
               </actions-component>
             </div>
 
-            <div v-if="model.external_url && canReadEnvironment" class="inline">
+            <div v-if="model.external_url && canReadEnvironment" class="inline js-external-url-container">
               <external-url-component
                 :external_url="model.external_url">
               </external_url-component>
             </div>
 
-            <div v-if="isStoppable && canCreateDeployment" class="inline">
+            <div v-if="isStoppable && canCreateDeployment" class="inline js-stop-component-container">
               <stop-component
                 :stop_url="model.environment_url">
               </stop-component>
             </div>
 
-            <div v-if="canRetry && canCreateDeployment" class="inline">
+            <div v-if="canRetry && canCreateDeployment" class="inline js-rollback-component-container">
               <rollback-component
                 :is_last_deployment="isLastDeployment"
                 :retry_url="retryUrl">

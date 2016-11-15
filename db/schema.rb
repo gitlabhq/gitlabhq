@@ -106,6 +106,9 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
   end
 
   create_table "audit_events", force: :cascade do |t|

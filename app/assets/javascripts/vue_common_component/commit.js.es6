@@ -26,7 +26,7 @@
       ref: {
         type: Object,
         required: false,
-        default: () => {},
+        default: () => ({}),
       },
 
       /**
@@ -66,7 +66,7 @@
       author: {
         type: Object,
         required: false,
-        default: () => {},
+        default: () => ({}),
       },
     },
 

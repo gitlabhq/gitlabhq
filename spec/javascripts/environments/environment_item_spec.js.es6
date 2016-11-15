@@ -9,6 +9,7 @@ describe('Environment item', () => {
 
   describe('When item is folder', () => {
     let mockItem;
+    let component;
 
     beforeEach(() => {
       mockItem = {
@@ -34,61 +35,31 @@ describe('Environment item', () => {
           },
         ],
       };
-    });
 
-    it('Should render clickable folder icon and name', () => {
-      const component = new window.gl.environmentsList.EnvironmentItem({
+      component = new window.gl.environmentsList.EnvironmentItem({
         el: document.querySelector('tr#environment-row'),
         propsData: {
           model: mockItem,
           toggleRow: () => {},
-          'can-create-deployment': false,
-          'can-read-environment': true,
+          canCreateDeployment: false,
+          canReadEnvironment: true,
         },
       });
+    });
 
+    it('Should render folder icon and name', () => {
       expect(component.$el.querySelector('.folder-name').textContent).toContain(mockItem.name);
       expect(component.$el.querySelector('.folder-icon')).toBeDefined();
     });
 
     it('Should render the number of children in a badge', () => {
-      const component = new window.gl.environmentsList.EnvironmentItem({
-        el: document.querySelector('tr#environment-row'),
-        propsData: {
-          model: mockItem,
-          toggleRow: () => {},
-          'can-create-deployment': false,
-          'can-read-environment': true,
-        },
-      });
-
       expect(component.$el.querySelector('.folder-name .badge').textContent).toContain(mockItem.children.length);
-    });
-
-    describe('when clicked', () => {
-      it('Should call the given prop', () => {
-        const component = new window.gl.environmentsList.EnvironmentItem({
-          el: document.querySelector('tr#environment-row'),
-          propsData: {
-            model: mockItem,
-            toggleRow: () => {
-              console.log('here!');
-            },
-            'can-create-deployment': false,
-            'can-read-environment': true,
-          },
-        });
-
-        spyOn(component.$options.propsData, 'toggleRow');
-        component.$el.querySelector('.folder-name').click();
-
-        expect(component.$options.propsData.toggleRow).toHaveBeenCalled();
-      });
     });
   });
 
   describe('when item is not folder', () => {
     let environment;
+    let component;
 
     beforeEach(() => {
       environment = {
@@ -151,104 +122,93 @@ describe('Environment item', () => {
         created_at: '2016-11-07T11:11:16.525Z',
         updated_at: '2016-11-10T15:55:58.778Z',
       };
-    });
 
-    it('should render environment name', () => {
-      const component = new window.gl.environmentsList.EnvironmentItem({
+      component = new window.gl.environmentsList.EnvironmentItem({
         el: document.querySelector('tr#environment-row'),
         propsData: {
           model: environment,
           toggleRow: () => {},
-          'can-create-deployment': false,
-          'can-read-environment': true,
+          canCreateDeployment: true,
+          canReadEnvironment: true,
         },
       });
+    });
 
-      debugger;
+    it('should render environment name', () => {
+      expect(component.$el.querySelector('.environment-name').textContent).toEqual(environment.name);
     });
 
     describe('With deployment', () => {
       it('should render deployment internal id', () => {
+        expect(
+          component.$el.querySelector('.deployment-column span').textContent
+        ).toContain(environment.last_deployment.iid);
 
-      });
-
-      it('should link to deployment', () => {
-
+        expect(
+          component.$el.querySelector('.deployment-column span').textContent
+        ).toContain('#');
       });
 
       describe('With user information', () => {
         it('should render user avatar with link to profile', () => {
-
+          expect(
+            component.$el.querySelector('.js-deploy-user-container').getAttribute('href')
+          ).toEqual(environment.last_deployment.user.web_url);
         });
       });
 
       describe('With build url', () => {
         it('Should link to build url provided', () => {
-
+          expect(
+            component.$el.querySelector('.build-link').getAttribute('href')
+          ).toEqual(environment.last_deployment.deployable.build_url);
         });
 
         it('Should render deployable name and id', () => {
-
+          expect(
+            component.$el.querySelector('.build-link').getAttribute('href')
+          ).toEqual(environment.last_deployment.deployable.build_url);
         });
       });
 
       describe('With commit information', () => {
-        it('should render commit component', () => {});
-      });
-
-      it('Should render timeago created date', () => {
-
-      });
-    });
-
-    describe('Without deployment', () => {
-      it('should render no deployments information', () => {
-
+        it('should render commit component', () => {
+          expect(
+            component.$el.querySelector('.js-commit-component')
+          ).toBeDefined();
+        });
       });
     });
 
     describe('With manual actions', () => {
-      describe('With create deployment permission', () => {
-        it('Should render actions component', () => {
-
-        });
-      });
-      describe('Without create deployment permission', () => {
-        it('should not render actions component', () => {
-
-        });
+      it('Should render actions component', () => {
+        expect(
+          component.$el.querySelector('.js-manual-actions-container')
+        ).toBeDefined();
       });
     });
 
     describe('With external URL', () => {
       it('should render external url component', () => {
-
+        expect(
+          component.$el.querySelector('.js-external-url-container')
+        ).toBeDefined();
       });
     });
 
     describe('With stop action', () => {
-      describe('With create deployment permission', () => {
-        it('Should render stop action component', () => {
-
-        });
-      });
-      describe('Without create deployment permission', () => {
-        it('should not render stop action component', () => {
-
-        });
+      it('Should render stop action component', () => {
+        expect(
+          component.$el.querySelector('.js-stop-component-container')
+        ).toBeDefined();
       });
     });
 
     describe('With retry action', () => {
-      describe('With create deployment permission', () => {
-        it('Should render rollback component', () => {
-
-        });
-      });
-      describe('Without create deployment permission', () => {
-        it('should not render rollback component', () => {
-
-        });
+      it('Should render rollback component', () => {
+        expect(
+          component.$el.querySelector('.js-rollback-component-container')
+        ).toBeDefined();
       });
     });
   });

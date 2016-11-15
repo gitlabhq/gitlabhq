@@ -23,8 +23,14 @@ $(() => {
     return fn(item);
   }).filter(Boolean);
 
-  window.gl.environmentsList.EnvironmentsComponent = Vue.extend({
-    props: ['store'],
+  window.gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
+    props: {
+      store: {
+        type: Object,
+        required: true,
+        default: () => ({}),
+      },
+    },
 
     components: {
       'environment-item': window.gl.environmentsList.EnvironmentItem,
@@ -43,9 +49,8 @@ $(() => {
         projectStoppedEnvironmentsPath: environmentsListApp.dataset.projectStoppedEnvironmentsPath,
         newEnvironmentPath: environmentsListApp.dataset.newEnvironmentPath,
         helpPagePath: environmentsListApp.dataset.helpPagePath,
-        loading: true,
         visibility: 'available',
-        isLoading: this.loading,
+        isLoading: false,
       };
     },
 
@@ -65,6 +70,10 @@ $(() => {
       canCreateDeploymentParsed() {
         return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
       },
+
+      canCreateEnvironmentParsed() {
+        return this.$options.convertPermissionToBoolean(this.canCreateEnvironment);
+      },
     },
 
     created() {
@@ -74,6 +83,15 @@ $(() => {
       if (scope) {
         this.visibility = scope;
       }
+
+      this.isLoading = true;
+
+      return window.gl.environmentsService.all()
+        .then(resp => resp.json())
+        .then((json) => {
+          this.store.storeEnvironments(json);
+          this.isLoading = false;
+        });
     },
 
     /**
@@ -81,12 +99,7 @@ $(() => {
      * Toggles loading property.
      */
     mounted() {
-      window.gl.environmentsService.all()
-      .then(resp => resp.json())
-      .then((json) => {
-        this.store.storeEnvironments(json);
-        this.loading = false;
-      });
+
     },
 
     /**
@@ -143,21 +156,21 @@ $(() => {
               </a>
             </li>
           </ul>
-          <div v-if="canCreateEnvironment && !loading" class="nav-controls">
+          <div v-if="canCreateEnvironmentParsed && !isLoading" class="nav-controls">
             <a :href="newEnvironmentPath" class="btn btn-create">
-              New envrionment
+              New environment
             </a>
           </div>
         </div>
 
         <div class="environments-container">
-          <div class="environments-list-loading text-center" v-if="loading">
+          <div class="environments-list-loading text-center" v-if="isLoading">
             <i class="fa fa-spinner spin"></i>
           </div>
 
           <div
             class="blank-state blank-state-no-icon"
-            v-if="!loading && state.environments.length === 0">
+            v-if="!isLoading && state.environments.length === 0">
             <h2 class="blank-state-title">
               You don't have any environments right now.
             </h2>
@@ -170,7 +183,7 @@ $(() => {
                 Read more about environments
               </a>
               <a
-                v-if="canCreateEnvironment"
+                v-if="canCreateEnvironmentParsed"
                 :href="newEnvironmentPath"
                 class="btn btn-create">
                 New Environment
@@ -180,7 +193,7 @@ $(() => {
 
           <div
             class="table-holder"
-            v-if="!loading && state.environments.length > 0">
+            v-if="!isLoading && state.environments.length > 0">
             <table class="table ci-table environments">
               <thead>
                 <tr>

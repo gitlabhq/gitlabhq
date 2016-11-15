@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environments', feature: true do
+feature 'Environments', feature: true, js:true do
   given(:project) { create(:empty_project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
@@ -59,6 +59,7 @@ feature 'Environments', feature: true do
         given(:deployment) { create(:deployment, environment: environment) }
 
         scenario 'does show deployment SHA' do
+          puts page.body
           expect(page).to have_link(deployment.short_sha)
         end
 

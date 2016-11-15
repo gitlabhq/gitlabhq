@@ -8,7 +8,10 @@ class EnvironmentsService {
     this.environments = Vue.resource(root);
 
     Vue.http.interceptors.push((request, next) => {
-      request.headers['X-CSRF-Token'] = $.rails.csrfToken();
+      // needed in order to not break the tests.
+      if ($.rails) {
+        request.headers['X-CSRF-Token'] = $.rails.csrfToken();
+      }
       next();
     });
   }

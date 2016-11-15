@@ -1,5 +1,5 @@
 //= require vue
-//= require environments/stores/environmnets_store
+//= require environments/stores/environments_store
 //= require ./mock_data
 /* globals environmentsList */
 (() => {
@@ -48,6 +48,21 @@
         expect(environments[1].children[0].name).toBe('test-environment');
         expect(environments[1].children[1].name).toBe('test-environment-1');
         expect(environments[2].name).toBe('review_app');
+      });
+    });
+
+    describe('toggleFolder', () => {
+      beforeEach(() => {
+        gl.environmentsList.EnvironmentsStore.storeEnvironments(environmentsList);
+      });
+
+      it('should toggle the open property for the given environment', () => {
+        gl.environmentsList.EnvironmentsStore.toggleFolder('review');
+
+        const { environments } = gl.environmentsList.EnvironmentsStore.state;
+        const environment = environments.filter(env => env['vue-isChildren'] === true && env.name === 'review');
+
+        expect(environment[0].isOpen).toBe(true);
       });
     });
   });
