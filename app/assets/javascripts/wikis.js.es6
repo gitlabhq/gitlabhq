@@ -3,6 +3,7 @@
 
 /*= require latinise */
 /*= require breakpoints */
+/*= require jquery.nicescroll */
 
 ((global) => {
   const dasherize = str => str.replace(/[_\s]+/g, '-');
@@ -13,6 +14,7 @@
       this.bp = Breakpoints.get();
       this.sidebarEl = document.querySelector('.js-wiki-sidebar');
       this.sidebarExpanded = false;
+      $(this.sidebarEl).niceScroll();
 
       const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
       for (const toggle of sidebarToggles) {
