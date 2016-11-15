@@ -76,7 +76,6 @@ describe Projects::ForksController do
     end
 
     context 'when user is signed in' do
-
       it 'responds with status 200' do
         sign_in(user)
 
@@ -87,7 +86,6 @@ describe Projects::ForksController do
     end
 
     context 'when user is not signed in' do
-
       it 'redirects to the sign-in page' do
         sign_out(user)
 
@@ -107,20 +105,17 @@ describe Projects::ForksController do
     end
 
     context 'when user is signed in' do
-
       it 'responds with status 302' do
         sign_in(user)
 
         post_create
 
         expect(response).to have_http_status(302)
-        expected_import_url = namespace_project_import_url(user.namespace, project)
-        expect(response.headers['Location']).to eq(expected_import_url)
+        expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
       end
     end
 
     context 'when user is not signed in' do
-
       it 'redirects to the sign-in page' do
         sign_out(user)
 
