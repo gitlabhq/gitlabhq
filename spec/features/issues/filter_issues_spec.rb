@@ -242,14 +242,12 @@ describe 'Filter issues', feature: true do
       end
 
       it 'single quotes containing double quotes' do
-        # TODO: Actual bug
+        double_quotes_label = create(:label, project: project, title: 'won"t fix')
+        double_quotes_label_issue = create(:issue, title: "Issue with double quotes label", project: project)
+        double_quotes_label_issue.labels << double_quotes_label
 
-        # double_quotes_label = create(:label, project: project, title: 'won"t fix')
-        # double_quotes_label_issue = create(:issue, title: "Issue with double quotes label", project: project)
-        # double_quotes_label_issue.labels << double_quotes_label
-
-        # input_filtered_search("label:'#{double_quotes_label.title}'")
-        # expect_issues_list_count(1)
+        input_filtered_search("label:~'#{double_quotes_label.title}'")
+        expect_issues_list_count(1)
       end
 
       it 'double quotes containing single quotes' do
