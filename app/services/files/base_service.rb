@@ -75,6 +75,9 @@ module Files
       validate_target_branch
 
       if @source_project != project
+        # Make sure we have the source_branch in target project,
+        # and use source_branch as target_branch directly to avoid
+        # unnecessary source branch in target project.
         @project.fetch_ref(@source_project, @target_branch, @source_branch)
       end
     end

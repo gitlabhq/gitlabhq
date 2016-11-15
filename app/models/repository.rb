@@ -1121,6 +1121,8 @@ class Repository
     fetch_ref(path_to_repo, ref, ref_path)
   end
 
+  # Whenever `source_branch` is passed, if `branch` doesn't exist, it would
+  # be created from `source_branch`.
   def update_branch_with_hooks(current_user, branch, source_branch: nil)
     update_autocrlf_option
 
