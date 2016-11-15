@@ -5,14 +5,13 @@ class AnalyticsGenericEntity < Grape::Entity
 
   expose :title
   expose :iid
-  expose :started_at, as: :date
   expose :author, using: UserEntity
 
   expose :total_time do |object|
     distance_of_time_in_words(object[:total_time].to_f)
   end
 
-  expose(:date) do |object|
+  expose(:created_at) do |object|
     interval_in_words(object[:created_at])
   end
 
@@ -22,7 +21,7 @@ class AnalyticsGenericEntity < Grape::Entity
 
   private
 
-  def url_to(route, id = nil)
+  def url_to(route, id)
     public_send("#{route}_url", request.project.namespace, request.project, id)
   end
 

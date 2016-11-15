@@ -34,15 +34,15 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it "has the author's URL" do
-      expect(subject.issue_events.first[:author_profile_url]).not_to be_nil
+      expect(subject.issue_events.first[:author][:web_url]).not_to be_nil
     end
 
     it "has the author's avatar URL" do
-      expect(subject.issue_events.first[:author_avatar_url]).not_to be_nil
+      expect(subject.issue_events.first[:author][:avatar_url]).not_to be_nil
     end
 
     it "has the author's name" do
-      expect(subject.issue_events.first[:author_name]).to eq(context.author.name)
+      expect(subject.issue_events.first[:author][:name]).to eq(context.author.name)
     end
   end
 

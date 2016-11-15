@@ -27,7 +27,7 @@ describe AnalyticsGenericSerializer do
     end
 
     it 'contains important elements of analyticsBuild' do
-      expect(json).to include(:title, :iid, :date, :total_time, :url, :author)
+      expect(json).to include(:title, :iid, :created_at, :total_time, :url, :author)
     end
   end
 end

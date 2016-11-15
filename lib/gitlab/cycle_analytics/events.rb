@@ -7,7 +7,7 @@ module Gitlab
       end
 
       def issue_events
-        @fetcher.fetch(stage: :issue).each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :issue).map { |event| parse_event(event) }
       end
 
       def plan_events
@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def code_events
-        @fetcher.fetch(stage: :code).each { |event| parse_event(event, entity: :merge_request) }
+        @fetcher.fetch(stage: :code).map { |event| parse_event(event, entity: :merge_request) }
       end
 
       def test_events
@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def review_events
-        @fetcher.fetch(stage: :review).each { |event| parse_event(event) }
+        @fetcher.fetch(stage: :review).map { |event| parse_event(event) }
       end
 
       def staging_events
@@ -50,7 +50,7 @@ module Gitlab
       private
 
       def parse_event(event, entity: :issue)
-        event['author'] = User.find(event.remove('author_id'))
+        event['author'] = User.find(event.delete('author_id'))
 
         AnalyticsGenericSerializer.new(project: @project, entity: entity).represent(event).as_json
       end
