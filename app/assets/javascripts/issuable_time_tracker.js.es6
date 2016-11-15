@@ -124,31 +124,26 @@ function getRandomInt(min, max) {
       },
       parseSeconds (seconds) {
         const DAYS_PER_WEEK = 5, HOURS_PER_DAY = 8, MINUTES_PER_HOUR = 60;
+
         const MINUTES_PER_WEEK =  DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
         const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
 
-        const timePeriodConstraints = [
-          [ 'weeks', MINUTES_PER_WEEK ],
-          [ 'days', MINUTES_PER_DAY ],
-          [ 'hours', MINUTES_PER_HOUR ],
-          [ 'minutes', 1 ]
-        ];
-
-        // Seee if you can just MAP that ^^ to the result
-        const parsedTime = {};
+        const timePeriodConstraints = {
+          weeks: MINUTES_PER_WEEK,
+          days: MINUTES_PER_DAY,
+          hours: MINUTES_PER_HOUR,
+          minutes: 1
+        };
 
         let unorderedMinutes = this.secondsToMinutes(seconds);
 
-        timePeriodConstraints.forEach((period, idx, collection) => {
-          const periodName = period[0];
-          const minutesPerPeriod = period[1];
+        return _.mapObject(timePeriodConstraints, (minutesPerPeriod, periodName ) => {
           const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
 
           unorderedMinutes -= (periodCount * minutesPerPeriod);
-          parsedTime[periodName] = periodCount;
-        });
 
-        return parsedTime;
+          return periodCount;
+        });
       },
       abbreviateTime(value) {
         return value.split(' ')[0];
