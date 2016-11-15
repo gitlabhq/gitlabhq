@@ -25,9 +25,6 @@ entry.
 - Remove additional padding on right-aligned items in MR widget. !7411 (Didem Acet)
 - Fix issue causing Labels not to appear in sidebar on MR page. !7416 (Alex Sanford)
 - Fix project Visibility Level selector not using default values.
-
-## 8.14.0 (2016-11-22)
-
 - Use separate email-token for incoming email and revert back the inactive feature. !5914
 - Replace jQuery.timeago with timeago.js. !6274 (ClemMakesApps)
 - Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
