@@ -4,6 +4,10 @@ entry.
 
 ## 8.14.0 (2016-11-22)
 
+- No changes.
+
+## 8.14.0 (2016-11-22)
+
 - Centralize LDAP config/filter logic. !6606
 - Show random messages when the To Do list is empty. !6818 (Josep Llaneras)
 - Fix record not found error on NewNoteWorker processing. !6863 (Oswaldo Ferreira)
