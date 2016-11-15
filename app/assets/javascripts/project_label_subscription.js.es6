@@ -14,7 +14,7 @@
       const $btn = $(event.currentTarget);
       const $span = $btn.find('span');
       const url = $btn.attr('data-url');
-      const status = $btn.attr('data-status');
+      const oldStatus = $btn.attr('data-status');
 
       $btn.addClass('disabled');
       $span.toggleClass('hidden');
@@ -25,10 +25,10 @@
       }).done(() => {
         let newStatus, newAction;
 
-        if (status === 'subscribed') {
-          [newStatus, newAction] = ['unsubscribed', 'Subscribe'];
-        } else {
+        if (oldStatus === 'unsubscribed') {
           [newStatus, newAction] = ['subscribed', 'Unsubscribe'];
+        } else {
+          [newStatus, newAction] = ['unsubscribed', 'Subscribe'];
         }
 
         $span.toggleClass('hidden');
