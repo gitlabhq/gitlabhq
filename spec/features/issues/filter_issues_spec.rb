@@ -17,6 +17,8 @@ describe 'Filter issues', feature: true do
   let!(:milestone) { create(:milestone, title: "8", project: project) }
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
+  let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
+
   def input_filtered_search(search_term)
     filtered_search = find('.filtered-search')
     filtered_search.set(search_term)
@@ -83,7 +85,8 @@ describe 'Filter issues', feature: true do
     multiple_words_label_issue.labels << multiple_words_label
 
     future_milestone = create(:milestone, title: "future", project: project, due_date: Time.now + 1.month)
-    issue_with_future_milestone = create(:issue,
+
+    create(:issue,
       title: "Issue with future milestone",
       milestone: future_milestone,
       project: project)
@@ -143,7 +146,7 @@ describe 'Filter issues', feature: true do
 
       it 'filters issues by no assignee' do
         input_filtered_search("assignee:none")
-        expect_issues_list_count(8)
+        expect_issues_list_count(8, 1)
       end
 
       it 'filters issues by invalid assignee' do
@@ -155,27 +158,27 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    # context 'assignee with other filters', js: true do
-    #   it 'filters issues by searched assignee and text' do
-    #     input_filtered_search("assignee:@#{user.username} searchTerm")
-    #     expect_issues_list_count(2)
-    #   end
+    context 'assignee with other filters', js: true do
+      it 'filters issues by searched assignee and text' do
+        input_filtered_search("assignee:@#{user.username} searchTerm")
+        expect_issues_list_count(2)
+      end
 
-    #   it 'filters issues by searched assignee, author and text' do
-    #     input_filtered_search("assignee:@#{user.username} author:@#{user.username} searchTerm")
-    #     expect_issues_list_count(2)
-    #   end
+      it 'filters issues by searched assignee, author and text' do
+        input_filtered_search("assignee:@#{user.username} author:@#{user.username} searchTerm")
+        expect_issues_list_count(2)
+      end
 
-    #   it 'filters issues by searched assignee, author, label, text' do
-    #     input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} searchTerm")
-    #     expect_issues_list_count(1)
-    #   end
+      it 'filters issues by searched assignee, author, label, text' do
+        input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} searchTerm")
+        expect_issues_list_count(1)
+      end
 
-    #   it 'filters issues by searched assignee, author, label, milestone and text' do
-    #     input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} searchTerm")
-    #     expect_issues_list_count(1)
-    #   end
-    # end
+      it 'filters issues by searched assignee, author, label, milestone and text' do
+        input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} searchTerm")
+        expect_issues_list_count(1)
+      end
+    end
 
     context 'sorting', js: true do
       # TODO
@@ -191,7 +194,7 @@ describe 'Filter issues', feature: true do
 
       it 'filters issues by no label' do
         input_filtered_search("label:none")
-        expect_issues_list_count(9)
+        expect_issues_list_count(9, 1)
       end
 
       it 'filters issues by invalid label' do
@@ -323,7 +326,7 @@ describe 'Filter issues', feature: true do
 
       it 'filters issues by no milestone' do
         input_filtered_search("milestone:none")
-        expect_issues_list_count(7)
+        expect_issues_list_count(7, 1)
       end
 
       it 'filters issues by upcoming milestones' do
@@ -376,7 +379,7 @@ describe 'Filter issues', feature: true do
     context 'only text', js: true do
       it 'filters issues by searched text' do
         input_filtered_search('Bug')
-        expect_issues_list_count(4)
+        expect_issues_list_count(4, 1)
       end
 
       it 'filters issues by multiple searched text' do
@@ -468,7 +471,62 @@ describe 'Filter issues', feature: true do
     end
 
     context 'sorting', js: true do
-      # TODO
+      it 'sorts by oldest updated' do
+        create(:issue, 
+          title: '3 days ago', 
+          project: project, 
+          author: user, 
+          created_at: 3.days.ago,
+          updated_at: 3.days.ago)
+
+        old_issue = create(:issue, 
+          title: '5 days ago', 
+          project: project, 
+          author: user, 
+          created_at: 5.days.ago,
+          updated_at: 5.days.ago)
+
+        input_filtered_search('days ago')
+        expect_issues_list_count(2)
+
+        sort_toggle = find('.filtered-search-container .dropdown-toggle')
+        sort_toggle.click
+        
+        find('.filtered-search-container .dropdown-menu li a', text: 'Oldest updated').click
+        wait_for_ajax
+        
+        expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)
+      end
+    end
+  end
+
+  describe 'retains filter when switching issue states', js: true do
+    before do
+      input_filtered_search('bug')
+      expect_issues_list_count(4, 1)
+    end
+
+    it 'open state' do
+      find('.issues-state-filters a', text: 'Closed').click
+      wait_for_ajax
+
+      find('.issues-state-filters a', text: 'Open').click
+      wait_for_ajax
+
+      expect(page).to have_selector('.issues-list .issue', count: 4)
+    end
+
+    it 'closed state' do
+      find('.issues-state-filters a', text: 'Closed').click
+      wait_for_ajax
+      expect(page).to have_selector('.issues-list .issue', count: 1)
+      expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(closed_issue.title)
+    end
+
+    it 'all state' do
+      find('.issues-state-filters a', text: 'All').click
+      wait_for_ajax
+      expect(page).to have_selector('.issues-list .issue', count: 5)
     end
   end
 
