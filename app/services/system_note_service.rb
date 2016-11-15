@@ -149,7 +149,7 @@ module SystemNoteService
   # Returns the created Note object
 
   def change_time_spent(noteable, project, author)
-    time_spent  = noteable.time_spent
+    time_spent = noteable.time_spent
 
     if time_spent.zero?
       body = "Removed time spent on this #{noteable.human_class_name}"

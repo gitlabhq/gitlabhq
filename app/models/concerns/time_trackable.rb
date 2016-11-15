@@ -16,30 +16,20 @@ module TimeTrackable
     has_many :timelogs, as: :trackable, dependent: :destroy
   end
 
-  def spend_time=(args)
-    return unless valid_spend_time_args?(args)
+  def spend_time=(seconds:, user:)
+    # Exit if time to subtract exceeds the total time spent.
+    return if seconds < 0 && (seconds.abs > total_time_spent)
 
-    seconds = args[:seconds]
-    new_time_spent = seconds.zero? ? -(total_time_spent) : seconds
+    # When seconds = 0 we reset the total time spent by creating a new Timelog
+    # record with a negative value that is equal to the current total time spent.
+    new_time_spent = seconds.zero? ? (total_time_spent * -1) : seconds
 
-    timelogs.new(user: args[:user], time_spent: new_time_spent)
+    timelogs.new(user: user, time_spent: new_time_spent)
 
     @time_spent = seconds
   end
 
   def total_time_spent
     timelogs.sum(:time_spent)
-  end
-
-  private
-
-  def valid_spend_time_args?(args)
-    return false if [:seconds, :user].any? { |k| args[k].blank? }
-
-    # time to subtract exceeds the total time spent
-    seconds = args[:seconds]
-    return false if seconds < 0 && (seconds.abs > total_time_spent)
-
-    true
   end
 end

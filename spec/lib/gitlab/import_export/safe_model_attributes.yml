@@ -353,5 +353,6 @@ Timelog:
 - time_spent
 - trackable_id
 - trackable_type
+- user_id
 - created_at
 - updated_at
