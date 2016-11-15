@@ -4,7 +4,7 @@ class Projects::BranchesController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :authorize_push_code!, only: [:new, :create, :destroy]
+  before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
   def index
     @sort = params[:sort].presence || sort_value_name
@@ -60,6 +60,13 @@ class Projects::BranchesController < Projects::ApplicationController
       end
       format.js { render nothing: true, status: status[:return_code] }
     end
+  end
+
+  def destroy_all_merged
+    DeleteMergedBranchesService.new(@project, current_user).async_execute
+
+    redirect_to namespace_project_branches_path(@project.namespace, @project),
+      notice: 'Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.'
   end
 
   private
