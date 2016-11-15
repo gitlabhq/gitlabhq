@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, object-shorthand, quotes, no-undef, prefer-template, wrap-iife, comma-dangle, no-return-assign, no-else-return, consistent-return, no-unused-vars, padded-blocks, max-len */
 (function() {
   this.Pager = {
     init: function(limit, preload, disable, callback) {

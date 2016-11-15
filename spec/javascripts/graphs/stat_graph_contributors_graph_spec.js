@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable quotes, no-undef, indent, semi, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, padded-blocks, spaced-comment, max-len */
 //= require graphs/stat_graph_contributors_graph
 
 describe("ContributorsGraph", function () {

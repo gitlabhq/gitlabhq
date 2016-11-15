@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, no-undef, comma-dangle, no-unused-expressions, prefer-template, padded-blocks, max-len */
 (function() {
   (function(w) {
     var base;

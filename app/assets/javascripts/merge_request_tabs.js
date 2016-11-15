@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable max-len, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-undef, one-var, one-var-declaration-per-line, quotes, comma-dangle, consistent-return, prefer-template, no-param-reassign, camelcase, vars-on-top, space-in-parens, curly, prefer-arrow-callback, no-unused-vars, no-return-assign, semi, object-shorthand, operator-assignment, padded-blocks, max-len */
 // MergeRequestTabs
 //
 // Handles persisting and restoring the current tab selection and lazily-loading

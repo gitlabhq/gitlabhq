@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, new-parens, no-undef, quotes, no-var, one-var, one-var-declaration-per-line, comma-dangle, padded-blocks, max-len */
 
 /*= require u2f/register */
 /*= require u2f/util */
