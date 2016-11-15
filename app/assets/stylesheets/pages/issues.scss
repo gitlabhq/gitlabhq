@@ -55,9 +55,27 @@ ul.related-merge-requests > li {
 }
 
 .merge-request-status {
-  color: $gl-gray;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 13px;
+  padding: 0px 5px;
+  color: #FFF;
+  height: 20px;
+  border-radius: 3px;
+  line-height: 18px;
+
+  &.merged {
+    border: 1px solid #2A96CC;
+    background: #2D9FD8;
+  }
+
+  &.closed {
+    border: 1px solid #C5254D;
+    background: #D62954;
+  }
+
+  &.open {
+    border: 1px solid #2EA65E;
+    background: #31AF64;
+  }
 }
 
 .merge-request,
