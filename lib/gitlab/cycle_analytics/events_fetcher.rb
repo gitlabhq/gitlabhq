@@ -15,24 +15,14 @@ module Gitlab
         end
       end
 
-      def issue_custom_query(base_query)
-        base_query.join(user_table).on(issue_table[:author_id].eq(user_table[:id]))
-      end
-
       def plan_custom_query(base_query)
         base_query.join(mr_diff_table).on(mr_diff_table[:merge_request_id].eq(mr_table[:id]))
-      end
-
-      def review_custom_query(base_query)
-        base_query.join(user_table).on(mr_table[:author_id].eq(user_table[:id]))
       end
 
       def test_custom_query(base_query)
         base_query.join(build_table).on(mr_metrics_table[:ci_commit_id].eq(build_table[:commit_id]))
       end
 
-      alias_method :code_custom_query, :issue_custom_query
-      alias_method :production_custom_query, :issue_custom_query
       alias_method :staging_custom_query, :test_custom_query
     end
   end

@@ -1,8 +1,6 @@
 module Gitlab
   module CycleAnalytics
     class Events
-      include ActionView::Helpers::DateHelper
-
       def initialize(project:, options:)
         @project = project
         @fetcher = EventsFetcher.new(project: project, options: options)
@@ -51,20 +49,16 @@ module Gitlab
 
       private
 
-      def parse_event(event, entity: :issue)
-        event['url'] = Gitlab::LightUrlBuilder.build(entity: entity, project: @project, id: event['iid'].to_s)
-        event['total_time'] = distance_of_time_in_words(event['total_time'].to_f)
-        event['created_at'] = interval_in_words(event['created_at'])
-        event['author_profile_url'] = Gitlab::LightUrlBuilder.build(entity: :user, id: event['author_username'])
-        event['author_avatar_url'] = Gitlab::LightUrlBuilder.build(entity: :user_avatar, id: event['author_id'])
+      def parse_event(event)
+        event['author'] = User.find(event.remove('author_id'))
 
-        event.except!('author_id', 'author_username')
+        AnalyticsGenericSerializer.new(project: @project).represent(event).as_json
       end
 
       def parse_build_event(event)
         build = ::Ci::Build.find(event['id'])
 
-        AnalyticsBuildSerializer.new(project: @project).represent(build).as_json
+        AnalyticsBuildSerializer.new.represent(build).as_json
       end
 
       def first_time_reference_commit(commits, event)

@@ -1,15 +1,26 @@
 require 'spec_helper'
 
-describe AnalyticsBuildSerializer do
+describe AnalyticsGenericSerializer do
   let(:serializer) do
     described_class
       .new(project: project)
       .represent(resource)
   end
 
+  let(:user) { create(:user) }
   let(:json) { serializer.as_json }
   let(:project) { create(:project) }
-  let(:resource) { create(:ci_build) }
+  let(:resource) {
+    {
+      total_time: "172802.724419",
+      title: "Eos voluptatem inventore in sed.",
+      iid: "1",
+      id: "1",
+      created_at: "2016-11-12 15:04:02.948604",
+      author: user,
+      entity: :merge_request
+    }
+  }
 
   context 'when there is a single object provided' do
     it 'it generates payload for single object' do
@@ -17,8 +28,7 @@ describe AnalyticsBuildSerializer do
     end
 
     it 'contains important elements of analyticsBuild' do
-      expect(json)
-        .to include(:name, :branch, :short_sha, :date, :total_time, :url, :branch_url, :commit_url, :author)
+      expect(json).to include(:title, :iid, :date, :total_time, :url, :author)
     end
   end
 end

@@ -24,9 +24,7 @@ module Gitlab
                         issue_table[:iid],
                         issue_table[:id],
                         issue_table[:created_at],
-                        user_table[:name].as('author_name'),
-                        user_table[:username].as('author_username'),
-                        user_table[:id].as('author_id')]
+                        issue_table[:author_id]]
         }
       end
 
@@ -48,9 +46,7 @@ module Gitlab
                         mr_table[:id],
                         mr_table[:created_at],
                         mr_table[:state],
-                        user_table[:name].as('author_name'),
-                        user_table[:username].as('author_username'),
-                        user_table[:id].as('author_id')],
+                        mr_table[:author_id]],
           order: mr_table[:created_at]
         }
       end
@@ -73,9 +69,7 @@ module Gitlab
                         mr_table[:id],
                         mr_table[:created_at].as('opened_at'),
                         mr_table[:state],
-                        user_table[:name].as('author_name'),
-                        user_table[:username].as('author_username'),
-                        user_table[:id].as('author_id')]
+                        mr_table[:author_id]]
         }
       end
 
@@ -96,9 +90,7 @@ module Gitlab
                         issue_table[:iid],
                         issue_table[:id],
                         issue_table[:created_at],
-                        user_table[:name].as('author_name'),
-                        user_table[:username].as('author_username'),
-                        user_table[:id].as('author_id')]
+                        issue_table[:author_id]]
         }
       end
     end

@@ -5,14 +5,14 @@ describe AnalyticsBuildEntity do
     described_class.new(build, request: double)
   end
 
-  context 'when build is a regular job' do
+  context 'build with an author' do
     let(:user) { create(:user) }
     let(:build) { create(:ci_build, author: user) }
 
     subject { entity.as_json }
 
-    it 'contains URLs' do
-      expect(subject).to include(:url, :branch_url, :commit_url)
+    it 'contains the URL' do
+      expect(subject).to include(:url)
     end
 
     it 'contains the author' do

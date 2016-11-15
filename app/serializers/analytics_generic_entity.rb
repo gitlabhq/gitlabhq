@@ -23,7 +23,7 @@ class AnalyticsGenericEntity < Grape::Entity
   private
 
   def url_to(route, id = nil)
-    public_send("#{route}_url", options[:project].namespace, options[:project], id)
+    public_send("#{route}_url", request.project.namespace, request.project, id)
   end
 
   def interval_in_words(diff)
