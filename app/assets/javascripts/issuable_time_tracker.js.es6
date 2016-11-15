@@ -42,6 +42,9 @@ function getRandomInt(min, max) {
           this.issuable = data;
         },
       },
+      beforeCreate() {
+        this.issuable = issuableData;
+      },
       created() {
         this.fetchIssuable();
       },
@@ -57,9 +60,9 @@ function getRandomInt(min, max) {
     });
   });
 
-  Vue.component('issuable-time-tracker', {
+gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
-    props: { time_estimate: { type: Number, default: '' },  time_spent: { type: Number, default: ''}  },
+    props: [ 'time_estimate', 'time_spent' ],
     data: function() {
       return {
         displayHelp: false,
