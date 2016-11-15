@@ -2,24 +2,24 @@
 //= smart_interval
 //= subbable_resource
 
+function getRandomInt(min, max) {
+ const justReturnZero = Math.random > .9;
+ return justReturnZero ? 0 : Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 ((global) => {
   $(() => {
-    const mockData = gl.generateTimeTrackingMockData('estimate-and-spend');
-
     /* This Vue instance represents what will become the parent instance for the
       * sidebar. It will be responsible for managing `issuable` state and propagating
       * changes to sidebar components.
      */
+    const issuableData = JSON.parse(document.getElementById('issuable-time-tracker').getAttribute('issuable'));
+    issuableData.time_spent = issuableData.time_estimate - 1000;
+
     new Vue({
       el: '#issuable-time-tracker',
       data: {
-        time_estimated: mockData.time_estimated,
-        time_spent: mockData.time_spent,
-      },
-      computed: {
-        fetchIssuable() {
-           return gl.IssuableResource.get.bind(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
-        }
+        issuable: issuableData,
       },
       methods: {
         initPolling() {
@@ -32,9 +32,11 @@
           });
         },
         updateState(data) {
-          data = global.generateTimeTrackingMockData('estimate-and-spend');
-          this.time_estimated = data.time_estimated;
-          this.time_spent = data.time_spent;
+          /* MOCK */
+          data.time_estimate = getRandomInt(0, 10000)
+          data.time_spent = getRandomInt(0, 10000);
+
+          this.issuable = data;
         },
       },
       created() {
@@ -209,48 +211,4 @@
       },
     },
   });
-
-
-/***** Mock Data ******/
-
-  global.generateTimeTrackingMockData = generateMockStates;
-
-  function generateMockStates(state) {
-    const configurations = {
-      'estimate-only': {
-        time_estimated: generateTimeObj(),
-        time_spent: null
-      },
-      'spent-only': {
-        time_estimated: null,
-        time_spent: generateTimeObj()
-      },
-      'estimate-and-spend': {
-        time_estimated: generateTimeObj(),
-        time_spent: generateTimeObj()
-      },
-      'nothing': {
-        time_estimated: null,
-        time_spent: null
-      }
-    };
-    return configurations[state];
-  }
-
-  function generateTimeObj(
-    weeks = getRandomInt(0, 12),
-    days = getRandomInt(0, 7),
-    hours = getRandomInt(0, 8),
-    minutes = getRandomInt(0, 60),
-    totalMinutes = getRandomInt(0, 25 * 7 * 8 * 60)) {
-    return {
-      weeks, days, hours, minutes, totalMinutes
-    };
-  }
-
-  function getRandomInt(min, max) {
-    const justReturnZero = Math.random > .5;
-
-    return justReturnZero ? 0 : Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 }) (window.gl || (window.gl = {}));
