@@ -111,6 +111,57 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the estimated time of a Noteable is changed
+  #
+  # noteable      - Noteable object
+  # project       - Project owning noteable
+  # author        - User performing the change
+  # time_estimate - Estimated time
+  #
+  # Example Note text:
+  #
+  #   "Changed estimate of this issue to 3d 5h"
+  #
+  # Returns the created Note object
+
+  def change_time_estimate(noteable, project, author)
+    parsed_time = ChronicDuration.output(noteable.time_estimate, format: :short)
+    body = if parsed_time
+             "Changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
+           else
+             "Removed time estimate on this #{noteable.human_class_name}"
+           end
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the spent time of a Noteable is changed
+  #
+  # noteable   - Noteable object
+  # project    - Project owning noteable
+  # author     - User performing the change
+  # time_spent - Spent time
+  #
+  # Example Note text:
+  #
+  #   "Added 2h 30m of time spent on this issue"
+  #
+  # Returns the created Note object
+
+  def change_time_spent(noteable, project, author)
+    time_spent = noteable.time_spent
+
+    if time_spent.zero?
+      body = "Removed time spent on this #{noteable.human_class_name}"
+    else
+      parsed_time = ChronicDuration.output(time_spent.abs, format: :short)
+      action = time_spent > 0 ? 'Added' : 'Substracted'
+      body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
+    end
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the status of a Noteable is changed
   #
   # noteable - Noteable object

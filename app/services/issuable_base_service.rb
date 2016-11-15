@@ -36,6 +36,14 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def create_time_estimate_note(issuable)
+    SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
+  end
+
+  def create_time_spent_note(issuable)
+    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
+  end
+
   def filter_params(issuable_ability_name = :issue)
     filter_assignee
     filter_milestone
@@ -247,6 +255,14 @@ class IssuableBaseService < BaseService
 
     if issuable.previous_changes.include?('description') && issuable.tasks?
       create_task_status_note(issuable)
+    end
+
+    if issuable.previous_changes.include?('time_estimate')
+      create_time_estimate_note(issuable)
+    end
+
+    if issuable.time_spent?
+      create_time_spent_note(issuable)
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels

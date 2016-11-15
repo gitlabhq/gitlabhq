@@ -210,6 +210,46 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'estimate command' do
+      it 'populates time_estimate: "3600" if content contains /estimate 1h' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(time_estimate: 3600)
+      end
+    end
+
+    shared_examples 'spend command' do
+      it 'populates spend_time: { seconds: 3600, user: user } if content contains /spend 1h' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: { seconds: 3600, user: developer })
+      end
+    end
+
+    shared_examples 'spend command with negative time' do
+      it 'populates spend_time: { seconds: -1800, user: user } if content contains /spend -30m' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: { seconds: -1800, user: developer })
+      end
+    end
+
+    shared_examples 'remove_estimation command' do
+      it 'populates time_estimate: "0" if content contains /remove_estimation' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(time_estimate: 0)
+      end
+    end
+
+    shared_examples 'remove_time_spent command' do
+      it 'populates spend_time: "0" if content contains /remove_time_spent' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: { seconds: 0, user: developer })
+      end
+    end
+
     shared_examples 'empty command' do
       it 'populates {} if content contains an unsupported command' do
         _, updates = service.execute(content, issuable)
@@ -321,7 +361,7 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'multiple label with same argument' do
       let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
       let(:issuable) { issue }
-    end	
+    end
 
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
@@ -449,6 +489,51 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'empty command' do
       let(:content) { '/remove_due_date' }
       let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'estimate command' do
+      let(:content) { '/estimate 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/estimate' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/estimate abc' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command' do
+      let(:content) { '/spend 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with negative time' do
+      let(:content) { '/spend -30m' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/spend' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/spend abc' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'remove_estimation command' do
+      let(:content) { '/remove_estimation' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'remove_time_spent command' do
+      let(:content) { '/remove_time_spent' }
+      let(:issuable) { issue }
     end
 
     context 'when current_user cannot :admin_issue' do

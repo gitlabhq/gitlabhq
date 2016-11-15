@@ -248,6 +248,54 @@ module SlashCommands
     params '@user'
     command :cc
 
+    desc 'Set time estimate'
+    params '<1w 3d 2h 14m>'
+    condition do
+      current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :estimate do |raw_duration|
+      time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
+
+      if time_spent
+        @updates[:time_estimate] = time_spent
+      end
+    end
+
+    desc 'Add or substract spent time'
+    params '<1h 30m | -1h 30m>'
+    condition do
+      current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :spend do |raw_duration|
+      reduce_time = raw_duration.sub!(/\A-/, '')
+      time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
+
+      if time_spent
+        @updates[:spend_time] = {
+          seconds: reduce_time ? (time_spent * -1) : time_spent,
+          user: current_user
+        }
+      end
+    end
+
+    desc 'Remove the estimated time'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :remove_estimation do
+      @updates[:time_estimate] = 0
+    end
+
+    desc 'Remove the time spent'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :remove_time_spent do
+      @updates[:spend_time] = { seconds: 0, user: current_user }
+    end
+
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
       labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)

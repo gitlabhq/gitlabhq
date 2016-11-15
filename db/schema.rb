@@ -560,6 +560,7 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
+    t.integer "time_estimate", default: 0
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -756,6 +757,7 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
+    t.integer "time_estimate", default: 0
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1250,6 +1252,18 @@ ActiveRecord::Schema.define(version: 20161106185620) do
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
+  create_table "timelogs", force: :cascade do |t|
+    t.integer "time_spent", null: false
+    t.integer "trackable_id"
+    t.string "trackable_type"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "timelogs", ["trackable_type", "trackable_id"], name: "index_timelogs_on_trackable_type_and_trackable_id", using: :btree
+  add_index "timelogs", ["user_id"], name: "index_timelogs_on_user_id", using: :btree
 
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false

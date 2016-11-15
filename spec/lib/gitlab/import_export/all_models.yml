@@ -15,6 +15,7 @@ issues:
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
 events:
 - author
 - project
@@ -80,6 +81,7 @@ merge_requests:
 - approvals
 - approvers
 - approver_groups
+- timelogs
 merge_request_diff:
 - merge_request
 pipelines:
@@ -207,3 +209,5 @@ award_emoji:
 - user
 priorities:
 - label
+timelogs:
+- trackable

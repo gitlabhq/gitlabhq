@@ -19,6 +19,9 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
+  # Attributes used to store the attributes that have ben changed by slash commands.
+  attr_accessor :commands_changes
+
   default_value_for :system, false
 
   attr_mentionable :note, pipeline: :note
