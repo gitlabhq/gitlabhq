@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe Mattermost::Commands::IssueSearchService, service: true do
+describe Gitlab::ChatCommands::IssueSearch, service: true do
   describe '#execute' do
     let!(:issue)    { create(:issue, title: 'The bird is the word') }
     let(:project)  { issue.project }
     let(:user)     { issue.author }
-    let(:params)   { { text: "issue search bird is the" } }
+    let(:regex_match) { described_class.match("issue search bird is the") }
 
     before { project.team << [user, :master] }
 
-    subject { described_class.new(project, user, params).execute }
+    subject { described_class.new(project, user).execute(regex_match) }
 
     context 'without results' do
-      let(:params) { { text: "issue search no results for this one" } }
+      let(:regex_match) { described_class.match("issue search no results for this one") }
 
       it "returns nil" do
         expect(subject[:response_type]).to be :ephemeral

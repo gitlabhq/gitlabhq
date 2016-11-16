@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Mattermost::Commands::IssueCreateService, service: true do
+describe Gitlab::ChatCommands::IssueCreate, service: true do
   describe '#execute' do
     let(:project)  { create(:empty_project) }
     let(:user)     { create(:user) }
-    let(:params)   { { text: "issue create bird is the word" } }
+    let(:regex_match) { described_class.match("issue create bird is the word") }
 
     before { project.team << [user, :master] }
 
-    subject { described_class.new(project, user, params).execute }
+    subject { described_class.new(project, user).execute(regex_match) }
 
     context 'without description' do
       it 'creates the issue' do
@@ -23,7 +23,7 @@ describe Mattermost::Commands::IssueCreateService, service: true do
 
     context 'with description' do
       let(:description) { "Surfin bird" }
-      let(:params) { { text: "issue create The bird is the word\n#{description}" } }
+      let(:regex_match) { described_class.match("issue create bird is the word\n#{description}") }
 
       before { subject }
 

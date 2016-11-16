@@ -1,6 +1,6 @@
-module Mattermost
-  module Commands
-    class IssueService < Mattermost::Commands::BaseService
+module Gitlab
+  module ChatCommands
+    class IssueCommand < BaseCommand
       def self.available?(project)
         project.issues_enabled? && project.default_issues_tracker?
       end

@@ -1,6 +1,6 @@
-module Mattermost
-  module Commands
-    class MergeRequestService < Mattermost::Commands::BaseService
+module Gitlab
+  module ChatCommands
+    class MergeRequestCommand < BaseCommand
       def self.available?(project)
         project.merge_requests_enabled?
       end

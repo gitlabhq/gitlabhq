@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Mattermost::SlashCommandService, service: true do
-  let(:project)         { build(:project) }
-  let(:user)            { build(:user) }
+describe Gitlab::ChatCommands::Command, service: true do
+  let(:project)         { create(:project) }
+  let(:user)            { create(:user) }
   let(:params)          { { text: 'issue show 1' } }
 
   subject { described_class.new(project, user, params).execute }

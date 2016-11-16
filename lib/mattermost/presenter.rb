@@ -12,12 +12,11 @@ module Mattermost
         }
       end
 
-      # TODO figure out how I know which are available or not
-      def help_message(commands)
+      def help(messages)
         messages = ["Available commands:"]
 
-        commands.each do |sub_command, attrs|
-          messages << "\t#{COMMAND_PREFIX} #{attrs[:help_message]}"
+        messages.each do |messsage|
+          messages << "- #{message}"
         end
 
         {
