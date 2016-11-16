@@ -13,7 +13,7 @@
     template: `
       <div>
         <div class="events-description">
-          {{ stage.shortDescription }}
+          {{ stage.description }}
         </div>
         <ul>
           <li v-for="issue in items">

@@ -15,7 +15,6 @@
   */
 
   global.cycleAnalytics.ItemIssueComponent = Vue.extend({
-    template: '#item-issue-component',
     props: {
       issue: Object,
     },
@@ -39,8 +38,8 @@
           </span>
           <span>
           by
-          <a href="issue.profile" class="issue-author-link">
-            {{ issue.author }}
+          <a :href="issue.author.web_url" class="issue-author-link">
+            {{ issue.author.name }}
           </a>
           </span>
         </div>

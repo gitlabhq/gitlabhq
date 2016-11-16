@@ -13,7 +13,7 @@
     template: `
       <div>
         <div class="events-description">
-          {{ stage.shortDescription }}
+          {{ stage.description }}
         </div>
         <ul class="stage-event-list">
           <li class="stage-event-item" v-for="mergeRequest in items">

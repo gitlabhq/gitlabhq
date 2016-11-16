@@ -9,11 +9,12 @@
     },
     props: {
       items: Array,
+      stage: Object,
     },
     template: `
       <div>
         <div class="events-description">
-          The time taken in staging
+          {{ stage.description }}
         </div>
         <ul>
           <li v-for="build in items">

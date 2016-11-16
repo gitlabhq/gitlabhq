@@ -6,7 +6,7 @@
       summary: '',
       stats: '',
       analytics: '',
-      items: [],
+      events: [],
       stages:[],
     },
     setCycleAnalyticsData(data) {
@@ -47,8 +47,19 @@
       this.deactivateAllStages();
       stage.active = true;
     },
-    setStageItems(items) {
-      this.state.items = items;
+    setStageEvents(events) {
+      this.state.events = this.decorateEvents(events);
+    },
+    decorateEvents(events) {
+      let newEvents = events;
+
+      newEvents.forEach((item) => {
+        item.totalTime = item.total_time;
+
+        delete item.total_time;
+      });
+
+      return newEvents;
     },
     currentActiveStage() {
       return this.state.stages.find(stage => stage.active);

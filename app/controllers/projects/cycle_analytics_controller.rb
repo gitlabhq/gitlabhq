@@ -31,11 +31,11 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     cycle_analytics_view_data = [[:issue, "Issue", "Related Issues", "Time before an issue gets scheduled"],
                                  [:plan, "Plan", "Related Commits", "Time before an issue starts implementation"],
-                                 [:code, "Code", "Related Merge Requests", "Time until first merge request"],
-                                 [:test, "Test", "Relative Builds Trigger by Commits", "Total test time for all commits/merges"],
-                                 [:review, "Review", "Relative Merged Requests", "Time between merge request creation and merge/close"],
-                                 [:staging, "Staging", "Relative Deployed Builds", "From merge request merge until deploy to production"],
-                                 [:production, "Production", "Related Issues", "From issue creation until deploy to production"]]
+                                 [:code, "Code", "Related Merge Requests", "Time spent coding"],
+                                 [:test, "Test", "Relative Builds Trigger by Commits", "The time taken to build and test the application"],
+                                 [:review, "Review", "Relative Merged Requests", "The time taken to review the code"],
+                                 [:staging, "Staging", "Relative Deployed Builds", "The time taken in staging"],
+                                 [:production, "Production", "Related Issues", "The total time taken from idea to production"]]
 
     stats = cycle_analytics_view_data.reduce([]) do |stats, (stage_method, stage_text, stage_legend, stage_description)|
       value = @cycle_analytics.send(stage_method).presence

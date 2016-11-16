@@ -83,5 +83,5 @@
             = icon("spinner spin", "v-show" => "isLoadingStage")
           %template{ "v-if" => "isEmptyStage" }
             = render partial: "empty_stage"
-          %template{ "v-if" => "state.items.length && !isLoadingStage && !isEmptyStage" }
-            %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.items" }
+          %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
+            %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }
