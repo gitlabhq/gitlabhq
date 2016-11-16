@@ -25,7 +25,7 @@ class AddPipelineIdToMergeRequestMetrics < ActiveRecord::Migration
 
   def change
     add_column :merge_request_metrics, :pipeline_id, :integer
-    add_index :merge_request_metrics, :pipeline_id
+    add_concurrent_index :merge_request_metrics, :pipeline_id
     add_foreign_key :merge_request_metrics, :ci_commits, column: :pipeline_id, on_delete: :cascade
   end
 end
