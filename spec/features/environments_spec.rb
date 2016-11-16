@@ -300,6 +300,9 @@ feature 'Environments', feature: true do
       expect(page).to have_no_link('Stop')
     end
 
+    ##
+    # This is a workaround for problem described in #24543
+    #
     def remove_branch_with_hooks(project, user, branch)
       params = {
         oldrev: project.commit(branch).id,
