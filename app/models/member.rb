@@ -83,6 +83,8 @@ class Member < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
+      when 'access_level_asc' then reorder(access_level: :asc)
+      when 'access_level_desc' then reorder(access_level: :desc)
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in
       when 'last_joined' then order_created_desc

@@ -37,6 +37,8 @@ module SortingHelper
 
   def member_sort_options_hash
     {
+      sort_value_access_level_asc => sort_title_access_level_asc,
+      sort_value_access_level_desc => sort_title_access_level_desc,
       sort_value_last_joined => sort_title_last_joined,
       sort_value_oldest_joined => sort_title_oldest_joined,
       sort_value_name => sort_title_name_asc,
@@ -114,6 +116,14 @@ module SortingHelper
     'Oldest joined'
   end
 
+  def sort_title_access_level_asc
+    'Access level, ascending'
+  end
+
+  def sort_title_access_level_desc
+    'Access level, descending'
+  end
+
   def sort_title_name_asc
     'Name, ascending'
   end
@@ -128,6 +138,14 @@ module SortingHelper
 
   def sort_value_oldest_joined
     'oldest_joined'
+  end
+
+  def sort_value_access_level_asc
+    'access_level_asc'
+  end
+
+  def sort_value_access_level_desc
+    'access_level_desc'
   end
 
   def sort_value_name_desc
