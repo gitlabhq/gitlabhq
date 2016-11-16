@@ -38,7 +38,7 @@ class Environment < ActiveRecord::Base
   end
 
   def recently_updated_on_branch?(ref)
-    ref.to_s == last_deployment.ref
+    ref.to_s == last_deployment.try(:ref)
   end
 
   def last_deployment
