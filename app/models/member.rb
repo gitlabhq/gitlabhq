@@ -57,6 +57,11 @@ class Member < ActiveRecord::Base
   scope :owners,  -> { active.where(access_level: OWNER) }
   scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
 
+  scope :order_name_asc, -> { joins(:user).merge(User.order_name_asc) }
+  scope :order_name_desc, -> { joins(:user).merge(User.order_name_desc) }
+  scope :order_recent_sign_in, -> { joins(:user).merge(User.order_recent_sign_in) }
+  scope :order_oldest_sign_in, -> { joins(:user).merge(User.order_oldest_sign_in) }
+
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
@@ -72,6 +77,21 @@ class Member < ActiveRecord::Base
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
   class << self
+    def search(query)
+      joins(:user).merge(User.search(query))
+    end
+
+    def sort(method)
+      case method.to_s
+      when 'recent_sign_in' then order_recent_sign_in
+      when 'oldest_sign_in' then order_oldest_sign_in
+      when 'last_joined' then order_created_desc
+      when 'oldest_joined' then order_created_asc
+      else
+        order_by(method)
+      end
+    end
+
     def access_for_user_ids(user_ids)
       where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
     end

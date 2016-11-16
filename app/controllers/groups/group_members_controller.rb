@@ -6,19 +6,13 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
+
     @members = @group.group_members
     @members = @members.non_invite unless can?(current_user, :admin_group, @group)
-
-    if params[:search].present?
-      @members = @members.joins(:user).merge(User.search(params[:search]))
-    end
-
-    if params[:sort].present?
-      @members = @members.joins(:user).merge(User.sort(@sort = params[:sort]))
-    end
-
-
+    @members = @members.search(params[:search]) if params[:search].present?
+    @members = @members.sort(@sort = params[:sort]) if params[:sort].present?
     @members = @members.page(params[:page]).per(50)
+
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 
     @group_member = @group.group_members.new
