@@ -50,6 +50,61 @@
           new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
         }
 
+
+        var renderMethod = function(data) {
+          var labelCount, template, labelTooltipTitle, labelTitles;
+          $loading.fadeOut();
+          $dropdown.trigger('loaded.gl.dropdown');
+          $selectbox.hide();
+          data.issueURLSplit = issueURLSplit;
+          labelCount = 0;
+          if (data.labels.length) {
+            template = labelHTMLTemplate(data);
+            labelCount = data.labels.length;
+          }
+          else {
+            template = labelNoneHTMLTemplate;
+          }
+          $value.removeAttr('style').html(template);
+          $sidebarCollapsedValue.text(labelCount);
+
+          if (data.labels.length) {
+            labelTitles = data.labels.map(function(label) {
+              return label.title;
+            });
+
+            if (labelTitles.length > 5) {
+              labelTitles = labelTitles.slice(0, 5);
+              labelTitles.push('and ' + (data.labels.length - 5) + ' more');
+            }
+
+            labelTooltipTitle = labelTitles.join(', ');
+          }
+          else {
+            labelTooltipTitle = '';
+            $sidebarLabelTooltip.tooltip('destroy');
+          }
+
+          $sidebarLabelTooltip
+            .attr('title', labelTooltipTitle)
+            .tooltip('fixTitle');
+
+          $('.has-tooltip', $value).tooltip({
+            container: 'body'
+          });
+          return $value.find('a').each(function(i) {
+            return setTimeout((function(_this) {
+              return function() {
+                return gl.animate.animate($(_this), 'pulse');
+              };
+            })(this), 200 * i);
+          });
+        };
+
+        if (gl.IssuableResource) {
+          gl.IssuableResource.subscribe(renderMethod);
+        }
+
         saveLabelData = function() {
           var data, selected;
           selected = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "']").map(function() {
@@ -72,55 +127,7 @@
             url: issueUpdateURL,
             dataType: 'JSON',
             data: data
-          }).done(function(data) {
-            var labelCount, template, labelTooltipTitle, labelTitles;
-            $loading.fadeOut();
-            $dropdown.trigger('loaded.gl.dropdown');
-            $selectbox.hide();
-            data.issueURLSplit = issueURLSplit;
-            labelCount = 0;
-            if (data.labels.length) {
-              template = labelHTMLTemplate(data);
-              labelCount = data.labels.length;
-            }
-            else {
-              template = labelNoneHTMLTemplate;
-            }
-            $value.removeAttr('style').html(template);
-            $sidebarCollapsedValue.text(labelCount);
-
-            if (data.labels.length) {
-              labelTitles = data.labels.map(function(label) {
-                return label.title;
-              });
-
-              if (labelTitles.length > 5) {
-                labelTitles = labelTitles.slice(0, 5);
-                labelTitles.push('and ' + (data.labels.length - 5) + ' more');
-              }
-
-              labelTooltipTitle = labelTitles.join(', ');
-            }
-            else {
-              labelTooltipTitle = '';
-              $sidebarLabelTooltip.tooltip('destroy');
-            }
-
-            $sidebarLabelTooltip
-              .attr('title', labelTooltipTitle)
-              .tooltip('fixTitle');
-
-            $('.has-tooltip', $value).tooltip({
-              container: 'body'
-            });
-            return $value.find('a').each(function(i) {
-              return setTimeout((function(_this) {
-                return function() {
-                  return gl.animate.animate($(_this), 'pulse');
-                };
-              })(this), 200 * i);
-            });
-          });
+          }).done(renderMethod);
         };
         return $dropdown.glDropdown({
           showMenuAbove: showMenuAbove,
