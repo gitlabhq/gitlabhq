@@ -3,12 +3,15 @@
 
 %div{ class: container_class }
   .wiki-page-header
-    %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
-      = icon('angle-double-left')
 
     .nav-text
       %h2.wiki-page-title
         Wiki Pages
+
+    .nav-controls
+      = link_to namespace_project_wikis_git_access_path(@project.namespace, @project), class: 'btn' do
+        = icon('cloud-download')
+        Clone repository
 
   %ul.content-list
     - @wiki_pages.each do |wiki_page|
@@ -18,5 +21,3 @@
         .pull-right
           %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
   = paginate @wiki_pages, theme: 'gitlab'
-
-= render 'sidebar'

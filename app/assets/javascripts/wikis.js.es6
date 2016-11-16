@@ -55,6 +55,7 @@
     }
 
     renderSidebar() {
+      if (!this.sidebarEl) return;
       const { classList } = this.sidebarEl;
       if (this.sidebarExpanded || !this.sidebarCanCollapse()) {
         if (!classList.contains('right-sidebar-expanded')) {

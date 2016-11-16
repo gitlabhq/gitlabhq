@@ -23,7 +23,6 @@ module NavHelper
     elsif current_path?('wikis#show') ||
       current_path?('wikis#edit') ||
       current_path?('wikis#history') ||
-      current_path?('wikis#pages') ||
       current_path?('wikis#git_access')
       "page-gutter wiki-sidebar right-sidebar-expanded"
     end

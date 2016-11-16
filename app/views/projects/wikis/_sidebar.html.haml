@@ -12,9 +12,12 @@
   .blocks-container
     .block.block-first
       %ul.wiki-pages
-        - @project_wiki.pages.each do |wiki_page|
+        - @sidebar_wiki_pages.each do |wiki_page|
           %li{ class: params[:id] == wiki_page.slug ? 'active' : '' }
             = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_page) do
               = wiki_page.title.capitalize
+    .block
+      = link_to namespace_project_wiki_pages_path(@project.namespace, @project), class: 'btn btn-block' do
+        More Pages
 
 = render 'projects/wikis/new'
