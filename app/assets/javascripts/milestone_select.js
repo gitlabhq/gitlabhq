@@ -32,6 +32,28 @@
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
           collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
         }
+
+        var renderMethod = function(data) {
+          $dropdown.trigger('loaded.gl.dropdown');
+          $loading.fadeOut();
+          $selectbox.hide();
+          $value.css('display', '');
+          if (data.milestone != null) {
+            data.milestone.namespace = _this.currentProject.namespace;
+            data.milestone.path = _this.currentProject.path;
+            data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
+            $value.html(milestoneLinkTemplate(data.milestone));
+            return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
+          } else {
+            $value.html(milestoneLinkNoneTemplate);
+            return $sidebarCollapsedValue.find('span').text('No');
+          }
+        };
+
+        if (gl.IssuableResource) {
+          gl.IssuableResource.subscribe(renderMethod);
+        }
+
         return $dropdown.glDropdown({
           showMenuAbove: showMenuAbove,
           data: function(term, callback) {
@@ -154,22 +176,7 @@
                 type: 'PUT',
                 url: issueUpdateURL,
                 data: data
-              }).done(function(data) {
-                $dropdown.trigger('loaded.gl.dropdown');
-                $loading.fadeOut();
-                $selectbox.hide();
-                $value.css('display', '');
-                if (data.milestone != null) {
-                  data.milestone.namespace = _this.currentProject.namespace;
-                  data.milestone.path = _this.currentProject.path;
-                  data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
-                  $value.html(milestoneLinkTemplate(data.milestone));
-                  return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
-                } else {
-                  $value.html(milestoneLinkNoneTemplate);
-                  return $sidebarCollapsedValue.find('span').text('No');
-                }
-              });
+              }).done(renderMethod);
             }
           }
         });
