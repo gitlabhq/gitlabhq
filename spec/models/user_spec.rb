@@ -491,7 +491,7 @@ describe User, models: true do
   end
 
   describe '.without_projects' do
-    let!(:project) { create(:empty_project, :public) }
+    let!(:project) { create(:empty_project, :public, :access_requestable) }
     let!(:user) { create(:user) }
     let!(:user_without_project) { create(:user) }
     let!(:user_without_project2) { create(:user) }
