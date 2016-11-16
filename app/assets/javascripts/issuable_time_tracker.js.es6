@@ -94,7 +94,8 @@
         });
       },
       abbreviateTime(value) {
-        return value.split(' ')[0];
+        return value.split(' ')
+          .filter(unitStr => unitStr.charAt(0) !== '0')[0];
       },
       toggleHelpState(show) {
         this.displayHelp = show;
