@@ -6,6 +6,7 @@ describe SearchHelper do
     str
   end
 
+<<<<<<< HEAD
   describe 'parsing result' do
     let(:project) { create(:project) }
     let(:repository) { project.repository }
@@ -71,6 +72,8 @@ describe SearchHelper do
     end
   end
 
+=======
+>>>>>>> ce-dev/master
   describe 'search_autocomplete_source' do
     context "with no current user" do
       before do

@@ -1,0 +1,4 @@
+---
+title: Fix labels API by adding missing current_user parameter
+merge_request: 7458
+author: Francesco Coda Zabetta

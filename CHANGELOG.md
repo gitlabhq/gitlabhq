@@ -4,6 +4,7 @@ entry.
 
 ## 8.14.0 (2016-11-22)
 
+<<<<<<< HEAD
 - Centralize LDAP config/filter logic. !6606
 - Show random messages when the To Do list is empty. !6818 (Josep Llaneras)
 - Fix record not found error on NewNoteWorker processing. !6863 (Oswaldo Ferreira)
@@ -56,6 +57,8 @@ entry.
 - Bump omniauth-gitlab to 1.0.2 to fix incompatibility with omniauth-oauth2.
 - Fix: Todos Filter Shows All Users.
 - Fix broken commits search.
+=======
+>>>>>>> ce-dev/master
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Diff collapse won't shift when collapsing.
@@ -125,6 +128,7 @@ entry.
 - Fix applying GitHub-imported labels when importing job is interrupted
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
 - Updated commit SHA styling on the branches page.
+- Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
 
 ## 8.13.5 (2016-11-08)

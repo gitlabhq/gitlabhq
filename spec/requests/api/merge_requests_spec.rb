@@ -554,12 +554,6 @@ describe API::API, api: true  do
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
-    it "returns 400 when source_branch is specified" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
-      source_branch: "master", target_branch: "master"
-      expect(response).to have_http_status(400)
-    end
-
     it "returns merge_request with renamed target_branch" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
       expect(response).to have_http_status(200)

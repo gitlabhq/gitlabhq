@@ -54,6 +54,7 @@
 /*= require_directory ./u2f */
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
+/*= require es6-promise.auto */
 
 (function () {
   document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);

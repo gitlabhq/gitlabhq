@@ -1,41 +1,48 @@
 module API
-  # groups API
   class Groups < Grape::API
     before { authenticate! }
 
+    helpers do
+      params :optional_params do
+        optional :description, type: String, desc: 'The description of the group'
+        optional :visibility_level, type: Integer, desc: 'The visibility level of the group'
+        optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
+        optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
+      end
+    end
+
     resource :groups do
-      # Get a groups list
-      #
-      # Parameters:
-      #   skip_groups (optional) - Array of group ids to exclude from list
-      #   all_available (optional, boolean) - Show all group that you have access to
-      # Example Request:
-      #  GET /groups
+      desc 'Get a groups list' do
+        success Entities::Group
+      end
+      params do
+        optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
+        optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
+        optional :search, type: String, desc: 'Search for a specific group'
+      end
       get do
-        @groups = if current_user.admin
-                    Group.all
-                  elsif params[:all_available]
-                    GroupsFinder.new.execute(current_user)
-                  else
-                    current_user.groups
-                  end
+        groups = if current_user.admin
+                   Group.all
+                 elsif params[:all_available]
+                   GroupsFinder.new.execute(current_user)
+                 else
+                   current_user.groups
+                 end
 
-        @groups = @groups.search(params[:search]) if params[:search].present?
-        @groups = @groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
-        @groups = paginate @groups
-        present @groups, with: Entities::Group
+        groups = groups.search(params[:search]) if params[:search].present?
+        groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
+        present paginate(groups), with: Entities::Group
       end
 
-      # Get list of owned groups for authenticated user
-      #
-      # Example Request:
-      #   GET /groups/owned
+      desc 'Get list of owned groups for authenticated user' do
+        success Entities::Group
+      end
       get '/owned' do
-        @groups = current_user.owned_groups
-        @groups = paginate @groups
-        present @groups, with: Entities::Group, user: current_user
+        groups = current_user.owned_groups
+        present paginate(groups), with: Entities::Group, user: current_user
       end
 
+<<<<<<< HEAD
       # Create group. Available only for users who can create groups.
       #
       # Parameters:
@@ -49,10 +56,20 @@ module API
       #   request_access_enabled (optional) - Allow users to request member access
       # Example Request:
       #   POST /groups
+=======
+      desc 'Create a group. Available only for users who can create groups.' do
+        success Entities::Group
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the group'
+        requires :path, type: String, desc: 'The path of the group'
+        use :optional_params
+      end
+>>>>>>> ce-dev/master
       post do
         authorize! :create_group
-        required_attributes! [:name, :path]
 
+<<<<<<< HEAD
         attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock, :lfs_enabled, :request_access_enabled]
         @group = Group.new(attrs)
 
@@ -68,11 +85,19 @@ module API
 
           @group.add_owner(current_user)
           present @group, with: Entities::Group
+=======
+        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
+
+        if group.persisted?
+          present group, with: Entities::Group
+>>>>>>> ce-dev/master
         else
-          render_api_error!("Failed to save group #{@group.errors.messages}", 400)
+          render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
       end
+    end
 
+<<<<<<< HEAD
       # Update group. Available only for users who can manage this group.
       #
       # Parameters:
@@ -87,46 +112,57 @@ module API
       #   request_access_enabled (optional) - Allow users to request member access
       # Example Request:
       #   PUT /groups/:id
+=======
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
+    resource :groups do
+      desc 'Update a group. Available only for users who can administrate groups.' do
+        success Entities::Group
+      end
+      params do
+        optional :name, type: String, desc: 'The name of the group'
+        optional :path, type: String, desc: 'The path of the group'
+        use :optional_params
+        at_least_one_of :name, :path, :description, :visibility_level,
+                        :lfs_enabled, :request_access_enabled
+      end
+>>>>>>> ce-dev/master
       put ':id' do
         group = find_group(params[:id])
         authorize! :admin_group, group
 
+<<<<<<< HEAD
         attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock, :lfs_enabled, :request_access_enabled]
 
         if ::Groups::UpdateService.new(group, current_user, attrs).execute
+=======
+        if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
+>>>>>>> ce-dev/master
           present group, with: Entities::GroupDetail
         else
           render_validation_error!(group)
         end
       end
 
-      # Get a single group, with containing projects
-      #
-      # Parameters:
-      #   id (required) - The ID of a group
-      # Example Request:
-      #   GET /groups/:id
+      desc 'Get a single group, with containing projects.' do
+        success Entities::GroupDetail
+      end
       get ":id" do
         group = find_group(params[:id])
         present group, with: Entities::GroupDetail
       end
 
-      # Remove group
-      #
-      # Parameters:
-      #   id (required) - The ID of a group
-      # Example Request:
-      #   DELETE /groups/:id
+      desc 'Remove a group.'
       delete ":id" do
         group = find_group(params[:id])
         authorize! :admin_group, group
         DestroyGroupService.new(group, current_user).execute
       end
 
-      # Get a list of projects in this group
-      #
-      # Example Request:
-      #   GET /groups/:id/projects
+      desc 'Get a list of projects in this group.' do
+        success Entities::Project
+      end
       get ":id/projects" do
         group = find_group(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
@@ -134,13 +170,12 @@ module API
         present projects, with: Entities::Project, user: current_user
       end
 
-      # Transfer a project to the Group namespace
-      #
-      # Parameters:
-      #   id - group id
-      #   project_id  - project id
-      # Example Request:
-      #   POST /groups/:id/projects/:project_id
+      desc 'Transfer a project to the group namespace. Available only for admin.' do
+        success Entities::GroupDetail
+      end
+      params do
+        requires :project_id, type: String, desc: 'The ID of the project'
+      end
       post ":id/projects/:project_id" do
         authenticated_as_admin!
         group = Group.find_by(id: params[:id])
@@ -148,7 +183,7 @@ module API
         result = ::Projects::TransferService.new(project, current_user).execute(group)
 
         if result
-          present group
+          present group, with: Entities::GroupDetail
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end

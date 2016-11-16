@@ -248,6 +248,26 @@ describe API::API, api: true  do
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
           expect(key.user.reload.last_activity_at.to_i).to eq(Time.now.to_i)
         end
+
+        context 'project as /namespace/project' do
+          it do
+            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          end
+        end
+
+        context 'project as namespace/project' do
+          it do
+            pull(key, project_with_repo_path(project.path_with_namespace))
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          end
+        end
       end
     end
 
@@ -360,7 +380,7 @@ describe API::API, api: true  do
 
     context 'project does not exist' do
       it do
-        pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
+        pull(key, project_with_repo_path('gitlab/notexist'))
 
         expect(response).to have_http_status(200)
         expect(json_response["status"]).to be_falsey
@@ -453,11 +473,17 @@ describe API::API, api: true  do
     end
   end
 
+  def project_with_repo_path(path)
+    double().tap do |fake_project|
+      allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)
+    end
+  end
+
   def pull(key, project, protocol = 'ssh')
     post(
       api("/internal/allowed"),
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-upload-pack',
       secret_token: secret_token,
       protocol: protocol
@@ -469,7 +495,7 @@ describe API::API, api: true  do
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol
@@ -481,7 +507,7 @@ describe API::API, api: true  do
       api("/internal/allowed"),
       ref: 'master',
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
@@ -493,7 +519,7 @@ describe API::API, api: true  do
       api("/internal/lfs_authenticate"),
       key_id: key_id,
       secret_token: secret_token,
-      project: project.path_with_namespace
+      project: project.repository.path_to_repo
     )
   end
 end

@@ -26,6 +26,8 @@
               = sort_title_oldest_updated
 
       - if can? current_user, :push_code, @project
+        = link_to namespace_project_merged_branches_path(@project.namespace, @project), class: 'btn btn-inverted btn-remove has-tooltip', title: "Delete all branches that are merged into '#{@project.repository.root_ref}'", method: :delete, data: { confirm: "Deleting the merged branches cannot be undone. Are you sure?", container: 'body' } do
+          Delete merged branches
         = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
           New branch
   = render 'projects/commits/mirror_status'

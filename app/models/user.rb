@@ -182,12 +182,16 @@ class User < ActiveRecord::Base
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
+<<<<<<< HEAD
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
   scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :with_provider, ->(provider) do
     joins(:identities).where(identities: { provider: provider })
   end
+=======
+  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
+>>>>>>> ce-dev/master
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
 
   def self.with_two_factor

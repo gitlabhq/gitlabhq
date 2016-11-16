@@ -151,6 +151,7 @@
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
 
+<<<<<<< HEAD
 %li.unsaved-approvers.hide.approver.approver-template{id: "user_{user_id}"}
   = link_to "{approver_name}", "#"
   .pull-right
@@ -158,4 +159,6 @@
       = icon("sign-out")
       Remove
 
+=======
+>>>>>>> ce-dev/master
 = form.hidden_field :lock_version

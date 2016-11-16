@@ -10,8 +10,7 @@ class Projects::ServicesController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @project.build_missing_services
-    @services = @project.services.visible.reload
+    @services = @project.find_or_initialize_services
   end
 
   def edit
@@ -46,6 +45,6 @@ class Projects::ServicesController < Projects::ApplicationController
   private
 
   def service
-    @service ||= @project.services.find { |service| service.to_param == params[:id] }
+    @service ||= @project.find_or_initialize_service(params[:id])
   end
 end

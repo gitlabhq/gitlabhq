@@ -3,6 +3,8 @@ module API
   class Internal < Grape::API
     before { authenticate_by_gitlab_shell_token! }
 
+    helpers ::API::Helpers::InternalHelpers
+
     namespace 'internal' do
       # Check if git command is allowed to project
       #
@@ -14,6 +16,7 @@ module API
       #   ref - branch name
       #   forced_push - forced_push
       #   protocol - Git access protocol being used, e.g. HTTP or SSH
+<<<<<<< HEAD
       #
 
       helpers do
@@ -58,6 +61,8 @@ module API
         end
       end
 
+=======
+>>>>>>> ce-dev/master
       post "/allowed" do
         status 200
 

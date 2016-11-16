@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Groups > Members > User requests access', feature: true do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
-  let(:group) { create(:group, :public) }
+  let(:group) { create(:group, :public, :access_requestable) }
   let!(:project) { create(:project, :private, namespace: group) }
 
   background do

@@ -393,33 +393,33 @@ describe Repository, models: true do
     end
   end
 
-  describe "search_files" do
-    let(:results) { repository.search_files('feature', 'master') }
+  describe "search_files_by_content" do
+    let(:results) { repository.search_files_by_content('feature', 'master') }
     subject { results }
 
     it { is_expected.to be_an Array }
 
     it 'regex-escapes the query string' do
-      results = repository.search_files("test\\", 'master')
+      results = repository.search_files_by_content("test\\", 'master')
 
       expect(results.first).not_to start_with('fatal:')
     end
 
     it 'properly handles an unmatched parenthesis' do
-      results = repository.search_files("test(", 'master')
+      results = repository.search_files_by_content("test(", 'master')
 
       expect(results.first).not_to start_with('fatal:')
     end
 
     it 'properly handles when query is not present' do
-      results = repository.search_files('', 'master')
+      results = repository.search_files_by_content('', 'master')
 
       expect(results).to match_array([])
     end
 
     it 'properly handles query when repo is empty' do
       repository = create(:empty_project).repository
-      results = repository.search_files('test', 'master')
+      results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
     end
@@ -429,6 +429,28 @@ describe Repository, models: true do
 
       it { is_expected.to be_an String }
       it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+    end
+  end
+
+  describe "search_files_by_name" do
+    let(:results) { repository.search_files_by_name('files', 'master') }
+
+    it 'returns result' do
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is not present' do
+      results = repository.search_files_by_name('', 'master')
+
+      expect(results).to match_array([])
+    end
+
+    it 'properly handles query when repo is empty' do
+      repository = create(:empty_project).repository
+
+      results = repository.search_files_by_name('test', 'master')
+
+      expect(results).to match_array([])
     end
   end
 
@@ -1677,6 +1699,7 @@ describe Repository, models: true do
       end.to raise_error(Repository::CommitError)
     end
   end
+<<<<<<< HEAD
 
   describe '#remove_storage_from_path' do
     let(:storage_path) { project.repository_storage_path }
@@ -1692,4 +1715,6 @@ describe Repository, models: true do
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
+=======
+>>>>>>> ce-dev/master
 end

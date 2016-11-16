@@ -6,20 +6,63 @@ describe Gitlab::ProjectSearchResults, lib: true do
   let(:query) { 'hello world' }
 
   describe 'initialize with empty ref' do
-    let(:results) { Gitlab::ProjectSearchResults.new(user, project, query, '') }
+    let(:results) { described_class.new(user, project, query, '') }
 
     it { expect(results.project).to eq(project) }
-    it { expect(results.repository_ref).to be_nil }
     it { expect(results.query).to eq('hello world') }
   end
 
   describe 'initialize with ref' do
     let(:ref) { 'refs/heads/test' }
-    let(:results) { Gitlab::ProjectSearchResults.new(user, project, query, ref) }
+    let(:results) { described_class.new(user, project, query, ref) }
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to eq(ref) }
     it { expect(results.query).to eq('hello world') }
+  end
+
+  describe 'blob search' do
+    let(:results) { described_class.new(user, project, 'files').objects('blobs') }
+
+    it 'finds by name' do
+      expect(results).to include(["files/images/wm.svg", nil])
+    end
+
+    it 'finds by content' do
+      blob = results.select { |result| result.first == "CHANGELOG" }.flatten.last
+
+      expect(blob.filename).to eq("CHANGELOG")
+    end
+
+    describe 'parsing results' do
+      let(:results) { project.repository.search_files_by_content('feature', 'master') }
+      let(:search_result) { results.first }
+
+      subject { described_class.parse_search_result(search_result) }
+
+      it "returns a valid OpenStruct object" do
+        is_expected.to be_an OpenStruct
+        expect(subject.filename).to eq('CHANGELOG')
+        expect(subject.basename).to eq('CHANGELOG')
+        expect(subject.ref).to eq('master')
+        expect(subject.startline).to eq(188)
+        expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
+      end
+
+      context "when filename has extension" do
+        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
+
+        it { expect(subject.filename).to eq('CONTRIBUTE.md') }
+        it { expect(subject.basename).to eq('CONTRIBUTE') }
+      end
+
+      context "when file under directory" do
+        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
+
+        it { expect(subject.filename).to eq('a/b/c.md') }
+        it { expect(subject.basename).to eq('a/b/c') }
+      end
+    end
   end
 
   describe 'confidential issues' do
@@ -66,7 +109,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it 'lists project confidential issues for assignee' do
-      results = described_class.new(assignee, project.id, query)
+      results = described_class.new(assignee, project, query)
       issues = results.objects('issues')
 
       expect(issues).to include issue

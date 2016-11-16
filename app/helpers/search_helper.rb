@@ -31,6 +31,7 @@ module SearchHelper
   end
 
   def parse_search_result(result)
+<<<<<<< HEAD
     if result.is_a?(String)
       parse_search_result_from_grep(result)
     else
@@ -110,6 +111,9 @@ module SearchHelper
       startline: startline,
       data: data
     )
+=======
+    Gitlab::ProjectSearchResults.parse_search_result(result)
+>>>>>>> ce-dev/master
   end
 
   def find_project_for_blob(blob)
