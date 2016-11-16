@@ -3,7 +3,7 @@
 ((global) => {
   gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
-    props: [ 'time_estimate', 'time_spent' ],
+    props: [ 'time_estimate', 'time_spent', 'human_time_estimate', 'human_time_spent' ],
     data: function() {
       return {
         displayHelp: false,
@@ -41,10 +41,10 @@
 
       /* Human readable time values */
       estimatedPretty() {
-        return this.stringifyTime(this.parsedEstimate);
+        return this.human_time_estimate || this.stringifyTime(this.parsedEstimate);
       },
       spentPretty() {
-        return this.stringifyTime(this.parsedSpent);
+        return this.human_time_spent || this.stringifyTime(this.parsedSpent);
       },
       remainingPretty() {
         return this.stringifyTime(this.parsedRemaining);

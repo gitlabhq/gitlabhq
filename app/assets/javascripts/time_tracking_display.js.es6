@@ -28,8 +28,8 @@
           initPolling() {
             new gl.SmartInterval({
               callback: this.fetchIssuable,
-              startingInterval: 1000,
-              maxInterval: 10000,
+              startingInterval: 5000,
+              maxInterval: 20000,
               incrementByFactorOf: 3,
               lazyStart: false,
             });
@@ -42,10 +42,13 @@
           },
           listenForSlashCommands() {
             $(document).on('ajax:success', '.gfm-form', (e) => {
-              // TODO: check if slash command was updated.
+              // TODO: check for slash command
               this.fetchIssuable();
             });
           },
+        },
+        created() {
+          this.fetchIssuable();
         },
         mounted() {
           this.initPolling();
