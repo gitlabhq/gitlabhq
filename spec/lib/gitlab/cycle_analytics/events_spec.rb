@@ -16,7 +16,7 @@ describe Gitlab::CycleAnalytics::Events do
 
   describe '#issue_events' do
     it 'has the total time' do
-      expect(subject.issue_events.first[:total_time]).to eq('2 days')
+      expect(subject.issue_events.first[:total_time]).not_to be_empty
     end
 
     it 'has a title' do
@@ -62,7 +62,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.plan_events.first[:total_time]).to eq('less than a minute')
+      expect(subject.plan_events.first[:total_time]).not_to be_empty
     end
 
     it "has the author's URL" do
@@ -84,7 +84,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.code_events.first[:total_time]).to eq('less than a minute')
+      expect(subject.code_events.first[:total_time]).not_to be_empty
     end
 
     it 'has a title' do
@@ -162,7 +162,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.test_events.first[:total_time]).not_to be_nil
+      expect(subject.test_events.first[:total_time]).not_to be_empty
     end
   end
 
@@ -170,7 +170,7 @@ describe Gitlab::CycleAnalytics::Events do
     let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
     it 'has the total time' do
-      expect(subject.review_events.first[:total_time]).to eq('less than a minute')
+      expect(subject.review_events.first[:total_time]).not_to be_empty
     end
 
     it 'has a title' do
@@ -259,7 +259,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.staging_events.first[:total_time]).not_to be_nil
+      expect(subject.staging_events.first[:total_time]).not_to be_empty
     end
 
     it "has the author's URL" do
@@ -284,7 +284,7 @@ describe Gitlab::CycleAnalytics::Events do
     end
 
     it 'has the total time' do
-      expect(subject.production_events.first[:total_time]).to eq('2 days')
+      expect(subject.production_events.first[:total_time]).not_to be_empty
     end
 
     it 'has a title' do

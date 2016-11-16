@@ -5,7 +5,7 @@ class AnalyticsCommitEntity < CommitEntity
   expose :short_id, as: :short_sha
 
   expose :total_time do |commit|
-    distance_of_time_in_words(request.total_time.to_f)
+    distance_of_time_as_hash(request.total_time.to_f)
   end
 
   unexpose :author_name
