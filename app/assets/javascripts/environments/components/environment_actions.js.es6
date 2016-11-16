@@ -27,10 +27,13 @@
 
       const dropdownContainer = this.$el.querySelector('.dropdown-play-icon-container');
       const actionContainers = this.$el.querySelectorAll('.action-play-icon-container');
+      // Phantomjs does not have support to iterate a nodelist.
+      const actionsArray = [].slice.call(actionContainers);
 
-      if (playIcon) {
+      if (playIcon && actionsArray && dropdownContainer) {
         dropdownContainer.appendChild(playIcon.cloneNode(true));
-        actionContainers.forEach((element) => {
+
+        actionsArray.forEach((element) => {
           element.appendChild(playIcon.cloneNode(true));
         });
       }
