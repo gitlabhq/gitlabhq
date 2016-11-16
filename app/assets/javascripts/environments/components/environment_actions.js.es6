@@ -1,4 +1,4 @@
-/*= require vue
+/*= require vue */
 /* global Vue */
 
 (() => {

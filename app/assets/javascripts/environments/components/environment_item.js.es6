@@ -1,10 +1,10 @@
-/*= require lib/utils/timeago
-/*= require lib/utils/text_utility
-/*= require vue_common_component/commit
-/*= require ./environment_actions
-/*= require ./environment_external_url
-/*= require ./environment_stop
-/*= require ./environment_rollback
+/*= require lib/utils/timeago */
+/*= require lib/utils/text_utility */
+/*= require vue_common_component/commit */
+/*= require ./environment_actions */
+/*= require ./environment_external_url */
+/*= require ./environment_stop */
+/*= require ./environment_rollback */
 
 /* globals Vue, timeago */
 
@@ -17,7 +17,7 @@
    * Recursive component based on [Tree View](https://vuejs.org/examples/tree-view.html)
    *
    * See this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/22539)
-   * for more information.
+   * for more information.15
    */
 
   window.gl = window.gl || {};
@@ -153,7 +153,7 @@
        * @returns {String}
        */
       createdDate() {
-        const timeagoInstance = new timeago();
+        const timeagoInstance = new timeago(); // eslint-disable-line
 
         return timeagoInstance.format(this.model.created_at);
       },

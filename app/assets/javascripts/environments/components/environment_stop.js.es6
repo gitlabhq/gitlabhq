@@ -1,4 +1,4 @@
-/*= require vue
+/*= require vue */
 /* global Vue */
 
 (() => {
@@ -15,7 +15,7 @@
 
     methods: {
       openConfirmDialog() {
-        return window.confirm('Are you sure you want to stop this environment?');
+        return window.confirm('Are you sure you want to stop this environment?'); // eslint-disable-line
       },
     },
 
