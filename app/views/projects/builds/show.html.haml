@@ -26,26 +26,29 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
-    - if @build.deployable?
+    - if @build.environment.present? && @build.starts_environment?
       .prepend-top-default
         .environment-information
-          - if @build.status == 'success' && (!@build.last_deployment.try(:last?))
+          - if @build.outdated_deployment?
             = ci_icon_for_status('success_with_warnings')
           - else
             = ci_icon_for_status(@build.status)
 
-          - last_deployment = @build.last_deployment
-          - if @build.complete?
-            - if @build.success?
-              - if last_deployment.try(:last?)
-                This build is the most recent deployment to #{environment_link_for_build(@build.project, @build)}.
-              - else
-                This build is an out-of-date deployment to #{environment_link_for_build(@build.project, @build)}. View the most recent deployment #{deployment_link(@project, last_deployment)}.
+          - environment = environment_for_build(@build.project, @build)
+          - if @build.success? && @build.last_deployment.present?
+            - if @build.last_deployment.last?
+              This build is the most recent deployment to #{environment_link_for_build(@build.project, @build)}.
             - else
-              The deployment of this build to #{environment_link_for_build(@build.project, @build)} did not complete.
+              This build is an out-of-date deployment to #{environment_link_for_build(@build.project, @build)}.
+              - if environment.last_deployment
+                View the most recent deployment #{deployment_link(environment.last_deployment)}.
+          - elsif @build.complete? && !@build.success?
+            The deployment of this build to #{environment_link_for_build(@build.project, @build)} did not complete.
           - else
-            This build is creating a deployment to #{environment_link_for_build(@build.project, @build)} and will overwrite the |
-            = link_to "latest deployment.", deployment_link(@project, last_deployment) |
+            This build is creating a deployment to #{environment_link_for_build(@build.project, @build)}
+            - if environment.last_deployment
+              and will overwrite the
+              = link_to 'latest deployment', deployment_link(environment.last_deployment)
 
     .prepend-top-default
       - if @build.erased?

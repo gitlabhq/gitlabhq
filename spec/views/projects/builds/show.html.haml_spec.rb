@@ -54,7 +54,7 @@ describe 'projects/builds/show', :view do
 
       it 'shows deployment message' do
         expected_text = 'This build is an out-of-date deployment ' \
-          "to staging. View the most recent deployment ##{first_deployment.id}"
+          "to staging.\nView the most recent deployment ##{second_deployment.id}."
         render
 
         expect(rendered).to have_css('.environment-information', text: expected_text)

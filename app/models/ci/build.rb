@@ -127,8 +127,24 @@ module Ci
       !self.pipeline.statuses.latest.include?(self)
     end
 
-    def deployable?
-      self.environment.present?
+    def expanded_environment_name
+      ExpandVariables.expand(environment, variables) if environment
+    end
+
+    def starts_environment?
+      self.environment.present? && self.environment_action == 'start'
+    end
+
+    def stops_environment?
+      self.environment.present? && self.environment_action == 'stop'
+    end
+
+    def environment_action
+      self.options.fetch(:environment, {}).fetch(:action, 'start')
+    end
+
+    def outdated_deployment?
+      success? && !last_deployment.try(:last?)
     end
 
     def last_deployment

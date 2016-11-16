@@ -4,6 +4,14 @@ describe Ci::Build, models: true do
   let(:build) { create(:ci_build) }
   let(:test_trace) { 'This is a test' }
 
+  describe 'ss' do
+  it { is_expected.to belong_to(:runner) }
+  it { is_expected.to belong_to(:trigger_request) }
+  it { is_expected.to belong_to(:erased_by) }
+
+  it { is_expected.to have_many(:deployments) }
+  end
+  
   describe '#trace' do
     it 'obfuscates project runners token' do
       allow(build).to receive(:raw_trace).and_return("Test: #{build.project.runners_token}")
