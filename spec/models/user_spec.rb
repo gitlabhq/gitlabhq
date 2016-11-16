@@ -37,7 +37,7 @@ describe User, models: true do
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
         user = create(:user)
-        group = create(:group, :public)
+        group = create(:group, :public, :access_requestable)
         group.request_access(user)
 
         expect(user.group_members).to be_empty
@@ -47,7 +47,7 @@ describe User, models: true do
     describe '#project_members' do
       it 'does not include project memberships for which user is a requester' do
         user = create(:user)
-        project = create(:project, :public)
+        project = create(:project, :public, :access_requestable)
         project.request_access(user)
 
         expect(user.project_members).to be_empty

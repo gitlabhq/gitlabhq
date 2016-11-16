@@ -9,19 +9,19 @@ describe API::AccessRequests, api: true  do
   let(:stranger) { create(:user) }
 
   let(:project) do
-    project = create(:project, :public, creator_id: master.id, namespace: master.namespace)
-    project.team << [developer, :developer]
-    project.team << [master, :master]
-    project.request_access(access_requester)
-    project
+    create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
+      project.team << [developer, :developer]
+      project.team << [master, :master]
+      project.request_access(access_requester)
+    end
   end
 
   let(:group) do
-    group = create(:group, :public)
-    group.add_developer(developer)
-    group.add_owner(master)
-    group.request_access(access_requester)
-    group
+    create(:group, :public, :access_requestable) do |group|
+      group.add_developer(developer)
+      group.add_owner(master)
+      group.request_access(access_requester)
+    end
   end
 
   shared_examples 'GET /:sources/:id/access_requests' do |source_type|
@@ -89,7 +89,7 @@ describe API::AccessRequests, api: true  do
       context 'when authenticated as a stranger' do
         context "when access request is disabled for the #{source_type}" do
           before do
-            source.update(request_access_enabled: false)
+            source.update_attributes(request_access_enabled: false)
           end
 
           it 'returns 403' do
