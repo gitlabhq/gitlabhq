@@ -23,15 +23,13 @@ module Gitlab
       private
 
       def select_body(message)
-        if message.multipart?
-          text = message.text_part || message.html_part || message
+        part = if message.multipart?
+          message.text_part || message.html_part || message
         else
-          text = message
+          message
         end
 
-        return "" unless text
-
-        decoded = fix_charset(text)
+        decoded = fix_charset(part)
 
         return "" unless decoded
 
@@ -40,7 +38,7 @@ module Gitlab
           return ""
         end
 
-        if text.content_type =~ %r(text/html)
+        if (part.content_type || '').include? 'text/html'
           HTMLParser.parse_reply(decoded)
         else
           decoded
