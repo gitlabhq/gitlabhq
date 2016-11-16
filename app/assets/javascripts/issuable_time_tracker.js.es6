@@ -101,9 +101,11 @@
         this.displayHelp = show;
       },
       stringifyTime(obj) {
-        return _.reduce(obj, (memo, val, key) => {
-          return memo + `${val}${key.charAt(0)} `;
+        const reducedTime = _.reduce(obj, (memo, unitValue, unitName) => {
+          const isNonZero = !!unitValue;
+          return isNonZero ? (memo + `${unitValue}${unitName.charAt(0)} `) : memo;
         }, '').trim();
+        return reducedTime.length ? reducedTime : '0m';
       },
     },
     template: `

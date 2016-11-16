@@ -57,14 +57,14 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
 
           it('should display the human readable version of time estimated', function() {
             const estimateText = this.timeTracker.$el.querySelector('.time-tracking-pane-compare .estimated .compare-value').innerText;
-            const correctText = '0w 3d 3h 46m';
+            const correctText = '3d 3h 46m';
 
             expect(estimateText).toBe(correctText);
           });
 
           it('should display the human readable version of time spent', function() {
             const spentText = this.timeTracker.$el.querySelector('.time-tracking-pane-compare .compare-value.spent').innerText;
-            const correctText = '0w 0d 1h 23m';
+            const correctText = '1h 23m';
 
             expect(spentText).toBe(correctText);
           });
@@ -107,7 +107,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
 
           it('should display the human readable version of time estimated', function() {
             const estimateText = this.timeTracker.$el.querySelector('.time-tracking-estimate-only').innerText;
-            const correctText = 'Estimated: 0w 0d 2h 46m';
+            const correctText = 'Estimated: 2h 46m';
 
             expect(estimateText).toBe(correctText);
           });
@@ -127,7 +127,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
 
           it('should display the human readable version of time spent', function() {
             const spentText = this.timeTracker.$el.querySelector('.time-tracking-spend-only').innerText;
-            const correctText = 'Spent: 0w 0d 1h 23m';
+            const correctText = 'Spent: 1h 23m';
 
             expect(spentText).toBe(correctText);
           });
@@ -323,7 +323,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
 
             const timeString = this.timeTracker.stringifyTime(timeObject);
 
-            expect(timeString).toBe('0w 4d 0h 20m');
+            expect(timeString).toBe('4d 20m');
           });
 
           it('should stringify values with no non-zero units', function() {
@@ -336,7 +336,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
 
             const timeString = this.timeTracker.stringifyTime(timeObject);
 
-            expect(timeString).toBe('0w 0d 0h 0m');
+            expect(timeString).toBe('0m');
           });
         });
 
