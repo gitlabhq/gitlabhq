@@ -61,7 +61,7 @@ class Event < ActiveRecord::Base
   end
 
   def visible_to_user?(user = nil)
-    if push?
+    if push? || commit_note?
       Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
       true
@@ -276,7 +276,7 @@ class Event < ActiveRecord::Base
   end
 
   def commit_note?
-    target.for_commit?
+    note? && target && target.for_commit?
   end
 
   def issue_note?
@@ -288,7 +288,7 @@ class Event < ActiveRecord::Base
   end
 
   def project_snippet_note?
-    target.for_snippet?
+    note? && target && target.for_snippet?
   end
 
   def note_target
