@@ -55,8 +55,10 @@
 
       newEvents.forEach((item) => {
         item.totalTime = item.total_time;
+        item.createdAt = item.created_at;
 
         delete item.total_time;
+        delete item.created_at;
       });
 
       return newEvents;

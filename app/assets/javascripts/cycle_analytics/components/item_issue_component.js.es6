@@ -21,19 +21,20 @@
     template: `
       <div>
         <div class="item-details">
-          <img class="avatar" src="https://secure.gravatar.com/avatar/3731e7dd4f2b4fa8ae184c0a7519dd58?s=64&amp;d=identicon">
+          <img class="avatar" :src="issue.author.avatar_url">
           <h5 class="item-title">
-            <a href="issue.url">
+            <a :href="issue.url">
               {{ issue.title }}
             </a>
           </h5>
-          <a href="issue.url" class="issue-link">
-            #{{issue.id}}
+          <a :href="issue.url" class="issue-link">
+            #{{issue.iid}}
           </a>
+          &middot;
           <span>
             Opened
-            <a href="issue.url" class="issue-date">
-              {{ issue.datetime }}
+            <a :href="issue.url" class="issue-date">
+              {{ issue.createdAt }}
             </a>
           </span>
           <span>
