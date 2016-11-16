@@ -27,7 +27,8 @@ module Ci
     end
 
     def environments
-      @environments ||= project.environments_for(@ref)
+      @environments ||= project
+        .environments_recently_updated_on_branch(@ref)
     end
   end
 end

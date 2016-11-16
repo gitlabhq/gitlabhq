@@ -1296,12 +1296,19 @@ class Project < ActiveRecord::Base
       .group(:environment_id)
       .select(:environment_id)
 
-    envs = environments.available.where(id: environment_ids)
+    environments_found = environments.available
+      .where(id: environment_ids).to_a
 
-    if commit
-      envs.select { |environment| env.includes_commit?(commit) }
-    else
-      envs.select { |environment| env.recently_updated_on?(ref) }
+    return environments_found unless commit
+
+    environments_found.select do |environment|
+      environment.includes_commit?(commit)
+    end
+  end
+
+  def environments_recently_updated_on_branch(branch)
+    environments_for(branch).select do |environment|
+      environment.recently_updated_on_branch?(branch)
     end
   end
 

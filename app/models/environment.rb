@@ -37,7 +37,7 @@ class Environment < ActiveRecord::Base
     state :stopped
   end
 
-  def recently_updated_on?(ref)
+  def recently_updated_on_branch?(ref)
     ref.to_s == last_deployment.ref
   end
 
