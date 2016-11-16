@@ -1,8 +1,6 @@
 module Gitlab
   module CycleAnalytics
     class EventsFetcher
-      include MetricsFetcher
-
       def initialize(project:, options:)
         @query = EventsQuery.new(project: project, options: options)
       end

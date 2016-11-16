@@ -1,5 +1,4 @@
 class AnalyticsCommitEntity < CommitEntity
-  include RequestAwareEntity
   include EntityDateHelper
 
   expose :short_id, as: :short_sha
