@@ -1,0 +1,4 @@
+---
+title: Do not create a MergeRequestDiff record when source branch is deleted
+merge_request: 7481
+author:
