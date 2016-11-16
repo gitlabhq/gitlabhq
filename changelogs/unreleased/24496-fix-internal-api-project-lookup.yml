@@ -1,0 +1,4 @@
+---
+title: Fix POST /internal/allowed to cope with gitlab-shell v4.0.0 project paths
+merge_request: 7480
+author:

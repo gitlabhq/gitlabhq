@@ -141,6 +141,10 @@
     &.btn-save {
       @include btn-outline($white-light, $green-normal, $green-normal, $green-light, $white-light, $green-light);
     }
+
+    &.btn-remove {
+      @include btn-outline($white-light, $red-normal, $red-normal, $red-light, $white-light, $red-light);
+    }
   }
 
   &.btn-gray {

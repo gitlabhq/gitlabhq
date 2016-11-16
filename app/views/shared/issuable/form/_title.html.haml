@@ -1,0 +1,32 @@
+- issuable = local_assigns.fetch(:issuable)
+- form = local_assigns.fetch(:form)
+- no_issuable_templates = issuable_templates(issuable).empty?
+- div_class = no_issuable_templates ? 'col-sm-10' : 'col-sm-7 col-lg-8'
+
+%div{ class: div_class }
+  = form.text_field :title, required: true, maxlength: 255, autofocus: true,
+      autocomplete: 'off', class: 'form-control pad'
+
+  - if issuable.respond_to?(:work_in_progress?)
+    %p.help-block
+      .js-wip-explanation
+        %a.js-toggle-wip{ href: '', tabindex: -1 }
+          Remove the
+          %code WIP:
+          prefix from the title
+        to allow this
+        %strong Work In Progress
+        merge request to be merged when it's ready.
+      .js-no-wip-explanation
+        %a.js-toggle-wip{ href: '', tabindex: -1 }
+          Start the title with
+          %code WIP:
+        to prevent a
+        %strong Work In Progress
+        merge request from being merged before it's ready.
+
+  - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
+    %p.help-block
+      Add
+      = link_to 'description templates', help_page_path('user/project/description_templates'), tabindex: -1
+      to help your contributors communicate effectively!

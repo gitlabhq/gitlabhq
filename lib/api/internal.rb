@@ -3,6 +3,8 @@ module API
   class Internal < Grape::API
     before { authenticate_by_gitlab_shell_token! }
 
+    helpers ::API::Helpers::InternalHelpers
+
     namespace 'internal' do
       # Check if git command is allowed to project
       #
@@ -14,42 +16,6 @@ module API
       #   ref - branch name
       #   forced_push - forced_push
       #   protocol - Git access protocol being used, e.g. HTTP or SSH
-      #
-
-      helpers do
-        def project_path
-          @project_path ||= begin
-            project_path = params[:project].sub(/\.git\z/, '')
-            Repository.remove_storage_from_path(project_path)
-          end
-        end
-
-        def wiki?
-          @wiki ||= project_path.end_with?('.wiki') &&
-            !Project.find_with_namespace(project_path)
-        end
-
-        def project
-          @project ||= begin
-            # Check for *.wiki repositories.
-            # Strip out the .wiki from the pathname before finding the
-            # project. This applies the correct project permissions to
-            # the wiki repository as well.
-            project_path.chomp!('.wiki') if wiki?
-
-            Project.find_with_namespace(project_path)
-          end
-        end
-
-        def ssh_authentication_abilities
-          [
-            :read_project,
-            :download_code,
-            :push_code
-          ]
-        end
-      end
-
       post "/allowed" do
         status 200
 

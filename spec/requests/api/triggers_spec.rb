@@ -54,6 +54,13 @@ describe API::API do
         expect(pipeline.builds.size).to eq(5)
       end
 
+      it 'creates builds on webhook from other gitlab repository and branch' do
+        expect do
+          post api("/projects/#{project.id}/ref/master/trigger/builds?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+        end.to change(project.builds, :count).by(5)
+        expect(response).to have_http_status(201)
+      end
+
       it 'returns bad request with no builds created if there\'s no commit for that ref' do
         post api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'other-branch')
         expect(response).to have_http_status(400)
