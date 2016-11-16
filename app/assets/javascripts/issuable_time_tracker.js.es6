@@ -1,66 +1,7 @@
 //= vue
-//= smart_interval
-//= subbable_resource
-
-function getRandomInt(min, max) {
- const justReturnZero = Math.random > .9;
- return justReturnZero ? 0 : Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 ((global) => {
-  $(() => {
-    /* This Vue instance represents what will become the parent instance for the
-      * sidebar. It will be responsible for managing `issuable` state and propagating
-      * changes to sidebar components.
-     */
-    const issuableData = JSON.parse(document.getElementById('issuable-time-tracker').getAttribute('issuable'));
-    issuableData.time_spent = issuableData.time_estimate - 1000;
-
-    new Vue({
-      el: '#issuable-time-tracker',
-      data: {
-        issuable: issuableData,
-      },
-      methods: {
-        fetchIssuable() {
-           return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
-        },
-        initPolling() {
-          new gl.SmartInterval({
-            callback: this.fetchIssuable,
-            startingInterval: 4000,
-            maxInterval: 10000,
-            incrementByFactorOf: 2,
-            lazyStart: false,
-          });
-        },
-        updateState(data) {
-          /* MOCK */
-          data.time_estimate = getRandomInt(0, 10000)
-          data.time_spent = getRandomInt(0, 10000);
-
-          this.issuable = data;
-        },
-      },
-      beforeCreate() {
-        this.issuable = issuableData;
-      },
-      created() {
-        this.fetchIssuable();
-      },
-      mounted() {
-        gl.IssuableResource.subscribe(data => this.updateState(data));
-        this.initPolling();
-
-        $(document).on('ajax:success', '.gfm-form', (e) => {
-          // TODO: check if slash command was updated.
-          this.fetchIssuable();
-        });
-      }
-    });
-  });
-
-gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
+  gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
     props: [ 'time_estimate', 'time_spent' ],
     data: function() {
@@ -236,4 +177,4 @@ gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
         </div>
     `,
   });
-}) (window.gl || (window.gl = {}));
+})(window.gl || (window.gl = {}));
