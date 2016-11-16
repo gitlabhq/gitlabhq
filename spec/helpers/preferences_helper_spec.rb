@@ -86,21 +86,43 @@ describe PreferencesHelper do
     end
   end
 
-  describe 'default_project_view' do
+  describe '#default_project_view' do
     context 'user not signed in' do
       before do
-        @project = create(:project)
+        helper.instance_variable_set(:@project, project)
         stub_user
       end
 
-      it 'returns readme view if repository is not empty' do
-        expect(helper.default_project_view).to eq('readme')
+      context 'when repository is empty' do
+        let(:project) { create(:project_empty_repo, :public) }
+
+        it 'returns activity if user has repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(true)
+
+          expect(helper.default_project_view).to eq('activity')
+        end
+
+        it 'returns activity if user does not have repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('activity')
+        end
       end
 
-      it 'returns activity if repository is empty' do
-        expect(@project).to receive(:empty_repo?).and_return(true)
+      context 'when repository is not empty' do
+        let(:project) { create(:project, :public) }
 
-        expect(helper.default_project_view).to eq('empty')
+        it 'returns readme if user has repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(true)
+
+          expect(helper.default_project_view).to eq('readme')
+        end
+
+        it 'returns activity if user does not have repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('activity')
+        end
       end
     end
   end
