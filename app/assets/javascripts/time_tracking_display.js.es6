@@ -31,7 +31,7 @@
               startingInterval: 1000,
               maxInterval: 10000,
               incrementByFactorOf: 10,
-              lazyStart: false
+              lazyStart: false,
             });
           },
           updateState(data) {
