@@ -39,6 +39,8 @@ describe ProjectCacheWorker do
         expect_any_instance_of(Project).to receive(:update_repository_size)
         expect_any_instance_of(Project).to receive(:update_commit_count)
 
+        expect_any_instance_of(Repository).to receive(:build_cache).and_call_original
+
         subject.perform(project.id)
       end
 
@@ -47,6 +49,21 @@ describe ProjectCacheWorker do
         expect_any_instance_of(Repository).not_to receive(:size)
 
         subject.perform(project.id)
+      end
+
+      context 'when in Geo secondary node' do
+        before do
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
+        end
+
+        it 'updates only non database cache' do
+          expect_any_instance_of(Repository).to receive(:build_cache).and_call_original
+
+          expect_any_instance_of(Project).not_to receive(:update_repository_size)
+          expect_any_instance_of(Project).not_to receive(:update_commit_count)
+
+          subject.perform(project.id)
+        end
       end
     end
 
