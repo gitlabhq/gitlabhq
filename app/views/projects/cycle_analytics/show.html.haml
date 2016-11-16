@@ -31,7 +31,7 @@
       .content-block
         .container-fluid
           .row
-            .col-sm-3.col-xs-12.column{"v-for" => "item in state.analytics.summary"}
+            .col-sm-3.col-xs-12.column{"v-for" => "item in state.summary"}
               %h3.header {{item.value}}
               %p.text {{item.title}}
             .col-sm-3.col-xs-12.column
@@ -58,10 +58,6 @@
               %span.stage-name
                 Median
               %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
-            %li.delta-header
-              %span.stage-name
-                = render "shared/icons/delta.svg"
-              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The difference between the previous and last measure, expressed as positive or negative values. E.g., if the previous value was 5 and the new value is 7, the delta is +2.", "aria-hidden" => "true" }
             %li.event-header
               %span.stage-name
                 {{ currentStage ? currentStage.legendTitle : 'Related Issues' }}
@@ -79,13 +75,9 @@
               ":on-stage-click" => "selectStage" }
               %li.stage-nav-item{ ":class" => "classObject", "@click" => "onClick(stage)" }
                 .stage-name
-                  {{stage.name}}
+                  {{ stage.title }}
                 .stage-median
-                  20 hrs 21 mins
-                .stage-delta
-                  + 20 days
-                  %span.stage-direction
-                    = render "shared/icons/down_arrow.svg"
+                  {{ stage.value }}
         .section.stage-events
           %template{ "v-if" => "isLoadingStage" }
             = icon("spinner spin", "v-show" => "isLoadingStage")

@@ -7,57 +7,7 @@
       stats: '',
       analytics: '',
       items: [],
-      stages:[
-        {
-          name:'Issue',
-          active: false,
-          component: 'stage-issue-component',
-          legendTitle: 'Related Issues',
-          shortDescription: 'Time before an issue get scheduled',
-        },
-        {
-          name:'Plan',
-          active: false,
-          component: 'stage-plan-component',
-          legendTitle: 'Related Commits',
-          shortDescription: 'Time before an issue starts implementation',
-        },
-        {
-          name:'Code',
-          active: false,
-          component: 'stage-code-component',
-          legendTitle: 'Related Merge Requests',
-          shortDescription: 'Time spent coding',
-        },
-        {
-          name:'Test',
-          active: false,
-          component: 'stage-test-component',
-          legendTitle: 'Relative Builds Trigger by Commits',
-          shortDescription: 'The time taken to build and test the application',
-        },
-        {
-          name:'Review',
-          active: false,
-          component: 'stage-review-component',
-          legendTitle: 'Relative Merged Requests',
-          shortDescription: 'The time taken to review the code',
-        },
-        {
-          name:'Staging',
-          active: false,
-          component: 'stage-staging-component',
-          legendTitle: 'Relative Deployed Builds',
-          shortDescription: 'The time taken in staging',
-        },
-        {
-          name:'Production',
-          active: false,
-          component: 'stage-production-component',
-          legendTitle: 'Related Issues',
-          shortDescription: 'The total time taken from idea to production',
-        }
-      ],
+      stages:[],
     },
     setCycleAnalyticsData(data) {
       this.state = Object.assign(this.state, this.decorateData(data));
@@ -65,18 +15,20 @@
     decorateData(data) {
       let newData = {};
 
-      newData.stats = data.stats || [];
+      newData.stages = data.stats || [];
       newData.summary = data.summary || [];
 
       newData.summary.forEach((item) => {
         item.value = item.value || '-';
       });
 
-      newData.stats.forEach((item) => {
+      newData.stages.forEach((item) => {
         item.value = item.value || '- - -';
+        item.active = false;
+        item.component = `stage-${item.title.toLowerCase()}-component`;
       });
 
-      newData.analytics = data;      
+      newData.analytics = data;
 
       return newData;
     },

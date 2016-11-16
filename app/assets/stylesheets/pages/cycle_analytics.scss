@@ -22,15 +22,11 @@
     }
 
     .stage-header {
-      width: 16%;
+      width: 28%;
       padding-left: $gl-padding;
     }
 
     .median-header {
-      width: 12%;
-    }
-
-    .delta-header {
       width: 12%;
     }
 
@@ -239,20 +235,11 @@
         float: left;
 
         &.stage-name {
-          width: 40%;
+          width: 70%;
         }
 
         &.stage-median {
           width: 30%;
-        }
-
-        &.stage-delta {
-          width: 30%;
-
-          .stage-direction {
-            float: right;
-            padding-right: $gl-padding;
-          }
         }
       }
 

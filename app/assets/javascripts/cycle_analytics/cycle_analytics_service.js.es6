@@ -28,7 +28,7 @@
         startDate,
       } = options;
 
-      return $.get(`http://localhost:8000/${stage.name.toLowerCase()}.json`, {
+      return $.get(`http://localhost:8000/${stage.title.toLowerCase()}.json`, {
         cycle_analytics: {
           start_date: options.startDate
         }
