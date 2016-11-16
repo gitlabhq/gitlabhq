@@ -125,7 +125,8 @@
           </div>
           <div class='title hide-collapsed'>
             Time tracking
-            <div class='help-button pull-right' v-if='showHelp' v-on:click='toggleHelpState(true)'>
+            <div class='help-button pull-right' v-if='!showHelp' v-on:click='toggleHelpState(true)'>
+              <i class='fa fa-question-circle'></i>
             </div>
           </div>
           <div class='time-tracking-content hide-collapsed'>
@@ -159,6 +160,7 @@
             </div>
             <div class='time-tracking-help-state' v-if='showHelp'>
               <div class='close-help-button pull-right' v-on:click='toggleHelpState(false)'>
+                <i class='fa fa-close'></i>
               </div>
               <div class='time-tracking-info'>
                 <h4>Track time with slash commands</h4>
@@ -171,6 +173,7 @@
                   <code>/spend</code>
                   will update the sum of the time spent.
                 </p>
+                <a class='btn btn-default learn-more-button' href='http://example.com/time-tracking-url'> Learn more </a>
               </div>
             </div>
           </div>
