@@ -4,7 +4,7 @@
 //= subbable_resource
 
 function getRandomInt(min, max) {
- const justReturnZero = Math.random() > .5;
+ const justReturnZero = Math.random() > .8;
  return justReturnZero ? 0 : Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -41,8 +41,8 @@ function getRandomInt(min, max) {
           },
           updateState(data) {
             /* MOCK */
-            data.time_estimate = getRandomInt(0, 10000)
-            data.time_spent = getRandomInt(0, 10000);
+            data.time_estimate = getRandomInt(0, 100000)
+            data.time_spent = getRandomInt(0, 100000);
 
             this.issuable = data;
           },
