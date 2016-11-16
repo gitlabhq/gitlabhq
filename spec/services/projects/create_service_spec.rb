@@ -10,13 +10,6 @@ describe Projects::CreateService, services: true do
       }
     end
 
-    it 'creates services on Project creation' do
-      project = create_project(@user, @opts)
-      project.reload
-
-      expect(project.services).not_to be_empty
-    end
-
     it 'creates labels on Project creation if there are templates' do
       Label.create(title: "bug", template: true)
       project = create_project(@user, @opts)
@@ -135,6 +128,19 @@ describe Projects::CreateService, services: true do
         expect(project).to be_valid
         expect(project.owner).to eq(@user)
         expect(project.namespace).to eq(@user.namespace)
+      end
+    end
+
+    context 'when there is an active service template' do
+      before do
+        create(:service, project: nil, template: true, active: true)
+      end
+
+      it 'creates a service from this template' do
+        project = create_project(@user, @opts)
+        project.reload
+
+        expect(project.services.count).to eq 1
       end
     end
   end

@@ -1,0 +1,4 @@
+---
+title: Defer saving project services to the database if there are no user changes
+merge_request: 6958
+author:
