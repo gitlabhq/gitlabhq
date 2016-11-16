@@ -239,9 +239,9 @@ class IssuableBaseService < BaseService
   end
 
   def change_time_spent(issuable)
-    if params[:spend_time]
-      issuable.spend_time(params.delete(:spend_time), current_user)
-    end
+    time_spent = params.delete(:spend_time)
+
+    issuable.spend_time(time_spent, current_user) if time_spent
   end
 
   def has_changes?(issuable, old_labels: [])

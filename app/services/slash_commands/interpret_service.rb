@@ -269,9 +269,10 @@ module SlashCommands
     command :spend do |raw_duration|
       reduce_time = raw_duration.sub!(/\A-/, '')
       time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
-      time_spent *= -1 if time_spent && reduce_time
 
       if time_spent
+        time_spent *= -1 if reduce_time
+
         @updates[:spend_time] = time_spent
       end
     end

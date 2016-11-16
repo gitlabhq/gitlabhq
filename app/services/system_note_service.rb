@@ -126,10 +126,10 @@ module SystemNoteService
 
   def change_time_estimate(noteable, project, author)
     parsed_time = ChronicDuration.output(noteable.time_estimate, format: :short)
-    body = if parsed_time
-             "Changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
-           else
+    body = if noteable.time_estimate == 0
              "Removed time estimate on this #{noteable.human_class_name}"
+           else
+             "Changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
            end
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -155,7 +155,7 @@ module SystemNoteService
       body = "Removed time spent on this #{noteable.human_class_name}"
     else
       parsed_time = ChronicDuration.output(time_spent.abs, format: :short)
-      action = time_spent > 0 ? 'Added' : 'Substracted'
+      action = time_spent > 0 ? 'Added' : 'Subtracted'
       body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
     end
 
