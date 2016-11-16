@@ -76,6 +76,9 @@
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
           %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.time_spent' }
+            .title.hide-collapsed
+              Time tracking
+              = icon('spinner spin')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon

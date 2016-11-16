@@ -109,7 +109,7 @@
       },
     },
     template: `
-        <div class='time-tracking-component-wrap'>
+        <div class='time-tracking-component-wrap' v-cloak>
           <div class='sidebar-collapsed-icon'>
             <div class='time-tracking-collapsed-summary'>
               <div class='compare' v-if='showComparison'>
