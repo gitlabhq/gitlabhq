@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-param-reassign, no-undef, prefer-template, quotes, comma-dangle, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, spaced-comment, radix, no-else-return, max-len, no-plusplus, padded-blocks, max-len */
 // LineHighlighter
 //
 // Handles single- and multi-line selection and highlight for blob views.

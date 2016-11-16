@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, padded-blocks, no-var */
 /*= require header */
 /*= require lib/utils/text_utility */
 /*= require jquery */
