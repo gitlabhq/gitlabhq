@@ -3,7 +3,7 @@
 //= smart_interval
 //= subbable_resource
 
-((global) => {
+(() => {
   /* This Vue instance represents what will become the parent instance for the
     * sidebar. It will be responsible for managing `issuable` state and propagating
     * changes to sidebar components.
@@ -16,17 +16,17 @@
     }
 
     initComponent(parsedIssuable) {
-      return new Vue({
+      this.parentInstance = new Vue({
         el: '#issuable-time-tracker',
         data: {
           issuable: parsedIssuable,
         },
         methods: {
           fetchIssuable() {
-             return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
+            return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
           },
           initPolling() {
-            new gl.SmartInterval({
+            return new gl.SmartInterval({
               callback: this.fetchIssuable,
               startingInterval: 5000,
               maxInterval: 20000,
@@ -41,7 +41,7 @@
             gl.IssuableResource.subscribe(data => this.updateState(data));
           },
           listenForSlashCommands() {
-            $(document).on('ajax:success', '.gfm-form', (e) => {
+            $(document).on('ajax:success', '.gfm-form', () => {
               // TODO: check for slash command
               this.fetchIssuable();
             });
@@ -54,7 +54,7 @@
           this.initPolling();
           this.subscribeToUpdates();
           this.listenForSlashCommands();
-        }
+        },
       });
     }
   }

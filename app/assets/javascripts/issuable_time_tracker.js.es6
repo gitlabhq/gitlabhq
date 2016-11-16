@@ -1,13 +1,13 @@
 //= vue
 
-((global) => {
+(() => {
   gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
-    props: [ 'time_estimate', 'time_spent', 'human_time_estimate', 'human_time_spent' ],
-    data: function() {
+    props: ['time_estimate', 'time_spent', 'human_time_estimate', 'human_time_spent'],
+    data() {
       return {
         displayHelp: false,
-      }
+      };
     },
     computed: {
       /* Select panels to show */
@@ -55,33 +55,32 @@
       },
 
       /* Diff values for comparison meter */
-      diffMinutes () {
-        const time_estimate = this.time_estimate;
-        const time_spent = this.time_spent;
-        return time_estimate - time_spent;
+      diffMinutes() {
+        return this.time_estimate - this.time_spent;
       },
       diffPercent() {
-        const estimate = this.time_estimate;
-        return Math.floor((this.time_spent / this.time_estimate * 100)) + '%';
+        return `${Math.floor(((this.time_spent / this.time_estimate) * 100))}%`;
       },
       diffStatusClass() {
         return this.time_estimate >= this.time_spent ? 'within_estimate' : 'over_estimate';
-      }
+      },
     },
     methods: {
       secondsToMinutes(seconds) {
         return Math.abs(seconds / 60);
       },
-      parseSeconds (seconds) {
-        const DAYS_PER_WEEK = 5, HOURS_PER_DAY = 8, MINUTES_PER_HOUR = 60;
-        const MINUTES_PER_WEEK =  DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
+      parseSeconds(seconds) {
+        const DAYS_PER_WEEK = 5;
+        const HOURS_PER_DAY = 8;
+        const MINUTES_PER_HOUR = 60;
+        const MINUTES_PER_WEEK = DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
         const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
 
         const timePeriodConstraints = {
           weeks: MINUTES_PER_WEEK,
           days: MINUTES_PER_DAY,
           hours: MINUTES_PER_HOUR,
-          minutes: 1
+          minutes: 1,
         };
 
         let unorderedMinutes = this.secondsToMinutes(seconds);
@@ -104,7 +103,7 @@
       stringifyTime(obj) {
         const reducedTime = _.reduce(obj, (memo, unitValue, unitName) => {
           const isNonZero = !!unitValue;
-          return isNonZero ? (memo + `${unitValue}${unitName.charAt(0)} `) : memo;
+          return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)} ` : memo;
         }, '').trim();
         return reducedTime.length ? reducedTime : '0m';
       },

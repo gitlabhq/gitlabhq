@@ -13,7 +13,7 @@
       * @param { integer } incrementByFactorOf `currentInterval` is incremented by this factor
       * @param { boolean } lazyStart Configure if timer is initialized on instantiation or lazily
       */
-    constructor({ callback, startingInterval, maxInterval, incrementByFactorOf, lazyStart = false }) {
+    constructor({ callback, startingInterval, maxInterval, incrementByFactorOf, lazyStart }) {
       this.cfg = {
         callback,
         startingInterval,
@@ -84,8 +84,6 @@
     }
 
     initVisibilityChangeHandling() {
-      const cfg = this.cfg;
-
       // cancel interval when tab no longer shown (prevents cached pages from polling)
       $(document)
         .off('visibilitychange').on('visibilitychange', (e) => {
@@ -95,8 +93,6 @@
     }
 
     initPageUnloadHandling() {
-      const cfg = this.cfg;
-
       // prevent interval continuing after page change, when kept in cache by Turbolinks
       $(document).on('page:before-unload', () => this.cancel());
     }

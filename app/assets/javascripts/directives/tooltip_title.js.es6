@@ -1,7 +1,6 @@
 //= require vue
 
-((global) => {
-
+(() => {
   /**
    * This directive ensures the text used to populate a Bootstrap tooltip is
    * updated dynamically. The tooltip's `title` is not stored or accessed
@@ -16,5 +15,4 @@
       el.setAttribute('data-original-title', updatedValue);
     },
   });
-
 })(window.gl || (window.gl = {}));
