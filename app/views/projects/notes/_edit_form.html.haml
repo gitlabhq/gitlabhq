@@ -8,8 +8,8 @@
       = render 'projects/notes/hints'
 
     .note-form-actions.clearfix
-      = submit_tag 'Save Comment', class: 'btn btn-nr btn-save js-comment-button'
-      %span.settings-message.note-edit-warning.js-edit-warning
+      .settings-message.note-edit-warning.js-edit-warning
         Finish editing this message first!
+      = submit_tag 'Save Comment', class: 'btn btn-nr btn-save js-comment-button'
       %button.btn.btn-nr.btn-cancel.note-edit-cancel{ type: 'button' }
         Cancel

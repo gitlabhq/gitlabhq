@@ -133,12 +133,12 @@
     var rect = el.getBoundingClientRect();
     var height = Math.max(document.documentElement.clientHeight, window.innerHeight);
     return !(rect.bottom - 110 < 0 || rect.top - height >= 0); // -110 for sticky GitLab navigation header
-  }
+  };
 
   gl.utils.animateToElement = function($el) {
     return $('body, html').animate({
       scrollTop: $el.offset().top - 110
     }, 200);
-  }
+  };
 
 }).call(this);
