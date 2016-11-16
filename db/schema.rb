@@ -155,15 +155,16 @@ ActiveRecord::Schema.define(version: 20161113184239) do
   create_table "chat_names", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "service_id", null: false
-    t.string "team_id"
+    t.string "team_id", null: false
     t.string "team_domain"
-    t.string "chat_id"
+    t.string "chat_id", null: false
     t.string "chat_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "chat_names", ["service_id", "team_id", "user_id"], name: "index_chat_names_on_service_id_and_team_id_and_user_id", unique: true, using: :btree
+  add_index "chat_names", ["service_id", "team_id", "chat_id"], name: "index_chat_names_on_service_id_and_team_id_and_chat_id", unique: true, using: :btree
   add_index "chat_names", ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
 
   create_table "ci_application_settings", force: :cascade do |t|
