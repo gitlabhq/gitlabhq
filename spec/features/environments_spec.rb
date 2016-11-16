@@ -59,7 +59,6 @@ feature 'Environments', feature: true, js: true do
         given(:deployment) { create(:deployment, environment: environment) }
 
         scenario 'does show deployment SHA' do
-          puts page.body
           expect(page).to have_link(deployment.short_sha)
         end
 
