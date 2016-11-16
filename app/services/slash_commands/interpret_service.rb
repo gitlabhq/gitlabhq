@@ -254,10 +254,10 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
-      time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
+      time_estimate = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
 
-      if time_spent
-        @updates[:time_estimate] = time_spent
+      if time_estimate
+        @updates[:time_estimate] = time_estimate
       end
     end
 
@@ -269,31 +269,29 @@ module SlashCommands
     command :spend do |raw_duration|
       reduce_time = raw_duration.sub!(/\A-/, '')
       time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
+      time_spent *= -1 if time_spent && reduce_time
 
       if time_spent
-        @updates[:spend_time] = {
-          seconds: reduce_time ? (time_spent * -1) : time_spent,
-          user: current_user
-        }
+        @updates[:spend_time] = time_spent
       end
     end
 
-    desc 'Remove the estimated time'
+    desc 'Remove time estimate'
     condition do
       issuable.persisted? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :remove_estimation do
+    command :remove_estimate do
       @updates[:time_estimate] = 0
     end
 
-    desc 'Remove the time spent'
+    desc 'Remove spent time'
     condition do
       issuable.persisted? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_time_spent do
-      @updates[:spend_time] = { seconds: 0, user: current_user }
+      @updates[:spend_time] = :reset
     end
 
     def find_label_ids(labels_param)

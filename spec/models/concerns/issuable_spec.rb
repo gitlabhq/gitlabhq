@@ -391,7 +391,7 @@ describe Issue, "Issuable" do
 
     context 'adding time' do
       it 'should update the total time spent' do
-        issue.update_attributes!(spend_time: { seconds: 1800, user: user })
+        issue.spend_time!(1800, user)
 
         expect(issue.total_time_spent).to eq(1800)
       end
@@ -399,18 +399,18 @@ describe Issue, "Issuable" do
 
     context 'substracting time' do
       before do
-        issue.update_attributes!(spend_time: { seconds: 1800, user: user })
+        issue.spend_time!(1800, user)
       end
 
       it 'should update the total time spent' do
-        issue.update_attributes!(spend_time: { seconds: -900, user: user })
+        issue.spend_time!(-900, user)
 
         expect(issue.total_time_spent).to eq(900)
       end
 
       context 'when time to substract exceeds the total time spent' do
         it 'should not alter the total time spent' do
-          issue.update_attributes!(spend_time: { seconds: -3600, user: user })
+          issue.spend_time!(-3600, user)
 
           expect(issue.total_time_spent).to eq(1800)
         end
