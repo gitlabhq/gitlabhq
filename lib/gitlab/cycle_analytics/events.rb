@@ -58,7 +58,7 @@ module Gitlab
         YAML.load(commits).find do |commit|
           next unless commit[:committed_date] && event['first_mentioned_in_commit_at']
 
-          commit[:committed_date].to_i == DateTime.parse(event['first_mentioned_in_commit_at']).to_i
+          commit[:committed_date].to_i == DateTime.parse(event['first_mentioned_in_commit_at'].to_s).to_i
         end
       end
 
