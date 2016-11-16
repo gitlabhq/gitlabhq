@@ -28,10 +28,10 @@
           initPolling() {
             return new gl.SmartInterval({
               callback: this.fetchIssuable,
-              startingInterval: 5000,
-              maxInterval: 20000,
-              incrementByFactorOf: 3,
-              lazyStart: false,
+              startingInterval: 1000,
+              maxInterval: 10000,
+              incrementByFactorOf: 10,
+              lazyStart: false
             });
           },
           updateState(data) {
