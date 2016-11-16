@@ -75,14 +75,12 @@ feature 'Environments', feature: true, js: true do
 
           scenario 'does show a play button' do
             # TODO: Fix me!
-            binding.pry
-            expect(page).to have_link(manual.name.humanize)
+            expect(page).to have_content(manual.name.humanize)
           end
 
           scenario 'does allow to play manual action' do
             expect(manual).to be_skipped
             # TODO: Fix me!
-            binding.pry
             expect{ click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
             expect(page).to have_content(manual.name)
             expect(manual.reload).to be_pending

@@ -14,7 +14,7 @@ describe('Stop Component', () => {
         stop_url: stopURL,
       },
     });
-    expect(component.$el.getAttribute('href')).toEqual(stopURL);
+    expect(component.$el.getAttribute('href')).toEqual(`${stopURL}/stop`);
   });
 
   describe('When clicked', () => {
