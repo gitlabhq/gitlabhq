@@ -3,11 +3,6 @@
 //= smart_interval
 //= subbable_resource
 
-function getRandomInt(min, max) {
- const justReturnZero = Math.random() > .8;
- return justReturnZero ? 0 : Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 ((global) => {
   /* This Vue instance represents what will become the parent instance for the
     * sidebar. It will be responsible for managing `issuable` state and propagating
@@ -40,10 +35,6 @@ function getRandomInt(min, max) {
             });
           },
           updateState(data) {
-            /* MOCK */
-            data.time_estimate = getRandomInt(0, 100000)
-            data.time_spent = getRandomInt(0, 100000);
-
             this.issuable = data;
           },
           subscribeToUpdates() {
@@ -54,7 +45,7 @@ function getRandomInt(min, max) {
               // TODO: check if slash command was updated.
               this.fetchIssuable();
             });
-          }
+          },
         },
         mounted() {
           this.initPolling();
