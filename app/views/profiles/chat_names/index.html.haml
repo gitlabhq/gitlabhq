@@ -1,4 +1,4 @@
-- page_title "Chat"
+- page_title 'Chat'
 = render 'profiles/head'
 
 .row.prepend-top-default
@@ -20,7 +20,7 @@
               %th Service
               %th Team domain
               %th Nickname
-              %th Created
+              %th Last used
               %th
           %tbody
             - @chat_names.each do |chat_name|
@@ -41,8 +41,14 @@
                       = chat_name.service.title
                 %td= chat_name.team_domain
                 %td= chat_name.chat_name
-                %td= chat_name.created_at
-                %td= link_to "Remove", profile_chat_name_path(chat_name), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this nickname?" }
+                %td=
+                  - if chat_name.used_at
+                    time_ago_with_tooltip(chat_name.used_at)
+                  - else
+                    Never
+
+                %td
+                  = link_to 'Remove', profile_chat_name_path(chat_name), method: :delete, class: 'btn btn-danger pull-right', data: { confirm: 'Are you sure you want to revoke this nickname?' }
 
     - else
       .settings-message.text-center

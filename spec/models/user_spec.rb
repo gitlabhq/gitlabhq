@@ -33,6 +33,7 @@ describe User, models: true do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
+    it { is_expected.to have_many(:chat_names).dependent(:destroy) }
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do

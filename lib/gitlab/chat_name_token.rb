@@ -5,7 +5,7 @@ module Gitlab
     attr_reader :token
 
     TOKEN_LENGTH = 50
-    EXPIRY_TIME = 1800
+    EXPIRY_TIME = 10.minutes # 10 minutes
 
     def initialize(token = new_token)
       @token = token

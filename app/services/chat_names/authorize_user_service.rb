@@ -1,5 +1,5 @@
 module ChatNames
-  class RequestService
+  class AuthorizeUserService
     include Gitlab::Routing.url_helpers
 
     def initialize(service, params)
@@ -8,12 +8,18 @@ module ChatNames
     end
 
     def execute
-      token = chat_name_token.store!(chat_name_params)
+      return unless chat_name_params.values.all?(&:present?)
+
+      token = request_token
 
       new_profile_chat_name_url(token: token) if token
     end
 
     private
+
+    def request_token
+      chat_name_token.store!(chat_name_params)
+    end
 
     def chat_name_token
       Gitlab::ChatNameToken.new
