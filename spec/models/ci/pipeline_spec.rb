@@ -402,6 +402,46 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#cancelable?' do
+    subject { pipeline.cancelable? }
+
+    %i[created running pending].each do |status|
+      context "when there is a build #{status}" do
+        before do
+          create(:ci_build, status, pipeline: pipeline)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context "when there is an external job #{status}" do
+        before do
+          create(:generic_commit_status, status, pipeline: pipeline)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    %i[success failed canceled].each do |status|
+      context "when there is a build #{status}" do
+        before do
+          create(:ci_build, status, pipeline: pipeline)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context "when there is an external job #{status}" do
+        before do
+          create(:generic_commit_status, status, pipeline: pipeline)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
     let!(:build_b) { create_build('b', 1) }

@@ -167,11 +167,11 @@ module Ci
     end
 
     def cancelable?
-      builds.running_or_pending.any?
+      statuses.cancelable.any?
     end
 
     def cancel_running
-      builds.running_or_pending.each(&:cancel)
+      statuses.cancelable.each(&:cancel)
     end
 
     def retry_failed(user)
