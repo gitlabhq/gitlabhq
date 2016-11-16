@@ -54,11 +54,6 @@
       this.stopTimer();
     }
 
-    // cancel the existing timer, without resetting the currentInterval
-    pause() {
-      this.stopTimer();
-    }
-
     // start a timer, using the existing interval
     resume() {
       this.stopTimer(); // stop exsiting timer, in case timer was not previously stopped
@@ -100,7 +95,7 @@
     handleVisibilityChange() {
       const state = this.state;
 
-      const intervalAction = state.pageVisibility === 'hidden' ? this.pause : this.resume;
+      const intervalAction = state.pageVisibility === 'hidden' ? this.cancel : this.resume;
 
       intervalAction.apply(this);
     }
