@@ -822,9 +822,9 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
     t.datetime "deleted_at"
+    t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "repository_size_limit"
-    t.text "description_html"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1007,7 +1007,6 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
-    t.boolean "wall_enabled", default: true, null: false
     t.integer "namespace_id"
     t.datetime "last_activity_at"
     t.string "import_url"
@@ -1050,8 +1049,8 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.boolean "has_external_wiki"
     t.boolean "repository_read_only"
     t.boolean "lfs_enabled"
-    t.integer "repository_size_limit"
     t.text "description_html"
+    t.integer "repository_size_limit"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
   end
 

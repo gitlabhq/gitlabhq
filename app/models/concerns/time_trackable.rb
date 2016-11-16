@@ -40,6 +40,14 @@ module TimeTrackable
     timelogs.sum(:time_spent)
   end
 
+  def human_total_time_spent
+    ChronicDuration.output(total_time_spent, format: :short)
+  end
+
+  def human_time_estimate
+    ChronicDuration.output(time_estimate, format: :short)
+  end
+
   private
 
   def reset_spent_time
