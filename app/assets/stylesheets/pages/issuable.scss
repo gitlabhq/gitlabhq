@@ -415,7 +415,7 @@
 
   .time-tracking-help-state {
     padding: 10px 0;
-    margin-top: 30px;
+    margin-top: 10px;
     border-top: 1px solid #dcdcdc;
   }
 
@@ -441,6 +441,7 @@
       color: $red-light ;
     }
   }
+
   .sidebar-collapsed-icon {
     svg {
       width: 16px;
@@ -455,6 +456,7 @@
     }
   }
   .compare-display-container {
+    height: 10px;
     margin-top: 5px;
   }
   .compare-display {
