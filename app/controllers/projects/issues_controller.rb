@@ -75,7 +75,7 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @issue.to_json(include: [:milestone, :labels])
+        render json: @issue.to_json(include: [:milestone, :labels], methods: [:total_time_spent, :human_total_time_spent, :human_time_estimate])
       end
     end
   end
