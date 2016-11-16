@@ -11,7 +11,6 @@ class BoardService {
     this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {});
 
     Vue.http.interceptors.push((request, next) => {
-      debugger;
       request.headers['X-CSRF-Token'] = $.rails.csrfToken();
       next();
     });
