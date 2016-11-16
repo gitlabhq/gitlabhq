@@ -91,7 +91,7 @@ module Gitlab
     def deploy_key_push_access_check(changes)
       if deploy_key.can_push_to?(project)
         check_repository_existence!
-        check_change_access!(changes) if user
+        check_change_access!(changes)
       else
         raise UnauthorizedError, ERROR_MESSAGES[:deploy_key]
       end
