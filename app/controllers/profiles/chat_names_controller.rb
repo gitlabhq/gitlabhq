@@ -1,5 +1,5 @@
 class Profiles::ChatNamesController < Profiles::ApplicationController
-  before_action :chat_names
+  before_action :chat_names, only: [:index]
   before_action :chat_name_token, only: [:new]
   before_action :chat_name_params, only: [:new, :create, :deny]
 
