@@ -38,45 +38,79 @@ the Omnibus Redis HA documentation.
 
 ## Configuring your own Redis server
 
-Redis server must be configured to use TCP connection instead of socket,
-and since Redis `3.2`, you must define a password to receive external
-connections (`requirepass`).
+This is the section where we install and setup the new Redis instances.
 
-You will also need to define equal password for slave password definition
-(`masterauth`), in the same instance, if you are using Redis with Sentinel.
+### Prerequisites
 
-To configure Redis to use TCP connection you need to define both
-`bind` and `port`. You can bind to all interfaces (`0.0.0.0`) or specify the
-IP of the desired interface (for ex. one from an internal network).
+- All Redis servers in this guide must be configured to use a TCP connection
+  instead of a socket. To configure Redis to use TCP connections you need to
+  define both `bind` and `port` in the Redis config file. You can bind to all
+  interfaces (`0.0.0.0`) or specify the IP of the desired interface
+  (e.g., one from an internal network).
+- Since Redis 3.2, you must define a password to receive external connections
+  (`requirepass`).
+- If you are using Redis with Sentinel, you will also need to define the same
+  password for the slave password definition (`masterauth`) in the same instance.
+
+In addition, read the prerequisites as described in the
+[Omnibus Redis HA document](redis.md#prerequisites) since they provide some
+valuable information for the general setup.
 
 ### Step 1. Configuring the master Redis instance
 
-You need to make the following changes in `redis.conf`:
+Assuming that the Redis master instance IP is `10.0.0.1`:
 
-1. Define a `bind` address pointing to a local IP that your other machines
-   can reach you. If you really need to bind to an external accessible IP, make
-   sure you add extra firewall rules to prevent unauthorized access:
+1. [Install Redis](../../install/installation.md#6-redis)
+1. Edit `/etc/redis/redis.conf`:
 
-1. Define a `port` to force redis to listen on TCP so other machines can
-   connect to it (default port is `6379`).
+    ```conf
+    ## Define a `bind` address pointing to a local IP that your other machines
+    ## can reach you. If you really need to bind to an external accessible IP, make
+    ## sure you add extra firewall rules to prevent unauthorized access:
+    bind 10.0.0.1
 
-1. Set up password authentication (use the same password in all nodes).
-   The password should be defined equal for both `requirepass` and `masterauth`
-   when setting up Redis to use with Sentinel.
+    ## Define a `port` to force redis to listen on TCP so other machines can
+    ## connect to it (default port is `6379`).
+    port 6379
 
-1. Restart the Redis services for the changes to take effect.
+    ## Set up password authentication (use the same password in all nodes).
+    ## The password should be defined equal for both `requirepass` and `masterauth`
+    ## when setting up Redis to use with Sentinel.
+    requirepass redis-password-goes-here
+    masterauth redis-password-goes-here
+    ```
 
-See [example configuration](#configuring-redis-master) below.
+1. Restart the Redis service for the changes to take effect.
 
 ### Step 2. Configuring the slave Redis instances
 
-1. Follow same instructions for Redis Master
+Assuming that the Redis slave instance IP is `10.0.0.2`:
 
-1. Define `slaveof` pointing to the Redis master instance with **IP** and **port**.
+1. [Install Redis](../../install/installation.md#6-redis)
+1. Edit `/etc/redis/redis.conf`:
 
-1. Restart the Redis services for the changes to take effect.
+    ```conf
+    ## Define a `bind` address pointing to a local IP that your other machines
+    ## can reach you. If you really need to bind to an external accessible IP, make
+    ## sure you add extra firewall rules to prevent unauthorized access:
+    bind 10.0.0.2
 
-See [example configuration](#configuring-redis-slaves) below.
+    ## Define a `port` to force redis to listen on TCP so other machines can
+    ## connect to it (default port is `6379`).
+    port 6379
+
+    ## Set up password authentication (use the same password in all nodes).
+    ## The password should be defined equal for both `requirepass` and `masterauth`
+    ## when setting up Redis to use with Sentinel.
+    requirepass redis-password-goes-here
+    masterauth redis-password-goes-here
+
+    ## Define `slaveof` pointing to the Redis master instance with IP and port.
+    slaveof 10.0.0.1 6379
+    ```
+
+1. Restart the Redis service for the changes to take effect.
+1. Go through the steps again for all the other slave nodes.
 
 ### Step 3. Configuring the Redis Sentinel instances
 
@@ -84,50 +118,64 @@ Sentinel is a special type of Redis server. It inherits most of the basic
 configuration options you can define in `redis.conf`, with specific ones
 starting with `sentinel` prefix.
 
-You will need to define the initial configs to enable connectivity:
+Assuming that the Redis Sentinel is installed on the same instance as Redis
+master with IP `10.0.0.1` (some settings might overlap with the master):
 
-1. Define a `bind` address pointing to a local IP that your other machines
-   can reach you. If you really need to bind to an external accessible IP, make
-   sure you add extra firewall rules to prevent unauthorized access:
+1. [Install Redis](../../install/installation.md#6-redis)
+1. Edit `/etc/redis/redis.conf`:
 
-1. Define a `port` to force sentinel to listen on TCP so other machines can
-   connect to it (default port is `26379`).
+    ```conf
+    ## Define a `bind` address pointing to a local IP that your other machines
+    ## can reach you. If you really need to bind to an external accessible IP, make
+    ## sure you add extra firewall rules to prevent unauthorized access:
+    bind 10.0.0.1
 
-And the sentinel specific ones:
+    ## Define a `port` to force Sentinel to listen on TCP so other machines can
+    ## connect to it (default port is `6379`).
+    port 26379
 
-1. Define with `sentinel auth-pass` the same shared password you have
-   defined for both Redis **Master** and **Slaves** instances.
+    ## Set up password authentication (use the same password in all nodes).
+    ## The password should be defined equal for both `requirepass` and `masterauth`
+    ## when setting up Redis to use with Sentinel.
+    requirepass redis-password-goes-here
+    masterauth redis-password-goes-here
 
-1. Define with `sentinel monitor` the **IP** and **port** of the Redis
-   **Master** node, and the **quorum** required to start a failover.
-   If you need more information to understand about quorum, please
-   read the detailed explanation in the [HA documentation for Omnibus Installs](redis.md).
+    ## Define with `sentinel auth-pass` the same shared password you have
+    ## defined for both Redis master and slaves instances.
+    sentinel auth-pass gitlab-redis redis-password-goes-here
 
-1. Define with `sentinel down-after-milliseconds` the amount in `ms` of time
-   that an unresponsive server will be considered down.
+    ## Define with `sentinel monitor` the IP and port of the Redis
+    ## master node, and the quorum required to start a failover.
+    sentinel monitor gitlab-redis 10.0.0.1 6379 2
 
-1. Define a value for `sentinel failover_timeout` in `ms`. This has multiple
-   meanings:
+    ## Define with `sentinel down-after-milliseconds` the time in `ms`
+    ## that an unresponsive server will be considered down.
+    sentinel down-after-milliseconds gitlab-redis 10000
 
-   * The time needed to re-start a failover after a previous failover was
-     already tried against the same master by a given Sentinel, is two
-     times the failover timeout.
-
-   * The time needed for a slave replicating to a wrong master according
-     to a Sentinel current configuration, to be forced to replicate
-     with the right master, is exactly the failover timeout (counting since
-     the moment a Sentinel detected the misconfiguration).
-
-   * The time needed to cancel a failover that is already in progress but
-     did not produced any configuration change (SLAVEOF NO ONE yet not
-     acknowledged by the promoted slave).
-
-   * The maximum time a failover in progress waits for all the slaves to be
-     reconfigured as slaves of the new master. However even after this time
-     the slaves will be reconfigured by the Sentinels anyway, but not with
-     the exact parallel-syncs progression as specified.
-
-See [example configuration](#configuring-redis-sentinel) below.
+    ## Define a value for `sentinel failover_timeout` in `ms`. This has multiple
+    ## meanings:
+    ##
+    ## * The time needed to re-start a failover after a previous failover was
+    ##   already tried against the same master by a given Sentinel, is two
+    ##   times the failover timeout.
+    ##
+    ## * The time needed for a slave replicating to a wrong master according
+    ##   to a Sentinel current configuration, to be forced to replicate
+    ##   with the right master, is exactly the failover timeout (counting since
+    ##   the moment a Sentinel detected the misconfiguration).
+    ##
+    ## * The time needed to cancel a failover that is already in progress but
+    ##   did not produced any configuration change (SLAVEOF NO ONE yet not
+    ##   acknowledged by the promoted slave).
+    ##
+    ## * The maximum time a failover in progress waits for all the slaves to be
+    ##   reconfigured as slaves of the new master. However even after this time
+    ##   the slaves will be reconfigured by the Sentinels anyway, but not with
+    ##   the exact parallel-syncs progression as specified.
+    sentinel failover_timeout 30000
+    ```
+1. Restart the Redis service for the changes to take effect.
+1. Go through the steps again for all the other Sentinel nodes.
 
 ### Step 4. Configuring the GitLab application
 
@@ -136,17 +184,17 @@ installations. From the GitLab application perspective, all it requires is
 the correct credentials for the Sentinel nodes.
 
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
-it needs to access at one of listed ones.
+it needs to access at least one of listed ones.
 
->**Note:**
 The following steps should be performed in the [GitLab application server](gitlab.md)
-which ideally should not have Redis or Sentinels in the same machine for a HA setup.
+which ideally should not have Redis or Sentinels in the same machine for a HA
+setup:
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in
    `/home/git/gitlab/config/resque.yml.example`, and uncomment the sentinels
    lines, pointing to the correct server credentials.
 
-1. Restart GitLab for the changes to take effect.
+1. [Restart GitLab][restart] for the changes to take effect.
 
 ## Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels
 
@@ -156,7 +204,7 @@ to each other using these IPs.
 
 In a real world usage, you would also setup firewall rules to prevent
 unauthorized access from other machines, and block traffic from the
-outside (Internet).
+outside ([Internet][it]).
 
 We will use the same `3` nodes with **Redis** + **Sentinel** topology
 discussed in the [Configuring Redis for GitLab HA](redis.md) documentation.
@@ -165,7 +213,7 @@ Here is a list and description of each **machine** and the assigned **IP**:
 
 * `10.0.0.1`: Redis Master + Sentinel 1
 * `10.0.0.2`: Redis Slave 1 + Sentinel 2
-* `10.0.0.2`: Redis Slave 2 + Sentinel 3
+* `10.0.0.3`: Redis Slave 2 + Sentinel 3
 
 Please note that after the initial configuration, if a failover is initiated
 by the Sentinel nodes, the Redis nodes will be reconfigured and the **Master**
@@ -296,3 +344,5 @@ When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics
 
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [downloads]: https://about.gitlab.com/downloads
+[restart]: ../restart_gitlab.md#installations-from-source
+[it]: https://gitlab.com/gitlab-org/gitlab-ce/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
