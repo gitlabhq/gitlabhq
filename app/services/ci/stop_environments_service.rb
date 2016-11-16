@@ -6,7 +6,6 @@ module Ci
       @ref = branch_name
 
       return unless has_ref?
-      return unless has_environments?
 
       environments.each do |environment|
         next unless environment.stoppable?
@@ -20,10 +19,6 @@ module Ci
 
     def has_ref?
       @ref.present?
-    end
-
-    def has_environments?
-      environments.any?
     end
 
     def environments
