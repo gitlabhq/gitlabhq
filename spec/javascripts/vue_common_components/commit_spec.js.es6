@@ -1,10 +1,8 @@
 //= require vue_common_component/commit
 
 describe('Commit component', () => {
-
   let props;
   let component;
-
 
   it('should render a code-fork icon if it does not represent a tag', () => {
     fixture.set('<div class="test-commit-container"></div>');

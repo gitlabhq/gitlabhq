@@ -76,6 +76,10 @@ $(() => {
       },
     },
 
+    /**
+     * Fetches all the environmnets and stores them.
+     * Toggles loading property.
+     */
     created() {
       window.gl.environmentsService = new EnvironmentsService(this.endpoint);
 
@@ -92,14 +96,6 @@ $(() => {
           this.store.storeEnvironments(json);
           this.isLoading = false;
         });
-    },
-
-    /**
-     * Fetches all the environmnets and stores them.
-     * Toggles loading property.
-     */
-    mounted() {
-
     },
 
     /**
