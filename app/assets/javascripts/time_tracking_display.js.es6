@@ -4,7 +4,7 @@
 //= subbable_resource
 
 function getRandomInt(min, max) {
- const justReturnZero = Math.random > .9;
+ const justReturnZero = Math.random() > .5;
  return justReturnZero ? 0 : Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -33,9 +33,9 @@ function getRandomInt(min, max) {
           initPolling() {
             new gl.SmartInterval({
               callback: this.fetchIssuable,
-              startingInterval: 4000,
+              startingInterval: 1000,
               maxInterval: 10000,
-              incrementByFactorOf: 2,
+              incrementByFactorOf: 3,
               lazyStart: false,
             });
           },
