@@ -20,12 +20,6 @@ describe DeleteBranchService, services: true do
         expect(result[:status]).to eq :success
         expect(branch_exists?('feature')).to be false
       end
-
-      it 'calls after branch delete hooks' do
-        expect(service).to receive(:execute_after_branch_delete_hooks)
-
-        service.execute('feature')
-      end
     end
 
     context 'when user does not have access to push to repository' do
@@ -37,12 +31,6 @@ describe DeleteBranchService, services: true do
         expect(result[:status]).to eq :error
         expect(result[:message]).to eq 'You dont have push access to repo'
         expect(branch_exists?('feature')).to be true
-      end
-
-      it 'does not call after branch delete hooks' do
-        expect(service).not_to receive(:execute_after_branch_delete_hooks)
-
-        service.execute('feature')
       end
     end
   end

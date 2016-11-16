@@ -22,7 +22,6 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(current_user, branch_name)
-      execute_after_branch_delete_hooks(branch_name)
       success('Branch was removed')
     else
       error('Failed to remove branch')
@@ -47,13 +46,5 @@ class DeleteBranchService < BaseService
       Gitlab::Git::BLANK_SHA,
       "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch.name}",
       [])
-  end
-
-  private
-
-  def execute_after_branch_delete_hooks(branch_name)
-    AfterBranchDeleteService
-      .new(project, current_user)
-      .execute(branch_name)
   end
 end

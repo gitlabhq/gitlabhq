@@ -291,10 +291,25 @@ feature 'Environments', feature: true do
     scenario 'user deletes the branch with running environment' do
       visit namespace_project_branches_path(project.namespace, project)
 
-      page.within('.js-branch-feature') { find('a.btn-remove').click }
+      remove_branch_with_hooks(project, user, 'feature') do
+        page.within('.js-branch-feature') { find('a.btn-remove').click }
+      end
+
       visit_environment(environment)
 
       expect(page).to have_no_link('Stop')
+    end
+
+    def remove_branch_with_hooks(project, user, branch)
+      params = {
+        oldrev: project.commit(branch).id,
+        newrev: Gitlab::Git::BLANK_SHA,
+        ref: "refs/heads/#{branch}"
+      }
+
+      yield
+
+      GitPushService.new(project, user, params).execute
     end
   end
 
