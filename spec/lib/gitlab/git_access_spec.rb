@@ -112,8 +112,12 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     describe 'deploy key permissions' do
-      let(:key) { create(:deploy_key) }
+      let(:key) { create(:deploy_key, user: user) }
       let(:actor) { key }
+
+      before do
+        project.team << [user, :master]
+      end
 
       context 'pull code' do
         context 'when project is authorized' do
@@ -404,8 +408,12 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe 'deploy key permissions' do
-    let(:key) { create(:deploy_key, can_push: can_push) }
+    let(:key) { create(:deploy_key, user: user, can_push: can_push) }
     let(:actor) { key }
+
+    before do
+      project.team << [user, :master]
+    end
 
     context 'when deploy_key can push' do
       let(:can_push) { true }
