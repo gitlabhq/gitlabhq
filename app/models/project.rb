@@ -76,7 +76,6 @@ class Project < ActiveRecord::Base
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
 
   # Project services
-  has_many :services
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
@@ -748,25 +747,30 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def build_missing_services
+  def find_or_initialize_services
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.each do |service_name|
+    Service.available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
-      # If service is available but missing in db
-      if service.nil?
+      if service
+        service
+      else
         # We should check if template for the service exists
         template = find_service(services_templates, service_name)
 
         if template.nil?
-          # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          public_send("create_#{service_name}_service")
+          # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+          public_send("build_#{service_name}_service")
         else
-          Service.create_from_template(self.id, template)
+          Service.build_from_template(id, template)
         end
       end
     end
+  end
+
+  def find_or_initialize_service(name)
+    find_or_initialize_services.find { |service| service.to_param == name }
   end
 
   def create_labels
