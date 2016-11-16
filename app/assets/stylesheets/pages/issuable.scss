@@ -408,38 +408,12 @@
   }
 }
 
-#issuable-time-tracker {
+.time_tracker {
+  padding-bottom: 0;
+  border-bottom: 0;
+
   > .stopwatch-svg {
     display: none;
-  }
-
-  .time-tracking-help-state {
-    padding: 10px 0;
-    margin-top: 10px;
-    border-top: 1px solid #dcdcdc;
-  }
-
-  .meter-container {
-    background: $gray-lighter;
-    border-radius: 2px;
-  }
-
-  .meter-fill {
-    max-width: 100%;
-    height: 4px;
-    background: $gl-text-green;
-  }
-
-  .help-button, .close-help-button {
-    cursor: pointer;
-  }
-  .over_estimate {
-    .meter-fill {
-      background: $red-light ;
-    }
-    .time-remaining, .compare-value.spent {
-      color: $red-light ;
-    }
   }
 
   .sidebar-collapsed-icon {
@@ -450,21 +424,65 @@
     }
   }
 
-  .within_estimate {
-    .meter-fill {
-      background: $gl-text-green;
-    }
+  .help-button, .close-help-button {
+    cursor: pointer;
   }
-  .compare-display-container {
-    height: 10px;
-    margin-top: 5px;
-  }
-  .compare-display {
-    font-size: 13px;
-    color: $gl-gray-light;
 
-    .compare-value {
-      color: $gl-gray;
+  .compare-meter {
+    &.within_estimate {
+      .meter-fill {
+        background: $gl-primary;
+      }
+    }
+
+    &.over_estimate {
+      .meter-fill {
+        background: $red-light ;
+      }
+
+      .time-remaining, .compare-value.spent {
+        color: $red-light ;
+      }
     }
   }
+
+  .meter-container {
+    background: $border-gray-light;
+    border-radius: 3px;
+
+    .meter-fill {
+      max-width: 100%;
+      height: 5px;
+      border-radius: 3px;
+      background: $gl-primary;
+    }
+  }
+
+  .compare-display-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+
+    .compare-display {
+      font-size: 13px;
+      color: $gl-gray-light;
+
+      .compare-value {
+        color: $gl-gray;
+      }
+    }
+  }
+
+  .time-tracking-help-state {
+    transition: all 1s ease-in-out;
+    background: $white-light;
+    margin: 16px -20px 0;
+    padding: 16px 20px;
+    border-top: 1px solid $border-gray-light;
+    border-bottom: 1px solid $border-gray-light;
+
+    a:hover {
+      color: $btn-white-active;
+    }
+  }  
 }

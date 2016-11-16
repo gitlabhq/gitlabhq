@@ -140,11 +140,11 @@
                   <div :style='{ width: diffPercent }' class='meter-fill'></div>
                 </div>
                 <div class='compare-display-container'>
-                  <div class='compare-display pull-left'>
+                  <div class='compare-display'>
                     <span class='compare-label'>Spent</span>
                     <span class='compare-value spent'>{{ spentPretty }}</span>
                   </div>
-                  <div class='compare-display estimated pull-right'>
+                  <div class='compare-display estimated'>
                     <span class='compare-label'>Est</span>
                     <span class='compare-value'>{{ estimatedPretty }}</span>
                   </div>
