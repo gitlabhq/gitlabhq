@@ -135,7 +135,7 @@
           </div>
           <div class='time-tracking-content hide-collapsed'>
             <div class='time-tracking-pane-compare' v-if='showComparison'>
-              <div class='compare-meter' data-toggle='tooltip' data-placement='top' v-tooltip-title='remainingTooltipPretty' :class='diffStatusClass' >
+              <div class='compare-meter' data-toggle='tooltip' data-placement='top' :title='remainingTooltipPretty' :data-original-title='remainingTooltipPretty' :class='diffStatusClass' >
                 <div class='meter-container'>
                   <div :style='{ width: diffPercent }' class='meter-fill'></div>
                 </div>
