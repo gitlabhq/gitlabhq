@@ -133,7 +133,7 @@
 
         <div v-if="hasRef" class="icon-container">
           <i v-if="tag" class="fa fa-tag"></i>
-          <i v-else class="fa fa-code-fork"></i>
+          <i v-if="!tag" class="fa fa-code-fork"></i>
         </div>
 
         <a v-if="hasRef"
