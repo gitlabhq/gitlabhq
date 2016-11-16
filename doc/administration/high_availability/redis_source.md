@@ -1,26 +1,34 @@
-# Configuring Redis for GitLab HA (Source Install)
+# Configuring non-Omnibus Redis for GitLab HA
 
-We highly recommend that you use Omnibus GitLab packages, as we can optimize
-required packages specifically for GitLab, and we will take care of upgrading
+This is the documentation for configuring a Highly Available Redis setup when
+you have installed Redis all by yourself and not using the bundled one that
+comes with the Omnibus packages.
+
+We cannot stress enough the importance of reading the
+[Overview section](redis.md#overview) of the Omnibus Redis HA as it provides
+some invaluable information to the configuration of Redis. Please proceed to
+read it before going forward with this guide.
+
+We also highly recommend that you use the Omnibus GitLab packages, as we
+optimize them specifically for GitLab, and we will take care of upgrading Redis
 to the latest supported version.
 
-If you are building packages for a specific distro, or trying to build some
-internal automation, you can check this documentation to learn about the
-minimal setup, required changes, etc.
+If you're not sure whether this guide is for you, please refer to
+[Available configuration setups](redis.md#available-configuration-setups) in
+the Omnibus Redis HA documentation.
 
-If you want to see the documentation for Omnibus GitLab Install, please
-[read it here](redis.md).
+---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Configure your own Redis server](#configure-your-own-redis-server)
-  - [Configuring Master Redis instance](#configuring-master-redis-instance)
-  - [Configuring Slave Redis instances](#configuring-slave-redis-instances)
-  - [Configuring Redis Sentinel instances](#configuring-redis-sentinel-instances)
-- [GitLab setup](#gitlab-setup)
-- [Example configurations](#example-configurations)
+- [Configuring your own Redis server](#configuring-your-own-redis-server)
+  - [Step 1. Configuring the master Redis instance](#step-1-configuring-the-master-redis-instance)
+  - [Step 2. Configuring the slave Redis instances](#step-2-configuring-the-slave-redis-instances)
+  - [Step 3. Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances)
+  - [Step 4. Configuring the GitLab application](#step-4-configuring-the-gitlab-application)
+- [Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels](#example-of-minimal-configuration-with-1-master-2-slaves-and-3-sentinels)
   - [Configuring Redis Master](#configuring-redis-master)
   - [Configuring Redis Slaves](#configuring-redis-slaves)
   - [Configuring Redis Sentinel](#configuring-redis-sentinel)
@@ -28,7 +36,7 @@ If you want to see the documentation for Omnibus GitLab Install, please
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Configure your own Redis server
+## Configuring your own Redis server
 
 Redis server must be configured to use TCP connection instead of socket,
 and since Redis `3.2`, you must define a password to receive external
@@ -41,8 +49,7 @@ To configure Redis to use TCP connection you need to define both
 `bind` and `port`. You can bind to all interfaces (`0.0.0.0`) or specify the
 IP of the desired interface (for ex. one from an internal network).
 
-
-### Configuring Master Redis instance
+### Step 1. Configuring the master Redis instance
 
 You need to make the following changes in `redis.conf`:
 
@@ -61,7 +68,7 @@ You need to make the following changes in `redis.conf`:
 
 See [example configuration](#configuring-redis-master) below.
 
-### Configuring Slave Redis instances
+### Step 2. Configuring the slave Redis instances
 
 1. Follow same instructions for Redis Master
 
@@ -71,7 +78,7 @@ See [example configuration](#configuring-redis-master) below.
 
 See [example configuration](#configuring-redis-slaves) below.
 
-### Configuring Redis Sentinel instances
+### Step 3. Configuring the Redis Sentinel instances
 
 Sentinel is a special type of Redis server. It inherits most of the basic
 configuration options you can define in `redis.conf`, with specific ones
@@ -122,7 +129,7 @@ And the sentinel specific ones:
 
 See [example configuration](#configuring-redis-sentinel) below.
 
-## GitLab setup
+### Step 4. Configuring the GitLab application
 
 You can enable or disable Sentinel support at any time in new or existing
 installations. From the GitLab application perspective, all it requires is
@@ -141,7 +148,7 @@ which ideally should not have Redis or Sentinels in the same machine for a HA se
 
 1. Restart GitLab for the changes to take effect.
 
-## Example configurations
+## Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels
 
 In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
@@ -247,12 +254,13 @@ sentinel failover_timeout 30000
 
 ## Troubleshooting
 
-We have a more detailed [Troubleshooting](redis.md#troubleshooting) explained in the documentation for Omnibus
-Install. Here we will list only the things that are specific to a **Source** install.
+We have a more detailed [Troubleshooting](redis.md#troubleshooting) explained
+in the documentation for Omnibus GitLab installations. Here we will list only
+the things that are specific to a source installation.
 
 If you get an error in GitLab like: `Redis::CannotConnectError: No sentinels available.`,
 there may be something wrong with your configuration files or it can be related
-to [this issue][gh-531].
+to [this upstream issue][gh-531].
 
 It's a bit non-intuitive the way you have to config `resque.yml` and
 `sentinel.conf`, otherwise `redis-rb` will not work properly.
@@ -287,3 +295,4 @@ production:
 When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel)
 
 [gh-531]: https://github.com/redis/redis-rb/issues/531
+[downloads]: https://about.gitlab.com/downloads
