@@ -437,7 +437,18 @@ module API
     end
 
     class Label < LabelBasic
-      expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+      expose :open_issues_count do |label, options|
+        label.open_issues_count(options[:current_user])
+      end
+
+      expose :closed_issues_count do |label, options|
+        label.closed_issues_count(options[:current_user])
+      end
+
+      expose :open_merge_requests_count do |label, options|
+        label.open_merge_requests_count(options[:current_user])
+      end
+
       expose :priority do |label, options|
         label.priority(options[:project])
       end
