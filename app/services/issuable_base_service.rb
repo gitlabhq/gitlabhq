@@ -145,6 +145,7 @@ class IssuableBaseService < BaseService
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
     filter_params
+    change_time_spent(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -185,6 +186,7 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
+    change_time_spent(issuable)
     filter_params
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -233,6 +235,12 @@ class IssuableBaseService < BaseService
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done([todo], current_user) if todo
+    end
+  end
+
+  def change_time_spent(issuable)
+    if params[:spend_time]
+      issuable.spend_time(params.delete(:spend_time), current_user)
     end
   end
 

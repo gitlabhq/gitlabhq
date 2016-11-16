@@ -563,7 +563,7 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
-    t.integer "time_estimate", default: 0
+    t.integer "time_estimate"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -760,7 +760,7 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
-    t.integer "time_estimate", default: 0
+    t.integer "time_estimate"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -825,9 +825,9 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
     t.datetime "deleted_at"
-    t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "repository_size_limit"
+    t.text "description_html"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1010,6 +1010,7 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
+    t.boolean "wall_enabled", default: true, null: false
     t.integer "namespace_id"
     t.datetime "last_activity_at"
     t.string "import_url"
