@@ -11,17 +11,17 @@ module MembersHelper
 
     text = 'Are you sure you want to '
     action =
-        if member.request?
-          if member.user == user
-            'withdraw your access request for'
-          else
-            "deny #{member.user.name}'s request to join"
-          end
-        elsif member.invite?
-          "revoke the invitation for #{member.invite_email} to join"
+      if member.request?
+        if member.user == user
+          'withdraw your access request for'
         else
-          "remove #{member.user.name} from"
+          "deny #{member.user.name}'s request to join"
         end
+      elsif member.invite?
+        "revoke the invitation for #{member.invite_email} to join"
+      else
+        "remove #{member.user.name} from"
+      end
 
     text << action << " the #{member.source.human_name} #{member.real_source_type.humanize(capitalize: false)}?"
   end
@@ -39,8 +39,8 @@ module MembersHelper
 
   def filter_group_project_member_path(options = {})
     exist_opts = {
-        search: params[:search],
-        sort: params[:sort]
+      search: params[:search],
+      sort: params[:sort]
     }
 
     options = exist_opts.merge(options)
