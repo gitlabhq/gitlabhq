@@ -10,13 +10,10 @@
 
   Vue.directive('tooltip-title', {
     update(el, binding) {
-      const titleInitAttr = 'title';
-      const titleStoreAttr = 'data-original-title';
-        
-      const updatedValue = binding.value || el.getAttribute(titleInitAttr);
+      const updatedValue = binding.value || el.getAttribute('title');
 
-      el.setAttribute(titleInitAttr, updatedValue);
-      el.setAttribute(titleStoreAttr, updatedValue);
+      el.setAttribute('title', updatedValue);
+      el.setAttribute('data-original-title', updatedValue);
     },
   });
 

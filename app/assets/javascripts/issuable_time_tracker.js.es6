@@ -7,7 +7,6 @@
     data: function() {
       return {
         displayHelp: false,
-        loading: false,
       }
     },
     computed: {
@@ -27,6 +26,7 @@
       showHelp() {
         return !!this.displayHelp;
       },
+
       /* Parsed time values */
       parsedEstimate() {
         return this.parseSeconds(this.time_estimate);
@@ -38,6 +38,7 @@
         const diffSeconds = this.time_estimate - this.time_spent;
         return this.parseSeconds(diffSeconds);
       },
+
       /* Human readable time values */
       estimatedPretty() {
         return this.stringifyTime(this.parsedEstimate);
@@ -52,6 +53,7 @@
         const prefix = this.diffMinutes < 0 ? 'Over by' : 'Time remaining:';
         return `${prefix} ${this.remainingPretty}`;
       },
+
       /* Diff values for comparison meter */
       diffMinutes () {
         const time_estimate = this.time_estimate;
@@ -72,7 +74,6 @@
       },
       parseSeconds (seconds) {
         const DAYS_PER_WEEK = 5, HOURS_PER_DAY = 8, MINUTES_PER_HOUR = 60;
-
         const MINUTES_PER_WEEK =  DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
         const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
 
