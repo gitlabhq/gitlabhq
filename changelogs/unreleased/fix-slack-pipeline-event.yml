@@ -1,0 +1,4 @@
+---
+title: Fix pipeline author for Slack and use pipeline id for pipeline link
+merge_request: 7506
+author:
