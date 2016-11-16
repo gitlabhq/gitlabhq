@@ -216,7 +216,10 @@ associated with in the description of the issue.
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The features we would really like a merge request for are
 listed with the label [`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
-and [EE][accepting-mrs-ee] but other improvements are also welcome.
+and [EE][accepting-mrs-ee] but other improvements are also welcome. Please note
+that if an issue is marked for the current milestone either before or while you 
+are working on it, a team member may take over the merge request in order to 
+ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled it is best to first create
 a feedback issue (if there isn't one already) and leave a comment asking for it
