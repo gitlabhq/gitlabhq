@@ -345,12 +345,12 @@ We have a more detailed [Troubleshooting](redis.md#troubleshooting) explained
 in the documentation for Omnibus GitLab installations. Here we will list only
 the things that are specific to a source installation.
 
-If you get an error in GitLab like: `Redis::CannotConnectError: No sentinels available.`,
+If you get an error in GitLab like `Redis::CannotConnectError: No sentinels available.`,
 there may be something wrong with your configuration files or it can be related
 to [this upstream issue][gh-531].
 
-It's a bit non-intuitive the way you have to config `resque.yml` and
-`sentinel.conf`, otherwise `redis-rb` will not work properly.
+You must make sure that `resque.yml` and `sentinel.conf` are configured correctly,
+otherwise `redis-rb` will not work properly.
 
 The `master-group-name` ('gitlab-redis') defined in (`sentinel.conf`)
 **must** be used as the hostname in GitLab (`resque.yml`):
@@ -379,7 +379,7 @@ production:
       port: 26379 # point to sentinel, not to redis port
 ```
 
-When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel)
+When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel).
 
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [downloads]: https://about.gitlab.com/downloads
