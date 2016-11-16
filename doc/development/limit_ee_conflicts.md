@@ -8,75 +8,54 @@ Usually, GitLab Community Edition is merged into the Enterprise Edition once a
 week. During these merges, it's very common to get conflicts when some changes
 in CE do not apply cleanly to EE.
 
-In this document, we will list the best practices to avoid such conflicts or to
-make them easily solvable by the person who does the CE->EE merge.
+There are a few things that can help you as a developer to:
 
-## Different type of conflicts
+- know when your merge request to CE will conflict when merged to EE
+- avoid such conflicts in the first place
+- ease future conflict resolutions if conflict is inevitable
 
-### Models
+## Check the `rake ee_compat_check` in your merge requests
 
-#### Common issues
+For each commit (except on `master`), the `rake ee_compat_check` CI job tries to
+detect if the current branch's changes will conflict during the CE->EE merge.
 
-TODO
+The job reports what files are conflicting and how to setup a merge request
+against EE. Here is roughly how it works:
 
-#### Mitigations
+1. Generates the diff between your branch and current CE `master`
+1. Tries to apply it to current EE `master`
+1. If it applies cleanly, the job succeeds, otherwise...
+1. Detects a branch with the `-ee` suffix in EE
+1. If it exists, generate the diff between this branch and current EE `master`
+1. Tries to apply it to current EE `master`
+1. If it applies cleanly, the job succeeds
 
-TODO
+In the case where the job fails, it means you should create a `<ce_branch>-ee`
+branch, push it to EE and open a merge request against EE `master`. At this
+point if you retry the failing job in your CE merge request, it should now pass.
 
-### Services
+Notes:
 
-#### Common issues
+- This task is not a silver-bullet, its current goal is to bring awareness to
+  developers that their work needs to be ported to EE.
+- Community contributors shouldn't submit merge requests against EE, but
+  reviewers should take actions by either creating such EE merge request or
+  asking a GitLab developer to do it once the merge request is merged.
+- If you branch is more than 500 commits behind `master`, the job will fail and
+  you should rebase your branch upon latest `master`.
 
-TODO
-
-#### Mitigations
-
-TODO
+## Possible type of conflicts
 
 ### Controllers
 
-#### Common issues
+#### List or arrays are augmented in EE
 
 In controllers, the most common type of conflicts is either in a `before_action`
 that has a list of actions in CE but EE adds some actions to that list.
 
 Same problems often occurs for `params.require` / `params.permit` calls.
 
-Other conflicts usually involve specific code for EE-specific features such as:
-
-- LDAP:
-    ```diff
-        def destroy
-          @key = current_user.keys.find(params[:id])
-     -    @key.destroy
-     +    @key.destroy unless @key.is_a? LDAPKey
-
-          respond_to do |format|
-    ```
-- Geo:
-    ```diff
-    def after_sign_out_path_for(resource)
-    -    current_application_settings.after_sign_out_path.presence || new_user_session_path
-    +    if Gitlab::Geo.secondary?
-    +      Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
-    +    else
-    +      current_application_settings.after_sign_out_path.presence || new_user_session_path
-    +    end
-    end
-    ```
-- Audit log:
-    ```diff
-    def approve_access_request
-    -    Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
-    +    member = Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
-    +
-    +    log_audit_event(member, action: :create)
-
-      redirect_to polymorphic_url([membershipable, :members])
-    end
-    ```
-
-#### Mitigations
+##### Mitigations
 
 Separate CE and EE actions/keywords. For instance for `params.require` in
 `ProjectsController`:
@@ -109,20 +88,56 @@ def project_params_ee
 end
 ```
 
+#### Additional condition(s) in EE
+
+For instance for LDAP:
+
+```diff
+    def destroy
+      @key = current_user.keys.find(params[:id])
+ -    @key.destroy
+ +    @key.destroy unless @key.is_a? LDAPKey
+
+      respond_to do |format|
+```
+
+Or for Geo:
+
+```diff
+def after_sign_out_path_for(resource)
+-    current_application_settings.after_sign_out_path.presence || new_user_session_path
++    if Gitlab::Geo.secondary?
++      Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
++    else
++      current_application_settings.after_sign_out_path.presence || new_user_session_path
++    end
+end
+```
+
+Or even for audit log:
+
+```diff
+def approve_access_request
+-    Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
++    member = Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
++
++    log_audit_event(member, action: :create)
+
+  redirect_to polymorphic_url([membershipable, :members])
+end
+```
+
 ### Views
 
-#### Common issues
+#### Additional view code in EE
 
-A few issues often happen here:
+A block of code added in CE conflicts because there is already another block
+at the same place in EE
 
-1. Indentation issue
-1. A block of code added in CE conflicts because there is already another block
-  at the same place in EE
-
-#### Mitigations
+##### Mitigations
 
 Blocks of code that are EE-specific should be moved to partials as much as
-possible to avoid conflicts with big chunks of HAML code that that are not funny
+possible to avoid conflicts with big chunks of HAML code that that are not fun
 to resolve when you add the indentation in the equation.
 
 For instance this kind of things:
@@ -241,6 +256,17 @@ level
   EE-specific code in that view, so it's the most likely to conflict, but you
   are encouraged to use partials even for code that's in CE to logically split
   big views into several smaller files.
+
+#### Indentation issue
+
+Sometimes a code block is indented more or less in EE because there's an
+additional condition.
+
+##### Mitigations
+
+Blocks of code that are EE-specific should be moved to partials as much as
+possible to avoid conflicts with big chunks of HAML code that that are not fun
+to resolve when you add the indentation in the equation.
 
 ---
 
