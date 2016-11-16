@@ -56,10 +56,14 @@ feature 'Environments', feature: true, js: true do
       end
 
       context 'with deployments' do
-        given(:deployment) { create(:deployment, environment: environment) }
+        given(:project) { create(:project) }
+
+        given(:deployment) do
+          create(:deployment, environment: environment,
+                              sha: project.commit.id)
+        end
 
         scenario 'does show deployment SHA' do
-          # TODO: Fix me!
           expect(page).to have_link(deployment.short_sha)
         end
 
