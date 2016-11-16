@@ -197,7 +197,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
       # The mailbox where incoming mail will end up. Usually "inbox".
       mailbox: "inbox"
       # The IDLE command timeout.
-      email_idle_timeout: 60
+      idle_timeout: 60
     ```
 
     ```yaml
@@ -228,7 +228,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
       # The mailbox where incoming mail will end up. Usually "inbox".
       mailbox: "inbox"
       # The IDLE command timeout.
-      email_idle_timeout: 60
+      idle_timeout: 60
     ```
 
 1. Enable `mail_room` in the init script at `/etc/default/gitlab`:
@@ -286,7 +286,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
       # The mailbox where incoming mail will end up. Usually "inbox".
       mailbox: "inbox"
       # The IDLE command timeout.
-      email_idle_timeout: 60
+      idle_timeout: 60
     ```
 
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.
