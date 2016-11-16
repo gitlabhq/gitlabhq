@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, comma-dangle, dot-notation, quotes, no-undef, no-return-assign, no-underscore-dangle, camelcase, padded-blocks, max-len */
 
 /*= require merge_request_tabs */
 //= require breakpoints

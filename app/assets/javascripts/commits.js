@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, consistent-return, no-undef, no-return-assign, no-param-reassign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, prefer-template, object-shorthand, comma-dangle, padded-blocks, max-len */
 (function() {
   this.CommitsList = (function() {
     function CommitsList() {}

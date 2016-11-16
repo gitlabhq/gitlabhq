@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, no-return-assign, padded-blocks, max-len */
 (function() {
   this.BuildArtifacts = (function() {
     function BuildArtifacts() {

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, no-undef, camelcase, comma-dangle, padded-blocks, max-len */
 // Zen Mode (full screen) textarea
 //
 /*= provides zen_mode:enter */
