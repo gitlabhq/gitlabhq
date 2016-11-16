@@ -25,6 +25,7 @@
       this.initRemoveDueDate();
       this.initDatePicker();
       this.initStopPropagation();
+      this.subscribeToIssuableUpdates();
     }
 
     initGlDropdown() {
@@ -72,6 +73,12 @@
       });
     }
 
+    subscribeToIssuableUpdates() {
+      if (gl.IssuableResource) {
+        gl.IssuableResource.subscribe(this.renderUpdatedDueDate.bind(this));
+      }
+    }
+
     saveDueDate(isDropdown) {
       this.parseSelectedDate();
       this.prepSelectedDate();
@@ -107,39 +114,43 @@
         });
     }
 
+    renderUpdatedDueDate(data) {
+      const selectedDateValue = data.due_date;
+
+      this.displayedDate = data.due_date !== null ? $.datepicker.formatDate('M d, yy', new Date(selectedDateValue)) : 'No due date';
+
+      const displayedDateStyle = this.displayedDate !== 'No due date' ? 'bold' : 'no-value';
+
+      this.$loading.fadeIn();
+
+      if (this.isDropdown) {
+        this.$dropdown.trigger('loading.gl.dropdown');
+        this.$selectbox.hide();
+      }
+
+      this.$value.css('display', '');
+      this.$valueContent.html(`<span class='${displayedDateStyle}'>${this.displayedDate}</span>`);
+      this.$sidebarValue.html(this.displayedDate);
+
+      selectedDateValue !== null ?
+          $('.js-remove-due-date-holder').removeClass('hidden') :
+          $('.js-remove-due-date-holder').addClass('hidden');
+
+      if (this.isDropdown) {
+        this.$dropdown.trigger('loaded.gl.dropdown');
+        this.$dropdown.dropdown('toggle');
+      }
+      return this.$loading.fadeOut();
+    }
+
     submitSelectedDate(isDropdown) {
+      this.isDropdown = isDropdown;
       return $.ajax({
         type: 'PUT',
         url: this.issueUpdateURL,
         data: this.datePayload,
         dataType: 'json',
-        beforeSend: () => {
-          const selectedDateValue = this.datePayload[this.abilityName].due_date;
-          const displayedDateStyle = this.displayedDate !== 'No due date' ? 'bold' : 'no-value';
-
-          this.$loading.fadeIn();
-
-          if (isDropdown) {
-            this.$dropdown.trigger('loading.gl.dropdown');
-            this.$selectbox.hide();
-          }
-
-          this.$value.css('display', '');
-          this.$valueContent.html(`<span class='${displayedDateStyle}'>${this.displayedDate}</span>`);
-          this.$sidebarValue.html(this.displayedDate);
-
-          return selectedDateValue.length ?
-            $('.js-remove-due-date-holder').removeClass('hidden') :
-            $('.js-remove-due-date-holder').addClass('hidden');
-
-        }
-      }).done((data) => {
-        if (isDropdown) {
-          this.$dropdown.trigger('loaded.gl.dropdown');
-          this.$dropdown.dropdown('toggle');
-        }
-        return this.$loading.fadeOut();
-      });
+      }).done((data) => this.renderUpdatedDueDate(data))
     }
   }
 
