@@ -13,7 +13,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
     new_chat_name = current_user.chat_names.new(chat_name_params)
 
     if new_chat_name.save
-      flash[:notice] = "Authorized chat nickname #{new_chat_name.chat_name}"
+      flash[:notice] = "Authorized #{new_chat_name.chat_name}"
     else
       flash[:alert] = "Could not authorize chat nickname. Try again!"
     end
@@ -34,7 +34,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
     @chat_name = chat_names.find(params[:id])
 
     if @chat_name.destroy
-      flash[:notice] = "Delete chat nickname: #{@chat_name.chat_name}!"
+      flash[:notice] = "Deleted chat nickname: #{@chat_name.chat_name}!"
     else
       flash[:alert] = "Could not delete chat nickname #{@chat_name.chat_name}."
     end

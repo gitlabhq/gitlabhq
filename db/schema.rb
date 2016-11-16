@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(version: 20161113184239) do
     t.string "team_domain"
     t.string "chat_id", null: false
     t.string "chat_name"
-    t.datetime "used_at"
+    t.datetime "last_used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

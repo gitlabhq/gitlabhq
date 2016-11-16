@@ -12,9 +12,7 @@ describe Gitlab::ChatNameToken, lib: true do
   end
 
   context 'when storing data' do
-    let(:data) {
-      { key: 'value' }
-    }
+    let(:data) { { key: 'value' } }
 
     subject { described_class.new(@token) }
 

@@ -6,7 +6,7 @@
     %h4.prepend-top-0
       = page_title
     %p
-      You can see your Chat integrations.
+      You can see your Chat accounts.
 
   .col-lg-9
     %h5 Active chat names (#{@chat_names.length})
@@ -39,11 +39,13 @@
                       = link_to service.title, edit_namespace_project_service_path(project.namespace, project, service)
                     - else
                       = chat_name.service.title
-                %td= chat_name.team_domain
-                %td= chat_name.chat_name
-                %td=
-                  - if chat_name.used_at
-                    time_ago_with_tooltip(chat_name.used_at)
+                %td
+                  = chat_name.team_domain
+                %td
+                  = chat_name.chat_name
+                %td
+                  - if chat_name.last_used_at
+                    time_ago_with_tooltip(chat_name.last_used_at)
                   - else
                     Never
 
