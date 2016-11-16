@@ -46,18 +46,20 @@ function getRandomInt(min, max) {
 
             this.issuable = data;
           },
-        },
-        created() {
-          this.fetchIssuable();
+          subscribeToUpdates() {
+            gl.IssuableResource.subscribe(data => this.updateState(data));
+          },
+          listenForSlashCommands() {
+            $(document).on('ajax:success', '.gfm-form', (e) => {
+              // TODO: check if slash command was updated.
+              this.fetchIssuable();
+            });
+          }
         },
         mounted() {
-          gl.IssuableResource.subscribe(data => this.updateState(data));
           this.initPolling();
-
-          $(document).on('ajax:success', '.gfm-form', (e) => {
-            // TODO: check if slash command was updated.
-            this.fetchIssuable();
-          });
+          this.subscribeToUpdates();
+          this.listenForSlashCommands();
         }
       });
     }
