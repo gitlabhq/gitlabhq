@@ -1,17 +1,33 @@
-/* eslint-disable */
+
 //= require jquery
 //= require smart_interval
 
 
-((global) => {
+(() => {
+  const DEFAULT_MAX_INTERVAL = 100;
+  const DEFAULT_STARTING_INTERVAL = 5;
+  const DEFAULT_SHORT_TIMEOUT = 75;
+  const DEFAULT_LONG_TIMEOUT = 1000;
+  const DEFAULT_INCREMENT_FACTOR = 2;
+
+  function createDefaultSmartInterval(config) {
+    const defaultParams = {
+      callback: () => {},
+      startingInterval: DEFAULT_STARTING_INTERVAL,
+      maxInterval: DEFAULT_MAX_INTERVAL,
+      incrementByFactorOf: DEFAULT_INCREMENT_FACTOR,
+      delayStartBy: 0,
+      lazyStart: false,
+    };
+
+    if (config) {
+      _.extend(defaultParams, config);
+    }
+
+    return new gl.SmartInterval(defaultParams);
+  }
+
   describe('SmartInterval', function () {
-
-    const DEFAULT_MAX_INTERVAL = 100;
-    const DEFAULT_STARTING_INTERVAL = 5;
-    const DEFAULT_SHORT_TIMEOUT = 75;
-    const DEFAULT_LONG_TIMEOUT = 1000;
-    const DEFAULT_INCREMENT_FACTOR = 2;
-
     describe('Increment Interval', function () {
       beforeEach(function () {
         this.smartInterval = createDefaultSmartInterval();
@@ -165,21 +181,4 @@
       });
     });
   });
-
-  function createDefaultSmartInterval(config) {
-    const defaultParams = {
-      callback: () => {},
-      startingInterval: DEFAULT_STARTING_INTERVAL,
-      maxInterval: DEFAULT_MAX_INTERVAL,
-      incrementByFactorOf: DEFAULT_INCREMENT_FACTOR,
-      delayStartBy: 0,
-      lazyStart: false,
-    };
-
-    if (config) {
-      _.extend(defaultParams, config);
-    }
-
-    return new gl.SmartInterval(defaultParams);
-  }
 })(window.gl || (window.gl = {}));
