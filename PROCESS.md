@@ -127,6 +127,10 @@ release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set. Merge requests without a milestone and this label will
 not be merged into any stable branches.
 
+## Scheduled issues
+
+When an issue is scheduled for a specific release, we would like to do our best to deliver it for the release. If something comes up when you are working on a scheduled issue, or it is taking longer than anticipated, just let us know by commenting on the issue. Depending on the issue, and if there is other dependent work, others may jump in to help out. If there are concerns about an issue being completed in time, and we don't hear any responses, we may still decide to help out.
+
 ## Copy & paste responses
 
 ### Improperly formatted issue
