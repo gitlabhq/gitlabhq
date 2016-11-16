@@ -56,25 +56,26 @@ ul.related-merge-requests > li {
 
 .merge-request-status {
   font-size: 13px;
-  padding: 0px 5px;
-  color: #FFF;
+  padding: 0 5px;
+  color: $white-light;
   height: 20px;
   border-radius: 3px;
   line-height: 18px;
+  border: 1px solid;
 
   &.merged {
-    border: 1px solid #2A96CC;
-    background: #2D9FD8;
+    border-color: darken($blue-normal, 10%);
+    background: $blue-normal;
   }
 
   &.closed {
-    border: 1px solid #C5254D;
-    background: #D62954;
+    border-color: darken($red-normal, 10%);
+    background: $red-normal;
   }
 
   &.open {
-    border: 1px solid #2EA65E;
-    background: #31AF64;
+    border: 1px solid darken($green-normal, 10%);
+    background: $green-normal;
   }
 }
 
