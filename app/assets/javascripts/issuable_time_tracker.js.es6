@@ -111,6 +111,7 @@
     template: `
         <div class='time-tracking-component-wrap' v-cloak>
           <div class='sidebar-collapsed-icon'>
+            <slot name='stopwatch'></slot>
             <div class='time-tracking-collapsed-summary'>
               <div class='compare' v-if='showComparison'>
                 <span>{{ abbreviateTime(spentPretty) }} / {{ abbreviateTime(estimatedPretty) }}</span>

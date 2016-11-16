@@ -79,6 +79,8 @@
             .title.hide-collapsed
               Time tracking
               = icon('spinner spin')
+            .stopwatch-svg{ slot:'stopwatch' }
+              = custom_icon('icon_stopwatch')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
