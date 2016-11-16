@@ -1,7 +1,7 @@
 //= require vue
-//= issuable_time_tracker
-//= smart_interval
-//= subbable_resource
+//= require issuable_time_tracker
+//= require smart_interval
+//= require subbable_resource
 
 (() => {
   /* This Vue instance represents what will become the parent instance for the
