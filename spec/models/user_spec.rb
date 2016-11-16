@@ -490,6 +490,28 @@ describe User, models: true do
     end
   end
 
+  describe '.without_projects' do
+    let!(:project) { create(:empty_project, :public) }
+    let!(:user) { create(:user) }
+    let!(:user_without_project) { create(:user) }
+    let!(:user_without_project2) { create(:user) }
+
+    before do
+      # add user to project
+      project.team << [user, :master]
+
+      # create invite to projet
+      create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
+
+      # create request to join project
+      project.request_access(user_without_project2)
+    end
+
+    it { expect(User.without_projects).not_to include user }
+    it { expect(User.without_projects).to include user_without_project }
+    it { expect(User.without_projects).to include user_without_project2 }
+  end
+
   describe '.not_in_project' do
     before do
       User.delete_all
