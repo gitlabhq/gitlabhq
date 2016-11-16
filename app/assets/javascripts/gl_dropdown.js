@@ -249,7 +249,7 @@
                 _this.fullData = data;
                 _this.parseData(_this.fullData);
                 _this.focusTextInput();
-                if (_this.options.filterable && _this.filter && _this.filter.input) {
+                if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val().trim() !== '') {
                   return _this.filter.input.trigger('input');
                 }
               };
