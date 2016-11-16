@@ -115,4 +115,7 @@ $(() => {
       },
     },
   });
+
+  // Register global components
+  Vue.component('total-time', gl.cycleAnalytics.TotalTimeComponent);
 });

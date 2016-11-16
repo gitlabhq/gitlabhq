@@ -45,14 +45,7 @@
           </span>
         </div>
         <div class="item-time">
-          <span class="hours" v-if="issue.totalTime.hours">
-            {{ issue.totalTime.hours }}
-            <abbr title="Hours">hr</abbr>
-          </span>
-          <span class="minutes" v-if="issue.totalTime.minutes">
-            {{ issue.totalTime.minutes }}
-            <abbr title="Minutes">mins</abbr>
-          </span>
+          <total-time :time="issue.totalTime"></total-time>
         </div>
       </div>
     `,
