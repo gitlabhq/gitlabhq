@@ -167,7 +167,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
           });
 
           it('should link to the correct documentation', function(done) {
-            const correctUrl = 'http://example.com/time-tracking-url';
+            const correctUrl = 'https://docs.gitlab.com/ee/workflow/time_tracking.html';
 
             $(this.timeTracker.$el).find('.help-button').click();
 
