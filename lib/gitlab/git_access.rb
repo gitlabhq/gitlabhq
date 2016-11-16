@@ -161,7 +161,7 @@ module Gitlab
 
     def can_read_project?
       if deploy_key
-        project.public? || deploy_key.projects.include?(project)
+        project.public? || deploy_key.has_access_to?(project)
       elsif user
         user_access.can_read_project?
       else

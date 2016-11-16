@@ -93,10 +93,10 @@ module ProjectsHelper
   end
 
   def project_for_deploy_key(deploy_key)
-    if deploy_key.projects.include?(@project)
+    if deploy_key.has_access_to?(@project)
       @project
     else
-      deploy_key.projects.find { |project| can?(current_user, :read_project, project) }
+      deploy_key.projects.find(&current_user.method(:has_access_to?))
     end
   end
 

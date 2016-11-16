@@ -501,6 +501,10 @@ class User < ActiveRecord::Base
     several_namespaces? || admin
   end
 
+  def has_access_to?(project)
+    can?(:read_project, project)
+  end
+
   def can?(action, subject)
     Ability.allowed?(self, action, subject)
   end

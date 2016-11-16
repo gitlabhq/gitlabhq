@@ -21,7 +21,11 @@ class DeployKey < Key
     self.private?
   end
 
+  def has_access_to?(project)
+    projects.include?(project)
+  end
+
   def can_push_to?(project)
-    can_push? && projects.include?(project)
+    can_push? && has_access_to?(project)
   end
 end
