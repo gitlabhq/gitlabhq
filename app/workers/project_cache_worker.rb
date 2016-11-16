@@ -6,6 +6,7 @@
 class ProjectCacheWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
+  prepend EE::Workers::ProjectCacheWorker
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
@@ -32,11 +33,7 @@ class ProjectCacheWorker
       return
     end
 
-    if Gitlab::Geo.secondary?
-      update_geo_caches(project_id)
-    else
-      update_caches(project_id)
-    end
+    update_caches(project_id)
   end
 
   def update_caches(project_id)
@@ -46,18 +43,6 @@ class ProjectCacheWorker
 
     project.update_repository_size
     project.update_commit_count
-
-    if project.repository.root_ref
-      project.repository.build_cache
-    end
-  end
-
-  # Geo should only update Redis based cache, as data store in the database
-  # will be updated on primary and replicated to the secondaries.
-  def update_geo_caches(project_id)
-    project = Project.find(project_id)
-
-    return unless project.repository.exists?
 
     if project.repository.root_ref
       project.repository.build_cache
