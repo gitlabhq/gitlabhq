@@ -28,6 +28,13 @@ module Bitbucket
       Collection.new(paginator)
     end
 
+    def pull_request_comments(repo, pull_request)
+      relative_path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments"
+      paginator = Paginator.new(connection, relative_path, :pull_request_comment)
+
+      Collection.new(paginator)
+    end
+
     def repo(name)
       parsed_response = connection.get("/repositories/#{name}")
       Representation::Repo.new(parsed_response)

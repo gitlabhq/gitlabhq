@@ -82,7 +82,7 @@ module Gitlab
             description = @formatter.author_line(pull_request.author)
             description += pull_request.description
 
-            project.merge_requests.create(
+            merge_request = project.merge_requests.create(
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
@@ -98,10 +98,78 @@ module Gitlab
               created_at: pull_request.created_at,
               updated_at: pull_request.updated_at
             )
+
+            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
           rescue ActiveRecord::RecordInvalid
             nil
           end
         end
+      end
+
+      def import_pull_request_comments(pull_request, merge_request)
+        comments = client.pull_request_comments(repo, pull_request.iid)
+
+        inline_comments, pr_comments = comments.partition(&:inline?)
+
+        import_inline_comments(inline_comments, pull_request, merge_request)
+        import_standalone_pr_comments(pr_comments, merge_request)
+      end
+
+      def import_inline_comments(inline_comments, pull_request, merge_request)
+        line_code_map = {}
+
+        children, parents = inline_comments.partition(&:has_parent?)
+
+        # The Bitbucket API returns threaded replies as parent-child
+        # relationships. We assume that the child can appear in any order in
+        # the JSON.
+        parents.each do |comment|
+          line_code_map[comment.iid] = generate_line_code(comment)
+        end
+
+        children.each do |comment|
+          line_code_map[comment.iid] = line_code_map.fetch(comment.parent_id, nil)
+        end
+
+        inline_comments.each do |comment|
+          begin
+            attributes = pull_request_comment_attributes(comment)
+            attributes.merge!(
+              commit_id: pull_request.source_branch_sha,
+              line_code: line_code_map.fetch(comment.iid),
+              type: 'LegacyDiffNote')
+
+            note = merge_request.notes.create!(attributes)
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.log.error("Bitbucket importer ERROR: Invalid pull request comment #{e.message}")
+            nil
+          end
+        end
+      end
+
+      def import_standalone_pr_comments(pr_comments, merge_request)
+        pr_comments.each do |comment|
+          begin
+            merge_request.notes.create!(pull_request_comment_attributes(comment))
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.log.error("Bitbucket importer ERROR: Invalid standalone pull request comment #{e.message}")
+            nil
+          end
+        end
+      end
+
+      def generate_line_code(pr_comment)
+        Gitlab::Diff::LineCode.generate(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
+      end
+
+      def pull_request_comment_attributes(comment)
+        {
+          project: project,
+          note: comment.note,
+          author_id: gitlab_user_id(project, comment.author),
+          created_at: comment.created_at,
+          updated_at: comment.updated_at
+        }
       end
     end
   end
