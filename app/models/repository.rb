@@ -1063,14 +1063,23 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-  def search_files(query, ref)
-    unless exists? && has_visible_content? && query.present?
-      return []
-    end
+  def empty_repo?
+    !exists? || !has_visible_content?
+  end
+
+  def search_files_by_content(query, ref)
+    return [] if empty_repo? || query.blank?
 
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+  end
+
+  def search_files_by_name(query, ref)
+    return [] if empty_repo? || query.blank?
+
+    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
