@@ -1,5 +1,11 @@
 # Configuring Redis for GitLab HA
 
+>
+Experimental Redis Sentinel support was [Introduced][ce-1877] in GitLab 8.11.
+Starting with 8.14, Redis Sentinel is no longer experimental.
+If you've used it with versions `< 8.14` before, please check the updated
+documentation here.
+
 High Availability with [Redis] is possible using a **Master** x **Slave**
 topology with a [Redis Sentinel][sentinel] service to watch and automatically
 start the failover procedure.
@@ -52,7 +58,6 @@ Omnibus GitLab packages.
   - [Troubleshooting Redis replication](#troubleshooting-redis-replication)
   - [Troubleshooting Sentinel](#troubleshooting-sentinel)
 - [Changelog](#changelog)
-  - [Experimental Redis Sentinel support](#experimental-redis-sentinel-support)
 - [Further reading](#further-reading)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -870,14 +875,6 @@ Changes to Redis HA over time.
 **8.11**
 
 - Experimental Redis Sentinel support was added
-
-### Experimental Redis Sentinel support
-
->
-Experimental Redis Sentinel support was [Introduced][ce-1877] in GitLab 8.11.
-Starting with 8.14, Redis Sentinel is no longer experimental.
-If you used with versions `< 8.14` before, please check the updated
-documentation here.
 
 ## Further reading
 
