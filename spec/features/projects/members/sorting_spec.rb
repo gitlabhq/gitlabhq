@@ -12,6 +12,13 @@ feature 'Projects > Members > Sorting', feature: true do
     login_as(master)
   end
 
+  scenario 'sorts alphabetically by default' do
+    visit_members_list(sort: nil)
+
+    expect(first_member).to include(master.name)
+    expect(second_member).to include(developer.name)
+  end
+
   scenario 'sorts by access level ascending' do
     visit_members_list(sort: :access_level_asc)
 
