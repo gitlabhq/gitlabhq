@@ -23,10 +23,10 @@ module Gitlab
       private
 
       def select_body(message)
-        part = if message.multipart?
-          message.text_part || message.html_part || message
+        if message.multipart?
+          part = message.text_part || message.html_part || message
         else
-          message
+          part = message
         end
 
         decoded = fix_charset(part)
