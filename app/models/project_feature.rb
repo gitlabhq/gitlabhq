@@ -49,20 +49,14 @@ class ProjectFeature < ActiveRecord::Base
   end
 
   def builds_enabled?
-    return true unless builds_access_level
-
     builds_access_level > DISABLED
   end
 
   def wiki_enabled?
-    return true unless wiki_access_level
-
     wiki_access_level > DISABLED
   end
 
   def merge_requests_enabled?
-    return true unless merge_requests_access_level
-
     merge_requests_access_level > DISABLED
   end
 

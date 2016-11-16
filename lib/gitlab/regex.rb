@@ -26,12 +26,12 @@ module Gitlab
     end
 
     def project_name_regex
-      @project_name_regex ||= /\A[\p{Alnum}_][\p{Alnum}\p{Pd}_\. ]*\z/.freeze
+      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9c0}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9c0}_\. ]*\z/.freeze
     end
 
     def project_name_regex_message
-      "can contain only letters, digits, '_', '.', dash and space. " \
-      "It must start with letter, digit or '_'."
+      "can contain only letters, digits, emojis, '_', '.', dash, space. " \
+      "It must start with letter, digit, emoji or '_'."
     end
 
     def project_path_regex

@@ -23,6 +23,10 @@ module Gitlab
       settings || fake_application_settings
     end
 
+    def sidekiq_throttling_enabled?
+      current_application_settings.sidekiq_throttling_enabled?
+    end
+
     def fake_application_settings
       OpenStruct.new(
         default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -50,6 +54,7 @@ module Gitlab
         repository_checks_enabled: true,
         container_registry_token_expire_delay: 5,
         user_default_external: false,
+        sidekiq_throttling_enabled: false,
       )
     end
 

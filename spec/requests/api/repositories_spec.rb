@@ -18,6 +18,7 @@ describe API::API, api: true  do
 
       it "returns project commits" do
         get api("/projects/#{project.id}/repository/tree", user)
+
         expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
@@ -38,6 +39,40 @@ describe API::API, api: true  do
     context "unauthorized user" do
       it "does not return project commits" do
         get api("/projects/#{project.id}/repository/tree")
+        expect(response).to have_http_status(401)
+      end
+    end
+  end
+
+  
+  describe 'GET /projects/:id/repository/tree?recursive=1' do
+    context 'authorized user' do
+      before { project.team << [user2, :reporter] }
+
+      it 'should return recursive project paths tree' do
+        get api("/projects/#{project.id}/repository/tree?recursive=1", user)
+
+        expect(response.status).to eq(200)
+
+        expect(json_response).to be_an Array
+        expect(json_response[4]['name']).to eq('html')
+        expect(json_response[4]['path']).to eq('files/html')
+        expect(json_response[4]['type']).to eq('tree')
+        expect(json_response[4]['mode']).to eq('040000')
+      end
+
+      it 'returns a 404 for unknown ref' do
+        get api("/projects/#{project.id}/repository/tree?ref_name=foo&recursive=1", user)
+        expect(response).to have_http_status(404)
+
+        expect(json_response).to be_an Object
+        json_response['message'] == '404 Tree Not Found'
+      end      
+    end
+
+    context "unauthorized user" do
+      it "does not return project commits" do
+        get api("/projects/#{project.id}/repository/tree?recursive=1")
         expect(response).to have_http_status(401)
       end
     end

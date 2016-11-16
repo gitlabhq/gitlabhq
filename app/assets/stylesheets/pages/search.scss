@@ -21,6 +21,11 @@
     padding: 4px;
     width: $search-input-width;
     line-height: 24px;
+
+    &:hover {
+      border-color: lighten($dropdown-input-focus-border, 20%);
+      box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
+    }
   }
 
   .location-text {
@@ -28,10 +33,9 @@
   }
 
   .search-input {
-    padding-right: 20px;
     border: none;
     font-size: 14px;
-    padding: 0;
+    padding: 0 20px 0 0;
     margin-left: 5px;
     line-height: 25px;
     width: 98%;

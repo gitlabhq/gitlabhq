@@ -44,11 +44,15 @@ This [resource](http://kb.kerio.com/product/kerio-connect/server-configuration/s
 has all the information you need to add a certificate to the main trusted chain.
 
 This [answer](http://superuser.com/questions/437330/how-do-you-add-a-certificate-authority-ca-to-ubuntu)
-at SuperUser also has relevant information.
+at Super User also has relevant information.
 
 **Omnibus Trusted Chain**
 
-It is enough to concatenate the certificate to the main trusted certificate:
+[Install the self signed certificate or custom certificate authorities](http://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
+in to GitLab Omnibus.
+
+It is enough to concatenate the certificate to the main trusted certificate
+however it may be overwritten during upgrades:
 
 ```bash
 cat jira.pem >> /opt/gitlab/embedded/ssl/certs/cacert.pem

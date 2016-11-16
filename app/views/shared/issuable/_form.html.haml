@@ -1,3 +1,4 @@
+- form = local_assigns.fetch(:f)
 - project = @target_project || @project
 
 = form_errors(issuable)
@@ -10,44 +11,17 @@
     and make sure your changes will not unintentionally remove theirs
 
 .form-group
-  = f.label :title, class: 'control-label'
+  = form.label :title, class: 'control-label'
 
   = render 'shared/issuable/form/template_selector', issuable: issuable
-
-  %div{ class: issuable_templates(issuable).any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
-    = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
-        class: 'form-control pad', required: true
-
-    - if issuable.is_a?(MergeRequest)
-      %p.help-block
-        .js-wip-explanation
-          %a.js-toggle-wip{href: "", tabindex: -1}
-            Remove the
-            %code WIP:
-            prefix from the title
-          to allow this
-          %strong Work In Progress
-          merge request to be merged when it's ready.
-        .js-no-wip-explanation
-          %a.js-toggle-wip{href: "", tabindex: -1}
-            Start the title with
-            %code WIP:
-          to prevent a
-          %strong Work In Progress
-          merge request from being merged before it's ready.
-
-    - if can_add_template?(issuable)
-      %p.help-block
-        Add
-        = link_to "description templates", help_page_path('user/project/description_templates'), tabindex: -1
-        to help your contributors communicate effectively!
+  = render 'shared/issuable/form/title', issuable: issuable, form: form
 
 .form-group.detail-page-description
-  = f.label :description, 'Description', class: 'control-label'
+  = form.label :description, 'Description', class: 'control-label'
   .col-sm-10
 
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
-      = render 'projects/zen', f: f, attr: :description,
+      = render 'projects/zen', f: form, attr: :description,
                                classes: 'note-textarea',
                                placeholder: "Write a comment or drag your files here...",
                                supports_slash_commands: !issuable.persisted?
@@ -59,8 +33,8 @@
   .form-group
     .col-sm-offset-2.col-sm-10
       .checkbox
-        = f.label :confidential do
-          = f.check_box :confidential
+        = form.label :confidential do
+          = form.check_box :confidential
           This issue is confidential and should only be visible to team members with at least Reporter access.
 
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
@@ -69,32 +43,32 @@
   .row
     %div{ class: (has_due_date ? "col-lg-6" : "col-sm-12") }
       .form-group.issue-assignee
-        = f.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
+        = form.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
             - if issuable.assignee_id
-              = f.hidden_field :assignee_id
+              = form.hidden_field :assignee_id
             = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Select assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
               placeholder: "Search assignee", data: { first_user: current_user.try(:username), null_user: true, current_user: true, project_id: project.try(:id), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee"} })
       .form-group.issue-milestone
-        = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
+        = form.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
             = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input", dropdown_title: "Select milestone"
       .form-group
         - has_labels = @labels && @labels.any?
-        = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
-        = f.hidden_field :label_ids, multiple: true, value: ''
+        = form.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
+        = form.hidden_field :label_ids, multiple: true, value: ''
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
           .issuable-form-select-holder
             = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false}, dropdown_title: "Select label"
     - if has_due_date
       .col-lg-6
         .form-group
-          = f.label :due_date, "Due date", class: "control-label"
+          = form.label :due_date, "Due date", class: "control-label"
           .col-sm-10
             .issuable-form-select-holder
-              = f.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: "Select due date"
+              = form.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: "Select due date"
 
 - if issuable.can_move?(current_user)
   %hr
@@ -112,15 +86,15 @@
   %hr
   - if @merge_request.new_record?
     .form-group
-      = f.label :source_branch, class: 'control-label'
+      = form.label :source_branch, class: 'control-label'
       .col-sm-10
         .issuable-form-select-holder
-          = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
+          = form.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
   .form-group
-    = f.label :target_branch, class: 'control-label'
+    = form.label :target_branch, class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
-        = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
+        = form.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
       - if @merge_request.new_record?
         &nbsp;
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
@@ -136,9 +110,9 @@
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{class: (is_footer ? "footer-block" : "middle-block")}
   - if issuable.new_record?
-    = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+    = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
-    = f.submit 'Save changes', class: 'btn btn-save'
+    = form.submit 'Save changes', class: 'btn btn-save'
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
     .inline.prepend-left-10
@@ -155,4 +129,4 @@
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
 
-= f.hidden_field :lock_version
+= form.hidden_field :lock_version

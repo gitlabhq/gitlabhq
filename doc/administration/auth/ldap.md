@@ -257,6 +257,24 @@ the LDAP server's SSL certificate is performed.
 
 ## Troubleshooting
 
+### Debug LDAP user filter with ldapsearch
+
+This example uses ldapsearch and assumes you are using ActiveDirectory. The
+following query returns the login names of the users that will be allowed to
+log in to GitLab if you configure your own user_filter.
+
+```
+ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "$user_filter" sAMAccountName
+```
+
+- Variables beginning with a `$` refer to a variable from the LDAP section of
+  your configuration file.
+- Replace ldaps:// with ldap:// if you are using the plain authentication method.
+  Port `389` is the default `ldap://` port and `636` is the default `ldaps://`
+  port.
+- We are assuming the password for the bind_dn user is in bind_dn_password.txt.
+
+
 ### Invalid credentials when logging in
 
 - Make sure the user you are binding with has enough permissions to read the user's

@@ -86,7 +86,8 @@
   }
 }
 
-.project-home-panel {
+.project-home-panel,
+.group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
 
@@ -94,7 +95,8 @@
     border-bottom: 1px solid $border-color;
   }
 
-  .project-avatar {
+  .project-avatar,
+  .group-avatar {
     float: none;
     margin: 0 auto;
     border: none;
@@ -104,7 +106,8 @@
     }
   }
 
-  .project-title {
+  .project-title,
+  .group-title {
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
@@ -118,10 +121,11 @@
     }
   }
 
-  .project-home-desc {
+  .project-home-desc,
+  .group-home-desc {
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     max-width: 700px;
 
     > p {
@@ -141,12 +145,17 @@
   }
 }
 
-.project-repo-buttons {
-  font-size: 0;
+.project-repo-buttons,
+.group-buttons {
+  margin-top: 15px;
 
   .btn {
     @include btn-gray;
     padding: 3px 10px;
+
+    &:last-child {
+      margin-left: 0;
+    }
 
     .fa {
       color: $layout-link-gray;
@@ -168,7 +177,8 @@
     }
   }
 
-  .project-repo-btn-group,
+  .download-button,
+  .dropdown-toggle,
   .notification-dropdown,
   .project-dropdown {
     margin-left: 10px;
@@ -474,9 +484,7 @@ a.deploy-project-label {
       margin-right: $gl-padding;
     }
 
-    &.project-repo-buttons-right {
-      margin-top: 10px;
-
+    &.right {
       @media (min-width: $screen-md-min) {
         float: right;
         margin-top: 0;
