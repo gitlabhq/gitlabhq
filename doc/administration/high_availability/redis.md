@@ -29,22 +29,23 @@ Omnibus GitLab packages.
 **Table of Contents**
 
 - [Overview](#overview)
-  - [Prerequisites](#prerequisites)
   - [High Availability with Sentinel](#high-availability-with-sentinel)
   - [Recommended setup](#recommended-setup)
-  - [Available configuration setups](#available-configuration-setups)
   - [Redis setup overview](#redis-setup-overview)
   - [Sentinel setup overview](#sentinel-setup-overview)
+  - [Available configuration setups](#available-configuration-setups)
 - [Configuring Redis HA](#configuring-redis-ha)
-  - [Step 1. Configuring the Master Redis instance](#step-1-configuring-the-master-redis-instance)
-  - [Step 2. Configuring the Slave Redis instances](#step-2-configuring-the-slave-redis-instances)
+  - [Prerequisites](#prerequisites)
+  - [Step 1. Configuring the master Redis instance](#step-1-configuring-the-master-redis-instance)
+  - [Step 2. Configuring the slave Redis instances](#step-2-configuring-the-slave-redis-instances)
   - [Step 3. Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances)
   - [Step 4. Configuring the GitLab application](#step-4-configuring-the-gitlab-application)
 - [Switching from an existing single-machine installation to Redis HA](#switching-from-an-existing-single-machine-installation-to-redis-ha)
 - [Example of a minimal configuration with 1 master, 2 slaves and 3 Sentinels](#example-of-a-minimal-configuration-with-1-master-2-slaves-and-3-sentinels)
-  - [Configuration for Redis master](#configuration-for-redis-master)
-  - [Configuration for Redis slaves](#configuration-for-redis-slaves)
-  - [Configuration for Sentinels](#configuration-for-sentinels)
+  - [Example configuration for Redis master and Sentinel 1](#example-configuration-for-redis-master-and-sentinel-1)
+  - [Example configuration for Redis slave 1 and Sentinel 2](#example-configuration-for-redis-slave-1-and-sentinel-2)
+  - [Example configuration for Redis slave 2 and Sentinel 3](#example-configuration-for-redis-slave-2-and-sentinel-3)
+  - [Example configuration for the GitLab application](#example-configuration-for-the-gitlab-application)
 - [Advanced configuration](#advanced-configuration)
   - [Control running services](#control-running-services)
 - [Troubleshooting](#troubleshooting)
@@ -277,7 +278,7 @@ The prerequisites for a HA Redis setup are the following:
    change the default ones).
 1. The server that hosts the GitLab application must be able to access the
    Redis nodes.
-1. Protect the nodes from access from external networks (Internet), using
+1. Protect the nodes from access from external networks ([Internet][it]), using
    firewall.
 
 ### Step 1. Configuring the master Redis instance
@@ -527,13 +528,13 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
 1. Edit `/etc/gitlab/gitlab.rb` and add/change the following lines:
 
     ```
-    # Must be the same in every sentinel node
+    ## Must be the same in every sentinel node
     redis['master_name'] = 'gitlab-redis'
 
-    # The same password for Redis authentication you set up for the master node.
+    ## The same password for Redis authentication you set up for the master node.
     redis['password'] = 'redis-password-goes-here'
 
-    # A list of sentinels with `host` and `port`
+    ## A list of sentinels with `host` and `port`
     gitlab_rails['redis_sentinels'] = [
       {'host' => '10.0.0.1', 'port' => 26379},
       {'host' => '10.0.0.2', 'port' => 26379},
@@ -567,6 +568,11 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
 
 ## Example of a minimal configuration with 1 master, 2 slaves and 3 Sentinels
 
+>**Note:**
+Redis Sentinel is bundled with Omnibus GitLab Enterprise Edition only. For
+different setups, read the
+[available configuration setups](#available-configuration-setups) section.
+
 In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
 to each other using these IPs.
@@ -595,142 +601,70 @@ The same thing will happen with `sentinel.conf` that will be overridden after th
 initial execution, after any new sentinel node starts watching the **Master**,
 or a failover promotes a different **Master** node.
 
-### Example configuration for Redis master
-
-**Example configation for Redis Master:**
+### Example configuration for Redis master and Sentinel 1
 
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 redis_master_role['enable'] = true
-
+redis_sentinel_role['enable'] = true
 redis['bind'] = '10.0.0.1'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
+redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
+redis['master_password'] = 'redis-password-goes-here' # the same value defined in redis['password'] in the master instance
+redis['master_ip'] = '10.0.0.1' # ip of the initial master redis instance
+#redis['master_port'] = 6379 # port of the initial master redis instance, uncomment to change to non default
+sentinel['bind'] = '10.0.0.1'
+# sentinel['port'] = 26379 # uncomment to change default port
+sentinel['quorum'] = 2
+# sentinel['down_after_milliseconds'] = 10000
+# sentinel['failover_timeout'] = 60000
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
-### Example configuration for Redis slaves
-
-**Example configuration for Slave 1:**
+### Example configuration for Redis slave 1 and Sentinel 2
 
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 redis_slave_role['enable'] = true
-
+redis_sentinel_role['enable'] = true
 redis['bind'] = '10.0.0.2'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
 redis['master_password'] = 'redis-password-goes-here'
-
 redis['master_ip'] = '10.0.0.1' # IP of master Redis server
 #redis['master_port'] = 6379 # Port of master Redis server, uncomment to change to non default
+redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
+sentinel['bind'] = '10.0.0.2'
+# sentinel['port'] = 26379 # uncomment to change default port
+sentinel['quorum'] = 2
+# sentinel['down_after_milliseconds'] = 10000
+# sentinel['failover_timeout'] = 60000
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
-**Example configuration for Slave 2:**
+### Example configuration for Redis slave 2 and Sentinel 3
 
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 redis_slave_role['enable'] = true
-
+redis_sentinel_role['enable'] = true
 redis['bind'] = '10.0.0.3'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
 redis['master_password'] = 'redis-password-goes-here'
-
 redis['master_ip'] = '10.0.0.1' # IP of master Redis server
 #redis['master_port'] = 6379 # Port of master Redis server, uncomment to change to non default
-```
-
-[Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
-
-### Example configuration for Sentinels
-
->**Note:**
-Redis Sentinel is bundled with Omnibus GitLab Enterprise Edition only. For the
-Omnibus Community Edition and installations from source, follow the
-[Redis HA source install](redis_source.md) guide.
-
-Please note that some of the variables are already configured previously
-as they are required for Redis replication.
-
-**Example configuration for Sentinel 1:**
-
-In `/etc/gitlab/gitlab.rb`:
-
-```ruby
-redis_sentinel_role['enable'] = true
-
 redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
-redis['master_password'] = 'redis-password-goes-here' # the same value defined in redis['password'] in the master instance
-redis['master_ip'] = '10.0.0.1' # ip of the initial master redis instance
-#redis['master_port'] = 6379 # port of the initial master redis instance, uncomment to change to non default
-
-## Configure Sentinel
-sentinel['bind'] = '10.0.0.1'
-# sentinel['port'] = 26379 # uncomment to change default port
-sentinel['quorum'] = 2
-
-## Consider unresponsive server down after x amount of ms.
-# sentinel['down_after_milliseconds'] = 10000
-
-# sentinel['failover_timeout'] = 60000
-```
-
-[Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
-
-**Example configuration for Sentinel 2:**
-
-In `/etc/gitlab/gitlab.rb`:
-
-```ruby
-redis_sentinel_role['enable'] = true
-
-redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
-redis['master_password'] = 'redis-password-goes-here' # the same value defined in redis['password'] in the master instance
-redis['master_ip'] = '10.0.0.1' # ip of the initial master redis instance
-#redis['master_port'] = 6379 # port of the initial master redis instance, uncomment to change to non default
-
-## Configure Sentinel
-sentinel['bind'] = '10.0.0.2'
-# sentinel['port'] = 26379 # uncomment to change default port
-
-sentinel['quorum'] = 2
-
-## Consider unresponsive server down after x amount of ms.
-# sentinel['down_after_milliseconds'] = 10000
-
-# sentinel['failover_timeout'] = 60000
-```
-
-[Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
-
-**Example configuration for Sentinel 3:**
-
-In `/etc/gitlab/gitlab.rb`:
-
-```ruby
-redis_sentinel_role['enable'] = true
-
-redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
-redis['master_password'] = 'redis-password-goes-here' # the same value defined in redis['password'] in the master instance
-redis['master_ip'] = '10.0.0.1' # ip of the initial master redis instance
-#redis['master_port'] = 6379 # port of the initial master redis instance, uncomment to change to non default
-
-## Configure Sentinel
 sentinel['bind'] = '10.0.0.3'
 # sentinel['port'] = 26379 # uncomment to change default port
-
 sentinel['quorum'] = 2
-
-## Consider unresponsive server down after x amount of ms.
 # sentinel['down_after_milliseconds'] = 10000
-
 # sentinel['failover_timeout'] = 60000
 ```
 
@@ -740,14 +674,9 @@ sentinel['quorum'] = 2
 
 In `/etc/gitlab/gitlab.rb`:
 
-```
-# Must be the same in every sentinel node
+```ruby
 redis['master_name'] = 'gitlab-redis'
-
-# The same password for Redis authentication you set up for the master node.
 redis['password'] = 'redis-password-goes-here'
-
-# A list of sentinels with `host` and `port`
 gitlab_rails['redis_sentinels'] = [
   {'host' => '10.0.0.1', 'port' => 26379},
   {'host' => '10.0.0.2', 'port' => 26379},
@@ -970,3 +899,4 @@ Read more on high-availability configuration:
 [source]: ../../install/installation.md
 [ce]: https://about.gitlab.com/downloads
 [ee]: https://about.gitlab.com/downloads-ee
+[it]: https://gitlab.com/gitlab-org/gitlab-ce/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
