@@ -1,0 +1,4 @@
+---
+title: Removes jQuery from todos icon related code. Adds custom event polyfill
+merge_request: 7204
+author:
