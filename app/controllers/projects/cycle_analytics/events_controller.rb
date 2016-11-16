@@ -1,4 +1,6 @@
-class Projects::CycleAnalytics::EventsController < Projects::ApplicationController
+module Projects
+  module CycleAnalytics
+class EventsController < Projects::ApplicationController
   include CycleAnalyticsParams
 
   before_action :authorize_read_cycle_analytics!
@@ -59,5 +61,7 @@ class Projects::CycleAnalytics::EventsController < Projects::ApplicationControll
 
   def authorize_builds!
     return access_denied! unless current_user.can?(:read_build, project)
+  end
+end
   end
 end

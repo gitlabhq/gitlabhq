@@ -12,9 +12,11 @@ module Gitlab
 
       def plan_events
         @fetcher.fetch(stage: :plan).map do |event|
-          commit = first_time_reference_commit(event.delete('commits'), event)
+          st_commit = first_time_reference_commit(event.delete('commits'), event)
 
-          AnalyticsCommitSerializer.new(project: @project, total_time: event['total_time']).represent(commit).as_json
+          next unless st_commit
+
+          serialize_commit(event, st_commit)
         end
       end
 
@@ -53,11 +55,17 @@ module Gitlab
       end
 
       def first_time_reference_commit(commits, event)
-        st_commit = YAML.load(commits).detect do |commit|
-          commit['created_at'] == event['first_mentioned_in_commit_at']
-        end
+        YAML.load(commits).find do |commit|
+          next unless commit[:committed_date] && event['first_mentioned_in_commit_at']
 
-        Commit.new(Gitlab::Git::Commit.new(st_commit), @project)
+          commit[:committed_date].to_i == DateTime.parse(event['first_mentioned_in_commit_at']).to_i
+        end
+      end
+
+      def serialize_commit(event, st_commit)
+        commit = Commit.new(Gitlab::Git::Commit.new(st_commit), @project)
+
+        AnalyticsCommitSerializer.new(project: @project, total_time: event['total_time']).represent(commit).as_json
       end
 
       def interval_in_words(diff)

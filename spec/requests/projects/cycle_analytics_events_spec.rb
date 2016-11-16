@@ -142,5 +142,7 @@ describe 'cycle analytics events' do
     create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
     merge_merge_requests_closing_issue(issue)
+
+    Issue::Metrics.update_all(first_mentioned_in_commit_at: mr.commits.last.committed_date)
   end
 end
