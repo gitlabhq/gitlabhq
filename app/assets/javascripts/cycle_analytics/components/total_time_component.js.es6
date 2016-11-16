@@ -6,23 +6,11 @@
       time: Object,
     },
     template: `
-      <span>
-        <span class="days" v-if="time.days">
-          {{ time.days }}
-          <abbr title="Days">{{ time.days === 1 ? 'day' : 'days' }}</abbr>
-        </span>
-        <span class="hours" v-if="time.hours">
-          {{ time.hours }}
-          <abbr title="Hours">hr</abbr>
-        </span>
-        <span class="mins" v-if="time.mins">
-          {{ time.mins }}
-          <abbr title="Minutes">mins</abbr>
-        </span>
-        <span class="seconds hide" v-if="time.seconds">
-          {{ time.seconds }}
-          <abbr title="Seconds">s</abbr>
-        </span>
+      <span class="total-time">
+        <template v-if="time.days">{{ time.days }} <span>{{ time.days === 1 ? 'day' : 'days' }}</span></template>
+        <template v-if="time.hours">{{ time.hours }} <span>hr</span></template>
+        <template v-if="time.mins">{{ time.mins }} <span>mins</span></template>
+        <!-- <template v-if="time.seconds">{{ time.seconds }} <span>s</span></template> -->
       </span>
     `,
   });

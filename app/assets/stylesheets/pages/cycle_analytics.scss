@@ -306,12 +306,15 @@
     .item-time {
       width: 25%;
       text-align: right;
+    }
+
+    .total-time {
       font-size: $cycle-analytics-big-font;
       color: $cycle-analytics-dark-text;
 
-      abbr {
-        font-size: $gl-font-size;
+      span {
         color: $gl-text-color;
+        font-size: $gl-font-size;
       }
     }
 
