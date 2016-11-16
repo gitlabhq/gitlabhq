@@ -59,6 +59,7 @@ feature 'Environments', feature: true, js: true do
         given(:deployment) { create(:deployment, environment: environment) }
 
         scenario 'does show deployment SHA' do
+          # TODO: Fix me!
           expect(page).to have_link(deployment.short_sha)
         end
 
@@ -73,11 +74,15 @@ feature 'Environments', feature: true, js: true do
           given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
 
           scenario 'does show a play button' do
+            # TODO: Fix me!
+            binding.pry
             expect(page).to have_link(manual.name.humanize)
           end
 
           scenario 'does allow to play manual action' do
             expect(manual).to be_skipped
+            # TODO: Fix me!
+            binding.pry
             expect{ click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
             expect(page).to have_content(manual.name)
             expect(manual.reload).to be_pending
@@ -114,7 +119,7 @@ feature 'Environments', feature: true, js: true do
             end
 
             scenario 'starts build when stop button clicked' do
-              page.find('.stop-env-link').click
+              find('.stop-env-link').click
 
               expect(page).to have_content('close_app')
             end
