@@ -24,14 +24,16 @@ the Omnibus Redis HA documentation.
 **Table of Contents**
 
 - [Configuring your own Redis server](#configuring-your-own-redis-server)
+  - [Prerequisites](#prerequisites)
   - [Step 1. Configuring the master Redis instance](#step-1-configuring-the-master-redis-instance)
   - [Step 2. Configuring the slave Redis instances](#step-2-configuring-the-slave-redis-instances)
   - [Step 3. Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances)
   - [Step 4. Configuring the GitLab application](#step-4-configuring-the-gitlab-application)
 - [Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels](#example-of-minimal-configuration-with-1-master-2-slaves-and-3-sentinels)
-  - [Configuring Redis Master](#configuring-redis-master)
-  - [Configuring Redis Slaves](#configuring-redis-slaves)
-  - [Configuring Redis Sentinel](#configuring-redis-sentinel)
+  - [Example configuration for Redis master and Sentinel 1](#example-configuration-for-redis-master-and-sentinel-1)
+  - [Example configuration for Redis slave 1 and Sentinel 2](#example-configuration-for-redis-slave-1-and-sentinel-2)
+  - [Example configuration for Redis slave 2 and Sentinel 3](#example-configuration-for-redis-slave-2-and-sentinel-3)
+  - [Example configuration of the GitLab application](#example-configuration-of-the-gitlab-application)
 - [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -121,8 +123,8 @@ starting with `sentinel` prefix.
 Assuming that the Redis Sentinel is installed on the same instance as Redis
 master with IP `10.0.0.1` (some settings might overlap with the master):
 
-1. [Install Redis](../../install/installation.md#6-redis)
-1. Edit `/etc/redis/redis.conf`:
+1. [Install Redis Sentinel](http://redis.io/topics/sentinel)
+1. Edit `/etc/redis/sentinel.conf`:
 
     ```conf
     ## Define a `bind` address pointing to a local IP that your other machines
@@ -191,8 +193,24 @@ which ideally should not have Redis or Sentinels in the same machine for a HA
 setup:
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in
-   `/home/git/gitlab/config/resque.yml.example`, and uncomment the sentinels
-   lines, pointing to the correct server credentials.
+   [resque.yml.example][resque], and uncomment the Sentinel lines, pointing to
+   the correct server credentials:
+
+    ```yaml
+    # resque.yaml
+    production:
+      url: redis://:redi-password-goes-here@gitlab-redis/
+      sentinels:
+        -
+          host: 10.0.0.1
+          port: 26379 # point to sentinel, not to redis port
+        -
+          host: 10.0.0.2
+          port: 26379 # point to sentinel, not to redis port
+        -
+          host: 10.0.0.3
+          port: 26379 # point to sentinel, not to redis port
+    ```
 
 1. [Restart GitLab][restart] for the changes to take effect.
 
@@ -206,14 +224,16 @@ In a real world usage, you would also setup firewall rules to prevent
 unauthorized access from other machines, and block traffic from the
 outside ([Internet][it]).
 
-We will use the same `3` nodes with **Redis** + **Sentinel** topology
-discussed in the [Configuring Redis for GitLab HA](redis.md) documentation.
+For this example, **Sentinel 1** will be configured in the same machine as the
+**Redis Master**, **Sentinel 2** and **Sentinel 3** in the same machines as the
+**Slave 1** and **Slave 2** respectively.
 
 Here is a list and description of each **machine** and the assigned **IP**:
 
 * `10.0.0.1`: Redis Master + Sentinel 1
 * `10.0.0.2`: Redis Slave 1 + Sentinel 2
 * `10.0.0.3`: Redis Slave 2 + Sentinel 3
+* `10.0.0.4`: GitLab application
 
 Please note that after the initial configuration, if a failover is initiated
 by the Sentinel nodes, the Redis nodes will be reconfigured and the **Master**
@@ -224,81 +244,100 @@ The same thing will happen with `sentinel.conf` that will be overridden after th
 initial execution, after any new sentinel node starts watching the **Master**,
 or a failover promotes a different **Master** node.
 
-### Configuring Redis Master
+### Example configuration for Redis master and Sentinel 1
 
-**Example configation for Redis Master - `redis.conf`:**
+1. In `/etc/redis/redis.conf`:
 
-```conf
-bind 10.0.0.1
-port 6379
-requirepass redis-password-goes-here
-masterauth redis-password-goes-here
-```
+    ```conf
+    bind 10.0.0.1
+    port 6379
+    requirepass redis-password-goes-here
+    masterauth redis-password-goes-here
+    ```
 
-### Configuring Redis Slaves
+1. In `/etc/redis/sentinel.conf`:
 
-**Example configation for Slave 1 - `redis.conf`:**
+    ```conf
+    bind 10.0.0.1
+    port 26379
+    sentinel auth-pass gitlab-redis redis-password-goes-here
+    sentinel monitor gitlab-redis 10.0.0.1 6379 2
+    sentinel down-after-milliseconds gitlab-redis 10000
+    sentinel failover_timeout 30000
+    ```
 
-```conf
-bind 10.0.0.2
-port 6379
-requirepass redis-password-goes-here
-masterauth redis-password-goes-here
+1. Restart the Redis service for the changes to take effect.
 
-# IP and port of the master Redis server
-slaveof 10.0.0.1 6379
-```
+### Example configuration for Redis slave 1 and Sentinel 2
 
-**Example configation for Slave 2 - `redis.conf`:**
+1. In `/etc/redis/redis.conf`:
 
-```conf
-bind 10.0.0.3
-port 6379
-requirepass redis-password-goes-here
-masterauth redis-password-goes-here
+    ```conf
+    bind 10.0.0.2
+    port 6379
+    requirepass redis-password-goes-here
+    masterauth redis-password-goes-here
+    slaveof 10.0.0.1 6379
+    ```
 
-# IP and port of the master Redis server
-slaveof 10.0.0.1 6379
-```
+1. In `/etc/redis/sentinel.conf`:
 
-### Configuring Redis Sentinel
+    ```conf
+    bind 10.0.0.2
+    port 26379
+    sentinel auth-pass gitlab-redis redis-password-goes-here
+    sentinel monitor gitlab-redis 10.0.0.1 6379 2
+    sentinel down-after-milliseconds gitlab-redis 10000
+    sentinel failover_timeout 30000
+    ```
 
-For this example, **Sentinel 1** will be configured in the same machine as the
-**Redis Master**, **Sentinel 2** and **Sentinel 3** in the same machines as the
-**Slave 1** and **Slave 2** respectively.
+1. Restart the Redis service for the changes to take effect.
 
-**Example configation for Sentinel 1 - `sentinel.conf`:**
+### Example configuration for Redis slave 2 and Sentinel 3
 
-```conf
-bind 10.0.0.1
-port 26379
-sentinel auth-pass gitlab-redis redis-password-goes-here
-sentinel monitor gitlab-redis 10.0.0.1 6379 2
-sentinel down-after-milliseconds gitlab-redis 10000
-sentinel failover_timeout 30000
-```
+1. In `/etc/redis/redis.conf`:
 
-**Example configation for Sentinel 2 - `sentinel.conf`:**
+    ```conf
+    bind 10.0.0.3
+    port 6379
+    requirepass redis-password-goes-here
+    masterauth redis-password-goes-here
+    slaveof 10.0.0.1 6379
+    ```
 
-```conf
-bind 10.0.0.2
-port 26379
-sentinel auth-pass gitlab-redis redis-password-goes-here
-sentinel monitor gitlab-redis 10.0.0.1 6379 2
-sentinel down-after-milliseconds gitlab-redis 10000
-sentinel failover_timeout 30000
-```
+1. In `/etc/redis/sentinel.conf`:
 
-**Example configation for Sentinel 3 - `sentinel.conf`:**
+    ```conf
+    bind 10.0.0.3
+    port 26379
+    sentinel auth-pass gitlab-redis redis-password-goes-here
+    sentinel monitor gitlab-redis 10.0.0.1 6379 2
+    sentinel down-after-milliseconds gitlab-redis 10000
+    sentinel failover_timeout 30000
+    ```
 
-```conf
-bind 10.0.0.3
-port 26379
-sentinel auth-pass gitlab-redis redis-password-goes-here
-sentinel monitor gitlab-redis 10.0.0.1 6379 2
-sentinel down-after-milliseconds gitlab-redis 10000
-sentinel failover_timeout 30000
-```
+1. Restart the Redis service for the changes to take effect.
+
+### Example configuration of the GitLab application
+
+1. Edit `/home/git/gitlab/config/resque.yml`:
+
+    ```yaml
+    production:
+      url: redis://:redi-password-goes-here@gitlab-redis/
+      sentinels:
+        -
+          host: 10.0.0.1
+          port: 26379 # point to sentinel, not to redis port
+        -
+          host: 10.0.0.2
+          port: 26379 # point to sentinel, not to redis port
+        -
+          host: 10.0.0.3
+          port: 26379 # point to sentinel, not to redis port
+    ```
+
+1. [Restart GitLab][restart] for the changes to take effect.
 
 ## Troubleshooting
 
