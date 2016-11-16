@@ -10,7 +10,7 @@ describe AnalyticsGenericSerializer do
   let(:user) { create(:user) }
   let(:json) { serializer.as_json }
   let(:project) { create(:project) }
-  let(:resource) {
+  let(:resource) do
     {
       total_time: "172802.724419",
       title: "Eos voluptatem inventore in sed.",
@@ -19,7 +19,7 @@ describe AnalyticsGenericSerializer do
       created_at: "2016-11-12 15:04:02.948604",
       author: user,
     }
-  }
+  end
 
   context 'when there is a single object provided' do
     it 'it generates payload for single object' do

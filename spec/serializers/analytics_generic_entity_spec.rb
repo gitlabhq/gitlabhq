@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe AnalyticsGenericEntity do
   let(:user) { create(:user) }
-  let(:entity_hash) {
+  let(:entity_hash) do
     {
       total_time: "172802.724419",
       title: "Eos voluptatem inventore in sed.",
@@ -11,7 +11,7 @@ describe AnalyticsGenericEntity do
       created_at: "2016-11-12 15:04:02.948604",
       author: user,
     }
-  }
+  end
 
   let(:project) { create(:empty_project) }
   let(:request) { EntityRequest.new(project: project, entity: :merge_request) }

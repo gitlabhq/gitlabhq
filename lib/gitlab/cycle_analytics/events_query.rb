@@ -11,7 +11,6 @@ module Gitlab
 
       def execute(stage, &block)
         @stage = stage
-        @config = QueryConfig.get(stage)
         query = build_query(&block)
 
         ActiveRecord::Base.connection.exec_query(query.to_sql)
@@ -21,21 +20,21 @@ module Gitlab
 
       def build_query
         base_query = base_query_for(@stage)
-        diff_fn = subtract_datetimes_diff(@config[:base_query], @config[:start_time_attrs], @config[:end_time_attrs])
+        diff_fn = subtract_datetimes_diff(base_query, stage_class.start_time_attrs, stage_class.end_time_attrs)
 
-        yield base_query if block_given?
+        yield(stage_class, base_query) if block_given?
 
-        base_query.project(extract_epoch(diff_fn).as('total_time'), *@config[:projections]).order(order.desc)
-      end
-
-      def order
-        @config[:order] || @config[:start_time_attrs]
+        base_query.project(extract_epoch(diff_fn).as('total_time'), *stage_class.projections).order(stage_class.order.desc)
       end
 
       def extract_epoch(arel_attribute)
         return arel_attribute unless Gitlab::Database.postgresql?
 
         Arel.sql(%Q{EXTRACT(EPOCH FROM (#{arel_attribute.to_sql}))})
+      end
+
+      def stage_class
+        @stage_class ||= "Gitlab::CycleAnalytics::#{@stage.to_s.camelize}Config".constantize
       end
     end
   end

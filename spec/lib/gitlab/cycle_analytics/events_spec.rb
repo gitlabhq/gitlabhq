@@ -9,6 +9,8 @@ describe Gitlab::CycleAnalytics::Events do
   subject { described_class.new(project: project, options: { from: from_date }) }
 
   before do
+    allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([context])
+
     setup(context)
   end
 
@@ -317,6 +319,8 @@ describe Gitlab::CycleAnalytics::Events do
   def setup(context)
     milestone = create(:milestone, project: project)
     context.update(milestone: milestone)
-    create_merge_request_closing_issue(context)
+    mr = create_merge_request_closing_issue(context)
+
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.sha)
   end
 end

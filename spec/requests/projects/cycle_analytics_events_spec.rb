@@ -12,6 +12,8 @@ describe 'cycle analytics events' do
       deploy_master
 
       login_as(user)
+
+      allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([context])
     end
 
     it 'lists the issue events' do
@@ -143,6 +145,6 @@ describe 'cycle analytics events' do
 
     merge_merge_requests_closing_issue(issue)
 
-    Issue::Metrics.update_all(first_mentioned_in_commit_at: mr.commits.last.committed_date)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.sha)
   end
 end
