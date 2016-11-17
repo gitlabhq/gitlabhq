@@ -51,7 +51,7 @@
 
           <ul class="dropdown-menu dropdown-menu-align-right">
             <li v-for="action in actions">
-              <a :href="action.play_url" data-method="post" rel="nofollow" class="js-manual-action-link">
+              <a :href="action.play_path" data-method="post" rel="nofollow" class="js-manual-action-link">
               <span class="action-play-icon-container">
                 <!-- svg goes here -->
               </span>

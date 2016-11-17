@@ -168,7 +168,7 @@
           return this.model.last_deployment.manual_actions.map((action) => {
             const parsedAction = {
               name: gl.text.humanize(action.name),
-              play_url: action.play_url,
+              play_path: action.play_path,
             };
             return parsedAction;
           });
@@ -224,8 +224,8 @@
       commitUrl() {
         if (this.model.last_deployment &&
           this.model.last_deployment.commit &&
-          this.model.last_deployment.commit.commit_url) {
-          return this.model.last_deployment.commit.commit_url;
+          this.model.last_deployment.commit.commit_path) {
+          return this.model.last_deployment.commit.commit_path;
         }
         return undefined;
       },
@@ -274,15 +274,15 @@
       },
 
       /**
-       * Verifies if the `retry_url` key is present and returns its value.
+       * Verifies if the `retry_path` key is present and returns its value.
        *
        * @returns {String|Undefined}
        */
       retryUrl() {
         if (this.model.last_deployment &&
           this.model.last_deployment.deployable &&
-          this.model.last_deployment.deployable.retry_url) {
-          return this.model.last_deployment.deployable.retry_url;
+          this.model.last_deployment.deployable.retry_path) {
+          return this.model.last_deployment.deployable.retry_path;
         }
         return undefined;
       },
@@ -355,7 +355,7 @@
           <a
             v-if="!isFolder"
             class="environment-name"
-            :href="model.environment_url"
+            :href="model.environment_path"
             v-html="model.name">
           </a>
           <span v-else v-on:click="toggleRow(model)" class="folder-name">
@@ -390,7 +390,7 @@
         <td>
           <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
             class="build-link"
-            :href="model.last_deployment.deployable.build_url"
+            :href="model.last_deployment.deployable.build_path"
             v-html="buildName">
           </a>
         </td>
@@ -435,7 +435,7 @@
 
             <div v-if="isStoppable && canCreateDeployment" class="inline js-stop-component-container">
               <stop-component
-                :stop_url="model.environment_url">
+                :stop_url="model.environment_path">
               </stop-component>
             </div>
 
