@@ -233,7 +233,7 @@
       width: 100%;
       text-align: center;
       padding-bottom: 10px;
-      color: #999;
+      color: $sidebar-collapsed-icon-color;
 
       span {
         display: block;
@@ -252,7 +252,7 @@
         }
 
         i {
-          color: #999;
+          color: $sidebar-collapsed-icon-color;
         }
       }
     }
@@ -412,15 +412,17 @@
   padding-bottom: 0;
   border-bottom: 0;
 
-  > .stopwatch-svg {
-    display: none;
-  }
 
   .sidebar-collapsed-icon {
+
+    > .stopwatch-svg {
+      display: inline-block;
+    }
+
     svg {
       width: 16px;
       height: 16px;
-      fill: #999;
+      fill: $sidebar-collapsed-icon-color;
     }
   }
 

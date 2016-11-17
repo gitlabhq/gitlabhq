@@ -1,5 +1,5 @@
 //= require vue
-//= lib/utils/pretty_time
+//= require lib/utils/pretty_time
 
 (() => {
   const PrettyTime = gl.PrettyTime;
@@ -77,7 +77,7 @@
       }
     },
     template: `
-        <div class='time-tracking-component-wrap' v-cloak>
+        <div class='time_tracker time-tracking-component-wrap' v-cloak>
           <div class='sidebar-collapsed-icon'>
             <slot name='stopwatch'></slot>
             <div class='time-tracking-collapsed-summary'>
