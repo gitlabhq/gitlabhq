@@ -30,7 +30,7 @@ describe SearchHelper do
         options: { highlight: true }
       )[:blobs][:results][0]
 
-      parsed_result = helper.parse_search_result_from_elastic(result)
+      parsed_result = helper.parse_search_result(result)
 
       expect(parsed_result.ref). to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
       expect(parsed_result.filename).to eq('files/ruby/popen.rb')
