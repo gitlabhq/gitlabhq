@@ -426,7 +426,8 @@
     }
   }
 
-  .help-button, .close-help-button {
+  .help-button,
+  .close-help-button {
     cursor: pointer;
   }
 
@@ -439,11 +440,12 @@
 
     &.over_estimate {
       .meter-fill {
-        background: $red-light ;
+        background: $red-light;
       }
 
-      .time-remaining, .compare-value.spent {
-        color: $red-light ;
+      .time-remaining,
+      .compare-value.spent {
+        color: $red-light;
       }
     }
   }
@@ -485,5 +487,5 @@
     a:hover {
       color: $btn-white-active;
     }
-  }  
+  }
 }
