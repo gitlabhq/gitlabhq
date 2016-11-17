@@ -20,10 +20,18 @@ module Gitlab
       end
 
       def execute
+        # The ordering of importing is important here due to the way GitHub structures their data
+        # 1. Labels are required by other items while not having a dependency on anything else
+        # so need to be first
+        # 2. Pull requests must come before issues. Every pull request is also an issue but not
+        # all issues are pull requests. Only the issue entity has labels defined in GitHub. GitLab
+        # doesn't structure data like this so we need to make sure that we've created the MRs
+        # before we attempt to add the labels defined in the GitHub issue for the related, already
+        # imported, pull request
         import_labels
         import_milestones
-        import_issues
         import_pull_requests
+        import_issues
         import_comments(:issues)
         import_comments(:pull_requests)
         import_wiki
@@ -79,13 +87,17 @@ module Gitlab
           issues.each do |raw|
             gh_issue = IssueFormatter.new(project, raw)
 
-            if gh_issue.valid?
-              begin
-                issue = gh_issue.create!
-                apply_labels(issue, raw)
-              rescue => e
-                errors << { type: :issue, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
-              end
+            begin
+              issuable =
+                if gh_issue.pull_request?
+                  MergeRequest.find_by_iid(gh_issue.number)
+                else
+                  gh_issue.create!
+                end
+
+              apply_labels(issuable, raw)
+            rescue => e
+              errors << { type: :issue, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
             end
           end
         end
@@ -101,8 +113,7 @@ module Gitlab
               restore_source_branch(pull_request) unless pull_request.source_branch_exists?
               restore_target_branch(pull_request) unless pull_request.target_branch_exists?
 
-              merge_request = pull_request.create!
-              apply_labels(merge_request, raw)
+              pull_request.create!
             rescue => e
               errors << { type: :pull_request, url: Gitlab::UrlSanitizer.sanitize(pull_request.url), errors: e.message }
             ensure
@@ -133,21 +144,14 @@ module Gitlab
         remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
       end
 
-      def apply_labels(issuable, raw_issuable)
-        # GH returns labels for issues but not for pull requests!
-        labels = if issuable.is_a?(MergeRequest)
-                   client.labels_for_issue(repo, raw_issuable.number)
-                 else
-                   raw_issuable.labels
-                 end
+      def apply_labels(issuable, raw)
+        return unless raw.labels.count > 0
 
-        if labels.count > 0
-          label_ids = labels
-            .map { |attrs| @labels[attrs.name] }
-            .compact
+        label_ids = raw.labels
+          .map { |attrs| @labels[attrs.name] }
+          .compact
 
-          issuable.update_attribute(:label_ids, label_ids)
-        end
+        issuable.update_attribute(:label_ids, label_ids)
       end
 
       def import_comments(issuable_type)
