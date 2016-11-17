@@ -64,7 +64,6 @@ feature 'Environment', :feature do
           given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
 
           scenario 'does show a play button' do
-
             expect(page).to have_link(manual.name.humanize)
           end
 
