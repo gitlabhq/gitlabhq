@@ -74,24 +74,31 @@ feature 'Environments', feature: true, js: true do
         context 'with build and manual actions' do
           given(:pipeline) { create(:ci_pipeline, project: project) }
           given(:build) { create(:ci_build, pipeline: pipeline) }
-          given(:deployment) { create(:deployment, environment: environment, deployable: build) }
-          given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
+
+          given(:manual) do
+            create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production')
+          end
+
+          given(:deployment) do
+            create(:deployment, environment: environment,
+                                deployable: build,
+                                sha: project.commit.id)
+          end
 
           scenario 'does show a play button' do
             find('.dropdown-play-icon-container').click
             expect(page).to have_content(manual.name.humanize)
           end
 
-          scenario 'does allow to play manual action' do
+          scenario 'does allow to play manual action', js: true do
             expect(manual).to be_skipped
 
             find('.dropdown-play-icon-container').click
-            play_action = find('span', text: manual.name.humanize)
-
             expect(page).to have_content(manual.name.humanize)
-            expect { play_action.click }.not_to change { Ci::Pipeline.count }
 
-            # TODO, fix me!
+            expect { click_link(manual.name.humanize) }
+              .not_to change { Ci::Pipeline.count }
+
             expect(manual.reload).to be_pending
           end
 
