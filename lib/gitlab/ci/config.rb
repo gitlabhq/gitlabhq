@@ -13,7 +13,7 @@ module Gitlab
       def initialize(config)
         @config = Loader.new(config).load!
 
-        @global = Node::Global.new(@config)
+        @global = Entry::Global.new(@config)
         @global.compose!
       end
 

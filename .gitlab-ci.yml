@@ -61,20 +61,33 @@ update-knapsack:
     - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
     - rm -f knapsack/*_node_*.json
   only:
-    - master
-
-# Execute all testing suites
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
 
 .use-db: &use-db
   services:
     - mysql:latest
     - redis:alpine
 
+setup-test-env:
+  <<: *use-db
+  stage: prepare
+  script:
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+  artifacts:
+    expire_in: 7d
+    paths:
+      - public/assets
+      - tmp/tests
+
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
   <<: *use-db
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -92,7 +105,6 @@ update-knapsack:
   stage: test
   <<: *use-db
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -143,7 +155,10 @@ spinach 9 10: *spinach-knapsack
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   cache:
     key: "ruby21"
     paths:
@@ -286,7 +301,10 @@ bundler:audit:
   stage: test
   <<: *ruby-static-analysis
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
@@ -297,6 +315,9 @@ migration paths:
     SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   script:
     - git checkout HEAD .
     - git fetch --tags

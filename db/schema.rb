@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161106185620) do
+ActiveRecord::Schema.define(version: 20161109150329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,9 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
@@ -721,7 +724,7 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.string "avatar"
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
-    t.boolean "request_access_enabled", default: true, null: false
+    t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
     t.boolean "lfs_enabled"
     t.text "description_html"
@@ -909,11 +912,11 @@ ActiveRecord::Schema.define(version: 20161106185620) do
     t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
-    t.boolean "request_access_enabled", default: true, null: false
+    t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
     t.boolean "lfs_enabled"
     t.text "description_html"
-    t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
+    t.boolean "only_allow_merge_if_all_discussions_are_resolved"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

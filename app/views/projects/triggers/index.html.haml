@@ -76,6 +76,16 @@
               script:
                 - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
         %h5.prepend-top-default
+          Use webhook
+
+        %p.light
+          Add the following webhook to another project for Push and Tag push events.
+          The project will be rebuilt at the corresponding event.
+
+        %pre
+          :plain
+             #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN
+        %h5.prepend-top-default
           Pass build variables
 
         %p.light
@@ -83,10 +93,18 @@
           %code variables[VARIABLE]=VALUE
           to an API request. Variable values can be used to distinguish between triggered builds and normal builds.
 
-        %pre.append-bottom-0
+          With cURL:
+
+        %pre
           :plain
             curl -X POST \
                  -F token=TOKEN \
                  -F "ref=REF_NAME" \
                  -F "variables[RUN_NIGHTLY_BUILD]=true" \
                  #{builds_trigger_url(@project.id)}
+        %p.light
+          With webhook:
+
+        %pre.append-bottom-0
+          :plain
+             #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN&variables[RUN_NIGHTLY_BUILD]=true

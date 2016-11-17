@@ -67,4 +67,14 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content('Source branch "non-exist-source" does not exist')
     expect(page).to have_content('Target branch "non-exist-target" does not exist')
   end
+
+  context 'when a branch contains commits that both delete and add the same image' do
+    it 'renders the diff successfully' do
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'deleted-image-test' })
+
+      click_link "Changes"
+
+      expect(page).to have_content "6049019_460s.jpg"
+    end
+  end
 end

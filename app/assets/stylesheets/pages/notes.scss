@@ -141,6 +141,22 @@ ul.notes {
   }
 }
 
+.page-sidebar-pinned.right-sidebar-expanded {
+  @media (max-width: $screen-lg-min) {
+    .note-header {
+      .note-headline-light {
+        display: block;
+      }
+
+      .note-actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+  }
+}
+
 // Diff code in discussion view
 .discussion-body .diff-file {
   .file-title {

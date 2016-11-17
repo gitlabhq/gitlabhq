@@ -42,7 +42,7 @@ class Projects::BlobController < Projects::ApplicationController
     after_edit_path =
       if from_merge_request && @target_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
-          "#file-path-#{hexdigest(@path)}"
+          "##{hexdigest(@path)}"
       else
         namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
       end

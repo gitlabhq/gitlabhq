@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, no-plusplus, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, semi, no-return-assign, no-else-return, camelcase, no-undef, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, padded-blocks, prefer-template, no-param-reassign, no-loop-func, no-extra-semi, keyword-spacing, no-mixed-operators, max-len */
 (function() {
   var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
@@ -249,7 +249,7 @@
                 _this.fullData = data;
                 _this.parseData(_this.fullData);
                 _this.focusTextInput();
-                if (_this.options.filterable && _this.filter && _this.filter.input) {
+                if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val().trim() !== '') {
                   return _this.filter.input.trigger('input');
                 }
               };

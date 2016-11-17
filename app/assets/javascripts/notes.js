@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, no-undef, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, semi, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks, max-len */
 
 /*= require autosave */
 /*= require autosize */
@@ -325,8 +325,8 @@
         discussionContainer.append(note_html);
       }
 
-      if (typeof DiffNotesApp !== 'undefined') {
-        DiffNotesApp.compileComponents();
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+        gl.diffNotesCompileComponents();
       }
 
       gl.utils.localTimeAgo($('.js-timeago', note_html), false);
@@ -466,8 +466,8 @@
 
       $note_li.replaceWith($html);
 
-      if (typeof DiffNotesApp !== 'undefined') {
-        DiffNotesApp.compileComponents();
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+        gl.diffNotesCompileComponents();
       }
     };
 
@@ -559,11 +559,9 @@
           note = $(el);
           notes = note.closest(".notes");
 
-          if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
-            ref = DiffNotesApp.$refs[noteId];
-
-            if (ref) {
-              ref.$destroy(true);
+          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+            if (gl.diffNoteApps[noteId]) {
+              gl.diffNoteApps[noteId].$destroy();
             }
           }
 
@@ -643,11 +641,12 @@
       form.find('.js-note-target-close').remove();
       this.setupNoteForm(form);
 
-      if (typeof DiffNotesApp !== 'undefined') {
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
-        DiffNotesApp.$compile($commentBtn.get(0));
+
+        gl.diffNotesCompileComponents();
       }
 
       form.find(".js-note-text").focus();

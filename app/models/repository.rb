@@ -15,16 +15,6 @@ class Repository
     Gitlab.config.repositories.storages
   end
 
-  def self.remove_storage_from_path(repo_path)
-    storages.find do |_, storage_path|
-      if repo_path.start_with?(storage_path)
-        return repo_path.sub(storage_path, '')
-      end
-    end
-
-    repo_path
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -243,7 +233,7 @@ class Repository
     # offer 'compare and swap' ref updates. Without compare-and-swap we can
     # (and have!) accidentally reset the ref to an earlier state, clobbering
     # commits. See also https://github.com/libgit2/libgit2/issues/1534.
-    command = %w[git update-ref --stdin -z]
+    command = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
     _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
       stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
     end
@@ -631,7 +621,7 @@ class Repository
     @head_tree ||= Tree.new(self, head_commit.sha, nil)
   end
 
-  def tree(sha = :head, path = nil)
+  def tree(sha = :head, path = nil, recursive: false)
     if sha == :head
       if path.nil?
         return head_tree
@@ -640,7 +630,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path)
+    Tree.new(self, sha, path, recursive: recursive)
   end
 
   def blob_at_branch(branch_name, path)
@@ -1063,14 +1053,23 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-  def search_files(query, ref)
-    unless exists? && has_visible_content? && query.present?
-      return []
-    end
+  def empty_repo?
+    !exists? || !has_visible_content?
+  end
+
+  def search_files_by_content(query, ref)
+    return [] if empty_repo? || query.blank?
 
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+  end
+
+  def search_files_by_name(query, ref)
+    return [] if empty_repo? || query.blank?
+
+    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

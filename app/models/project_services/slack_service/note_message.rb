@@ -46,25 +46,25 @@ class SlackService
       commit_sha = commit[:id]
       commit_sha = Commit.truncate_sha(commit_sha)
       commented_on_message(
-        "[commit #{commit_sha}](#{@note_url})",
+        "commit #{commit_sha}",
         format_title(commit[:message]))
     end
 
     def create_issue_note(issue)
       commented_on_message(
-        "[issue ##{issue[:iid]}](#{@note_url})",
+        "issue ##{issue[:iid]}",
         format_title(issue[:title]))
     end
 
     def create_merge_note(merge_request)
       commented_on_message(
-        "[merge request !#{merge_request[:iid]}](#{@note_url})",
+        "merge request !#{merge_request[:iid]}",
         format_title(merge_request[:title]))
     end
 
     def create_snippet_note(snippet)
       commented_on_message(
-        "[snippet ##{snippet[:id]}](#{@note_url})",
+        "snippet ##{snippet[:id]}",
         format_title(snippet[:title]))
     end
 
@@ -76,8 +76,8 @@ class SlackService
       "[#{@project_name}](#{@project_url})"
     end
 
-    def commented_on_message(target_link, title)
-      @message = "#{@user_name} commented on #{target_link} in #{project_link}: *#{title}*"
+    def commented_on_message(target, title)
+      @message = "#{@user_name} [commented on #{target}](#{@note_url}) in #{project_link}: *#{title}*"
     end
   end
 end

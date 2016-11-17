@@ -7,6 +7,40 @@ describe HelpController do
     sign_in(user)
   end
 
+  describe 'GET #index' do
+    context 'when url prefixed without /help/' do
+      it 'has correct url prefix' do
+        stub_readme("[API](api/README.md)")
+        get :index
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md)'
+      end
+    end
+
+    context 'when url prefixed with help/' do
+      it 'will be an absolute path' do
+        stub_readme("[API](help/api/README.md)")
+        get :index
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md)'
+      end
+    end
+
+    context 'when url prefixed with help' do
+      it 'will be an absolute path' do
+        stub_readme("[API](helpful_hints/README.md)")
+        get :index
+        expect(assigns[:help_index]).to eq '[API](/help/helpful_hints/README.md)'
+      end
+    end
+
+    context 'when url prefixed with /help/' do
+      it 'will not be changed' do
+        stub_readme("[API](/help/api/README.md)")
+        get :index
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md)'
+      end
+    end
+  end
+
   describe 'GET #show' do
     context 'for Markdown formats' do
       context 'when requested file exists' do
@@ -71,5 +105,9 @@ describe HelpController do
         expect(response).to have_http_status(200)
       end
     end
+  end
+
+  def stub_readme(content)
+    allow(File).to receive(:read).and_return(content)
   end
 end

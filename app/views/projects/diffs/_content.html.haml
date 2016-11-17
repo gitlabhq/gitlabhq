@@ -9,7 +9,7 @@
     - if !project.repository.diffable?(blob)
       .nothing-here-block This diff was suppressed by a .gitattributes entry.
     - elsif diff_file.collapsed?
-      - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path))
+      - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
       .nothing-here-block.diff-collapsed{data: { diff_for_path: url } }
         This diff is collapsed.
         %a.click-to-expand
@@ -25,7 +25,7 @@
       - elsif diff_file.renamed_file
         .nothing-here-block File moved
   - elsif blob.image?
-    - old_blob = diff_file.old_blob(diff_commit)
+    - old_blob = diff_file.old_blob(diff_file.old_content_commit || @base_commit)
     = render "projects/diffs/image", diff_file: diff_file, old_file: old_blob, file: blob
   - else
     .nothing-here-block No preview for this file type

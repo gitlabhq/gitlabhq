@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, no-undef, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, padded-blocks, max-len */
 (function() {
   this.Api = {
     groupsPath: "/api/:version/groups.json",

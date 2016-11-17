@@ -30,6 +30,8 @@
           });
         });
 
+        Store.state.lists = _.sortBy(Store.state.lists, 'position');
+
         // Save the labels
         gl.boardService.generateDefaultLists()
           .then((resp) => {
