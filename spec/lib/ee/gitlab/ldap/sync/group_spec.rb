@@ -126,7 +126,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     end
 
     let(:group) do
-      create(:group_with_ldap_group_link,
+      create(:group_with_ldap_group_link, :access_requestable,
              cn: 'ldap_group1',
              group_access: ::Gitlab::Access::DEVELOPER)
     end
