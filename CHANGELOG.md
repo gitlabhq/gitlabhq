@@ -129,6 +129,7 @@ entry.
 
 ## 8.13.6 (2016-11-17)
 
+- No changes.
 - Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
 - Fix no "Register" tab if ldap auth is enabled (#24038). !7274 (Luc Didry)
 - Fix cache for commit status in commits list to respect branches. !7372
