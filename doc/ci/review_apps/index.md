@@ -31,7 +31,16 @@ In the image above you can see that the `add-new-line` branch was successfully
 built and deployed under a dynamic environment and can be previewed with an
 also dynamically URL.
 
----
+The details of the Review Apps implementation depend widely on your real
+technology stack and on your deployment process. The simplest case it to
+deploy a simple static HTML website, but it will not be that straightforward
+when your app is using a database for example. To make a branch be deployed
+on a temporary instance and booting up this instance with all required software
+and services automatically on the fly is not a trivial task. However, it is
+doable, especially if you use Docker, or at least a configuration management
+tool like Chef, Puppet, Ansible or Salt.
+
+## Prerequisites
 
 To get a better understanding of Review Apps, you must first learn how
 environments and deployments work. The following docs will help you grasp that
@@ -51,11 +60,15 @@ knowledge:
 
 ## Configuration
 
-For configuration examples see the [dynamic environments] documentation.
+The configuration of Review apps depends on your technology stack and your
+infrastructure. Read the [dynamic environments] documentation to understand
+how to define and create them.
 
 ## Creating and destroying Review Apps
 
-The creation and destruction of a Review App is defined in `.gitlab-ci.yml`.
+The creation and destruction of a Review App is defined in `.gitlab-ci.yml`
+at a job level under the `environment` keyword.
+
 Check the [environments] documentation how to do so.
 
 ## A simple workflow
@@ -63,11 +76,12 @@ Check the [environments] documentation how to do so.
 The process of adding Review Apps in your workflow would look like:
 
 1. Set up the infrastructure to host and deploy the Review Apps.
-1. Install and configure a Runner that does the deployment.
+1. [Install][install-runner] and [configure][conf-runner] a Runner that does
+   the deployment.
 1. Set up a job in `.gitlab-ci.yml` that uses the predefined
    [predefined CI environment variable][variables] `${CI_BUILD_REF_NAME}` to
    create dynamic environments and restrict it to run only on branches.
-1. Optionally set a job that stops the Review Apps.
+1. Optionally set a job that [manually stops][manual-env] the Review Apps.
 
 From there on, you would follow the branched Git flow:
 
@@ -115,3 +129,6 @@ And below is a soon to be added examples list:
 [merge request]: ../../user/project/merge_requests.md
 [variables]: ../variables/README.md
 [yaml-env]: ../yaml/README.md#environment
+[install-runner]: https://docs.gitlab.com/runner/install/
+[conf-runner]: https://docs.gitlab.com/runner/commands/
+[manual-env]: ../environments.md#stopping-an-environment
