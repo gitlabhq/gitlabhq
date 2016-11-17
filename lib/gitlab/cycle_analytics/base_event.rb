@@ -1,26 +1,36 @@
 module Gitlab
   module CycleAnalytics
     class BaseEvent
-      extend MetricsTables
+      include MetricsTables
 
-      class << self
-        attr_reader :stage, :start_time_attrs, :end_time_attrs, :projections
+      attr_reader :stage, :start_time_attrs, :end_time_attrs, :projections, :query
 
-        def order
-          @order || @start_time_attrs
+      def initialize(project:, options:)
+        @query = EventsQuery.new(project: project, options: options)
+        @project = project
+        @options = options
+      end
+
+      def fetch
+        @query.execute(self).map do |event|
+          serialize(event) if has_permission?(event['id'])
         end
+      end
 
-        def query(_base_query); end
+      def custom_query(_base_query); end
 
-        def fetch(query)
-          query.execute(self).map { |event| serialize(event, query) }
-        end
+      def order
+        @order || @start_time_attrs
+      end
 
-        private
+      private
 
-        def serialize(_event, _query)
-          raise NotImplementedError.new("Expected #{self.name} to implement serialize(event, query)")
-        end
+      def serialize(_event)
+        raise NotImplementedError.new("Expected #{self.name} to implement serialize(event)")
+      end
+
+      def has_permission?(_id)
+        true
       end
     end
   end

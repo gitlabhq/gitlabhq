@@ -22,7 +22,7 @@ module Gitlab
         base_query = @fetcher.base_query_for(@stage_class.stage)
         diff_fn = @fetcher.subtract_datetimes_diff(base_query, @stage_class.start_time_attrs, @stage_class.end_time_attrs)
 
-        @stage_class.query(base_query)
+        @stage_class.custom_query(base_query)
 
         base_query.project(extract_epoch(diff_fn).as('total_time'), *@stage_class.projections).order(@stage_class.order.desc)
       end

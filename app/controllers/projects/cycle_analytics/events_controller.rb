@@ -50,7 +50,7 @@ module Projects
       end
     
       def options
-        @options ||= { from: start_date(events_params) }
+        @options ||= { from: start_date(events_params), current_user: current_user }
       end
     
       def events_params

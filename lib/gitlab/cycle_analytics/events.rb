@@ -3,35 +3,35 @@ module Gitlab
     class Events
       def initialize(project:, options:)
         @project = project
-        @query = EventsQuery.new(project: project, options: options)
+        @options = options
       end
 
       def issue_events
-        IssueEvent.fetch(@query)
+        IssueEvent.new(project: @project, options: @options).fetch
       end
 
       def plan_events
-        PlanEvent.fetch(@query)
+        PlanEvent.new(project: @project, options: @options).fetch
       end
 
       def code_events
-        CodeEvent.fetch(@query)
+        CodeEvent.new(project: @project, options: @options).fetch
       end
 
       def test_events
-        TestEvent.fetch(@query)
+        TestEvent.new(project: @project, options: @options).fetch
       end
 
       def review_events
-        ReviewEvent.fetch(@query)
+        ReviewEvent.new(project: @project, options: @options).fetch
       end
 
       def staging_events
-        StagingEvent.fetch(@query)
+        StagingEvent.new(project: @project, options: @options).fetch
       end
 
       def production_events
-        ProductionEvent.fetch(@query)
+        ProductionEvent.new(project: @project, options: @options).fetch
       end
     end
   end
