@@ -17,27 +17,6 @@ If you're not sure whether this guide is for you, please refer to
 [Available configuration setups](redis.md#available-configuration-setups) in
 the Omnibus Redis HA documentation.
 
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-- [Configuring your own Redis server](#configuring-your-own-redis-server)
-  - [Prerequisites](#prerequisites)
-  - [Step 1. Configuring the master Redis instance](#step-1-configuring-the-master-redis-instance)
-  - [Step 2. Configuring the slave Redis instances](#step-2-configuring-the-slave-redis-instances)
-  - [Step 3. Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances)
-  - [Step 4. Configuring the GitLab application](#step-4-configuring-the-gitlab-application)
-- [Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels](#example-of-minimal-configuration-with-1-master-2-slaves-and-3-sentinels)
-  - [Example configuration for Redis master and Sentinel 1](#example-configuration-for-redis-master-and-sentinel-1)
-  - [Example configuration for Redis slave 1 and Sentinel 2](#example-configuration-for-redis-slave-1-and-sentinel-2)
-  - [Example configuration for Redis slave 2 and Sentinel 3](#example-configuration-for-redis-slave-2-and-sentinel-3)
-  - [Example configuration of the GitLab application](#example-configuration-of-the-gitlab-application)
-- [Troubleshooting](#troubleshooting)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## Configuring your own Redis server
 
 This is the section where we install and setup the new Redis instances.
