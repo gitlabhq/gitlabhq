@@ -479,13 +479,22 @@ fetch line:
 fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 
+## Limitations
+
+- You are limited to use only the [CI predefined variables][variables] in the
+  `environment: name`. Any variables defined inside `script` will not work.
+- If the branch name contains special characters and you use the
+  `$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
+  be complications during deployment. Follow the [issue 22849][ce-22849] for
+  more information.
+
 ## Further reading
 
 Below are some links you may find interesting:
 
 - [The `.gitlab-ci.yml` definition of environments](yaml/README.md#environment)
 - [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
-- [Review Apps](review_apps.md) Expand dynamic environments to deploy your code for every branch
+- [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
 
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
