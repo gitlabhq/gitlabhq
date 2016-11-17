@@ -48,11 +48,9 @@ module Gitlab
         deploy_key.has_access_to?(project)
       elsif user
         user_download_access_check
-      elsif Guest.can?(:download_code, project)
-        true
-      else
-        raise UnauthorizedError, ERROR_MESSAGES[:download]
-      end
+      end ||
+        Guest.can?(:download_code, project) ||
+        raise(UnauthorizedError, ERROR_MESSAGES[:download])
     end
 
     def push_access_check(changes)
