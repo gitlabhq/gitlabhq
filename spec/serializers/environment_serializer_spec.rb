@@ -33,7 +33,7 @@ describe EnvironmentSerializer do
 
     it 'contains important elements of environment' do
       expect(json)
-        .to include(:name, :external_url, :environment_url, :last_deployment)
+        .to include(:name, :external_url, :environment_path, :last_deployment)
     end
 
     it 'contains relevant information about last deployment' do
