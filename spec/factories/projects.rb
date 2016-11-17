@@ -41,6 +41,10 @@ FactoryGirl.define do
       mirror_user_id { creator_id }
     end
 
+    trait :access_requestable do
+      request_access_enabled true
+    end
+
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository

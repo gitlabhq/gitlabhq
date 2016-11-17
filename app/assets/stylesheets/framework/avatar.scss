@@ -34,11 +34,18 @@
 
   &.avatar-inline {
     float: none;
+    display: inline-block;
     margin-left: 4px;
     margin-bottom: 2px;
 
     &.s16 { margin-right: 4px; }
     &.s24 { margin-right: 4px; }
+  }
+
+  &.center {
+    font-size: 14px;
+    line-height: 1.8em;
+    text-align: center;
   }
 
   &.avatar-tile {

@@ -86,7 +86,7 @@ module EventsHelper
     elsif event.merge_request?
       namespace_project_merge_request_url(event.project.namespace,
                                           event.project, event.merge_request)
-    elsif event.note? && event.commit_note?
+    elsif event.commit_note?
       namespace_project_commit_url(event.project.namespace, event.project,
                                    event.note_target)
     elsif event.note?
@@ -127,7 +127,7 @@ module EventsHelper
   end
 
   def event_note_target_path(event)
-    if event.note? && event.commit_note?
+    if event.commit_note?
       namespace_project_commit_path(event.project.namespace,
                                     event.project,
                                     event.note_target,

@@ -57,6 +57,49 @@ module Gitlab
         @milestones_count ||= milestones.total_count
       end
 
+      def self.parse_search_result(result)
+        ref = result["_source"]["blob"]["commit_sha"]
+        filename = result["_source"]["blob"]["path"]
+        extname = File.extname(filename)
+        basename = filename.sub(/#{extname}$/, '')
+        content = result["_source"]["blob"]["content"]
+        total_lines = content.lines.size
+
+        highlighted_content = result["highlight"]["blob.content"]
+        term = highlighted_content && highlighted_content[0].match(/gitlabelasticsearch→(.*?)←gitlabelasticsearch/)[1]
+
+        found_line_number = 0
+
+        content.each_line.each_with_index do |line, index|
+          if term && line.include?(term)
+            found_line_number = index
+            break
+          end
+        end
+
+        from = if found_line_number >= 2
+                 found_line_number - 2
+               else
+                 found_line_number
+               end
+
+        to = if (total_lines - found_line_number) > 3
+               found_line_number + 2
+             else
+               found_line_number
+             end
+
+        data = content.lines[from..to]
+
+        OpenStruct.new(
+          filename: filename,
+          basename: basename,
+          ref: ref,
+          startline: from + 1,
+          data: data.join
+        )
+      end
+
       private
 
       def base_options

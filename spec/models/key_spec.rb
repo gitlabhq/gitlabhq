@@ -71,15 +71,25 @@ describe Key, models: true do
 
   context 'callbacks' do
     it 'adds new key to authorized_file' do
-      @key = build(:personal_key, id: 7)
-      expect(GitlabShellWorker).to receive(:perform_async).with(:add_key, @key.shell_id, @key.key)
-      @key.save
+      key = build(:personal_key, id: 7)
+      expect(GitlabShellWorker).to receive(:perform_async).with(:add_key, key.shell_id, key.key)
+      key.save!
     end
 
     it 'removes key from authorized_file' do
-      @key = create(:personal_key)
-      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, @key.shell_id, @key.key)
-      @key.destroy
+      key = create(:personal_key)
+      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, key.shell_id, key.key)
+      key.destroy
+    end
+  end
+
+  describe '#key=' do
+    let(:valid_key) do
+      "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0= dummy@gitlab.com"
+    end
+
+    it 'strips white spaces' do
+      expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
     end
   end
 end

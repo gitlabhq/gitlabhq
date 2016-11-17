@@ -56,8 +56,7 @@ describe API::API, api: true  do
 
       # inject some properties into the service
       before do
-        project.build_missing_services
-        service_object = project.send(service_method)
+        service_object = project.find_or_initialize_service(service)
         service_object.properties = service_attrs
         service_object.save
       end

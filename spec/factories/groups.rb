@@ -38,5 +38,9 @@ FactoryGirl.define do
         )
       end
     end
+
+    trait :access_requestable do
+      request_access_enabled true
+    end
   end
 end

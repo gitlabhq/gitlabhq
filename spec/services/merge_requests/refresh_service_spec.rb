@@ -302,6 +302,16 @@ describe MergeRequests::RefreshService, services: true do
       end
     end
 
+    context 'when the source branch is deleted' do
+      it 'does not create a MergeRequestDiff record' do
+        refresh_service = service.new(@project, @user)
+
+        expect do
+          refresh_service.execute(@oldrev, Gitlab::Git::BLANK_SHA, 'refs/heads/master')
+        end.not_to change { MergeRequestDiff.count }
+      end
+    end
+
     def reload_mrs
       @merge_request.reload
       @fork_merge_request.reload

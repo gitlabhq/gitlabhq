@@ -63,7 +63,11 @@ header {
         &:focus,
         &:active {
           background-color: $background-color;
-          color: darken($gl-icon-color, 50%);
+          color: darken($gl-icon-color, 30%);
+
+          .todos-pending-count {
+            background: darken($todo-alert-blue, 10%);
+          }
         }
 
         .fa-caret-down {
@@ -194,7 +198,7 @@ header {
         cursor: pointer;
 
         &:hover {
-          color: darken($color: $gl-text-color, $amount: 50%);
+          color: darken($color: $gl-text-color, $amount: 30%);
         }
       }
 
