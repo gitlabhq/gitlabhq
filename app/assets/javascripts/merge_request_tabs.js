@@ -145,7 +145,8 @@
       if (action === 'show') {
         action = 'notes';
       }
-      $(".merge-request-tabs a[data-action='" + action + "']").tab('show').trigger('shown.bs.tab');
+      // important note: the .tab('show') method triggers 'shown.bs.tab' event itself
+      $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
     };
 
     // Replaces the current Merge Request-specific action in the URL with a new one
