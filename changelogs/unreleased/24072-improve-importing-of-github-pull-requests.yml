@@ -1,0 +1,4 @@
+---
+title: Reduce API calls needed when importing issues and pull requests from GitHub
+merge_request: 7241
+author: Andrew Smith (EspadaV8)
