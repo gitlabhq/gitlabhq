@@ -51,11 +51,6 @@
         if (!GitLab.GfmAutoComplete.dataLoaded) {
           return this.at;
         } else {
-          if (value.indexOf("unlabel") !== -1) {
-            GitLab.GfmAutoComplete.input.atwho('load', '~', GitLab.GfmAutoComplete.cachedData.unlabels);
-          } else {
-            GitLab.GfmAutoComplete.input.atwho('load', '~', GitLab.GfmAutoComplete.cachedData.labels);
-          }
           return value;
         }
       }
@@ -363,4 +358,3 @@
   };
 
 }).call(this);
-
