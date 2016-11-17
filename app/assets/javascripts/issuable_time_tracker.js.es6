@@ -1,6 +1,9 @@
 //= require vue
+//= lib/utils/pretty_time
 
 (() => {
+  const PrettyTime = gl.PrettyTime;
+
   gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
     props: ['time_estimate', 'time_spent', 'human_time_estimate', 'human_time_spent'],
@@ -29,25 +32,25 @@
 
       /* Parsed time values */
       parsedEstimate() {
-        return this.parseSeconds(this.time_estimate);
+        return PrettyTime.parseSeconds(this.time_estimate);
       },
       parsedSpent() {
-        return this.parseSeconds(this.time_spent);
+        return PrettyTime.parseSeconds(this.time_spent);
       },
       parsedRemaining() {
         const diffSeconds = this.time_estimate - this.time_spent;
-        return this.parseSeconds(diffSeconds);
+        return PrettyTime.parseSeconds(diffSeconds);
       },
 
       /* Human readable time values */
       estimatedPretty() {
-        return this.human_time_estimate || this.stringifyTime(this.parsedEstimate);
+        return this.human_time_estimate || PrettyTime.stringifyTime(this.parsedEstimate);
       },
       spentPretty() {
-        return this.human_time_spent || this.stringifyTime(this.parsedSpent);
+        return this.human_time_spent || PrettyTime.stringifyTime(this.parsedSpent);
       },
       remainingPretty() {
-        return this.stringifyTime(this.parsedRemaining);
+        return PrettyTime.stringifyTime(this.parsedRemaining);
       },
       remainingTooltipPretty() {
         const prefix = this.diffMinutes < 0 ? 'Over by' : 'Time remaining:';
@@ -66,47 +69,12 @@
       },
     },
     methods: {
-      secondsToMinutes(seconds) {
-        return Math.abs(seconds / 60);
-      },
-      parseSeconds(seconds) {
-        const DAYS_PER_WEEK = 5;
-        const HOURS_PER_DAY = 8;
-        const MINUTES_PER_HOUR = 60;
-        const MINUTES_PER_WEEK = DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
-        const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
-
-        const timePeriodConstraints = {
-          weeks: MINUTES_PER_WEEK,
-          days: MINUTES_PER_DAY,
-          hours: MINUTES_PER_HOUR,
-          minutes: 1,
-        };
-
-        let unorderedMinutes = this.secondsToMinutes(seconds);
-
-        return _.mapObject(timePeriodConstraints, (minutesPerPeriod) => {
-          const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
-
-          unorderedMinutes -= (periodCount * minutesPerPeriod);
-
-          return periodCount;
-        });
-      },
-      abbreviateTime(value) {
-        return value.split(' ')
-          .filter(unitStr => unitStr.charAt(0) !== '0')[0];
-      },
       toggleHelpState(show) {
         this.displayHelp = show;
       },
-      stringifyTime(obj) {
-        const reducedTime = _.reduce(obj, (memo, unitValue, unitName) => {
-          const isNonZero = !!unitValue;
-          return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)} ` : memo;
-        }, '').trim();
-        return reducedTime.length ? reducedTime : '0m';
-      },
+      abbreviateTime(timeStr) {
+        return PrettyTime.abbreviateTime(timeStr);
+      }
     },
     template: `
         <div class='time-tracking-component-wrap' v-cloak>
