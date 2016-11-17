@@ -7,12 +7,22 @@ describe Gitlab::ChatCommands::Command, service: true do
 
   subject { described_class.new(project, user, params).execute }
 
-  xdescribe '#execute' do
-    context 'when issue show is triggered' do
-      it 'calls IssueShowService' do
-        expect_any_instance_of(Mattermost::Commands::IssueShowService).to receive(:new).with(project, user, params)
+  describe '#execute' do
+    context 'when the command is not available' do
+      let(:project) { create(:project, has_external_issue_tracker: true) }
 
-        subject
+      it 'displays the help message' do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to start_with('Available commands')
+      end
+    end
+
+    context 'when an unknown command is triggered' do
+      let(:params) { { text: "unknown command 123" } }
+
+      it 'displays the help message' do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to start_with('Available commands')
       end
     end
   end

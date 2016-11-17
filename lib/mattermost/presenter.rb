@@ -1,6 +1,8 @@
 module Mattermost
   class Presenter
     class << self
+      include Rails.application.routes.url_helpers
+
       def authorize_chat_name(url)
         message = "Hi there! We've yet to get acquainted! Please [introduce yourself](#{url})!"
 
@@ -59,7 +61,7 @@ module Mattermost
         message = "The action was not succesfull because:\n"
         message << resource.errors.messages.map { |message| "- #{message}" }.join("\n")
 
-        ephemeral_response(resource.errors.messages.join("\n")
+        ephemeral_response(resource.errors.messages.join("\n"))
       end
 
       def title(resource)
@@ -67,14 +69,12 @@ module Mattermost
       end
 
       def url(resource)
-        polymorphic_url(
+        url_for(
           [
             resource.project.namespace.becomes(Namespace),
             resource.project,
-           resource 
-          ],
-          id: resource_id,
-          routing_type: :url
+            resource
+          ]
         )
       end
 

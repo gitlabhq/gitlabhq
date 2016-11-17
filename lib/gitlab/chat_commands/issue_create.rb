@@ -1,8 +1,12 @@
 module Gitlab
   module ChatCommands
-    class IssueCreate < BaseCommand
+    class IssueCreate < IssueCommand 
       def self.match(text)
         /\Aissue\s+create\s+(?<title>[^\n]*)\n*(?<description>.*)\z/.match(text)
+      end
+
+      def self.help_message
+        'issue create <title>\n<description>'
       end
 
       def execute(match)
