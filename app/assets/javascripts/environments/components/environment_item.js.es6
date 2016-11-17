@@ -208,8 +208,7 @@
        * @returns {Object|Undefined}
        */
       commitRef() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.ref) {
+        if (this.model.last_deployment && this.model.last_deployment.ref) {
           return this.model.last_deployment.ref;
         }
         return undefined;
@@ -327,10 +326,8 @@
        * @returns {Boolean}
        */
       deploymentHasUser() {
-        if (this.model.last_deployment && this.model.last_deployment.user) {
-          return true;
-        }
-        return false;
+        return !this.$options.isObjectEmpty(this.model.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.last_deployment.user);
       },
 
       /**
@@ -340,10 +337,37 @@
        * @returns {Object}
        */
       deploymentUser() {
-        if (this.model.last_deployment && this.model.last_deployment.user) {
+        if (!this.$options.isObjectEmpty(this.model.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.last_deployment.user)) {
           return this.model.last_deployment.user;
         }
         return {};
+      },
+
+      /**
+       * Verifies if the build name column should be rendered by verifing
+       * if all the information needed is present
+       * and if the environment is not a folder.
+       *
+       * @returns {Boolean}
+       */
+      shouldRenderBuildName() {
+        return !this.isFolder &&
+          !this.$options.isObjectEmpty(this.model.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.last_deployment.deployable);
+      },
+
+      /**
+       * Verifies if deplyment internal ID should be rendered by verifing
+       * if all the information needed is present
+       * and if the environment is not a folder.
+       *
+       * @returns {Boolean}
+       */
+      shouldRenderDeploymentID() {
+        return !this.isFolder &&
+          !this.$options.isObjectEmpty(this.model.last_deployment) &&
+          this.model.last_deployment.iid !== undefined;
       },
     },
 
@@ -385,7 +409,7 @@
 
         <td class="deployment-column">
           <span
-            v-if="!isFolder && model.last_deployment && model.last_deployment.iid"
+            v-if="shouldRenderDeploymentID"
             v-html="deploymentInternalId">
           </span>
 
@@ -401,7 +425,7 @@
         </td>
 
         <td>
-          <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
+          <a v-if="shouldRenderBuildName"
             class="build-link"
             :href="model.last_deployment.deployable.build_path"
             v-html="buildName">
@@ -434,25 +458,29 @@
 
         <td class="hidden-xs">
           <div v-if="!isFolder">
-            <div v-if="hasManualActions && canCreateDeployment" class="inline js-manual-actions-container">
+            <div v-if="hasManualActions && canCreateDeployment"
+              class="inline js-manual-actions-container">
               <actions-component
                 :actions="manualActions">
               </actions-component>
             </div>
 
-            <div v-if="model.external_url && canReadEnvironment" class="inline js-external-url-container">
+            <div v-if="model.external_url && canReadEnvironment"
+              class="inline js-external-url-container">
               <external-url-component
                 :external_url="model.external_url">
               </external_url-component>
             </div>
 
-            <div v-if="isStoppable && canCreateDeployment" class="inline js-stop-component-container">
+            <div v-if="isStoppable && canCreateDeployment"
+              class="inline js-stop-component-container">
               <stop-component
                 :stop_url="model.environment_path">
               </stop-component>
             </div>
 
-            <div v-if="canRetry && canCreateDeployment" class="inline js-rollback-component-container">
+            <div v-if="canRetry && canCreateDeployment"
+              class="inline js-rollback-component-container">
               <rollback-component
                 :is_last_deployment="isLastDeployment"
                 :retry_url="retryUrl">
