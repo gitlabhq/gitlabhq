@@ -43,7 +43,7 @@
               - if environment.last_deployment
                 View the most recent deployment #{deployment_link(environment.last_deployment)}.
           - elsif @build.complete? && !@build.success?
-            The deployment of this build to #{environment_link_for_build(@build.project, @build)} did not complete.
+            The deployment of this build to #{environment_link_for_build(@build.project, @build)} did not succeed.
           - else
             This build is creating a deployment to #{environment_link_for_build(@build.project, @build)}
             - if environment.last_deployment

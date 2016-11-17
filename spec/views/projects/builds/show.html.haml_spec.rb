@@ -40,6 +40,10 @@ describe 'projects/builds/show', :view do
         create(:ci_build, :success, environment: 'staging', pipeline: pipeline)
       end
 
+      let(:second_build) do
+        create(:ci_build, :success, environment: 'staging', pipeline: pipeline)
+      end
+
       let(:environment) do
         create(:environment, name: 'staging', project: project)
       end
@@ -49,12 +53,12 @@ describe 'projects/builds/show', :view do
       end
 
       let!(:second_deployment) do
-        create(:deployment, environment: environment, deployable: build)
+        create(:deployment, environment: environment, deployable: second_build)
       end
 
       it 'shows deployment message' do
         expected_text = 'This build is an out-of-date deployment ' \
-          "to staging.\nView the most recent deployment ##{second_deployment.id}."
+          "to staging.\nView the most recent deployment ##{second_deployment.iid}."
         render
 
         expect(rendered).to have_css('.environment-information', text: expected_text)
@@ -71,7 +75,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'The deployment of this build to staging did not complete.'
+        expected_text = 'The deployment of this build to staging did not succeed.'
         render
 
         expect(rendered).to have_css(
@@ -107,7 +111,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'The deployment of this build to staging did not complete'
+        expected_text = 'The deployment of this build to staging did not succeed'
         render
 
         expect(rendered).to have_css(

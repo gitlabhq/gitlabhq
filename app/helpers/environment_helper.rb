@@ -17,7 +17,7 @@ module EnvironmentHelper
   def deployment_link(deployment)
     return unless deployment
 
-    link_to "##{deployment.id}", [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+    link_to "##{deployment.iid}", [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
   end
 
   def last_deployment_link_for_environment_build(project, build)
