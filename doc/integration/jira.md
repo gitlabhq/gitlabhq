@@ -54,15 +54,18 @@ contains the improvement and in merge request description we say that this
 merge request `Closes PROJECT-7` issue.
 
 Once this merge request is merged, the JIRA issue will be automatically closed
-with a link to the commit that resolved the issue.
+with a comment and a associated link to the commit that resolved the issue.
 
 ![A Git commit that causes the JIRA issue to be closed](img/jira_merge_request_close.png)
 
 ---
 
-![The GitLab integration user leaves a comment on JIRA](img/jira_service_close_issue.png)
+![The GitLab integration closes JIRA issue](img/jira_service_close_issue.png)
 
 ---
+
+![The GitLab integration creates a comment and a link on JIRA issue.](img/jira_service_close_comment.png)
+
 
 ## Configuration
 
