@@ -71,11 +71,23 @@ update-knapsack:
     - mysql:latest
     - redis:alpine
 
+setup-test-env:
+  <<: *use-db
+  stage: prepare
+  script:
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+  artifacts:
+    expire_in: 7d
+    paths:
+      - public/assets
+      - tmp/tests
+
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
   <<: *use-db
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -93,7 +105,6 @@ update-knapsack:
   stage: test
   <<: *use-db
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
