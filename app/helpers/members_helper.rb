@@ -38,12 +38,8 @@ module MembersHelper
   end
 
   def filter_group_project_member_path(options = {})
-    exist_opts = {
-      search: params[:search],
-      sort: params[:sort]
-    }
+    options = params.slice(:search, :sort).merge(options)
 
-    options = exist_opts.merge(options)
     path = request.path
     path << "?#{options.to_param}"
     path
