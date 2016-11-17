@@ -36,11 +36,11 @@ module TimeTrackable
   end
 
   def human_total_time_spent
-    ChronicDuration.output(total_time_spent, format: :short)
+    Gitlab::TimeTrackingFormatter.output(total_time_spent)
   end
 
   def human_time_estimate
-    ChronicDuration.output(time_estimate, format: :short)
+    Gitlab::TimeTrackingFormatter.output(time_estimate)
   end
 
   private

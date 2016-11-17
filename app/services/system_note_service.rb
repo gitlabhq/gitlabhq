@@ -125,7 +125,7 @@ module SystemNoteService
   # Returns the created Note object
 
   def change_time_estimate(noteable, project, author)
-    parsed_time = ChronicDuration.output(noteable.time_estimate, format: :short)
+    parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
     body = if noteable.time_estimate == 0
              "Removed time estimate on this #{noteable.human_class_name}"
            else
@@ -154,7 +154,7 @@ module SystemNoteService
     if time_spent == :reset
       body = "Removed time spent on this #{noteable.human_class_name}"
     else
-      parsed_time = ChronicDuration.output(time_spent.abs, format: :short)
+      parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'Added' : 'Subtracted'
       body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
     end
