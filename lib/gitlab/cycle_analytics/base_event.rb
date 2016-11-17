@@ -19,7 +19,7 @@ module Gitlab
         private
 
         def serialize(_event, _query)
-          raise NotImplementedError.new("Expected #{self.name} to implement serialize(event)")
+          raise NotImplementedError.new("Expected #{self.name} to implement serialize(event, query)")
         end
       end
     end
