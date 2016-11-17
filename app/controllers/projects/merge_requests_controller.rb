@@ -61,7 +61,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_discussion_vars }
 
       format.json do
-        render json: @merge_request
+        render json: MergeRequestSerializer.new.represent(@merge_request)
       end
 
       format.patch  do

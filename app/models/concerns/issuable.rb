@@ -251,6 +251,17 @@ module Issuable
     self.class.to_ability_name
   end
 
+  # Convert this Issuable class name to a format usable by notifications.
+  #
+  # Examples:
+  #
+  #   issuable.class           # => MergeRequest
+  #   issuable.human_class_name # => "merge request"
+
+  def human_class_name
+    @human_class_name ||= self.class.name.titleize.downcase
+  end
+
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
