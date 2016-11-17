@@ -107,7 +107,8 @@
        * @returns {Boolean}
        */
       hasLastDeploymentKey() {
-        if (this.model.last_deployment && this.model.last_deployment !== {}) {
+        if (this.model.last_deployment &&
+          !this.$options.isObjectEmpty(this.model.last_deployment)) {
           return true;
         }
         return false;
@@ -326,8 +327,7 @@
        * @returns {Boolean}
        */
       deploymentHasUser() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.user) {
+        if (this.model.last_deployment && this.model.last_deployment.user) {
           return true;
         }
         return false;
@@ -345,6 +345,21 @@
         }
         return {};
       },
+    },
+
+    /**
+     * Helper to verify if certain given object are empty.
+     * Should be replaced by lodash _.isEmpty - https://lodash.com/docs/4.17.2#isEmpty
+     * @param  {Object} object
+     * @returns {Bollean}
+     */
+    isObjectEmpty(object) {
+      for (const key in object) { // eslint-disable-line
+        if (hasOwnProperty.call(object, key)) {
+          return false;
+        }
+      }
+      return true;
     },
 
     template: `
