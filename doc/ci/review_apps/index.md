@@ -91,20 +91,9 @@ From there on, you would follow the branched Git flow:
 1. Click on the link that's present in the MR related to the branch and see the
    changes live.
 
-## Distinguish between production and review apps
-
-1. We need some form to distinguish between production/staging and review app environment,
-
-- Are dynamic environments distinguishable by the slash in `environment:url`?
-
-We would expect the environments to be of `type/name`:
-
-1. This would allow us to have a clear distinction between different environment types: `production/gitlab.com`, `staging/dev`, `review-apps/feature/branch`,
-3. We would be aware of some of these types and for example for `review-apps` show them differently in context of Merge Requests, ex. calculating `deployed ago` a little differently.
-
 ## Limitations
 
-We are limited to use only [CI predefined variables][variables].
+Check the [environments limitations](../environments.md#limitations).
 
 ## Examples
 
