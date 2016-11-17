@@ -18,13 +18,11 @@ module Gitlab
       private
 
       def serialize(event)
-        event['author'] = User.find(event.delete('author_id'))
-
         AnalyticsIssueSerializer.new(project: @project).represent(event).as_json
       end
 
-      def has_permission?(id)
-        @options[:current_user].can?(:read_issue, Issue.find(id))
+      def allowed_ids
+        @allowed_ids ||= IssuesFinder.new(@options[:current_user], project_id: @project.id).execute.where(id: event_result_ids).pluck(:id)
       end
     end
   end

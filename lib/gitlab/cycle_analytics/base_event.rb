@@ -12,7 +12,9 @@ module Gitlab
       end
 
       def fetch
-        @query.execute(self).map do |event|
+        update_author! if event_result.first['author_id']
+
+        event_result.map do |event|
           serialize(event) if has_permission?(event['id'])
         end
       end
@@ -25,12 +27,28 @@ module Gitlab
 
       private
 
+      def update_author!
+        AuthorUpdater.update!(event_result)
+      end
+
+      def event_result
+        @event_result ||= @query.execute(self).to_a
+      end
+
       def serialize(_event)
         raise NotImplementedError.new("Expected #{self.name} to implement serialize(event)")
       end
 
-      def has_permission?(_id)
-        true
+      def has_permission?(id)
+        allowed_ids.nil? || allowed_ids.include?(id.to_i)
+      end
+
+      def allowed_ids
+        nil
+      end
+
+      def event_result_ids
+        event_result.map { |event| event['id'] }
       end
     end
   end
