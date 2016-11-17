@@ -1,5 +1,5 @@
 .page-with-sidebar {
-  padding: $header-height 0 25px;
+  padding-bottom: 25px;
   transition: padding $sidebar-transition-duration;
 
   &.page-sidebar-pinned {
