@@ -140,10 +140,7 @@
      * @returns {Boolean}
      */
     convertPermissionToBoolean(string) {
-      if (string === 'true') {
-        return true;
-      }
-      return false;
+      return string === 'true';
     },
 
     methods: {
