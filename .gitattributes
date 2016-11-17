@@ -1,1 +1,2 @@
 *.js.es6 gitlab-language=javascript
+*.svg gitlab-language=xml
