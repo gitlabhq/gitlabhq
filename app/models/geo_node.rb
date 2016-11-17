@@ -66,8 +66,8 @@ class GeoNode < ActiveRecord::Base
   end
 
   def backfill_repositories
-    if Gitlab::Geo.enabled?
-      GeoScheduleBackfillWorker.perform_async(id) unless primary?
+    if Gitlab::Geo.enabled? && !primary?
+      GeoScheduleBackfillWorker.perform_async(id)
     end
   end
 

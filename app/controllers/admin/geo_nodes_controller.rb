@@ -1,5 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license
+  before_action :load_node, except: [:index, :create]
 
   def index
     @nodes = GeoNode.all
@@ -18,15 +19,12 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def destroy
-    @node = GeoNode.find(params[:id])
     @node.destroy
 
     redirect_to admin_geo_nodes_path, notice: 'Node was successfully removed.'
   end
 
   def repair
-    @node = GeoNode.find(params[:id])
-
     if @node.primary? || !@node.missing_oauth_application?
       flash[:notice] = "This node doesn't need to be repaired."
     elsif @node.save
@@ -39,7 +37,6 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def backfill_repositories
-    @node = GeoNode.find(params[:id])
     if @node.primary?
       redirect_to admin_geo_nodes_path, notice: 'This is the primary node. Please run this action with a secondary node.'
     else
@@ -60,5 +57,9 @@ class Admin::GeoNodesController < Admin::ApplicationController
       flash[:alert] = 'You need a different license to enable Geo replication'
       redirect_to admin_license_path
     end
+  end
+
+  def load_node
+    @node = GeoNode.find(params[:id])
   end
 end

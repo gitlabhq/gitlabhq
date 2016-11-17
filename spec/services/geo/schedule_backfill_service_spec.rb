@@ -13,7 +13,7 @@ describe Geo::ScheduleBackfillService, services: true do
           create(:project)
         end
 
-        expect{ subject.execute }.to change(GeoBackfillWorker.jobs, :size).by(2)
+        expect{ subject.execute }.to change(GeoRepositoryBackfillWorker.jobs, :size).by(2)
       end
     end
   end

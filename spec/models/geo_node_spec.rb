@@ -245,7 +245,7 @@ describe GeoNode, type: :model do
 
         node.backfill_repositories
 
-        expect { GeoScheduleBackfillWorker.drain }.to change(GeoBackfillWorker.jobs, :size).by(2)
+        expect { GeoScheduleBackfillWorker.drain }.to change(GeoRepositoryBackfillWorker.jobs, :size).by(2)
       end
     end
   end

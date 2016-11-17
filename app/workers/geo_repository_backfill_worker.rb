@@ -1,4 +1,4 @@
-class GeoBackfillWorker
+class GeoRepositoryBackfillWorker
   include Sidekiq::Worker
   include ::GeoDynamicBackoff
   include GeoQueue
