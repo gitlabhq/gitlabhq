@@ -6,15 +6,36 @@
 /* globals Vue, EnvironmentsService */
 /* eslint-disable no-param-reassign */
 
-$(() => {
+(() => { // eslint-disable-line
   window.gl = window.gl || {};
 
-  const filterState = state => environment => environment.state === state && environment;
+  /**
+   * Given the visibility prop provided by the url query parameter and which
+   * changes according to the active tab we need to filter which environments
+   * should be visible.
+   *
+   * The environments array is a recursive tree structure and we need to filter
+   * both root level environments and children environments.
+   *
+   * In order to acomplish that, both `filterState` and `filterEnvironmnetsByState`
+   * functions work together.
+   * The first one works as the filter that verifies if the given environment matches
+   * the given state.
+   * The second guarantees both root level and children elements are filtered as well.
+   */
 
-  // recursiveMap :: (Function, Array) -> Array
-  const recursiveMap = (fn, arr) => arr.map((item) => {
+  const filterState = state => environment => environment.state === state && environment;
+  /**
+   * Given the filter function and the array of environments will return only
+   * the environments that match the state provided to the filter function.
+   *
+   * @param {Function} fn
+   * @param {Array} array
+   * @return {Array}
+   */
+  const filterEnvironmnetsByState = (fn, arr) => arr.map((item) => {
     if (item.children) {
-      const filteredChildren = recursiveMap(fn, item.children).filter(Boolean);
+      const filteredChildren = filterEnvironmnetsByState(fn, item.children).filter(Boolean);
       if (filteredChildren.length) {
         item.children = filteredChildren;
         return item;
@@ -56,7 +77,7 @@ $(() => {
 
     computed: {
       filteredEnvironments() {
-        return recursiveMap(filterState(this.visibility), this.state.environments);
+        return filterEnvironmnetsByState(filterState(this.visibility), this.state.environments);
       },
 
       scope() {
