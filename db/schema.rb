@@ -1259,7 +1259,6 @@ ActiveRecord::Schema.define(version: 20161128161412) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects", on_delete: :cascade
-  add_foreign_key "ci_builds", "projects", column: "gl_project_id", on_delete: :cascade
   add_foreign_key "ci_commits", "projects", column: "gl_project_id", on_delete: :cascade
   add_foreign_key "ci_runner_projects", "projects", column: "gl_project_id", on_delete: :cascade
   add_foreign_key "ci_trigger_requests", "ci_commits", column: "commit_id", on_delete: :cascade

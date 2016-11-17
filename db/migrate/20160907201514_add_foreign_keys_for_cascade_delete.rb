@@ -7,12 +7,49 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
   disable_ddl_transaction!
 
   DOWNTIME = true
+
   DOWNTIME_REASON = <<-HEREDOC
     According to https://gocardless.com/blog/zero-downtime-postgres-migrations-the-hard-parts
     adding a foreign key needs to acquire an AccessExclusive lock. Since we're
     adding foreign keys in large, heavily used tables, this migration will require
     downtime.
   HEREDOC
+
+  TABLES = [
+    [:boards, :projects, :project_id],
+    [:ci_commits, :projects, :gl_project_id],
+    [:ci_runner_projects, :projects, :gl_project_id],
+    [:ci_trigger_requests, :ci_commits, :commit_id],
+    [:ci_trigger_requests, :ci_triggers, :trigger_id],
+    [:ci_triggers, :projects, :gl_project_id],
+    [:ci_variables, :projects, :gl_project_id],
+    [:deployments, :projects, :project_id],
+    [:environments, :projects, :project_id],
+    [:events, :projects, :project_id],
+    [:forked_project_links, :projects, :forked_to_project_id],
+    [:issues, :projects, :project_id],
+    [:label_links, :labels, :label_id],
+    [:labels, :projects, :project_id],
+    [:lfs_objects_projects, :projects, :project_id],
+    [:lists, :boards, :board_id],
+    [:lists, :labels, :label_id],
+    [:merge_requests, :projects, :target_project_id],
+    [:merge_request_diffs, :merge_requests, :merge_request_id],
+    [:milestones, :projects, :project_id],
+    [:notes, :projects, :project_id],
+    [:project_features, :projects, :project_id],
+    [:project_group_links, :projects, :project_id],
+    [:project_import_data, :projects, :project_id],
+    [:protected_branch_merge_access_levels, :protected_branches, :protected_branch_id],
+    [:protected_branch_push_access_levels, :protected_branches, :protected_branch_id],
+    [:releases, :projects, :project_id],
+    [:services, :projects, :project_id],
+    [:snippets, :projects, :project_id],
+    [:todos, :notes, :note_id],
+    [:todos, :projects, :project_id],
+    [:users_star_projects, :projects, :project_id],
+    [:web_hooks, :projects, :project_id],
+  ]
 
   def up
     disable_statement_timeout
@@ -34,14 +71,31 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
     remove_index :events, :target_id if index_exists?(:events, :target_id)
     remove_index :events, :target_type if index_exists?(:events, :target_type)
 
-    threads = []
-    threads << delete_project_orphans(:events, :project_id)
-    threads << delete_project_orphans(:issues, :project_id)
-    threads << delete_project_orphans(:merge_requests, :target_project_id)
-    threads << delete_project_orphans(:forked_project_links, :forked_to_project_id)
-    threads << delete_project_orphans(:services, :project_id)
-    threads << delete_project_orphans(:notes, :project_id)
-    threads.map(&:join)
+    # These already exist but don't specify on_delete: cascade, so we'll re-add them.
+    remove_foreign_key :boards, :projects
+    remove_foreign_key :lists, :boards
+    remove_foreign_key :lists, :labels
+    remove_foreign_key :protected_branch_merge_access_levels, :protected_branches
+    remove_foreign_key :protected_branch_push_access_levels, :protected_branches
+
+    TABLES.each_slice(8) do |slice|
+      threads = slice.map do |(source_table, target_table, column)|
+        Thread.new do
+          delete_project_orphans(source_table, target_table, column)
+        end
+      end
+
+      threads.each(&:join)
+
+      # Foreign keys can not be added in parallel as Rails' constraint name
+      # generation code is not thread-safe.
+      slice.each do |(source_table, target_table, column)|
+        add_foreign_key(source_table,
+                        target_table,
+                        column: column,
+                        on_delete: :cascade)
+      end
+    end
 
     # Rebuild indexes
     add_index :issues, [:project_id, :iid], unique: true
@@ -59,89 +113,14 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
     add_index :events, :project_id
     add_index :events, :target_id
     add_index :events, :target_type
-
-    # These already exist but don't specify on_delete: cascade, so we'll re-add them.
-    remove_foreign_key :boards, :projects
-    remove_foreign_key :lists, :boards
-    remove_foreign_key :lists, :labels
-    remove_foreign_key :protected_branch_merge_access_levels, :protected_branches
-    remove_foreign_key :protected_branch_push_access_levels, :protected_branches
-
-    # Merge Requests for target project and should be removed with it.
-    # Merge Requests from source project should be kept when source project was removed.
-    add_foreign_key :merge_requests, :projects, column: :target_project_id, on_delete: :cascade
-
-    add_foreign_key :forked_project_links, :projects, column: :forked_to_project_id, on_delete: :cascade
-    add_foreign_key :boards, :projects, on_delete: :cascade
-    add_foreign_key :lists, :boards, on_delete: :cascade
-    add_foreign_key :services, :projects, on_delete: :cascade
-    add_foreign_key :notes, :projects, on_delete: :cascade
-    add_foreign_key :events, :projects, on_delete: :cascade
-    add_foreign_key :todos, :notes, on_delete: :cascade
-    add_foreign_key :merge_request_diffs, :merge_requests, on_delete: :cascade
-    add_foreign_key :issues, :projects, on_delete: :cascade
-    add_foreign_key :labels, :projects, on_delete: :cascade
-    add_foreign_key :lists, :labels, on_delete: :cascade
-    add_foreign_key :label_links, :labels, on_delete: :cascade
-    add_foreign_key :milestones, :projects, on_delete: :cascade
-    add_foreign_key :snippets, :projects, on_delete: :cascade
-    add_foreign_key :web_hooks, :projects, on_delete: :cascade
-    add_foreign_key :protected_branch_merge_access_levels, :protected_branches, on_delete: :cascade
-    add_foreign_key :protected_branch_push_access_levels, :protected_branches, on_delete: :cascade
-    add_foreign_key :users_star_projects, :projects, on_delete: :cascade
-    add_foreign_key :releases, :projects, on_delete: :cascade
-    add_foreign_key :lfs_objects_projects, :projects, on_delete: :cascade
-    add_foreign_key :project_group_links, :projects, on_delete: :cascade
-    add_foreign_key :todos, :projects, on_delete: :cascade
-    add_foreign_key :deployments, :projects, on_delete: :cascade
-    add_foreign_key :environments, :projects, on_delete: :cascade
-    add_foreign_key :ci_builds, :projects, column: :gl_project_id, on_delete: :cascade
-    add_foreign_key :ci_runner_projects, :projects, column: :gl_project_id, on_delete: :cascade
-    add_foreign_key :ci_variables, :projects, column: :gl_project_id, on_delete: :cascade
-    add_foreign_key :ci_trigger_requests, :ci_triggers, column: :trigger_id, on_delete: :cascade
-    add_foreign_key :ci_triggers, :projects, column: :gl_project_id, on_delete: :cascade
-    add_foreign_key :ci_trigger_requests, :ci_commits, column: :commit_id, on_delete: :cascade
-    add_foreign_key :ci_commits, :projects, column: :gl_project_id, on_delete: :cascade
-    add_foreign_key :project_features, :projects, on_delete: :cascade
-    add_foreign_key :project_import_data, :projects, on_delete: :cascade
   end
 
   def down
-    remove_foreign_key :merge_requests, column: :target_project_id
-    remove_foreign_key :forked_project_links, column: :forked_to_project_id
-    remove_foreign_key :boards, :projects
-    remove_foreign_key :lists, :boards
-    remove_foreign_key :services, :projects
-    remove_foreign_key :notes, :projects
-    remove_foreign_key :events, :projects
-    remove_foreign_key :todos, :notes
-    remove_foreign_key :merge_request_diffs, :merge_requests
-    remove_foreign_key :issues, :projects
-    remove_foreign_key :labels, :projects
-    remove_foreign_key :lists, :labels
-    remove_foreign_key :label_links, :labels
-    remove_foreign_key :milestones, :projects
-    remove_foreign_key :snippets, :projects
-    remove_foreign_key :web_hooks, :projects
-    remove_foreign_key :protected_branch_merge_access_levels, :protected_branches
-    remove_foreign_key :protected_branch_push_access_levels, :protected_branches
-    remove_foreign_key :users_star_projects, :projects
-    remove_foreign_key :releases, :projects
-    remove_foreign_key :lfs_objects_projects, :projects
-    remove_foreign_key :project_group_links, :projects
-    remove_foreign_key :todos, :projects
-    remove_foreign_key :deployments, :projects
-    remove_foreign_key :environments, :projects
-    remove_foreign_key :ci_builds, column: :gl_project_id
-    remove_foreign_key :ci_runner_projects, column: :gl_project_id
-    remove_foreign_key :ci_variables, column: :gl_project_id
-    remove_foreign_key :ci_trigger_requests, column: :trigger_id
-    remove_foreign_key :ci_triggers, column: :gl_project_id
-    remove_foreign_key :ci_trigger_requests, column: :commit_id
-    remove_foreign_key :ci_commits, column: :gl_project_id
-    remove_foreign_key :project_features, :projects
-    remove_foreign_key :project_import_data, :projects
+    TABLES.each do |(source_table, target_table, column)|
+      remove_foreign_key(source_table, target_table, column: column)
+    end
 
+    # Re-add these without a cascading delete.
     add_foreign_key :boards, :projects
     add_foreign_key :lists, :boards
     add_foreign_key :lists, :labels
@@ -157,11 +136,15 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
 
   private
 
-  def delete_project_orphans(table_name, reference_column)
+  def delete_project_orphans(source_table, target_table, reference_column)
     # select all soft-deleted issuables with no matching project
     select_query = <<-EOF
-SELECT id FROM #{table_name}
-WHERE NOT EXISTS (SELECT 1 FROM projects WHERE projects.id = #{table_name}.#{reference_column})
+SELECT id FROM #{source_table}
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM #{target_table}
+    WHERE #{target_table}.id = #{source_table}.#{reference_column}
+)
 LIMIT 50000
 EOF
 
@@ -169,7 +152,9 @@ EOF
     # on each of them. Also notice that these queries are executed in a new
     # transaction. That should be ok, since we are removing orphan records.
     Thread.new do
-      transaction do
+      connection = ActiveRecord::Base.connection
+
+      connection.transaction do
         disable_statement_timeout
 
         # MySQL doesn't allow you to use the table from the DELETE in the subquery.
@@ -177,7 +162,7 @@ EOF
         # http://www.mysqlfaqs.net/mysql-errors/1093-you-can-not-specify-target-table-comments-for-update-in-from-clause),
         # which seems to be perfectly fine. What's the point of the restriction then, you ask? Beats me.
         loop do
-          deleted = delete "DELETE FROM #{table_name} WHERE id IN (SELECT id FROM (#{select_query}) AS t)"
+          deleted = connection.delete "DELETE FROM #{source_table} WHERE id IN (SELECT id FROM (#{select_query}) AS t)"
           break if deleted == 0
         end
       end
