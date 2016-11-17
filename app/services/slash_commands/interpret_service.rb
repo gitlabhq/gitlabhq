@@ -243,11 +243,6 @@ module SlashCommands
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
-    # This is a dummy command, so that it appears in the autocomplete commands
-    desc 'CC'
-    params '@user'
-    command :cc
-
     desc 'Set time estimate'
     params '<1w 3d 2h 14m>'
     condition do
@@ -294,6 +289,11 @@ module SlashCommands
     command :remove_time_spent do
       @updates[:spend_time] = :reset
     end
+
+    # This is a dummy command, so that it appears in the autocomplete commands
+    desc 'CC'
+    params '@user'
+    command :cc
 
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
