@@ -1,6 +1,12 @@
-- file_name, blob = blob
 - project = @project || find_project_for_blob(blob)
-- ref = @search_results.repository_ref
+
+- if blob.is_a?(Array)
+  - file_name, blob = blob
+- else
+  - blob = parse_search_result(blob)
+  - file_name = blob.filename
+
+- ref = blob.ref
 - blob_link = namespace_project_blob_path(project.namespace, project, tree_join(ref, file_name))
 .blob-result
   .file-holder
