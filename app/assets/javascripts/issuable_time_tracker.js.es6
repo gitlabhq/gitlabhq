@@ -97,7 +97,7 @@
           </div>
           <div class='title hide-collapsed'>
             Time tracking
-            <div class='help-button pull-right' v-if='!showHelp' v-on:click='toggleHelpState(true)'>
+            <div class='help-button pull-right' v-if='!showHelp' @click='toggleHelpState(true)'>
               <i class='fa fa-question-circle'></i>
             </div>
           </div>
@@ -131,7 +131,7 @@
               <span class='no-value'>No estimate or time spent</span>
             </div>
             <div class='time-tracking-help-state' v-if='showHelp'>
-              <div class='close-help-button pull-right' v-on:click='toggleHelpState(false)'>
+              <div class='close-help-button pull-right' @click='toggleHelpState(false)'>
                 <i class='fa fa-close'></i>
               </div>
               <div class='time-tracking-info'>
