@@ -30,38 +30,6 @@ Omnibus GitLab packages.
   [Available configuration setups](#available-configuration-setups) section
   below.
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-- [Overview](#overview)
-  - [High Availability with Sentinel](#high-availability-with-sentinel)
-  - [Recommended setup](#recommended-setup)
-  - [Redis setup overview](#redis-setup-overview)
-  - [Sentinel setup overview](#sentinel-setup-overview)
-  - [Available configuration setups](#available-configuration-setups)
-- [Configuring Redis HA](#configuring-redis-ha)
-  - [Prerequisites](#prerequisites)
-  - [Step 1. Configuring the master Redis instance](#step-1-configuring-the-master-redis-instance)
-  - [Step 2. Configuring the slave Redis instances](#step-2-configuring-the-slave-redis-instances)
-  - [Step 3. Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances)
-  - [Step 4. Configuring the GitLab application](#step-4-configuring-the-gitlab-application)
-- [Switching from an existing single-machine installation to Redis HA](#switching-from-an-existing-single-machine-installation-to-redis-ha)
-- [Example of a minimal configuration with 1 master, 2 slaves and 3 Sentinels](#example-of-a-minimal-configuration-with-1-master-2-slaves-and-3-sentinels)
-  - [Example configuration for Redis master and Sentinel 1](#example-configuration-for-redis-master-and-sentinel-1)
-  - [Example configuration for Redis slave 1 and Sentinel 2](#example-configuration-for-redis-slave-1-and-sentinel-2)
-  - [Example configuration for Redis slave 2 and Sentinel 3](#example-configuration-for-redis-slave-2-and-sentinel-3)
-  - [Example configuration for the GitLab application](#example-configuration-for-the-gitlab-application)
-- [Advanced configuration](#advanced-configuration)
-  - [Control running services](#control-running-services)
-- [Troubleshooting](#troubleshooting)
-  - [Troubleshooting Redis replication](#troubleshooting-redis-replication)
-  - [Troubleshooting Sentinel](#troubleshooting-sentinel)
-- [Changelog](#changelog)
-- [Further reading](#further-reading)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## Overview
 
 Before diving into the details of setting up Redis and Redis Sentinel for HA,
