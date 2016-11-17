@@ -56,6 +56,7 @@ class User < ActiveRecord::Base
   has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
   has_many :u2f_registrations, dependent: :destroy
+  has_many :chat_names, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
