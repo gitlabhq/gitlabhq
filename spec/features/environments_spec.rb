@@ -78,15 +78,20 @@ feature 'Environments', feature: true, js: true do
           given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
 
           scenario 'does show a play button' do
-            # TODO: Fix me!
+            find('.dropdown-play-icon-container').click
             expect(page).to have_content(manual.name.humanize)
           end
 
           scenario 'does allow to play manual action' do
             expect(manual).to be_skipped
-            # TODO: Fix me!
-            expect{ click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
-            expect(page).to have_content(manual.name)
+
+            find('.dropdown-play-icon-container').click
+            play_action = find('span', text: manual.name.humanize)
+
+            expect(page).to have_content(manual.name.humanize)
+            expect { play_action.click }.not_to change { Ci::Pipeline.count }
+
+            # TODO, fix me!
             expect(manual.reload).to be_pending
           end
 
