@@ -166,4 +166,25 @@ describe Environment, models: true do
       end
     end
   end
+
+  describe 'recently_updated_on_branch?' do
+    subject { environment.recently_updated_on_branch?('feature') }
+
+    context 'when last deployment to environment is the most recent one' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when last deployment to environment is not the most recent' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: environment, ref: 'master')
+      end
+
+      it { is_expected.to be false }
+    end
+  end
 end
