@@ -2,7 +2,6 @@
 //= require jquery
 //= require vue
 //= require issuable_time_tracker
-//= require directives/tooltip_title
 
 function initComponent(time_estimate = 100000, time_spent = 5000 ) {
   fixture.set(`
@@ -167,7 +166,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000 ) {
           });
 
           it('should link to the correct documentation', function(done) {
-            const correctUrl = 'https://docs.gitlab.com/ee/workflow/time_tracking.html';
+            const correctUrl = 'http://example.com/time-tracking-url';
 
             $(this.timeTracker.$el).find('.help-button').click();
 

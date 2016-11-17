@@ -108,11 +108,11 @@
                   <div :style='{ width: diffPercent }' class='meter-fill'></div>
                 </div>
                 <div class='compare-display-container'>
-                  <div class='compare-display'>
+                  <div class='compare-display pull-left'>
                     <span class='compare-label'>Spent</span>
                     <span class='compare-value spent'>{{ spentPretty }}</span>
                   </div>
-                  <div class='compare-display estimated'>
+                  <div class='compare-display estimated pull-right'>
                     <span class='compare-label'>Est</span>
                     <span class='compare-value'>{{ estimatedPretty }}</span>
                   </div>
@@ -145,7 +145,7 @@
                   <code>/spend</code>
                   will update the sum of the time spent.
                 </p>
-                <a class='btn btn-default learn-more-button' href='https://docs.gitlab.com/ee/workflow/time_tracking.html'> Learn more </a>
+                <a class='btn btn-default learn-more-button' href='http://example.com/time-tracking-url'>Learn more</a>
               </div>
             </div>
           </div>
