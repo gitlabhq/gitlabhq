@@ -93,7 +93,9 @@ module ProjectsHelper
     if deploy_key.has_access_to?(@project)
       @project
     else
-      deploy_key.projects.find(&current_user.method(:has_access_to?))
+      deploy_key.projects.find do |project|
+        can?(current_user, :read_project, project)
+      end
     end
   end
 
