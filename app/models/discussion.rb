@@ -165,18 +165,21 @@ class Discussion
 
   # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines(highlight: true)
-    initial_lines = highlight ? highlighted_diff_lines : diff_lines
+    lines = highlight ? highlighted_diff_lines : diff_lines
     prev_lines = []
 
-    initial_lines.each do |line|
+    lines.each do |line|
       if line.meta?
         prev_lines.clear
       else
         prev_lines << line
+
         break if for_line?(line)
+
         prev_lines.shift if prev_lines.length >= NUMBER_OF_TRUNCATED_DIFF_LINES
       end
     end
+
     prev_lines
   end
 
