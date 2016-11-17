@@ -165,6 +165,6 @@
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
-      new Subscription('.subscription')
+      gl.Subscription.bindAll('.subscription');
       new gl.DueDateSelectors();
       sidebar = new Sidebar();
