@@ -552,6 +552,28 @@ An example usage of manual actions is deployment to production.
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
 
+In its simplest form, the `environment` keyword can be defined like:
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment:
+    name: production
+```
+
+In the above example, the `deploy to production` job will be marked as doing a
+deployment to the `production` environment.
+
+#### environment:name
+
+> Introduced in GitLab 8.11.
+
+>**Note:**
+Before GitLab 8.11, the name of an environment could be defined as a string like
+`environment: production`. The recommended way now is to define it under the
+`name` keyword.
+
 The `environment` name can contain:
 
 - letters
@@ -566,27 +588,6 @@ The `environment` name can contain:
 
 Common names are `qa`, `staging`, and `production`, but you can use whatever
 name works with your workflow.
-
-In its simplest form, the `environment` keyword can be defined like:
-
-```
-deploy to production:
-  stage: deploy
-  script: git push production HEAD:master
-  environment: production
-```
-
-In the above example, the `deploy to production` job will be marked as doing a
-deployment to the `production` environment.
-
-#### environment:name
-
-> Introduced in GitLab 8.11.
-
->**Note:**
-Before GitLab 8.11, the name of an environment could be defined as a string like
-`environment: production`. The recommended way now is to define it under the
-`name` keyword.
 
 Instead of defining the name of the environment right after the `environment`
 keyword, it is also possible to define it as a separate value. For that, use
@@ -626,7 +627,12 @@ deploy to production:
 
 #### environment:on_stop
 
-> [Introduced][ce-6669] in GitLab 8.13.
+>
+**Notes:**
+- [Introduced][ce-6669] in GitLab 8.13.
+- Starting with GitLab 8.14, when you have an environment that has a stop action
+  defined, GitLab will automatically trigger a stop action when the associated
+  branch is deleted.
 
 Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close
