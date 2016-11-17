@@ -15,6 +15,14 @@ module Gitlab
         raise NotImplementedError
       end
 
+      def self.allowed?(_, _)
+        true
+      end
+
+      def self.can?(object, action, subject)
+        Ability.allowed?(object, action, subject)
+      end
+
       def execute(_)
         raise NotImplementedError
       end
@@ -31,20 +39,10 @@ module Gitlab
 
       private
 
-      def can?(object, action, subject)
-        Ability.allowed?(object, action, subject)
-      end
-
       def find_by_iid(iid)
         resource = collection.find_by(iid: iid)
 
         readable?(resource) ? resource : nil
-      end
-
-      def search_results(query)
-        collection.search(query).limit(QUERY_LIMIT).select do |resource|
-          readable?(resource)
-        end
       end
     end
   end

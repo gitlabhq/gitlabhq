@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def readable?(issue)
-        can?(current_user, :read_issue, issue)
+        self.class.can?(current_user, :read_issue, issue)
       end
     end
   end

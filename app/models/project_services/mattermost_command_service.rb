@@ -38,19 +38,19 @@ class MattermostCommandService < ChatService
     user = find_chat_user(params)
     unless user
       url = authorize_chat_name_url(params)
-      return Mattermost::Presenter.authorize_user(url)
+      return Mattermost::Presenter.authorize_chat_name(url)
     end
 
-    Mattermost::CommandService.new(project, user, params).execute
+    Gitlab::ChatCommands::Command.new(project, user, params).execute
   end
 
   private
 
   def find_chat_user(params)
-    ChatNames::FindUserService.new(chat_names, params).execute
+    ChatNames::FindUserService.new(self, params).execute
   end
 
   def authorize_chat_name_url(params)
-    ChatNames::RequestService.new(self, params).execute
+    ChatNames::AuthorizeUserService.new(self, params).execute
   end
 end

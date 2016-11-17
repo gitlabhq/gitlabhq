@@ -26,6 +26,15 @@ describe Gitlab::ChatCommands::Command, service: true do
       end
     end
 
+    context 'the user can not create an issue' do
+      let(:params) { { text: "issue create my new issue" } }
+
+      it 'rejects the actions' do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to start_with('Whoops! That action is not allowed')
+      end
+    end
+
     context 'issue is succesfully created' do
       let(:params) { { text: "issue create my new issue" } }
 

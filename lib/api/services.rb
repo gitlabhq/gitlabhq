@@ -61,7 +61,6 @@ module API
     end
 
     resource :projects do
-
       desc 'Trigger a slash command' do
         detail 'Added in GitLab 8.13'
       end
@@ -78,7 +77,8 @@ module API
         result = service.try(:active?) && service.try(:trigger, params)
 
         if result
-          present result, status: result[:status] || 200
+          status result[:status] || 200
+          present result
         else
           not_found!('Service')
         end

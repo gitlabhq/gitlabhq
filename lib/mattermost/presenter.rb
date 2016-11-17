@@ -4,24 +4,19 @@ module Mattermost
       include Rails.application.routes.url_helpers
 
       def authorize_chat_name(url)
-        message = "Hi there! We've yet to get acquainted! Please introduce yourself by [connection your GitLab profile](#{url})!"
+        message = ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
 
         ephemeral_response(message)
       end
 
-      def help(messages, command)
-        return ephemeral_response("No commands configured") unless messages.count > 1
-        message = ["Available commands:"]
+      def help(commands, trigger)
+        if commands.count == 0
+          ephemeral_response("No commands configured") unless messages.count > 1
+        else
+          message = header_with_list("Available commands", commands)
 
-        messages.each do |messsage|
-          message << "- #{command} #{message}"
+          ephemeral_response(message)
         end
-
-        ephemeral_response(message.join("\n"))
-      end
-
-      def not_found
-        ephemeral_response("404 not found! GitLab couldn't find what your were looking for! :boom:")
       end
 
       def present(resource)
@@ -40,7 +35,15 @@ module Mattermost
         single_resource(resource)
       end
 
+      def access_denied
+        ephemeral_response("Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
+      end
+
       private
+
+      def not_found
+        ephemeral_response("404 not found! GitLab couldn't find what your were looking for! :boom:")
+      end
 
       def single_resource(resource)
         return error(resource) if resource.errors.any?
@@ -52,21 +55,31 @@ module Mattermost
       end
 
       def multiple_resources(resources)
-        message = "Multiple results were found:\n"
-        message << resources.map { |resource| "- #{title(resource)}" }.join("\n")
+        resources.map! { |resource| title(resource) }
+
+        message = header_with_list("Multiple results were found:", resources)
 
         ephemeral_response(message)
       end
 
       def error(resource)
-        message = "The action was not succesfull because:\n"
-        message << resource.errors.messages.map { |message| "- #{message}" }.join("\n")
+        message = header_with_list("The action was not succesful, because:", resource.errors.messages)
 
-        ephemeral_response(resource.errors.messages.join("\n"))
+        ephemeral_response(message)
       end
 
       def title(resource)
         "[#{resource.to_reference} #{resource.title}](#{url(resource)})"
+      end
+
+      def header_with_list(header, items)
+        message = [header]
+
+        items.each do |item|
+          message << "- #{item}"
+        end
+
+        message.join("\n")
       end
 
       def url(resource)
@@ -82,14 +95,16 @@ module Mattermost
       def ephemeral_response(message)
         {
           response_type: :ephemeral,
-          text: message
+          text: message,
+          status: 200
         }
       end
 
       def in_channel_response(message)
         {
           response_type: :in_channel,
-          text: message
+          text: message,
+          status: 200
         }
       end
     end

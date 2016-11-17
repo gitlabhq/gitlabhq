@@ -9,9 +9,11 @@ module Gitlab
         'issue create <title>\n<description>'
       end
 
-      def execute(match)
-        return nil unless can?(current_user, :create_issue, project)
+      def self.allowed?(project, user)
+        can?(user, :create_issue, project)
+      end
 
+      def execute(match)
         title = match[:title]
         description = match[:description]
 
