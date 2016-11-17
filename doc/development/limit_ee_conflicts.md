@@ -50,10 +50,10 @@ Notes:
 
 #### List or arrays are augmented in EE
 
-In controllers, the most common type of conflicts is either in a `before_action`
-that has a list of actions in CE but EE adds some actions to that list.
+In controllers, the most common type of conflict is with `before_action` that
+has a list of actions in CE but EE adds some actions to that list.
 
-Same problems often occurs for `params.require` / `params.permit` calls.
+The same problem often occurs for `params.require` / `params.permit` calls.
 
 ##### Mitigations
 
@@ -64,7 +64,7 @@ Separate CE and EE actions/keywords. For instance for `params.require` in
 def project_params
   params.require(:project).permit(project_params_ce)
   # On EE, this is always:
-  # params.require(:project).permit(project_params_ce + project_params_ee)
+  # params.require(:project).permit(project_params_ce << project_params_ee)
 end
 
 # Always returns an array of symbols, created however best fits the use case.
@@ -138,9 +138,9 @@ at the same place in EE
 
 Blocks of code that are EE-specific should be moved to partials as much as
 possible to avoid conflicts with big chunks of HAML code that that are not fun
-to resolve when you add the indentation in the equation.
+to resolve when you add the indentation to the equation.
 
-For instance this kind of things:
+For instance this kind of thing:
 
 ```haml
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
@@ -250,8 +250,7 @@ and then the `_weight_form.html.haml` could be as follows:
 
 Note:
 
-- The safeguards at the top allows to get rid of an unneccessary indentation
-level
+- The safeguards at the top allow to get rid of an unneccessary indentation level
 - Here we only moved the 'Weight' code to a partial since this is the only
   EE-specific code in that view, so it's the most likely to conflict, but you
   are encouraged to use partials even for code that's in CE to logically split
