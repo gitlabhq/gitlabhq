@@ -13,7 +13,6 @@
         abilityName = $dropdown.data('ability-name');
         $loading = $block.find('.block-loading').fadeOut();
 
-        var ajaxResource = gl.IssuableResource ? gl.IssuableResource.put.bind(gl.IssuableResource) : $.ajax;
 
         var renderMethod = function(data) {
           if (data.weight != null) {
@@ -24,7 +23,9 @@
           return $sidebarCollapsedValue.html(data.weight);
         };
 
-        gl.IssuableResource && gl.IssuableResource.subscribe(renderMethod);
+        if (gl.IssuableResource) {
+          gl.IssuableResource.subscribe(renderMethod);
+        }
 
         updateWeight = function(selected) {
           var data;
@@ -33,7 +34,7 @@
           data[abilityName].weight = selected != null ? selected : null;
           $loading.fadeIn();
           $dropdown.trigger('loading.gl.dropdown');
-          return ajaxResource({
+          return $.ajax({
             type: 'PUT',
             dataType: 'json',
             url: updateUrl,
