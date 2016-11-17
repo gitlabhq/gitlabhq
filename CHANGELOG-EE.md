@@ -12,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.13.6 (2016-11-17)
 
+- No changes.
 - Disable retries for remote mirror update worker. !848
 - Fixed cache clearing on secondary Geo nodes. !869
 - Geo: fix a problem that prevented git cloning from secondary node. !873
