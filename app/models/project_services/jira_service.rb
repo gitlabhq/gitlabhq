@@ -256,16 +256,14 @@ class JiraService < IssueTrackerService
   end
 
   def build_entity_url(entity_name, entity_id)
-    resource_url(
-      polymorphic_url(
-        [
-          self.project.namespace.becomes(Namespace),
-          self.project,
-          entity_name
-        ],
-        id: entity_id,
-        routing_type: :path
-      )
+    polymorphic_url(
+      [
+        self.project.namespace.becomes(Namespace),
+        self.project,
+        entity_name
+      ],
+      id:   entity_id,
+      host: Settings.gitlab.base_url
     )
   end
 end
