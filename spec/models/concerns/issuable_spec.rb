@@ -389,9 +389,14 @@ describe Issue, "Issuable" do
     let(:user) { create(:user) }
     let(:issue) { create(:issue) }
 
+    def spend_time(seconds)
+      issue.spend_time(seconds, user)
+      issue.save!
+    end
+
     context 'adding time' do
       it 'should update the total time spent' do
-        issue.spend_time!(1800, user)
+        spend_time(1800)
 
         expect(issue.total_time_spent).to eq(1800)
       end
@@ -399,18 +404,18 @@ describe Issue, "Issuable" do
 
     context 'substracting time' do
       before do
-        issue.spend_time!(1800, user)
+        spend_time(1800)
       end
 
       it 'should update the total time spent' do
-        issue.spend_time!(-900, user)
+        spend_time(-900)
 
         expect(issue.total_time_spent).to eq(900)
       end
 
       context 'when time to substract exceeds the total time spent' do
         it 'should not alter the total time spent' do
-          issue.spend_time!(-3600, user)
+          spend_time(-3600)
 
           expect(issue.total_time_spent).to eq(1800)
         end
