@@ -271,12 +271,17 @@ rake db:seed_fu:
       - log/development.log
 
 teaspoon:
+  cache:
+    paths:
+      - vendor/ruby
+      - node_modules/
   stage: test
   <<: *use-db
   script:
     - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
     - apt-get install --assume-yes nodejs
-    - npm install --global istanbul
+    - npm install
+    - npm link istanbul
     - rake teaspoon
   artifacts:
     name: coverage-javascript
@@ -346,8 +351,11 @@ coverage:
     - coverage/assets/
 
 lint-javascript:
+  cache:
+    paths:
+      - node_modules/
   stage: test
-  image: "node:latest"
+  image: "node:7.1"
   before_script:
     - npm install
   script:
