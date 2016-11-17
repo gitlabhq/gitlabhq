@@ -333,9 +333,6 @@ gem 'email_reply_parser', '~> 0.5.8'
 
 gem 'ruby-prof', '~> 0.16.2'
 
-## CI
-gem 'nested_form', '~> 0.3.2'
-
 # OAuth
 gem 'oauth2', '~> 1.2.0'
 
