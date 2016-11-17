@@ -25,7 +25,7 @@ describe Projects::Boards::IssuesController do
         create(:labeled_issue, project: project, labels: [planning])
         create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
         create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
-        issue.subscribe(johndoe)
+        issue.subscribe(johndoe, project)
 
         list_issues user: user, board: board, list: list2
 

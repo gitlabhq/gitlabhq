@@ -1067,9 +1067,10 @@ ActiveRecord::Schema.define(version: 20161113184239) do
     t.boolean "subscribed"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "project_id"
   end
 
-  add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id"], name: "subscriptions_user_id_and_ref_fields", unique: true, using: :btree
+  add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
 
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
@@ -1265,6 +1266,7 @@ ActiveRecord::Schema.define(version: 20161113184239) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
+  add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
 end
