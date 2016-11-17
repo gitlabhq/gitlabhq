@@ -6,6 +6,7 @@
 class ProjectCacheWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
+  prepend EE::Workers::ProjectCacheWorker
 
   LEASE_TIMEOUT = 15.minutes.to_i
 

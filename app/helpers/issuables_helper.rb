@@ -39,11 +39,6 @@ module IssuablesHelper
     end
   end
 
-  def can_add_template?(issuable)
-    names = issuable_templates(issuable)
-    names.empty? && can?(current_user, :push_code, @project) && !@project.private?
-  end
-
   def template_dropdown_tag(issuable, &block)
     title = selected_template(issuable) || "Choose a template"
     options = {

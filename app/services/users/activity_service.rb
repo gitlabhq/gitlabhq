@@ -14,7 +14,7 @@ module Users
     private
 
     def record_activity
-      user_activity.touch
+      user_activity.touch unless Gitlab::Geo.secondary?
 
       Rails.logger.debug("Recorded activity: #{@activity} for User ID: #{@author.id} (username: #{@author.username}")
     end
