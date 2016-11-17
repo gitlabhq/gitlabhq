@@ -16,13 +16,25 @@ describe "Pipelines", feature: true, js: true do
   describe 'GET /:project/pipelines', feature: true, js: true do
     include WaitForVueResource
 
-    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running') }
+    let!(:pipeline) do
+      create(
+        :ci_empty_pipeline,
+        project: project,
+        ref: 'master',
+        status: 'running'
+      )
+    end
 
     [:pipelines].each do |scope|
       context "displaying #{scope}" do
         let(:project) { create(:project) }
 
-        before { visit namespace_project_pipelines_path(project.namespace, project, scope: scope) }
+        before do
+          visit namespace_project_pipelines_path(
+            project.namespace, project,
+            scope: scope
+          )
+        end
 
         it do
           wait_for_vue_resource
@@ -35,20 +47,29 @@ describe "Pipelines", feature: true, js: true do
       context "displaying #{scope}" do
         let(:project) { create(:project) }
 
-        before { visit namespace_project_pipelines_path(project.namespace, project, scope: scope) }
+        before do
+          visit namespace_project_pipelines_path(
+            project.namespace,
+            project, scope: scope
+          )
+        end
 
         it { expect(page).to have_content(pipeline.short_sha) }
       end
     end
 
     context 'anonymous access' do
-      before { visit namespace_project_pipelines_path(project.namespace, project) }
+      before do
+        visit namespace_project_pipelines_path(project.namespace, project)
+      end
 
       it { expect(page).to have_http_status(:success) }
     end
 
     context 'cancelable pipeline' do
-      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) do
+        create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test')
+      end
 
       before do
         build.run
@@ -84,7 +105,9 @@ describe "Pipelines", feature: true, js: true do
     end
 
     context 'retryable pipelines' do
-      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) do
+        create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test')
+      end
 
       before do
         build.drop
@@ -103,9 +126,20 @@ describe "Pipelines", feature: true, js: true do
     end
 
     context 'with manual actions' do
-      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'manual build', stage: 'test', commands: 'test') }
+      let!(:manual) do
+        create(
+          :ci_build,
+          :manual,
+          pipeline: pipeline,
+          name: 'manual build',
+          stage: 'test',
+          commands: 'test'
+        )
+      end
 
-      before { visit namespace_project_pipelines_path(project.namespace, project) }
+      before do
+        visit namespace_project_pipelines_path(project.namespace, project)
+      end
 
       it do
         wait_for_vue_resource
@@ -127,7 +161,14 @@ describe "Pipelines", feature: true, js: true do
 
     context 'for generic statuses' do
       context 'when running' do
-        let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
+        let!(:running) do
+          create(
+            :generic_commit_status,
+            status: 'running',
+            pipeline: pipeline,
+            stage: 'test'
+          )
+        end
 
         before do
           visit namespace_project_pipelines_path(project.namespace, project)
@@ -143,7 +184,14 @@ describe "Pipelines", feature: true, js: true do
       end
 
       context 'when failed' do
-        let!(:status) { create(:generic_commit_status, :pending, pipeline: pipeline, stage: 'test') }
+        let!(:status) do
+          create(
+            :generic_commit_status,
+            :pending,
+            pipeline: pipeline,
+            stage: 'test'
+          )
+        end
 
         before do
           status.drop
@@ -162,9 +210,20 @@ describe "Pipelines", feature: true, js: true do
 
     context 'downloadable pipelines' do
       context 'with artifacts' do
-        let!(:with_artifacts) { create(:ci_build, :artifacts, :success, pipeline: pipeline, name: 'rspec tests', stage: 'test') }
+        let!(:with_artifacts) do
+          create(
+            :ci_build,
+            :artifacts,
+            :success,
+            pipeline: pipeline,
+            name: 'rspec tests',
+            stage: 'test'
+          )
+        end
 
-        before { visit namespace_project_pipelines_path(project.namespace, project) }
+        before do
+          visit namespace_project_pipelines_path(project.namespace, project)
+        end
 
         it do
           wait_for_vue_resource
@@ -178,17 +237,38 @@ describe "Pipelines", feature: true, js: true do
       end
 
       context 'with artifacts expired' do
-        let!(:with_artifacts_expired) { create(:ci_build, :artifacts_expired, :success, pipeline: pipeline, name: 'rspec', stage: 'test') }
+        let!(:with_artifacts_expired) do
+          create(
+            :ci_build,
+            :artifacts_expired,
+            :success,
+            pipeline: pipeline,
+            name: 'rspec',
+            stage: 'test'
+          )
+        end
 
-        before { visit namespace_project_pipelines_path(project.namespace, project) }
+        before do
+          visit namespace_project_pipelines_path(project.namespace, project)
+        end
 
         it { expect(page).not_to have_selector('.build-artifacts') }
       end
 
       context 'without artifacts' do
-        let!(:without_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage: 'test') }
+        let!(:without_artifacts) do
+          create(
+            :ci_build,
+            :success,
+            pipeline: pipeline,
+            name: 'rspec',
+            stage: 'test'
+          )
+        end
 
-        before { visit namespace_project_pipelines_path(project.namespace, project) }
+        before do
+          visit namespace_project_pipelines_path(project.namespace, project)
+        end
 
         it { expect(page).not_to have_selector('.build-artifacts') }
       end
@@ -199,14 +279,49 @@ describe "Pipelines", feature: true, js: true do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
 
     before do
-      @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
-      @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
-      @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
-      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual build')
-      @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
+      @success = create(
+        :ci_build,
+        :success,
+        pipeline: pipeline,
+        stage: 'build',
+        name: 'build'
+      )
+      @failed = create(
+        :ci_build,
+        :failed,
+        pipeline: pipeline,
+        stage: 'test',
+        name: 'test',
+        commands: 'test'
+      )
+      @running = create(
+        :ci_build,
+        :running,
+        pipeline: pipeline,
+        stage: 'deploy',
+        name: 'deploy'
+      )
+      @manual = create(
+        :ci_build,
+        :manual,
+        pipeline: pipeline,
+        stage: 'deploy',
+        name: 'manual build'
+      )
+      @external = create(
+        :generic_commit_status,
+        status: 'success',
+        pipeline: pipeline,
+        name: 'jenkins',
+        stage: 'external'
+      )
     end
 
-    before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    before do
+      visit namespace_project_pipeline_path(
+        project.namespace, project, pipeline
+        )
+    end
 
     it 'shows a list of builds' do
       expect(page).to have_content('Test')
@@ -256,7 +371,9 @@ describe "Pipelines", feature: true, js: true do
   describe 'POST /:project/pipelines', feature: true, js: true do
     let(:project) { create(:project) }
 
-    before { visit new_namespace_project_pipeline_path(project.namespace, project) }
+    before do
+      visit new_namespace_project_pipeline_path(project.namespace, project)
+    end
 
     context 'for valid commit' do
       before { fill_in('pipeline[ref]', with: 'master') }
@@ -264,7 +381,13 @@ describe "Pipelines", feature: true, js: true do
       context 'with gitlab-ci.yml' do
         before { stub_ci_pipeline_to_return_yaml_file }
 
-        it { expect{ click_on 'Create pipeline' }.to change{ Ci::Pipeline.count }.by(1) }
+        it do
+          expect{
+            click_on 'Create pipeline'
+          }.to change{
+            Ci::Pipeline.count
+          }.by(1)
+        end
       end
 
       context 'without gitlab-ci.yml' do

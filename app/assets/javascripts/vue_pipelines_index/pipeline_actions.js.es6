@@ -47,7 +47,7 @@
                       >
                       </path>
                     </svg>
-                    <span>{{action.name}}</span>
+                    <span title="Manual build">{{action.name}}</span>
                   </a>
                 </li>
               </ul>
