@@ -24,7 +24,6 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
-<<<<<<< HEAD
     trait :import_started do
       import_url FFaker::Internet.uri('http')
       import_status :started
@@ -40,10 +39,10 @@ FactoryGirl.define do
 
       mirror true
       mirror_user_id { creator_id }
-=======
+    end
+
     trait :access_requestable do
       request_access_enabled true
->>>>>>> ce-dev/master
     end
 
     trait :empty_repo do

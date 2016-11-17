@@ -8,6 +8,8 @@ module API
         optional :visibility_level, type: Integer, desc: 'The visibility level of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
+        optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
+        optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
     end
 
@@ -42,21 +44,6 @@ module API
         present paginate(groups), with: Entities::Group, user: current_user
       end
 
-<<<<<<< HEAD
-      # Create group. Available only for users who can create groups.
-      #
-      # Parameters:
-      #   name (required)                           - The name of the group
-      #   path (required)                           - The path of the group
-      #   description (optional)                    - The description of the group
-      #   visibility_level (optional)               - The visibility level of the group
-      #   membership_lock       (optional, boolean) - Prevent adding new members to project membership within this group
-      #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
-      #   lfs_enabled (optional)      - Enable/disable LFS for the projects in this group
-      #   request_access_enabled (optional) - Allow users to request member access
-      # Example Request:
-      #   POST /groups
-=======
       desc 'Create a group. Available only for users who can create groups.' do
         success Entities::Group
       end
@@ -65,15 +52,12 @@ module API
         requires :path, type: String, desc: 'The path of the group'
         use :optional_params
       end
->>>>>>> ce-dev/master
       post do
         authorize! :create_group
 
-<<<<<<< HEAD
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock, :lfs_enabled, :request_access_enabled]
-        @group = Group.new(attrs)
+        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
-        if @group.save
+        if group.persisted?
           # NOTE: add backwards compatibility for single ldap link
           ldap_attrs = attributes_for_keys [:ldap_cn, :ldap_access]
           if ldap_attrs.present?
@@ -83,36 +67,13 @@ module API
             })
           end
 
-          @group.add_owner(current_user)
-          present @group, with: Entities::Group
-=======
-        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
-
-        if group.persisted?
           present group, with: Entities::Group
->>>>>>> ce-dev/master
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
       end
     end
 
-<<<<<<< HEAD
-      # Update group. Available only for users who can manage this group.
-      #
-      # Parameters:
-      #   id (required)                             - The ID of a group
-      #   name (optional)                           - The name of the group
-      #   path (optional)                           - The path of the group
-      #   description (optional)                    - The details of the group
-      #   visibility_level (optional)               - The visibility level of the group
-      #   lfs_enabled (optional)      - Enable/disable LFS for the projects in this group
-      #   membership_lock (optional, boolean)       - Prevent adding new members to project membership within this group
-      #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
-      #   request_access_enabled (optional) - Allow users to request member access
-      # Example Request:
-      #   PUT /groups/:id
-=======
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
@@ -127,18 +88,11 @@ module API
         at_least_one_of :name, :path, :description, :visibility_level,
                         :lfs_enabled, :request_access_enabled
       end
->>>>>>> ce-dev/master
       put ':id' do
         group = find_group(params[:id])
         authorize! :admin_group, group
 
-<<<<<<< HEAD
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock, :lfs_enabled, :request_access_enabled]
-
-        if ::Groups::UpdateService.new(group, current_user, attrs).execute
-=======
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
->>>>>>> ce-dev/master
           present group, with: Entities::GroupDetail
         else
           render_validation_error!(group)

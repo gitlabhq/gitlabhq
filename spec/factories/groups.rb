@@ -16,7 +16,6 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
-<<<<<<< HEAD
     factory :group_with_members do
       after(:create) do |group, evaluator|
         group.add_developer(create :user)
@@ -38,10 +37,10 @@ FactoryGirl.define do
           provider: evaluator.provider
         )
       end
-=======
+    end
+
     trait :access_requestable do
       request_access_enabled true
->>>>>>> ce-dev/master
     end
   end
 end

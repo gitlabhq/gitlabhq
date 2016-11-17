@@ -816,16 +816,12 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.boolean "membership_lock", default: false
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
-<<<<<<< HEAD
-    t.boolean "request_access_enabled", default: true, null: false
+    t.boolean "request_access_enabled", default: false, null: false
     t.string "ldap_sync_status", default: "ready", null: false
     t.string "ldap_sync_error"
     t.datetime "ldap_sync_last_update_at"
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
-=======
-    t.boolean "request_access_enabled", default: false, null: false
->>>>>>> ce-dev/master
     t.datetime "deleted_at"
     t.text "description_html"
     t.boolean "lfs_enabled"

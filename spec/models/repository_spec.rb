@@ -1699,7 +1699,6 @@ describe Repository, models: true do
       end.to raise_error(Repository::CommitError)
     end
   end
-<<<<<<< HEAD
 
   describe '#remove_storage_from_path' do
     let(:storage_path) { project.repository_storage_path }
@@ -1715,6 +1714,4 @@ describe Repository, models: true do
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
-=======
->>>>>>> ce-dev/master
 end

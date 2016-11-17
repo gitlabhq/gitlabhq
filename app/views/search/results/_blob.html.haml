@@ -1,33 +1,18 @@
-<<<<<<< HEAD
-- parsed_blob = parse_search_result(blob)
-- project = @project || find_project_for_blob(blob)
-- blob_link = namespace_project_blob_path(project.namespace, project, tree_join(parsed_blob.ref, parsed_blob.filename))
-.blob-result
-  .file-holder
-    .file-title
-=======
 - file_name, blob = blob
+- project = @project || find_project_for_blob(blob)
+- ref = @search_results.repository_ref
+- blob_link = namespace_project_blob_path(project.namespace, project, tree_join(ref, file_name))
 .blob-result
   .file-holder
     .file-title
-      - ref = @search_results.repository_ref
-      - blob_link = namespace_project_blob_path(@project.namespace, @project, tree_join(ref, file_name))
->>>>>>> ce-dev/master
       = link_to blob_link do
         = icon('fa-file')
         %strong
-<<<<<<< HEAD
           - if @project
-            = parsed_blob.filename
+            = file_name
           - else
             #{project.name_with_namespace}:
-            %i= parsed_blob.filename
-
-    .file-content.code.term
-      = render 'shared/file_highlight', blob: parsed_blob, first_line_number: parsed_blob.startline, blob_link: blob_link
-=======
-          = file_name
+            %i= file_name
     - if blob
       .file-content.code.term
         = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link
->>>>>>> ce-dev/master

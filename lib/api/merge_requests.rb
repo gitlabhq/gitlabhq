@@ -28,6 +28,7 @@ module API
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
+          optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
         end
       end
 
@@ -63,30 +64,6 @@ module API
         present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user
       end
 
-<<<<<<< HEAD
-      # Create MR
-      #
-      # Parameters:
-      #
-      #   id (required)                      - The ID of a project - this will be the source of the merge request
-      #   source_branch (required)           - The source branch
-      #   target_branch (required)           - The target branch
-      #   target_project_id (optional)       - The target project of the merge request defaults to the :id of the project
-      #   assignee_id (optional)             - Assignee user ID
-      #   title (required)                   - Title of MR
-      #   description (optional)             - Description of MR
-      #   labels (optional)                  - Labels for MR as a comma-separated list
-      #   milestone_id (optional)            - Milestone ID
-      #   approvals_before_merge (optional)  - Number of approvals required before this can be merged
-      #
-      # Example:
-      #   POST /projects/:id/merge_requests
-      #
-      post ":id/merge_requests" do
-        authorize! :create_merge_request, user_project
-        required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id, :approvals_before_merge]
-=======
       desc 'Create a merge request' do
         success Entities::MergeRequest
       end
@@ -102,7 +79,6 @@ module API
         authorize! :create_merge_request, user_project
 
         mr_params = declared_params
->>>>>>> ce-dev/master
 
         # Validate label names in advance
         if (errors = validate_label_params(mr_params)).any?
@@ -176,7 +152,7 @@ module API
                                  desc: 'Status of the merge request'
           use :optional_params
           at_least_one_of :title, :target_branch, :description, :assignee_id,
-                          :milestone_id, :labels, :state_event
+                          :milestone_id, :labels, :state_event, :approvals_before_merge
         end
         put path do
           merge_request = user_project.merge_requests.find(params.delete(:merge_request_id))

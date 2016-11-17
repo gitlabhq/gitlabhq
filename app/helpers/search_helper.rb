@@ -31,7 +31,6 @@ module SearchHelper
   end
 
   def parse_search_result(result)
-<<<<<<< HEAD
     if result.is_a?(String)
       parse_search_result_from_grep(result)
     else
@@ -83,37 +82,7 @@ module SearchHelper
   end
 
   def parse_search_result_from_grep(result)
-    ref = nil
-    filename = nil
-    basename = nil
-    startline = 0
-
-    result.each_line.each_with_index do |line, index|
-      if line =~ /^.*:.*:\d+:/
-        ref, filename, startline = line.split(':')
-        startline = startline.to_i - index
-        extname = Regexp.escape(File.extname(filename))
-        basename = filename.sub(/#{extname}$/, '')
-        break
-      end
-    end
-
-    data = ""
-
-    result.each_line do |line|
-      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: startline,
-      data: data
-    )
-=======
     Gitlab::ProjectSearchResults.parse_search_result(result)
->>>>>>> ce-dev/master
   end
 
   def find_project_for_blob(blob)
