@@ -83,37 +83,18 @@
         }, DEFAULT_SHORT_TIMEOUT);
       });
 
-      it('should pause an interval', function (done) {
-        const interval = this.smartInterval;
-
-        setTimeout(() => {
-          interval.pause();
-
-          const intervalId = interval.state.intervalId;
-          const currentInterval = interval.getCurrentInterval();
-          const intervalLowerLimit = interval.cfg.startingInterval;
-
-          expect(intervalId).toBeUndefined();
-          expect(currentInterval).toBeGreaterThan(intervalLowerLimit);
-
-          done();
-        }, DEFAULT_SHORT_TIMEOUT);
-      });
-
       it('should resume an interval', function (done) {
         const interval = this.smartInterval;
 
         setTimeout(() => {
-          interval.pause();
+          interval.cancel();
 
           const lastInterval = interval.getCurrentInterval();
           interval.resume();
 
-          const nextInterval = interval.getCurrentInterval();
           const intervalId = interval.state.intervalId;
 
           expect(intervalId).toBeTruthy();
-          expect(nextInterval).toBe(lastInterval);
 
           done();
         }, DEFAULT_SHORT_TIMEOUT);
@@ -162,7 +143,6 @@
           interval.handleVisibilityChange();
 
           expect(interval.state.intervalId).toBeTruthy();
-          expect(interval.getCurrentInterval()).toBe(pausedIntervalLength);
 
           done();
         }, DEFAULT_SHORT_TIMEOUT);
