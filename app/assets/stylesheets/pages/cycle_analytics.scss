@@ -295,11 +295,14 @@
     .item-title {
       margin: 0 0 2px 0;
 
-      .issue-title {
-        color: $gl-dark-link-color;
+      &.issue-title, &.commit-title, &.merge-merquest-title {
         max-width: 100%;
         display: block;
         @include text-overflow();
+
+        a {
+          color: $gl-dark-link-color;
+        }
       }
     }
 

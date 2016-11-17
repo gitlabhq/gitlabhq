@@ -22,7 +22,7 @@
       <div>
         <div class="item-details">
           <img class="avatar" :src="mergeRequest.author.avatarUrl">
-          <h5 class="item-title">
+          <h5 class="item-title merge-merquest-title">
             <a :href="mergeRequest.url">
               {{ mergeRequest.title }}
             </a>
