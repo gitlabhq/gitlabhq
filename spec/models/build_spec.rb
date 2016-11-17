@@ -1053,6 +1053,26 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#has_environment?' do
+    subject { build.has_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#starts_environment?' do
     subject { build.starts_environment? }
 
@@ -1061,7 +1081,17 @@ describe Ci::Build, models: true do
         build.update(environment: 'review')
       end
 
-      it { is_expected.to be_truthy }
+      context 'no action is defined' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'and start action is defined' do
+        before do
+          build.update(options: { environment: { action: 'start' } } )
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'when environment is not defined' do
@@ -1106,11 +1136,13 @@ describe Ci::Build, models: true do
   describe '#last_deployment' do
     subject { build.last_deployment }
 
-    context 'when multiple deployments is created returns latest one' do
+    context 'when multiple deployments are created' do
       let!(:deployment1) { create(:deployment, deployable: build) }
       let!(:deployment2) { create(:deployment, deployable: build) }
 
-      it { is_expected.to eq(deployment2) }
+      it 'returns the latest one' do
+        is_expected.to eq(deployment2)
+      end
     end
   end
 

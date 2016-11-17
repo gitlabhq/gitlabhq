@@ -26,7 +26,7 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
-    - if @build.environment.present? && @build.starts_environment?
+    - if @build.starts_environment?
       .prepend-top-default
         .environment-information
           - if @build.outdated_deployment?

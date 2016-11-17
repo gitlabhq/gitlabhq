@@ -4,7 +4,7 @@ class BuildSuccessWorker
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      create_deployment(build) if build.environment.present?
+      create_deployment(build) if build.has_environment?
     end
   end
 

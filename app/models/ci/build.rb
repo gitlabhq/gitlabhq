@@ -131,12 +131,16 @@ module Ci
       ExpandVariables.expand(environment, variables) if environment
     end
 
+    def has_environment?
+      self.environment.present?
+    end
+
     def starts_environment?
-      self.environment.present? && self.environment_action == 'start'
+      has_environment? && self.environment_action == 'start'
     end
 
     def stops_environment?
-      self.environment.present? && self.environment_action == 'stop'
+      has_environment? && self.environment_action == 'stop'
     end
 
     def environment_action
@@ -148,7 +152,7 @@ module Ci
     end
 
     def last_deployment
-      deployments.order(id: :desc).last
+      deployments.last
     end
 
     def depends_on_builds
