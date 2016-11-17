@@ -6,8 +6,8 @@ feature 'Environments', feature: true do
   given(:role) { :developer }
 
   background do
-    login_as(user)
     project.team << [user, role]
+    login_as(user)
   end
 
   describe 'when showing environments' do
@@ -16,7 +16,7 @@ feature 'Environments', feature: true do
     given!(:manual) { }
 
     before do
-      visit namespace_project_environments_path(project.namespace, project)
+      visit_environments(project)
     end
 
     context 'shows two tabs' do
@@ -142,7 +142,7 @@ feature 'Environments', feature: true do
     given!(:manual) { }
 
     before do
-      visit namespace_project_environment_path(project.namespace, project, environment)
+      visit_environment(environment)
     end
 
     context 'without deployments' do
@@ -152,7 +152,9 @@ feature 'Environments', feature: true do
     end
 
     context 'with deployments' do
-      given(:deployment) { create(:deployment, environment: environment) }
+      given(:deployment) do
+        create(:deployment, environment: environment, deployable: nil)
+      end
 
       scenario 'does show deployment SHA' do
         expect(page).to have_link(deployment.short_sha)
@@ -232,7 +234,7 @@ feature 'Environments', feature: true do
 
   describe 'when creating a new environment' do
     before do
-      visit namespace_project_environments_path(project.namespace, project)
+      visit_environments(project)
     end
 
     context 'when logged as developer' do
@@ -270,5 +272,57 @@ feature 'Environments', feature: true do
         expect(page).not_to have_link('New environment')
       end
     end
+  end
+
+  feature 'auto-close environment when branch deleted' do
+    given(:project) { create(:project) }
+
+    given!(:environment) do
+      create(:environment, :with_review_app, project: project,
+                                             ref: 'feature')
+    end
+
+    scenario 'user visits environment page' do
+      visit_environment(environment)
+
+      expect(page).to have_link('Stop')
+    end
+
+    scenario 'user deletes the branch with running environment' do
+      visit namespace_project_branches_path(project.namespace, project)
+
+      remove_branch_with_hooks(project, user, 'feature') do
+        page.within('.js-branch-feature') { find('a.btn-remove').click }
+      end
+
+      visit_environment(environment)
+
+      expect(page).to have_no_link('Stop')
+    end
+
+    ##
+    # This is a workaround for problem described in #24543
+    #
+    def remove_branch_with_hooks(project, user, branch)
+      params = {
+        oldrev: project.commit(branch).id,
+        newrev: Gitlab::Git::BLANK_SHA,
+        ref: "refs/heads/#{branch}"
+      }
+
+      yield
+
+      GitPushService.new(project, user, params).execute
+    end
+  end
+
+  def visit_environments(project)
+    visit namespace_project_environments_path(project.namespace, project)
+  end
+
+  def visit_environment(environment)
+    visit namespace_project_environment_path(environment.project.namespace,
+                                             environment.project,
+                                             environment)
   end
 end

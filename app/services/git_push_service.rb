@@ -49,10 +49,7 @@ class GitPushService < BaseService
       update_gitattributes if is_default_branch?
     end
 
-    # Update merge requests that may be affected by this push. A new branch
-    # could cause the last commit of a merge request to change.
-    update_merge_requests
-
+    execute_related_hooks
     perform_housekeeping
   end
 
@@ -62,14 +59,24 @@ class GitPushService < BaseService
 
   protected
 
-  def update_merge_requests
-    UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+  def execute_related_hooks
+    # Update merge requests that may be affected by this push. A new branch
+    # could cause the last commit of a merge request to change.
+    #
+    UpdateMergeRequestsWorker
+      .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
     ProjectCacheWorker.perform_async(@project.id)
+
+    if push_remove_branch?
+      AfterBranchDeleteService
+        .new(project, current_user)
+        .execute(branch_name)
+    end
   end
 
   def perform_housekeeping
