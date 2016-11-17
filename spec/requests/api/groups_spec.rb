@@ -57,13 +57,48 @@ describe API::API, api: true  do
     end
 
     context "when using all_available in request" do
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
       it "returns all groups you have access to" do
         public_group = create :group, :public
         get api("/groups", user1), all_available: true
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(public_group.name)
+        expect(response_groups).to contain_exactly(public_group.name, group1.name)
+      end
+    end
+
+    context "when using sorting" do
+      let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
+      before do
+        group3.add_owner(user1)
+      end
+
+      it "sorts by name ascending by default" do
+        get api("/groups", user1)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group3.name, group1.name])
+      end
+
+      it "sorts in descending order when passed" do
+        get api("/groups", user1), sort: "desc"
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name])
+      end
+
+      it "sorts by the order_by param" do
+        get api("/groups", user1), order_by: "path"
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name])
       end
     end
   end
