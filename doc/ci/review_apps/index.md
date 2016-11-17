@@ -1,9 +1,10 @@
 # Getting started with Review Apps
 
-> [Introduced][ce-21971] in GitLab 8.12. Further additions were made in GitLab 8.13.
 >
-Inspired by [Heroku's Review Apps][heroku-apps] which itself was inspired by
-[Fourchette].
+- [Introduced][ce-21971] in GitLab 8.12. Further additions were made in GitLab
+  8.13 and 8.14.
+- Inspired by [Heroku's Review Apps][heroku-apps] which itself was inspired by
+  [Fourchette].
 
 The base of Review Apps is the [dynamic environments] which allow you to create
 a new environment (dynamically) for each one of your branches.
