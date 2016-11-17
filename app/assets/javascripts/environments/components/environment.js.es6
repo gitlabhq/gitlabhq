@@ -102,7 +102,7 @@
      * Toggles loading property.
      */
     created() {
-      window.gl.environmentsService = new EnvironmentsService(this.endpoint);
+      gl.environmentsService = new EnvironmentsService(this.endpoint);
 
       const scope = this.$options.getQueryParameter('scope');
       if (scope) {
@@ -156,7 +156,7 @@
       <div class="container-fluid container-limited">
         <div class="top-area">
           <ul v-if="!isLoading" class="nav-links">
-            <li v-bind:class="{ 'active': scope === undefined}">
+            <li v-bind:class="{ 'active': scope === undefined }">
               <a :href="projectEnvironmentsPath">
                 Available
                 <span
@@ -164,7 +164,7 @@
                   v-html="state.availableCounter"></span>
               </a>
             </li>
-            <li v-bind:class="{ 'active' : scope === 'stopped'}">
+            <li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
                 <span
