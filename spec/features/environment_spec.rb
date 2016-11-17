@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environments', feature: true do
+feature 'Environment', :feature do
   given(:project) { create(:empty_project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
@@ -10,13 +10,13 @@ feature 'Environments', feature: true do
     project.team << [user, role]
   end
 
-  describe 'when showing the environment' do
-    given(:environment) { create(:environment, project: project) }
+  feature 'environment details page' do
+    given!(:environment) { create(:environment, project: project) }
     given!(:deployment) { }
     given!(:manual) { }
 
     before do
-      visit namespace_project_environment_path(project.namespace, project, environment)
+      visit_environment(environment)
     end
 
     context 'without deployments' do
@@ -26,20 +26,27 @@ feature 'Environments', feature: true do
     end
 
     context 'with deployments' do
-      given(:deployment) { create(:deployment, environment: environment) }
+      context 'when there is no related deployable' do
+        given(:deployment) do
+          create(:deployment, environment: environment, deployable: nil)
+        end
 
-      scenario 'does show deployment SHA' do
-        expect(page).to have_link(deployment.short_sha)
+        scenario 'does show deployment SHA' do
+          expect(page).to have_link(deployment.short_sha)
+        end
+
+        scenario 'does not show a re-deploy button for deployment without build' do
+          expect(page).not_to have_link('Re-deploy')
+        end
       end
 
-      scenario 'does not show a re-deploy button for deployment without build' do
-        expect(page).not_to have_link('Re-deploy')
-      end
-
-      context 'with build' do
+      context 'with related deployable present' do
         given(:pipeline) { create(:ci_pipeline, project: project) }
         given(:build) { create(:ci_build, pipeline: pipeline) }
-        given(:deployment) { create(:deployment, environment: environment, deployable: build) }
+
+        given(:deployment) do
+          create(:deployment, environment: environment, deployable: build)
+        end
 
         scenario 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
@@ -103,5 +110,53 @@ feature 'Environments', feature: true do
         end
       end
     end
+  end
+
+  feature 'auto-close environment when branch is deleted' do
+    given(:project) { create(:project) }
+
+    given!(:environment) do
+      create(:environment, :with_review_app, project: project,
+                                             ref: 'feature')
+    end
+
+    scenario 'user visits environment page' do
+      visit_environment(environment)
+
+      expect(page).to have_link('Stop')
+    end
+
+    scenario 'user deletes the branch with running environment' do
+      visit namespace_project_branches_path(project.namespace, project)
+
+      remove_branch_with_hooks(project, user, 'feature') do
+        page.within('.js-branch-feature') { find('a.btn-remove').click }
+      end
+
+      visit_environment(environment)
+
+      expect(page).to have_no_link('Stop')
+    end
+
+    ##
+    # This is a workaround for problem described in #24543
+    #
+    def remove_branch_with_hooks(project, user, branch)
+      params = {
+        oldrev: project.commit(branch).id,
+        newrev: Gitlab::Git::BLANK_SHA,
+        ref: "refs/heads/#{branch}"
+      }
+
+      yield
+
+      GitPushService.new(project, user, params).execute
+    end
+  end
+
+  def visit_environment(environment)
+    visit namespace_project_environment_path(environment.project.namespace,
+                                             environment.project,
+                                             environment)
   end
 end

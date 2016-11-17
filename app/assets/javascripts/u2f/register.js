@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-undef, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, padded-blocks, max-len */
 // Register U2F (universal 2nd factor) devices for users to authenticate with.
 //
 // State Flow #1: setup -> in_progress -> registered -> POST to server

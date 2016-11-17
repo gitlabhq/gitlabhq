@@ -73,7 +73,21 @@ entry.
 - Fix applying GitHub-imported labels when importing job is interrupted
 - Allow to search for user by secondary email address in the admin interface(/admin/users) !7115 (YarNayar)
 - Updated commit SHA styling on the branches page.
+- Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.6 (2016-11-17)
+
+- Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
+- Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option. !7117
+- Fix relative links in Markdown wiki when displayed in "Project" tab. !7218
+- Fix no "Register" tab if ldap auth is enabled (#24038). !7274 (Luc Didry)
+- Fix cache for commit status in commits list to respect branches. !7372
+- Fix issue causing Labels not to appear in sidebar on MR page. !7416 (Alex Sanford)
+- Limit labels returned for a specific project as an administrator. !7496
+- Clicking "force remove source branch" label now toggles the checkbox again.
+- Allow commit note to be visible if repo is visible.
+- Fix project Visibility Level selector not using default values.
 
 ## 8.13.5 (2016-11-08)
 
@@ -102,7 +116,6 @@ entry.
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
-- Fix relative links in Markdown wiki when displayed in "Project" tab !7218
 - Changed build dropdown list length to be 6,5 builds long in the pipeline graph
 
 ## 8.13.2 (2016-10-31)
