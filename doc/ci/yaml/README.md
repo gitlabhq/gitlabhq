@@ -541,6 +541,8 @@ same manual action multiple times.
 
 An example usage of manual actions is deployment to production.
 
+Read more at the [environments documentation][env-manual].
+
 ### environment
 
 > Introduced in GitLab 8.9.
@@ -1223,6 +1225,7 @@ capitalization, the commit will be created but the builds will be skipped.
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
+[env-manual]: ../environments.md#manually-deploying-to-environments
 [examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
 [environment]: ../environments.md
