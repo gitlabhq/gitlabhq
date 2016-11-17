@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def execute(match)
-        present find_by_iid(match[:iid])
+        find_by_iid(match[:iid])
       end
     end
   end

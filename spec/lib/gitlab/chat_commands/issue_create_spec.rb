@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::ChatCommands::IssueCreate, service: true do
   describe '#execute' do
-    let(:project)  { create(:empty_project) }
-    let(:user)     { create(:user) }
+    let(:project) { create(:empty_project) }
+    let(:user) { create(:user) }
     let(:regex_match) { described_class.match("issue create bird is the word") }
 
     before do
@@ -16,12 +16,9 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
 
     context 'without description' do
       it 'creates the issue' do
-        expect do
-          subject # this trigger the execution
-        end.to change { project.issues.count }.by(1)
+        expect { subject }.to change { project.issues.count }.by(1)
 
-        expect(subject[:response_type]).to be :in_channel
-        expect(subject[:text]).to match('bird is the word')
+        expect(subject.title).to eq('bird is the word')
       end
     end
 
@@ -29,11 +26,9 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
       let(:description) { "Surfin bird" }
       let(:regex_match) { described_class.match("issue create bird is the word\n#{description}") }
 
-      before do
-        subject
-      end
-
       it 'creates the issue with description' do
+        subject
+
         expect(Issue.last.description).to eq(description)
       end
     end

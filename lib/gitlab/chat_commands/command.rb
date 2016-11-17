@@ -9,9 +9,11 @@ module Gitlab
       def execute
         klass, match = fetch_klass
 
-        return help(help_messages, params[:command]) unless klass.try(:available?, project)
-
-        klass.new(project, current_user, params).execute(match)
+        if klass
+          present klass.new(project, current_user, params).execute(match)
+        else
+          help(help_messages)
+        end
       end
 
       private
@@ -39,6 +41,14 @@ module Gitlab
 
       def command
         params[:text]
+      end
+
+      def present(resource)
+        Mattermost::Presenter.present(resource)
+      end
+
+      def help(messages)
+        Mattermost::Presenter.help(messages, params[:command])
       end
     end
   end

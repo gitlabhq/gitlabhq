@@ -17,17 +17,15 @@ describe Gitlab::ChatCommands::IssueShow, service: true do
 
     context 'the issue exists' do
       it 'returns the issue' do
-        expect(subject[:response_type]).to be(:in_channel)
-        expect(subject[:text]).to match(issue.title)
+        expect(subject.iid).to be issue.iid
       end
     end
 
     context 'the issue does not exist' do
-      let(:regex_match) { described_class.match("issue show 1234") }
+      let(:regex_match) { described_class.match("issue show 2343242") }
 
       it "returns nil" do
-        expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('404 not found!')
+        expect(subject).to be_nil
       end
     end
   end

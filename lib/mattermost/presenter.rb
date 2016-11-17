@@ -4,19 +4,20 @@ module Mattermost
       include Rails.application.routes.url_helpers
 
       def authorize_chat_name(url)
-        message = "Hi there! We've yet to get acquainted! Please [introduce yourself](#{url})!"
+        message = "Hi there! We've yet to get acquainted! Please introduce yourself by [connection your GitLab profile](#{url})!"
 
         ephemeral_response(message)
       end
 
       def help(messages, command)
+        return ephemeral_response("No commands configured") unless messages.count > 1
         message = ["Available commands:"]
 
         messages.each do |messsage|
           message << "- #{command} #{message}"
         end
 
-        ephemeral_response(messages.join("\n"))
+        ephemeral_response(message.join("\n"))
       end
 
       def not_found
