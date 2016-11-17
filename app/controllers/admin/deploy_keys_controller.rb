@@ -10,7 +10,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def create
-    @deploy_key = deploy_keys.new(deploy_key_params)
+    @deploy_key = deploy_keys.new(deploy_key_params.merge(user: current_user))
 
     if @deploy_key.save
       redirect_to admin_deploy_keys_path

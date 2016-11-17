@@ -49,10 +49,6 @@ class Key < ActiveRecord::Base
     )
   end
 
-  def notify_user
-    run_after_commit { NotificationService.new.new_key(self) }
-  end
-
   def post_create_hook
     SystemHooksService.new.execute_hooks_for(self, :create)
   end
@@ -77,5 +73,9 @@ class Key < ActiveRecord::Base
     return unless self.key.present?
 
     self.fingerprint = Gitlab::KeyFingerprint.new(self.key).fingerprint
+  end
+
+  def notify_user
+    run_after_commit { NotificationService.new.new_key(self) }
   end
 end

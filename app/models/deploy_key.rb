@@ -28,4 +28,10 @@ class DeployKey < Key
   def can_push_to?(project)
     can_push? && has_access_to?(project)
   end
+
+  private
+
+  # we don't want to notify the user for deploy keys
+  def notify_user
+  end
 end
