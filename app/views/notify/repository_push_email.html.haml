@@ -27,9 +27,9 @@
   %h4 #{pluralize @message.diffs_count, "changed file"}:
 
   %ul
-    - @message.diffs.each_with_index do |diff, i|
+    - @message.diffs.each do |diff|
       %li.file-stats
-        %a{href: "#{@message.target_url if @message.disable_diffs?}#diff-#{i}" }
+        %a{href: "#{@message.target_url if @message.disable_diffs?}##{hexdigest(diff.file_path)}" }
           - if diff.deleted_file
             %span.deleted-file
               &minus;
@@ -52,9 +52,10 @@
       %h5 The diff was not included because it is too large.
     - else
       %h4 Changes:
-      - diff_files.each_with_index do |diff_file, i|
-        %li{id: "diff-#{i}"}
-          %a{href: @message.target_url + "#diff-#{i}"}<
+      - diff_files.each do |diff_file|
+        - file_hash = hexdigest(diff_file.file_path)
+        %li{id: file_hash}
+          %a{href: @message.target_url + "##{file_hash}"}<
             - if diff_file.deleted_file
               %strong<
                 = diff_file.old_path
