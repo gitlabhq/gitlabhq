@@ -1700,16 +1700,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '#remove_storage_from_path' do
-    let(:storage_path) { project.repository_storage_path }
-    let(:project_path) { project.path_with_namespace }
-    let(:full_path) { File.join(storage_path, project_path) }
-
-    it { expect(Repository.remove_storage_from_path(full_path)).to eq(project_path) }
-    it { expect(Repository.remove_storage_from_path(project_path)).to eq(project_path) }
-    it { expect(Repository.remove_storage_from_path(storage_path)).to eq('') }
-  end
-
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
