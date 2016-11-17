@@ -5,8 +5,6 @@
   %div.form-group
     = f.label :password
     = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required."
-  %div.submit-container.move-submit-down
-    = f.submit "Sign in", class: "btn btn-save"
   - if devise_mapping.rememberable?
     .remember-me.checkbox
       %label{for: "user_remember_me"}
@@ -14,3 +12,5 @@
         %span Remember me
       .pull-right.forgot-password
         = link_to "Forgot your password?", new_password_path(resource_name)
+  %div.submit-container.move-submit-down
+    = f.submit "Sign in", class: "btn btn-save"
