@@ -334,10 +334,6 @@ gem 'html2text'
 
 gem 'ruby-prof', '~> 0.16.2'
 
-## CI
-gem 'activerecord-session_store', '~> 1.0.0'
-gem 'nested_form', '~> 0.3.2'
-
 # OAuth
 gem 'oauth2', '~> 1.2.0'
 
