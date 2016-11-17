@@ -58,20 +58,20 @@
     },
 
     data() {
-      const environmentsListApp = document.querySelector('#environments-list-view');
+      const environmentsData = document.querySelector('#environments-list-view').dataset;
 
       return {
         state: this.store.state,
-        endpoint: environmentsListApp.dataset.environmentsDataEndpoint,
-        canCreateDeployment: environmentsListApp.dataset.canCreateDeployment,
-        canReadEnvironment: environmentsListApp.dataset.canReadEnvironment,
-        canCreateEnvironment: environmentsListApp.dataset.canCreateEnvironment,
-        projectEnvironmentsPath: environmentsListApp.dataset.projectEnvironmentsPath,
-        projectStoppedEnvironmentsPath: environmentsListApp.dataset.projectStoppedEnvironmentsPath,
-        newEnvironmentPath: environmentsListApp.dataset.newEnvironmentPath,
-        helpPagePath: environmentsListApp.dataset.helpPagePath,
         visibility: 'available',
         isLoading: false,
+        endpoint: environmentsData.environmentsDataEndpoint,
+        canCreateDeployment: environmentsData.canCreateDeployment,
+        canReadEnvironment: environmentsData.canReadEnvironment,
+        canCreateEnvironment: environmentsData.canCreateEnvironment,
+        projectEnvironmentsPath: environmentsData.projectEnvironmentsPath,
+        projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
+        newEnvironmentPath: environmentsData.newEnvironmentPath,
+        helpPagePath: environmentsData.helpPagePath,
       };
     },
 
