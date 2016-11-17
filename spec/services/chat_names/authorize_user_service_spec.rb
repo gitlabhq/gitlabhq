@@ -15,7 +15,7 @@ describe ChatNames::AuthorizeUserService, services: true do
     end
 
     context 'when there are missing parameters' do
-      let(:params) { { } }
+      let(:params) { {} }
 
       it 'does not request a new token' do
         is_expected.to be_nil

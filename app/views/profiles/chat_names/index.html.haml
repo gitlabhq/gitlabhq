@@ -38,7 +38,7 @@
                     - if can?(current_user, :admin_project, project)
                       = link_to service.title, edit_namespace_project_service_path(project.namespace, project, service)
                     - else
-                      = chat_name.service.title
+                      = service.title
                 %td
                   = chat_name.team_domain
                 %td
