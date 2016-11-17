@@ -9,7 +9,7 @@ module ChatNames
       chat_name = find_chat_name
       return unless chat_name
 
-      chat_name.update(last_used_at: Time.now)
+      chat_name.touch(:last_used_at)
       chat_name.user
     end
 
