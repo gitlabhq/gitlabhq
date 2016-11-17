@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option. !7117
+- Fix relative links in Markdown wiki when displayed in "Project" tab. !7218
 - Fix no "Register" tab if ldap auth is enabled (#24038). !7274 (Luc Didry)
 - Fix cache for commit status in commits list to respect branches. !7372
 - Fix issue causing Labels not to appear in sidebar on MR page. !7416 (Alex Sanford)
