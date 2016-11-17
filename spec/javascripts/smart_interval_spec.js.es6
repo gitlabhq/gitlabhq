@@ -1,7 +1,6 @@
 //= require jquery
 //= require smart_interval
 
-
 (() => {
   const DEFAULT_MAX_INTERVAL = 100;
   const DEFAULT_STARTING_INTERVAL = 5;
@@ -89,7 +88,6 @@
         setTimeout(() => {
           interval.cancel();
 
-          const lastInterval = interval.getCurrentInterval();
           interval.resume();
 
           const intervalId = interval.state.intervalId;
@@ -133,8 +131,6 @@
           // simulates triggering of visibilitychange event
           interval.state.pageVisibility = 'hidden';
           interval.handleVisibilityChange();
-
-          const pausedIntervalLength = interval.getCurrentInterval();
 
           expect(interval.state.intervalId).toBeUndefined();
 
