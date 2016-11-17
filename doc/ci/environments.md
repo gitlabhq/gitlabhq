@@ -490,7 +490,8 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ## Limitations
 
 - You are limited to use only the [CI predefined variables][variables] in the
-  `environment: name`. Any variables defined inside `script` will not work.
+  `environment: name`. If you try to re-use variables defined inside `script`
+  as part of the environment name, it will not work.
 - If the branch name contains special characters and you use the
   `$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
   be complications during deployment. Follow the [issue 22849][ce-22849] for
@@ -515,5 +516,6 @@ Below are some links you may find interesting:
 [only]: yaml/README.md#only-and-except
 [onstop]: yaml/README.md#environment-on_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
+[ce-22849]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22849
 [gitlab runner]: https://docs.gitlab.com/runner/
 [git-strategy]: yaml/README.md#git-strategy
