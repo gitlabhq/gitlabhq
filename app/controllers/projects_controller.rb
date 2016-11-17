@@ -144,15 +144,13 @@ class ProjectsController < Projects::ApplicationController
 
     autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)
-    unlabels = autocomplete.unlabels(noteable)
 
     @suggestions = {
       emojis: Gitlab::AwardEmoji.urls,
       issues: autocomplete.issues,
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
-      labels: autocomplete.labels - unlabels,
-      unlabels: unlabels,
+      labels: autocomplete.labels,
       members: participants,
       commands: autocomplete.commands(noteable, params[:type])
     }
