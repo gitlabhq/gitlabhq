@@ -594,4 +594,69 @@ describe SystemNoteService, services: true do
       end
     end
   end
+
+  describe '.change_time_estimate' do
+    subject { described_class.change_time_estimate(noteable, project, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'with a time estimate' do
+      it 'sets the note text' do
+        noteable.update_attribute(:time_estimate, 277200)
+
+        expect(subject.note).to eq "Changed time estimate of this issue to 1w 4d 5h"
+      end
+    end
+
+    context 'without a time estimate' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Removed time estimate on this issue"
+      end
+    end
+  end
+
+  describe '.change_time_spent' do
+    # We need a custom noteable in order to the shared examples to be green.
+    let(:noteable) do
+      mr = create(:merge_request, source_project: project)
+      mr.spend_time(1, author)
+      mr.save!
+      mr
+    end
+
+    subject do
+      described_class.change_time_spent(noteable, project, author)
+    end
+
+    it_behaves_like 'a system note'
+
+    context 'when time was added' do
+      it 'sets the note text' do
+        spend_time!(277200)
+
+        expect(subject.note).to eq "Added 1w 4d 5h of time spent on this merge request"
+      end
+    end
+
+    context 'when time was subtracted' do
+      it 'sets the note text' do
+        spend_time!(-277200)
+
+        expect(subject.note).to eq "Subtracted 1w 4d 5h of time spent on this merge request"
+      end
+    end
+
+    context 'when time was removed' do
+      it 'sets the note text' do
+        spend_time!(:reset)
+
+        expect(subject.note).to eq "Removed time spent on this merge request"
+      end
+    end
+
+    def spend_time!(seconds)
+      noteable.spend_time(seconds, author)
+      noteable.save!
+    end
+  end
 end

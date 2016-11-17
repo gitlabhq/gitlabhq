@@ -211,3 +211,4 @@ priorities:
 - label
 timelogs:
 - trackable
+- user

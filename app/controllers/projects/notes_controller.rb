@@ -148,8 +148,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note_json(note)
     attrs = {
       award: false,
-      id: note.id,
-      commands_changes: note.commands_changes
+      id: note.id
     }
 
     if note.is_a?(AwardEmoji)
@@ -198,6 +197,7 @@ class Projects::NotesController < Projects::ApplicationController
       )
     end
 
+    attrs[:commands_changes] = note.commands_changes unless attrs[:award]
     attrs
   end
 

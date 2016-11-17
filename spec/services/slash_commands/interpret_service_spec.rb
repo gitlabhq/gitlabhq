@@ -211,7 +211,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'estimate command' do
-      it 'populates time_estimate: "3600" if content contains /estimate 1h' do
+      it 'populates time_estimate: 3600 if content contains /estimate 1h' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(time_estimate: 3600)
@@ -219,7 +219,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'spend command' do
-      it 'populates spend_time: { seconds: 3600, user: user } if content contains /spend 1h' do
+      it 'populates spend_time: 3600 if content contains /spend 1h' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: 3600)
@@ -227,7 +227,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'spend command with negative time' do
-      it 'populates spend_time: { seconds: -1800, user: user } if content contains /spend -30m' do
+      it 'populates spend_time: -1800 if content contains /spend -30m' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: -1800)
@@ -235,7 +235,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'remove_estimate command' do
-      it 'populates time_estimate: "0" if content contains /remove_estimate' do
+      it 'populates time_estimate: 0 if content contains /remove_estimate' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(time_estimate: 0)
@@ -243,7 +243,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'remove_time_spent command' do
-      it 'populates spend_time: ":reset" if content contains /remove_time_spent' do
+      it 'populates spend_time: :reset if content contains /remove_time_spent' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: :reset)

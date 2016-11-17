@@ -6,4 +6,5 @@ RSpec.describe Timelog, type: :model do
   it { is_expected.to be_valid }
 
   it { is_expected.to validate_presence_of(:time_spent) }
+  it { is_expected.to validate_presence_of(:user) }
 end

@@ -254,7 +254,7 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :estimate do |raw_duration|
-      time_estimate = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
+      time_estimate = Gitlab::TimeTrackingFormatter.parse(raw_duration)
 
       if time_estimate
         @updates[:time_estimate] = time_estimate
@@ -268,10 +268,11 @@ module SlashCommands
     end
     command :spend do |raw_duration|
       reduce_time = raw_duration.sub!(/\A-/, '')
-      time_spent = ChronicDuration.parse(raw_duration, default_unit: 'hours') rescue nil
-      time_spent *= -1 if time_spent && reduce_time
+      time_spent = Gitlab::TimeTrackingFormatter.parse(raw_duration)
 
       if time_spent
+        time_spent *= -1 if reduce_time
+
         @updates[:spend_time] = time_spent
       end
     end

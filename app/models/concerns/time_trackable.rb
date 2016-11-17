@@ -27,13 +27,8 @@ module TimeTrackable
     if seconds == :reset
       reset_spent_time
     else
-      add_or_susbtract_spent_time
+      add_or_subtract_spent_time
     end
-  end
-
-  def spend_time!(seconds, user)
-    spend_time(seconds, user)
-    save!
   end
 
   def total_time_spent
@@ -41,11 +36,11 @@ module TimeTrackable
   end
 
   def human_total_time_spent
-    ChronicDuration.output(total_time_spent, format: :short)
+    Gitlab::TimeTrackingFormatter.output(total_time_spent)
   end
 
   def human_time_estimate
-    ChronicDuration.output(time_estimate, format: :short)
+    Gitlab::TimeTrackingFormatter.output(time_estimate)
   end
 
   private
@@ -54,7 +49,7 @@ module TimeTrackable
     timelogs.new(time_spent: total_time_spent * -1, user: @time_spent_user)
   end
 
-  def add_or_susbtract_spent_time
+  def add_or_subtract_spent_time
     # Exit if time to subtract exceeds the total time spent.
     return if time_spent < 0 && (time_spent.abs > total_time_spent)
 
