@@ -76,8 +76,7 @@
        * @returns {Boolean|Undefined}
        */
       isFolder() {
-        return this.model.children &&
-          this.model.children.length > 0;
+        return this.model.children && this.model.children.length > 0;
       },
 
       /**
@@ -97,8 +96,7 @@
        * @returns {Number|Undefined}  The number of environments for the current folder.
        */
       childrenCounter() {
-        return this.model.children &&
-          this.model.children.length;
+        return this.model.children && this.model.children.length;
       },
 
       /**
