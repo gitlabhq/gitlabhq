@@ -65,6 +65,12 @@ class GeoNode < ActiveRecord::Base
     self.primary? ? false : !oauth_application.present?
   end
 
+  def backfill_repositories
+    if Gitlab::Geo.enabled?
+      GeoScheduleBackfillWorker.perform_async(id) unless primary?
+    end
+  end
+
   private
 
   def url_helper_args
@@ -120,9 +126,5 @@ class GeoNode < ActiveRecord::Base
     self.system_hook.url = geo_events_url if uri.present?
     self.system_hook.push_events = true
     self.system_hook.tag_push_events = true
-  end
-
-  def backfill_repositories
-    GeoScheduleBackfillWorker.perform_async(id) unless primary?
   end
 end
