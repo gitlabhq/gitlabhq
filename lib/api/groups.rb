@@ -71,10 +71,10 @@ module API
 
         if group.persisted?
           # NOTE: add backwards compatibility for single ldap link
-          if ldap_link_attrs[:ldap_cn].present?
+          if ldap_link_attrs[:cn].present?
             group.ldap_group_links.create(
-              cn: ldap_cn,
-              group_access: ldap_access
+              cn: ldap_link_attrs[:cn],
+              group_access: ldap_link_attrs[:group_access]
             )
           end
 
