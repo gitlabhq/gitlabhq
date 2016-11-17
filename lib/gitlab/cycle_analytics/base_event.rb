@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def fetch
-        update_author! if event_result.first['author_id']
+        update_author!
 
         event_result.map do |event|
           serialize(event) if has_permission?(event['id'])
@@ -28,6 +28,8 @@ module Gitlab
       private
 
       def update_author!
+        return unless event_result.any? && event_result.first['author_id']
+
         AuthorUpdater.update!(event_result)
       end
 
