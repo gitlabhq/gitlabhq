@@ -273,9 +273,9 @@ Last but not least, we tell the job to run [`only`][only] on branches
 [`except`][only] master.
 
 >**Note:**
-You are not bound to use only slashes in the dynamic environments' names (`/`),
-but as we will see later, this will enable the "grouping similar environments"
-feature.
+You are not bound to use the same prefix or only slashes in the dynamic
+environments' names (`/`), but as we will see later, this will enable the
+[grouping similar environments](#grouping-similar-environments) feature.
 
 The whole `.gitlab-ci.yml` looks like this so far:
 
@@ -388,31 +388,74 @@ and finally manually deployed to the production server. What we just described
 is a single workflow, but imagine tens of developers working on a project
 at the same time. They each push to their branches, and dynamic environments are
 created all the time. In that case, we probably need to do some clean up. Read
-next how environments can be closed.
+next how environments can be stopped.
 
-## Closing an environment
+## Stopping an environment
 
-```
-review:
+By stopping an environment, you are effectively terminating its recording of the
+deployments that happen in it.
+
+>**Note:**
+Starting with GitLab 8.14, dynamic environments will be stopped automatically
+when their associated branch is removed.
+
+There is a special case where environments can be manually closed. That can
+happen if you provide another job for that matter. The syntax is a little
+tricky since a job calls another job to do the job.
+
+Consider the following example where the `deploy_review` calls the `stop_review`
+to clean up and stop the environment:
+
+```yaml
+deploy_review:
   stage: deploy
   script:
-    - rsync -av --delete public /srv/nginx/pages/$CI_BUILD_REF_NAME
+    - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: http://$CI_BUILD_REF_NAME.$APPS_DOMAIN
+    url: https://$CI_BUILD_REF_NAME.example.com
     on_stop: stop_review
+  only:
+    - branches
+  except:
+    - master
 
 stop_review:
-  script: rm -rf /srv/nginx/pages/$CI_BUILD_REF_NAME
+  script:
+    - echo "Remove review app"
   when: manual
   environment:
     name: review/$CI_BUILD_REF_NAME
     action: stop
 ```
 
+You can read more in the [`.gitlab-ci.yml` reference][onstop].
+
 ## Grouping similar environments
 
-folders in environments page
+> [Introduced][ce-7015] in GitLab 8.14.
+
+As we've seen in the [dynamic environments](#dynamic-environments), you can
+
+In short, environments that are named like `type/foo` are presented under a
+group named `type`.
+
+In our minimal example, we name the environments `review/$CI_BUILD_REF_NAME`
+where `$CI_BUILD_REF_NAME` is the branch name:
+
+```yaml
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+```
+
+In that case, if you visit the Environments page, and provided the branches
+exist, you should see something like:
+
+![Environment groups](img/environments_dynamic_groups.png)
 
 ## Checkout deployments locally
 
@@ -435,22 +478,6 @@ Below are some links you may find interesting:
 - [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps](review_apps.md) Expand dynamic environments to deploy your code for every branch
 
-
-## TODO
-
-Actions
-
-- View environments +
-- View deployments +
-   - Rollback deployments +
-   - Run deployments +
-- View link to environment URL
-- View last commit message of deployment +
-- View person who performed the deployment +
-- View commit SHA that triggered the deployment +
-- View branch the deployment was based on +
-- View time ago the deployment was performed +
-
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
@@ -460,3 +487,5 @@ Actions
 [variables]: variables/README.md
 [env-name]: yaml/README.md#environment-name
 [only]: yaml/README.md#only-and-except
+[onstop]: yaml/README.md#environment-on_stop
+[ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
