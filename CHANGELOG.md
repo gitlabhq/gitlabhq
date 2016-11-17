@@ -80,6 +80,7 @@ entry.
 
 - Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option. !7117
+- Fix relative links in Markdown wiki when displayed in "Project" tab. !7218
 - Fix no "Register" tab if ldap auth is enabled (#24038). !7274 (Luc Didry)
 - Fix cache for commit status in commits list to respect branches. !7372
 - Fix issue causing Labels not to appear in sidebar on MR page. !7416 (Alex Sanford)
@@ -115,7 +116,6 @@ entry.
 
 - Removes any symlinks before importing a project export file. CVE-2016-9086
 - Fixed Import/Export foreign key issue to do with project members.
-- Fix relative links in Markdown wiki when displayed in "Project" tab !7218
 - Changed build dropdown list length to be 6,5 builds long in the pipeline graph
 
 ## 8.13.2 (2016-10-31)
