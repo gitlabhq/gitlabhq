@@ -34,7 +34,13 @@
 
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url) {
-      Vue.activeResources = 0;
+      const setVueResources = () => { Vue.activeResources = 1; };
+      const resetVueResources = () => { Vue.activeResources = 0; };
+      const addToVueResources = () => { Vue.activeResources += 1; };
+      const subtractFromVueResources = () => { Vue.activeResources -= 1; };
+
+      resetVueResources(); // set Vue.resources to 0
+
       const updatePipelineNums = (total, running) => {
         document.querySelector('.js-totalbuilds-count').innerHTML = total;
         document.querySelector('.js-running-count').innerHTML = running;
@@ -42,9 +48,9 @@
 
       const resourceChecker = () => {
         if (Vue.activeResources === 0) {
-          Vue.activeResources = 1;
+          setVueResources();
         } else {
-          Vue.activeResources += 1;
+          addToVueResources();
         }
       };
 
@@ -57,7 +63,7 @@
             Vue.set(this, 'count', res.count);
             updatePipelineNums(this.count.all, this.count.running_or_pending);
             this.pageRequest = false;
-            Vue.activeResources -= 1;
+            subtractFromVueResources();
           }, () => new Flash(
             'Something went wrong on our end.'
           ));
@@ -71,7 +77,7 @@
             Vue.set(this, 'pipelines', p.updatePipelines(res));
             Vue.set(this, 'count', res.count);
             updatePipelineNums(this.count.all, this.count.running_or_pending);
-            Vue.activeResources -= 1;
+            subtractFromVueResources();
           }, () => new Flash(
             'Something went wrong on our end.'
           ));
