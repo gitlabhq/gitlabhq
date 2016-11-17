@@ -1,5 +1,0 @@
----
-title: Omniauth auto link LDAP user falls back to find by DN when user cannot be found
-  by UID
-merge_request: 7002
-author: 

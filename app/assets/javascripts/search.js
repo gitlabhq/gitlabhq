@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, no-undef, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, padded-blocks, max-len */
 (function() {
   this.Search = (function() {
     function Search() {

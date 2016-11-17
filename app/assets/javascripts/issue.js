@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-undef, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, padded-blocks, max-len */
 
 /*= require flash */
 /*= require jquery.waitforimages */

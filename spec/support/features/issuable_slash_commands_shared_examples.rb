@@ -230,31 +230,31 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context "with a note subscribing to the #{issuable_type}" do
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master)).to be_falsy
+        expect(issuable.subscribed?(master, project)).to be_falsy
 
         write_note("/subscribe")
 
         expect(page).not_to have_content '/subscribe'
         expect(page).to have_content 'Your commands have been executed!'
 
-        expect(issuable.subscribed?(master)).to be_truthy
+        expect(issuable.subscribed?(master, project)).to be_truthy
       end
     end
 
     context "with a note unsubscribing to the #{issuable_type} as done" do
       before do
-        issuable.subscribe(master)
+        issuable.subscribe(master, project)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master)).to be_truthy
+        expect(issuable.subscribed?(master, project)).to be_truthy
 
         write_note("/unsubscribe")
 
         expect(page).not_to have_content '/unsubscribe'
         expect(page).to have_content 'Your commands have been executed!'
 
-        expect(issuable.subscribed?(master)).to be_falsy
+        expect(issuable.subscribed?(master, project)).to be_falsy
       end
     end
   end

@@ -10,9 +10,7 @@ describe ChatNames::AuthorizeUserService, services: true do
       let(:params) { { team_id: 'T0001', team_domain: 'myteam', user_id: 'U0001', user_name: 'user' } }
 
       it 'requests a new token' do
-        is_expected.to include('http')
-        is_expected.to include('://')
-        is_expected.to include('token=')
+        is_expected.to be_url
       end
     end
 

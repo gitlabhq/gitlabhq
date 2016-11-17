@@ -20,7 +20,7 @@ describe ChatNames::FindUserService, services: true do
         it 'updates when last time chat name was used' do
           subject
 
-          expect(chat_name.reload.used_at).to be_like_time(Time.now)
+          expect(chat_name.reload.last_used_at).to be_like_time(Time.now)
         end
       end
 

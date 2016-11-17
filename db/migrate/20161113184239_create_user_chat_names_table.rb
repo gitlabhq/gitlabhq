@@ -11,7 +11,7 @@ class CreateUserChatNamesTable < ActiveRecord::Migration
       t.string :team_domain
       t.string :chat_id, null: false
       t.string :chat_name
-      t.datetime :used_at
+      t.datetime :last_used_at
       t.timestamps null: false
     end
 

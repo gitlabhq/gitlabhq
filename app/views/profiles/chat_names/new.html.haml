@@ -1,11 +1,11 @@
 %h3.page-title Authorization required
 %main{:role => "main"}
   %p.h4
-    Authorize the chat user
+    Authorize
     %strong.text-info= @chat_name_params[:chat_name]
     to use your account?
 
-  %hr/
+  %hr
   .actions
     = form_tag profile_chat_names_path, method: :post do
       = hidden_field_tag :token, @chat_name_token.token

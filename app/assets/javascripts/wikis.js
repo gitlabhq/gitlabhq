@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, consistent-return, one-var, one-var-declaration-per-line, no-undef, prefer-template, padded-blocks, max-len */
 
 /*= require latinise */
 
