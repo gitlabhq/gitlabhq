@@ -10,7 +10,7 @@ module Gitlab
           @order || @start_time_attrs
         end
 
-        def query(base_query); end
+        def query(_base_query); end
 
         def fetch(query)
           query.execute(self).map { |event| serialize(event, query) }
@@ -18,7 +18,7 @@ module Gitlab
 
         private
 
-        def serialize(event, query)
+        def serialize(_event, _query)
           raise NotImplementedError.new("Expected #{self.name} to implement serialize(event)")
         end
       end

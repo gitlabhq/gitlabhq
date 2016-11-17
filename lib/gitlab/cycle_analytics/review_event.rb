@@ -11,7 +11,7 @@ module Gitlab
                       mr_table[:state],
                       mr_table[:author_id]]
 
-      def self.serialize(event, _query)
+      def self.serialize(event, query)
         event['author'] = User.find(event.delete('author_id'))
 
         AnalyticsMergeRequestSerializer.new(project: query.project).represent(event).as_json
