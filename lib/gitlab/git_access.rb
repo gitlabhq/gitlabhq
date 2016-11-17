@@ -45,7 +45,7 @@ module Gitlab
 
     def download_access_check
       if deploy_key
-        true
+        deploy_key.has_access_to?(project)
       elsif user
         user_download_access_check
       elsif Guest.can?(:download_code, project)
