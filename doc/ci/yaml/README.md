@@ -627,7 +627,12 @@ deploy to production:
 
 #### environment:on_stop
 
-> [Introduced][ce-6669] in GitLab 8.13.
+>
+**Notes:**
+- [Introduced][ce-6669] in GitLab 8.13.
+- Starting with GitLab 8.14, when you have an environment that has a stop action
+  defined, GitLab will automatically trigger a stop action when the associated
+  branch is deleted.
 
 Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close

@@ -395,11 +395,12 @@ next how environments can be stopped.
 By stopping an environment, you are effectively terminating its recording of the
 deployments that happen in it.
 
->**Note:**
-Starting with GitLab 8.14, dynamic environments will be stopped automatically
-when their associated branch is removed.
+A branch is associated with an environment when the CI pipeline that is created
+for this branch, was recently deployed to this environment. You can think of
+the CI pipeline as the glue between the branch and the environment:
+`branch ➔ CI pipeline ➔ environment`.
 
-There is a special case where environments can be manually closed. That can
+There is a special case where environments can be manually stopped. That can
 happen if you provide another job for that matter. The syntax is a little
 tricky since a job calls another job to do the job.
 
@@ -428,6 +429,14 @@ stop_review:
     name: review/$CI_BUILD_REF_NAME
     action: stop
 ```
+
+>**Note:**
+Starting with GitLab 8.14, dynamic environments will be stopped automatically
+when their associated branch is deleted.
+
+When you have an environment that has a stop action defined (typically when
+the environment describes a review app), GitLab will automatically trigger a
+stop action when the associated branch is deleted.
 
 You can read more in the [`.gitlab-ci.yml` reference][onstop].
 
