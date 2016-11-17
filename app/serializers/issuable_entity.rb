@@ -18,4 +18,3 @@ class IssuableEntity < Grape::Entity
   expose :human_time_estimate
   expose :human_total_time_spent
 end
-

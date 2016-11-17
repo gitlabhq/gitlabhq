@@ -1,3 +1,3 @@
- class MergeRequestSerializer < BaseSerializer
-   entity MergeRequestEntity
- end
+class MergeRequestSerializer < BaseSerializer
+  entity MergeRequestEntity
+end

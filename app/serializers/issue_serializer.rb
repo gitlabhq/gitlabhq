@@ -1,3 +1,3 @@
- class IssueSerializer < BaseSerializer
-   entity IssueEntity
- end
+class IssueSerializer < BaseSerializer
+  entity IssueEntity
+end
