@@ -541,6 +541,8 @@ same manual action multiple times.
 
 An example usage of manual actions is deployment to production.
 
+Read more at the [environments documentation][env-manual].
+
 ### environment
 
 > Introduced in GitLab 8.9.
@@ -686,6 +688,13 @@ The `stop_review_app` job is **required** to have the following keywords defined
 `environment` can also represent a configuration hash with `name` and `url`.
 These parameters can use any of the defined [CI variables](#variables)
 (including predefined, secure variables and `.gitlab-ci.yml` variables).
+
+>**Note:**
+Be aware than if the branch name contains special characters and you use the
+`$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
+be complications during deployment. Follow the
+[issue 22849](https://gitlab.com/gitlab-org/gitlab-ce/issues/22849) for more
+information.
 
 For example:
 
@@ -1216,6 +1225,7 @@ capitalization, the commit will be created but the builds will be skipped.
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
+[env-manual]: ../environments.md#manually-deploying-to-environments
 [examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
 [environment]: ../environments.md
