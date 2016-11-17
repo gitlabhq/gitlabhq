@@ -10,7 +10,7 @@ class MigrateSubscriptionsProjectId < ActiveRecord::Migration
       SET project_id = (
         SELECT issues.project_id
         FROM issues
-        WHERE issues.id = subscriptions.subscribable_id AND subscriptions.subscribable_type = 'Issue'
+        WHERE issues.id = subscriptions.subscribable_id
       )
       WHERE subscriptions.subscribable_type = 'Issue';
     EOF
@@ -20,7 +20,7 @@ class MigrateSubscriptionsProjectId < ActiveRecord::Migration
       SET project_id = (
         SELECT merge_requests.target_project_id
         FROM merge_requests
-        WHERE merge_requests.id = subscriptions.subscribable_id AND subscriptions.subscribable_type = 'MergeRequest'
+        WHERE merge_requests.id = subscriptions.subscribable_id
       )
       WHERE subscriptions.subscribable_type = 'MergeRequest';
     EOF
@@ -30,7 +30,7 @@ class MigrateSubscriptionsProjectId < ActiveRecord::Migration
       SET project_id = (
         SELECT projects.id
         FROM labels INNER JOIN projects ON projects.id = labels.project_id
-        WHERE labels.id = subscriptions.subscribable_id AND subscriptions.subscribable_type = 'Label'
+        WHERE labels.id = subscriptions.subscribable_id
       )
       WHERE subscriptions.subscribable_type = 'Label';
     EOF
