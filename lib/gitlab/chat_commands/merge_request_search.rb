@@ -2,7 +2,7 @@ module Gitlab
   module ChatCommands
     class MergeRequestSearch < MergeRequestCommand
       def self.match(text)
-        /\Amergerequest\s+search\s+(?<query>.*)/.match(text)
+        /\Amergerequest\s+search\s+(?<query>.*)\s*/.match(text)
       end
 
       def self.help_message

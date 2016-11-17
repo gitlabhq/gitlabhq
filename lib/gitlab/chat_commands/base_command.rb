@@ -38,6 +38,10 @@ module Gitlab
       def present(resource)
         Mattermost::Presenter.present(resource)
       end
+      
+      def help(messages)
+        Mattermost::Presenter.help(messages)
+      end
 
       def find_by_iid(iid)
         resource = collection.find_by(iid: iid)

@@ -61,6 +61,10 @@ module API
     end
 
     resource :projects do
+
+      desc 'Trigger a slash command' do
+        detail 'Added in GitLab 8.13'
+      end
       post ':id/services/:service_slug/trigger' do
         project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
 
@@ -71,9 +75,7 @@ module API
 
         service = project.public_send(service_method)
 
-        result = if service.try(:active?) && service.respond_to?(:trigger)
-          service.trigger(params)
-        end
+        result = service.try(:active?) && service.try(:trigger, params)
 
         if result
           present result, status: result[:status] || 200

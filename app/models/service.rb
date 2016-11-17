@@ -202,7 +202,6 @@ class Service < ActiveRecord::Base
       bamboo
       buildkite
       builds_email
-      pipelines_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -214,7 +213,8 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jira
-      mattermost_chat
+      mattermost_command
+      pipelines_email
       pivotaltracker
       pushover
       redmine

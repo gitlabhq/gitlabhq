@@ -9,8 +9,8 @@ module Gitlab
         project.merge_requests
       end
 
-      def readable?(_)
-        can?(current_user, :read_merge_request, project)
+      def readable?(merge_request)
+        can?(current_user, :read_merge_request, merge_request)
       end
     end
   end

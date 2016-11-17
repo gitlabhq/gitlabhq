@@ -2,7 +2,7 @@ module Gitlab
   module ChatCommands
     class IssueSearch < IssueCommand
       def self.match(text)
-        /\Aissue\s+search\s+(?<query>.*)/.match(text)
+        /\Aissue\s+search\s+(?<query>.*)\s*/.match(text)
       end
 
       def self.help_message

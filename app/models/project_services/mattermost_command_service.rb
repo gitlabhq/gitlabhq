@@ -1,4 +1,4 @@
-class MattermostChatService < ChatService
+class MattermostCommandService < ChatService
   include TriggersHelper
 
   prop_accessor :token
@@ -8,7 +8,7 @@ class MattermostChatService < ChatService
   end
 
   def title
-    'Mattermost'
+    'Mattermost Command'
   end
 
   def description
@@ -16,7 +16,7 @@ class MattermostChatService < ChatService
   end
 
   def to_param
-    'mattermost'
+    'mattermost_command'
   end
 
   def help
@@ -33,10 +33,24 @@ class MattermostChatService < ChatService
   end
 
   def trigger(params)
-    user = ChatNames::FindUserService.new(chat_names, params).execute
-    return Mattermost::Presenter.authorize_chat_name(params) unless user
+    return nil unless valid_token?(params[:token])
 
-    Mattermost::CommandService.new(project, user, params.slice(:command, :text)).
-      execute
+    user = find_chat_user(params)
+    unless user
+      url = authorize_chat_name_url(params)
+      return Mattermost::Presenter.authorize_user(url)
+    end
+
+    Mattermost::CommandService.new(project, user, params).execute
+  end
+
+  private
+
+  def find_chat_user(params)
+    ChatNames::FindUserService.new(chat_names, params).execute
+  end
+
+  def authorize_chat_name_url(params)
+    ChatNames::RequestService.new(self, params).execute
   end
 end

@@ -18,8 +18,4 @@ class ChatService < Service
   def trigger(params)
     raise NotImplementedError
   end
-
-  def chat_user_params(params)
-    params.permit()
-  end
 end

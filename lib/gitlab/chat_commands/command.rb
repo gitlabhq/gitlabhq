@@ -13,7 +13,7 @@ module Gitlab
       def execute
         klass, match = fetch_klass
 
-        return help(help_messages) unless klass.try(:available?, project)
+        return help(help_messages, params[:command]) unless klass.try(:available?, project)
 
         klass.new(project, current_user, params).execute(match)
       end
@@ -22,23 +22,23 @@ module Gitlab
 
       def fetch_klass
         match = nil
-        service = COMMANDS.find do |klass|
-          if klass.available?(project)
-            false
-          else
-            match = klass.match(command)
-          end
+        service = available_commands.find do |klass|
+          match = klass.match(command)
         end
 
         [service, match]
       end
 
       def help_messages
-        COMMANDS.map do |klass|
-          next unless klass.available?(project)
-
+        available_commands.map do |klass|
           klass.help_message
-        end.compact
+        end
+      end
+
+      def available_commands
+        COMMANDS.select do |klass|
+          klass.available?(project)
+        end
       end
 
       def command

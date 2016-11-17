@@ -6,6 +6,8 @@ module Gitlab
       end
 
       def execute(match)
+        present nil unless can?(current_user, :create_issue, project)
+
         title = match[:title]
         description = match[:description]
 

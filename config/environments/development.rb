@@ -45,7 +45,4 @@ Rails.application.configure do
 
   # Do not log asset requests
   config.assets.quiet = true
-
-  # Make hot reloading to work with Grape API
-  ActiveSupport::Dependencies.explicitly_unloadable_constants << "API"
 end

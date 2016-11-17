@@ -1,35 +1,24 @@
 module Mattermost
   class Presenter
     class << self
-      COMMAND_PREFIX = '/gitlab'.freeze
+      def authorize_chat_name(url)
+        message = "Hi there! We've yet to get acquainted! Please [introduce yourself](#{url})!"
 
-      def authorize_chat_name(params)
-        url = ChatNames::RequestService.new(service, params).execute
-
-        {
-          response_type: :ephemeral,
-          message: "You are not authorized. Click this [link](#{url}) to authorize."
-        }
+        ephemeral_response(message)
       end
 
-      def help(messages)
-        messages = ["Available commands:"]
+      def help(messages, command)
+        message = ["Available commands:"]
 
         messages.each do |messsage|
-          messages << "- #{message}"
+          message << "- #{command} #{message}"
         end
 
-        {
-          response_type: :ephemeral,
-          text: messages.join("\n")
-        }
+        ephemeral_response(messages.join("\n"))
       end
 
       def not_found
-        {
-          response_type: :ephemeral,
-          text: "404 not found! GitLab couldn't find what your were looking for! :boom:",
-        }
+        ephemeral_response("404 not found! GitLab couldn't find what your were looking for! :boom:")
       end
 
       def present(resource)
@@ -51,38 +40,56 @@ module Mattermost
       private
 
       def single_resource(resource)
-        message = title(resource)
+        return error(resource) if resource.errors.any?
+
+        message = "### #{title(resource)}"
         message << "\n\n#{resource.description}" if resource.description
 
-        {
-          response_type: :in_channel,
-          text: message
-        }
+        in_channel_response(message)
       end
 
       def multiple_resources(resources)
         message = "Multiple results were found:\n"
-        message << resources.map { |resource| "  #{title(resource)}" }.join("\n")
+        message << resources.map { |resource| "- #{title(resource)}" }.join("\n")
 
+        ephemeral_response(message)
+      end
+
+      def error(resource)
+        message = "The action was not succesfull because:\n"
+        message << resource.errors.messages.map { |message| "- #{message}" }.join("\n")
+
+        ephemeral_response(resource.errors.messages.join("\n")
+      end
+
+      def title(resource)
+        "[#{resource.to_reference} #{resource.title}](#{url(resource)})"
+      end
+
+      def url(resource)
+        polymorphic_url(
+          [
+            resource.project.namespace.becomes(Namespace),
+            resource.project,
+           resource 
+          ],
+          id: resource_id,
+          routing_type: :url
+        )
+      end
+
+      def ephemeral_response(message)
         {
           response_type: :ephemeral,
           text: message
         }
       end
 
-      def title(resource)
-        "### [#{resource.to_reference} #{resource.title}](#{url(resource)})"
-      end
-
-      def url(resource)
-        helper = Rails.application.routes.url_helpers
-
-        case resource
-        when Issue
-          helper.namespace_project_issue_url(resource.project.namespace.becomes(Namespace), resource.project, resource)
-        when MergeRequest
-          helper.namespace_project_merge_request_url(resource.project.namespace.becomes(Namespace), resource.project, resource)
-        end
+      def in_channel_response(message)
+        {
+          response_type: :in_channel,
+          text: message
+        }
       end
     end
   end

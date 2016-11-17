@@ -7,14 +7,18 @@ describe Gitlab::ChatCommands::MergeRequestSearch, service: true do
     let(:user)           { merge_request.author }
     let(:regex_match)    { described_class.match("mergerequest search #{merge_request.title}") }
 
-    before { project.team << [user, :master] }
+    before do
+      project.team << [user, :master]
+    end
 
-    subject { described_class.new(project, user, {}).execute(regex_match) }
+    subject do
+      described_class.new(project, user).execute(regex_match)
+    end
 
     context 'the merge request exists' do
       it 'returns the merge request' do
-        expect(subject[:response_type]).to be :in_channel
-        expect(subject[:text]).to match merge_request.title
+        expect(subject[:response_type]).to be(:in_channel)
+        expect(subject[:text]).to match(merge_request.title)
       end
     end
 
@@ -22,8 +26,8 @@ describe Gitlab::ChatCommands::MergeRequestSearch, service: true do
       let(:regex_match) { described_class.match("mergerequest search 12334") }
 
       it "returns a 404 message" do
-        expect(subject[:response_type]).to be :ephemeral
-        expect(subject[:text]).to start_with '404 not found!'
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to start_with('404 not found!')
       end
     end
   end
