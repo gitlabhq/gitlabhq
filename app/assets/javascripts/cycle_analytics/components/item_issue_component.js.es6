@@ -21,14 +21,14 @@
     template: `
       <div>
         <div class="item-details">
-          <img class="avatar" :src="issue.author.avatar_url">
+          <img class="avatar" :src="issue.author.avatarUrl">
           <h5 class="item-title">
             <a :href="issue.url">
               {{ issue.title }}
             </a>
           </h5>
           <a :href="issue.url" class="issue-link">
-            #{{issue.iid}}
+            #{{ issue.iid }}
           </a>
           &middot;
           <span>
@@ -39,7 +39,7 @@
           </span>
           <span>
           by
-          <a :href="issue.author.web_url" class="issue-author-link">
+          <a :href="issue.author.webUrl" class="issue-author-link">
             {{ issue.author.name }}
           </a>
           </span>

@@ -56,9 +56,18 @@
       newEvents.forEach((item) => {
         item.totalTime = item.total_time;
         item.createdAt = item.created_at;
+        item.author.webUrl = item.author.web_url;
+        item.author.avatarUrl = item.author.avatar_url;
 
+        if (item.short_sha) {
+          item.shortSha = item.short_sha;
+        }
+
+        delete item.author.web_url;
+        delete item.author.avatar_url;
         delete item.total_time;
         delete item.created_at;
+        delete item.short_sha;
       });
 
       return newEvents;
