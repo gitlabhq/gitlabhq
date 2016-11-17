@@ -221,6 +221,11 @@ Clicking on the play button in either of these places will trigger the
 `deploy_prod` job, and the deployment will be recorded under a new
 environment named `production`.
 
+>**Note:**
+Remember that if your environment's name is `production` (all lowercase), then
+it will get recorded in [Cycle Analytics](../user/project/cycle_analytics.md).
+Double the benefit!
+
 While this is fine for deploying to some stable environments like staging or
 production, what happens for branches? So far we haven't defined anything
 regarding deployments for branches other than `master`. Dynamic environments
@@ -229,20 +234,161 @@ will help us achieve that.
 ## Dynamic environments
 
 As the name suggests, it is possible to create environments on the fly by just
-declaring their names dynamically in `.gitlab-ci.yml`.
+declaring their names dynamically in `.gitlab-ci.yml`. Dynamic environments is
+the base of [Review apps](review_apps.md).
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
-and as such you can use them
+and as such, you can use them as environment names. Let's add another job in
+our example which will deploy to all branches except `master`:
 
-```
-review:
+```yaml
+deploy_review:
   stage: deploy
   script:
-    - rsync -av --delete public /srv/nginx/pages/$CI_BUILD_REF_NAME
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_NAME.example.com
+  only:
+    - branches
+  except:
+    - master
+```
+
+Let's break it down in pieces. The job's name is `deploy_review` and it runs
+on the `deploy` stage. The `script` at this point is fictional, you'd have to
+use your own based on your deployment. Then, we set the `environment` with the
+`environment:name` being `review/$CI_BUILD_REF_NAME`. Now that's an interesting
+one. Since the [environment name][env-name] can contain also slashes (`/`), we
+can use this pattern to distinguish between dynamic environments and the regular
+ones.
+
+So, the first part is `review`, followed by a `/` and then `$CI_BUILD_REF_NAME`
+which takes the value of the branch name. We also use the same
+`$CI_BUILD_REF_NAME` value in the `environment:url` so that the environment
+can get a specific and distinct URL for each branch. Again, the way you set up
+the webserver to serve these requests is based on your setup.
+
+Last but not least, we tell the job to run [`only`][only] on branches
+[`except`][only] master.
+
+>**Note:**
+You are not bound to use only slashes in the dynamic environments' names (`/`),
+but as we will see later, this will enable the "grouping similar environments"
+feature.
+
+The whole `.gitlab-ci.yml` looks like this so far:
+
+```yaml
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  stage: test
+  script: echo "Running tests"
+
+build:
+  stage: build
+  script: echo "Building the app"
+
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_NAME.example.com
+  only:
+    - branches
+  except:
+    - master
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: staging
+    url: https://staging.example.com
+  only:
+  - master
+
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: production
+    url: https://example.com
+  when: manual
+  only:
+  - master
+```
+
+A more realistic example would include copying files to a location where a
+webserver (NGINX) could then read and serve. The example below will copy the
+`public` directory to `/srv/nginx/$CI_BUILD_REF_NAME/public`:
+
+```yaml
+review_app:
+  stage: deploy
+  script:
+    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_NAME
   environment:
     name: review/$CI_BUILD_REF_NAME
     url: https://$CI_BUILD_REF_NAME.example.com
 ```
+
+It is assumed that the user has already setup NGINX and GitLab Runner in the
+server this job will run on.
+
+---
+
+The development workflow would now be:
+
+- Developer creates a branch locally
+- Developer makes changes, commits and pushes the branch to GitLab
+- Developer creates a merge request
+
+Behind the scenes:
+
+- GitLab Runner picks up the changes and starts running the jobs
+- The jobs run sequentially as defined in `stages`
+  - First, the tests pass
+  - Then, the build begins and successfully also passes
+  - Lastly, the app is deployed to an environment with a name specific to the
+    branch
+
+So now, every branch gets its own environment and is deployed to its own place
+with the added benefit of having a [history of deployments](#viewing-the-deployment-history-of-an-environment)
+and also being able to [rollback changes](#rolling-back-changes) if needed.
+Let's briefly see where URL that's defined in the environments is exposed.
+
+## Making use of the environment URL
+
+The environment URL is exposed in a few places within GitLab.
+
+| In a merge request widget as a link | In the Environments view as a button | In the Deployments view as a button |
+| -------------------- | ------------ | ----------- |
+| ![Environment URL in merge request](img/environments_mr_review_app.png) | ![Environment URL in environments](img/environments_link_url.png) | ![Environment URL in deployments](img/environments_link_url_deployments.png) |
+
+If a merge request is eventually merged to the default branch (in our case
+`master`) and that branch also deploys to an environment (in our case `staging`
+and/or `production`) you can see this information in the merge request itself.
+
+![Environment URLs in merge request](img/environments_link_url_mr.png)
+
+---
+
+We now have a full development cycle, where our app is tested, built, deployed
+as a Review app, deployed to a staging server once the merge request is merged,
+and finally manually deployed to the production server. What we just described
+is a single workflow, but imagine tens of developers working on a project
+at the same time. They each push to their branches, and dynamic environments are
+created all the time. In that case, we probably need to do some clean up. Read
+next how environments can be closed.
 
 ## Closing an environment
 
@@ -263,6 +409,10 @@ stop_review:
     name: review/$CI_BUILD_REF_NAME
     action: stop
 ```
+
+## Grouping similar environments
+
+folders in environments page
 
 ## Checkout deployments locally
 
@@ -308,3 +458,5 @@ Actions
 [deployments]: #deployments
 [permissions]: ../user/permissions.md
 [variables]: variables/README.md
+[env-name]: yaml/README.md#environment-name
+[only]: yaml/README.md#only-and-except
