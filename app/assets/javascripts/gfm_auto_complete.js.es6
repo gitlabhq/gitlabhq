@@ -35,7 +35,7 @@
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
         // Highlight first item only if at least one char was typed
-        this.setting.highlightFirst = query.length > 0;
+        this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
         if ((items[0].name != null) && items[0].name === 'loading') {
           return items;
         }
@@ -117,6 +117,7 @@
         insertTpl: '${atwho-at}${username}',
         searchKey: 'search',
         data: ['loading'],
+        alwaysHighlightFirst: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -363,4 +364,3 @@
   };
 
 }).call(this);
-
