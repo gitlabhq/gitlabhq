@@ -115,10 +115,6 @@ describe Gitlab::GitAccess, lib: true do
       let(:key) { create(:deploy_key, user: user) }
       let(:actor) { key }
 
-      before do
-        project.team << [user, :master]
-      end
-
       context 'pull code' do
         context 'when project is authorized' do
           before { key.projects << project }
@@ -387,16 +383,6 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'full authentication abilities' do
-    let(:authentication_abilities) { full_authentication_abilities }
-
-    it_behaves_like 'pushing code', :to do
-      def authorize
-        project.team << [user, :developer]
-      end
-    end
-  end
-
   describe 'build authentication abilities' do
     let(:authentication_abilities) { build_authentication_abilities }
 
@@ -410,10 +396,6 @@ describe Gitlab::GitAccess, lib: true do
   describe 'deploy key permissions' do
     let(:key) { create(:deploy_key, user: user, can_push: can_push) }
     let(:actor) { key }
-
-    before do
-      project.team << [user, :master]
-    end
 
     context 'when deploy_key can push' do
       let(:can_push) { true }

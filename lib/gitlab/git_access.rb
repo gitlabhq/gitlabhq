@@ -27,7 +27,7 @@ module Gitlab
 
     def check(cmd, changes)
       check_protocol!
-      check_active_user!
+      check_active_user! unless deploy_key?
       check_project_accessibility!
       check_command_existence!(cmd)
 
@@ -44,9 +44,13 @@ module Gitlab
     end
 
     def download_access_check
-      if user
+      if deploy_key
+        true
+      elsif user
         user_download_access_check
-      elsif deploy_key.nil? && !Guest.can?(:download_code, project)
+      elsif Guest.can?(:download_code, project)
+        true
+      else
         raise UnauthorizedError, ERROR_MESSAGES[:download]
       end
     end
@@ -148,7 +152,10 @@ module Gitlab
 
     def check_single_change_access(change)
       Checks::ChangeAccess.new(
-        change, user_access: user_access, project: project).exec
+        change,
+        user_access: user_access,
+        project: project,
+        skip_authorization: deploy_key?).exec
     end
 
     def matching_merge_request?(newrev, branch_name)
@@ -156,17 +163,19 @@ module Gitlab
     end
 
     def deploy_key
-      actor if actor.is_a?(DeployKey)
+      actor if deploy_key?
+    end
+
+    def deploy_key?
+      actor.is_a?(DeployKey)
     end
 
     def can_read_project?
       if deploy_key
-        project.public? || deploy_key.has_access_to?(project)
+        deploy_key.has_access_to?(project)
       elsif user
-        user_access.can_read_project?
-      else
-        Guest.can?(:read_project, project)
-      end
+        user.can?(:read_project, project)
+      end || Guest.can?(:read_project, project)
     end
 
     protected
