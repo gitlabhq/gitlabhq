@@ -422,6 +422,8 @@ deploy_review:
     - master
 
 stop_review:
+  variables:
+    GIT_STRATEGY: none
   script:
     - echo "Remove review app"
   when: manual
@@ -429,6 +431,10 @@ stop_review:
     name: review/$CI_BUILD_REF_NAME
     action: stop
 ```
+
+Setting the [`GIT_STRATEGY`][git-strategy] to `none` is necessary on the
+`stop_review` job so that the [GitLab Runner] won't try to checkout the code
+after the branch is deleted.
 
 >**Note:**
 Starting with GitLab 8.14, dynamic environments will be stopped automatically
@@ -445,6 +451,8 @@ You can read more in the [`.gitlab-ci.yml` reference][onstop].
 > [Introduced][ce-7015] in GitLab 8.14.
 
 As we've seen in the [dynamic environments](#dynamic-environments), you can
+prepend their name with a word, then followed by a `/` and finally the branch
+name which is automatically defined by the `CI_BUILD_REF_NAME` variable.
 
 In short, environments that are named like `type/foo` are presented under a
 group named `type`.
@@ -507,3 +515,5 @@ Below are some links you may find interesting:
 [only]: yaml/README.md#only-and-except
 [onstop]: yaml/README.md#environment-on_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
+[gitlab runner]: https://docs.gitlab.com/runner/
+[git-strategy]: yaml/README.md#git-strategy
