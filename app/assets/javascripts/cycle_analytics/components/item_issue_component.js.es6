@@ -23,7 +23,7 @@
         <div class="item-details">
           <img class="avatar" :src="issue.author.avatarUrl">
           <h5 class="item-title">
-            <a :href="issue.url">
+            <a class="issue-title" :href="issue.url">
               {{ issue.title }}
             </a>
           </h5>
