@@ -127,6 +127,17 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix 404 when visit /projects page
 
+## 8.13.6 (2016-11-17)
+
+- Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
+- Fix no "Register" tab if ldap auth is enabled (#24038). !7274 (Luc Didry)
+- Fix cache for commit status in commits list to respect branches. !7372
+- Fix issue causing Labels not to appear in sidebar on MR page. !7416 (Alex Sanford)
+- Limit labels returned for a specific project as an administrator. !7496
+- Clicking "force remove source branch" label now toggles the checkbox again.
+- Allow commit note to be visible if repo is visible.
+- Fix project Visibility Level selector not using default values.
+
 ## 8.13.5 (2016-11-08)
 
 - Restore unauthenticated access to public container registries
