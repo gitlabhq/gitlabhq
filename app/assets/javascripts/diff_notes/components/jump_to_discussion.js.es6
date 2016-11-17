@@ -1,6 +1,6 @@
 /* eslint-disable */
 (() => {
-  JumpToDiscussion = Vue.extend({
+  const JumpToDiscussion = Vue.extend({
     mixins: [DiscussionMixins],
     props: {
       discussionId: String
