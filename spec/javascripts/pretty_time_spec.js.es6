@@ -1,4 +1,4 @@
-//= require directives/tooltip_title
+//= require lib/utils/pretty_time
 
 (() => {
   const PrettyTime = gl.PrettyTime;

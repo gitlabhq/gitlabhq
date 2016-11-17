@@ -43,7 +43,7 @@
     static stringifyTime(timeObject) {
       const reducedTime = _.reduce(timeObject, (memo, unitValue, unitName) => {
         const isNonZero = !!unitValue;
-        return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)} ` : memo;
+        return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
       }, '').trim();
       return reducedTime.length ? reducedTime : '0m';
     }
