@@ -1,0 +1,4 @@
+---
+title: Allow mail_room idle_timeout option to be configurable
+merge_request: 7423
+author:
