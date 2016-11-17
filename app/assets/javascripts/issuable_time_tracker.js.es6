@@ -74,7 +74,7 @@
       },
       abbreviateTime(timeStr) {
         return PrettyTime.abbreviateTime(timeStr);
-      }
+      },
     },
     template: `
         <div class='time_tracker time-tracking-component-wrap' v-cloak>

@@ -7,7 +7,7 @@
   class PrettyTime {
 
     /*
-     * Accepts seconds (Number) and returns a timeObject:  { weeks: #, days: #, hours: #, minutes: # }.
+     * Accepts seconds and returns a timeObject { weeks: #, days: #, hours: #, minutes: # }
      * Seconds can be negative or positive, zero or non-zero.
     */
     static parseSeconds(seconds) {
