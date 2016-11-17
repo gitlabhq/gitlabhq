@@ -2,6 +2,8 @@
 
 /*= require merge_request_tabs */
 //= require breakpoints
+//= require lib/utils/common_utils
+//= require jquery.scrollTo
 
 (function () {
   describe('MergeRequestTabs', function () {
@@ -21,13 +23,13 @@
       setLocation();
 
       this.spies = {
-        ajax: spyOn($, 'ajax').and.callFake(function () {}),
         history: spyOn(window.history, 'replaceState').and.callFake(function () {})
       };
     });
 
     describe('#activateTab', function () {
       beforeEach(function () {
+        spyOn($, 'ajax').and.callFake(function() {});
         fixture.load('merge_request_tabs.html');
         this.subject = this.class.activateTab;
       });
@@ -51,6 +53,7 @@
 
     describe('#setCurrentAction', function () {
       beforeEach(function () {
+        spyOn($, 'ajax').and.callFake(function() {});
         this.subject = this.class.setCurrentAction;
       });
       it('changes from commits', function () {
@@ -105,6 +108,14 @@
           pathname: '/foo/bar/merge_requests/1/commits'
         });
         expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
+      });
+    });
+    describe('#loadDiff', function() {
+      it('requires an absolute pathname', function() {
+        spyOn($, 'ajax').and.callFake(function(options) {
+          expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
+        });
+        this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
       });
     });
   });
