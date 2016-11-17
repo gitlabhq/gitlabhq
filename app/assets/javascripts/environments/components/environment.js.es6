@@ -193,19 +193,18 @@
             </h2>
             <p class="blank-state-text">
               Environments are places where code gets deployed, such as staging or production.
-
               <br />
-
               <a :href="helpPagePath">
                 Read more about environments
               </a>
-              <a
-                v-if="canCreateEnvironmentParsed"
-                :href="newEnvironmentPath"
-                class="btn btn-create">
-                New Environment
-              </a>
             </p>
+
+            <a
+              v-if="canCreateEnvironmentParsed"
+              :href="newEnvironmentPath"
+              class="btn btn-create">
+              New Environment
+            </a>
           </div>
 
           <div
