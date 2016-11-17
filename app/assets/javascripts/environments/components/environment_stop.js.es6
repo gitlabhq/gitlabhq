@@ -30,7 +30,7 @@
         class="btn stop-env-link"
         :href="stopUrl"
         data-method="post"
-        data-rel="nofollow">
+        rel="nofollow">
         <i class="fa fa-stop stop-env-icon"></i>
       </a>
     `,
