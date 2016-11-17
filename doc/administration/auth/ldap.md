@@ -246,6 +246,24 @@ group you can use the following syntax:
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
+### Escaping special characters
+
+If the `user_filter` DN contains a special characters. For example a comma
+
+```
+OU=GitLab, Inc,DC=gitlab,DC=com
+```
+
+This character needs to be escaped as documented in [RFC 4515](https://tools.ietf.org/search/rfc4515).
+
+Due to the way the string is parsed the special character needs to be convered
+to hex and `\\5C\\` (`5C` = `\` in hex) added before it.
+As an example the above DN would look like
+
+```
+OU=GitLab\\5C\\2C Inc,DC=gitlab,DC=com
+```
+
 Please note that GitLab does not support the custom filter syntax used by
 omniauth-ldap.
 
