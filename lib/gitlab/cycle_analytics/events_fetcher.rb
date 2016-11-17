@@ -6,9 +6,7 @@ module Gitlab
       end
 
       def fetch(stage:)
-        @query.execute(stage) do |stage_class, base_query|
-          stage_class.query(base_query)
-        end
+        @query.execute(stage)
       end
     end
   end

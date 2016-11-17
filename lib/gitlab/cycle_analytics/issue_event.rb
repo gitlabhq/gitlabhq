@@ -1,6 +1,7 @@
 module Gitlab
   module CycleAnalytics
-    class IssueConfig < BaseConfig
+    class IssueEvent < BaseEvent
+      @stage = :issue
       @start_time_attrs = issue_table[:created_at]
 
       @end_time_attrs = [issue_metrics_table[:first_associated_with_milestone_at],
@@ -11,6 +12,12 @@ module Gitlab
                       issue_table[:id],
                       issue_table[:created_at],
                       issue_table[:author_id]]
+
+      def self.serialize(event, query)
+        event['author'] = User.find(event.delete('author_id'))
+
+        AnalyticsIssueSerializer.new(project: query.project).represent(event).as_json
+      end
     end
   end
 end

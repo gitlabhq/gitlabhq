@@ -1,12 +1,18 @@
 module Gitlab
   module CycleAnalytics
-    module MetricsFetcher
+    class MetricsFetcher
       include Gitlab::Database::Median
       include Gitlab::Database::DateTime
+      include MetricsTables
 
       DEPLOYMENT_METRIC_STAGES = %i[production staging]
 
-      private
+      def initialize(project:, from:, branch:)
+        @project = project
+        @project = project
+        @from = from
+        @branch = branch
+      end
 
       def calculate_metric(name, start_time_attrs, end_time_attrs)
         cte_table = Arel::Table.new("cte_table_for_#{name}")
@@ -48,38 +54,6 @@ module Gitlab
         end
 
         query
-      end
-
-      def mr_metrics_table
-        MergeRequest::Metrics.arel_table
-      end
-
-      def mr_table
-        MergeRequest.arel_table
-      end
-
-      def mr_diff_table
-        MergeRequestDiff.arel_table
-      end
-
-      def mr_closing_issues_table
-        MergeRequestsClosingIssues.arel_table
-      end
-
-      def issue_table
-        Issue.arel_table
-      end
-
-      def issue_metrics_table
-        Issue::Metrics.arel_table
-      end
-
-      def user_table
-        User.arel_table
-      end
-
-      def build_table
-        ::CommitStatus.arel_table
       end
     end
   end

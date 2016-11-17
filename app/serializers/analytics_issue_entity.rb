@@ -1,9 +1,8 @@
-class AnalyticsGenericEntity < Grape::Entity
+class AnalyticsIssueEntity < Grape::Entity
   include RequestAwareEntity
   include EntityDateHelper
 
   expose :title
-  expose :state, if: ->(_instance, options) { options[:request].entity == :merge_request }
   expose :author, using: UserEntity
 
   expose :iid do |object|
@@ -19,7 +18,7 @@ class AnalyticsGenericEntity < Grape::Entity
   end
 
   expose :url do |object|
-    url_to("namespace_project_#{request.entity}".to_sym, id: object[:iid].to_s)
+    url_to(:namespace_project_issue, id: object[:iid].to_s)
   end
 
   private

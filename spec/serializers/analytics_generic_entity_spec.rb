@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AnalyticsGenericEntity do
+describe AnalyticsIssueEntity do
   let(:user) { create(:user) }
   let(:entity_hash) do
     {

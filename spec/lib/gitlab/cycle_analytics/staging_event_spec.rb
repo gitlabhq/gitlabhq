@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'lib/gitlab/cycle_analytics/shared_config_spec'
+require 'lib/gitlab/cycle_analytics/shared_event_spec'
 
-describe Gitlab::CycleAnalytics::StagingConfig do
+describe Gitlab::CycleAnalytics::StagingEvent do
   it_behaves_like 'default query config'
 
   it 'has the default order' do
