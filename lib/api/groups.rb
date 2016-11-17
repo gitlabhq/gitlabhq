@@ -11,6 +11,12 @@ module API
         optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
+
+      params :optional_params_ee do
+        optional :ldap_cn, type: String, desc: 'LDAP Common Name'
+        optional :ldap_access, type: Integer, desc: 'A valid access level'
+        all_or_none_of :ldap_cn, :ldap_access
+      end
     end
 
     resource :groups do
@@ -51,20 +57,25 @@ module API
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
         use :optional_params
+        use :optional_params_ee
       end
       post do
         authorize! :create_group
+
+        ldap_link_attrs = {
+          cn: params.delete(:ldap_cn),
+          group_access: params.delete(:ldap_access)
+        }
 
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
           # NOTE: add backwards compatibility for single ldap link
-          ldap_attrs = attributes_for_keys [:ldap_cn, :ldap_access]
-          if ldap_attrs.present?
-            @group.ldap_group_links.create({
-              cn: ldap_attrs[:ldap_cn],
-              group_access: ldap_attrs[:ldap_access]
-            })
+          if ldap_link_attrs[:ldap_cn].present?
+            group.ldap_group_links.create(
+              cn: ldap_cn,
+              group_access: ldap_access
+            )
           end
 
           present group, with: Entities::Group
