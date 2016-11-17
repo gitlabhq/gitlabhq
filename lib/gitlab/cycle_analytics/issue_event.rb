@@ -13,7 +13,7 @@ module Gitlab
                       issue_table[:created_at],
                       issue_table[:author_id]]
 
-      def self.serialize(event, query)#
+      def self.serialize(event, query)
         event['author'] = User.find(event.delete('author_id'))
 
         AnalyticsIssueSerializer.new(project: query.project).represent(event).as_json

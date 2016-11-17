@@ -19,7 +19,7 @@ module Projects
       end
     
       def test
-        @options[:branch] = events_params[:branch_name]
+        options[:branch] = events_params[:branch_name]
     
         render_events(events.test_events)
       end
