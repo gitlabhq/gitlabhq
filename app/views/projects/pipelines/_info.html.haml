@@ -10,7 +10,7 @@
   .header-action-buttons
     - if can?(current_user, :update_pipeline, @pipeline.project)
       - if @pipeline.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn retry-build-btn', method: :post
+        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn btn-inverted-secondary', method: :post
       - if @pipeline.builds.running_or_pending.any?
         = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 

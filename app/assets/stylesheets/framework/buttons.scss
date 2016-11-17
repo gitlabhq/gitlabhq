@@ -345,8 +345,10 @@
   }
 }
 
-.retry-build-btn {
-  @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
+.btn-inverted {
+  &-secondary {
+    @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
+  }
 }
 
 @media (max-width: $screen-xs-max) {
