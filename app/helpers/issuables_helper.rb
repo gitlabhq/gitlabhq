@@ -30,6 +30,15 @@ module IssuablesHelper
     end
   end
 
+  def serialize_issuable(issuable)
+    case issuable
+    when Issue
+      IssueSerializer.new.represent(issuable).to_json
+    when MergeRequest
+      MergeRequestSerializer.new.represent(issuable).to_json
+    end
+  end
+
   def can_add_template?(issuable)
     names = issuable_templates(issuable)
     names.empty? && can?(current_user, :push_code, @project) && !@project.private?

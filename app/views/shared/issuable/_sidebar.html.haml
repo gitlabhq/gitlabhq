@@ -206,7 +206,7 @@
 
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
-      new gl.IssuableTimeTracking('#{issuable.to_json}');
+      new gl.IssuableTimeTracking('#{serialize_issuable(issuable)}');
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
       new WeightSelect();
