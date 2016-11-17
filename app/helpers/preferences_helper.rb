@@ -50,7 +50,7 @@ module PreferencesHelper
   end
 
   def default_project_view
-    return 'readme' unless current_user
+    return anonymous_project_view unless current_user
 
     user_view = current_user.project_view
 
@@ -65,5 +65,9 @@ module PreferencesHelper
     else
       "customize_workflow"
     end
+  end
+
+  def anonymous_project_view
+    @project.empty_repo? || !can?(current_user, :download_code, @project) ? 'activity' : 'readme'
   end
 end
