@@ -35,6 +35,10 @@ describe CommitEntity do
     expect(subject).to include(:commit_path)
   end
 
+  it 'contains URL to commit' do
+    expect(subject).to include(:commit_url)
+  end
+
   it 'needs to receive project in the request' do
     expect(request).to receive(:project)
       .and_return(project)
