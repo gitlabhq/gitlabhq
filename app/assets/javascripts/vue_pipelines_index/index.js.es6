@@ -29,7 +29,7 @@
       store: new gl.PipelineStore(),
     },
     components: {
-      'vue-pipelines': gl.VuePipeLines,
+      'vue-pipelines': gl.VuePipelines,
     },
     template: `
       <div>

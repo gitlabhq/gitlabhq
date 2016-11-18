@@ -2,7 +2,13 @@
 /* eslint-disable no-param-reassign, no-bitwise*/
 
 ((gl) => {
-  gl.VuePipeLines = Vue.extend({
+  const SPREAD = '...';
+  const PREV = 'Prev';
+  const NEXT = 'Next';
+  const FIRST = '<< First';
+  const LAST = 'Last >>';
+
+  gl.VuePipelines = Vue.extend({
     components: {
       runningPipeline: gl.VueRunningPipeline,
       pipelineActions: gl.VuePipelineActions,
@@ -41,12 +47,12 @@
     methods: {
       changepage(e, last) {
         const text = e.target.innerText;
-        if (text === '...') return;
+        if (text === SPREAD) return;
         if (/^-?[\d.]+(?:e-?\d+)?$/.test(text)) this.pagenum = +text;
-        if (text === 'Last >>') this.pagenum = last;
-        if (text === 'Next') this.pagenum = +this.pagenum + 1;
-        if (text === 'Prev') this.pagenum = +this.pagenum - 1;
-        if (text === '<< First') this.pagenum = 1;
+        if (text === LAST) this.pagenum = last;
+        if (text === NEXT) this.pagenum = +this.pagenum + 1;
+        if (text === PREV) this.pagenum = +this.pagenum - 1;
+        if (text === FIRST) this.pagenum = 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
         clearInterval(this.intervalId);

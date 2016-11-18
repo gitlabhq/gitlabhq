@@ -2,6 +2,9 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
+  const PAGINATION_LIMIT = 31;
+  const SLICE_LIMIT = 29;
+
   class PipelineUpdater {
     constructor(pipelines) {
       this.pipelines = pipelines;
@@ -11,8 +14,8 @@
         });
       };
       this.currentPageSlicer = (update) => {
-        if (update.length <= 30) return update;
-        return update.slice(0, 29);
+        if (update.length < PAGINATION_LIMIT) return update;
+        return update.slice(0, SLICE_LIMIT);
       };
     }
 
