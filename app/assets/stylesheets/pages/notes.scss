@@ -102,6 +102,7 @@ ul.notes {
             overflow: auto;
 
             &::after {
+              display: none;
               background: transparent;
             }
           }
