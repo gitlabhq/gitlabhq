@@ -6,6 +6,7 @@ project_tree:
     - :events
   - issues:
     - :events
+    - :timelogs
     - notes:
       - :author
       - :events
@@ -27,6 +28,7 @@ project_tree:
       - :events
     - :merge_request_diff
     - :events
+    - :timelogs
     - label_links:
       - label:
           :priorities
