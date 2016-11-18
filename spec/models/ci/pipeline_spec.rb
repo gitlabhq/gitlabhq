@@ -454,6 +454,22 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#cancel_running' do
+    context 'when there is a running external job and created build' do
+      before do
+        create(:generic_commit_status, :running, pipeline: pipeline)
+        create(:ci_build, :created, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels both jobs' do
+        expect(pipeline.statuses.pluck(:status)).
+          to contain_exactly('canceled', 'canceled')
+      end
+    end
+  end
+
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
     let!(:build_b) { create_build('b', 1) }
