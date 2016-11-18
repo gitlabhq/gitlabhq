@@ -425,3 +425,25 @@
     }
   }
 }
+
+.cycle-analytics-overview {
+  padding-top: 100px;
+
+  .overview-details {
+    display: flex;
+    align-items: center;
+  }
+  
+  .overview-text {
+  }
+
+  .overview-image {
+    text-align: right;
+  }
+  .overview-icon {
+    svg {
+      width: 365px;
+      height: 227px;
+    }
+  }
+}
