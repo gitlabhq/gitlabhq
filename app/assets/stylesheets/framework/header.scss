@@ -92,26 +92,11 @@ header {
         }
       }
     }
-
-    .side-nav-toggle {
-      position: absolute;
-      left: -10px;
-      margin: 7px 0;
-      font-size: 18px;
-      padding: 6px 10px;
-      border: none;
-      background-color: $background-color;
-
-      &:hover {
-        background-color: $btn-gray-hover;
-      }
-    }
   }
 
   .header-content {
     position: relative;
     height: $header-height;
-    padding-left: 30px;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -224,14 +209,6 @@ header {
 
   .impersonation i {
     color: $red-normal;
-  }
-}
-
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-lg-min) {
-    .header-content .title {
-      width: 300px;
-    }
   }
 }
 

@@ -39,7 +39,6 @@
 /*= require mousetrap/pause */
 /*= require shortcuts */
 /*= require shortcuts_navigation */
-/*= require shortcuts_dashboard_navigation */
 /*= require shortcuts_issuable */
 /*= require shortcuts_network */
 /*= require jquery.nicescroll */
@@ -98,11 +97,6 @@
     Cookies.defaults.path = gon.relative_url_root || '/';
 
     gl.utils.preventDisabledButtons();
-    $('.nav-sidebar').niceScroll({
-      cursoropacitymax: '0.4',
-      cursorcolor: '#FFF',
-      cursorborder: '1px solid #FFF'
-    });
     $('.js-select-on-focus').on('focusin', function () {
       return $(this).select().one('mouseup', function (e) {
         return e.preventDefault();
@@ -249,8 +243,5 @@
     gl.awardsHandler = new AwardsHandler();
     checkInitialSidebarSize();
     new Aside();
-
-    // bind sidebar events
-    new gl.Sidebar();
   });
 }).call(this);

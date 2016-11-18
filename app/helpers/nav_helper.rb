@@ -1,9 +1,4 @@
 module NavHelper
-  def page_sidebar_class
-    if pinned_nav?
-      "page-sidebar-expanded page-sidebar-pinned"
-    end
-  end
 
   def page_gutter_class
     if current_path?('merge_requests#show') ||
@@ -26,10 +21,6 @@ module NavHelper
   def nav_header_class
     class_name = ''
     class_name << " with-horizontal-nav" if defined?(nav) && nav
-
-    if pinned_nav?
-      class_name << " header-sidebar-expanded header-sidebar-pinned"
-    end
 
     class_name
   end

@@ -2,9 +2,6 @@
   %a{ href: "#content-body", tabindex: "1", class: "sr-only gl-accessibility" } Skip to content
   %div{ class: "container-fluid" }
     .header-content
-      %button.side-nav-toggle{ type: 'button', "aria-label" => "Toggle global navigation" }
-        %span.sr-only Toggle navigation
-        = icon('bars')
       %button.navbar-toggle{type: 'button'}
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
@@ -47,6 +44,23 @@
                     = link_to "Profile Settings", profile_path, aria: { label: "Profile Settings" }
                   %li
                     = link_to "Help", help_path, aria: { label: "Help" }
+                  %li
+                    = link_to "Projects", dashboard_projects_path, aria: { label: "Projects" }
+                  %li
+                    = link_to "Activity", activity_dashboard_path, aria: { label: "Activity" }
+                  - if koding_enabled?
+                    %li
+                      = link_to "Koding", koding_path, aria: { label: "Koding" }
+                  %li
+                    = link_to "Groups", dashboard_groups_path, aria: { label: "Groups" }
+                  %li
+                    = link_to "Milestones", dashboard_milestones_path, aria: { label: "Milestones" }
+                  %li
+                    = link_to "Issues", assigned_issues_dashboard_path, aria: { label: "Issues" }
+                  %li
+                    = link_to "Merge Requests", assigned_mrs_dashboard_path, aria: { label: "Merge Requests" }
+                  %li
+                    = link_to "Snippets", dashboard_snippets_path, aria: { label: "Snippets" }
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link", aria: { label: "Sign out" }
