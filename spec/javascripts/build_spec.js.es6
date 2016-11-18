@@ -1,5 +1,7 @@
 /* global Build */
 /* eslint-disable no-new */
+//= require lib/utils/timeago
+//= require lib/utils/datetime_utility
 //= require build
 //= require breakpoints
 //= require jquery.nicescroll
