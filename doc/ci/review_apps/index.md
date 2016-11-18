@@ -6,7 +6,7 @@
 - Inspired by [Heroku's Review Apps][heroku-apps] which itself was inspired by
   [Fourchette].
 
-The base of Review Apps is the [dynamic environments] which allow you to create
+The basis of Review Apps is the [dynamic environments] which allow you to create
 a new environment (dynamically) for each one of your branches.
 
 A Review App can then be visible as a link when you visit the [merge request]
