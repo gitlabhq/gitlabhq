@@ -41,8 +41,11 @@
 
       resetVueResources(); // set Vue.resources to 0
 
-      const updatePipelineNums = (total, running) => {
-        document.querySelector('.js-totalbuilds-count').innerHTML = total;
+      const updatePipelineNums = (count) => {
+        const { all } = count;
+        // cannot define non camel case, so not using destructuring for running
+        const running = count.running_or_pending;
+        document.querySelector('.js-totalbuilds-count').innerHTML = all;
         document.querySelector('.js-running-count').innerHTML = running;
       };
 
@@ -61,7 +64,7 @@
             Vue.set(this, 'updatedAt', res.updated_at);
             Vue.set(this, 'pipelines', res.pipelines);
             Vue.set(this, 'count', res.count);
-            updatePipelineNums(this.count.all, this.count.running_or_pending);
+            updatePipelineNums(this.count);
             this.pageRequest = false;
             subtractFromVueResources();
           }, () => new Flash(
@@ -76,7 +79,7 @@
             Vue.set(this, 'updatedAt', res.updated_at);
             Vue.set(this, 'pipelines', p.updatePipelines(res));
             Vue.set(this, 'count', res.count);
-            updatePipelineNums(this.count.all, this.count.running_or_pending);
+            updatePipelineNums(this.count);
             subtractFromVueResources();
           }, () => new Flash(
             'Something went wrong on our end.'
