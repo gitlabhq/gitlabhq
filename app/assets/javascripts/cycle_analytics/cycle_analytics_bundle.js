@@ -2,7 +2,6 @@
 //= require_tree .
 
 $(() => {
-  const EMPTY_DIALOG_COOKIE = 'ca_empty_dialog_dismissed';
   const OVERVIEW_DIALOG_COOKIE = 'ca_overview_dialog_dismissed';
   const cycleAnalyticsEl = document.querySelector('#cycle-analytics');
   const cycleAnalyticsStore = gl.cycleAnalytics.CycleAnalyticsStore;
@@ -20,7 +19,6 @@ $(() => {
       isEmptyStage: false,
       hasError: false,
       startDate: 30,
-      isEmptyDialogDismissed: Cookies.get(EMPTY_DIALOG_COOKIE),
       isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
     },
     computed: {
@@ -103,10 +101,6 @@ $(() => {
           .always(() => {
             this.isLoadingStage = false;
           });
-      },
-      dismissEmptyDialog() {
-        this.isEmptyDialogDismissed = true;
-        Cookies.set(EMPTY_DIALOG_COOKIE, '1');
       },
       dismissOverviewDialog() {
         this.isOverviewDialogDismissed = true;

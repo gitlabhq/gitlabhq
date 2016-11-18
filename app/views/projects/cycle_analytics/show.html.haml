@@ -10,8 +10,6 @@
   - content_for :page_specific_javascripts do
     = page_specific_javascript_tag("cycle_analytics/cycle_analytics_bundle.js")
   #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
-    .empty-dialog-message{ "v-if" => "!isEmptyDialogDismissed" }
-      = render partial: "empty_cycle_analytics"
     .bordered-box.landing.content-block{"v-if" => "!isOverviewDialogDismissed"}
       = icon("times", class: "dismiss-icon", "@click" => "dismissOverviewDialog()")
       .row
