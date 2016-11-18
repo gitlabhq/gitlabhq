@@ -4,7 +4,7 @@ module Projects
       include CycleAnalyticsParams
     
       before_action :authorize_read_cycle_analytics!
-      before_action :authorize_builds!, only: [:test, :staging]
+      before_action :authorize_read_build!, only: [:test, :staging]
       before_action :authorize_read_issue!, only: [:issue, :production]
       before_action :authorize_read_merge_request!, only: [:code, :review]
 
@@ -59,14 +59,6 @@ module Projects
         return {} unless params[:events].present?
     
         params[:events].slice(:start_date, :branch_name)
-      end
-    
-      def authorize_builds!
-        return access_denied! unless can?(current_user, :read_build, project)
-      end
-
-      def authorize_read_issue!
-        return access_denied! unless can?(current_user, :read_issue, project)
       end
     end
   end

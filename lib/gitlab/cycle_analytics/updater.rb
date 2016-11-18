@@ -5,25 +5,25 @@ module Gitlab
         new(*args).update!
       end
 
-      def initialize(event_result, update_klass, update_key, column = nil)
+      def initialize(event_result, from:, to:, klass:)
         @event_result = event_result
-        @update_klass = update_klass
-        @update_key = update_key.to_s
-        @column = column || "#{@update_key}_id"
+        @klass = klass
+        @from = from
+        @to = to
       end
 
       def update!
         @event_result.each do |event|
-          event[@update_key] = items[event.delete(@column).to_i].first
+          event[@to] = items[event.delete(@from).to_i].first
         end
       end
 
       def result_ids
-        @event_result.map { |event| event[@column] }
+        @event_result.map { |event| event[@from] }
       end
 
       def items
-        @items ||= @update_klass.find(result_ids).group_by { |item| item['id'] }
+        @items ||= @klass.find(result_ids).group_by { |item| item['id'] }
       end
     end
   end

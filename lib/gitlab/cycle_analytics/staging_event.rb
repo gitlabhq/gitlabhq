@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def fetch
-        BuildUpdater.update!(event_result)
+        Updater.update!(event_result, from: 'id', to: 'build', klass: ::Ci::Build)
 
         super
       end

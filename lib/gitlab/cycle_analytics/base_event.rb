@@ -30,7 +30,7 @@ module Gitlab
       def update_author!
         return unless event_result.any? && event_result.first['author_id']
 
-        AuthorUpdater.update!(event_result)
+        Updater.update!(event_result, from: 'author_id', to: 'author', klass: User)
       end
 
       def event_result
