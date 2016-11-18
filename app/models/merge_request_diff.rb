@@ -11,6 +11,9 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
+  serialize :st_commits
+  serialize :st_diffs
+
   state_machine :state, initial: :empty do
     state :collected
     state :overflow
@@ -22,8 +25,7 @@ class MergeRequestDiff < ActiveRecord::Base
     state :overflow_diff_lines_limit
   end
 
-  serialize :st_commits
-  serialize :st_diffs
+  scope :viewable, -> { without_state(:empty) }
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.

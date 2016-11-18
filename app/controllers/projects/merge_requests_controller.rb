@@ -82,12 +82,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff =
       if params[:diff_id]
-        @merge_request.merge_request_diffs.find(params[:diff_id])
+        @merge_request.merge_request_diffs.viewable.find(params[:diff_id])
       else
         @merge_request.merge_request_diff
       end
 
-    @merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?
