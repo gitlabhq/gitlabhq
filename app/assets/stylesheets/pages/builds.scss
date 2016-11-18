@@ -50,7 +50,7 @@
   align-items: center;
 
   .btn-inverted {
-    @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
+    @include btn-outline($white-light, $border-blue-light, $border-blue-light, $blue-light, $white-light, $border-blue-light, $blue-normal, $border-blue-normal);
   }
 
   @media (max-width: $screen-sm-max) {

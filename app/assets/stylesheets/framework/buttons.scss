@@ -15,7 +15,7 @@
   @include btn-default;
 }
 
-@mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border) {
+@mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border, $active-background, $active-border) {
   background-color: $background;
   color: $text;
   border-color: $border;
@@ -23,8 +23,14 @@
   &:hover,
   &:focus {
     background-color: $hover-background;
-    color: $hover-text;
     border-color: $hover-border;
+    color: $hover-text;
+  }
+
+  &:active {
+    background-color: $active-background;
+    border-color: $active-border;
+    color: $hover-text;
   }
 }
 
@@ -139,11 +145,11 @@
     &.btn-new,
     &.btn-create,
     &.btn-save {
-      @include btn-outline($white-light, $green-normal, $green-normal, $green-light, $white-light, $green-light);
+      @include btn-outline($white-light, $border-green-light, $border-green-light, $green-light, $white-light, $border-green-light, $green-normal, $border-green-normal);
     }
 
     &.btn-remove {
-      @include btn-outline($white-light, $red-normal, $red-normal, $red-light, $white-light, $red-light);
+      @include btn-outline($white-light, $border-red-light, $border-red-light, $red-light, $white-light, $border-red-light, $red-normal, $border-red-normal);
     }
   }
 
@@ -165,11 +171,15 @@
   }
 
   &.btn-close {
-    @include btn-outline($white-light, $orange-normal, $orange-normal, $orange-light, $white-light, $orange-light);
+    @include btn-outline($white-light, $border-orange-light, $border-orange-light, $orange-light, $white-light, $border-orange-light, $orange-normal, $border-orange-normal);
   }
 
   &.btn-spam {
-    @include btn-outline($white-light, $red-normal, $red-normal, $red-light, $white-light, $red-light);
+    @include btn-outline($white-light, $border-red-light, $border-red-light, $red-light, $white-light, $border-red-light, $red-normal, $border-red-normal);
+  }
+
+  &.btn-blue-inverted {
+    @include btn-outline($white-light, $border-blue-light, $border-blue-light, $blue-light, $white-light, $border-blue-light, $blue-normal, $border-blue-normal);
   }
 
   &.btn-danger,
