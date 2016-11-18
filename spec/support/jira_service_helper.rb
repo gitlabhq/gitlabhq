@@ -57,6 +57,10 @@ module JiraServiceHelper
     JIRA_API + "/issue/#{issue_id}/comment"
   end
 
+  def jira_api_remote_link_url(issue_id)
+    JIRA_API + "/issue/#{issue_id}/remotelink"
+  end
+
   def jira_api_transition_url(issue_id)
     JIRA_API + "/issue/#{issue_id}/transitions"
   end
@@ -75,6 +79,7 @@ module JiraServiceHelper
     WebMock.stub_request(:get, jira_issue_url(issue_id))
     WebMock.stub_request(:get, jira_api_test_url)
     WebMock.stub_request(:post, jira_api_comment_url(issue_id))
+    WebMock.stub_request(:post, jira_api_remote_link_url(issue_id))
     WebMock.stub_request(:post, jira_api_transition_url(issue_id))
   end
 end

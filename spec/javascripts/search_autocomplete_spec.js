@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, padded-blocks, max-len */
 
 /*= require gl_dropdown */
 /*= require search_autocomplete */

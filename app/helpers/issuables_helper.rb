@@ -136,7 +136,18 @@ module IssuablesHelper
     html.html_safe
   end
 
+  def cached_assigned_issuables_count(assignee, issuable_type, state)
+    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
+    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      assigned_issuables_count(assignee, issuable_type, state)
+    end
+  end
+
   private
+
+  def assigned_issuables_count(assignee, issuable_type, state)
+    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
+  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
@@ -160,9 +171,11 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state)
     issuables_finder = public_send("#{issuable_type}_finder")
-    issuables_finder.params[:state] = state
+    
+    params = issuables_finder.params.merge(state: state)
+    finder = issuables_finder.class.new(issuables_finder.current_user, params)
 
-    issuables_finder.execute.page(1).total_count
+    finder.execute.page(1).total_count
   end
 
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, no-undef, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, padded-blocks, max-len */
 
 /*= require awards_handler */
 /*= require jquery */

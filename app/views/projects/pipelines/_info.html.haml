@@ -1,39 +1,49 @@
-%p
-.commit-info-row
-  Pipeline
-  = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @pipeline.id), class: "monospace"
-  with
-  = pluralize @pipeline.statuses.count(:id), "build"
-  - if @pipeline.ref
-    for
-    = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
-  - if @pipeline.duration
-    in
-    = time_interval_in_words(@pipeline.duration)
-  - if @pipeline.queued_duration
-    = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
-
-  .pull-right
+.page-content-header
+  .header-main-content
     = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do
       = ci_icon_for_status(@pipeline.status)
       = ci_label_for_status(@pipeline.status)
+    %strong Pipeline ##{@commit.pipelines.last.id}
+    triggered #{time_ago_with_tooltip(@commit.authored_date)} by
+    = author_avatar(@commit, size: 24)
+    = commit_author_link(@commit)
+  .header-action-buttons
+    - if can?(current_user, :update_pipeline, @pipeline.project)
+      - if @pipeline.builds.latest.failed.any?(&:retryable?)
+        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn btn-inverted-secondary', method: :post
+      - if @pipeline.builds.running_or_pending.any?
+        = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
 - if @commit
-  .commit-info-row
-    %span.light Authored by
-    %strong
-      = commit_author_link(@commit, avatar: true, size: 24)
-    #{time_ago_with_tooltip(@commit.authored_date)}
-
-.commit-info-row
-  %span.light Commit
-  = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace"
-  = clipboard_button(clipboard_text: @pipeline.sha)
-
-- if @commit
-  .commit-box.content-block
+  .commit-box
     %h3.commit-title
       = markdown(@commit.title, pipeline: :single_line)
     - if @commit.description.present?
       %pre.commit-description
         = preserve(markdown(@commit.description, pipeline: :single_line))
+
+.info-well
+  - if @commit.status
+    .well-segment.pipeline-info
+      .icon-container
+        = ci_icon_for_status(@commit.status)
+      = pluralize @pipeline.statuses.count(:id), "build"
+      - if @pipeline.ref
+        from
+        = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
+      - if @pipeline.duration
+        in
+        = time_interval_in_words(@pipeline.duration)
+      - if @pipeline.queued_duration
+        = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
+
+  .well-segment.branch-info
+    .icon-container.commit-icon
+      = custom_icon("icon_commit")
+    = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace js-details-short"
+    = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
+      %span.text-expander
+        \...
+    %span.js-details-content.hide
+      = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace commit-hash-full"
+    = clipboard_button(clipboard_text: @pipeline.sha, title: "Copy commit SHA to clipboard")

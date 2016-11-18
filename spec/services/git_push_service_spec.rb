@@ -490,7 +490,17 @@ describe GitPushService, services: true do
 
       context "closing an issue" do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
-        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
+        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
+
+        before do
+          open_issue   = JIRA::Resource::Issue.new(jira_tracker.client, attrs: { "id" => "JIRA-1" })
+          closed_issue = open_issue.dup
+          allow(open_issue).to receive(:resolution).and_return(false)
+          allow(closed_issue).to receive(:resolution).and_return(true)
+          allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
+
+          allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return("JIRA-1")
+        end
 
         context "using right markdown" do
           it "initiates one api call to jira server to close the issue" do

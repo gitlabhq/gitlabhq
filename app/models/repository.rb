@@ -15,16 +15,6 @@ class Repository
     Gitlab.config.repositories.storages
   end
 
-  def self.remove_storage_from_path(repo_path)
-    storages.find do |_, storage_path|
-      if repo_path.start_with?(storage_path)
-        return repo_path.sub(storage_path, '')
-      end
-    end
-
-    repo_path
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -186,11 +176,18 @@ class Repository
 
     options = { message: message, tagger: user_to_committer(user) } if message
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-      rugged.tags.create(tag_name, target, options)
+    rugged.tags.create(tag_name, target, options)
+    tag = find_tag(tag_name)
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, tag.target, ref) do
+      # we already created a tag, because we need tag SHA to pass correct
+      # values to hooks
     end
 
-    find_tag(tag_name)
+    tag
+  rescue GitHooksService::PreReceiveError
+    rugged.tags.delete(tag_name)
+    raise
   end
 
   def rm_branch(user, branch_name)
@@ -1063,14 +1060,23 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-  def search_files(query, ref)
-    unless exists? && has_visible_content? && query.present?
-      return []
-    end
+  def empty_repo?
+    !exists? || !has_visible_content?
+  end
+
+  def search_files_by_content(query, ref)
+    return [] if empty_repo? || query.blank?
 
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+  end
+
+  def search_files_by_name(query, ref)
+    return [] if empty_repo? || query.blank?
+
+    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

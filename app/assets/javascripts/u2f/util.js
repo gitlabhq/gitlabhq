@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, padded-blocks */
 (function() {
   this.U2FUtil = (function() {
     function U2FUtil() {}

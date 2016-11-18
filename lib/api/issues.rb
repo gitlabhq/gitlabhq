@@ -120,7 +120,7 @@ module API
 
         issues = issues.reorder(issuable_order_by => issuable_sort)
 
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
       end
 
       # Get a single project issue
@@ -132,7 +132,7 @@ module API
       #   GET /projects/:id/issues/:issue_id
       get ":id/issues/:issue_id" do
         @issue = find_project_issue(params[:issue_id])
-        present @issue, with: Entities::Issue, current_user: current_user
+        present @issue, with: Entities::Issue, current_user: current_user, project: user_project
       end
 
       # Create a new project issue
@@ -174,7 +174,7 @@ module API
         end
 
         if issue.valid?
-          present issue, with: Entities::Issue, current_user: current_user
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_validation_error!(issue)
         end
@@ -217,7 +217,7 @@ module API
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 
         if issue.valid?
-          present issue, with: Entities::Issue, current_user: current_user
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_validation_error!(issue)
         end
@@ -239,7 +239,7 @@ module API
 
         begin
           issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
-          present issue, with: Entities::Issue, current_user: current_user
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)
         end

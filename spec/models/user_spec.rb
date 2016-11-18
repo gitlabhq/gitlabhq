@@ -33,11 +33,12 @@ describe User, models: true do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
+    it { is_expected.to have_many(:chat_names).dependent(:destroy) }
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
         user = create(:user)
-        group = create(:group, :public)
+        group = create(:group, :public, :access_requestable)
         group.request_access(user)
 
         expect(user.group_members).to be_empty
@@ -47,7 +48,7 @@ describe User, models: true do
     describe '#project_members' do
       it 'does not include project memberships for which user is a requester' do
         user = create(:user)
-        project = create(:project, :public)
+        project = create(:project, :public, :access_requestable)
         project.request_access(user)
 
         expect(user.project_members).to be_empty
@@ -488,6 +489,28 @@ describe User, models: true do
 
       expect(User.filter('wop')).to include user
     end
+  end
+
+  describe '.without_projects' do
+    let!(:project) { create(:empty_project, :public, :access_requestable) }
+    let!(:user) { create(:user) }
+    let!(:user_without_project) { create(:user) }
+    let!(:user_without_project2) { create(:user) }
+
+    before do
+      # add user to project
+      project.team << [user, :master]
+
+      # create invite to projet
+      create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
+
+      # create request to join project
+      project.request_access(user_without_project2)
+    end
+
+    it { expect(User.without_projects).not_to include user }
+    it { expect(User.without_projects).to include user_without_project }
+    it { expect(User.without_projects).to include user_without_project2 }
   end
 
   describe '.not_in_project' do

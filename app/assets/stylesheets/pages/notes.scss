@@ -35,11 +35,83 @@ ul.notes {
 
   .system-note {
     font-size: 14px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background: #fdfdfd;
+    padding: 0;
+    clear: both;
+
+    &.timeline-entry::after {
+      clear: none;
+    }
+
+    .system-note-message {
+      text-transform: lowercase;
+
+      a {
+        color: $gl-link-color;
+        text-decoration: none;
+      }
+    }
+
+    .timeline-content {
+      padding: 14px 10px;
+    }
+
+    .note-body {
+      overflow: hidden;
+
+      .system-note-commit-list-toggler {
+        display: none;
+        padding: 10px 0 0;
+        cursor: pointer;
+      }
+
+      .note-text {
+        & p:first-child {
+          display: none;
+        }
+
+        &.system-note-commit-list {
+          max-height: 63px;
+          overflow: hidden;
+          display: block;
+
+          ul {
+            margin: 3px 0 3px 15px !important;
+
+            li {
+              font-family: $monospace_font;
+              font-size: 12px;
+            }
+          }
+
+          p:first-child {
+            display: none;
+          }
+
+          &::after {
+            content: '';
+            width: 100%;
+            height: 20px;
+            position: absolute;
+            left: 0;
+            bottom: 50px;
+            background: linear-gradient(rgba($gray-light, .3) 0, $white-light);
+          }
+
+          &.hide-shade {
+            max-height: 100%;
+            overflow: auto;
+
+            &::after {
+              background: transparent;
+            }
+          }
+        }
+      }
+    }
 
     .timeline-icon {
+      display: none;
+
       .avatar {
         visibility: hidden;
 
@@ -65,6 +137,12 @@ ul.notes {
     position: relative;
     border-bottom: 1px solid $table-border-gray;
 
+    &.note-discussion {
+      &.timeline-entry {
+        padding: 14px 10px;
+      }
+    }
+
     &.is-editting {
       .note-header,
       .note-text,
@@ -88,10 +166,8 @@ ul.notes {
         overflow: auto;
         word-wrap: break-word;
         @include md-typography;
-
         // Reset ul style types since we're nested inside a ul already
         @include bulleted-list;
-
         ul.task-list {
           ul:not(.task-list) {
             padding-left: 1.3em;
@@ -110,6 +186,11 @@ ul.notes {
     .note-header {
       padding-bottom: 3px;
       padding-right: 20px;
+
+      p {
+        display: inline;
+        margin: 0;
+      }
 
       @media (min-width: $screen-sm-min) {
         padding-right: 0;
@@ -236,6 +317,10 @@ ul.notes {
   .author_link {
     color: $gl-gray;
   }
+}
+
+.discussion-header {
+  font-size: 14px;
 }
 
 .note-headline-light,

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable quotes, padded-blocks, no-undef, semi */
 //= require graphs/stat_graph
 
 describe("StatGraph", function () {

@@ -7,6 +7,8 @@ module Ci
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
+    has_many :deployments, as: :deployable
+
     serialize :options
     serialize :yaml_variables
 
@@ -123,6 +125,34 @@ module Ci
 
     def retried?
       !self.pipeline.statuses.latest.include?(self)
+    end
+
+    def expanded_environment_name
+      ExpandVariables.expand(environment, variables) if environment
+    end
+
+    def has_environment?
+      self.environment.present?
+    end
+
+    def starts_environment?
+      has_environment? && self.environment_action == 'start'
+    end
+
+    def stops_environment?
+      has_environment? && self.environment_action == 'stop'
+    end
+
+    def environment_action
+      self.options.fetch(:environment, {}).fetch(:action, 'start')
+    end
+
+    def outdated_deployment?
+      success? && !last_deployment.try(:last?)
+    end
+
+    def last_deployment
+      deployments.last
     end
 
     def depends_on_builds
@@ -271,6 +301,7 @@ module Ci
 
     def append_trace(trace_part, offset)
       recreate_trace_dir
+      touch if needs_touch?
 
       trace_part = hide_secrets(trace_part)
 
@@ -278,6 +309,10 @@ module Ci
       File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
       end
+    end
+
+    def needs_touch?
+      Time.now - updated_at > 15.minutes.to_i
     end
 
     def trace_file_path

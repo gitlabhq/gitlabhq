@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, object-shorthand, quotes, no-var, one-var, one-var-declaration-per-line, no-undef, prefer-arrow-callback, consistent-return, no-unused-vars, camelcase, prefer-template, comma-dangle, padded-blocks, max-len */
 (function() {
   this.ProjectsList = {
     init: function() {

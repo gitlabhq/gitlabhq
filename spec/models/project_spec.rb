@@ -20,6 +20,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
@@ -35,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
     it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
@@ -76,7 +78,7 @@ describe Project, models: true do
     end
 
     describe '#members & #requesters' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -496,9 +498,6 @@ describe Project, models: true do
     end
 
     it 'returns nil and does not query services when there is no external issue tracker' do
-      project.build_missing_services
-      project.reload
-
       expect(project).not_to receive(:services)
 
       expect(project.external_issue_tracker).to eq(nil)
@@ -506,9 +505,6 @@ describe Project, models: true do
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
       ext_project.reload # Factory returns a project with changed attributes
-      ext_project.build_missing_services
-      ext_project.reload
-
       expect(ext_project).to receive(:services).once.and_call_original
 
       2.times { expect(ext_project.external_issue_tracker).to be_a_kind_of(RedmineService) }
@@ -706,7 +702,7 @@ describe Project, models: true do
         "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'When avatar file in git' do
@@ -718,7 +714,7 @@ describe Project, models: true do
         "/#{project.namespace.name}/#{project.path}/avatar"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
@@ -1646,15 +1642,18 @@ describe Project, models: true do
       end
 
       it 'returns environment when with_tags is set' do
-        expect(project.environments_for('master', project.commit, with_tags: true)).to contain_exactly(environment)
+        expect(project.environments_for('master', commit: project.commit, with_tags: true))
+          .to contain_exactly(environment)
       end
 
       it 'does not return environment when no with_tags is set' do
-        expect(project.environments_for('master', project.commit)).to be_empty
+        expect(project.environments_for('master', commit: project.commit))
+          .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+        expect(project.environments_for('master', commit: project.commit('feature')))
+          .to be_empty
       end
     end
 
@@ -1664,15 +1663,65 @@ describe Project, models: true do
       end
 
       it 'returns environment when ref is set' do
-        expect(project.environments_for('master', project.commit)).to contain_exactly(environment)
+        expect(project.environments_for('master', commit: project.commit))
+          .to contain_exactly(environment)
       end
 
       it 'does not environment when ref is different' do
-        expect(project.environments_for('feature', project.commit)).to be_empty
+        expect(project.environments_for('feature', commit: project.commit))
+          .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', project.commit('feature'))).to be_empty
+        expect(project.environments_for('master', commit: project.commit('feature')))
+          .to be_empty
+      end
+
+      it 'returns environment when commit constraint is not set' do
+        expect(project.environments_for('master'))
+          .to contain_exactly(environment)
+      end
+    end
+  end
+
+  describe '#environments_recently_updated_on_branch' do
+    let(:project) { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+
+    context 'when last deployment to environment is the most recent one' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+      end
+
+      it 'finds recently updated environment' do
+        expect(project.environments_recently_updated_on_branch('feature'))
+          .to contain_exactly(environment)
+      end
+    end
+
+    context 'when last deployment to environment is not the most recent' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: environment, ref: 'master')
+      end
+
+      it 'does not find environment' do
+        expect(project.environments_recently_updated_on_branch('feature'))
+          .to be_empty
+      end
+    end
+
+    context 'when there are two environments that deploy to the same branch' do
+      let(:second_environment) { create(:environment, project: project) }
+
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: second_environment, ref: 'feature')
+      end
+
+      it 'finds both environments' do
+        expect(project.environments_recently_updated_on_branch('feature'))
+          .to contain_exactly(environment, second_environment)
       end
     end
   end

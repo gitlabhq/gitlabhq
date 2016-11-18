@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-undef, no-param-reassign, no-shadow, padded-blocks, max-len */
 (function() {
   this.MilestoneSelect = (function() {
     function MilestoneSelect(currentProject) {

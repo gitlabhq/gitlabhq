@@ -393,33 +393,33 @@ describe Repository, models: true do
     end
   end
 
-  describe "search_files" do
-    let(:results) { repository.search_files('feature', 'master') }
+  describe "search_files_by_content" do
+    let(:results) { repository.search_files_by_content('feature', 'master') }
     subject { results }
 
     it { is_expected.to be_an Array }
 
     it 'regex-escapes the query string' do
-      results = repository.search_files("test\\", 'master')
+      results = repository.search_files_by_content("test\\", 'master')
 
       expect(results.first).not_to start_with('fatal:')
     end
 
     it 'properly handles an unmatched parenthesis' do
-      results = repository.search_files("test(", 'master')
+      results = repository.search_files_by_content("test(", 'master')
 
       expect(results.first).not_to start_with('fatal:')
     end
 
     it 'properly handles when query is not present' do
-      results = repository.search_files('', 'master')
+      results = repository.search_files_by_content('', 'master')
 
       expect(results).to match_array([])
     end
 
     it 'properly handles query when repo is empty' do
       repository = create(:empty_project).repository
-      results = repository.search_files('test', 'master')
+      results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
     end
@@ -429,6 +429,28 @@ describe Repository, models: true do
 
       it { is_expected.to be_an String }
       it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+    end
+  end
+
+  describe "search_files_by_name" do
+    let(:results) { repository.search_files_by_name('files', 'master') }
+
+    it 'returns result' do
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is not present' do
+      results = repository.search_files_by_name('', 'master')
+
+      expect(results).to match_array([])
+    end
+
+    it 'properly handles query when repo is empty' do
+      repository = create(:empty_project).repository
+
+      results = repository.search_files_by_name('test', 'master')
+
+      expect(results).to match_array([])
     end
   end
 
@@ -1332,6 +1354,28 @@ describe Repository, models: true do
         repository.add_tag(user, '8.5', 'master', 'foo')
       end
 
+      it 'does not create a tag when a pre-hook fails' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+
+        expect do
+          repository.add_tag(user, '8.5', 'master', 'foo')
+        end.to raise_error(GitHooksService::PreReceiveError)
+
+        repository.expire_tags_cache
+        expect(repository.find_tag('8.5')).to be_nil
+      end
+
+      it 'passes tag SHA to hooks' do
+        spy = GitHooksService.new
+        allow(GitHooksService).to receive(:new).and_return(spy)
+        allow(spy).to receive(:execute).and_call_original
+
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        expect(spy).to have_received(:execute).
+          with(anything, anything, anything, tag.target, anything)
+      end
+
       it 'returns a Gitlab::Git::Tag object' do
         tag = repository.add_tag(user, '8.5', 'master', 'foo')
 
@@ -1533,15 +1577,5 @@ describe Repository, models: true do
         repository.update_ref!('refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
       end.to raise_error(Repository::CommitError)
     end
-  end
-
-  describe '#remove_storage_from_path' do
-    let(:storage_path) { project.repository_storage_path }
-    let(:project_path) { project.path_with_namespace }
-    let(:full_path) { File.join(storage_path, project_path) }
-
-    it { expect(Repository.remove_storage_from_path(full_path)).to eq(project_path) }
-    it { expect(Repository.remove_storage_from_path(project_path)).to eq(project_path) }
-    it { expect(Repository.remove_storage_from_path(storage_path)).to eq('') }
   end
 end

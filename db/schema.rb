@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161109150329) do
+ActiveRecord::Schema.define(version: 20161117114805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,21 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.string "font"
     t.text "message_html"
   end
+
+  create_table "chat_names", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "service_id", null: false
+    t.string "team_id", null: false
+    t.string "team_domain"
+    t.string "chat_id", null: false
+    t.string "chat_name"
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "chat_names", ["service_id", "team_id", "chat_id"], name: "index_chat_names_on_service_id_and_team_id_and_chat_id", unique: true, using: :btree
+  add_index "chat_names", ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
 
   create_table "ci_application_settings", force: :cascade do |t|
     t.boolean "all_broken_builds"
@@ -637,10 +652,12 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.datetime "merged_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "pipeline_id"
   end
 
   add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
   add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
+  add_index "merge_request_metrics", ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
     t.string "target_branch", null: false
@@ -726,7 +743,7 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.string "avatar"
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
-    t.boolean "request_access_enabled", default: true, null: false
+    t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
     t.boolean "lfs_enabled"
     t.text "description_html"
@@ -914,7 +931,7 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
-    t.boolean "request_access_enabled", default: true, null: false
+    t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
     t.boolean "lfs_enabled"
     t.text "description_html"
@@ -1055,9 +1072,10 @@ ActiveRecord::Schema.define(version: 20161109150329) do
     t.boolean "subscribed"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "project_id"
   end
 
-  add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id"], name: "subscriptions_user_id_and_ref_fields", unique: true, using: :btree
+  add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
 
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
@@ -1247,12 +1265,14 @@ ActiveRecord::Schema.define(version: 20161109150329) do
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_metrics", "ci_commits", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
+  add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
 end

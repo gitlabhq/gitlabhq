@@ -203,6 +203,8 @@ class Gitlab::Seeder::CycleAnalytics
       pipeline.run!
       Timecop.travel rand(1..6).hours.from_now
       pipeline.succeed!
+
+      PipelineMetricsWorker.new.perform(pipeline.id)
     end
   end
 
