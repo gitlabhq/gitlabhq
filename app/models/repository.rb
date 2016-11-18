@@ -1,15 +1,53 @@
 require 'securerandom'
 
 class Repository
-  class CommitError < StandardError; end
-
-  # Files to use as a project avatar in case no avatar was uploaded via the web
-  # UI.
-  AVATAR_FILES = %w{logo.png logo.jpg logo.gif}
-
   include Gitlab::ShellAdapter
 
   attr_accessor :path_with_namespace, :project
+
+  class CommitError < StandardError; end
+
+  # Methods that cache data from the Git repository.
+  #
+  # Each entry in this Array should have a corresponding method with the exact
+  # same name. The cache key used by those methods must also match method's
+  # name.
+  #
+  # For example, for entry `:readme` there's a method called `readme` which
+  # stores its data in the `readme` cache key.
+  CACHED_METHODS = %i(size commit_count readme version contribution_guide
+                      changelog license_blob license_key gitignore koding_yml
+                      gitlab_ci_yml branch_names tag_names branch_count
+                      tag_count avatar exists? empty? root_ref)
+
+  # Certain method caches should be refreshed when certain types of files are
+  # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
+  # the corresponding methods to call for refreshing caches.
+  METHOD_CACHES_FOR_FILE_TYPES = {
+    readme: :readme,
+    changelog: :changelog,
+    license: %i(license_blob license_key),
+    contributing: :contribution_guide,
+    version: :version,
+    gitignore: :gitignore,
+    koding: :koding_yml,
+    gitlab_ci: :gitlab_ci_yml,
+    avatar: :avatar
+  }
+
+  # Wraps around the given method and caches its output in Redis and an instance
+  # variable.
+  #
+  # This only works for methods that do not take any arguments.
+  def self.cache_method(name, fallback: nil)
+    original = :"_uncached_#{name}"
+
+    alias_method(original, name)
+
+    define_method(name) do
+      cache_method_output(name, fallback: fallback) { __send__(original) }
+    end
+  end
 
   def self.storages
     Gitlab.config.repositories.storages
@@ -35,20 +73,6 @@ class Repository
     @path_to_repo ||= File.expand_path(
       File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
-  end
-
-  def exists?
-    return @exists unless @exists.nil?
-
-    @exists = cache.fetch(:exists?) do
-      refs_directory_exists?
-    end
-  end
-
-  def empty?
-    return @empty unless @empty.nil?
-
-    @empty = cache.fetch(:empty?) { raw_repository.empty? }
   end
 
   #
@@ -217,10 +241,6 @@ class Repository
     branch_names + tag_names
   end
 
-  def branch_names
-    @branch_names ||= cache.fetch(:branch_names) { branches.map(&:name) }
-  end
-
   def branch_exists?(branch_name)
     branch_names.include?(branch_name)
   end
@@ -270,34 +290,6 @@ class Repository
     ref_exists?(keep_around_ref_name(sha))
   end
 
-  def tag_names
-    cache.fetch(:tag_names) { raw_repository.tag_names }
-  end
-
-  def commit_count
-    cache.fetch(:commit_count) do
-      begin
-        raw_repository.commit_count(self.root_ref)
-      rescue
-        0
-      end
-    end
-  end
-
-  def branch_count
-    @branch_count ||= cache.fetch(:branch_count) { branches.size }
-  end
-
-  def tag_count
-    @tag_count ||= cache.fetch(:tag_count) { raw_repository.rugged.tags.count }
-  end
-
-  # Return repo size in megabytes
-  # Cached in redis
-  def size
-    cache.fetch(:size) { raw_repository.size }
-  end
-
   def diverging_commit_counts(branch)
     root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
@@ -313,48 +305,55 @@ class Repository
     end
   end
 
-  # Keys for data that can be affected for any commit push.
-  def cache_keys
-    %i(size commit_count
-       readme version contribution_guide changelog
-       license_blob license_key gitignore koding_yml gitlab_ci_yml)
-  end
-
-  # Keys for data on branch/tag operations.
-  def cache_keys_for_branches_and_tags
-    %i(branch_names tag_names branch_count tag_count)
-  end
-
-  def build_cache
-    (cache_keys + cache_keys_for_branches_and_tags).each do |key|
-      unless cache.exist?(key)
-        send(key)
-      end
-    end
-  end
-
   def expire_tags_cache
-    cache.expire(:tag_names)
+    expire_method_caches(%i(tag_names tag_count))
     @tags = nil
   end
 
   def expire_branches_cache
-    cache.expire(:branch_names)
-    @branch_names = nil
+    expire_method_caches(%i(branch_names branch_count))
     @local_branches = nil
   end
 
-  def expire_cache(branch_name = nil, revision = nil)
-    cache_keys.each do |key|
+  def expire_statistics_caches
+    expire_method_caches(%i(size commit_count))
+  end
+
+  def expire_all_method_caches
+    expire_method_caches(CACHED_METHODS)
+  end
+
+  # Expires the caches of a specific set of methods
+  def expire_method_caches(methods)
+    methods.each do |key|
       cache.expire(key)
+
+      ivar = cache_instance_variable_name(key)
+
+      remove_instance_variable(ivar) if instance_variable_defined?(ivar)
+    end
+  end
+
+  def expire_avatar_cache
+    expire_method_caches(%i(avatar))
+  end
+
+  # Refreshes the method caches of this repository.
+  #
+  # types - An Array of file types (e.g. `:readme`) used to refresh extra
+  #         caches.
+  def refresh_method_caches(types)
+    to_refresh = []
+
+    types.each do |type|
+      methods = METHOD_CACHES_FOR_FILE_TYPES[type.to_sym]
+
+      to_refresh.concat(Array(methods)) if methods
     end
 
-    expire_branch_cache(branch_name)
-    expire_avatar_cache(branch_name, revision)
+    expire_method_caches(to_refresh)
 
-    # This ensures this particular cache is flushed after the first commit to a
-    # new repository.
-    expire_emptiness_caches if empty?
+    to_refresh.each { |method| send(method) }
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -373,15 +372,14 @@ class Repository
   end
 
   def expire_root_ref_cache
-    cache.expire(:root_ref)
-    @root_ref = nil
+    expire_method_caches(%i(root_ref))
   end
 
   # Expires the cache(s) used to determine if a repository is empty or not.
   def expire_emptiness_caches
-    cache.expire(:empty?)
-    @empty = nil
+    return unless empty?
 
+    expire_method_caches(%i(empty?))
     expire_has_visible_content_cache
   end
 
@@ -390,51 +388,22 @@ class Repository
     @has_visible_content = nil
   end
 
-  def expire_branch_count_cache
-    cache.expire(:branch_count)
-    @branch_count = nil
-  end
-
-  def expire_tag_count_cache
-    cache.expire(:tag_count)
-    @tag_count = nil
-  end
-
   def lookup_cache
     @lookup_cache ||= {}
   end
 
-  def expire_avatar_cache(branch_name = nil, revision = nil)
-    # Avatars are pulled from the default branch, thus if somebody pushes to a
-    # different branch there's no need to expire anything.
-    return if branch_name && branch_name != root_ref
-
-    # We don't want to flush the cache if the commit didn't actually make any
-    # changes to any of the possible avatar files.
-    if revision && commit = self.commit(revision)
-      return unless commit.raw_diffs(deltas_only: true).
-        any? { |diff| AVATAR_FILES.include?(diff.new_path) }
-    end
-
-    cache.expire(:avatar)
-
-    @avatar = nil
-  end
-
   def expire_exists_cache
-    cache.expire(:exists?)
-    @exists = nil
+    expire_method_caches(%i(exists?))
   end
 
   # expire cache that doesn't depend on repository data (when expiring)
   def expire_content_cache
     expire_tags_cache
-    expire_tag_count_cache
     expire_branches_cache
-    expire_branch_count_cache
     expire_root_ref_cache
     expire_emptiness_caches
     expire_exists_cache
+    expire_statistics_caches
   end
 
   # Runs code after a repository has been created.
@@ -449,9 +418,8 @@ class Repository
   # Runs code just before a repository is deleted.
   def before_delete
     expire_exists_cache
-
-    expire_cache if exists?
-
+    expire_all_method_caches
+    expire_branch_cache if exists?
     expire_content_cache
 
     repository_event(:remove_repository)
@@ -468,9 +436,9 @@ class Repository
 
   # Runs code before pushing (= creating or removing) a tag.
   def before_push_tag
-    expire_cache
+    expire_statistics_caches
+    expire_emptiness_caches
     expire_tags_cache
-    expire_tag_count_cache
 
     repository_event(:push_tag)
   end
@@ -478,7 +446,7 @@ class Repository
   # Runs code before removing a tag.
   def before_remove_tag
     expire_tags_cache
-    expire_tag_count_cache
+    expire_statistics_caches
 
     repository_event(:remove_tag)
   end
@@ -490,12 +458,14 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
-    build_cache
+    expire_tags_cache
+    expire_branches_cache
   end
 
   # Runs code after a new commit has been pushed.
-  def after_push_commit(branch_name, revision)
-    expire_cache(branch_name, revision)
+  def after_push_commit(branch_name)
+    expire_statistics_caches
+    expire_branch_cache(branch_name)
 
     repository_event(:push_commit, branch: branch_name)
   end
@@ -504,7 +474,6 @@ class Repository
   def after_create_branch
     expire_branches_cache
     expire_has_visible_content_cache
-    expire_branch_count_cache
 
     repository_event(:push_branch)
   end
@@ -519,7 +488,6 @@ class Repository
   # Runs code after an existing branch has been removed.
   def after_remove_branch
     expire_has_visible_content_cache
-    expire_branch_count_cache
     expire_branches_cache
   end
 
@@ -546,82 +514,127 @@ class Repository
     Gitlab::Git::Blob.raw(self, oid)
   end
 
-  def readme
-    cache.fetch(:readme) { tree(:head).readme }
+  def root_ref
+    if raw_repository
+      raw_repository.root_ref
+    else
+      # When the repo does not exist we raise this error so no data is cached.
+      raise Rugged::ReferenceError
+    end
   end
+  cache_method :root_ref
+
+  def exists?
+    refs_directory_exists?
+  end
+  cache_method :exists?
+
+  def empty?
+    raw_repository.empty?
+  end
+  cache_method :empty?
+
+  # The size of this repository in megabytes.
+  def size
+    exists? ? raw_repository.size : 0.0
+  end
+  cache_method :size, fallback: 0.0
+
+  def commit_count
+    root_ref ? raw_repository.commit_count(root_ref) : 0
+  end
+  cache_method :commit_count, fallback: 0
+
+  def branch_names
+    branches.map(&:name)
+  end
+  cache_method :branch_names, fallback: []
+
+  def tag_names
+    raw_repository.tag_names
+  end
+  cache_method :tag_names, fallback: []
+
+  def branch_count
+    branches.size
+  end
+  cache_method :branch_count, fallback: 0
+
+  def tag_count
+    raw_repository.rugged.tags.count
+  end
+  cache_method :tag_count, fallback: 0
+
+  def avatar
+    if tree = file_on_head(:avatar)
+      tree.path
+    end
+  end
+  cache_method :avatar
+
+  def readme
+    if head = tree(:head)
+      head.readme
+    end
+  end
+  cache_method :readme
 
   def version
-    cache.fetch(:version) do
-      file_on_head(:version)
-    end
+    file_on_head(:version)
   end
+  cache_method :version
 
   def contribution_guide
-    cache.fetch(:contribution_guide) do
-      file_on_head(:contributing)
-    end
+    file_on_head(:contributing)
   end
+  cache_method :contribution_guide
 
   def changelog
-    cache.fetch(:changelog) do
-      file_on_head(:changelog)
-    end
+    file_on_head(:changelog)
   end
+  cache_method :changelog
 
   def license_blob
-    return nil unless head_exists?
-
-    cache.fetch(:license_blob) do
-      file_on_head(:license)
-    end
+    file_on_head(:license)
   end
+  cache_method :license_blob
 
   def license_key
-    return nil unless head_exists?
+    return unless exists?
 
-    cache.fetch(:license_key) do
-      Licensee.license(path).try(:key)
-    end
+    Licensee.license(path).try(:key)
   end
+  cache_method :license_key
 
   def gitignore
-    return nil if !exists? || empty?
-
-    cache.fetch(:gitignore) do
-      file_on_head(:gitignore)
-    end
+    file_on_head(:gitignore)
   end
+  cache_method :gitignore
 
   def koding_yml
-    return nil unless head_exists?
-
-    cache.fetch(:koding_yml) do
-      file_on_head(:koding)
-    end
+    file_on_head(:koding)
   end
+  cache_method :koding_yml
 
   def gitlab_ci_yml
-    return nil unless head_exists?
-
-    @gitlab_ci_yml ||= cache.fetch(:gitlab_ci_yml) do
-      file_on_head(:gitlab_ci)
-    end
-  rescue Rugged::ReferenceError
-    # For unknow reason spinach scenario "Scenario: I change project path"
-    # lead to "Reference 'HEAD' not found" exception from Repository#empty?
-    nil
+    file_on_head(:gitlab_ci)
   end
+  cache_method :gitlab_ci_yml
 
   def head_commit
     @head_commit ||= commit(self.root_ref)
   end
 
   def head_tree
-    @head_tree ||= Tree.new(self, head_commit.sha, nil)
+    if head_commit
+      @head_tree ||= Tree.new(self, head_commit.sha, nil)
+    end
   end
 
   def tree(sha = :head, path = nil, recursive: false)
     if sha == :head
+      return unless head_commit
+
       if path.nil?
         return head_tree
       else
@@ -769,10 +782,6 @@ class Repository
 
   def tags
     @tags ||= raw_repository.tags
-  end
-
-  def root_ref
-    @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
   def commit_dir(user, path, message, branch, author_email: nil, author_name: nil)
@@ -1132,12 +1141,41 @@ class Repository
     end
   end
 
-  def avatar
-    return nil unless exists?
+  # Caches the supplied block both in a cache and in an instance variable.
+  #
+  # The cache key and instance variable are named the same way as the value of
+  # the `key` argument.
+  #
+  # This method will return `nil` if the corresponding instance variable is also
+  # set to `nil`. This ensures we don't keep yielding the block when it returns
+  # `nil`.
+  #
+  # key - The name of the key to cache the data in.
+  # fallback - A value to fall back to in the event of a Git error.
+  def cache_method_output(key, fallback: nil, &block)
+    ivar = cache_instance_variable_name(key)
 
-    @avatar ||= cache.fetch(:avatar) do
-      AVATAR_FILES.find do |file|
-        blob_at_branch(root_ref, file)
+    if instance_variable_defined?(ivar)
+      instance_variable_get(ivar)
+    else
+      begin
+        instance_variable_set(ivar, cache.fetch(key, &block))
+      rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
+        # if e.g. HEAD or the entire repository doesn't exist we want to
+        # gracefully handle this and not cache anything.
+        fallback
+      end
+    end
+  end
+
+  def cache_instance_variable_name(key)
+    :"@#{key.to_s.tr('?!', '')}"
+  end
+
+  def file_on_head(type)
+    if head = tree(:head)
+      head.blobs.find do |file|
+        Gitlab::FileDetector.type_of(file.name) == type
       end
     end
   end
@@ -1152,16 +1190,6 @@ class Repository
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
-  end
-
-  def head_exists?
-    exists? && !empty? && !rugged.head_unborn?
-  end
-
-  def file_on_head(type)
-    tree(:head).blobs.find do |file|
-      Gitlab::FileDetector.type_of(file.name) == type
-    end
   end
 
   def tags_sorted_by_committed_date
