@@ -19,6 +19,7 @@
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */
 /*= require js.cookie */
+/*= require timeago */
 /*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */
