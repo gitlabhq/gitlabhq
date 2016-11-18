@@ -4,7 +4,7 @@ describe CycleAnalytics::Summary, models: true do
   let(:project) { create(:project) }
   let(:from) { Time.now }
   let(:user) { create(:user, :admin) }
-  subject { described_class.new(project, from: from) }
+  subject { described_class.new(project, user, from: from) }
 
   describe "#new_issues" do
     it "finds the number of issues created after the 'from date'" do

@@ -4,13 +4,14 @@ class CycleAnalytics
 
   DEPLOYMENT_METRIC_STAGES = %i[production staging]
 
-  def initialize(project, from:)
+  def initialize(project, current_user, from:)
     @project = project
+    @current_user = current_user
     @from = from
   end
 
   def summary
-    @summary ||= Summary.new(@project, from: @from)
+    @summary ||= Summary.new(@project, @current_user, from: @from)
   end
 
   def issue
