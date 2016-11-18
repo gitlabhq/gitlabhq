@@ -145,7 +145,7 @@
                   <code>/spend</code>
                   will update the sum of the time spent.
                 </p>
-                <a class='btn btn-default learn-more-button' href='http://example.com/time-tracking-url'>Learn more</a>
+                <a class='btn btn-default learn-more-button' href='https://docs.gitlab.com/ee/workflow/time_tracking.html'>Learn more</a>
               </div>
             </div>
           </div>
