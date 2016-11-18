@@ -72,4 +72,3 @@ def submit_time(slash_command)
   click_button 'Comment'
   wait_for_ajax
 end
-
