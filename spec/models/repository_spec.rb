@@ -1354,6 +1354,28 @@ describe Repository, models: true do
         repository.add_tag(user, '8.5', 'master', 'foo')
       end
 
+      it 'does not create a tag when a pre-hook fails' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+
+        expect do
+          repository.add_tag(user, '8.5', 'master', 'foo')
+        end.to raise_error(GitHooksService::PreReceiveError)
+
+        repository.expire_tags_cache
+        expect(repository.find_tag('8.5')).to be_nil
+      end
+
+      it 'passes tag SHA to hooks' do
+        spy = GitHooksService.new
+        allow(GitHooksService).to receive(:new).and_return(spy)
+        allow(spy).to receive(:execute).and_call_original
+
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        expect(spy).to have_received(:execute).
+          with(anything, anything, anything, tag.target, anything)
+      end
+
       it 'returns a Gitlab::Git::Tag object' do
         tag = repository.add_tag(user, '8.5', 'master', 'foo')
 
