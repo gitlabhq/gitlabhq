@@ -9,7 +9,7 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_user_id
   expose :merge_when_build_succeeds
   expose :rebase_commit_sha
-  expose :rebase_in_progress?
+  expose :rebase_in_progress?, if: { type: :full }
   expose :source_branch
   expose :source_project_id
   expose :target_branch
