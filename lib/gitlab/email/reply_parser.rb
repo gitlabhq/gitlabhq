@@ -13,7 +13,7 @@ module Gitlab
 
         encoding = body.encoding
 
-        body = EmailReplyTrimmer.trim(body)
+        body = EmailReplyTrimmer.trim(body) or return ""
 
         # [jneen] not using /\s+$/ here because that deletes empty lines
         body = body.gsub(/[ \t]$/, '')
