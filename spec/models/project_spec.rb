@@ -241,6 +241,13 @@ describe Project, models: true do
     it { is_expected.to respond_to(:path_with_namespace) }
   end
 
+  describe 'delegation' do
+    it { is_expected.to delegate_method(:add_guest).to(:team) }
+    it { is_expected.to delegate_method(:add_reporter).to(:team) }
+    it { is_expected.to delegate_method(:add_developer).to(:team) }
+    it { is_expected.to delegate_method(:add_master).to(:team) }
+  end
+
   describe '#name_with_namespace' do
     let(:project) { build_stubbed(:empty_project) }
 
