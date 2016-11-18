@@ -4,6 +4,8 @@
 class AddPipelineIdToMergeRequestMetrics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = true
 
