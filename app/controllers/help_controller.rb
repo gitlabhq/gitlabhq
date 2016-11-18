@@ -6,9 +6,9 @@ class HelpController < ApplicationController
   def index
     @help_index = File.read(Rails.root.join('doc', 'README.md'))
 
-    # Prefix Markdown links with `help/` unless they already have been
-    # See http://rubular.com/r/ie2MlpdUMq
-    @help_index.gsub!(/(\]\()(\/?help\/)?([^\)\(]+\))/, '\1/help/\3')
+    # Prefix Markdown links with `help/` unless they are external links
+    # See http://rubular.com/r/MioSrVLK3S
+    @help_index.gsub!(%r{(\]\()(?!.+://)([^\)\(]+\))}, '\1/help/\2')
   end
 
   def show
