@@ -30,10 +30,7 @@ describe "Pipelines", feature: true, js: true do
         let(:project) { create(:project) }
 
         before do
-          visit namespace_project_pipelines_path(
-            project.namespace, project,
-            scope: scope
-          )
+          visit namespace_project_pipelines_path(project.namespace, project)
         end
 
         it do
@@ -283,7 +280,7 @@ describe "Pipelines", feature: true, js: true do
         project: project,
         ref: 'master',
         sha: project.commit.id
-      ) 
+      )
     end
 
     before do
