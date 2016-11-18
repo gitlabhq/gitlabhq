@@ -136,6 +136,16 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'Time tracking slash commands', focus: true, js: true do
+    before do
+      issue = create(:issue, author: @user, assignee: @user, project: project)
+      project.team << [@user, :developer]
+      visit namespace_project_issue_path(project.namespace, project, issue)
+    end
+
+    it_behaves_like 'issuable time tracker'
+  end
+
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
       issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
