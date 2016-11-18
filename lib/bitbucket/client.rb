@@ -22,7 +22,7 @@ module Bitbucket
     end
 
     def pull_requests(repo)
-      relative_path = "/repositories/#{repo}/pullrequests"
+      relative_path = "/repositories/#{repo}/pullrequests?state=ALL"
       paginator = Paginator.new(connection, relative_path, :pull_request)
 
       Collection.new(paginator)
@@ -33,6 +33,12 @@ module Bitbucket
       paginator = Paginator.new(connection, relative_path, :pull_request_comment)
 
       Collection.new(paginator)
+    end
+
+    def pull_request_diff(repo, pull_request)
+      relative_path = "/repositories/#{repo}/pullrequests/#{pull_request}/diff"
+
+      connection.get(relative_path)
     end
 
     def repo(name)
