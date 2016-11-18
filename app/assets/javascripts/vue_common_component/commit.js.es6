@@ -143,7 +143,6 @@
         </a>
 
         <div class="icon-container commit-icon commit-icon-container">
-          <!-- svg goes here -->
         </div>
 
         <a class="commit-id monospace"
