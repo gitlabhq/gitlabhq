@@ -89,17 +89,17 @@
     toggleFolder(envType) {
       const environments = this.state.environments;
 
-      const environmnetsCopy = environments.map((env) => {
-        if (env['vue-isChildren'] === true && env.name === envType) {
+      const environmentsCopy = environments.map((env) => {
+        if (env['vue-isChildren'] && env.name === envType) {
           env.isOpen = !env.isOpen;
         }
 
         return env;
       });
 
-      this.state.environments = environmnetsCopy;
+      this.state.environments = environmentsCopy;
 
-      return environmnetsCopy;
+      return environmentsCopy;
     },
 
     /**
