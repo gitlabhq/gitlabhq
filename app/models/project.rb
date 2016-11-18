@@ -1293,14 +1293,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # Checks if `user` is authorized for this project, with at least the
-  # `min_access_level` (if given).
-  def authorized_for_user?(user, min_access_level = nil)
-    return false unless user
-
-    user.authorized_project?(self, min_access_level)
-  end
-
   def append_or_update_attribute(name, value)
     old_values = public_send(name.to_s)
 
