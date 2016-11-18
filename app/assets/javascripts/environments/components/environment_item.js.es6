@@ -475,7 +475,7 @@
             <div v-if="isStoppable && canCreateDeployment"
               class="inline js-stop-component-container">
               <stop-component
-                :stop_url="model.environment_path">
+                :stop_url="model.stop_path">
               </stop-component>
             </div>
 

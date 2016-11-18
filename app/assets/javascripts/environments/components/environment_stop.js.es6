@@ -15,7 +15,7 @@
 
     computed: {
       stopUrl() {
-        return `${this.stop_url}/stop`;
+        return this.stop_url;
       },
     },
 

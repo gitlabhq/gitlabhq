@@ -16,5 +16,12 @@ class EnvironmentEntity < Grape::Entity
       environment)
   end
 
+  expose :stop_path do |environment|
+    stop_namespace_project_environment_path(
+      environment.project.namespace,
+      environment.project,
+      environment)
+  end
+
   expose :created_at, :updated_at
 end
