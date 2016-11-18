@@ -4,12 +4,6 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-      ##
-      # Temporary delegations that should be removed after refactoring
-      #
-      delegate :before_script, :image, :services, :after_script, :variables,
-               :stages, :cache, :jobs, to: :@global
-
       def initialize(config)
         @config = Loader.new(config).load!
 
@@ -27,6 +21,41 @@ module Gitlab
 
       def to_hash
         @config
+      end
+
+      ##
+      # Temporary method that should be removed after refactoring
+      #
+      def before_script
+        @global.before_script_value
+      end
+
+      def image
+        @global.image_value
+      end
+
+      def services
+        @global.services_value
+      end
+
+      def after_script
+        @global.after_script_value
+      end
+
+      def variables
+        @global.variables_value
+      end
+
+      def stages
+        @global.stages_value
+      end
+
+      def cache
+        @global.cache_value
+      end
+
+      def jobs
+        @global.jobs_value
       end
     end
   end
