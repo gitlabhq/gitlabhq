@@ -11,10 +11,10 @@
 
 (() => {
   describe('Build', () => {
-    fixture.preload('build.html');
+    fixture.preload('builds/build-with-artifacts.html.raw');
 
     beforeEach(function () {
-      fixture.load('build.html');
+      fixture.load('builds/build-with-artifacts.html.raw');
       spyOn($, 'ajax');
     });
 
@@ -28,15 +28,7 @@
       });
 
       describe('setup', function () {
-        const removeDate = new Date();
-        removeDate.setUTCFullYear(removeDate.getUTCFullYear() + 1);
-        // give the test three days to run
-        removeDate.setTime(removeDate.getTime() + (3 * 24 * 60 * 60 * 1000));
-
         beforeEach(function () {
-          const removeDateElement = document.querySelector('.js-artifacts-remove');
-          removeDateElement.innerText = removeDate.toString();
-
           this.build = new Build();
         });
 
