@@ -94,6 +94,24 @@ describe Projects::BranchesController do
           branch_name: branch,
           issue_iid: issue.iid
       end
+
+      context 'without issue feature access' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          project.team.truncate
+        end
+
+        it "doesn't post a system note" do
+          expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+        end
+      end
     end
   end
 
