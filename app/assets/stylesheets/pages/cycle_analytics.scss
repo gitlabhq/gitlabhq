@@ -344,6 +344,17 @@
         }
       } 
     }
+
+    .merge-request-branch {
+      a {
+        max-width: 180px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: bottom;
+      }
+    }
   }
   
   // Custom Styles for stage items

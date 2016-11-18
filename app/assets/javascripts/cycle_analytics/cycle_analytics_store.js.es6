@@ -55,10 +55,10 @@
 
       newEvents.forEach((item) => {
         item.totalTime = item.total_time;
-        item.createdAt = item.created_at;
         item.author.webUrl = item.author.web_url;
         item.author.avatarUrl = item.author.avatar_url;
 
+        if (item.created_at) item.createdAt = item.created_at;
         if (item.short_sha) item.shortSha = item.short_sha;
         if (item.commit_url) item.commitUrl = item.commit_url;
 

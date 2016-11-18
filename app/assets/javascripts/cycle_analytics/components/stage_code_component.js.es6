@@ -3,9 +3,6 @@
   global.cycleAnalytics = global.cycleAnalytics || {};
 
   global.cycleAnalytics.StageCodeComponent = Vue.extend({
-    components: {
-      'item-merge-request-component': gl.cycleAnalytics.ItemMergeRequestComponent,
-    },
     props: {
       items: Array,
       stage: Object,
@@ -16,8 +13,30 @@
           {{ stage.description }}
         </div>
         <ul class="stage-event-list">
-          <li class="stage-event-item" v-for="mergeRequest in items">
-            <item-merge-request-component :merge-request="mergeRequest"></item-merge-request-component>
+          <li v-for="mergeRequest in items" class="stage-event-item">
+            <div class="item-details">
+              <img class="avatar" :src="mergeRequest.author.avatarUrl">
+              <h5 class="item-title merge-merquest-title">
+                <a :href="mergeRequest.url">
+                  {{ mergeRequest.title }}
+                </a>
+              </h5>
+              <a :href="mergeRequest.url" class="issue-link">!{{ mergeRequest.iid }}</a>
+              &middot;
+              <span>
+                Opened
+                <a :href="mergeRequest.url" class="issue-date">
+                  {{ mergeRequest.createdAt }}
+                </a>
+              </span>
+              <span>
+                by
+                <a :href="mergeRequest.author.webUrl" class="issue-author-link">{{ mergeRequest.author.name }}</a>
+              </span>
+            </div>
+            <div class="item-time">
+              <total-time :time="mergeRequest.totalTime"></total-time>
+            </div>
           </li>
         </ul>
       </div>
