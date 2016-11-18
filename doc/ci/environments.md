@@ -235,7 +235,7 @@ will help us achieve that.
 
 As the name suggests, it is possible to create environments on the fly by just
 declaring their names dynamically in `.gitlab-ci.yml`. Dynamic environments is
-the base of [Review apps](review_apps.md).
+the basis of [Review apps](review_apps.md).
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in
@@ -343,6 +343,10 @@ review_app:
 
 It is assumed that the user has already setup NGINX and GitLab Runner in the
 server this job will run on.
+
+>**Note:**
+Be sure to check out the [limitations](#limitations) section for some edge
+cases regarding naming of you branches and Review Apps.
 
 ---
 
