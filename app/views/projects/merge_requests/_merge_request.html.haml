@@ -54,15 +54,18 @@
       = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch) do
         = icon('code-fork')
         = merge_request.target_branch
+
     - if merge_request.milestone
       &nbsp;
       = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, milestone_title: merge_request.milestone.title) do
         = icon('clock-o')
         = merge_request.milestone.title
+
     - if merge_request.labels.any?
       &nbsp;
       - merge_request.labels.each do |label|
         = link_to_label(label, subject: merge_request.project, type: :merge_request)
+        
     - if merge_request.tasks?
       &nbsp;
       %span.task-status
