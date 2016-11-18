@@ -14,8 +14,8 @@ module Mattermost
       end
 
       def help(commands, trigger)
-        if commands.empty?
-          ephemeral_response("No commands configured") unless messages.count > 1
+        if commands.zero?
+          ephemeral_response("No commands configured")
         else
           message = header_with_list("Available commands", commands)
 

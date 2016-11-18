@@ -98,14 +98,14 @@ ActiveRecord::Schema.define(version: 20161113184239) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -383,6 +383,17 @@ ActiveRecord::Schema.define(version: 20161113184239) do
   end
 
   add_index "ci_variables", ["gl_project_id"], name: "index_ci_variables_on_gl_project_id", using: :btree
+
+  create_table "custom_emoji", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name"
+    t.string "emoji"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "custom_emoji", ["project_id", "name"], name: "index_custom_emoji_on_project_id_and_name", unique: true, using: :btree
+  add_index "custom_emoji", ["project_id"], name: "index_custom_emoji_on_project_id", using: :btree
 
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false
@@ -930,7 +941,7 @@ ActiveRecord::Schema.define(version: 20161113184239) do
     t.boolean "has_external_wiki"
     t.boolean "lfs_enabled"
     t.text "description_html"
-    t.boolean "only_allow_merge_if_all_discussions_are_resolved"
+    t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1254,6 +1265,7 @@ ActiveRecord::Schema.define(version: 20161113184239) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
+  add_foreign_key "custom_emoji", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

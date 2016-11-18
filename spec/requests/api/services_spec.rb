@@ -95,9 +95,10 @@ describe API::API, api: true  do
 
     context 'no service is available' do
       it 'returns a not found message' do
-        post api("/projects/#{project.id}/services/mattermost_command/trigger")
+        post api("/projects/#{project.id}/services/idonotexist/trigger")
 
         expect(response).to have_http_status(404)
+        expect(json_response["message"]).to eq("404 Service Not Found")
       end
     end
 
@@ -139,7 +140,7 @@ describe API::API, api: true  do
           post api("/projects/404/services/mattermost_command/trigger"), params
 
           expect(response).to have_http_status(404)
-          expect(json_response["message"]).to eq '404 Not Found'
+          expect(json_response["message"]).to eq("404 Service Not Found")
         end
       end
     end
