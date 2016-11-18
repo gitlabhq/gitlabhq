@@ -146,7 +146,8 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines/:id' do
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+    let(:project) { create(:project) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
       @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
