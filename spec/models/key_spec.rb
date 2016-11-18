@@ -92,4 +92,16 @@ describe Key, models: true do
       expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
     end
   end
+
+  describe 'notification' do
+    let(:user) { create(:user) }
+
+    it 'sends a notification' do
+      perform_enqueued_jobs do
+        create(:key, user: user)
+      end
+
+      should_email(user)
+    end
+  end
 end
