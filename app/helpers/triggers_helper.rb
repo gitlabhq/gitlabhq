@@ -6,4 +6,8 @@ module TriggersHelper
       "#{Settings.gitlab.url}/api/v3/projects/#{project_id}/ref/#{ref}/trigger/builds"
     end
   end
+
+  def service_trigger_url(service)
+    "#{Settings.gitlab.url}/api/v3/projects/#{service.project_id}/services/#{service.to_param}/trigger"
+  end
 end
