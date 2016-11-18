@@ -225,4 +225,28 @@ describe GeoNode, type: :model do
       expect(node).to be_missing_oauth_application
     end
   end
+
+  describe '#backfill_repositories' do
+    before do
+      Sidekiq::Worker.clear_all
+    end
+
+    it 'schedules the scheduler worker' do
+      Sidekiq::Testing.fake! do
+        expect { node.backfill_repositories }.to change(GeoScheduleBackfillWorker.jobs, :size).by(1)
+      end
+    end
+
+    it 'schedules the correct worker for the number of projects' do
+      Sidekiq::Testing.fake! do
+        2.times do
+          create(:project)
+        end
+
+        node.backfill_repositories
+
+        expect { GeoScheduleBackfillWorker.drain }.to change(GeoRepositoryBackfillWorker.jobs, :size).by(2)
+      end
+    end
+  end
 end

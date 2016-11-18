@@ -53,7 +53,13 @@
 
           .pull-right
             - if node.missing_oauth_application?
-              = link_to repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default, btn-sm' do
+              = link_to repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default btn-sm prepend-left-10' do
                 = icon('exclamation-triangle fw')
                 Repair authentication
-            = link_to 'Remove', admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'
+            - unless node.primary?
+              = link_to backfill_repositories_admin_geo_node_path(node), method: :post, class: 'btn btn-primary btn-sm prepend-left-10' do
+                = icon 'map-signs'
+                Backfill all repositories
+            = link_to admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm prepend-left-10' do
+              = icon 'trash'
+              Remove

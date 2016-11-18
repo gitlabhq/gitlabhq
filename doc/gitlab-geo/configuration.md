@@ -214,8 +214,12 @@ The two most obvious issues that replication can have here are:
 ### Step 5. Replicating the repositories data
 
 Getting a new secondary Geo node up and running, will also require the
-repositories directory to be synced from the primary node. You can use `rsync`
-for that.
+repositories directory to be synced from the primary node.
+
+With GitLab **8.14** you can start the syncing process by clicking the
+"Backfill all repositories" button on `Admin > Geo Nodes` screen. 
+
+On previous versions, you can use `rsync` for that:
 
 Make sure `rsync` is installed in both primary and secondary servers and root
 SSH access with a password is enabled. Otherwise, you can set up an SSH key-based

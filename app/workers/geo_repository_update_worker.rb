@@ -1,7 +1,7 @@
 class GeoRepositoryUpdateWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
-  include GeoQueue
+  include DedicatedSidekiqQueue
 
   attr_accessor :project
 

@@ -69,8 +69,10 @@ there are a few things to consider:
          git remote set-url --push origin git@primary.gitlab.example.com:user/repo.git
          ```
 
-> **Important**: The initialization of a new Geo secondary node requires data
-to be copied from the primary, as there is no backfill feature bundled with it.
+>**Important**:
+The initialization of a new Geo secondary node on versions older than 8.14 
+requires data to be copied from the primary, as there is no backfill 
+feature bundled with those versions.
 See more details in the [Configure GitLab](configuration.md) step.
 
 ## Current limitations

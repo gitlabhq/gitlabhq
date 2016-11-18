@@ -65,6 +65,12 @@ class GeoNode < ActiveRecord::Base
     self.primary? ? false : !oauth_application.present?
   end
 
+  def backfill_repositories
+    if Gitlab::Geo.enabled? && !primary?
+      GeoScheduleBackfillWorker.perform_async(id)
+    end
+  end
+
   private
 
   def url_helper_args
