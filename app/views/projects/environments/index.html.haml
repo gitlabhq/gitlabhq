@@ -6,10 +6,8 @@
   = page_specific_javascript_tag("environments/environments_bundle.js")
 .commit-icon-svg.hidden
   = custom_icon("icon_commit")
-
-.play-icon-svg{ slot: "actionplayicon" }
-  %span.hide
-    = custom_icon("icon_play")
+.play-icon-svg.hidden
+  = custom_icon("icon_play")
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
