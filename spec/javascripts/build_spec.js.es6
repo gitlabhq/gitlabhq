@@ -26,7 +26,15 @@
       });
 
       describe('setup', function () {
+        const removeDate = new Date();
+        removeDate.setUTCFullYear(removeDate.getUTCFullYear() + 1);
+        // give the test three days to run
+        removeDate.setTime(removeDate.getTime() + (3 * 24 * 60 * 60 * 1000));
+
         beforeEach(function () {
+          const removeDateElement = document.querySelector('.js-artifacts-remove');
+          removeDateElement.innerText = removeDate.toString();
+
           this.build = new Build();
         });
 
@@ -55,6 +63,11 @@
           expect($('.build-job[data-stage="build"]').is(':visible')).toBe(true);
           expect($('.build-job[data-stage="test"]').is(':visible')).toBe(false);
           expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
+        });
+
+        it('displays the remove date correctly', function () {
+          const removeDateElement = document.querySelector('.js-artifacts-remove');
+          expect(removeDateElement.innerText.trim()).toBe('1 year');
         });
       });
 
