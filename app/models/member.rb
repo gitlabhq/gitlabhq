@@ -57,10 +57,10 @@ class Member < ActiveRecord::Base
   scope :owners,  -> { active.where(access_level: OWNER) }
   scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
 
-  scope :order_name_asc, -> { joins(:user).merge(User.order_name_asc) }
-  scope :order_name_desc, -> { joins(:user).merge(User.order_name_desc) }
-  scope :order_recent_sign_in, -> { joins(:user).merge(User.order_recent_sign_in) }
-  scope :order_oldest_sign_in, -> { joins(:user).merge(User.order_oldest_sign_in) }
+  scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
+  scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
+  scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
@@ -92,6 +92,17 @@ class Member < ActiveRecord::Base
       else
         order_by(method)
       end
+    end
+
+    def left_join_users
+      users = User.arel_table
+      members = Member.arel_table
+
+      member_users = members.join(users, Arel::Nodes::OuterJoin).
+                             on(members[:user_id].eq(users[:id])).
+                             join_sources
+
+      joins(member_users)
     end
 
     def access_for_user_ids(user_ids)
