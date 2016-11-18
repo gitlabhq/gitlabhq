@@ -520,6 +520,6 @@ Below are some links you may find interesting:
 [only]: yaml/README.md#only-and-except
 [onstop]: yaml/README.md#environment-on_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
-[ce-22849]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22849
+[ce-22849]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22849
 [gitlab runner]: https://docs.gitlab.com/runner/
 [git-strategy]: yaml/README.md#git-strategy
