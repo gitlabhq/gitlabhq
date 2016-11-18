@@ -321,7 +321,7 @@
       }
     }
 
-    .issue-date {
+    .issue-date, .build-date {
       color: $gl-text-color;
     }
     
@@ -364,6 +364,8 @@
       .icon-build-status {
         float: left;
         margin-right: 5px;
+        position: relative;
+        top: 2px;
       }
 
       .item-build-name {

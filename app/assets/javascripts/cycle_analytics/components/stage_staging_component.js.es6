@@ -17,9 +17,7 @@
             <div class="item-details">
               <img class="avatar" :src="build.author.avatarUrl">
               <h5 class="item-title">
-                <a :href="build.url" class="pipeline-id">
-                  #{{ build.iid }}
-                </a>
+                <a :href="build.url" class="pipeline-id">#{{ build.id }}</a>
                 <i class="fa fa-code-fork"></i>
                 <a :href="build.branch.url" class="branch-name monospace">{{ build.branch.name }}</a>
                 <span class="icon-branch">
@@ -30,9 +28,7 @@
                 <a :href="build.commitUrl" class="short-sha monospace">da57eb39</a>
               </h5>
               <span>
-                <a :href="build.url" class="issue-date">
-                  {{ build.createdAt }}
-                </a>
+                <a :href="build.url" class="build-date">{{ build.date }}</a>
                 by
                 <a :href="build.author.webUrl" class="issue-author-link">
                   {{ build.author.name }}

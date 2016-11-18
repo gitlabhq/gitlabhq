@@ -21,15 +21,11 @@
                   {{ issue.title }}
                 </a>
               </h5>
-              <a :href="issue.url" class="issue-link">
-                #{{ issue.iid }}
-              </a>
+              <a :href="issue.url" class="issue-link">#{{ issue.iid }}</a>
               &middot;
               <span>
                 Opened
-                <a :href="issue.url" class="issue-date">
-                  {{ issue.createdAt }}
-                </a>
+                <a :href="issue.url" class="issue-date">{{ issue.createdAt }}</a>
               </span>
               <span>
               by

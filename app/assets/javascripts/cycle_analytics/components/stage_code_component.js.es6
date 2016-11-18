@@ -25,9 +25,7 @@
               &middot;
               <span>
                 Opened
-                <a :href="mergeRequest.url" class="issue-date">
-                  {{ mergeRequest.createdAt }}
-                </a>
+                <a :href="mergeRequest.url" class="issue-date">{{ mergeRequest.createdAt }}</a>
               </span>
               <span>
                 by
