@@ -23,7 +23,10 @@
         },
         methods: {
           fetchIssuable() {
-            return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
+            return gl.IssuableResource.get.call(gl.IssuableResource, {
+              type: 'GET',
+              url: gl.IssuableResource.endpoint,
+            });
           },
           initPolling() {
             return new gl.SmartInterval({
