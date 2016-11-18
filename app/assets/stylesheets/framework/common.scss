@@ -376,3 +376,19 @@ table {
 }
 
 .hide-bottom-border { border-bottom: none !important; }
+
+.gl-accessibility {
+  &:focus {
+    top: 1px;
+    left: 1px;
+    width: auto;
+    height: 100%;
+    line-height: 50px;
+    padding: 0 10px;
+    clip: auto;
+    text-decoration: none;
+    color: $gl-title-color;
+    background: $gray-light;
+    z-index: 1;
+  }
+}
