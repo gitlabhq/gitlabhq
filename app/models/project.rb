@@ -77,7 +77,6 @@ class Project < ActiveRecord::Base
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
 
   # Project services
-  has_many :services
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
@@ -749,25 +748,30 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def build_missing_services
+  def find_or_initialize_services
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.each do |service_name|
+    Service.available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
-      # If service is available but missing in db
-      if service.nil?
+      if service
+        service
+      else
         # We should check if template for the service exists
         template = find_service(services_templates, service_name)
 
         if template.nil?
-          # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          public_send("create_#{service_name}_service")
+          # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+          public_send("build_#{service_name}_service")
         else
-          Service.create_from_template(self.id, template)
+          Service.build_from_template(id, template)
         end
       end
     end
+  end
+
+  def find_or_initialize_service(name)
+    find_or_initialize_services.find { |service| service.to_param == name }
   end
 
   def create_labels
@@ -1319,19 +1323,27 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
-  def environments_for(ref, commit, with_tags: false)
-    environment_ids = deployments.group(:environment_id).
-      select(:environment_id)
+  def environments_for(ref, commit: nil, with_tags: false)
+    deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
 
-    environment_ids =
-      if with_tags
-        environment_ids.where('ref=? OR tag IS TRUE', ref)
-      else
-        environment_ids.where(ref: ref)
-      end
+    environment_ids = deployments
+      .where(deployments_query, ref.to_s)
+      .group(:environment_id)
+      .select(:environment_id)
 
-    environments.available.where(id: environment_ids).select do |environment|
+    environments_found = environments.available
+      .where(id: environment_ids).to_a
+
+    return environments_found unless commit
+
+    environments_found.select do |environment|
       environment.includes_commit?(commit)
+    end
+  end
+
+  def environments_recently_updated_on_branch(branch)
+    environments_for(branch).select do |environment|
+      environment.recently_updated_on_branch?(branch)
     end
   end
 

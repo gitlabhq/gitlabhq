@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable wrap-iife, func-names, space-before-function-paren, prefer-arrow-callback, vars-on-top, no-var, max-len */
 (function(w) {
   $(function() {
     // Toggle button. Show/hide content inside parent container.

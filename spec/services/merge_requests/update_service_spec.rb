@@ -199,7 +199,7 @@ describe MergeRequests::UpdateService, services: true do
 
     context 'when the issue is relabeled' do
       let!(:non_subscriber) { create(:user) }
-      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
       before do
         project.team << [non_subscriber, :developer]

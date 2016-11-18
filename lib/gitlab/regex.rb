@@ -2,7 +2,14 @@ module Gitlab
   module Regex
     extend self
 
-    NAMESPACE_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])(?<!\.git|\.atom)'.freeze
+    # The namespace regex is used in Javascript to validate usernames in the "Register" form. However, Javascript
+    # does not support the negative lookbehind assertion (?<!) that disallows usernames ending in `.git` and `.atom`.
+    # Since this is a non-trivial problem to solve in Javascript (heavily complicate the regex, modify view code to
+    # allow non-regex validatiions, etc), `NAMESPACE_REGEX_STR_SIMPLE` serves as a Javascript-compatible version of
+    # `NAMESPACE_REGEX_STR`, with the negative lookbehind assertion removed. This means that the client-side validation
+    # will pass for usernames ending in `.atom` and `.git`, but will be caught by the server-side validation.
+    NAMESPACE_REGEX_STR_SIMPLE = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
+    NAMESPACE_REGEX_STR = "(?:#{NAMESPACE_REGEX_STR_SIMPLE})(?<!\.git|\.atom)".freeze
 
     def namespace_regex
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze

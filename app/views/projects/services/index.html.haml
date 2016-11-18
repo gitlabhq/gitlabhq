@@ -28,5 +28,6 @@
           %td.hidden-xs
             = service.description
           %td.light
-            = time_ago_in_words service.updated_at
-            ago
+            - if service.updated_at.present?
+              = time_ago_in_words service.updated_at
+              ago

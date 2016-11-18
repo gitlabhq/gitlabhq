@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, padded-blocks, max-len */
 (function() {
   this.TreeView = (function() {
     function TreeView() {

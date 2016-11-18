@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, no-param-reassign, no-undef, quotes, prefer-template, no-new, comma-dangle, one-var, one-var-declaration-per-line, prefer-arrow-callback, no-else-return, no-unused-vars, padded-blocks, max-len */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 

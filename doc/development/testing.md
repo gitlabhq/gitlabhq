@@ -64,6 +64,7 @@ the command line via `bundle exec teaspoon`, or via a web browser at
   methods.
 - Use `context` to test branching logic.
 - Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
+- Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
 - Prefer `not_to` to `to_not` (_this is enforced by Rubocop_).
 - Try to match the ordering of tests to the ordering within the class.

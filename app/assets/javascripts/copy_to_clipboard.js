@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-undef, prefer-template, quotes, no-unused-vars, prefer-arrow-callback, padded-blocks, max-len */
 
 /*= require clipboard */
 

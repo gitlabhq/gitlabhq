@@ -271,6 +271,7 @@ module Ci
 
     def append_trace(trace_part, offset)
       recreate_trace_dir
+      touch if needs_touch?
 
       trace_part = hide_secrets(trace_part)
 
@@ -278,6 +279,10 @@ module Ci
       File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
       end
+    end
+
+    def needs_touch?
+      Time.now - updated_at > 15.minutes.to_i
     end
 
     def trace_file_path

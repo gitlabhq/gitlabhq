@@ -1,11 +1,13 @@
 require 'mime/types'
 
 module API
-  # Projects API
   class Repositories < Grape::API
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
       helpers do
         def handle_project_member_errors(errors)
@@ -16,43 +18,35 @@ module API
         end
       end
 
-      # Get a project repository tree
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
-      #   recursive (optional) - Used to get a recursive tree
-      # Example Request:
-      #   GET /projects/:id/repository/tree
+      desc 'Get a project repository tree' do
+        success Entities::RepoTreeObject
+      end
+      params do
+        optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
+        optional :path, type: String, desc: 'The path of the tree'
+        optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+      end
       get ':id/repository/tree' do
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
-        recursive = to_boolean(params[:recursive])
 
         commit = user_project.commit(ref)
         not_found!('Tree') unless commit
 
-        tree = user_project.repository.tree(commit.id, path, recursive: recursive)
+        tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
 
         present tree.sorted_entries, with: Entities::RepoTreeObject
       end
 
-      # Get a raw file contents
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit or branch name
-      #   filepath (required) - The path to the file to display
-      # Example Request:
-      #   GET /projects/:id/repository/blobs/:sha
+      desc 'Get a raw file contents'
+      params do
+        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :filepath, type: String, desc: 'The path to the file to display'
+      end
       get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
-        required_attributes! [:filepath]
-
-        ref = params[:sha]
-
         repo = user_project.repository
 
-        commit = repo.commit(ref)
+        commit = repo.commit(params[:sha])
         not_found! "Commit" unless commit
 
         blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
@@ -61,20 +55,15 @@ module API
         send_git_blob repo, blob
       end
 
-      # Get a raw blob contents by blob sha
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The blob's sha
-      # Example Request:
-      #   GET /projects/:id/repository/raw_blobs/:sha
+      desc 'Get a raw blob contents by blob sha'
+      params do
+        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+      end
       get ':id/repository/raw_blobs/:sha' do
-        ref = params[:sha]
-
         repo = user_project.repository
 
         begin
-          blob = Gitlab::Git::Blob.raw(repo, ref)
+          blob = Gitlab::Git::Blob.raw(repo, params[:sha])
         rescue
           not_found! 'Blob'
         end
@@ -84,15 +73,12 @@ module API
         send_git_blob repo, blob
       end
 
-      # Get a an archive of the repository
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (optional) - the commit sha to download defaults to the tip of the default branch
-      # Example Request:
-      #   GET /projects/:id/repository/archive
-      get ':id/repository/archive',
-          requirements: { format: Gitlab::Regex.archive_formats_regex } do
+      desc 'Get an archive of the repository'
+      params do
+        optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
+        optional :format, type: String, desc: 'The archive format'
+      end
+      get ':id/repository/archive', requirements: { format: Gitlab::Regex.archive_formats_regex } do
         authorize! :download_code, user_project
 
         begin
@@ -102,27 +88,22 @@ module API
         end
       end
 
-      # Compare two branches, tags or commits
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   from (required) - the commit sha or branch name
-      #   to (required) - the commit sha or branch name
-      # Example Request:
-      #   GET /projects/:id/repository/compare?from=master&to=feature
+      desc 'Compare two branches, tags, or commits' do
+        success Entities::Compare
+      end
+      params do
+        requires :from, type: String, desc: 'The commit, branch name, or tag name to start comparison'
+        requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
+      end
       get ':id/repository/compare' do
         authorize! :download_code, user_project
-        required_attributes! [:from, :to]
         compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
         present compare, with: Entities::Compare
       end
 
-      # Get repository contributors
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/repository/contributors
+      desc 'Get repository contributors' do
+        success Entities::Contributor
+      end
       get ':id/repository/contributors' do
         authorize! :download_code, user_project
 

@@ -541,6 +541,8 @@ same manual action multiple times.
 
 An example usage of manual actions is deployment to production.
 
+Read more at the [environments documentation][env-manual].
+
 ### environment
 
 > Introduced in GitLab 8.9.
@@ -551,6 +553,28 @@ An example usage of manual actions is deployment to production.
 `environment` is used to define that a job deploys to a specific environment.
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
+
+In its simplest form, the `environment` keyword can be defined like:
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment:
+    name: production
+```
+
+In the above example, the `deploy to production` job will be marked as doing a
+deployment to the `production` environment.
+
+#### environment:name
+
+> Introduced in GitLab 8.11.
+
+>**Note:**
+Before GitLab 8.11, the name of an environment could be defined as a string like
+`environment: production`. The recommended way now is to define it under the
+`name` keyword.
 
 The `environment` name can contain:
 
@@ -566,27 +590,6 @@ The `environment` name can contain:
 
 Common names are `qa`, `staging`, and `production`, but you can use whatever
 name works with your workflow.
-
-In its simplest form, the `environment` keyword can be defined like:
-
-```
-deploy to production:
-  stage: deploy
-  script: git push production HEAD:master
-  environment: production
-```
-
-In the above example, the `deploy to production` job will be marked as doing a
-deployment to the `production` environment.
-
-#### environment:name
-
-> Introduced in GitLab 8.11.
-
->**Note:**
-Before GitLab 8.11, the name of an environment could be defined as a string like
-`environment: production`. The recommended way now is to define it under the
-`name` keyword.
 
 Instead of defining the name of the environment right after the `environment`
 keyword, it is also possible to define it as a separate value. For that, use
@@ -626,7 +629,12 @@ deploy to production:
 
 #### environment:on_stop
 
-> [Introduced][ce-6669] in GitLab 8.13.
+>
+**Notes:**
+- [Introduced][ce-6669] in GitLab 8.13.
+- Starting with GitLab 8.14, when you have an environment that has a stop action
+  defined, GitLab will automatically trigger a stop action when the associated
+  branch is deleted.
 
 Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close
@@ -680,6 +688,13 @@ The `stop_review_app` job is **required** to have the following keywords defined
 `environment` can also represent a configuration hash with `name` and `url`.
 These parameters can use any of the defined [CI variables](#variables)
 (including predefined, secure variables and `.gitlab-ci.yml` variables).
+
+>**Note:**
+Be aware than if the branch name contains special characters and you use the
+`$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
+be complications during deployment. Follow the
+[issue 22849](https://gitlab.com/gitlab-org/gitlab-ce/issues/22849) for more
+information.
 
 For example:
 
@@ -1210,6 +1225,7 @@ capitalization, the commit will be created but the builds will be skipped.
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
+[env-manual]: ../environments.md#manually-deploying-to-environments
 [examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
 [environment]: ../environments.md
