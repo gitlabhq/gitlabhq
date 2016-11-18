@@ -7,14 +7,14 @@ describe('Stop Component', () => {
   });
 
   it('should link to the provided URL', () => {
-    const stopURL = 'https://gitlab.com/stop';
+    const stopURL = '/stop';
     const component = new window.gl.environmentsList.StopComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         stop_url: stopURL,
       },
     });
-    expect(component.$el.getAttribute('href')).toEqual(`${stopURL}/stop`);
+    expect(component.$el.getAttribute('href')).toEqual(stopURL);
   });
 
   describe('When clicked', () => {
@@ -26,9 +26,10 @@ describe('Stop Component', () => {
         },
       });
 
-      const spy = spyOn(window, 'confirm');
+      var confirm = spyOn(window, 'confirm');
+      confirm.and.returnValue(false);
       component.$el.click();
-      expect(spy).toHaveBeenCalled();
+      expect(confirm).toHaveBeenCalled();
     });
   });
 });
