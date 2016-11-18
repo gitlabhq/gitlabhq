@@ -1,4 +1,0 @@
----
-title: Fix no "Register" tab if ldap auth is enabled (#24038)
-merge_request: 7274
-author: Luc Didry

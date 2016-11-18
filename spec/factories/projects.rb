@@ -24,6 +24,10 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :access_requestable do
+      request_access_enabled true
+    end
+
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository

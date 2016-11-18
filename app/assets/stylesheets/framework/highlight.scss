@@ -11,7 +11,7 @@
     border-radius: 0;
     font-family: $monospace_font;
     font-size: $code_font_size;
-    line-height: $code_line_height !important;
+    line-height: 19px;
     margin: 0;
     overflow: auto;
     overflow-y: hidden;
@@ -47,7 +47,7 @@
       font-family: $monospace_font;
       display: block;
       font-size: $code_font_size !important;
-      line-height: $code_line_height !important;
+      line-height: 19px;
       white-space: nowrap;
 
       i {

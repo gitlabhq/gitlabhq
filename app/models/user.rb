@@ -56,6 +56,7 @@ class User < ActiveRecord::Base
   has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
   has_many :u2f_registrations, dependent: :destroy
+  has_many :chat_names, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
@@ -173,7 +174,7 @@ class User < ActiveRecord::Base
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
-  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
 
   def self.with_two_factor

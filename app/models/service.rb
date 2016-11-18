@@ -222,11 +222,11 @@ class Service < ActiveRecord::Base
     ]
   end
 
-  def self.create_from_template(project_id, template)
+  def self.build_from_template(project_id, template)
     service = template.dup
     service.template = false
     service.project_id = project_id
-    service if service.save
+    service
   end
 
   private

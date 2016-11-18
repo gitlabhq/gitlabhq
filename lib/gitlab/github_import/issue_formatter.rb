@@ -32,8 +32,8 @@ module Gitlab
         raw_data.number
       end
 
-      def valid?
-        raw_data.pull_request.nil?
+      def pull_request?
+        raw_data.pull_request.present?
       end
 
       private

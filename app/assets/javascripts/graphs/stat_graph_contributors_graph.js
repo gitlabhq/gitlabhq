@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, space-before-blocks, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, padded-blocks, no-undef, newline-per-chained-call, no-else-return, max-len */
 
 /*= require d3 */
 

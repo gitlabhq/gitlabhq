@@ -15,5 +15,9 @@ FactoryGirl.define do
     trait :private do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
+
+    trait :access_requestable do
+      request_access_enabled true
+    end
   end
 end

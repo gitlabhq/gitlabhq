@@ -30,11 +30,6 @@ module IssuablesHelper
     end
   end
 
-  def can_add_template?(issuable)
-    names = issuable_templates(issuable)
-    names.empty? && can?(current_user, :push_code, @project) && !@project.private?
-  end
-
   def template_dropdown_tag(issuable, &block)
     title = selected_template(issuable) || "Choose a template"
     options = {
@@ -141,7 +136,18 @@ module IssuablesHelper
     html.html_safe
   end
 
+  def cached_assigned_issuables_count(assignee, issuable_type, state)
+    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
+    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      assigned_issuables_count(assignee, issuable_type, state)
+    end
+  end
+
   private
+
+  def assigned_issuables_count(assignee, issuable_type, state)
+    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
+  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'

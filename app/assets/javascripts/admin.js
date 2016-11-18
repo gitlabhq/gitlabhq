@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-arrow-callback, camelcase, quotes, comma-dangle, no-undef, padded-blocks, max-len */
 (function() {
   this.Admin = (function() {
     function Admin() {
