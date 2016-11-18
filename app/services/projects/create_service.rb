@@ -106,6 +106,8 @@ module Projects
       unless @project.group || @project.gitlab_project_import?
         @project.team << [current_user, :master, current_user]
       end
+
+      @project.group.refresh_members_authorized_projects if @project.group
     end
 
     def skip_wiki?

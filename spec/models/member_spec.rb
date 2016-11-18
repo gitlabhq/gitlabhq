@@ -443,6 +443,16 @@ describe Member, models: true do
 
       member.accept_invite!(user)
     end
+
+    it "refreshes user's authorized projects", truncate: true do
+      project = member.source
+
+      expect(user.authorized_projects).not_to include(project)
+
+      member.accept_invite!(user)
+
+      expect(user.authorized_projects.reload).to include(project)
+    end
   end
 
   describe "#decline_invite!" do
@@ -466,6 +476,18 @@ describe Member, models: true do
 
     it "sets the invite token" do
       expect { member.generate_invite_token }.to change { member.invite_token}
+    end
+  end
+
+  describe "destroying a record", truncate: true do
+    it "refreshes user's authorized projects" do
+      project = create(:project, :private)
+      user    = create(:user)
+      member  = project.team << [user, :reporter]
+
+      member.destroy
+
+      expect(user.authorized_projects).not_to include(project)
     end
   end
 end

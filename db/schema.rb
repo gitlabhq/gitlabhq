@@ -861,6 +861,14 @@ ActiveRecord::Schema.define(version: 20161117114805) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
+  create_table "project_authorizations", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "project_id"
+    t.integer "access_level"
+  end
+
+  add_index "project_authorizations", ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
+
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"
     t.integer "merge_requests_access_level"
@@ -1205,6 +1213,7 @@ ActiveRecord::Schema.define(version: 20161117114805) do
     t.boolean "external", default: false
     t.string "organization"
     t.string "incoming_email_token"
+    t.boolean "authorized_projects_populated"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1267,6 +1276,8 @@ ActiveRecord::Schema.define(version: 20161117114805) do
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "project_authorizations", "projects", on_delete: :cascade
+  add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade

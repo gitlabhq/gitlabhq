@@ -13,6 +13,7 @@ class Project < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include ProjectFeaturesCompatibility
+  include SelectForProjectAuthorization
 
   extend Gitlab::ConfigHelper
 
@@ -1293,16 +1294,10 @@ class Project < ActiveRecord::Base
 
   # Checks if `user` is authorized for this project, with at least the
   # `min_access_level` (if given).
-  #
-  # If you change the logic of this method, please also update `User#authorized_projects`
   def authorized_for_user?(user, min_access_level = nil)
     return false unless user
 
-    return true if personal? && namespace_id == user.namespace_id
-
-    authorized_for_user_by_group?(user, min_access_level) ||
-      authorized_for_user_by_members?(user, min_access_level) ||
-      authorized_for_user_by_shared_projects?(user, min_access_level)
+    user.authorized_project?(self, min_access_level)
   end
 
   def append_or_update_attribute(name, value)
@@ -1360,30 +1355,6 @@ class Project < ActiveRecord::Base
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
-  end
-
-  def authorized_for_user_by_group?(user, min_access_level)
-    member = user.group_members.find_by(source_id: group)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_members?(user, min_access_level)
-    member = members.find_by(user_id: user)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_shared_projects?(user, min_access_level)
-    shared_projects = user.group_members.joins(group: :shared_projects).
-      where(project_group_links: { project_id: self })
-
-    if min_access_level
-      members_scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
-      shared_projects = shared_projects.where(members: members_scope)
-    end
-
-    shared_projects.any?
   end
 
   # Similar to the normal callbacks that hook into the life cycle of an
