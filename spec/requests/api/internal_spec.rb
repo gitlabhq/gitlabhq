@@ -5,7 +5,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project) }
-  let(:secret_token) { File.read Gitlab.config.gitlab_shell.secret_file }
+  let(:secret_token) { Gitlab::Shell.secret_token }
 
   describe "GET /internal/check", no_db: true do
     it do
