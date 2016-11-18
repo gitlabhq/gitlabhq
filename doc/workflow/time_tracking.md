@@ -10,7 +10,7 @@ Other interesting links:
 
 ## Overview
 
-Time Tracking lets you
+Time Tracking lets you:
 * record the time spent working on an issue or a merge request,
 * add an estimate of the amount of time needed to complete an issue or a merge
 request.
