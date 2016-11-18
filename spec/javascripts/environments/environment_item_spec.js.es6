@@ -74,7 +74,7 @@ describe('Environment item', () => {
           sha: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
           ref: {
             name: 'master',
-            ref_url: 'http://localhost:3000/root/ci-folders/tree/master',
+            ref_path: 'root/ci-folders/tree/master',
           },
           tag: true,
           'last?': true,
@@ -102,23 +102,23 @@ describe('Environment item', () => {
               avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
               web_url: 'http://localhost:3000/root',
             },
-            commit_url: 'http://localhost:3000/root/ci-folders/tree/500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
+            commit_path: '/root/ci-folders/tree/500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
           },
           deployable: {
             id: 1279,
             name: 'deploy',
-            build_url: 'http://localhost:3000/root/ci-folders/builds/1279',
-            retry_url: 'http://localhost:3000/root/ci-folders/builds/1279/retry',
+            build_path: '/root/ci-folders/builds/1279',
+            retry_path: '/root/ci-folders/builds/1279/retry',
           },
           manual_actions: [
             {
               name: 'action',
-              play_url: 'http://localhost:3000/play',
+              play_path: '/play',
             },
           ],
         },
         'stoppable?': true,
-        environment_url: 'http://localhost:3000/root/ci-folders/environments/31',
+        environment_path: 'root/ci-folders/environments/31',
         created_at: '2016-11-07T11:11:16.525Z',
         updated_at: '2016-11-10T15:55:58.778Z',
       };
@@ -161,13 +161,13 @@ describe('Environment item', () => {
         it('Should link to build url provided', () => {
           expect(
             component.$el.querySelector('.build-link').getAttribute('href')
-          ).toEqual(environment.last_deployment.deployable.build_url);
+          ).toEqual(environment.last_deployment.deployable.build_path);
         });
 
         it('Should render deployable name and id', () => {
           expect(
             component.$el.querySelector('.build-link').getAttribute('href')
-          ).toEqual(environment.last_deployment.deployable.build_url);
+          ).toEqual(environment.last_deployment.deployable.build_path);
         });
       });
 

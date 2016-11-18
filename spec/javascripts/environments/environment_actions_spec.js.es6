@@ -12,11 +12,11 @@ describe('Actions Component', () => {
     const actionsMock = [
       {
         name: 'bar',
-        play_url: 'https://gitlab.com/play',
+        play_path: 'https://gitlab.com/play',
       },
       {
         name: 'foo',
-        play_url: '#',
+        play_path: '#',
       },
     ];
 
@@ -32,6 +32,6 @@ describe('Actions Component', () => {
     ).toEqual(actionsMock.length);
     expect(
       component.$el.querySelector('.dropdown-menu li a').getAttribute('href')
-    ).toEqual(actionsMock[0].play_url);
+    ).toEqual(actionsMock[0].play_path);
   });
 });
