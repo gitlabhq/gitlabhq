@@ -69,15 +69,19 @@
       .stage-panel-body
         %nav.stage-nav
           %ul
-            %li.stage-nav-item{ ':class' => '{active: stage.active}', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
+            %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
               .stage-name
                 {{ stage.title }}
               .stage-median
-                {{ stage.value }}
+                %template{ "v-if" => "stage.value" }
+                  {{ stage.value }}
+                %template{ "v-else" => true }
+                  %span.stage-empty
+                    No enough data
         .section.stage-events
           %template{ "v-if" => "isLoadingStage" }
             = icon("spinner spin", "v-show" => "isLoadingStage")
-          %template{ "v-if" => "isEmptyStage" }
+          %template{ "v-if" => "isEmptyStage && !isLoadingStage" }
             = render partial: "empty_stage"
           %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
             %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }

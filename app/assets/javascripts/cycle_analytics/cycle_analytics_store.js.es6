@@ -23,7 +23,6 @@
       });
 
       newData.stages.forEach((item) => {
-        item.value = item.value || '- - -';
         item.active = false;
         item.component = `stage-${item.title.toLowerCase()}-component`;
       });
