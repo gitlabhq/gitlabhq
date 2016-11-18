@@ -145,12 +145,14 @@
   }
 }
 
-.group-buttons {
-  margin-top: 15px;
+.nav > .project-repo-buttons {
+  margin-top: 0;
 }
 
 .project-repo-buttons,
 .group-buttons {
+  margin-top: 15px;
+
   .btn {
     @include btn-gray;
     padding: 3px 10px;
