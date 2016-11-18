@@ -172,7 +172,7 @@
       $date = $('.js-artifacts-remove');
       if ($date.length) {
         date = $date.text();
-        return $date.text(gl.utils.timefor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
+        return $date.text(gl.utils.timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
       }
     };
 
