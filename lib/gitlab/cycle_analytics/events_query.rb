@@ -1,13 +1,8 @@
 module Gitlab
   module CycleAnalytics
     class EventsQuery
-      attr_reader :project
-
-      def initialize(project:, options: {})
-        @project = project
-        @from = options[:from]
-        @branch = options[:branch]
-        @fetcher = Gitlab::CycleAnalytics::MetricsFetcher.new(project: project, from: @from, branch: @branch)
+      def initialize(fetcher:)
+        @fetcher = fetcher
       end
 
       def execute(stage_class)

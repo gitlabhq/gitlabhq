@@ -4,7 +4,6 @@ module Gitlab
       include MergeRequestAllowed
 
       def initialize(*args)
-        @stage = :review
         @start_time_attrs = mr_table[:created_at]
         @end_time_attrs = mr_metrics_table[:merged_at]
         @projections = [mr_table[:title],

@@ -5,10 +5,11 @@ module Gitlab
       include Gitlab::Database::DateTime
       include MetricsTables
 
+      attr_reader :project
+
       DEPLOYMENT_METRIC_STAGES = %i[production staging]
 
       def initialize(project:, from:, branch:)
-        @project = project
         @project = project
         @from = from
         @branch = branch

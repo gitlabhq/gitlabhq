@@ -4,7 +4,6 @@ module Gitlab
       include IssueAllowed
 
       def initialize(*args)
-        @stage = :production
         @start_time_attrs = issue_table[:created_at]
         @end_time_attrs = mr_metrics_table[:first_deployed_to_production_at]
         @projections = [issue_table[:title],
