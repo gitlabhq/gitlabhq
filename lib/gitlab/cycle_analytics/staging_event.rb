@@ -11,6 +11,12 @@ module Gitlab
         super(*args)
       end
 
+      def fetch
+        BuildUpdater.update!(event_result)
+
+        super
+      end
+
       def custom_query(base_query)
         base_query.join(build_table).on(mr_metrics_table[:pipeline_id].eq(build_table[:commit_id]))
       end
@@ -18,9 +24,7 @@ module Gitlab
       private
 
       def serialize(event)
-        build = ::Ci::Build.find(event['id'])
-
-        AnalyticsBuildSerializer.new.represent(build).as_json
+        AnalyticsBuildSerializer.new.represent(event['build']).as_json
       end
     end
   end

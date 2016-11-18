@@ -1,6 +1,8 @@
 module Gitlab
   module CycleAnalytics
     class IssueEvent < BaseEvent
+      include IssueAllowed
+
       def initialize(*args)
         @stage = :issue
         @start_time_attrs = issue_table[:created_at]
@@ -19,10 +21,6 @@ module Gitlab
 
       def serialize(event)
         AnalyticsIssueSerializer.new(project: @project).represent(event).as_json
-      end
-
-      def allowed_ids
-        @allowed_ids ||= IssuesFinder.new(@options[:current_user], project_id: @project.id).execute.where(id: event_result_ids).pluck(:id)
       end
     end
   end

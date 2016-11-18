@@ -1,6 +1,8 @@
 module Gitlab
   module CycleAnalytics
     class CodeEvent < BaseEvent
+      include MergeRequestAllowed
+
       def initialize(*args)
         @stage = :code
         @start_time_attrs = issue_metrics_table[:first_mentioned_in_commit_at]
@@ -20,10 +22,6 @@ module Gitlab
 
       def serialize(event)
         AnalyticsMergeRequestSerializer.new(project: @project).represent(event).as_json
-      end
-
-      def allowed_ids
-        @allowed_ids ||= MergeRequestsFinder.new(@options[:current_user], project_id: @project.id).execute.where(id: event_result_ids).pluck(:id)
       end
     end
   end

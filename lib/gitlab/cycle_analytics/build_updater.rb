@@ -1,8 +1,8 @@
 module Gitlab
   module CycleAnalytics
-    class AuthorUpdater < Updater
+    class BuildUpdater < Updater
       def self.update!(event_result)
-        new(event_result, User, :author).update!
+        new(event_result, ::Ci::Build, :build, 'id').update!
       end
     end
   end

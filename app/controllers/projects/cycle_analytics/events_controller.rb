@@ -5,7 +5,9 @@ module Projects
     
       before_action :authorize_read_cycle_analytics!
       before_action :authorize_builds!, only: [:test, :staging]
-    
+      before_action :authorize_read_issue!, only: [:issue, :production]
+      before_action :authorize_read_merge_request!, only: [:code, :review]
+
       def issue
         render_events(events.issue_events)
       end
@@ -60,7 +62,11 @@ module Projects
       end
     
       def authorize_builds!
-        return access_denied! unless current_user.can?(:read_build, project)
+        return access_denied! unless can?(current_user, :read_build, project)
+      end
+
+      def authorize_read_issue!
+        return access_denied! unless can?(current_user, :read_issue, project)
       end
     end
   end
