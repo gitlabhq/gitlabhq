@@ -2,13 +2,14 @@ class CycleAnalytics
   include Gitlab::Database::Median
   include Gitlab::Database::DateTime
 
-  def initialize(project, from:)
+  def initialize(project, current_user, from:)
     @project = project
+    @current_user = current_user
     @from = from
   end
 
   def summary
-    @summary ||= Summary.new(@project, from: @from)
+    @summary ||= Summary.new(@project, @current_user, from: @from)
   end
 
   def issue
