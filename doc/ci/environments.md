@@ -492,7 +492,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 - You are limited to use only the [CI predefined variables][variables] in the
   `environment: name`. If you try to re-use variables defined inside `script`
   as part of the environment name, it will not work.
-- If the branch name contains special characters and you use the
+- If the branch name contains special characters (`/`), and you use the
   `$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
   be complications during deployment. Follow the [issue 22849][ce-22849] for
   more information.
