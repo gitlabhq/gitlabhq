@@ -12,7 +12,7 @@ class MattermostCommandService < ChatService
   end
 
   def description
-    'Mattermost is an open source, self-hosted Slack-alternative'
+    "Perform common operations on GitLab in Mattermost"
   end
 
   def to_param

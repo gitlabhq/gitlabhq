@@ -14,9 +14,10 @@ module Mattermost
       end
 
       def help(commands, trigger)
-        if commands.zero?
+        if commands.none?
           ephemeral_response("No commands configured")
         else
+          commands.map! { |command| "#{trigger} #{command}" }
           message = header_with_list("Available commands", commands)
 
           ephemeral_response(message)
@@ -46,7 +47,7 @@ module Mattermost
       private
 
       def not_found
-        ephemeral_response("404 not found! GitLab couldn't find what your were looking for! :boom:")
+        ephemeral_response("404 not found! GitLab couldn't find what you were looking for! :boom:")
       end
 
       def single_resource(resource)
@@ -67,7 +68,7 @@ module Mattermost
       end
 
       def error(resource)
-        message = header_with_list("The action was not succesful, because:", resource.errors.messages)
+        message = header_with_list("The action was not successful, because:", resource.errors.messages)
 
         ephemeral_response(message)
       end

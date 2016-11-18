@@ -11,18 +11,19 @@ describe Gitlab::ChatCommands::Command, service: true do
       let(:params) { { text: 'issue show 1' } }
       let(:project) { create(:project, has_external_issue_tracker: true) }
 
-      it 'displays the help message' do
+      it 'displays 404 messages' do
         expect(subject[:response_type]).to be(:ephemeral)
         expect(subject[:text]).to start_with('404 not found')
       end
     end
 
     context 'when an unknown command is triggered' do
-      let(:params) { { text: "unknown command 123" } }
+      let(:params) { { command: '/gitlab', text: "unknown command 123" } }
 
       it 'displays the help message' do
         expect(subject[:response_type]).to be(:ephemeral)
         expect(subject[:text]).to start_with('Available commands')
+        expect(subject[:text]).to match('/gitlab issue show')
       end
     end
 
@@ -35,7 +36,7 @@ describe Gitlab::ChatCommands::Command, service: true do
       end
     end
 
-    context 'issue is succesfully created' do
+    context 'issue is successfully created' do
       let(:params) { { text: "issue create my new issue" } }
 
       before do
