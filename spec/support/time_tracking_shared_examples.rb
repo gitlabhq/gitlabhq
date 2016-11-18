@@ -55,6 +55,16 @@ shared_examples 'issuable time tracker' do
       expect(page).to have_content 'Learn more'
     end
   end
+
+  it 'hides the help state when close icon is clicked' do
+    page.within '#issuable-time-tracker' do
+      find('.help-button').click
+      find('.close-help-button').click
+
+      expect(page).not_to have_content 'Track time with slash commands'
+      expect(page).not_to have_content 'Learn more'
+    end
+  end
 end
 
 def submit_time(slash_command)

@@ -100,6 +100,33 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
       end
     end
 
+    describe 'Issuable time tracking', focus: true, js: true do
+      before do
+        project.team << [user, :developer]
+      end
+
+      context 'Issue' do
+        let(:issue) { create(:issue, project: project) }
+
+        before do
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it_behaves_like 'issuable time tracker'
+      end
+
+      context 'Merge Request' do
+        let(:issue) { create(:issue, project: project) }
+        let(:merge_request) { create(:merge_request, source_project: project) }
+
+        before do
+          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        end
+
+        it_behaves_like 'issuable time tracker'
+      end
+    end
+
     describe 'toggling the WIP prefix from the title from note' do
       let(:issue) { create(:issue, project: project) }
 
