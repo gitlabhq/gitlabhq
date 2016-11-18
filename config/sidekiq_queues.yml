@@ -35,6 +35,7 @@
   - [clear_database_cache, 1]
   - [delete_user, 1]
   - [delete_merged_branches, 1]
+  - [authorized_projects, 1]
   - [expire_build_instance_artifacts, 1]
   - [group_destroy, 1]
   - [irker, 1]

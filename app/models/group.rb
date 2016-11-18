@@ -5,6 +5,7 @@ class Group < Namespace
   include Gitlab::VisibilityLevel
   include AccessRequestable
   include Referable
+  include SelectForProjectAuthorization
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :group_members
@@ -60,6 +61,14 @@ class Group < Namespace
 
     def visible_to_user(user)
       where(id: user.authorized_groups.select(:id).reorder(nil))
+    end
+
+    def select_for_project_authorization
+      if current_scope.joins_values.include?(:shared_projects)
+        select("members.user_id, projects.id AS project_id, project_group_links.group_access")
+      else
+        super
+      end
     end
   end
 
@@ -175,5 +184,9 @@ class Group < Namespace
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def refresh_members_authorized_projects
+    UserProjectAccessChangedService.new(users.pluck(:id)).execute
   end
 end

@@ -1514,7 +1514,7 @@ describe Project, models: true do
       members_project.team << [developer, :developer]
       members_project.team << [master, :master]
 
-      create(:project_group_link, project: shared_project, group: group)
+      create(:project_group_link, project: shared_project, group: group, group_access: Gitlab::Access::DEVELOPER)
     end
 
     it 'returns false for no user' do
@@ -1543,7 +1543,9 @@ describe Project, models: true do
       expect(members_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
       expect(members_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
       expect(shared_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
+      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(false)
+      expect(shared_project.authorized_for_user?(developer, Gitlab::Access::DEVELOPER)).to be(true)
+      expect(shared_project.authorized_for_user?(master, Gitlab::Access::DEVELOPER)).to be(true)
     end
   end
 
