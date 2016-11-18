@@ -11,7 +11,7 @@ module Gitlab
 
           ALLOWED_KEYS = %i[tags script only except type image services allow_failure
                             type stage when artifacts cache dependencies before_script
-                            after_script variables environment coverage_regex]
+                            after_script variables environment coverage]
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -71,12 +71,12 @@ module Gitlab
           entry :environment, Entry::Environment,
                description: 'Environment configuration for this job.'
 
-          node :coverage_regex, Node::Regexp,
+          entry :coverage, Entry::Coverage,
                description: 'Coverage scanning regex configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :commands, :environment, :coverage_regex
+                  :artifacts, :commands, :environment, :coverage
 
           attributes :script, :tags, :allow_failure, :when, :dependencies
 
@@ -133,7 +133,7 @@ module Gitlab
               variables: variables_defined? ? variables_value : nil,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
-              coverage_regex: coverage_regex_defined? ? coverage_regex_value : nil,
+              coverage: coverage_defined? ? coverage_value : nil,
               artifacts: artifacts_value,
               after_script: after_script_value }
           end

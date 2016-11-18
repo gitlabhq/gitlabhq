@@ -1,11 +1,11 @@
 module Gitlab
   module Ci
     class Config
-      module Node
+      module Entry
         ##
         # Entry that represents a Regular Expression.
         #
-        class Regexp < Entry
+        class Coverage < Node
           include Validatable
 
           validations do

@@ -29,7 +29,8 @@ module Gitlab
           end
 
           def validate_regexp(value)
-            !!::Regexp.new(value)
+            Regexp.new(value)
+            true
           rescue RegexpError
             false
           end
