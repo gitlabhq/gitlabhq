@@ -19,8 +19,7 @@ describe Gitlab::Ci::Config::Entry::Job do
         let(:entry) { described_class.new(config, name: ''.to_sym) }
 
         it 'reports error' do
-          expect(entry.errors)
-            .to include "job name can't be blank"
+          expect(entry.errors).to include "job name can't be blank"
         end
       end
     end
@@ -56,6 +55,15 @@ describe Gitlab::Ci::Config::Entry::Job do
           end
         end
       end
+
+      context 'when script is not provided' do
+        let(:config) { { stage: 'test' } }
+
+        it 'returns error about missing script entry' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include "job script can't be blank"
+        end
+      end
     end
   end
 
@@ -78,7 +86,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       before { entry.compose!(deps) }
 
       let(:config) do
-        { image: 'some_image', cache: { key: 'test' } }
+        { script: 'rspec', image: 'some_image', cache: { key: 'test' } }
       end
 
       it 'overrides global config' do

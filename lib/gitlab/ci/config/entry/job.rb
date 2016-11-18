@@ -13,12 +13,10 @@ module Gitlab
                             type stage when artifacts cache dependencies before_script
                             after_script variables environment]
 
-          attributes :tags, :allow_failure, :when, :dependencies
-
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
-
             validates :config, presence: true
+            validates :script, presence: true
             validates :name, presence: true
             validates :name, type: Symbol
 
@@ -77,6 +75,8 @@ module Gitlab
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :commands, :environment
 
+          attributes :script, :tags, :allow_failure, :when, :dependencies
+
           def compose!(deps = nil)
             super do
               if type_defined? && !stage_defined?
@@ -118,20 +118,20 @@ module Gitlab
 
           def to_hash
             { name: name,
-              before_script: before_script,
-              script: script,
+              before_script: before_script_value,
+              script: script_value,
               commands: commands,
-              image: image,
-              services: services,
-              stage: stage,
-              cache: cache,
-              only: only,
-              except: except,
-              variables: variables_defined? ? variables : nil,
-              environment: environment_defined? ? environment : nil,
-              environment_name: environment_defined? ? environment[:name] : nil,
-              artifacts: artifacts,
-              after_script: after_script }
+              image: image_value,
+              services: services_value,
+              stage: stage_value,
+              cache: cache_value,
+              only: only_value,
+              except: except_value,
+              variables: variables_defined? ? variables_value : nil,
+              environment: environment_defined? ? environment_value : nil,
+              environment_name: environment_defined? ? environment_value[:name] : nil,
+              artifacts: artifacts_value,
+              after_script: after_script_value }
           end
         end
       end

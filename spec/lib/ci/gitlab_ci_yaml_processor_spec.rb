@@ -1124,8 +1124,8 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra config should be a hash")
       end
 
-      it "returns errors if there are unknown parameters that are hashes, but doesn't have a script" do
-        config = YAML.dump({ extra: { services: "test" } })
+      it "returns errors if services configuration is not correct" do
+        config = YAML.dump({ extra: { script: 'rspec', services: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra:services config should be an array of strings")
