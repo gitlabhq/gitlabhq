@@ -206,5 +206,9 @@ describe Gitlab::Email::ReplyParser, lib: true do
     it "properly renders email reply from MS Outlook client" do
       expect(test_parse_body(fixture_file("emails/outlook.eml"))).to eq("Microsoft Outlook 2010")
     end
+
+    it "properly renders html-only email from MS Outlook" do
+      expect(test_parse_body(fixture_file("emails/outlook_html.eml"))).to eq("Microsoft Outlook 2010")
+    end
   end
 end
