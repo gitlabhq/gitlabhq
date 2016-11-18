@@ -139,7 +139,7 @@ module Gitlab
               line_code: line_code_map.fetch(comment.iid),
               type: 'LegacyDiffNote')
 
-            note = merge_request.notes.create!(attributes)
+            merge_request.notes.create!(attributes)
           rescue ActiveRecord::RecordInvalid => e
             Rails.log.error("Bitbucket importer ERROR: Invalid pull request comment #{e.message}")
             nil

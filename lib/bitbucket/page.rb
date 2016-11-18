@@ -29,7 +29,7 @@ module Bitbucket
     end
 
     def representation_class(type)
-      class_name = Bitbucket::Representation.const_get(type.to_s.camelize)
+      Bitbucket::Representation.const_get(type.to_s.camelize)
     end
   end
 end
