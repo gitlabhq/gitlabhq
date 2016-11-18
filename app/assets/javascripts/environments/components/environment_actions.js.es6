@@ -23,39 +23,38 @@
      *
      */
     mounted() {
-      const playIcon = document.querySelector('.play-icon-svg.hidden svg');
-
-      const dropdownContainer = this.$el.querySelector('.dropdown-play-icon-container');
-      const actionContainers = this.$el.querySelectorAll('.action-play-icon-container');
-      // Phantomjs does not have support to iterate a nodelist.
-      const actionsArray = [].slice.call(actionContainers);
-
-      if (playIcon && actionsArray && dropdownContainer) {
-        dropdownContainer.appendChild(playIcon.cloneNode(true));
-
-        actionsArray.forEach((element) => {
-          element.appendChild(playIcon.cloneNode(true));
-        });
-      }
+      // const playIcon = document.querySelector('.play-icon-svg.hidden svg');
+      //
+      // const dropdownContainer = this.$el.querySelector('.dropdown-play-icon-container');
+      // const actionContainers = this.$el.querySelectorAll('.action-play-icon-container');
+      // // Phantomjs does not have support to iterate a nodelist.
+      // const actionsArray = [].slice.call(actionContainers);
+      //
+      // if (playIcon && actionsArray && dropdownContainer) {
+      //   dropdownContainer.appendChild(playIcon.cloneNode(true));
+      //
+      //   actionsArray.forEach((element) => {
+      //     element.appendChild(playIcon.cloneNode(true));
+      //   });
+      // }
     },
 
     template: `
       <div class="inline">
         <div class="dropdown">
           <a class="dropdown-new btn btn-default" data-toggle="dropdown">
-            <span class="dropdown-play-icon-container">
-              <!-- svg goes here -->
-            </span>
+            <slot name="actionplayicon"></slot>
             <i class="fa fa-caret-down"></i>
           </a>
 
           <ul class="dropdown-menu dropdown-menu-align-right">
             <li v-for="action in actions">
-              <a :href="action.play_path" data-method="post" rel="nofollow" class="js-manual-action-link">
-              <span class="action-play-icon-container">
-                <!-- svg goes here -->
-              </span>
-              <span v-html="action.name"></span>
+              <a :href="action.play_path"
+                data-method="post"
+                rel="nofollow"
+                class="js-manual-action-link">
+                <slot name="actionplayicon"></slot>
+                <span v-html="action.name"></span>
               </a>
             </li>
           </ul>
