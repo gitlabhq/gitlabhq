@@ -69,15 +69,11 @@
       .stage-panel-body
         %nav.stage-nav
           %ul
-            %stage-button{ "inline-template" => true,
-              "v-for" => "stage in state.stages",
-              ":stage" => "stage",
-              ":on-stage-click" => "selectStage" }
-              %li.stage-nav-item{ ":class" => "classObject", "@click" => "onClick(stage)" }
-                .stage-name
-                  {{ stage.title }}
-                .stage-median
-                  {{ stage.value }}
+            %li.stage-nav-item{ ':class' => '{active: stage.active}', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
+              .stage-name
+                {{ stage.title }}
+              .stage-median
+                {{ stage.value }}
         .section.stage-events
           %template{ "v-if" => "isLoadingStage" }
             = icon("spinner spin", "v-show" => "isLoadingStage")

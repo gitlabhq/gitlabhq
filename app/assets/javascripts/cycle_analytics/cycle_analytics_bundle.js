@@ -29,7 +29,6 @@ $(() => {
       },
     },
     components: {
-      'stage-button': gl.cycleAnalytics.StageButton,
       'stage-issue-component': gl.cycleAnalytics.StageIssueComponent,
       'stage-plan-component': gl.cycleAnalytics.StagePlanComponent,
       'stage-code-component': gl.cycleAnalytics.StageCodeComponent,
