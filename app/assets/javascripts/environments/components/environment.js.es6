@@ -64,6 +64,7 @@
         state: this.store.state,
         visibility: 'available',
         isLoading: false,
+        cssContainerClass: environmentsData.cssClass,
         endpoint: environmentsData.environmentsDataEndpoint,
         canCreateDeployment: environmentsData.canCreateDeployment,
         canReadEnvironment: environmentsData.canReadEnvironment,
@@ -150,7 +151,7 @@
     },
 
     template: `
-      <div class="container-fluid container-limited">
+      <div :class="cssContainerClass">
         <div class="top-area">
           <ul v-if="!isLoading" class="nav-links">
             <li v-bind:class="{ 'active': scope === undefined }">
