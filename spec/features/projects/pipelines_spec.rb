@@ -97,6 +97,13 @@ describe "Pipelines" do
         it 'has pipeline running' do
           expect(page).to have_selector('.ci-running')
         end
+
+        context 'when canceling' do
+          before { click_link('Cancel') }
+
+          it { expect(page).not_to have_link('Cancel') }
+          it { expect(page).to have_selector('.ci-canceled') }
+        end
       end
 
       context 'when failed' do
