@@ -13,10 +13,8 @@
     }
 
     currentPageSlicer(update) {
-      const length = update.length;
-      if (this.pipelines.length === update.length) return update;
       if (update.length <= 30) return update;
-      return update.slice(0, (length - 1));
+      return update.slice(0, 29);
     }
 
     updatePipelines(apiResponse) {
