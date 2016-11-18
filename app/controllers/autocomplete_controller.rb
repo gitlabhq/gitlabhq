@@ -55,7 +55,7 @@ class AutocompleteController < ApplicationController
   def find_users
     @users =
       if @project
-        user_ids = @project.team.users.map(&:id)
+        user_ids = @project.team.users.pluck(:id)
 
         if params[:author_id].present?
           user_ids << params[:author_id]
