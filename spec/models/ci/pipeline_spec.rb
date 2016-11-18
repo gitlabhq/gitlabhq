@@ -421,6 +421,18 @@ describe Ci::Pipeline, models: true do
 
         it { is_expected.to be_truthy }
       end
+
+      %i[success failed canceled].each do |status2|
+        context "when there are two builds for #{status} and #{status2}" do
+          before do
+            build = %i[ci_build generic_commit_status]
+            create(build.sample, status, pipeline: pipeline)
+            create(build.sample, status2, pipeline: pipeline)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
     end
 
     %i[success failed canceled].each do |status|
