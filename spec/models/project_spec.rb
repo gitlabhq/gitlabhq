@@ -700,7 +700,7 @@ describe Project, models: true do
         "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'When avatar file in git' do
@@ -712,7 +712,7 @@ describe Project, models: true do
         "/#{project.namespace.name}/#{project.path}/avatar"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
