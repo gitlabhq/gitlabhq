@@ -6,12 +6,10 @@ class DestroyGroupService
   end
 
   def async_execute
-    group.transaction do
-      # Soft delete via paranoia gem
-      group.destroy
-      job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
-      Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
-    end
+    # Soft delete via paranoia gem
+    group.destroy
+    job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
+    Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
   end
 
   def execute
