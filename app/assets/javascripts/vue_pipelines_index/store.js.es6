@@ -10,11 +10,10 @@
           if (pipe.id === newPipe.id) pipe = Object.assign({}, pipe, newPipe);
         });
       };
-    }
-
-    currentPageSlicer(update) {
-      if (update.length <= 30) return update;
-      return update.slice(0, 29);
+      this.currentPageSlicer = (update) => {
+        if (update.length <= 30) return update;
+        return update.slice(0, 29);
+      };
     }
 
     updatePipelines(apiResponse) {
