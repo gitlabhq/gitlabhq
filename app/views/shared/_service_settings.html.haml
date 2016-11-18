@@ -1,9 +1,7 @@
 = form_errors(@service)
 
-- byebug
-
-- if lookup_context.template_exists?(@service.type.underscore, "projects/services", true)
-  = render 'projects/services/mattermost_command_service'
+- if lookup_context.template_exists?('help', "projects/services/#{@service.to_param}", true)
+  = render "projects/services/#{@service.to_param}/help", subject: @service
 - elsif @service.help.present?
   .well
     = preserve do
