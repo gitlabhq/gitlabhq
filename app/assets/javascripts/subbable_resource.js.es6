@@ -11,7 +11,7 @@
   class SubbableResource {
     constructor(resourcePath) {
       this.endpoint = resourcePath;
-
+      debugger;
       // TODO: Switch to axios.create
       this.resource = $.ajax;
       this.subscribers = [];

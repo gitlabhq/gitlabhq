@@ -167,6 +167,17 @@
           = clipboard_button(clipboard_text: project_ref)
 
     :javascript
+      gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
+      function fetcher() {
+        return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
+      }
+      new gl.SmartInterval({
+        startingInterval: 5000,
+        maxInterval: 5000,
+        increaseByFactorOf: 2,
+        lazyStart: false,
+        callback: fetcher 
+      });
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');

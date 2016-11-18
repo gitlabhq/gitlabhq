@@ -58,7 +58,7 @@
           $selectbox.hide();
           data.issueURLSplit = issueURLSplit;
           labelCount = 0;
-          if (data.labels.length) {
+          if (data.labels && data.labels.length) {
             template = labelHTMLTemplate(data);
             labelCount = data.labels.length;
           }
@@ -68,7 +68,7 @@
           $value.removeAttr('style').html(template);
           $sidebarCollapsedValue.text(labelCount);
 
-          if (data.labels.length) {
+          if (data.labels && data.labels.length) {
             labelTitles = data.labels.map(function(label) {
               return label.title;
             });
