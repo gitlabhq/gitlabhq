@@ -1,6 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license
-  before_action :load_node, except: [:index, :create]
+  before_action :load_node, only: [:destroy, :repair, :backfill_repositories]
 
   def index
     @nodes = GeoNode.all
