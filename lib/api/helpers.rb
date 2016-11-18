@@ -85,8 +85,8 @@ module API
       end
     end
 
-    def project_service
-      @project_service ||= user_project.find_or_initialize_service(params[:service_slug].underscore)
+    def project_service(project = user_project)
+      @project_service ||= project.find_or_initialize_service(params[:service_slug].underscore)
       @project_service || not_found!("Service")
     end
 

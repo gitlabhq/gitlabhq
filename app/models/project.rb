@@ -24,7 +24,9 @@ class Project < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
+                                                       allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -76,6 +78,7 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
+  has_many :chat_services
 
   # Project services
   has_one :campfire_service, dependent: :destroy
@@ -90,6 +93,7 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
+  has_one :mattermost_slash_commands_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
