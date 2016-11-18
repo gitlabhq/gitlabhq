@@ -57,7 +57,7 @@ describe ApplicationHelper do
     it 'returns an url for the avatar' do
       project = create(:project, avatar: File.open(avatar_file_path))
 
-      avatar_url = "http://localhost/uploads/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "http://#{Gitlab.config.gitlab.host}/uploads/project/avatar/#{project.id}/banana_sample.gif"
       expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
@@ -67,7 +67,7 @@ describe ApplicationHelper do
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
-      avatar_url = 'http://localhost' + namespace_project_avatar_path(project.namespace, project)
+      avatar_url = "http://#{Gitlab.config.gitlab.host}#{namespace_project_avatar_path(project.namespace, project)}"
       expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to match(
         image_tag(avatar_url))
     end

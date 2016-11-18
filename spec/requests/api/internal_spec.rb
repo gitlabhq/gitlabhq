@@ -406,7 +406,7 @@ describe API::API, api: true  do
     it 'returns link to create new merge request' do
       expect(json_response).to match [{
         "branch_name" => "new_branch",
-        "url" => "http://localhost/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
         "new_merge_request" => true
       }]
     end
