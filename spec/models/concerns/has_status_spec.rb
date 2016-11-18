@@ -123,4 +123,81 @@ describe HasStatus do
       it_behaves_like 'build status summary'
     end
   end
+
+  def self.random_type
+    %i[ci_build generic_commit_status].sample
+  end
+
+  context 'for scope with one status' do
+    shared_examples 'having a job' do |type, status|
+      context "when it's #{status} #{type} job" do
+        let!(:job) { create(type, status) }
+
+        describe ".#{status}" do
+          subject { CommitStatus.public_send(status).all }
+
+          it { is_expected.to contain_exactly(job) }
+        end
+
+        describe '.relevant' do
+          subject { CommitStatus.relevant.all }
+
+          it do
+            case status
+            when :created
+              is_expected.to be_empty
+            else
+              is_expected.to contain_exactly(job)
+            end
+          end
+        end
+      end
+    end
+
+    %i[created running pending success
+       failed canceled skipped].each do |status|
+      it_behaves_like 'having a job', random_type, status
+    end
+  end
+
+  context 'for scope with more statuses' do
+    shared_examples 'having a job' do |type, status, excluded_status|
+      context "when it's #{status} #{type} job" do
+        let!(:job) { create(type, status) }
+
+        it do
+          case status
+          when excluded_status
+            is_expected.to be_empty
+          else
+            is_expected.to contain_exactly(job)
+          end
+        end
+      end
+    end
+
+    describe '.running_or_pending' do
+      subject { CommitStatus.running_or_pending }
+
+      %i[running pending created].each do |status|
+        it_behaves_like 'having a job', random_type, status, :created
+      end
+    end
+
+    describe '.finished' do
+      subject { CommitStatus.finished }
+
+      %i[success failed canceled created].each do |status|
+        it_behaves_like 'having a job', random_type, status, :created
+      end
+    end
+
+    describe '.cancelable' do
+      subject { CommitStatus.cancelable }
+
+      %i[running pending created failed].each do |status|
+        it_behaves_like 'having a job', random_type, status, :failed
+      end
+    end
+  end
 end
