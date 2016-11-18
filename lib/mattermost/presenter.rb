@@ -1,7 +1,7 @@
 module Mattermost
   class Presenter
     class << self
-      include Rails.application.routes.url_helpers
+      include Gitlab::Routing.url_helpers
 
       def authorize_chat_name(url)
         message = if url
@@ -14,7 +14,7 @@ module Mattermost
       end
 
       def help(commands, trigger)
-        if commands.count == 0
+        if commands.empty?
           ephemeral_response("No commands configured") unless messages.count > 1
         else
           message = header_with_list("Available commands", commands)
@@ -50,7 +50,7 @@ module Mattermost
       end
 
       def single_resource(resource)
-        return error(resource) if resource.errors.any?
+        return error(resource) if resource.errors.any? || !resource.persisted?
 
         message = "### #{title(resource)}"
         message << "\n\n#{resource.description}" if resource.description

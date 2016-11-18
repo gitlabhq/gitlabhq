@@ -34,7 +34,7 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
     end
   end
 
-  describe 'self.match' do
+  describe '.match' do
     it 'matches the title without description' do
       match = described_class.match("issue create my title")
 

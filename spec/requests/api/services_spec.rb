@@ -102,6 +102,8 @@ describe API::API, api: true  do
     end
 
     context 'the service exists' do
+      let(:params) { { token: 'token' } }
+
       context 'the service is not active' do
         let!(:inactive_service) do
           project.create_mattermost_command_service(
@@ -124,12 +126,20 @@ describe API::API, api: true  do
             properties: { token: 'token' }
           )
         end
-        let(:params) { { token: 'token' } }
 
         it 'retusn status 200' do
           post api("/projects/#{project.id}/services/mattermost_command/trigger"), params
 
           expect(response).to have_http_status(200)
+        end
+      end
+
+      context 'when the project can not be found' do
+        it 'returns a generic 404' do
+          post api("/projects/404/services/mattermost_command/trigger"), params
+
+          expect(response).to have_http_status(404)
+          expect(json_response["message"]).to eq '404 Not Found'
         end
       end
     end

@@ -67,7 +67,9 @@ module API
       post ':id/services/:service_slug/trigger' do
         project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
 
-        service = service_by_slug(project, params[:service_slug])
+        not_found! unless project
+
+        service = project_service(project)
 
         result = service.try(:active?) && service.try(:trigger, params)
 
@@ -75,7 +77,7 @@ module API
           status result[:status] || 200
           present result
         else
-          not_found!('Service')
+          not_found!
         end
       end
     end

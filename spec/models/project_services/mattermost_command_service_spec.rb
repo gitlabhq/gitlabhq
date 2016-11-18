@@ -55,11 +55,11 @@ describe MattermostCommandService, models: true do
         end
 
         context 'when an auth url can be generated' do
-          let(:params) do 
+          let(:params) do
             {
-              team_domain: 'http://domain.tld', 
-              team_id: 'T3423423', 
-              user_id: 'U234234', 
+              team_domain: 'http://domain.tld',
+              team_id: 'T3423423',
+              user_id: 'U234234',
               user_name: 'mepmep',
               token: 'token'
             }
@@ -72,7 +72,7 @@ describe MattermostCommandService, models: true do
           end
 
           it 'generates the url' do
-            response =  service.trigger(params)
+            response = service.trigger(params)
 
             expect(response[:text]).to start_with(':wave: Hi there!')
           end

@@ -85,18 +85,9 @@ module API
       end
     end
 
-    def project_service
-      @project_service ||= user_project.find_or_initialize_service(params[:service_slug].underscore)
+    def project_service(project = user_project)
+      @project_service ||= project.find_or_initialize_service(params[:service_slug].underscore)
       @project_service || not_found!("Service")
-    end
-
-    def service_by_slug(project, slug)
-      underscored_service = slug.underscore
-
-      not_found!('Service') unless Service.available_services_names.include?(underscored_service)
-      service_method = "#{underscored_service}_service"
-
-      service = project.public_send(service_method)
     end
 
     def service_attributes

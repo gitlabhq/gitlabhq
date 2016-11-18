@@ -116,6 +116,7 @@ project:
 - base_tags
 - tag_taggings
 - tags
+- chat_services
 - creator
 - group
 - namespace
@@ -127,6 +128,7 @@ project:
 - emails_on_push_service
 - builds_email_service
 - pipelines_email_service
+- mattermost_command_service
 - irker_service
 - pivotaltracker_service
 - hipchat_service

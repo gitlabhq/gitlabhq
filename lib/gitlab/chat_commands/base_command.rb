@@ -3,7 +3,7 @@ module Gitlab
     class BaseCommand
       QUERY_LIMIT = 5
 
-      def self.match(_)
+      def self.match(_text)
         raise NotImplementedError
       end
 
@@ -11,11 +11,11 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def self.available?(_)
+      def self.available?(_project)
         raise NotImplementedError
       end
 
-      def self.allowed?(_, _)
+      def self.allowed?(_user, _ability)
         true
       end
 

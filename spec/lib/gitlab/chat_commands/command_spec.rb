@@ -7,7 +7,7 @@ describe Gitlab::ChatCommands::Command, service: true do
   subject { described_class.new(project, user, params).execute }
 
   describe '#execute' do
-    context 'when no command is not available' do
+    context 'when no command is available' do
       let(:params) { { text: 'issue show 1' } }
       let(:project) { create(:project, has_external_issue_tracker: true) }
 
@@ -44,6 +44,10 @@ describe Gitlab::ChatCommands::Command, service: true do
 
       it 'presents the issue' do
         expect(subject[:text]).to match("my new issue")
+      end
+
+      it 'shows a link to the new issue' do
+        expect(subject[:text]).to match(/\/issues\/\d+/)
       end
     end
   end
