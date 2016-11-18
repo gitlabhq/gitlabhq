@@ -15,21 +15,23 @@ describe PipelineMetricsWorker do
   end
 
   describe '#perform' do
-    subject { described_class.new.perform(pipeline.id) }
+    before do
+      described_class.new.perform(pipeline.id)
+    end
 
     context 'when pipeline is running' do
       let(:status) { 'running' }
 
       it 'records the build start time' do
-        subject
-
         expect(merge_request.reload.metrics.latest_build_started_at).to be_like_time(pipeline.started_at)
       end
 
       it 'clears the build end time' do
-        subject
-
         expect(merge_request.reload.metrics.latest_build_finished_at).to be_nil
+      end
+
+      it 'records the pipeline' do
+        expect(merge_request.reload.metrics.pipeline).to eq(pipeline)
       end
     end
 
@@ -37,9 +39,11 @@ describe PipelineMetricsWorker do
       let(:status) { 'success' }
 
       it 'records the build end time' do
-        subject
-
         expect(merge_request.reload.metrics.latest_build_finished_at).to be_like_time(pipeline.finished_at)
+      end
+
+      it 'records the pipeline' do
+        expect(merge_request.reload.metrics.pipeline).to eq(pipeline)
       end
     end
   end

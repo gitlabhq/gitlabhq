@@ -649,10 +649,12 @@ ActiveRecord::Schema.define(version: 20161117114805) do
     t.datetime "merged_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "pipeline_id"
   end
 
   add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
   add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
+  add_index "merge_request_metrics", ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
     t.string "target_branch", null: false
@@ -1260,6 +1262,7 @@ ActiveRecord::Schema.define(version: 20161117114805) do
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_metrics", "ci_commits", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
