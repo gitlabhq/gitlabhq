@@ -1,13 +1,11 @@
-# When the Todos list on the user's dashboard becomes empty, one of the messages below shows up randomly.
+# When the todo list on the user's dashboard becomes empty, a random message
+# from the list below will be shown.
 #
 # If you come up with a fun one, please feel free to contribute it to GitLab!
 # https://about.gitlab.com/contributing/
-
 --- 
 - Good job! Looks like you don't have any todos left.
-- Coffee really tastes better without any todos left.
-- Isn't an empty To Do list beautiful?
-- Time for a rewarding coffee break
+- Isn't an empty todo list beautiful?
 - Give yourself a pat on the back!
-- High five!
-- Hence forth you shall be known as 'Todo Destroyer'
+- Nothing left to do, high five!
+- Henceforth you shall be known as "Todo Destroyer".
