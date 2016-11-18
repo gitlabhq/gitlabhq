@@ -44,18 +44,19 @@
         <div class="dropdown">
           <a class="dropdown-new btn btn-default" data-toggle="dropdown">
             <span class="dropdown-play-icon-container">
-              <!-- svg goes here -->
             </span>
             <i class="fa fa-caret-down"></i>
           </a>
 
           <ul class="dropdown-menu dropdown-menu-align-right">
             <li v-for="action in actions">
-              <a :href="action.play_url" data-method="post" data-rel="nofollow" class="js-manual-action-link">
-              <span class="action-play-icon-container">
-                <!-- svg goes here -->
-              </span>
-              <span v-html="action.name"></span>
+              <a :href="action.play_path"
+                data-method="post"
+                rel="nofollow"
+                class="js-manual-action-link">
+                <span class="action-play-icon-container">
+                </span>
+                <span v-html="action.name"></span>
               </a>
             </li>
           </ul>

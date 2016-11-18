@@ -76,8 +76,7 @@
        * @returns {Boolean|Undefined}
        */
       isFolder() {
-        return this.model.children &&
-          this.model.children.length > 0;
+        return this.model.children && this.model.children.length > 0;
       },
 
       /**
@@ -97,8 +96,7 @@
        * @returns {Number|Undefined}  The number of environments for the current folder.
        */
       childrenCounter() {
-        return this.model.children &&
-          this.model.children.length;
+        return this.model.children && this.model.children.length;
       },
 
       /**
@@ -109,7 +107,8 @@
        * @returns {Boolean}
        */
       hasLastDeploymentKey() {
-        if (this.model.last_deployment && this.model.last_deployment !== {}) {
+        if (this.model.last_deployment &&
+          !this.$options.isObjectEmpty(this.model.last_deployment)) {
           return true;
         }
         return false;
@@ -168,7 +167,7 @@
           return this.model.last_deployment.manual_actions.map((action) => {
             const parsedAction = {
               name: gl.text.humanize(action.name),
-              play_url: action.play_url,
+              play_path: action.play_path,
             };
             return parsedAction;
           });
@@ -209,8 +208,7 @@
        * @returns {Object|Undefined}
        */
       commitRef() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.ref) {
+        if (this.model.last_deployment && this.model.last_deployment.ref) {
           return this.model.last_deployment.ref;
         }
         return undefined;
@@ -224,8 +222,8 @@
       commitUrl() {
         if (this.model.last_deployment &&
           this.model.last_deployment.commit &&
-          this.model.last_deployment.commit.commit_url) {
-          return this.model.last_deployment.commit.commit_url;
+          this.model.last_deployment.commit.commit_path) {
+          return this.model.last_deployment.commit.commit_path;
         }
         return undefined;
       },
@@ -274,15 +272,15 @@
       },
 
       /**
-       * Verifies if the `retry_url` key is present and returns its value.
+       * Verifies if the `retry_path` key is present and returns its value.
        *
        * @returns {String|Undefined}
        */
       retryUrl() {
         if (this.model.last_deployment &&
           this.model.last_deployment.deployable &&
-          this.model.last_deployment.deployable.retry_url) {
-          return this.model.last_deployment.deployable.retry_url;
+          this.model.last_deployment.deployable.retry_path) {
+          return this.model.last_deployment.deployable.retry_path;
         }
         return undefined;
       },
@@ -328,11 +326,8 @@
        * @returns {Boolean}
        */
       deploymentHasUser() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.user) {
-          return true;
-        }
-        return false;
+        return !this.$options.isObjectEmpty(this.model.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.last_deployment.user);
       },
 
       /**
@@ -342,11 +337,53 @@
        * @returns {Object}
        */
       deploymentUser() {
-        if (this.model.last_deployment && this.model.last_deployment.user) {
+        if (!this.$options.isObjectEmpty(this.model.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.last_deployment.user)) {
           return this.model.last_deployment.user;
         }
         return {};
       },
+
+      /**
+       * Verifies if the build name column should be rendered by verifing
+       * if all the information needed is present
+       * and if the environment is not a folder.
+       *
+       * @returns {Boolean}
+       */
+      shouldRenderBuildName() {
+        return !this.isFolder &&
+          !this.$options.isObjectEmpty(this.model.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.last_deployment.deployable);
+      },
+
+      /**
+       * Verifies if deplyment internal ID should be rendered by verifing
+       * if all the information needed is present
+       * and if the environment is not a folder.
+       *
+       * @returns {Boolean}
+       */
+      shouldRenderDeploymentID() {
+        return !this.isFolder &&
+          !this.$options.isObjectEmpty(this.model.last_deployment) &&
+          this.model.last_deployment.iid !== undefined;
+      },
+    },
+
+    /**
+     * Helper to verify if certain given object are empty.
+     * Should be replaced by lodash _.isEmpty - https://lodash.com/docs/4.17.2#isEmpty
+     * @param  {Object} object
+     * @returns {Bollean}
+     */
+    isObjectEmpty(object) {
+      for (const key in object) { // eslint-disable-line
+        if (hasOwnProperty.call(object, key)) {
+          return false;
+        }
+      }
+      return true;
     },
 
     template: `
@@ -355,7 +392,7 @@
           <a
             v-if="!isFolder"
             class="environment-name"
-            :href="model.environment_url"
+            :href="model.environment_path"
             v-html="model.name">
           </a>
           <span v-else v-on:click="toggleRow(model)" class="folder-name">
@@ -372,7 +409,7 @@
 
         <td class="deployment-column">
           <span
-            v-if="!isFolder && model.last_deployment && model.last_deployment.iid"
+            v-if="shouldRenderDeploymentID"
             v-html="deploymentInternalId">
           </span>
 
@@ -388,9 +425,9 @@
         </td>
 
         <td>
-          <a v-if="!isFolder && model.last_deployment && model.last_deployment.deployable"
+          <a v-if="shouldRenderBuildName"
             class="build-link"
-            :href="model.last_deployment.deployable.build_url"
+            :href="model.last_deployment.deployable.build_path"
             v-html="buildName">
           </a>
         </td>
@@ -421,25 +458,29 @@
 
         <td class="hidden-xs">
           <div v-if="!isFolder">
-            <div v-if="hasManualActions && canCreateDeployment" class="inline js-manual-actions-container">
+            <div v-if="hasManualActions && canCreateDeployment"
+              class="inline js-manual-actions-container">
               <actions-component
                 :actions="manualActions">
               </actions-component>
             </div>
 
-            <div v-if="model.external_url && canReadEnvironment" class="inline js-external-url-container">
+            <div v-if="model.external_url && canReadEnvironment"
+              class="inline js-external-url-container">
               <external-url-component
                 :external_url="model.external_url">
               </external_url-component>
             </div>
 
-            <div v-if="isStoppable && canCreateDeployment" class="inline js-stop-component-container">
+            <div v-if="isStoppable && canCreateDeployment"
+              class="inline js-stop-component-container">
               <stop-component
-                :stop_url="model.environment_url">
+                :stop_url="model.environment_path">
               </stop-component>
             </div>
 
-            <div v-if="canRetry && canCreateDeployment" class="inline js-rollback-component-container">
+            <div v-if="canRetry && canCreateDeployment"
+              class="inline js-rollback-component-container">
               <rollback-component
                 :is_last_deployment="isLastDeployment"
                 :retry_url="retryUrl">

@@ -9,8 +9,8 @@ class EnvironmentEntity < Grape::Entity
   expose :last_deployment, using: DeploymentEntity
   expose :stoppable?
 
-  expose :environment_url do |environment|
-    namespace_project_environment_url(
+  expose :environment_path do |environment|
+    namespace_project_environment_path(
       environment.project.namespace,
       environment.project,
       environment)

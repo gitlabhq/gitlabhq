@@ -13,6 +13,6 @@ describe EnvironmentEntity do
   end
 
   it 'exposes core elements of environment' do
-    expect(subject).to include(:id, :name, :state, :environment_url)
+    expect(subject).to include(:id, :name, :state, :environment_path)
   end
 end

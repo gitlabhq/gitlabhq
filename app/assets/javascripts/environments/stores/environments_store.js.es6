@@ -89,17 +89,17 @@
     toggleFolder(envType) {
       const environments = this.state.environments;
 
-      const environmnetsCopy = environments.map((env) => {
-        if (env['vue-isChildren'] === true && env.name === envType) {
+      const environmentsCopy = environments.map((env) => {
+        if (env['vue-isChildren'] && env.name === envType) {
           env.isOpen = !env.isOpen;
         }
 
         return env;
       });
 
-      this.state.environments = environmnetsCopy;
+      this.state.environments = environmentsCopy;
 
-      return environmnetsCopy;
+      return environmentsCopy;
     },
 
     /**
@@ -125,15 +125,7 @@
       const nameA = a.name.toUpperCase();
       const nameB = b.name.toUpperCase();
 
-      if (nameA < nameB) {
-        return -1;
-      }
-
-      if (nameA > nameB) {
-        return 1;
-      }
-
-      return 0;
+      return nameA < nameB ? -1 : nameA > nameB ? 1 : 0; // eslint-disable-line
     },
   };
 })();
