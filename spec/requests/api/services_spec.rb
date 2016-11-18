@@ -91,7 +91,7 @@ describe API::API, api: true  do
 
   describe 'POST /projects/:id/services/:slug/trigger' do
     let!(:project) { create(:empty_project) }
-    let(:service_name) { 'mattermost_command' }
+    let(:service_name) { 'mattermost_slash_commands' }
 
     context 'no service is available' do
       it 'returns a not found message' do
@@ -107,14 +107,14 @@ describe API::API, api: true  do
 
       context 'the service is not active' do
         let!(:inactive_service) do
-          project.create_mattermost_command_service(
+          project.create_mattermost_slash_commands_service(
             active: false,
             properties: { token: 'token' }
           )
         end
 
         it 'when the service is inactive' do
-          post api("/projects/#{project.id}/services/mattermost_command/trigger")
+          post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger")
 
           expect(response).to have_http_status(404)
         end
@@ -122,14 +122,14 @@ describe API::API, api: true  do
 
       context 'the service is active' do
         let!(:active_service) do
-          project.create_mattermost_command_service(
+          project.create_mattermost_slash_commands_service(
             active: true,
             properties: { token: 'token' }
           )
         end
 
         it 'retusn status 200' do
-          post api("/projects/#{project.id}/services/mattermost_command/trigger"), params
+          post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger"), params
 
           expect(response).to have_http_status(200)
         end
@@ -137,7 +137,7 @@ describe API::API, api: true  do
 
       context 'when the project can not be found' do
         it 'returns a generic 404' do
-          post api("/projects/404/services/mattermost_command/trigger"), params
+          post api("/projects/404/services/mattermost_slash_commands/trigger"), params
 
           expect(response).to have_http_status(404)
           expect(json_response["message"]).to eq("404 Service Not Found")

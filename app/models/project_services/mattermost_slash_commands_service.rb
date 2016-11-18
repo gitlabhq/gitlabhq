@@ -1,4 +1,4 @@
-class MattermostCommandService < ChatService
+class MattermostSlashCommandsService < ChatService
   include TriggersHelper
 
   prop_accessor :token
@@ -16,7 +16,7 @@ class MattermostCommandService < ChatService
   end
 
   def to_param
-    'mattermost_command'
+    'mattermost_slash_commands'
   end
 
   def help

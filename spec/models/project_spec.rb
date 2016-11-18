@@ -36,7 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
-    it { is_expected.to have_one(:mattermost_command_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
     it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }

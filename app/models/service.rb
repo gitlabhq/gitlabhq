@@ -213,7 +213,7 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jira
-      mattermost_command
+      mattermost_slash_commands
       pipelines_email
       pivotaltracker
       pushover

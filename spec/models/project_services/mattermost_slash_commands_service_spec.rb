@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MattermostCommandService, models: true do
+describe MattermostSlashCommandsService, models: true do
   describe "Associations" do
     it { is_expected.to respond_to :token }
   end
@@ -66,7 +66,7 @@ describe MattermostCommandService, models: true do
           end
 
           let(:service) do
-            project.create_mattermost_command_service(
+            project.create_mattermost_slash_commands_service(
               properties: { token: 'token' }
             )
           end
@@ -82,7 +82,7 @@ describe MattermostCommandService, models: true do
       context 'when the user is authenticated' do
         let!(:chat_name) { create(:chat_name, service: service) }
         let(:service) do
-          project.create_mattermost_command_service(
+          project.create_mattermost_slash_commands_service(
             properties: { token: 'token' }
           )
         end
