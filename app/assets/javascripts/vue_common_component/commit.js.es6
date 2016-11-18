@@ -152,7 +152,6 @@
 
         <p class="commit-title">
           <span v-if="title">
-            <!-- commit author info-->
             <a v-if="hasAuthor"
               class="avatar-image-container"
               :href="author.web_url">
