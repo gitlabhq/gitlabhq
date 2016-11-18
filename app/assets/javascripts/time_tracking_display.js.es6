@@ -41,9 +41,10 @@
             gl.IssuableResource.subscribe(data => this.updateState(data));
           },
           listenForSlashCommands() {
-            $(document).on('ajax:success', '.gfm-form', () => {
-              // TODO: check for slash command
-              this.fetchIssuable();
+            $(document).on('ajax:success', '.gfm-form', (e, data) => {
+              if (data.commands_changes !== null) {
+                this.fetchIssuable();
+              }
             });
           },
         },
