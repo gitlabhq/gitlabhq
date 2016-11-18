@@ -5,6 +5,6 @@ describe Gitlab::CycleAnalytics::ReviewEvent do
   it_behaves_like 'default query config'
    
   it 'has the default order' do
-    expect(described_class.order).to eq(described_class.start_time_attrs)
+    expect(event.order).to eq(event.start_time_attrs)
   end
 end

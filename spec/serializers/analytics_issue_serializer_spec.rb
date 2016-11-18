@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AnalyticsGenericSerializer do
+describe AnalyticsIssueSerializer do
   let(:serializer) do
     described_class
       .new(project: project, entity: :merge_request)
@@ -26,7 +26,7 @@ describe AnalyticsGenericSerializer do
       expect(json).to be_an_instance_of Hash
     end
 
-    it 'contains important elements of analyticsBuild' do
+    it 'contains important elements of the issue' do
       expect(json).to include(:title, :iid, :created_at, :total_time, :url, :author)
     end
   end
