@@ -90,6 +90,15 @@ module API
       @project_service || not_found!("Service")
     end
 
+    def service_by_slug(project, slug)
+      underscored_service = slug.underscore
+
+      not_found!('Service') unless Service.available_services_names.include?(underscored_service)
+      service_method = "#{underscored_service}_service"
+
+      service = project.public_send(service_method)
+    end
+
     def service_attributes
       @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
         arr << hash[:name].to_sym

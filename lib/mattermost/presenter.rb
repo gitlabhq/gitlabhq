@@ -4,7 +4,11 @@ module Mattermost
       include Rails.application.routes.url_helpers
 
       def authorize_chat_name(url)
-        message = ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
+        message = if url
+                    ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
+                  else
+                    ":sweat_smile: Couldn't identify you, nor can I autorize you!"
+                  end
 
         ephemeral_response(message)
       end

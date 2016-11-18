@@ -88,4 +88,50 @@ describe API::API, api: true  do
       end
     end
   end
+
+  describe 'POST /projects/:id/services/:slug/trigger' do
+    let!(:project) { create(:empty_project) }
+    let(:service_name) { 'mattermost_command' }
+
+    context 'no service is available' do
+      it 'returns a not found message' do
+        post api("/projects/#{project.id}/services/mattermost_command/trigger")
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'the service exists' do
+      context 'the service is not active' do
+        let!(:inactive_service) do
+          project.create_mattermost_command_service(
+            active: false,
+            properties: { token: 'token' }
+          )
+        end
+
+        it 'when the service is inactive' do
+          post api("/projects/#{project.id}/services/mattermost_command/trigger")
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'the service is active' do
+        let!(:active_service) do
+          project.create_mattermost_command_service(
+            active: true,
+            properties: { token: 'token' }
+          )
+        end
+        let(:params) { { token: 'token' } }
+
+        it 'retusn status 200' do
+          post api("/projects/#{project.id}/services/mattermost_command/trigger"), params
+
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+  end
 end

@@ -67,12 +67,7 @@ module API
       post ':id/services/:service_slug/trigger' do
         project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
 
-        underscored_service = params[:service_slug].underscore
-
-        not_found!('Service') unless Service.available_services_names.include?(underscored_service)
-        service_method = "#{underscored_service}_service"
-
-        service = project.public_send(service_method)
+        service = service_by_slug(project, params[:service_slug])
 
         result = service.try(:active?) && service.try(:trigger, params)
 

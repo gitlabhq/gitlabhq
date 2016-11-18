@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ChatCommands::Command, service: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
   subject { described_class.new(project, user, params).execute }
