@@ -7,7 +7,7 @@
       this.pipelines = pipelines;
       this.updateClone = (update, newPipe) => {
         update.forEach((pipe) => {
-          if (pipe.id === newPipe.id) pipe = Object.assign(pipe, newPipe);
+          if (pipe.id === newPipe.id) pipe = Object.assign({}, pipe, newPipe);
         });
       };
     }
@@ -20,7 +20,7 @@
     }
 
     updatePipelines(apiResponse) {
-      const update = this.pipelines.map(e => e);
+      const update = this.pipelines.slice(0);
       apiResponse.pipelines.forEach((newPipe) => {
         if (newPipe.commit) {
           update.unshift(newPipe);
