@@ -24,7 +24,7 @@
       .accept_merge_request {
         &.ci-pending,
         &.ci-running {
-          @include btn-orange;
+          @include btn-blue;
         }
 
         &.ci-skipped,
