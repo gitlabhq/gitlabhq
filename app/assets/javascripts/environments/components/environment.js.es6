@@ -111,7 +111,7 @@
 
       this.isLoading = true;
 
-      return window.gl.environmentsService.all()
+      return gl.environmentsService.all()
         .then(resp => resp.json())
         .then((json) => {
           this.store.storeEnvironments(json);
