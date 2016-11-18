@@ -339,6 +339,8 @@ GEM
     html-pipeline (1.11.0)
       activesupport (>= 2)
       nokogiri (~> 1.4)
+    html2text (0.2.0)
+      nokogiri (~> 1.6)
     htmlentities (4.3.4)
     httparty (0.13.7)
       json (~> 1.8)
@@ -873,6 +875,7 @@ DEPENDENCIES
   health_check (~> 2.2.0)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
+  html2text
   httparty (~> 0.13.3)
   influxdb (~> 0.2)
   jira-ruby (~> 1.1.2)
