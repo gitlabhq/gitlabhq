@@ -16,20 +16,4 @@ describe('Stop Component', () => {
     });
     expect(component.$el.getAttribute('href')).toEqual(stopURL);
   });
-
-  describe('When clicked', () => {
-    it('Should open popup with confirmation warning', () => {
-      const component = new window.gl.environmentsList.StopComponent({
-        el: document.querySelector('.test-dom-element'),
-        propsData: {
-          stop_url: '#',
-        },
-      });
-
-      var confirm = spyOn(window, 'confirm');
-      confirm.and.returnValue(false);
-      component.$el.click();
-      expect(confirm).toHaveBeenCalled();
-    });
-  });
 });
