@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, space-before-blocks, prefer-rest-params, max-len, vars-on-top, no-plusplus, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, padded-blocks, max-len */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };

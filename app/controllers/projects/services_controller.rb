@@ -28,6 +28,8 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
+    return render_404 unless @service.can_test?
+
     data = @service.test_data(project, current_user)
     outcome = @service.test(data)
 

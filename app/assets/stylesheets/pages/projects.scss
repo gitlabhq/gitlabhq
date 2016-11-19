@@ -145,6 +145,10 @@
   }
 }
 
+.nav > .project-repo-buttons {
+  margin-top: 0;
+}
+
 .project-repo-buttons,
 .group-buttons {
   margin-top: 15px;
@@ -182,6 +186,12 @@
   .notification-dropdown,
   .project-dropdown {
     margin-left: 10px;
+  }
+
+  .download-button {
+    @media (max-width: $screen-lg-min) {
+      margin-left: 0;
+    }
   }
 
   .count-buttons {
@@ -468,6 +478,20 @@ a.deploy-project-label {
   }
 }
 
+.page-sidebar-pinned {
+  .project-stats .nav > li.right {
+    @media (min-width: $screen-lg-min) {
+      float: none;
+    }
+  }
+
+  .download-button {
+    @media (min-width: $screen-lg-min) {
+      margin-left: 0;
+    }
+  }
+}
+
 .project-stats {
   font-size: 0;
   border-bottom: 1px solid $border-color;
@@ -485,9 +509,11 @@ a.deploy-project-label {
     }
 
     &.right {
-      @media (min-width: $screen-md-min) {
+      vertical-align: top;
+      margin-top: 0;
+
+      @media (min-width: $screen-lg-min) {
         float: right;
-        margin-top: 0;
       }
     }
   }

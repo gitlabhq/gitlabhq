@@ -1,0 +1,4 @@
+---
+title: Fix double event and ajax request call on MR page
+merge_request: 7298
+author: YarNayar

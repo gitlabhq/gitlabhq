@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe MergeRequests::ApprovalService, services: true do
   describe '#execute' do
-    let(:user)          { build_stubbed(:user) }
+    let(:user)          { create(:user) }
     let(:merge_request) { build_stubbed(:merge_request) }
     let(:project)       { merge_request.project }
     let!(:todo)         { create(:todo, user: user, project: project, target: merge_request) }

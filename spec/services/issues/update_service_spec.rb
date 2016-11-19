@@ -215,7 +215,7 @@ describe Issues::UpdateService, services: true do
 
       let!(:subscriber) do
         create(:user).tap do |u|
-          label.toggle_subscription(u)
+          label.toggle_subscription(u, project)
           project.team << [u, :developer]
         end
       end

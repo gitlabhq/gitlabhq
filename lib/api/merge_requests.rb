@@ -61,7 +61,7 @@ module API
           end
 
         merge_requests = merge_requests.reorder(issuable_order_by => issuable_sort)
-        present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user
+        present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
       desc 'Create a merge request' do
@@ -88,7 +88,7 @@ module API
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
         if merge_request.valid?
-          present merge_request, with: Entities::MergeRequest, current_user: current_user
+          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
         else
           handle_merge_request_errors! merge_request.errors
         end
@@ -121,7 +121,7 @@ module API
         get path do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           authorize! :read_merge_request, merge_request
-          present merge_request, with: Entities::MergeRequest, current_user: current_user
+          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
         desc 'Get the commits of a merge request' do
@@ -168,7 +168,7 @@ module API
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
           if merge_request.valid?
-            present merge_request, with: Entities::MergeRequest, current_user: current_user
+            present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -213,7 +213,7 @@ module API
               execute(merge_request)
           end
 
-          present merge_request, with: Entities::MergeRequest, current_user: current_user
+          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
         desc 'Cancel merge if "Merge when build succeeds" is enabled' do

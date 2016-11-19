@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-return-assign, padded-blocks, max-len */
 
 /*= require lib/utils/common_utils */
 

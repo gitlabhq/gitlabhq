@@ -41,7 +41,6 @@ scope(path: 'groups/:group_id', module: :groups, as: :group) do
 
   resource :avatar, only: [:destroy]
   resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
-  resources :labels, except: [:show], constraints: { id: /\d+/ }
 
   ## EE-specific
   resource :notification_setting, only: [:update]
@@ -55,6 +54,10 @@ scope(path: 'groups/:group_id', module: :groups, as: :group) do
     end
   end
   ## EE-specific
+
+  resources :labels, except: [:show], constraints: { id: /\d+/ } do
+    post :toggle_subscription, on: :member
+  end
 end
 
 # Must be last route in this file

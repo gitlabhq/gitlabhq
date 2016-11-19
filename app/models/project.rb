@@ -14,6 +14,7 @@ class Project < ActiveRecord::Base
   include TokenAuthenticatable
   include Elastic::ProjectsSearch
   include ProjectFeaturesCompatibility
+  include SelectForProjectAuthorization
 
   extend Gitlab::ConfigHelper
 
@@ -21,7 +22,9 @@ class Project < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
+                                                       allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -68,6 +71,7 @@ class Project < ActiveRecord::Base
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, dependent: :destroy
+  has_many :chat_services
 
   # Project services
   has_one :campfire_service, dependent: :destroy
@@ -82,6 +86,7 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
+  has_one :mattermost_slash_commands_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
   has_one :jenkins_deprecated_service, dependent: :destroy
@@ -1525,16 +1530,10 @@ class Project < ActiveRecord::Base
 
   # Checks if `user` is authorized for this project, with at least the
   # `min_access_level` (if given).
-  #
-  # If you change the logic of this method, please also update `User#authorized_projects`
   def authorized_for_user?(user, min_access_level = nil)
     return false unless user
 
-    return true if personal? && namespace_id == user.namespace_id
-
-    authorized_for_user_by_group?(user, min_access_level) ||
-      authorized_for_user_by_members?(user, min_access_level) ||
-      authorized_for_user_by_shared_projects?(user, min_access_level)
+    user.authorized_project?(self, min_access_level)
   end
 
   def append_or_update_attribute(name, value)
@@ -1597,19 +1596,27 @@ class Project < ActiveRecord::Base
     size_limit_enabled? && (size_mb > actual_size_limit || size_mb + repository_and_lfs_size > actual_size_limit)
   end
 
-  def environments_for(ref, commit, with_tags: false)
-    environment_ids = deployments.group(:environment_id).
-      select(:environment_id)
+  def environments_for(ref, commit: nil, with_tags: false)
+    deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
 
-    environment_ids =
-      if with_tags
-        environment_ids.where('ref=? OR tag IS TRUE', ref)
-      else
-        environment_ids.where(ref: ref)
-      end
+    environment_ids = deployments
+      .where(deployments_query, ref.to_s)
+      .group(:environment_id)
+      .select(:environment_id)
 
-    environments.available.where(id: environment_ids).select do |environment|
+    environments_found = environments.available
+      .where(id: environment_ids).to_a
+
+    return environments_found unless commit
+
+    environments_found.select do |environment|
       environment.includes_commit?(commit)
+    end
+  end
+
+  def environments_recently_updated_on_branch(branch)
+    environments_for(branch).select do |environment|
+      environment.recently_updated_on_branch?(branch)
     end
   end
 
@@ -1622,40 +1629,5 @@ class Project < ActiveRecord::Base
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
-  end
-
-  def authorized_for_user_by_group?(user, min_access_level)
-    member = user.group_members.find_by(source_id: group)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_members?(user, min_access_level)
-    member = members.find_by(user_id: user)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_shared_projects?(user, min_access_level)
-    shared_projects = user.group_members.joins(group: :shared_projects).
-      where(project_group_links: { project_id: self })
-
-    if min_access_level
-      members_scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
-      shared_projects = shared_projects.where(members: members_scope)
-    end
-
-    shared_projects.any?
-  end
-
-  # Similar to the normal callbacks that hook into the life cycle of an
-  # Active Record object, you can also define callbacks that get triggered
-  # when you add an object to an association collection. If any of these
-  # callbacks throw an exception, the object will not be added to the
-  # collection. Before you add a new board to the boards collection if you
-  # already have 1, 2, or n it will fail, but it if you have 0 that is lower
-  # than the number of permitted boards per project it won't fail.
-  def validate_board_limit(board)
-    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 end

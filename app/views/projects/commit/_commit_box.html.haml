@@ -1,5 +1,5 @@
-.commit-info-row.commit-info-row-header
-  .commit-meta
+.page-content-header
+  .header-main-content
     %strong Commit
     %strong.monospace.js-details-short= @commit.short_id
     = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
@@ -19,7 +19,8 @@
       %strong
         = commit_committer_link(@commit, avatar: true, size: 24)
       #{time_ago_with_tooltip(@commit.committed_date)}
-  .commit-action-buttons
+
+  .header-action-buttons
     - if defined?(@notes_count) && @notes_count > 0
       %span.btn.disabled.btn-grouped.hidden-xs.append-right-10
         = icon('comment')
@@ -55,8 +56,8 @@
     %pre.commit-description
       = preserve(markdown(@commit.description, pipeline: :single_line, author: @commit.author))
 
-.commit-info-widget
-  .widget-row.branch-info
+.info-well
+  .well-segment.branch-info
     .icon-container.commit-icon
       = custom_icon("icon_commit")
     %span.cgray= pluralize(@commit.parents.count, "parent")
@@ -66,7 +67,7 @@
       %i.fa.fa-spinner.fa-spin
 
   - if @commit.status
-    .widget-row.pipeline-info
+    .well-segment.pipeline-info
       .icon-container
         = ci_icon_for_status(@commit.status)
       Pipeline

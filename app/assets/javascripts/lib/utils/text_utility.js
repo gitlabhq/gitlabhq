@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, semi, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, padded-blocks, max-len */
 (function() {
   (function(w) {
     var base;
@@ -112,6 +112,9 @@
     gl.text.removeListeners = function(form) {
       return $('.js-md', form).off();
     };
+    gl.text.humanize = function(string) {
+      return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
+    }
     return gl.text.truncate = function(string, maxLength) {
       return string.substr(0, (maxLength - 3)) + '...';
     };

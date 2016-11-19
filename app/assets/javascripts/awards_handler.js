@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-undef, no-plusplus, no-return-assign, camelcase, padded-blocks, max-len */
 (function() {
   this.AwardsHandler = (function() {
     var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence

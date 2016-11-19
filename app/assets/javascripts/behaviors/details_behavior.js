@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, quotes, no-var, vars-on-top, padded-blocks, max-len */
 (function() {
   $(function() {
     $("body").on("click", ".js-details-target", function() {

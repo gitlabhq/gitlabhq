@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, no-undef, quote-props, prefer-template, comma-dangle, padded-blocks, max-len */
 (function() {
   this.Network = (function() {
     function Network(opts) {
