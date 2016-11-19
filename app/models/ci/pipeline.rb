@@ -161,9 +161,7 @@ module Ci
     end
 
     def retryable?
-      builds.latest.any? do |build|
-        (build.failed? || build.canceled?) && build.retryable?
-      end
+      builds.latest.failed_or_canceled.any?(&:retryable?)
     end
 
     def cancelable?
@@ -171,12 +169,16 @@ module Ci
     end
 
     def cancel_running
-      statuses.cancelable.each(&:cancel)
+      Gitlab::OptimisticLocking.retry_lock(statuses.cancelable) do |cancelable|
+        cancelable.each(&:cancel)
+      end
     end
 
     def retry_failed(user)
-      builds.latest.failed.select(&:retryable?).each do |build|
-        Ci::Build.retry(build, user)
+      Gitlab::OptimisticLocking.retry_lock(builds.latest.failed_or_canceled) do |failed|
+        failed.select(&:retryable?).each do |build|
+          Ci::Build.retry(build, user)
+        end
       end
     end
 

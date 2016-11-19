@@ -455,17 +455,74 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#cancel_running' do
+    let(:latest_status) { pipeline.statuses.pluck(:status) }
+
     context 'when there is a running external job and created build' do
       before do
+        create(:ci_build, :running, pipeline: pipeline)
         create(:generic_commit_status, :running, pipeline: pipeline)
-        create(:ci_build, :created, pipeline: pipeline)
 
         pipeline.cancel_running
       end
 
       it 'cancels both jobs' do
-        expect(pipeline.statuses.pluck(:status)).
-          to contain_exactly('canceled', 'canceled')
+        expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+
+    context 'when builds are in different stages' do
+      before do
+        create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :running, stage_idx: 1, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels both jobs' do
+        expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+  end
+
+  describe '#retry_failed' do
+    let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+
+    context 'when there is a failed build and failed external status' do
+      before do
+        create(:ci_build, :failed, name: 'build', pipeline: pipeline)
+        create(:generic_commit_status, :failed, name: 'jenkins', pipeline: pipeline)
+
+        pipeline.retry_failed(nil)
+      end
+
+      it 'retries only build' do
+        expect(latest_status).to contain_exactly('pending', 'failed')
+      end
+    end
+
+    context 'when builds are in different stages' do
+      before do
+        create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :failed, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
+
+        pipeline.retry_failed(nil)
+      end
+
+      it 'retries both builds' do
+        expect(latest_status).to contain_exactly('pending', 'pending')
+      end
+    end
+
+    context 'when there are canceled and failed' do
+      before do
+        create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :canceled, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
+
+        pipeline.retry_failed(nil)
+      end
+
+      it 'retries both builds' do
+        expect(latest_status).to contain_exactly('pending', 'pending')
       end
     end
   end
