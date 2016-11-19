@@ -6,7 +6,7 @@
 
   %td.deployment-column
     - if last_deployment
-      %span ##{last_deployment.iid} 
+      %span ##{last_deployment.iid}
       - if last_deployment.user
         by
         = user_avatar(user: last_deployment.user, size: 20)
@@ -28,7 +28,7 @@
       #{time_ago_with_tooltip(last_deployment.created_at)}
 
   %td.hidden-xs
-    .pull-right
+    .pull-right.text-nowrap
       = render 'projects/environments/external_url', environment: environment
       = render 'projects/deployments/actions', deployment: last_deployment
       = render 'projects/environments/stop', environment: environment
