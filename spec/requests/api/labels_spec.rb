@@ -339,7 +339,7 @@ describe API::API, api: true  do
     end
 
     context "when user is already subscribed to label" do
-      before { label1.subscribe(user) }
+      before { label1.subscribe(user, project) }
 
       it "returns 304" do
         post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
@@ -358,7 +358,7 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/labels/:label_id/subscription" do
-    before { label1.subscribe(user) }
+    before { label1.subscribe(user, project) }
 
     context "when label_id is a label title" do
       it "unsubscribes from the label" do
@@ -381,7 +381,7 @@ describe API::API, api: true  do
     end
 
     context "when user is already unsubscribed from label" do
-      before { label1.unsubscribe(user) }
+      before { label1.unsubscribe(user, project) }
 
       it "returns 304" do
         delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)

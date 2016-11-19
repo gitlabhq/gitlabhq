@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-undef, no-new, padded-blocks, max-len */
 (function() {
   this.GLForm = (function() {
     function GLForm(form) {

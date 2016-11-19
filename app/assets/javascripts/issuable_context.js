@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, no-undef, comma-dangle, quotes, prefer-arrow-callback, consistent-return, one-var, no-var, one-var-declaration-per-line, no-underscore-dangle, padded-blocks, max-len */
 (function() {
   this.IssuableContext = (function() {
     function IssuableContext(currentUser) {

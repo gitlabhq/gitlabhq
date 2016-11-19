@@ -193,7 +193,7 @@ module SlashCommands
     desc 'Subscribe'
     condition do
       issuable.persisted? &&
-        !issuable.subscribed?(current_user)
+        !issuable.subscribed?(current_user, project)
     end
     command :subscribe do
       @updates[:subscription_event] = 'subscribe'
@@ -202,7 +202,7 @@ module SlashCommands
     desc 'Unsubscribe'
     condition do
       issuable.persisted? &&
-        issuable.subscribed?(current_user)
+        issuable.subscribed?(current_user, project)
     end
     command :unsubscribe do
       @updates[:subscription_event] = 'unsubscribe'

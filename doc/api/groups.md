@@ -6,8 +6,13 @@ Get a list of groups. (As user: my groups or all available, as admin: all groups
 
 Parameters:
 
-- `all_available` (optional) - if passed, show all groups you have access to
-- `skip_groups` (optional)(array of group IDs) - if passed, skip groups
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `skip_groups` | array of integers | no | Skip the group IDs passes |
+| `all_available` | boolean | no | Show all the groups you have access to |
+| `search` | string | no | Return list of authorized groups matching the search criteria |
+| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 
 ```
 GET /groups

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, object-shorthand, no-unused-vars, no-shadow, one-var, one-var-declaration-per-line, comma-dangle, padded-blocks, max-len */
 (function() {
   this.IssueStatusSelect = (function() {
     function IssueStatusSelect() {

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-undef, quotes, no-var, padded-blocks, max-len */
 (function() {
   this.Activities = (function() {
     function Activities() {

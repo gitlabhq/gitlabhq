@@ -219,7 +219,7 @@ module Issuable
     end
   end
 
-  def subscribed_without_subscriptions?(user)
+  def subscribed_without_subscriptions?(user, project)
     participants(user).include?(user)
   end
 

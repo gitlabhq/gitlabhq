@@ -1,10 +1,10 @@
 module API
   # Projects API
   class Services < Grape::API
-    before { authenticate! }
-    before { authorize_admin_project }
-
     resource :projects do
+      before { authenticate! }
+      before { authorize_admin_project }
+
       # Set <service_slug> service for project
       #
       # Example Request:
@@ -57,6 +57,29 @@ module API
       #
       get ':id/services/:service_slug' do
         present project_service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+      end
+    end
+
+    resource :projects do
+      desc 'Trigger a slash command' do
+        detail 'Added in GitLab 8.13'
+      end
+      post ':id/services/:service_slug/trigger' do
+        project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
+
+        # This is not accurate, but done to prevent leakage of the project names
+        not_found!('Service') unless project
+
+        service = project_service(project)
+
+        result = service.try(:active?) && service.try(:trigger, params)
+
+        if result
+          status result[:status] || 200
+          present result
+        else
+          not_found!('Service')
+        end
       end
     end
   end

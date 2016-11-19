@@ -66,8 +66,6 @@ module Gitlab
 
                   @entries[symbol].value
                 end
-
-                alias_method symbol.to_sym, "#{symbol}_value".to_sym
               end
             end
           end

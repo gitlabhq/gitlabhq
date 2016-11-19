@@ -35,7 +35,7 @@
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
         // Highlight first item only if at least one char was typed
-        this.setting.highlightFirst = query.length > 0;
+        this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
         if ((items[0].name != null) && items[0].name === 'loading') {
           return items;
         }
@@ -51,11 +51,6 @@
         if (!GitLab.GfmAutoComplete.dataLoaded) {
           return this.at;
         } else {
-          if (value.indexOf("unlabel") !== -1) {
-            GitLab.GfmAutoComplete.input.atwho('load', '~', GitLab.GfmAutoComplete.cachedData.unlabels);
-          } else {
-            GitLab.GfmAutoComplete.input.atwho('load', '~', GitLab.GfmAutoComplete.cachedData.labels);
-          }
           return value;
         }
       }
@@ -117,6 +112,7 @@
         insertTpl: '${atwho-at}${username}',
         searchKey: 'search',
         data: ['loading'],
+        alwaysHighlightFirst: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -363,4 +359,3 @@
   };
 
 }).call(this);
-

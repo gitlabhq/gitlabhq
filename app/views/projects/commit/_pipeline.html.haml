@@ -1,10 +1,6 @@
 .pipeline-graph-container
   .row-content-block.build-content.middle-block.pipeline-actions
     .pull-right
-      %button.btn.btn-grouped.btn-white.toggle-pipeline-btn
-        %span.toggle-btn-text Hide
-        %span pipeline graph
-        %span.caret
       - if can?(current_user, :update_pipeline, pipeline.project)
         - if pipeline.builds.latest.failed.any?(&:retryable?)
           = link_to "Retry failed", retry_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: 'btn btn-grouped btn-primary', method: :post

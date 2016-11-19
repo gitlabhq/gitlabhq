@@ -1,0 +1,5 @@
+---
+title: Fixing the issue of the project fork url giving 500 when not signed instead
+  of being redirected to sign in page
+merge_request: 
+author: Cagdas Gerede

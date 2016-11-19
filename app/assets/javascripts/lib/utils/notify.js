@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, consistent-return, no-undef, prefer-arrow-callback, no-return-assign, object-shorthand, comma-dangle, no-param-reassign, padded-blocks, max-len */
 (function() {
   (function(w) {
     var notificationGranted, notifyMe, notifyPermissions;

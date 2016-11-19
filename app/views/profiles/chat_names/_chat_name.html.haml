@@ -1,0 +1,27 @@
+- service = chat_name.service
+- project = service.project
+%tr
+  %td
+    %strong
+      - if can?(current_user, :read_project, project)
+        = link_to project.name_with_namespace, project_path(project)
+      - else
+        .light N/A
+  %td
+    %strong
+      - if can?(current_user, :admin_project, project)
+        = link_to service.title, edit_namespace_project_service_path(project.namespace, project, service)
+      - else
+        = service.title
+  %td
+    = chat_name.team_domain
+  %td
+    = chat_name.chat_name
+  %td
+    - if chat_name.last_used_at
+      time_ago_with_tooltip(chat_name.last_used_at)
+    - else
+      Never
+
+  %td
+    = link_to 'Remove', profile_chat_name_path(chat_name), method: :delete, class: 'btn btn-danger pull-right', data: { confirm: 'Are you sure you want to revoke this nickname?' }

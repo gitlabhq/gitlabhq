@@ -169,7 +169,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unsubscribe command' do
       it 'populates subscription_event: "unsubscribe" if content contains /unsubscribe' do
-        issuable.subscribe(developer)
+        issuable.subscribe(developer, project)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(subscription_event: 'unsubscribe')
