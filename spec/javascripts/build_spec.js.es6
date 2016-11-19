@@ -11,6 +11,13 @@
 
 (() => {
   describe('Build', () => {
+    // see spec/factories/ci/builds.rb
+    const BUILD_TRACE = 'BUILD TRACE';
+    // see lib/ci/ansi2html.rb
+    const INITIAL_BUILD_TRACE_STATE = window.btoa(JSON.stringify({
+      offset: BUILD_TRACE.length, n_open_tags: 0, fg_color: null, bg_color: null, style_mask: 0,
+    }));
+
     fixture.preload('builds/build-with-artifacts.html.raw');
 
     beforeEach(function () {
@@ -33,11 +40,11 @@
         });
 
         it('copies build options', function () {
-          expect(this.build.pageUrl).toBe('http://example.com/root/test-build/builds/2');
-          expect(this.build.buildUrl).toBe('http://example.com/root/test-build/builds/2.json');
-          expect(this.build.buildStatus).toBe('passed');
+          expect(this.build.pageUrl).toBe('http://test.host/namespace1/project1/builds/1');
+          expect(this.build.buildUrl).toBe('http://test.host/namespace1/project1/builds/1.json');
+          expect(this.build.buildStatus).toBe('success');
           expect(this.build.buildStage).toBe('test');
-          expect(this.build.state).toBe('buildstate');
+          expect(this.build.state).toBe(INITIAL_BUILD_TRACE_STATE);
         });
 
         it('only shows the jobs matching the current stage', function () {
@@ -73,7 +80,7 @@
         it('displays the initial build trace', function () {
           expect($.ajax.calls.count()).toBe(1);
           const [{ url, dataType, success, context }] = $.ajax.calls.argsFor(0);
-          expect(url).toBe('http://example.com/root/test-build/builds/2.json');
+          expect(url).toBe('http://test.host/namespace1/project1/builds/1.json');
           expect(dataType).toBe('json');
           expect(success).toEqual(jasmine.any(Function));
 
@@ -95,7 +102,7 @@
           $('.js-build-options').data('buildStatus', 'running');
           this.build = new Build();
           spyOn(this.build, 'location')
-            .and.returnValue('http://example.com/root/test-build/builds/2');
+            .and.returnValue('http://test.host/namespace1/project1/builds/1');
         });
 
         it('updates the build trace on an interval', function () {
@@ -104,7 +111,7 @@
           expect($.ajax.calls.count()).toBe(2);
           let [{ url, dataType, success, context }] = $.ajax.calls.argsFor(1);
           expect(url).toBe(
-            'http://example.com/root/test-build/builds/2/trace.json?state=buildstate'
+            `http://test.host/namespace1/project1/builds/1/trace.json?state=${encodeURIComponent(INITIAL_BUILD_TRACE_STATE)}`
           );
           expect(dataType).toBe('json');
           expect(success).toEqual(jasmine.any(Function));
@@ -124,7 +131,7 @@
           expect($.ajax.calls.count()).toBe(3);
           [{ url, dataType, success, context }] = $.ajax.calls.argsFor(2);
           expect(url).toBe(
-            'http://example.com/root/test-build/builds/2/trace.json?state=newstate'
+            'http://test.host/namespace1/project1/builds/1/trace.json?state=newstate'
           );
           expect(dataType).toBe('json');
           expect(success).toEqual(jasmine.any(Function));
@@ -175,7 +182,7 @@
           });
 
           expect(Turbolinks.visit).toHaveBeenCalledWith(
-            'http://example.com/root/test-build/builds/2'
+            'http://test.host/namespace1/project1/builds/1'
           );
         });
       });
