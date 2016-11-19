@@ -10,6 +10,7 @@
 //= require turbolinks
 
 describe('Build', () => {
+  const BUILD_URL = `${gl.TEST_HOST}/namespace1/project1/builds/1`;
   // see spec/factories/ci/builds.rb
   const BUILD_TRACE = 'BUILD TRACE';
   // see lib/ci/ansi2html.rb
@@ -39,8 +40,8 @@ describe('Build', () => {
       });
 
       it('copies build options', function () {
-        expect(this.build.pageUrl).toBe('http://test.host/namespace1/project1/builds/1');
-        expect(this.build.buildUrl).toBe('http://test.host/namespace1/project1/builds/1.json');
+        expect(this.build.pageUrl).toBe(BUILD_URL);
+        expect(this.build.buildUrl).toBe(`${BUILD_URL}.json`);
         expect(this.build.buildStatus).toBe('success');
         expect(this.build.buildStage).toBe('test');
         expect(this.build.state).toBe(INITIAL_BUILD_TRACE_STATE);
@@ -79,7 +80,7 @@ describe('Build', () => {
       it('displays the initial build trace', function () {
         expect($.ajax.calls.count()).toBe(1);
         const [{ url, dataType, success, context }] = $.ajax.calls.argsFor(0);
-        expect(url).toBe('http://test.host/namespace1/project1/builds/1.json');
+        expect(url).toBe(`${BUILD_URL}.json`);
         expect(dataType).toBe('json');
         expect(success).toEqual(jasmine.any(Function));
 
@@ -100,8 +101,7 @@ describe('Build', () => {
       beforeEach(function () {
         $('.js-build-options').data('buildStatus', 'running');
         this.build = new Build();
-        spyOn(this.build, 'location')
-          .and.returnValue('http://test.host/namespace1/project1/builds/1');
+        spyOn(this.build, 'location').and.returnValue(BUILD_URL);
       });
 
       it('updates the build trace on an interval', function () {
@@ -110,7 +110,7 @@ describe('Build', () => {
         expect($.ajax.calls.count()).toBe(2);
         let [{ url, dataType, success, context }] = $.ajax.calls.argsFor(1);
         expect(url).toBe(
-          `http://test.host/namespace1/project1/builds/1/trace.json?state=${encodeURIComponent(INITIAL_BUILD_TRACE_STATE)}`
+          `${BUILD_URL}/trace.json?state=${encodeURIComponent(INITIAL_BUILD_TRACE_STATE)}`
         );
         expect(dataType).toBe('json');
         expect(success).toEqual(jasmine.any(Function));
@@ -129,9 +129,7 @@ describe('Build', () => {
 
         expect($.ajax.calls.count()).toBe(3);
         [{ url, dataType, success, context }] = $.ajax.calls.argsFor(2);
-        expect(url).toBe(
-          'http://test.host/namespace1/project1/builds/1/trace.json?state=newstate'
-        );
+        expect(url).toBe(`${BUILD_URL}/trace.json?state=newstate`);
         expect(dataType).toBe('json');
         expect(success).toEqual(jasmine.any(Function));
 
@@ -180,9 +178,7 @@ describe('Build', () => {
           append: true,
         });
 
-        expect(Turbolinks.visit).toHaveBeenCalledWith(
-          'http://test.host/namespace1/project1/builds/1'
-        );
+        expect(Turbolinks.visit).toHaveBeenCalledWith(BUILD_URL);
       });
     });
   });

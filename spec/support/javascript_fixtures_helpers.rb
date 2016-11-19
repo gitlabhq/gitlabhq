@@ -1,3 +1,4 @@
+require 'action_dispatch/testing/test_request'
 require 'fileutils'
 require 'gitlab/popen'
 
@@ -36,7 +37,8 @@ module JavaScriptFixturesHelpers
       fixture = doc.to_html
 
       # replace relative links
-      fixture.gsub!(%r{="/}, '="https://fixture.invalid/')
+      test_host = ActionDispatch::TestRequest::DEFAULT_ENV['HTTP_HOST']
+      fixture.gsub!(%r{="/}, "=\"http://#{test_host}/")
     end
 
     FileUtils.mkdir_p(File.dirname(fixture_file_name))
