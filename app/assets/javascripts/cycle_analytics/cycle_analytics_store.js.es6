@@ -25,6 +25,7 @@
 
       newData.stages.forEach((item) => {
         item.active = false;
+        item.isUserAllowed = true; // This should come from server
         item.component = `stage-${item.title.toLowerCase()}-component`;
       });
 

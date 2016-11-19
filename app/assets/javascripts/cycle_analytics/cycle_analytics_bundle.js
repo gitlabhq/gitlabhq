@@ -76,11 +76,17 @@ $(() => {
           });
       },
       selectDefaultStage() {
-        this.selectStage(this.state.stages.first());
+        const stage = this.state.stages.first();
+        this.selectStage(stage);
       },
       selectStage(stage) {
         if (this.isLoadingStage) return;
         if (this.currentStage === stage) return;
+
+        if (!stage.isUserAllowed) {
+          cycleAnalyticsStore.setActiveStage(stage);
+          return;
+        }
 
         this.isLoadingStage = true;
         cycleAnalyticsStore.setStageEvents([]);

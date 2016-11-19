@@ -247,7 +247,8 @@
         padding-left: 16px;
       }
 
-      .stage-empty {
+      .stage-empty,
+      .not-available {
         color: $gl-text-color-light;
       }
     }
@@ -410,22 +411,34 @@
     }
   }
 
-  .empty-stage {
+  .empty-stage,
+  .no-access-stage {
     text-align: center;
     width: 75%;
     margin: 0 auto;
     padding-top: 130px;
     color: $gl-text-color-light;
 
+    h4 {
+      color: $gl-text-color;
+    }
+  }
+
+  .empty-stage {
     .icon-no-data {
       height: 36px;
       width: 78px;
       display: inline-block;
       margin-bottom: 20px;
     }
+  }
 
-    h4 {
-      color: $gl-text-color;
+  .no-access-stage {
+    .icon-lock {
+      height: 36px;
+      width: 78px;
+      display: inline-block;
+      margin-bottom: 20px;
     }
   }
 }

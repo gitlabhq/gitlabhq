@@ -72,15 +72,21 @@
                 .stage-name
                   {{ stage.title }}
                 .stage-median
-                  %template{ "v-if" => "stage.value" }
-                    {{ stage.value }}
-                  %template{ "v-else" => true }
-                    %span.stage-empty
+                  %template{ "v-if" => "stage.isUserAllowed" }
+                    %span{ "v-if" => "stage.value" }
+                      {{ stage.value }}
+                    %span.stage-empty{ "v-else" => true }
                       No enough data
+                  %template{ "v-else" => true }
+                    %span.not-available
+                      Not available
           .section.stage-events
             %template{ "v-if" => "isLoadingStage" }
-              = icon("spinner spin", "v-show" => "isLoadingStage")
-            %template{ "v-if" => "isEmptyStage && !isLoadingStage" }
-              = render partial: "empty_stage"
-            %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
-              %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }
+              = icon("spinner spin")
+            %template{ "v-if" => "currentStage && !currentStage.isUserAllowed" }
+              = render partial: "no_access"
+            %template{ "v-else" => true }
+              %template{ "v-if" => "isEmptyStage && !isLoadingStage" }
+                = render partial: "empty_stage"
+              %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
+                %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }
