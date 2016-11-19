@@ -279,7 +279,7 @@ The trick is to use the merge/pull request with multiple commits when your work 
 The commit message should reflect your intention, not the contents of the commit.
 The contents of the commit can be easily seen anyway, the question is why you did it.
 An example of a good commit message is: "Combine templates to dry up the user views.".
-Some words that are bad commit messages because they don't contain munch information are: change, improve and refactor.
+Some words that are bad commit messages because they don't contain much information are: change, improve and refactor.
 The word fix or fixes is also a red flag, unless it comes after the commit sentence and references an issue number.
 To see more information about the formatting of commit messages please see this great [blog post by Tim Pope](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
