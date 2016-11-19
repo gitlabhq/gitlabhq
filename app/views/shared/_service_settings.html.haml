@@ -1,7 +1,7 @@
 = form_errors(@service)
 
 - if lookup_context.template_exists?('help', "projects/services/#{@service.to_param}", true)
-  = render "projects/services/#{@service.to_param}/help", subject: @service
+  = render "projects/services/#{@service.to_param}/help", subject: subject
 - elsif @service.help.present?
   .well
     = preserve do
