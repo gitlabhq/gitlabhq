@@ -10,7 +10,7 @@
 //= require turbolinks
 
 describe('Build', () => {
-  const BUILD_URL = `${gl.TEST_HOST}/namespace1/project1/builds/1`;
+  const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;
   // see spec/factories/ci/builds.rb
   const BUILD_TRACE = 'BUILD TRACE';
   // see lib/ci/ansi2html.rb

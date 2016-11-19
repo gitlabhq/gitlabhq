@@ -4,7 +4,8 @@ describe Projects::BuildsController, '(JavaScript fixtures)', type: :controller 
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }
-  let(:project) { create(:project_empty_repo) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
+  let(:project) { create(:project_empty_repo, namespace: namespace, path: 'builds-project') }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let!(:build_with_artifacts) { create(:ci_build, :success, :artifacts, :trace, pipeline: pipeline, stage: 'test', artifacts_expire_at: Time.now + 18.months) }
   let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline, stage: 'build') }

@@ -74,7 +74,7 @@
       it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe(gl.TEST_HOST + '/namespace3/project3/issues/1.json');
+          expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
           expect(req.data.issue.description).not.toBe(null);
         });
 
