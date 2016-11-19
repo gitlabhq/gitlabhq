@@ -13,16 +13,11 @@
       },
     },
 
-    methods: {
-      openConfirmDialog() {
-        return window.confirm('Are you sure you want to stop this environment?'); // eslint-disable-line
-      },
-    },
-
     template: `
-      <a v-on:click="openConfirmDialog"
+      <a
         class="btn stop-env-link"
         :href="stop_url"
+        data-confirm="Are you sure you want to stop this environment?"
         data-method="post"
         rel="nofollow">
         <i class="fa fa-stop stop-env-icon"></i>
