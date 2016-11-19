@@ -5,10 +5,18 @@ module Bitbucket
 
       def initialize(raw)
         super(raw)
+      end
 
-        if full_name && full_name.split('/').size == 2
-          @owner, @slug = full_name.split('/')
-        end
+      def owner_and_slug
+        @owner_and_slug ||= full_name.split('/', 2)
+      end
+
+      def owner
+        owner_and_slug.first
+      end
+
+      def slug
+        owner_and_slug.last
       end
 
       def clone_url(token = nil)
