@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
 
@@ -16,26 +17,25 @@
         contentType: 'application/json',
         data: {
           cycle_analytics: {
-            start_date: options.startDate
-          }
-        }
+            start_date: options.startDate,
+          },
+        },
       });
     }
 
     fetchStageData(options) {
-      let {
+      const {
         stage,
         startDate,
       } = options;
 
       return $.get(`${this.requestPath}/events/${stage.title.toLowerCase()}.json`, {
         cycle_analytics: {
-          start_date: options.startDate
-        }
+          start_date: startDate,
+        },
       });
     }
-  };
+  }
 
   global.cycleAnalytics.CycleAnalyticsService = CycleAnalyticsService;
-
 })(window.gl || (window.gl = {}));

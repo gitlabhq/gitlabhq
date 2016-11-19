@@ -216,7 +216,7 @@
         border-right-color: transparent;
         border-top-color: $border-color;
         border-bottom-color: $border-color;
-        box-shadow: inset 2px 0px 0px 0px $active-item-blue;
+        box-shadow: inset 2px 0 0 0 $active-item-blue;
 
         .stage-name {
           font-weight: 600;
@@ -279,7 +279,7 @@
   .stage-event-item {
     list-style-type: none;
     padding: 0 0 $gl-padding;
-    margin: 0 $gl-padding $gl-padding $gl-padding;
+    margin: 0 $gl-padding $gl-padding;
     border-bottom: solid 1px $gray-darker;
     @include clearfix;
 
@@ -288,7 +288,8 @@
       margin-bottom: 0;
     }
 
-    .item-details, .item-time {
+    .item-details,
+    .item-time {
       float: left;
     }
 
@@ -297,9 +298,11 @@
     }
 
     .item-title {
-      margin: 0 0 2px 0;
+      margin: 0 0 2px;
 
-      &.issue-title, &.commit-title, &.merge-merquest-title {
+      &.issue-title,
+      &.commit-title,
+      &.merge-merquest-title {
         max-width: 100%;
         display: block;
         @include text-overflow();
@@ -325,10 +328,11 @@
       }
     }
 
-    .issue-date, .build-date {
+    .issue-date,
+    .build-date {
       color: $gl-text-color;
     }
-    
+
     .issue-link,
     .commit-author-link,
     .issue-author-link {
@@ -346,7 +350,7 @@
         svg {
           float: left;
         }
-      } 
+      }
     }
 
     .merge-request-branch {
@@ -360,7 +364,7 @@
       }
     }
   }
-  
+
   // Custom Styles for stage items
   .item-build-component {
 
@@ -391,7 +395,7 @@
         line-height: 1.3;
         vertical-align: top;
       }
-      
+
       .short-sha {
         color: $gl-link-color;
         line-height: 1.3;
@@ -433,13 +437,11 @@
     display: flex;
     align-items: center;
   }
-  
-  .overview-text {
-  }
 
   .overview-image {
     text-align: right;
   }
+
   .overview-icon {
     svg {
       width: 365px;

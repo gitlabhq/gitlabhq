@@ -1,5 +1,5 @@
+/* eslint-disable no-param-reassign */
 ((global) => {
-
   global.cycleAnalytics = global.cycleAnalytics || {};
 
   global.cycleAnalytics.StageProductionComponent = Vue.extend({
@@ -40,7 +40,6 @@
           </li>
         </ul>
       </div>
-    `
+    `,
   });
-
 })(window.gl || (window.gl = {}));

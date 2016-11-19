@@ -25,6 +25,7 @@
     "Turbolinks": false,
     "window": false,
     "Vue": false,
-    "Flash": false
+    "Flash": false,
+    "Cookies": false
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
 
@@ -7,13 +8,13 @@
       stats: '',
       analytics: '',
       events: [],
-      stages:[],
+      stages: [],
     },
     setCycleAnalyticsData(data) {
       this.state = Object.assign(this.state, this.decorateData(data));
     },
     decorateData(data) {
-      let newData = {};
+      const newData = {};
 
       newData.stages = data.stats || [];
       newData.summary = data.summary || [];
@@ -38,7 +39,7 @@
       this.state.hasError = state;
     },
     deactivateAllStages() {
-      this.state.stages.forEach(stage => {
+      this.state.stages.forEach((stage) => {
         stage.active = false;
       });
     },
@@ -50,7 +51,7 @@
       this.state.events = this.decorateEvents(events);
     },
     decorateEvents(events) {
-      let newEvents = events;
+      const newEvents = events;
 
       newEvents.forEach((item) => {
         item.totalTime = item.total_time;
@@ -75,5 +76,4 @@
       return this.state.stages.find(stage => stage.active);
     },
   };
-
 })(window.gl || (window.gl = {}));
