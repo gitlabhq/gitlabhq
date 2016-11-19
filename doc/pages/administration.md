@@ -14,39 +14,6 @@ configuration.
 If you are looking for ways to upload your static content in GitLab Pages, you
 probably want to read the [user documentation](README.md).
 
-[ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
-[ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
-
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [The GitLab Pages daemon](#the-gitlab-pages-daemon)
-    - [The GitLab Pages daemon and the case of custom domains](#the-gitlab-pages-daemon-and-the-case-of-custom-domains)
-    - [Install the Pages daemon](#install-the-pages-daemon)
-- [Configuration](#configuration)
-    - [Configuration prerequisites](#configuration-prerequisites)
-    - [Configuration scenarios](#configuration-scenarios)
-    - [DNS configuration](#dns-configuration)
-- [Setting up GitLab Pages](#setting-up-gitlab-pages)
-    - [Custom domains with HTTPS support](#custom-domains-with-https-support)
-    - [Custom domains without HTTPS support](#custom-domains-without-https-support)
-    - [Wildcard HTTP domain without custom domains](#wildcard-http-domain-without-custom-domains)
-    - [Wildcard HTTPS domain without custom domains](#wildcard-https-domain-without-custom-domains)
-- [NGINX configuration](#nginx-configuration)
-    - [NGINX configuration files](#nginx-configuration-files)
-    - [NGINX configuration for custom domains](#nginx-configuration-for-custom-domains)
-    - [NGINX caveats](#nginx-caveats)
-- [Set maximum pages size](#set-maximum-pages-size)
-- [Change storage path](#change-storage-path)
-- [Backup](#backup)
-- [Security](#security)
-- [Changelog](#changelog)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## The GitLab Pages daemon
 
 Starting from GitLab EE 8.5, GitLab Pages make use of the [GitLab Pages daemon],
@@ -522,6 +489,8 @@ No new changes.
 
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
 [8-3-omnidocs]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8-3-stable-ee/doc/settings/pages.md
+[backup]: ../../raketasks/backup_restore.md
+[ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
+[ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
 [reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../../administration/restart_gitlab.md#installations-from-source
-[backup]: ../../raketasks/backup_restore.md
