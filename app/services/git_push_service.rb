@@ -49,18 +49,11 @@ class GitPushService < BaseService
       update_gitattributes if is_default_branch?
     end
 
-<<<<<<< HEAD
     if current_application_settings.elasticsearch_indexing? && is_default_branch?
       ElasticCommitIndexerWorker.perform_async(@project.id, params[:oldrev], params[:newrev])
     end
 
-    # Update merge requests that may be affected by this push. A new branch
-    # could cause the last commit of a merge request to change.
-    update_merge_requests
-
-=======
     execute_related_hooks
->>>>>>> ce/master
     perform_housekeeping
   end
 
@@ -70,18 +63,13 @@ class GitPushService < BaseService
 
   protected
 
-<<<<<<< HEAD
-  def update_merge_requests
-    UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
-    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
-=======
   def execute_related_hooks
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     #
     UpdateMergeRequestsWorker
       .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
->>>>>>> ce/master
+    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)

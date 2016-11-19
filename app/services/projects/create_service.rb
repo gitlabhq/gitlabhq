@@ -107,16 +107,14 @@ module Projects
         @project.team << [current_user, :master, current_user]
       end
 
-<<<<<<< HEAD
       predefined_push_rule = PushRule.find_by(is_sample: true)
 
       if predefined_push_rule
         push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
         project.push_rule = push_rule
       end
-=======
+
       @project.group.refresh_members_authorized_projects if @project.group
->>>>>>> ce/master
     end
 
     def skip_wiki?

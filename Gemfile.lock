@@ -928,11 +928,7 @@ DEPENDENCIES
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.3.16)
-<<<<<<< HEAD
-  nested_form (~> 0.3.2)
   net-ldap
-=======
->>>>>>> ce/master
   net-ssh (~> 3.0.1)
   newrelic_rpm (~> 3.16)
   nokogiri (~> 1.6.7, >= 1.6.7.2)

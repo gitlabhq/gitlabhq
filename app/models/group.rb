@@ -225,12 +225,11 @@ class Group < Namespace
     SystemHooksService.new
   end
 
-<<<<<<< HEAD
   def first_non_empty_project
     projects.detect{ |project| !project.empty_repo? }
-=======
+  end
+
   def refresh_members_authorized_projects
     UserProjectAccessChangedService.new(users.pluck(:id)).execute
->>>>>>> ce/master
   end
 end

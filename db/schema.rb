@@ -1484,22 +1484,16 @@ ActiveRecord::Schema.define(version: 20161117114805) do
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
-<<<<<<< HEAD
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
-=======
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
->>>>>>> ce/master
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
-<<<<<<< HEAD
   add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "remote_mirrors", "projects"
-=======
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
->>>>>>> ce/master
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_activities", "users", on_delete: :cascade

@@ -59,12 +59,8 @@ The following table depicts the various user permission levels in a project.
 | Manage runners                        |         |            |             | ✓        | ✓      |
 | Manage build triggers                 |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
-<<<<<<< HEAD
 | Manage pages                          |         |            |             | ✓        | ✓      |
 | Manage pages domains and certificates |         |            |             | ✓        | ✓      |
-| Delete environments                   |         |            |             | ✓        | ✓      |
-=======
->>>>>>> ce/master
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |

@@ -211,9 +211,6 @@ award_emoji:
 - user
 priorities:
 - label
-<<<<<<< HEAD
 timelogs:
 - trackable
 - user
-=======
->>>>>>> ce/master

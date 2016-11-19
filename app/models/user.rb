@@ -71,15 +71,10 @@ class User < ActiveRecord::Base
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
-<<<<<<< HEAD
-  has_many :users_star_projects,      dependent: :destroy
-  has_many :starred_projects,         through: :users_star_projects, source: :project
-=======
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
   has_many :project_authorizations, dependent: :destroy
   has_many :authorized_projects, through: :project_authorizations, source: :project
->>>>>>> ce/master
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
