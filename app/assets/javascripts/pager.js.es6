@@ -1,7 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, object-shorthand, quotes, no-undef, prefer-template, wrap-iife, comma-dangle, no-return-assign, no-else-return, consistent-return, no-unused-vars, padded-blocks, max-len */
-(function() {
-  this.Pager = {
-    init: function(limit, preload, disable, callback) {
+(() => {
+  const Pager = {
+    init(limit, preload, disable, callback) {
       this.limit = limit != null ? limit : 0;
       this.disable = disable != null ? disable : false;
       this.callback = callback != null ? callback : $.noop;
@@ -12,53 +11,46 @@
       } else {
         this.offset = this.limit;
       }
-      return this.initLoadMore();
+      this.initLoadMore();
     },
-    getOld: function() {
+    getOld() {
       this.loading.show();
-      return $.ajax({
-        type: "GET",
-        url: $(".content_list").data('href') || location.href,
-        data: "limit=" + this.limit + "&offset=" + this.offset,
-        complete: (function(_this) {
-          return function() {
-            return _this.loading.hide();
-          };
-        })(this),
-        success: function(data) {
+      $.ajax({
+        type: 'GET',
+        url: $('.content_list').data('href') || window.location.href,
+        data: `limit=${this.limit}&offset=${this.offset}`,
+        complete: () => this.loading.hide(),
+        success: (data) => {
           Pager.append(data.count, data.html);
-          return Pager.callback();
+          Pager.callback();
         },
-        dataType: "json"
+        dataType: 'json',
       });
     },
-    append: function(count, html) {
-      $(".content_list").append(html);
+    append(count, html) {
+      $('.content_list').append(html);
       if (count > 0) {
-        return this.offset += count;
+        this.offset += count;
       } else {
-        return this.disable = true;
+        this.disable = true;
       }
     },
-    initLoadMore: function() {
+    initLoadMore() {
       $(document).unbind('scroll');
-      return $(document).endlessScroll({
+      $(document).endlessScroll({
         bottomPixels: 400,
         fireDelay: 1000,
         fireOnce: true,
-        ceaseFire: function() {
-          return Pager.disable;
+        ceaseFire: () => Pager.disable !== true,
+        callback: () => {
+          if (!this.loading.is(':visible')) {
+            this.loading.show();
+            Pager.getOld();
+          }
         },
-        callback: (function(_this) {
-          return function(i) {
-            if (!_this.loading.is(':visible')) {
-              _this.loading.show();
-              return Pager.getOld();
-            }
-          };
-        })(this)
       });
-    }
+    },
   };
 
-}).call(this);
+  window.Pager = Pager;
+})();
