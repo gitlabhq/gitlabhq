@@ -1,12 +1,5 @@
 # Object state models
 
-## Contents
-
-* [Diagrams](#diagrams)
-* [Legend](#legend)
-* [Issue](#issue)
-* [Merge request](#merge-request)
-
 ## Diagrams
 
 [GitLab object state models](https://drive.google.com/drive/u/3/folders/0B5tDlHAM4iZINmpvYlJXcDVqMGc)
