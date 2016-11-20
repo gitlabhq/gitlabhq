@@ -7,12 +7,12 @@ module Bitbucket
     def initialize(options = {})
       @api_version = options.fetch(:api_version, DEFAULT_API_VERSION)
       @base_uri    = options.fetch(:base_uri, DEFAULT_BASE_URI)
-      @query       = options.fetch(:query, DEFAULT_QUERY)
+      @default_query = options.fetch(:query, DEFAULT_QUERY)
 
-      @token         = options.fetch(:token)
-      @expires_at    = options.fetch(:expires_at)
-      @expires_in    = options.fetch(:expires_in)
-      @refresh_token = options.fetch(:refresh_token)
+      @token         = options[:token]
+      @expires_at    = options[:expires_at]
+      @expires_in    = options[:expires_in]
+      @refresh_token = options[:refresh_token]
     end
 
     def client
@@ -24,13 +24,13 @@ module Bitbucket
     end
 
     def query(params = {})
-      @query.merge!(params)
+      @default_query.merge!(params)
     end
 
-    def get(path, query = {})
+    def get(path, extra_query = {})
       refresh! if expired?
 
-      response = connection.get(build_url(path), params: @query.merge(query))
+      response = connection.get(build_url(path), params: @default_query.merge(extra_query))
       response.parsed
     end
 
