@@ -72,7 +72,7 @@ module Gitlab
                description: 'Environment configuration for this job.'
 
           entry :coverage, Entry::Coverage,
-               description: 'Coverage scanning regex configuration for this job.'
+               description: 'Coverage configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
