@@ -20,10 +20,17 @@
         type: 'GET',
         url: $('.content_list').data('href') || window.location.href,
         data: `limit=${this.limit}&offset=${this.offset}`,
-        complete: () => this.loading.hide(),
+        error: () => this.loading.hide(),
         success: (data) => {
-          Pager.append(data.count, data.html);
-          Pager.callback();
+          this.append(data.count, data.html);
+          this.callback();
+
+          // keep loading until we've filled the viewport height
+          if (!this.isScrollable()) {
+            this.getOld();
+          } else {
+            this.loading.hide();
+          }
         },
         dataType: 'json',
       });
@@ -38,17 +45,21 @@
       }
     },
 
+    isScrollable() {
+      return $(document).height() > $(window).height() + $(window).scrollTop() + 400;
+    },
+
     initLoadMore() {
       $(document).unbind('scroll');
       $(document).endlessScroll({
         bottomPixels: 400,
         fireDelay: 1000,
         fireOnce: true,
-        ceaseFire: () => Pager.disable !== true,
+        ceaseFire: () => this.disable === true,
         callback: () => {
           if (!this.loading.is(':visible')) {
             this.loading.show();
-            Pager.getOld();
+            this.getOld();
           }
         },
       });
