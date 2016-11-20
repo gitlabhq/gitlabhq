@@ -1,9 +1,9 @@
 (() => {
   const Pager = {
-    init(limit, preload, disable, callback) {
-      this.limit = limit != null ? limit : 0;
-      this.disable = disable != null ? disable : false;
-      this.callback = callback != null ? callback : $.noop;
+    init(limit = 0, preload = false, disable = false, callback = $.noop) {
+      this.limit = limit;
+      this.disable = disable;
+      this.callback = callback;
       this.loading = $('.loading').first();
       if (preload) {
         this.offset = 0;
@@ -13,6 +13,7 @@
       }
       this.initLoadMore();
     },
+
     getOld() {
       this.loading.show();
       $.ajax({
@@ -27,6 +28,7 @@
         dataType: 'json',
       });
     },
+
     append(count, html) {
       $('.content_list').append(html);
       if (count > 0) {
@@ -35,6 +37,7 @@
         this.disable = true;
       }
     },
+
     initLoadMore() {
       $(document).unbind('scroll');
       $(document).endlessScroll({
