@@ -58,28 +58,38 @@ describe Ci::API::API do
           expect { register_builds }.to change { runner.reload.contacted_at }
         end
 
-        context 'when registry is enabled' do
-          before do
-            stub_container_registry_config(enabled: true, host_port: 'registry.example.com:5005')
+        context 'registry credentials' do
+          let(:registry_credentials) do
+            { 'type' => 'docker-registry',
+              'url' => 'registry.example.com:5005',
+              'username' => 'gitlab-ci-token',
+              'password' => build.token }
           end
 
-          it 'sends registry_url key' do
-            register_builds info: { platform: :darwin }
+          context 'when registry is enabled' do
+            before do
+              stub_container_registry_config(enabled: true, host_port: 'registry.example.com:5005')
+            end
 
-            expect(json_response).to have_key('registry_url')
-            expect(json_response['registry_url']).to eq("registry.example.com:5005")
+            it 'sends registry credentials key' do
+              register_builds info: { platform: :darwin }
+
+              expect(json_response).to have_key('credentials')
+              expect(json_response['credentials']).to include(registry_credentials)
+            end
           end
-        end
 
-        context 'when registry is disabled' do
-          before do
-            stub_container_registry_config(enabled: false, host_port: 'registry.example.com:5005')
-          end
+          context 'when registry is disabled' do
+            before do
+              stub_container_registry_config(enabled: false, host_port: 'registry.example.com:5005')
+            end
 
-          it 'does not send registry_url key' do
-            register_builds info: { platform: :darwin }
+            it 'does not send registry credentials' do
+              register_builds info: { platform: :darwin }
 
-            expect(json_response).not_to have_key('registry_url')
+              expect(json_response).to have_key('credentials')
+              expect(json_response['credentials']).not_to include(registry_credentials)
+            end
           end
         end
       end
