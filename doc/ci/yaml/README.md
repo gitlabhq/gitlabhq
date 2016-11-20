@@ -76,6 +76,7 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | after_script  | no | Define commands that run after each job's script |
 | variables     | no | Define build variables |
 | cache         | no | Define list of files that should be cached between subsequent runs |
+| coverage      | no | Define coverage settings for all jobs |
 
 ### image and services
 
@@ -278,6 +279,33 @@ cache:
   untracked: true
 ```
 
+### coverage
+
+`coverage` allows you to configure how coverage will be filtered out from the
+build outputs. Setting this up globally will make all the jobs to use this
+setting for output filtering and extracting the coverage information from your
+builds.
+
+#### coverage:output_filter
+
+For now, there is only the `output_filter` directive expected to be inside the
+`coverage` entry. And it is expected to be a regular expression.
+
+So, in the end, you're going to have something like the following:
+
+```yaml
+coverage:
+  output_filter: /\(\d+\.\d+\) covered\./
+```
+
+It's worth to keep in mind that the surrounding `/` is optional. So, the above
+example is the same as the following:
+
+```yaml
+coverage:
+  output_filter: \(\d+\.\d+\) covered\.
+```
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -319,6 +347,8 @@ job_name:
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
 | environment   | no | Defines a name of environment to which deployment is done by this build |
+| environment   | no | Defines a name of environment to which deployment is done by this build |
+| coverage      | no | Define coverage settings for a given job |
 
 ### script
 
@@ -992,6 +1022,27 @@ job:
   after_script:
   - execute this after my script
 ```
+
+### job coverage
+
+This entry is pretty much the same as described in the global context in
+[`coverage`](#coverage). The only difference is that, by setting it inside
+the job level, whatever is set in there will take precedence over what has
+been defined in the global level. A quick example of one overwritting the
+other would be:
+
+```yaml
+coverage:
+  output_filter: /\(\d+\.\d+\) covered\./
+
+job1:
+  coverage:
+    output_filter: /Code coverage: \d+\.\d+/
+```
+
+In the example above, considering the context of the job `job1`, the coverage
+regex that would be used is `/Code coverage: \d+\.\d+/` instead of
+`/\(\d+\.\d+\) covered\./`.
 
 ## Git Strategy
 
