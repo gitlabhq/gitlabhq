@@ -26,7 +26,7 @@
           this.callback();
 
           // keep loading until we've filled the viewport height
-          if (!this.isScrollable()) {
+          if (data.count > 0 && !this.isScrollable()) {
             this.getOld();
           } else {
             this.loading.hide();
