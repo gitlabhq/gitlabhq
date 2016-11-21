@@ -353,7 +353,7 @@ module API
         success Entities::UserFull
       end
       get do
-        present current_user, with: Entities::UserFull
+        present current_user, with: Entities::UserFull, sudo_identifier: sudo_identifier
       end
 
       desc "Get the currently authenticated user's SSH keys" do
