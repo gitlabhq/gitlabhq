@@ -1,42 +1,130 @@
-# Mattermost Commands
+# Mattermost slash commands
+
+> Introduced in GitLab 8.14
 
 Mattermost commands give users an extra interface to perform common operations
 from the chat environment. This allows one to, for example, create an issue as
 soon as the idea was discussed in Mattermost.
 
+## Prerequisites
+
+Mattermost 3.4 and up is required.
+
+If you have the Omnibus GitLab package installed, Mattermost is already bundled
+in it. All you have to do is configure it. Read more in the
+[Omnibus GitLab Mattermost documentation][omnimatdocs].
+
 ## Configuration
 
-### On Mattermost
+The configuration consists of two parts. First you need to enable the slash
+commands in Mattermost and then enable the service in GitLab.
 
-On Mattermost, an administrator has to enable custom slash commands. To do this,
-log on, and go to the system console.
 
-Click **Custom integrations**, and enable the custom slash commands and don't
-forget to save your settings.
+### Step 1. Enable custom slash commands in Mattermost
 
-![Enable custom slash commands](img/mattermost_enable_custom_commands.png)
+The first thing to do in Mattermost is to enable the custom slash commands from
+the administrator console.
 
-Now go back to your team page, and go the the configuration page for a new
-slash command.
+1. Log in with an account that has admin privileges and navigate to the system
+   console.
 
-**Integrations** > **Slash Command** > **Add Slash Command**
+    ![Mattermost go to console](img/mattermost_goto_console.png)
 
-### On GitLab
+    ---
 
-On the project you want to configure the slash commands for, go to the
-Mattermost Command service. Under settings > **Project Services**.
+1. Click **Custom integrations** and set **Enable Custom Slash Commands** to
+   true.
 
-A screen will appear with all the values you can copy to the Mattermost page you
-have just opened.
+    ![Mattermost console](img/mattermost_console_integrations.png)
 
-![Mattermost setup instructions](img/mattermost_config_help.png)
+    ---
 
-## Usage
+1. Click **Save** at the bottom to save the changes.
 
-A users first interaction with the newly created slash commands will trigger an
-authorisation process. This process connects your Mattermost user with your
-GitLab user.
+### Step 2. Create a new custom command in Mattermost
 
-After these steps are performed, you can start interacting with GitLab. Maybe
-start with `/your-trigger issue show 1` and see what your first issue was on
-this project!
+Now that you have enabled the custom slash commands:
+
+1. Back to your team page settings, you should see the **Integrations** option.
+
+    ![Mattermost team integrations](img/mattermost_team_integrations.png)
+
+    ---
+
+1. Go to the **Slash Command** integration and add a new one by clicking the
+   **Add Slash Command** button.
+
+    ![Mattermost add command](img/mattermost_add_slash_command.png)
+
+    ---
+
+1. Fill in the options for the custom command.
+
+    ![Mattermost add command configuration](img/mattermost_slash_command_configuration.png)
+
+    > **Note:**
+    When configuring the GitLab Mattermost command service in the next step,
+    you will be presented with some predefined values to paste into the
+    Mattermost slash command settings.
+
+1. After you setup all the values, copy the token (we will use it below) and
+   click **Done**.
+
+>
+[**➔ Read more on Mattermost slash commands**][mmslashdocs].
+
+### Step 3. Configure GitLab
+
+1. Go to your project's settings **Services ➔ Mattermost command**. A screen
+   will appear with all the values you can copy to the Mattermost page in the
+   previous step.
+
+    ![Mattermost setup instructions](img/mattermost_config_help.png)
+
+1. Paste the Mattermost token you copied when setting up the Mattermost slash
+   command and check the **Active** checkbox.
+1. Click **Save changes** for the changes to take effect.
+
+## Authorizing Mattermost to interact with GitLab
+
+The first time a user will interact with the newly created slash commands,
+Mattermost will trigger an authorization process.
+
+![Mattermost bot authorize](img/mattermost_bot_auth.png)
+
+This will connect connect your Mattermost user with your GitLab user. You can
+see all authorized chat accounts in your profile's page under **Chat**.
+
+When the authorization process is complete, you can start interacting with
+GitLab using the Mattermost commands.
+
+## Available slash commands
+
+The available slash commands so far are:
+
+- `/<trigger> issue create <title>\n<description>` - Create a new issue to the
+  project that `<trigger>` is tied to.
+- `/<trigger> issue show <issue-number>` - Show the issue with ID `<issue-number>`
+  from the project that `<trigger>` is tied to.
+- `/<trigger> deploy <environment> to <environment>` - Start the CI job that
+  deploys from an environment to another, for example `staging` to `production`.
+  CI must be properly configured.
+
+If you enabled autocomplete when you created the Mattermost command, you can
+use the autocomplete hint to see the available commands that can interact
+with GitLab. If for example the autocomplete hint was set to `help` and the
+command trigger word to `my-project`, then to see all available command type:
+
+```
+/my-project help
+```
+
+![Mattermost bot available commands](img/mattermost_bot_available_commands.png)
+
+## Permissions
+
+The permissions to run the [available commands](#available-commands) derive from
+the [permissions you have on the project](../user/permissions.md#project).
+
+[omnimatdocs]: https://docs.gitlab.com/omnibus/gitlab-mattermost/
+[mmslashdocs]: https://docs.mattermost.com/developer/slash-commands.html
