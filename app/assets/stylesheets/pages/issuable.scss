@@ -494,4 +494,17 @@
       color: $btn-white-active;
     }
   }
+
+  .help-state-toggle-enter-active {
+    transition: all .8s ease;
+  }
+
+  .help-state-toggle-leave-active {
+    transition: all .5s ease;
+  }
+
+  .help-state-toggle-enter,
+  .help-state-toggle-leave-active {
+    opacity: 0;
+  }
 }

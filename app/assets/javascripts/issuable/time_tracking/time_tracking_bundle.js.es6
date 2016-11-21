@@ -1,6 +1,6 @@
 /* eslint-disable */
 //= require vue
-//= require issuable_time_tracker
+//= require_directory ./components
 //= require smart_interval
 //= require subbable_resource
 
@@ -29,15 +29,6 @@
               url: gl.IssuableResource.endpoint,
             });
           },
-          initPolling() {
-            return new gl.SmartInterval({
-              callback: this.fetchIssuable,
-              startingInterval: 1000,
-              maxInterval: 10000,
-              incrementByFactorOf: 10,
-              lazyStart: false,
-            });
-          },
           updateState(data) {
             this.issuable = data;
           },
@@ -59,7 +50,6 @@
           this.fetchIssuable();
         },
         mounted() {
-          this.initPolling();
           this.subscribeToUpdates();
           this.listenForSlashCommands();
         },
