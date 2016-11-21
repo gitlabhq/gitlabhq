@@ -3,7 +3,7 @@ module Gitlab
     class Config
       module Entry
         ##
-        # Entry that represents a Regular Expression.
+        # Entry that represents Coverage settings.
         #
         class Coverage < Node
           include Validatable
