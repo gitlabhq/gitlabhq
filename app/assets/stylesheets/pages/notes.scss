@@ -43,11 +43,24 @@ ul.notes {
     }
 
     .system-note-message {
-      text-transform: lowercase;
+      display: inline-block;
+
+      &::first-letter {
+        text-transform: lowercase;
+      }
 
       a {
         color: $gl-link-color;
         text-decoration: none;
+      }
+
+      p {
+        display: inline-block;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
       }
     }
 
@@ -62,6 +75,11 @@ ul.notes {
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
       }
 
       .note-text {
@@ -85,6 +103,16 @@ ul.notes {
 
           p:first-child {
             display: none;
+          }
+
+          p:last-child {
+            a {
+              color: $gl-text-color;
+
+              &:hover {
+                color: $gl-link-color;
+              }
+            }
           }
 
           &::after {
@@ -187,11 +215,6 @@ ul.notes {
     .note-header {
       padding-bottom: 3px;
       padding-right: 20px;
-
-      p {
-        display: inline;
-        margin: 0;
-      }
 
       @media (min-width: $screen-sm-min) {
         padding-right: 0;
