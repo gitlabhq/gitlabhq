@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 feature 'Only allow merge requests to be merged if the build succeeds', feature: true do
-  let(:project)       { create(:project, :public) }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: project) }
+  let(:merge_request) { create(:merge_request_with_diffs) }
+  let(:project)       { merge_request.target_project }
 
   before do
     login_as merge_request.author
@@ -19,7 +19,13 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
   end
 
   context 'when project has CI enabled' do
-    let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch) }
+    given!(:pipeline) do
+      create(:ci_empty_pipeline,
+      project: project,
+      sha: merge_request.diff_head_sha,
+      ref: merge_request.source_branch,
+      status: status)
+    end
 
     context 'when merge requests can only be merged if the build succeeds' do
       before do
@@ -27,7 +33,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI is running' do
-        before { pipeline.update_column(:status, :running) }
+        given(:status) { :running }
 
         it 'does not allow to merge immediately' do
           visit_merge_request(merge_request)
@@ -38,7 +44,18 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI failed' do
-        before { pipeline.update_column(:status, :failed) }
+        given(:status) { :failed }
+
+        it 'does not allow MR to be merged' do
+          visit_merge_request(merge_request)
+
+          expect(page).not_to have_button 'Accept Merge Request'
+          expect(page).to have_content('Please retry the build or push a new commit to fix the failure.')
+        end
+      end
+
+      context 'when CI canceled' do
+        given(:status) { :canceled }
 
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
@@ -49,7 +66,17 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI succeeded' do
-        before { pipeline.update_column(:status, :success) }
+        given(:status) { :success }
+
+        it 'allows MR to be merged' do
+          visit_merge_request(merge_request)
+
+          expect(page).to have_button 'Accept Merge Request'
+        end
+      end
+
+      context 'when CI skipped' do
+        given(:status) { :skipped }
 
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
@@ -65,7 +92,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI is running' do
-        before { pipeline.update_column(:status, :running) }
+        given(:status) { :running }
 
         it 'allows MR to be merged immediately', js: true do
           visit_merge_request(merge_request)
@@ -78,7 +105,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI failed' do
-        before { pipeline.update_column(:status, :failed) }
+        given(:status) { :failed }
 
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
@@ -88,7 +115,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       end
 
       context 'when CI succeeded' do
-        before { pipeline.update_column(:status, :success) }
+        given(:status) { :success }
 
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)

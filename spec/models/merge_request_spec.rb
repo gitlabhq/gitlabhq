@@ -1070,11 +1070,29 @@ describe MergeRequest, models: true do
     context 'when it is only allowed to merge when build is green' do
       context 'and a failed pipeline is associated' do
         before do
-          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          pipeline.update(status: 'failed')
           allow(subject).to receive(:pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_falsey }
+      end
+
+      context 'and a successful pipeline is associated' do
+        before do
+          pipeline.update(status: 'success')
+          allow(subject).to receive(:pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
+      context 'and a skipped pipeline is associated' do
+        before do
+          pipeline.update(status: 'skipped')
+          allow(subject).to receive(:pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
 
       context 'when no pipeline is associated' do

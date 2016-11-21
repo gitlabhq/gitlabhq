@@ -709,7 +709,7 @@ class MergeRequest < ActiveRecord::Base
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_build_succeeds?
 
-    !pipeline || pipeline.success?
+    !pipeline || pipeline.success? || pipeline.skipped?
   end
 
   def environments
