@@ -536,7 +536,7 @@ describe SystemNoteService, services: true do
     let(:project)         { create(:jira_project) }
     let(:author)          { create(:user) }
     let(:issue)           { create(:issue, project: project) }
-    let(:mergereq)        { create(:merge_request, :simple, target_project: project, source_project: project) }
+    let(:merge_request)        { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:jira_issue)      { ExternalIssue.new("JIRA-1", project)}
     let(:jira_tracker)    { project.jira_service }
     let(:commit)          { project.commit }
@@ -545,7 +545,31 @@ describe SystemNoteService, services: true do
 
     before { stub_jira_urls(jira_issue.id) }
 
-    context 'in issue' do
+    noteable_types = ["merge_requests", "commit"]
+
+    noteable_types.each do |type|
+      context "when noteable is a #{type}" do
+        it "blocks cross reference when #{type.underscore}_events is false" do
+          jira_tracker.update("#{type}_events" => false)
+
+          noteable = type == "commit" ? commit : merge_request
+          result = described_class.cross_reference(jira_issue, noteable, author)
+
+          expect(result).to eq("Events for #{noteable.class.to_s.underscore.humanize.pluralize.downcase} are disabled.")
+        end
+
+        it "blocks cross reference when #{type.underscore}_events is true" do
+          jira_tracker.update("#{type}_events" => true)
+
+          noteable = type == "commit" ? commit : merge_request
+          result = described_class.cross_reference(jira_issue, noteable, author)
+
+          expect(result).to eq(success_message)
+        end
+      end
+    end
+
+    context 'in JIRA issue tracker' do
       before { jira_service_settings }
 
       describe "new reference" do
