@@ -74,7 +74,7 @@ describe Gitlab::ChatCommands::Command, service: true do
         end
 
         it 'returns action' do
-          expect(subject[:text]).to include(manual.name)
+          expect(subject[:text]).to include('Deployment from staging to production started')
           expect(subject[:response_type]).to be(:in_channel)
         end
 
