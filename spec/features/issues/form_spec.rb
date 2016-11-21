@@ -44,6 +44,8 @@ describe 'New/edit issue', feature: true, js: true do
       page.within '.dropdown-menu-labels' do
         click_link label.title
         click_link label2.title
+
+        find('.dropdown-menu-close').click
       end
       page.within '.js-label-select' do
         expect(page).to have_content label.title
