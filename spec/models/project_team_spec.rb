@@ -118,7 +118,7 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group) }
-      let(:project) { create(:empty_project, group: group) }
+      let!(:project) { create(:empty_project, group: group) }
 
       it 'returns project members' do
         group_member = create(:group_member, group: group)

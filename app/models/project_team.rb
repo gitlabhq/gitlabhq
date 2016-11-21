@@ -80,19 +80,19 @@ class ProjectTeam
   alias_method :users, :members
 
   def guests
-    @guests ||= fetch_members(:guests)
+    @guests ||= fetch_members(Gitlab::Access::GUEST)
   end
 
   def reporters
-    @reporters ||= fetch_members(:reporters)
+    @reporters ||= fetch_members(Gitlab::Access::REPORTER)
   end
 
   def developers
-    @developers ||= fetch_members(:developers)
+    @developers ||= fetch_members(Gitlab::Access::DEVELOPER)
   end
 
   def masters
-    @masters ||= fetch_members(:masters)
+    @masters ||= fetch_members(Gitlab::Access::MASTER)
   end
 
   def import(source_project, current_user = nil)
@@ -185,59 +185,13 @@ class ProjectTeam
   private
 
   def fetch_members(level = nil)
-    project_members = project.members
-    group_members = group ? group.members : []
+    members = project.authorized_users
+    members = members.where(project_authorizations: { access_level: level }) if level
 
-    if level
-      project_members = project_members.public_send(level)
-      group_members = group_members.public_send(level) if group
-    end
-
-    user_ids = project_members.pluck(:user_id)
-
-    invited_members = fetch_invited_members(level)
-    user_ids.push(*invited_members.map(&:user_id)) if invited_members.any?
-
-    user_ids.push(*group_members.pluck(:user_id)) if group
-
-    User.where(id: user_ids)
+    members
   end
 
   def group
     project.group
-  end
-
-  def project_shared_with_group?
-    project.invited_groups.any? && project.allowed_to_share_with_group?
-  end
-
-  def fetch_invited_members(level = nil)
-    invited_members = []
-
-    return invited_members unless project_shared_with_group?
-
-    project.project_group_links.includes(group: [:group_members]).each do |link|
-      invited_group_members = link.group.members
-
-      if level
-        numeric_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
-
-        # If we're asked for a level that's higher than the group's access,
-        # there's nothing left to do
-        next if numeric_level > link.group_access
-
-        # Make sure we include everyone _above_ the requested level as well
-        invited_group_members =
-          if numeric_level == link.group_access
-            invited_group_members.where("access_level >= ?", link.group_access)
-          else
-            invited_group_members.public_send(level)
-          end
-      end
-
-      invited_members << invited_group_members
-    end
-
-    invited_members.flatten.compact
   end
 end
