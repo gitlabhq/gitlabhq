@@ -52,12 +52,13 @@ describe Gitlab::ChatCommands::Deploy, service: true do
 
         context 'when teardown action exists' do
           let!(:teardown) do
-            create(:ci_build, :manual, :teardown_environment, project: project, pipeline: build.pipeline,
+            create(:ci_build, :manual, :teardown_environment,
+                   project: project, pipeline: build.pipeline,
                    name: 'teardown', environment: 'production')
           end
 
           it 'returns error' do
-            expect(subject).to eq(action)
+            expect(subject).to eq(manual1)
           end
         end
       end

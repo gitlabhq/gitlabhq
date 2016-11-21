@@ -30,9 +30,9 @@ module Mattermost
         if subject.is_a?(Gitlab::ChatCommands::Result)
           show_result(subject)
         elsif subject.respond_to?(:count)
-          if subject.try(:many?)
+          if subject.many?
             multiple_resources(subject)
-          elsif subject.count == 0
+          elsif subject.none?
             not_found
           else
             single_resource(subject)
