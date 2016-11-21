@@ -22,6 +22,27 @@ module API
         pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
         present paginate(pipelines), with: Entities::Pipeline
       end
+      
+      desc 'Create a new pipeline' do
+        detail 'This feature was introduced in GitLab 8.14'
+        success Entities::Pipeline
+      end
+      params do
+        requires :ref, type: String,  desc: 'Reference'
+      end
+      post ':id/pipeline' do
+        authorize! :create_pipeline, user_project
+
+        new_pipeline = Ci::CreatePipelineService.new(user_project,
+                                                     current_user,
+                                                     declared_params(include_missing: false))
+                           .execute(ignore_skip_ci: true, save_on_errors: false)
+        if new_pipeline.persisted?
+          present new_pipeline, with: Entities::Pipeline
+        else
+          render_validation_error!(new_pipeline)
+        end
+      end
 
       desc 'Gets a specific pipeline for the project' do
         detail 'This feature was introduced in GitLab 8.11'

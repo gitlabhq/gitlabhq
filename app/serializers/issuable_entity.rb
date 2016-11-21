@@ -13,8 +13,11 @@ class IssuableEntity < Grape::Entity
   expose :created_at
   expose :updated_at
   expose :deleted_at
+<<<<<<< HEAD
   expose :time_estimate
   expose :total_time_spent
   expose :human_time_estimate
   expose :human_total_time_spent
+=======
+>>>>>>> ce/master
 end

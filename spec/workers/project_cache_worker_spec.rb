@@ -2,53 +2,58 @@ require 'spec_helper'
 
 describe ProjectCacheWorker do
   let(:project) { create(:project) }
-
-  subject { described_class.new }
-
-  describe '.perform_async' do
-    it 'schedules the job when no lease exists' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).
-        and_return(false)
-
-      expect_any_instance_of(described_class).to receive(:perform)
-
-      described_class.perform_async(project.id)
-    end
-
-    it 'does not schedule the job when a lease exists' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).
-        and_return(true)
-
-      expect_any_instance_of(described_class).not_to receive(:perform)
-
-      described_class.perform_async(project.id)
-    end
-  end
+  let(:worker) { described_class.new }
 
   describe '#perform' do
-    context 'when an exclusive lease can be obtained' do
-      before do
-        allow(subject).to receive(:try_obtain_lease_for).with(project.id).
-          and_return(true)
+    before do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+        and_return(true)
+    end
+
+    context 'with a non-existing project' do
+      it 'does nothing' do
+        expect(worker).not_to receive(:update_repository_size)
+
+        worker.perform(-1)
+      end
+    end
+
+    context 'with an existing project without a repository' do
+      it 'does nothing' do
+        allow_any_instance_of(Repository).to receive(:exists?).and_return(false)
+
+        expect(worker).not_to receive(:update_repository_size)
+
+        worker.perform(project.id)
+      end
+    end
+
+    context 'with an existing project' do
+      it 'updates the repository size' do
+        expect(worker).to receive(:update_repository_size).and_call_original
+
+        worker.perform(project.id)
       end
 
-      it 'updates project cache data' do
-        expect_any_instance_of(Repository).to receive(:size)
-        expect_any_instance_of(Repository).to receive(:commit_count)
+      it 'updates the commit count' do
+        expect_any_instance_of(Project).to receive(:update_commit_count).
+          and_call_original
 
-        expect_any_instance_of(Project).to receive(:update_repository_size)
-        expect_any_instance_of(Project).to receive(:update_commit_count)
-
+<<<<<<< HEAD
         expect_any_instance_of(Repository).to receive(:build_cache).and_call_original
 
         subject.perform(project.id)
+=======
+        worker.perform(project.id)
+>>>>>>> ce/master
       end
 
-      it 'handles missing repository data' do
-        expect_any_instance_of(Repository).to receive(:exists?).and_return(false)
-        expect_any_instance_of(Repository).not_to receive(:size)
+      it 'refreshes the method caches' do
+        expect_any_instance_of(Repository).to receive(:refresh_method_caches).
+          with(%i(readme)).
+          and_call_original
 
-        subject.perform(project.id)
+        worker.perform(project.id, %i(readme))
       end
 
       context 'when in Geo secondary node' do
@@ -66,15 +71,30 @@ describe ProjectCacheWorker do
         end
       end
     end
+  end
 
-    context 'when an exclusive lease can not be obtained' do
-      it 'does nothing' do
-        allow(subject).to receive(:try_obtain_lease_for).with(project.id).
+  describe '#update_repository_size' do
+    context 'when a lease could not be obtained' do
+      it 'does not update the repository size' do
+        allow(worker).to receive(:try_obtain_lease_for).
+          with(project.id, :update_repository_size).
           and_return(false)
 
-        expect(subject).not_to receive(:update_caches)
+        expect(project).not_to receive(:update_repository_size)
 
-        subject.perform(project.id)
+        worker.update_repository_size(project)
+      end
+    end
+
+    context 'when a lease could be obtained' do
+      it 'updates the repository size' do
+        allow(worker).to receive(:try_obtain_lease_for).
+          with(project.id, :update_repository_size).
+          and_return(true)
+
+        expect(project).to receive(:update_repository_size).and_call_original
+
+        worker.update_repository_size(project)
       end
     end
   end

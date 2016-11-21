@@ -111,10 +111,10 @@
           Issuable.init();
           break;
         case 'dashboard:activity':
-          new Activities();
+          new gl.Activities();
           break;
         case 'dashboard:projects:starred':
-          new Activities();
+          new gl.Activities();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -140,7 +140,7 @@
           new gl.Pipelines();
           break;
         case 'groups:activity':
-          new Activities();
+          new gl.Activities();
           break;
         case 'groups:show':
           shortcut_handler = new ShortcutsNavigation();

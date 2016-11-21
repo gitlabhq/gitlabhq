@@ -262,6 +262,7 @@ Service:
 - template
 - push_events
 - issues_events
+- commit_events
 - merge_requests_events
 - tag_push_events
 - note_events
@@ -348,6 +349,7 @@ LabelPriority:
 - priority
 - created_at
 - updated_at
+<<<<<<< HEAD
 Timelog:
 - id
 - time_spent
@@ -356,3 +358,5 @@ Timelog:
 - user_id
 - created_at
 - updated_at
+=======
+>>>>>>> ce/master

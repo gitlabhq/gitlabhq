@@ -7,6 +7,7 @@ class Snippet < ActiveRecord::Base
   include Sortable
   include Elastic::SnippetsSearch
   include Awardable
+  include Mentionable
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :content

@@ -157,17 +157,17 @@
             <li v-bind:class="{ 'active': scope === undefined }">
               <a :href="projectEnvironmentsPath">
                 Available
-                <span
-                  class="badge js-available-environments-count"
-                  v-html="state.availableCounter"></span>
+                <span class="badge js-available-environments-count">
+                  {{state.availableCounter}}
+                </span>
               </a>
             </li>
             <li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
-                <span
-                  class="badge js-stopped-environments-count"
-                  v-html="state.stoppedCounter"></span>
+                <span class="badge js-stopped-environments-count">
+                  {{state.stoppedCounter}}
+                </span>
               </a>
             </li>
           </ul>
@@ -183,8 +183,7 @@
             <i class="fa fa-spinner spin"></i>
           </div>
 
-          <div
-            class="blank-state blank-state-no-icon"
+          <div class="blank-state blank-state-no-icon"
             v-if="!isLoading && state.environments.length === 0">
             <h2 class="blank-state-title">
               You don't have any environments right now.
@@ -205,8 +204,7 @@
             </a>
           </div>
 
-          <div
-            class="table-holder"
+          <div class="table-holder"
             v-if="!isLoading && state.environments.length > 0">
             <table class="table ci-table environments">
               <thead>
@@ -234,7 +232,9 @@
                     is="environment-item"
                     v-for="children in model.children"
                     :model="children"
-                    :toggleRow="toggleRow.bind(children)">
+                    :toggleRow="toggleRow.bind(children)"
+                    :can-create-deployment="canCreateDeploymentParsed"
+                    :can-read-environment="canReadEnvironmentParsed">
                     </tr>
 
                 </template>
