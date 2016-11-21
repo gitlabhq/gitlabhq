@@ -47,14 +47,13 @@ describe Import::BitbucketController do
 
   describe "GET status" do
     before do
-      @repo = OpenStruct.new(slug: 'vim', owner: 'asd')
+      @repo = double(slug: 'vim', owner: 'asd', full_name: 'asd/vim', "valid?" => true)
       assign_session_tokens
     end
 
     it "assigns variables" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id)
-      client = stub_client(projects: [@repo])
-      allow(client).to receive(:incompatible_projects).and_return([])
+      allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
 
@@ -65,7 +64,7 @@ describe Import::BitbucketController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
-      stub_client(projects: [@repo])
+      allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
 
