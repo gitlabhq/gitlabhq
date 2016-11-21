@@ -41,6 +41,52 @@ describe API::API, api: true do
     end
   end
 
+  describe 'POST /projects/:id/pipeline ' do
+    context 'authorized user' do
+      context 'with gitlab-ci.yml' do
+        before { stub_ci_pipeline_to_return_yaml_file }
+
+        it 'creates and returns a new pipeline' do
+          expect do
+            post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+          end.to change { Ci::Pipeline.count }.by(1)
+
+          expect(response).to have_http_status(201)
+          expect(json_response).to be_a Hash
+          expect(json_response['sha']).to eq project.commit.id
+        end
+
+        it 'fails when using an invalid ref' do
+          post api("/projects/#{project.id}/pipeline", user), ref: 'invalid_ref'
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']['base'].first).to eq 'Reference not found'
+          expect(json_response).not_to be_an Array
+        end
+      end
+
+      context 'without gitlab-ci.yml' do
+        it 'fails to create pipeline' do
+          post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
+          expect(json_response).not_to be_an Array
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not create pipeline' do
+        post api("/projects/#{project.id}/pipeline", non_member), ref: project.default_branch
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
+        expect(json_response).not_to be_an Array
+      end
+    end
+  end
+
   describe 'GET /projects/:id/pipelines/:pipeline_id' do
     context 'authorized user' do
       it 'returns project pipelines' do
