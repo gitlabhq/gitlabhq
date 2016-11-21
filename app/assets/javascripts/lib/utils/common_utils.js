@@ -94,10 +94,20 @@
       return $(document).off('scroll');
     };
 
-    w.gl.utils.shiftWindow = function() {
-      return w.scrollBy(0, -100);
-    };
+    // automatically adjust scroll position for hash urls taking the height of the navbar into account
+    // https://github.com/twitter/bootstrap/issues/1768
+    w.gl.utils.handleLocationHash = function() {
+      var navbar = document.querySelector('.navbar-gitlab');
+      var subnav = document.querySelector('.layout-nav');
+      var fixedTabs = document.querySelector('.js-tabs-affix');
 
+      var adjustment = 0;
+      if (navbar) adjustment -= navbar.offsetHeight;
+      if (subnav) adjustment -= subnav.offsetHeight;
+      if (fixedTabs) adjustment -= fixedTabs.offsetHeight;
+
+      window.scrollBy(0, adjustment);
+    };
 
     gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
       return $tooltipEl.tooltip('destroy').attr('title', newTitle).tooltip('fixTitle');
