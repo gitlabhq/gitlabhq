@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign, class-methods-use-this */
-/* global Pager, Cookies */
+/* global Pager */
+/* global Cookies */
 
 ((global) => {
   class Activities {
