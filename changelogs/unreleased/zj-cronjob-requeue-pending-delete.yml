@@ -1,4 +1,4 @@
 ---
-title: Requeue projects pending deletion
+title: Delete soft deleted entities from the database
 merge_request: 7067
 author: 
