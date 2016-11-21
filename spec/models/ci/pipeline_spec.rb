@@ -403,15 +403,15 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#cancelable?' do
-    subject { pipeline.cancelable? }
-
     %i[created running pending].each do |status|
       context "when there is a build #{status}" do
         before do
           create(:ci_build, status, pipeline: pipeline)
         end
 
-        it { is_expected.to be_truthy }
+        it 'is cancelable' do
+          expect(pipeline.cancelable?).to be_truthy
+        end
       end
 
       context "when there is an external job #{status}" do
@@ -419,7 +419,9 @@ describe Ci::Pipeline, models: true do
           create(:generic_commit_status, status, pipeline: pipeline)
         end
 
-        it { is_expected.to be_truthy }
+        it 'is cancelable' do
+          expect(pipeline.cancelable?).to be_truthy
+        end
       end
 
       %i[success failed canceled].each do |status2|
@@ -430,7 +432,9 @@ describe Ci::Pipeline, models: true do
             create(build.sample, status2, pipeline: pipeline)
           end
 
-          it { is_expected.to be_truthy }
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
         end
       end
     end
@@ -441,7 +445,9 @@ describe Ci::Pipeline, models: true do
           create(:ci_build, status, pipeline: pipeline)
         end
 
-        it { is_expected.to be_falsey }
+        it 'is not cancelable' do
+          expect(pipeline.cancelable?).to be_falsey
+        end
       end
 
       context "when there is an external job #{status}" do
@@ -449,7 +455,9 @@ describe Ci::Pipeline, models: true do
           create(:generic_commit_status, status, pipeline: pipeline)
         end
 
-        it { is_expected.to be_falsey }
+        it 'is not cancelable' do
+          expect(pipeline.cancelable?).to be_falsey
+        end
       end
     end
   end

@@ -134,20 +134,20 @@ describe HasStatus do
         let!(:job) { create(type, status) }
 
         describe ".#{status}" do
-          subject { CommitStatus.public_send(status).all }
-
-          it { is_expected.to contain_exactly(job) }
+          it 'contains the job' do
+            expect(CommitStatus.public_send(status).all).
+              to contain_exactly(job)
+          end
         end
 
         describe '.relevant' do
-          subject { CommitStatus.relevant.all }
-
-          it do
-            case status
-            when :created
-              is_expected.to be_empty
-            else
-              is_expected.to contain_exactly(job)
+          if status == :created
+            it 'contains nothing' do
+              expect(CommitStatus.relevant.all).to be_empty
+            end
+          else
+            it 'contains the job' do
+              expect(CommitStatus.relevant.all).to contain_exactly(job)
             end
           end
         end
@@ -161,17 +161,22 @@ describe HasStatus do
   end
 
   context 'for scope with more statuses' do
-    shared_examples 'having a job' do |type, status, excluded_status|
+    shared_examples 'containing the job' do |type, status|
       context "when it's #{status} #{type} job" do
         let!(:job) { create(type, status) }
 
-        it do
-          case status
-          when excluded_status
-            is_expected.to be_empty
-          else
-            is_expected.to contain_exactly(job)
-          end
+        it 'contains the job' do
+          is_expected.to contain_exactly(job)
+        end
+      end
+    end
+
+    shared_examples 'not containing the job' do |type, status|
+      context "when it's #{status} #{type} job" do
+        let!(:job) { create(type, status) }
+
+        it 'contains nothing' do
+          is_expected.to be_empty
         end
       end
     end
@@ -179,25 +184,31 @@ describe HasStatus do
     describe '.running_or_pending' do
       subject { CommitStatus.running_or_pending }
 
-      %i[running pending created].each do |status|
-        it_behaves_like 'having a job', random_type, status, :created
+      %i[running pending].each do |status|
+        it_behaves_like 'containing the job', random_type, status
       end
+
+      it_behaves_like 'not containing the job', random_type, :created
     end
 
     describe '.finished' do
       subject { CommitStatus.finished }
 
-      %i[success failed canceled created].each do |status|
-        it_behaves_like 'having a job', random_type, status, :created
+      %i[success failed canceled].each do |status|
+        it_behaves_like 'containing the job', random_type, status
       end
+
+      it_behaves_like 'not containing the job', random_type, :created
     end
 
     describe '.cancelable' do
       subject { CommitStatus.cancelable }
 
-      %i[running pending created failed].each do |status|
-        it_behaves_like 'having a job', random_type, status, :failed
+      %i[running pending created].each do |status|
+        it_behaves_like 'containing the job', random_type, status
       end
+
+      it_behaves_like 'not containing the job', random_type, :failed
     end
   end
 end
