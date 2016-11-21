@@ -10,7 +10,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     stats_values, cycle_analytics_json = generate_cycle_analytics_data
 
-    @cycle_analytics_not_set_up = stats_with_no_data?(stats_values)
+    @cycle_analytics_no_data = stats_values.blank?
 
     respond_to do |format|
       format.html
@@ -67,9 +67,5 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
     }
 
     [stats_values, cycle_analytics_hash]
-  end
-
-  def stats_with_no_data?(stats_values)
-    stats_values.blank? || stats_values.inject(:+).zero?
   end
 end

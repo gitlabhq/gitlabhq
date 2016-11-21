@@ -17,7 +17,7 @@ describe Projects::CycleAnalyticsController do
             project_id: project.to_param)
 
         expect(response).to be_success
-        expect(assigns(:cycle_analytics_not_set_up)).to eq(true)
+        expect(assigns(:cycle_analytics_no_data)).to eq(true)
       end
     end
 
@@ -36,7 +36,7 @@ describe Projects::CycleAnalyticsController do
             project_id: project.to_param)
 
         expect(response).to be_success
-        expect(assigns(:cycle_analytics_not_set_up)).to eq(false)
+        expect(assigns(:cycle_analytics_no_data)).to eq(false)
       end
     end
   end
