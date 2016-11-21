@@ -42,48 +42,49 @@
                   %li
                     %a{ "href" => "#", "data-value" => "90" }
                       Last 90 days
-    .panel.panel-default.stage-panel
-      .panel-heading
-        %nav.col-headers
-          %ul
-            %li.stage-header
-              %span.stage-name
-                Stage
-              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The phase of the development lifecycle.", "aria-hidden" => "true" }
-            %li.median-header
-              %span.stage-name
-                Median
-              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
-            %li.event-header
-              %span.stage-name
-                {{ currentStage ? currentStage.legend : 'Related Issues' }}
-              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
-            %li.total-time-header
-              %span.stage-name
-                Total Time
-              %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The time taken by each data entry gathered by that stage.", "aria-hidden" => "true" }
-      .stage-panel-body
-        %nav.stage-nav
-          %ul
-            %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
-              .stage-nav-item-cell.stage-name
-                {{ stage.title }}
-              .stage-nav-item-cell.stage-median
-                %template{ "v-if" => "stage.isUserAllowed" }
-                  %span{ "v-if" => "stage.value" }
-                    {{ stage.value }}
-                  %span.stage-empty{ "v-else" => true }
-                    Not enough data
-                %template{ "v-else" => true }
-                  %span.not-available
-                    Not available
-        .section.stage-events
-          %template{ "v-if" => "isLoadingStage" }
-            = icon("spinner spin")
-          %template{ "v-if" => "currentStage && !currentStage.isUserAllowed" }
-            = render partial: "no_access"
-          %template{ "v-else" => true }
-            %template{ "v-if" => "isEmptyStage && !isLoadingStage" }
-              = render partial: "empty_stage"
-            %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
-              %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }
+    .stage-panel-container
+      .panel.panel-default.stage-panel
+        .panel-heading
+          %nav.col-headers
+            %ul
+              %li.stage-header
+                %span.stage-name
+                  Stage
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The phase of the development lifecycle.", "aria-hidden" => "true" }
+              %li.median-header
+                %span.stage-name
+                  Median
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
+              %li.event-header
+                %span.stage-name
+                  {{ currentStage ? currentStage.legend : 'Related Issues' }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
+              %li.total-time-header
+                %span.stage-name
+                  Total Time
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The time taken by each data entry gathered by that stage.", "aria-hidden" => "true" }
+        .stage-panel-body
+          %nav.stage-nav
+            %ul
+              %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
+                .stage-nav-item-cell.stage-name
+                  {{ stage.title }}
+                .stage-nav-item-cell.stage-median
+                  %template{ "v-if" => "stage.isUserAllowed" }
+                    %span{ "v-if" => "stage.value" }
+                      {{ stage.value }}
+                    %span.stage-empty{ "v-else" => true }
+                      Not enough data
+                  %template{ "v-else" => true }
+                    %span.not-available
+                      Not available
+          .section.stage-events
+            %template{ "v-if" => "isLoadingStage" }
+              = icon("spinner spin")
+            %template{ "v-if" => "currentStage && !currentStage.isUserAllowed" }
+              = render partial: "no_access"
+            %template{ "v-else" => true }
+              %template{ "v-if" => "isEmptyStage && !isLoadingStage" }
+                = render partial: "empty_stage"
+              %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
+                %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }

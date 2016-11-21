@@ -1,5 +1,5 @@
 #cycle-analytics {
-  width: 1000px;
+  max-width: 1000px;
   margin: 24px auto 0;
   position: relative;
 
@@ -259,7 +259,14 @@
     }
   }
 
+  .stage-panel-container {
+    width: 100%;
+    overflow: auto;
+  }
+
   .stage-panel {
+    min-width: 968px;
+
     .panel-heading {
       padding: 0;
       background-color: transparent;
