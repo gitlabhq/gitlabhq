@@ -487,6 +487,10 @@ module Ci
       ]
     end
 
+    def credentials
+      Gitlab::Ci::Build::Credentials::Factory.new(self).create!
+    end
+
     private
 
     def update_artifacts_size
