@@ -8,7 +8,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   def show
     @cycle_analytics = ::CycleAnalytics.new(@project, from: start_date(cycle_analytics_params))
 
-    stats_values, cycle_analytics_json = generate_cycle_analytics_json
+    stats_values, cycle_analytics_json = generate_cycle_analytics_data
 
     @cycle_analytics_not_set_up = stats_with_no_data?(stats_values)
 
@@ -26,7 +26,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
     { start_date: params[:cycle_analytics][:start_date] }
   end
 
-  def generate_cycle_analytics_json
+  def generate_cycle_analytics_data
     stats_values = []
 
     cycle_analytics_view_data = [[:issue, "Issue", "Time before an issue gets scheduled"],
