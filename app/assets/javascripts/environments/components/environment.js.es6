@@ -60,6 +60,8 @@
     data() {
       const environmentsData = document.querySelector('#environments-list-view').dataset;
 
+      debugger;
+
       return {
         state: this.store.state,
         visibility: 'available',
@@ -234,7 +236,9 @@
                     is="environment-item"
                     v-for="children in model.children"
                     :model="children"
-                    :toggleRow="toggleRow.bind(children)">
+                    :toggleRow="toggleRow.bind(children)"
+                    :can-create-deployment="canCreateDeploymentParsed"
+                    :can-read-environment="canReadEnvironmentParsed">
                     </tr>
 
                 </template>
