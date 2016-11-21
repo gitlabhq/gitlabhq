@@ -17,6 +17,10 @@ describe Ci::API::API do
       let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
       let(:user_agent) { 'gitlab-ci-multi-runner 1.5.2 (1-5-stable; go1.6.3; linux/amd64)' }
 
+      before do
+        stub_container_registry_config(enabled: false)
+      end
+
       shared_examples 'no builds available' do
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
@@ -52,6 +56,41 @@ describe Ci::API::API do
 
         it 'updates runner info' do
           expect { register_builds }.to change { runner.reload.contacted_at }
+        end
+
+        context 'registry credentials' do
+          let(:registry_credentials) do
+            { 'type' => 'registry',
+              'url' => 'registry.example.com:5005',
+              'username' => 'gitlab-ci-token',
+              'password' => build.token }
+          end
+
+          context 'when registry is enabled' do
+            before do
+              stub_container_registry_config(enabled: true, host_port: 'registry.example.com:5005')
+            end
+
+            it 'sends registry credentials key' do
+              register_builds info: { platform: :darwin }
+
+              expect(json_response).to have_key('credentials')
+              expect(json_response['credentials']).to include(registry_credentials)
+            end
+          end
+
+          context 'when registry is disabled' do
+            before do
+              stub_container_registry_config(enabled: false, host_port: 'registry.example.com:5005')
+            end
+
+            it 'does not send registry credentials' do
+              register_builds info: { platform: :darwin }
+
+              expect(json_response).to have_key('credentials')
+              expect(json_response['credentials']).not_to include(registry_credentials)
+            end
+          end
         end
       end
 
