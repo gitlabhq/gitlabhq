@@ -60,7 +60,7 @@ describe Ci::API::API do
 
         context 'registry credentials' do
           let(:registry_credentials) do
-            { 'type' => 'docker-registry',
+            { 'type' => 'registry',
               'url' => 'registry.example.com:5005',
               'username' => 'gitlab-ci-token',
               'password' => build.token }

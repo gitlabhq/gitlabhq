@@ -449,17 +449,10 @@ module Ci
     end
 
     def credentials
-      [build_container_registry_credentials].compact
+      Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
     private
-
-    def build_container_registry_credentials
-      return unless Gitlab.config.registry.enabled
-
-      Gitlab::Ci::Build::Credentials.new('docker-registry', Gitlab.config.registry.host_port,
-                                         'gitlab-ci-token', token)
-    end
 
     def update_artifacts_size
       self.artifacts_size = if artifacts_file.exists?
