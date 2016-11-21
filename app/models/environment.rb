@@ -103,8 +103,8 @@ class Environment < ActiveRecord::Base
   def actions_for(environment)
     return [] unless manual_actions
 
-    manual_actions.select |action|
-      action.expanded_environment_name = environment
+    manual_actions.select do |action|
+      action.expanded_environment_name == environment
     end
   end
 end

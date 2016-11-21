@@ -9,6 +9,7 @@ describe Environment, models: true do
   it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
+  it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
@@ -185,6 +186,17 @@ describe Environment, models: true do
       end
 
       it { is_expected.to be false }
+    end
+  end
+
+  describe '#actions_for' do
+    let(:deployment) { create(:deployment, environment: environment) }
+    let(:pipeline) { deployment.deployable.pipeline }
+    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_BUILD_REF_NAME' )}
+    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production' )}
+
+    it 'returns a list of actions with matching environment' do
+      expect(environment.actions_for('review/master')).to contain_exactly(review_action)
     end
   end
 end
