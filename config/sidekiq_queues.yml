@@ -52,6 +52,7 @@
   - [pages, 1]
   - [elasticsearch, 1]
   - [geo, 1]
+  - [project_mirror, 1]
   - [project_update_repository_storage, 1]
   - [admin_emails, 1]
   - [geo_repository_update, 1]
