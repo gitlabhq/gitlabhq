@@ -1,7 +1,8 @@
 # Time Tracking
 
-> Introduced in GitLab 8.14 as beta. This Product is free while in beta.
-After the beta period, a new License key will need to be issued to use it.
+> Introduced in GitLab 8.14 as a beta Product. This functionality is free while
+in beta. After the beta period, a new License key will need to be issued to use
+it.
 
 Time Tracking lets teams stack their project estimates against their time spent.
 
