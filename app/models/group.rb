@@ -65,7 +65,7 @@ class Group < Namespace
 
     def select_for_project_authorization
       if current_scope.joins_values.include?(:shared_projects)
-        select("members.user_id, projects.id AS project_id, project_group_links.group_access")
+        select("members.user_id, projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
       end
