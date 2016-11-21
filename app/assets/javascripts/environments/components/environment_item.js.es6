@@ -389,8 +389,7 @@
     template: `
       <tr>
         <td v-bind:class="{ 'children-row': isChildren}">
-          <a
-            v-if="!isFolder"
+          <a v-if="!isFolder"
             class="environment-name"
             :href="model.environment_path">
             {{model.name}}
@@ -412,8 +411,7 @@
         </td>
 
         <td class="deployment-column">
-          <span
-            v-if="shouldRenderDeploymentID">
+          <span v-if="shouldRenderDeploymentID">
             {{deploymentInternalId}}
           </span>
 

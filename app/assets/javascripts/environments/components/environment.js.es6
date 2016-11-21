@@ -159,7 +159,7 @@
                 Available
                 <span class="badge js-available-environments-count">
                   {{state.availableCounter}}
-                  </span>
+                </span>
               </a>
             </li>
             <li v-bind:class="{ 'active' : scope === 'stopped' }">
@@ -167,7 +167,7 @@
                 Stopped
                 <span class="badge js-stopped-environments-count">
                   {{state.stoppedCounter}}
-                  </span>
+                </span>
               </a>
             </li>
           </ul>
