@@ -3,7 +3,7 @@ class RepositoryUpdateMirrorDispatchWorker
 
   LEASE_TIMEOUT = 5.minutes
 
-  sidekiq_options queue: :gitlab_shell
+  sidekiq_options queue: :project_mirror
 
   attr_accessor :project, :repository, :current_user
 
