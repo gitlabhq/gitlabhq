@@ -19,6 +19,14 @@ describe Gitlab::ChatCommands::IssueShow, service: true do
       it 'returns the issue' do
         expect(subject.iid).to be issue.iid
       end
+
+      context 'when its reference is given' do
+        let(:regex_match) { described_class.match("issue show #{issue.to_reference}") }
+
+        it 'shows the issue' do
+          expect(subject.iid).to be issue.iid
+        end
+      end
     end
 
     context 'the issue does not exist' do
