@@ -105,7 +105,7 @@ module Ci
     end
 
     def self.latest_successful_for(ref)
-      latest_for(ref).success.first
+      success.latest_for(ref).first
     end
 
     def self.truncate_sha(sha)
