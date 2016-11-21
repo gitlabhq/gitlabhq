@@ -36,8 +36,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
           create(:ci_build, :manual, project: project, pipeline: build.pipeline, name: 'first', environment: 'production')
         end
 
-        it 'returns action' do
-          expect(subject).to eq(manual1)
+        it 'returns success result' do
+          expect(subject.type).to eq(:success)
+          expect(subject.message).to include('Deployment from staging to production started')
         end
 
         context 'when duplicate action exists' do
@@ -46,7 +47,8 @@ describe Gitlab::ChatCommands::Deploy, service: true do
           end
 
           it 'returns error' do
-            expect(subject.message).to eq('Too many actions defined')
+            expect(subject.type).to eq(:error)
+            expect(subject.message).to include('Too many actions defined')
           end
         end
 
@@ -57,8 +59,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
                    name: 'teardown', environment: 'production')
           end
 
-          it 'returns error' do
-            expect(subject).to eq(manual1)
+          it 'returns success result' do
+            expect(subject.type).to eq(:success)
+            expect(subject.message).to include('Deployment from staging to production started')
           end
         end
       end
