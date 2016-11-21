@@ -6,11 +6,11 @@ describe Import::BitbucketController do
   let(:user) { create(:user) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
+  let(:refresh_token) { SecureRandom.hex(15) }
   let(:access_params) { { bitbucket_access_token: token, bitbucket_access_token_secret: secret } }
 
   def assign_session_tokens
-    session[:bitbucket_access_token] = token
-    session[:bitbucket_access_token_secret] = secret
+    session[:bitbucket_token] = token
   end
 
   before do
@@ -24,15 +24,23 @@ describe Import::BitbucketController do
     end
 
     it "updates access token" do
-      access_token = double(token: token, secret: secret)
-      allow_any_instance_of(Gitlab::BitbucketImport::Client).
+      expires_at = Time.now + 1.day
+      expires_in = 1.day
+      access_token = double(token: token,
+                            secret: secret,
+                            expires_at: expires_at,
+                            expires_in: expires_in,
+                            refresh_token: refresh_token)
+      allow_any_instance_of(OAuth2::Client).
         to receive(:get_token).and_return(access_token)
       stub_omniauth_provider('bitbucket')
 
       get :callback
 
-      expect(session[:bitbucket_access_token]).to eq(token)
-      expect(session[:bitbucket_access_token_secret]).to eq(secret)
+      expect(session[:bitbucket_token]).to eq(token)
+      expect(session[:bitbucket_refresh_token]).to eq(refresh_token)
+      expect(session[:bitbucket_expires_at]).to eq(expires_at)
+      expect(session[:bitbucket_expires_in]).to eq(expires_in)
       expect(controller).to redirect_to(status_import_bitbucket_url)
     end
   end
