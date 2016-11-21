@@ -1,4 +1,5 @@
 #cycle-analytics {
+  width: 1000px;
   margin: 24px auto 0;
   position: relative;
 
@@ -82,6 +83,10 @@
         }
       }
     }
+  }
+
+  .js-ca-dropdown {
+    top: $gl-padding-top;
   }
 
   .bordered-box {
