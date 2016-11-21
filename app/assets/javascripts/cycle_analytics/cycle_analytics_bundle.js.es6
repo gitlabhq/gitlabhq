@@ -1,4 +1,5 @@
 //= require vue
+//= require_tree ./svg
 //= require_tree .
 
 $(() => {
