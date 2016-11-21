@@ -1,5 +1,7 @@
 module API
   class Pipelines < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
@@ -11,8 +13,7 @@ module API
         success Entities::Pipeline
       end
       params do
-        optional :page,     type: Integer, desc: 'Page number of the current request'
-        optional :per_page, type: Integer, desc: 'Number of items per page'
+        use :pagination
         optional :scope,    type: String, values: ['running', 'branches', 'tags'],
                             desc: 'Either running, branches, or tags'
       end

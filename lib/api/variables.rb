@@ -1,6 +1,8 @@
 module API
   # Projects variables API
   class Variables < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :admin_build, user_project }
 
@@ -13,8 +15,7 @@ module API
         success Entities::Variable
       end
       params do
-        optional :page, type: Integer, desc: 'The page number for pagination'
-        optional :per_page, type: Integer, desc: 'The value of items per page to show'
+        use :pagination
       end
       get ':id/variables' do
         variables = user_project.variables
