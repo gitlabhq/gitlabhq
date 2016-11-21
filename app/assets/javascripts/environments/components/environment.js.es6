@@ -232,7 +232,9 @@
                     is="environment-item"
                     v-for="children in model.children"
                     :model="children"
-                    :toggleRow="toggleRow.bind(children)">
+                    :toggleRow="toggleRow.bind(children)"
+                    :can-create-deployment="canCreateDeploymentParsed"
+                    :can-read-environment="canReadEnvironmentParsed">
                     </tr>
 
                 </template>
