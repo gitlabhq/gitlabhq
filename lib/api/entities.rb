@@ -22,7 +22,7 @@ module API
       expose :provider, :extern_uid
     end
 
-    class UserFull < User
+    class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
       expose :email
@@ -32,10 +32,9 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
-      expose :private_token, if: lambda { |user, options| user.is_admin? && options[:sudo_identifier] }
     end
 
-    class UserLogin < UserFull
+    class UserWithPrivateToken < UserPublic
       expose :private_token
     end
 
@@ -290,7 +289,7 @@ module API
     end
 
     class SSHKeyWithUser < SSHKey
-      expose :user, using: Entities::UserFull
+      expose :user, using: Entities::UserPublic
     end
 
     class Note < Grape::Entity
