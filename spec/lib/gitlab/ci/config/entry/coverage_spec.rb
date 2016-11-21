@@ -1,0 +1,40 @@
+require 'spec_helper'
+
+describe Gitlab::Ci::Config::Entry::Coverage do
+  let(:entry) { described_class.new(config) }
+
+  describe 'validations' do
+    context 'when entry config value is correct' do
+      let(:config) { { output_filter: 'Code coverage: \d+\.\d+' } }
+
+      describe '#value' do
+        subject { entry.value }
+        it      { is_expected.to eq config }
+      end
+
+      describe '#errors' do
+        subject { entry.errors }
+        it      { is_expected.to be_empty }
+      end
+
+      describe '#valid?' do
+        subject { entry }
+        it      { is_expected.to be_valid }
+      end
+    end
+
+    context 'when entry value is not correct' do
+      let(:config) { { output_filter: '(malformed regexp' } }
+
+      describe '#errors' do
+        subject { entry.errors }
+        it      { is_expected.to include /coverage output filter must be a regular expression/ }
+      end
+
+      describe '#valid?' do
+        subject { entry }
+        it      { is_expected.not_to be_valid }
+      end
+    end
+  end
+end

@@ -22,7 +22,7 @@ module Gitlab
             if output_filter_value.start_with?('/') && output_filter_value.end_with?('/')
               output_filter_value[1...-1]
             else
-              value[:output_filter]
+              @config[:output_filter]
             end
           end
 

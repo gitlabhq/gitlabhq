@@ -4,12 +4,19 @@ describe Gitlab::Ci::Config::Entry::Global do
   let(:global) { described_class.new(hash) }
 
   describe '.nodes' do
-    it 'can contain global config keys' do
-      expect(described_class.nodes).to include :before_script
-    end
+    subject { described_class.nodes }
 
-    it 'returns a hash' do
-      expect(described_class.nodes).to be_a Hash
+    it { is_expected.to be_a Hash }
+
+    context 'when filtering all the entry/node names' do
+      subject { described_class.nodes.keys }
+
+      let(:result) do
+        %i[before_script image services after_script variables stages types
+           cache coverage]
+      end
+
+      it { is_expected.to match_array result }
     end
   end
 
