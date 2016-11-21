@@ -1007,15 +1007,14 @@ namespace :gitlab do
     client = Elasticsearch::Client.new(host: ApplicationSetting.current.elasticsearch_host,
                                        port: ApplicationSetting.current.elasticsearch_port)
 
-    print "Elasticsearch version >= 2.4? ... "
+    print "Elasticsearch version 2.4.x? ... "
 
-    version = client.info["version"]["number"]
+    version = Gitlab::VersionInfo.parse(client.info["version"]["number"])
 
-    # The version is greater or equal to 2.4.0
-    if Gitlab::VersionInfo.parse(version) >= Gitlab::VersionInfo.new(2, 4, 0)
+    if version.major == 2 && version.minor == 4
       puts "yes (#{version})".color(:green)
     else
-      puts "no".color(:red)
+      puts "no, you have #{version}".color(:red)
     end
 
     print "Elasticsearch has plugin delete-by-query installed? ... "
