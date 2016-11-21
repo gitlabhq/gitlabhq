@@ -37,7 +37,7 @@ describe ProjectTeam, models: true do
 
   context 'group project' do
     let(:group) { create(:group) }
-    let(:project) { create(:empty_project, group: group) }
+    let!(:project) { create(:empty_project, group: group) }
 
     before do
       group.add_master(master)
@@ -178,9 +178,9 @@ describe ProjectTeam, models: true do
     it 'returns Master role' do
       user = create(:user)
       group = create(:group)
-      group.add_master(user)
+      project = create(:empty_project, namespace: group)
 
-      project = build_stubbed(:empty_project, namespace: group)
+      group.add_master(user)
 
       expect(project.team.human_max_access(user.id)).to eq 'Master'
     end
@@ -188,9 +188,9 @@ describe ProjectTeam, models: true do
     it 'returns Owner role' do
       user = create(:user)
       group = create(:group)
-      group.add_owner(user)
+      project = create(:empty_project, namespace: group)
 
-      project = build_stubbed(:empty_project, namespace: group)
+      group.add_owner(user)
 
       expect(project.team.human_max_access(user.id)).to eq 'Owner'
     end
@@ -244,7 +244,7 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group, :access_requestable) }
-      let(:project) { create(:empty_project, group: group) }
+      let!(:project) { create(:empty_project, group: group) }
 
       before do
         group.add_master(master)

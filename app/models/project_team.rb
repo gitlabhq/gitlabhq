@@ -169,53 +169,20 @@ class ProjectTeam
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys
+    users_access = project.project_authorizations.
+      where(user: user_ids).
+      group(:user_id).
+      maximum(:access_level)
 
-    if user_ids.present?
-      user_ids.each { |id| access[id] = Gitlab::Access::NO_ACCESS }
-
-      member_access = project.members.access_for_user_ids(user_ids)
-      merge_max!(access, member_access)
-
-      if group
-        group_access = group.members.access_for_user_ids(user_ids)
-        merge_max!(access, group_access)
-      end
-
-      # Each group produces a list of maximum access level per user. We take the
-      # max of the values produced by each group.
-      if project_shared_with_group?
-        project.project_group_links.each do |group_link|
-          invited_access = max_invited_level_for_users(group_link, user_ids)
-          merge_max!(access, invited_access)
-        end
-      end
-    end
-
+    access.merge!(users_access)
     access
   end
 
   def max_member_access(user_id)
-    max_member_access_for_user_ids([user_id])[user_id]
+    max_member_access_for_user_ids([user_id])[user_id] || Gitlab::Access::NO_ACCESS
   end
 
   private
-
-  # For a given group, return the maximum access level for the user. This is the min of
-  # the invited access level of the group and the access level of the user within the group.
-  # For example, if the group has been given DEVELOPER access but the member has MASTER access,
-  # the user should receive only DEVELOPER access.
-  def max_invited_level_for_users(group_link, user_ids)
-    invited_group = group_link.group
-    capped_access_level = group_link.group_access
-    access = invited_group.group_members.access_for_user_ids(user_ids)
-
-    # If the user is not in the list, assume he/she does not have access
-    missing_users = user_ids - access.keys
-    missing_users.each { |id| access[id] = Gitlab::Access::NO_ACCESS }
-
-    # Cap the maximum access by the invited level access
-    access.each { |key, value| access[key] = [value, capped_access_level].min }
-  end
 
   def fetch_members(level = nil)
     project_members = project.members
@@ -238,10 +205,6 @@ class ProjectTeam
 
   def group
     project.group
-  end
-
-  def merge_max!(first_hash, second_hash)
-    first_hash.merge!(second_hash) { |_key, old, new| old > new ? old : new }
   end
 
   def project_shared_with_group?
