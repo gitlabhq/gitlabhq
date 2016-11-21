@@ -43,7 +43,7 @@ Primary links are blue in their rest state. Secondary links (such as the time st
 
 #### Hover
 
-An underline should always be added on hover. A gray link becomes blue on hover.
+On hover, an underline should be added and the color should change. Both the primary and secondary link should become the darker blue color on hover.
 
 #### Focus
 
@@ -72,9 +72,7 @@ Secondary buttons are for alternative commands. They should be conveyed by a bu
 ### Icon and text treatment
 Text should be in sentence case, where only the first word is capitalized. "Create issue" is correct, not "Create Issue". Buttons should only contain an icon or a text, not both.
 
->>>
-TODO: Rationalize this. Ensure that we still believe this.
->>>
+> TODO: Rationalize this. Ensure that we still believe this.
 
 ### Colors
 Follow the color guidance on the [basics](basics.md#color) page. The default color treatment is the white/grey button.
@@ -85,9 +83,7 @@ Follow the color guidance on the [basics](basics.md#color) page. The default col
 
 Dropdowns are used to allow users to choose one (or many) options from a list of options. If this list of options is more 20, there should generally be a way to search through and filter the options (see the complex filter dropdowns below.)
 
->>>
-TODO: Will update this section when the new filters UI is implemented.
->>>
+> TODO: Will update this section when the new filters UI is implemented.
 
 ![Dropdown states](img/components-dropdown.png)
 
@@ -166,9 +162,7 @@ Cover blocks are generally used to create a heading element for a page, such as 
 
 ## Panels
 
->>>
-TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
->>>
+> TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
 
 ![Panels](img/components-panels.png)
 
@@ -176,9 +170,7 @@ TODO: Catalog how we are currently using panels and rationalize how they relate 
 
 ## Alerts
 
->>>
-TODO: Catalog how we are currently using alerts
->>>
+> TODO: Catalog how we are currently using alerts
 
 ![Alerts](img/components-alerts.png)
 
