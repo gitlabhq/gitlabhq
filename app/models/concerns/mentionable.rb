@@ -1,6 +1,6 @@
 # == Mentionable concern
 #
-# Contains functionality related to objects that can mention Users, Issues, MergeRequests, or Commits by
+# Contains functionality related to objects that can mention Users, Issues, MergeRequests, Commits or Snippets by
 # GFM references.
 #
 # Used by Issue, Note, MergeRequest, and Commit.
