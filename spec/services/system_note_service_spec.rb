@@ -225,8 +225,8 @@ describe SystemNoteService, services: true do
 
     it_behaves_like 'a system note'
 
-    it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to match  /Enabled an automatic merge when the build for (\w+\/\w+@)?[0-9a-f]{40} succeeds/
+    it "posts the 'merge when pipeline succeeds' system note" do
+      expect(subject.note).to match  /Enabled an automatic merge when the pipeline for (\w+\/\w+@)?[0-9a-f]{40} succeeds/
     end
   end
 
@@ -239,7 +239,7 @@ describe SystemNoteService, services: true do
 
     it_behaves_like 'a system note'
 
-    it "posts the Merge When Build Succeeds system note" do
+    it "posts the 'merge when pipeline succeeds' system note" do
       expect(subject.note).to eq  "Canceled the automatic merge"
     end
   end

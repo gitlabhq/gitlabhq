@@ -40,11 +40,11 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       it 'activates Merge When Build Succeeds feature' do
         expect(page).to have_link "Cancel Automatic Merge"
 
-        expect(page).to have_content "Set by #{user.name} to be merged automatically when the build succeeds."
+        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
         expect(page).to have_content "The source branch will not be removed."
 
         visit_merge_request(merge_request) # Needed to refresh the page
-        expect(page).to have_content /Enabled an automatic merge when the build for [0-9a-f]{8} succeeds/i
+        expect(page).to have_content /Enabled an automatic merge when the pipeline for [0-9a-f]{8} succeeds/i
       end
     end
   end
