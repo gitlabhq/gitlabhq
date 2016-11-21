@@ -158,16 +158,18 @@
               <a :href="projectEnvironmentsPath">
                 Available
                 <span
-                  class="badge js-available-environments-count"
-                  v-html="state.availableCounter"></span>
+                  class="badge js-available-environments-count">
+                  {{state.availableCounter}}
+                  </span>
               </a>
             </li>
             <li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
                 <span
-                  class="badge js-stopped-environments-count"
-                  v-html="state.stoppedCounter"></span>
+                  class="badge js-stopped-environments-count">
+                  {{state.stoppedCounter}}
+                  </span>
               </a>
             </li>
           </ul>
