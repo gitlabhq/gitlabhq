@@ -113,7 +113,7 @@ describe GitlabMarkdownHelper do
     it 'replaces commit message with emoji to link' do
       actual = link_to_gfm(':book:Book', '/foo')
       expect(actual).
-        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://localhost/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
+        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://#{Gitlab.config.gitlab.host}/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
     end
   end
 

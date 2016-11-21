@@ -1073,7 +1073,7 @@ describe User, models: true do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects' do
+  describe '#authorized_projects', truncate: true do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -1092,6 +1092,80 @@ describe User, models: true do
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
       end
+    end
+
+    it "includes user's personal projects" do
+      user    = create(:user)
+      project = create(:project, :private, namespace: user.namespace)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "includes personal projects user has been given access to" do
+      user1   = create(:user)
+      user2   = create(:user)
+      project = create(:project, :private, namespace: user1.namespace)
+
+      project.team << [user2, Gitlab::Access::DEVELOPER]
+
+      expect(user2.authorized_projects).to include(project)
+    end
+
+    it "includes projects of groups user has been added to" do
+      group   = create(:group)
+      project = create(:project, group: group)
+      user    = create(:user)
+
+      group.add_developer(user)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "does not include projects of groups user has been removed from" do
+      group   = create(:group)
+      project = create(:project, group: group)
+      user    = create(:user)
+
+      member = group.add_developer(user)
+      expect(user.authorized_projects).to include(project)
+
+      member.destroy
+      expect(user.authorized_projects).not_to include(project)
+    end
+
+    it "includes projects shared with user's group" do
+      user    = create(:user)
+      project = create(:project, :private)
+      group   = create(:group)
+
+      group.add_reporter(user)
+      project.project_group_links.create(group: group)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "does not include destroyed projects user had access to" do
+      user1   = create(:user)
+      user2   = create(:user)
+      project = create(:project, :private, namespace: user1.namespace)
+
+      project.team << [user2, Gitlab::Access::DEVELOPER]
+      expect(user2.authorized_projects).to include(project)
+
+      project.destroy
+      expect(user2.authorized_projects).not_to include(project)
+    end
+
+    it "does not include projects of destroyed groups user had access to" do
+      group   = create(:group)
+      project = create(:project, namespace: group)
+      user    = create(:user)
+
+      group.add_developer(user)
+      expect(user.authorized_projects).to include(project)
+
+      group.destroy
+      expect(user.authorized_projects).not_to include(project)
     end
   end
 

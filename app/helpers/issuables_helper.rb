@@ -171,9 +171,11 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state)
     issuables_finder = public_send("#{issuable_type}_finder")
-    issuables_finder.params[:state] = state
+    
+    params = issuables_finder.params.merge(state: state)
+    finder = issuables_finder.class.new(issuables_finder.current_user, params)
 
-    issuables_finder.execute.page(1).total_count
+    finder.execute.page(1).total_count
   end
 
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]

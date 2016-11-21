@@ -1,0 +1,4 @@
+---
+title: Fix race condition during group deletion and remove stale records present due to this bug
+merge_request: 7528
+author: Timothy Andrew

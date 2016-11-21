@@ -5,7 +5,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project) }
-  let(:secret_token) { File.read Gitlab.config.gitlab_shell.secret_file }
+  let(:secret_token) { Gitlab::Shell.secret_token }
 
   describe "GET /internal/check", no_db: true do
     it do
@@ -406,7 +406,7 @@ describe API::API, api: true  do
     it 'returns link to create new merge request' do
       expect(json_response).to match [{
         "branch_name" => "new_branch",
-        "url" => "http://localhost/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
         "new_merge_request" => true
       }]
     end

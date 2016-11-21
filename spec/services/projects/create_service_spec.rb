@@ -34,6 +34,8 @@ describe Projects::CreateService, services: true do
         @group = create :group
         @group.add_owner(@user)
 
+        @user.refresh_authorized_projects # Ensure cache is warm
+
         @opts.merge!(namespace_id: @group.id)
         @project = create_project(@user, @opts)
       end
@@ -41,6 +43,7 @@ describe Projects::CreateService, services: true do
       it { expect(@project).to be_valid }
       it { expect(@project.owner).to eq(@group) }
       it { expect(@project.namespace).to eq(@group) }
+      it { expect(@user.authorized_projects).to include(@project) }
     end
 
     context 'error handling' do

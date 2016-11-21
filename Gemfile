@@ -330,6 +330,7 @@ gem 'octokit', '~> 4.3.0'
 gem 'mail_room', '~> 0.9.0'
 
 gem 'email_reply_parser', '~> 0.5.8'
+gem 'html2text'
 
 gem 'ruby-prof', '~> 0.16.2'
 

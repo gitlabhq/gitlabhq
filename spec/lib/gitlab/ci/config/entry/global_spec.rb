@@ -60,9 +60,9 @@ describe Gitlab::Ci::Config::Entry::Global do
       end
 
       context 'when not composed' do
-        describe '#before_script' do
+        describe '#before_script_value' do
           it 'returns nil' do
-            expect(global.before_script).to be nil
+            expect(global.before_script_value).to be nil
           end
         end
 
@@ -82,40 +82,40 @@ describe Gitlab::Ci::Config::Entry::Global do
           end
         end
 
-        describe '#before_script' do
+        describe '#before_script_value' do
           it 'returns correct script' do
-            expect(global.before_script).to eq ['ls', 'pwd']
+            expect(global.before_script_value).to eq ['ls', 'pwd']
           end
         end
 
-        describe '#image' do
+        describe '#image_value' do
           it 'returns valid image' do
-            expect(global.image).to eq 'ruby:2.2'
+            expect(global.image_value).to eq 'ruby:2.2'
           end
         end
 
-        describe '#services' do
+        describe '#services_value' do
           it 'returns array of services' do
-            expect(global.services).to eq ['postgres:9.1', 'mysql:5.5']
+            expect(global.services_value).to eq ['postgres:9.1', 'mysql:5.5']
           end
         end
 
-        describe '#after_script' do
+        describe '#after_script_value' do
           it 'returns after script' do
-            expect(global.after_script).to eq ['make clean']
+            expect(global.after_script_value).to eq ['make clean']
           end
         end
 
-        describe '#variables' do
+        describe '#variables_value' do
           it 'returns variables' do
-            expect(global.variables).to eq(VAR: 'value')
+            expect(global.variables_value).to eq(VAR: 'value')
           end
         end
 
-        describe '#stages' do
+        describe '#stages_value' do
           context 'when stages key defined' do
             it 'returns array of stages' do
-              expect(global.stages).to eq %w[build pages]
+              expect(global.stages_value).to eq %w[build pages]
             end
           end
 
@@ -126,21 +126,21 @@ describe Gitlab::Ci::Config::Entry::Global do
             end
 
             it 'returns array of types as stages' do
-              expect(global.stages).to eq %w[test deploy]
+              expect(global.stages_value).to eq %w[test deploy]
             end
           end
         end
 
-        describe '#cache' do
+        describe '#cache_value' do
           it 'returns cache configuration' do
-            expect(global.cache)
+            expect(global.cache_value)
               .to eq(key: 'k', untracked: true, paths: ['public/'])
           end
         end
 
-        describe '#jobs' do
+        describe '#jobs_value' do
           it 'returns jobs configuration' do
-            expect(global.jobs).to eq(
+            expect(global.jobs_value).to eq(
               rspec: { name: :rspec,
                        script: %w[rspec ls],
                        before_script: ['ls', 'pwd'],
@@ -185,21 +185,21 @@ describe Gitlab::Ci::Config::Entry::Global do
         end
       end
 
-      describe '#variables' do
+      describe '#variables_value' do
         it 'returns default value for variables' do
-          expect(global.variables).to eq({})
+          expect(global.variables_value).to eq({})
         end
       end
 
-      describe '#stages' do
+      describe '#stages_value' do
         it 'returns an array of default stages' do
-          expect(global.stages).to eq %w[build test deploy]
+          expect(global.stages_value).to eq %w[build test deploy]
         end
       end
 
-      describe '#cache' do
+      describe '#cache_value' do
         it 'returns correct cache definition' do
-          expect(global.cache).to eq(key: 'a')
+          expect(global.cache_value).to eq(key: 'a')
         end
       end
     end
@@ -217,9 +217,9 @@ describe Gitlab::Ci::Config::Entry::Global do
         { variables: nil, rspec: { script: 'rspec' } }
       end
 
-      describe '#variables' do
+      describe '#variables_value' do
         it 'undefined entry returns a default value' do
-          expect(global.variables).to eq({})
+          expect(global.variables_value).to eq({})
         end
       end
     end
@@ -245,9 +245,9 @@ describe Gitlab::Ci::Config::Entry::Global do
       end
     end
 
-    describe '#before_script' do
+    describe '#before_script_value' do
       it 'returns nil' do
-        expect(global.before_script).to be_nil
+        expect(global.before_script_value).to be_nil
       end
     end
   end

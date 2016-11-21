@@ -2,47 +2,19 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
-  .top-area
-    %ul.nav-links
-      %li{class: ('active' if @scope.nil?)}
-        = link_to project_environments_path(@project) do
-          Available
-          %span.badge.js-available-environments-count
-            = number_with_delimiter(@all_environments.available.count)
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag("environments/environments_bundle.js")
+.commit-icon-svg.hidden
+  = custom_icon("icon_commit")
+.play-icon-svg.hidden
+  = custom_icon("icon_play")
 
-      %li{class: ('active' if @scope == 'stopped')}
-        = link_to project_environments_path(@project, scope: :stopped) do
-          Stopped
-          %span.badge.js-stopped-environments-count
-            = number_with_delimiter(@all_environments.stopped.count)
-
-    - if can?(current_user, :create_environment, @project) && !@all_environments.blank?
-      .nav-controls
-        = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
-          New environment
-
-  .environments-container
-    - if @all_environments.blank?
-      .blank-state.blank-state-no-icon
-        %h2.blank-state-title
-          You don't have any environments right now.
-        %p.blank-state-text
-          Environments are places where code gets deployed, such as staging or production.
-          %br
-          = succeed "." do
-            = link_to "Read more about environments", help_page_path("ci/environments")
-        - if can?(current_user, :create_environment, @project)
-          = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
-            New environment
-    - else
-      .table-holder
-        %table.table.ci-table.environments
-          %tbody
-            %th Environment
-            %th Last Deployment
-            %th Build
-            %th Commit
-            %th
-            %th.hidden-xs
-          = render @environments
+#environments-list-view{ data: { environments_data: environments_list_data,
+  "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
+  "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
+  "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
+  "project-environments-path" => project_environments_path(@project),
+  "project-stopped-environments-path" => project_environments_path(@project, scope: :stopped),
+  "new-environment-path" => new_namespace_project_environment_path(@project.namespace, @project),
+  "help-page-path" => help_page_path("ci/environments"),
+  "css-class" => container_class}}

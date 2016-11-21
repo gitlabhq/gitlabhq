@@ -153,6 +153,18 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
 
       resource :cycle_analytics, only: [:show]
 
+      namespace :cycle_analytics do
+        scope :events, controller: 'events' do
+          get :issue
+          get :plan
+          get :code
+          get :test
+          get :review
+          get :staging
+          get :production
+        end
+      end
+
       resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
         collection do
           post :cancel_all

@@ -1,0 +1,4 @@
+---
+title: Add support for reply-by-email when the email only contains HTML
+merge_request: 7397
+author:

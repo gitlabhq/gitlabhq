@@ -125,6 +125,11 @@
       // Close any open tooltips
       $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
     };
+
+    gl.utils.isMetaKey = function(e) {
+      return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
+    };
+
   })(window);
 
 }).call(this);
