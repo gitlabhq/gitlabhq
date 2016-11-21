@@ -54,7 +54,8 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     {
       summary: summary,
-      stats: stats
+      stats: stats,
+      permissions: @cycle_analytics.permissions(user: current_user)
     }
   end
 end
