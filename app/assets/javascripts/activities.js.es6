@@ -5,9 +5,9 @@
   class Activities {
     constructor() {
       Pager.init(20, true, false, this.updateTooltips);
-      $('.event-filter-link').on('click', (event) => {
-        event.preventDefault();
-        this.toggleFilter($(event.currentTarget));
+      $('.event-filter-link').on('click', (e) => {
+        e.preventDefault();
+        this.toggleFilter(e.currentTarget);
         this.reloadActivities();
       });
     }
@@ -22,12 +22,13 @@
     }
 
     toggleFilter(sender) {
-      const filter = sender.attr('id').split('_')[0];
+      const $sender = $(sender);
+      const filter = $sender.attr('id').split('_')[0];
 
       $('.event-filter .active').removeClass('active');
       Cookies.set('event_filter', filter);
 
-      sender.closest('li').toggleClass('active');
+      $sender.closest('li').toggleClass('active');
     }
   }
 
