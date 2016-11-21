@@ -60,8 +60,6 @@
     data() {
       const environmentsData = document.querySelector('#environments-list-view').dataset;
 
-      debugger;
-
       return {
         state: this.store.state,
         visibility: 'available',
