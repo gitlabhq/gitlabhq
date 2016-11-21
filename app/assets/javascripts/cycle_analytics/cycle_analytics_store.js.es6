@@ -24,13 +24,12 @@
       });
 
       newData.stages.forEach((item) => {
+        const stageName = item.title.toLowerCase();
         item.active = false;
-        item.isUserAllowed = true; // This should come from server
-        item.component = `stage-${item.title.toLowerCase()}-component`;
+        item.isUserAllowed = data.permissions[stageName];
+        item.component = `stage-${stageName}-component`;
       });
-
       newData.analytics = data;
-
       return newData;
     },
     setLoadingState(state) {
