@@ -7,6 +7,8 @@ module Ci
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
+    has_many :deployments, as: :deployable
+
     serialize :options
     serialize :yaml_variables
 
@@ -123,6 +125,34 @@ module Ci
 
     def retried?
       !self.pipeline.statuses.latest.include?(self)
+    end
+
+    def expanded_environment_name
+      ExpandVariables.expand(environment, variables) if environment
+    end
+
+    def has_environment?
+      self.environment.present?
+    end
+
+    def starts_environment?
+      has_environment? && self.environment_action == 'start'
+    end
+
+    def stops_environment?
+      has_environment? && self.environment_action == 'stop'
+    end
+
+    def environment_action
+      self.options.fetch(:environment, {}).fetch(:action, 'start')
+    end
+
+    def outdated_deployment?
+      success? && !last_deployment.try(:last?)
+    end
+
+    def last_deployment
+      deployments.last
     end
 
     def depends_on_builds

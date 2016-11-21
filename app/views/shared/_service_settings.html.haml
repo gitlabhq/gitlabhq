@@ -10,26 +10,27 @@
   .col-sm-10
     = form.check_box :active
 
-.form-group
-  = form.label :url, "Trigger", class: 'control-label'
+- if @service.supported_events.present?
+  .form-group
+    = form.label :url, "Trigger", class: 'control-label'
 
-  .col-sm-10
-    - @service.supported_events.each do |event|
-      %div
-        = form.check_box service_event_field_name(event), class: 'pull-left'
-        .prepend-left-20
-          = form.label service_event_field_name(event), class: 'list-label' do
-            %strong
-              = event.humanize
+    .col-sm-10
+      - @service.supported_events.each do |event|
+        %div
+          = form.check_box service_event_field_name(event), class: 'pull-left'
+          .prepend-left-20
+            = form.label service_event_field_name(event), class: 'list-label' do
+              %strong
+                = event.humanize
 
-      - field = @service.event_field(event)
+        - field = @service.event_field(event)
 
-      - if field
-        %p
-          = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
+        - if field
+          %p
+            = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
 
-      %p.light
-        = service_event_description(event)
+        %p.light
+          = service_event_description(event)
 
 - @service.global_fields.each do |field|
   - type = field[:type]

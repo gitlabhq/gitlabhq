@@ -160,3 +160,9 @@
     }
   }
 }
+
+.admin-builds-table {
+  .ci-table td:last-child {
+    min-width: 120px;
+  }
+}

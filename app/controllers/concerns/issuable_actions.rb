@@ -12,7 +12,7 @@ module IssuableActions
     destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
     TodoService.new.public_send(destroy_method, issuable, current_user)
 
-    name = issuable.class.name.titleize.downcase
+    name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
     redirect_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
   end

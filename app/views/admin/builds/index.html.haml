@@ -14,5 +14,5 @@
   .row-content-block.second-block
     #{(@scope || 'all').capitalize} builds
 
-  %ul.content-list.builds-content-list
+  %ul.content-list.builds-content-list.admin-builds-table
     = render "projects/builds/table", builds: @builds, admin: true

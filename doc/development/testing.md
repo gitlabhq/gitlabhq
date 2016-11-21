@@ -70,6 +70,7 @@ the command line via `bundle exec teaspoon`, or via a web browser at
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
+- Try to use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 

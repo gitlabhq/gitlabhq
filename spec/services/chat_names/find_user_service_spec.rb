@@ -13,7 +13,7 @@ describe ChatNames::FindUserService, services: true do
       context 'when existing user is requested' do
         let(:params) { { team_id: chat_name.team_id, user_id: chat_name.chat_id } }
 
-        it 'returns existing user' do
+        it 'returns the existing user' do
           is_expected.to eq(user)
         end
 

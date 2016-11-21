@@ -60,6 +60,10 @@ class ProjectFeature < ActiveRecord::Base
     merge_requests_access_level > DISABLED
   end
 
+  def issues_enabled?
+    issues_access_level > DISABLED
+  end
+
   private
 
   # Validates builds and merge requests access level

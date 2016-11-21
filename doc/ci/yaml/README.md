@@ -760,6 +760,15 @@ artifacts:
   - binaries/
 ```
 
+To disable artifact passing, define the job with empty [dependencies](#dependencies):
+
+```yaml
+job:
+  stage: build
+  script: make build
+  dependencies: []
+```
+
 You may want to create artifacts only for tagged releases to avoid filling the
 build server storage with temporary build artifacts.
 

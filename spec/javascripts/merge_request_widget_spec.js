@@ -35,9 +35,9 @@
           external_url_formatted: 'test-url.com'
         }];
 
-        spyOn(jQuery, 'getJSON').and.callFake((req, cb) => {
+        spyOn(jQuery, 'getJSON').and.callFake(function(req, cb) {
           cb(this.ciEnvironmentsStatusData);
-        });
+        }.bind(this));
       });
 
       it('should call renderEnvironments when the environments property is set', function() {
