@@ -181,7 +181,7 @@ module API
           optional :should_remove_source_branch, type: Boolean,
                                                  desc: 'When true, the source branch will be deleted if possible'
           optional :merge_when_build_succeeds, type: Boolean,
-                                               desc: 'When true, this merge request will be merged when the build succeeds'
+                                               desc: 'When true, this merge request will be merged when the pipeline succeeds'
           optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
         end
         put "#{path}/merge" do
@@ -217,7 +217,7 @@ module API
           present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
-        desc 'Cancel merge if "Merge when build succeeds" is enabled' do
+        desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
           success Entities::MergeRequest
         end
         post "#{path}/cancel_merge_when_build_succeeds" do

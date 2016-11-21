@@ -463,7 +463,7 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    it "enables merge when build succeeds if the ci is active" do
+    it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 

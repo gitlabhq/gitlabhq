@@ -518,7 +518,7 @@ Parameters:
 }
 ```
 
-## Cancel Merge When Build Succeeds
+## Cancel Merge When Pipeline Succeeds
 
 If successful you'll get `200 OK`.
 
