@@ -28,10 +28,10 @@
                 <a :href="issue.url" class="issue-date">{{ issue.createdAt }}</a>
               </span>
               <span>
-              by
-              <a :href="issue.author.webUrl" class="issue-author-link">
-                {{ issue.author.name }}
-              </a>
+                by
+                <a :href="issue.author.webUrl" class="issue-author-link">
+                  {{ issue.author.name }}
+                </a>
               </span>
             </div>
             <div class="item-time">

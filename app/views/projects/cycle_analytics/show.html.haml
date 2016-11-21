@@ -1,5 +1,4 @@
 - @no_container = true
-- @cycle_analytics_not_set_up = false
 - page_title "Cycle Analytics"
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag("cycle_analytics/cycle_analytics_bundle.js")
@@ -7,18 +6,19 @@
 = render "projects/pipelines/head"
 
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
-  .bordered-box.landing.content-block{"v-if" => "!isOverviewDialogDismissed"}
-    = icon("times", class: "dismiss-icon", "@click" => "dismissOverviewDialog()")
-    .row
-      .col-sm-3.col-xs-12.svg-container
-        = custom_icon('icon_cycle_analytics_splash')
-      .col-sm-8.col-xs-12.inner-content
-        %h4
-          Introducing Cycle Analytics
-        %p
-          Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
+  - if @cycle_analytics_no_data
+    .bordered-box.landing.content-block{"v-if" => "!isOverviewDialogDismissed"}
+      = icon("times", class: "dismiss-icon", "@click" => "dismissOverviewDialog()")
+      .row
+        .col-sm-3.col-xs-12.svg-container
+          = custom_icon('icon_cycle_analytics_splash')
+        .col-sm-8.col-xs-12.inner-content
+          %h4
+            Introducing Cycle Analytics
+          %p
+            Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
 
-        = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
+          = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
   = icon("spinner spin", "v-show" => "isLoading")
   .wrapper{"v-show" => "!isLoading && !hasError"}
     .panel.panel-default
