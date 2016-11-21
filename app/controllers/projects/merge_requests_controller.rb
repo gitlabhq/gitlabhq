@@ -22,6 +22,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :apply_diff_view_cookie!, only: [:new_diffs]
   before_action :build_merge_request, only: [:new, :new_diffs]
+  before_action :set_suggested_approvers, only: [:new, :new_diffs, :edit]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -228,7 +229,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def new
     define_new_vars
-    set_suggested_approvers
   end
 
   def new_diffs
@@ -271,8 +271,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
-
-    set_suggested_approvers
   end
 
   def update
