@@ -403,10 +403,10 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#cancelable?' do
-    %i[created running pending].each do |status|
-      context "when there is a build #{status}" do
+    %i[created running pending].each do |status0|
+      context "when there is a build #{status0}" do
         before do
-          create(:ci_build, status, pipeline: pipeline)
+          create(:ci_build, status0, pipeline: pipeline)
         end
 
         it 'is cancelable' do
@@ -414,9 +414,9 @@ describe Ci::Pipeline, models: true do
         end
       end
 
-      context "when there is an external job #{status}" do
+      context "when there is an external job #{status0}" do
         before do
-          create(:generic_commit_status, status, pipeline: pipeline)
+          create(:generic_commit_status, status0, pipeline: pipeline)
         end
 
         it 'is cancelable' do
@@ -424,16 +424,19 @@ describe Ci::Pipeline, models: true do
         end
       end
 
-      %i[success failed canceled].each do |status2|
-        context "when there are two builds for #{status} and #{status2}" do
-          before do
-            build = %i[ci_build generic_commit_status]
-            create(build.sample, status, pipeline: pipeline)
-            create(build.sample, status2, pipeline: pipeline)
-          end
+      %i[success failed canceled].each do |status1|
+        %i[ci_build generic_commit_status].each do |type0|
+          %i[ci_build generic_commit_status].each do |type1|
+            context "when there are #{type0} and #{type1} for #{status0} and #{status1}" do
+              before do
+                create(type0, status0, pipeline: pipeline)
+                create(type1, status1, pipeline: pipeline)
+              end
 
-          it 'is cancelable' do
-            expect(pipeline.cancelable?).to be_truthy
+              it 'is cancelable' do
+                expect(pipeline.cancelable?).to be_truthy
+              end
+            end
           end
         end
       end
