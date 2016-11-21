@@ -83,7 +83,8 @@ describe JiraService, models: true do
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password',
-        project_key: 'GitLabProject'
+        project_key: 'GitLabProject',
+        jira_issue_transition_id: "custom-id"
       )
 
       # These stubs are needed to test JiraService#close_issue.
@@ -177,11 +178,10 @@ describe JiraService, models: true do
     end
 
     it "calls the api with jira_issue_transition_id" do
-      @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
       @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @transitions_url).with(
-        body: /this-is-a-custom-id/
+        body: /custom-id/
       ).once
     end
 
