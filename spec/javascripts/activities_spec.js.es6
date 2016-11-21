@@ -35,7 +35,7 @@
   describe('Activities', () => {
     beforeEach(() => {
       fixture.load(fixtureTemplate);
-      new Activities();
+      new gl.Activities();
     });
 
     for(let i = 0; i < filters.length; i++) {
