@@ -261,7 +261,7 @@ describe "Authentication", "routing" do
 end
 
 describe "Groups", "routing" do
-  let(:name) { 'complex.group-name' }
+  let(:name) { 'complex.group-namegit' }
 
   it "to #show" do
     expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
