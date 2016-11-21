@@ -53,8 +53,7 @@
                 data-method="post"
                 rel="nofollow"
                 class="js-manual-action-link">
-                <span class="action-play-icon-container">
-                </span>
+                <span class="action-play-icon-container"></span>
                 <span>
                   {{action.name}}
                 </span>
