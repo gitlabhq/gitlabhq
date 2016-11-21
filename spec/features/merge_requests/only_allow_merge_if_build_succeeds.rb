@@ -43,8 +43,8 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).not_to have_button 'Accept Merge Request'
-          expect(page).to have_content('Please retry the build or push a new commit to fix the failure.')
+          expect(page).to have_button 'Accept Merge Request'
+          expect(page).not_to have_content('Please retry the build or push a new commit to fix the failure.')
         end
       end
 
