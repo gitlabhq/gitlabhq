@@ -1,6 +1,12 @@
 module Gitlab
   module CycleAnalytics
     class ProductionStage < BaseStage
+      def initialize(*args)
+        super(*args)
+
+        @description = "From issue creation until deploy to production"
+      end
+
       def median
         @fetcher.calculate_metric(:production,
                                   Issue.arel_table[:created_at],

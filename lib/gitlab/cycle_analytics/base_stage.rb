@@ -1,6 +1,8 @@
 module Gitlab
   module CycleAnalytics
     class BaseStage
+      attr_reader :stage, :description
+
       def initialize(project:, options:, stage: stage)
         @project = project
         @options = options

@@ -1,6 +1,12 @@
 module Gitlab
   module CycleAnalytics
     class IssueStage < BaseStage
+      def initialize(*args)
+        super(*args)
+
+        @description = "Time before an issue gets scheduled"
+      end
+
       def median
         @fetcher.calculate_metric(:issue,
                                   Issue.arel_table[:created_at],
