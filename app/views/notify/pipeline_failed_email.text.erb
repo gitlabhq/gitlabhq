@@ -22,7 +22,7 @@ Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) had <%= failed.
 Build #<%= build.id %><%= if build.kind_of?(Ci::Build) then " ( #{pipeline_build_url(@pipeline, build)} )" end %>
 Stage: <%= build.stage %>
 Name: <%= build.name %>
-<% if build.kind_of?(Ci::Build) -%>
+<% if build.has_trace? -%>
 Trace: <%= build.trace_with_state(last_lines: 10)[:text] %>
 <% end -%>
 

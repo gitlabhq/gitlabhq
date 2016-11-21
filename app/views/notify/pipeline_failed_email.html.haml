@@ -165,12 +165,11 @@
                                       - when GenericCommitStatus
                                         = build.name
                                   %tr.build-log
-                                    - case build
-                                    - when Ci::Build
+                                    - if build.has_trace?
                                       %td{colspan: "2", style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:0 0 15px;"}
                                         %pre{style: "font-family:Monaco,'Lucida Console','Courier New',Courier,monospace;background-color:#fafafa;border-radius:3px;overflow:hidden;white-space:pre-wrap;word-break:break-all;font-size:13px;line-height:1.4;padding:12px;color:#333333;margin:0;"}
                                           = build.trace_html(last_lines: 10).html_safe
-                                    - when GenericCommitStatus
+                                    - else
                                       %td{colspan: "2"}
         %tr.footer
           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;"}
