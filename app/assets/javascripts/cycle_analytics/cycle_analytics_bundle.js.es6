@@ -30,7 +30,7 @@ $(() => {
     components: {
       'stage-issue-component': gl.cycleAnalytics.StageIssueComponent,
       'stage-plan-component': gl.cycleAnalytics.StagePlanComponent,
-      'stage-code-component': gl .cycleAnalytics.StageCodeComponent,
+      'stage-code-component': gl.cycleAnalytics.StageCodeComponent,
       'stage-test-component': gl.cycleAnalytics.StageTestComponent,
       'stage-review-component': gl.cycleAnalytics.StageReviewComponent,
       'stage-staging-component': gl.cycleAnalytics.StageStagingComponent,
