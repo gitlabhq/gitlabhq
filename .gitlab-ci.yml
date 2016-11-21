@@ -41,9 +41,8 @@ migration paths:
   variables:
     SETUP_DB: "false"
   script:
-    - git checkout HEAD .
-    - git fetch --tags
-    - git checkout v8.5.9
+    - git fetch origin v8.5.9
+    - git checkout -f FETCH_HEAD
     - cp config/resque.yml.example config/resque.yml
     - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) ${FLAGS[@]} --retry=3
