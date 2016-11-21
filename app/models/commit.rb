@@ -234,13 +234,7 @@ class Commit
 
     return @statuses[ref] if @statuses.key?(ref)
 
-    latest_pipeline = if ref
-                        pipelines.latest_for(ref)
-                      else
-                        pipelines.latest
-                      end.first
-
-    @statuses[ref] = latest_pipeline.try(:status)
+    @statuses[ref] = pipelines.latest_for(ref).status
   end
 
   def revert_branch_name

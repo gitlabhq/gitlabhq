@@ -89,13 +89,23 @@ module Ci
       end
     end
 
-    scope :latest, -> { order(id: :desc) }
+    scope :latest, -> do
+      max_id = unscope(:select).select("max(#{quoted_table_name}.id)")
+
+      where(id: max_id.group(:ref, :sha))
+    end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest_for, ->(ref) { where(ref: ref).latest }
+    scope :latest_for, ->(ref) do
+      if ref
+        where(ref: ref)
+      else
+        self
+      end.latest
+    end
 
     def self.latest_successful_for(ref)
-      latest_for(ref).success.first
+      where(ref: ref).order(id: :desc).success.first
     end
 
     def self.truncate_sha(sha)
