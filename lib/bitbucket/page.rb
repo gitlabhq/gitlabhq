@@ -23,7 +23,7 @@ module Bitbucket
     end
 
     def parse_values(raw, representation_class)
-      return [] if raw['values'].nil? || !raw['values'].is_a?(Array)
+      return [] unless raw['values'] && raw['values'].is_a?(Array)
 
       raw['values'].map { |hash| representation_class.new(hash) }
     end
