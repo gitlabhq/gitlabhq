@@ -42,6 +42,7 @@
   - [project_cache, 1]
   - [project_destroy, 1]
   - [project_export, 1]
+  - [project_mirror, 1]
   - [project_web_hook, 1]
   - [repository_check, 1]
   - [system_hook, 1]
