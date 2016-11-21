@@ -12,21 +12,6 @@
         $value = $block.find('.value');
         abilityName = $dropdown.data('ability-name');
         $loading = $block.find('.block-loading').fadeOut();
-
-
-        var renderMethod = function(data) {
-          if (data.weight != null) {
-            $value.html(data.weight);
-          } else {
-            $value.html('None');
-          }
-          return $sidebarCollapsedValue.html(data.weight);
-        };
-
-        if (gl.IssuableResource) {
-          gl.IssuableResource.subscribe(renderMethod);
-        }
-
         updateWeight = function(selected) {
           var data;
           data = {};
@@ -43,7 +28,12 @@
             $dropdown.trigger('loaded.gl.dropdown');
             $loading.fadeOut();
             $selectbox.hide();
-            renderMethod(data);
+            if (data.weight != null) {
+              $value.html(data.weight);
+            } else {
+              $value.html('None');
+            }
+            return $sidebarCollapsedValue.html(data.weight);
           });
         };
         return $dropdown.glDropdown({
