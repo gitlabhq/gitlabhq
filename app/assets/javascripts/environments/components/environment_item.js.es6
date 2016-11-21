@@ -389,11 +389,10 @@
     template: `
       <tr>
         <td v-bind:class="{ 'children-row': isChildren}">
-          <a
-            v-if="!isFolder"
+          <a v-if="!isFolder"
             class="environment-name"
-            :href="model.environment_path"
-            v-html="model.name">
+            :href="model.environment_path">
+            {{model.name}}
           </a>
           <span v-else v-on:click="toggleRow(model)" class="folder-name">
             <span class="folder-icon">
@@ -401,16 +400,19 @@
               <i v-show="!model.isOpen" class="fa fa-caret-right"></i>
             </span>
 
-            <span v-html="model.name"></span>
+            <span>
+              {{model.name}}
+            </span>
 
-            <span class="badge" v-html="childrenCounter"></span>
+            <span class="badge">
+              {{childrenCounter}}
+            </span>
           </span>
         </td>
 
         <td class="deployment-column">
-          <span
-            v-if="shouldRenderDeploymentID"
-            v-html="deploymentInternalId">
+          <span v-if="shouldRenderDeploymentID">
+            {{deploymentInternalId}}
           </span>
 
           <span v-if="!isFolder && deploymentHasUser">
@@ -427,8 +429,8 @@
         <td>
           <a v-if="shouldRenderBuildName"
             class="build-link"
-            :href="model.last_deployment.deployable.build_path"
-            v-html="buildName">
+            :href="model.last_deployment.deployable.build_path">
+            {{buildName}}
           </a>
         </td>
 
@@ -451,8 +453,8 @@
         <td>
           <span
             v-if="!isFolder && model.last_deployment"
-            class="environment-created-date-timeago"
-            v-html="createdDate">
+            class="environment-created-date-timeago">
+            {{createdDate}}
           </span>
         </td>
 
