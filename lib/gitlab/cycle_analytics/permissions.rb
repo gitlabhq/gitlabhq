@@ -2,9 +2,12 @@ module Gitlab
   module CycleAnalytics
     class Permissions
       STAGE_PERMISSIONS = {
-        read_build: [:test, :staging],
-        read_issue: [:issue, :production],
-        read_merge_request: [:code, :review]
+        issue: :read_issue,
+        code: :read_merge_request,
+        test: :read_build,
+        review: :read_merge_request,
+        staging: :read_build,
+        production: :read_issue,
       }.freeze
 
       def self.get(*args)
@@ -30,15 +33,7 @@ module Gitlab
       def authorized_stage?(stage)
         return false unless authorize_project(:read_cycle_analytics)
 
-        permissions_for_stage(stage).keys.each do |permission|
-          return false unless authorize_project(permission)
-        end
-
-        true
-      end
-
-      def permissions_for_stage(stage)
-        STAGE_PERMISSIONS.select { |_permission, stages| stages.include?(stage) }
+        STAGE_PERMISSIONS[stage] ? authorize_project(STAGE_PERMISSIONS[stage]) : true
       end
 
       def authorize_project(permission)
