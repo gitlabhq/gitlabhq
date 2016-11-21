@@ -6,7 +6,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = ::CycleAnalytics.new(@project, from: start_date(cycle_analytics_params))
+    @cycle_analytics = ::CycleAnalytics.new(@project, from: start_date(cycle_analytics_params), user: current_user)
 
     respond_to do |format|
       format.html
@@ -54,7 +54,8 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     {
       summary: summary,
-      stats: stats
+      stats: stats,
+      permissions: @cycle_analytics.permissions
     }
   end
 end

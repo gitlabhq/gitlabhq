@@ -1,12 +1,19 @@
 class CycleAnalytics
-  def initialize(project, from:)
+  STAGES = %i[issue plan code test review staging production].freeze
+
+  def initialize(project, from:, user:)
     @project = project
     @from = from
+    @user = user
     @fetcher = Gitlab::CycleAnalytics::MetricsFetcher.new(project: project, from: from, branch: nil)
   end
 
   def summary
     @summary ||= Summary.new(@project, from: @from)
+  end
+
+  def permissions
+    Gitlab::CycleAnalytics::Permissions.get(user: @user, project: @project)
   end
 
   def issue
