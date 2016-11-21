@@ -144,20 +144,20 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     end
   end
 
-  describe '#valid?' do
+  describe '#pull_request?' do
     context 'when mention a pull request' do
       let(:raw_data) { double(base_data.merge(pull_request: double)) }
 
-      it 'returns false' do
-        expect(issue.valid?).to eq false
+      it 'returns true' do
+        expect(issue.pull_request?).to eq true
       end
     end
 
     context 'when does not mention a pull request' do
       let(:raw_data) { double(base_data.merge(pull_request: nil)) }
 
-      it 'returns true' do
-        expect(issue.valid?).to eq true
+      it 'returns false' do
+        expect(issue.pull_request?).to eq false
       end
     end
   end

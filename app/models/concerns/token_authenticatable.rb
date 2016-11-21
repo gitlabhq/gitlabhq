@@ -4,15 +4,19 @@ module TokenAuthenticatable
   private
 
   def write_new_token(token_field)
-    new_token = generate_token(token_field)
+    new_token = generate_available_token(token_field)
     write_attribute(token_field, new_token)
   end
 
-  def generate_token(token_field)
+  def generate_available_token(token_field)
     loop do
-      token = Devise.friendly_token
+      token = generate_token(token_field)
       break token unless self.class.unscoped.find_by(token_field => token)
     end
+  end
+
+  def generate_token(token_field)
+    Devise.friendly_token
   end
 
   class_methods do

@@ -524,4 +524,78 @@ describe Ci::Pipeline, models: true do
       expect(pipeline.merge_requests).to be_empty
     end
   end
+
+  describe 'notifications when pipeline success or failed' do
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             sha: project.commit('master').sha,
+             user: create(:user))
+    end
+
+    before do
+      reset_delivered_emails!
+
+      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+
+      perform_enqueued_jobs do
+        pipeline.enqueue
+        pipeline.run
+      end
+    end
+
+    shared_examples 'sending a notification' do
+      it 'sends an email' do
+        should_only_email(pipeline.user, kind: :bcc)
+      end
+    end
+
+    shared_examples 'not sending any notification' do
+      it 'does not send any email' do
+        should_not_email_anyone
+      end
+    end
+
+    context 'with success pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.succeed
+        end
+      end
+
+      it_behaves_like 'sending a notification'
+    end
+
+    context 'with failed pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.drop
+        end
+      end
+
+      it_behaves_like 'sending a notification'
+    end
+
+    context 'with skipped pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.skip
+        end
+      end
+
+      it_behaves_like 'not sending any notification'
+    end
+
+    context 'with cancelled pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.cancel
+        end
+      end
+
+      it_behaves_like 'not sending any notification'
+    end
+  end
 end

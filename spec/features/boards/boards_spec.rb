@@ -659,6 +659,10 @@ describe 'Issue Boards', feature: true, js: true do
       wait_for_vue_resource
     end
 
+    it 'displays lists' do
+      expect(page).to have_selector('.board')
+    end
+
     it 'does not show create new list' do
       expect(page).not_to have_selector('.js-new-board-list')
     end

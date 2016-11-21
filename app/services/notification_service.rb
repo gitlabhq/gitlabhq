@@ -75,7 +75,7 @@ class NotificationService
   #  * watchers of the issue's labels
   #
   def relabeled_issue(issue, added_labels, current_user)
-    relabeled_resource_email(issue, added_labels, current_user, :relabeled_issue_email)
+    relabeled_resource_email(issue, issue.project, added_labels, current_user, :relabeled_issue_email)
   end
 
   # When create a merge request we should send an email to:
@@ -118,7 +118,7 @@ class NotificationService
   #  * watchers of the mr's labels
   #
   def relabeled_merge_request(merge_request, added_labels, current_user)
-    relabeled_resource_email(merge_request, added_labels, current_user, :relabeled_merge_request_email)
+    relabeled_resource_email(merge_request, merge_request.target_project, added_labels, current_user, :relabeled_merge_request_email)
   end
 
   def close_mr(merge_request, current_user)
@@ -205,7 +205,7 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, note.project)
 
-    recipients = add_subscribed_users(recipients, note.noteable)
+    recipients = add_subscribed_users(recipients, note.project, note.noteable)
     recipients = reject_unsubscribed_users(recipients, note.noteable)
     recipients = reject_users_without_access(recipients, note.noteable)
 
@@ -312,6 +312,22 @@ class NotificationService
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
+  def pipeline_finished(pipeline, recipients = nil)
+    email_template = "pipeline_#{pipeline.status}_email"
+
+    return unless mailer.respond_to?(email_template)
+
+    recipients ||= build_recipients(
+      pipeline,
+      pipeline.project,
+      nil, # The acting user, who won't be added to recipients
+      action: pipeline.status).map(&:notification_email)
+
+    if recipients.any?
+      mailer.public_send(email_template, pipeline, recipients).deliver_later
+    end
+  end
+
   protected
 
   # Get project/group users with CUSTOM notification level
@@ -377,7 +393,7 @@ class NotificationService
     )
   end
 
-  # Build a list of users based on project notifcation settings
+  # Build a list of users based on project notification settings
   def select_project_member_setting(project, global_setting, users_global_level_watch)
     users = notification_settings_for(project, :watch)
 
@@ -475,26 +491,31 @@ class NotificationService
   end
 
   def reject_users_without_access(recipients, target)
-    return recipients unless target.is_a?(Issuable)
+    ability = case target
+              when Issuable
+                :"read_#{target.to_ability_name}"
+              when Ci::Pipeline
+                :read_build # We have build trace in pipeline emails
+              end
 
-    ability = :"read_#{target.to_ability_name}"
+    return recipients unless ability
 
     recipients.select do |user|
       user.can?(ability, target)
     end
   end
 
-  def add_subscribed_users(recipients, target)
+  def add_subscribed_users(recipients, project, target)
     return recipients unless target.respond_to? :subscribers
 
-    recipients + target.subscribers
+    recipients + target.subscribers(project)
   end
 
-  def add_labels_subscribers(recipients, target, labels: nil)
+  def add_labels_subscribers(recipients, project, target, labels: nil)
     return recipients unless target.respond_to? :labels
 
     (labels || target.labels).each do |label|
-      recipients += label.subscribers
+      recipients += label.subscribers(project)
     end
 
     recipients
@@ -550,8 +571,8 @@ class NotificationService
     end
   end
 
-  def relabeled_resource_email(target, labels, current_user, method)
-    recipients = build_relabeled_recipients(target, current_user, labels: labels)
+  def relabeled_resource_email(target, project, labels, current_user, method)
+    recipients = build_relabeled_recipients(target, project, current_user, labels: labels)
     label_names = labels.map(&:name)
 
     recipients.each do |recipient|
@@ -587,10 +608,10 @@ class NotificationService
     end
 
     recipients = reject_muted_users(recipients, project)
-    recipients = add_subscribed_users(recipients, target)
+    recipients = add_subscribed_users(recipients, project, target)
 
     if [:new_issue, :new_merge_request].include?(custom_action)
-      recipients = add_labels_subscribers(recipients, target)
+      recipients = add_labels_subscribers(recipients, project, target)
     end
 
     recipients = reject_unsubscribed_users(recipients, target)
@@ -601,8 +622,8 @@ class NotificationService
     recipients.uniq
   end
 
-  def build_relabeled_recipients(target, current_user, labels:)
-    recipients = add_labels_subscribers([], target, labels: labels)
+  def build_relabeled_recipients(target, project, current_user, labels:)
+    recipients = add_labels_subscribers([], project, target, labels: labels)
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
     recipients.delete(current_user)
@@ -624,6 +645,6 @@ class NotificationService
   # Build event key to search on custom notification level
   # Check NotificationSetting::EMAIL_EVENTS
   def build_custom_key(action, object)
-    "#{action}_#{object.class.name.underscore}".to_sym
+    "#{action}_#{object.class.model_name.name.underscore}".to_sym
   end
 end

@@ -2,6 +2,9 @@
 redis_config_hash = Gitlab::Redis.params
 redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
 
+# Default is to retry 25 times with exponential backoff. That's too much.
+Sidekiq.default_worker_options = { retry: 3 }
+
 Sidekiq.configure_server do |config|
   config.redis = redis_config_hash
 
@@ -25,6 +28,8 @@ Sidekiq.configure_server do |config|
     end
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
+
+  Gitlab::SidekiqThrottler.execute!
 
   # Database pool should be at least `sidekiq_concurrency` + 2
   # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md

@@ -240,3 +240,21 @@ Example response:
   "branch_name": "newbranch"
 }
 ```
+
+## Delete merged branches
+
+Will delete all branches that are merged into the project's default branch.
+
+```
+DELETE /projects/:id/repository/merged_branches
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of a project |
+
+It returns `200` to indicate deletion of all merged branches was started.
+
+```bash
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/merged_branches"
+```

@@ -35,6 +35,10 @@ of one hour.
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
 
+There is a Rake task to check LDAP configuration. After configuring LDAP
+using the documentation below, see [LDAP check Rake task](../raketasks/check.md#ldap-check)
+for information on the LDAP check Rake task.
+
 >**Note**: In GitLab EE, you can configure multiple LDAP servers to connect to
 one GitLab server.
 
@@ -252,6 +256,24 @@ the LDAP server before any LDAP-protocol data is exchanged but no validation of
 the LDAP server's SSL certificate is performed.
 
 ## Troubleshooting
+
+### Debug LDAP user filter with ldapsearch
+
+This example uses ldapsearch and assumes you are using ActiveDirectory. The
+following query returns the login names of the users that will be allowed to
+log in to GitLab if you configure your own user_filter.
+
+```
+ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "$user_filter" sAMAccountName
+```
+
+- Variables beginning with a `$` refer to a variable from the LDAP section of
+  your configuration file.
+- Replace ldaps:// with ldap:// if you are using the plain authentication method.
+  Port `389` is the default `ldap://` port and `636` is the default `ldaps://`
+  port.
+- We are assuming the password for the bind_dn user is in bind_dn_password.txt.
+
 
 ### Invalid credentials when logging in
 

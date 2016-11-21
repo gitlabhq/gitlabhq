@@ -76,7 +76,7 @@ configuration to move each data location to a subdirectory:
 user['home'] = '/gitlab-data/home'
 git_data_dir '/gitlab-data/git-data'
 gitlab_rails['shared_path'] = '/gitlab-data/shared'
-gitlab_rails['uploads_directory'] = "/gitlab-data/uploads"
+gitlab_rails['uploads_directory'] = '/gitlab-data/uploads'
 gitlab_ci['builds_directory'] = '/gitlab-data/builds'
 ```
 

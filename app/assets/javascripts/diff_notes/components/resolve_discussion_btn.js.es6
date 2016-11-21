@@ -1,6 +1,6 @@
 /* eslint-disable */
-((w) => {
-  w.ResolveDiscussionBtn = Vue.extend({
+(() => {
+  const ResolveDiscussionBtn = Vue.extend({
     props: {
       discussionId: String,
       mergeRequestId: Number,
@@ -54,4 +54,6 @@
       CommentsStore.createDiscussion(this.discussionId, this.canResolve);
     }
   });
-})(window);
+
+  Vue.component('resolve-discussion-btn', ResolveDiscussionBtn);
+})();

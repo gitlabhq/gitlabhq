@@ -23,6 +23,10 @@
   color: $md-link-color;
 }
 
+.private-tokens-reset div.reset-action:not(:first-child) {
+  padding-top: 15px;
+}
+
 .oauth-buttons {
   .btn-group {
     margin-right: 10px;

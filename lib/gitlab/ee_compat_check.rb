@@ -2,39 +2,38 @@
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
   class EeCompatCheck
+    CE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ce.git'.freeze
     EE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
+    CHECK_DIR = Rails.root.join('ee_compat_check')
+    MAX_FETCH_DEPTH = 500
+    IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
 
-    attr_reader :ce_branch, :check_dir, :ce_repo
+    attr_reader :repo_dir, :patches_dir, :ce_repo, :ce_branch
 
-    def initialize(branch:, check_dir:, ce_repo: nil)
+    def initialize(branch:, ce_repo: CE_REPO)
+      @repo_dir = CHECK_DIR.join('repo')
+      @patches_dir = CHECK_DIR.join('patches')
       @ce_branch = branch
-      @check_dir = check_dir
-      @ce_repo = ce_repo || 'https://gitlab.com/gitlab-org/gitlab-ce.git'
+      @ce_repo = ce_repo
     end
 
     def check
       ensure_ee_repo
-      delete_patches
+      ensure_patches_dir
 
       generate_patch(ce_branch, ce_patch_full_path)
 
-      Dir.chdir(check_dir) do
-        step("In the #{check_dir} directory")
-
-        step("Pulling latest master", %w[git pull --ff-only origin master])
+      Dir.chdir(repo_dir) do
+        step("In the #{repo_dir} directory")
 
         status = catch(:halt_check) do
           ce_branch_compat_check!
-
-          delete_ee_branch_locally
-
+          delete_ee_branch_locally!
           ee_branch_presence_check!
-
           ee_branch_compat_check!
         end
 
-        delete_ee_branch_locally
-        delete_patches
+        delete_ee_branch_locally!
 
         if status.nil?
           true
@@ -47,20 +46,43 @@ module Gitlab
     private
 
     def ensure_ee_repo
-      if Dir.exist?(check_dir)
-        step("#{check_dir} already exists")
+      if Dir.exist?(repo_dir)
+        step("#{repo_dir} already exists")
       else
-        cmd = %W[git clone --branch master --single-branch --depth 1 #{EE_REPO} #{check_dir}]
-        step("Cloning #{EE_REPO} into #{check_dir}", cmd)
+        cmd = %W[git clone --branch master --single-branch --depth 200 #{EE_REPO} #{repo_dir}]
+        step("Cloning #{EE_REPO} into #{repo_dir}", cmd)
       end
     end
 
-    def ce_branch_compat_check!
-      cmd = %W[git apply --check #{ce_patch_full_path}]
-      status = step("Checking if #{ce_patch_name} applies cleanly to EE/master", cmd)
+    def ensure_patches_dir
+      FileUtils.mkdir_p(patches_dir)
+    end
 
-      if status.zero?
-        puts ce_applies_cleanly_msg(ce_branch)
+    def generate_patch(branch, patch_path)
+      FileUtils.rm(patch_path, force: true)
+
+      depth = 0
+      loop do
+        depth += 50
+        cmd = %W[git fetch --depth #{depth} origin --prune +refs/heads/master:refs/remotes/origin/master]
+        Gitlab::Popen.popen(cmd)
+        _, status = Gitlab::Popen.popen(%w[git merge-base FETCH_HEAD HEAD])
+
+        raise "#{branch} is too far behind master, please rebase it!" if depth >= MAX_FETCH_DEPTH
+        break if status.zero?
+      end
+
+      step("Generating the patch against master in #{patch_path}")
+      output, status = Gitlab::Popen.popen(%w[git format-patch FETCH_HEAD --stdout])
+      throw(:halt_check, :ko) unless status.zero?
+
+      File.write(patch_path, output)
+      throw(:halt_check, :ko) unless File.exist?(patch_path)
+    end
+
+    def ce_branch_compat_check!
+      if check_patch(ce_patch_full_path).zero?
+        puts applies_cleanly_msg(ce_branch)
         throw(:halt_check)
       end
     end
@@ -80,10 +102,8 @@ module Gitlab
       step("Checking out origin/#{ee_branch}", %W[git checkout -b #{ee_branch} FETCH_HEAD])
 
       generate_patch(ee_branch, ee_patch_full_path)
-      cmd = %W[git apply --check #{ee_patch_full_path}]
-      status = step("Checking if #{ee_patch_name} applies cleanly to EE/master", cmd)
 
-      unless status.zero?
+      unless check_patch(ee_patch_full_path).zero?
         puts
         puts ee_branch_doesnt_apply_cleanly_msg
 
@@ -91,42 +111,41 @@ module Gitlab
       end
 
       puts
-      puts ee_applies_cleanly_msg
+      puts applies_cleanly_msg(ee_branch)
     end
 
-    def generate_patch(branch, filepath)
-      FileUtils.rm(filepath, force: true)
+    def check_patch(patch_path)
+      step("Checking out master", %w[git checkout master])
+      step("Reseting to latest master", %w[git reset --hard origin/master])
 
-      depth = 0
-      loop do
-        depth += 10
-        step("Fetching origin/master", %W[git fetch origin master --depth=#{depth}])
-        status = step("Finding merge base with master", %W[git merge-base FETCH_HEAD #{branch}])
+      step("Checking if #{patch_path} applies cleanly to EE/master")
+      output, status = Gitlab::Popen.popen(%W[git apply --check #{patch_path}])
 
-        break if status.zero? || depth > 500
+      unless status.zero?
+        failed_files = output.lines.reduce([]) do |memo, line|
+          if line.start_with?('error: patch failed:')
+            file = line.sub(/\Aerror: patch failed: /, '')
+            memo << file unless file =~ IGNORED_FILES_REGEX
+          end
+          memo
+        end
+
+        if failed_files.empty?
+          status = 0
+        else
+          puts "\nConflicting files:"
+          failed_files.each do |file|
+            puts "  - #{file}"
+          end
+        end
       end
 
-      raise "#{branch} is too far behind master, please rebase it!" if depth > 500
-
-      step("Generating the patch against master")
-      output, status = Gitlab::Popen.popen(%w[git format-patch FETCH_HEAD --stdout])
-      throw(:halt_check, :ko) unless status.zero?
-
-      File.write(filepath, output)
-      throw(:halt_check, :ko) unless File.exist?(filepath)
+      status
     end
 
-    def delete_ee_branch_locally
+    def delete_ee_branch_locally!
       command(%w[git checkout master])
       step("Deleting the local #{ee_branch} branch", %W[git branch -D #{ee_branch}])
-    end
-
-    def delete_patches
-      step("Deleting #{ce_patch_full_path}")
-      FileUtils.rm(ce_patch_full_path, force: true)
-
-      step("Deleting #{ee_patch_full_path}")
-      FileUtils.rm(ee_patch_full_path, force: true)
     end
 
     def ce_patch_name
@@ -134,7 +153,7 @@ module Gitlab
     end
 
     def ce_patch_full_path
-      @ce_patch_full_path ||= File.expand_path(ce_patch_name, check_dir)
+      @ce_patch_full_path ||= patches_dir.join(ce_patch_name)
     end
 
     def ee_branch
@@ -146,15 +165,18 @@ module Gitlab
     end
 
     def ee_patch_full_path
-      @ee_patch_full_path ||= File.expand_path(ee_patch_name, check_dir)
+      @ee_patch_full_path ||= patches_dir.join(ee_patch_name)
     end
 
     def step(desc, cmd = nil)
       puts "\n=> #{desc}\n"
 
       if cmd
+        start = Time.now
         puts "\n$ #{cmd.join(' ')}"
-        command(cmd)
+        status = command(cmd)
+        puts "\nFinished in #{Time.now - start} seconds"
+        status
       end
     end
 
@@ -165,12 +187,12 @@ module Gitlab
       status
     end
 
-    def ce_applies_cleanly_msg(ce_branch)
+    def applies_cleanly_msg(branch)
       <<-MSG.strip_heredoc
         =================================================================
         🎉 Congratulations!! 🎉
 
-        The #{ce_branch} branch applies cleanly to EE/master!
+        The #{branch} branch applies cleanly to EE/master!
 
         Much ❤️!!
         =================================================================\n
@@ -211,7 +233,7 @@ module Gitlab
 
           # In the EE repo
           $ git fetch origin
-          $ git checkout -b #{ee_branch} FETCH_HEAD
+          $ git checkout -b #{ee_branch} origin/master
           $ git fetch #{ce_repo} #{ce_branch}
           $ git cherry-pick SHA # Repeat for all the commits you want to pick
 
@@ -242,18 +264,6 @@ module Gitlab
         retry this build.
 
         Stay 💪 !
-        =================================================================\n
-      MSG
-    end
-
-    def ee_applies_cleanly_msg
-      <<-MSG.strip_heredoc
-        =================================================================
-        🎉 Congratulations!! 🎉
-
-        The #{ee_branch} branch applies cleanly to EE/master!
-
-        Much ❤️!!
         =================================================================\n
       MSG
     end

@@ -1,0 +1,4 @@
+---
+title: Fix expanding a collapsed diff when converting a symlink to a regular file
+merge_request: 6953
+author:

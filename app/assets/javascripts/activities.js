@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-undef, quotes, no-var, padded-blocks, max-len */
 (function() {
   this.Activities = (function() {
     function Activities() {
@@ -13,12 +13,12 @@
     }
 
     Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
+      gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
     };
 
     Activities.prototype.reloadActivities = function() {
       $(".content_list").html('');
-      return Pager.init(20, true);
+      Pager.init(20, true, false, this.updateTooltips);
     };
 
     Activities.prototype.toggleFilter = function(sender) {

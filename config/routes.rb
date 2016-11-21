@@ -2,12 +2,6 @@ require 'sidekiq/web'
 require 'sidekiq/cron/web'
 require 'api/api'
 
-class ActionDispatch::Routing::Mapper
-  def draw(routes_name)
-    instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
-  end
-end
-
 Rails.application.routes.draw do
   concern :access_requestable do
     post :request_access, on: :collection

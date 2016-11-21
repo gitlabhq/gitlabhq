@@ -38,7 +38,6 @@
   text-align: left;
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
-  outline: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -53,6 +52,10 @@
       font-size: 16px;
       margin-top: -8px;
     }
+  }
+
+  &.no-outline {
+    outline: 0;
   }
 
   &:hover, {

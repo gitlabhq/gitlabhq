@@ -81,6 +81,12 @@ module Ci
           PipelineHooksWorker.perform_async(id)
         end
       end
+
+      after_transition any => [:success, :failed] do |pipeline|
+        pipeline.run_after_commit do
+          PipelineNotificationWorker.perform_async(pipeline.id)
+        end
+      end
     end
 
     scope :latest, -> { order(id: :desc) }
@@ -111,6 +117,11 @@ module Ci
 
     def project_id
       project.id
+    end
+
+    # For now the only user who participates is the user who triggered
+    def participants(_current_user = nil)
+      Array(user)
     end
 
     def valid_commit_sha

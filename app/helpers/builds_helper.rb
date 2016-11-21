@@ -5,4 +5,14 @@ module BuildsHelper
     build_class += ' retried' if build.retried?
     build_class
   end
+
+  def javascript_build_options
+    {
+      page_url: namespace_project_build_url(@project.namespace, @project, @build),
+      build_url: namespace_project_build_url(@project.namespace, @project, @build, :json),
+      build_status: @build.status,
+      build_stage: @build.stage,
+      state1: @build.trace_with_state[:state]
+    }
+  end
 end

@@ -53,7 +53,7 @@ module API
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs = declared(params)
+        attrs = declared_params
         attrs[:source_branch] = attrs[:branch_name]
         attrs[:target_branch] = attrs[:branch_name]
         attrs[:actions].map! do |action|

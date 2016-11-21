@@ -1,5 +1,7 @@
 module Gitlab
   module IncomingEmail
+    WILDCARD_PLACEHOLDER = '%{key}'.freeze
+
     class << self
       FALLBACK_MESSAGE_ID_REGEX = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\Z/.freeze
 
@@ -7,8 +9,16 @@ module Gitlab
         config.enabled && config.address
       end
 
+      def supports_wildcard?
+        config.address && config.address.include?(WILDCARD_PLACEHOLDER)
+      end
+
+      def supports_issue_creation?
+        enabled? && supports_wildcard?
+      end
+
       def reply_address(key)
-        config.address.gsub('%{key}', key)
+        config.address.gsub(WILDCARD_PLACEHOLDER, key)
       end
 
       def key_from_address(address)

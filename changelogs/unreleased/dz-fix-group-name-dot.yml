@@ -1,0 +1,4 @@
+---
+title: Fix 404 on some group pages when name contains dot
+merge_request: 7614
+author: 

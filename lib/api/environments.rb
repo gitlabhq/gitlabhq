@@ -32,8 +32,7 @@ module API
       post ':id/environments' do
         authorize! :create_environment, user_project
 
-        create_params = declared(params, include_parent_namespaces: false).to_h
-        environment = user_project.environments.create(create_params)
+        environment = user_project.environments.create(declared_params)
 
         if environment.persisted?
           present environment, with: Entities::Environment
@@ -55,8 +54,8 @@ module API
         authorize! :update_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
-        
-        update_params = declared(params, include_missing: false).extract!(:name, :external_url).to_h
+
+        update_params = declared_params(include_missing: false).extract!(:name, :external_url)
         if environment.update(update_params)
           present environment, with: Entities::Environment
         else

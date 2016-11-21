@@ -7,19 +7,10 @@ highly available.
 
 ## Architecture
 
-### Active/Passive
+There are two kinds of setups:
 
-For pure high-availability/failover with no scaling you can use an
-active/passive configuration. This utilizes DRBD (Distributed Replicated
-Block Device) to keep all data in sync. DRBD requires a low latency link to
-remain in sync. It is not advisable to attempt to run DRBD between data centers
-or in different cloud availability zones.
-
-Components/Servers Required:
-
-- 2 servers/virtual machines (one active/one passive)
-
-![Active/Passive HA Diagram](../img/high_availability/active-passive-diagram.png)
+- active/active
+- active/passive
 
 ### Active/Active
 
@@ -28,12 +19,24 @@ user requests simultaneously. The database, Redis, and GitLab application are
 all deployed on separate servers. The configuration is **only** highly-available
 if the database, Redis and storage are also configured as such.
 
-![Active/Active HA Diagram](../img/high_availability/active-active-diagram.png)
-
-**Steps to configure active/active:**
+Follow the steps below to configure an active/active setup:
 
 1. [Configure the database](database.md)
 1. [Configure Redis](redis.md)
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
+
+![Active/Active HA Diagram](../img/high_availability/active-active-diagram.png)
+
+### Active/Passive
+
+For pure high-availability/failover with no scaling you can use an
+active/passive configuration. This utilizes DRBD (Distributed Replicated
+Block Device) to keep all data in sync. DRBD requires a low latency link to
+remain in sync. It is not advisable to attempt to run DRBD between data centers
+or in different cloud availability zones.
+
+Components/Servers Required: 2 servers/virtual machines (one active/one passive)
+
+![Active/Passive HA Diagram](../img/high_availability/active-passive-diagram.png)

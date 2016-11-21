@@ -1,6 +1,6 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, indent, quote-props, no-var, padded-blocks, max-len */
 /*= require merge_request_widget */
-/*= require jquery.timeago.js */
+/*= require lib/utils/timeago.js */
 
 (function() {
   describe('MergeRequestWidget', function() {
@@ -35,9 +35,9 @@
           external_url_formatted: 'test-url.com'
         }];
 
-        spyOn(jQuery, 'getJSON').and.callFake((req, cb) => {
+        spyOn(jQuery, 'getJSON').and.callFake(function(req, cb) {
           cb(this.ciEnvironmentsStatusData);
-        });
+        }.bind(this));
       });
 
       it('should call renderEnvironments when the environments property is set', function() {

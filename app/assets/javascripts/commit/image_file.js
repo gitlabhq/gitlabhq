@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, padded-blocks, max-len */
 (function() {
   this.ImageFile = (function() {
     var prepareFrames;

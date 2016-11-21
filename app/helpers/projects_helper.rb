@@ -49,7 +49,7 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project, name = nil, url = nil)
+  def project_title(project)
     namespace_link =
       if project.group
         link_to(simple_sanitize(project.group.name), group_path(project.group))
@@ -66,10 +66,7 @@ module ProjectsHelper
       end
     end
 
-    full_title = "#{namespace_link} / #{project_link}".html_safe
-    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
-
-    full_title
+    "#{namespace_link} / #{project_link}".html_safe
   end
 
   def remove_project_message(project)

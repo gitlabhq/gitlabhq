@@ -21,10 +21,6 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   def authenticate_user
     @authentication_result = Gitlab::Auth::Result.new
 
-    if project && project.public? && download_request?
-      return # Allow access
-    end
-
     if allow_basic_auth? && basic_auth_provided?
       login, password = user_name_and_password(request)
 
@@ -41,6 +37,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         send_final_spnego_response
         return # Allow access
       end
+    elsif project && download_request? && Guest.can?(:download_code, project)
+      @authentication_result = Gitlab::Auth::Result.new(nil, project, :none, [:download_code])
+
+      return # Allow access
     end
 
     send_challenges

@@ -1,0 +1,44 @@
+.board-list-component
+  .board-list-loading.text-center{ "v-if" => "loading" }
+    = icon("spinner spin")
+  - if can? current_user, :create_issue, @project
+    %board-new-issue{ "inline-template" => true,
+      ":list" => "list",
+      "v-if" => 'list.type !== "done" && showIssueForm' }
+      .card.board-new-issue-form
+        %form{ "@submit" => "submit($event)" }
+          .flash-container{ "v-if" => "error" }
+            .flash-alert
+              An error occured. Please try again.
+          %label.label-light{ ":for" => 'list.id + "-title"' }
+            Title
+          %input.form-control{ type: "text",
+            "v-model" => "title",
+            "ref" => "input",
+            ":id" => 'list.id + "-title"' }
+          .clearfix.prepend-top-10
+            %button.btn.btn-success.pull-left{ type: "submit",
+              ":disabled" => 'title === ""',
+              "ref" => "submit-button" }
+              Submit issue
+            %button.btn.btn-default.pull-right{ type: "button",
+              "@click" => "cancel" }
+              Cancel
+  %ul.board-list{ "ref" => "list",
+    "v-show" => "!loading",
+    ":data-board" => "list.id",
+    ":class" => '{ "is-smaller": showIssueForm }' }
+    %board-card{ "v-for" => "(issue, index) in orderedIssues",
+      "ref" => "issue",
+      ":index" => "index",
+      ":list" => "list",
+      ":issue" => "issue",
+      ":issue-link-base" => "issueLinkBase",
+      ":disabled" => "disabled",
+      "key" => "id" }
+    %li.board-list-count.text-center{ "v-if" => "showCount" }
+      = icon("spinner spin", "v-show" => "list.loadingMore" )
+      %span{ "v-if" => "list.issues.length === list.issuesSize" }
+        Showing all issues
+      %span{ "v-else" => true }
+        Showing {{ list.issues.length }} of {{ list.issuesSize }} issues

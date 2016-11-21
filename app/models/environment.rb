@@ -37,6 +37,10 @@ class Environment < ActiveRecord::Base
     state :stopped
   end
 
+  def recently_updated_on_branch?(ref)
+    ref.to_s == last_deployment.try(:ref)
+  end
+
   def last_deployment
     deployments.last
   end
@@ -92,6 +96,7 @@ class Environment < ActiveRecord::Base
   def stop!(current_user)
     return unless stoppable?
 
+    stop
     stop_action.play(current_user)
   end
 end

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, max-len, one-var, camelcase, one-var-declaration-per-line, no-unused-vars, no-unused-expressions, no-sequences, object-shorthand, comma-dangle, prefer-arrow-callback, semi, radix, padded-blocks, max-len */
 (function() {
   this.Diff = (function() {
     var UNFOLD_COUNT;
@@ -43,10 +43,6 @@
             bottom: unfoldBottom,
             offset: offset,
             unfold: unfold,
-            // indent is used to compensate for single space indent to fit
-            // '+' and '-' prepended to diff lines,
-            // see https://gitlab.com/gitlab-org/gitlab-ce/issues/707
-            indent: 1,
             view: file.data('view')
           };
           return $.get(link, params, function(response) {

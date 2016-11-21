@@ -25,9 +25,9 @@
         %a{href: "##{line_code}", data: { linenumber: link_text }}
     %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }<
       - if email
-        %pre= diff_line_content(line.text, type)
+        %pre= diff_line_content(line.text)
       - else
-        = diff_line_content(line.text, type)
+        = diff_line_content(line.text)
 
 - discussions = local_assigns.fetch(:discussions, nil)
 - if discussions && !line.meta?

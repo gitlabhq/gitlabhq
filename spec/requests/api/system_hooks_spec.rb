@@ -52,6 +52,12 @@ describe API::API, api: true  do
       expect(response).to have_http_status(400)
     end
 
+    it "responds with 400 if url is invalid" do
+      post api("/hooks", admin), url: 'hp://mep.mep'
+
+      expect(response).to have_http_status(400)
+    end
+
     it "does not create new hook without url" do
       expect do
         post api("/hooks", admin)

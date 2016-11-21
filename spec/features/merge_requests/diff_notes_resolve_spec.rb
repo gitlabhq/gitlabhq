@@ -69,8 +69,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
         page.within '.diff-content .note' do
           expect(page).to have_selector('.line-resolve-btn.is-active')
-
-          expect(find('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.line-resolve-all-container' do
@@ -203,7 +201,7 @@ feature 'Diff notes resolve', feature: true, js: true do
           expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
-        expect(page).to have_content('Last updated')
+        expect(page).not_to have_content('Last updated')
 
         page.within '.line-resolve-all-container' do
           expect(page).to have_content('0/1 discussion resolved')

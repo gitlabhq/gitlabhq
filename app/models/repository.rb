@@ -15,16 +15,6 @@ class Repository
     Gitlab.config.repositories.storages
   end
 
-  def self.remove_storage_from_path(repo_path)
-    storages.find do |_, storage_path|
-      if repo_path.start_with?(storage_path)
-        return repo_path.sub(storage_path, '')
-      end
-    end
-
-    repo_path
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -84,15 +74,17 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+
     commit =
       if ref.is_a?(Gitlab::Git::Commit)
         ref
       else
         Gitlab::Git::Commit.find(raw_repository, ref)
       end
+
     commit = ::Commit.new(commit, @project) if commit
     commit
-  rescue Rugged::OdbError
+  rescue Rugged::OdbError, Rugged::TreeError
     nil
   end
 
@@ -184,11 +176,18 @@ class Repository
 
     options = { message: message, tagger: user_to_committer(user) } if message
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-      rugged.tags.create(tag_name, target, options)
+    rugged.tags.create(tag_name, target, options)
+    tag = find_tag(tag_name)
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, tag.target, ref) do
+      # we already created a tag, because we need tag SHA to pass correct
+      # values to hooks
     end
 
-    find_tag(tag_name)
+    tag
+  rescue GitHooksService::PreReceiveError
+    rugged.tags.delete(tag_name)
+    raise
   end
 
   def rm_branch(user, branch_name)
@@ -232,6 +231,8 @@ class Repository
 
   def ref_exists?(ref)
     rugged.references.exist?(ref)
+  rescue Rugged::ReferenceError
+    false
   end
 
   def update_ref!(name, newrev, oldrev)
@@ -239,7 +240,7 @@ class Repository
     # offer 'compare and swap' ref updates. Without compare-and-swap we can
     # (and have!) accidentally reset the ref to an earlier state, clobbering
     # commits. See also https://github.com/libgit2/libgit2/issues/1534.
-    command = %w[git update-ref --stdin -z]
+    command = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
     _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
       stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
     end
@@ -270,11 +271,7 @@ class Repository
   end
 
   def kept_around?(sha)
-    begin
-      ref_exists?(keep_around_ref_name(sha))
-    rescue Rugged::ReferenceError
-      false
-    end
+    ref_exists?(keep_around_ref_name(sha))
   end
 
   def tag_names
@@ -631,7 +628,7 @@ class Repository
     @head_tree ||= Tree.new(self, head_commit.sha, nil)
   end
 
-  def tree(sha = :head, path = nil)
+  def tree(sha = :head, path = nil, recursive: false)
     if sha == :head
       if path.nil?
         return head_tree
@@ -640,7 +637,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path)
+    Tree.new(self, sha, path, recursive: recursive)
   end
 
   def blob_at_branch(branch_name, path)
@@ -1063,10 +1060,23 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-  def search_files(query, ref)
+  def empty_repo?
+    !exists? || !has_visible_content?
+  end
+
+  def search_files_by_content(query, ref)
+    return [] if empty_repo? || query.blank?
+
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+  end
+
+  def search_files_by_name(query, ref)
+    return [] if empty_repo? || query.blank?
+
+    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

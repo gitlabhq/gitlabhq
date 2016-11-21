@@ -20,56 +20,61 @@ Example response:
 
 ```json
 [
-   {
-      "name" : "bug",
-      "color" : "#d9534f",
-      "description": "Bug reported by user",
-      "open_issues_count": 1,
-      "closed_issues_count": 0,
-      "open_merge_requests_count": 1,
-      "subscribed": false,
-      "priority": 10
-   },
-   {
-      "color" : "#d9534f",
-      "name" : "confirmed",
-      "description": "Confirmed issue",
-      "open_issues_count": 2,
-      "closed_issues_count": 5,
-      "open_merge_requests_count": 0,
-      "subscribed": false,
-      "priority": null
-   },
-   {
-      "name" : "critical",
-      "color" : "#d9534f",
-      "description": "Critical issue. Need fix ASAP",
-      "open_issues_count": 1,
-      "closed_issues_count": 3,
-      "open_merge_requests_count": 1,
-      "subscribed": false,
-      "priority": null
-   },
-   {
-      "name" : "documentation",
-      "color" : "#f0ad4e",
-      "description": "Issue about documentation",
-      "open_issues_count": 1,
-      "closed_issues_count": 0,
-      "open_merge_requests_count": 2,
-      "subscribed": false,
-      "priority": null
-   },
-   {
-      "color" : "#5cb85c",
-      "name" : "enhancement",
-      "description": "Enhancement proposal",
-      "open_issues_count": 1,
-      "closed_issues_count": 0,
-      "open_merge_requests_count": 1,
-      "subscribed": false,
-      "priority": null
-   }
+  {
+    "id" : 1,
+    "name" : "bug",
+    "color" : "#d9534f",
+    "description": "Bug reported by user",
+    "open_issues_count": 1,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 1,
+    "subscribed": false,
+    "priority": 10
+  },
+  {
+    "id" : 4,
+    "color" : "#d9534f",
+    "name" : "confirmed",
+    "description": "Confirmed issue",
+    "open_issues_count": 2,
+    "closed_issues_count": 5,
+    "open_merge_requests_count": 0,
+    "subscribed": false,
+    "priority": null
+  },
+  {
+    "id" : 7,
+    "name" : "critical",
+    "color" : "#d9534f",
+    "description": "Critical issue. Need fix ASAP",
+    "open_issues_count": 1,
+    "closed_issues_count": 3,
+    "open_merge_requests_count": 1,
+    "subscribed": false,
+    "priority": null
+  },
+  {
+    "id" : 8,
+    "name" : "documentation",
+    "color" : "#f0ad4e",
+    "description": "Issue about documentation",
+    "open_issues_count": 1,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 2,
+    "subscribed": false,
+    "priority": null
+  },
+  {
+    "id" : 9,
+    "color" : "#5cb85c",
+    "name" : "enhancement",
+    "description": "Enhancement proposal",
+    "open_issues_count": 1,
+    "closed_issues_count": 0,
+    "open_merge_requests_count": 1,
+    "subscribed": true,
+    "priority": null
+  }
 ]
 ```
 
@@ -100,13 +105,15 @@ Example response:
 
 ```json
 {
-   "name" : "feature",
-   "color" : "#5843AD",
-   "open_issues_count": 1,
-   "closed_issues_count": 0,
-   "open_merge_requests_count": 1,
-   "description": null,
-   "priority": null
+  "id" : 10,
+  "name" : "feature",
+  "color" : "#5843AD",
+  "description":null,
+  "open_issues_count": 0,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 0,
+  "subscribed": false,
+  "priority": null
 }
 ```
 
@@ -135,15 +142,15 @@ Example response:
 
 ```json
 {
-   "title" : "feature",
-   "color" : "#5843AD",
-   "description": "New feature proposal",
-   "updated_at" : "2015-11-03T21:22:30.737Z",
-   "template" : false,
-   "project_id" : 1,
-   "created_at" : "2015-11-03T21:22:30.737Z",
-   "id" : 9,
-   "priority": null
+  "id" : 1,
+  "name" : "bug",
+  "color" : "#d9534f",
+  "description": "Bug reported by user",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 1,
+  "subscribed": false,
+  "priority": null
 }
 ```
 
@@ -178,13 +185,15 @@ Example response:
 
 ```json
 {
-   "color" : "#8E44AD",
-   "name" : "docs",
-   "description": "Documentation",
-   "open_issues_count": 1,
-   "closed_issues_count": 0,
-   "open_merge_requests_count": 1,
-   "priority": null
+  "id" : 8,
+  "name" : "docs",
+  "color" : "#8E44AD",
+  "description": "Documentation",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 2,
+  "subscribed": false,
+  "priority": null
 }
 ```
 
@@ -213,14 +222,15 @@ Example response:
 
 ```json
 {
-    "name": "Docs",
-    "color": "#cc0033",
-    "description": "",
-    "open_issues_count": 0,
-    "closed_issues_count": 0,
-    "open_merge_requests_count": 0,
-    "subscribed": true,
-    "priority": null
+  "id" : 1,
+  "name" : "bug",
+  "color" : "#d9534f",
+  "description": "Bug reported by user",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 1,
+  "subscribed": true,
+  "priority": null
 }
 ```
 
@@ -249,13 +259,14 @@ Example response:
 
 ```json
 {
-    "name": "Docs",
-    "color": "#cc0033",
-    "description": "",
-    "open_issues_count": 0,
-    "closed_issues_count": 0,
-    "open_merge_requests_count": 0,
-    "subscribed": false,
-    "priority": null
+  "id" : 1,
+  "name" : "bug",
+  "color" : "#d9534f",
+  "description": "Bug reported by user",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 1,
+  "subscribed": false,
+  "priority": null
 }
 ```

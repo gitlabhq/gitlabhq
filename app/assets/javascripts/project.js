@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, consistent-return, no-undef, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-else-return, newline-per-chained-call, no-shadow, semi, vars-on-top, indent, prefer-template, padded-blocks, max-len */
 (function() {
   this.Project = (function() {
     function Project() {

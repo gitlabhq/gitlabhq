@@ -58,7 +58,7 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def render_new_with_error(empty_project_ids)
     @milestone = Milestone.new(milestone_params)
-    @milestone.errors.add(:project_id, "Please select at least one project.") if empty_project_ids
+    @milestone.errors.add(:base, "Please select at least one project.") if empty_project_ids
     render :new
   end
 

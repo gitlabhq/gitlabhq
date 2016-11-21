@@ -1,6 +1,7 @@
 - label_css_id = dom_id(label)
 - open_issues_count = label.open_issues_count(current_user)
 - open_merge_requests_count = label.open_merge_requests_count(current_user)
+- status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 
 %li{id: label_css_id, data: { id: label.id } }
@@ -18,10 +19,19 @@
         %li
           = link_to_label(label, subject: subject) do
             = pluralize open_issues_count, 'open issue'
-        - if current_user
-          %li.label-subscription{ data: toggle_subscription_data(label) }
-            %a.js-subscribe-button.label-subscribe-button.subscription-status{ role: "button", href: "#", data: { toggle: "tooltip", status: label_subscription_status(label) } }
-              %span= label_subscription_toggle_button_text(label)
+        - if current_user && defined?(@project)
+          %li.label-subscription
+            - if label.is_a?(ProjectLabel)
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', data: { status: status, url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                %span= label_subscription_toggle_button_text(label, @project)
+            - else
+              %a.js-unsubscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' if status.unsubscribed?), data: { url: group_label_unsubscribe_path(label, @project) } }
+                %span Unsubscribe
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                %span Subscribe at project level
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
+                %span Subscribe at group level
+
         - if can?(current_user, :admin_label, label)
           %li
             = link_to 'Edit', edit_label_path(label)
@@ -34,12 +44,27 @@
     = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
       = pluralize open_issues_count, 'open issue'
 
-    - if current_user
-      .label-subscription.inline{ data: toggle_subscription_data(label) }
-        %button.js-subscribe-button.label-subscribe-button.btn.btn-transparent.btn-action.subscription-status{ type: "button", title: label_subscription_toggle_button_text(label), data: { toggle: "tooltip", status: label_subscription_status(label) } }
-          %span.sr-only= label_subscription_toggle_button_text(label)
-          = icon('eye', class: 'label-subscribe-button-icon', disabled: label.is_a?(GroupLabel))
-          = icon('spinner spin', class: 'label-subscribe-button-loading')
+    - if current_user && defined?(@project)
+      .label-subscription.inline
+        - if label.is_a?(ProjectLabel)
+          %button.js-subscribe-button.label-subscribe-button.btn.btn-default.btn-action{ type: 'button', title: label_subscription_toggle_button_text(label, @project), data: { toggle: 'tooltip', status: status, url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+            %span= label_subscription_toggle_button_text(label, @project)
+            = icon('spinner spin', class: 'label-subscribe-button-loading')
+        - else
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default.btn-action{ type: 'button', class: ('hidden' if status.unsubscribed?), title: 'Unsubscribe', data: { toggle: 'tooltip', url: group_label_unsubscribe_path(label, @project) } }
+            %span Unsubscribe
+            = icon('spinner spin', class: 'label-subscribe-button-loading')
+
+          .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
+            %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+              %span Subscribe
+              = icon('chevron-down')
+            %ul.dropdown-menu
+              %li
+                %a.js-subscribe-button{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                  Project level
+                %a.js-subscribe-button{ data: { url: toggle_subscription_group_label_path(label.group, label) } }
+                  Group level
 
     - if can?(current_user, :admin_label, label)
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
@@ -49,6 +74,10 @@
         %span.sr-only Delete
         = icon('trash-o')
 
-  - if current_user && label.is_a?(ProjectLabel)
-    :javascript
-      new Subscription('##{dom_id(label)} .label-subscription');
+  - if current_user && defined?(@project)
+    - if label.is_a?(ProjectLabel)
+      :javascript
+        new gl.ProjectLabelSubscription('##{dom_id(label)} .label-subscription');
+    - else
+      :javascript
+        new gl.GroupLabelSubscription('##{dom_id(label)} .label-subscription');

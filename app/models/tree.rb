@@ -3,15 +3,16 @@ class Tree
 
   attr_accessor :repository, :sha, :path, :entries
 
-  def initialize(repository, sha, path = '/')
+  def initialize(repository, sha, path = '/', recursive: false)
     path = '/' if path.blank?
 
     @repository = repository
     @sha = sha
     @path = path
+    @recursive = recursive
 
     git_repo = @repository.raw_repository
-    @entries = Gitlab::Git::Tree.where(git_repo, @sha, @path)
+    @entries = get_entries(git_repo, @sha, @path, recursive: @recursive)
   end
 
   def readme
@@ -57,5 +58,22 @@ class Tree
 
   def sorted_entries
     trees + blobs + submodules
+  end
+
+  private
+
+  def get_entries(git_repo, sha, path, recursive: false)
+    current_path_entries = Gitlab::Git::Tree.where(git_repo, sha, path)
+    ordered_entries = []
+
+    current_path_entries.each do |entry|
+      ordered_entries << entry
+
+      if recursive && entry.dir?
+        ordered_entries.concat(get_entries(git_repo, sha, entry.path, recursive: true))
+      end
+    end
+
+    ordered_entries
   end
 end

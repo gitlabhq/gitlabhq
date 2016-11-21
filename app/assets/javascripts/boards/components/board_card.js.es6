@@ -6,6 +6,7 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardCard = Vue.extend({
+    template: '#js-board-list-card',
     props: {
       list: Object,
       issue: Object,
@@ -52,11 +53,6 @@
       },
       mouseDown () {
         this.showDetail = true;
-      },
-      mouseMove () {
-        if (this.showDetail) {
-          this.showDetail = false;
-        }
       },
       showIssue (e) {
         const targetTagName = e.target.tagName.toLowerCase();

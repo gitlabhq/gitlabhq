@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, object-shorthand, comma-dangle, padded-blocks, max-len */
 // Disable an element and add the 'disabled' Bootstrap class
 (function() {
   $.fn.extend({

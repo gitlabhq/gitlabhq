@@ -401,7 +401,12 @@ describe Notify do
 
     describe 'project access requested' do
       context 'for a project in a user namespace' do
-        let(:project) { create(:project, :public).tap { |p| p.team << [p.owner, :master, p.owner] } }
+        let(:project) do
+          create(:empty_project, :public, :access_requestable) do |project|
+            project.team << [project.owner, :master, project.owner]
+          end
+        end
+
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -428,7 +433,7 @@ describe Notify do
       context 'for a project in a group' do
         let(:group_owner) { create(:user) }
         let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
-        let(:project) { create(:project, :public, namespace: group) }
+        let(:project) { create(:empty_project, :public, :access_requestable, namespace: group) }
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -454,7 +459,7 @@ describe Notify do
     end
 
     describe 'project access denied' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
@@ -474,7 +479,7 @@ describe Notify do
     end
 
     describe 'project access changed' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) { create(:project_member, project: project, user: user) }
       subject { Notify.member_access_granted_email('project', project_member.id) }
@@ -685,7 +690,7 @@ describe Notify do
 
   context 'for a group' do
     describe 'group access requested' do
-      let(:group) { create(:group) }
+      let(:group) { create(:group, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)

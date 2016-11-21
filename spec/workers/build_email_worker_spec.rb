@@ -24,7 +24,7 @@ describe BuildEmailWorker do
     end
 
     it "gracefully handles an input SMTP error" do
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
       allow(Notify).to receive(:build_success_email).and_raise(Net::SMTPFatalError)
 
       subject.perform(build.id, [user.email], data.stringify_keys)

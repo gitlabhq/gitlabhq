@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, no-undef, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len */
 // This is a manifest file that'll be compiled into including all the files listed below.
 // Add new JavaScript code in separate files in this directory and they'll automatically
 // be included in the compiled file accessible from http://example.com/assets/application.js
@@ -13,7 +13,6 @@
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
 /*= require jquery.endless-scroll */
-/*= require jquery.timeago */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
@@ -54,16 +53,34 @@
 /*= require_directory ./u2f */
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
+/*= require es6-promise.auto */
 
 (function () {
   document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
   window.addEventListener('hashchange', gl.utils.shiftWindow);
 
+  // automatically adjust scroll position for hash urls taking the height of the navbar into account
+  // https://github.com/twitter/bootstrap/issues/1768
+  window.adjustScroll = function() {
+    var navbar = document.querySelector('.navbar-gitlab');
+    var subnav = document.querySelector('.layout-nav');
+    var fixedTabs = document.querySelector('.js-tabs-affix');
+
+    adjustment = 0;
+    if (navbar) adjustment -= navbar.offsetHeight;
+    if (subnav) adjustment -= subnav.offsetHeight;
+    if (fixedTabs) adjustment -= fixedTabs.offsetHeight;
+
+    return scrollBy(0, adjustment);
+  };
+
+  window.addEventListener("hashchange", adjustScroll);
+
   window.onload = function () {
     // Scroll the window to avoid the topnav bar
     // https://github.com/twitter/bootstrap/issues/1768
     if (location.hash) {
-      return setTimeout(gl.utils.shiftWindow, 100);
+      return setTimeout(adjustScroll, 100);
     }
   };
 
@@ -194,9 +211,6 @@
       e.preventDefault();
       return new ConfirmDangerModal(form, text);
     });
-    $document.on('click', 'button', function () {
-      return $(this).blur();
-    });
     $('input[type="search"]').each(function () {
       var $this = $(this);
       $this.attr('value', $this.val());
@@ -238,8 +252,5 @@
 
     // bind sidebar events
     new gl.Sidebar();
-
-    // Custom time ago
-    gl.utils.shortTimeAgo($('.js-short-timeago'));
   });
 }).call(this);

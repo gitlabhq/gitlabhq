@@ -1,0 +1,4 @@
+---
+title: Pass correct tag target to post-receive hook when creating tag via UI
+merge_request: 7556
+author:

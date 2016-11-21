@@ -3,6 +3,8 @@ require 'spec_helper'
 describe Gitlab::ReferenceExtractor, lib: true do
   let(:project) { create(:project) }
 
+  before { project.team << [project.creator, :developer] }
+
   subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 
   it 'accesses valid user objects' do
@@ -42,7 +44,6 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   it 'accesses valid issue objects' do
-    project.team << [project.creator, :developer]
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)
 

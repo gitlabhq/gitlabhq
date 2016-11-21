@@ -14,7 +14,7 @@
           - if can_admin_group
             = nav_link(path: 'groups#projects') do
               = link_to 'Projects', projects_group_path(@group), title: 'Projects'
-          - if can_edit || can_leave
+          - if (can_edit || can_leave) && can_admin_group
             %li.divider
           - if can_edit
             %li

@@ -1,10 +1,7 @@
 class PipelinesEmailService < Service
   prop_accessor :recipients
-  boolean_accessor :add_pusher
   boolean_accessor :notify_only_broken_pipelines
-  validates :recipients,
-    presence: true,
-    if: ->(s) { s.activated? && !s.add_pusher? }
+  validates :recipients, presence: true, if: :activated?
 
   def initialize_properties
     self.properties ||= { notify_only_broken_pipelines: true }
@@ -34,8 +31,8 @@ class PipelinesEmailService < Service
 
     return unless all_recipients.any?
 
-    pipeline = Ci::Pipeline.find(data[:object_attributes][:id])
-    Ci::SendPipelineNotificationService.new(pipeline).execute(all_recipients)
+    pipeline_id = data[:object_attributes][:id]
+    PipelineNotificationWorker.new.perform(pipeline_id, all_recipients)
   end
 
   def can_test?
@@ -57,9 +54,6 @@ class PipelinesEmailService < Service
       { type: 'textarea',
         name: 'recipients',
         placeholder: 'Emails separated by comma' },
-      { type: 'checkbox',
-        name: 'add_pusher',
-        label: 'Add pusher to recipients list' },
       { type: 'checkbox',
         name: 'notify_only_broken_pipelines' },
     ]
@@ -85,12 +79,6 @@ class PipelinesEmailService < Service
   end
 
   def retrieve_recipients(data)
-    all_recipients = recipients.to_s.split(',').reject(&:blank?)
-
-    if add_pusher? && data[:user].try(:[], :email)
-      all_recipients << data[:user][:email]
-    end
-
-    all_recipients
+    recipients.to_s.split(',').reject(&:blank?)
   end
 end

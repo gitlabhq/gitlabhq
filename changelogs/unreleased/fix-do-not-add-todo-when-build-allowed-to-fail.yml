@@ -1,0 +1,4 @@
+---
+title: Do not create a new TODO when failed build is allowed to fail
+merge_request: 7618
+author: 

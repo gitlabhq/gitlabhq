@@ -31,34 +31,7 @@ module SearchHelper
   end
 
   def parse_search_result(result)
-    ref = nil
-    filename = nil
-    basename = nil
-    startline = 0
-
-    result.each_line.each_with_index do |line, index|
-      if line =~ /^.*:.*:\d+:/
-        ref, filename, startline = line.split(':')
-        startline = startline.to_i - index
-        extname = Regexp.escape(File.extname(filename))
-        basename = filename.sub(/#{extname}$/, '')
-        break
-      end
-    end
-
-    data = ""
-
-    result.each_line do |line|
-      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: startline,
-      data: data
-    )
+    Gitlab::ProjectSearchResults.parse_search_result(result)
   end
 
   private

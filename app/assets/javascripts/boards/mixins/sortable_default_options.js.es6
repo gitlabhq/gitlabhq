@@ -23,7 +23,7 @@
       fallbackOnBody: true,
       ghostClass: 'is-ghost',
       filter: '.board-delete, .btn',
-      delay: gl.issueBoards.touchEnabled ? 100 : 50,
+      delay: gl.issueBoards.touchEnabled ? 100 : 0,
       scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,
       onStart: gl.issueBoards.onStart,

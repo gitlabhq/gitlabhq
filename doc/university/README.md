@@ -212,5 +212,8 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [Support Path](support/README.md)
 1. [Sales Path (redirect to sales handbook)](https://about.gitlab.com/handbook/sales-onboarding/)
+1. [User Training](training/user_training.md)
+1. [GitLab Flow Training](training/gitlab_flow.md)
+1. [Training Topics](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/university/training/topics/)
 1. [GitLab architecture for noobs](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/development/architecture.md)
 1. [Client Assessment of GitLab versus GitHub](https://docs.google.com/a/gitlab.com/spreadsheets/d/18cRF9Y5I6I7Z_ab6qhBEW55YpEMyU4PitZYjomVHM-M/edit?usp=sharing)

@@ -18,7 +18,7 @@ describe Gitlab::GitAccessWiki, lib: true do
       project.team << [user, :developer]
     end
 
-    subject { access.push_access_check(changes) }
+    subject { access.check('git-receive-pack', changes) }
 
     it { expect(subject.allowed?).to be_truthy }
   end

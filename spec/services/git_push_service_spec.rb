@@ -302,6 +302,9 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(commit)
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -357,6 +360,9 @@ describe GitPushService, services: true do
         committed_date: commit_time
       )
 
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(commit)
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -392,6 +398,9 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+        and_return(closing_commit)
 
       project.team << [commit_author, :master]
     end
@@ -481,7 +490,17 @@ describe GitPushService, services: true do
 
       context "closing an issue" do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
-        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
+        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
+
+        before do
+          open_issue   = JIRA::Resource::Issue.new(jira_tracker.client, attrs: { "id" => "JIRA-1" })
+          closed_issue = open_issue.dup
+          allow(open_issue).to receive(:resolution).and_return(false)
+          allow(closed_issue).to receive(:resolution).and_return(true)
+          allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
+
+          allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return("JIRA-1")
+        end
 
         context "using right markdown" do
           it "initiates one api call to jira server to close the issue" do
@@ -538,7 +557,14 @@ describe GitPushService, services: true do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
+      # Flush any raw Redis data stored by the housekeeping code.
+      Gitlab::Redis.with { |conn| conn.flushall }
+
       allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    after do
+      Gitlab::Redis.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do

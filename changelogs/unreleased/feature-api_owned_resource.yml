@@ -1,0 +1,4 @@
+---
+title: Add api endpoint `/groups/owned`
+merge_request: 7103
+author: Borja Aparicio

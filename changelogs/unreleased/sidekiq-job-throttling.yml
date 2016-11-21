@@ -1,0 +1,4 @@
+---
+title: Added ability to throttle Sidekiq Jobs
+merge_request: 7292
+author:

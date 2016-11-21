@@ -33,6 +33,18 @@ GET /users
 ]
 ```
 
+In addition, you can filter users based on states eg. `blocked`, `active`
+This works only to filter users who are `blocked` or `active`.
+It does not support `active=false` or `blocked=false`.
+
+```
+GET /users?active=true
+```
+
+```
+GET /users?blocked=true
+```
+
 ### For admins
 
 ```
@@ -119,6 +131,8 @@ For example:
 ```
 GET /users?username=jack_smith
 ```
+
+You can search for users who are external with: `/users?external=true`
 
 ## Single user
 
@@ -355,24 +369,24 @@ Parameters:
 Get a list of a specified user's SSH keys. Available only for admin
 
 ```
-GET /users/:uid/keys
+GET /users/:id/keys
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
 ## Single SSH key
 
 Get a single key.
 
 ```
-GET /user/keys/:id
+GET /user/keys/:key_id
 ```
 
 Parameters:
 
-- `id` (required) - The ID of an SSH key
+- `key_id` (required) - The ID of an SSH key
 
 ```json
 {
@@ -444,25 +458,25 @@ This is an idempotent function and calling it on a key that is already deleted
 or not available results in `200 OK`.
 
 ```
-DELETE /user/keys/:id
+DELETE /user/keys/:key_id
 ```
 
 Parameters:
 
-- `id` (required) - SSH key ID
+- `key_id` (required) - SSH key ID
 
 ## Delete SSH key for given user
 
 Deletes key owned by a specified user. Available only for admin.
 
 ```
-DELETE /users/:uid/keys/:id
+DELETE /users/:id/keys/:key_id
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
-- `id` (required)  - SSH key ID
+- `id` (required) - id of specified user
+- `key_id` (required)  - SSH key ID
 
 Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
 
@@ -496,24 +510,24 @@ Parameters:
 Get a list of a specified user's emails. Available only for admin
 
 ```
-GET /users/:uid/emails
+GET /users/:id/emails
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
 ## Single email
 
 Get a single email.
 
 ```
-GET /user/emails/:id
+GET /user/emails/:email_id
 ```
 
 Parameters:
 
-- `id` (required) - email ID
+- `email_id` (required) - email ID
 
 ```json
 {
@@ -576,25 +590,25 @@ This is an idempotent function and calling it on a email that is already deleted
 or not available results in `200 OK`.
 
 ```
-DELETE /user/emails/:id
+DELETE /user/emails/:email_id
 ```
 
 Parameters:
 
-- `id` (required) - email ID
+- `email_id` (required) - email ID
 
 ## Delete email for given user
 
 Deletes email owned by a specified user. Available only for admin.
 
 ```
-DELETE /users/:uid/emails/:id
+DELETE /users/:id/emails/:email_id
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
-- `id` (required)  - email ID
+- `id` (required) - id of specified user
+- `email_id` (required)  - email ID
 
 Will return `200 OK` on success, or `404 Not found` if either user or email cannot be found.
 
@@ -603,12 +617,12 @@ Will return `200 OK` on success, or `404 Not found` if either user or email cann
 Blocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:uid/block
+PUT /users/:id/block
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
 Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
@@ -618,12 +632,12 @@ Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 Unblocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:uid/unblock
+PUT /users/:id/unblock
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
 Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.

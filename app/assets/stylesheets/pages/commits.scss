@@ -62,6 +62,8 @@
 
   .ci-status-link {
     display: inline-block;
+    position: relative;
+    top: 1px;
   }
 
   .btn-clipboard,
@@ -82,7 +84,8 @@
   font-weight: 600;
 }
 
-.commit {
+.commit,
+.generic_commit_status {
   padding: 10px 0;
   position: relative;
 
@@ -99,7 +102,6 @@
     color: $gl-dark-link-color;
     vertical-align: baseline;
   }
-
 
   .avatar {
     margin-left: -46px;

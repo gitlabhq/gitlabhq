@@ -9,6 +9,7 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardList = Vue.extend({
+    template: '#js-board-list-template',
     components: {
       'board-card': gl.issueBoards.BoardCard,
       'board-new-issue': gl.issueBoards.BoardNewIssue
@@ -19,20 +20,20 @@
       issues: Array,
       loading: Boolean,
       issueLinkBase: String,
-      showIssueForm: Boolean
     },
     data () {
       return {
         scrollOffset: 250,
         filters: Store.state.filters,
-        showCount: false
+        showCount: false,
+        showIssueForm: false
       };
     },
     watch: {
       filters: {
         handler () {
           this.list.loadingMore = false;
-          this.$els.list.scrollTop = 0;
+          this.$refs.list.scrollTop = 0;
         },
         deep: true
       },
@@ -51,15 +52,20 @@
         });
       }
     },
+    computed: {
+      orderedIssues () {
+        return _.sortBy(this.issues, 'priority');
+      },
+    },
     methods: {
       listHeight () {
-        return this.$els.list.getBoundingClientRect().height;
+        return this.$refs.list.getBoundingClientRect().height;
       },
       scrollHeight () {
-        return this.$els.list.scrollHeight;
+        return this.$refs.list.scrollHeight;
       },
       scrollTop () {
-        return this.$els.list.scrollTop + this.listHeight();
+        return this.$refs.list.scrollTop + this.listHeight();
       },
       loadNextPage () {
         const getIssues = this.list.nextPage();
@@ -72,7 +78,7 @@
         }
       },
     },
-    ready () {
+    mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         group: 'issues',
         sort: false,
@@ -81,23 +87,27 @@
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 
+          card.showDetail = false;
           Store.moving.issue = card.issue;
           Store.moving.list = card.list;
 
           gl.issueBoards.onStart();
         },
         onAdd: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+          // Add the element back to original list to allow Vue to handle DOM updates
+          e.from.appendChild(e.item);
+
+          this.$nextTick(() => {
+            // Update the issues once we know the element has been moved
+            gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+          });
         },
-        onRemove: (e) => {
-          this.$refs.issue[e.oldIndex].$destroy(true);
-        }
       });
 
-      this.sortable = Sortable.create(this.$els.list, options);
+      this.sortable = Sortable.create(this.$refs.list, options);
 
       // Scroll event on list to load more
-      this.$els.list.onscroll = () => {
+      this.$refs.list.onscroll = () => {
         if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
           this.loadNextPage();
         }

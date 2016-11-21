@@ -1,0 +1,4 @@
+---
+title: Fix error when using invalid branch name when creating a new pipeline
+merge_request: 7324
+author: 

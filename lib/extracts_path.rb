@@ -106,7 +106,7 @@ module ExtractsPath
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
     # assign allowed options
-    allowed_options = ["filter_ref", "extended_sha1"]
+    allowed_options = ["filter_ref"]
     @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
     @options = HashWithIndifferentAccess.new(@options)
 
@@ -114,17 +114,13 @@ module ExtractsPath
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
 
-    if @options[:extended_sha1].present?
-      @commit = @repo.commit(@options[:extended_sha1])
-    else
+    @commit = @repo.commit(@ref)
+
+    if @path.empty? && !@commit && @id.ends_with?('.atom')
+      @id = @ref = extract_ref_without_atom(@id)
       @commit = @repo.commit(@ref)
 
-      if @path.empty? && !@commit && @id.ends_with?('.atom')
-        @id = @ref = extract_ref_without_atom(@id)
-        @commit = @repo.commit(@ref)
-
-        request.format = :atom if @commit
-      end
+      request.format = :atom if @commit
     end
 
     raise InvalidPathError unless @commit

@@ -17,7 +17,7 @@ describe NotificationService, services: true do
 
     it 'sends no emails when no new mentions are present' do
       send_notifications
-      expect(ActionMailer::Base.deliveries).to be_empty
+      should_not_email_anyone
     end
 
     it 'emails new mentions with a watch level higher than participant' do
@@ -27,7 +27,7 @@ describe NotificationService, services: true do
 
     it 'does not email new mentions with a watch level equal to or less than participant' do
       send_notifications(@u_participating, @u_mentioned)
-      expect(ActionMailer::Base.deliveries).to be_empty
+      should_not_email_anyone
     end
   end
 
@@ -79,7 +79,7 @@ describe NotificationService, services: true do
           # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
 
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
 
           notification.new_note(note)
 
@@ -111,7 +111,7 @@ describe NotificationService, services: true do
         context 'participating' do
           context 'by note' do
             before do
-              ActionMailer::Base.deliveries.clear
+              reset_delivered_emails!
               note.author = @u_lazy_participant
               note.save
               notification.new_note(note)
@@ -134,7 +134,7 @@ describe NotificationService, services: true do
           @u_watcher.notification_settings_for(note.project).participating!
           @u_watcher.notification_settings_for(note.project.group).global!
           update_custom_notification(:new_note, @u_custom_global)
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
         end
 
         it do
@@ -173,7 +173,7 @@ describe NotificationService, services: true do
 
         expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
 
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
 
         notification.new_note(note)
 
@@ -196,7 +196,7 @@ describe NotificationService, services: true do
       before do
         build_team(note.project)
         note.project.team << [note.author, :master]
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
       end
 
       describe '#new_note' do
@@ -238,7 +238,7 @@ describe NotificationService, services: true do
       before do
         build_team(note.project)
         note.project.team << [note.author, :master]
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
       end
 
       describe '#new_note' do
@@ -273,7 +273,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
         allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
         update_custom_notification(:new_note, @u_guest_custom, project)
         update_custom_notification(:new_note, @u_custom_global)
@@ -342,13 +342,15 @@ describe NotificationService, services: true do
   end
 
   describe 'Issues' do
-    let(:project) { create(:empty_project, :public) }
+    let(:group) { create(:group) }
+    let(:project) { create(:empty_project, :public, namespace: group) }
+    let(:another_project) { create(:empty_project, :public, namespace: group) }
     let(:issue) { create :issue, project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
       build_team(issue.project)
       add_users_with_subscription(issue.project, issue)
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, project)
       update_custom_notification(:new_issue, @u_custom_global)
     end
@@ -377,13 +379,24 @@ describe NotificationService, services: true do
       end
 
       it "emails subscribers of the issue's labels" do
-        subscriber = create(:user)
-        label = create(:label, issues: [issue])
+        user_1 = create(:user)
+        user_2 = create(:user)
+        user_3 = create(:user)
+        user_4 = create(:user)
+        label = create(:label, project: project, issues: [issue])
+        group_label = create(:group_label, group: group, issues: [issue])
         issue.reload
-        label.toggle_subscription(subscriber)
+        label.toggle_subscription(user_1, project)
+        group_label.toggle_subscription(user_2, project)
+        group_label.toggle_subscription(user_3, another_project)
+        group_label.toggle_subscription(user_4)
+
         notification.new_issue(issue, @u_disabled)
 
-        should_email(subscriber)
+        should_email(user_1)
+        should_email(user_2)
+        should_not_email(user_3)
+        should_email(user_4)
       end
 
       context 'confidential issues' do
@@ -399,16 +412,16 @@ describe NotificationService, services: true do
           project.team << [member, :developer]
           project.team << [guest, :guest]
 
-          label = create(:label, issues: [confidential_issue])
+          label = create(:label, project: project, issues: [confidential_issue])
           confidential_issue.reload
-          label.toggle_subscription(non_member)
-          label.toggle_subscription(author)
-          label.toggle_subscription(assignee)
-          label.toggle_subscription(member)
-          label.toggle_subscription(guest)
-          label.toggle_subscription(admin)
+          label.toggle_subscription(non_member, project)
+          label.toggle_subscription(author, project)
+          label.toggle_subscription(assignee, project)
+          label.toggle_subscription(member, project)
+          label.toggle_subscription(guest, project)
+          label.toggle_subscription(admin, project)
 
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
 
           notification.new_issue(confidential_issue, @u_disabled)
 
@@ -554,20 +567,30 @@ describe NotificationService, services: true do
     end
 
     describe '#relabeled_issue' do
-      let(:label) { create(:label, issues: [issue]) }
-      let(:label2) { create(:label) }
-      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
-      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+      let(:group_label_1) { create(:group_label, group: group, title: 'Group Label 1', issues: [issue]) }
+      let(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }
+      let(:label_1) { create(:label, project: project, title: 'Label 1', issues: [issue]) }
+      let(:label_2) { create(:label, project: project, title: 'Label 2') }
+      let!(:subscriber_to_group_label_1) { create(:user) { |u| group_label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_1_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_2_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u) } }
+      let!(:subscriber_to_group_label_2_on_another_project) { create(:user) { |u| group_label_2.toggle_subscription(u, another_project) } }
+      let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
       it "emails subscribers of the issue's added labels only" do
-        notification.relabeled_issue(issue, [label2], @u_disabled)
+        notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
 
-        should_not_email(subscriber_to_label)
-        should_email(subscriber_to_label2)
+        should_not_email(subscriber_to_label_1)
+        should_not_email(subscriber_to_group_label_1)
+        should_not_email(subscriber_to_group_label_2_on_another_project)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
+        should_email(subscriber_to_label_2)
       end
 
       it "doesn't send email to anyone but subscribers of the given labels" do
-        notification.relabeled_issue(issue, [label2], @u_disabled)
+        notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
 
         should_not_email(issue.assignee)
         should_not_email(issue.author)
@@ -578,8 +601,12 @@ describe NotificationService, services: true do
         should_not_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
-        should_not_email(subscriber_to_label)
-        should_email(subscriber_to_label2)
+        should_not_email(subscriber_to_label_1)
+        should_not_email(subscriber_to_group_label_1)
+        should_not_email(subscriber_to_group_label_2_on_another_project)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
+        should_email(subscriber_to_label_2)
       end
 
       context 'confidential issues' do
@@ -590,21 +617,21 @@ describe NotificationService, services: true do
         let(:guest) { create(:user) }
         let(:admin) { create(:admin) }
         let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
-        let!(:label_1) { create(:label, issues: [confidential_issue]) }
-        let!(:label_2) { create(:label) }
+        let!(:label_1) { create(:label, project: project, issues: [confidential_issue]) }
+        let!(:label_2) { create(:label, project: project) }
 
         it "emails subscribers of the issue's labels that can read the issue" do
           project.team << [member, :developer]
           project.team << [guest, :guest]
 
-          label_2.toggle_subscription(non_member)
-          label_2.toggle_subscription(author)
-          label_2.toggle_subscription(assignee)
-          label_2.toggle_subscription(member)
-          label_2.toggle_subscription(guest)
-          label_2.toggle_subscription(admin)
+          label_2.toggle_subscription(non_member, project)
+          label_2.toggle_subscription(author, project)
+          label_2.toggle_subscription(assignee, project)
+          label_2.toggle_subscription(member, project)
+          label_2.toggle_subscription(guest, project)
+          label_2.toggle_subscription(admin, project)
 
-          ActionMailer::Base.deliveries.clear
+          reset_delivered_emails!
 
           notification.relabeled_issue(confidential_issue, [label_2], @u_disabled)
 
@@ -725,7 +752,9 @@ describe NotificationService, services: true do
   end
 
   describe 'Merge Requests' do
-    let(:project) { create(:project, :public) }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, :public, namespace: group) }
+    let(:another_project) { create(:empty_project, :public, namespace: group) }
     let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
@@ -733,7 +762,7 @@ describe NotificationService, services: true do
       add_users_with_subscription(merge_request.target_project, merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, project)
       update_custom_notification(:new_merge_request, @u_custom_global)
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
     end
 
     describe '#new_merge_request' do
@@ -758,12 +787,23 @@ describe NotificationService, services: true do
       end
 
       it "emails subscribers of the merge request's labels" do
-        subscriber = create(:user)
-        label = create(:label, merge_requests: [merge_request])
-        label.toggle_subscription(subscriber)
+        user_1 = create(:user)
+        user_2 = create(:user)
+        user_3 = create(:user)
+        user_4 = create(:user)
+        label = create(:label, project: project, merge_requests: [merge_request])
+        group_label = create(:group_label, group: group, merge_requests: [merge_request])
+        label.toggle_subscription(user_1, project)
+        group_label.toggle_subscription(user_2, project)
+        group_label.toggle_subscription(user_3, another_project)
+        group_label.toggle_subscription(user_4)
+
         notification.new_merge_request(merge_request, @u_disabled)
 
-        should_email(subscriber)
+        should_email(user_1)
+        should_email(user_2)
+        should_not_email(user_3)
+        should_email(user_4)
       end
 
       context 'participating' do
@@ -857,20 +897,30 @@ describe NotificationService, services: true do
     end
 
     describe '#relabel_merge_request' do
-      let(:label) { create(:label, merge_requests: [merge_request]) }
-      let(:label2) { create(:label) }
-      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
-      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+      let(:group_label_1) { create(:group_label, group: group, title: 'Group Label 1', merge_requests: [merge_request]) }
+      let(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }
+      let(:label_1) { create(:label, project: project, title: 'Label 1', merge_requests: [merge_request]) }
+      let(:label_2) { create(:label, project: project, title: 'Label 2') }
+      let!(:subscriber_to_group_label_1) { create(:user) { |u| group_label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_1_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u, project) } }
+      let!(:subscriber_2_to_group_label_2) { create(:user) { |u| group_label_2.toggle_subscription(u) } }
+      let!(:subscriber_to_group_label_2_on_another_project) { create(:user) { |u| group_label_2.toggle_subscription(u, another_project) } }
+      let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
+      let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
       it "emails subscribers of the merge request's added labels only" do
-        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+        notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
 
-        should_not_email(subscriber_to_label)
-        should_email(subscriber_to_label2)
+        should_not_email(subscriber_to_label_1)
+        should_not_email(subscriber_to_group_label_1)
+        should_not_email(subscriber_to_group_label_2_on_another_project)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
+        should_email(subscriber_to_label_2)
       end
 
       it "doesn't send email to anyone but subscribers of the given labels" do
-        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+        notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
 
         should_not_email(merge_request.assignee)
         should_not_email(merge_request.author)
@@ -881,8 +931,12 @@ describe NotificationService, services: true do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_lazy_participant)
-        should_not_email(subscriber_to_label)
-        should_email(subscriber_to_label2)
+        should_not_email(subscriber_to_label_1)
+        should_not_email(subscriber_to_group_label_1)
+        should_not_email(subscriber_to_group_label_2_on_another_project)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
+        should_email(subscriber_to_label_2)
       end
     end
 
@@ -1111,7 +1165,7 @@ describe NotificationService, services: true do
 
     before do
       build_team(project)
-      ActionMailer::Base.deliveries.clear
+      reset_delivered_emails!
     end
 
     describe '#project_was_moved' do
@@ -1290,10 +1344,10 @@ describe NotificationService, services: true do
     project.team << [@unsubscriber, :master]
     project.team << [@watcher_and_subscriber, :master]
 
-    issuable.subscriptions.create(user: @subscriber, subscribed: true)
-    issuable.subscriptions.create(user: @subscribed_participant, subscribed: true)
-    issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
+    issuable.subscriptions.create(user: @subscriber, project: project, subscribed: true)
+    issuable.subscriptions.create(user: @subscribed_participant, project: project, subscribed: true)
+    issuable.subscriptions.create(user: @unsubscriber, project: project, subscribed: false)
     # Make the watcher a subscriber to detect dupes
-    issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
+    issuable.subscriptions.create(user: @watcher_and_subscriber, project: project, subscribed: true)
   end
 end

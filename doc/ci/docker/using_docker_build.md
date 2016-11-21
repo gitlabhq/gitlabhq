@@ -44,7 +44,8 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 
 2. Install Docker Engine on server.
 
-    For more information how to install Docker Engine on different systems checkout the [Supported installations](https://docs.docker.com/engine/installation/).
+    For more information how to install Docker Engine on different systems
+    checkout the [Supported installations](https://docs.docker.com/engine/installation/).
 
 3. Add `gitlab-runner` user to `docker` group:
 
@@ -122,10 +123,16 @@ In order to do that, follow the steps:
         Insecure = false
     ```
 
-1. You can now use `docker` in the build script (note the inclusion of the `docker:dind` service):
+1. You can now use `docker` in the build script (note the inclusion of the
+   `docker:dind` service):
 
     ```yaml
     image: docker:latest
+
+    # When using dind, it's wise to use the overlayfs driver for
+    # improved performance.
+    variables:
+      DOCKER_DRIVER: overlay
 
     services:
     - docker:dind
@@ -140,15 +147,21 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-Docker-in-Docker works well, and is the recommended configuration, but it is not without its own challenges:
-* By enabling `--docker-privileged`, you are effectively disabling all of
-the security mechanisms of containers and exposing your host to privilege
-escalation which can lead to container breakout. For more information, check out the official Docker documentation on
-[Runtime privilege and Linux capabilities][docker-cap].
-* Using docker-in-docker, each build is in a clean environment without the past
-history. Concurrent builds work fine because every build gets it's own instance of docker engine so they won't conflict with each other. But this also means builds can be slower because there's no caching of layers.
-* By default, `docker:dind` uses `--storage-driver vfs` which is the slowest form
-offered.
+Docker-in-Docker works well, and is the recommended configuration, but it is
+not without its own challenges:
+
+- By enabling `--docker-privileged`, you are effectively disabling all of
+  the security mechanisms of containers and exposing your host to privilege
+  escalation which can lead to container breakout. For more information, check
+  out the official Docker documentation on
+  [Runtime privilege and Linux capabilities][docker-cap].
+- Using docker-in-docker, each build is in a clean environment without the past
+  history. Concurrent builds work fine because every build gets it's own
+  instance of Docker engine so they won't conflict with each other. But this
+  also means builds can be slower because there's no caching of layers.
+- By default, `docker:dind` uses `--storage-driver vfs` which is the slowest
+  form offered. To use a different driver, see
+  [Using the overlayfs driver](#using-the-overlayfs-driver).
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
 
@@ -220,6 +233,40 @@ create containers with specific names, they may conflict with each other.
 work as expected since volume mounting is done in the context of the host
 machine, not the build container.
 e.g. `docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests`
+
+## Using the OverlayFS driver
+
+By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
+copies the filesystem on every run. This is a very disk-intensive operation
+which can be avoided if a different driver is used, for example `overlay`.
+
+1. Make sure a recent kernel is used, preferably `>= 4.2`.
+1. Check whether the `overlay` module is loaded:
+
+    ```
+    sudo lsmod | grep overlay
+    ```
+
+    If you see no result, then it isn't loaded. To load it use:
+
+    ```
+    sudo modprobe overlay
+    ```
+
+    If everything went fine, you need to make sure module is loaded on reboot.
+    On Ubuntu systems, this is done by editing `/etc/modules`. Just add the
+    following line into it:
+
+    ```
+    overlay
+    ```
+
+1. Use the driver by defining a variable at the top of your `.gitlab-ci.yml`:
+
+    ```
+    variables:
+      DOCKER_DRIVER: overlay
+    ```
 
 ## Using the GitLab Container Registry
 

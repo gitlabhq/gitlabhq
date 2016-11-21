@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Group, models: true do
-  let!(:group) { create(:group) }
+  let!(:group) { create(:group, :access_requestable) }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }

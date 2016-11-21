@@ -6,7 +6,6 @@
 
   &:focus,
   &:active {
-    outline: none;
     background-color: $btn-active-gray;
     box-shadow: $gl-btn-active-background;
   }
@@ -142,6 +141,10 @@
     &.btn-save {
       @include btn-outline($white-light, $green-normal, $green-normal, $green-light, $white-light, $green-light);
     }
+
+    &.btn-remove {
+      @include btn-outline($white-light, $red-normal, $red-normal, $red-light, $white-light, $red-light);
+    }
   }
 
   &.btn-gray {
@@ -267,10 +270,6 @@
       outline: none;
     }
 
-    &:focus {
-      outline: none;
-    }
-
     &:active {
       outline: none;
     }
@@ -347,6 +346,12 @@
     -moz-box-shadow: inset 0 0 0 white;
     -webkit-box-shadow: inset 0 0 0 white;
     box-shadow: inset 0 0 0 white;
+  }
+}
+
+.btn-inverted {
+  &-secondary {
+    @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
   }
 }
 

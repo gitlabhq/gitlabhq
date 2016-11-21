@@ -23,6 +23,7 @@ module TestEnv
     'binary-encoding'                    => '7b1cf43',
     'gitattributes'                      => '5a62481',
     'expand-collapse-diffs'              => '4842455',
+    'symlink-expand-diff'                => '81e6355',
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
@@ -34,6 +35,7 @@ module TestEnv
     'conflict-missing-side'              => 'eb227b3',
     'conflict-non-utf8'                  => 'd0a293c',
     'conflict-too-large'                 => '39fa04f',
+    'deleted-image-test'                 => '6c17798'
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

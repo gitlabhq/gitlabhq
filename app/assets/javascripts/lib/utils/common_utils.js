@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, padded-blocks, max-len */
 (function() {
   (function(w) {
     var base;
@@ -119,7 +119,6 @@
       parser.href = url;
       return parser;
     };
-
     gl.utils.cleanupBeforeFetch = function() {
       // Unbind scroll events
       $(document).off('scroll');
@@ -127,23 +126,10 @@
       $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
     };
 
-    return jQuery.timefor = function(time, suffix, expiredLabel) {
-      var suffixFromNow, timefor;
-      if (!time) {
-        return '';
-      }
-      suffix || (suffix = 'remaining');
-      expiredLabel || (expiredLabel = 'Past due');
-      jQuery.timeago.settings.allowFuture = true;
-      suffixFromNow = jQuery.timeago.settings.strings.suffixFromNow;
-      jQuery.timeago.settings.strings.suffixFromNow = suffix;
-      timefor = $.timeago(time);
-      if (timefor.indexOf('ago') > -1) {
-        timefor = expiredLabel;
-      }
-      jQuery.timeago.settings.strings.suffixFromNow = suffixFromNow;
-      return timefor;
+    gl.utils.isMetaKey = function(e) {
+      return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
+
   })(window);
 
 }).call(this);

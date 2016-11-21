@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-undef, object-shorthand, comma-dangle, no-return-assign, new-cap, padded-blocks, max-len */
 
 /*= require zen_mode */
 
