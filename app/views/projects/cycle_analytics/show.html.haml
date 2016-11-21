@@ -66,9 +66,9 @@
         %nav.stage-nav
           %ul
             %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
-              .stage-name
+              .stage-nav-item-cell.stage-name
                 {{ stage.title }}
-              .stage-median
+              .stage-nav-item-cell.stage-median
                 %template{ "v-if" => "stage.isUserAllowed" }
                   %span{ "v-if" => "stage.value" }
                     {{ stage.value }}

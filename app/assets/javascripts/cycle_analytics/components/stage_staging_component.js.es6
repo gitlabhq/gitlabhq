@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
-  debugger;
+
   global.cycleAnalytics.StageStagingComponent = Vue.extend({
     props: {
       items: Array,

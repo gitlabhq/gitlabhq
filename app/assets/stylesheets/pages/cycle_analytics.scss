@@ -211,9 +211,9 @@
     .stage-nav-item {
       display: block;
       line-height: 65px;
-      border-top: solid 1px transparent;
-      border-bottom: solid 1px transparent;
-      border-right: solid 1px $border-color;
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+      border-right: 1px solid $border-color;
       background-color: $gray-light;
 
       &.active {
@@ -236,7 +236,7 @@
         border-bottom: none;
       }
 
-      > div {
+      .stage-nav-item-cell {
         float: left;
 
         &.stage-name {
@@ -286,7 +286,7 @@
     list-style-type: none;
     padding: 0 0 $gl-padding;
     margin: 0 $gl-padding $gl-padding;
-    border-bottom: solid 1px $gray-darker;
+    border-bottom: 1px solid $gray-darker;
     @include clearfix;
 
     &:last-child {
