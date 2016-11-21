@@ -33,10 +33,7 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
-<<<<<<< HEAD
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
-=======
->>>>>>> ce/master
       end
       get do
         unless can?(current_user, :read_users_list, nil)
@@ -48,10 +45,7 @@ module API
         else
           users = User.all
           users = users.active if params[:active]
-<<<<<<< HEAD
           users = users.non_ldap if params[:skip_ldap]
-=======
->>>>>>> ce/master
           users = users.search(params[:search]) if params[:search].present?
           users = users.blocked if params[:blocked]
           users = users.external if params[:external] && current_user.is_admin?

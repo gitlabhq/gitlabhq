@@ -1,8 +1,5 @@
 class MergeRequestEntity < IssuableEntity
-<<<<<<< HEAD
   expose :approvals_before_merge
-=======
->>>>>>> ce/master
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha
@@ -11,11 +8,8 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_status
   expose :merge_user_id
   expose :merge_when_build_succeeds
-<<<<<<< HEAD
   expose :rebase_commit_sha
   expose :rebase_in_progress?, if: { type: :full }
-=======
->>>>>>> ce/master
   expose :source_branch
   expose :source_project_id
   expose :target_branch

@@ -24,8 +24,10 @@ scope(path: 'groups/:id',
   get :activity, as: :activity_group
 end
 
-<<<<<<< HEAD
-scope(path: 'groups/:group_id', module: :groups, as: :group) do
+scope(path: 'groups/:group_id',
+      module: :groups,
+      as: :group,
+      constraints: { group_id: Gitlab::Regex.namespace_route_regex }) do
   ## EE-specific
   resource :analytics, only: [:show]
   resource :ldap, only: [] do
@@ -37,12 +39,6 @@ scope(path: 'groups/:group_id', module: :groups, as: :group) do
   resources :ldap_group_links, only: [:index, :create, :destroy]
   ## EE-specific
 
-=======
-scope(path: 'groups/:group_id',
-      module: :groups,
-      as: :group,
-      constraints: { group_id: Gitlab::Regex.namespace_route_regex }) do
->>>>>>> ce/master
   resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
     post :resend_invite, on: :member
     delete :leave, on: :collection

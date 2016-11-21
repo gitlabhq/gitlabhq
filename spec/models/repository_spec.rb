@@ -1675,7 +1675,6 @@ describe Repository, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches).
@@ -1751,10 +1750,6 @@ describe Repository, models: true do
     end
   end
 
-  describe "#keep_around" do
-    it "does not fail if we attempt to reference bad commit" do
-      expect(repository.kept_around?('abc1234')).to be_falsey
-=======
   describe '#commit_count' do
     context 'with a non-existing repository' do
       it 'returns 0' do
@@ -1762,7 +1757,6 @@ describe Repository, models: true do
 
         expect(repository.commit_count).to eq(0)
       end
->>>>>>> ce/master
     end
 
     context 'with an existing repository' do

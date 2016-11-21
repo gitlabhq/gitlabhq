@@ -3,23 +3,15 @@ require 'securerandom'
 require 'forwardable'
 
 class Repository
-<<<<<<< HEAD
+  include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
+
+  attr_accessor :path_with_namespace, :project
 
   class CommitError < StandardError; end
 
   MIRROR_REMOTE = "upstream"
   MIRROR_GEO = "geo"
-
-  # Files to use as a project avatar in case no avatar was uploaded via the web
-  # UI.
-  AVATAR_FILES = %w{logo.png logo.jpg logo.gif}
-=======
-  include Gitlab::ShellAdapter
-
-  attr_accessor :path_with_namespace, :project
-
-  class CommitError < StandardError; end
 
   # Methods that cache data from the Git repository.
   #
@@ -55,7 +47,6 @@ class Repository
   # This only works for methods that do not take any arguments.
   def self.cache_method(name, fallback: nil)
     original = :"_uncached_#{name}"
->>>>>>> ce/master
 
     alias_method(original, name)
 
@@ -1297,16 +1288,12 @@ class Repository
     end
   end
 
-<<<<<<< HEAD
   def main_language
-    return unless head_exists?
+    return unless exists?
 
     Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
-  def avatar
-    return nil unless exists?
-=======
   # Caches the supplied block both in a cache and in an instance variable.
   #
   # The cache key and instance variable are named the same way as the value of
@@ -1320,7 +1307,6 @@ class Repository
   # fallback - A value to fall back to in the event of a Git error.
   def cache_method_output(key, fallback: nil, &block)
     ivar = cache_instance_variable_name(key)
->>>>>>> ce/master
 
     if instance_variable_defined?(ivar)
       instance_variable_get(ivar)
@@ -1335,17 +1321,9 @@ class Repository
     end
   end
 
-<<<<<<< HEAD
-  def head_exists?
-    exists? && !empty? && !rugged.head_unborn?
-  end
-
-  private
-=======
   def cache_instance_variable_name(key)
     :"@#{key.to_s.tr('?!', '')}"
   end
->>>>>>> ce/master
 
   def file_on_head(type)
     if head = tree(:head)
@@ -1355,10 +1333,6 @@ class Repository
     end
   end
 
-<<<<<<< HEAD
-  def file_on_head(regex)
-    tree(:head).blobs.find { |file| file.name =~ regex }
-=======
   private
 
   def refs_directory_exists?
@@ -1369,7 +1343,6 @@ class Repository
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
->>>>>>> ce/master
   end
 
   def tags_sorted_by_committed_date

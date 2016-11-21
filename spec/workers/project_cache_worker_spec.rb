@@ -39,13 +39,7 @@ describe ProjectCacheWorker do
         expect_any_instance_of(Project).to receive(:update_commit_count).
           and_call_original
 
-<<<<<<< HEAD
-        expect_any_instance_of(Repository).to receive(:build_cache).and_call_original
-
-        subject.perform(project.id)
-=======
         worker.perform(project.id)
->>>>>>> ce/master
       end
 
       it 'refreshes the method caches' do

@@ -349,7 +349,6 @@ LabelPriority:
 - priority
 - created_at
 - updated_at
-<<<<<<< HEAD
 Timelog:
 - id
 - time_spent
@@ -358,5 +357,3 @@ Timelog:
 - user_id
 - created_at
 - updated_at
-=======
->>>>>>> ce/master
