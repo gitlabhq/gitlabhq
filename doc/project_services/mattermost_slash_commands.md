@@ -29,7 +29,7 @@ Mattermost Command service. Under settings > **Project Services**.
 A screen will appear with all the values you can copy to the Mattermost page you
 have just opened.
 
-**Insert screenshot here**
+![Mattermost setup instructions](img/mattermost_config_help.png)
 
 ## Usage
 
