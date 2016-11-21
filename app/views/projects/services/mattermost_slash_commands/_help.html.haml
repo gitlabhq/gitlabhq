@@ -1,5 +1,5 @@
 - pretty_path_with_namespace = "#{@project ? @project.namespace.name : 'namespace'} / #{@project ? @project.name : 'name'}"
-- run_actions_text = "Run action on the GitLab project: #{pretty_path_with_namespace}"
+- run_actions_text = "Perform common operations on this project: #{pretty_path_with_namespace}"
 
 .well
   %p
@@ -15,7 +15,7 @@
       %li
         1.
         = link_to 'Enable custom slash commands', 'https://docs.mattermost.com/developer/slash-commands.html#enabling-custom-commands'
-        on your Mattermost installation.
+        on your Mattermost installation
       %li
         2.
         = link_to 'Add a slash command', 'https://docs.mattermost.com/developer/slash-commands.html#set-up-a-custom-command'
@@ -44,9 +44,9 @@
         %p Fill in the word that works best for your team.
         %p
           Suggestions:
-          %code= @project ? @project.name : 'project_name'
-          %code= @project ? @project.namespace.name : 'namespace_name'
-          %code= @project ? @project.name_with_namespace : 'namespace_name/project_name'
+          %code= 'gitlab'
+          %code= @project.path # Path contains no spaces, but dashes
+          %code= @project.path_with_namespace
 
     .form-group
       = label_tag :request_url, 'Request URL', class: 'col-sm-2 col-xs-12 control-label'
@@ -69,7 +69,7 @@
     .form-group
       = label_tag :response_icon, 'Response icon', class: 'col-sm-2 col-xs-12 control-label'
       .col-sm-10.col-xs-12.input-group
-        = text_field_tag :response_icon, asset_path('gitlab_logo.png'), class: 'form-control input-sm', readonly: 'readonly'
+        = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control input-sm', readonly: 'readonly'
         .input-group-btn
           = clipboard_button(clipboard_target: '#response_icon')
 
