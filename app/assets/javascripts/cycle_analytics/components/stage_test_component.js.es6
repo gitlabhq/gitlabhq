@@ -24,9 +24,9 @@
                     </g>
                   </svg>
                 </span>
-                <a :href="build.url"  class="item-build-name">{{ build.name }}</a>
+                <a :href="build.url" class="item-build-name">{{ build.name }}</a>
                 &middot;
-                <a href="#" class="pipeline-id">#{{ build.id }}</a>
+                <a :href="build.url" class="pipeline-id">#{{ build.id }}</a>
                 <i class="fa fa-code-fork"></i>
                 <a :href="build.branch.url" class="branch-name monospace">{{ build.branch.name }}</a>
                 <span class="icon-branch">
