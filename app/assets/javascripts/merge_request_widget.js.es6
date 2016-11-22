@@ -144,6 +144,11 @@
     };
 
     MergeRequestWidget.prototype.getCIStatus = function(showNotification) {
+      // Only perform pulling if tab is active
+      if (document.hidden) {
+        return;
+      }
+
       var _this;
       _this = this;
       $('.ci-widget-fetching').show();
@@ -199,6 +204,11 @@
     };
 
     MergeRequestWidget.prototype.getCIEnvironmentsStatus = function() {
+      // Only perform pulling if tab is active
+      if (document.hidden) {
+        return;
+      }
+
       $.getJSON(this.opts.ci_environments_status_url, (environments) => {
         if (this.cancel) return;
         this.readyForCIEnvironmentCheck = true;
@@ -212,11 +222,11 @@
         if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
         if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
-        
+
         if (!environment.stop_url) {
           $('.js-stop-env-link', $template).remove();
         }
-        
+
         if (environment.deployed_at && environment.deployed_at_formatted) {
           environment.deployed_at = gl.utils.getTimeago().format(environment.deployed_at, 'gl_en') + '.';
         } else {
