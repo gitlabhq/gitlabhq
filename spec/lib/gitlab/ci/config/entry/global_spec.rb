@@ -254,7 +254,9 @@ describe Gitlab::Ci::Config::Entry::Global do
     end
 
     context 'when job does not have commands' do
-      let(:hash) { { rspec: { stage: 'test' } } }
+      let(:hash) do
+        { before_script: ['echo 123'], rspec: { stage: 'test' } }
+      end
 
       describe '#errors' do
         it 'reports errors about missing script' do
