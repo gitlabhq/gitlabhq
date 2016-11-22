@@ -571,6 +571,9 @@ describe Ci::Pipeline, models: true do
     context 'with failed pipeline' do
       before do
         perform_enqueued_jobs do
+          create(:ci_build, :failed, pipeline: pipeline)
+          create(:generic_commit_status, :failed, pipeline: pipeline)
+
           pipeline.drop
         end
       end
