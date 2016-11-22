@@ -169,7 +169,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unsubscribe command' do
       it 'populates subscription_event: "unsubscribe" if content contains /unsubscribe' do
-        issuable.subscribe(developer)
+        issuable.subscribe(developer, project)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(subscription_event: 'unsubscribe')
@@ -321,7 +321,7 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'multiple label with same argument' do
       let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
       let(:issuable) { issue }
-    end	
+    end
 
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }

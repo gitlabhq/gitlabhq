@@ -94,6 +94,7 @@ describe Event, models: true do
     let(:admin) { create(:admin) }
     let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+    let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
     let(:event) { Event.new(project: project, target: target, author_id: author.id) }
@@ -101,6 +102,32 @@ describe Event, models: true do
     before do
       project.team << [member, :developer]
       project.team << [guest, :guest]
+    end
+
+    context 'commit note event' do
+      let(:target) { note_on_commit }
+
+      it do
+        aggregate_failures do
+          expect(event.visible_to_user?(non_member)).to eq true
+          expect(event.visible_to_user?(member)).to eq true
+          expect(event.visible_to_user?(guest)).to eq true
+          expect(event.visible_to_user?(admin)).to eq true
+        end
+      end
+
+      context 'private project' do
+        let(:project) { create(:empty_project, :private) }
+
+        it do
+          aggregate_failures do
+            expect(event.visible_to_user?(non_member)).to eq false
+            expect(event.visible_to_user?(member)).to eq true
+            expect(event.visible_to_user?(guest)).to eq false
+            expect(event.visible_to_user?(admin)).to eq true
+          end
+        end
+      end
     end
 
     context 'issue event' do

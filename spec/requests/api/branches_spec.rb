@@ -14,7 +14,7 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/repository/branches" do
     it "returns an array of project branches" do
-      project.repository.expire_cache
+      project.repository.expire_all_method_caches
 
       get api("/projects/#{project.id}/repository/branches", user)
       expect(response).to have_http_status(200)
@@ -297,6 +297,22 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/repository/branches/master", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('Cannot remove HEAD branch')
+    end
+  end
+
+  describe "DELETE /projects/:id/repository/merged_branches" do
+    before do
+      allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
+    end
+
+    it 'returns 200' do
+      delete api("/projects/#{project.id}/repository/merged_branches", user)
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns a 403 error if guest' do
+      delete api("/projects/#{project.id}/repository/merged_branches", user2)
+      expect(response).to have_http_status(403)
     end
   end
 end

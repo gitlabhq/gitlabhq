@@ -24,11 +24,11 @@ module API
         post ":id/#{type}/:subscribable_id/subscription" do
           resource = instance_exec(params[:subscribable_id], &finder)
 
-          if resource.subscribed?(current_user)
+          if resource.subscribed?(current_user, user_project)
             not_modified!
           else
-            resource.subscribe(current_user)
-            present resource, with: entity_class, current_user: current_user
+            resource.subscribe(current_user, user_project)
+            present resource, with: entity_class, current_user: current_user, project: user_project
           end
         end
 
@@ -38,11 +38,11 @@ module API
         delete ":id/#{type}/:subscribable_id/subscription" do
           resource = instance_exec(params[:subscribable_id], &finder)
 
-          if !resource.subscribed?(current_user)
+          if !resource.subscribed?(current_user, user_project)
             not_modified!
           else
-            resource.unsubscribe(current_user)
-            present resource, with: entity_class, current_user: current_user
+            resource.unsubscribe(current_user, user_project)
+            present resource, with: entity_class, current_user: current_user, project: user_project
           end
         end
       end

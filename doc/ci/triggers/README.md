@@ -58,6 +58,22 @@ below.
 See the [Examples](#examples) section for more details on how to actually
 trigger a rebuild.
 
+## Trigger a build from webhook
+
+> Introduced in GitLab 8.14.
+
+To trigger a build from webhook of another project you need to add the following
+webhook url for Push and Tag push events:
+
+```
+https://gitlab.example.com/api/v3/projects/:id/ref/:ref/trigger/builds?token=TOKEN
+```
+
+> **Note**:
+- `ref` should be passed as part of url in order to take precedence over `ref`
+  from webhook body that designates the branchref that fired the trigger in the source repository.
+- `ref` should be url encoded if contains slashes.
+
 ## Pass build variables to a trigger
 
 You can pass any number of arbitrary variables in the trigger API call and they
@@ -167,6 +183,14 @@ curl --request POST \
   --form ref=master \
   --form "variables[UPLOAD_TO_S3]=true" \
   https://gitlab.example.com/api/v3/projects/9/trigger/builds
+```
+
+### Using webhook to trigger builds
+
+You can add the following webhook to another project in order to trigger a build:
+
+```
+https://gitlab.example.com/api/v3/projects/9/ref/master/trigger/builds?token=TOKEN&variables[UPLOAD_TO_S3]=true
 ```
 
 ### Using cron to trigger nightly builds

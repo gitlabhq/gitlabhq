@@ -1,0 +1,4 @@
+---
+title: Return 400 when creating a system hook fails
+merge_request: 7350
+author: Robert Schilling

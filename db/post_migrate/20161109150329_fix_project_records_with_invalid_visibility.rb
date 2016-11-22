@@ -1,7 +1,7 @@
 class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  BATCH_SIZE = 1000
+  BATCH_SIZE = 500
   DOWNTIME = false
 
   # This migration is idempotent and there's no sense in throwing away the
@@ -12,34 +12,34 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
     projects = Arel::Table.new(:projects)
     namespaces = Arel::Table.new(:namespaces)
 
-    finder =
+    finder_sql =
       projects.
       join(namespaces, Arel::Nodes::InnerJoin).
       on(projects[:namespace_id].eq(namespaces[:id])).
       where(projects[:visibility_level].gt(namespaces[:visibility_level])).
-      project(projects[:id]).
-      take(BATCH_SIZE)
+      project(projects[:id], namespaces[:visibility_level]).
+      take(BATCH_SIZE).
+      to_sql
 
-    # MySQL requires a derived table to perform this query
-    nested_finder =
-      projects.
-      from(finder.as("AS projects_inner")).
-      project(projects[:id])
-
-    valuer =
-      namespaces.
-      where(namespaces[:id].eq(projects[:namespace_id])).
-      project(namespaces[:visibility_level])
-
-    # Update matching rows until none remain. The finder contains a limit.
+    # Update matching rows in batches. Each batch can cause up to 3 UPDATE
+    # statements, in addition to the SELECT: one per visibility_level 
     loop do
-      updater = Arel::UpdateManager.new(ActiveRecord::Base).
-        table(projects).
-        set(projects[:visibility_level] => Arel::Nodes::SqlLiteral.new("(#{valuer.to_sql})")).
-        where(projects[:id].in(nested_finder))
+      to_update = connection.exec_query(finder_sql)
+      break if to_update.rows.count == 0
 
-      num_updated = connection.exec_update(updater.to_sql, self.class.name, [])
-      break if num_updated == 0
+      # row[0] is projects.id, row[1] is namespaces.visibility_level
+      updates = to_update.rows.each_with_object(Hash.new {|h, k| h[k] = [] }) do |row, obj|
+        obj[row[1]] << row[0]
+      end
+
+      updates.each do |visibility_level, project_ids|
+        updater = Arel::UpdateManager.new(ActiveRecord::Base).
+          table(projects).
+          set(projects[:visibility_level] => visibility_level).
+          where(projects[:id].in(project_ids))
+
+        ActiveRecord::Base.connection.exec_update(updater.to_sql, self.class.name, [])
+      end
     end
   end
 

@@ -55,7 +55,13 @@ class AutocompleteController < ApplicationController
   def find_users
     @users =
       if @project
-        @project.team.users
+        user_ids = @project.team.users.pluck(:id)
+
+        if params[:author_id].present?
+          user_ids << params[:author_id]
+        end
+
+        User.where(id: user_ids)
       elsif params[:group_id].present?
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)

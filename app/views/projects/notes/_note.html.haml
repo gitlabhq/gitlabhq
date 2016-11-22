@@ -14,6 +14,9 @@
           = note.author.to_reference
           - unless note.system
             commented
+          - if note.system
+            %span{class: 'system-note-message'}
+              = h(note.note_html.downcase.html_safe)
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
@@ -67,7 +70,9 @@
           = render 'projects/notes/edit_form', note: note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
-
+        - if note.system
+          .system-note-commit-list-toggler
+            Toggle commit list
       - if note.attachment.url
         .note-attachment
           - if note.attachment.image?

@@ -26,6 +26,11 @@ The GitLab experience is broken apart into several surfaces. Each of these surfa
 
 ---
 
+### [Copy](copy.md)
+Conventions on text and messaging within labels, buttons, and other components.
+
+---
+
 ### [Features](features.md)
 The previous building blocks are combined into complete features in the GitLab UX. Examples include our navigation, filters, search results, and empty states.
 

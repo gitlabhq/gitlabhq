@@ -1,43 +1,5 @@
 # Markdown
 
-## Table of Contents
-
-**[GitLab Flavored Markdown](#gitlab-flavored-markdown-gfm)**
-
-* [Newlines](#newlines)
-* [Multiple underscores in words](#multiple-underscores-in-words)
-* [URL auto-linking](#url-auto-linking)
-* [Multiline Blockquote](#multiline-blockquote)
-* [Code and Syntax Highlighting](#code-and-syntax-highlighting)
-* [Inline Diff](#inline-diff)
-* [Emoji](#emoji)
-* [Special GitLab references](#special-gitlab-references)
-* [Task Lists](#task-lists)
-* [Videos](#videos)
-
-**[Standard Markdown](#standard-markdown)**
-
-* [Headers](#headers)
-* [Emphasis](#emphasis)
-* [Lists](#lists)
-* [Links](#links)
-* [Images](#images)
-* [Blockquotes](#blockquotes)
-* [Inline HTML](#inline-html)
-* [Horizontal Rule](#horizontal-rule)
-* [Line Breaks](#line-breaks)
-* [Tables](#tables)
-* [Footnotes](#footnotes)
-
-**[Wiki-Specific Markdown](#wiki-specific-markdown)**
-
-* [Wiki - Direct page link](#wiki-direct-page-link)
-* [Wiki - Direct file link](#wiki-direct-file-link)
-* [Wiki - Hierarchical link](#wiki-hierarchical-link)
-* [Wiki - Root link](#wiki-root-link)
-
-**[References](#references)**
-
 ## GitLab Flavored Markdown (GFM)
 
 > **Note:**
@@ -64,7 +26,7 @@ You can use GFM in the following areas:
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
-## Newlines
+### Newlines
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newlines
@@ -84,7 +46,7 @@ Violets are blue
 
 Sugar is sweet
 
-## Multiple underscores in words
+### Multiple underscores in words
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiple-underscores-in-words
@@ -99,7 +61,7 @@ perform_complicated_task
 
 do_this_and_do_that_and_another_thing
 
-## URL auto-linking
+### URL auto-linking
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#url-auto-linking
@@ -120,7 +82,7 @@ GFM will autolink almost any URL you copy and paste into your text:
 * irc://irc.freenode.net/gitlab
 * http://localhost:3000
 
-## Multiline Blockquote
+### Multiline Blockquote
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiline-blockquote
@@ -154,7 +116,7 @@ multiple lines,
 you can quote that without having to manually prepend `>` to every line!
 >>>
 
-## Code and Syntax Highlighting
+### Code and Syntax Highlighting
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting
@@ -224,7 +186,7 @@ s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
 
-## Inline Diff
+### Inline Diff
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-diff
@@ -240,7 +202,7 @@ However the wrapping tags cannot be mixed as such:
 - {- deletions -]
 - [- deletions -}
 
-## Emoji
+### Emoji
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
@@ -265,7 +227,7 @@ If you are new to this, don't be :fearful:. You can easily join the emoji :famil
 
 Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
 
-## Special GitLab References
+### Special GitLab References
 
 GFM recognizes special references.
 
@@ -305,7 +267,7 @@ GFM also recognizes certain cross-project references:
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
 | `namespace/project~"Some label"`        | issues with given label |
 
-## Task Lists
+### Task Lists
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#task-lists
@@ -328,7 +290,7 @@ You can add task lists to issues, merge requests and comments. To create a task 
 
 Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
-## Videos
+### Videos
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#videos
@@ -345,9 +307,9 @@ Here's a sample video:
 
 ![Sample Video](img/markdown_video.mp4)
 
-# Standard Markdown
+## Standard Markdown
 
-## Headers
+### Headers
 
 ```no-highlight
 # H1
@@ -365,21 +327,6 @@ Alt-H1
 Alt-H2
 ------
 ```
-
-# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6
-
-Alternatively, for H1 and H2, an underline-ish style:
-
-Alt-H1
-======
-
-Alt-H2
-------
 
 ### Header IDs and links
 
@@ -416,7 +363,7 @@ Would generate the following link IDs:
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 
-## Emphasis
+### Emphasis
 
 ```no-highlight
 Emphasis, aka italics, with *asterisks* or _underscores_.
@@ -436,7 +383,7 @@ Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 
-## Lists
+### Lists
 
 ```no-highlight
 1. First ordered list item
@@ -492,7 +439,7 @@ the second list item will be incorrectly labeled as `1`.
    Second paragraph of first item.
 2. Another item
 
-## Links
+### Links
 
 There are two ways to create links, inline-style and reference-style.
 
@@ -501,9 +448,9 @@ There are two ways to create links, inline-style and reference-style.
     [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
     [I'm a relative reference to a repository file](LICENSE)
-    
+
     [I am an absolute reference within the repository](/doc/user/markdown.md)
-    
+
     [I link to the Milestones page](/../milestones)
 
     [You can use numbers for reference-style link definitions][1]
@@ -523,9 +470,9 @@ There are two ways to create links, inline-style and reference-style.
 [I'm a relative reference to a repository file](LICENSE)[^1]
 
 [I am an absolute reference within the repository](/doc/user/markdown.md)
-    
+
 [I link to the Milestones page](/../milestones)
-    
+
 [You can use numbers for reference-style link definitions][1]
 
 Or leave it empty and use the [link text itself][]
@@ -544,7 +491,8 @@ Relative links do not allow referencing project files in a wiki page or wiki pag
 
 will point the link to `wikis/style` when the link is inside of a wiki markdown file.
 
-## Images
+
+### Images
 
     Here's our logo (hover to see the title text):
 
@@ -568,7 +516,7 @@ Reference-style:
 
 [logo]: img/markdown_logo.png
 
-## Blockquotes
+### Blockquotes
 
 ```no-highlight
 > Blockquotes are very handy in email to emulate reply text.
@@ -586,7 +534,7 @@ Quote break.
 
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 
-## Inline HTML
+### Inline HTML
 
 You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
@@ -610,7 +558,7 @@ See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubyd
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
-## Horizontal Rule
+### Horizontal Rule
 
 ```
 Three or more...
@@ -642,7 +590,7 @@ ___
 
 Underscores
 
-## Line Breaks
+### Line Breaks
 
 My basic recommendation for learning how line breaks work is to experiment and discover -- hit &lt;Enter&gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. "Markdown Toggle" is your friend.
 
@@ -672,7 +620,7 @@ This line is also a separate paragraph, and...
 This line is on its own line, because the previous line ends with two
 spaces.
 
-## Tables
+### Tables
 
 Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
 
@@ -708,15 +656,14 @@ By including colons in the header row, you can align the text within that column
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 
-## Footnotes
-
-You can add footnotes to your text as follows.[^1]
-[^1]: This is my awesome footnote.
+### Footnotes
 
 ```
-You can add footnotes to your text as follows.[^1]
-[^1]: This is my awesome footnote.
+You can add footnotes to your text as follows.[^2]
+[^2]: This is my awesome footnote.
 ```
+
+You can add footnotes to your text as follows.[^2]
 
 ## Wiki-specific Markdown
 
@@ -752,30 +699,30 @@ A link can be constructed relative to the current wiki page using `./<page>`,
 - If this snippet was placed on a page at `<your_wiki>/documentation/main`,
   it would link to `<your_wiki>/documentation/related`:
 
-	```markdown
-	[Link to Related Page](./related)
-	```
+    ```markdown
+    [Link to Related Page](./related)
+    ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
   it would link to `<your_wiki>/documentation/main`:
 
-	```markdown
-	[Link to Related Page](../main)
-	```
+    ```markdown
+    [Link to Related Page](../main)
+    ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/main`,
   it would link to `<your_wiki>/documentation/related.md`:
 
-	```markdown
-	[Link to Related Page](./related.md)
-	```
+    ```markdown
+    [Link to Related Page](./related.md)
+    ```
 
 - If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
   it would link to `<your_wiki>/documentation/main.md`:
 
-	```markdown
-	[Link to Related Page](../main.md)
-	```
+    ```markdown
+    [Link to Related Page](../main.md)
+    ```
 
 ### Wiki - Root link
 
@@ -783,22 +730,25 @@ A link starting with a `/` is relative to the wiki root.
 
 - This snippet links to `<wiki_root>/documentation`:
 
-	```markdown
-	[Link to Related Page](/documentation)
-	```
+    ```markdown
+    [Link to Related Page](/documentation)
+    ```
 
 - This snippet links to `<wiki_root>/miscellaneous.md`:
 
-	```markdown
-	[Link to Related Page](/miscellaneous.md)
-	```
+    ```markdown
+    [Link to Related Page](/miscellaneous.md)
+    ```
+
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 - The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
 - [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
 
+[^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com
+[^2]: This is my awesome footnote.
+
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
-[^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com

@@ -1,0 +1,4 @@
+---
+title: Introduce round-robin project creation to spread load over multiple shards
+merge_request: 7266
+author: 

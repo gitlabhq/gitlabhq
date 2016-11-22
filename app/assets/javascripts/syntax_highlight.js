@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-undef, no-else-return, prefer-arrow-callback, padded-blocks, max-len */
 // Syntax Highlighter
 //
 // Applies a syntax highlighting color scheme CSS class to any element with the

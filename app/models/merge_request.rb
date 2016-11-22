@@ -686,18 +686,21 @@ class MergeRequest < ActiveRecord::Base
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_build_succeeds?
 
-    !pipeline || pipeline.success?
+    !pipeline || pipeline.success? || pipeline.skipped?
   end
 
   def environments
     return [] unless diff_head_commit
 
-    @environments ||=
-      begin
-        envs = target_project.environments_for(target_branch, diff_head_commit, with_tags: true)
-        envs.concat(source_project.environments_for(source_branch, diff_head_commit)) if source_project
-        envs.uniq
-      end
+    @environments ||= begin
+      target_envs = target_project.environments_for(
+        target_branch, commit: diff_head_commit, with_tags: true)
+
+      source_envs = source_project.environments_for(
+        source_branch, commit: diff_head_commit) if source_project
+
+      (target_envs.to_a + source_envs.to_a).uniq
+    end
   end
 
   def state_human_name

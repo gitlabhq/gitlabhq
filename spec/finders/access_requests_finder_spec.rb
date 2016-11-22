@@ -3,12 +3,17 @@ require 'spec_helper'
 describe AccessRequestsFinder, services: true do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
-  let(:project) { create(:project, :public) }
-  let(:group) { create(:group, :public) }
 
-  before do
-    project.request_access(access_requester)
-    group.request_access(access_requester)
+  let(:project) do
+    create(:empty_project, :public, :access_requestable) do |project|
+      project.request_access(access_requester)
+    end
+  end
+
+  let(:group) do
+    create(:group, :public, :access_requestable) do |group|
+      group.request_access(access_requester)
+    end
   end
 
   shared_examples 'a finder returning access requesters' do |method_name|

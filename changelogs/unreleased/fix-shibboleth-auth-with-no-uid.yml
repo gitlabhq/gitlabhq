@@ -1,0 +1,4 @@
+---
+title: fix shibboleth misconfigurations resulting in authentication bypass
+merge_request: 7428
+author: 

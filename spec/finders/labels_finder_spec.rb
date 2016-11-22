@@ -64,6 +64,21 @@ describe LabelsFinder do
 
         expect(finder.execute).to eq [group_label_2, project_label_1, group_label_1]
       end
+
+      context 'as an administrator' do
+        it 'does not return labels from another project' do
+          # Purposefully creating a project with _nothing_ associated to it
+          isolated_project = create(:empty_project)
+          admin = create(:admin)
+
+          # project_3 has a label associated to it, which we don't want coming
+          # back when we ask for the isolated project's labels
+          project_3.team << [admin, :reporter]
+          finder = described_class.new(admin, project_id: isolated_project.id)
+
+          expect(finder.execute).to be_empty
+        end
+      end
     end
 
     context 'filtering by title' do

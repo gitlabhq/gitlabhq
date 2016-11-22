@@ -69,7 +69,7 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @issue.to_json(include: [:milestone, :labels])
+        render json: IssueSerializer.new.represent(@issue)
       end
     end
   end

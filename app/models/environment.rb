@@ -19,7 +19,7 @@ class Environment < ActiveRecord::Base
             allow_nil: true,
             addressable_url: true
 
-  delegate :stop_action, to: :last_deployment, allow_nil: true
+  delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
@@ -35,6 +35,10 @@ class Environment < ActiveRecord::Base
 
     state :available
     state :stopped
+  end
+
+  def recently_updated_on_branch?(ref)
+    ref.to_s == last_deployment.try(:ref)
   end
 
   def last_deployment
@@ -92,6 +96,15 @@ class Environment < ActiveRecord::Base
   def stop!(current_user)
     return unless stoppable?
 
+    stop
     stop_action.play(current_user)
+  end
+
+  def actions_for(environment)
+    return [] unless manual_actions
+
+    manual_actions.select do |action|
+      action.expanded_environment_name == environment
+    end
   end
 end

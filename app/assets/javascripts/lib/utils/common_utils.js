@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, padded-blocks, max-len */
 (function() {
   (function(w) {
     var base;
@@ -125,6 +125,11 @@
       // Close any open tooltips
       $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
     };
+
+    gl.utils.isMetaKey = function(e) {
+      return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
+    };
+
   })(window);
 
 }).call(this);

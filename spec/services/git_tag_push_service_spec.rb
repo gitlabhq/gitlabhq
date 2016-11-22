@@ -18,19 +18,13 @@ describe GitTagPushService, services: true do
     end
 
     it 'flushes general cached data' do
-      expect(project.repository).to receive(:expire_cache)
+      expect(project.repository).to receive(:before_push_tag)
 
       subject
     end
 
     it 'flushes the tags cache' do
       expect(project.repository).to receive(:expire_tags_cache)
-
-      subject
-    end
-
-    it 'flushes the tag count cache' do
-      expect(project.repository).to receive(:expire_tag_count_cache)
 
       subject
     end

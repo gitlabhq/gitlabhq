@@ -125,6 +125,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       end
 
       resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      delete :merged_branches, controller: 'branches', action: :destroy_all_merged
       resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
         resource :release, only: [:edit, :update]
       end
@@ -151,6 +152,18 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       end
 
       resource :cycle_analytics, only: [:show]
+
+      namespace :cycle_analytics do
+        scope :events, controller: 'events' do
+          get :issue
+          get :plan
+          get :code
+          get :test
+          get :review
+          get :staging
+          get :production
+        end
+      end
 
       resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
         collection do

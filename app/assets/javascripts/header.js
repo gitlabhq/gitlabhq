@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable wrap-iife, func-names, space-before-function-paren, padded-blocks, prefer-arrow-callback, no-var, max-len */
 (function() {
 
   $(document).on('todo:toggle', function(e, count) {

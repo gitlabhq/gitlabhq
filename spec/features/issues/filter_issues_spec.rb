@@ -3,8 +3,8 @@ require 'rails_helper'
 describe 'Filter issues', feature: true do
   include WaitForAjax
 
-  let!(:project)   { create(:project) }
   let!(:group)     { create(:group) }
+  let!(:project)   { create(:project, group: group) }
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
@@ -127,7 +127,7 @@ describe 'Filter issues', feature: true do
         expect(page).to have_content wontfix.title
       end
 
-      find('body').click
+      find('.dropdown-menu-close-icon').click
 
       expect(find('.filtered-labels')).to have_content(wontfix.title)
 
@@ -135,7 +135,7 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
       find('.dropdown-menu-labels a', text: label.title).click
 
-      find('body').click
+      find('.dropdown-menu-close-icon').click
 
       expect(find('.filtered-labels')).to have_content(wontfix.title)
       expect(find('.filtered-labels')).to have_content(label.title)
@@ -150,8 +150,8 @@ describe 'Filter issues', feature: true do
     it "selects and unselects `won't fix`" do
       find('.dropdown-menu-labels a', text: wontfix.title).click
       find('.dropdown-menu-labels a', text: wontfix.title).click
-      # Close label dropdown to load
-      find('body').click
+
+      find('.dropdown-menu-close-icon').click
       expect(page).not_to have_css('.filtered-labels')
     end
   end

@@ -134,7 +134,7 @@ content on the Users#show page.
       }
       const $calendarWrap = this.$parentEl.find('.user-calendar');
       $calendarWrap.load($calendarWrap.data('href'));
-      new Activities();
+      new gl.Activities();
       return this.loaded['activity'] = true;
     }
 

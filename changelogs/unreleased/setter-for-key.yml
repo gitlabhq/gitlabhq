@@ -1,0 +1,4 @@
+---
+title: Use setter for key instead AR callback
+merge_request: 7488
+author: Semyon Pupkov

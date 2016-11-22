@@ -30,6 +30,10 @@ module LfsHelper
     ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code?
   end
 
+  def objects
+    @objects ||= (params[:objects] || []).to_a
+  end
+
   def user_can_download_code?
     has_authentication_ability?(:download_code) && can?(user, :download_code, project)
   end

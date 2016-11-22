@@ -1,0 +1,4 @@
+---
+title: Introduce better credential and error checking to `rake gitlab:ldap:check`
+merge_request: 6601
+author: 
