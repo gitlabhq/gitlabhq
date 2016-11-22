@@ -41,15 +41,13 @@ module API
                             desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
-        optional :iid, type: Integer, desc: 'The IID of the merge requests'
+        optional :iid, type: Array[Integer], desc: 'The IID of the merge requests'
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
-        merge_requests = user_project.merge_requests.inc_notes_with_associations
 
-        unless params[:iid].nil?
-          merge_requests = filter_by_iid(merge_requests, params[:iid])
-        end
+        merge_requests = user_project.merge_requests.inc_notes_with_associations
+        merge_requests = filter_by_iid(merge_requests, params[:iid]) if params[:iid].present?
 
         merge_requests =
           case params[:state]

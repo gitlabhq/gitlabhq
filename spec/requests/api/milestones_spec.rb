@@ -61,6 +61,15 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq closed_milestone.id
     end
 
+    it 'returns a project milestone by iid array' do
+      get api("/projects/#{project.id}/milestones", user), iid: [milestone.iid, closed_milestone.iid]
+
+      expect(response).to have_http_status(200)
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['title']).to eq milestone.title
+      expect(json_response.first['id']).to eq milestone.id
+    end
+
     it 'returns 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}")
 
