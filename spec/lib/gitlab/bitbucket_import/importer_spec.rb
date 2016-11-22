@@ -98,7 +98,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
 
     it 'map statuses to open or closed' do
       # HACK: Bitbucket::Representation.const_get('Issue') seems to return Issue without this
-      Bitbucket::Representation::Issue.new
+      Bitbucket::Representation::Issue.new({})
       importer.execute
 
       expect(project.issues.where(state: "closed").size).to eq(5)

@@ -94,7 +94,7 @@ module Gitlab
 
             import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
           rescue ActiveRecord::RecordInvalid
-            nil
+            Rails.log.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Invalid pull request #{e.message}")
           end
         end
       end
@@ -134,7 +134,7 @@ module Gitlab
 
             merge_request.notes.create!(attributes)
           rescue ActiveRecord::RecordInvalid => e
-            Rails.log.error("Bitbucket importer ERROR: Invalid pull request comment #{e.message}")
+            Rails.log.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Invalid pull request comment #{e.message}")
             nil
           end
         end
@@ -145,7 +145,7 @@ module Gitlab
           begin
             merge_request.notes.create!(pull_request_comment_attributes(comment))
           rescue ActiveRecord::RecordInvalid => e
-            Rails.log.error("Bitbucket importer ERROR: Invalid standalone pull request comment #{e.message}")
+            Rails.log.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Invalid standalone pull request comment #{e.message}")
             nil
           end
         end
