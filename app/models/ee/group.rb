@@ -1,12 +1,14 @@
-# Group EE mixin
-#
-# This module is intended to encapsulate EE-specific model logic
-# and be included in the `Group` model
 module EE
+  # Group EE mixin
+  #
+  # This module is intended to encapsulate EE-specific model logic
+  # and be included in the `Group` model
   module Group
     extend ActiveSupport::Concern
 
     included do
+      prepend GeoFeatures
+
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
         state :started
@@ -54,6 +56,16 @@ module EE
 
       fail_ldap_sync
       update_column(:ldap_sync_error, ::Gitlab::UrlSanitizer.sanitize(error_message))
+    end
+
+    module GeoFeatures
+      def avatar_url(size = nil)
+        if self[:avatar].present? && ::Gitlab::Geo.secondary?
+          File.join(::Gitlab::Geo.primary_node.url, avatar.url)
+        else
+          super
+        end
+      end
     end
   end
 end

@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   include Sortable
   include CaseSensitivity
   include TokenAuthenticatable
+  prepend EE::User
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
