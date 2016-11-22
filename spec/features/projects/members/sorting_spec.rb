@@ -6,8 +6,8 @@ feature 'Projects > Members > Sorting', feature: true do
   let(:project)   { create(:empty_project) }
 
   background do
-    project.team << [master, :master]
-    project.team << [developer, :developer]
+    create(:project_member, :master, user: master, project: project, created_at: 5.days.ago)
+    create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
 
     login_as(master)
   end

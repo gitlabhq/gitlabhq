@@ -6,8 +6,8 @@ feature 'Groups > Members > Sorting', feature: true do
   let(:group)     { create(:group) }
 
   background do
-    group.add_owner(owner)
-    group.add_developer(developer)
+    create(:group_member, :owner, user: owner, group: group, created_at: 5.days.ago)
+    create(:group_member, :developer, user: developer, group: group, created_at: 3.days.ago)
 
     login_as(owner)
   end
