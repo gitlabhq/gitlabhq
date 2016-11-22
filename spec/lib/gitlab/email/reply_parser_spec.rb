@@ -15,8 +15,23 @@ describe Gitlab::Email::ReplyParser, lib: true do
       expect(test_parse_body("asdf" * 30)).to eq("")
     end
 
-    it "returns an empty string if there is no reply content" do
-      expect(test_parse_body(fixture_file("emails/no_content_reply.eml"))).to eq("")
+    it "returns the quote for an empty-quoted comment" do
+      expect(test_parse_body(fixture_file("emails/empty_quote.eml")))
+        .to eq(<<-BODY.strip_heredoc.chomp)
+         >
+         >
+         >
+         > eviltrout posted in 'Adventure Time Sux' on Discourse Meta:
+         >
+         > ---
+         > hey guys everyone knows adventure time sucks!
+         >
+         > ---
+         > Please visit this link to respond: http://localhost:3000/t/adventure-time-sux/1234/3
+         >
+         > To unsubscribe from these emails, visit your [user preferences](http://localhost:3000/user_preferences).
+         >
+       BODY
     end
 
     it "properly renders plaintext-only email" do
