@@ -3,12 +3,11 @@ require 'spec_helper'
 feature 'Merge Request versions', js: true, feature: true do
   let(:merge_request) { create(:merge_request, importing: true) }
   let(:project) { merge_request.source_project }
-  let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-  let!(:merge_request_diff2) { merge_request.merge_request_diffs.create(head_commit_sha: nil) }
-  let!(:merge_request_diff3) { merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
   before do
     login_as :admin
+    merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+    merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e')
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
@@ -54,7 +53,7 @@ feature 'Merge Request versions', js: true, feature: true do
         project.namespace,
         project,
         merge_request.iid,
-        diff_id: merge_request_diff3.id,
+        diff_id: 2,
         start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
       )
     end

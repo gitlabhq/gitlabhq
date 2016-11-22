@@ -9,10 +9,10 @@
 
     - if @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
-    - elsif @merge_request.branch_missing?
-      = render 'projects/merge_requests/widget/open/missing_branch'
     - elsif @merge_request.commits.blank?
       = render 'projects/merge_requests/widget/open/nothing'
+    - elsif @merge_request.branch_missing?
+      = render 'projects/merge_requests/widget/open/missing_branch'
     - elsif @merge_request.unchecked?
       = render 'projects/merge_requests/widget/open/check'
     - elsif @merge_request.cannot_be_merged? && !resolved_conflicts

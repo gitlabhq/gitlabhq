@@ -60,15 +60,7 @@ module MergeRequests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
-        if merge_request.source_branch == @branch_name || force_push?
-          merge_request.reload_diff
-        else
-          mr_commit_ids = merge_request.commits.map(&:id)
-          push_commit_ids = @commits.map(&:id)
-          matches = mr_commit_ids & push_commit_ids
-          merge_request.reload_diff if matches.any?
-        end
-
+        reload_diff(merge_request) unless branch_removed?
         merge_request.mark_as_unchecked
       end
     end
@@ -172,6 +164,17 @@ module MergeRequests
 
     def branch_removed?
       Gitlab::Git.blank_ref?(@newrev)
+    end
+
+    def reload_diff(merge_request)
+      if merge_request.source_branch == @branch_name || force_push?
+        merge_request.reload_diff
+      else
+        mr_commit_ids = merge_request.commits.map(&:id)
+        push_commit_ids = @commits.map(&:id)
+        matches = mr_commit_ids & push_commit_ids
+        merge_request.reload_diff if matches.any?
+      end
     end
   end
 end
