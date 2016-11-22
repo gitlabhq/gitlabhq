@@ -48,7 +48,7 @@ check it into your Git repository:
 
 ```bash
 git clone git@gitlab.example.com:group/project.git
-git lfs install                       # initialize the Git LFS project project
+git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
 
