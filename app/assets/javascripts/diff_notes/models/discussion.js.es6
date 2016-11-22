@@ -57,14 +57,17 @@ class DiscussionModel {
   }
 
   updateHeadline (data) {
-    const $discussionHeadline = $(`.discussion[data-discussion-id="${this.id}"] .js-discussion-headline`);
+    const discussionSelector = `.discussion[data-discussion-id="${this.id}"]`;
+    const $discussionHeadline = $(`${discussionSelector} .js-discussion-headline`);
 
     if (data.discussion_headline_html) {
       if ($discussionHeadline.length) {
         $discussionHeadline.replaceWith(data.discussion_headline_html);
       } else {
-        $(`.discussion[data-discussion-id="${this.id}"] .discussion-header`).append(data.discussion_headline_html);
+        $(`${discussionSelector} .discussion-header`).append(data.discussion_headline_html);
       }
+
+      gl.utils.localTimeAgo($('.js-timeago', `${discussionSelector}`));
     } else {
        $discussionHeadline.remove();
     }
@@ -74,7 +77,7 @@ class DiscussionModel {
     if (!this.canResolve) {
       return false;
     }
-    
+
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
