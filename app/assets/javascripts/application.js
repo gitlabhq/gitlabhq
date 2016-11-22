@@ -60,9 +60,7 @@
   window.addEventListener('hashchange', gl.utils.handleLocationHash);
   window.addEventListener('load', function onLoad() {
     window.removeEventListener('load', onLoad, false);
-    if (window.location.hash) {
-      setTimeout(gl.utils.handleLocationHash, 100);
-    }
+    gl.utils.handleLocationHash();
   }, false);
 
   $(function () {
