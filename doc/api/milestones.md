@@ -6,7 +6,8 @@ Returns a list of project milestones.
 
 ```
 GET /projects/:id/milestones
-GET /projects/:id/milestones?iid[]=42
+GET /projects/:id/milestones?iid=42
+GET /projects/:id/milestones?iid[]=42&iid[]=43
 GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
 ```
