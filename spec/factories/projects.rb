@@ -140,7 +140,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           namespace: project.path,
-          api_url: 'https://kubernetes.example.com/api',
+          api_url: 'https://kubernetes.example.com',
           token: 'a' * 40,
         }
       )

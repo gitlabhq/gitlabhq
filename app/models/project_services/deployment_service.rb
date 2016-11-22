@@ -12,4 +12,22 @@ class DeploymentService < Service
   def predefined_variables
     []
   end
+
+  # Environments may have a number of terminals. Should return an array of
+  # hashes describing them, e.g.:
+  #
+  #     [{
+  #       :selectors    => {"a" => "b", "foo" => "bar"},
+  #       :url          => "wss://external.example.com/exec",
+  #       :headers      => {"Authorization" => "Token xxx"},
+  #       :subprotocols => ["foo"],
+  #       :ca_pem       => "----BEGIN CERTIFICATE...", # optional
+  #       :created_at   => Time.now.utc
+  #     }]
+  #
+  # Selectors should be a set of values that uniquely identify a particular
+  # terminal
+  def terminals(environment)
+    raise NotImplementedError
+  end
 end

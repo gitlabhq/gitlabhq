@@ -55,6 +55,10 @@ module ReactiveCaching
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes
 
+    def calculate_reactive_cache
+      raise NotImplementedError
+    end
+
     def with_reactive_cache(&blk)
       within_reactive_cache_lifetime do
         data = Rails.cache.read(full_reactive_cache_key)

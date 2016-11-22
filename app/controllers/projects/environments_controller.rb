@@ -9,7 +9,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def index
     @scope = params[:scope]
     @environments = project.environments
-  
+
     respond_to do |format|
       format.html
       format.json do
@@ -54,6 +54,29 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     new_action = @environment.stop!(current_user)
     redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, new_action])
+  end
+
+  def terminal
+    # Currently, this acts as a hint to load the terminal details into the cache
+    # if they aren't there already. In the future, users will need these details
+    # to choose between terminals to connect to.
+    @terminals = environment.terminals
+  end
+
+  # GET .../terminal.ws : implemented in gitlab-workhorse
+  def terminal_websocket_authorize
+    Gitlab::Workhorse.verify_api_request!(request.headers)
+
+    # Just return the first terminal for now. If the list is in the process of
+    # being looked up, this may result in a 404 response, so the frontend
+    # should retry
+    terminal = environment.terminals.try(:first)
+    if terminal
+      set_workhorse_internal_api_content_type
+      render json: Gitlab::Workhorse.terminal_websocket(terminal)
+    else
+      render text: 'Not found', status: 404
+    end
   end
 
   private
