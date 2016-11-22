@@ -1,4 +1,0 @@
----
-title: Process commits using a dedicated Sidekiq worker
-merge_request: 6802
-author: 
