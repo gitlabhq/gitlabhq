@@ -17,5 +17,14 @@
         %code= Doorkeeper.configuration.native_redirect_uri
         for local tests
 
+  .form-group
+    = f.label :scopes, class: 'label-light'
+    - @scopes.each do |scope|
+      %fieldset
+        = check_box_tag 'doorkeeper_application[scopes][]', scope, application.scopes.include?(scope), id: "doorkeeper_application_scopes_#{scope}"
+        = label_tag "doorkeeper_application_scopes_#{scope}", scope
+        %span= "(#{t(scope, scope: [:doorkeeper, :scopes])})"
+
+
   .prepend-top-default
     = f.submit 'Save application', class: "btn btn-create"
