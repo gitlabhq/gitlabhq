@@ -24,12 +24,8 @@
     "spyOnEvent": false,
     "Turbolinks": false,
     "window": false,
-<<<<<<< HEAD
-    "Vue": false
-=======
     "Vue": false,
     "Flash": false,
     "Cookies": false
->>>>>>> ce/master
   }
 }
