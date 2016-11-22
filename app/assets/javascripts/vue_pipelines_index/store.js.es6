@@ -8,27 +8,20 @@
   class PipelineUpdater {
     constructor(pipelines) {
       this.pipelines = pipelines;
-      this.updateClone = (update, newPipe) => {
-        update.forEach((pipe) => {
-          if (pipe.id === newPipe.id) pipe = Object.assign({}, pipe, newPipe);
-        });
-      };
-      this.currentPageSlicer = (update) => {
-        if (update.length < PAGINATION_LIMIT) return update;
-        return update.slice(0, SLICE_LIMIT);
-      };
     }
 
     updatePipelines(apiResponse) {
       const update = this.pipelines.slice(0);
-      apiResponse.pipelines.forEach((newPipe) => {
+      apiResponse.pipelines.forEach((newPipe, i) => {
         if (newPipe.commit) {
           update.unshift(newPipe);
         } else {
-          this.updateClone(update, newPipe);
+          const newMerge = Object.assign({}, update[i], newPipe);
+          update[i] = newMerge;
         }
       });
-      return this.currentPageSlicer(update);
+      if (update.length < PAGINATION_LIMIT) return update;
+      return update.slice(0, SLICE_LIMIT);
     }
   }
 
