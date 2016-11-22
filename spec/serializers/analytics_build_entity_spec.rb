@@ -7,7 +7,7 @@ describe AnalyticsBuildEntity do
 
   context 'build with an author' do
     let(:user) { create(:user) }
-    let(:build) { create(:ci_build, author: user) }
+    let(:build) { create(:ci_build, author: user, started_at: 2.hours.ago, finished_at: 1.hour.ago) }
 
     subject { entity.as_json }
 
@@ -22,6 +22,14 @@ describe AnalyticsBuildEntity do
     it 'does not contain sensitive information' do
       expect(subject).not_to include(/token/)
       expect(subject).not_to include(/variables/)
+    end
+
+    it 'contains the right started at' do
+      expect(subject[:date]).to eq('about 2 hours ago')
+    end
+
+    it 'contains the duration' do
+      expect(subject[:total_time]).to eq(hours: 1 )
     end
   end
 end
