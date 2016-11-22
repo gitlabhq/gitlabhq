@@ -425,18 +425,36 @@ describe Ci::Pipeline, models: true do
       end
 
       %i[success failed canceled].each do |status1|
-        %i[ci_build generic_commit_status].each do |type0|
-          %i[ci_build generic_commit_status].each do |type1|
-            context "when there are #{type0} and #{type1} for #{status0} and #{status1}" do
-              before do
-                create(type0, status0, pipeline: pipeline)
-                create(type1, status1, pipeline: pipeline)
-              end
+        context "when there are generic_commit_status jobs for #{status0} and #{status1}" do
+          before do
+            create(:generic_commit_status, status0, pipeline: pipeline)
+            create(:generic_commit_status, status1, pipeline: pipeline)
+          end
 
-              it 'is cancelable' do
-                expect(pipeline.cancelable?).to be_truthy
-              end
-            end
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+
+        context "when there are generic_commit_status and ci_build jobs for #{status0} and #{status1}" do
+          before do
+            create(:generic_commit_status, status0, pipeline: pipeline)
+            create(:ci_build, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+
+        context "when there are ci_build jobs for #{status0} and #{status1}" do
+          before do
+            create(:ci_build, status0, pipeline: pipeline)
+            create(:ci_build, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
           end
         end
       end
