@@ -1,10 +1,7 @@
 # Cycle Analytics
 
-> [Introduced][ce-5986] in GitLab 8.12.
->
-> **Note:**
-There are more changes coming to Cycle Analytics, you can follow the following
-issue to track the changes to this feature: [#20975][ce-20975].
+> [Introduced][ce-5986] in GitLab 8.12. Further features were added in GitLab
+  8.14.
 
 Cycle Analytics measures the time it takes to go from an [idea to production] for
 each project you have. This is achieved by not only indicating the total time it
@@ -16,7 +13,7 @@ calculates a separate median for each stage.
 
 ## Overview
 
-You can find the Cycle Analytics page under your project's **Pipelines > Cycle
+You can find the Cycle Analytics page under your project's **Pipelines ➔ Cycle
 Analytics** tab.
 
 ![Cycle Analytics landing page](img/cycle_analytics_landing_page.png)
