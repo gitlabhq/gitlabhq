@@ -8,6 +8,12 @@
   }
 }
 
+@mixin chevron-active {
+  .fa-chevron-down {
+    color: $dropdown-toggle-hover-icon-color;
+  }
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
@@ -19,7 +25,10 @@
     }
   }
 
+  .dropdown-toggle,
   .dropdown-menu-toggle {
+    @include chevron-active;
+
     border-color: $dropdown-toggle-hover-border-color;
   }
 }
@@ -70,20 +79,14 @@
     margin-left: 5px;
   }
 
-  @mixin chevron-hover {
-    .fa-chevron-down {
-      color: $dropdown-toggle-hover-icon-color;
-    }
-  }
-
   &:hover {
-    @include chevron-hover;
+    @include chevron-active;
 
     border-color: $dropdown-toggle-hover-border-color;
   }
 
   &:focus:active {
-    @include chevron-hover;
+    @include chevron-active;
 
     border-color: $dropdown-toggle-active-border-color;
   }
