@@ -7,7 +7,7 @@ class CycleAnalytics
   end
 
   def summary
-    @summary ||= Summary.new(@project, from: @options[:from])
+    @summary ||= Gitlab::CycleAnalytics::Summary.new(@project, from: @options[:from]).data
   end
 
   def method_missing(method_sym, *arguments, &block)

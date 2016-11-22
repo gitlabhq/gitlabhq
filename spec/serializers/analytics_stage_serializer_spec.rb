@@ -1,0 +1,24 @@
+require 'spec_helper'
+
+describe AnalyticsStageSerializer do
+  let(:serializer) do
+    described_class
+      .new.represent(resource)
+  end
+
+  let(:json) { serializer.as_json }
+  let(:resource) { Gitlab::CycleAnalytics::CodeStage.new(project: double, options: {}, stage: :code) }
+
+  before do
+    allow_any_instance_of(Gitlab::CycleAnalytics::MetricsFetcher).to receive(:calculate_metric).and_return(1.12)
+    allow_any_instance_of(Gitlab::CycleAnalytics::BaseEvent).to receive(:event_result).and_return({})
+  end
+
+  it 'it generates payload for single object' do
+    expect(json).to be_an_instance_of Hash
+  end
+
+  it 'contains important elements of AnalyticsStage' do
+    expect(json).to include(:title, :description, :value)
+  end
+end
