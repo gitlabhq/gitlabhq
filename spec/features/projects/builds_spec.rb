@@ -181,12 +181,24 @@ feature 'Builds', :feature do
         visit namespace_project_build_path(project.namespace, project, build)
       end
 
-      it 'loads build trace' do
-        expect(page).to have_content 'BUILD TRACE'
+      context 'when build has an initial trace' do
+        it 'loads build trace' do
+          expect(page).to have_content 'BUILD TRACE'
 
-        build.append_trace(' and more trace', 11)
+          build.append_trace(' and more trace', 11)
 
-        expect(page).to have_content 'BUILD TRACE and more trace'
+          expect(page).to have_content 'BUILD TRACE and more trace'
+        end
+      end
+
+      context 'when build does not have an initial trace' do
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        it 'loads new trace' do
+          build.append_trace('build trace', 0)
+
+          expect(page).to have_content 'build trace'
+        end
       end
     end
 
