@@ -683,9 +683,9 @@ class Project < ActiveRecord::Base
     self.id
   end
 
-  def get_issue(issue_id)
+  def get_issue(issue_id, current_user)
     if default_issues_tracker?
-      issues.find_by(iid: issue_id)
+      IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id)
     else
       ExternalIssue.new(issue_id, self)
     end

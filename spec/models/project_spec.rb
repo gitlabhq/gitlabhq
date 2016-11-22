@@ -354,10 +354,15 @@ describe Project, models: true do
   describe '#get_issue' do
     let(:project) { create(:empty_project) }
     let!(:issue)  { create(:issue, project: project) }
+    let(:user)    { create(:user) }
+
+    before do
+      project.team << [user, :developer]
+    end
 
     context 'with default issues tracker' do
       it 'returns an issue' do
-        expect(project.get_issue(issue.iid)).to eq issue
+        expect(project.get_issue(issue.iid, user)).to eq issue
       end
 
       it 'returns count of open issues' do
@@ -365,7 +370,12 @@ describe Project, models: true do
       end
 
       it 'returns nil when no issue found' do
-        expect(project.get_issue(999)).to be_nil
+        expect(project.get_issue(999, user)).to be_nil
+      end
+
+      it "returns nil when user doesn't have access" do
+        user = create(:user)
+        expect(project.get_issue(issue.iid, user)).to eq nil
       end
     end
 
@@ -375,7 +385,7 @@ describe Project, models: true do
       end
 
       it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234')
+        issue = project.get_issue('FOO-1234', user)
         expect(issue).to be_kind_of(ExternalIssue)
         expect(issue.iid).to eq 'FOO-1234'
         expect(issue.project).to eq project
