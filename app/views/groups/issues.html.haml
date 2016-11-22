@@ -3,7 +3,9 @@
   - if current_user
     = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@group.name} issues")
 
-- if group_issues(@group).exists?
+- if group_issues(@group).empty?
+  = render 'shared/empty_states/issues', project_select_button: true
+- else
   .top-area
     = render 'shared/issuable/nav', type: :issues
     .nav-controls
@@ -25,5 +27,3 @@
 
   .prepend-top-default
     = render 'shared/issues'
-- else
-  = render 'shared/empty_states/issues', project_select_button: true

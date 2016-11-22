@@ -50,6 +50,8 @@ module GroupsHelper
   end
 
   def group_issues(group)
-    IssuesFinder.new(current_user, group_id: group.id).execute
+    group.projects.map do |project|
+      IssuesFinder.new(current_user, project_id: project.id).execute
+    end.compact
   end
 end
