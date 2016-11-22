@@ -503,7 +503,7 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', pipeline: pipeline)
         create(:generic_commit_status, :failed, name: 'jenkins', pipeline: pipeline)
 
-        pipeline.retry_failed(nil)
+        pipeline.retry_failed(create(:user))
       end
 
       it 'retries only build' do
@@ -516,7 +516,7 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :failed, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
 
-        pipeline.retry_failed(nil)
+        pipeline.retry_failed(create(:user))
       end
 
       it 'retries both builds' do
@@ -529,7 +529,7 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :canceled, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
 
-        pipeline.retry_failed(nil)
+        pipeline.retry_failed(create(:user))
       end
 
       it 'retries both builds' do
