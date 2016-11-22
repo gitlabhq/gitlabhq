@@ -37,13 +37,13 @@
                   = link_to "(?)", help_page_path("public_access/public_access")
                 %span.help-block
               .col-md-3.visibility-select-container
-                = render('shared/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
+                = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
             = f.fields_for :project_feature do |feature_fields|
               %fieldset.features
                 .row
                   .col-md-9.project-feature
                     = feature_fields.label :repository_access_level, "Repository", class: 'label-light'
-                    %span.help-block Push files to be stored in this project
+                    %span.help-block View and edit files in this project
                   .col-md-3.js-repo-access-level
                     = project_feature_access_select(:repository_access_level)
 

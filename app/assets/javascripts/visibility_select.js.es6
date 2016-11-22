@@ -1,29 +1,27 @@
 (() => {
-  const global = window.gl || (window.gl = {});
-
-  const VISIBILITY_DESCRIPTIONS = {
-    0: 'Project access must be granted explicitly to each user.',
-    10: 'This project can be cloned by any logged in user.',
-    20: 'The project can be cloned without any authentication.',
-  };
+  const gl = window.gl || (window.gl = {});
 
   class VisibilitySelect {
-    constructor() {
-      this.visibilitySelect = document.querySelector('.js-visibility-select');
-      this.helpBlock = this.visibilitySelect.querySelector('.help-block');
-      this.select = this.visibilitySelect.querySelector('select');
+    constructor(container) {
+      if (!container) throw new Error('VisibilitySelect requires a container element as argument 1');
+      this.container = container;
+      this.helpBlock = this.container.querySelector('.help-block');
+      this.select = this.container.querySelector('select');
+    }
+
+    init() {
       if (this.select) {
-        this.visibilityChanged();
-        this.select.addEventListener('change', this.visibilityChanged.bind(this));
+        this.updateHelpText();
+        this.select.addEventListener('change', this.updateHelpText.bind(this));
       } else {
-        this.helpBlock.textContent = this.visibilitySelect.querySelector('.js-locked').dataset.helpBlock;
+        this.helpBlock.textContent = this.container.querySelector('.js-locked').dataset.helpBlock;
       }
     }
 
-    visibilityChanged() {
-      this.helpBlock.innerText = VISIBILITY_DESCRIPTIONS[this.select.value];
+    updateHelpText() {
+      this.helpBlock.textContent = this.select.querySelector('option:checked').dataset.description;
     }
   }
 
-  global.VisibilitySelect = VisibilitySelect;
+  gl.VisibilitySelect = VisibilitySelect;
 })();

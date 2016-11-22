@@ -14,10 +14,20 @@
           return $('.save-project-loader').show();
         };
       })(this));
+
+      this.initVisibilitySelect();
+
       this.toggleSettings();
       this.toggleSettingsOnclick();
       this.toggleRepoVisibility();
     }
+
+    ProjectNew.prototype.initVisibilitySelect = function() {
+      const visibilityContainer = document.querySelector('.js-visibility-select');
+      if (!visibilityContainer) return;
+      const visibilitySelect = new gl.VisibilitySelect(visibilityContainer);
+      visibilitySelect.init();
+    };
 
     ProjectNew.prototype.toggleSettings = function() {
       var self = this;

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'byebug'
 
 feature 'Visibility settings', feature: true, js: true do
   let(:user) { create(:user) }
@@ -13,6 +12,7 @@ feature 'Visibility settings', feature: true, js: true do
 
     scenario 'project visibility select is available' do
       visibility_select_container = find('.js-visibility-select')
+
       expect(visibility_select_container.find('.visibility-select').value).to eq project.visibility_level.to_s
       expect(visibility_select_container).to have_content 'The project can be cloned without any authentication.'
     end
@@ -21,6 +21,7 @@ feature 'Visibility settings', feature: true, js: true do
       visibility_select_container = find('.js-visibility-select')
       visibility_select = visibility_select_container.find('.visibility-select')
       visibility_select.select('Private')
+
       expect(visibility_select.value).to eq '0'
       expect(visibility_select_container).to have_content 'Project access must be granted explicitly to each user.'
     end
@@ -37,6 +38,7 @@ feature 'Visibility settings', feature: true, js: true do
 
     scenario 'project visibility is locked' do
       visibility_select_container = find('.js-visibility-select')
+
       expect(visibility_select_container).not_to have_select '.visibility-select'
       expect(visibility_select_container).to have_content 'Public'
       expect(visibility_select_container).to have_content 'The project can be cloned without any authentication.'

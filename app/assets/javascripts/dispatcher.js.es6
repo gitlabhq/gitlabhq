@@ -262,7 +262,6 @@
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
-              new gl.VisibilitySelect();
               break;
             case 'new':
               new ProjectNew();
