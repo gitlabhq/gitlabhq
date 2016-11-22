@@ -3,7 +3,7 @@ module Gitlab
     class BaseStage
       attr_reader :stage, :description
 
-      def initialize(project:, options:, stage: stage)
+      def initialize(project:, options:, stage:)
         @project = project
         @options = options
         @fetcher = Gitlab::CycleAnalytics::MetricsFetcher.new(project: project,
@@ -14,6 +14,10 @@ module Gitlab
 
       def events
         event_class.new(fetcher: @fetcher, stage: @stage).fetch
+      end
+
+      def median_data
+        AnalyticsStageSerializer.new.represent(self).as_json
       end
 
       private
