@@ -2,6 +2,10 @@ module Gitlab
   module Auth
     class MissingPersonalTokenError < StandardError; end
 
+    SCOPES = [:api, :read_user]
+    DEFAULT_SCOPES = [:api]
+    OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
+
     class << self
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?

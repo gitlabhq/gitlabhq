@@ -2,8 +2,6 @@ module API
   module Helpers
     include Gitlab::Utils
 
-    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
-    PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
@@ -322,7 +320,7 @@ module API
     private
 
     def private_token
-      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+      params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
     end
 
     def warden
@@ -337,18 +335,11 @@ module API
       warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
     end
 
-    def find_user_by_private_token
-      token = private_token
-      return nil unless token.present?
-
-      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
-    end
-
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
-      @initial_current_user ||= find_user_by_private_token
-      @initial_current_user ||= doorkeeper_guard
+      @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
+      @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
       @initial_current_user ||= find_user_from_warden
 
       unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
