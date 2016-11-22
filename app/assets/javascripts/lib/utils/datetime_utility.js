@@ -14,6 +14,10 @@
       return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
     };
 
+    w.gl.utils.formatDateNoTime = function(datetime) {
+      return dateFormat(datetime, 'mmm d, yyyy');
+    };
+
     w.gl.utils.getDayName = function(date) {
       return this.days[date.getDay()];
     };
