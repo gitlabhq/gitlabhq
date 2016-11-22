@@ -51,10 +51,6 @@ module Projects
         @events ||= Gitlab::CycleAnalytics::Events.new(project: project, options: options)
       end
     
-      def options
-        @options ||= { from: start_date(events_params), current_user: current_user }
-      end
-    
       def events_params
         return {} unless params[:events].present?
     

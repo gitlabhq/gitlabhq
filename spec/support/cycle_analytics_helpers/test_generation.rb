@@ -1,8 +1,13 @@
+class CycleAnalyticsTest < CycleAnalytics
+  def method_missing(method_sym, *arguments, &block)
+    classify_stage(method_sym).new(project: @project, options: @options, stage: method_sym).median
+  end
+end
+
 # rubocop:disable Metrics/AbcSize
 
 # Note: The ABC size is large here because we have a method generating test cases with
 #       multiple nested contexts. This shouldn't count as a violation.
-
 module CycleAnalyticsHelpers
   module TestGeneration
     # Generate the most common set of specs that all cycle analytics phases need to have.

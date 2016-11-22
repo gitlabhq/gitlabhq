@@ -6,7 +6,9 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = ::CycleAnalytics.new(@project, current_user, from: start_date(cycle_analytics_params))
+    @cycle_analytics = ::CycleAnalytics.new(@project, options: options)
+
+    @cycle_analytics_no_data = @cycle_analytics.no_stats?
 
     respond_to do |format|
       format.html
@@ -25,8 +27,8 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   def cycle_analytics_json
     {
       summary: @cycle_analytics.summary,
-      stats: nil, # TODO
-      permissions: @cycle_analytics.permissions(user: current_user)# TODO
+      stats: @cycle_analytics.stats,
+      permissions: @cycle_analytics.permissions(user: current_user)
     }
   end
 end
