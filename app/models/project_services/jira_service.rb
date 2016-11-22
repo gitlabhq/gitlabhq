@@ -57,9 +57,9 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    'See the ' \
-    '[integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) '\
-    'for details.'
+    'You need to configure JIRA before enabling this service. For more details
+    read the
+    [JIRA service documentation](https://docs.gitlab.com/ce/project_services/jira.html).'
   end
 
   def title
