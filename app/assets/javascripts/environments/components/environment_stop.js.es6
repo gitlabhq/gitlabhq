@@ -14,8 +14,7 @@
     },
 
     template: `
-      <a
-        class="btn stop-env-link"
+      <a class="btn stop-env-link"
         :href="stop_url"
         data-confirm="Are you sure you want to stop this environment?"
         data-method="post"

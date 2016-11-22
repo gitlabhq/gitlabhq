@@ -59,6 +59,12 @@ FactoryGirl.define do
       self.when 'manual'
     end
 
+    trait :teardown_environment do
+      options do
+        { environment: { action: 'stop' } }
+      end
+    end
+
     trait :allowed_to_fail do
       allow_failure true
     end

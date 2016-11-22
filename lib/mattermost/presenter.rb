@@ -24,20 +24,22 @@ module Mattermost
         end
       end
 
-      def present(resource)
-        return not_found unless resource
+      def present(subject)
+        return not_found unless subject
 
-        if resource.respond_to?(:count)
-          if resource.count > 1
-            return multiple_resources(resource)
-          elsif resource.count == 0
-            return not_found
+        if subject.is_a?(Gitlab::ChatCommands::Result)
+          show_result(subject)
+        elsif subject.respond_to?(:count)
+          if subject.many?
+            multiple_resources(subject)
+          elsif subject.none?
+            not_found
           else
-            resource = resource.first
+            single_resource(subject)
           end
+        else
+          single_resource(subject)
         end
-
-        single_resource(resource)
       end
 
       def access_denied
@@ -45,6 +47,15 @@ module Mattermost
       end
 
       private
+
+      def show_result(result)
+        case result.type
+        when :success
+          in_channel_response(result.message)
+        else
+          ephemeral_response(result.message)
+        end
+      end
 
       def not_found
         ephemeral_response("404 not found! GitLab couldn't find what you were looking for! :boom:")
@@ -54,7 +65,7 @@ module Mattermost
         return error(resource) if resource.errors.any? || !resource.persisted?
 
         message = "### #{title(resource)}"
-        message << "\n\n#{resource.description}" if resource.description
+        message << "\n\n#{resource.description}" if resource.try(:description)
 
         in_channel_response(message)
       end
@@ -74,7 +85,10 @@ module Mattermost
       end
 
       def title(resource)
-        "[#{resource.to_reference} #{resource.title}](#{url(resource)})"
+        reference = resource.try(:to_reference) || resource.try(:id)
+        title = resource.try(:title) || resource.try(:name)
+
+        "[#{reference} #{title}](#{url(resource)})"
       end
 
       def header_with_list(header, items)
