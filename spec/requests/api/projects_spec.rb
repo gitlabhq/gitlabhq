@@ -49,7 +49,7 @@ describe API::Projects, api: true  do
       end
     end
 
-    context 'when authenticated' do
+    context 'when authenticated as regular user' do
       it 'returns an array of projects' do
         get api('/projects', user)
         expect(response).to have_http_status(200)
@@ -172,6 +172,22 @@ describe API::Projects, api: true  do
           end
         end
       end
+
+      it "does not include statistics by default" do
+        get api('/projects/all', admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        get api('/projects/all', admin), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).to include 'statistics'
+      end
     end
   end
 
@@ -195,6 +211,32 @@ describe API::Projects, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(project4.name)
         expect(json_response.first['owner']['username']).to eq(user4.username)
+      end
+
+      it "does not include statistics by default" do
+        get api('/projects/owned', user4)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        attributes = {
+          commit_count: 23,
+          storage_size: 702,
+          repository_size: 123,
+          lfs_objects_size: 234,
+          build_artifacts_size: 345,
+        }
+
+        project4.statistics.update!(attributes)
+
+        get api('/projects/owned', user4), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['statistics']).to eq attributes.stringify_keys
       end
     end
   end

@@ -246,11 +246,6 @@ module ProjectsHelper
     end
   end
 
-  def repository_size(project = @project)
-    size_in_bytes = project.repository_size * 1.megabyte
-    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
-  end
-
   def default_url_to_repo(project = @project)
     case default_clone_protocol
     when 'ssh'

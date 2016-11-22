@@ -11,6 +11,20 @@ module API
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
       end
+
+      params :statistics_params do
+        optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
+      end
+
+      def present_groups(groups, options = {})
+        options = options.reverse_merge(
+          with: Entities::Group,
+          current_user: current_user,
+        )
+
+        groups = groups.with_statistics if options[:statistics]
+        present paginate(groups), options
+      end
     end
 
     resource :groups do
@@ -18,6 +32,7 @@ module API
         success Entities::Group
       end
       params do
+        use :statistics_params
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
@@ -38,7 +53,7 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-        present paginate(groups), with: Entities::Group, current_user: current_user
+        present_groups groups, statistics: params[:statistics] && current_user.is_admin?
       end
 
       desc 'Get list of owned groups for authenticated user' do
@@ -46,10 +61,10 @@ module API
       end
       params do
         use :pagination
+        use :statistics_params
       end
       get '/owned' do
-        groups = current_user.owned_groups
-        present paginate(groups), with: Entities::Group, current_user: current_user
+        present_groups current_user.owned_groups, statistics: params[:statistics]
       end
 
       desc 'Create a group. Available only for users who can create groups.' do

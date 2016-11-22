@@ -49,6 +49,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
     it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
+    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
@@ -1726,6 +1727,26 @@ describe Project, models: true do
           { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
         )
       end
+    end
+  end
+
+  describe '#update_project_statistics' do
+    let(:project) { create(:empty_project) }
+
+    it "is called after creation" do
+      expect(project.statistics).to be_a ProjectStatistics
+      expect(project.statistics).to be_persisted
+    end
+
+    it "copies the namespace_id" do
+      expect(project.statistics.namespace_id).to eq project.namespace_id
+    end
+
+    it "updates the namespace_id when changed" do
+      namespace = create(:namespace)
+      project.update(namespace: namespace)
+
+      expect(project.statistics.namespace_id).to eq namespace.id
     end
   end
 

@@ -74,7 +74,7 @@ class GitPushService < BaseService
       types = []
     end
 
-    ProjectCacheWorker.perform_async(@project.id, types)
+    ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
   end
 
   protected

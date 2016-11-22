@@ -101,6 +101,16 @@ module API
       expose :only_allow_merge_if_build_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+
+      expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+    end
+
+    class ProjectStatistics < Grape::Entity
+      expose :commit_count
+      expose :storage_size
+      expose :repository_size
+      expose :lfs_objects_size
+      expose :build_artifacts_size
     end
 
     class Member < UserBasic
@@ -127,6 +137,15 @@ module API
       expose :avatar_url
       expose :web_url
       expose :request_access_enabled
+
+      expose :statistics, if: :statistics do
+        with_options format_with: -> (value) { value.to_i } do
+          expose :storage_size
+          expose :repository_size
+          expose :lfs_objects_size
+          expose :build_artifacts_size
+        end
+      end
     end
 
     class GroupDetail < Group
