@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class UpdateReleaseService < BaseService
   def execute(tag_name, release_description)
     repository = project.repository
