@@ -158,7 +158,7 @@
                                             %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8c8c8c;font-weight:500;font-size:15px;vertical-align:middle;"}
                                               = build.stage
                                     %td{align: "right", style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:20px 0;color:#8c8c8c;font-weight:500;font-size:15px;"}
-                                      = render "notify/#{build.to_partial_path}", pipeline: @pipeline, build: build
+                                      = render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build
                                   %tr.build-log
                                     - if build.has_trace?
                                       %td{colspan: "2", style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:0 0 15px;"}
