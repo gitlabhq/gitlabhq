@@ -86,7 +86,7 @@ describe GeoRepositoryUpdateWorker do
     before { allow(subject).to receive(:fetch_repository) }
 
     it 'executes after_push_commit' do
-      expect(project.repository).to receive(:after_push_commit).at_least(:once).with('master', newrev)
+      expect(project.repository).to receive(:after_push_commit).at_least(:once).with('master')
 
       performed
     end
