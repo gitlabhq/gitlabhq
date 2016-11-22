@@ -15,9 +15,21 @@
 .new_project,
 .edit-project {
 
+  .visibility-select-container {
+    padding-left: 26px;
+
+    @media(max-width: $screen-md-min) {
+      padding-left: 15px;
+    }
+  }
+
   fieldset {
 
     &.features {
+
+      .header {
+        padding-top: $gl-vert-padding;
+      }
 
       .label-light {
         margin-bottom: 0;
