@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* global Vue */
 
 ((global) => {
@@ -53,6 +54,5 @@
     }
   }
 
-  // eslint-disable-next-line no-param-reassign
   global.Subscription = Subscription;
 })(window.gl || (window.gl = {}));
