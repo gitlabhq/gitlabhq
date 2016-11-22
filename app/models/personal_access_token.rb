@@ -2,6 +2,8 @@ class PersonalAccessToken < ActiveRecord::Base
   include TokenAuthenticatable
   add_authentication_token_field :token
 
+  serialize :scopes, Array
+
   belongs_to :user
 
   scope :active, -> { where(revoked: false).where("expires_at >= NOW() OR expires_at IS NULL") }
