@@ -13,7 +13,7 @@
       runningPipeline: gl.VueRunningPipeline,
       pipelineActions: gl.VuePipelineActions,
       stages: gl.VueStages,
-      branchCommit: gl.VueBranchCommit,
+      commit: gl.CommitComponent,
       pipelineUrl: gl.VuePipelineUrl,
       pipelineHead: gl.VuePipelineHead,
       glPagination: gl.VueGlPagination,
@@ -59,6 +59,11 @@
         this.pageRequest = true;
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
+      author(pipeline) {
+        const author = pipeline.commit.author;
+        if (author) return author;
+        return ({});
+      },
     },
     template: `
       <div>
@@ -72,7 +77,15 @@
               <tr class="commit" v-for='pipeline in pipelines'>
                 <status-scope :pipeline='pipeline'></status-scope>
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
-                <branch-commit :pipeline='pipeline'></branch-commit>
+                <commit
+                  :tag='pipeline.ref.tag'
+                  :author='pipeline.commit.author'
+                  :title='pipeline.commit.title'
+                  :ref='pipeline.ref'
+                  :short_sha='pipeline.commit.short_id'
+                  :commit_url='pipeline.commit.commit_url'
+                >
+                </commit>
                 <stages :pipeline='pipeline'></stages>
                 <time-ago :pipeline='pipeline'></time-ago>
                 <pipeline-actions :pipeline='pipeline'></pipeline-actions>
