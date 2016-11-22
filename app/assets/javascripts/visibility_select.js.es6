@@ -3,7 +3,7 @@
 
   const VISIBILITY_DESCRIPTIONS = {
     0: 'Project access must be granted explicitly to each user.',
-    10: 'Project access must be granted explicitly to each user.',
+    10: 'This project can be cloned by any logged in user.',
     20: 'The project can be cloned without any authentication.',
   };
 

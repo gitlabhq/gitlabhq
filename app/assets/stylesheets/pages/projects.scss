@@ -15,29 +15,17 @@
 .new_project,
 .edit-project {
 
-  .visibility-select-container {
-    padding-left: 26px;
-
-    @media(max-width: $screen-md-min) {
-      padding-left: 15px;
+  .sharing-and-permissions {
+    .header {
+      padding-top: $gl-vert-padding;
     }
-  }
 
-  fieldset {
+    .label-light {
+      margin-bottom: 0;
+    }
 
-    &.features {
-
-      .header {
-        padding-top: $gl-vert-padding;
-      }
-
-      .label-light {
-        margin-bottom: 0;
-      }
-
-      .help-block {
-        margin-top: 0;
-      }
+    .help-block {
+      margin-top: 0;
     }
 
     .form-group {
@@ -876,9 +864,15 @@ pre.light-well {
   }
 }
 
-.project-feature-nested {
+.project-feature {
   @media (min-width: $screen-sm-min) {
     padding-left: 45px;
+  }
+
+  &.nested {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 90px;
+    }
   }
 }
 
