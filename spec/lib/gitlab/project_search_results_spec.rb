@@ -22,6 +22,14 @@ describe Gitlab::ProjectSearchResults, lib: true do
     it { expect(results.query).to eq('hello world') }
   end
 
+  it 'does not list issues on private projects' do
+    issue = create(:issue, project: project)
+
+    results = described_class.new(user, project, issue.title)
+
+    expect(results.objects('issues')).not_to include issue
+  end
+
   describe 'confidential issues' do
     let(:query) { 'issue' }
     let(:author) { create(:user) }
@@ -29,6 +37,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
+    let(:project) { create(:empty_project, :internal) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
     let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }

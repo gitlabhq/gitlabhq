@@ -365,6 +365,24 @@ describe API::API, api: true  do
     let(:base_url) { "/projects/#{project.id}" }
     let(:title) { milestone.title }
 
+    it "returns 404 on private projects for other users" do
+      private_project = create(:empty_project, :private)
+      create(:issue, project: private_project)
+
+      get api("/projects/#{private_project.id}/issues", non_member)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns no issues when user has access to project but not issues' do
+      restricted_project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      create(:issue, project: restricted_project)
+
+      get api("/projects/#{restricted_project.id}/issues", non_member)
+
+      expect(json_response).to eq([])
+    end
+
     it 'returns project issues without confidential issues for non project members' do
       get api("#{base_url}/issues", non_member)
       expect(response).to have_http_status(200)
