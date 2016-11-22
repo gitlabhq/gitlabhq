@@ -571,13 +571,10 @@ describe Ci::Pipeline, models: true do
     context 'with failed pipeline' do
       before do
         perform_enqueued_jobs do
-          create(:ci_build, :created, pipeline: pipeline)
-          create(:generic_commit_status, :created, pipeline: pipeline)
+          create(:ci_build, :failed, pipeline: pipeline)
+          create(:generic_commit_status, :failed, pipeline: pipeline)
 
-          pipeline.statuses.count.times do |offset|
-            # workaround race conditions
-            pipeline.statuses.offset(offset).first.drop
-          end
+          pipeline.drop
         end
       end
 
