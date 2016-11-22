@@ -97,7 +97,7 @@ in the table below.
 | Field | Description |
 | ----- | ----------- |
 | `URL` | The base URL to the JIRA project which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
-| `Project key` | The short, the identifier for your JIRA project, all uppercase. |
+| `Project key` | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
 | `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). |
@@ -121,7 +121,7 @@ ID in GitLab commits and merge requests.
 When GitLab project has JIRA issue tracker configured and enabled, mentioning
 JIRA issue in GitLab will automatically add a comment in JIRA issue with the
 link back to GitLab. This means that in comments in merge requests and commits
-referencing an issue, eg. `PROJECT-7`, will add a comment in JIRA issue in the
+referencing an issue, e.g., `PROJECT-7`, will add a comment in JIRA issue in the
 format:
 
 ```
@@ -150,11 +150,11 @@ the transition ID was set up correctly).
 There are currently three trigger words, and you can use either one to achieve
 the same goal:
 
-- `Resolves GITLAB-1`
-- `Closes GITLAB-1`
-- `Fixes GITLAB-1`
+- `Resolves PROJECT-1`
+- `Closes PROJECT-1`
+- `Fixes PROJECT-1`
 
-- where `GITLAB-1` the issue ID of the JIRA project.
+where `PROJECT-1` is the issue ID of the JIRA project.
 
 ### JIRA issue closing example
 
