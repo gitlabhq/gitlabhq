@@ -22,10 +22,10 @@ module Bitbucket
       attrs.map { |attr| { attr.to_sym => raw[attr] } }.reduce(&:merge)
     end
 
-    def parse_values(raw, representation_class)
+    def parse_values(raw, bitbucket_rep_class)
       return [] unless raw['values'] && raw['values'].is_a?(Array)
 
-      raw['values'].map { |hash| representation_class.new(hash) }
+      raw['values'].map { |hash| bitbucket_rep_class.new(hash) }
     end
 
     def representation_class(type)
