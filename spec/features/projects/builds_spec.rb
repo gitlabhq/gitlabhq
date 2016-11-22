@@ -1,17 +1,17 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe "Builds" do
-  let(:artifacts_file) do
-    fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-  end
-
+feature 'Builds', :feature do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let!(:build) { create(:ci_build, :trace, pipeline: pipeline) }
   let!(:build2) { create(:ci_build) }
+
+  let(:artifacts_file) do
+    fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+  end
 
   before do
     project.team << [user, :developer]
@@ -163,7 +163,7 @@ describe "Builds" do
       end
     end
 
-    context 'Build raw trace' do
+    feature 'Raw trace' do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
@@ -174,7 +174,23 @@ describe "Builds" do
       end
     end
 
-    describe 'Variables' do
+    feature 'HTML trace', :js do
+      before do
+        build.run!
+
+        visit namespace_project_build_path(project.namespace, project, build)
+      end
+
+      it 'loads build trace' do
+        expect(page).to have_content 'BUILD TRACE'
+
+        build.append_trace(' and more trace', 11)
+
+        expect(page).to have_content 'BUILD TRACE and more trace'
+      end
+    end
+
+    feature 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request_with_variables) }
 
       let(:build) do
