@@ -12,8 +12,4 @@ class GenericCommitStatus < CommitStatus
   def tags
     [:external]
   end
-
-  def has_trace?
-    false
-  end
 end
