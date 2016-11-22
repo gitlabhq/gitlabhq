@@ -11,6 +11,7 @@ module Files
                              message: @commit_message,
                              author_email: @author_email,
                              author_name: @author_name,
+                             source_project: @source_project,
                              source_branch: @source_branch)
     end
 

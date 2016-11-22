@@ -784,13 +784,16 @@ class Repository
     @tags ||= raw_repository.tags
   end
 
+  # rubocop:disable Metrics/ParameterLists
   def commit_dir(
     user, path, message, branch,
-    author_email: nil, author_name: nil, source_branch: nil)
+    author_email: nil, author_name: nil,
+    source_branch: nil, source_project: project)
     update_branch_with_hooks(
       user,
       branch,
-      source_branch: source_branch) do |ref|
+      source_branch: source_branch,
+      source_project: source_project) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -804,15 +807,18 @@ class Repository
       raw_repository.mkdir(path, options)
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/ParameterLists
   def commit_file(
     user, path, content, message, branch, update,
-    author_email: nil, author_name: nil, source_branch: nil)
+    author_email: nil, author_name: nil,
+    source_branch: nil, source_project: project)
     update_branch_with_hooks(
       user,
       branch,
-      source_branch: source_branch) do |ref|
+      source_branch: source_branch,
+      source_project: source_project) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -837,11 +843,13 @@ class Repository
   def update_file(
     user, path, content,
     branch:, previous_path:, message:,
-    author_email: nil, author_name: nil, source_branch: nil)
+    author_email: nil, author_name: nil,
+    source_branch: nil, source_project: project)
     update_branch_with_hooks(
       user,
       branch,
-      source_branch: source_branch) do |ref|
+      source_branch: source_branch,
+      source_project: source_project) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -867,13 +875,16 @@ class Repository
   end
   # rubocop:enable Metrics/ParameterLists
 
+  # rubocop:disable Metrics/ParameterLists
   def remove_file(
     user, path, message, branch,
-    author_email: nil, author_name: nil, source_branch: nil)
+    author_email: nil, author_name: nil,
+    source_branch: nil, source_project: project)
     update_branch_with_hooks(
       user,
       branch,
-      source_branch: source_branch) do |ref|
+      source_branch: source_branch,
+      source_project: source_project) do |ref|
       options = {
         commit: {
           branch: ref,
@@ -890,14 +901,18 @@ class Repository
       Gitlab::Git::Blob.remove(raw_repository, options)
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
+  # rubocop:disable Metrics/ParameterLists
   def multi_action(
     user:, branch:, message:, actions:,
-    author_email: nil, author_name: nil, source_branch: nil)
+    author_email: nil, author_name: nil,
+    source_branch: nil, source_project: project)
     update_branch_with_hooks(
       user,
       branch,
-      source_branch: source_branch) do |ref|
+      source_branch: source_branch,
+      source_project: source_project) do |ref|
       index = rugged.index
       branch_commit = find_branch(ref)
 
@@ -942,6 +957,7 @@ class Repository
       Rugged::Commit.create(rugged, options)
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def get_committer_and_author(user, email: nil, name: nil)
     committer = user_to_committer(user)
@@ -991,8 +1007,6 @@ class Repository
   end
 
   def revert(user, commit, base_branch, revert_tree_id = nil)
-    source_sha = raw_ensure_branch(base_branch, source_commit: commit).
-      first.dereferenced_target.sha
     revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
@@ -1000,8 +1014,11 @@ class Repository
     update_branch_with_hooks(
       user,
       base_branch,
-      source_branch: revert_tree_id) do
+      source_commit: commit) do
+
+      source_sha = find_branch(base_branch).dereferenced_target.sha
       committer = user_to_committer(user)
+
       Rugged::Commit.create(rugged,
         message: commit.revert_message,
         author: committer,
@@ -1012,8 +1029,6 @@ class Repository
   end
 
   def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
-    source_sha = raw_ensure_branch(base_branch, source_commit: commit).
-      first.dereferenced_target.sha
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
 
     return false unless cherry_pick_tree_id
@@ -1021,8 +1036,11 @@ class Repository
     update_branch_with_hooks(
       user,
       base_branch,
-      source_branch: cherry_pick_tree_id) do
+      source_commit: commit) do
+
+      source_sha = find_branch(base_branch).dereferenced_target.sha
       committer = user_to_committer(user)
+
       Rugged::Commit.create(rugged,
         message: commit.message,
         author: {
@@ -1130,12 +1148,19 @@ class Repository
 
   # Whenever `source_branch` is passed, if `branch` doesn't exist, it would
   # be created from `source_branch`.
-  def update_branch_with_hooks(current_user, branch, source_branch: nil)
+  def update_branch_with_hooks(
+    current_user, branch,
+    source_branch: nil, source_commit: nil, source_project: project)
     update_autocrlf_option
 
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     target_branch, new_branch_added =
-      raw_ensure_branch(branch, source_branch: source_branch)
+      raw_ensure_branch(
+        branch,
+        source_branch: source_branch,
+        source_project: source_project
+      )
+
+    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     was_empty = empty?
 
     # Make commit
@@ -1244,11 +1269,31 @@ class Repository
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
   end
 
-  def raw_ensure_branch(branch_name, source_commit: nil, source_branch: nil)
+  def raw_ensure_branch(
+    branch_name, source_commit: nil, source_branch: nil, source_project: nil)
     old_branch = find_branch(branch_name)
+
+    if source_commit && source_branch
+      raise ArgumentError,
+        'Should only pass either :source_branch or :source_commit, not both'
+    end
 
     if old_branch
       [old_branch, false]
+    elsif project != source_project
+      unless source_branch
+        raise ArgumentError,
+          'Should also pass :source_branch if' +
+          ' :source_project is different from current project'
+      end
+
+      fetch_ref(
+        source_project.repository.path_to_repo,
+        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch}",
+        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch}"
+      )
+
+      [find_branch(branch_name), true]
     elsif source_commit || source_branch
       oldrev = Gitlab::Git::BLANK_SHA
       ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name

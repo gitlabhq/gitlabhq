@@ -1,16 +1,12 @@
 require_relative 'base_service'
 
 class CreateBranchService < BaseService
-  def execute(branch_name, ref, source_project: @project)
+  def execute(branch_name, ref)
     failure = validate_new_branch(branch_name)
 
     return failure if failure
 
-    new_branch = if source_project != @project
-                   @project.fetch_ref(source_project, branch_name, ref)
-                 else
-                   repository.add_branch(current_user, branch_name, ref)
-                 end
+    new_branch = repository.add_branch(current_user, branch_name, ref)
 
     if new_branch
       success(new_branch)
