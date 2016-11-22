@@ -12,7 +12,6 @@
         = succeed "." do
           = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
         %span.ci-coverage
-        = link_to "View details", pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'pipelines'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
@@ -29,8 +28,6 @@
         = succeed "." do
           = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"
         %span.ci-coverage
-        - if details_path = ci_build_details_path(@merge_request)
-          = link_to "View details", details_path, :"data-no-turbolink" => "data-no-turbolink"
 
     .ci_widget
       = icon("spinner spin")
