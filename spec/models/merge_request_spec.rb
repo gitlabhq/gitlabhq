@@ -752,20 +752,32 @@ describe MergeRequest, models: true do
   end
 
   describe '#rebase_in_progress?' do
-    it 'return true' do
+    it 'returns true' do
       allow(File).to receive(:exist?).and_return(true)
       allow(File).to receive(:new).and_return(double(:file, mtime: Time.now))
+
       expect(subject.rebase_in_progress?).to be_truthy
     end
 
-    it 'return false' do
+    it 'returns false' do
       allow(File).to receive(:exist?).with(subject.rebase_dir_path).and_return(false)
+
       expect(subject.rebase_in_progress?).to be_falsey
     end
 
-    it 'return false if temporary file exists by is expired' do
+    it 'returns false if temporary file exists by is expired' do
       allow(File).to receive(:exist?).and_return(true)
       allow(File).to receive(:new).and_return(double(:file, mtime: Time.now - 2.hours))
+
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+
+    it 'returns false if source_project is removed' do
+      allow(subject).to receive(:source_project).and_return(nil)
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:new).and_return(double(:file, mtime: Time.now))
+
+      expect(File).not_to have_received(:exist?)
       expect(subject.rebase_in_progress?).to be_falsey
     end
   end
