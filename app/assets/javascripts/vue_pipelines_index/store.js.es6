@@ -36,7 +36,6 @@
 
       const updatePipelineNums = (count) => {
         const { all } = count;
-        // cannot define non camel case, so not using destructuring for running
         const running = count.running_or_pending;
         document.querySelector('.js-totalbuilds-count').innerHTML = all;
         document.querySelector('.js-running-count').innerHTML = running;
