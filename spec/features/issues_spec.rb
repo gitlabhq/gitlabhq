@@ -371,10 +371,12 @@ describe 'Issues', feature: true do
 
   describe 'when I want to reset my incoming email token' do
     let(:project1) { create(:project, namespace: @user.namespace) }
+    let(:issue) { create(:issue, project: project1) }
 
     before do
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
       project1.team << [@user, :master]
+      project1.issues << issue
       visit namespace_project_issues_path(@user.namespace, project1)
     end
 
@@ -576,7 +578,10 @@ describe 'Issues', feature: true do
 
   describe 'new issue by email' do
     shared_examples 'show the email in the modal' do
+      let(:issue) { create(:issue, project: project) }
+
       before do
+        project.issues << issue
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
         visit namespace_project_issues_path(project.namespace, project)

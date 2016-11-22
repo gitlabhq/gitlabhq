@@ -261,20 +261,28 @@ describe "Authentication", "routing" do
 end
 
 describe "Groups", "routing" do
+  let(:name) { 'complex.group-namegit' }
+
   it "to #show" do
-    expect(get("/groups/1")).to route_to('groups#show', id: '1')
+    expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
   end
 
   it "also display group#show on the short path" do
     allow(Group).to receive(:find_by).and_return(true)
 
-    expect(get('/1')).to route_to('groups#show', id: '1')
+    expect(get("/#{name}")).to route_to('groups#show', id: name)
   end
 
-  it "also display group#show with dot in the path" do
-    allow(Group).to receive(:find_by).and_return(true)
+  it "to #activity" do
+    expect(get("/groups/#{name}/activity")).to route_to('groups#activity', id: name)
+  end
 
-    expect(get('/group.with.dot')).to route_to('groups#show', id: 'group.with.dot')
+  it "to #issues" do
+    expect(get("/groups/#{name}/issues")).to route_to('groups#issues', id: name)
+  end
+
+  it "to #members" do
+    expect(get("/groups/#{name}/group_members")).to route_to('groups/group_members#index', group_id: name)
   end
 end
 

@@ -19,6 +19,8 @@ module API
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
+        optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
       get do
         groups = if current_user.admin
@@ -31,6 +33,8 @@ module API
 
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
+        groups = groups.reorder(params[:order_by] => params[:sort].to_sym)
+
         present paginate(groups), with: Entities::Group
       end
 

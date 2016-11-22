@@ -212,9 +212,9 @@ class IssuableBaseService < BaseService
   def change_subscription(issuable)
     case params.delete(:subscription_event)
     when 'subscribe'
-      issuable.subscribe(current_user)
+      issuable.subscribe(current_user, project)
     when 'unsubscribe'
-      issuable.unsubscribe(current_user)
+      issuable.unsubscribe(current_user, project)
     end
   end
 

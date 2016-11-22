@@ -20,6 +20,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
@@ -35,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
     it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
@@ -700,7 +702,7 @@ describe Project, models: true do
         "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'When avatar file in git' do
@@ -712,7 +714,7 @@ describe Project, models: true do
         "/#{project.namespace.name}/#{project.path}/avatar"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
@@ -1514,7 +1516,7 @@ describe Project, models: true do
       members_project.team << [developer, :developer]
       members_project.team << [master, :master]
 
-      create(:project_group_link, project: shared_project, group: group)
+      create(:project_group_link, project: shared_project, group: group, group_access: Gitlab::Access::DEVELOPER)
     end
 
     it 'returns false for no user' do
@@ -1543,7 +1545,9 @@ describe Project, models: true do
       expect(members_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
       expect(members_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
       expect(shared_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
+      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(false)
+      expect(shared_project.authorized_for_user?(developer, Gitlab::Access::DEVELOPER)).to be(true)
+      expect(shared_project.authorized_for_user?(master, Gitlab::Access::DEVELOPER)).to be(true)
     end
   end
 
@@ -1568,7 +1572,7 @@ describe Project, models: true do
     end
 
     it 'expires the avatar cache' do
-      expect(project.repository).to receive(:expire_avatar_cache).with(project.default_branch)
+      expect(project.repository).to receive(:expire_avatar_cache)
       project.change_head(project.default_branch)
     end
 

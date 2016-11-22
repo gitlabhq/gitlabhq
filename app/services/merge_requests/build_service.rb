@@ -48,11 +48,11 @@ module MergeRequests
       end
 
       # See if source and target branches exist
-      unless merge_request.source_project.commit(merge_request.source_branch)
+      if merge_request.source_branch.present? && !merge_request.source_project.commit(merge_request.source_branch)
         messages << "Source branch \"#{merge_request.source_branch}\" does not exist"
       end
 
-      unless merge_request.target_project.commit(merge_request.target_branch)
+      if merge_request.target_branch.present? && !merge_request.target_project.commit(merge_request.target_branch)
         messages << "Target branch \"#{merge_request.target_branch}\" does not exist"
       end
 

@@ -1,11 +1,10 @@
 class SlackService
   class PipelineMessage < BaseMessage
-    attr_reader :sha, :ref_type, :ref, :status, :project_name, :project_url,
+    attr_reader :ref_type, :ref, :status, :project_name, :project_url,
                 :user_name, :duration, :pipeline_id
 
     def initialize(data)
       pipeline_attributes = data[:object_attributes]
-      @sha = pipeline_attributes[:sha]
       @ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
       @ref = pipeline_attributes[:ref]
       @status = pipeline_attributes[:status]
@@ -14,7 +13,7 @@ class SlackService
 
       @project_name = data[:project][:path_with_namespace]
       @project_url = data[:project][:web_url]
-      @user_name = data[:commit] && data[:commit][:author_name]
+      @user_name = data[:user] && data[:user][:name]
     end
 
     def pretext
@@ -73,7 +72,7 @@ class SlackService
     end
 
     def pipeline_link
-      "[#{Commit.truncate_sha(sha)}](#{pipeline_url})"
+      "[##{pipeline_id}](#{pipeline_url})"
     end
   end
 end

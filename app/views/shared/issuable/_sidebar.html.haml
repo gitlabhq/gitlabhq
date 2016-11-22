@@ -140,7 +140,7 @@
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
-        - subscribed = issuable.subscribed?(current_user)
+        - subscribed = issuable.subscribed?(current_user, @project)
         .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
           .sidebar-collapsed-icon
             = icon('rss')

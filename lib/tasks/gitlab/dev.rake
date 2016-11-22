@@ -4,10 +4,7 @@ namespace :gitlab do
     task :ee_compat_check, [:branch] => :environment do |_, args|
       opts =
         if ENV['CI']
-          {
-            branch: ENV['CI_BUILD_REF_NAME'],
-            ce_repo: ENV['CI_BUILD_REPO']
-          }
+          { branch: ENV['CI_BUILD_REF_NAME'] }
         else
           unless args[:branch]
             puts "Must specify a branch as an argument".color(:red)

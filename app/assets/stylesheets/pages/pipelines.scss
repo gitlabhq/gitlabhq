@@ -300,6 +300,8 @@
 
 .pipeline-graph {
   width: 100%;
+  background-color: $background-color;
+  padding: $gl-padding;
   overflow: auto;
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
@@ -363,6 +365,7 @@
 
   .build {
     border: 1px solid $border-color;
+    background-color: $white-light;
     position: relative;
     padding: 7px 10px 8px;
     border-radius: 30px;

@@ -205,6 +205,57 @@ command line.
 Please note: Not all of the frontend fixtures are generated. Some are still static
 files. These will not be touched by `rake teaspoon:fixtures`.
 
+## Design Patterns
+
+### Singletons
+
+When exactly one object is needed for a given task, prefer to define it as a
+`class` rather than as an object literal. Prefer also to explicitly restrict
+instantiation, unless flexibility is important (e.g. for testing).
+
+```
+// bad
+
+gl.MyThing = {
+  prop1: 'hello',
+  method1: () => {}
+};
+
+// good
+
+class MyThing {
+  constructor() {
+    this.prop1 = 'hello';
+  }
+  method1() {}
+}
+
+gl.MyThing = new MyThing();
+
+// best
+
+let singleton;
+
+class MyThing {
+  constructor() {
+    if (!singleton) {
+      singleton = this;
+      singleton.init();
+    }
+      return singleton;
+  }
+
+  init() {
+    this.prop1 = 'hello';
+  }
+
+  method1() {}
+}
+
+gl.MyThing = MyThing;
+
+```
+
 ## Supported browsers
 
 For our currently-supported browsers, see our [requirements][requirements].

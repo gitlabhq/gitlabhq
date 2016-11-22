@@ -18,7 +18,9 @@ class Tree
   def readme
     return @readme if defined?(@readme)
 
-    available_readmes = blobs.select(&:readme?)
+    available_readmes = blobs.select do |blob|
+      Gitlab::FileDetector.type_of(blob.name) == :readme
+    end
 
     previewable_readmes = available_readmes.select do |blob|
       previewable?(blob.name)

@@ -218,7 +218,7 @@ module API
       expose :assignee, :author, using: Entities::UserBasic
 
       expose :subscribed do |issue, options|
-        issue.subscribed?(options[:current_user])
+        issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
@@ -248,7 +248,7 @@ module API
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :subscribed do |merge_request, options|
-        merge_request.subscribed?(options[:current_user])
+        merge_request.subscribed?(options[:current_user], options[:project])
       end
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
@@ -454,7 +454,7 @@ module API
       end
 
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user])
+        label.subscribed?(options[:current_user], options[:project])
       end
     end
 

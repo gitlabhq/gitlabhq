@@ -146,24 +146,26 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_json(note)
+    attrs = {
+      award: false,
+      id: note.id
+    }
+
     if note.is_a?(AwardEmoji)
-      {
+      attrs.merge!(
         valid:  note.valid?,
         award:  true,
-        id:     note.id,
         name:   note.name
-      }
+      )
     elsif note.persisted?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
-      attrs = {
+      attrs.merge!(
         valid: true,
-        id: note.id,
         discussion_id: note.discussion_id,
         html: note_html(note),
-        award: false,
         note: note.note
-      }
+      )
 
       if note.diff_note?
         discussion = note.to_discussion
@@ -188,15 +190,14 @@ class Projects::NotesController < Projects::ApplicationController
           attrs[:original_discussion_id] = note.original_discussion_id
         end
       end
-
-      attrs
     else
-      {
+      attrs.merge!(
         valid: false,
-        award: false,
         errors: note.errors
-      }
+      )
     end
+
+    attrs
   end
 
   def authorize_admin_note!

@@ -7,7 +7,6 @@ module MergeRequestsAction
 
     @merge_requests = merge_requests_collection
                       .non_archived
-                      .preload(:author, :target_project)
                       .page(params[:page])
   end
 end

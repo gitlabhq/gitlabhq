@@ -1,5 +1,6 @@
 require 'sidekiq/testing'
 require './spec/support/test_env'
+require './db/fixtures/support/serialized_transaction'
 
 class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)
@@ -203,6 +204,8 @@ class Gitlab::Seeder::CycleAnalytics
       pipeline.run!
       Timecop.travel rand(1..6).hours.from_now
       pipeline.succeed!
+
+      PipelineMetricsWorker.new.perform(pipeline.id)
     end
   end
 
