@@ -1,52 +1,59 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe "Builds" do
-  let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+feature 'Builds', :feature do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
+
+  let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+  let(:build2) { create(:ci_build) }
+
+  let(:artifacts_file) do
+    fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+  end
 
   before do
-    login_as(:user)
-    @commit = FactoryGirl.create :ci_pipeline
-    @build = FactoryGirl.create :ci_build, :trace, pipeline: @commit
-    @build2 = FactoryGirl.create :ci_build
-    @project = @commit.project
-    @project.team << [@user, :developer]
+    project.team << [user, :developer]
+    login_as(user)
   end
 
   describe "GET /:project/builds" do
+    let!(:build) { create(:ci_build,  pipeline: pipeline) }
+
     context "Pending scope" do
       before do
-        visit namespace_project_builds_path(@project.namespace, @project, scope: :pending)
+        visit namespace_project_builds_path(project.namespace, project, scope: :pending)
       end
 
       it "shows Pending tab builds" do
         expect(page).to have_link 'Cancel running'
         expect(page).to have_selector('.nav-links li.active', text: 'Pending')
-        expect(page).to have_content @build.short_sha
-        expect(page).to have_content @build.ref
-        expect(page).to have_content @build.name
+        expect(page).to have_content build.short_sha
+        expect(page).to have_content build.ref
+        expect(page).to have_content build.name
       end
     end
 
     context "Running scope" do
       before do
-        @build.run!
-        visit namespace_project_builds_path(@project.namespace, @project, scope: :running)
+        build.run!
+        visit namespace_project_builds_path(project.namespace, project, scope: :running)
       end
 
       it "shows Running tab builds" do
         expect(page).to have_selector('.nav-links li.active', text: 'Running')
         expect(page).to have_link 'Cancel running'
-        expect(page).to have_content @build.short_sha
-        expect(page).to have_content @build.ref
-        expect(page).to have_content @build.name
+        expect(page).to have_content build.short_sha
+        expect(page).to have_content build.ref
+        expect(page).to have_content build.name
       end
     end
 
     context "Finished scope" do
       before do
-        @build.run!
-        visit namespace_project_builds_path(@project.namespace, @project, scope: :finished)
+        build.run!
+        visit namespace_project_builds_path(project.namespace, project, scope: :finished)
       end
 
       it "shows Finished tab builds" do
@@ -58,15 +65,15 @@ describe "Builds" do
 
     context "All builds" do
       before do
-        @project.builds.running_or_pending.each(&:success)
-        visit namespace_project_builds_path(@project.namespace, @project)
+        project.builds.running_or_pending.each(&:success)
+        visit namespace_project_builds_path(project.namespace, project)
       end
 
       it "shows All tab builds" do
         expect(page).to have_selector('.nav-links li.active', text: 'All')
-        expect(page).to have_content @build.short_sha
-        expect(page).to have_content @build.ref
-        expect(page).to have_content @build.name
+        expect(page).to have_content build.short_sha
+        expect(page).to have_content build.ref
+        expect(page).to have_content build.name
         expect(page).not_to have_link 'Cancel running'
       end
     end
@@ -74,17 +81,17 @@ describe "Builds" do
 
   describe "POST /:project/builds/:id/cancel_all" do
     before do
-      @build.run!
-      visit namespace_project_builds_path(@project.namespace, @project)
+      build.run!
+      visit namespace_project_builds_path(project.namespace, project)
       click_link "Cancel running"
     end
 
     it 'shows all necessary content' do
       expect(page).to have_selector('.nav-links li.active', text: 'All')
       expect(page).to have_content 'canceled'
-      expect(page).to have_content @build.short_sha
-      expect(page).to have_content @build.ref
-      expect(page).to have_content @build.name
+      expect(page).to have_content build.short_sha
+      expect(page).to have_content build.ref
+      expect(page).to have_content build.name
       expect(page).not_to have_link 'Cancel running'
     end
   end
@@ -92,20 +99,20 @@ describe "Builds" do
   describe "GET /:project/builds/:id" do
     context "Build from project" do
       before do
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       it 'shows commit`s data' do
         expect(page.status_code).to eq(200)
-        expect(page).to have_content @commit.sha[0..7]
-        expect(page).to have_content @commit.git_commit_message
-        expect(page).to have_content @commit.git_author_name
+        expect(page).to have_content pipeline.sha[0..7]
+        expect(page).to have_content pipeline.git_commit_message
+        expect(page).to have_content pipeline.git_author_name
       end
     end
 
     context "Build from other project" do
       before do
-        visit namespace_project_build_path(@project.namespace, @project, @build2)
+        visit namespace_project_build_path(project.namespace, project, build2)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -113,8 +120,8 @@ describe "Builds" do
 
     context "Download artifacts" do
       before do
-        @build.update_attributes(artifacts_file: artifacts_file)
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.update_attributes(artifacts_file: artifacts_file)
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       it 'has button to download artifacts' do
@@ -124,8 +131,8 @@ describe "Builds" do
 
     context 'Artifacts expire date' do
       before do
-        @build.update_attributes(artifacts_file: artifacts_file, artifacts_expire_at: expire_at)
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.update_attributes(artifacts_file: artifacts_file, artifacts_expire_at: expire_at)
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       context 'no expire date defined' do
@@ -158,10 +165,10 @@ describe "Builds" do
       end
     end
 
-    context 'Build raw trace' do
+    feature 'Raw trace' do
       before do
-        @build.run!
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.run!
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       it do
@@ -169,11 +176,43 @@ describe "Builds" do
       end
     end
 
-    describe 'Variables' do
+    feature 'HTML trace', :js do
       before do
-        @trigger_request = create :ci_trigger_request_with_variables
-        @build = create :ci_build, pipeline: @commit, trigger_request: @trigger_request
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.run!
+
+        visit namespace_project_build_path(project.namespace, project, build)
+      end
+
+      context 'when build has an initial trace' do
+        it 'loads build trace' do
+          expect(page).to have_content 'BUILD TRACE'
+
+          build.append_trace(' and more trace', 11)
+
+          expect(page).to have_content 'BUILD TRACE and more trace'
+        end
+      end
+
+      context 'when build does not have an initial trace' do
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        it 'loads new trace' do
+          build.append_trace('build trace', 0)
+
+          expect(page).to have_content 'build trace'
+        end
+      end
+    end
+
+    feature 'Variables' do
+      let(:trigger_request) { create(:ci_trigger_request_with_variables) }
+
+      let(:build) do
+        create :ci_build, pipeline: pipeline, trigger_request: trigger_request
+      end
+
+      before do
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       it 'shows variable key and value after click', js: true do
@@ -193,8 +232,8 @@ describe "Builds" do
   describe "POST /:project/builds/:id/cancel" do
     context "Build from project" do
       before do
-        @build.run!
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.run!
+        visit namespace_project_build_path(project.namespace, project, build)
         click_link "Cancel"
       end
 
@@ -207,9 +246,9 @@ describe "Builds" do
 
     context "Build from other project" do
       before do
-        @build.run!
-        visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.driver.post(cancel_namespace_project_build_path(@project.namespace, @project, @build2))
+        build.run!
+        visit namespace_project_build_path(project.namespace, project, build)
+        page.driver.post(cancel_namespace_project_build_path(project.namespace, project, build2))
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -219,8 +258,8 @@ describe "Builds" do
   describe "POST /:project/builds/:id/retry" do
     context "Build from project" do
       before do
-        @build.run!
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.run!
+        visit namespace_project_build_path(project.namespace, project, build)
         click_link 'Cancel'
         page.within('.build-header') do
           click_link 'Retry build'
@@ -238,10 +277,10 @@ describe "Builds" do
 
     context "Build from other project" do
       before do
-        @build.run!
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        build.run!
+        visit namespace_project_build_path(project.namespace, project, build)
         click_link 'Cancel'
-        page.driver.post(retry_namespace_project_build_path(@project.namespace, @project, @build2))
+        page.driver.post(retry_namespace_project_build_path(project.namespace, project, build2))
       end
 
       it { expect(page).to have_http_status(404) }
@@ -249,13 +288,13 @@ describe "Builds" do
 
     context "Build that current user is not allowed to retry" do
       before do
-        @build.run!
-        @build.cancel!
-        @project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        build.run!
+        build.cancel!
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
         logout_direct
         login_with(create(:user))
-        visit namespace_project_build_path(@project.namespace, @project, @build)
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       it 'does not show the Retry button' do
@@ -268,15 +307,15 @@ describe "Builds" do
 
   describe "GET /:project/builds/:id/download" do
     before do
-      @build.update_attributes(artifacts_file: artifacts_file)
-      visit namespace_project_build_path(@project.namespace, @project, @build)
+      build.update_attributes(artifacts_file: artifacts_file)
+      visit namespace_project_build_path(project.namespace, project, build)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
-        @build2.update_attributes(artifacts_file: artifacts_file)
-        visit download_namespace_project_build_artifacts_path(@project.namespace, @project, @build2)
+        build2.update_attributes(artifacts_file: artifacts_file)
+        visit download_namespace_project_build_artifacts_path(project.namespace, project, build2)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -288,23 +327,23 @@ describe "Builds" do
       context 'build from project' do
         before do
           Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          @build.run!
-          visit namespace_project_build_path(@project.namespace, @project, @build)
+          build.run!
+          visit namespace_project_build_path(project.namespace, project, build)
           page.within('.js-build-sidebar') { click_link 'Raw' }
         end
 
         it 'sends the right headers' do
           expect(page.status_code).to eq(200)
           expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(@build.path_to_trace)
+          expect(page.response_headers['X-Sendfile']).to eq(build.path_to_trace)
         end
       end
 
       context 'build from other project' do
         before do
           Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          @build2.run!
-          visit raw_namespace_project_build_path(@project.namespace, @project, @build2)
+          build2.run!
+          visit raw_namespace_project_build_path(project.namespace, project, build2)
         end
 
         it 'sends the right headers' do
@@ -325,8 +364,8 @@ describe "Builds" do
       context 'when build has trace in file' do
         before do
           Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          @build.run!
-          visit namespace_project_build_path(@project.namespace, @project, @build)
+          build.run!
+          visit namespace_project_build_path(project.namespace, project, build)
 
           allow_any_instance_of(Project).to receive(:ci_id).and_return(nil)
           allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(existing_file)
@@ -345,8 +384,8 @@ describe "Builds" do
       context 'when build has trace in old file' do
         before do
           Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          @build.run!
-          visit namespace_project_build_path(@project.namespace, @project, @build)
+          build.run!
+          visit namespace_project_build_path(project.namespace, project, build)
 
           allow_any_instance_of(Project).to receive(:ci_id).and_return(999)
           allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(non_existing_file)
@@ -365,8 +404,8 @@ describe "Builds" do
       context 'when build has trace in DB' do
         before do
           Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          @build.run!
-          visit namespace_project_build_path(@project.namespace, @project, @build)
+          build.run!
+          visit namespace_project_build_path(project.namespace, project, build)
 
           allow_any_instance_of(Project).to receive(:ci_id).and_return(nil)
           allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(non_existing_file)
@@ -385,7 +424,7 @@ describe "Builds" do
   describe "GET /:project/builds/:id/trace.json" do
     context "Build from project" do
       before do
-        visit trace_namespace_project_build_path(@project.namespace, @project, @build, format: :json)
+        visit trace_namespace_project_build_path(project.namespace, project, build, format: :json)
       end
 
       it { expect(page.status_code).to eq(200) }
@@ -393,7 +432,7 @@ describe "Builds" do
 
     context "Build from other project" do
       before do
-        visit trace_namespace_project_build_path(@project.namespace, @project, @build2, format: :json)
+        visit trace_namespace_project_build_path(project.namespace, project, build2, format: :json)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -403,7 +442,7 @@ describe "Builds" do
   describe "GET /:project/builds/:id/status" do
     context "Build from project" do
       before do
-        visit status_namespace_project_build_path(@project.namespace, @project, @build)
+        visit status_namespace_project_build_path(project.namespace, project, build)
       end
 
       it { expect(page.status_code).to eq(200) }
@@ -411,7 +450,7 @@ describe "Builds" do
 
     context "Build from other project" do
       before do
-        visit status_namespace_project_build_path(@project.namespace, @project, @build2)
+        visit status_namespace_project_build_path(project.namespace, project, build2)
       end
 
       it { expect(page.status_code).to eq(404) }
