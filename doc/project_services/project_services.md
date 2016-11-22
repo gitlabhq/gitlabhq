@@ -42,6 +42,7 @@ further configuration instructions and details. Contributions are welcome.
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
 | [JIRA](jira.md) | JIRA issue tracker |
 | JetBrains TeamCity CI | A continuous integration and build server |
+| [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
