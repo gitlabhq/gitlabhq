@@ -11,6 +11,8 @@ concurrent [Runners]), and if they all succeed, the pipeline moves on to the
 next stage. If one of the builds fails, the next stage is not (usually)
 executed.
 
+![Pipelines example](img/pipelines.png)
+
 ## Builds
 
 Builds are individual runs of [jobs]. Not to be confused with a `build` job or
