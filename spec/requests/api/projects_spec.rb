@@ -908,6 +908,36 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'DELETE /projects/:id/share/:group_id' do
+    it 'returns 204 when deleting a group share' do
+      group = create(:group, :public)
+      create(:project_group_link, group: group, project: project)
+
+      delete api("/projects/#{project.id}/share/#{group.id}", user)
+
+      expect(response).to have_http_status(204)
+      expect(project.project_group_links).to be_empty
+    end
+
+    it 'returns a 400 when group id is not an integer' do
+      delete api("/projects/#{project.id}/share/foo", user)
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'returns a 404 error when group link does not exist' do
+      delete api("/projects/#{project.id}/share/1234", user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns a 404 error when project does not exist' do
+      delete api("/projects/123/share/1234", user)
+
+      expect(response).to have_http_status(404)
+    end
+  end
+
   describe 'GET /projects/search/:query' do
     let!(:query) { 'query'}
     let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
