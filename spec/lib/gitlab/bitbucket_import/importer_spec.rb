@@ -67,14 +67,14 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
         :get,
         "https://api.bitbucket.org/2.0/repositories/#{project_identifier}"
       ).to_return(status: 200,
-                  headers: {"Content-Type" => "application/json"},
+                  headers: { "Content-Type" => "application/json" },
                   body: { has_issues: true, full_name: project_identifier }.to_json)
 
       stub_request(
         :get,
         "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/issues?pagelen=50&sort=created_on"
       ).to_return(status: 200,
-                  headers: {"Content-Type" => "application/json"},
+                  headers: { "Content-Type" => "application/json" },
                   body: issues_statuses_sample_data.to_json)
 
       sample_issues_statuses.each_with_index do |issue, index|
@@ -83,22 +83,22 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
           "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/issues/#{issue[:id]}/comments?pagelen=50&sort=created_on"
         ).to_return(
           status: 200,
-          headers: {"Content-Type" => "application/json"},
+          headers: { "Content-Type" => "application/json" },
           body: { author_info: { username: "username" }, utc_created_on: index }.to_json
         )
       end
 
       stub_request(
-          :get,
-          "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/pullrequests?pagelen=50&sort=created_on&state=ALL"
+        :get,
+        "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/pullrequests?pagelen=50&sort=created_on&state=ALL"
       ).to_return(status: 200,
-                  headers: {"Content-Type" => "application/json"},
+                  headers: { "Content-Type" => "application/json" },
                   body: {}.to_json)
     end
 
     it 'map statuses to open or closed' do
       # HACK: Bitbucket::Representation.const_get('Issue') seems to return Issue without this
-      Bitbucket::Representation::Issue
+      Bitbucket::Representation::Issue.new
       importer.execute
 
       expect(project.issues.where(state: "closed").size).to eq(5)
