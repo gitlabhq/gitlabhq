@@ -22,9 +22,8 @@
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
-        - data_attrs = { toggle: 'buttons' }
-        .btn-group{ data: data_attrs }
-          - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+        - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+          .checkbox
             = level
         %span.help-block#restricted-visibility-help
           Selected levels cannot be used by non-admin users for projects or snippets.

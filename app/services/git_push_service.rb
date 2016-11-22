@@ -18,7 +18,7 @@ class GitPushService < BaseService
   #
   def execute
     @project.repository.after_create if @project.empty_repo?
-    @project.repository.after_push_commit(branch_name, params[:newrev])
+    @project.repository.after_push_commit(branch_name)
 
     if push_remove_branch?
       @project.repository.after_remove_branch
@@ -55,10 +55,30 @@ class GitPushService < BaseService
 
     execute_related_hooks
     perform_housekeeping
+
+    update_caches
   end
 
   def update_gitattributes
     @project.repository.copy_gitattributes(params[:ref])
+  end
+
+  def update_caches
+    if is_default_branch?
+      paths = Set.new
+
+      @push_commits.each do |commit|
+        commit.raw_diffs(deltas_only: true).each do |diff|
+          paths << diff.new_path
+        end
+      end
+
+      types = Gitlab::FileDetector.types_in_paths(paths.to_a)
+    else
+      types = []
+    end
+
+    ProjectCacheWorker.perform_async(@project.id, types)
   end
 
   protected
@@ -75,7 +95,6 @@ class GitPushService < BaseService
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(mirror_update: mirror_update)
-    ProjectCacheWorker.perform_async(@project.id)
 
     if push_remove_branch?
       AfterBranchDeleteService

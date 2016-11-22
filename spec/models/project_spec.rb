@@ -1498,9 +1498,14 @@ describe Project, models: true do
     let(:mirror) { false }
 
     before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).
+        with(project.repository_storage_path, project.path_with_namespace, project.import_url).
+        and_return(true)
+
       allow(project).to receive(:repository_exists?).and_return(true)
-      allow_any_instance_of(Repository).to receive(:build_cache).and_return(true)
+
+      expect_any_instance_of(Repository).to receive(:after_import).
+        and_call_original
     end
 
     it 'imports a project' do
@@ -1859,7 +1864,7 @@ describe Project, models: true do
     end
 
     it 'expires the avatar cache' do
-      expect(project.repository).to receive(:expire_avatar_cache).with(project.default_branch)
+      expect(project.repository).to receive(:expire_avatar_cache)
       project.change_head(project.default_branch)
     end
 

@@ -25,9 +25,9 @@ describe ElasticCommitIndexerWorker do
 
     it 'returns true if repository has unborn head' do
       project = create :project
-      rugged = double('rugged')
-      expect(rugged).to receive(:head_unborn?).and_return(true)
-      expect_any_instance_of(Repository).to receive(:rugged).and_return(rugged)
+      repository = double('repository')
+      expect(repository).to receive(:exists?).and_return(false)
+      expect_any_instance_of(Project).to receive(:repository).and_return(repository)
 
       expect(subject.perform(project.id)).to be_truthy
     end

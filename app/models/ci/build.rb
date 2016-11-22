@@ -70,7 +70,11 @@ module Ci
           environment: build.environment,
           status_event: 'enqueue'
         )
-        MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
+
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(build.project, nil)
+          .close(new_build)
+
         build.pipeline.mark_as_processable_after_stage(build.stage_idx)
         new_build
       end
@@ -482,6 +486,10 @@ module Ci
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
         { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
       ]
+    end
+
+    def credentials
+      Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
     private

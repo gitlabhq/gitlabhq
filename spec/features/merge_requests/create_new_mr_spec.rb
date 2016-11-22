@@ -106,4 +106,11 @@ feature 'Create New Merge Request', feature: true, js: true do
       expect(page).to have_content "6049019_460s.jpg"
     end
   end
+
+  # Isolates a regression (see #24627)
+  it 'does not show error messages on initial form' do
+    visit new_namespace_project_merge_request_path(project.namespace, project)
+    expect(page).not_to have_selector('#error_explanation')
+    expect(page).not_to have_content('The form contains the following error')
+  end
 end

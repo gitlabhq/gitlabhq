@@ -14,7 +14,7 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/repository/branches" do
     it "returns an array of project branches" do
-      project.repository.expire_cache
+      project.repository.expire_all_method_caches
 
       get api("/projects/#{project.id}/repository/branches", user)
       expect(response).to have_http_status(200)

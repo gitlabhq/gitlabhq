@@ -4,7 +4,7 @@ class Spinach::Features::ProjectIssuesWeight < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I click link "New Issue"' do
-    click_link "New Issue"
+    click_link "New issue"
   end
 
   step 'I submit new issue "500 error on profile" with weight' do

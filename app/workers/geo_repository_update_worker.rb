@@ -24,12 +24,12 @@ class GeoRepositoryUpdateWorker
   def process_hooks
     if @push_data['type'] == 'push'
       branch = Gitlab::Git.ref_name(@push_data['ref'])
-      process_push(branch, @push_data['after'])
+      process_push(branch)
     end
   end
 
-  def process_push(branch, revision)
-    @project.repository.after_push_commit(branch, revision)
+  def process_push(branch)
+    @project.repository.after_push_commit(branch)
 
     if push_remove_branch?
       @project.repository.after_remove_branch

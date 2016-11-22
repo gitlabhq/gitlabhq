@@ -5,9 +5,9 @@ module EE
     # This module is intended to encapsulate EE-specific methods
     # and be **prepended** in the `ProjectCacheWorker` class.
     module ProjectCacheWorker
-      def update_caches(project_id)
+      def perform(*args)
         if ::Gitlab::Geo.secondary?
-          update_geo_caches(project_id)
+          perform_geo_secondary(*args)
         else
           super
         end
@@ -17,14 +17,12 @@ module EE
 
       # Geo should only update Redis based cache, as data store in the database
       # will be updated on primary and replicated to the secondaries.
-      def update_geo_caches(project_id)
-        project = Project.find(project_id)
+      def perform_geo_secondary(project_id, refresh = [])
+        project = Project.find_by(id: project_id)
 
-        return unless project.repository.exists?
+        return unless project && project.repository.exists?
 
-        if project.repository.root_ref
-          project.repository.build_cache
-        end
+        project.repository.refresh_method_caches(refresh.map(&:to_sym))
       end
     end
   end
