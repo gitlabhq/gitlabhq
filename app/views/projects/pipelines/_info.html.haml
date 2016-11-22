@@ -1,8 +1,6 @@
 .page-content-header
   .header-main-content
-    = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do
-      = ci_icon_for_status(@pipeline.status)
-      = ci_label_for_status(@pipeline.status)
+    = ci_status_with_icon(@pipeline.status)
     %strong Pipeline ##{@commit.pipelines.last.id}
     triggered #{time_ago_with_tooltip(@commit.authored_date)} by
     = author_avatar(@commit, size: 24)
@@ -25,7 +23,7 @@
 .info-well
   - if @commit.status
     .well-segment.pipeline-info
-      .icon-container
+      %div{class: "icon-container ci-status-icon-#{@commit.status}"}
         = ci_icon_for_status(@commit.status)
       = pluralize @pipeline.statuses.count(:id), "build"
       - if @pipeline.ref
