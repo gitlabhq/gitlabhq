@@ -50,14 +50,14 @@ module ApplicationSettingsHelper
   def restricted_level_checkboxes(help_block_id)
     Gitlab::VisibilityLevel.options.map do |name, level|
       checked = restricted_visibility_levels(true).include?(level)
-      css_class = 'btn'
-      css_class += ' active' if checked
-      checkbox_name = 'application_setting[restricted_visibility_levels][]'
+      css_class = checked ? 'active' : ''
+      checkbox_name = "application_setting[restricted_visibility_levels][]"
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(name, class: css_class) do
         check_box_tag(checkbox_name, level, checked,
                       autocomplete: 'off',
-                      'aria-describedby' => help_block_id) + name
+                      'aria-describedby' => help_block_id,
+                      id: name) + visibility_level_icon(level) + name
       end
     end
   end
