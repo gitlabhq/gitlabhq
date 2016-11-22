@@ -9,7 +9,9 @@ xml.entry do
 
   xml.author do
     xml.name event.author_name
-    xml.email event.author_email
+    unless @user.public_email.blank?
+        xml.email event.author_email
+    end
   end
 
   xml.summary(type: "xhtml") do |summary|
