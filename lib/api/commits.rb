@@ -3,6 +3,8 @@ require 'mime/types'
 module API
   # Projects commits API
   class Commits < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
@@ -107,9 +109,8 @@ module API
         failure [[404, 'Not Found']]
       end
       params do
+        use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
-        optional :per_page, type: Integer, desc: 'The amount of items per page for paginaion'
-        optional :page, type: Integer, desc: 'The page number for pagination'
       end
       get ':id/repository/commits/:sha/comments' do
         commit = user_project.commit(params[:sha])
