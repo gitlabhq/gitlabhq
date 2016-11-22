@@ -24,7 +24,7 @@
       }
       button.classList.add('disabled');
 
-      const isSubscribed = buttonSpan.innerHTML.trim() !== 'Subscribe';
+      const isSubscribed = buttonSpan.innerHTML.trim().toLowerCase() !== 'subscribe';
       const toggleActionUrl = this.containerElm.getAttribute('data-url');
 
       $.post(toggleActionUrl, () => {
