@@ -28,7 +28,7 @@ module API
       params do
         optional :state, type: String, values: %w[active closed all], default: 'all',
                          desc: 'Return "active", "closed", or "all" milestones'
-        optional :iid, type: Integer, desc: 'The IID of the milestone'
+        optional :iid, type: Array[Integer], desc: 'The IID of the milestone'
       end
       get ":id/milestones" do
         authorize! :read_milestone, user_project
