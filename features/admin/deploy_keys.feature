@@ -13,4 +13,11 @@ Feature: Admin Deploy Keys
     And I click 'New Deploy Key'
     And I submit new deploy key
     Then I should be on admin deploy keys page
-    And I should see newly created deploy key
+    And I should see newly created deploy key without write access
+
+  Scenario: Deploy Keys new with write access
+    When I visit admin deploy keys page
+    And I click 'New Deploy Key'
+    And I submit new deploy key with write access
+    Then I should be on admin deploy keys page
+    And I should see newly created deploy key with write access

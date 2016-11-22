@@ -11,6 +11,7 @@
           %tr
             %th Title
             %th Fingerprint
+            %th Write access
             %th Added at
             %th
         %tbody
@@ -20,6 +21,11 @@
                 %strong= deploy_key.title
               %td
                 %code.key-fingerprint= deploy_key.fingerprint
+              %td
+                - if deploy_key.can_push?
+                  Yes
+                - else
+                  No
               %td
                 %span.cgray
                   added #{time_ago_with_tooltip(deploy_key.created_at)}
