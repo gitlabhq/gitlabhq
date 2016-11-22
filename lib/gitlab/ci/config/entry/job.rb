@@ -108,7 +108,7 @@ module Gitlab
 
             self.class.nodes.each_key do |key|
               global_entry = deps[key]
-              job_entry = @entries[key]
+              job_entry = self[key]
 
               if global_entry.specified? && !job_entry.specified?
                 @entries[key] = global_entry
