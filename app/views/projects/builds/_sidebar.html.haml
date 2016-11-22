@@ -116,7 +116,7 @@
         .title Stage
         %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
           %span.stage-selection More
-          = icon('caret-down')
+          = icon('chevron-down')
         %ul.dropdown-menu
           - @build.pipeline.stages.each do |stage|
             %li
