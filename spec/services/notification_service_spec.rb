@@ -64,9 +64,9 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        project.team << [issue.author, :master]
-        project.team << [issue.assignee, :master]
-        project.team << [note.author, :master]
+        project.add_master(issue.author)
+        project.add_master(issue.assignee)
+        project.add_master(note.author)
         create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@subscribed_participant cc this guy')
         update_custom_notification(:new_note, @u_guest_custom, project)
         update_custom_notification(:new_note, @u_custom_global)
@@ -168,8 +168,8 @@ describe NotificationService, services: true do
       let(:guest_watcher) { create_user_with_notification(:watch, "guest-watcher-confidential") }
 
       it 'filters out users that can not read the issue' do
-        project.team << [member, :developer]
-        project.team << [guest, :guest]
+        project.add_developer(member)
+        project.add_guest(guest)
 
         expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
 
@@ -195,7 +195,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        note.project.team << [note.author, :master]
+        note.project.add_master(note.author)
         reset_delivered_emails!
       end
 
@@ -237,7 +237,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        note.project.team << [note.author, :master]
+        note.project.add_master(note.author)
         reset_delivered_emails!
       end
 
@@ -324,8 +324,8 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
-        project.team << [merge_request.author, :master]
-        project.team << [merge_request.assignee, :master]
+        project.add_master(merge_request.author)
+        project.add_master(merge_request.assignee)
       end
 
       describe '#new_note' do
@@ -409,8 +409,8 @@ describe NotificationService, services: true do
         let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignee: assignee) }
 
         it "emails subscribers of the issue's labels that can read the issue" do
-          project.team << [member, :developer]
-          project.team << [guest, :guest]
+          project.add_developer(member)
+          project.add_guest(guest)
 
           label = create(:label, project: project, issues: [confidential_issue])
           confidential_issue.reload
@@ -621,8 +621,8 @@ describe NotificationService, services: true do
         let!(:label_2) { create(:label, project: project) }
 
         it "emails subscribers of the issue's labels that can read the issue" do
-          project.team << [member, :developer]
-          project.team << [guest, :guest]
+          project.add_developer(member)
+          project.add_guest(guest)
 
           label_2.toggle_subscription(non_member, project)
           label_2.toggle_subscription(author, project)
@@ -1210,7 +1210,7 @@ describe NotificationService, services: true do
       let(:member) { create(:user) }
 
       before(:each) do
-        project.team << [member, :developer, project.owner]
+        project.add_developer(member, current_user: project.owner)
       end
 
       it do
@@ -1233,9 +1233,9 @@ describe NotificationService, services: true do
     let(:note) { create(:note, noteable: merge_request, project: private_project) }
 
     before do
-      private_project.team << [assignee, :developer]
-      private_project.team << [developer, :developer]
-      private_project.team << [guest, :guest]
+      private_project.add_developer(assignee)
+      private_project.add_developer(developer)
+      private_project.add_guest(guest)
 
       ActionMailer::Base.deliveries.clear
     end
@@ -1297,15 +1297,15 @@ describe NotificationService, services: true do
     @u_guest_watcher = create_user_with_notification(:watch, 'guest_watching')
     @u_guest_custom = create_user_with_notification(:custom, 'guest_custom')
 
-    project.team << [@u_watcher, :master]
-    project.team << [@u_participating, :master]
-    project.team << [@u_participant_mentioned, :master]
-    project.team << [@u_disabled, :master]
-    project.team << [@u_mentioned, :master]
-    project.team << [@u_committer, :master]
-    project.team << [@u_not_mentioned, :master]
-    project.team << [@u_lazy_participant, :master]
-    project.team << [@u_custom_global, :master]
+    project.add_master(@u_watcher)
+    project.add_master(@u_participating)
+    project.add_master(@u_participant_mentioned)
+    project.add_master(@u_disabled)
+    project.add_master(@u_mentioned)
+    project.add_master(@u_committer)
+    project.add_master(@u_not_mentioned)
+    project.add_master(@u_lazy_participant)
+    project.add_master(@u_custom_global)
   end
 
   def create_global_setting_for(user, level)
@@ -1339,10 +1339,10 @@ describe NotificationService, services: true do
     @subscribed_participant = create_global_setting_for(create(:user, username: 'subscribed_participant'), :participating)
     @watcher_and_subscriber = create_global_setting_for(create(:user), :watch)
 
-    project.team << [@subscribed_participant, :master]
-    project.team << [@subscriber, :master]
-    project.team << [@unsubscriber, :master]
-    project.team << [@watcher_and_subscriber, :master]
+    project.add_master(@subscribed_participant)
+    project.add_master(@subscriber)
+    project.add_master(@unsubscriber)
+    project.add_master(@watcher_and_subscriber)
 
     issuable.subscriptions.create(user: @subscriber, project: project, subscribed: true)
     issuable.subscriptions.create(user: @subscribed_participant, project: project, subscribed: true)

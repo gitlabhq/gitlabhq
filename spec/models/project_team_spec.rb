@@ -10,9 +10,9 @@ describe ProjectTeam, models: true do
     let(:project) { create(:empty_project) }
 
     before do
-      project.team << [master, :master]
-      project.team << [reporter, :reporter]
-      project.team << [guest, :guest]
+      project.add_master(master)
+      project.add_reporter(reporter)
+      project.add_guest(guest)
     end
 
     describe 'members collection' do
@@ -47,8 +47,8 @@ describe ProjectTeam, models: true do
       # If user is a group and a project member - GitLab uses highest permission
       # So we add group guest as master and add group master as guest
       # to this project to test highest access
-      project.team << [guest, :master]
-      project.team << [master, :guest]
+      project.add_master(guest)
+      project.add_guest(master)
     end
 
     describe 'members collection' do
@@ -79,14 +79,14 @@ describe ProjectTeam, models: true do
 
       it 'returns project members' do
         user = create(:user)
-        project.team << [user, :guest]
+        project.add_guest(user)
 
         expect(project.team.members).to contain_exactly(user)
       end
 
       it 'returns project members of a specified level' do
         user = create(:user)
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(project.team.guests).to be_empty
         expect(project.team.reporters).to contain_exactly(user)
@@ -141,9 +141,9 @@ describe ProjectTeam, models: true do
       let(:requester) { create(:user) }
 
       before do
-        project.team << [master, :master]
-        project.team << [reporter, :reporter]
-        project.team << [guest, :guest]
+        project.add_master(master)
+        project.add_reporter(reporter)
+        project.add_guest(guest)
         project.request_access(requester)
       end
 
@@ -204,9 +204,9 @@ describe ProjectTeam, models: true do
 
       context 'when project is not shared with group' do
         before do
-          project.team << [master, :master]
-          project.team << [reporter, :reporter]
-          project.team << [guest, :guest]
+          project.add_master(master)
+          project.add_reporter(reporter)
+          project.add_guest(guest)
           project.request_access(requester)
         end
 
@@ -281,10 +281,10 @@ describe ProjectTeam, models: true do
         guest = create(:user)
         project = create(:project)
 
-        project.team << [master, :master]
-        project.team << [reporter, :reporter]
-        project.team << [promoted_guest, :guest]
-        project.team << [guest, :guest]
+        project.add_master(master)
+        project.add_reporter(reporter)
+        project.add_guest(promoted_guest)
+        project.add_guest(guest)
 
         group = create(:group)
         group_developer = create(:user)
