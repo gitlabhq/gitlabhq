@@ -6,7 +6,7 @@ Returns a list of project milestones.
 
 ```
 GET /projects/:id/milestones
-GET /projects/:id/milestones?iid=42
+GET /projects/:id/milestones?iid[]=42
 GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
 ```
@@ -16,7 +16,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iid` | integer | optional | Return only the milestone having the given `iid` |
+| `iid` | Array[integer] | optional | Return only the milestone having the given `iid` |
 | `state` | string | optional | Return  only `active` or `closed` milestones` |
 
 ```bash
