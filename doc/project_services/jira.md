@@ -150,11 +150,11 @@ the transition ID was set up correctly).
 There are currently three trigger words, and you can use either one to achieve
 the same goal:
 
-- `Resolves GITLAB-1`
-- `Closes GITLAB-1`
-- `Fixes GITLAB-1`
+- `Resolves PROJECT-1`
+- `Closes PROJECT-1`
+- `Fixes PROJECT-1`
 
-- where `GITLAB-1` the issue ID of the JIRA project.
+where `PROJECT-1` is the issue ID of the JIRA project.
 
 ### JIRA issue closing example
 
