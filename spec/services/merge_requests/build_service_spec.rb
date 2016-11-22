@@ -24,6 +24,8 @@ describe MergeRequests::BuildService, services: true do
   end
 
   before do
+    project.team << [user, :guest]
+
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
   end
 
@@ -148,6 +150,16 @@ describe MergeRequests::BuildService, services: true do
 
         it 'sets the title to: Resolves "$issue-title"' do
           expect(merge_request.title).to eq("Resolve \"#{issue.title}\"")
+        end
+
+        context 'when issue is not accessible to user' do
+          before do
+            project.team.truncate
+          end
+
+          it 'uses branch title as the merge request title' do
+            expect(merge_request.title).to eq("#{issue.iid} fix issue")
+          end
         end
 
         context 'issue does not exist' do

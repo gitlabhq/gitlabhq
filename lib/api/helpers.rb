@@ -123,9 +123,7 @@ module API
     end
 
     def find_project_issue(id)
-      issue = user_project.issues.find(id)
-      not_found! unless can?(current_user, :read_issue, issue)
-      issue
+      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
     def paginate(relation)

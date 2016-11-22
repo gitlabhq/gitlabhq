@@ -109,7 +109,7 @@ module API
       #   GET /projects/:id/issues?milestone=1.0.0&state=closed
       #   GET /issues?iid=42
       get ":id/issues" do
-        issues = user_project.issues.inc_notes_with_associations.visible_to_user(current_user)
+        issues = IssuesFinder.new(current_user, project_id: user_project.id).execute.inc_notes_with_associations
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
