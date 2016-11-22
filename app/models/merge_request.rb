@@ -788,6 +788,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def rebase_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
     File.exist?(rebase_dir_path) && !clean_stuck_rebase
   end
 
