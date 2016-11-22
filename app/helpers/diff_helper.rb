@@ -51,9 +51,11 @@ module DiffHelper
     html.html_safe
   end
 
-  def diff_line_content(line)
+  def diff_line_content(line, email: false)
     if line.blank?
       "&nbsp;".html_safe
+    elsif email
+      line.html_safe
     else
       line.sub(/^[\-+ ]/, '').html_safe
     end
