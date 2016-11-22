@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 8.14.0 (2016-11-22)
 
+- Added Backfill service for Geo. !861
+- Fix for autosuggested approvers(https://gitlab.com/gitlab-org/gitlab-ee/issues/1273).
 - Gracefully recover from previously failed rebase.
 - Disable retries for remote mirror update worker. !848
 - Fix Approvals API documentation.
