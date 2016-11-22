@@ -67,7 +67,7 @@
     MergeRequestWidget.prototype.addEventListeners = function() {
       var allowedPages;
       allowedPages = ['show', 'commits', 'builds', 'pipelines', 'changes'];
-      return $(document).on('page:change.merge_request', (function(_this) {
+      $(document).on('page:change.merge_request', (function(_this) {
         return function() {
           var page;
           page = $('body').data('page').split(':').last();
@@ -245,7 +245,7 @@
           case "not_found":
             return this.setMergeButtonClass('btn-danger');
           case "running":
-            return this.setMergeButtonClass('btn-warning');
+            return this.setMergeButtonClass('btn-info');
           case "success":
           case "success_with_warnings":
             return this.setMergeButtonClass('btn-create');
@@ -263,7 +263,7 @@
     };
 
     MergeRequestWidget.prototype.setMergeButtonClass = function(css_class) {
-      return $('.js-merge-button,.accept-action .dropdown-toggle').removeClass('btn-danger btn-warning btn-create').addClass(css_class);
+      return $('.js-merge-button,.accept-action .dropdown-toggle').removeClass('btn-danger btn-info btn-create').addClass(css_class);
     };
 
     return MergeRequestWidget;
