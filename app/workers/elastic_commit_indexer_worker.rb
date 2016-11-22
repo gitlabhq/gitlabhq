@@ -10,7 +10,7 @@ class ElasticCommitIndexerWorker
     project = Project.find(project_id)
     repository = project.repository
 
-    return true unless repository.head_exists?
+    return true unless repository.exists?
 
     indexer = Gitlab::Elastic::Indexer.new
     indexer.run(
