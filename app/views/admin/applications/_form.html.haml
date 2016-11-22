@@ -18,6 +18,16 @@
           Use
           %code= Doorkeeper.configuration.native_redirect_uri
           for local tests
+
+  .form-group
+    = f.label :scopes, class: 'col-sm-2 control-label'
+    .col-sm-10
+      - @scopes.each do |scope|
+        %fieldset
+          = check_box_tag 'doorkeeper_application[scopes][]', scope, application.scopes.include?(scope), id: "doorkeeper_application_scopes_#{scope}"
+          = label_tag "doorkeeper_application_scopes_#{scope}", scope
+          %span= "(#{t(scope, scope: [:doorkeeper, :scopes])})"
+
   .form-actions
     = f.submit 'Submit', class: "btn btn-save wide"
     = link_to "Cancel", admin_applications_path, class: "btn btn-default"

@@ -1,4 +1,6 @@
 class Admin::ApplicationsController < Admin::ApplicationController
+  include OauthApplications
+
   before_action :set_application, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -10,9 +12,11 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def new
     @application = Doorkeeper::Application.new
+    @scopes = Doorkeeper.configuration.scopes
   end
 
   def edit
+    @scopes = Doorkeeper.configuration.scopes
   end
 
   def create
@@ -47,6 +51,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def application_params
-    params[:doorkeeper_application].permit(:name, :redirect_uri)
+    params[:doorkeeper_application].permit(:name, :redirect_uri, :scopes)
   end
 end

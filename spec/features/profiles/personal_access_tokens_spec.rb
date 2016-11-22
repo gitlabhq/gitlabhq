@@ -51,6 +51,32 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       expect(active_personal_access_tokens).to have_text(Date.today.next_month.at_beginning_of_month.to_s(:medium))
     end
 
+    context "scopes" do
+      it "allows creation of a token with scopes" do
+        visit profile_personal_access_tokens_path
+        fill_in "Name", with: FFaker::Product.brand
+
+        check "api"
+        check "read_user"
+
+        expect {click_on "Create Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
+        expect(created_personal_access_token).to eq(PersonalAccessToken.last.token)
+        expect(PersonalAccessToken.last.scopes).to match_array(['api', 'read_user'])
+        expect(active_personal_access_tokens).to have_text('api')
+        expect(active_personal_access_tokens).to have_text('read_user')
+      end
+
+      it "allows creation of a token with no scopes" do
+        visit profile_personal_access_tokens_path
+        fill_in "Name", with: FFaker::Product.brand
+
+        expect {click_on "Create Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
+        expect(created_personal_access_token).to eq(PersonalAccessToken.last.token)
+        expect(PersonalAccessToken.last.scopes).to eq([])
+        expect(active_personal_access_tokens).to have_text('no scopes')
+      end
+    end
+
     context "when creation fails" do
       it "displays an error message" do
         disallow_personal_access_token_saves!
