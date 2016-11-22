@@ -209,12 +209,12 @@
             <table class="table ci-table environments">
               <thead>
                 <tr>
-                  <th>Environment</th>
-                  <th>Last deployment</th>
-                  <th>Build</th>
-                  <th>Commit</th>
-                  <th></th>
-                  <th class="hidden-xs"></th>
+                  <th class="environments-name">Environment</th>
+                  <th class="environments-deploy">Last deployment</th>
+                  <th class="environments-build">Build</th>
+                  <th class="environments-commit">Commit</th>
+                  <th class="environments-date"></th>
+                  <th class="hidden-xs environments-actions"></th>
                 </tr>
               </thead>
               <tbody>
