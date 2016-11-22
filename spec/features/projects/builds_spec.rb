@@ -6,8 +6,8 @@ feature 'Builds', :feature do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let!(:build) { create(:ci_build, :trace, pipeline: pipeline) }
-  let!(:build2) { create(:ci_build) }
+  let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+  let(:build2) { create(:ci_build) }
 
   let(:artifacts_file) do
     fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
@@ -19,6 +19,8 @@ feature 'Builds', :feature do
   end
 
   describe "GET /:project/builds" do
+    let!(:build) { create(:ci_build,  pipeline: pipeline) }
+
     context "Pending scope" do
       before do
         visit namespace_project_builds_path(project.namespace, project, scope: :pending)
