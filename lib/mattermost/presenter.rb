@@ -49,7 +49,12 @@ module Mattermost
       private
 
       def show_result(result)
-        ephemeral_response(result.message)
+        case result.type
+        when :success
+          in_channel_response(result.message)
+        else
+          ephemeral_response(result.message)
+        end
       end
 
       def not_found

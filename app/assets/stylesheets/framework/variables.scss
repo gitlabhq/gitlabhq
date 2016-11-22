@@ -161,6 +161,7 @@ $settings-icon-size: 18px;
 $provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
+$active-item-blue: #4a8bee;
 $layout-link-gray: #7e7c7c;
 $todo-alert-blue: #428bca;
 $btn-side-margin: 10px;
@@ -284,6 +285,9 @@ $calendar-unselectable-bg: $gray-light;
  */
 $cycle-analytics-box-padding: 30px;
 $cycle-analytics-box-text-color: #8c8c8c;
+$cycle-analytics-big-font: 19px;
+$cycle-analytics-dark-text: $gl-title-color;
+$cycle-analytics-light-gray: #bfbfbf;
 
 /*
  * Personal Access Tokens
