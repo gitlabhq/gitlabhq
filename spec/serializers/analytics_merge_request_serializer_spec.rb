@@ -23,10 +23,6 @@ describe AnalyticsMergeRequestSerializer do
   end
 
   context 'when there is a single object provided' do
-    it 'it generates payload for single object' do
-      expect(json).to be_an_instance_of Hash
-    end
-
     it 'contains important elements of the merge request' do
       expect(json).to include(:title, :iid, :created_at, :total_time, :url, :author, :state)
     end
