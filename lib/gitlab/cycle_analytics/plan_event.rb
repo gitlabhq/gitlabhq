@@ -27,6 +27,8 @@ module Gitlab
       end
 
       def first_time_reference_commit(commits, event)
+        return nil if commits.blank?
+
         YAML.load(commits).find do |commit|
           next unless commit[:committed_date] && event['first_mentioned_in_commit_at']
 
