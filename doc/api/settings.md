@@ -3,7 +3,7 @@
 >**Note:**
 The `https://gitlab.example.com` URL that is presented in the examples of the
 API docs is fictional. Replace it with the URL of your GitLab instance,
-or in case of GitLab.com, use `https://gitlab.com`.
+or in case of GitLab.com, use `https://gitlab.com` (where applicable).
 
 These API calls allow you to read and modify GitLab instance application
 settings as appear in `/admin/application_settings`. You have to be an
