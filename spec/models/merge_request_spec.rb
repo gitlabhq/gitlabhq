@@ -410,11 +410,17 @@ describe MergeRequest, models: true do
         .to match("Remove all technical debt\n\n")
     end
 
-    it 'includes its description in the body' do
-      request = build(:merge_request, description: 'By removing all code')
+    it 'includes its closed issues in the body' do
+      issue = create(:issue, project: subject.project) 
 
-      expect(request.merge_commit_message)
-        .to match("By removing all code\n\n")
+      subject.project.team << [subject.author, :developer]
+      subject.description = "Closes #{issue.to_reference}"
+
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
+
+      expect(subject.merge_commit_message)
+        .to match("Closed Issues: #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do

@@ -615,7 +615,8 @@ class MergeRequest < ActiveRecord::Base
   def merge_commit_message
     message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
     message << "#{title}\n\n"
-    message << "#{description}\n\n" if description.present?
+    mr_closes_issues = closes_issues
+    message << "Closed Issues: #{mr_closes_issues.map { |issue| issue.to_reference(target_project) }.join(", ")}\n\n" if mr_closes_issues.present?
     message << "See merge request #{to_reference}"
 
     message
