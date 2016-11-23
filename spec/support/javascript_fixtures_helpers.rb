@@ -31,6 +31,9 @@ module JavaScriptFixturesHelpers
     if response_mime_type.html?
       doc = Nokogiri::HTML::DocumentFragment.parse(fixture)
 
+      link_tags = doc.css('link')
+      link_tags.remove
+
       scripts = doc.css('script')
       scripts.remove
 
