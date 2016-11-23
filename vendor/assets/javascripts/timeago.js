@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-expressions, wrap-iife, func-names, curly, no-param-reassign, no-trailing-spaces, prefer-arrow-callback, no-var, one-var, quote-props, space-before-function-paren, vars-on-top, radix, prefer-template, space-infix-ops, no-use-before-define, newline-per-chained-call, no-useless-escape, no-nested-ternary, indent, no-undef, no-plusplus, one-var-declaration-per-line, operator-assignment, consistent-return, keyword-spacing, max-len, space-unary-ops, no-shadow, no-restricted-syntax, guard-for-in, eol-last, max-len */
-
 /**
  * Copyright (c) 2016 hustcc
  * License: MIT
@@ -14,7 +12,7 @@
     module.exports = factory(root);
   else
     root.timeago = factory(root);
-}(typeof window !== 'undefined' ? window : this, 
+}(typeof window !== 'undefined' ? window : this,
 function () {
   var cnt = 0, // the timer counter, for timer key
     indexMapEn = 'second_minute_hour_day_week_month_year'.split('_'),
@@ -32,7 +30,7 @@ function () {
     SEC_ARRAY = [60, 60, 24, 7, 365/7/12, 12],
     SEC_ARRAY_LEN = 6,
     ATTR_DATETIME = 'datetime';
-  
+
   // format Date / string / timestamp to Date instance.
   function toDate(input) {
     if (input instanceof Date) return input;
