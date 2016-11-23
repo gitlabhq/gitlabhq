@@ -11,6 +11,15 @@
       text-decoration: none;
     }
 
+    svg {
+      height: 13px;
+      width: 13px;
+      position: relative;
+      top: 1px;
+      margin-right: 3px;
+      overflow: visible;
+    }
+
     &.ci-failed {
       color: $gl-danger;
       border-color: $gl-danger;
@@ -103,15 +112,6 @@
       svg {
         fill: $table-text-gray;
       }
-    }
-
-    svg {
-      height: 13px;
-      width: 13px;
-      position: relative;
-      top: 1px;
-      margin: 0 3px;
-      overflow: visible;
     }
   }
 }
