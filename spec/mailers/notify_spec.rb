@@ -646,6 +646,7 @@ describe Notify do
         before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
 
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
+
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
           let(:model) { merge_request }
