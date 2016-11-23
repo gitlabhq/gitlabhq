@@ -1,6 +1,6 @@
 RSpec.configure do |config|
   def builds_path
-    Rails.root.join('tmp/builds')
+    Rails.root.join('tmp/tests/builds')
   end
 
   config.before(:each) do
@@ -9,7 +9,7 @@ RSpec.configure do |config|
     Settings.gitlab_ci['builds_path'] = builds_path
   end
 
-  config.after(:suite) do
+  config.after(:each) do
     Dir[File.join(builds_path, '*')].each do |path|
       next if File.basename(path) == '.gitkeep'
 
