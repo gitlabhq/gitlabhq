@@ -169,17 +169,19 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(statuses.cancelable) do |cancelable|
-        cancelable.each(&:cancel)
-      end
+      Gitlab::OptimisticLocking.retry_lock(
+        statuses.cancelable) do |cancelable|
+          cancelable.each(&:cancel)
+        end
     end
 
     def retry_failed(user)
-      Gitlab::OptimisticLocking.retry_lock(builds.latest.failed_or_canceled) do |failed|
-        failed.select(&:retryable?).each do |build|
-          Ci::Build.retry(build, user)
+      Gitlab::OptimisticLocking.retry_lock(
+        builds.latest.failed_or_canceled) do |failed_or_canceled|
+          failed_or_canceled.select(&:retryable?).each do |build|
+            Ci::Build.retry(build, user)
+          end
         end
-      end
     end
 
     def mark_as_processable_after_stage(stage_idx)
