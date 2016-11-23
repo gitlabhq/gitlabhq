@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::API, api: true  do
+describe API::Repositories, api: true  do
   include ApiHelpers
   include RepoHelpers
   include WorkhorseHelpers
@@ -44,7 +44,6 @@ describe API::API, api: true  do
     end
   end
 
-  
   describe 'GET /projects/:id/repository/tree?recursive=1' do
     context 'authorized user' do
       before { project.team << [user2, :reporter] }
@@ -67,7 +66,7 @@ describe API::API, api: true  do
 
         expect(json_response).to be_an Object
         json_response['message'] == '404 Tree Not Found'
-      end      
+      end
     end
 
     context "unauthorized user" do

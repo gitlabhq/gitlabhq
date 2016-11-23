@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe API::API, 'MergeRequestDiffs', api: true  do
+describe API::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
   include ApiHelpers
 
   let!(:user)          { create(:user) }
