@@ -2,7 +2,6 @@
 /* global Build */
 /* global Turbolinks */
 
-//= require lib/utils/timeago
 //= require lib/utils/datetime_utility
 //= require build
 //= require breakpoints
