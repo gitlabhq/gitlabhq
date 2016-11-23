@@ -21,6 +21,22 @@ class ProjectTeam
     end
   end
 
+  def add_guest(user, current_user: nil)
+    self << [user, :guest, current_user]
+  end
+
+  def add_reporter(user, current_user: nil)
+    self << [user, :reporter, current_user]
+  end
+
+  def add_developer(user, current_user: nil)
+    self << [user, :developer, current_user]
+  end
+
+  def add_master(user, current_user: nil)
+    self << [user, :master, current_user]
+  end
+
   def find_member(user_id)
     member = project.members.find_by(user_id: user_id)
 
