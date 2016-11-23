@@ -76,7 +76,12 @@ module API
     end
 
     def find_project(id)
-      project = Project.find_with_namespace(id) || Project.find_by(id: id)
+      project =
+        if id =~ /^\d+$/
+          Project.find_by(id: id)
+        else
+          Project.find_with_namespace(id)
+        end
 
       if can?(current_user, :read_project, project)
         project
