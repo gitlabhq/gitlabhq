@@ -45,7 +45,7 @@ describe MergeRequests::FfMergeService do
 
       it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
-        expect(note.note).to include 'Status changed to merged'
+        expect(note.note).to include 'merged'
       end
     end
   end

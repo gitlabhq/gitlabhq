@@ -91,24 +91,24 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'creates system note about issue reassign' do
-          note = find_note('Reassigned to')
+          note = find_note('assigned to')
 
           expect(note).not_to be_nil
-          expect(note.note).to include "Reassigned to \@#{user2.username}"
+          expect(note.note).to include "assigned to #{user2.to_reference}"
         end
 
         it 'creates system note about issue label edit' do
-          note = find_note('Added ~')
+          note = find_note('added ~')
 
           expect(note).not_to be_nil
-          expect(note.note).to include "Added ~#{label.id} label"
+          expect(note.note).to include "added #{label.to_reference} label"
         end
 
         it 'creates system note about title change' do
-          note = find_note('Changed title:')
+          note = find_note('changed title')
 
           expect(note).not_to be_nil
-          expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
+          expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
         end
       end
     end
@@ -128,10 +128,10 @@ describe Issues::UpdateService, services: true do
       it 'creates system note about confidentiality change' do
         update_issue(confidential: true)
 
-        note = find_note('Made the issue confidential')
+        note = find_note('made the issue confidential')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Made the issue confidential'
+        expect(note.note).to eq 'made the issue confidential'
       end
 
       it 'executes confidential issue hooks' do
@@ -269,8 +269,8 @@ describe Issues::UpdateService, services: true do
         before { update_issue(description: "- [x] Task 1\n- [X] Task 2") }
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as completed')
-          note2 = find_note('Marked the task **Task 2** as completed')
+          note1 = find_note('marked the task **Task 1** as completed')
+          note2 = find_note('marked the task **Task 2** as completed')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -284,8 +284,8 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as incomplete')
-          note2 = find_note('Marked the task **Task 2** as incomplete')
+          note1 = find_note('marked the task **Task 1** as incomplete')
+          note2 = find_note('marked the task **Task 2** as incomplete')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -299,7 +299,7 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note' do
-          note = find_note('Marked the task **Task 2** as incomplete')
+          note = find_note('marked the task **Task 2** as incomplete')
 
           expect(note).to be_nil
         end
@@ -312,7 +312,7 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note referencing the position the old item' do
-          note = find_note('Marked the task **Two** as incomplete')
+          note = find_note('marked the task **Two** as incomplete')
 
           expect(note).to be_nil
         end

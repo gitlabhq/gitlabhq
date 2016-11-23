@@ -21,7 +21,7 @@ Parameters:
 [
   {
     "id": 302,
-    "body": "Status changed to closed",
+    "body": "closed",
     "attachment": null,
     "author": {
       "id": 1,
