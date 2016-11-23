@@ -5,23 +5,23 @@
   const PAGINATION_LIMIT = 31;
   const SLICE_LIMIT = 29;
 
-  class PipelineUpdater {
-    constructor(pipelines) {
-      this.pipelines = pipelines;
+  class RealtimePaginationUpdater {
+    constructor(pageData) {
+      this.pageData = pageData;
     }
 
-    updatePipelines(apiResponse) {
-      const update = this.pipelines.slice(0);
+    updatePageDiff(apiResponse) {
+      const diffData = this.pageData.slice(0);
       apiResponse.pipelines.forEach((newPipe, i) => {
         if (newPipe.commit) {
-          update.unshift(newPipe);
+          diffData.unshift(newPipe);
         } else {
-          const newMerge = Object.assign({}, update[i], newPipe);
-          update[i] = newMerge;
+          const newMerge = Object.assign({}, diffData[i], newPipe);
+          diffData[i] = newMerge;
         }
       });
-      if (update.length < PAGINATION_LIMIT) return update;
-      return update.slice(0, SLICE_LIMIT);
+      if (diffData.length < PAGINATION_LIMIT) return diffData;
+      return diffData.slice(0, SLICE_LIMIT);
     }
   }
 
@@ -36,6 +36,7 @@
 
       const updatePipelineNums = (count) => {
         const { all } = count;
+        // cannot define non camel case, so not using destructuring for running
         const running = count.running_or_pending;
         document.querySelector('.js-totalbuilds-count').innerHTML = all;
         document.querySelector('.js-running-count').innerHTML = running;
@@ -67,9 +68,9 @@
         this.$http.get(`${url}?page=${pageNum}&updated_at=${this.updatedAt}`)
           .then((response) => {
             const res = JSON.parse(response.body);
-            const p = new PipelineUpdater(this.pipelines);
+            const p = new RealtimePaginationUpdater(this.pipelines);
             Vue.set(this, 'updatedAt', res.updated_at);
-            Vue.set(this, 'pipelines', p.updatePipelines(res));
+            Vue.set(this, 'pipelines', p.updatePageDiff(res));
             Vue.set(this, 'count', res.count);
             updatePipelineNums(this.count);
             subtractFromVueResources();

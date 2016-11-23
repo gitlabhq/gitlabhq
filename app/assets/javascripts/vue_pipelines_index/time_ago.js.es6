@@ -5,6 +5,11 @@
     props: [
       'pipeline',
     ],
+    computed: {
+      localTimeFinished() {
+        return gl.utils.formatDate(this.pipeline.details.finished_at);
+      },
+    },
     methods: {
       formatSection(section) {
         if (`${section}`.split('').length <= 1) return `0${section}`;
@@ -58,13 +63,17 @@
         };
       },
       duration() {
-        if (this.timeStopped()) return this.finishdate();
-        return this.runningdate();
+        // if (this.timeStopped()) return this.finishdate();
+        // return this.runningdate();
+        const { duration } = this.pipeline.details;
+        if (duration === 0) return '00:00:00';
+        if (duration !== null) return duration;
+        return false;
       },
     },
     template: `
       <td>
-        <p class="duration">
+        <p class="duration" v-if='duration()'>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="40"
@@ -83,7 +92,7 @@
             data-toggle="tooltip"
             data-placement="top"
             data-container="body"
-            :data-original-title='9 + 9'
+            :data-original-title='localTimeFinished'
           >
             {{timeStopped().words}}
           </time>

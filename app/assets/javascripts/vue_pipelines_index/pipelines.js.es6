@@ -78,7 +78,7 @@
                 <status-scope :pipeline='pipeline'></status-scope>
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
                 <commit
-                  :tag='pipeline.ref.tag'
+                  :tag="pipeline.ref['tag?']"
                   :author='pipeline.commit.author'
                   :title='pipeline.commit.title'
                   :ref='pipeline.ref'
