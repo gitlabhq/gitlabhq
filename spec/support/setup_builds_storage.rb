@@ -7,11 +7,12 @@ RSpec.configure do |config|
     Settings.gitlab_ci['builds_path'] = builds_path
   end
 
-  config.before(:each) do
+  config.before(:all) do
     FileUtils.mkdir_p(builds_path)
   end
 
-  config.after(:each) do
+  config.before(:each) do
     FileUtils.rm_rf(builds_path)
+    FileUtils.mkdir_p(builds_path)
   end
 end
