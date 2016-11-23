@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::API::API do
+describe Ci::API::Builds do
   include ApiHelpers
 
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
