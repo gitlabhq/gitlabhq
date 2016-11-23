@@ -56,7 +56,7 @@ module CycleAnalyticsHelpers
               end
 
               median_time_difference = time_differences.sort[2]
-              expect(subject.send(phase)).to be_within(5).of(median_time_difference)
+              expect(subject.public_send(phase)).to be_within(5).of(median_time_difference)
             end
 
             context "when the data belongs to another project" do
@@ -88,7 +88,7 @@ module CycleAnalyticsHelpers
                 # Turn off the stub before checking assertions
                 allow(self).to receive(:project).and_call_original
 
-                expect(subject.send(phase)).to be_nil
+                expect(subject.public_send(phase)).to be_nil
               end
             end
 
@@ -111,7 +111,7 @@ module CycleAnalyticsHelpers
 
                 Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
 
-                expect(subject.send(phase)).to be_nil
+                expect(subject.public_send(phase)).to be_nil
               end
             end
           end
@@ -131,7 +131,7 @@ module CycleAnalyticsHelpers
                 Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
               end
 
-              expect(subject.send(phase)).to be_nil
+              expect(subject.public_send(phase)).to be_nil
             end
           end
         end
@@ -150,7 +150,7 @@ module CycleAnalyticsHelpers
                 post_fn[self, data] if post_fn
               end
 
-              expect(subject.send(phase)).to be_nil
+              expect(subject.public_send(phase)).to be_nil
             end
           end
         end
@@ -158,7 +158,7 @@ module CycleAnalyticsHelpers
 
       context "when none of the start / end conditions are matched" do
         it "returns nil" do
-          expect(subject.send(phase)).to be_nil
+          expect(subject.public_send(phase)).to be_nil
         end
       end
     end
