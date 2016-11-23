@@ -1,26 +1,186 @@
 - todo = issuable_todo(issuable)
-- can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-- has_due_date = issuable.has_attribute?(:due_date)
-- has_labels = @labels && @labels.any?
-
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('issuable/issuable_bundle.js')
-
 %aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
-  #issuable-sidebar-app.issuable-sidebar{ 'data-issuable' => issuable.to_json, 'data-admin' => can_edit_issuable.to_s }
-    %issuable-todo-toggle{':todo' => 'issuable.todo', ':admin' => 'admin'}
-    %issuable-assignee-select{ ':assignee' => 'issuable.assignee', ':admin' => 'admin'}
-    %issuable-milestone-select{':milestone' => 'issuable.milestone', ':admin' => 'admin'}
-    %issuable-due-date-select{':due_date' => 'issuable.due_date', ':admin' => 'admin'}
-    %issuable-labels-select{':labels' => 'issuable.labels', 'admin' => 'admin' }
-    %issuable-participants-display{':participants' => 'issuable.participants', 'admin' => 'admin'}
-    %issuable-subscription-toggle{':subscription' => 'issuable.subscription' }
-    %issuable-project-refs{':refs' => 'issuable.refs', ':admin' => 'admin'}
+  .issuable-sidebar
+    - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+    .block.issuable-sidebar-header
+      - if current_user
+        %span.issuable-header-text.hide-collapsed.pull-left
+          Todo
+      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", aria: { label: "Toggle sidebar" } }
+        = sidebar_gutter_toggle_icon
+      - if current_user
+        %button.btn.btn-default.issuable-header-btn.pull-right.js-issuable-todo{ type: "button", aria: { label: (todo.nil? ? "Add Todo" : "Mark Done") }, data: { todo_text: "Add Todo", mark_text: "Mark Done", issuable_id: issuable.id, issuable_type: issuable.class.name.underscore, url: namespace_project_todos_path(@project.namespace, @project), delete_path: (dashboard_todo_path(todo) if todo) } }
+          %span.js-issuable-todo-text
+            - if todo
+              Mark Done
+            - else
+              Add Todo
+          = icon('spin spinner', class: 'hidden js-issuable-todo-loading')
 
-  :javascript
-    new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
-    new LabelsSelect();
-    new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
-    new Subscription('.subscription')
-    new gl.DueDateSelectors();
-    sidebar = new Sidebar();
+    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
+      .block.assignee
+        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.name if issuable.assignee)}
+          - if issuable.assignee
+            = link_to_member(@project, issuable.assignee, size: 24)
+          - else
+            = icon('user')
+        .title.hide-collapsed
+          Assignee
+          = icon('spinner spin', class: 'block-loading')
+          - if can_edit_issuable
+            = link_to 'Edit', '#', class: 'edit-link pull-right'
+        .value.hide-collapsed
+          - if issuable.assignee
+            = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
+              - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+                %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+                  = icon('exclamation-triangle')
+              %span.username
+                = issuable.assignee.to_reference
+          - else
+            %span.assign-yourself.no-value
+              No assignee
+              - if can_edit_issuable
+                \-
+                %a.js-assign-yourself{ href: '#' }
+                  assign yourself
+
+        .selectbox.hide-collapsed
+          = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
+          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
+
+      .block.milestone
+        .sidebar-collapsed-icon
+          = icon('clock-o')
+          %span
+            - if issuable.milestone
+              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1, placement: 'left'}}
+                = issuable.milestone.title
+            - else
+              None
+        .title.hide-collapsed
+          Milestone
+          = icon('spinner spin', class: 'block-loading')
+          - if can_edit_issuable
+            = link_to 'Edit', '#', class: 'edit-link pull-right'
+        .value.hide-collapsed
+          - if issuable.milestone
+            = link_to issuable.milestone.title, namespace_project_milestone_path(@project.namespace, @project, issuable.milestone), class: "bold has-tooltip", title: milestone_remaining_days(issuable.milestone), data: { container: "body", html: 1 }
+          - else
+            %span.no-value None
+
+        .selectbox.hide-collapsed
+          = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
+          = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
+
+      - if issuable.has_attribute?(:due_date)
+        .block.due_date
+          .sidebar-collapsed-icon
+            = icon('calendar')
+            %span.js-due-date-sidebar-value
+              = issuable.due_date.try(:to_s, :medium) || 'None'
+          .title.hide-collapsed
+            Due date
+            = icon('spinner spin', class: 'block-loading')
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.hide-collapsed
+            %span.value-content
+              - if issuable.due_date
+                %span.bold= issuable.due_date.to_s(:medium)
+              - else
+                %span.no-value No due date
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
+                \-
+                %a.js-remove-due-date{ href: "#", role: "button" }
+                  remove due date
+          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            .selectbox.hide-collapsed
+              = f.hidden_field :due_date, value: issuable.due_date
+              .dropdown
+                %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
+                  %span.dropdown-toggle-text Due date
+                  = icon('chevron-down')
+                .dropdown-menu.dropdown-menu-due-date
+                  = dropdown_title('Due date')
+                  = dropdown_content do
+                    .js-due-date-calendar
+
+      - if @labels && @labels.any?
+        - selected_labels = issuable.labels
+        .block.labels
+          .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
+            = icon('tags')
+            %span
+              = selected_labels.size
+          .title.hide-collapsed
+            Labels
+            = icon('spinner spin', class: 'block-loading')
+            - if can_edit_issuable
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
+            - if selected_labels.any?
+              - selected_labels.each do |label|
+                = link_to_label(label, type: issuable.to_ability_name)
+            - else
+              %span.no-value None
+          .selectbox.hide-collapsed
+            - selected_labels.each do |label|
+              = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
+            .dropdown
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
+                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?)}
+                  = multi_label_name(selected_labels, "Labels")
+                = icon('chevron-down')
+              .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+                = render partial: "shared/issuable/label_page_default"
+                - if can? current_user, :admin_label, @project and @project
+                  = render partial: "shared/issuable/label_page_create"
+
+      = render "shared/issuable/participants", participants: issuable.participants(current_user)
+      - if current_user
+        - subscribed = issuable.subscribed?(current_user, @project)
+        .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
+          .sidebar-collapsed-icon
+            = icon('rss')
+          .title.hide-collapsed
+            Notifications
+          - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
+          %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+            %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+          .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
+            .unsubscribed{class: ( 'hidden' if subscribed )}
+              You're not receiving notifications from this thread.
+            .subscribed{class: ( 'hidden' unless subscribed )}
+              You're receiving notifications because you're subscribed to this thread.
+
+      - project_ref = cross_project_reference(@project, issuable)
+      .block.project-reference
+        .sidebar-collapsed-icon.dont-change-state
+          = clipboard_button(clipboard_text: project_ref)
+        .cross-project-reference.hide-collapsed
+          %span
+            Reference:
+            %cite{title: project_ref}
+              = project_ref
+          = clipboard_button(clipboard_text: project_ref)
+
+    :javascript
+      gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
+      function fetcher() {
+        return gl.IssuableResource.get.call(gl.IssuableResource, { type: 'GET', url: gl.IssuableResource.endpoint });
+      }
+      new gl.SmartInterval({
+        startingInterval: 5000,
+        maxInterval: 5000,
+        increaseByFactorOf: 2,
+        lazyStart: false,
+        callback: fetcher 
+      });
+      new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
+      new LabelsSelect();
+      new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
+      new Subscription('.subscription')
+      new gl.DueDateSelectors();
+      sidebar = new Sidebar();
