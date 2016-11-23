@@ -9,7 +9,7 @@
     %table
       - discussions = { discussion.original_line_code => discussion }
       = render partial: "projects/diffs/line",
-        collection: discussion.highlighted_diff_lines,
+        collection: discussion.truncated_diff_lines,
         as: :line,
         locals: { diff_file: diff_file,
           discussions: discussions,

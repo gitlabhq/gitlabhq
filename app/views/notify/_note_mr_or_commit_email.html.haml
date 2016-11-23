@@ -3,12 +3,10 @@
 
 New comment
 
-- if @note.diff_note? && @note.diff_file
+- if @discussion && @discussion.diff_file
   on
   = link_to @note.diff_file.file_path, @target_url, class: 'details'
-\:
-
-- if @discussion
+  \:
   %table
     = render partial: "projects/diffs/line",
       collection: @discussion.truncated_diff_lines,
