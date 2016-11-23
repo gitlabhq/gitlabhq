@@ -803,6 +803,35 @@ describe User, models: true do
     end
   end
 
+  describe '#avatar_url' do
+    let(:user) { create(:user) }
+    subject { user.avatar_url }
+
+    context 'when avatar file is uploaded' do
+      before do
+        user.update_columns(avatar: 'uploads/avatar.png')
+        allow(user.avatar).to receive(:present?) { true }
+      end
+
+      let(:avatar_path) do
+        "/uploads/user/avatar/#{user.id}/uploads/avatar.png"
+      end
+
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+
+      context 'when in a geo secondary node' do
+        let(:geo_url) { 'http://geo.example.com' }
+
+        before do
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
+          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+        end
+
+        it { should eq "#{geo_url}#{avatar_path}" }
+      end
+    end
+  end
+
   describe '#requires_ldap_check?' do
     let(:user) { User.new }
 

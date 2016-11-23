@@ -811,6 +811,17 @@ describe Project, models: true do
       end
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+
+      context 'When in a geo secondary node' do
+        let(:geo_url) { 'http://geo.example.com' }
+
+        before do
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
+          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+        end
+
+        it { should eq "#{geo_url}#{avatar_path}" }
+      end
     end
 
     context 'When avatar file in git' do
