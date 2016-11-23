@@ -50,7 +50,7 @@ describe SystemNoteService, services: true do
 
       context 'without existing commits' do
         it 'adds a message header' do
-          expect(note_lines[0]).to eq "Added #{new_commits.size} commits:"
+          expect(note_lines[0]).to eq "added #{new_commits.size} commits"
         end
 
         it 'adds a message line for each commit' do
@@ -120,7 +120,7 @@ describe SystemNoteService, services: true do
 
     context 'when assignee added' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Reassigned to @#{assignee.username}"
+        expect(subject.note).to eq "assigned to @#{assignee.username}"
       end
     end
 
@@ -128,7 +128,7 @@ describe SystemNoteService, services: true do
       let(:assignee) { nil }
 
       it 'sets the note text' do
-        expect(subject.note).to eq 'Assignee removed'
+        expect(subject.note).to eq 'removed assignee'
       end
     end
   end
@@ -147,7 +147,7 @@ describe SystemNoteService, services: true do
       let(:removed) { [] }
 
       it 'sets the note text' do
-        expect(subject.note).to eq "Added ~#{labels[0].id} ~#{labels[1].id} labels"
+        expect(subject.note).to eq "added ~#{labels[0].id} ~#{labels[1].id} labels"
       end
     end
 
@@ -156,7 +156,7 @@ describe SystemNoteService, services: true do
       let(:removed) { labels }
 
       it 'sets the note text' do
-        expect(subject.note).to eq "Removed ~#{labels[0].id} ~#{labels[1].id} labels"
+        expect(subject.note).to eq "removed ~#{labels[0].id} ~#{labels[1].id} labels"
       end
     end
 
@@ -165,7 +165,7 @@ describe SystemNoteService, services: true do
       let(:removed) { [labels[1]] }
 
       it 'sets the note text' do
-        expect(subject.note).to eq "Added ~#{labels[0].id} and removed ~#{labels[1].id} labels"
+        expect(subject.note).to eq "added ~#{labels[0].id} and removed ~#{labels[1].id} labels"
       end
     end
   end
@@ -179,7 +179,7 @@ describe SystemNoteService, services: true do
 
     context 'when milestone added' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Milestone changed to #{milestone.to_reference}"
+        expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
       end
     end
 
@@ -187,7 +187,7 @@ describe SystemNoteService, services: true do
       let(:milestone) { nil }
 
       it 'sets the note text' do
-        expect(subject.note).to eq 'Milestone removed'
+        expect(subject.note).to eq 'removed milestone'
       end
     end
   end
@@ -204,13 +204,13 @@ describe SystemNoteService, services: true do
       let(:source) { double('commit', gfm_reference: 'commit 123456') }
 
       it 'sets the note text' do
-        expect(subject.note).to eq "Status changed to #{status} by commit 123456"
+        expect(subject.note).to eq "#{status} via commit 123456"
       end
     end
 
     context 'without a source' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Status changed to #{status}"
+        expect(subject.note).to eq status
       end
     end
   end
@@ -226,7 +226,7 @@ describe SystemNoteService, services: true do
     it_behaves_like 'a system note'
 
     it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to match  /Enabled an automatic merge when the build for (\w+\/\w+@)?[0-9a-f]{40} succeeds/
+      expect(subject.note).to match  /enabled an automatic merge when the build for (\w+\/\w+@)?\h{40} succeeds/
     end
   end
 
@@ -240,7 +240,7 @@ describe SystemNoteService, services: true do
     it_behaves_like 'a system note'
 
     it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to eq  "Canceled the automatic merge"
+      expect(subject.note).to eq  "canceled the automatic merge"
     end
   end
 
@@ -252,7 +252,7 @@ describe SystemNoteService, services: true do
 
       it 'sets the note text' do
         expect(subject.note).
-          to eq "Changed title: **{-Old title-}** → **{+#{noteable.title}+}**"
+          to eq "changed title from **{-Old title-}** to **{+#{noteable.title}+}**"
       end
     end
   end
@@ -264,7 +264,7 @@ describe SystemNoteService, services: true do
       it_behaves_like 'a system note'
 
       it 'sets the note text' do
-        expect(subject.note).to eq 'Made the issue visible'
+        expect(subject.note).to eq 'made the issue visible to everyone'
       end
     end
   end
@@ -278,7 +278,7 @@ describe SystemNoteService, services: true do
 
     context 'when target branch name changed' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Target branch changed from `#{old_branch}` to `#{new_branch}`"
+        expect(subject.note).to eq "changed target branch from `#{old_branch}` to `#{new_branch}`"
       end
     end
   end
@@ -290,7 +290,7 @@ describe SystemNoteService, services: true do
 
     context 'when source branch deleted' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Deleted source branch `feature`"
+        expect(subject.note).to eq "deleted source branch `feature`"
       end
     end
   end
@@ -302,7 +302,7 @@ describe SystemNoteService, services: true do
 
     context 'when a branch is created from the new branch button' do
       it 'sets the note text' do
-        expect(subject.note).to match /\AStarted branch [`1-mepmep`]/
+        expect(subject.note).to match /\Acreated branch [`1-mepmep`]/
       end
     end
   end
@@ -338,13 +338,13 @@ describe SystemNoteService, services: true do
             let(:mentioner) { project2.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "Mentioned in commit #{mentioner.to_reference(project)}"
+              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference(project)}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "Mentioned in issue #{mentioner.to_reference(project)}"
+              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference(project)}"
             end
           end
         end
@@ -354,13 +354,13 @@ describe SystemNoteService, services: true do
             let(:mentioner) { project.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "Mentioned in commit #{mentioner.to_reference}"
+              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "Mentioned in issue #{mentioner.to_reference}"
+              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference}"
             end
           end
         end
@@ -370,7 +370,11 @@ describe SystemNoteService, services: true do
 
   describe '.cross_reference?' do
     it 'is truthy when text begins with expected text' do
-      expect(described_class.cross_reference?('Mentioned in something')).to be_truthy
+      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
+    end
+
+    it 'is truthy when text begins with legacy capitalized expected text' do
+      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
     end
 
     it 'is falsey when text does not begin with expected text' do
@@ -433,6 +437,19 @@ describe SystemNoteService, services: true do
         expect(described_class.cross_reference_exists?(noteable, commit1)).
           to be_falsey
       end
+
+      context 'legacy capitalized cross reference' do
+        before do
+          # Mention issue (noteable) from commit0
+          system_note = described_class.cross_reference(noteable, commit0, author)
+          system_note.update(note: system_note.note.capitalize)
+        end
+
+        it 'is truthy when already mentioned' do
+          expect(described_class.cross_reference_exists?(noteable, commit0)).
+            to be_truthy
+        end
+      end
     end
 
     context 'commit from commit' do
@@ -450,6 +467,19 @@ describe SystemNoteService, services: true do
         expect(described_class.cross_reference_exists?(commit1, commit0)).
           to be_falsey
       end
+
+      context 'legacy capitalized cross reference' do
+        before do
+          # Mention commit1 from commit0
+          system_note = described_class.cross_reference(commit0, commit1, author)
+          system_note.update(note: system_note.note.capitalize)
+        end
+
+        it 'is truthy when already mentioned' do
+          expect(described_class.cross_reference_exists?(commit0, commit1)).
+            to be_truthy
+        end
+      end
     end
 
     context 'commit with cross-reference from fork' do
@@ -464,6 +494,18 @@ describe SystemNoteService, services: true do
       it 'is true when a fork mentions an external issue' do
         expect(described_class.cross_reference_exists?(noteable, commit2)).
             to be true
+      end
+
+      context 'legacy capitalized cross reference' do
+        before do
+          system_note = described_class.cross_reference(noteable, commit0, author2)
+          system_note.update(note: system_note.note.capitalize)
+        end
+
+        it 'is true when a fork mentions an external issue' do
+          expect(described_class.cross_reference_exists?(noteable, commit2)).
+              to be true
+        end
       end
     end
   end
@@ -498,7 +540,7 @@ describe SystemNoteService, services: true do
       it_behaves_like 'cross project mentionable'
 
       it 'notifies about noteable being moved to' do
-        expect(subject.note).to match /Moved to/
+        expect(subject.note).to match /moved to/
       end
     end
 
@@ -508,7 +550,7 @@ describe SystemNoteService, services: true do
       it_behaves_like 'cross project mentionable'
 
       it 'notifies about noteable being moved from' do
-        expect(subject.note).to match /Moved from/
+        expect(subject.note).to match /moved from/
       end
     end
 
