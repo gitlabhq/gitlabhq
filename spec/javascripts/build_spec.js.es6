@@ -20,13 +20,13 @@ describe('Build', () => {
 
   fixture.preload('builds/build-with-artifacts.html.raw');
 
-  beforeEach(function () {
+  beforeEach(() => {
     fixture.load('builds/build-with-artifacts.html.raw');
     spyOn($, 'ajax');
   });
 
   describe('constructor', () => {
-    beforeEach(function () {
+    beforeEach(() => {
       jasmine.clock().install();
     });
 
@@ -34,7 +34,7 @@ describe('Build', () => {
       jasmine.clock().uninstall();
     });
 
-    describe('setup', function () {
+    describe('setup', () => {
       beforeEach(function () {
         this.build = new Build();
       });
@@ -47,17 +47,17 @@ describe('Build', () => {
         expect(this.build.state).toBe(INITIAL_BUILD_TRACE_STATE);
       });
 
-      it('only shows the jobs matching the current stage', function () {
+      it('only shows the jobs matching the current stage', () => {
         expect($('.build-job[data-stage="build"]').is(':visible')).toBe(false);
         expect($('.build-job[data-stage="test"]').is(':visible')).toBe(true);
         expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
       });
 
-      it('selects the current stage in the build dropdown menu', function () {
+      it('selects the current stage in the build dropdown menu', () => {
         expect($('.stage-selection').text()).toBe('test');
       });
 
-      it('updates the jobs when the build dropdown changes', function () {
+      it('updates the jobs when the build dropdown changes', () => {
         $('.stage-item:contains("build")').click();
 
         expect($('.stage-selection').text()).toBe('build');
@@ -66,18 +66,18 @@ describe('Build', () => {
         expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
       });
 
-      it('displays the remove date correctly', function () {
+      it('displays the remove date correctly', () => {
         const removeDateElement = document.querySelector('.js-artifacts-remove');
         expect(removeDateElement.innerText.trim()).toBe('1 year');
       });
     });
 
-    describe('initial build trace', function () {
-      beforeEach(function () {
+    describe('initial build trace', () => {
+      beforeEach(() => {
         new Build();
       });
 
-      it('displays the initial build trace', function () {
+      it('displays the initial build trace', () => {
         expect($.ajax.calls.count()).toBe(1);
         const [{ url, dataType, success, context }] = $.ajax.calls.argsFor(0);
         expect(url).toBe(`${BUILD_URL}.json`);
@@ -89,7 +89,7 @@ describe('Build', () => {
         expect($('#build-trace .js-build-output').text()).toMatch(/Example/);
       });
 
-      it('removes the spinner', function () {
+      it('removes the spinner', () => {
         const [{ success, context }] = $.ajax.calls.argsFor(0);
         success.call(context, { trace_html: '<span>Example</span>', status: 'success' });
 
@@ -97,7 +97,7 @@ describe('Build', () => {
       });
     });
 
-    describe('running build', function () {
+    describe('running build', () => {
       beforeEach(function () {
         $('.js-build-options').data('buildStatus', 'running');
         this.build = new Build();
@@ -144,7 +144,7 @@ describe('Build', () => {
         expect(this.build.state).toBe('finalstate');
       });
 
-      it('replaces the entire build trace', function () {
+      it('replaces the entire build trace', () => {
         jasmine.clock().tick(4001);
         let [{ success, context }] = $.ajax.calls.argsFor(1);
         success.call(context, {
@@ -167,7 +167,7 @@ describe('Build', () => {
         expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
       });
 
-      it('reloads the page when the build is done', function () {
+      it('reloads the page when the build is done', () => {
         spyOn(Turbolinks, 'visit');
 
         jasmine.clock().tick(4001);
