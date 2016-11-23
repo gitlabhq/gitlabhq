@@ -62,9 +62,11 @@
       this.state.events = this.decorateEvents(events);
     },
     decorateEvents(events) {
-      const newEvents = events;
+      const newEvents = [];
 
-      newEvents.forEach((item) => {
+      events.forEach((item) => {
+        if (!item) return;
+
         item.totalTime = item.total_time;
         item.author.webUrl = item.author.web_url;
         item.author.avatarUrl = item.author.avatar_url;
@@ -79,6 +81,8 @@
         delete item.created_at;
         delete item.short_sha;
         delete item.commit_url;
+
+        newEvents.push(item);
       });
 
       return newEvents;
