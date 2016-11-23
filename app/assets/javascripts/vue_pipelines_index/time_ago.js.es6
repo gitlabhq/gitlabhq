@@ -11,39 +11,6 @@
       },
     },
     methods: {
-      formatSection(section) {
-        if (`${section}`.split('').length <= 1) return `0${section}`;
-        return `${section}`;
-      },
-      hours(date) {
-        return this.formatSection(date.getHours());
-      },
-      minutes(date) {
-        return this.formatSection(date.getMinutes());
-      },
-      seconds(date) {
-        return this.formatSection(date.getSeconds());
-      },
-      finishdate() {
-        const date = new Date(
-          new Date(
-            this.pipeline.details.finished_at
-          ).getTime() - new Date(
-            this.pipeline.created_at
-          ).getTime()
-        );
-        return (
-          `${this.hours(date)}:${this.minutes(date)}:${this.seconds(date)}`
-        );
-      },
-      runningdate() {
-        const date = new Date(
-          new Date().getTime() - new Date(this.pipeline.created_at).getTime()
-        );
-        return (
-          `${this.hours(date)}:${this.minutes(date)}:${this.seconds(date)}`
-        );
-      },
       timeStopped() {
         const options = {
           weekday: 'long',
@@ -63,8 +30,6 @@
         };
       },
       duration() {
-        // if (this.timeStopped()) return this.finishdate();
-        // return this.runningdate();
         const { duration } = this.pipeline.details;
         if (duration === 0) return '00:00:00';
         if (duration !== null) return duration;
