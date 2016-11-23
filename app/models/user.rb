@@ -926,7 +926,7 @@ class User < ActiveRecord::Base
   # Returns a union query of projects that the user is authorized to access
   def project_authorizations_union
     relations = [
-      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::OWNER} AS access_level"),
+      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
       groups_projects.select_for_project_authorization,
       projects.select_for_project_authorization,
       groups.joins(:shared_projects).select_for_project_authorization

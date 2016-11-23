@@ -27,6 +27,7 @@ class Namespace < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   after_update :move_dir, if: :path_changed?
+  after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   # Save the storage paths before the projects are destroyed to use them on after destroy
   before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
@@ -174,5 +175,12 @@ class Namespace < ActiveRecord::Base
         GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
       end
     end
+  end
+
+  def refresh_access_of_projects_invited_groups
+    Group.
+      joins(project_group_links: :project).
+      where(projects: { namespace_id: id }).
+      find_each(&:refresh_members_authorized_projects)
   end
 end

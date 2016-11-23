@@ -37,7 +37,7 @@ describe ProjectTeam, models: true do
 
   context 'group project' do
     let(:group) { create(:group) }
-    let(:project) { create(:empty_project, group: group) }
+    let!(:project) { create(:empty_project, group: group) }
 
     before do
       group.add_master(master)
@@ -118,7 +118,7 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group) }
-      let(:project) { create(:empty_project, group: group) }
+      let!(:project) { create(:empty_project, group: group) }
 
       it 'returns project members' do
         group_member = create(:group_member, group: group)
@@ -178,9 +178,9 @@ describe ProjectTeam, models: true do
     it 'returns Master role' do
       user = create(:user)
       group = create(:group)
-      group.add_master(user)
+      project = create(:empty_project, namespace: group)
 
-      project = build_stubbed(:empty_project, namespace: group)
+      group.add_master(user)
 
       expect(project.team.human_max_access(user.id)).to eq 'Master'
     end
@@ -188,9 +188,9 @@ describe ProjectTeam, models: true do
     it 'returns Owner role' do
       user = create(:user)
       group = create(:group)
-      group.add_owner(user)
+      project = create(:empty_project, namespace: group)
 
-      project = build_stubbed(:empty_project, namespace: group)
+      group.add_owner(user)
 
       expect(project.team.human_max_access(user.id)).to eq 'Owner'
     end
@@ -244,7 +244,7 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group, :access_requestable) }
-      let(:project) { create(:empty_project, group: group) }
+      let!(:project) { create(:empty_project, group: group) }
 
       before do
         group.add_master(master)
@@ -258,6 +258,57 @@ describe ProjectTeam, models: true do
       it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
       it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
       it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
+    end
+  end
+
+  describe '#member?' do
+    let(:group) { create(:group) }
+    let(:developer) { create(:user) }
+    let(:master) { create(:user) }
+    let(:personal_project) { create(:project, namespace: developer.namespace) }
+    let(:group_project) { create(:project, namespace: group) }
+    let(:members_project) { create(:project) }
+    let(:shared_project) { create(:project) }
+
+    before do
+      group.add_master(master)
+      group.add_developer(developer)
+
+      members_project.team << [developer, :developer]
+      members_project.team << [master, :master]
+
+      create(:project_group_link, project: shared_project, group: group)
+    end
+
+    it 'returns false for no user' do
+      expect(personal_project.team.member?(nil)).to be(false)
+    end
+
+    it 'returns true for personal projects of the user' do
+      expect(personal_project.team.member?(developer)).to be(true)
+    end
+
+    it 'returns true for projects of groups the user is a member of' do
+      expect(group_project.team.member?(developer)).to be(true)
+    end
+
+    it 'returns true for projects for which the user is a member of' do
+      expect(members_project.team.member?(developer)).to be(true)
+    end
+
+    it 'returns true for projects shared on a group the user is a member of' do
+      expect(shared_project.team.member?(developer)).to be(true)
+    end
+
+    it 'checks for the correct minimum level access' do
+      expect(group_project.team.member?(developer, Gitlab::Access::MASTER)).to be(false)
+      expect(group_project.team.member?(master, Gitlab::Access::MASTER)).to be(true)
+      expect(members_project.team.member?(developer, Gitlab::Access::MASTER)).to be(false)
+      expect(members_project.team.member?(master, Gitlab::Access::MASTER)).to be(true)
+      expect(shared_project.team.member?(developer, Gitlab::Access::MASTER)).to be(false)
+      expect(shared_project.team.member?(master, Gitlab::Access::MASTER)).to be(false)
+      expect(shared_project.team.member?(developer, Gitlab::Access::DEVELOPER)).to be(true)
+      expect(shared_project.team.member?(master, Gitlab::Access::DEVELOPER)).to be(true)
     end
   end
 
