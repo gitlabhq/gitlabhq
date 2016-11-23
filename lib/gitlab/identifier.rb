@@ -24,7 +24,7 @@ module Gitlab
       email = commit.author_email
 
       identify_with_cache(:email, email) do
-        User.find_by(email: email)
+        User.find_by_any_email(email)
       end
     end
 
