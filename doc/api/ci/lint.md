@@ -1,5 +1,10 @@
 # Validate the .gitlab-ci.yml
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 > [Introduced][ce-5953] in GitLab 8.12.
 
 Checks if your .gitlab-ci.yml file is valid.

@@ -1,5 +1,10 @@
 # Runners API
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 API used by Runners to register and delete themselves.
 
 >**Note:**

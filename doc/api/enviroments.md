@@ -1,5 +1,10 @@
 # Environments
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 ## List environments
 
 Get all environments for a given project.

@@ -1,5 +1,10 @@
 # GitLab API
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 Automate GitLab via a simple and powerful API. All definitions can be found
 under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 

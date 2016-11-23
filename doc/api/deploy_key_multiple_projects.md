@@ -1,5 +1,10 @@
 # Adding deploy keys to multiple projects
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 If you want to easily add the same deploy key to multiple projects in the same
 group, this can be achieved quite easily with the API.
 

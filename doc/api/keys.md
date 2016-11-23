@@ -1,5 +1,10 @@
 # Keys
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 ## Get SSH key with user by ID of an SSH key
 
 Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID of an SSH key.

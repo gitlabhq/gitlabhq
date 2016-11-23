@@ -1,5 +1,10 @@
 # GitLab CI API
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 ## Purpose
 
 The main purpose of GitLab CI API is to provide the necessary data and context

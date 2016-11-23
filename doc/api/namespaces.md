@@ -1,5 +1,10 @@
 # Namespaces
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 Usernames and groupnames fall under a special category called namespaces.
 
 For users and groups supported API calls see the [users](users.md) and

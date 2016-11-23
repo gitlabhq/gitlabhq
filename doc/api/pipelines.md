@@ -1,5 +1,10 @@
 # Pipelines API
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 ## List project pipelines
 
 > [Introduced][ce-5837] in GitLab 8.11

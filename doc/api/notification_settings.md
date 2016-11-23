@@ -1,5 +1,10 @@
 # Notification settings
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 >**Note:** This feature was [introduced][ce-5632] in GitLab 8.12.
 
 **Valid notification levels**

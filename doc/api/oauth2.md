@@ -1,5 +1,10 @@
 # GitLab as an OAuth2 provider
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 This document covers using the OAuth2 protocol to access GitLab.
 
 If you want GitLab to be an OAuth authentication service provider to sign into other services please see the [Oauth2 provider documentation](../integration/oauth_provider.md).

@@ -1,5 +1,10 @@
 # Session
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
 ## Deprecation Notice
 
 1. Starting in GitLab 8.11, this feature has been *disabled* for users with two-factor authentication turned on.

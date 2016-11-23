@@ -1,5 +1,10 @@
 # Group and project access requests
 
+>**Note:**
+The `https://gitlab.example.com` URL that is presented in the examples of the
+API docs is fictional. Replace it with the URL of your GitLab instance,
+or in case of GitLab.com, use `https://gitlab.com`.
+
  >**Note:** This feature was introduced in GitLab 8.11
 
  **Valid access levels**
