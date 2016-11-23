@@ -1,12 +1,13 @@
+/* eslint-disable no-param-reassign */
+/* global Vue */
+/* global EnvironmentsService */
+
 //= require vue
 //= require vue-resource
 //= require_tree ../services/
 //= require ./environment_item
 
-/* globals Vue, EnvironmentsService */
-/* eslint-disable no-param-reassign */
-
-(() => { // eslint-disable-line
+(() => {
   window.gl = window.gl || {};
 
   /**

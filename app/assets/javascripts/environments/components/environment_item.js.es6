@@ -6,7 +6,8 @@
 /*= require ./environment_stop */
 /*= require ./environment_rollback */
 
-/* globals Vue, timeago */
+/* global Vue */
+/* global timeago */
 
 (() => {
   /**
