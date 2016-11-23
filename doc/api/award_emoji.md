@@ -5,7 +5,7 @@ The `https://gitlab.example.com` URL that is presented in the examples of the
 API docs is fictional. Replace it with the URL of your GitLab instance,
 or in case of GitLab.com, use `https://gitlab.com`.
 
-> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
+>[Introduced][ce-4575] in GitLab 8.9, snippet support in 8.12.
 
 
 An awarded emoji tells a thousand words, and can be awarded on issues, merge

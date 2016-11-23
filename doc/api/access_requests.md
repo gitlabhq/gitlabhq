@@ -5,11 +5,11 @@ The `https://gitlab.example.com` URL that is presented in the examples of the
 API docs is fictional. Replace it with the URL of your GitLab instance,
 or in case of GitLab.com, use `https://gitlab.com`.
 
- >**Note:** This feature was introduced in GitLab 8.11
+>Introduced in GitLab 8.11.
 
- **Valid access levels**
+**Valid access levels**
 
- The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
+The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
 ```
 10 => Guest access

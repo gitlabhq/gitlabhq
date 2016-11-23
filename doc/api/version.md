@@ -5,7 +5,7 @@ The `https://gitlab.example.com` URL that is presented in the examples of the
 API docs is fictional. Replace it with the URL of your GitLab instance,
 or in case of GitLab.com, use `https://gitlab.com`.
 
->**Note:** This feature was introduced in GitLab 8.13
+>Introduced in GitLab 8.13.
 
 Retrieve version information for this GitLab instance. Responds `200 OK` for
 authenticated users.
