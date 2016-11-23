@@ -39,7 +39,8 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: "Set a password on your account<br>to pull or push via #{protocol}"
+        title: "Set a password on your account<br>to pull or push via #{protocol}",
+        primary_url: (project.geo_primary_http_url_to_repo if Gitlab::Geo.secondary?)
       }
   end
 
@@ -71,5 +72,15 @@ module ButtonHelper
         container: 'body',
         title: 'Get a Kerberos token for your<br>account with kinit.'
       }
+  end
+
+  def geo_button
+    data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }
+    content_tag :button,
+                icon('globe'),
+                class: 'btn btn-geo',
+                data: data,
+                type: :button,
+                title: 'See Geo-specific instructions'
   end
 end

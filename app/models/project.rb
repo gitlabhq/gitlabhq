@@ -16,6 +16,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   prepend EE::GeoAwareAvatar
+  include EE::Project
 
   extend Gitlab::ConfigHelper
 

@@ -23,6 +23,7 @@
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn
     = clipboard_button(clipboard_target: '#project_clone')
+    = geo_button if Gitlab::Geo.secondary?
 
 :javascript
   $('ul.clone-options-dropdown a').on('click',function(e){
@@ -30,4 +31,10 @@
     var $this = $(this);
     $('a.clone-dropdown-btn span').text($this.text());
     $('#project_clone').val($this.attr('href'));
+    if (gl.GeoCloneDialog) {
+      gl.GeoCloneDialog.cloneUrlSecondary = $this.attr('href');
+      gl.GeoCloneDialog.cloneUrlPrimary = $this.attr('data-primary-url');
+    }
   });
+
+= render partial: 'shared/geo_info_modal', locals: {project: project} if Gitlab::Geo.secondary?
