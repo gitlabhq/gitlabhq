@@ -41,9 +41,19 @@ module API
 
           if event['action'] == 'push' and !!event['target']['tag']
             namespace, container_image_name = ContainerImage::split_namespace(repository)
-            ::ContainerImagesRepositories::ContainerImages::PushService.new(
-              Project::find_with_namespace(namespace), current_user
-                ).execute(container_image_name, event)
+            project = Project::find_with_namespace(namespace)
+
+            if project
+              container_image = project.container_images.find_or_create_by(name: container_image_name)
+
+              if container_image.valid?
+                puts('Valid!')
+              else
+                render_api_error!({ error: "Failed to create container image!" }, 400)
+              end
+            else
+              not_found!('Project')
+            end
           end
         end
       end

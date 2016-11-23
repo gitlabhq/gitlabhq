@@ -5,17 +5,22 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   layout 'project'
 
   def index
-    @tags = container_registry_repository.tags
+    @images = project.container_images
   end
 
   def destroy
     url = namespace_project_container_registry_index_path(project.namespace, project)
 
-    if tag.delete
-      redirect_to url
+    if tag
+      delete_tag(url)
     else
-      redirect_to url, alert: 'Failed to remove tag'
+      if image.destroy
+        redirect_to url
+      else
+        redirect_to url, alert: 'Failed to remove image'
+      end
     end
+
   end
 
   private
@@ -24,11 +29,20 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
     render_404 unless Gitlab.config.registry.enabled
   end
 
-  def container_registry_repository
-    @container_registry_repository ||= project.container_registry_repository
+  def delete_tag(url)
+    if tag.delete
+      image.destroy if image.tags.empty?
+      redirect_to url
+    else
+      redirect_to url, alert: 'Failed to remove tag'
+    end
+  end
+
+  def image
+    @image ||= project.container_images.find_by(id: params[:id])
   end
 
   def tag
-    @tag ||= container_registry_repository.tag(params[:id])
+    @tag ||= image.tag(params[:tag]) if params[:tag].present?
   end
 end

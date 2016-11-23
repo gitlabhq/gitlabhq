@@ -157,7 +157,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
-  has_one :container_images_repository, dependent: :destroy
+  has_many :container_images, dependent: :destroy
 
   has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
@@ -405,15 +405,19 @@ class Project < ActiveRecord::Base
     path_with_namespace.downcase
   end
 
-  def container_registry_repository
+  def container_registry_allowed_paths
+    @container_registry_allowed_paths ||= [container_registry_path_with_namespace] +
+      container_images.map { |i| i.name_with_namespace }
+  end
+
+  def container_registry
     return unless Gitlab.config.registry.enabled
 
-    @container_registry_repository ||= begin
-      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_path_with_namespace)
+    @container_registry ||= begin
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_allowed_paths)
       url = Gitlab.config.registry.api_url
       host_port = Gitlab.config.registry.host_port
-      registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
-      registry.repository(container_registry_path_with_namespace)
+      ContainerRegistry::Registry.new(url, token: token, path: host_port)
     end
   end
 
@@ -424,9 +428,9 @@ class Project < ActiveRecord::Base
   end
 
   def has_container_registry_tags?
-    return unless container_registry_repository
+    return unless container_images
 
-    container_registry_repository.tags.any?
+    container_images.first.tags.any?
   end
 
   def commit(ref = 'HEAD')

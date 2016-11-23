@@ -25,7 +25,7 @@ class CreateContainerImage < ActiveRecord::Migration
 
   def change
     create_table :container_images do |t|
-      t.integer :container_images_repository_id
+      t.integer :project_id
       t.string :name
     end
   end

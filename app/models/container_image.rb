@@ -1,23 +1,28 @@
 class ContainerImage < ActiveRecord::Base
-  belongs_to :container_images_repository
+  belongs_to :project
 
-  delegate :registry, :registry_path_with_namespace, :client, to: :container_images_repository
+  delegate :container_registry, :container_registry_allowed_paths,
+    :container_registry_path_with_namespace, to: :project
+
+  delegate :client, to: :container_registry
 
   validates :manifest, presence: true
 
+  before_destroy :delete_tags
+
   before_validation :update_token, on: :create
   def update_token
-    paths = container_images_repository.allowed_paths << name_with_namespace
+    paths = container_registry_allowed_paths << name_with_namespace
     token = Auth::ContainerRegistryAuthenticationService.full_access_token(paths)
     client.update_token(token)
   end
 
   def path
-    [registry.path, name_with_namespace].compact.join('/')
+    [container_registry.path, name_with_namespace].compact.join('/')
   end
 
   def name_with_namespace
-    [registry_path_with_namespace, name].compact.join('/')
+    [container_registry_path_with_namespace, name].compact.join('/')
   end
 
   def tag(tag)
@@ -44,7 +49,10 @@ class ContainerImage < ActiveRecord::Base
   def delete_tags
     return unless tags
 
-    tags.all?(&:delete)
+    digests = tags.map {|tag| tag.digest }.to_set
+    digests.all? do |digest|
+      client.delete_repository_tag(name_with_namespace, digest)
+    end
   end
 
   def self.split_namespace(full_path)

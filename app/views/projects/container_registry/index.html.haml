@@ -19,21 +19,9 @@
         %br
         docker push #{escape_once(@project.container_registry_repository_url)}
 
-  - if @tags.blank?
-    %li
-      .nothing-here-block No images in Container Registry for this project.
+  - if @images.blank?
+    .nothing-here-block No container images in Container Registry for this project.
 
   - else
-    .table-holder
-      %table.table.tags
-        %thead
-          %tr
-            %th Name
-            %th Image ID
-            %th Size
-            %th Created
-            - if can?(current_user, :update_container_image, @project)
-              %th
-
-        - @tags.each do |tag|
-          = render 'tag', tag: tag
+    - @images.each do |image|
+      = render 'image', image: image

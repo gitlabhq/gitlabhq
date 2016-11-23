@@ -1,0 +1,35 @@
+- expanded = false
+.container-image.js-toggle-container
+  .container-image-head
+    = link_to "#", class: "js-toggle-button" do
+      - if expanded
+        = icon("chevron-up")
+      - else
+        = icon("chevron-down")
+
+      = escape_once(image.name)
+      = clipboard_button(clipboard_text: "docker pull #{image.path}")
+    .controls.hidden-xs.pull-right
+      = link_to namespace_project_container_registry_path(@project.namespace, @project, image.id), class: 'btn btn-remove has-tooltip', title: "Remove", data: { confirm: "Are you sure?" }, method: :delete do
+        = icon("trash cred")
+
+
+  .container-image-tags.js-toggle-content{ class: ("hide" unless expanded) }
+    - if image.tags.blank?
+      %li
+        .nothing-here-block No tags in Container Registry for this container image.
+
+    - else
+      .table-holder
+        %table.table.tags
+          %thead
+            %tr
+              %th Name
+              %th Image ID
+              %th Size
+              %th Created
+              - if can?(current_user, :update_container_image, @project)
+                %th
+
+          - image.tags.each do |tag|
+            = render 'tag', tag: tag
