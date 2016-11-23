@@ -92,13 +92,14 @@ describe API::API, api: true  do
       expect(json_response['description']).to be_nil
     end
 
-    it 'creates a new project milestone with description and due date' do
+    it 'creates a new project milestone with description and dates' do
       post api("/projects/#{project.id}/milestones", user),
-        title: 'new milestone', description: 'release', due_date: '2013-03-02'
+        title: 'new milestone', description: 'release', due_date: '2013-03-02', start_date: '2013-02-02'
 
       expect(response).to have_http_status(201)
       expect(json_response['description']).to eq('release')
       expect(json_response['due_date']).to eq('2013-03-02')
+      expect(json_response['start_date']).to eq('2013-02-02')
     end
 
     it 'returns a 400 error if title is missing' do
