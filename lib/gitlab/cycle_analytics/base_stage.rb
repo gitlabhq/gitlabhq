@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def events
-        event_class.new(fetcher: @fetcher, stage: @stage).fetch
+        event_class.new(fetcher: @fetcher, stage: @stage, options: @options).fetch
       end
 
       def median_data

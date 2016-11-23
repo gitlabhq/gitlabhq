@@ -7,7 +7,7 @@ class CycleAnalytics
   end
 
   def summary
-    @summary ||= Gitlab::CycleAnalytics::Summary.new(@project, from: @options[:from]).data
+    @summary ||= ::Gitlab::CycleAnalytics::StageSummary.new(@project, from: @options[:from]).data
   end
 
   def stats
@@ -15,23 +15,26 @@ class CycleAnalytics
   end
 
   def no_stats?
-    stats.map(&:value).compact.empty?
+    stats.map { |hash| hash[:value] }.compact.empty?
   end
 
   def permissions(user:)
     Gitlab::CycleAnalytics::Permissions.get(user: user, project: @project)
   end
 
+  def events_for(stage)
+    classify_stage(stage).new(project: @project, options: @options, stage: stage).events
+  end
+
   private
 
   def stats_per_stage
     STAGES.map do |stage_name|
-      classify_stage(method_sym).new(project: @project, options: @options, stage: stage_name).median_data
+      classify_stage(stage_name).new(project: @project, options: @options, stage: stage_name).median_data
     end
   end
 
   def classify_stage(stage_name)
     "Gitlab::CycleAnalytics::#{stage_name.to_s.capitalize}Stage".constantize
   end
-
 end

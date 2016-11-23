@@ -8,7 +8,7 @@ module Gitlab
         end
 
         def title
-          self.name
+          self.class.name.demodulize
         end
 
         def value

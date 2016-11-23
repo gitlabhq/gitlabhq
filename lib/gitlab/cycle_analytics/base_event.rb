@@ -5,10 +5,11 @@ module Gitlab
 
       attr_reader :stage, :start_time_attrs, :end_time_attrs, :projections, :query
 
-      def initialize(fetcher:, stage:)
+      def initialize(fetcher:, stage:, options:)
         @query = EventsQuery.new(fetcher: fetcher)
         @project = fetcher.project
         @stage = stage
+        @options = options
       end
 
       def fetch

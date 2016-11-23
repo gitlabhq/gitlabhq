@@ -1,7 +1,13 @@
 require 'spec_helper'
 
 shared_examples 'default query config' do
-  let(:event) { described_class.new(project: double, options: {}) }
+  let(:fetcher) do
+    Gitlab::CycleAnalytics::MetricsFetcher.new(project: create(:empty_project),
+                                               from: 1.day.ago,
+                                               branch: nil)
+  end
+
+  let(:event) { described_class.new(fetcher: fetcher, stage: stage_name, options: {}) }
 
   it 'has the start attributes' do
     expect(event.start_time_attrs).not_to be_nil

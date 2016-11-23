@@ -1,8 +1,8 @@
 module CycleAnalyticsParams
   extend ActiveSupport::Concern
 
-  def options
-    @options ||= { from: start_date(events_params), current_user: current_user }
+  def options(params)
+    @options ||= { from: start_date(params), current_user: current_user }
   end
 
   def start_date(params)

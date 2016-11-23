@@ -9,46 +9,46 @@ module Projects
       before_action :authorize_read_merge_request!, only: [:code, :review]
 
       def issue
-        render_events(events.issue_events)
+        render_events(cycle_analytics.events_for(:issue))
       end
     
       def plan
-        render_events(events.plan_events)
+        render_events(cycle_analytics.events_for(:plan))
       end
     
       def code
-        render_events(events.code_events)
+        render_events(cycle_analytics.events_for(:code))
       end
     
       def test
-        options[:branch] = events_params[:branch_name]
+        options(events_params)[:branch] = events_params[:branch_name]
     
-        render_events(events.test_events)
+        render_events(cycle_analytics.events_for(:test))
       end
     
       def review
-        render_events(events.review_events)
+        render_events(cycle_analytics.events_for(:review))
       end
     
       def staging
-        render_events(events.staging_events)
+        render_events(cycle_analytics.events_for(:staging))
       end
     
       def production
-        render_events(events.production_events)
+        render_events(cycle_analytics.events_for(:production))
       end
     
       private
-    
-      def render_events(events_list)
+
+      def render_events(events)
         respond_to do |format|
           format.html
-          format.json { render json: { events: events_list } }
+          format.json { render json: { events: events } }
         end
       end
     
-      def events
-        @events ||= Gitlab::CycleAnalytics::Events.new(project: project, options: options)
+      def cycle_analytics
+        @cycle_analytics ||= ::CycleAnalytics.new(project, options: options(events_params))
       end
     
       def events_params

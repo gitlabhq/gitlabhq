@@ -1,8 +1,6 @@
 module Gitlab
   module CycleAnalytics
-    module Summary
-      extend self
-
+    class StageSummary
       def initialize(project, from:)
         @project = project
         @from = from

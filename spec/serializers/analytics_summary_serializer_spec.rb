@@ -8,10 +8,10 @@ describe AnalyticsSummarySerializer do
 
   let(:json) { serializer.as_json }
   let(:project) { create(:empty_project) }
-  let(:resource) { Gitlab::CycleAnalytics::Summary::Issue.new(project: double, from: 1.day.ago) }
+  let(:resource) { Gitlab::CycleAnalytics::StageSummary::Issue.new(project: double, from: 1.day.ago) }
 
   before do
-    allow_any_instance_of(Gitlab::CycleAnalytics::Summary::Issue).to receive(:value).and_return(1.12)
+    allow_any_instance_of(Gitlab::CycleAnalytics::StageSummary::Issue).to receive(:value).and_return(1.12)
   end
 
   it 'it generates payload for single object' do
