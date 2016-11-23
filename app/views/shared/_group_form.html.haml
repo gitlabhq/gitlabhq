@@ -13,7 +13,7 @@
       .input-group-addon
         = root_url
       = f.text_field :path, placeholder: 'open-source', class: 'form-control',
-        autofocus: local_assigns[:autofocus] || false,  pattern: "[a-zA-Z0-9-_]+",
+        autofocus: local_assigns[:autofocus] || false,  pattern: "[a-zA-Z0-9-_\\.]+",
         required: true, title: 'Please choose a group name with no special characters.'
 
     - if @group.persisted?
