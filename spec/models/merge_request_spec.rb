@@ -252,7 +252,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe 'detection of issues to be closed' do
+  describe 'detection of issues' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
 
@@ -265,29 +265,44 @@ describe MergeRequest, models: true do
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
-    it 'accesses the set of issues that will be closed on acceptance' do
+    describe 'detection of issues to be closed' do
+      it 'accesses the set of issues that will be closed on acceptance' do
+        allow(subject.project).to receive(:default_branch).
+          and_return(subject.target_branch)
+
+        closed = subject.closes_issues
+
+        expect(closed).to include(issue0, issue1)
+      end
+
+      it 'only lists issues as to be closed if it targets the default branch' do
+        allow(subject.project).to receive(:default_branch).and_return('master')
+        subject.target_branch = 'something-else'
+
+        expect(subject.closes_issues).to be_empty
+      end
+
+      it 'detects issues mentioned in the description' do
+        issue2 = create(:issue, project: subject.project)
+
+        subject.description = "Closes #{issue2.to_reference}"
+
+        allow(subject.project).to receive(:default_branch).
+          and_return(subject.target_branch)
+
+        expect(subject.closes_issues).to include(issue2)
+      end
+    end
+
+    it 'detects issues mentioned but not closed' do
+      mentioned_issue = create(:issue, project: subject.project)
+
+      subject.description = "Is related to #{mentioned_issue.to_reference}"
+
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      closed = subject.closes_issues
-
-      expect(closed).to include(issue0, issue1)
-    end
-
-    it 'only lists issues as to be closed if it targets the default branch' do
-      allow(subject.project).to receive(:default_branch).and_return('master')
-      subject.target_branch = 'something-else'
-
-      expect(subject.closes_issues).to be_empty
-    end
-
-    it 'detects issues mentioned in the description' do
-      issue2 = create(:issue, project: subject.project)
-      subject.description = "Closes #{issue2.to_reference}"
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
-
-      expect(subject.closes_issues).to include(issue2)
+      expect(subject.issues_mentioned_but_not_closing).to match_array([mentioned_issue])
     end
   end
 

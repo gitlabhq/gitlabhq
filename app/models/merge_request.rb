@@ -568,6 +568,22 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def issues_mentioned_but_not_closing(current_user = self.author)
+    issues = []
+
+    if target_branch == project.default_branch
+      messages = [description]
+      messages.concat(commits.map(&:safe_message)) if merge_request_diff
+
+      ext = Gitlab::ReferenceExtractor.new(project, current_user)
+      ext.analyze(messages.join("\n"))
+
+      issues = ext.issues
+    end
+
+    issues - closes_issues
+  end
+
   def target_project_path
     if target_project
       target_project.path_with_namespace
