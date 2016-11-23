@@ -32,6 +32,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   def show
   end
 
+  def builds
+    render 'show'
+  end
+
   def retry
     pipeline.retry_failed(current_user)
 

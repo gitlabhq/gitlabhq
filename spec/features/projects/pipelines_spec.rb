@@ -178,6 +178,13 @@ describe "Pipelines" do
       expect(page).to have_link('Play')
     end
 
+    context 'page tabs' do
+      it 'should have two tabs' do
+        expect(page).to have_link('Pipeline')
+        expect(page).to have_link('Builds')
+      end
+    end
+
     context 'retrying builds' do
       it { expect(page).not_to have_content('retried') }
 

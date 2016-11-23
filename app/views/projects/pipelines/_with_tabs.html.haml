@@ -1,14 +1,17 @@
 .tabs-holder
-  %ul.nav-links.no-top.no-bottom
-    %li.active
-      = link_to "Pipeline", "#js-tab-pipeline", data: { target: '#js-tab-pipeline', action: 'pipeline', toggle: 'tab' }, class: 'pipeline-tab'
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom
     %li
-      = link_to "#js-tab-builds", data: { target: '#js-tab-builds', action: 'build', toggle: 'tab' }, class: 'builds-tab' do
+      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' } do
+        Pipeline
+    %li
+      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' } do
         Builds
         %span.badge= pipeline.statuses.count
 
+
+
 .tab-content
-  #js-tab-pipeline.tab-pane.active
+  #js-tab-pipeline.tab-pane
     .build-content.middle-block.pipeline-graph
       .pipeline-visualization
         %ul.stage-column-list
@@ -49,3 +52,13 @@
             %th
         - pipeline.statuses.relevant.stages.each do |stage|
           = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.relevant.where(stage: stage)
+
+
+:javascript
+  var pipelines_tab;
+
+  pipelines_tab = new window.gl.LinkedTabs({
+    action: "#{controller.action_name}",
+    defaultAction: 'pipelines',
+    parentEl: '.pipelines-tabs'
+  });
