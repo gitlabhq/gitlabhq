@@ -110,23 +110,22 @@
       }
     }
   }
+}
 
-  .member-search-btn {
-    position: absolute;
-    right: 4px;
-    top: 0;
-    height: 35px;
-    padding-left: 10px;
-    padding-right: 10px;
-    color: $gray-darkest;
-    background: transparent;
-    border: 0;
-    outline: 0;
+.member-search-btn {
+  position: absolute;
+  right: 4px;
+  top: 0;
+  height: 35px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: $gray-darkest;
+  background: transparent;
+  border: 0;
+  outline: 0;
 
-    @media (min-width: $screen-sm-min) {
-      right: 160px;
-      top: 8px;
-    }
+  @media (min-width: $screen-sm-min) {
+    right: 160px;
+    top: 8px;
   }
-
 }
