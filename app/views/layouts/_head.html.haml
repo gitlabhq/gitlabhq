@@ -56,5 +56,3 @@
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
   = render 'layouts/bootlint' if Rails.env.development?
-
-  = render 'layouts/user_styles'

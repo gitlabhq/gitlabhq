@@ -347,6 +347,10 @@ class Event < ActiveRecord::Base
       update_all(last_activity_at: created_at)
   end
 
+  def authored_by?(user)
+    user ? author_id == user.id : false
+  end
+
   private
 
   def recent_update?
