@@ -2,6 +2,10 @@ module SharedNote
   include Spinach::DSL
   include WaitForAjax
 
+  after do
+    wait_for_ajax if javascript_test?
+  end
+
   step 'I delete a comment' do
     page.within('.main-notes-list') do
       find('.note').hover

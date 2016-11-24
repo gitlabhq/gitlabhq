@@ -49,6 +49,14 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  def route_not_found
+    if current_user
+      not_found
+    else
+      redirect_to new_user_session_path
+    end
+  end
+
   protected
 
   # This filter handles both private tokens and personal access tokens
