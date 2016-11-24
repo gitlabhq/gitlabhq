@@ -1,7 +1,7 @@
-module Ci
+module EE
   module Model
     def table_name_prefix
-      "ci_"
+      'ee_'
     end
 
     def model_name
