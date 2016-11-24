@@ -10,7 +10,7 @@ To enable the Shibboleth OmniAuth provider you must:
 1. Configure Apache shibboleth module. Installation and configuration of module it self is out of scope of this document.
 Check https://wiki.shibboleth.net/ for more info.
 
-1. You can find Apache config in gitlab-recipes (https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/apache/gitlab-ssl.conf)
+1. You can find Apache config in gitlab-recipes (https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache)
 
 Following changes are needed to enable shibboleth:
 

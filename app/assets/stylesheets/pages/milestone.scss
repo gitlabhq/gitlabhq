@@ -2,13 +2,18 @@
   max-width: 90%;
 }
 
-li.milestone {
-  h4 {
-    font-weight: bold;
-  }
+.milestones {
+  .milestone {
+    padding: 10px 16px;
 
-  .progress {
-    height: 6px;
+    h4 {
+      font-weight: bold;
+    }
+
+    .progress {
+      width: 100%;
+      height: 6px;
+    }
   }
 }
 
@@ -26,26 +31,78 @@ li.milestone {
       margin-right: 7px;
     }
 
-    // Issue title
     span a {
       color: $gl-text-color;
+      word-wrap: break-word;
     }
   }
 }
 
 .milestone-summary {
-  margin-bottom: 25px;
-
   .milestone-stat {
+    white-space: nowrap;
     margin-right: 10px;
+
+    &.with-drilldown {
+      margin-right: 2px;
+    }
   }
 
   .remaining-days {
     color: $orange-light;
   }
+
+  .milestone-stats-and-buttons {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    @media (min-width: $screen-xs-min) {
+      justify-content: space-between;
+      flex-wrap: nowrap;
+    }
+  }
+
+  .milestone-progress-buttons {
+    order: 1;
+    margin-top: 10px;
+
+    @media (min-width: $screen-xs-min) {
+      order: 2;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      float: left;
+      margin-right: $btn-side-margin;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .milestone-stats {
+    order: 2;
+    width: 100%;
+    padding: 7px 0;
+    flex-shrink: 1;
+
+    @media (min-width: $screen-xs-min) {
+      // when displayed on one line stats go first, buttons second
+      order: 1;
+    }
+  }
+
+  .progress {
+    width: 100%;
+    margin: 15px 0;
+  }
 }
 
-.issues-sortable-list, .merge_requests-sortable-list {
+.issues-sortable-list,
+.merge_requests-sortable-list {
   .issuable-detail {
     display: block;
     margin-top: 7px;
@@ -54,6 +111,7 @@ li.milestone {
       color: $gl-placeholder-color;
       margin-right: 5px;
     }
+
     .avatar {
       float: none;
     }
@@ -63,4 +121,62 @@ li.milestone {
 .milestone-detail {
   border-bottom: 1px solid $border-color;
   padding: 20px 0;
+}
+
+@media (max-width: $screen-sm-min) {
+  .milestone-actions {
+    @include clearfix();
+    padding-top: $gl-vert-padding;
+
+    .btn:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.milestone-page-header {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .status-box {
+    margin-top: 0;
+  }
+
+  .milestone-buttons {
+    margin-left: auto;
+  }
+
+  .status-box {
+    order: 1;
+  }
+
+  .milestone-buttons {
+    order: 2;
+  }
+
+  .header-text-content {
+    order: 3;
+    width: 100%;
+  }
+
+  .milestone-buttons .verbose {
+    display: none;
+  }
+
+  @media (min-width: $screen-xs-min) {
+    .milestone-buttons .verbose {
+      display: inline;
+    }
+
+    .header-text-content {
+      order: 2;
+      width: auto;
+    }
+
+    .milestone-buttons {
+      order: 3;
+    }
+  }
 }

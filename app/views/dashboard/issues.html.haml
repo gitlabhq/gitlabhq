@@ -2,13 +2,13 @@
 - header_title  "Issues", issues_dashboard_path(assignee_id: current_user.id)
 = content_for :meta_tags do
   - if current_user
-    = auto_discovery_link_tag(:atom, issues_dashboard_url(format: :atom, private_token: current_user.private_token), title: "#{current_user.name} issues")
+    = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{current_user.name} issues")
 
 .top-area
   = render 'shared/issuable/nav', type: :issues
   .nav-controls
     - if current_user
-      = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
+      = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn' do
         = icon('rss')
         %span.icon-label
           Subscribe

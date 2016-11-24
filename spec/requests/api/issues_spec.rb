@@ -637,7 +637,7 @@ describe API::API, api: true  do
 
     it "sends notifications for subscribers of newly added labels" do
       label = project.labels.first
-      label.toggle_subscription(user2)
+      label.toggle_subscription(user2, project)
 
       perform_enqueued_jobs do
         post api("/projects/#{project.id}/issues", user),
@@ -694,7 +694,7 @@ describe API::API, api: true  do
           title: 'new issue', labels: 'label, label2', created_at: creation_time
 
         expect(response).to have_http_status(201)
-        expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
+        expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
       end
     end
   end
@@ -828,7 +828,7 @@ describe API::API, api: true  do
 
     it "sends notifications for subscribers of newly added labels when issue is updated" do
       label = create(:label, title: 'foo', color: '#FFAABB', project: project)
-      label.toggle_subscription(user2)
+      label.toggle_subscription(user2, project)
 
       perform_enqueued_jobs do
         put api("/projects/#{project.id}/issues/#{issue.id}", user),
@@ -895,7 +895,7 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
 
         expect(json_response['labels']).to include 'label3'
-        expect(Time.parse(json_response['updated_at'])).to be_within(1.second).of(update_time)
+        expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
     end
   end

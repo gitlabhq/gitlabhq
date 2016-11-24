@@ -12,11 +12,15 @@ describe 'Commits' do
     end
 
     let!(:pipeline) do
-      FactoryGirl.create :ci_pipeline, project: project, sha: project.commit.sha
+      create(:ci_pipeline,
+             project: project,
+             ref: project.default_branch,
+             sha: project.commit.sha,
+             status: :success)
     end
 
     context 'commit status is Generic Commit Status' do
-      let!(:status) { FactoryGirl.create :generic_commit_status, pipeline: pipeline }
+      let!(:status) { create(:generic_commit_status, pipeline: pipeline) }
 
       before do
         project.team << [@user, :reporter]
@@ -39,7 +43,7 @@ describe 'Commits' do
     end
 
     context 'commit status is Ci Build' do
-      let!(:build) { FactoryGirl.create :ci_build, pipeline: pipeline }
+      let!(:build) { create(:ci_build, pipeline: pipeline) }
       let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
       context 'when logged as developer' do
@@ -48,13 +52,22 @@ describe 'Commits' do
         end
 
         describe 'Project commits' do
+          let!(:pipeline_from_other_branch) do
+            create(:ci_pipeline,
+                   project: project,
+                   ref: 'fix',
+                   sha: project.commit.sha,
+                   status: :failed)
+          end
+
           before do
             visit namespace_project_commits_path(project.namespace, project, :master)
           end
 
-          it 'shows build status' do
+          it 'shows correct build status from default branch' do
             page.within("//li[@id='commit-#{pipeline.short_sha}']") do
-              expect(page).to have_css(".ci-status-link")
+              expect(page).to have_css('.ci-status-link')
+              expect(page).to have_css('.ci-status-icon-success')
             end
           end
         end
@@ -64,9 +77,11 @@ describe 'Commits' do
             visit ci_status_path(pipeline)
           end
 
-          it { expect(page).to have_content pipeline.sha[0..7] }
-          it { expect(page).to have_content pipeline.git_commit_message }
-          it { expect(page).to have_content pipeline.git_author_name }
+          it 'shows pipeline`s data' do
+            expect(page).to have_content pipeline.sha[0..7]
+            expect(page).to have_content pipeline.git_commit_message
+            expect(page).to have_content pipeline.git_author_name
+          end
         end
 
         context 'Download artifacts' do

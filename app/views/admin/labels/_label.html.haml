@@ -1,7 +1,7 @@
 %li{id: dom_id(label)}
   .label-row
     = render_colored_label(label, tooltip: false)
-    = markdown(label.description, pipeline: :single_line)
+    = markdown_field(label, :description)
     .pull-right
       = link_to 'Edit', edit_admin_label_path(label), class: 'btn btn-sm'
       = link_to 'Delete', admin_label_path(label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Delete this label? Are you sure?"}

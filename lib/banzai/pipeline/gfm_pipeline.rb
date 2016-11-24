@@ -25,7 +25,9 @@ module Banzai
           Filter::MilestoneReferenceFilter,
 
           Filter::TaskListFilter,
-          Filter::InlineDiffFilter
+          Filter::InlineDiffFilter,
+
+          Filter::SetDirectionFilter
         ]
       end
 

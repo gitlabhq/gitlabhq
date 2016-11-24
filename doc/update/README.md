@@ -85,6 +85,8 @@ possible.
 - [MySQL installation guide](../install/database_mysql.md) contains additional
   information about configuring GitLab to work with a MySQL database.
 - [Restoring from backup after a failed upgrade](restore_after_failure.md)
+- [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
+  upgrading a PostgreSQL database with minimal downtime.
 
 [omnidocker]: http://docs.gitlab.com/omnibus/docker/README.html
 [source-ee]: https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc/update

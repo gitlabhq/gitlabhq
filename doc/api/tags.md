@@ -124,7 +124,7 @@ Parameters:
 The message will be `nil` when creating a lightweight tag otherwise
 it will contain the annotation.
 
-It returns 200 if the operation succeed. In case of an error,
+It returns 201 if the operation succeed. In case of an error,
 405 with an explaining error message is returned.
 
 ## Delete a tag

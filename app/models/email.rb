@@ -7,10 +7,8 @@ class Email < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true, email: true
   validate :unique_email, if: ->(email) { email.email_changed? }
 
-  before_validation :cleanup_email
-
-  def cleanup_email
-    self.email = self.email.downcase.strip
+  def email=(value)
+    write_attribute(:email, value.downcase.strip)
   end
 
   def unique_email

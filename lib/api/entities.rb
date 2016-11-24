@@ -15,7 +15,7 @@ module API
     class User < UserBasic
       expose :created_at
       expose :is_admin?, as: :is_admin
-      expose :bio, :location, :skype, :linkedin, :twitter, :website_url
+      expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
     class Identity < Grape::Entity
@@ -43,14 +43,13 @@ module API
     end
 
     class Hook < Grape::Entity
-      expose :id, :url, :created_at
+      expose :id, :url, :created_at, :push_events, :tag_push_events
+      expose :enable_ssl_verification
     end
 
     class ProjectHook < Hook
-      expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events
+      expose :project_id, :issues_events, :merge_requests_events
       expose :note_events, :build_events, :pipeline_events, :wiki_page_events
-      expose :enable_ssl_verification
     end
 
     class BasicProjectDetails < Grape::Entity
@@ -100,22 +99,24 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_build_succeeds
+      expose :request_access_enabled
+      expose :only_allow_merge_if_all_discussions_are_resolved
     end
 
     class Member < UserBasic
       expose :access_level do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.access_level
       end
       expose :expires_at do |user, options|
-        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member = options[:member] || options[:source].members.find_by(user_id: user.id)
         member.expires_at
       end
     end
 
     class AccessRequester < UserBasic
       expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester = options[:access_requester] || options[:source].requesters.find_by(user_id: user.id)
         access_requester.requested_at
       end
     end
@@ -125,6 +126,7 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
+      expose :request_access_enabled
     end
 
     class GroupDetail < Group
@@ -136,7 +138,7 @@ module API
       expose :name
 
       expose :commit do |repo_branch, options|
-        options[:project].repository.commit(repo_branch.target)
+        options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
       expose :protected do |repo_branch, options|
@@ -157,7 +159,7 @@ module API
     end
 
     class RepoTreeObject < Grape::Entity
-      expose :id, :name, :type
+      expose :id, :name, :type, :path
 
       expose :mode do |obj, options|
         filemode = obj.mode.to_s(8)
@@ -208,6 +210,7 @@ module API
 
     class Milestone < ProjectEntity
       expose :due_date
+      expose :start_date
     end
 
     class Issue < ProjectEntity
@@ -216,7 +219,7 @@ module API
       expose :assignee, :author, using: Entities::UserBasic
 
       expose :subscribed do |issue, options|
-        issue.subscribed?(options[:current_user])
+        issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
@@ -246,7 +249,7 @@ module API
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :subscribed do |merge_request, options|
-        merge_request.subscribed?(options[:current_user])
+        merge_request.subscribed?(options[:current_user], options[:project])
       end
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
@@ -341,7 +344,7 @@ module API
     end
 
     class ProjectGroupLink < Grape::Entity
-      expose :id, :project_id, :group_id, :group_access
+      expose :id, :project_id, :group_id, :group_access, :expires_at
     end
 
     class Todo < Grape::Entity
@@ -430,12 +433,42 @@ module API
       end
     end
 
-    class Label < Grape::Entity
-      expose :name, :color, :description
-      expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+    class LabelBasic < Grape::Entity
+      expose :id, :name, :color, :description
+    end
+
+    class Label < LabelBasic
+      expose :open_issues_count do |label, options|
+        label.open_issues_count(options[:current_user])
+      end
+
+      expose :closed_issues_count do |label, options|
+        label.closed_issues_count(options[:current_user])
+      end
+
+      expose :open_merge_requests_count do |label, options|
+        label.open_merge_requests_count(options[:current_user])
+      end
+
+      expose :priority do |label, options|
+        label.priority(options[:project])
+      end
 
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user])
+        label.subscribed?(options[:current_user], options[:project])
+      end
+    end
+
+    class List < Grape::Entity
+      expose :id
+      expose :label, using: Entities::LabelBasic
+      expose :position
+    end
+
+    class Board < Grape::Entity
+      expose :id
+      expose :lists, using: Entities::List do |board|
+        board.lists.destroyable
       end
     end
 
@@ -492,6 +525,9 @@ module API
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
       expose :repository_storage
+      expose :repository_storages
+      expose :koding_enabled
+      expose :koding_url
     end
 
     class Release < Grape::Entity
@@ -503,7 +539,7 @@ module API
       expose :name, :message
 
       expose :commit do |repo_tag, options|
-        options[:project].repository.commit(repo_tag.target)
+        options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
       expose :release, using: Entities::Release do |repo_tag, options|
@@ -543,6 +579,10 @@ module API
       expose :filename, :size
     end
 
+    class PipelineBasic < Grape::Entity
+      expose :id, :sha, :ref, :status
+    end
+
     class Build < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
@@ -550,6 +590,7 @@ module API
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
       expose :commit, with: RepoCommit
       expose :runner, with: Runner
+      expose :pipeline, with: PipelineBasic
     end
 
     class Trigger < Grape::Entity
@@ -560,8 +601,8 @@ module API
       expose :key, :value
     end
 
-    class Pipeline < Grape::Entity
-      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+    class Pipeline < PipelineBasic
+      expose :before_sha, :tag, :yaml_errors
 
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at

@@ -14,7 +14,7 @@ feature 'Signup', feature: true do
         fill_in 'new_user_username', with: user.username
         fill_in 'new_user_email',    with: user.email
         fill_in 'new_user_password', with: user.password
-        click_button "Sign up"
+        click_button "Register"
 
         expect(current_path).to eq users_almost_there_path
         expect(page).to have_content("Please check your email to confirm your account")
@@ -33,7 +33,7 @@ feature 'Signup', feature: true do
         fill_in 'new_user_username', with: user.username
         fill_in 'new_user_email',    with: user.email
         fill_in 'new_user_password', with: user.password
-        click_button "Sign up"
+        click_button "Register"
 
         expect(current_path).to eq dashboard_projects_path
         expect(page).to have_content("Welcome! You have signed up successfully.")
@@ -52,7 +52,7 @@ feature 'Signup', feature: true do
       fill_in 'new_user_username', with: user.username
       fill_in 'new_user_email',    with: existing_user.email
       fill_in 'new_user_password', with: user.password
-      click_button "Sign up"
+      click_button "Register"
 
       expect(current_path).to eq user_registration_path
       expect(page).to have_content("error prohibited this user from being saved")
@@ -69,7 +69,7 @@ feature 'Signup', feature: true do
       fill_in 'new_user_username', with: user.username
       fill_in 'new_user_email',    with: existing_user.email
       fill_in 'new_user_password', with: user.password
-      click_button "Sign up"
+      click_button "Register"
 
       expect(current_path).to eq user_registration_path
       expect(page.body).not_to match(/#{user.password}/)

@@ -2,7 +2,7 @@ module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model
 
-    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :project, foreign_key: :gl_project_id
 
     validates_uniqueness_of :key, scope: :gl_project_id
     validates :key,

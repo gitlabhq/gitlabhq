@@ -27,6 +27,7 @@
                 - else
                   .input-group-addon.static-namespace
                     #{root_url}#{current_user.username}/
+                  = f.hidden_field :namespace_id, value: current_user.namespace_id
           .form-group.col-xs-12.col-sm-6.project-path
             = f.label :namespace_id, class: 'label-light' do
               %span
@@ -72,7 +73,7 @@
                     = link_to "#", class: 'btn js-toggle-button import_git' do
                       = icon('git', text: 'Repo by URL')
                 %div{ class: 'import_gitlab_project' }
-                  - if gitlab_project_import_enabled? && current_user.is_admin?
+                  - if gitlab_project_import_enabled?
                     = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
                       = icon('gitlab', text: 'GitLab export')
 
@@ -89,7 +90,8 @@
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
             = link_to "(?)", help_page_path("public_access/public_access")
-          = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
+          = render 'shared/visibility_level', f: f, visibility_level: default_project_visibility, can_change_visibility_level: true, form_model: @project
+
 
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
         = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
@@ -124,6 +126,11 @@
       event.preventDefault();
       new Flash("Please enter path and name for the project to be imported to.");
     }
+  });
+
+  $('#new_project').submit(function(){
+    var $path = $('#project_path');
+    $path.val($path.val().trim());
   });
 
   $('#project_path').keyup(function(){

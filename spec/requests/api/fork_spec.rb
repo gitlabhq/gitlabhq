@@ -18,7 +18,7 @@ describe API::API, api: true  do
   end
 
   let(:project_user2) do
-    create(:project_member, :guest, user: user2, project: project)
+    create(:project_member, :reporter, user: user2, project: project)
   end
 
   describe 'POST /projects/fork/:id' do
@@ -94,7 +94,7 @@ describe API::API, api: true  do
       it 'fails if trying to fork to another user when not admin' do
         post api("/projects/fork/#{project.id}", user2), namespace: admin.namespace.id
 
-        expect(response).to have_http_status(409)
+        expect(response).to have_http_status(404)
       end
 
       it 'fails if trying to fork to non-existent namespace' do
@@ -114,7 +114,7 @@ describe API::API, api: true  do
       it 'fails to fork to not owned group' do
         post api("/projects/fork/#{project.id}", user2), namespace: group.name
 
-        expect(response).to have_http_status(409)
+        expect(response).to have_http_status(404)
       end
 
       it 'forks to not owned group when admin' do

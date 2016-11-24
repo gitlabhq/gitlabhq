@@ -2,11 +2,11 @@ class ProjectPolicy < BasePolicy
   def rules
     team_access!(user)
 
-    owner = user.admin? ||
-            project.owner == user ||
+    owner = project.owner == user ||
             (project.group && project.group.has_owner?(user))
 
-    owner_access! if owner
+    owner_access! if user.admin? || owner
+    team_member_owner_access! if owner
 
     if project.public? || (project.internal? && !user.external?)
       guest_access!
@@ -16,7 +16,7 @@ class ProjectPolicy < BasePolicy
       can! :read_build if project.public_builds?
 
       if project.request_access_enabled &&
-         !(owner || project.team.member?(user) || project_group_member?(user))
+         !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
       end
     end
@@ -40,12 +40,12 @@ class ProjectPolicy < BasePolicy
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member
-    can! :read_merge_request
     can! :read_note
     can! :create_project
     can! :create_issue
     can! :create_note
     can! :upload_file
+    can! :read_cycle_analytics
   end
 
   def reporter_access!
@@ -62,6 +62,13 @@ class ProjectPolicy < BasePolicy
     can! :read_pipeline
     can! :read_environment
     can! :read_deployment
+    can! :read_merge_request
+  end
+
+  # Permissions given when an user is team member of a project
+  def team_member_reporter_access!
+    can! :build_download_code
+    can! :build_read_container_image
   end
 
   def developer_access!
@@ -91,7 +98,6 @@ class ProjectPolicy < BasePolicy
     can! :admin_milestone
     can! :admin_project_snippet
     can! :admin_project_member
-    can! :admin_merge_request
     can! :admin_note
     can! :admin_wiki
     can! :admin_project
@@ -109,6 +115,9 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_pipeline
     can! :read_container_image
+    can! :build_download_code
+    can! :build_read_container_image
+    can! :read_merge_request
   end
 
   def owner_access!
@@ -126,14 +135,26 @@ class ProjectPolicy < BasePolicy
     can! :destroy_issue
   end
 
+  def team_member_owner_access!
+    team_member_reporter_access!
+  end
+
   # Push abilities on the users team role
   def team_access!(user)
     access = project.team.max_member_access(user.id)
 
-    guest_access!     if access >= Gitlab::Access::GUEST
-    reporter_access!  if access >= Gitlab::Access::REPORTER
-    developer_access! if access >= Gitlab::Access::DEVELOPER
-    master_access!    if access >= Gitlab::Access::MASTER
+    return if access < Gitlab::Access::GUEST
+    guest_access!
+
+    return if access < Gitlab::Access::REPORTER
+    reporter_access!
+    team_member_reporter_access!
+
+    return if access < Gitlab::Access::DEVELOPER
+    developer_access!
+
+    return if access < Gitlab::Access::MASTER
+    master_access!
   end
 
   def archived_access!
@@ -145,11 +166,13 @@ class ProjectPolicy < BasePolicy
   end
 
   def disabled_features!
+    repository_enabled = project.feature_available?(:repository, user)
+
     unless project.feature_available?(:issues, user)
       cannot!(*named_abilities(:issue))
     end
 
-    unless project.feature_available?(:merge_requests, user)
+    unless project.feature_available?(:merge_requests, user) && repository_enabled
       cannot!(*named_abilities(:merge_request))
     end
 
@@ -166,11 +189,19 @@ class ProjectPolicy < BasePolicy
       cannot!(*named_abilities(:wiki))
     end
 
-    unless project.feature_available?(:builds, user)
+    unless project.feature_available?(:builds, user) && repository_enabled
       cannot!(*named_abilities(:build))
       cannot!(*named_abilities(:pipeline))
       cannot!(*named_abilities(:environment))
       cannot!(*named_abilities(:deployment))
+    end
+
+    unless repository_enabled
+      cannot! :push_code
+      cannot! :push_code_to_protected_branches
+      cannot! :download_code
+      cannot! :fork_project
+      cannot! :read_commit_status
     end
 
     unless project.container_registry_enabled
@@ -195,6 +226,7 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_container_image
     can! :download_code
+    can! :read_cycle_analytics
 
     # NOTE: may be overridden by IssuePolicy
     can! :read_issue

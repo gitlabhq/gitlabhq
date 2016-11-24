@@ -37,7 +37,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   end
 
   def preview
-    @message = broadcast_message_params[:message]
+    @broadcast_message = BroadcastMessage.new(broadcast_message_params)
   end
 
   protected

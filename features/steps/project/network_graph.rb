@@ -109,4 +109,8 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
       find('button').click
     end
   end
+
+  step 'I should see non-existent git revision error message' do
+    expect(page).to have_selector '.flash-alert', text: "Git revision ';' does not exist."
+  end
 end

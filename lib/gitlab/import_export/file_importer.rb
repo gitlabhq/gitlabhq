@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def import
-        FileUtils.mkdir_p(@shared.export_path)
+        mkdir_p(@shared.export_path)
 
         wait_for_archived_file do
           decompress_archive
@@ -42,6 +42,14 @@ module Gitlab
         result = untar_zxf(archive: @archive_file, dir: @shared.export_path)
 
         raise Projects::ImportService::Error.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
+
+        remove_symlinks!
+      end
+
+      def remove_symlinks!
+        Dir["#{@shared.export_path}/**/*"].each do |path|
+          FileUtils.rm(path) if File.lstat(path).symlink?
+        end
 
         true
       end

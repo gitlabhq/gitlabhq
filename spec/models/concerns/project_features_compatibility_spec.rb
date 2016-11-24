@@ -22,4 +22,18 @@ describe ProjectFeaturesCompatibility do
       expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::DISABLED)
     end
   end
+
+  it "converts fields from true to ProjectFeature::ENABLED" do
+    features.each do |feature|
+      project.update_attribute("#{feature}_enabled".to_sym, true)
+      expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::ENABLED)
+    end
+  end
+
+  it "converts fields from false to ProjectFeature::DISABLED" do
+    features.each do |feature|
+      project.update_attribute("#{feature}_enabled".to_sym, false)
+      expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::DISABLED)
+    end
+  end
 end

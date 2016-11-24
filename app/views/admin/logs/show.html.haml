@@ -1,7 +1,7 @@
 - @no_container = true
 - page_title "Logs"
 - loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
-             Gitlab::ProductionLogger, Gitlab::SidekiqLogger,
+             Gitlab::EnvironmentLogger, Gitlab::SidekiqLogger,
              Gitlab::RepositoryCheckLogger]
 = render 'admin/background_jobs/head'
 

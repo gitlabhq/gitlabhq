@@ -1,8 +1,10 @@
 .flash-container.flash-container-page
   - if alert
     .flash-alert
-      = alert
+      %div{ class: (container_class) }
+        %span= alert
 
   - elsif notice
     .flash-notice
-      = notice
+      %div{ class: (container_class) }
+        %span= notice

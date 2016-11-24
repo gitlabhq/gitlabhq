@@ -50,14 +50,6 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     end
   end
 
-  shared_examples :relative_to_requested do
-    it 'rebuilds URL relative to the requested path' do
-      doc = filter(link('users.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/users.md"
-    end
-  end
-
   context 'with a project_wiki' do
     let(:project_wiki) { double('ProjectWiki') }
     include_examples :preserve_unchanged
@@ -188,12 +180,38 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
 
     context 'when requested path is a file in the repo' do
       let(:requested_path) { 'doc/api/README.md' }
-      include_examples :relative_to_requested
+      it 'rebuilds URL relative to the containing directory' do
+        doc = filter(link('users.md'))
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
+      end
     end
 
     context 'when requested path is a directory in the repo' do
-      let(:requested_path) { 'doc/api' }
-      include_examples :relative_to_requested
+      let(:requested_path) { 'doc/api/' }
+      it 'rebuilds URL relative to the directory' do
+        doc = filter(link('users.md'))
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
+      end
+    end
+
+    context 'when ref name contains percent sign' do
+      let(:ref) { '100%branch' }
+      let(:commit) { project.commit('1b12f15a11fc6e62177bef08f47bc7b5ce50b141') }
+      let(:requested_path) { 'foo/bar/' }
+      it 'correctly escapes the ref' do
+        doc = filter(link('.gitkeep'))
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/foo/bar/.gitkeep"
+      end
+    end
+
+    context 'when requested path is a directory with space in the repo' do
+      let(:ref) { 'master' }
+      let(:commit) { project.commit('38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e') }
+      let(:requested_path) { 'with space/' }
+      it 'does not escape the space twice' do
+        doc = filter(link('README.md'))
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/with%20space/README.md"
+      end
     end
   end
 

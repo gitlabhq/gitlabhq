@@ -1,5 +1,5 @@
 module Ci
-  class LintsController < ApplicationController
+  class LintsController < ::ApplicationController
     before_action :authenticate_user!
 
     def show
@@ -14,6 +14,7 @@ module Ci
         @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
         @stages = @config_processor.stages
         @builds = @config_processor.builds
+        @jobs = @config_processor.jobs
       end
     rescue
       @error = 'Undefined error'

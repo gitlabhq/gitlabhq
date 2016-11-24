@@ -34,7 +34,7 @@ Example of response
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "created_at": "2016-08-16T10:23:19.007Z",
     "updated_at": "2016-08-16T10:23:19.216Z",
@@ -57,7 +57,7 @@ Example of response
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/u/root"
+      "web_url": "http://localhost:3000/root"
     },
     "created_at": "2016-08-16T10:23:21.184Z",
     "updated_at": "2016-08-16T10:23:21.314Z",
@@ -103,12 +103,57 @@ Example of response
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "created_at": "2016-08-11T11:28:34.085Z",
   "updated_at": "2016-08-11T11:32:35.169Z",
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
+  "committed_at": null,
+  "duration": null
+}
+```
+
+## Create a new pipeline
+
+> [Introduced][ce-7209] in GitLab 8.14
+
+```
+POST /projects/:id/pipeline
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer | yes      | The ID of a project |
+| `ref`       | string | yes      | Reference to commit |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/pipeline?ref=master"
+```
+
+Example of response
+
+```json
+{
+  "id": 61,
+  "sha": "384c444e840a515b23f21915ee5766b87068a70d",
+  "ref": "master",
+  "status": "pending",
+  "before_sha": "0000000000000000000000000000000000000000",
+  "tag": false,
+  "yaml_errors": null,
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "http://localhost:3000/root"
+  },
+  "created_at": "2016-11-04T09:36:13.747Z",
+  "updated_at": "2016-11-04T09:36:13.977Z",
+  "started_at": null,
+  "finished_at": null,
   "committed_at": null,
   "duration": null
 }
@@ -148,7 +193,7 @@ Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "created_at": "2016-08-11T11:28:34.085Z",
   "updated_at": "2016-08-11T11:32:35.169Z",
@@ -193,7 +238,7 @@ Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/u/root"
+    "web_url": "http://localhost:3000/root"
   },
   "created_at": "2016-08-11T11:28:34.085Z",
   "updated_at": "2016-08-11T11:32:35.169Z",
@@ -205,3 +250,4 @@ Response:
 ```
 
 [ce-5837]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5837
+[ce-7209]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7209

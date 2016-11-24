@@ -14,9 +14,6 @@
       window.project_uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
       window.preview_markdown_path = "#{preview_markdown_path}";
 
-- content_for :scripts_body do
-  = render "layouts/init_auto_complete" if current_user
-
 - content_for :header_content do
   .js-dropdown-menu-projects
     .dropdown-menu.dropdown-select.dropdown-menu-projects

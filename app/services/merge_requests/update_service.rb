@@ -1,7 +1,3 @@
-require_relative 'base_service'
-require_relative 'reopen_service'
-require_relative 'close_service'
-
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)
@@ -15,8 +11,11 @@ module MergeRequests
         params.except!(:target_branch, :force_remove_source_branch)
       end
 
-      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      if params[:force_remove_source_branch].present?
+        merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      end
 
+      handle_wip_event(merge_request)
       update(merge_request)
     end
 
@@ -76,6 +75,23 @@ module MergeRequests
 
     def close_service
       MergeRequests::CloseService
+    end
+
+    def after_update(issuable)
+      issuable.cache_merge_request_closes_issues!(current_user)
+    end
+
+    private
+
+    def handle_wip_event(merge_request)
+      if wip_event = params.delete(:wip_event)
+        # We update the title that is provided in the params or we use the mr title
+        title = params[:title] || merge_request.title
+        params[:title] = case wip_event
+                         when 'wip' then MergeRequest.wip_title(title)
+                         when 'unwip' then MergeRequest.wipless_title(title)
+                         end
+      end
     end
   end
 end

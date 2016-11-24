@@ -6,9 +6,7 @@ describe 'Issue Boards shortcut', feature: true, js: true do
   let(:project) { create(:empty_project) }
 
   before do
-    project.create_board
-    project.board.lists.create(list_type: :backlog)
-    project.board.lists.create(list_type: :done)
+    create(:board, project: project)
 
     login_as :admin
 

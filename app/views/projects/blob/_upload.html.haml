@@ -26,6 +26,6 @@
 
 
 :javascript
-  disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
+  gl.utils.disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
   new BlobFileDropzone($('.js-upload-blob-form'), '#{method}');
   new NewCommitForm($('.js-upload-blob-form'))

@@ -20,6 +20,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_link('GitLab.com')
     expect(page).to have_link('Google Code')
     expect(page).to have_link('Repo by URL')
+    expect(page).to have_link('GitLab export')
   end
 
   step 'I click on "Import project from GitHub"' do

@@ -9,6 +9,10 @@ RSpec.describe AbuseReport, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:reporter).class_name('User') }
     it { is_expected.to belong_to(:user) }
+
+    it "aliases reporter to author" do
+      expect(subject.author).to be(subject.reporter)
+    end
   end
 
   describe 'validations' do

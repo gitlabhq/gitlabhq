@@ -12,10 +12,13 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml') }
   let(:project)   { create(:project, :public) }
-  let(:noteable)  { create(:issue, project: project) }
   let(:user)      { create(:user) }
+  let(:note)      { create(:diff_note_on_merge_request, project: project) }
+  let(:noteable)  { note.noteable }
 
-  let!(:sent_notification) { SentNotification.record(noteable, user.id, mail_key) }
+  let!(:sent_notification) do
+    SentNotification.record_note(note, user.id, mail_key)
+  end
 
   context "when the recipient address doesn't include a mail key" do
     let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "") }
@@ -82,7 +85,6 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
           expect { receiver.execute }.to change { noteable.notes.count }.by(1)
 
           expect(noteable.reload).to be_closed
-          expect(noteable.due_date).to eq(Date.tomorrow)
           expect(TodoService.new.todo_exist?(noteable, user)).to be_truthy
         end
       end
@@ -100,7 +102,6 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
         expect { receiver.execute }.to change { noteable.notes.count }.by(1)
 
         expect(noteable.reload).to be_open
-        expect(noteable.due_date).to be_nil
         expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
       end
     end
@@ -117,7 +118,6 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
         expect { receiver.execute }.to change { noteable.notes.count }.by(2)
 
         expect(noteable.reload).to be_closed
-        expect(noteable.due_date).to eq(Date.tomorrow)
         expect(TodoService.new.todo_exist?(noteable, user)).to be_truthy
       end
     end
@@ -138,10 +138,11 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
 
     it "creates a comment" do
       expect { receiver.execute }.to change { noteable.notes.count }.by(1)
-      note = noteable.notes.last
+      new_note = noteable.notes.last
 
-      expect(note.author).to eq(sent_notification.recipient)
-      expect(note.note).to include("I could not disagree more.")
+      expect(new_note.author).to eq(sent_notification.recipient)
+      expect(new_note.position).to eq(note.position)
+      expect(new_note.note).to include("I could not disagree more.")
     end
 
     it "adds all attachments" do
@@ -160,10 +161,11 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
       shared_examples 'an email that contains a mail key' do |header|
         it "fetches the mail key from the #{header} header and creates a comment" do
           expect { receiver.execute }.to change { noteable.notes.count }.by(1)
-          note = noteable.notes.last
+          new_note = noteable.notes.last
 
-          expect(note.author).to eq(sent_notification.recipient)
-          expect(note.note).to include('I could not disagree more.')
+          expect(new_note.author).to eq(sent_notification.recipient)
+          expect(new_note.position).to eq(note.position)
+          expect(new_note.note).to include('I could not disagree more.')
         end
       end
 

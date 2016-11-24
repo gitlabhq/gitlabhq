@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, no-undef, padded-blocks, max-len */
 (function() {
   this.CommitFile = (function() {
     function CommitFile(file) {

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Appearance, type: :model do
-  subject { create(:appearance) }
+  subject { build(:appearance) }
 
   it { is_expected.to be_valid }
 

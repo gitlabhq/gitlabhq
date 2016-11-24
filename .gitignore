@@ -5,6 +5,7 @@
 .chef
 .directory
 /.envrc
+eslint-report.html
 /.gitlab_shell_secret
 .idea
 /.rbenv-version
@@ -37,6 +38,7 @@
 /doc/code/*
 /dump.rdb
 /log/*.log*
+/node_modules/
 /nohup.out
 /public/assets/
 /public/uploads.*

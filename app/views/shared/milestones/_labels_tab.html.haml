@@ -8,7 +8,7 @@
           = link_to milestones_label_path(options) do
             - render_colored_label(label, tooltip: false)
         %span.prepend-description-left
-          = markdown(label.description, pipeline: :single_line)
+          = markdown_field(label, :description)
 
       .pull-info-right
         %span.append-right-20

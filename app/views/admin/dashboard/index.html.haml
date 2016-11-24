@@ -63,6 +63,11 @@
           Reply by email
           %span.light.pull-right
             = boolean_to_icon Gitlab::IncomingEmail.enabled?
+        %p
+          Container Registry
+          %span.light.pull-right
+            = boolean_to_icon Gitlab.config.registry.enabled
+
       .col-md-4
         %h4
           Components
@@ -82,7 +87,7 @@
         %p
           GitLab Workhorse
           %span.pull-right
-            = Gitlab::Workhorse.version
+            = gitlab_workhorse_version
         %p
           GitLab API
           %span.pull-right

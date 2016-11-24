@@ -10,6 +10,10 @@ module NotesHelper
     Ability.can_edit_note?(current_user, note)
   end
 
+  def note_supports_slash_commands?(note)
+    Notes::SlashCommandsService.supported?(note, current_user)
+  end
+
   def noteable_json(noteable)
     {
       id: noteable.id,

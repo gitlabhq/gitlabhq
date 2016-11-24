@@ -13,7 +13,7 @@ class Projects::CommitsController < Projects::ApplicationController
 
     @commits =
       if search.present?
-        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset).compact
+        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset)
       else
         @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
       end
@@ -26,8 +26,15 @@ class Projects::CommitsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { pager_json("projects/commits/_commits", @commits.size) }
       format.atom { render layout: false }
+
+      format.json do
+        pager_json(
+          'projects/commits/_commits',
+          @commits.size,
+          project: @project,
+          ref: @ref)
+      end
     end
   end
 end

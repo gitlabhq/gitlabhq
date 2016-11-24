@@ -8,4 +8,8 @@ module WaitForAjax
   def finished_all_ajax_requests?
     page.evaluate_script('jQuery.active').zero?
   end
+
+  def javascript_test?
+    [:selenium, :webkit, :chrome, :poltergeist].include?(Capybara.current_driver)
+  end
 end

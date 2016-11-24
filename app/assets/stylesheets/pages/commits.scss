@@ -33,21 +33,22 @@
     color: $gl-dark-link-color;
   }
 
-  .text-expander {
-    display: inline-block;
-    background: $gray-light;
-    color: $gl-placeholder-color;
-    padding: 0 5px;
-    cursor: pointer;
-    border: 1px solid $border-gray-dark;
-    border-radius: $border-radius-default;
-    margin-left: 5px;
-    line-height: 1;
+}
 
-    &:hover {
-      background-color: darken($gray-light, 10%);
-      text-decoration: none;
-    }
+.text-expander {
+  display: inline-block;
+  background: $gray-light;
+  color: $gl-placeholder-color;
+  padding: 0 5px;
+  cursor: pointer;
+  border: 1px solid $border-gray-dark;
+  border-radius: $border-radius-default;
+  margin-left: 5px;
+  line-height: 1;
+
+  &:hover {
+    background-color: darken($gray-light, 10%);
+    text-decoration: none;
   }
 }
 
@@ -61,9 +62,12 @@
 
   .ci-status-link {
     display: inline-block;
+    position: relative;
+    top: 1px;
   }
 
-  .btn-clipboard, .btn-transparent {
+  .btn-clipboard,
+  .btn-transparent {
     padding-left: 0;
     padding-right: 0;
   }
@@ -80,7 +84,8 @@
   font-weight: 600;
 }
 
-.commit {
+.commit,
+.generic_commit_status {
   padding: 10px 0;
   position: relative;
 
@@ -97,7 +102,6 @@
     color: $gl-dark-link-color;
     vertical-align: baseline;
   }
-
 
   .avatar {
     margin-left: -46px;
@@ -161,7 +165,24 @@
 
 .branch-commit {
   color: $gl-gray;
-  .commit-id, .commit-row-message {
+
+  .commit-icon {
+    text-align: center;
+    display: inline-block;
+
+    svg {
+      height: 14px;
+      width: 14px;
+      vertical-align: middle;
+      fill: $table-text-gray;
+    }
+  }
+
+  .commit-id {
+    color: $gl-link-color;
+  }
+
+  .commit-row-message {
     color: $gl-gray;
   }
 }

@@ -36,17 +36,54 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
     expect(page).not_to have_content project_2.name_with_namespace
   end
 
-  it 'filters by author' do
-    click_button 'Author'
-    within '.dropdown-menu-author' do
-      fill_in 'Search authors', with: user_1.name
-      click_link user_1.name
+  context "Author filter" do
+    it 'filters by author' do
+      click_button 'Author'
+
+      within '.dropdown-menu-author' do
+        fill_in 'Search authors', with: user_1.name
+        click_link user_1.name
+      end
+
+      wait_for_ajax
+
+      expect(find('.todos-list')).to     have_content user_1.name
+      expect(find('.todos-list')).not_to have_content user_2.name
     end
 
-    wait_for_ajax
+    it "shows only authors of existing todos" do
+      click_button 'Author'
 
-    expect(find('.todos-list')).to     have_content user_1.name
-    expect(find('.todos-list')).not_to have_content user_2.name
+      within '.dropdown-menu-author' do
+        # It should contain two users + "Any Author"
+        expect(page).to have_selector('.dropdown-menu-user-link', count: 3)
+        expect(page).to have_content(user_1.name)
+        expect(page).to have_content(user_2.name)
+      end
+    end
+
+    it "shows only authors of existing done todos" do
+      user_3 = create :user
+      user_4 = create :user
+      create(:todo, user: user_1, author: user_3, project: project_1, target: issue, action: 1, state: :done)
+      create(:todo, user: user_1, author: user_4, project: project_2, target: merge_request, action: 2, state: :done)
+
+      project_1.team << [user_3, :developer]
+      project_2.team << [user_4, :developer]
+
+      visit dashboard_todos_path(state: 'done')
+
+      click_button 'Author'
+
+      within '.dropdown-menu-author' do
+        # It should contain two users + "Any Author"
+        expect(page).to have_selector('.dropdown-menu-user-link', count: 3)
+        expect(page).to have_content(user_3.name)
+        expect(page).to have_content(user_4.name)
+        expect(page).not_to have_content(user_1.name)
+        expect(page).not_to have_content(user_2.name)
+      end
+    end
   end
 
   it 'filters by type' do

@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-undef, padded-blocks, max-len */
 (function() {
   this.ProjectImport = (function() {
     function ProjectImport() {

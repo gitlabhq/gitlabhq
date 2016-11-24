@@ -36,8 +36,8 @@ the command line via `bundle exec teaspoon`, or via a web browser at
 `http://localhost:3000/teaspoon` when the Rails server is running.
 
 - JavaScript tests live in `spec/javascripts/`, matching the folder structure of
-  `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js.coffee` has a corresponding
-  `spec/javascripts/behaviors/autosize_spec.js.coffee` file.
+  `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js.es6` has a corresponding
+  `spec/javascripts/behaviors/autosize_spec.js.es6` file.
 - Haml fixtures required for JavaScript tests live in
   `spec/javascripts/fixtures`. They should contain the bare minimum amount of
   markup necessary for the test.
@@ -63,12 +63,16 @@ the command line via `bundle exec teaspoon`, or via a web browser at
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
 - Use `context` to test branching logic.
+- Use multi-line `do...end` blocks for `before` and `after`, even when it would
+  fit on a single line.
 - Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
+- Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
 - Prefer `not_to` to `to_not` (_this is enforced by Rubocop_).
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
+- Try to use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
@@ -131,6 +135,42 @@ opting for [RSpec feature](#features-integration) specs.
 Adding new Spinach scenarios is acceptable _only if_ the new scenario requires
 no more than one new `step` definition. If more than that is required, the
 test should be re-implemented using RSpec instead.
+
+## Testing Rake Tasks
+
+To make testing Rake tasks a little easier, there is a helper that can be included
+in lieu of the standard Spec helper. Instead of `require 'spec_helper'`, use
+`require 'rake_helper'`. The helper includes `spec_helper` for you, and configures
+a few other things to make testing Rake tasks easier.
+
+At a minimum, requiring the Rake helper will redirect `stdout`, include the
+runtime task helpers, and include the `RakeHelpers` Spec support module.
+
+The `RakeHelpers` module exposes a `run_rake_task(<task>)` method to make
+executing tasks simple. See `spec/support/rake_helpers.rb` for all available
+methods.
+
+Example:
+
+```ruby
+require 'rake_helper'
+
+describe 'gitlab:shell rake tasks' do
+  before do
+    Rake.application.rake_require 'tasks/gitlab/shell'
+
+    stub_warn_user_is_not_gitlab
+  end
+
+ describe 'install task' do
+    it 'invokes create_hooks task' do
+      expect(Rake::Task['gitlab:shell:create_hooks']).to receive(:invoke)
+
+      run_rake_task('gitlab:shell:install')
+    end
+  end
+end
+```
 
 ---
 

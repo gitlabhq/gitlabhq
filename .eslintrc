@@ -1,0 +1,20 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": "airbnb",
+  "globals": {
+    "$": false,
+    "_": false,
+    "gl": false,
+    "gon": false,
+    "jQuery": false
+  },
+  "plugins": [
+    "filenames"
+  ],
+  "rules": {
+    "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"]
+  }
+}

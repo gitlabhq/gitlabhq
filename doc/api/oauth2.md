@@ -1,10 +1,10 @@
-# GitLab as an OAuth2 client
+# GitLab as an OAuth2 provider
 
 This document covers using the OAuth2 protocol to access GitLab.
 
 If you want GitLab to be an OAuth authentication service provider to sign into other services please see the [Oauth2 provider documentation](../integration/oauth_provider.md).
 
-OAuth2 is a protocol that enables us to authenticate a user without requiring them to give their password to a third-party. 
+OAuth2 is a protocol that enables us to authenticate a user without requiring them to give their password to a third-party.
 
 This functionality is based on [doorkeeper gem](https://github.com/doorkeeper-gem/doorkeeper)
 
@@ -22,7 +22,7 @@ In the following sections you will be introduced to the three steps needed for t
 ### 1. Registering the client
 
 First, you should create an application (`/profile/applications`) in your user's account.
-Each application gets a unique App ID and App Secret parameters. 
+Each application gets a unique App ID and App Secret parameters.
 
 >**Note:**
 **You should not share/leak your App ID or App Secret.**
@@ -46,10 +46,10 @@ http://myapp.com/oauth/redirect?code=1234567890&state=your_unique_state_hash
 You should then use the `code` to request an access token.
 
 >**Important:**
-It is highly recommended that you send a `state` value with the request to `/oauth/authorize` and 
-validate that value is returned and matches in the redirect request. 
-This is important to prevent [CSFR attacks](http://www.oauthsecurity.com/#user-content-authorization-code-flow), 
-`state` really should have been a requirement in the standard! 
+It is highly recommended that you send a `state` value with the request to `/oauth/authorize` and
+validate that value is returned and matches in the redirect request.
+This is important to prevent [CSRF attacks](http://www.oauthsecurity.com/#user-content-authorization-code-flow),
+`state` really should have been a requirement in the standard!
 
 ### 3. Requesting the access token
 
@@ -62,7 +62,7 @@ RestClient.post 'http://localhost:3000/oauth/token', parameters
 # The response will be
 {
  "access_token": "de6780bc506a0446309bd9362820ba8aed28aa506c71eedbe1c5c4f9dd350e54",
- "token_type": "bearer", 
+ "token_type": "bearer",
  "expires_in": 7200,
  "refresh_token": "8257e65c97202ed1726cf9571600918f3bffb2544b26e00a61df9897668c33a1"
 }
@@ -95,7 +95,7 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/
 
 ---
 
-In this flow, a token is requested in exchange for the resource owner credentials (username and password). 
+In this flow, a token is requested in exchange for the resource owner credentials (username and password).
 The credentials should only be used when there is a high degree of trust between the resource owner and the client (e.g. the
 client is part of the device operating system or a highly privileged application), and when other authorization grant types are not
 available (such as an authorization code).
@@ -112,7 +112,7 @@ You can do POST request to `/oauth/token` with parameters:
 {
   "grant_type"    : "password",
   "username"      : "user@example.com",
-  "password"      : "sekret"
+  "password"      : "secret"
 }
 ```
 
@@ -130,7 +130,7 @@ For testing you can use the oauth2 ruby gem:
 
 ```
 client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "http://example.com")
-access_token = client.password.get_token('user@example.com', 'sekret')
+access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 

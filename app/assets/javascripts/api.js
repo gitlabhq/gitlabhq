@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, no-undef, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, padded-blocks, max-len */
 (function() {
   this.Api = {
     groupsPath: "/api/:version/groups.json",
@@ -5,36 +6,30 @@
     namespacesPath: "/api/:version/namespaces.json",
     groupProjectsPath: "/api/:version/groups/:id/projects.json",
     projectsPath: "/api/:version/projects.json?simple=true",
-    labelsPath: "/api/:version/projects/:id/labels",
-    licensePath: "/api/:version/licenses/:key",
-    gitignorePath: "/api/:version/gitignores/:key",
-    gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key",
+    labelsPath: "/:namespace_path/:project_path/labels",
+    licensePath: "/api/:version/templates/licenses/:key",
+    gitignorePath: "/api/:version/templates/gitignores/:key",
+    gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
-
     group: function(group_id, callback) {
       var url = Api.buildUrl(Api.groupPath)
         .replace(':id', group_id);
       return $.ajax({
         url: url,
-        data: {
-          private_token: gon.api_token
-        },
         dataType: "json"
       }).done(function(group) {
         return callback(group);
       });
     },
     // Return groups list. Filtered by query
-    // Only active groups retrieved
-    groups: function(query, skip_ldap, callback) {
+    groups: function(query, options, callback) {
       var url = Api.buildUrl(Api.groupsPath);
       return $.ajax({
         url: url,
-        data: {
-          private_token: gon.api_token,
-          search: query,
-          per_page: 20
-        },
+        data: $.extend({
+                search: query,
+                per_page: 20
+              }, options),
         dataType: "json"
       }).done(function(groups) {
         return callback(groups);
@@ -46,7 +41,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },
@@ -61,7 +55,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           order_by: order,
           per_page: 20
@@ -71,14 +64,14 @@
         return callback(projects);
       });
     },
-    newLabel: function(project_id, data, callback) {
+    newLabel: function(namespace_path, project_path, data, callback) {
       var url = Api.buildUrl(Api.labelsPath)
-        .replace(':id', project_id);
-      data.private_token = gon.api_token;
+        .replace(':namespace_path', namespace_path)
+        .replace(':project_path', project_path);
       return $.ajax({
         url: url,
         type: "POST",
-        data: data,
+        data: {'label': data},
         dataType: "json"
       }).done(function(label) {
         return callback(label);
@@ -93,7 +86,6 @@
       return $.ajax({
         url: url,
         data: {
-          private_token: gon.api_token,
           search: query,
           per_page: 20
         },

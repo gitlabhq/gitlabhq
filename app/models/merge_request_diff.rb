@@ -6,7 +6,13 @@ class MergeRequestDiff < ActiveRecord::Base
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
 
+  # Valid types of serialized diffs allowed by Gitlab::Git::Diff
+  VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta]
+
   belongs_to :merge_request
+
+  serialize :st_commits
+  serialize :st_diffs
 
   state_machine :state, initial: :empty do
     state :collected
@@ -19,8 +25,7 @@ class MergeRequestDiff < ActiveRecord::Base
     state :overflow_diff_lines_limit
   end
 
-  serialize :st_commits
-  serialize :st_diffs
+  scope :viewable, -> { without_state(:empty) }
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
@@ -28,6 +33,10 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def self.select_without_diff
     select(column_names - ['st_diffs'])
+  end
+
+  def st_commits
+    super || []
   end
 
   # Collect information about commits and diff from repository
@@ -83,7 +92,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits
-    @commits ||= load_commits(st_commits || [])
+    @commits ||= load_commits(st_commits)
   end
 
   def reload_commits
@@ -115,6 +124,14 @@ class MergeRequestDiff < ActiveRecord::Base
     return unless head_commit_sha
 
     project.commit(head_commit_sha)
+  end
+
+  def commits_sha
+    if @commits
+      commits.map(&:sha)
+    else
+      st_commits.map { |commit| commit[:id] }
+    end
   end
 
   def diff_refs
@@ -152,11 +169,23 @@ class MergeRequestDiff < ActiveRecord::Base
     self == merge_request.merge_request_diff
   end
 
-  def compare_with(sha)
-    CompareService.new.execute(project, head_commit_sha, project, sha)
+  def compare_with(sha, straight: true)
+    # When compare merge request versions we want diff A..B instead of A...B
+    # so we handle cases when user does squash and rebase of the commits between versions.
+    # For this reason we set straight to true by default.
+    CompareService.new.execute(project, head_commit_sha, project, sha, straight: straight)
   end
 
   private
+
+  # Old GitLab implementations may have generated diffs as ["--broken-diff"].
+  # Avoid an error 500 by ignoring bad elements. See:
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/20776
+  def valid_raw_diff?(raw)
+    return false unless raw.respond_to?(:each)
+
+    raw.any? { |element| VALID_CLASSES.include?(element.class) }
+  end
 
   def dump_commits(commits)
     commits.map(&:to_hash)
@@ -188,7 +217,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def load_diffs(raw, options)
-    if raw.respond_to?(:each)
+    if valid_raw_diff?(raw)
       if paths = options[:paths]
         raw = raw.select do |diff|
           paths.include?(diff[:old_path]) || paths.include?(diff[:new_path])
@@ -272,8 +301,10 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def keep_around_commits
-    repository.keep_around(start_commit_sha)
-    repository.keep_around(head_commit_sha)
-    repository.keep_around(base_commit_sha)
+    [repository, merge_request.source_project.repository].each do |repo|
+      repo.keep_around(start_commit_sha)
+      repo.keep_around(head_commit_sha)
+      repo.keep_around(base_commit_sha)
+    end
   end
 end

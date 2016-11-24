@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, no-undef, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, padded-blocks, max-len */
 
 /*= require jquery.waitforimages */
 /*= require task_list */
@@ -36,13 +37,10 @@
     };
 
     MergeRequest.prototype.initTabs = function() {
-      if (this.opts.action !== 'new') {
-        // `MergeRequests#new` has no tab-persisting or lazy-loading behavior
-        window.mrTabs = new MergeRequestTabs(this.opts);
-      } else {
-        // Show the first tab (Commits)
-        return $('.merge-request-tabs a[data-toggle="tab"]:first').tab('show');
+      if (window.mrTabs) {
+        window.mrTabs.unbindEvents();
       }
+      window.mrTabs = new MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {
@@ -99,7 +97,11 @@
       return $.ajax({
         type: 'PATCH',
         url: $('form.js-issuable-update').attr('action'),
-        data: patchData
+        data: patchData,
+        success: function(mergeRequest) {
+          document.querySelector('#task_status').innerText = mergeRequest.task_status;
+          document.querySelector('#task_status_short').innerText = mergeRequest.task_status_short;
+        }
       });
     // TODO (rspeicher): Make the merge request description inline-editable like a
     // note so that we can re-use its form here

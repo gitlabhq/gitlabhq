@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe Milestone, models: true do
-  describe "Associations" do
-    it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_many(:issues) }
-  end
-
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
@@ -13,6 +8,20 @@ describe Milestone, models: true do
 
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'start_date' do
+      it 'adds an error when start_date is greated then due_date' do
+        milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:start_date]).to include("Can't be greater than due date")
+      end
+    end
+  end
+
+  describe "Associations" do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:issues) }
   end
 
   let(:milestone) { create(:milestone) }
@@ -20,10 +29,10 @@ describe Milestone, models: true do
   let(:user) { create(:user) }
 
   describe "#title" do
-    let(:milestone) { create(:milestone, title: "<b>test</b>") }
+    let(:milestone) { create(:milestone, title: "<b>foo & bar -> 2.2</b>") }
 
     it "sanitizes title" do
-      expect(milestone.title).to eq("test")
+      expect(milestone.title).to eq("foo & bar -> 2.2")
     end
   end
 
@@ -58,18 +67,6 @@ describe Milestone, models: true do
     end
   end
 
-  describe "#expires_at" do
-    it "is nil when due_date is unset" do
-      milestone.update_attributes(due_date: nil)
-      expect(milestone.expires_at).to be_nil
-    end
-
-    it "is not nil when due_date is set" do
-      milestone.update_attributes(due_date: Date.tomorrow)
-      expect(milestone.expires_at).to be_present
-    end
-  end
-
   describe '#expired?' do
     context "expired" do
       before do
@@ -85,6 +82,18 @@ describe Milestone, models: true do
       end
 
       it { expect(milestone.expired?).to be_falsey }
+    end
+  end
+
+  describe '#upcoming?' do
+    it 'returns true' do
+      milestone = build(:milestone, start_date: Time.now + 1.month)
+      expect(milestone.upcoming?).to be_truthy
+    end
+
+    it 'returns false' do
+      milestone = build(:milestone, start_date: Date.today.prev_year)
+      expect(milestone.upcoming?).to be_falsey
     end
   end
 

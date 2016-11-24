@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, no-undef, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, padded-blocks, max-len */
 (function() {
   this.Search = (function() {
     function Search() {
@@ -10,7 +11,7 @@
         filterable: true,
         fieldName: 'group_id',
         data: function(term, callback) {
-          return Api.groups(term, null, function(data) {
+          return Api.groups(term, {}, function(data) {
             data.unshift({
               name: 'Any'
             });

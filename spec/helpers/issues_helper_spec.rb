@@ -63,28 +63,38 @@ describe IssuesHelper do
   end
 
   describe '#award_user_list' do
-    let!(:awards) { build_list(:award_emoji, 15) }
+    it "returns a comma-separated list of the first X users" do
+      user = build_stubbed(:user, name: 'Joe')
+      awards = Array.new(3, build_stubbed(:award_emoji, user: user))
 
-    it "returns a comma seperated list of 1-9 users" do
-      expect(award_user_list(awards.first(9), nil)).to eq(awards.first(9).map { |a| a.user.name }.to_sentence)
+      expect(award_user_list(awards, nil, limit: 3))
+        .to eq('Joe, Joe, and Joe')
     end
 
     it "displays the current user's name as 'You'" do
-      expect(award_user_list(awards.first(1), awards[0].user)).to eq('You')
+      user = build_stubbed(:user, name: 'Joe')
+      award = build_stubbed(:award_emoji, user: user)
+
+      expect(award_user_list([award], user)).to eq('You')
+      expect(award_user_list([award], nil)).to eq 'Joe'
     end
 
-    it "truncates lists of larger than 9 users" do
-      expect(award_user_list(awards, nil)).to eq(awards.first(9).map { |a| a.user.name }.join(', ') + ", and 6 more.")
+    it "truncates lists" do
+      user = build_stubbed(:user, name: 'Jane')
+      awards = Array.new(5, build_stubbed(:award_emoji, user: user))
+
+      expect(award_user_list(awards, nil, limit: 3))
+        .to eq('Jane, Jane, Jane, and 2 more.')
     end
 
-    it "displays the current user in front of 0-9 other users" do
-      expect(award_user_list(awards, awards[0].user)).
-        to eq("You, " + awards[1..9].map { |a| a.user.name }.join(', ') + ", and 5 more.")
-    end
+    it "displays the current user in front of other users" do
+      current_user = build_stubbed(:user)
+      my_award = build_stubbed(:award_emoji, user: current_user)
+      award = build_stubbed(:award_emoji, user: build_stubbed(:user, name: 'Jane'))
+      awards = Array.new(5, award).push(my_award)
 
-    it "displays the current user in front regardless of position in the list" do
-      expect(award_user_list(awards, awards[12].user)).
-        to eq("You, " + awards[0..8].map { |a| a.user.name }.join(', ') + ", and 5 more.")
+      expect(award_user_list(awards, current_user, limit: 2)).
+        to eq("You, Jane, and 4 more.")
     end
   end
 

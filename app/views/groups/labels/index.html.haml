@@ -1,0 +1,20 @@
+- page_title 'Labels'
+
+.top-area.adjust
+  .nav-text
+    Labels can be applied to issues and merge requests. Group labels are available for any project within the group.
+
+  .nav-controls
+    - if can?(current_user, :admin_label, @group)
+      = link_to new_group_label_path(@group), class: "btn btn-new" do
+        New label
+
+.labels
+  .other-labels
+    - if @labels.present?
+      %ul.content-list.manage-labels-list.js-other-labels
+        = render partial: 'shared/label', subject: @group, collection: @labels, as: :label
+        = paginate @labels, theme: 'gitlab'
+    - else
+      .nothing-here-block
+        No labels created yet.

@@ -1,3 +1,4 @@
+/* eslint-disable wrap-iife, func-names, strict, indent, no-tabs, no-var, vars-on-top, no-param-reassign, object-shorthand, no-shadow, comma-dangle, prefer-template, consistent-return, no-mixed-operators, no-unused-vars, object-curly-spacing, no-unused-expressions, prefer-arrow-callback, max-len */
 (function () {
 	'use strict';
 

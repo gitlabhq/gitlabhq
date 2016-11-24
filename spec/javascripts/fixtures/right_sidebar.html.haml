@@ -5,6 +5,10 @@
     %div.block.issuable-sidebar-header
       %a.gutter-toggle.pull-right.js-sidebar-toggle
         %i.fa.fa-angle-double-left
+      %button.btn.btn-default.issuable-header-btn.pull-right.js-issuable-todo{ type: "button", data: { todo_text: "Add Todo", mark_text: "Mark Done", issuable_id: "1", issuable_type: "issue", url: "/todos" }}
+        %span.js-issuable-todo-text
+          Add Todo
+        %i.fa.fa-spin.fa-spinner.js-issuable-todo-loading.hidden
 
     %form.issuable-context-form
       %div.block.labels

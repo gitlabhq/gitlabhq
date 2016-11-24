@@ -11,9 +11,10 @@ class Compare
     end
   end
 
-  def initialize(compare, project)
+  def initialize(compare, project, straight: false)
     @compare = compare
     @project = project
+    @straight = straight
   end
 
   def commits
@@ -45,6 +46,18 @@ class Compare
                    end
   end
 
+  def start_commit_sha
+    start_commit.try(:sha)
+  end
+
+  def base_commit_sha
+    base_commit.try(:sha)
+  end
+
+  def head_commit_sha
+    commit.try(:sha)
+  end
+
   def raw_diffs(*args)
     @compare.diffs(*args)
   end
@@ -58,9 +71,9 @@ class Compare
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha:  base_commit.try(:sha),
-      start_sha: start_commit.try(:sha),
-      head_sha: commit.try(:sha)
+      base_sha:  @straight ? start_commit_sha : base_commit_sha,
+      start_sha: start_commit_sha,
+      head_sha: head_commit_sha
     )
   end
 end

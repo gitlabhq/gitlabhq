@@ -39,8 +39,8 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe '#ignored?' do
-    subject { build.ignored? }
+  describe '#failed_but_allowed?' do
+    subject { build.failed_but_allowed? }
 
     context 'when build is not allowed to fail' do
       before do
@@ -88,9 +88,7 @@ describe Ci::Build, models: true do
   end
 
   describe '#trace' do
-    subject { build.trace_html }
-
-    it { is_expected.to be_empty }
+    it { expect(build.trace).to be_nil }
 
     context 'when build.trace contains text' do
       let(:text) { 'example output' }
@@ -98,16 +96,80 @@ describe Ci::Build, models: true do
         build.trace = text
       end
 
-      it { is_expected.to include(text) }
-      it { expect(subject.length).to be >= text.length }
+      it { expect(build.trace).to eq(text) }
     end
 
-    context 'when build.trace hides token' do
+    context 'when build.trace hides runners token' do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update_attributes(runners_token: token)
-        build.update_attributes(trace: token)
+        build.update(trace: token)
+        build.project.update(runners_token: token)
+      end
+
+      it { expect(build.trace).not_to include(token) }
+      it { expect(build.raw_trace).to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(trace: token)
+        build.update(token: token)
+      end
+
+      it { expect(build.trace).not_to include(token) }
+      it { expect(build.raw_trace).to include(token) }
+    end
+  end
+
+  describe '#raw_trace' do
+    subject { build.raw_trace }
+
+    context 'when build.trace hides runners token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update(runners_token: token)
+        build.update(trace: token)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(token: token)
+        build.update(trace: token)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+  end
+
+  context '#append_trace' do
+    subject { build.trace_html }
+
+    context 'when build.trace hides runners token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update(runners_token: token)
+        build.append_trace(token, 0)
+      end
+
+      it { is_expected.not_to include(token) }
+    end
+
+    context 'when build.trace hides build token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.update(token: token)
+        build.append_trace(token, 0)
       end
 
       it { is_expected.not_to include(token) }
@@ -988,6 +1050,134 @@ describe Ci::Build, models: true do
       it 'returns true' do
         expect(build).to be_retryable
       end
+    end
+  end
+
+  describe '#has_environment?' do
+    subject { build.has_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#starts_environment?' do
+    subject { build.starts_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      context 'no action is defined' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'and start action is defined' do
+        before do
+          build.update(options: { environment: { action: 'start' } } )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#stops_environment?' do
+    subject { build.stops_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      context 'no action is defined' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'and stop action is defined' do
+        before do
+          build.update(options: { environment: { action: 'stop' } } )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#last_deployment' do
+    subject { build.last_deployment }
+
+    context 'when multiple deployments are created' do
+      let!(:deployment1) { create(:deployment, deployable: build) }
+      let!(:deployment2) { create(:deployment, deployable: build) }
+
+      it 'returns the latest one' do
+        is_expected.to eq(deployment2)
+      end
+    end
+  end
+
+  describe '#outdated_deployment?' do
+    subject { build.outdated_deployment? }
+
+    context 'when build succeeded' do
+      let(:build) { create(:ci_build, :success) }
+      let!(:deployment) { create(:deployment, deployable: build) }
+
+      context 'current deployment is latest' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'current deployment is not latest on environment' do
+        let!(:deployment2) { create(:deployment, environment: deployment.environment) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when build failed' do
+      let(:build) { create(:ci_build, :failed) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#expanded_environment_name' do
+    subject { build.expanded_environment_name }
+
+    context 'when environment uses variables' do
+      let(:build) { create(:ci_build, ref: 'master', environment: 'review/$CI_BUILD_REF_NAME') }
+
+      it { is_expected.to eq('review/master') }
     end
   end
 end

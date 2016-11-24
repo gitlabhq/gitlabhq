@@ -8,9 +8,8 @@
 
 .row-content-block
   - if current_user
-    .pull-right
-      = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
-        New Snippet
+    = link_to new_snippet_path, class: "btn btn-new btn-wide-on-sm pull-right", title: "New snippet" do
+      New snippet
 
   .oneline
     Public snippets created by you and other users are listed here

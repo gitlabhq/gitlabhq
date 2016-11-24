@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, space-before-blocks, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, padded-blocks, no-undef, newline-per-chained-call, no-else-return, max-len */
 
 /*= require d3 */
 
@@ -29,8 +30,7 @@
     ContributorsGraph.set_y_domain = function(data) {
       return ContributorsGraph.prototype.y_domain = [
         0, d3.max(data, function(d) {
-          var ref, ref1;
-          return d.commits = (ref = (ref1 = d.commits) != null ? ref1 : d.additions) != null ? ref : d.deletions;
+          return d.commits = d.commits || d.additions || d.deletions;
         })
       ];
     };
@@ -44,8 +44,7 @@
     ContributorsGraph.init_y_domain = function(data) {
       return ContributorsGraph.prototype.y_domain = [
         0, d3.max(data, function(d) {
-          var ref, ref1;
-          return d.commits = (ref = (ref1 = d.commits) != null ? ref1 : d.additions) != null ? ref : d.deletions;
+          return d.commits = d.commits || d.additions || d.deletions;
         })
       ];
     };
@@ -147,9 +146,8 @@
       return this.area = d3.svg.area().x(function(d) {
         return x(d.date);
       }).y0(this.height).y1(function(d) {
-        var ref, ref1, xa;
-        xa = d.commits = (ref = (ref1 = d.commits) != null ? ref1 : d.additions) != null ? ref : d.deletions;
-        return y(xa);
+        d.commits = d.commits || d.additions || d.deletions;
+        return y(d.commits);
       }).interpolate("basis");
     };
 

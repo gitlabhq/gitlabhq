@@ -45,9 +45,10 @@
 
 @media (max-width: $screen-xs-max) {
   .timeline {
-    &:before {
+    &::before {
       background: none;
     }
+
     .timeline-entry .timeline-entry-inner {
       .timeline-icon {
         display: none;

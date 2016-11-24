@@ -69,8 +69,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
         page.within '.diff-content .note' do
           expect(page).to have_selector('.line-resolve-btn.is-active')
-
-          expect(find('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.line-resolve-all-container' do
@@ -194,16 +192,16 @@ feature 'Diff notes resolve', feature: true, js: true do
     context 'multiple notes' do
       before do
         create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+        visit_merge_request
       end
 
       it 'does not mark discussion as resolved when resolving single note' do
-        page.within '.diff-content .note' do
+        page.first '.diff-content .note' do
           first('.line-resolve-btn').click
-          sleep 1
           expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
-        expect(page).to have_content('Last updated')
+        expect(page).not_to have_content('Last updated')
 
         page.within '.line-resolve-all-container' do
           expect(page).to have_content('0/1 discussion resolved')
@@ -212,7 +210,9 @@ feature 'Diff notes resolve', feature: true, js: true do
 
       it 'resolves discussion' do
         page.all('.note').each do |note|
-          note.find('.line-resolve-btn').click
+          note.all('.line-resolve-btn').each do |button|
+            button.click
+          end
         end
 
         expect(page).to have_content('Resolved by')
@@ -292,7 +292,7 @@ feature 'Diff notes resolve', feature: true, js: true do
           expect(holder).to have_selector('.discussion-next-btn')
         end
       end
-      
+
       it 'displays next discussion even if hidden' do
         page.all('.note-discussion').each do |discussion|
           page.within discussion do

@@ -3,7 +3,7 @@ module Banzai
     # Renders a collection of Note instances.
     #
     # notes - The notes to render.
-    # project - The project to use for rendering/redacting.
+    # project - The project to use for redacting.
     # user - The user viewing the notes.
     # path - The request path.
     # wiki - The project's wiki.
@@ -13,8 +13,7 @@ module Banzai
                                     user,
                                     requested_path: path,
                                     project_wiki: wiki,
-                                    ref: git_ref,
-                                    pipeline: :note)
+                                    ref: git_ref)
 
       renderer.render(notes, :note)
     end

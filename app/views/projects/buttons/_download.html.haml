@@ -1,9 +1,9 @@
 - if !project.empty_repo? && can?(current_user, :download_code, project)
-  %span.btn-group{class: 'hidden-xs hidden-sm btn-grouped'}
+  %span{class: 'download-button'}
     .dropdown.inline
       %button.btn{ 'data-toggle' => 'dropdown' }
         = icon('download')
-        %span.caret
+        = icon("caret-down")
         %span.sr-only
           Select Archive Format
       %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
@@ -37,6 +37,6 @@
               %li.dropdown-header Previous Artifacts
             - artifacts.each do |job|
               %li
-                = link_to latest_succeeded_namespace_project_artifacts_path(project.namespace, project, ref, 'download', job: job.name), rel: 'nofollow' do
+                = link_to latest_succeeded_namespace_project_artifacts_path(project.namespace, project, "#{ref}/download", job: job.name), rel: 'nofollow' do
                   %i.fa.fa-download
                   %span Download '#{job.name}'

@@ -50,7 +50,7 @@
     - if issue.labels.any?
       &nbsp;
       - issue.labels.each do |label|
-        = link_to_label(label, project: issue.project)
+        = link_to_label(label, subject: issue.project)
     - if issue.tasks?
       &nbsp;
       %span.task-status

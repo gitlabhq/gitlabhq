@@ -23,19 +23,12 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    terms = params['issue_search']
     @issues = issues_collection
-
-    if terms.present?
-      if terms =~ /\A#(\d+)\z/
-        @issues = @issues.where(iid: $1)
-      else
-        @issues = @issues.full_search(terms)
-      end
-    end
-
     @issues = @issues.page(params[:page])
-    @labels = @project.labels.where(title: params[:label_name])
+
+    if params[:label_name].present?
+      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+    end
 
     respond_to do |format|
       format.html
@@ -63,7 +56,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    raw_notes = @issue.notes_with_associations.fresh
+    raw_notes = @issue.notes.inc_relations_for_view.fresh
 
     @notes = Banzai::NoteRenderer.
       render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
@@ -76,7 +69,7 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @issue.to_json(include: [:milestone, :labels])
+        render json: IssueSerializer.new.represent(@issue)
       end
     end
   end
@@ -119,7 +112,7 @@ class Projects::IssuesController < Projects::ApplicationController
       end
 
       format.json do
-        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
+        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
       end
     end
 
@@ -168,7 +161,8 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @noteable = @issue ||= @project.issues.find_by(iid: params[:id]) || redirect_old
+    # The Sortable default scope causes performance issues when used with find_by
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue

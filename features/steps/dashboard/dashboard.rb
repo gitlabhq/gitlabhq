@@ -33,33 +33,6 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
     expect(find("input#merge_request_target_branch").value).to eq "master"
   end
 
-  step 'user with name "John Doe" joined project "Shop"' do
-    user = create(:user, { name: "John Doe" })
-    project.team << [user, :master]
-    Event.create(
-      project: project,
-      author_id: user.id,
-      action: Event::JOINED
-    )
-  end
-
-  step 'I should see "John Doe joined project Shop" event' do
-    expect(page).to have_content "John Doe joined project #{project.name_with_namespace}"
-  end
-
-  step 'user with name "John Doe" left project "Shop"' do
-    user = User.find_by(name: "John Doe")
-    Event.create(
-      project: project,
-      author_id: user.id,
-      action: Event::LEFT
-    )
-  end
-
-  step 'I should see "John Doe left project Shop" event' do
-    expect(page).to have_content "John Doe left project #{project.name_with_namespace}"
-  end
-
   step 'I have group with projects' do
     @group   = create(:group)
     @project = create(:project, namespace: @group)

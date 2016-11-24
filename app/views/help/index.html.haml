@@ -20,7 +20,7 @@
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
     - if current_application_settings.help_page_text.present?
       %hr
-      = markdown(current_application_settings.help_page_text)
+      = markdown_field(current_application_settings, :help_page_text)
 
 %hr
 

@@ -6,7 +6,7 @@ class Key < ActiveRecord::Base
 
   belongs_to :user
 
-  before_validation :strip_white_space, :generate_fingerprint
+  before_validation :generate_fingerprint
 
   validates :title, presence: true, length: { within: 0..255 }
   validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }
@@ -21,8 +21,9 @@ class Key < ActiveRecord::Base
   after_destroy :remove_from_shell
   after_destroy :post_destroy_hook
 
-  def strip_white_space
-    self.key = key.strip unless key.blank?
+  def key=(value)
+    value.strip! unless value.blank?
+    write_attribute(:key, value)
   end
 
   def publishable_key

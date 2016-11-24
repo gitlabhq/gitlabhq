@@ -4,10 +4,9 @@ module API
     before { authenticate! }
 
     resource :keys do
-      # Get single ssh key by id. Only available to admin users.
-      #
-      # Example Request:
-      #   GET /keys/:id
+      desc 'Get single ssh key by id. Only available to admin users' do
+        success Entities::SSHKeyWithUser
+      end
       get ":id" do
         authenticated_as_admin!
 

@@ -1,0 +1,11 @@
+- if current_user
+  .block.light.subscription{ ":data-url" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '/toggle_subscription'" }
+    .title
+      Notifications
+    %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+      {{ issue.subscribed ? 'Unsubscribe' : 'Subscribe' }}
+    .subscription-status{ ":data-status" => "issue.subscribed ? 'subscribed' : 'unsubscribed'" }
+      .unsubscribed{ "v-show" => "!issue.subscribed" }
+        You're not receiving notifications from this thread.
+      .subscribed{ "v-show" => "issue.subscribed" }
+        You're receiving notifications because you're subscribed to this thread.

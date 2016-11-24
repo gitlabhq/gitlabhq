@@ -1,5 +1,8 @@
 class BroadcastMessage < ActiveRecord::Base
+  include CacheMarkdownField
   include Sortable
+
+  cache_markdown_field :message, pipeline: :broadcast_message
 
   validates :message,   presence: true
   validates :starts_at, presence: true

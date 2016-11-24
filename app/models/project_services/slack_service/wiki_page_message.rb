@@ -9,7 +9,7 @@ class SlackService
     attr_reader :description
 
     def initialize(params)
-      @user_name = params[:user][:name]
+      @user_name = params[:user][:username]
       @project_name = params[:project_name]
       @project_url = params[:project_url]
 

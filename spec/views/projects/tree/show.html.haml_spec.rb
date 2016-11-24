@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/tree/show' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:project) { create(:project) }
   let(:repository) { project.repository }

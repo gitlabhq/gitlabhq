@@ -8,9 +8,6 @@ module AccessRequestable
   extend ActiveSupport::Concern
 
   def request_access(user)
-    members.create(
-      access_level: Gitlab::Access::DEVELOPER,
-      user: user,
-      requested_at: Time.now.utc)
+    Members::RequestAccessService.new(self, user).execute
   end
 end

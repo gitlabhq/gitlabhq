@@ -61,6 +61,10 @@ module TodosHelper
     }
   end
 
+  def todos_filter_empty?
+    todos_filter_params.values.none?
+  end
+
   def todos_filter_path(options = {})
     without = options.delete(:without)
 
@@ -112,6 +116,26 @@ module TodosHelper
   def todo_types_dropdown_label(selected_type, default_type)
     selected_type = todo_types_options.find { |type| type[:id] == selected_type && type[:id] != '' }
     selected_type ? selected_type[:text] : default_type
+  end
+
+  def todo_due_date(todo)
+    return unless todo.target.try(:due_date)
+
+    is_due_today = todo.target.due_date.today?
+    is_overdue = todo.target.overdue?
+    css_class =
+      if is_due_today
+        'text-warning'
+      elsif is_overdue
+        'text-danger'
+      else
+        ''
+      end
+
+    html = "&middot; ".html_safe
+    html << content_tag(:span, class: css_class) do
+      "Due #{is_due_today ? "today" : todo.target.due_date.to_s(:medium)}"
+    end
   end
 
   private

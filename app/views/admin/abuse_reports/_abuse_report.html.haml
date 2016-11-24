@@ -21,7 +21,7 @@
   %td
     %strong.subheading.visible-xs-block.visible-sm-block Message
     .message
-      = markdown(abuse_report.message.squish!, pipeline: :single_line, author: reporter)
+      = markdown_field(abuse_report, :message)
   %td
     - if user
       = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),

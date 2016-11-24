@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'email_spec'
-require 'mailers/shared/notify'
 
 describe Notify do
   include EmailSpec::Matchers
@@ -26,7 +25,7 @@ describe Notify do
       it 'includes a link for user to set password' do
         params = "reset_password_token=#{token}"
         is_expected.to have_body_text(
-          %r{http://localhost(:\d+)?/users/password/edit\?#{params}}
+          %r{http://#{Gitlab.config.gitlab.host}(:\d+)?/users/password/edit\?#{params}}
         )
       end
 

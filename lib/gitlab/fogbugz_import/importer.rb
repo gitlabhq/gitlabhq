@@ -74,8 +74,8 @@ module Gitlab
       end
 
       def create_label(name)
-        color = nice_label_color(name)
-        Label.create!(project_id: project.id, title: name, color: color)
+        params = { title: name, color: nice_label_color(name) }
+        ::Labels::FindOrCreateService.new(nil, project, params).execute(skip_authorization: true)
       end
 
       def user_info(person_id)
@@ -122,25 +122,21 @@ module Gitlab
           author_id = user_info(bug['ixPersonOpenedBy'])[:gitlab_id] || project.creator_id
 
           issue = Issue.create!(
-            project_id:   project.id,
-            title:        bug['sTitle'],
-            description:  body,
-            author_id:    author_id,
-            assignee_id:  assignee_id,
-            state:        bug['fOpen'] == 'true' ? 'opened' : 'closed'
+            iid:         bug['ixBug'],
+            project_id:  project.id,
+            title:       bug['sTitle'],
+            description: body,
+            author_id:   author_id,
+            assignee_id: assignee_id,
+            state:       bug['fOpen'] == 'true' ? 'opened' : 'closed',
+            created_at:  date,
+            updated_at:  DateTime.parse(bug['dtLastUpdated'])
           )
-          issue.add_labels_by_names(labels)
 
-          if issue.iid != bug['ixBug']
-            issue.update_attribute(:iid, bug['ixBug'])
-          end
+          issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)
+          issue.update_attribute(:label_ids, issue_labels.pluck(:id))
 
           import_issue_comments(issue, comments)
-
-          issue.update_attribute(:created_at, date)
-
-          last_update = DateTime.parse(bug['dtLastUpdated'])
-          issue.update_attribute(:updated_at, last_update)
         end
       end
 

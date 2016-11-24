@@ -5,16 +5,17 @@ module MergeRequests
     end
 
     def create_title_change_note(issuable, old_title)
-      removed_wip = old_title =~ MergeRequest::WIP_REGEX && !issuable.work_in_progress?
-      added_wip = old_title !~ MergeRequest::WIP_REGEX && issuable.work_in_progress?
+      removed_wip = MergeRequest.work_in_progress?(old_title) && !issuable.work_in_progress?
+      added_wip = !MergeRequest.work_in_progress?(old_title) && issuable.work_in_progress?
+      changed_title = MergeRequest.wipless_title(old_title) != issuable.wipless_title
 
       if removed_wip
         SystemNoteService.remove_merge_request_wip(issuable, issuable.project, current_user)
       elsif added_wip
         SystemNoteService.add_merge_request_wip(issuable, issuable.project, current_user)
-      else
-        super
       end
+
+      super if changed_title
     end
 
     def hook_data(merge_request, action, oldrev = nil)
@@ -41,28 +42,33 @@ module MergeRequests
       super(:merge_request)
     end
 
-    def merge_request_from(commit_status)
-      branches = commit_status.ref
+    def merge_requests_for(branch)
+      origin_merge_requests = @project.origin_merge_requests
+        .opened.where(source_branch: branch).to_a
 
-      # This is for ref-less builds
-      branches ||= @project.repository.branch_names_contains(commit_status.sha)
+      fork_merge_requests = @project.fork_merge_requests
+        .opened.where(source_branch: branch).to_a
 
-      return [] if branches.blank?
-
-      merge_requests = @project.origin_merge_requests.opened.where(source_branch: branches).to_a
-      merge_requests += @project.fork_merge_requests.opened.where(source_branch: branches).to_a
-
-      merge_requests.uniq.select(&:source_project)
+      (origin_merge_requests + fork_merge_requests)
+        .uniq.select(&:source_project)
     end
 
-    def each_merge_request(commit_status)
-      merge_request_from(commit_status).each do |merge_request|
+    def pipeline_merge_requests(pipeline)
+      merge_requests_for(pipeline.ref).each do |merge_request|
+        next unless pipeline == merge_request.pipeline
+
+        yield merge_request
+      end
+    end
+
+    def commit_status_merge_requests(commit_status)
+      merge_requests_for(commit_status.ref).each do |merge_request|
         pipeline = merge_request.pipeline
 
         next unless pipeline
         next unless pipeline.sha == commit_status.sha
 
-        yield merge_request, pipeline
+        yield merge_request
       end
     end
   end

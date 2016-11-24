@@ -100,7 +100,7 @@ describe Gitlab::Badge::Coverage::Report do
 
     create(:ci_pipeline, opts).tap do |pipeline|
       yield pipeline
-      pipeline.build_updated
+      pipeline.update_status
     end
   end
 end

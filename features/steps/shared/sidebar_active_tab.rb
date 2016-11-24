@@ -1,12 +1,8 @@
 module SharedSidebarActiveTab
   include Spinach::DSL
 
-  step 'the active main tab should be Help' do
-    ensure_active_main_tab('Help')
-  end
-
   step 'no other main tabs should be active' do
-    expect(page).to have_selector('.nav-sidebar > li.active', count: 1)
+    expect(page).to have_selector('.nav-sidebar li.active', count: 1)
   end
 
   def ensure_active_main_tab(content)
@@ -15,6 +11,10 @@ module SharedSidebarActiveTab
 
   step 'the active main tab should be Home' do
     ensure_active_main_tab('Projects')
+  end
+
+  step 'the active main tab should be Groups' do
+    ensure_active_main_tab('Groups')
   end
 
   step 'the active main tab should be Projects' do
@@ -27,9 +27,5 @@ module SharedSidebarActiveTab
 
   step 'the active main tab should be Merge Requests' do
     ensure_active_main_tab('Merge Requests')
-  end
-
-  step 'the active main tab should be Help' do
-    ensure_active_main_tab('Help')
   end
 end

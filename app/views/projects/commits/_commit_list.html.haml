@@ -11,4 +11,4 @@
       %li.warning-row.unstyled
         #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.
   - else
-    %ul.content-list= render commits, project: @project
+    %ul.content-list= render commits, project: @project, ref: @ref

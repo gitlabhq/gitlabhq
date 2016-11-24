@@ -1,12 +1,9 @@
-((w) => {
-  w.ResolveDiscussionBtn = Vue.extend({
-    mixins: [
-      ButtonMixins
-    ],
+/* eslint-disable */
+(() => {
+  const ResolveDiscussionBtn = Vue.extend({
     props: {
       discussionId: String,
       mergeRequestId: Number,
-      namespacePath: String,
       projectPath: String,
       canResolve: Boolean,
     },
@@ -50,11 +47,13 @@
     },
     methods: {
       resolve: function () {
-        ResolveService.toggleResolveForDiscussion(this.namespace, this.mergeRequestId, this.discussionId);
+        ResolveService.toggleResolveForDiscussion(this.projectPath, this.mergeRequestId, this.discussionId);
       }
     },
     created: function () {
       CommentsStore.createDiscussion(this.discussionId, this.canResolve);
     }
   });
-})(window);
+
+  Vue.component('resolve-discussion-btn', ResolveDiscussionBtn);
+})();

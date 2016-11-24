@@ -53,6 +53,10 @@ module Gitlab
         }
       end
 
+      def sym_options_with_owner
+        sym_options.merge(owner: OWNER)
+      end
+
       def protection_options
         {
           "Not protected: Both developers and masters can push new commits, force push, or delete the branch." => PROTECTION_NONE,

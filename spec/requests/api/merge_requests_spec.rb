@@ -15,7 +15,7 @@ describe API::API, api: true  do
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
 
   before do
-    project.team << [user, :reporters]
+    project.team << [user, :reporter]
   end
 
   describe "GET /projects/:id/merge_requests" do
@@ -169,6 +169,16 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq merge_request.id
     end
 
+    it 'returns merge_request by iid array' do
+      get api("/projects/#{project.id}/merge_requests", user), iid: [merge_request.iid, merge_request_closed.iid]
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['title']).to eq merge_request_closed.title
+      expect(json_response.first['id']).to eq merge_request_closed.id
+    end
+
     it "returns a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response).to have_http_status(404)
@@ -186,14 +196,14 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/commits' do
-    context 'valid merge request' do
-      before { get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user) }
-      let(:commit) { merge_request.commits.first }
+    it 'returns a 200 when merge request is valid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user)
+      commit = merge_request.commits.first
 
-      it { expect(response.status).to eq 200 }
-      it { expect(json_response.size).to eq(merge_request.commits.size) }
-      it { expect(json_response.first['id']).to eq(commit.id) }
-      it { expect(json_response.first['title']).to eq(commit.title) }
+      expect(response.status).to eq 200
+      expect(json_response.size).to eq(merge_request.commits.size)
+      expect(json_response.first['id']).to eq(commit.id)
+      expect(json_response.first['title']).to eq(commit.title)
     end
 
     it 'returns a 404 when merge_request_id not found' do
@@ -299,7 +309,7 @@ describe API::API, api: true  do
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
-        fork_project.team << [user2, :reporters]
+        fork_project.team << [user2, :reporter]
       end
 
       it "returns merge_request" do
@@ -492,12 +502,6 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
       expect(response).to have_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
-    end
-
-    it "returns 400 when source_branch is specified" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
-      source_branch: "master", target_branch: "master"
-      expect(response).to have_http_status(400)
     end
 
     it "returns merge_request with renamed target_branch" do

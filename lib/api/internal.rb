@@ -3,6 +3,8 @@ module API
   class Internal < Grape::API
     before { authenticate_by_gitlab_shell_token! }
 
+    helpers ::API::Helpers::InternalHelpers
+
     namespace 'internal' do
       # Check if git command is allowed to project
       #
@@ -14,29 +16,6 @@ module API
       #   ref - branch name
       #   forced_push - forced_push
       #   protocol - Git access protocol being used, e.g. HTTP or SSH
-      #
-
-      helpers do
-        def wiki?
-          @wiki ||= params[:project].end_with?('.wiki') &&
-            !Project.find_with_namespace(params[:project])
-        end
-
-        def project
-          @project ||= begin
-            project_path = params[:project]
-
-            # Check for *.wiki repositories.
-            # Strip out the .wiki from the pathname before finding the
-            # project. This applies the correct project permissions to
-            # the wiki repository as well.
-            project_path.chomp!('.wiki') if wiki?
-
-            Project.find_with_namespace(project_path)
-          end
-        end
-      end
-
       post "/allowed" do
         status 200
 
@@ -51,9 +30,9 @@ module API
 
         access =
           if wiki?
-            Gitlab::GitAccessWiki.new(actor, project, protocol)
+            Gitlab::GitAccessWiki.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           else
-            Gitlab::GitAccess.new(actor, project, protocol)
+            Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
           end
 
         access_status = access.check(params[:action], params[:changes])
@@ -72,6 +51,19 @@ module API
         end
 
         response
+      end
+
+      post "/lfs_authenticate" do
+        status 200
+
+        key = Key.find(params[:key_id])
+        token_handler = Gitlab::LfsToken.new(key)
+
+        {
+          username: token_handler.actor_name,
+          lfs_token: token_handler.token,
+          repository_http_path: project.http_url_to_repo
+        }
       end
 
       get "/merge_request_urls" do

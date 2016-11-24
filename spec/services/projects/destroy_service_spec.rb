@@ -5,6 +5,7 @@ describe Projects::DestroyService, services: true do
   let!(:project) { create(:project, namespace: user.namespace) }
   let!(:path) { project.repository.path_to_repo }
   let!(:remove_path) { path.sub(/\.git\Z/, "+#{project.id}+deleted.git") }
+  let!(:async) { false } # execute or async_execute
 
   context 'Sidekiq inline' do
     before do
@@ -26,6 +27,22 @@ describe Projects::DestroyService, services: true do
     it { expect(Project.all).not_to include(project) }
     it { expect(Dir.exist?(path)).to be_falsey }
     it { expect(Dir.exist?(remove_path)).to be_truthy }
+  end
+
+  context 'async delete of project with private issue visibility' do
+    let!(:async) { true }
+
+    before do
+      project.project_feature.update_attribute("issues_access_level", ProjectFeature::PRIVATE)
+      # Run sidekiq immediately to check that renamed repository will be removed
+      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+    end
+
+    it 'deletes the project' do
+      expect(Project.all).not_to include(project)
+      expect(Dir.exist?(path)).to be_falsey
+      expect(Dir.exist?(remove_path)).to be_falsey
+    end
   end
 
   context 'container registry' do
@@ -52,6 +69,10 @@ describe Projects::DestroyService, services: true do
   end
 
   def destroy_project(project, user, params)
-    Projects::DestroyService.new(project, user, params).execute
+    if async
+      Projects::DestroyService.new(project, user, params).async_execute
+    else
+      Projects::DestroyService.new(project, user, params).execute
+    end
   end
 end

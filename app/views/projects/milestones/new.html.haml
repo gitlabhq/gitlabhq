@@ -1,8 +1,11 @@
+- @no_container = true
 - page_title "New Milestone"
+= render "projects/issues/head"
 
-%h3.page-title
-  New Milestone
+%div{ class: container_class }
+  %h3.page-title
+    New Milestone
 
-%hr
+  %hr
 
-= render "form"
+  = render "form"

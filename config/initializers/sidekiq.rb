@@ -2,6 +2,9 @@
 redis_config_hash = Gitlab::Redis.params
 redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
 
+# Default is to retry 25 times with exponential backoff. That's too much.
+Sidekiq.default_worker_options = { retry: 3 }
+
 Sidekiq.configure_server do |config|
   config.redis = redis_config_hash
 
@@ -26,6 +29,8 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
+  Gitlab::SidekiqThrottler.execute!
+
   # Database pool should be at least `sidekiq_concurrency` + 2
   # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md
   config = ActiveRecord::Base.configurations[Rails.env] ||
@@ -41,4 +46,20 @@ end
 
 Sidekiq.configure_client do |config|
   config.redis = redis_config_hash
+end
+
+# The Sidekiq client API always adds the queue to the Sidekiq queue
+# list, but mail_room and gitlab-shell do not. This is only necessary
+# for monitoring.
+config = YAML.load_file(Rails.root.join('config', 'sidekiq_queues.yml').to_s)
+
+begin
+  Sidekiq.redis do |conn|
+    conn.pipelined do
+      config[:queues].each do |queue|
+        conn.sadd('queues', queue[0])
+      end
+    end
+  end
+rescue Redis::BaseError, SocketError
 end

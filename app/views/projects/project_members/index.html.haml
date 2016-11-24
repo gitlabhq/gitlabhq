@@ -1,24 +1,28 @@
 - page_title "Members"
 
-.project-members-page.js-project-members-page.prepend-top-default
+.project-members-page.prepend-top-default
+  %h4.project-members-title.clearfix
+    Members
+    = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default pull-right hidden-xs", title: "Import members from another project"
   - if can?(current_user, :admin_project_member, @project)
-    .panel.panel-default
-      .panel-heading
-        Add new user to project
-        .controls
-          = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "Import members from another project" do
-            Import members
-      .panel-body
-        %p.light
-          Users with access to this project are listed below.
-        = render "new_project_member"
+    .project-members-new.append-bottom-default
+      %p.clearfix
+        Add new user to
+        %strong= @project.name
+      = render "new_project_member"
 
-    = render 'shared/members/requests', membership_source: @project, requesters: @requesters
+      = render 'shared/members/requests', membership_source: @project, requesters: @requesters
+
+  .append-bottom-default.clearfix
+    %h5.member.existing-title
+      Existing users and groups
+    = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
+      .form-group
+        = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
+        %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+          = icon("search")
+  - if @group_links.any?
+    = render 'groups', group_links: @group_links
 
   = render 'team', members: @project_members
-
-  - if @group
-    = render "group_members", members: @group_members
-
-  - if @project_group_links.any? && @project.allowed_to_share_with_group?
-    = render "shared_group_members"
+  = paginate @project_members, theme: "gitlab"

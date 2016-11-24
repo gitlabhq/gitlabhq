@@ -8,24 +8,36 @@
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Private Token
+      = incoming_email_token_enabled? ? "Private Tokens" : "Private Token"
     %p
-      Your private token is used to access application resources without authentication.
-  .col-lg-9
-    = form_for @user, url: reset_private_token_profile_path, method: :put, html: { class: "private-token" } do |f|
+      Keep
+      = incoming_email_token_enabled? ? "these tokens" : "this token"
+      secret, anyone with access to them can interact with GitLab as if they were you.
+  .col-lg-9.private-tokens-reset
+    .reset-action
       %p.cgray
         - if current_user.private_token
-          = label_tag "token", "Private token", class: "label-light"
-          = text_field_tag "token", current_user.private_token, class: "form-control"
+          = label_tag "private-token", "Private token", class: "label-light"
+          = text_field_tag "private-token", current_user.private_token, class: "form-control", readonly: true, onclick: "this.select()"
         - else
-          %span You don`t have one yet. Click generate to fix it.
-      %p.help-block
-        It can be used for atom feeds or the API. Keep it secret!
+          %span You don't have one yet. Click generate to fix it.
+        %p.help-block
+          Your private token is used to access the API and Atom feeds without username/password authentication.
       .prepend-top-default
         - if current_user.private_token
-          = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
+          = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default private-token"
         - else
           = f.submit 'Generate', class: "btn btn-default"
+    - if incoming_email_token_enabled?
+      .reset-action
+        %p.cgray
+          = label_tag "incoming-email-token", "Incoming Email Token", class: 'label-light'
+          = text_field_tag "incoming-email-token", current_user.incoming_email_token, class: "form-control", readonly: true, onclick: "this.select()"
+        %p.help-block
+          Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.
+        .prepend-top-default
+          = link_to 'Reset incoming email token', reset_incoming_email_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default incoming-email-token"
+
 %hr
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -86,11 +98,11 @@
           = f.label :username, "Path", class: "label-light"
           .input-group
             .input-group-addon
-              = "#{root_url}u/"
+              = root_url
             = f.text_field :username, required: true, class: 'form-control'
         .help-block
           Current path:
-          = "#{root_url}u/#{current_user.username}"
+          = "#{root_url}#{current_user.username}"
         .prepend-top-default
           = f.button class: "btn btn-warning", type: "submit" do
             = icon "spinner spin", class: "hidden loading-username"

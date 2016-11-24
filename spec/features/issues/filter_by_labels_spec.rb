@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Issue filtering by Labels', feature: true do
+feature 'Issue filtering by Labels', feature: true, js: true do
   include WaitForAjax
 
   let(:project) { create(:project, :public) }
-  let!(:user)   { create(:user)}
+  let!(:user)   { create(:user) }
   let!(:label)  { create(:label, project: project) }
 
   before do
@@ -28,156 +28,81 @@ feature 'Issue filtering by Labels', feature: true do
     visit namespace_project_issues_path(project.namespace, project)
   end
 
-  context 'filter by label bug', js: true do
+  context 'filter by label bug' do
     before do
-      page.find('.js-label-select').click
-      wait_for_ajax
-      execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
+      select_labels('bug')
     end
 
-    it 'shows issue "Bugfix1" and "Bugfix2" in issues list' do
+    it 'apply the filter' do
       expect(page).to have_content "Bugfix1"
       expect(page).to have_content "Bugfix2"
-    end
-
-    it 'does not show "Feature1" in issues list' do
       expect(page).not_to have_content "Feature1"
-    end
-
-    it 'shows label "bug" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "bug"
-    end
-
-    it 'does not show label "feature" and "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "feature"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
-    end
 
-    it 'removes label "bug"' do
       find('.js-label-filter-remove').click
       wait_for_ajax
       expect(find('.filtered-labels', visible: false)).to have_no_content "bug"
     end
   end
 
-  context 'filter by label feature', js: true do
+  context 'filter by label feature' do
     before do
-      page.find('.js-label-select').click
-      wait_for_ajax
-      execute_script("$('.dropdown-menu-labels li:contains(\"feature\") a').click()")
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
+      select_labels('feature')
     end
 
-    it 'shows issue "Feature1" in issues list' do
+    it 'applies the filter' do
       expect(page).to have_content "Feature1"
-    end
-
-    it 'does not show "Bugfix1" and "Bugfix2" in issues list' do
       expect(page).not_to have_content "Bugfix2"
       expect(page).not_to have_content "Bugfix1"
-    end
-
-    it 'shows label "feature" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "feature"
-    end
-
-    it 'does not show label "bug" and "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
     end
   end
 
-  context 'filter by label enhancement', js: true do
+  context 'filter by label enhancement' do
     before do
-      page.find('.js-label-select').click
-      wait_for_ajax
-      execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
+      select_labels('enhancement')
     end
 
-    it 'shows issue "Bugfix2" in issues list' do
+    it 'applies the filter' do
       expect(page).to have_content "Bugfix2"
-    end
-
-    it 'does not show "Feature1" and "Bugfix1" in issues list' do
       expect(page).not_to have_content "Feature1"
       expect(page).not_to have_content "Bugfix1"
-    end
-
-    it 'shows label "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "enhancement"
-    end
-
-    it 'does not show label "feature" and "bug" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
       expect(find('.filtered-labels')).not_to have_content "feature"
     end
   end
 
-  context 'filter by label enhancement or feature', js: true do
+  context 'filter by label enhancement and bug in issues list' do
     before do
-      page.find('.js-label-select').click
-      wait_for_ajax
-      execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
-      execute_script("$('.dropdown-menu-labels li:contains(\"feature\") a').click()")
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
+      select_labels('bug', 'enhancement')
     end
 
-    it 'does not show "Bugfix1" or "Feature1" in issues list' do
-      expect(page).not_to have_content "Bugfix1"
-      expect(page).not_to have_content "Feature1"
-    end
-
-    it 'shows label "enhancement" and "feature" in filtered-labels' do
-      expect(find('.filtered-labels')).to have_content "enhancement"
-      expect(find('.filtered-labels')).to have_content "feature"
-    end
-
-    it 'does not show label "bug" in filtered-labels' do
-      expect(find('.filtered-labels')).not_to have_content "bug"
-    end
-
-    it 'removes label "enhancement"' do
-      find('.js-label-filter-remove', match: :first).click
-      wait_for_ajax
-      expect(find('.filtered-labels')).to have_no_content "enhancement"
-    end
-  end
-
-  context 'filter by label enhancement and bug in issues list', js: true do
-    before do
-      page.find('.js-label-select').click
-      wait_for_ajax
-      execute_script("$('.dropdown-menu-labels li:contains(\"enhancement\") a').click()")
-      execute_script("$('.dropdown-menu-labels li:contains(\"bug\") a').click()")
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
-    end
-
-    it 'shows issue "Bugfix2" in issues list' do
+    it 'applies the filters' do
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content "Bugfix2"
-    end
-
-    it 'does not show "Feature1"' do
       expect(page).not_to have_content "Feature1"
-    end
-
-    it 'shows label "bug" and "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "bug"
       expect(find('.filtered-labels')).to have_content "enhancement"
-    end
+      expect(find('.filtered-labels')).not_to have_content "feature"
 
-    it 'does not show label "feature" in filtered-labels' do
+      find('.js-label-filter-remove', match: :first).click
+      wait_for_ajax
+
+      expect(page).to have_content "Bugfix2"
+      expect(page).not_to have_content "Feature1"
+      expect(page).not_to have_content "Bugfix1"
+      expect(find('.filtered-labels')).not_to have_content "bug"
+      expect(find('.filtered-labels')).to have_content "enhancement"
       expect(find('.filtered-labels')).not_to have_content "feature"
     end
   end
 
-  context 'remove filtered labels', js: true do
+  context 'remove filtered labels' do
     before do
       page.within '.labels-filter' do
         click_button 'Label'
@@ -200,7 +125,7 @@ feature 'Issue filtering by Labels', feature: true do
     end
   end
 
-  context 'dropdown filtering', js: true do
+  context 'dropdown filtering' do
     it 'filters by label name' do
       page.within '.labels-filter' do
         click_button 'Label'
@@ -213,5 +138,15 @@ feature 'Issue filtering by Labels', feature: true do
         end
       end
     end
+  end
+
+  def select_labels(*labels)
+    page.find('.js-label-select').click
+    wait_for_ajax
+    labels.each do |label|
+      execute_script("$('.dropdown-menu-labels li:contains(\"#{label}\") a').click()")
+    end
+    page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
+    wait_for_ajax
   end
 end

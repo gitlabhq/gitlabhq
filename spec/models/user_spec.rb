@@ -15,11 +15,11 @@ describe User, models: true do
 
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
-    it { is_expected.to have_many(:snippets).class_name('Snippet').dependent(:destroy) }
+    it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
-    it { is_expected.to have_many(:events).class_name('Event').dependent(:destroy) }
+    it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
@@ -33,11 +33,12 @@ describe User, models: true do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
+    it { is_expected.to have_many(:chat_names).dependent(:destroy) }
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
         user = create(:user)
-        group = create(:group, :public)
+        group = create(:group, :public, :access_requestable)
         group.request_access(user)
 
         expect(user.group_members).to be_empty
@@ -47,7 +48,7 @@ describe User, models: true do
     describe '#project_members' do
       it 'does not include project memberships for which user is a requester' do
         user = create(:user)
-        project = create(:project, :public)
+        project = create(:project, :public, :access_requestable)
         project.request_access(user)
 
         expect(user.project_members).to be_empty
@@ -254,6 +255,20 @@ describe User, models: true do
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
+      end
+    end
+
+    describe '.todo_authors' do
+      it 'filters users' do
+        create :user
+        user_2 = create :user
+        user_3 = create :user
+        current_user = create :user
+        create(:todo, user: current_user, author: user_2, state: :done)
+        create(:todo, user: current_user, author: user_3, state: :pending)
+
+        expect(User.todo_authors(current_user.id, 'pending')).to eq [user_3]
+        expect(User.todo_authors(current_user.id, 'done')).to eq [user_2]
       end
     end
   end
@@ -476,6 +491,28 @@ describe User, models: true do
     end
   end
 
+  describe '.without_projects' do
+    let!(:project) { create(:empty_project, :public, :access_requestable) }
+    let!(:user) { create(:user) }
+    let!(:user_without_project) { create(:user) }
+    let!(:user_without_project2) { create(:user) }
+
+    before do
+      # add user to project
+      project.team << [user, :master]
+
+      # create invite to projet
+      create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
+
+      # create request to join project
+      project.request_access(user_without_project2)
+    end
+
+    it { expect(User.without_projects).not_to include user }
+    it { expect(User.without_projects).to include user_without_project }
+    it { expect(User.without_projects).to include user_without_project2 }
+  end
+
   describe '.not_in_project' do
     before do
       User.delete_all
@@ -599,6 +636,80 @@ describe User, models: true do
     end
   end
 
+  describe '.search_with_secondary_emails' do
+    def search_with_secondary_emails(query)
+      described_class.search_with_secondary_emails(query)
+    end
+
+    let!(:user) { create(:user) }
+    let!(:email) { create(:email) }
+
+    it 'returns users with a matching name' do
+      expect(search_with_secondary_emails(user.name)).to eq([user])
+    end
+
+    it 'returns users with a partially matching name' do
+      expect(search_with_secondary_emails(user.name[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching name regardless of the casing' do
+      expect(search_with_secondary_emails(user.name.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching email' do
+      expect(search_with_secondary_emails(user.email)).to eq([user])
+    end
+
+    it 'returns users with a partially matching email' do
+      expect(search_with_secondary_emails(user.email[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching email regardless of the casing' do
+      expect(search_with_secondary_emails(user.email.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching username' do
+      expect(search_with_secondary_emails(user.username)).to eq([user])
+    end
+
+    it 'returns users with a partially matching username' do
+      expect(search_with_secondary_emails(user.username[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching username regardless of the casing' do
+      expect(search_with_secondary_emails(user.username.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching whole secondary email' do
+      expect(search_with_secondary_emails(email.email)).to eq([email.user])
+    end
+
+    it 'returns users with a matching part of secondary email' do
+      expect(search_with_secondary_emails(email.email[1..4])).to eq([email.user])
+    end
+
+    it 'return users with a matching part of secondary email regardless of case' do
+      expect(search_with_secondary_emails(email.email[1..4].upcase)).to eq([email.user])
+      expect(search_with_secondary_emails(email.email[1..4].downcase)).to eq([email.user])
+      expect(search_with_secondary_emails(email.email[1..4].capitalize)).to eq([email.user])
+    end
+
+    it 'returns multiple users with matching secondary emails' do
+      email1 = create(:email, email: '1_testemail@example.com')
+      email2 = create(:email, email: '2_testemail@example.com')
+      email3 = create(:email, email: 'other@email.com')
+      email3.user.update_attributes!(email: 'another@mail.com')
+
+      expect(
+        search_with_secondary_emails('testemail@example.com').map(&:id)
+      ).to include(email1.user.id, email2.user.id)
+
+      expect(
+        search_with_secondary_emails('testemail@example.com').map(&:id)
+      ).not_to include(email3.user.id)
+    end
+  end
+
   describe 'by_username_or_id' do
     let(:user1) { create(:user, username: 'foo') }
 
@@ -607,6 +718,23 @@ describe User, models: true do
       expect(User.by_username_or_id('foo')).to eq(user1)
       expect(User.by_username_or_id(-1)).to be_nil
       expect(User.by_username_or_id('bar')).to be_nil
+    end
+  end
+
+  describe '.find_by_ssh_key_id' do
+    context 'using an existing SSH key ID' do
+      let(:user) { create(:user) }
+      let(:key) { create(:key, user: user) }
+
+      it 'returns the corresponding User' do
+        expect(described_class.find_by_ssh_key_id(key.id)).to eq(user)
+      end
+    end
+
+    context 'using an invalid SSH key ID' do
+      it 'returns nil' do
+        expect(described_class.find_by_ssh_key_id(-1)).to be_nil
+      end
     end
   end
 
@@ -621,6 +749,17 @@ describe User, models: true do
       expect(User.by_login(username)).to eq user
       expect(User.by_login(nil)).to be_nil
       expect(User.by_login('')).to be_nil
+    end
+  end
+
+  describe '.find_by_username' do
+    it 'returns nil if not found' do
+      expect(described_class.find_by_username('JohnDoe')).to be_nil
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username('JOHNDOE')).to eq user
     end
   end
 
@@ -945,7 +1084,7 @@ describe User, models: true do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects' do
+  describe '#authorized_projects', truncate: true do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -964,6 +1103,80 @@ describe User, models: true do
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
       end
+    end
+
+    it "includes user's personal projects" do
+      user    = create(:user)
+      project = create(:project, :private, namespace: user.namespace)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "includes personal projects user has been given access to" do
+      user1   = create(:user)
+      user2   = create(:user)
+      project = create(:project, :private, namespace: user1.namespace)
+
+      project.team << [user2, Gitlab::Access::DEVELOPER]
+
+      expect(user2.authorized_projects).to include(project)
+    end
+
+    it "includes projects of groups user has been added to" do
+      group   = create(:group)
+      project = create(:project, group: group)
+      user    = create(:user)
+
+      group.add_developer(user)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "does not include projects of groups user has been removed from" do
+      group   = create(:group)
+      project = create(:project, group: group)
+      user    = create(:user)
+
+      member = group.add_developer(user)
+      expect(user.authorized_projects).to include(project)
+
+      member.destroy
+      expect(user.authorized_projects).not_to include(project)
+    end
+
+    it "includes projects shared with user's group" do
+      user    = create(:user)
+      project = create(:project, :private)
+      group   = create(:group)
+
+      group.add_reporter(user)
+      project.project_group_links.create(group: group)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "does not include destroyed projects user had access to" do
+      user1   = create(:user)
+      user2   = create(:user)
+      project = create(:project, :private, namespace: user1.namespace)
+
+      project.team << [user2, Gitlab::Access::DEVELOPER]
+      expect(user2.authorized_projects).to include(project)
+
+      project.destroy
+      expect(user2.authorized_projects).not_to include(project)
+    end
+
+    it "does not include projects of destroyed groups user had access to" do
+      group   = create(:group)
+      project = create(:project, namespace: group)
+      user    = create(:user)
+
+      group.add_developer(user)
+      expect(user.authorized_projects).to include(project)
+
+      group.destroy
+      expect(user.authorized_projects).not_to include(project)
     end
   end
 
@@ -1098,6 +1311,42 @@ describe User, models: true do
 
     it 'returns only starred projects the user can view' do
       expect(user.viewable_starred_projects).not_to include(private_project)
+    end
+  end
+
+  describe '#projects_with_reporter_access_limited_to' do
+    let(:project1) { create(:project) }
+    let(:project2) { create(:project) }
+    let(:user) { create(:user) }
+
+    before do
+      project1.team << [user, :reporter]
+      project2.team << [user, :guest]
+    end
+
+    it 'returns the projects when using a single project ID' do
+      projects = user.projects_with_reporter_access_limited_to(project1.id)
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'returns the projects when using an Array of project IDs' do
+      projects = user.projects_with_reporter_access_limited_to([project1.id])
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'returns the projects when using an ActiveRecord relation' do
+      projects = user.
+        projects_with_reporter_access_limited_to(Project.select(:id))
+
+      expect(projects).to eq([project1])
+    end
+
+    it 'does not return projects you do not have reporter access to' do
+      projects = user.projects_with_reporter_access_limited_to(project2.id)
+
+      expect(projects).to be_empty
     end
   end
 end

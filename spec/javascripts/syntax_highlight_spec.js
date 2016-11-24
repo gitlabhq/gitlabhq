@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren, no-var, no-return-assign, quotes, padded-blocks */
 
 /*= require syntax_highlight */
 

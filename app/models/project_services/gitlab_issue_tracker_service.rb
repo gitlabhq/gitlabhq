@@ -1,6 +1,8 @@
 class GitlabIssueTrackerService < IssueTrackerService
   include Gitlab::Routing.url_helpers
 
+  validates :project_url, :issues_url, :new_issue_url, presence: true, url: true, if: :activated?
+
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
   default_value_for :default, true

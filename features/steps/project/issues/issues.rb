@@ -62,7 +62,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "New Issue"' do
-    click_link "New Issue"
+    page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
   end
 
   step 'I click "author" dropdown' do
@@ -84,7 +84,8 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I submit new issue "500 error on profile" with label \'bug\'' do
     fill_in "issue_title", with: "500 error on profile"
-    select 'bug', from: "Labels"
+    click_button "Label"
+    click_link "bug"
     click_button "Submit issue"
   end
 
@@ -356,6 +357,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   def filter_issue(text)
-    fill_in 'issue_search', with: text
+    fill_in 'issuable_search', with: text
   end
 end

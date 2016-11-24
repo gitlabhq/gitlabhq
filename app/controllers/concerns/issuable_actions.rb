@@ -2,6 +2,7 @@ module IssuableActions
   extend ActiveSupport::Concern
 
   included do
+    before_action :labels, only: [:show, :new, :edit]
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
   end
@@ -11,7 +12,7 @@ module IssuableActions
     destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
     TodoService.new.public_send(destroy_method, issuable, current_user)
 
-    name = issuable.class.name.titleize.downcase
+    name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
     redirect_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
   end
@@ -24,6 +25,10 @@ module IssuableActions
   end
 
   private
+
+  def labels
+    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+  end
 
   def authorize_destroy_issuable!
     unless can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable)

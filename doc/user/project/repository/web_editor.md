@@ -97,11 +97,11 @@ There are multiple ways to create a branch from GitLab's web interface.
 
 In case your development workflow dictates to have an issue for every merge
 request, you can quickly create a branch right on the issue page which will be
-tied with the issue itself. You can see a **New Branch** button after the issue
+tied with the issue itself. You can see a **New branch** button after the issue
 description, unless there is already a branch with the same name or a referenced
 merge request.
 
-![New Branch Button](img/new_branch_from_issue.png)
+![New Branch Button](img/web_editor_new_branch_from_issue.png)
 
 Once you click it, a new branch will be created that diverges from the default
 branch of your project, by default `master`. The branch name will be based on
@@ -172,4 +172,4 @@ you commit the changes you will be taken to a new merge request form.
 
 ![New file button](basicsimages/file_button.png)
 [ce-2808]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2808
-[issue closing pattern]: ../customization/issue_closing.md
+[issue closing pattern]: ../user/project/issues/automatic_issue_closing.md

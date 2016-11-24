@@ -15,6 +15,7 @@ feature 'issuable templates', feature: true, js: true do
     let(:template_content) { 'this is a test "bug" template' }
     let(:longtemplate_content) { %Q(this\n\n\n\n\nis\n\n\n\n\na\n\n\n\n\nbug\n\n\n\n\ntemplate) }
     let(:issue) { create(:issue, author: user, assignee: user, project: project) }
+    let(:description_addition) { ' appending to description' }
 
     background do
       project.repository.commit_file(user, '.gitlab/issue_templates/bug.md', template_content, 'added issue template', 'master', false)
@@ -30,6 +31,25 @@ feature 'issuable templates', feature: true, js: true do
       save_changes
     end
 
+    scenario 'user selects "bug" template and then "no template"' do
+      select_template 'bug'
+      wait_for_ajax
+      select_option 'No template'
+      wait_for_ajax
+      preview_template('')
+      save_changes('')
+    end
+
+    scenario 'user selects "bug" template, edits description and then selects "reset template"' do
+      select_template 'bug'
+      wait_for_ajax
+      find_field('issue_description').send_keys(description_addition)
+      preview_template(template_content + description_addition)
+      select_option 'Reset template'
+      preview_template
+      save_changes
+    end
+
     it 'updates height of markdown textarea' do
       start_height = page.evaluate_script('$(".markdown-area").outerHeight()')
 
@@ -37,8 +57,28 @@ feature 'issuable templates', feature: true, js: true do
       wait_for_ajax
 
       end_height = page.evaluate_script('$(".markdown-area").outerHeight()')
-      
+
       expect(end_height).not_to eq(start_height)
+    end
+  end
+
+  context 'user creates an issue using templates, with a prior description' do
+    let(:prior_description) { 'test issue description' }
+    let(:template_content) { 'this is a test "bug" template' }
+    let(:issue) { create(:issue, author: user, assignee: user, project: project) }
+
+    background do
+      project.repository.commit_file(user, '.gitlab/issue_templates/bug.md', template_content, 'added issue template', 'master', false)
+      visit edit_namespace_project_issue_path project.namespace, project, issue
+      fill_in :'issue[title]', with: 'test issue title'
+      fill_in :'issue[description]', with: prior_description
+    end
+
+    scenario 'user selects "bug" template' do
+      select_template 'bug'
+      wait_for_ajax
+      preview_template("#{template_content}")
+      save_changes
     end
   end
 
@@ -89,18 +129,24 @@ feature 'issuable templates', feature: true, js: true do
     end
   end
 
-  def preview_template
+  def preview_template(expected_content = template_content)
     click_link 'Preview'
-    expect(page).to have_content template_content
+    expect(page).to have_content expected_content
+    click_link 'Write'
   end
 
-  def save_changes
+  def save_changes(expected_content = template_content)
     click_button "Save changes"
-    expect(page).to have_content template_content
+    expect(page).to have_content expected_content
   end
 
   def select_template(name)
     first('.js-issuable-selector').click
     first('.js-issuable-selector-wrap .dropdown-content a', text: name).click
+  end
+
+  def select_option(name)
+    first('.js-issuable-selector').click
+    first('.js-issuable-selector-wrap .dropdown-footer-list a', text: name).click
   end
 end

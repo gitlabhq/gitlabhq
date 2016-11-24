@@ -31,9 +31,10 @@ Below is a table of the definitions used for GitLab's Issue Board.
 There are three types of lists, the ones you create based on your labels, and
 two default:
 
-- **Backlog** (default): shows all opened issues that do not fall in one of the other lists. Always appears on the very left.
-- **Done** (default): shows all closed issues that do not fall in one of the other lists. Always appears on the very right.
-- Label list: a list based on a label. It shows all opened or closed issues with that label.
+- **Backlog** (default): shows all issues that do not fall in one of the other lists. Always appears on the very left.
+- **Done** (default): shows all closed issues. Always appears on the very right.
+Label list: a list based on a label. It shows all issues with that label.
+- Label list: a list based on a label. It shows all opened issues with that label.
 
 ![GitLab Issue Board](img/issue_board.png)
 
@@ -71,7 +72,7 @@ the list will be created and filled with the issues that have that label.
 
 ## Creating a new list
 
-Create a new list by clicking on the **Create new list** button at the upper
+Create a new list by clicking on the **Add list** button at the upper
 right corner of the Issue Board.
 
 ![Issue Board welcome message](img/issue_board_add_list.png)

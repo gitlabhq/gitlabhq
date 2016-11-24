@@ -26,6 +26,17 @@ class List < ActiveRecord::Base
     label? ? label.name : list_type.humanize
   end
 
+  def as_json(options = {})
+    super(options).tap do |json|
+      if options.has_key?(:label)
+        json[:label] = label.as_json(
+          project: board.project,
+          only: [:id, :title, :description, :color]
+        )
+      end
+    end
+  end
+
   private
 
   def can_be_destroyed

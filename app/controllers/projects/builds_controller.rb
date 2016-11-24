@@ -35,7 +35,11 @@ class Projects::BuildsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @build.to_json(methods: :trace_html)
+        render json: {
+          id: @build.id,
+          status: @build.status,
+          trace_html: @build.trace_html
+        }
       end
     end
   end
@@ -43,7 +47,9 @@ class Projects::BuildsController < Projects::ApplicationController
   def trace
     respond_to do |format|
       format.json do
-        render json: @build.trace_with_state(params[:state].presence).merge!(id: @build.id, status: @build.status)
+        state = params[:state].presence
+        render json: @build.trace_with_state(state: state).
+          merge!(id: @build.id, status: @build.status)
       end
     end
   end

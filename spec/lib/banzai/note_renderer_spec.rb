@@ -12,8 +12,7 @@ describe Banzai::NoteRenderer do
         with(project, user,
              requested_path: 'foo',
              project_wiki: wiki,
-             ref: 'bar',
-             pipeline: :note).
+             ref: 'bar').
         and_call_original
 
       expect_any_instance_of(Banzai::ObjectRenderer).

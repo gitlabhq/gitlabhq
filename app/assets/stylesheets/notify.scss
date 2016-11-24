@@ -2,22 +2,28 @@ img {
   max-width: 100%;
   height: auto;
 }
+
 p.details {
   font-style: italic;
-  color: #777
+  color: #777;
 }
+
 .footer > p {
   font-size: small;
-  color: #777
+  color: #777;
 }
+
 pre.commit-message {
   white-space: pre-wrap;
 }
+
 .file-stats > a {
   text-decoration: none;
+
   > .new-file {
     color: #090;
   }
+
   > .deleted-file {
     color: #b00;
   }

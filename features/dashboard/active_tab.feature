@@ -18,7 +18,7 @@ Feature: Dashboard Active Tab
     Then the active main tab should be Merge Requests
     And no other main tabs should be active
 
-  Scenario: On Dashboard Help
-    Given I visit dashboard help page
-    Then the active main tab should be Help
+  Scenario: On Dashboard Groups
+    Given I visit dashboard groups page
+    Then the active main tab should be Groups
     And no other main tabs should be active

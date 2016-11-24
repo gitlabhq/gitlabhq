@@ -10,7 +10,7 @@ describe Gitlab::Template::IssueTemplate do
   let(:file_path_3) { '.gitlab/issue_templates/feature_proposal.md' }
 
   before do
-    project.team.add_user(user, Gitlab::Access::MASTER)
+    project.add_user(user, Gitlab::Access::MASTER)
     project.repository.commit_file(user, file_path_1, "something valid", "test 3", "master", false)
     project.repository.commit_file(user, file_path_2, "template_test", "test 1", "master", false)
     project.repository.commit_file(user, file_path_3, "feature_proposal", "test 2", "master", false)
@@ -53,7 +53,7 @@ describe Gitlab::Template::IssueTemplate do
 
     context 'when repo is bare or empty' do
       let(:empty_project) { create(:empty_project) }
-      before { empty_project.team.add_user(user, Gitlab::Access::MASTER) }
+      before { empty_project.add_user(user, Gitlab::Access::MASTER) }
 
       it "returns empty array" do
         templates = subject.by_category('', empty_project)
@@ -78,7 +78,7 @@ describe Gitlab::Template::IssueTemplate do
     context "when repo is empty" do
       let(:empty_project) { create(:empty_project) }
 
-      before { empty_project.team.add_user(user, Gitlab::Access::MASTER) }
+      before { empty_project.add_user(user, Gitlab::Access::MASTER) }
 
       it "raises file not found" do
         issue_template = subject.new('.gitlab/issue_templates/not_existent.md', empty_project)

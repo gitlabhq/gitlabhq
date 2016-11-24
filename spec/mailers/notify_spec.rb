@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'email_spec'
-require 'mailers/shared/notify'
 
 describe Notify do
   include EmailSpec::Helpers
@@ -402,7 +401,12 @@ describe Notify do
 
     describe 'project access requested' do
       context 'for a project in a user namespace' do
-        let(:project) { create(:project).tap { |p| p.team << [p.owner, :master, p.owner] } }
+        let(:project) do
+          create(:empty_project, :public, :access_requestable) do |project|
+            project.team << [project.owner, :master, project.owner]
+          end
+        end
+
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -429,7 +433,7 @@ describe Notify do
       context 'for a project in a group' do
         let(:group_owner) { create(:user) }
         let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
-        let(:project) { create(:project, namespace: group) }
+        let(:project) { create(:empty_project, :public, :access_requestable, namespace: group) }
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -455,7 +459,7 @@ describe Notify do
     end
 
     describe 'project access denied' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
@@ -475,7 +479,7 @@ describe Notify do
     end
 
     describe 'project access changed' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) { create(:project_member, project: project, user: user) }
       subject { Notify.member_access_granted_email('project', project_member.id) }
@@ -492,21 +496,22 @@ describe Notify do
       end
     end
 
-    def invite_to_project(project:, email:, inviter:)
-      Member.add_user(
-        project.project_members,
-        'toto@example.com',
-        Gitlab::Access::DEVELOPER,
-        current_user: inviter
+    def invite_to_project(project, inviter:)
+      create(
+        :project_member,
+        :developer,
+        project: project,
+        invite_token: '1234',
+        invite_email: 'toto@example.com',
+        user: nil,
+        created_by: inviter
       )
-
-      project.project_members.invite.last
     end
 
     describe 'project invitation' do
       let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
-      let(:project_member) { invite_to_project(project: project, email: 'toto@example.com', inviter: master) }
+      let(:project_member) { invite_to_project(project, inviter: master) }
 
       subject { Notify.member_invited_email('project', project_member.id, project_member.invite_token) }
 
@@ -525,10 +530,10 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:project) { create(:project) }
-      let(:invited_user) { create(:user) }
+      let(:invited_user) { create(:user, name: 'invited user') }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
-        invitee = invite_to_project(project: project, email: 'toto@example.com', inviter: master)
+        invitee = invite_to_project(project, inviter: master)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -552,7 +557,7 @@ describe Notify do
       let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
-        invitee = invite_to_project(project: project, email: 'toto@example.com', inviter: master)
+        invitee = invite_to_project(project, inviter: master)
         invitee.decline_invite!
         invitee
       end
@@ -627,7 +632,7 @@ describe Notify do
         it_behaves_like 'a user cannot unsubscribe through footer link'
 
         it 'has the correct subject' do
-          is_expected.to have_subject /#{commit.title} \(#{commit.short_id}\)/
+          is_expected.to have_subject /Re: #{project.name} | #{commit.title} \(#{commit.short_id}\)/
         end
 
         it 'contains a link to the commit' do
@@ -685,7 +690,7 @@ describe Notify do
 
   context 'for a group' do
     describe 'group access requested' do
-      let(:group) { create(:group) }
+      let(:group) { create(:group, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
@@ -744,21 +749,22 @@ describe Notify do
       end
     end
 
-    def invite_to_group(group:, email:, inviter:)
-      Member.add_user(
-        group.group_members,
-        'toto@example.com',
-        Gitlab::Access::DEVELOPER,
-        current_user: inviter
+    def invite_to_group(group, inviter:)
+      create(
+        :group_member,
+        :developer,
+        group: group,
+        invite_token: '1234',
+        invite_email: 'toto@example.com',
+        user: nil,
+        created_by: inviter
       )
-
-      group.group_members.invite.last
     end
 
     describe 'group invitation' do
       let(:group) { create(:group) }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
-      let(:group_member) { invite_to_group(group: group, email: 'toto@example.com', inviter: owner) }
+      let(:group_member) { invite_to_group(group, inviter: owner) }
 
       subject { Notify.member_invited_email('group', group_member.id, group_member.invite_token) }
 
@@ -777,10 +783,10 @@ describe Notify do
 
     describe 'group invitation accepted' do
       let(:group) { create(:group) }
-      let(:invited_user) { create(:user) }
+      let(:invited_user) { create(:user, name: 'invited user') }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
-        invitee = invite_to_group(group: group, email: 'toto@example.com', inviter: owner)
+        invitee = invite_to_group(group, inviter: owner)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -804,7 +810,7 @@ describe Notify do
       let(:group) { create(:group) }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
-        invitee = invite_to_group(group: group, email: 'toto@example.com', inviter: owner)
+        invitee = invite_to_group(group, inviter: owner)
         invitee.decline_invite!
         invitee
       end
@@ -829,6 +835,7 @@ describe Notify do
     let(:user) { create(:user, email: 'old-email@mail.com') }
 
     before do
+      stub_config_setting(email_subject_suffix: 'A Nice Suffix')
       perform_enqueued_jobs do
         user.email = "new-email@mail.com"
         user.save
@@ -845,7 +852,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject "Confirmation instructions"
+      is_expected.to have_subject /^Confirmation instructions/
     end
 
     it 'includes a link to the site' do
@@ -861,7 +868,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'a user cannot unsubscribe through footer link'
     it_behaves_like 'an email with X-GitLab headers containing project details'
     it_behaves_like 'an email that contains a header with author username'
 
@@ -914,7 +921,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'a user cannot unsubscribe through footer link'
     it_behaves_like 'an email with X-GitLab headers containing project details'
     it_behaves_like 'an email that contains a header with author username'
 
@@ -936,7 +943,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'a user cannot unsubscribe through footer link'
     it_behaves_like 'an email with X-GitLab headers containing project details'
     it_behaves_like 'an email that contains a header with author username'
 
@@ -964,7 +971,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'a user cannot unsubscribe through footer link'
     it_behaves_like 'an email with X-GitLab headers containing project details'
     it_behaves_like 'an email that contains a header with author username'
 
@@ -1066,7 +1073,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
-    it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'a user cannot unsubscribe through footer link'
     it_behaves_like 'an email with X-GitLab headers containing project details'
     it_behaves_like 'an email that contains a header with author username'
 

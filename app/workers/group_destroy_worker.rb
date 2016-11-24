@@ -1,7 +1,6 @@
 class GroupDestroyWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include DedicatedSidekiqQueue
 
   def perform(group_id, user_id)
     begin

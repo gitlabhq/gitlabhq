@@ -20,6 +20,7 @@ module MergeRequests
       event_service.open_mr(issuable, current_user)
       notification_service.new_merge_request(issuable, current_user)
       todo_service.new_merge_request(issuable, current_user)
+      issuable.cache_merge_request_closes_issues!(current_user)
     end
   end
 end

@@ -8,7 +8,7 @@ describe Projects::RepositoriesController do
       it 'responds with redirect in correct format' do
         get :archive, namespace_id: project.namespace.path, project_id: project.path, format: "zip"
 
-        expect(response.content_type).to start_with 'text/html'
+        expect(response.header["Content-Type"]).to start_with('text/html')
         expect(response).to be_redirect
       end
     end

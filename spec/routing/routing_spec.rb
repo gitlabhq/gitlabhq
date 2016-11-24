@@ -9,31 +9,33 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    expect(get("/u/User")).to route_to('users#show', username: 'User')
+    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+
+    expect(get("/User")).to route_to('users#show', username: 'User')
   end
 
   it "to #groups" do
-    expect(get("/u/User/groups")).to route_to('users#groups', username: 'User')
+    expect(get("/users/User/groups")).to route_to('users#groups', username: 'User')
   end
 
   it "to #projects" do
-    expect(get("/u/User/projects")).to route_to('users#projects', username: 'User')
+    expect(get("/users/User/projects")).to route_to('users#projects', username: 'User')
   end
 
   it "to #contributed" do
-    expect(get("/u/User/contributed")).to route_to('users#contributed', username: 'User')
+    expect(get("/users/User/contributed")).to route_to('users#contributed', username: 'User')
   end
 
   it "to #snippets" do
-    expect(get("/u/User/snippets")).to route_to('users#snippets', username: 'User')
+    expect(get("/users/User/snippets")).to route_to('users#snippets', username: 'User')
   end
 
   it "to #calendar" do
-    expect(get("/u/User/calendar")).to route_to('users#calendar', username: 'User')
+    expect(get("/users/User/calendar")).to route_to('users#calendar', username: 'User')
   end
 
   it "to #calendar_activities" do
-    expect(get("/u/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
+    expect(get("/users/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
   end
 end
 
@@ -193,6 +195,8 @@ describe Profiles::KeysController, "routing" do
 
   # get all the ssh-keys of a user
   it "to #get_keys" do
+    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+
     expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end
 end
@@ -259,12 +263,36 @@ describe "Authentication", "routing" do
 end
 
 describe "Groups", "routing" do
+  let(:name) { 'complex.group-namegit' }
+
+  before { allow_any_instance_of(GroupUrlConstrainer).to receive(:matches?).and_return(true) }
+
   it "to #show" do
-    expect(get("/groups/1")).to route_to('groups#show', id: '1')
+    expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
+  end
+
+  it "also supports nested groups" do
+    expect(get("/#{name}/#{name}")).to route_to('groups#show', id: "#{name}/#{name}")
   end
 
   it "also display group#show on the short path" do
-    expect(get('/1')).to route_to('namespaces#show', id: '1')
+    expect(get("/#{name}")).to route_to('groups#show', id: name)
+  end
+
+  it "to #activity" do
+    expect(get("/groups/#{name}/activity")).to route_to('groups#activity', id: name)
+  end
+
+  it "to #issues" do
+    expect(get("/groups/#{name}/issues")).to route_to('groups#issues', id: name)
+  end
+
+  it "to #members" do
+    expect(get("/groups/#{name}/group_members")).to route_to('groups/group_members#index', group_id: name)
+  end
+
+  it "also display group#show with slash in the path" do
+    expect(get('/group/subgroup')).to route_to('groups#show', id: 'group/subgroup')
   end
 end
 

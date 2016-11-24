@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-unused-vars, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, no-new, no-undef, padded-blocks, max-len */
 (function() {
   this.Star = (function() {
     function Star() {
@@ -10,11 +11,9 @@
           $this.parent().find('.star-count').text(data.star_count);
           if (isStarred) {
             $starSpan.removeClass('starred').text('Star');
-            gl.utils.updateTooltipTitle($this, 'Star project');
             $starIcon.removeClass('fa-star').addClass('fa-star-o');
           } else {
             $starSpan.addClass('starred').text('Unstar');
-            gl.utils.updateTooltipTitle($this, 'Unstar project');
             $starIcon.removeClass('fa-star-o').addClass('fa-star');
           }
         };

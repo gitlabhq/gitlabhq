@@ -31,10 +31,6 @@ class Projects::LfsApiController < Projects::GitHttpClientController
 
   private
 
-  def objects
-    @objects ||= (params[:objects] || []).to_a
-  end
-
   def existing_oids
     @existing_oids ||= begin
       storage_project.lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)

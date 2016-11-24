@@ -11,3 +11,4 @@
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
     = yield :scripts_body
+    = render "layouts/init_auto_complete" if @gfm_form

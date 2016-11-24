@@ -7,7 +7,11 @@ describe CommitStatus, models: true do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
-  let(:commit_status) { create(:commit_status, pipeline: pipeline) }
+  let(:commit_status) { create_status }
+
+  def create_status(args = {})
+    create(:commit_status, args.merge(pipeline: pipeline))
+  end
 
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
@@ -125,32 +129,53 @@ describe CommitStatus, models: true do
   describe '.latest' do
     subject { CommitStatus.latest.order(:id) }
 
-    before do
-      @commit1 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'cc', status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'bb', status: 'success'
-      @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'success'
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running'),
+       create_status(name: 'cc', ref: 'cc', status: 'pending'),
+       create_status(name: 'aa', ref: 'cc', status: 'success'),
+       create_status(name: 'cc', ref: 'bb', status: 'success'),
+       create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
 
     it 'returns unique statuses' do
-      is_expected.to eq([@commit4, @commit5])
+      is_expected.to eq(statuses.values_at(3, 4))
     end
   end
 
   describe '.running_or_pending' do
     subject { CommitStatus.running_or_pending.order(:id) }
 
-    before do
-      @commit1 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'running'
-      @commit2 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'cc', ref: 'cc', status: 'pending'
-      @commit3 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: nil, status: 'success'
-      @commit4 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'dd', ref: nil, status: 'failed'
-      @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'ee', ref: nil, status: 'canceled'
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running'),
+       create_status(name: 'cc', ref: 'cc', status: 'pending'),
+       create_status(name: 'aa', ref: nil, status: 'success'),
+       create_status(name: 'dd', ref: nil, status: 'failed'),
+       create_status(name: 'ee', ref: nil, status: 'canceled')]
     end
 
     it 'returns statuses that are running or pending' do
-      is_expected.to eq([@commit1, @commit2])
+      is_expected.to eq(statuses.values_at(0, 1))
+    end
+  end
+
+  describe '.exclude_ignored' do
+    subject { CommitStatus.exclude_ignored.order(:id) }
+
+    let(:statuses) do
+      [create_status(when: 'manual', status: 'skipped'),
+       create_status(when: 'manual', status: 'success'),
+       create_status(when: 'manual', status: 'failed'),
+       create_status(when: 'on_failure', status: 'skipped'),
+       create_status(when: 'on_failure', status: 'success'),
+       create_status(when: 'on_failure', status: 'failed'),
+       create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 2, 4, 5, 6, 8, 9))
     end
   end
 

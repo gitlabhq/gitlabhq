@@ -1,3 +1,5 @@
+- supports_slash_commands = note_supports_slash_commands?(@note)
+
 = form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
   = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
@@ -14,8 +16,8 @@
       attr: :note,
       classes: 'note-textarea js-note-text',
       placeholder: "Write a comment or drag your files here...",
-      supports_slash_commands: true
-    = render 'projects/notes/hints', supports_slash_commands: true
+      supports_slash_commands: supports_slash_commands
+    = render 'projects/notes/hints', supports_slash_commands: supports_slash_commands
     .error-alert
 
   .note-form-actions.clearfix

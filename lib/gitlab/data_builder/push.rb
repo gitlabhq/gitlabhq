@@ -83,7 +83,7 @@ module Gitlab
           tag = repository.find_tag(tag_name)
 
           if tag
-            commit = repository.commit(tag.target)
+            commit = repository.commit(tag.dereferenced_target)
             commit.try(:sha)
           end
         else

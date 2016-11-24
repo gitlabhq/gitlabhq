@@ -20,5 +20,5 @@ unless ENV['CI'] || ENV['CI_SERVER']
 end
 
 Spinach.hooks.before_run do
-  TestEnv.warm_asset_cache
+  TestEnv.warm_asset_cache unless ENV['CI'] || ENV['CI_SERVER']
 end

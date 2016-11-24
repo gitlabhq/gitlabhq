@@ -1,3 +1,5 @@
+- remote = local_assigns.fetch(:remote, false)
+
 .snippets-list-holder
   %ul.content-list
     = render partial: 'shared/snippets/snippet', collection: @snippets
@@ -5,7 +7,7 @@
       %li
         .nothing-here-block Nothing here.
 
-  = paginate @snippets, theme: 'gitlab', remote: true
+  = paginate @snippets, theme: 'gitlab', remote: remote
 
 :javascript
   gl.SnippetsList();

@@ -1,5 +1,6 @@
 class BuildEmailWorker
   include Sidekiq::Worker
+  include BuildQueue
 
   def perform(build_id, recipients, push_data)
     recipients.each do |recipient|

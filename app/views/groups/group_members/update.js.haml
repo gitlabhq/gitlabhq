@@ -1,3 +1,3 @@
 :plain
-  $("##{dom_id(@group_member)}").replaceWith('#{escape_javascript(render('shared/members/member', member: @group_member))}');
-  new gl.MemberExpirationDate();
+  var $listItem = $('#{escape_javascript(render('shared/members/member', member: @group_member))}');
+  $("##{dom_id(@group_member)} .list-item-name").replaceWith($listItem.find('.list-item-name'));

@@ -105,6 +105,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Commit Changes'
   end
 
+  step 'I click on "Changes" tab' do
+    click_link 'Changes'
+  end
+
   step 'I click on "Create directory"' do
     click_button 'Create directory'
   end

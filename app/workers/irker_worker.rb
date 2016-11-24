@@ -3,6 +3,7 @@ require 'socket'
 
 class IrkerWorker
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
 
   def perform(project_id, chans, colors, push_data, settings)
     project = Project.find(project_id)

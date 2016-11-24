@@ -1,8 +1,10 @@
 class SnippetsController < ApplicationController
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
+  include ToggleAwardEmoji
+
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
 
   # Allow read snippet
-  before_action :authorize_read_snippet!, only: [:show, :raw]
+  before_action :authorize_read_snippet!, only: [:show, :raw, :download]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -10,7 +12,7 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :show, :raw]
+  skip_before_action :authenticate_user!, only: [:index, :show, :raw, :download]
 
   layout 'snippets'
   respond_to :html
@@ -73,6 +75,14 @@ class SnippetsController < ApplicationController
     )
   end
 
+  def download
+    send_data(
+      @snippet.content,
+      type: 'text/plain; charset=utf-8',
+      filename: @snippet.sanitized_file_name
+    )
+  end
+
   protected
 
   def snippet
@@ -85,6 +95,7 @@ class SnippetsController < ApplicationController
                    PersonalSnippet.find(params[:id])
                  end
   end
+  alias_method :awardable, :snippet
 
   def authorize_read_snippet!
     authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)

@@ -6,7 +6,7 @@
   "always-semicolon": true,
   "color-case": "lower",
   "block-indent": "  ",
-  "color-shorthand": true,
+  "color-shorthand": false,
   "element-case": "lower",
   "space-before-colon": "",
   "space-after-colon": " ",

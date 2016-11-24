@@ -9,7 +9,7 @@ shared_context 'mentionable context' do
   let(:author)  { subject.author }
 
   let(:mentioned_issue)  { create(:issue, project: project) }
-  let!(:mentioned_mr)     { create(:merge_request, :simple, source_project: project) }
+  let!(:mentioned_mr)     { create(:merge_request, source_project: project) }
   let(:mentioned_commit) { project.commit("HEAD~1") }
 
   let(:ext_proj)   { create(:project, :public) }
@@ -100,6 +100,7 @@ shared_examples 'an editable mentionable' do
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
     subject.save
+    subject.create_cross_references!
 
     new_text = <<-MSG.strip_heredoc
       These references already existed:
@@ -131,6 +132,7 @@ shared_examples 'an editable mentionable' do
     end
 
     # These two issues are new and should receive reference notes
+    # In the case of MergeRequests remember that cannot mention commits included in the MergeRequest
     new_issues.each do |newref|
       expect(SystemNoteService).to receive(:cross_reference).
         with(newref, subject.local_reference, author)

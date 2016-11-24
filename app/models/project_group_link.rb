@@ -10,11 +10,14 @@ class ProjectGroupLink < ActiveRecord::Base
   belongs_to :group
 
   validates :project_id, presence: true
-  validates :group_id, presence: true
+  validates :group, presence: true
   validates :group_id, uniqueness: { scope: [:project_id], message: "already shared with this group" }
   validates :group_access, presence: true
   validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
   validate :different_group
+
+  after_create :refresh_group_members_authorized_projects
+  after_destroy :refresh_group_members_authorized_projects
 
   def self.access_options
     Gitlab::Access.options
@@ -34,5 +37,9 @@ class ProjectGroupLink < ActiveRecord::Base
     if self.group && self.project && self.project.group == self.group
       errors.add(:base, "Project cannot be shared with the project it is in.")
     end
+  end
+
+  def refresh_group_members_authorized_projects
+    group.refresh_members_authorized_projects
   end
 end

@@ -23,6 +23,10 @@ module Gitlab
       settings || fake_application_settings
     end
 
+    def sidekiq_throttling_enabled?
+      current_application_settings.sidekiq_throttling_enabled?
+    end
+
     def fake_application_settings
       OpenStruct.new(
         default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -50,6 +54,7 @@ module Gitlab
         repository_checks_enabled: true,
         container_registry_token_expire_delay: 5,
         user_default_external: false,
+        sidekiq_throttling_enabled: false,
       )
     end
 
@@ -59,10 +64,8 @@ module Gitlab
       # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
       active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
-      ENV['USE_DB'] != 'false' &&
       active_db_connection &&
-      ActiveRecord::Base.connection.table_exists?('application_settings')
-
+        ActiveRecord::Base.connection.table_exists?('application_settings')
     rescue ActiveRecord::NoDatabaseError
       false
     end

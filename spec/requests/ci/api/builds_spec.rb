@@ -17,6 +17,10 @@ describe Ci::API::API do
       let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
       let(:user_agent) { 'gitlab-ci-multi-runner 1.5.2 (1-5-stable; go1.6.3; linux/amd64)' }
 
+      before do
+        stub_container_registry_config(enabled: false)
+      end
+
       shared_examples 'no builds available' do
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
@@ -35,18 +39,59 @@ describe Ci::API::API do
         end
       end
 
-      it "starts a build" do
-        register_builds info: { platform: :darwin }
+      context 'when there is a pending build' do
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
 
-        expect(response).to have_http_status(201)
-        expect(json_response['sha']).to eq(build.sha)
-        expect(runner.reload.platform).to eq("darwin")
-        expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
-        expect(json_response["variables"]).to include(
-          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-          { "key" => "DB_NAME", "value" => "postgres", "public" => true }
-        )
+          expect(response).to have_http_status(201)
+          expect(json_response['sha']).to eq(build.sha)
+          expect(runner.reload.platform).to eq("darwin")
+          expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
+          expect(json_response["variables"]).to include(
+            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "DB_NAME", "value" => "postgres", "public" => true }
+          )
+        end
+
+        it 'updates runner info' do
+          expect { register_builds }.to change { runner.reload.contacted_at }
+        end
+
+        context 'registry credentials' do
+          let(:registry_credentials) do
+            { 'type' => 'registry',
+              'url' => 'registry.example.com:5005',
+              'username' => 'gitlab-ci-token',
+              'password' => build.token }
+          end
+
+          context 'when registry is enabled' do
+            before do
+              stub_container_registry_config(enabled: true, host_port: 'registry.example.com:5005')
+            end
+
+            it 'sends registry credentials key' do
+              register_builds info: { platform: :darwin }
+
+              expect(json_response).to have_key('credentials')
+              expect(json_response['credentials']).to include(registry_credentials)
+            end
+          end
+
+          context 'when registry is disabled' do
+            before do
+              stub_container_registry_config(enabled: false, host_port: 'registry.example.com:5005')
+            end
+
+            it 'does not send registry credentials' do
+              register_builds info: { platform: :darwin }
+
+              expect(json_response).to have_key('credentials')
+              expect(json_response['credentials']).not_to include(registry_credentials)
+            end
+          end
+        end
       end
 
       context 'when builds are finished' do
@@ -159,13 +204,18 @@ describe Ci::API::API do
       end
 
       context 'when runner is paused' do
-        let(:inactive_runner) { create(:ci_runner, :inactive, token: "InactiveRunner") }
+        let(:runner) { create(:ci_runner, :inactive, token: 'InactiveRunner') }
 
-        before do
-          register_builds inactive_runner.token
+        it 'responds with 404' do
+          register_builds
+
+          expect(response).to have_http_status 404
         end
 
-        it { expect(response).to have_http_status 404 }
+        it 'does not update runner info' do
+          expect { register_builds }
+            .not_to change { runner.reload.contacted_at }
+        end
       end
 
       def register_builds(token = runner.token, **params)
@@ -202,37 +252,120 @@ describe Ci::API::API do
       let(:build) { create(:ci_build, :pending, :trace, runner_id: runner.id) }
       let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
+      let(:update_interval) { 10.seconds.to_i }
+
+      def patch_the_trace(content = ' appended', request_headers = nil)
+        unless request_headers
+          offset = build.trace_length
+          limit = offset + content.length - 1
+          request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+        end
+
+        Timecop.travel(build.updated_at + update_interval) do
+          patch ci_api("/builds/#{build.id}/trace.txt"), content, request_headers
+          build.reload
+        end
+      end
+
+      def initial_patch_the_trace
+        patch_the_trace(' appended', headers_with_range)
+      end
+
+      def force_patch_the_trace
+        2.times { patch_the_trace('') }
+      end
 
       before do
         build.run!
-        patch ci_api("/builds/#{build.id}/trace.txt"), ' appended', headers_with_range
+        initial_patch_the_trace
       end
 
       context 'when request is valid' do
-        it { expect(response.status).to eq 202 }
-        it { expect(build.reload.trace).to eq 'BUILD TRACE appended' }
-        it { expect(response.header).to have_key 'Range' }
-        it { expect(response.header).to have_key 'Build-Status' }
+        it 'gets correct response' do
+          expect(response.status).to eq 202
+          expect(build.reload.trace).to eq 'BUILD TRACE appended'
+          expect(response.header).to have_key 'Range'
+          expect(response.header).to have_key 'Build-Status'
+        end
+
+        context 'when build has been updated recently' do
+          it { expect{ patch_the_trace }.not_to change { build.updated_at }}
+
+          it 'changes the build trace' do
+            patch_the_trace
+
+            expect(build.reload.trace).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when Runner makes a force-patch' do
+            it { expect{ force_patch_the_trace }.not_to change { build.updated_at }}
+
+            it "doesn't change the build.trace" do
+              force_patch_the_trace
+
+              expect(build.reload.trace).to eq 'BUILD TRACE appended'
+            end
+          end
+        end
+
+        context 'when build was not updated recently' do
+          let(:update_interval) { 15.minutes.to_i }
+
+          it { expect { patch_the_trace }.to change { build.updated_at } }
+
+          it 'changes the build.trace' do
+            patch_the_trace
+
+            expect(build.reload.trace).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when Runner makes a force-patch' do
+            it { expect { force_patch_the_trace }.to change { build.updated_at } }
+
+            it "doesn't change the build.trace" do
+              force_patch_the_trace
+
+              expect(build.reload.trace).to eq 'BUILD TRACE appended'
+            end
+          end
+        end
+      end
+
+      context 'when Runner makes a force-patch' do
+        before do
+          force_patch_the_trace
+        end
+
+        it 'gets correct response' do
+          expect(response.status).to eq 202
+          expect(build.reload.trace).to eq 'BUILD TRACE appended'
+          expect(response.header).to have_key 'Range'
+          expect(response.header).to have_key 'Build-Status'
+        end
       end
 
       context 'when content-range start is too big' do
         let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
 
-        it { expect(response.status).to eq 416 }
-        it { expect(response.header).to have_key 'Range' }
-        it { expect(response.header['Range']).to eq '0-11' }
+        it 'gets 416 error response with range headers' do
+          expect(response.status).to eq 416
+          expect(response.header).to have_key 'Range'
+          expect(response.header['Range']).to eq '0-11'
+        end
       end
 
       context 'when content-range start is too small' do
         let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
 
-        it { expect(response.status).to eq 416 }
-        it { expect(response.header).to have_key 'Range' }
-        it { expect(response.header['Range']).to eq '0-11' }
+        it 'gets 416 error response with range headers' do
+          expect(response.status).to eq 416
+          expect(response.header).to have_key 'Range'
+          expect(response.header['Range']).to eq '0-11'
+        end
       end
 
       context 'when Content-Range header is missing' do
-        let(:headers_with_range) { headers.merge({}) }
+        let(:headers_with_range) { headers }
 
         it { expect(response.status).to eq 400 }
       end
@@ -254,7 +387,8 @@ describe Ci::API::API do
       let(:get_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
       let(:headers) { { "GitLab-Workhorse" => "1.0", Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
-      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
+      let(:token) { build.token }
+      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => token) }
 
       before { build.run! }
 
@@ -262,6 +396,7 @@ describe Ci::API::API do
         context "should authorize posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
+
             expect(response).to have_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
@@ -269,6 +404,15 @@ describe Ci::API::API do
 
           it "using token as header" do
             post authorize_url, {}, headers_with_token
+
+            expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            expect(json_response["TempPath"]).not_to be_nil
+          end
+
+          it "using runners token" do
+            post authorize_url, { token: build.project.runners_token }, headers
+
             expect(response).to have_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
@@ -276,7 +420,9 @@ describe Ci::API::API do
 
           it "reject requests that did not go through gitlab-workhorse" do
             headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+
             post authorize_url, { token: build.token }, headers
+
             expect(response).to have_http_status(500)
           end
         end
@@ -284,13 +430,17 @@ describe Ci::API::API do
         context "should fail to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
+
             post authorize_url, { token: build.token, filesize: 100 }, headers
+
             expect(response).to have_http_status(413)
           end
 
           it "using token as header" do
             stub_application_setting(max_artifacts_size: 0)
+
             post authorize_url, { filesize: 100 }, headers_with_token
+
             expect(response).to have_http_status(413)
           end
         end
@@ -353,6 +503,16 @@ describe Ci::API::API do
             context 'updates artifact' do
               before do
                 upload_artifacts(file_upload2, headers_with_token)
+                upload_artifacts(file_upload, headers_with_token)
+              end
+
+              it_behaves_like 'successful artifacts upload'
+            end
+
+            context 'when using runners token' do
+              let(:token) { build.project.runners_token }
+
+              before do
                 upload_artifacts(file_upload, headers_with_token)
               end
 
@@ -497,19 +657,40 @@ describe Ci::API::API do
 
         before do
           delete delete_url, token: build.token
-          build.reload
         end
 
-        it 'removes build artifacts' do
-          expect(response).to have_http_status(200)
-          expect(build.artifacts_file.exists?).to be_falsy
-          expect(build.artifacts_metadata.exists?).to be_falsy
-          expect(build.artifacts_size).to be_nil
+        shared_examples 'having removable artifacts' do
+          it 'removes build artifacts' do
+            build.reload
+
+            expect(response).to have_http_status(200)
+            expect(build.artifacts_file.exists?).to be_falsy
+            expect(build.artifacts_metadata.exists?).to be_falsy
+            expect(build.artifacts_size).to be_nil
+          end
+        end
+
+        context 'when using build token' do
+          before do
+            delete delete_url, token: build.token
+          end
+
+          it_behaves_like 'having removable artifacts'
+        end
+
+        context 'when using runnners token' do
+          before do
+            delete delete_url, token: build.project.runners_token
+          end
+
+          it_behaves_like 'having removable artifacts'
         end
       end
 
       describe 'GET /builds/:id/artifacts' do
-        before { get get_url, token: build.token }
+        before do
+          get get_url, token: token
+        end
 
         context 'build has artifacts' do
           let(:build) { create(:ci_build, :artifacts) }
@@ -518,13 +699,29 @@ describe Ci::API::API do
               'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
           end
 
-          it 'downloads artifact' do
-            expect(response).to have_http_status(200)
-            expect(response.headers).to include download_headers
+          shared_examples 'having downloadable artifacts' do
+            it 'download artifacts' do
+              expect(response).to have_http_status(200)
+              expect(response.headers).to include download_headers
+            end
+          end
+
+          context 'when using build token' do
+            let(:token) { build.token }
+
+            it_behaves_like 'having downloadable artifacts'
+          end
+
+          context 'when using runnners token' do
+            let(:token) { build.project.runners_token }
+
+            it_behaves_like 'having downloadable artifacts'
           end
         end
 
         context 'build does not has artifacts' do
+          let(:token) { build.token }
+
           it 'responds with not found' do
             expect(response).to have_http_status(404)
           end

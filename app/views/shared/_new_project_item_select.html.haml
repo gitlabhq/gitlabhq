@@ -3,7 +3,7 @@
     = project_select_tag :project_path, class: "project-item-select", data: { include_groups: local_assigns[:include_groups], order_by: 'last_activity_at' }
     %a.btn.btn-new.new-project-item-select-button
       = local_assigns[:label]
-      %b.caret
+      = icon('caret-down')
 
   :javascript
     $('.new-project-item-select-button').on('click', function() {

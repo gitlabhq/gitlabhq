@@ -78,7 +78,8 @@ Parameters:
 
 ### Create new issue note
 
-Creates a new note to a single project issue.
+Creates a new note to a single project issue. If you create a note where the body
+only contains an Award Emoji, you'll receive this object back.
 
 ```
 POST /projects/:id/issues/:issue_id/notes
@@ -142,7 +143,7 @@ Example Response:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/pipin"
+    "web_url": "https://gitlab.example.com/pipin"
   },
   "created_at": "2016-04-05T22:10:44.164Z",
   "system": false,
@@ -204,6 +205,7 @@ Parameters:
 ### Create new snippet note
 
 Creates a new note for a single snippet. Snippet notes are comments users can post to a snippet.
+If you create a note where the body only contains an Award Emoji, you'll receive this object back.
 
 ```
 POST /projects/:id/snippets/:snippet_id/notes
@@ -266,7 +268,7 @@ Example Response:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/pipin"
+    "web_url": "https://gitlab.example.com/pipin"
   },
   "created_at": "2016-04-06T16:51:53.239Z",
   "system": false,
@@ -332,6 +334,8 @@ Parameters:
 ### Create new merge request note
 
 Creates a new note for a single merge request.
+If you create a note where the body only contains an Award Emoji, you'll receive
+this object back.
 
 ```
 POST /projects/:id/merge_requests/:merge_request_id/notes
@@ -394,7 +398,7 @@ Example Response:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/pipin"
+    "web_url": "https://gitlab.example.com/pipin"
   },
   "created_at": "2016-04-05T22:11:59.923Z",
   "system": false,

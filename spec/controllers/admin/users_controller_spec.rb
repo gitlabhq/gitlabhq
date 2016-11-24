@@ -114,6 +114,17 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'POST create' do
+    it 'creates the user' do
+      expect{ post :create, user: attributes_for(:user) }.to change{ User.count }.by(1)
+    end
+
+    it 'shows only one error message for an invalid email' do
+      post :create, user: attributes_for(:user, email: 'bogus')
+      expect(assigns[:user].errors).to contain_exactly("Email is invalid")
+    end
+  end
+
   describe 'POST update' do
     context 'when the password has changed' do
       def update_password(user, password, password_confirmation = nil)

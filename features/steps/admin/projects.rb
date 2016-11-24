@@ -70,7 +70,7 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
       select "Developer", from: "access_level"
     end
 
-    click_button "Add users to project"
+    click_button "Add to project"
   end
 
   step 'I should see current user as "Developer"' do

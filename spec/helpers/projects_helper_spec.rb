@@ -11,7 +11,7 @@ describe ProjectsHelper do
 
   describe "can_change_visibility_level?" do
     let(:project) { create(:project) }
-    let(:user) { create(:user) }
+    let(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
     let(:fork_project) { Projects::ForkService.new(project, user).execute }
 
     it "returns false if there are no appropriate permissions" do
@@ -72,7 +72,7 @@ describe ProjectsHelper do
       it 'returns an HTML link to the user' do
         link = helper.link_to_member(project, user)
 
-        expect(link).to match(%r{/u/#{user.username}})
+        expect(link).to match(%r{/#{user.username}})
       end
     end
   end

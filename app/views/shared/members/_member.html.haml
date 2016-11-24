@@ -1,59 +1,29 @@
 - show_roles = local_assigns.fetch(:show_roles, true)
 - show_controls = local_assigns.fetch(:show_controls, true)
-- user = member.user
+- user = local_assigns.fetch(:user, member.user)
+- source = member.source
+- can_admin_member = can?(current_user, action_member_permission(:update, member), member)
 
-%li.js-toggle-container{ class: dom_class(member), id: dom_id(member) }
-  - if show_roles
-    .controls
-      %strong.control-text= member.human_access
-      - if show_controls
-        - if !user && can?(current_user, action_member_permission(:admin, member), member.source)
-          = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
-                    method: :post,
-                    class: 'btn'
-
-        - if can?(current_user, action_member_permission(:update, member), member)
-          = button_tag icon('pencil'),
-                       type: 'button',
-                       class: 'btn inline js-toggle-button',
-                       title: 'Edit'
-
-          - if member.request?
-            = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
-                      method: :post,
-                      class: 'btn btn-success',
-                      title: 'Grant access'
-
-        - if can?(current_user, action_member_permission(:destroy, member), member)
-          - if current_user == user
-            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
-                      method: :delete,
-                      data: { confirm: leave_confirmation_message(member.source) },
-                      class: 'btn btn-remove'
-          - else
-            = link_to icon('trash'), member,
-                      remote: true,
-                      method: :delete,
-                      data: { confirm: remove_member_message(member) },
-                      class: 'btn btn-remove',
-                      title: remove_member_title(member)
-
-
-  %span{ class: ("list-item-name" if show_controls) }
+%li.member{ class: dom_class(member), id: dom_id(member) }
+  %span.list-item-name
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
       %strong
         = link_to user.name, user_path(user)
-      %span.cgray= user.username
+      %span.cgray= user.to_reference
 
       - if user == current_user
-        %span.label.label-success It's you
+        %span.label.label-success.prepend-left-5 It's you
 
       - if user.blocked?
         %label.label.label-danger
           %strong Blocked
 
-      .cgray
+      - if source.instance_of?(Group) && !@group
+        = link_to source, class: "member-group-link prepend-left-5" do
+          = "· #{source.name}"
+
+      .hidden-xs.cgray
         - if member.request?
           Requested
           = time_ago_with_tooltip(member.requested_at)
@@ -73,20 +43,44 @@
           by
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
-
   - if show_roles
-    .edit-member.hide.js-toggle-content
-      %br
-      = form_for member, remote: true, html: { class: 'form-horizontal' }  do |f|
-        .form-group
-          = label_tag "member_access_level_#{member.id}", 'Project access', class: 'control-label'
-          .col-sm-10
-            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control', id: "member_access_level_#{member.id}"
-        .form-group
-          = label_tag "member_expires_at_#{member.id}", 'Access expiration date', class: 'control-label'
-          .col-sm-10
-            .clearable-input
-              = f.text_field :expires_at, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date', id: "member_expires_at_#{member.id}"
+    .controls.member-controls
+      - if show_controls
+        - if user != current_user
+          = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
+            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can_admin_member
+            .prepend-left-5.clearable-input.member-form-control
+              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member
               %i.clear-icon.js-clear-input
-        .prepend-top-10
-          = f.submit 'Save', class: 'btn btn-save btn-sm'
+        - else
+          %span.member-access-text= member.human_access
+
+        - if member.invite? && can?(current_user, action_member_permission(:admin, member), member.source)
+          = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
+                    method: :post,
+                    class: 'btn btn-default  prepend-left-10'
+
+        - elsif member.request? && can_admin_member
+          = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
+                    method: :post,
+                    class: 'btn btn-success prepend-left-10',
+                    title: 'Grant access'
+
+        - if can?(current_user, action_member_permission(:destroy, member), member)
+          - if current_user == user
+            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
+                      method: :delete,
+                      data: { confirm: leave_confirmation_message(member.source) },
+                      class: 'btn btn-remove prepend-left-10'
+          - else
+            = link_to member,
+                      remote: true,
+                      method: :delete,
+                      data: { confirm: remove_member_message(member) },
+                      class: 'btn btn-remove prepend-left-10',
+                      title: remove_member_title(member) do
+              %span.visible-xs-block
+                Delete
+              = icon('trash', class: 'hidden-xs')
+      - else
+        %span.member-access-text= member.human_access

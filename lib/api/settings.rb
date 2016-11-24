@@ -17,12 +17,12 @@ module API
       present current_settings, with: Entities::ApplicationSetting
     end
 
-    # Modify applicaiton settings
+    # Modify application settings
     #
     # Example Request:
     #   PUT /application/settings
     put "application/settings" do
-      attributes = current_settings.attributes.keys - ["id"]
+      attributes = ["repository_storage"] + current_settings.attributes.keys - ["id"]
       attrs = attributes_for_keys(attributes)
 
       if current_settings.update_attributes(attrs)

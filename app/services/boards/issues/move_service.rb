@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class MoveService < Boards::BaseService
+    class MoveService < BaseService
       def execute(issue)
         return false unless can?(current_user, :update_issue, issue)
         return false unless valid_move?
@@ -9,6 +9,10 @@ module Boards
       end
 
       private
+
+      def board
+        @board ||= project.boards.find(params[:board_id])
+      end
 
       def valid_move?
         moving_from_list.present? && moving_to_list.present? &&
@@ -49,7 +53,7 @@ module Boards
           if moving_to_list.movable?
             moving_from_list.label_id
           else
-            board.lists.movable.pluck(:label_id)
+            project.boards.joins(:lists).merge(List.movable).pluck(:label_id)
           end
 
         Array(label_ids).compact

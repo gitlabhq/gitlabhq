@@ -1,5 +1,6 @@
 class PruneOldEventsWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   def perform
     # Contribution calendar shows maximum 12 months of events.

@@ -1,9 +1,10 @@
+/* eslint-disable max-len, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-undef, one-var, one-var-declaration-per-line, quotes, comma-dangle, consistent-return, prefer-template, no-param-reassign, camelcase, vars-on-top, space-in-parens, curly, prefer-arrow-callback, no-unused-vars, no-return-assign, semi, object-shorthand, operator-assignment, padded-blocks, max-len */
 // MergeRequestTabs
 //
 // Handles persisting and restoring the current tab selection and lazily-loading
 // content on the MergeRequests#show page.
 //
-/*= require jquery.cookie */
+/*= require js.cookie */
 
 //
 // ### Example Markup
@@ -56,9 +57,14 @@
 
     MergeRequestTabs.prototype.commitsLoaded = false;
 
+    MergeRequestTabs.prototype.fixedLayoutPref = null;
+
     function MergeRequestTabs(opts) {
       this.opts = opts != null ? opts : {};
       this.opts.setUrl = this.opts.setUrl !== undefined ? this.opts.setUrl : true;
+
+      this.buildsLoaded = this.opts.buildsLoaded || false;
+
       this.setCurrentAction = bind(this.setCurrentAction, this);
       this.tabShown = bind(this.tabShown, this);
       this.showTab = bind(this.showTab, this);
@@ -66,11 +72,17 @@
       this._location = location;
       this.bindEvents();
       this.activateTab(this.opts.action);
+      this.initAffix();
     }
 
     MergeRequestTabs.prototype.bindEvents = function() {
       $(document).on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown);
-      return $(document).on('click', '.js-show-tab', this.showTab);
+      $(document).on('click', '.js-show-tab', this.showTab);
+    };
+
+    MergeRequestTabs.prototype.unbindEvents = function() {
+      $(document).off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown);
+      $(document).off('click', '.js-show-tab', this.showTab);
     };
 
     MergeRequestTabs.prototype.showTab = function(event) {
@@ -85,10 +97,14 @@
       if (action === 'commits') {
         this.loadCommits($target.attr('href'));
         this.expandView();
-      } else if (action === 'diffs') {
+        this.resetViewContainer();
+      } else if (this.isDiffAction(action)) {
         this.loadDiff($target.attr('href'));
         if ((typeof bp !== "undefined" && bp !== null) && bp.getBreakpointSize() !== 'lg') {
           this.shrinkView();
+        }
+        if (this.diffViewType() === 'parallel') {
+          this.expandViewContainer();
         }
         navBarHeight = $('.navbar-gitlab').outerHeight();
         $.scrollTo(".merge-request-details .merge-request-tabs", {
@@ -97,11 +113,14 @@
       } else if (action === 'builds') {
         this.loadBuilds($target.attr('href'));
         this.expandView();
+        this.resetViewContainer();
       } else if (action === 'pipelines') {
         this.loadPipelines($target.attr('href'));
         this.expandView();
+        this.resetViewContainer();
       } else {
         this.expandView();
+        this.resetViewContainer();
       }
       if (this.opts.setUrl) {
         this.setCurrentAction(action);
@@ -111,7 +130,7 @@
     MergeRequestTabs.prototype.scrollToElement = function(container) {
       var $el, navBarHeight;
       if (window.location.hash) {
-        navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+        navBarHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + document.querySelector('.js-tabs-affix').offsetHeight;
         $el = $(container + " " + window.location.hash + ":not(.match)");
         if ($el.length) {
           return $.scrollTo(container + " " + window.location.hash + ":not(.match)", {
@@ -126,7 +145,8 @@
       if (action === 'show') {
         action = 'notes';
       }
-      return $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
+      // important note: the .tab('show') method triggers 'shown.bs.tab' event itself
+      $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
     };
 
     // Replaces the current Merge Request-specific action in the URL with a new one
@@ -156,8 +176,9 @@
         action = 'notes';
       }
       this.currentAction = action;
-      // Remove a trailing '/commits' or '/diffs'
-      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
+      // Remove a trailing '/commits' '/diffs' '/builds' '/pipelines' '/new' '/new/diffs'
+      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
+
       // Append the new action if we're on a tab other than 'notes'
       if (action !== 'notes') {
         new_state += "/" + action;
@@ -196,25 +217,33 @@
       if (this.diffsLoaded) {
         return;
       }
+
+      // We extract pathname for the current Changes tab anchor href
+      // some pages like MergeRequestsController#new has query parameters on that anchor
+      var url = gl.utils.parseUrl(source);
+
       return this._get({
-        url: (source + ".json") + this._location.search,
+        url: (url.pathname + ".json") + this._location.search,
         success: (function(_this) {
           return function(data) {
             $('#diffs').html(data.html);
 
-            if (typeof DiffNotesApp !== 'undefined') {
-              DiffNotesApp.compileComponents();
+            if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+              gl.diffNotesCompileComponents();
             }
 
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
             $('#diffs .js-syntax-highlight').syntaxHighlight();
             $('#diffs .diff-file').singleFileDiff();
-            if (_this.diffViewType() === 'parallel') {
+            if (_this.diffViewType() === 'parallel' && (_this.isDiffAction(_this.currentAction)) ) {
               _this.expandViewContainer();
             }
             _this.diffsLoaded = true;
-            _this.scrollToElement("#diffs");
-            _this.highlighSelectedLine();
+            var anchoredDiff = gl.utils.getLocationHash();
+            if (anchoredDiff) _this.openAnchoredDiff(anchoredDiff, function() {
+              _this.scrollToElement("#diffs");
+              _this.highlighSelectedLine();
+            });
             _this.filesCommentButton = $('.files .diff-file').filesCommentButton();
             return $(document).off('click', '.diff-line-num a').on('click', '.diff-line-num a', function(e) {
               e.preventDefault();
@@ -227,15 +256,26 @@
       });
     };
 
+    MergeRequestTabs.prototype.openAnchoredDiff = function(anchoredDiff, cb) {
+      var diffTitle = $('#file-path-' + anchoredDiff);
+      var diffFile = diffTitle.closest('.diff-file');
+      var nothingHereBlock = $('.nothing-here-block:visible', diffFile);
+      if (nothingHereBlock.length) {
+        diffFile.singleFileDiff(true, cb);
+      } else {
+        cb();
+      }
+    };
+
     MergeRequestTabs.prototype.highlighSelectedLine = function() {
       var $diffLine, diffLineTop, hashClassString, locationHash, navBarHeight;
       $('.hll').removeClass('hll');
       locationHash = window.location.hash;
       if (locationHash !== '') {
-        hashClassString = "." + (locationHash.replace('#', ''));
+        dataLineString = '[data-line-code="' + locationHash.replace('#', '') + '"]';
         $diffLine = $(locationHash + ":not(.match)", $('#diffs'));
         if (!$diffLine.is('tr')) {
-          $diffLine = $('#diffs').find("td" + locationHash + ", td" + hashClassString);
+          $diffLine = $('#diffs').find("td" + locationHash + ", td" + dataLineString);
         } else {
           $diffLine = $diffLine.find('td');
         }
@@ -258,6 +298,7 @@
             document.querySelector("div#builds").innerHTML = data.html;
             gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
             _this.buildsLoaded = true;
+            if (!this.pipelines) this.pipelines = new gl.Pipelines();
             return _this.scrollToElement("#builds");
           };
         })(this)
@@ -308,11 +349,25 @@
 
     MergeRequestTabs.prototype.diffViewType = function() {
       return $('.inline-parallel-buttons a.active').data('view-type');
-    // Returns diff view type
+    };
+
+    MergeRequestTabs.prototype.isDiffAction = function(action) {
+      return action === 'diffs' || action === 'new/diffs'
     };
 
     MergeRequestTabs.prototype.expandViewContainer = function() {
-      return $('.container-fluid').removeClass('container-limited');
+      var $wrapper = $('.content-wrapper .container-fluid');
+      if (this.fixedLayoutPref === null) {
+        this.fixedLayoutPref = $wrapper.hasClass('container-limited');
+      }
+      $wrapper.removeClass('container-limited');
+    };
+
+    MergeRequestTabs.prototype.resetViewContainer = function() {
+      if (this.fixedLayoutPref !== null) {
+        $('.content-wrapper .container-fluid')
+          .toggleClass('container-limited', this.fixedLayoutPref);
+      }
     };
 
     MergeRequestTabs.prototype.shrinkView = function() {
@@ -329,7 +384,7 @@
 
     MergeRequestTabs.prototype.expandView = function() {
       var $gutterIcon;
-      if ($.cookie('collapsed_gutter') === 'true') {
+      if (Cookies.get('collapsed_gutter') === 'true') {
         return;
       }
       $gutterIcon = $('.js-sidebar-toggle i:visible');
@@ -341,6 +396,43 @@
     // Expand the issuable sidebar unless the user explicitly collapsed it
     // Wait until listeners are set
     // Only when sidebar is collapsed
+    };
+
+    MergeRequestTabs.prototype.initAffix = function () {
+      var $tabs = $('.js-tabs-affix');
+
+      // Screen space on small screens is usually very sparse
+      // So we dont affix the tabs on these
+      if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
+
+      var $diffTabs = $('#diff-notes-app'),
+        $fixedNav = $('.navbar-fixed-top'),
+        $layoutNav = $('.layout-nav');
+
+      $tabs.off('affix.bs.affix affix-top.bs.affix')
+        .affix({
+          offset: {
+            top: function () {
+              var tabsTop = $diffTabs.offset().top - $tabs.height();
+              tabsTop = tabsTop - ($fixedNav.height() + $layoutNav.height());
+
+              return tabsTop;
+            }
+          }
+        }).on('affix.bs.affix', function () {
+          $diffTabs.css({
+            marginTop: $tabs.height()
+          });
+        }).on('affix-top.bs.affix', function () {
+          $diffTabs.css({
+            marginTop: ''
+          });
+        });
+
+      // Fix bug when reloading the page already scrolling
+      if ($tabs.hasClass('affix')) {
+        $tabs.trigger('affix.bs.affix');
+      }
     };
 
     return MergeRequestTabs;

@@ -15,6 +15,7 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
   subject { described_class.new(project) }
 
   before do
+    project.team << [project.creator, :master]
     project.create_import_data(data: import_data)
   end
 
@@ -31,9 +32,9 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
       subject.execute
 
       %w(
-        Type-Defect Type-Enhancement Type-Task Type-Review Type-Other Milestone-0.12 Priority-Critical 
-        Priority-High Priority-Medium Priority-Low OpSys-All OpSys-Windows OpSys-Linux OpSys-OSX Security 
-        Performance Usability Maintainability Component-Panel Component-Taskbar Component-Battery 
+        Type-Defect Type-Enhancement Type-Task Type-Review Type-Other Milestone-0.12 Priority-Critical
+        Priority-High Priority-Medium Priority-Low OpSys-All OpSys-Windows OpSys-Linux OpSys-OSX Security
+        Performance Usability Maintainability Component-Panel Component-Taskbar Component-Battery
         Component-Systray Component-Clock Component-Launcher Component-Tint2conf Component-Docs Component-New
       ).each do |label|
         label.sub!("-", ": ")

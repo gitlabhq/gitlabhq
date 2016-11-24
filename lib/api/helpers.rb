@@ -1,24 +1,44 @@
 module API
   module Helpers
+    include Gitlab::Utils
+
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
-    def to_boolean(value)
-      return true if value =~ /^(true|t|yes|y|1|on)$/i
-      return false if value =~ /^(false|f|no|n|0|off)$/i
+    def private_token
+      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+    end
 
-      nil
+    def warden
+      env['warden']
+    end
+
+    # Check the Rails session for valid authentication details
+    #
+    # Until CSRF protection is added to the API, disallow this method for
+    # state-changing endpoints
+    def find_user_from_warden
+      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
+    end
+
+    def declared_params(options = {})
+      options = { include_parent_namespaces: false }.merge(options)
+      declared(params, options).to_h.symbolize_keys
     end
 
     def find_user_by_private_token
-      token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+      token = private_token
+      return nil unless token.present?
+
+      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
     end
 
     def current_user
-      @current_user ||= (find_user_by_private_token || doorkeeper_guard)
+      @current_user ||= find_user_by_private_token
+      @current_user ||= doorkeeper_guard
+      @current_user ||= find_user_from_warden
 
       unless @current_user && Gitlab::UserAccess.new(@current_user).allowed?
         return nil
@@ -51,6 +71,10 @@ module API
       @project ||= find_project(params[:id])
     end
 
+    def available_labels
+      @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
+    end
+
     def find_project(id)
       project = Project.find_with_namespace(id) || Project.find_by(id: id)
 
@@ -61,24 +85,9 @@ module API
       end
     end
 
-    def project_service
-      @project_service ||= begin
-        underscored_service = params[:service_slug].underscore
-
-        if Service.available_services_names.include?(underscored_service)
-          user_project.build_missing_services
-
-          service_method = "#{underscored_service}_service"
-
-          send_service(service_method)
-        end
-      end
-
+    def project_service(project = user_project)
+      @project_service ||= project.find_or_initialize_service(params[:service_slug].underscore)
       @project_service || not_found!("Service")
-    end
-
-    def send_service(service_method)
-      user_project.send(service_method)
     end
 
     def service_attributes
@@ -98,7 +107,7 @@ module API
     end
 
     def find_project_label(id)
-      label = user_project.labels.find_by_id(id) || user_project.labels.find_by_title(id)
+      label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
       label || not_found!('Label')
     end
 
@@ -177,16 +186,11 @@ module API
     def validate_label_params(params)
       errors = {}
 
-      if params[:labels].present?
-        params[:labels].split(',').each do |label_name|
-          label = user_project.labels.create_with(
-            color: Label::DEFAULT_COLOR).find_or_initialize_by(
-              title: label_name.strip)
+      params[:labels].to_s.split(',').each do |label_name|
+        label = available_labels.find_or_initialize_by(title: label_name.strip)
+        next if label.valid?
 
-          if label.invalid?
-            errors[label.title] = label.errors
-          end
-        end
+        errors[label.title] = label.errors
       end
 
       errors
@@ -413,7 +417,7 @@ module API
     end
 
     def secret_token
-      File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+      Gitlab::Shell.secret_token
     end
 
     def send_git_blob(repository, blob)

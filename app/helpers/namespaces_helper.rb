@@ -1,6 +1,9 @@
 module NamespacesHelper
-  def namespaces_options(selected = :current_user, display_path: false)
+  def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
     groups = current_user.owned_groups + current_user.masters_groups
+
+    groups << extra_group if extra_group && !Group.exists?(name: extra_group.name)
+
     users = [current_user.namespace]
 
     data_attr_group = { 'data-options-parent' => 'groups' }

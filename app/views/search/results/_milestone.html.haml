@@ -6,4 +6,4 @@
   - if milestone.description.present?
     .description.term
       = preserve do
-        = search_md_sanitize(markdown(milestone.description))
+        = search_md_sanitize(milestone, :description)

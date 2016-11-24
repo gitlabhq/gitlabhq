@@ -1,20 +1,16 @@
 .content-block.oneline-block.files-changed{"v-if" => "!isLoading && !hasError"}
-  .inline-parallel-buttons
+  .inline-parallel-buttons{"v-if" => "showDiffViewTypeSwitcher"}
     .btn-group
-      %a.btn{ |
-        ":class" => "{'active': !isParallel}", |
-        "@click" => "handleViewTypeChange('inline')"}
+      %button.btn{":class" => "{'active': !isParallel}", "@click" => "handleViewTypeChange('inline')"}
         Inline
-      %a.btn{ |
-        ":class" => "{'active': isParallel}", |
-        "@click" => "handleViewTypeChange('parallel')"}
+      %button.btn{":class" => "{'active': isParallel}", "@click" => "handleViewTypeChange('parallel')"}
         Side-by-side
 
   .js-toggle-container
     .commit-stat-summary
       Showing
-      %strong.cred {{conflictsCount}} {{conflictsData.conflictsText}}
+      %strong.cred {{conflictsCountText}}
       between
-      %strong {{conflictsData.source_branch}}
+      %strong {{conflictsData.sourceBranch}}
       and
-      %strong {{conflictsData.target_branch}}
+      %strong {{conflictsData.targetBranch}}

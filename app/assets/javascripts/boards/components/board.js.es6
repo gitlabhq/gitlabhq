@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require ./board_blank_state
 //= require ./board_delete
 //= require ./board_list
@@ -9,6 +10,7 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.Board = Vue.extend({
+    template: '#js-board-template',
     components: {
       'board-list': gl.issueBoards.BoardList,
       'board-delete': gl.issueBoards.BoardDelete,
@@ -21,7 +23,8 @@
     },
     data () {
       return {
-        filters: Store.state.filters
+        detailIssue: Store.detail,
+        filters: Store.state.filters,
       };
     },
     watch: {
@@ -31,9 +34,34 @@
           this.list.getIssues(true);
         },
         deep: true
+      },
+      detailIssue: {
+        handler () {
+          if (!Object.keys(this.detailIssue.issue).length) return;
+
+          const issue = this.list.findIssue(this.detailIssue.issue.id);
+
+          if (issue) {
+            const boardsList = document.querySelectorAll('.boards-list')[0];
+            const right = (this.$el.offsetLeft + this.$el.offsetWidth) - boardsList.offsetWidth;
+            const left = boardsList.scrollLeft - this.$el.offsetLeft;
+
+            if (right - boardsList.scrollLeft > 0) {
+              boardsList.scrollLeft = right;
+            } else if (left > 0) {
+              boardsList.scrollLeft = this.$el.offsetLeft;
+            }
+          }
+        },
+        deep: true
       }
     },
-    ready () {
+    methods: {
+      showNewIssueForm() {
+        this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
+      }
+    },
+    mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         disabled: this.disabled,
         group: 'boards',
@@ -44,13 +72,9 @@
 
           if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
             const order = this.sortable.toArray(),
-                  $board = this.$parent.$refs.board[e.oldIndex + 1],
-                  list = $board.list;
-
-            $board.$destroy(true);
+                  list = Store.findList('id', parseInt(e.item.dataset.id));
 
             this.$nextTick(() => {
-              Store.state.lists.splice(e.newIndex, 0, list);
               Store.moveList(list, order);
             });
           }
@@ -59,8 +83,5 @@
 
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
-    beforeDestroy () {
-      Store.state.lists.$remove(this.list);
-    }
   });
 })();

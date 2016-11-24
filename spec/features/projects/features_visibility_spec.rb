@@ -2,8 +2,11 @@ require 'spec_helper'
 include WaitForAjax
 
 describe 'Edit Project Settings', feature: true do
+  include WaitForAjax
+
   let(:member) { create(:user) }
   let!(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
+  let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
   describe 'project features visibility selectors', js: true do
@@ -36,6 +39,22 @@ describe 'Edit Project Settings', feature: true do
 
           sleep 0.1
         end
+      end
+    end
+
+    context "pipelines subtabs" do
+      it "shows builds when enabled" do
+        visit namespace_project_pipelines_path(project.namespace, project)
+
+        expect(page).to have_selector(".shortcuts-builds")
+      end
+
+      it "hides builds when disabled" do
+        allow(Ability).to receive(:allowed?).with(member, :read_builds, project).and_return(false)
+
+        visit namespace_project_pipelines_path(project.namespace, project)
+
+        expect(page).not_to have_selector(".shortcuts-builds")
       end
     end
   end
@@ -117,6 +136,66 @@ describe 'Edit Project Settings', feature: true do
           expect(page.status_code).to eq(200)
         end
       end
+    end
+  end
+
+  describe 'repository visibility', js: true do
+    before do
+      project.team << [member, :master]
+      login_as(member)
+      visit edit_namespace_project_path(project.namespace, project)
+    end
+
+    it "disables repository related features" do
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+
+      expect(find(".edit-project")).to have_selector("select.disabled", count: 2)
+    end
+
+    it "shows empty features project homepage" do
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+      select "Disabled", from: "project_project_feature_attributes_issues_access_level"
+      select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
+
+      click_button "Save changes"
+      wait_for_ajax
+
+      visit namespace_project_path(project.namespace, project)
+
+      expect(page).to have_content "Customize your workflow!"
+    end
+
+    it "hides project activity tabs" do
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+      select "Disabled", from: "project_project_feature_attributes_issues_access_level"
+      select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
+
+      click_button "Save changes"
+      wait_for_ajax
+
+      visit activity_namespace_project_path(project.namespace, project)
+
+      page.within(".event-filter") do
+        expect(page).to have_selector("a", count: 2)
+        expect(page).not_to have_content("Push events")
+        expect(page).not_to have_content("Merge events")
+        expect(page).not_to have_content("Comments")
+      end
+    end
+  end
+
+  # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/24056
+  describe 'project statistic visibility' do
+    let!(:project) { create(:project, :private) }
+
+    before do
+      project.team << [member, :guest]
+      login_as(member)
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it "does not show project statistic for guest" do
+      expect(page).not_to have_selector('.project-stats')
     end
   end
 end

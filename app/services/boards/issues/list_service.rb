@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class ListService < Boards::BaseService
+    class ListService < BaseService
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
         issues = without_board_labels(issues) unless list.movable?
@@ -9,6 +9,10 @@ module Boards
       end
 
       private
+
+      def board
+        @board ||= project.boards.find(params[:board_id])
+      end
 
       def list
         @list ||= board.lists.find(params[:id])
@@ -36,12 +40,7 @@ module Boards
       end
 
       def set_state
-        params[:state] =
-          case list.list_type.to_sym
-          when :backlog then 'opened'
-          when :done then 'closed'
-          else 'all'
-          end
+        params[:state] = list.done? ? 'closed' : 'opened'
       end
 
       def board_label_ids

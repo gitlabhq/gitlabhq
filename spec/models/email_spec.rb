@@ -6,4 +6,9 @@ describe Email, models: true do
       subject { build(:email) }
     end
   end
+
+  it 'normalize email value' do
+    expect(described_class.new(email: ' inFO@exAMPLe.com ').email)
+      .to eq 'info@example.com'
+  end
 end

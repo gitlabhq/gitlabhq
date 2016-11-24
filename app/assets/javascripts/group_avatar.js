@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, one-var, one-var-declaration-per-line, no-useless-escape, padded-blocks, max-len */
 (function() {
   this.GroupAvatar = (function() {
     function GroupAvatar() {

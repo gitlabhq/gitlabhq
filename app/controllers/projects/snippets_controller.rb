@@ -1,6 +1,8 @@
 class Projects::SnippetsController < Projects::ApplicationController
+  include ToggleAwardEmoji
+
   before_action :module_enabled
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji]
 
   # Allow read any snippet
   before_action :authorize_read_project_snippet!, except: [:new, :create, :index]
@@ -80,6 +82,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   def snippet
     @snippet ||= @project.snippets.find(params[:id])
   end
+  alias_method :awardable, :snippet
 
   def authorize_read_project_snippet!
     return render_404 unless can?(current_user, :read_project_snippet, @snippet)

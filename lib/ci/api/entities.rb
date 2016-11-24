@@ -15,12 +15,25 @@ module Ci
         expose :filename, :size
       end
 
+      class BuildOptions < Grape::Entity
+        expose :image
+        expose :services
+        expose :artifacts
+        expose :cache
+        expose :dependencies
+        expose :after_script
+      end
+
       class Build < Grape::Entity
         expose :id, :ref, :tag, :sha, :status
         expose :name, :token, :stage
         expose :project_id
         expose :project_name
         expose :artifacts_file, using: ArtifactFile, if: ->(build, _) { build.artifacts? }
+      end
+
+      class BuildCredentials < Grape::Entity
+        expose :type, :url, :username, :password
       end
 
       class BuildDetails < Build
@@ -41,6 +54,8 @@ module Ci
 
         expose :variables
         expose :depends_on_builds, using: Build
+
+        expose :credentials, using: BuildCredentials
       end
 
       class Runner < Grape::Entity

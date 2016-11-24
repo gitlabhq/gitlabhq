@@ -1,34 +1,39 @@
 module API
-  # Runners API
   class Runners < Grape::API
     before { authenticate! }
 
     resource :runners do
-      # Get runners available for user
-      #
-      # Example Request:
-      #   GET /runners
+      desc 'Get runners available for user' do
+        success Entities::Runner
+      end
+      params do
+        optional :scope, type: String, values: %w[active paused online],
+                         desc: 'The scope of specific runners to show'
+      end
       get do
         runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
         present paginate(runners), with: Entities::Runner
       end
 
-      # Get all runners - shared and specific
-      #
-      # Example Request:
-      #   GET /runners/all
+      desc 'Get all runners - shared and specific' do
+        success Entities::Runner
+      end
+      params do
+        optional :scope, type: String, values: %w[active paused online specific shared],
+                         desc: 'The scope of specific runners to show'
+      end
       get 'all' do
         authenticated_as_admin!
         runners = filter_runners(Ci::Runner.all, params[:scope])
         present paginate(runners), with: Entities::Runner
       end
 
-      # Get runner's details
-      #
-      # Parameters:
-      #   id (required) - The ID of ther runner
-      # Example Request:
-      #   GET /runners/:id
+      desc "Get runner's details" do
+        success Entities::RunnerDetails
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the runner'
+      end
       get ':id' do
         runner = get_runner(params[:id])
         authenticate_show_runner!(runner)
@@ -36,33 +41,35 @@ module API
         present runner, with: Entities::RunnerDetails, current_user: current_user
       end
 
-      # Update runner's details
-      #
-      # Parameters:
-      #   id (required) - The ID of ther runner
-      #   description (optional) - Runner's description
-      #   active (optional) - Runner's status
-      #   tag_list (optional) - Array of tags for runner
-      # Example Request:
-      #   PUT /runners/:id
+      desc "Update runner's details" do
+        success Entities::RunnerDetails
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the runner'
+        optional :description, type: String, desc: 'The description of the runner'
+        optional :active, type: Boolean, desc: 'The state of a runner'
+        optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
+        optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
+        optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
+        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked
+      end
       put ':id' do
-        runner = get_runner(params[:id])
+        runner = get_runner(params.delete(:id))
         authenticate_update_runner!(runner)
 
-        attrs = attributes_for_keys [:description, :active, :tag_list, :run_untagged, :locked]
-        if runner.update(attrs)
+        if runner.update(declared_params(include_missing: false))
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)
         end
       end
 
-      # Remove runner
-      #
-      # Parameters:
-      #   id (required) - The ID of ther runner
-      # Example Request:
-      #   DELETE /runners/:id
+      desc 'Remove a runner' do
+        success Entities::Runner
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the runner'
+      end
       delete ':id' do
         runner = get_runner(params[:id])
         authenticate_delete_runner!(runner)
@@ -72,28 +79,31 @@ module API
       end
     end
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
       before { authorize_admin_project }
 
-      # Get runners available for project
-      #
-      # Example Request:
-      #   GET /projects/:id/runners
+      desc 'Get runners available for project' do
+        success Entities::Runner
+      end
+      params do
+        optional :scope, type: String, values: %w[active paused online specific shared],
+                         desc: 'The scope of specific runners to show'
+      end
       get ':id/runners' do
         runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])
         present paginate(runners), with: Entities::Runner
       end
 
-      # Enable runner for project
-      #
-      # Parameters:
-      #   id (required) - The ID of the project
-      #   runner_id (required) - The ID of the runner
-      # Example Request:
-      #   POST /projects/:id/runners/:runner_id
+      desc 'Enable a runner for a project' do
+        success Entities::Runner
+      end
+      params do
+        requires :runner_id, type: Integer, desc: 'The ID of the runner'
+      end
       post ':id/runners' do
-        required_attributes! [:runner_id]
-
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
 
@@ -106,13 +116,12 @@ module API
         end
       end
 
-      # Disable project's runner
-      #
-      # Parameters:
-      #   id (required) - The ID of the project
-      #   runner_id (required) - The ID of the runner
-      # Example Request:
-      #   DELETE /projects/:id/runners/:runner_id
+      desc "Disable project's runner" do
+        success Entities::Runner
+      end
+      params do
+        requires :runner_id, type: Integer, desc: 'The ID of the runner'
+      end
       delete ':id/runners/:runner_id' do
         runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
         not_found!('Runner') unless runner_project

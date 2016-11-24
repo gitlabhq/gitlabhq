@@ -1,27 +1,28 @@
-.scrolling-tabs-container.sub-nav-scroll
-  = render 'shared/nav_scroll'
-  .nav-links.sub-nav.scrolling-tabs
-    %ul{ class: (container_class) }
-      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
-        = link_to project_files_path(@project) do
-          Files
+= content_for :sub_nav do
+  .scrolling-tabs-container.sub-nav-scroll
+    = render 'shared/nav_scroll'
+    .nav-links.sub-nav.scrolling-tabs
+      %ul{ class: (container_class) }
+        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
+          = link_to project_files_path(@project) do
+            Files
 
-      = nav_link(controller: [:commit, :commits]) do
-        = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
-          Commits
+        = nav_link(controller: [:commit, :commits]) do
+          = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
+            Commits
 
-      = nav_link(controller: %w(network)) do
-        = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
-          Network
+        = nav_link(controller: %w(network)) do
+          = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
+            Network
 
-      = nav_link(controller: :compare) do
-        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
-          Compare
+        = nav_link(controller: :compare) do
+          = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
+            Compare
 
-      = nav_link(html_options: {class: branches_tab_class}) do
-        = link_to namespace_project_branches_path(@project.namespace, @project) do
-          Branches
+        = nav_link(html_options: {class: branches_tab_class}) do
+          = link_to namespace_project_branches_path(@project.namespace, @project) do
+            Branches
 
-      = nav_link(controller: [:tags, :releases]) do
-        = link_to namespace_project_tags_path(@project.namespace, @project) do
-          Tags
+        = nav_link(controller: [:tags, :releases]) do
+          = link_to namespace_project_tags_path(@project.namespace, @project) do
+            Tags

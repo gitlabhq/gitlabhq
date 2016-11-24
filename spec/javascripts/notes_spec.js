@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-undef, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
 /*= require notes */
 /*= require autosize */
 /*= require gl_form */

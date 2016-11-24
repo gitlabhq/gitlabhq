@@ -62,6 +62,10 @@ class EventCreateService
     create_event(project, current_user, Event::LEFT)
   end
 
+  def expired_leave_project(project, current_user)
+    create_event(project, current_user, Event::EXPIRED)
+  end
+
   def create_project(project, current_user)
     create_event(project, current_user, Event::CREATED)
   end

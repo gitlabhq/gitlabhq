@@ -1,3 +1,4 @@
+/* eslint-disable */
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -5,6 +6,9 @@
   gl.issueBoards.BoardsStore = {
     disabled: false,
     state: {},
+    detail: {
+      issue: {}
+    },
     moving: {
       issue: {},
       list: {}
@@ -35,6 +39,8 @@
           // Remove any new issues from the backlog
           // as they will be visible in the new list
           list.issues.forEach(backlogList.removeIssue.bind(backlogList));
+
+          this.state.lists = _.sortBy(this.state.lists, 'position');
         });
       this.removeBlankState();
     },
@@ -54,16 +60,19 @@
         title: 'Welcome to your Issue Board!',
         position: 0
       });
+
+      this.state.lists = _.sortBy(this.state.lists, 'position');
     },
     removeBlankState () {
       this.removeList('blank');
 
-      $.cookie('issue_board_welcome_hidden', 'true', {
-        expires: 365 * 10
+      Cookies.set('issue_board_welcome_hidden', 'true', {
+        expires: 365 * 10,
+        path: ''
       });
     },
     welcomeIsHidden () {
-      return $.cookie('issue_board_welcome_hidden') === 'true';
+      return Cookies.get('issue_board_welcome_hidden') === 'true';
     },
     removeList (id, type = 'blank') {
       const list = this.findList('id', id, type);

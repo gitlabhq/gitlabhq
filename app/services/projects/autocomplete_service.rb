@@ -13,7 +13,7 @@ module Projects
     end
 
     def labels
-      @project.labels.select([:title, :color])
+      LabelsFinder.new(current_user, project_id: project.id).execute.select([:title, :color])
     end
 
     def commands(noteable, type)

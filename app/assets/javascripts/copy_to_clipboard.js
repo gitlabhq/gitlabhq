@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-undef, prefer-template, quotes, no-unused-vars, prefer-arrow-callback, padded-blocks, max-len */
 
 /*= require clipboard */
 
@@ -26,15 +27,15 @@
   };
 
   showTooltip = function(target, title) {
-    return $(target).tooltip({
-      container: 'body',
-      html: 'true',
-      placement: 'auto bottom',
-      title: title,
-      trigger: 'manual'
-    }).tooltip('show').one('mouseleave', function() {
-      return $(this).tooltip('hide');
-    });
+    var $target = $(target);
+    var originalTitle = $target.data('original-title');
+
+    $target
+      .attr('title', 'Copied!')
+      .tooltip('fixTitle')
+      .tooltip('show')
+      .attr('title', originalTitle)
+      .tooltip('fixTitle');
   };
 
   $(function() {

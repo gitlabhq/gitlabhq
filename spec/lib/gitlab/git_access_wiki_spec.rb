@@ -1,9 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccessWiki, lib: true do
-  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web') }
+  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', authentication_abilities: authentication_abilities) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:authentication_abilities) do
+    [
+      :read_project,
+      :download_code,
+      :push_code
+    ]
+  end
 
   describe 'push_allowed?' do
     before do
@@ -11,7 +18,7 @@ describe Gitlab::GitAccessWiki, lib: true do
       project.team << [user, :developer]
     end
 
-    subject { access.push_access_check(changes) }
+    subject { access.check('git-receive-pack', changes) }
 
     it { expect(subject.allowed?).to be_truthy }
   end

@@ -5,6 +5,7 @@
         background: $background-color;
         border-top-left-radius: 0;
       }
+
       border-top-left-radius: 0;
     }
   }
@@ -17,6 +18,7 @@
     float: left;
     @extend .col-md-2;
   }
+
   .btn {
     margin-left: 5px;
     float: left;
@@ -32,10 +34,6 @@
   i {
     color: #888;
   }
-}
-
-.dash-project-avatar {
-  float: left;
 }
 
 .dash-project-access-icon {

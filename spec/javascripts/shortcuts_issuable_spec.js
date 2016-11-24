@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren, no-return-assign, no-undef, no-var, quotes, padded-blocks, max-len */
 
 /*= require shortcuts_issuable */
 

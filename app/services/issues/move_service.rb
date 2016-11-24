@@ -52,8 +52,12 @@ module Issues
     end
 
     def cloneable_label_ids
-      @new_project.labels
-        .where(title: @old_issue.labels.pluck(:title)).pluck(:id)
+      params = {
+        project_id: @new_project.id,
+        title: @old_issue.labels.pluck(:title)
+      }
+
+      LabelsFinder.new(current_user, params).execute.pluck(:id)
     end
 
     def cloneable_milestone_id

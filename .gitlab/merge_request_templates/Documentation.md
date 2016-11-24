@@ -1,4 +1,4 @@
-See the general Documentation guidelines http://docs.gitlab.com/ce/development/doc_styleguide.html.
+See the general Documentation guidelines http://docs.gitlab.com/ce/development/doc_styleguide.html
 
 ## What does this MR do?
 

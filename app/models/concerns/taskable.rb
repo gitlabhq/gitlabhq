@@ -53,10 +53,22 @@ module Taskable
 
   # Return a string that describes the current state of this Taskable's task
   # list items, e.g. "12 of 20 tasks completed"
-  def task_status
+  def task_status(short: false)
     return '' if description.blank?
 
+    prep, completed = if short
+                        ['/', '']
+                      else
+                        [' of ', ' completed']
+                      end
+
     sum = tasks.summary
-    "#{sum.complete_count} of #{sum.item_count} #{'task'.pluralize(sum.item_count)} completed"
+    "#{sum.complete_count}#{prep}#{sum.item_count} #{'task'.pluralize(sum.item_count)}#{completed}"
+  end
+
+  # Return a short string that describes the current state of this Taskable's
+  # task list items -- for small screens
+  def task_status_short
+    task_status(short: true)
   end
 end

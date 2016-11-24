@@ -1,4 +1,4 @@
-%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch), branch_id: protected_branch.id } }
+%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
   %td
     = protected_branch.name
     - if @project.root_ref?(protected_branch.name)

@@ -71,4 +71,14 @@ describe Projects::TransferService, services: true do
       it { expect(private_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE) }
     end
   end
+
+  context 'missing group labels applied to issues or merge requests' do
+    it 'delegates tranfer to Labels::TransferService' do
+      group.add_owner(user)
+
+      expect_any_instance_of(Labels::TransferService).to receive(:execute).once.and_call_original
+
+      transfer_project(project, user, group)
+    end
+  end
 end

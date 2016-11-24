@@ -754,6 +754,20 @@ module Ci
         it 'does return production' do
           expect(builds.size).to eq(1)
           expect(builds.first[:environment]).to eq(environment)
+          expect(builds.first[:options]).to include(environment: { name: environment, action: "start" })
+        end
+      end
+
+      context 'when hash is specified' do
+        let(:environment) do
+          { name: 'production',
+            url: 'http://production.gitlab.com' }
+        end
+
+        it 'does return production and URL' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to eq(environment[:name])
+          expect(builds.first[:options]).to include(environment: environment)
         end
       end
 
@@ -770,15 +784,62 @@ module Ci
         let(:environment) { 1 }
 
         it 'raises error' do
-          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error(
+            'jobs:deploy_to_production:environment config should be a hash or a string')
         end
       end
 
       context 'is not a valid string' do
-        let(:environment) { 'production staging' }
+        let(:environment) { 'production:staging' }
 
         it 'raises error' do
-          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error("jobs:deploy_to_production:environment name #{Gitlab::Regex.environment_name_regex_message}")
+        end
+      end
+
+      context 'when on_stop is specified' do
+        let(:review) { { stage: 'deploy', script: 'test', environment: { name: 'review', on_stop: 'close_review' } } }
+        let(:config) { { review: review, close_review: close_review }.compact }
+
+        context 'with matching job' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review', action: 'stop' } } }
+
+          it 'does return a list of builds' do
+            expect(builds.size).to eq(2)
+            expect(builds.first[:environment]).to eq('review')
+          end
+        end
+
+        context 'without matching job' do
+          let(:close_review) { nil  }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review is not defined')
+          end
+        end
+
+        context 'with close job without environment' do
+          let(:close_review) { { stage: 'deploy', script: 'test' } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review does not have environment defined')
+          end
+        end
+
+        context 'with close job for different environment' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: 'production' } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review have different environment name')
+          end
+        end
+
+        context 'with close job without stop action' do
+          let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review' } } }
+
+          it 'raises error' do
+            expect { builds }.to raise_error('review job: on_stop job close_review needs to have action stop defined')
+          end
         end
       end
     end
@@ -1063,8 +1124,8 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra config should be a hash")
       end
 
-      it "returns errors if there are unknown parameters that are hashes, but doesn't have a script" do
-        config = YAML.dump({ extra: { services: "test" } })
+      it "returns errors if services configuration is not correct" do
+        config = YAML.dump({ extra: { script: 'rspec', services: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra:services config should be an array of strings")

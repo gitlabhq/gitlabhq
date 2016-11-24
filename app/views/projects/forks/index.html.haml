@@ -15,7 +15,7 @@
           = sort_options_hash[@sort]
         - else
           = sort_title_recently_created
-        %b.caret
+        = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         %li
           - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]

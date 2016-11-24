@@ -5,6 +5,7 @@
 
   .file-finder {
     width: 50%;
+
     .file-finder-input {
       width: 95%;
       display: inline-block;
@@ -22,12 +23,18 @@
       border-bottom: 1px solid $table-border-gray;
       border-top: 1px solid $table-border-gray;
 
-      td, th {
+      td,
+      th {
         line-height: 21px;
       }
 
       .last-commit {
-        @include str-truncated(60%);
+        @include str-truncated(506px);
+
+        @media (min-width: $screen-sm-max) and (max-width: $screen-md-max) {
+          @include str-truncated(450px);
+        }
+
       }
 
       .commit-history-link-spacer {
@@ -55,11 +62,21 @@
   }
 
   .tree-item {
+    .link-container {
+      padding: 0;
+
+      a {
+        padding: 10px $gl-padding;
+        display: block;
+      }
+    }
+
     .tree-item-file-name {
       max-width: 320px;
       vertical-align: middle;
 
-      i, a {
+      i,
+      a {
         color: $gl-dark-link-color;
       }
 
@@ -154,4 +171,8 @@
   margin-top: 11px;
   position: relative;
   z-index: 2;
+
+  .download-button {
+    margin-left: $btn-side-margin;
+  }
 }

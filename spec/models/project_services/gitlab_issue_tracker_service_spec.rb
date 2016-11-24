@@ -1,23 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#
-
 require 'spec_helper'
 
 describe GitlabIssueTrackerService, models: true do
@@ -55,9 +35,9 @@ describe GitlabIssueTrackerService, models: true do
       end
 
       it 'gives the correct path' do
-        expect(@service.project_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues")
-        expect(@service.new_issue_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/new")
-        expect(@service.issue_url(432)).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/432")
+        expect(@service.project_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.path_with_namespace}/issues")
+        expect(@service.new_issue_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.path_with_namespace}/issues/new")
+        expect(@service.issue_url(432)).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.path_with_namespace}/issues/432")
       end
     end
 

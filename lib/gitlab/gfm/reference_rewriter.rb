@@ -58,7 +58,7 @@ module Gitlab
         referable = find_referable(reference)
         return reference unless referable
 
-        cross_reference = referable.to_reference(target_project)
+        cross_reference = build_cross_reference(referable, target_project)
         return reference if reference == cross_reference
 
         new_text = before + cross_reference + after
@@ -70,6 +70,14 @@ module Gitlab
                                                    @current_user)
         extractor.analyze(reference)
         extractor.all.first
+      end
+
+      def build_cross_reference(referable, target_project)
+        if referable.respond_to?(:project)
+          referable.to_reference(target_project)
+        else
+          referable.to_reference(@source_project, target_project)
+        end
       end
 
       def substitution_valid?(substituted)

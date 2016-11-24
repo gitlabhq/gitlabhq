@@ -1,2 +1,2 @@
-= form_tag(path, method: :get, id: "issue_search_form", class: 'issue-search-form') do
-  = search_field_tag :issue_search, params[:issue_search], { placeholder: 'Filter by name ...', class: 'form-control issue_search search-text-input input-short', spellcheck: false }
+= form_tag(path, method: :get, id: "issuable_search_form", class: 'issuable-search-form') do
+  = search_field_tag :search, params[:search], { id: 'issuable_search', placeholder: 'Filter by name ...', class: 'form-control issuable_search search-text-input input-short', spellcheck: false }

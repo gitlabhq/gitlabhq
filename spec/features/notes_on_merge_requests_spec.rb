@@ -240,6 +240,18 @@ describe 'Comments', feature: true do
           is_expected.to have_css('.notes_holder .note', count: 1)
           is_expected.to have_button('Reply...')
         end
+
+        it 'adds code to discussion' do
+          click_button 'Reply...'
+
+          page.within(first('.js-discussion-note-form')) do
+            fill_in 'note[note]', with: '```{{ test }}```'
+
+            click_button('Comment')
+          end
+
+          expect(page).to have_content('{{ test }}')
+        end
       end
     end
   end

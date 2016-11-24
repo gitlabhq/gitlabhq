@@ -9,14 +9,18 @@ module Gitlab
         }
       end
 
-      def klass
-        Label
+      def project_association
+        :labels
       end
 
       def create!
-        project.labels.find_or_create_by!(title: title) do |label|
-          label.color = color
-        end
+        params  = attributes.except(:project)
+        service = ::Labels::FindOrCreateService.new(nil, project, params)
+        label   = service.execute(skip_authorization: true)
+
+        raise ActiveRecord::RecordInvalid.new(label) unless label.persisted?
+
+        label
       end
 
       private

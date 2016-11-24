@@ -2,6 +2,10 @@
 
 > [Introduced][ci-229] in GitLab CE 7.14.
 
+> **Note**:
+GitLab 8.12 has a completely redesigned build permissions system.
+Read all about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#build-triggers).
+
 Triggers can be used to force a rebuild of a specific branch, tag or commit,
 with an API call.
 
@@ -53,6 +57,22 @@ below.
 
 See the [Examples](#examples) section for more details on how to actually
 trigger a rebuild.
+
+## Trigger a build from webhook
+
+> Introduced in GitLab 8.14.
+
+To trigger a build from webhook of another project you need to add the following
+webhook url for Push and Tag push events:
+
+```
+https://gitlab.example.com/api/v3/projects/:id/ref/:ref/trigger/builds?token=TOKEN
+```
+
+> **Note**:
+- `ref` should be passed as part of url in order to take precedence over `ref`
+  from webhook body that designates the branchref that fired the trigger in the source repository.
+- `ref` should be url encoded if contains slashes.
 
 ## Pass build variables to a trigger
 
@@ -163,6 +183,14 @@ curl --request POST \
   --form ref=master \
   --form "variables[UPLOAD_TO_S3]=true" \
   https://gitlab.example.com/api/v3/projects/9/trigger/builds
+```
+
+### Using webhook to trigger builds
+
+You can add the following webhook to another project in order to trigger a build:
+
+```
+https://gitlab.example.com/api/v3/projects/9/ref/master/trigger/builds?token=TOKEN&variables[UPLOAD_TO_S3]=true
 ```
 
 ### Using cron to trigger nightly builds

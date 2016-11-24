@@ -1,18 +1,21 @@
 require 'spec_helper'
 
 describe 'projects/merge_requests/edit.html.haml' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:fork_project) { create(:project, forked_from_project: project) }
   let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+  let(:milestone) { create(:milestone, project: project) }
 
   let(:closed_merge_request) do
     create(:closed_merge_request,
       source_project: fork_project,
       target_project: project,
-      author: user)
+      author: user,
+      assignee: user,
+      milestone: milestone)
   end
 
   before do

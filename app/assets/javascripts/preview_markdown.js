@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, wrap-iife, no-else-return, consistent-return, object-shorthand, comma-dangle, no-param-reassign, padded-blocks, no-undef, camelcase, prefer-arrow-callback, max-len */
 // MarkdownPreview
 //
 // Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,

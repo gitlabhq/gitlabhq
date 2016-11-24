@@ -1,9 +1,12 @@
 - unless @snippet.content.empty?
   - if markup?(@snippet.file_name)
     %textarea.markdown-snippet-copy.blob-content{data: {blob_id: @snippet.id}}
-      = @snippet.data
+      = @snippet.content
     .file-content.wiki
-      = render_markup(@snippet.file_name, @snippet.data)
+      - if gitlab_markdown?(@snippet.file_name)
+        = preserve(markdown_field(@snippet, :content))
+      - else
+        = render_markup(@snippet.file_name, @snippet.content)
   - else
     = render 'shared/file_highlight', blob: @snippet
 - else

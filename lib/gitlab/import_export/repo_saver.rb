@@ -20,7 +20,7 @@ module Gitlab
       private
 
       def bundle_to_disk
-        FileUtils.mkdir_p(@shared.export_path)
+        mkdir_p(@shared.export_path)
         git_bundle(repo_path: path_to_repo, bundle_path: @full_path)
       rescue => e
         @shared.error(e)

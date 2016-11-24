@@ -1,6 +1,17 @@
 module Gitlab
   module Conflict
     class Parser
+      class UnresolvableError < StandardError
+      end
+
+      class UnmergeableFile < UnresolvableError
+      end
+
+      class UnsupportedEncoding < UnresolvableError
+      end
+
+      # Recoverable errors - the conflict can be resolved in an editor, but not with
+      # sections.
       class ParserError < StandardError
       end
 
@@ -8,12 +19,6 @@ module Gitlab
       end
 
       class MissingEndDelimiter < ParserError
-      end
-
-      class UnmergeableFile < ParserError
-      end
-
-      class UnsupportedEncoding < ParserError
       end
 
       def parse(text, our_path:, their_path:, parent_file: nil)

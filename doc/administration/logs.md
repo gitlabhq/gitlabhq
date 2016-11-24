@@ -13,7 +13,8 @@ This guide talks about how to read and use these system log files.
 
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for
 omnibus package or in `/home/git/gitlab/log/production.log` for
-installations from source.
+installations from source. (When Gitlab is running in an environment
+other than production, the corresponding logfile is shown here.)
 
 It contains information about all performed requests. You can see the
 URL and type of request, IP address and what exactly parts of code were

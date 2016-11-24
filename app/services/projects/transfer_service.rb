@@ -28,6 +28,7 @@ module Projects
       Project.transaction do
         old_path = project.path_with_namespace
         old_namespace = project.namespace
+        old_group = project.group
         new_path = File.join(new_namespace.try(:path) || '', project.path)
 
         if Project.where(path: project.path, namespace_id: new_namespace.try(:id)).present?
@@ -56,6 +57,9 @@ module Projects
 
         # Move wiki repo also if present
         gitlab_shell.mv_repository(project.repository_storage_path, "#{old_path}.wiki", "#{new_path}.wiki")
+
+        # Move missing group labels to project
+        Labels::TransferService.new(current_user, old_group, project).execute
 
         # clear project cached events
         project.reset_events_cache

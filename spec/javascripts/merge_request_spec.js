@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren, no-return-assign, no-undef, padded-blocks */
 
 /*= require merge_request */
 

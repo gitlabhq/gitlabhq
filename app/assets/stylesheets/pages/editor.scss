@@ -1,7 +1,7 @@
 .file-editor {
   #editor {
     border: none;
-    @include border-radius(0);
+    border-radius: 0;
     height: 500px;
     margin: 0;
     padding: 0;
@@ -15,6 +15,7 @@
 
   .cancel-btn {
     color: #b94a48;
+
     &:hover {
       color: #b94a48;
     }
@@ -54,11 +55,16 @@
     float: left;
   }
 
+  .file-buttons {
+    font-size: 0;
+  }
+
   .select2 {
     float: right;
   }
 
   .encoding-selector,
+  .soft-wrap-toggle,
   .license-selector,
   .gitignore-selector,
   .gitlab-ci-yml-selector {
@@ -67,7 +73,31 @@
     font-family: $regular_font;
   }
 
-  .gitignore-selector, .license-selector, .gitlab-ci-yml-selector {
+  .soft-wrap-toggle {
+    margin: 0 $btn-side-margin;
+
+    .soft-wrap {
+      display: block;
+    }
+
+    .no-wrap {
+      display: none;
+    }
+
+    &.soft-wrap-active {
+      .soft-wrap {
+        display: none;
+      }
+
+      .no-wrap {
+        display: block;
+      }
+    }
+  }
+
+  .gitignore-selector,
+  .license-selector,
+  .gitlab-ci-yml-selector {
     .dropdown {
       line-height: 21px;
     }

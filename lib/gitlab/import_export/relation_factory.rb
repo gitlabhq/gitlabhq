@@ -7,23 +7,30 @@ module Gitlab
                     variables: 'Ci::Variable',
                     triggers: 'Ci::Trigger',
                     builds: 'Ci::Build',
-                    hooks: 'ProjectHook' }.freeze
+                    hooks: 'ProjectHook',
+                    merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
+                    push_access_levels: 'ProtectedBranch::PushAccessLevel',
+                    labels: :project_labels,
+                    priorities: :label_priorities,
+                    label: :project_label }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id].freeze
+
+      PROJECT_REFERENCES = %w[project_id source_project_id gl_project_id target_project_id].freeze
 
       BUILD_MODELS = %w[Ci::Build commit_status].freeze
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels project_label group_label].freeze
 
       def self.create(*args)
         new(*args).create
       end
 
-      def initialize(relation_sym:, relation_hash:, members_mapper:, user:)
+      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project_id:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('id', 'noteable_id')
+        @relation_hash = relation_hash.except('noteable_id').merge('project_id' => project_id)
         @members_mapper = members_mapper
         @user = user
         @imported_object_retries = 0
@@ -50,6 +57,8 @@ module Gitlab
 
         update_user_references
         update_project_references
+
+        handle_group_label if group_label?
         reset_ci_tokens if @relation_name == 'Ci::Trigger'
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diffs if @relation_name == :merge_request_diff
@@ -117,6 +126,20 @@ module Gitlab
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
+      def group_label?
+        @relation_hash['type'] == 'GroupLabel'
+      end
+
+      def handle_group_label
+        # If there's no group, move the label to a project label
+        if @relation_hash['group_id']
+          @relation_hash['project_id'] = nil
+          @relation_name = :group_label
+        else
+          @relation_hash['type'] = 'ProjectLabel'
+        end
+      end
+
       def reset_ci_tokens
         return unless Gitlab::ImportExport.reset_tokens?
 
@@ -149,7 +172,8 @@ module Gitlab
       end
 
       def parsed_relation_hash
-        @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
+        @parsed_relation_hash ||= Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
+                                                                               relation_class: relation_class)
       end
 
       def set_st_diffs
@@ -161,13 +185,35 @@ module Gitlab
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
           if EXISTING_OBJECT_CHECK.include?(@relation_name)
-            existing_object = relation_class.find_or_initialize_by(parsed_relation_hash.slice('title', 'project_id'))
-            existing_object.assign_attributes(parsed_relation_hash)
+            attribute_hash = attribute_hash_for(['events', 'priorities'])
+
+            existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
+
             existing_object
           else
             relation_class.new(parsed_relation_hash)
           end
         end
+      end
+
+      def attribute_hash_for(attributes)
+        attributes.inject({}) do |hash, value|
+          hash[value] = parsed_relation_hash.delete(value) if parsed_relation_hash[value]
+          hash
+        end
+      end
+
+      def existing_object
+        @existing_object ||=
+          begin
+            finder_attributes = @relation_name == :group_label ? %w[title group_id] : %w[title project_id]
+            finder_hash = parsed_relation_hash.slice(*finder_attributes)
+            existing_object = relation_class.find_or_create_by(finder_hash)
+            # Done in two steps, as MySQL behaves differently than PostgreSQL using
+            # the +find_or_create_by+ method and does not return the ID the second time.
+            existing_object.update!(parsed_relation_hash)
+            existing_object
+          end
       end
     end
   end

@@ -1,3 +1,4 @@
+/* eslint-disable */
 class List {
   constructor (obj) {
     this.id = obj.id;
@@ -41,7 +42,8 @@ class List {
   }
 
   destroy () {
-    gl.issueBoards.BoardsStore.state.lists.$remove(this);
+    const index = gl.issueBoards.BoardsStore.state.lists.indexOf(this);
+    gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
     gl.boardService.destroyList(this.id);
@@ -84,6 +86,17 @@ class List {
         }
 
         this.createIssues(data.issues);
+      });
+  }
+
+  newIssue (issue) {
+    this.addIssue(issue);
+    this.issuesSize++;
+
+    return gl.boardService.newIssue(this.id, issue)
+      .then((resp) => {
+        const data = resp.json();
+        issue.id = data.iid;
       });
   }
 

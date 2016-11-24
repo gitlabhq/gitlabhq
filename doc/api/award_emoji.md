@@ -1,12 +1,13 @@
 # Award Emoji
 
-> [Introduced][ce-4575] in GitLab 8.9.
+> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
+
 
 An awarded emoji tells a thousand words, and can be awarded on issues, merge
-requests and notes/comments. Issues, merge requests and notes are further called
+requests, snippets, and notes/comments. Issues, merge requests, snippets, and notes are further called
 `awardables`.
 
-## Issues and merge requests
+## Issues, merge requests, and snippets
 
 ### List an awardable's award emoji
 
@@ -15,6 +16,7 @@ Gets a list of all award emoji
 ```
 GET /projects/:id/issues/:issue_id/award_emoji
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji
+GET /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
@@ -41,7 +43,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/u/root"
+      "web_url": "http://gitlab.example.com/root"
     },
     "created_at": "2016-06-15T10:09:34.206Z",
     "updated_at": "2016-06-15T10:09:34.206Z",
@@ -57,7 +59,7 @@ Example Response:
       "id": 26,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/u/user4"
+      "web_url": "http://gitlab.example.com/user4"
     },
     "created_at": "2016-06-15T10:09:34.177Z",
     "updated_at": "2016-06-15T10:09:34.177Z",
@@ -69,11 +71,12 @@ Example Response:
 
 ### Get single award emoji
 
-Gets a single award emoji from an issue or merge request.
+Gets a single award emoji from an issue, snippet, or merge request.
 
 ```
 GET /projects/:id/issues/:issue_id/award_emoji/:award_id
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -100,7 +103,7 @@ Example Response:
     "id": 26,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/user4"
+    "web_url": "http://gitlab.example.com/user4"
   },
   "created_at": "2016-06-15T10:09:34.177Z",
   "updated_at": "2016-06-15T10:09:34.177Z",
@@ -116,6 +119,7 @@ This end point creates an award emoji on the specified resource
 ```
 POST /projects/:id/issues/:issue_id/award_emoji
 POST /projects/:id/merge_requests/:merge_request_id/award_emoji
+POST /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
@@ -142,7 +146,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T17:47:29.266Z",
   "updated_at": "2016-06-17T17:47:29.266Z",
@@ -159,6 +163,7 @@ admins or the author of the award. Status code 200 on success, 401 if unauthoriz
 ```
 DELETE /projects/:id/issues/:issue_id/award_emoji/:award_id
 DELETE /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -185,7 +190,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T17:47:29.266Z",
   "updated_at": "2016-06-17T17:47:29.266Z",
@@ -197,7 +202,7 @@ Example Response:
 ## Award Emoji on Notes
 
 The endpoints documented above are available for Notes as well. Notes
-are a sub-resource of Issues and Merge Requests. The examples below
+are a sub-resource of Issues, Merge Requests, or Snippets. The examples below
 describe working with Award Emoji on notes for an Issue, but can be
 easily adapted for notes on a Merge Request.
 
@@ -233,7 +238,7 @@ Example Response:
       "id": 26,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/u/user4"
+      "web_url": "http://gitlab.example.com/user4"
     },
     "created_at": "2016-06-15T10:09:34.197Z",
     "updated_at": "2016-06-15T10:09:34.197Z",
@@ -274,7 +279,7 @@ Example Response:
     "id": 26,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/user4"
+    "web_url": "http://gitlab.example.com/user4"
   },
   "created_at": "2016-06-15T10:09:34.197Z",
   "updated_at": "2016-06-15T10:09:34.197Z",
@@ -314,7 +319,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T19:59:55.888Z",
   "updated_at": "2016-06-17T19:59:55.888Z",
@@ -357,7 +362,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/u/root"
+    "web_url": "http://gitlab.example.com/root"
   },
   "created_at": "2016-06-17T19:59:55.888Z",
   "updated_at": "2016-06-17T19:59:55.888Z",

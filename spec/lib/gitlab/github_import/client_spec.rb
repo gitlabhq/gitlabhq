@@ -66,6 +66,6 @@ describe Gitlab::GithubImport::Client, lib: true do
     stub_request(:get, /api.github.com/)
     allow(client.api).to receive(:rate_limit!).and_raise(Octokit::NotFound)
 
-    expect { client.issues }.not_to raise_error
+    expect { client.issues {} }.not_to raise_error
   end
 end

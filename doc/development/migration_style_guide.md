@@ -9,10 +9,10 @@ a big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style guide below.
 
 Migrations should not require GitLab installations to be taken offline unless
-_absolutely_ necessary. If a migration requires downtime this should be
-clearly mentioned during the review process as well as being documented in the
-monthly release post. For more information see the "Downtime Tagging" section
-below.
+_absolutely_ necessary - see the ["What Requires Downtime?"](what_requires_downtime.md)
+page. If a migration requires downtime, this should be clearly mentioned during
+the review process, as well as being documented in the monthly release post. For
+more information, see the "Downtime Tagging" section below.
 
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as little assumptions as possible
@@ -60,7 +60,7 @@ migration was tested.
 
 If you need to remove index, please add a condition like in following example:
 
-```
+```ruby
 remove_index :namespaces, column: :name if index_exists?(:namespaces, :name)
 ```
 
@@ -75,7 +75,7 @@ need for downtime. To use this method you must disable transactions by calling
 the method `disable_ddl_transaction!` in the body of your migration class like
 so:
 
-```
+```ruby
 class MyMigration < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
@@ -96,7 +96,7 @@ the `up` and `down` methods in your migration class.
 For example, to add the column `foo` to the `projects` table with a default
 value of `10` you'd write the following:
 
-```
+```ruby
 class MyMigration < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
@@ -111,6 +111,28 @@ class MyMigration < ActiveRecord::Migration
 end
 ```
 
+
+## Integer column type
+
+By default, an integer column can hold up to a 4-byte (32-bit) number. That is
+a max value of 2,147,483,647. Be aware of this when creating a column that will
+hold file sizes in byte units. If you are tracking file size in bytes this
+restricts the maximum file size to just over 2GB.
+
+To allow an integer column to hold up to an 8-byte (64-bit) number, explicitly
+set the limit to 8-bytes. This will allow the column to hold a value up to
+9,223,372,036,854,775,807.
+
+Rails migration example:
+
+```ruby
+add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
+
+# or
+
+add_column(:projects, :foo, :integer, default: 10, limit: 8)
+```
+
 ## Testing
 
 Make sure that your migration works with MySQL and PostgreSQL with data. An empty database does not guarantee that your migration is correct.
@@ -123,7 +145,7 @@ Please prefer Arel and plain SQL over usual ActiveRecord syntax. In case of usin
 
 Example with Arel:
 
-```
+```ruby
 users = Arel::Table.new(:users)
 users.group(users[:user_id]).having(users[:id].count.gt(5))
 
@@ -132,7 +154,7 @@ users.group(users[:user_id]).having(users[:id].count.gt(5))
 
 Example with plain SQL and `quote_string` helper:
 
-```
+```ruby
 select_all("SELECT name, COUNT(id) as cnt FROM tags GROUP BY name HAVING COUNT(id) > 1").each do |tag|
   tag_name = quote_string(tag["name"])
   duplicate_ids = select_all("SELECT id FROM tags WHERE name = '#{tag_name}'").map{|tag| tag["id"]}

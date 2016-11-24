@@ -79,7 +79,9 @@ describe PostReceive do
     end
 
     it "does not run if the author is not in the project" do
-      allow(Key).to receive(:find_by).with(hash_including(id: anything())) { nil }
+      allow_any_instance_of(Gitlab::GitPostReceive).
+        to receive(:identify_using_ssh_key).
+        and_return(nil)
 
       expect(project).not_to receive(:execute_hooks)
 
@@ -90,7 +92,13 @@ describe PostReceive do
       allow(Project).to receive(:find_with_namespace).and_return(project)
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
-      expect(project).to receive(:update_merge_requests)
+
+      PostReceive.new.perform(pwd(project), key_id, base64_changes)
+    end
+
+    it "enqueues a UpdateMergeRequestsWorker job" do
+      allow(Project).to receive(:find_with_namespace).and_return(project)
+      expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
       PostReceive.new.perform(pwd(project), key_id, base64_changes)
     end

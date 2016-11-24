@@ -114,6 +114,7 @@ describe Namespace, models: true do
 
     it "cleans the path and makes sure it's available" do
       expect(Namespace.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
+      expect(Namespace.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
     end
   end
 end

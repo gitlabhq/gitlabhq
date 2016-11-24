@@ -61,6 +61,15 @@ acs-*.bib
 # fixme
 *.lox
 
+# feynmf/feynmp
+*.mf
+*.mp
+*.t[1-9]
+*.t[1-9][0-9]
+*.tfm
+*.[1-9]
+*.[1-9][0-9]
+
 #(r)(e)ledmac/(r)(e)ledpar
 *.end
 *.?end
@@ -192,3 +201,6 @@ TSWLatexianTemp*
 
 # KBibTeX
 *~[0-9]*
+
+# auto folder when using emacs and auctex 
+/auto/*

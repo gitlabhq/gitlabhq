@@ -54,6 +54,7 @@ Libraries with the following licenses are acceptable for use:
 - [BSD 2-Clause License][BSD-2-Clause]: A permissive (non-copyleft) license as defined by the Open Source Initiative.
 - [BSD 3-Clause License][BSD-3-Clause] (also known as New BSD or Modified BSD): A permissive (non-copyleft) license as defined by the Open Source Initiative
 - [ISC License][ISC] (also known as the OpenBSD License): A permissive (non-copyleft) license as defined by the Open Source Initiative.
+- [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 
 ## Unacceptable Licenses
 
@@ -61,6 +62,7 @@ Libraries with the following licenses are unacceptable for use:
 
 - [GNU GPL][GPL] (version 1, [version 2][GPLv2], [version 3][GPLv3], or any future versions): GPL-licensed libraries cannot be linked to from non-GPL projects.
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
+- [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
 
 ## Notes
 
@@ -85,9 +87,12 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [BSD-2-Clause]: https://opensource.org/licenses/BSD-2-Clause
 [BSD-3-Clause]: https://opensource.org/licenses/BSD-3-Clause
 [ISC]: https://opensource.org/licenses/ISC
+[CC0]: https://creativecommons.org/publicdomain/zero/1.0/
 [GPL]: http://choosealicense.com/licenses/gpl-3.0/
 [GPLv2]: http://www.gnu.org/licenses/gpl-2.0.txt
 [GPLv3]: http://www.gnu.org/licenses/gpl-3.0.txt
 [AGPLv3]: http://choosealicense.com/licenses/agpl-3.0/
 [GNU-GPL-FAQ]: http://www.gnu.org/licenses/gpl-faq.html#IfLibraryIsGPL
 [OSI-GPL]: https://opensource.org/faq#linking-proprietary-code
+[OSL]: https://opensource.org/licenses/OSL-3.0
+[OSL-GNU]: https://www.gnu.org/licenses/license-list.en.html#OSL

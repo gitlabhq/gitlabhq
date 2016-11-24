@@ -7,11 +7,18 @@ module Projects
     def execute
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
+      @skip_wiki = params.delete(:skip_wiki)
+
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
         deny_visibility_level(@project)
+        return @project
+      end
+
+      unless allowed_fork?(forked_from_project_id)
+        @project.errors.add(:forked_from_project_id, 'is forbidden')
         return @project
       end
 
@@ -71,6 +78,13 @@ module Projects
       @project.errors.add(:namespace, "is not valid")
     end
 
+    def allowed_fork?(source_project_id)
+      return true if source_project_id.nil?
+
+      source_project = Project.find_by(id: source_project_id)
+      current_user.can?(:fork_project, source_project)
+    end
+
     def allowed_namespace?(user, namespace_id)
       namespace = Namespace.find_by(id: namespace_id)
       current_user.can?(:create_projects, namespace)
@@ -80,8 +94,8 @@ module Projects
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
       unless @project.gitlab_project_import?
-        @project.create_wiki if @project.feature_available?(:wiki, current_user)
-        @project.build_missing_services
+        @project.create_wiki unless skip_wiki?
+        create_services_from_active_templates(@project)
 
         @project.create_labels
       end
@@ -92,6 +106,12 @@ module Projects
       unless @project.group || @project.gitlab_project_import?
         @project.team << [current_user, :master, current_user]
       end
+
+      @project.group.refresh_members_authorized_projects if @project.group
+    end
+
+    def skip_wiki?
+      !@project.feature_available?(:wiki, current_user) || @skip_wiki
     end
 
     def save_project_and_import_data(import_data)
@@ -116,6 +136,13 @@ module Projects
       end
 
       @project
+    end
+
+    def create_services_from_active_templates(project)
+      Service.where(template: true, active: true).each do |template|
+        service = Service.build_from_template(project.id, template)
+        service.save!
+      end
     end
   end
 end

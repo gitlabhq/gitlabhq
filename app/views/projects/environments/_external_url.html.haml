@@ -1,0 +1,3 @@
+- if environment.external_url && can?(current_user, :read_environment, environment)
+  = link_to environment.external_url, target: '_blank', class: 'btn external-url' do
+    = icon('external-link')

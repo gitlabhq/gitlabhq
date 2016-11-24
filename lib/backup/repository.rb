@@ -2,11 +2,14 @@ require 'yaml'
 
 module Backup
   class Repository
+
     def dump
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
         $progress.print " * #{project.path_with_namespace} ... "
+        path_to_project_repo = path_to_repo(project)
+        path_to_project_bundle = path_to_bundle(project)
 
         # Create namespace dir if missing
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
@@ -14,8 +17,22 @@ module Backup
         if project.empty_repo?
           $progress.puts "[SKIPPED]".color(:cyan)
         else
-          cmd = %W(tar -cf #{path_to_bundle(project)} -C #{path_to_repo(project)} .)
+          in_path(path_to_project_repo) do |dir|
+            FileUtils.mkdir_p(path_to_tars(project))
+            cmd = %W(tar -cf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+            output, status = Gitlab::Popen.popen(cmd)
+
+            unless status.zero?
+              puts "[FAILED]".color(:red)
+              puts "failed: #{cmd.join(' ')}"
+              puts output
+              abort 'Backup failed'
+            end
+          end
+
+          cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_project_repo} bundle create #{path_to_project_bundle} --all)
           output, status = Gitlab::Popen.popen(cmd)
+
           if status.zero?
             $progress.puts "[DONE]".color(:green)
           else
@@ -27,19 +44,22 @@ module Backup
         end
 
         wiki = ProjectWiki.new(project)
+        path_to_wiki_repo = path_to_repo(wiki)
+        path_to_wiki_bundle = path_to_bundle(wiki)
 
-        if File.exist?(path_to_repo(wiki))
+        if File.exist?(path_to_wiki_repo)
           $progress.print " * #{wiki.path_with_namespace} ... "
           if wiki.repository.empty?
             $progress.puts " [SKIPPED]".color(:cyan)
           else
-            cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all)
+            cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_wiki_repo} bundle create #{path_to_wiki_bundle} --all)
             output, status = Gitlab::Popen.popen(cmd)
             if status.zero?
               $progress.puts " [DONE]".color(:green)
             else
               puts " [FAILED]".color(:red)
               puts "failed: #{cmd.join(' ')}"
+              puts output
               abort 'Backup failed'
             end
           end
@@ -60,40 +80,59 @@ module Backup
 
       Project.find_each(batch_size: 1000) do |project|
         $progress.print " * #{project.path_with_namespace} ... "
+        path_to_project_repo = path_to_repo(project)
+        path_to_project_bundle = path_to_bundle(project)
 
         project.ensure_dir_exist
 
-        if File.exist?(path_to_bundle(project))
-          FileUtils.mkdir_p(path_to_repo(project))
-          cmd = %W(tar -xf #{path_to_bundle(project)} -C #{path_to_repo(project)})
+        if File.exists?(path_to_project_bundle)
+          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})
         else
-          cmd = %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_repo(project)})
+          cmd = %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
         end
 
-        if system(*cmd, silent)
+        output, status = Gitlab::Popen.popen(cmd)
+        if status.zero?
           $progress.puts "[DONE]".color(:green)
         else
           puts "[FAILED]".color(:red)
           puts "failed: #{cmd.join(' ')}"
+          puts output
           abort 'Restore failed'
         end
 
-        wiki = ProjectWiki.new(project)
+        in_path(path_to_tars(project)) do |dir|
+          cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
 
-        if File.exist?(path_to_bundle(wiki))
+          output, status = Gitlab::Popen.popen(cmd)
+          unless status.zero?
+            puts "[FAILED]".color(:red)
+            puts "failed: #{cmd.join(' ')}"
+            puts output
+            abort 'Restore failed'
+          end
+        end
+
+        wiki = ProjectWiki.new(project)
+        path_to_wiki_repo = path_to_repo(wiki)
+        path_to_wiki_bundle = path_to_bundle(wiki)
+
+        if File.exist?(path_to_wiki_bundle)
           $progress.print " * #{wiki.path_with_namespace} ... "
 
           # If a wiki bundle exists, first remove the empty repo
           # that was initialized with ProjectWiki.new() and then
           # try to restore with 'git clone --bare'.
-          FileUtils.rm_rf(path_to_repo(wiki))
-          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
+          FileUtils.rm_rf(path_to_wiki_repo)
+          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_wiki_bundle} #{path_to_wiki_repo})
 
-          if system(*cmd, silent)
+          output, status = Gitlab::Popen.popen(cmd)
+          if status.zero?
             $progress.puts " [DONE]".color(:green)
           else
             puts " [FAILED]".color(:red)
             puts "failed: #{cmd.join(' ')}"
+            puts output
             abort 'Restore failed'
           end
         end
@@ -101,13 +140,15 @@ module Backup
 
       $progress.print 'Put GitLab hooks in repositories dirs'.color(:yellow)
       cmd = %W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args
-      if system(*cmd)
+
+      output, status = Gitlab::Popen.popen(cmd)
+      if status.zero?
         $progress.puts " [DONE]".color(:green)
       else
         puts " [FAILED]".color(:red)
         puts "failed: #{cmd}"
+        puts output
       end
-
     end
 
     protected
@@ -117,11 +158,30 @@ module Backup
     end
 
     def path_to_bundle(project)
-      File.join(backup_repos_path, project.path_with_namespace + ".bundle")
+      File.join(backup_repos_path, project.path_with_namespace + '.bundle')
+    end
+
+    def path_to_tars(project, dir = nil)
+      path = File.join(backup_repos_path, project.path_with_namespace)
+
+      if dir
+        File.join(path, "#{dir}.tar")
+      else
+        path
+      end
     end
 
     def backup_repos_path
-      File.join(Gitlab.config.backup.path, "repositories")
+      File.join(Gitlab.config.backup.path, 'repositories')
+    end
+
+    def in_path(path)
+      return unless Dir.exist?(path)
+
+      dir_entries = Dir.entries(path)
+      %w[annex custom_hooks].each do |entry|
+        yield(entry) if dir_entries.include?(entry)
+      end
     end
 
     def prepare

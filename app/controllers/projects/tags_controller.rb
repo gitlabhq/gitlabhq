@@ -20,8 +20,10 @@ class Projects::TagsController < Projects::ApplicationController
   def show
     @tag = @repository.find_tag(params[:id])
 
+    return render_404 unless @tag
+
     @release = @project.releases.find_or_initialize_by(tag: @tag.name)
-    @commit = @repository.commit(@tag.target)
+    @commit = @repository.commit(@tag.dereferenced_target)
   end
 
   def create

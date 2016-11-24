@@ -10,7 +10,7 @@
           = hidden_field_tag "filter", h(params[:filter])
         .search-holder
           .search-field-holder
-            = search_field_tag :name, params[:name], placeholder: 'Search by name, email or username', class: 'form-control search-text-input js-search-input', spellcheck: false
+            = search_field_tag :search_query, params[:search_query], placeholder: 'Search by name, email or username', class: 'form-control search-text-input js-search-input', spellcheck: false
             = icon("search", class: "search-icon")
           .dropdown
             - toggle_text = if @sort.present? then sort_options_hash[@sort] else sort_title_name end

@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, consistent-return, no-undef, padded-blocks, max-len */
 
 /*= require jquery.ba-resize */
 /*= require autosize */

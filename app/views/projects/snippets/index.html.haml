@@ -1,10 +1,9 @@
 - page_title "Snippets"
 
 .sub-header-block
-  .pull-right
-    - if can?(current_user, :create_project_snippet, @project)
-      = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New Snippet" do
-        New Snippet
+  - if can?(current_user, :create_project_snippet, @project)
+    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new btn-wide-on-sm pull-right", title: "New snippet" do
+      New snippet
 
   .oneline
     Share code pastes with others out of git repository

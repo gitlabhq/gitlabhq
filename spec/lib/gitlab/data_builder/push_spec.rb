@@ -8,13 +8,13 @@ describe Gitlab::DataBuilder::Push, lib: true do
     let(:data) { described_class.build_sample(project, user) }
 
     it { expect(data).to be_a(Hash) }
-    it { expect(data[:before]).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-    it { expect(data[:after]).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    it { expect(data[:before]).to eq('1b12f15a11fc6e62177bef08f47bc7b5ce50b141') }
+    it { expect(data[:after]).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(data[:ref]).to eq('refs/heads/master') }
     it { expect(data[:commits].size).to eq(3) }
     it { expect(data[:total_commits_count]).to eq(3) }
-    it { expect(data[:commits].first[:added]).to eq(['gitlab-grack']) }
-    it { expect(data[:commits].first[:modified]).to eq(['.gitmodules']) }
+    it { expect(data[:commits].first[:added]).to eq(['bar/branch-test.txt']) }
+    it { expect(data[:commits].first[:modified]).to eq([]) }
     it { expect(data[:commits].first[:removed]).to eq([]) }
 
     include_examples 'project hook data with deprecateds'

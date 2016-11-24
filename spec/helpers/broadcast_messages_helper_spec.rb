@@ -7,7 +7,7 @@ describe BroadcastMessagesHelper do
     end
 
     it 'includes the current message' do
-      current = double(message: 'Current Message')
+      current = BroadcastMessage.new(message: 'Current Message')
 
       allow(helper).to receive(:broadcast_message_style).and_return(nil)
 
@@ -15,7 +15,7 @@ describe BroadcastMessagesHelper do
     end
 
     it 'includes custom style' do
-      current = double(message: 'Current Message')
+      current = BroadcastMessage.new(message: 'Current Message')
 
       allow(helper).to receive(:broadcast_message_style).and_return('foo')
 

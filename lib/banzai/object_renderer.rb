@@ -1,28 +1,32 @@
 module Banzai
-  # Class for rendering multiple objects (e.g. Note instances) in a single pass.
+  # Class for rendering multiple objects (e.g. Note instances) in a single pass,
+  # using +render_field+ to benefit from caching in the database. Rendering and
+  # redaction are both performed.
   #
-  # Rendered Markdown is stored in an attribute in every object based on the
-  # name of the attribute containing the Markdown. For example, when the
-  # attribute `note` is rendered the HTML is stored in `note_html`.
+  # The unredacted HTML is generated according to the usual +render_field+
+  # policy, so specify the pipeline and any other context options on the model.
+  #
+  # The *redacted* (i.e., suitable for use) HTML is placed in an attribute
+  # named "redacted_<foo>", where <foo> is the name of the cache field for the
+  # chosen attribute.
+  #
+  # As an example, rendering the attribute `note` would place the unredacted
+  # HTML into `note_html` and the redacted HTML into `redacted_note_html`.
   class ObjectRenderer
     attr_reader :project, :user
 
-    # Make sure to set the appropriate pipeline in the `raw_context` attribute
-    # (e.g. `:note` for Note instances).
-    #
-    # project - A Project to use for rendering and redacting Markdown.
+    # project - A Project to use for redacting Markdown.
     # user - The user viewing the Markdown/HTML documents, if any.
-    # context - A Hash containing extra attributes to use in the rendering
-    #           pipeline.
-    def initialize(project, user = nil, raw_context = {})
+    # context - A Hash containing extra attributes to use during redaction
+    def initialize(project, user = nil, redaction_context = {})
       @project = project
       @user = user
-      @raw_context = raw_context
+      @redaction_context = redaction_context
     end
 
     # Renders and redacts an Array of objects.
     #
-    # objects - The objects to render
+    # objects - The objects to render.
     # attribute - The attribute containing the raw Markdown to render.
     #
     # Returns the same input objects.
@@ -32,7 +36,7 @@ module Banzai
 
       objects.each_with_index do |object, index|
         redacted_data = redacted[index]
-        object.__send__("#{attribute}_html=", redacted_data[:document].to_html.html_safe)
+        object.__send__("redacted_#{attribute}_html=", redacted_data[:document].to_html.html_safe)
         object.user_visible_reference_count = redacted_data[:visible_reference_count]
       end
     end
@@ -53,12 +57,8 @@ module Banzai
 
     # Returns a Banzai context for the given object and attribute.
     def context_for(object, attribute)
-      context = base_context.merge(cache_key: [object, attribute])
-
-      if object.respond_to?(:author)
-        context[:author] = object.author
-      end
-
+      context = base_context.dup
+      context = context.merge(object.banzai_render_context(attribute))
       context
     end
 
@@ -66,21 +66,16 @@ module Banzai
     #
     # Returns an Array of `Nokogiri::HTML::Document`.
     def render_attributes(objects, attribute)
-      strings_and_contexts = objects.map do |object|
+      objects.map do |object|
+        string = Banzai.render_field(object, attribute)
         context = context_for(object, attribute)
 
-        string = object.__send__(attribute)
-
-        { text: string, context: context }
-      end
-
-      Banzai.cache_collection_render(strings_and_contexts).each_with_index.map do |html, index|
-        Banzai::Pipeline[:relative_link].to_document(html, strings_and_contexts[index][:context])
+        Banzai::Pipeline[:relative_link].to_document(string, context)
       end
     end
 
     def base_context
-      @base_context ||= @raw_context.merge(current_user: user, project: project)
+      @base_context ||= @redaction_context.merge(current_user: user, project: project)
     end
   end
 end

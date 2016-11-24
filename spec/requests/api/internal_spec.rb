@@ -5,7 +5,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project) }
-  let(:secret_token) { File.read Gitlab.config.gitlab_shell.secret_file }
+  let(:secret_token) { Gitlab::Shell.secret_token }
 
   describe "GET /internal/check", no_db: true do
     it do
@@ -100,6 +100,43 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /internal/lfs_authenticate" do
+    before do
+      project.team << [user, :developer]
+    end
+
+    context 'user key' do
+      it 'returns the correct information about the key' do
+        lfs_auth(key.id, project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
+
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+      end
+
+      it 'returns a 404 when the wrong key is provided' do
+        lfs_auth(nil, project)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'deploy key' do
+      let(:key) { create(:deploy_key) }
+
+      it 'returns the correct information about the key' do
+        lfs_auth(key.id, project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+      end
+    end
+  end
+
   describe "GET /internal/discover" do
     it do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
@@ -153,6 +190,26 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+        end
+
+        context 'project as /namespace/project' do
+          it do
+            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          end
+        end
+
+        context 'project as namespace/project' do
+          it do
+            pull(key, project_with_repo_path(project.path_with_namespace))
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          end
         end
       end
     end
@@ -262,7 +319,7 @@ describe API::API, api: true  do
 
     context 'project does not exist' do
       it do
-        pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
+        pull(key, project_with_repo_path('gitlab/notexist'))
 
         expect(response).to have_http_status(200)
         expect(json_response["status"]).to be_falsey
@@ -349,9 +406,15 @@ describe API::API, api: true  do
     it 'returns link to create new merge request' do
       expect(json_response).to match [{
         "branch_name" => "new_branch",
-        "url" => "http://localhost/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
         "new_merge_request" => true
       }]
+    end
+  end
+
+  def project_with_repo_path(path)
+    double().tap do |fake_project|
+      allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)
     end
   end
 
@@ -359,7 +422,7 @@ describe API::API, api: true  do
     post(
       api("/internal/allowed"),
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-upload-pack',
       secret_token: secret_token,
       protocol: protocol
@@ -371,7 +434,7 @@ describe API::API, api: true  do
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol
@@ -383,10 +446,19 @@ describe API::API, api: true  do
       api("/internal/allowed"),
       ref: 'master',
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
+    )
+  end
+
+  def lfs_auth(key_id, project)
+    post(
+      api("/internal/lfs_authenticate"),
+      key_id: key_id,
+      secret_token: secret_token,
+      project: project.repository.path_to_repo
     )
   end
 end

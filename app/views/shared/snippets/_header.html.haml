@@ -21,4 +21,4 @@
       = render "snippets/actions"
 
 %h2.snippet-title.prepend-top-0.append-bottom-0
-  = markdown escape_once(@snippet.title), pipeline: :single_line, author: @snippet.author
+  = markdown_field(@snippet, :title)

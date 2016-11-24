@@ -37,6 +37,11 @@ Feature: Project Commits
     Then I see commit info
     And I see side-by-side diff button
 
+  Scenario: I browse commit from list and create a new tag
+    Given I click on commit link
+    And I click on tag link
+    Then I see commit SHA pre-filled
+
   Scenario: I browse commit with ci from list
     Given commit has ci status
     And repository contains ".gitlab-ci.yml" file

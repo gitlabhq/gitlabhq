@@ -13,6 +13,10 @@
       = link_to activity_group_path(@group), title: 'Activity' do
         %span
           Activity
+    = nav_link(controller: [:group, :labels]) do
+      = link_to group_labels_path(@group), title: 'Labels' do
+        %span
+          Labels
     = nav_link(controller: [:group, :milestones]) do
       = link_to group_milestones_path(@group), title: 'Milestones' do
         %span

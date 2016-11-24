@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 feature 'Projects > Members > Owner cannot request access to his project', feature: true do
-  let(:owner) { create(:user) }
   let(:project) { create(:project) }
 
   background do
-    project.team << [owner, :owner]
-    login_as(owner)
+    login_as(project.owner)
     visit namespace_project_path(project.namespace, project)
   end
 

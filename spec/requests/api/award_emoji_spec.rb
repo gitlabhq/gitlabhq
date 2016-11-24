@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user)            { create(:user) }
-  let!(:project)        { create(:project) }
+  let!(:project)        { create(:empty_project) }
   let(:issue)           { create(:issue, project: project) }
   let!(:award_emoji)    { create(:award_emoji, awardable: issue, user: user) }
   let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
@@ -36,6 +36,19 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(downvote.name)
+      end
+    end
+
+    context 'on a snippet' do
+      let(:snippet) { create(:project_snippet, :public, project: project) }
+      let!(:award)  { create(:award_emoji, awardable: snippet) }
+
+      it 'returns the awarded emoji' do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(award.name)
       end
     end
 
@@ -88,6 +101,20 @@ describe API::API, api: true  do
         expect(json_response['name']).to eq(downvote.name)
         expect(json_response['awardable_id']).to eq(merge_request.id)
         expect(json_response['awardable_type']).to eq("MergeRequest")
+      end
+    end
+
+    context 'on a snippet' do
+      let(:snippet) { create(:project_snippet, :public, project: project) }
+      let!(:award)  { create(:award_emoji, awardable: snippet) }
+
+      it 'returns the awarded emoji' do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(award.name)
+        expect(json_response['awardable_id']).to eq(snippet.id)
+        expect(json_response['awardable_type']).to eq("Snippet")
       end
     end
 
@@ -160,6 +187,18 @@ describe API::API, api: true  do
         end
       end
     end
+
+    context 'on a snippet' do
+      it 'creates a new award emoji' do
+        snippet = create(:project_snippet, :public, project: project)
+
+        post api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", user), name: 'blowfish'
+
+        expect(response).to have_http_status(201)
+        expect(json_response['name']).to eq('blowfish')
+        expect(json_response['user']['username']).to eq(user.username)
+      end
+    end
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji" do
@@ -227,6 +266,19 @@ describe API::API, api: true  do
         delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/notes/12345", user)
 
         expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when the awardable is a Snippet' do
+      let(:snippet) { create(:project_snippet, :public, project: project) }
+      let!(:award)  { create(:award_emoji, awardable: snippet, user: user) }
+
+      it 'deletes the award' do
+        expect do
+          delete api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user)
+        end.to change { snippet.award_emoji.count }.from(1).to(0)
+
+        expect(response).to have_http_status(200)
       end
     end
   end

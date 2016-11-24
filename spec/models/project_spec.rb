@@ -20,11 +20,12 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_one(:board).dependent(:destroy) }
+    it { is_expected.to have_many(:boards).dependent(:destroy) }
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
@@ -35,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
     it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
@@ -56,7 +58,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
-    it { is_expected.to have_many(:labels).dependent(:destroy) }
+    it { is_expected.to have_many(:labels).class_name('ProjectLabel').dependent(:destroy) }
     it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
@@ -67,8 +69,16 @@ describe Project, models: true do
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
+    context 'after initialized' do
+      it "has a project_feature" do
+        project = FactoryGirl.build(:project)
+
+        expect(project.project_feature.present?).to be_present
+      end
+    end
+
     describe '#members & #requesters' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -92,6 +102,15 @@ describe Project, models: true do
           expect(requester_user_ids).to include(requester.id)
           expect(requester_user_ids).not_to include(developer.id)
         end
+      end
+    end
+
+    describe '#boards' do
+      it 'raises an error when attempting to add more than one board to the project' do
+        subject.boards.build
+
+        expect { subject.boards.build }.to raise_error(Project::BoardLimitExceeded, 'Number of permitted boards exceeded')
+        expect(subject.boards.size).to eq 1
       end
     end
   end
@@ -219,10 +238,16 @@ describe Project, models: true do
   describe 'Respond to' do
     it { is_expected.to respond_to(:url_to_repo) }
     it { is_expected.to respond_to(:repo_exists?) }
-    it { is_expected.to respond_to(:update_merge_requests) }
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+  end
+
+  describe 'delegation' do
+    it { is_expected.to delegate_method(:add_guest).to(:team) }
+    it { is_expected.to delegate_method(:add_reporter).to(:team) }
+    it { is_expected.to delegate_method(:add_developer).to(:team) }
+    it { is_expected.to delegate_method(:add_master).to(:team) }
   end
 
   describe '#name_with_namespace' do
@@ -279,7 +304,7 @@ describe Project, models: true do
     end
   end
 
-  xdescribe "#new_issue_address" do
+  describe "#new_issue_address" do
     let(:project) { create(:empty_project, path: "somewhere") }
     let(:user) { create(:user) }
 
@@ -289,8 +314,7 @@ describe Project, models: true do
       end
 
       it 'returns the address to create a new issue' do
-        token = user.authentication_token
-        address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end
@@ -308,20 +332,24 @@ describe Project, models: true do
   end
 
   describe 'last_activity methods' do
-    let(:project) { create(:project) }
-    let(:last_event) { double(created_at: Time.now) }
+    let(:timestamp) { 2.hours.ago }
+    # last_activity_at gets set to created_at upon creation
+    let(:project) { create(:project, created_at: timestamp, updated_at: timestamp) }
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
-        allow(project).to receive(:last_event).and_return(last_event)
+        last_event = create(:event, project: project)
+
         expect(project.last_activity).to eq(last_event)
       end
     end
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        create(:event, project: project)
-        expect(project.last_activity_at.to_i).to eq(last_event.created_at.to_i)
+        new_event = create(:event, project: project, created_at: Time.now)
+
+        project.reload
+        expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
       end
 
       it 'returns the project\'s last update date if it has no events' do
@@ -373,26 +401,6 @@ describe Project, models: true do
     it 'is falsey when issue does not exist' do
       expect(project).to receive(:get_issue).and_return(nil)
       expect(project.issue_exists?(1)).to be_falsey
-    end
-  end
-
-  describe '#update_merge_requests' do
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-    let(:key) { create(:key, user_id: project.owner.id) }
-    let(:prev_commit_id) { merge_request.commits.last.id }
-    let(:commit_id) { merge_request.commits.first.id }
-
-    it 'closes merge request if last commit from source branch was pushed to target branch' do
-      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.merged?).to be_truthy
-    end
-
-    it 'updates merge request commits with new one if pushed to source branch' do
-      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.diff_head_sha).to eq(commit_id)
     end
   end
 
@@ -497,9 +505,6 @@ describe Project, models: true do
     end
 
     it 'returns nil and does not query services when there is no external issue tracker' do
-      project.build_missing_services
-      project.reload
-
       expect(project).not_to receive(:services)
 
       expect(project.external_issue_tracker).to eq(nil)
@@ -507,9 +512,6 @@ describe Project, models: true do
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
       ext_project.reload # Factory returns a project with changed attributes
-      ext_project.build_missing_services
-      ext_project.reload
-
       expect(ext_project).to receive(:services).once.and_call_original
 
       2.times { expect(ext_project.external_issue_tracker).to be_a_kind_of(RedmineService) }
@@ -517,7 +519,7 @@ describe Project, models: true do
   end
 
   describe '#cache_has_external_issue_tracker' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, has_external_issue_tracker: nil) }
 
     it 'stores true if there is any external_issue_tracker' do
       services = double(:service, external_issue_trackers: [RedmineService.new])
@@ -539,9 +541,9 @@ describe Project, models: true do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project) { build(:project, wiki_enabled: false, has_external_wiki: false) }
-    let(:wiki_enabled_project) { build(:project) }
-    let(:external_wiki_project) { build(:project, has_external_wiki: true) }
+    let(:no_wiki_project)       { create(:project, wiki_access_level: ProjectFeature::DISABLED, has_external_wiki: false) }
+    let(:wiki_enabled_project)  { create(:project) }
+    let(:external_wiki_project) { create(:project, has_external_wiki: true) }
 
     it 'returns true if project is wiki enabled or has external wiki' do
       expect(wiki_enabled_project).to have_wiki
@@ -707,7 +709,7 @@ describe Project, models: true do
         "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'When avatar file in git' do
@@ -719,7 +721,7 @@ describe Project, models: true do
         "/#{project.namespace.name}/#{project.path}/avatar"
       end
 
-      it { should eq "http://localhost#{avatar_path}" }
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
@@ -796,32 +798,22 @@ describe Project, models: true do
       end
 
       create(:note_on_commit, project: project2)
+
+      TrendingProject.refresh!
     end
 
-    describe 'without an explicit start date' do
-      subject { described_class.trending.to_a }
+    subject { described_class.trending.to_a }
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project1, project2])
-      end
+    it 'sorts projects by the amount of notes in descending order' do
+      expect(subject).to eq([project1, project2])
     end
 
-    describe 'with an explicit start date' do
-      let(:date) { 2.months.ago }
-
-      subject { described_class.trending(date).to_a }
-
-      before do
-        2.times do
-          # Little fix for special issue related to Fractional Seconds support for MySQL.
-          # See: https://github.com/rails/rails/pull/14359/files
-          create(:note_on_commit, project: project2, created_at: date + 1)
-        end
+    it 'does not take system notes into account' do
+      10.times do
+        create(:note_on_commit, project: project2, system: true)
       end
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project2, project1])
-      end
+      expect(described_class.trending.to_a).to eq([project1, project2])
     end
   end
 
@@ -833,7 +825,7 @@ describe Project, models: true do
 
     describe 'when a user has access to a project' do
       before do
-        project.team.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MASTER)
       end
 
       it { is_expected.to eq([project]) }
@@ -847,16 +839,19 @@ describe Project, models: true do
   context 'repository storage by default' do
     let(:project) { create(:empty_project) }
 
-    subject { project.repository_storage }
-
     before do
-      storages = { 'alternative_storage' => '/some/path' }
+      storages = {
+        'default' => 'tmp/tests/repositories',
+        'picked'  => 'tmp/tests/repositories',
+      }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-      stub_application_setting(repository_storage: 'alternative_storage')
-      allow_any_instance_of(Project).to receive(:ensure_dir_exist).and_return(true)
     end
 
-    it { is_expected.to eq('alternative_storage') }
+    it 'picks storage from ApplicationSetting' do
+      expect_any_instance_of(ApplicationSetting).to receive(:pick_repository_storage).and_return('picked')
+
+      expect(project.repository_storage).to eq('picked')
+    end
   end
 
   context 'shared runners by default' do
@@ -1512,55 +1507,6 @@ describe Project, models: true do
     end
   end
 
-  describe 'authorized_for_user' do
-    let(:group) { create(:group) }
-    let(:developer) { create(:user) }
-    let(:master) { create(:user) }
-    let(:personal_project) { create(:project, namespace: developer.namespace) }
-    let(:group_project) { create(:project, namespace: group) }
-    let(:members_project) { create(:project) }
-    let(:shared_project) { create(:project) }
-
-    before do
-      group.add_master(master)
-      group.add_developer(developer)
-
-      members_project.team << [developer, :developer]
-      members_project.team << [master, :master]
-
-      create(:project_group_link, project: shared_project, group: group)
-    end
-
-    it 'returns false for no user' do
-      expect(personal_project.authorized_for_user?(nil)).to be(false)
-    end
-
-    it 'returns true for personal projects of the user' do
-      expect(personal_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'returns true for projects of groups the user is a member of' do
-      expect(group_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'returns true for projects for which the user is a member of' do
-      expect(members_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'returns true for projects shared on a group the user is a member of' do
-      expect(shared_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'checks for the correct minimum level access' do
-      expect(group_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(group_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
-      expect(members_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(members_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
-      expect(shared_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
-    end
-  end
-
   describe 'change_head' do
     let(:project) { create(:project) }
 
@@ -1582,7 +1528,7 @@ describe Project, models: true do
     end
 
     it 'expires the avatar cache' do
-      expect(project.repository).to receive(:expire_avatar_cache).with(project.default_branch)
+      expect(project.repository).to receive(:expire_avatar_cache)
       project.change_head(project.default_branch)
     end
 
@@ -1641,6 +1587,100 @@ describe Project, models: true do
       project.reset_pushes_since_gc
 
       expect(project.pushes_since_gc).to eq(0)
+    end
+  end
+
+  describe '#environments_for' do
+    let(:project) { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+
+    context 'tagged deployment' do
+      before do
+        create(:deployment, environment: environment, ref: '1.0', tag: true, sha: project.commit.id)
+      end
+
+      it 'returns environment when with_tags is set' do
+        expect(project.environments_for('master', commit: project.commit, with_tags: true))
+          .to contain_exactly(environment)
+      end
+
+      it 'does not return environment when no with_tags is set' do
+        expect(project.environments_for('master', commit: project.commit))
+          .to be_empty
+      end
+
+      it 'does not return environment when commit is not part of deployment' do
+        expect(project.environments_for('master', commit: project.commit('feature')))
+          .to be_empty
+      end
+    end
+
+    context 'branch deployment' do
+      before do
+        create(:deployment, environment: environment, ref: 'master', sha: project.commit.id)
+      end
+
+      it 'returns environment when ref is set' do
+        expect(project.environments_for('master', commit: project.commit))
+          .to contain_exactly(environment)
+      end
+
+      it 'does not environment when ref is different' do
+        expect(project.environments_for('feature', commit: project.commit))
+          .to be_empty
+      end
+
+      it 'does not return environment when commit is not part of deployment' do
+        expect(project.environments_for('master', commit: project.commit('feature')))
+          .to be_empty
+      end
+
+      it 'returns environment when commit constraint is not set' do
+        expect(project.environments_for('master'))
+          .to contain_exactly(environment)
+      end
+    end
+  end
+
+  describe '#environments_recently_updated_on_branch' do
+    let(:project) { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+
+    context 'when last deployment to environment is the most recent one' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+      end
+
+      it 'finds recently updated environment' do
+        expect(project.environments_recently_updated_on_branch('feature'))
+          .to contain_exactly(environment)
+      end
+    end
+
+    context 'when last deployment to environment is not the most recent' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: environment, ref: 'master')
+      end
+
+      it 'does not find environment' do
+        expect(project.environments_recently_updated_on_branch('feature'))
+          .to be_empty
+      end
+    end
+
+    context 'when there are two environments that deploy to the same branch' do
+      let(:second_environment) { create(:environment, project: project) }
+
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: second_environment, ref: 'feature')
+      end
+
+      it 'finds both environments' do
+        expect(project.environments_recently_updated_on_branch('feature'))
+          .to contain_exactly(environment, second_environment)
+      end
     end
   end
 

@@ -30,6 +30,10 @@ module Gitlab
         end
       end
 
+      def file_for_path(old_path, new_path)
+        files.find { |file| file.their_path == old_path && file.our_path == new_path }
+      end
+
       def as_json(opts = nil)
         {
           target_branch: merge_request.target_branch,

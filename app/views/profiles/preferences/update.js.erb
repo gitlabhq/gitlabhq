@@ -4,9 +4,9 @@ $('body').addClass('<%= user_application_theme %>')
 
 // Toggle container-fluid class
 if ('<%= current_user.layout %>' === 'fluid') {
-  $('.content-wrapper').find('.container-fluid').removeClass('container-limited')
+  $('.content-wrapper .container-fluid').removeClass('container-limited')
 } else {
-  $('.content-wrapper').find('.container-fluid').addClass('container-limited')
+  $('.content-wrapper .container-fluid').addClass('container-limited')
 }
 
 // Re-enable the "Save" button

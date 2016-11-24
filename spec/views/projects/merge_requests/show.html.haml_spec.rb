@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/merge_requests/show.html.haml' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project) }
@@ -37,6 +37,19 @@ describe 'projects/merge_requests/show.html.haml' do
 
       render
 
+      expect(rendered).to have_css('a', visible: false, text: 'Reopen')
+      expect(rendered).to have_css('a', visible: false, text: 'Close')
+    end
+  end
+
+  context 'when the merge request is open' do
+    it 'closes the merge request if the source project does not exist' do
+      closed_merge_request.update_attributes(state: 'open')
+      fork_project.destroy
+
+      render
+
+      expect(closed_merge_request.reload.state).to eq('closed')
       expect(rendered).to have_css('a', visible: false, text: 'Reopen')
       expect(rendered).to have_css('a', visible: false, text: 'Close')
     end

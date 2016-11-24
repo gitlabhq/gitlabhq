@@ -16,9 +16,12 @@ $white-light: #fff;
 $white-normal: #ededed;
 $white-dark: #ececec;
 
+$gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
+$gray-lighter: #f9f9f9;
 $gray-normal: #f5f5f5;
 $gray-dark: #ededed;
+$gray-darker: #eee;
 $gray-darkest: #c9c9c9;
 
 $green-light: #38ae67;
@@ -32,6 +35,8 @@ $blue-dark: #2897ce;
 $blue-medium-light: #3498cb;
 $blue-medium: #2f8ebf;
 $blue-medium-dark: #2d86b4;
+
+$blue-light-transparent: rgba(44, 159, 216, 0.05);
 
 $orange-light: #fc8a51;
 $orange-normal: #e75e40;
@@ -52,6 +57,7 @@ $border-gray-light: #dcdcdc;
 $border-gray-normal: #d7d7d7;
 $border-gray-dark: #c6cacf;
 
+$border-green-extra-light: #9adb84;
 $border-green-light: #2faa60;
 $border-green-normal: #2ca05b;
 $border-green-dark: #279654;
@@ -78,38 +84,41 @@ $warning-message-border: #f0e2bb;
 /*
  * UI elements
  */
-$border-color:          #e5e5e5;
-$focus-border-color:    #3aabf0;
-$table-border-color:    #f0f0f0;
-$background-color:      $gray-light;
+$border-color: #e5e5e5;
+$focus-border-color: #3aabf0;
+$table-border-color: #f0f0f0;
+$background-color: $gray-light;
 $dark-background-color: #f5f5f5;
-$table-text-gray:       #8f8f8f;
+$table-text-gray: #8f8f8f;
+$well-expand-item: #e8f2f7;
+$well-inner-border: #eef0f2;
 
 /*
  * Text
  */
-$gl-font-size:         15px;
-$gl-title-color:       #333;
-$gl-text-color:        #5c5c5c;
-$gl-text-green:        #4a2;
-$gl-text-red:          #d12f19;
-$gl-text-orange:       #d90;
-$gl-link-color:        #3084bb;
-$gl-dark-link-color:   #333;
+$gl-font-size: 15px;
+$gl-title-color: #333;
+$gl-text-color: #5c5c5c;
+$gl-text-color-light: #8c8c8c;
+$gl-text-green: #4a2;
+$gl-text-red: #d12f19;
+$gl-text-orange: #d90;
+$gl-link-color: #3777b0;
+$gl-dark-link-color: #333;
 $gl-placeholder-color: #8f8f8f;
-$gl-icon-color:        $gl-placeholder-color;
-$gl-grayish-blue:      #7f8fa4;
-$gl-gray:              $gl-text-color;
-$gl-gray-dark:         #313236;
-$gl-gray-light:        $gl-placeholder-color;
-$gl-header-color:      $gl-title-color;
+$gl-icon-color: $gl-placeholder-color;
+$gl-grayish-blue: #7f8fa4;
+$gl-gray: $gl-text-color;
+$gl-gray-dark: #313236;
+$gl-gray-light: $gl-placeholder-color;
+$gl-header-color: #4c4e54;
 
 /*
  * Lists
  */
-$list-font-size:   $gl-font-size;
+$list-font-size: $gl-font-size;
 $list-title-color: $gl-title-color;
-$list-text-color:  $gl-text-color;
+$list-text-color: $gl-text-color;
 $list-text-height: 42px;
 
 /*
@@ -151,6 +160,7 @@ $settings-icon-size: 18px;
 $provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
+$active-item-blue: #4a8bee;
 $layout-link-gray: #7e7c7c;
 $todo-alert-blue: #428bca;
 $btn-side-margin: 10px;
@@ -188,7 +198,7 @@ $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
 $match-line: $gray-light;
 $table-border-gray: #f0f0f0;
-$line-target-blue: #eaf3fc;
+$line-target-blue: #f6faff;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
 
@@ -243,7 +253,7 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
  */
 $search-input-border-color: rgba(#4688f1, .8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
-$search-input-width: 244px;
+$search-input-width: 220px;
 $location-badge-color: #aaa;
 $location-badge-bg: $gray-normal;
 $location-badge-active-bg: #4f91f8;
@@ -268,6 +278,15 @@ $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
 $calendar-unselectable-bg: $gray-light;
+
+/*
+ *  Cycle Analytics
+ */
+$cycle-analytics-box-padding: 30px;
+$cycle-analytics-box-text-color: #8c8c8c;
+$cycle-analytics-big-font: 19px;
+$cycle-analytics-dark-text: $gl-title-color;
+$cycle-analytics-light-gray: #bfbfbf;
 
 /*
  * Personal Access Tokens

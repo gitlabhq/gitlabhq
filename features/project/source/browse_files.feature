@@ -71,6 +71,7 @@ Feature: Project Source Browse Files
     And I fill the new branch name
     And I click on "Commit Changes"
     Then I am redirected to the new merge request page
+    When I click on "Changes" tab
     And I should see its new content
 
   @javascript
@@ -80,9 +81,10 @@ Feature: Project Source Browse Files
     And I fill the upload file commit message
     And I fill the new branch name
     And I click on "Upload file"
-    Then I can see the new text file
+    Then I can see the new commit message
     And I am redirected to the new merge request page
-    And I can see the new commit message
+    When I click on "Changes" tab
+    Then I can see the new text file
 
   @javascript
   Scenario: I can upload file and commit when I don't have write access
@@ -93,9 +95,10 @@ Feature: Project Source Browse Files
     And I upload a new text file
     And I fill the upload file commit message
     And I click on "Upload file"
-    Then I can see the new text file
+    Then I can see the new commit message
     And I am redirected to the fork's new merge request page
-    And I can see the new commit message
+    When I click on "Changes" tab
+    Then I can see the new text file
 
   @javascript
   Scenario: I can replace file and commit
@@ -119,9 +122,10 @@ Feature: Project Source Browse Files
     And I replace it with a text file
     And I fill the replace file commit message
     And I click on "Replace file"
-    Then I can see the new text file
-    And I am redirected to the fork's new merge request page
     And I can see the replacement commit message
+    And I am redirected to the fork's new merge request page
+    When I click on "Changes" tab
+    Then I can see the new text file
 
   @javascript
   Scenario: If I enter an illegal file name I see an error message
@@ -191,6 +195,7 @@ Feature: Project Source Browse Files
     And I fill the new branch name
     And I click on "Commit Changes"
     Then I am redirected to the new merge request page
+    Then I click on "Changes" tab
     And I should see its new content
 
   @javascript  @wip

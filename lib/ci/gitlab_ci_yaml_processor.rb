@@ -2,9 +2,9 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
-    include Gitlab::Ci::Config::Node::LegacyValidationHelpers
+    include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
-    attr_reader :path, :cache, :stages
+    attr_reader :path, :cache, :stages, :jobs
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -60,7 +60,7 @@ module Ci
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
-        environment: job[:environment],
+        environment: job[:environment_name],
         yaml_variables: yaml_variables(name),
         options: {
           image: job[:image],
@@ -69,6 +69,7 @@ module Ci
           cache: job[:cache],
           dependencies: job[:dependencies],
           after_script: job[:after_script],
+          environment: job[:environment],
         }.compact
       }
     end
@@ -108,6 +109,7 @@ module Ci
 
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
+        validate_job_environment!(name, job)
       end
     end
 
@@ -146,6 +148,35 @@ module Ci
         unless @stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
+      end
+    end
+
+    def validate_job_environment!(name, job)
+      return unless job[:environment]
+      return unless job[:environment].is_a?(Hash)
+
+      environment = job[:environment]
+      validate_on_stop_job!(name, environment, environment[:on_stop])
+    end
+
+    def validate_on_stop_job!(name, environment, on_stop)
+      return unless on_stop
+
+      on_stop_job = @jobs[on_stop.to_sym]
+      unless on_stop_job
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} is not defined"
+      end
+
+      unless on_stop_job[:environment]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} does not have environment defined"
+      end
+
+      unless on_stop_job[:environment][:name] == environment[:name]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} have different environment name"
+      end
+
+      unless on_stop_job[:environment][:action] == 'stop'
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} needs to have action stop defined"
       end
     end
 

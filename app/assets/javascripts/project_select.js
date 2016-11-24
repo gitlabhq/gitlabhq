@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-undef, no-else-return, quotes, padded-blocks, max-len */
 (function() {
   this.ProjectSelect = (function() {
     function ProjectSelect() {
@@ -23,7 +24,7 @@
                   data = groups.concat(projects);
                   return finalCallback(data);
                 };
-                return Api.groups(term, false, groupsCallback);
+                return Api.groups(term, {}, groupsCallback);
               };
             } else {
               projectsCallback = finalCallback;
@@ -72,7 +73,7 @@
                     data = groups.concat(projects);
                     return finalCallback(data);
                   };
-                  return Api.groups(query.term, false, groupsCallback);
+                  return Api.groups(query.term, {}, groupsCallback);
                 };
               } else {
                 projectsCallback = finalCallback;

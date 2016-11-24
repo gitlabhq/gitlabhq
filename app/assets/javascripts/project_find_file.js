@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, no-undef, object-shorthand, no-param-reassign, comma-dangle, no-plusplus, prefer-template, no-unused-vars, no-return-assign, padded-blocks, max-len */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -36,16 +37,6 @@
           }
         };
       })(this));
-      return this.element.find(".tree-content-holder .tree-table").on("click", function(event) {
-        var path;
-        if (event.target.nodeName !== "A") {
-          path = this.element.find(".tree-item-file-name a", this).attr("href");
-          if (path) {
-            return location.href = path;
-          }
-        }
-      });
-    // init event
     };
 
     ProjectFindFile.prototype.findFile = function() {
@@ -121,11 +112,12 @@
     // make tbody row html
     ProjectFindFile.prototype.makeHtml = function(filePath, matches, blobItemUrl) {
       var $tr;
-      $tr = $("<tr class='tree-item'><td class='tree-item-file-name'><i class='fa fa-file-text-o fa-fw'></i><span class='str-truncated'><a></a></span></td></tr>");
+      $tr = $("<tr class='tree-item'><td class='tree-item-file-name link-container'><a><i class='fa fa-file-text-o fa-fw'></i><span class='str-truncated'></span></a></td></tr>");
       if (matches) {
         $tr.find("a").replaceWith(highlighter($tr.find("a"), filePath, matches).attr("href", blobItemUrl));
       } else {
-        $tr.find("a").attr("href", blobItemUrl).text(filePath);
+        $tr.find("a").attr("href", blobItemUrl);
+        $tr.find(".str-truncated").text(filePath);
       }
       return $tr;
     };
@@ -165,10 +157,10 @@
     };
 
     ProjectFindFile.prototype.goToBlob = function() {
-      var path;
-      path = this.element.find(".tree-item.selected .tree-item-file-name a").attr("href");
-      if (path) {
-        return location.href = path;
+      var $link = this.element.find(".tree-item.selected .tree-item-file-name a");
+
+      if ($link.length) {
+        $link.get(0).click();
       }
     };
 

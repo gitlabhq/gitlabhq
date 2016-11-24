@@ -5,7 +5,7 @@
   }
 
   .example {
-    &:before {
+    &::before {
       content: "Example";
       color: #bbb;
     }

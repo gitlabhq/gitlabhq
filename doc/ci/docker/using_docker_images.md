@@ -37,7 +37,7 @@ The registered runner will use the `ruby:2.1` docker image and will run two
 services, `postgres:latest` and `mysql:latest`, both of which will be
 accessible during the build process.
 
-## What is image
+## What is an image
 
 The `image` keyword is the name of the docker image that is present in the
 local Docker Engine (list all images with `docker images`) or any image that
@@ -47,7 +47,7 @@ Hub please read the [Docker Fundamentals][] documentation.
 In short, with `image` we refer to the docker image, which will be used to
 create a container on which your build will run.
 
-## What is service
+## What is a service
 
 The `services` keyword defines just another docker image that is run during
 your build and is linked to the docker image that the `image` keyword defines.
@@ -61,7 +61,7 @@ time the project is built.
 You can see some widely used services examples in the relevant documentation of
 [CI services examples](../services/README.md).
 
-### How is service linked to the build
+### How services are linked to the build
 
 To better understand how the container linking works, read
 [Linking containers together][linking-containers].
@@ -221,7 +221,7 @@ time.
 *Note: The following commands are run without root privileges. You should be
 able to run docker with your regular user account.*
 
-First start with creating a file named `build script`:
+First start with creating a file named `build_script`:
 
 ```bash
 cat <<EOF > build_script

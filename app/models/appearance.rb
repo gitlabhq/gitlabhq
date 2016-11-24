@@ -1,4 +1,8 @@
 class Appearance < ActiveRecord::Base
+  include CacheMarkdownField
+
+  cache_markdown_field :description
+
   validates :title,       presence: true
   validates :description, presence: true
   validates :logo,        file_size: { maximum: 1.megabyte }

@@ -54,7 +54,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Branches" tab' do
-    page.within '.content' do
+    page.within '.sub-nav' do
       click_link('Branches')
     end
   end

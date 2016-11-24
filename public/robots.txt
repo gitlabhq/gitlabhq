@@ -23,7 +23,7 @@ Disallow: /groups/*/edit
 Disallow: /users
 
 # Global snippets
-Disallow: /s
+Disallow: /s/
 Disallow: /snippets/new
 Disallow: /snippets/*/edit
 Disallow: /snippets/*/raw

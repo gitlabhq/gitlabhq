@@ -34,6 +34,10 @@ request is up to one of our merge request "endbosses", denoted on the
 
 ## Having your code reviewed
 
+Please keep in mind that code review is a process that can take multiple
+iterations, and reviewers may spot things later that they may not have seen the
+first time.
+
 - The first reviewer of your code is _you_. Before you perform that first push
   of your shiny new branch, read through the entire diff. Does it make sense?
   Did you include something unrelated to the overall purpose of the changes? Did
@@ -55,6 +59,7 @@ request is up to one of our merge request "endbosses", denoted on the
 Understand why the change is necessary (fixes a bug, improves the user
 experience, refactors the existing code). Then:
 
+- Try to be thorough in your reviews to reduce the number of iterations.
 - Communicate which ideas you feel strongly about and those you don't.
 - Identify ways to simplify the code while still solving the problem.
 - Offer alternative implementations, but assume the author already considered
@@ -64,8 +69,10 @@ experience, refactors the existing code). Then:
   someone else would be confused by it as well.
 - After a round of line notes, it can be helpful to post a summary note such as
   "LGTM :thumbsup:", or "Just a couple things to address."
-- Avoid accepting a merge request before the build succeeds ("Merge when build
-  succeeds" is fine).
+- Avoid accepting a merge request before the build succeeds. Of course, "Merge
+  When Build Succeeds" (MWBS) is fine.
+- If you set the MR to "Merge When Build Succeeds", you should take over
+  subsequent revisions for anything that would be spotted after that.
 
 ## Credits
 

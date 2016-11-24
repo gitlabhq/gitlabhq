@@ -23,14 +23,15 @@ describe Issues::MoveService, services: true do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
 
-      ['label1', 'label2'].each do |label|
+      labels = Array.new(2) { |x| "label%d" % (x + 1) }
+
+      labels.each do |label|
         old_issue.labels << create(:label,
           project_id: old_project.id,
           title: label)
-      end
 
-      new_project.labels << create(:label, title: 'label1')
-      new_project.labels << create(:label, title: 'label2')
+        new_project.labels << create(:label, title: label)
+      end
     end
   end
 
@@ -207,16 +208,26 @@ describe Issues::MoveService, services: true do
         end
       end
 
-      describe 'rewritting references' do
+      describe 'rewriting references' do
         include_context 'issue move executed'
 
-        context 'issue reference' do
+        context 'issue references' do
           let(:another_issue) { create(:issue, project: old_project) }
           let(:description) { "Some description #{another_issue.to_reference}" }
 
           it 'rewrites referenced issues creating cross project reference' do
             expect(new_issue.description)
               .to eq "Some description #{old_project.to_reference}#{another_issue.to_reference}"
+          end
+        end
+
+        context "user references" do
+          let(:another_issue) { create(:issue, project: old_project) }
+          let(:description) { "Some description #{user.to_reference}" }
+
+          it "doesn't throw any errors for issues containing user references" do
+            expect(new_issue.description)
+              .to eq "Some description #{user.to_reference}"
           end
         end
       end
@@ -275,6 +286,26 @@ describe Issues::MoveService, services: true do
         include_context 'user can move issue'
         let(:old_issue) { build(:issue, project: old_project, author: author) }
         it { expect { move }.to raise_error(StandardError, /permissions/) }
+      end
+    end
+
+    context 'movable issue with no assigned labels' do
+      before do
+        old_project.team << [user, :reporter]
+        new_project.team << [user, :reporter]
+
+        labels = Array.new(2) { |x| "label%d" % (x + 1) }
+
+        labels.each do |label|
+          new_project.labels << create(:label, title: label)
+        end
+      end
+
+      include_context 'issue move executed'
+
+      it 'does not assign labels to new issue' do
+        expected_label_titles = new_issue.reload.labels.map(&:title)
+        expect(expected_label_titles.size).to eq 0
       end
     end
   end

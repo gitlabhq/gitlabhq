@@ -164,10 +164,10 @@ eos
     let(:data) { commit.hook_attrs(with_changed_files: true) }
 
     it { expect(data).to be_a(Hash) }
-    it { expect(data[:message]).to include('Add submodule from gitlab.com') }
-    it { expect(data[:timestamp]).to eq('2014-02-27T11:01:38+02:00') }
-    it { expect(data[:added]).to eq(["gitlab-grack"]) }
-    it { expect(data[:modified]).to eq([".gitmodules"]) }
+    it { expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method') }
+    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46+00:00') }
+    it { expect(data[:added]).to eq(["bar/branch-test.txt"]) }
+    it { expect(data[:modified]).to eq([]) }
     it { expect(data[:removed]).to eq([]) }
   end
 
@@ -205,12 +205,53 @@ eos
     end
   end
 
-  describe '#ci_commits' do
-    # TODO: kamil
-  end
-
   describe '#status' do
-    # TODO: kamil
+    context 'without arguments for compound status' do
+      shared_examples 'giving the status from pipeline' do
+        it do
+          expect(commit.status).to eq(Ci::Pipeline.status)
+        end
+      end
+
+      context 'with pipelines' do
+        let!(:pipeline) do
+          create(:ci_empty_pipeline, project: project, sha: commit.sha)
+        end
+
+        it_behaves_like 'giving the status from pipeline'
+      end
+
+      context 'without pipelines' do
+        it_behaves_like 'giving the status from pipeline'
+      end
+    end
+
+    context 'when a particular ref is specified' do
+      let!(:pipeline_from_master) do
+        create(:ci_empty_pipeline,
+               project: project,
+               sha: commit.sha,
+               ref: 'master',
+               status: 'failed')
+      end
+
+      let!(:pipeline_from_fix) do
+        create(:ci_empty_pipeline,
+               project: project,
+               sha: commit.sha,
+               ref: 'fix',
+               status: 'success')
+      end
+
+      it 'gives pipelines from a particular branch' do
+        expect(commit.status('master')).to eq(pipeline_from_master.status)
+        expect(commit.status('fix')).to eq(pipeline_from_fix.status)
+      end
+
+      it 'gives compound status if ref is nil' do
+        expect(commit.status(nil)).to eq(commit.status)
+      end
+    end
   end
 
   describe '#participants' do

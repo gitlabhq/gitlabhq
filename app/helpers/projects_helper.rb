@@ -49,7 +49,7 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project, name = nil, url = nil)
+  def project_title(project)
     namespace_link =
       if project.group
         link_to(simple_sanitize(project.group.name), group_path(project.group))
@@ -66,10 +66,7 @@ module ProjectsHelper
       end
     end
 
-    full_title = "#{namespace_link} / #{project_link}".html_safe
-    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
-
-    full_title
+    "#{namespace_link} / #{project_link}".html_safe
   end
 
   def remove_project_message(project)
@@ -134,15 +131,34 @@ module ProjectsHelper
     options = project_feature_options
 
     if @project.private?
+      level = @project.project_feature.send(field)
       options.delete('Everyone with access')
-      highest_available_option = options.values.max if @project.project_feature.send(field) == ProjectFeature::ENABLED
+      highest_available_option = options.values.max if level == ProjectFeature::ENABLED
     end
 
     options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
-    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control", data: { field: field }).html_safe
+
+    content_tag(
+      :select,
+      options,
+      name: "project[project_feature_attributes][#{field}]",
+      id: "project_project_feature_attributes_#{field}",
+      class: "pull-right form-control #{repo_children_classes(field)}",
+      data: { field: field }
+    ).html_safe
   end
 
   private
+
+  def repo_children_classes(field)
+    needs_repo_check = [:merge_requests_access_level, :builds_access_level]
+    return unless needs_repo_check.include?(field)
+
+    classes = "project-repo-select js-repo-select"
+    classes << " disabled" unless @project.feature_available?(:repository, current_user)
+
+    classes
+  end
 
   def get_project_nav_tabs(project, current_user)
     nav_tabs = [:home]
@@ -434,5 +450,13 @@ module ProjectsHelper
       'Only team members' => ProjectFeature::PRIVATE,
       'Everyone with access' => ProjectFeature::ENABLED
     }
+  end
+
+  def project_child_container_class(view_path)
+    view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
+  end
+
+  def project_issues(project)
+    IssuesFinder.new(current_user, project_id: project.id).execute
   end
 end

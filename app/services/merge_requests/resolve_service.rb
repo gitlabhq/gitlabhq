@@ -1,5 +1,8 @@
 module MergeRequests
   class ResolveService < MergeRequests::BaseService
+    class MissingFiles < Gitlab::Conflict::ResolutionError
+    end
+
     attr_accessor :conflicts, :rugged, :merge_index, :merge_request
 
     def execute(merge_request)
@@ -10,8 +13,16 @@ module MergeRequests
 
       fetch_their_commit!
 
-      conflicts.files.each do |file|
-        write_resolved_file_to_index(file, params[:sections])
+      params[:files].each do |file_params|
+        conflict_file = merge_request.conflicts.file_for_path(file_params[:old_path], file_params[:new_path])
+
+        write_resolved_file_to_index(conflict_file, file_params)
+      end
+
+      unless merge_index.conflicts.empty?
+        missing_files = merge_index.conflicts.map { |file| file[:ours][:path] }
+
+        raise MissingFiles, "Missing resolutions for the following files: #{missing_files.join(', ')}"
       end
 
       commit_params = {
@@ -23,8 +34,13 @@ module MergeRequests
       project.repository.resolve_conflicts(current_user, merge_request.source_branch, commit_params)
     end
 
-    def write_resolved_file_to_index(file, resolutions)
-      new_file = file.resolve_lines(resolutions).map(&:text).join("\n")
+    def write_resolved_file_to_index(file, params)
+      new_file = if params[:sections]
+                   file.resolve_lines(params[:sections]).map(&:text).join("\n")
+                 elsif params[:content]
+                   file.resolve_content(params[:content])
+                 end
+
       our_path = file.our_path
 
       merge_index.add(path: our_path, oid: rugged.write(new_file, :blob), mode: file.our_mode)

@@ -41,10 +41,10 @@ module Banzai
           next if visible.include?(node)
 
           doc_data[:visible_reference_count] -= 1
-          # The reference should be replaced by the original text,
-          # which is not always the same as the rendered text.
-          text = node.attr('data-original') || node.text
-          node.replace(text)
+          # The reference should be replaced by the original link's content,
+          # which is not always the same as the rendered one.
+          content = node.attr('data-original') || node.inner_html
+          node.replace(content)
         end
       end
 

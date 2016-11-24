@@ -14,18 +14,10 @@
     }
   }
 
-  .autoscroll-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 100;
-  }
-
   .scroll-controls {
-    &.affix-top {
-      position: absolute;
-      top: 10px;
-      right: 25px;
+    .scroll-step {
+      width: 31px;
+      margin: 0 0 0 auto;
     }
 
     &.affix-bottom {
@@ -34,13 +26,13 @@
     }
 
     &.affix {
-      right: 30px;
+      right: 25px;
       bottom: 15px;
       z-index: 1;
+    }
 
-      @media (min-width: $screen-md-min) {
-        right: 26%;
-      }
+    &.sidebar-expanded {
+      right: #{$gutter_width + ($gl-padding * 2)};
     }
 
     a {
@@ -48,22 +40,46 @@
       margin-bottom: 10px;
     }
   }
+
+  .environment-information {
+    background-color: $background-color;
+    border: 1px solid $border-color;
+    padding: 12px $gl-padding;
+    border-radius: $border-radius-default;
+
+    svg {
+      position: relative;
+      top: 1px;
+      margin-right: 5px;
+    }
+  }
 }
 
 .build-header {
   position: relative;
-  padding-right: 40px;
+  padding: 0;
+  display: flex;
+  min-height: 58px;
+  align-items: center;
 
-  @media (min-width: $screen-sm-min) {
-    padding-right: 0;
+  @media (max-width: $screen-sm-max) {
+    padding-right: 40px;
+
+    .btn-inverted {
+      display: none;
+    }
   }
 
-  a {
-    color: $gl-gray;
+  .header-content {
+    flex: 1;
 
-    &:hover {
-      color: $gl-link-color;
-      text-decoration: none;
+    a {
+      color: $gl-gray;
+
+      &:hover {
+        color: $gl-link-color;
+        text-decoration: none;
+      }
     }
   }
 
@@ -107,6 +123,14 @@
 
   .block {
     width: 100%;
+
+    &.coverage {
+      padding: 0 16px 11px;
+    }
+
+    .btn-group-justified {
+      margin-top: 5px;
+    }
   }
 
   .js-build-variable {
@@ -129,8 +153,14 @@
 
   .retry-link {
     color: $gl-link-color;
+    display: none;
+
     &:hover {
       text-decoration: underline;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      display: block;
     }
   }
 
@@ -186,7 +216,7 @@
     .build-job {
       position: relative;
 
-      .fa {
+      .fa-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -196,13 +226,22 @@
       &.active {
         font-weight: bold;
 
-        .fa {
+        .fa-arrow-right {
           display: block;
         }
       }
 
+      &.retried {
+        background-color: $gray-lightest;
+      }
+
       &:hover {
         background-color: $row-hover;
+      }
+
+      .fa-refresh {
+        font-size: 13px;
+        margin-left: 3px;
       }
     }
   }
@@ -210,6 +249,10 @@
 
 .build-detail-row {
   margin-bottom: 5px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .build-light-text {
@@ -221,4 +264,10 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
+}
+
+@media (min-width: $screen-md-min) {
+  .sub-nav.build {
+    width: calc(100% + #{$gutter_width});
+  }
 }

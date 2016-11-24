@@ -7,14 +7,15 @@ class Notify < BaseMailer
   include Emails::Projects
   include Emails::Profile
   include Emails::Builds
+  include Emails::Pipelines
   include Emails::Members
 
-  add_template_helper MergeRequestsHelper
-  add_template_helper DiffHelper
-  add_template_helper BlobHelper
-  add_template_helper EmailsHelper
-  add_template_helper MembersHelper
-  add_template_helper GitlabRoutingHelper
+  helper MergeRequestsHelper
+  helper DiffHelper
+  helper BlobHelper
+  helper EmailsHelper
+  helper MembersHelper
+  helper GitlabRoutingHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,
@@ -92,6 +93,7 @@ class Notify < BaseMailer
     subject = ""
     subject << "#{@project.name} | " if @project
     subject << extra.join(' | ') if extra.present?
+    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.present?
     subject
   end
 
@@ -107,6 +109,12 @@ class Notify < BaseMailer
     add_project_headers
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
     headers['X-GitLab-Reply-Key'] = reply_key
+
+    if !@labels_url && @sent_notification && @sent_notification.unsubscribable?
+      headers['List-Unsubscribe'] = "<#{unsubscribe_sent_notification_url(@sent_notification, force: true)}>"
+
+      @sent_notification_url = unsubscribe_sent_notification_url(@sent_notification)
+    end
 
     if Gitlab::IncomingEmail.enabled?
       address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))

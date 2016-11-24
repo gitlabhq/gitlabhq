@@ -12,29 +12,139 @@ feature 'Merge request conflict resolution', js: true, feature: true do
     end
   end
 
-  context 'when a merge request can be resolved in the UI' do
-    let(:merge_request) { create_merge_request('conflict-resolvable') }
+  shared_examples "conflicts are resolved in Interactive mode" do
+    it 'conflicts are resolved in Interactive mode' do
+      within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
+        click_button 'Use ours'
+      end
 
+      within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
+        all('button', text: 'Use ours').each do |button|
+          button.click
+        end
+      end
+
+      click_button 'Commit conflict resolution'
+      wait_for_ajax
+
+      expect(page).to have_content('All merge conflicts were resolved')
+      merge_request.reload_diff
+
+      click_on 'Changes'
+      wait_for_ajax
+
+      within find('.diff-file', text: 'files/ruby/popen.rb') do
+        expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")
+        expect(page).to have_selector('.line_content.new', text: "options = { chdir: path }")
+      end
+
+      within find('.diff-file', text: 'files/ruby/regex.rb') do
+        expect(page).to have_selector('.line_content.new', text: "def username_regexp")
+        expect(page).to have_selector('.line_content.new', text: "def project_name_regexp")
+        expect(page).to have_selector('.line_content.new', text: "def path_regexp")
+        expect(page).to have_selector('.line_content.new', text: "def archive_formats_regexp")
+        expect(page).to have_selector('.line_content.new', text: "def git_reference_regexp")
+        expect(page).to have_selector('.line_content.new', text: "def default_regexp")
+      end
+    end
+  end
+
+  shared_examples "conflicts are resolved in Edit inline mode" do
+    it 'conflicts are resolved in Edit inline mode' do
+      expect(find('#conflicts')).to have_content('popen.rb')
+
+      within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
+        click_button 'Edit inline'
+        wait_for_ajax
+        execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
+      end
+
+      within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
+        click_button 'Edit inline'
+        wait_for_ajax
+        execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
+      end
+
+      click_button 'Commit conflict resolution'
+      wait_for_ajax
+      expect(page).to have_content('All merge conflicts were resolved')
+      merge_request.reload_diff
+
+      click_on 'Changes'
+      wait_for_ajax
+
+      expect(page).to have_content('One morning')
+      expect(page).to have_content('Gregor Samsa woke from troubled dreams')
+    end
+  end
+
+  context 'can be resolved in the UI' do
     before do
       project.team << [user, :developer]
       login_as(user)
-
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
-    it 'shows a link to the conflict resolution page' do
-      expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
-    end
+    context 'the conflicts are resolvable' do
+      let(:merge_request) { create_merge_request('conflict-resolvable') }
 
-    context 'visiting the conflicts resolution page' do
-      before { click_link('conflicts', href: /\/conflicts\Z/) }
+      before { visit namespace_project_merge_request_path(project.namespace, project, merge_request) }
 
-      it 'shows the conflicts' do
-        begin
-          expect(find('#conflicts')).to have_content('popen.rb')
-        rescue Capybara::Poltergeist::JavascriptError
-          retry
+      it 'shows a link to the conflict resolution page' do
+        expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
+      end
+
+      context 'in Inline view mode' do
+        before { click_link('conflicts', href: /\/conflicts\Z/) }
+
+        include_examples "conflicts are resolved in Interactive mode"
+        include_examples "conflicts are resolved in Edit inline mode"
+      end
+
+      context 'in Parallel view mode' do
+        before do
+          click_link('conflicts', href: /\/conflicts\Z/) 
+          click_button 'Side-by-side'
         end
+
+        include_examples "conflicts are resolved in Interactive mode"
+        include_examples "conflicts are resolved in Edit inline mode"
+      end
+    end
+
+    context 'the conflict contain markers' do
+      let(:merge_request) { create_merge_request('conflict-contains-conflict-markers') }
+
+      before do
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        click_link('conflicts', href: /\/conflicts\Z/)
+      end
+
+      it 'conflicts can not be resolved in Interactive mode' do
+        within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
+          expect(page).not_to have_content 'Interactive mode'
+          expect(page).not_to have_content 'Edit inline'
+        end
+      end
+
+      it 'conflicts are resolved in Edit inline mode' do
+        within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
+          wait_for_ajax
+          execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
+        end
+
+        click_button 'Commit conflict resolution'
+        wait_for_ajax
+
+        expect(page).to have_content('All merge conflicts were resolved')
+
+        merge_request.reload_diff
+
+        click_on 'Changes'
+        wait_for_ajax
+        find('.click-to-expand').click
+        wait_for_ajax
+
+        expect(page).to have_content('Gregor Samsa woke from troubled dreams')
       end
     end
   end
@@ -42,7 +152,6 @@ feature 'Merge request conflict resolution', js: true, feature: true do
   UNRESOLVABLE_CONFLICTS = {
     'conflict-too-large' => 'when the conflicts contain a large file',
     'conflict-binary-file' => 'when the conflicts contain a binary file',
-    'conflict-contains-conflict-markers' => 'when the conflicts contain a file with ambiguous conflict markers',
     'conflict-missing-side' => 'when the conflicts contain a file edited in one branch and deleted in another',
     'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file',
   }

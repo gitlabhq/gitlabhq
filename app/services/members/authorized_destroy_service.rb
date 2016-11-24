@@ -14,6 +14,8 @@ module Members
       if member.request? && member.user != user
         notification_service.decline_access_request(member)
       end
+
+      member
     end
   end
 end

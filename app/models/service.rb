@@ -8,6 +8,7 @@ class Service < ActiveRecord::Base
   default_value_for :push_events, true
   default_value_for :issues_events, true
   default_value_for :confidential_issues_events, true
+  default_value_for :commit_events, true
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
@@ -136,6 +137,7 @@ class Service < ActiveRecord::Base
         end
 
         def #{arg}=(value)
+          self.properties ||= {}
           updated_properties['#{arg}'] = #{arg} unless #{arg}_changed?
           self.properties['#{arg}'] = value
         end
@@ -195,7 +197,7 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w(
+    %w[
       asana
       assembla
       bamboo
@@ -212,19 +214,21 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jira
+      mattermost_slash_commands
+      pipelines_email
       pivotaltracker
       pushover
       redmine
       slack
       teamcity
-    )
+    ]
   end
 
-  def self.create_from_template(project_id, template)
+  def self.build_from_template(project_id, template)
     service = template.dup
     service.template = false
     service.project_id = project_id
-    service if service.save
+    service
   end
 
   private

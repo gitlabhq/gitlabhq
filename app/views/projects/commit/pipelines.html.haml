@@ -1,0 +1,6 @@
+- page_title "Pipelines", "#{@commit.title} (#{@commit.short_id})", "Commits"
+
+= render "commit_box"
+
+= render "ci_menu"
+= render "pipelines_list", pipelines: @ci_pipelines

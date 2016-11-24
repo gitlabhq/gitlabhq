@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'admin/dashboard/index.html.haml' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   before do
     assign(:projects, create_list(:empty_project, 1))

@@ -4,7 +4,7 @@
     text-align: center;
 
     .preview {
-      @include border-radius(4px);
+      border-radius: 4px;
 
       height: 80px;
       margin-bottom: 10px;
@@ -47,7 +47,7 @@
       width: 160px;
 
       img {
-        @include border-radius(4px);
+        border-radius: 4px;
 
         max-width: 100%;
       }

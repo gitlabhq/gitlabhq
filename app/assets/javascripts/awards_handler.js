@@ -1,6 +1,7 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-undef, no-plusplus, no-return-assign, camelcase, padded-blocks, max-len */
 (function() {
   this.AwardsHandler = (function() {
-    const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
+    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
@@ -91,7 +92,7 @@
       css = {
         top: ($addBtn.offset().top + $addBtn.outerHeight()) + "px"
       };
-      if ((position != null) && position === 'right') {
+      if (position === 'right') {
         css.left = (($addBtn.offset().left - $menu.outerWidth()) + 20) + "px";
         $menu.addClass('is-aligned-right');
       } else {
@@ -322,21 +323,18 @@
       var frequentlyUsedEmojis;
       frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
       frequentlyUsedEmojis.push(emoji);
-      return $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
-        path: gon.relative_url_root || '/',
-        expires: 365
-      });
+      Cookies.set('frequently_used_emojis', frequentlyUsedEmojis.join(','), { expires: 365 });
     };
 
     AwardsHandler.prototype.getFrequentlyUsedEmojis = function() {
       var frequentlyUsedEmojis;
-      frequentlyUsedEmojis = ($.cookie('frequently_used_emojis') || '').split(',');
+      frequentlyUsedEmojis = (Cookies.get('frequently_used_emojis') || '').split(',');
       return _.compact(_.uniq(frequentlyUsedEmojis));
     };
 
     AwardsHandler.prototype.renderFrequentlyUsedBlock = function() {
       var emoji, frequentlyUsedEmojis, i, len, ul;
-      if ($.cookie('frequently_used_emojis')) {
+      if (Cookies.get('frequently_used_emojis')) {
         frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
         ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>");
         for (i = 0, len = frequentlyUsedEmojis.length; i < len; i++) {
@@ -357,7 +355,7 @@
           $('ul.emoji-menu-search, h5.emoji-search').remove();
           if (term) {
             // Generate a search result block
-            h5 = $('<h5>').text('Search results');
+            h5 = $('<h5 class="emoji-search" />').text('Search results');
             found_emojis = _this.searchEmojis(term).show();
             ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis);
             $('.emoji-menu-content ul, .emoji-menu-content h5').hide();

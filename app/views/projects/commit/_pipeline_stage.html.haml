@@ -1,4 +1,4 @@
-- status_groups = statuses.group_by(&:group_name)
+- status_groups = statuses.sort_by(&:name).group_by(&:group_name)
 - status_groups.each do |group_name, grouped_statuses|
   - if grouped_statuses.one?
     - status = grouped_statuses.first
@@ -10,5 +10,5 @@
   - else
     %li.build
       .curve
-      .build-content
+      .dropdown.inline.build-content
         = render "projects/commit/pipeline_status_group", name: group_name, subject: grouped_statuses

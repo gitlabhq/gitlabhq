@@ -1,13 +1,10 @@
-((w) => {
-  w.ResolveBtn = Vue.extend({
-    mixins: [
-      ButtonMixins
-    ],
+/* eslint-disable */
+(() => {
+  const ResolveBtn = Vue.extend({
     props: {
       noteId: Number,
       discussionId: String,
       resolved: Boolean,
-      namespacePath: String,
       projectPath: String,
       canResolve: Boolean,
       resolvedBy: String
@@ -57,7 +54,7 @@
     },
     methods: {
       updateTooltip: function () {
-        $(this.$els.button)
+        $(this.$refs.button)
           .tooltip('hide')
           .tooltip('fixTitle');
       },
@@ -69,10 +66,10 @@
 
         if (this.isResolved) {
           promise = ResolveService
-            .unresolve(this.namespace, this.noteId);
+            .unresolve(this.projectPath, this.noteId);
         } else {
           promise = ResolveService
-            .resolve(this.namespace, this.noteId);
+            .resolve(this.projectPath, this.noteId);
         }
 
         promise.then((response) => {
@@ -92,8 +89,8 @@
         });
       }
     },
-    compiled: function () {
-      $(this.$els.button).tooltip({
+    mounted: function () {
+      $(this.$refs.button).tooltip({
         container: 'body'
       });
     },
@@ -104,4 +101,6 @@
       CommentsStore.create(this.discussionId, this.noteId, this.canResolve, this.resolved, this.resolvedBy);
     }
   });
-})(window);
+
+  Vue.component('resolve-btn', ResolveBtn);
+})();

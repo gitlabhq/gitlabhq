@@ -19,5 +19,5 @@
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
 
-  %ul.content-list.builds-content-list
+  %div.content-list.builds-content-list
     = render "table", builds: @builds, project: @project

@@ -186,6 +186,7 @@ Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].ni
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
@@ -214,6 +215,7 @@ Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(
 Settings.gitlab['domain_whitelist'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project]
 Settings.gitlab['trusted_proxies'] ||= []
+Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 
 #
 # CI
@@ -302,6 +304,13 @@ Settings.cron_jobs['remove_expired_group_links_worker']['job_class'] = 'RemoveEx
 Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
+
+Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
+Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsWorker'
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
+Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
 
 #
 # GitLab Shell

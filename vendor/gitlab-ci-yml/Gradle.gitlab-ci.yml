@@ -1,0 +1,34 @@
+# This template uses the java:8 docker image because there isn't any
+# official Gradle image at this moment
+#
+# This is the Gradle build system for JVM applications
+# https://gradle.org/
+# https://github.com/gradle/gradle
+image: java:8
+
+# Make the gradle wrapper executable. This essentially downloads a copy of
+# Gradle to build the project with.
+# https://docs.gradle.org/current/userguide/gradle_wrapper.html
+# It is expected that any modern gradle project has a wrapper
+before_script:
+    - chmod +x gradlew
+
+# We redirect the gradle user home using -g so that it caches the
+# wrapper and dependencies.
+# https://docs.gradle.org/current/userguide/gradle_command_line.html
+#
+# Unfortunately it also caches the build output so
+# cleaning removes reminants of any cached builds.
+# The assemble task actually builds the project.
+# If it fails here, the tests can't run.
+build:
+  stage: build
+  script:
+    - ./gradlew -g /cache/.gradle clean assemble
+  allow_failure: false
+
+# Use the generated build output to run the tests.
+test:
+  stage: test
+  script:
+    - ./gradlew -g /cache./gradle check

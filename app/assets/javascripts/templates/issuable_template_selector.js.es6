@@ -1,7 +1,8 @@
+/* eslint-disable */
 /*= require ../blob/template_selector */
 
 ((global) => {
-  class IssuableTemplateSelector extends TemplateSelector {
+  class IssuableTemplateSelector extends gl.TemplateSelector {
     constructor(...args) {
       super(...args);
       this.projectPath = this.dropdown.data('project-path');
@@ -16,7 +17,13 @@
       if (initialQuery.name) this.requestFile(initialQuery);
 
       $('.reset-template', this.dropdown.parent()).on('click', () => {
-        if (this.currentTemplate) this.setInputValueToTemplateContent();
+        this.setInputValueToTemplateContent();
+      });
+
+      $('.no-template', this.dropdown.parent()).on('click', () => {
+        this.currentTemplate = '';
+        this.setInputValueToTemplateContent();
+        $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
       });
     }
 
@@ -36,16 +43,16 @@
       // to the content of the template selected.
       if (this.titleInput.val() === '') {
         // If the title has not yet been set, focus the title input and
-        // skip focusing the description input by setting `true` as the 2nd
-        // argument to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, true);
+        // skip focusing the description input by setting `true` as the
+        // `skipFocus` option to `requestFileSuccess`.
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: true});
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate);
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: false});
       }
       return;
     }
   }
 
   global.IssuableTemplateSelector = IssuableTemplateSelector;
-})(window);
+})(window.gl || (window.gl = {}));

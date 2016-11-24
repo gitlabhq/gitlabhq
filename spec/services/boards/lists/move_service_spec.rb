@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Boards::Lists::MoveService, services: true do
   describe '#execute' do
-    let(:project) { create(:project_with_board) }
-    let(:board)   { project.board }
+    let(:project) { create(:empty_project) }
+    let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
     let!(:backlog)     { create(:backlog_list, board: board) }

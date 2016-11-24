@@ -52,7 +52,7 @@ module Gitlab
 
       def method_missing(method, *args, &block)
         if api.respond_to?(method)
-          request { api.send(method, *args, &block) }
+          request(method, *args, &block)
         else
           super(method, *args, &block)
         end
@@ -99,20 +99,31 @@ module Gitlab
         rate_limit.resets_in + GITHUB_SAFE_SLEEP_TIME
       end
 
-      def request
+      def request(method, *args, &block)
         sleep rate_limit_sleep_time if rate_limit_exceed?
 
-        data = yield
+        data = api.send(method, *args)
+        return data unless data.is_a?(Array)
 
         last_response = api.last_response
 
+        if block_given?
+          yield data
+          # api.last_response could change while we're yielding (e.g. fetching labels for each PR)
+          # so we cache our own last response
+          each_response_page(last_response, &block)
+        else
+          each_response_page(last_response) { |page| data.concat(page) }
+          data
+        end
+      end
+
+      def each_response_page(last_response)
         while last_response.rels[:next]
           sleep rate_limit_sleep_time if rate_limit_exceed?
           last_response = last_response.rels[:next].get
-          data.concat(last_response.data) if last_response.data.is_a?(Array)
+          yield last_response.data if last_response.data.is_a?(Array)
         end
-
-        data
       end
     end
   end

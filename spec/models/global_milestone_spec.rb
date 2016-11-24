@@ -50,8 +50,9 @@ describe GlobalMilestone, models: true do
           milestone1_project2,
           milestone1_project3,
         ]
+      milestones_relation = Milestone.where(id: milestones.map(&:id))
 
-      @global_milestone = GlobalMilestone.new(milestone1_project1.title, milestones)
+      @global_milestone = GlobalMilestone.new(milestone1_project1.title, milestones_relation)
     end
 
     it 'has exactly one group milestone' do
@@ -67,7 +68,7 @@ describe GlobalMilestone, models: true do
     let(:milestone) { create(:milestone, title: "git / test", project: project1) }
 
     it 'strips out slashes and spaces' do
-      global_milestone = GlobalMilestone.new(milestone.title, [milestone])
+      global_milestone = GlobalMilestone.new(milestone.title, Milestone.where(id: milestone.id))
 
       expect(global_milestone.safe_title).to eq('git-test')
     end

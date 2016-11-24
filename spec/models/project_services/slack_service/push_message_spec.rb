@@ -9,7 +9,7 @@ describe SlackService::PushMessage, models: true do
       before: 'before',
       project_name: 'project_name',
       ref: 'refs/heads/master',
-      user_name: 'user_name',
+      user_name: 'test.user',
       project_url: 'url'
     }
   end
@@ -26,7 +26,7 @@ describe SlackService::PushMessage, models: true do
 
     it 'returns a message regarding pushes' do
       expect(subject.pretext).to eq(
-        'user_name pushed to branch <url/commits/master|master> of '\
+        'test.user pushed to branch <url/commits/master|master> of '\
         '<url|project_name> (<url/compare/before...after|Compare changes>)'
       )
       expect(subject.attachments).to eq([
@@ -46,13 +46,13 @@ describe SlackService::PushMessage, models: true do
         before: Gitlab::Git::BLANK_SHA,
         project_name: 'project_name',
         ref: 'refs/tags/new_tag',
-        user_name: 'user_name',
+        user_name: 'test.user',
         project_url: 'url'
       }
     end
 
     it 'returns a message regarding pushes' do
-      expect(subject.pretext).to eq('user_name pushed new tag ' \
+      expect(subject.pretext).to eq('test.user pushed new tag ' \
        '<url/commits/new_tag|new_tag> to ' \
        '<url|project_name>')
       expect(subject.attachments).to be_empty
@@ -66,7 +66,7 @@ describe SlackService::PushMessage, models: true do
 
     it 'returns a message regarding a new branch' do
       expect(subject.pretext).to eq(
-        'user_name pushed new branch <url/commits/master|master> to '\
+        'test.user pushed new branch <url/commits/master|master> to '\
         '<url|project_name>'
       )
       expect(subject.attachments).to be_empty
@@ -80,7 +80,7 @@ describe SlackService::PushMessage, models: true do
 
     it 'returns a message regarding a removed branch' do
       expect(subject.pretext).to eq(
-        'user_name removed branch master from <url|project_name>'
+        'test.user removed branch master from <url|project_name>'
       )
       expect(subject.attachments).to be_empty
     end

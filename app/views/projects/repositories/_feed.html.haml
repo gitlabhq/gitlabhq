@@ -12,7 +12,7 @@
       = link_to namespace_project_commits_path(@project.namespace, @project, commit.id) do
         %code= commit.short_id
       = image_tag avatar_icon(commit.author_email), class: "", width: 16, alt: ''
-      = markdown escape_once(truncate(commit.title, length: 40)), pipeline: :single_line, author: commit.author
+      = markdown(truncate(commit.title, length: 40), pipeline: :single_line, author: commit.author)
   %td
     %span.pull-right.cgray
       = time_ago_with_tooltip(commit.committed_date)

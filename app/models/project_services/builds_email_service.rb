@@ -43,7 +43,7 @@ class BuildsEmailService < Service
   end
 
   def can_test?
-    project.builds.count > 0
+    project.builds.any?
   end
 
   def disabled_title

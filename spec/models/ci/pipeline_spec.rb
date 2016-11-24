@@ -88,23 +88,37 @@ describe Ci::Pipeline, models: true do
 
     context 'no failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", pipeline: pipeline, status: 'success'
+        create_build('rspec', 'success')
       end
 
-      it 'be not retryable' do
+      it 'is not retryable' do
         is_expected.to be_falsey
+      end
+
+      context 'one canceled job' do
+        before do
+          create_build('rubocop', 'canceled')
+        end
+
+        it 'is retryable' do
+          is_expected.to be_truthy
+        end
       end
     end
 
     context 'with failed builds' do
       before do
-        FactoryGirl.create :ci_build, name: "rspec", pipeline: pipeline, status: 'running'
-        FactoryGirl.create :ci_build, name: "rubocop", pipeline: pipeline, status: 'failed'
+        create_build('rspec', 'running')
+        create_build('rubocop', 'failed')
       end
 
-      it 'be retryable' do
+      it 'is retryable' do
         is_expected.to be_truthy
       end
+    end
+
+    def create_build(name, status)
+      create(:ci_build, name: name, status: status, pipeline: pipeline)
     end
   end
 
@@ -124,32 +138,26 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create_build('build1', current, 10) }
-    let(:build_b) { create_build('build2', current, 20) }
-    let(:build_c) { create_build('build3', current + 50, 10) }
+    let(:build) { create_build('build1', 0) }
+    let(:build_b) { create_build('build2', 0) }
+    let(:build_c) { create_build('build3', 0) }
 
     describe '#duration' do
       before do
-        pipeline.update(created_at: current)
-
-        travel_to(current + 5) do
-          pipeline.run
-          pipeline.save
-        end
-
         travel_to(current + 30) do
-          build.success
+          build.run!
+          build.success!
+          build_b.run!
+          build_c.run!
         end
 
         travel_to(current + 40) do
-          build_b.drop
+          build_b.drop!
         end
 
         travel_to(current + 70) do
-          build_c.success
+          build_c.success!
         end
-
-        pipeline.drop
       end
 
       it 'matches sum of builds duration' do
@@ -184,6 +192,28 @@ describe Ci::Pipeline, models: true do
         build.run
 
         expect(pipeline.reload.finished_at).to be_nil
+      end
+    end
+
+    describe 'merge request metrics' do
+      let(:project) { FactoryGirl.create :project }
+      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
+
+      before do
+        expect(PipelineMetricsWorker).to receive(:perform_async).with(pipeline.id)
+      end
+
+      context 'when transitioning to running' do
+        it 'schedules metrics workers' do
+          pipeline.run
+        end
+      end
+
+      context 'when transitioning to success' do
+        it 'schedules metrics workers' do
+          pipeline.succeed
+        end
       end
     end
 
@@ -419,7 +449,9 @@ describe Ci::Pipeline, models: true do
         context 'when all builds succeed' do
           before do
             build_a.success
-            build_b.success
+
+            # We have to reload build_b as this is in next stage and it gets triggered by PipelineProcessWorker
+            build_b.reload.success
           end
 
           it 'receives a success event once' do
@@ -466,6 +498,107 @@ describe Ci::Pipeline, models: true do
              pipeline: pipeline,
              name: name,
              stage_idx: stage_idx)
+    end
+  end
+
+  describe "#merge_requests" do
+    let(:project) { FactoryGirl.create :project }
+    let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+
+    it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
+      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+
+      expect(pipeline.merge_requests).to eq([merge_request])
+    end
+
+    it "doesn't return merge requests whose source branch doesn't match the pipeline's ref" do
+      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
+
+      expect(pipeline.merge_requests).to be_empty
+    end
+
+    it "doesn't return merge requests whose `diff_head_sha` doesn't match the pipeline's SHA" do
+      create(:merge_request, source_project: project, source_branch: pipeline.ref)
+      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
+
+      expect(pipeline.merge_requests).to be_empty
+    end
+  end
+
+  describe 'notifications when pipeline success or failed' do
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             sha: project.commit('master').sha,
+             user: create(:user))
+    end
+
+    before do
+      reset_delivered_emails!
+
+      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+
+      perform_enqueued_jobs do
+        pipeline.enqueue
+        pipeline.run
+      end
+    end
+
+    shared_examples 'sending a notification' do
+      it 'sends an email' do
+        should_only_email(pipeline.user, kind: :bcc)
+      end
+    end
+
+    shared_examples 'not sending any notification' do
+      it 'does not send any email' do
+        should_not_email_anyone
+      end
+    end
+
+    context 'with success pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.succeed
+        end
+      end
+
+      it_behaves_like 'sending a notification'
+    end
+
+    context 'with failed pipeline' do
+      before do
+        perform_enqueued_jobs do
+          create(:ci_build, :failed, pipeline: pipeline)
+          create(:generic_commit_status, :failed, pipeline: pipeline)
+
+          pipeline.drop
+        end
+      end
+
+      it_behaves_like 'sending a notification'
+    end
+
+    context 'with skipped pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.skip
+        end
+      end
+
+      it_behaves_like 'not sending any notification'
+    end
+
+    context 'with cancelled pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.cancel
+        end
+      end
+
+      it_behaves_like 'not sending any notification'
     end
   end
 end

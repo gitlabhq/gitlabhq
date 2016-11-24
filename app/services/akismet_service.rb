@@ -29,41 +29,11 @@ class AkismetService
   end
 
   def submit_ham
-    return false unless akismet_enabled?
-
-    params = {
-      type: 'comment',
-      text: text,
-      author: owner.name,
-      author_email: owner.email
-    }
-
-    begin
-      akismet_client.submit_ham(options[:ip_address], options[:user_agent], params)
-      true
-    rescue => e
-      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
-      false
-    end
+    submit(:ham)
   end
 
   def submit_spam
-    return false unless akismet_enabled?
-
-    params = {
-      type: 'comment',
-      text: text,
-      author: owner.name,
-      author_email: owner.email
-    }
-
-    begin
-      akismet_client.submit_spam(options[:ip_address], options[:user_agent], params)
-      true
-    rescue => e
-      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
-      false
-    end
+    submit(:spam)
   end
 
   private
@@ -75,5 +45,24 @@ class AkismetService
 
   def akismet_enabled?
     current_application_settings.akismet_enabled
+  end
+
+  def submit(type)
+    return false unless akismet_enabled?
+
+    params = {
+      type: 'comment',
+      text: text,
+      author: owner.name,
+      author_email: owner.email
+    }
+
+    begin
+      akismet_client.public_send(type, options[:ip_address], options[:user_agent], params)
+      true
+    rescue => e
+      Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
+      false
+    end
   end
 end

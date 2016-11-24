@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, vars-on-top, semi, keyword-spacing, no-plusplus, no-undef, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, padded-blocks, max-len */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -29,7 +30,7 @@
         date.setDate(date.getDate() + i);
 
         var day = date.getDay();
-        var count = timestamps[date.getTime() * 0.001];
+        var count = timestamps[dateFormat(date, 'yyyy-mm-dd')];
 
         // Create a new group array if this is the first day of the week
         // or if is first object
@@ -205,6 +206,7 @@
           }
         });
       } else {
+        this.currentSelectedDate = '';
         return $('.user-calendar-activities').html('');
       }
     };

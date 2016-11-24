@@ -17,4 +17,18 @@ describe Projects::TagsController do
       expect(assigns(:releases)).not_to include(invalid_release)
     end
   end
+
+  describe 'GET show' do
+    before { get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, id: id }
+
+    context "valid tag" do
+      let(:id) { 'v1.0.0' }
+      it { is_expected.to respond_with(:success) }
+    end
+
+    context "invalid tag" do
+      let(:id) { 'latest' }
+      it { is_expected.to respond_with(:not_found) }
+    end
+  end
 end

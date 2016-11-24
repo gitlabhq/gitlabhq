@@ -78,15 +78,11 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   def upload_pack_allowed?
     return false unless Gitlab.config.gitlab_shell.upload_pack
 
-    if user
-      access_check.allowed?
-    else
-      ci? || project.public?
-    end
+    access_check.allowed? || ci?
   end
 
   def access
-    @access ||= Gitlab::GitAccess.new(user, project, 'http')
+    @access ||= Gitlab::GitAccess.new(user, project, 'http', authentication_abilities: authentication_abilities)
   end
 
   def access_check

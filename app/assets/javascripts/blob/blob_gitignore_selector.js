@@ -1,3 +1,4 @@
+/* eslint-disable func-names, space-before-function-paren, max-len, one-var, no-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, prefer-rest-params, no-undef, padded-blocks, max-len */
 
 /*= require blob/template_selector */
 
@@ -18,6 +19,6 @@
 
     return BlobGitignoreSelector;
 
-  })(TemplateSelector);
+  })(gl.TemplateSelector);
 
 }).call(this);
