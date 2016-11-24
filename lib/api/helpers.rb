@@ -68,7 +68,7 @@ module API
     end
 
     def user_project
-      @project ||= find_project(params[:id])
+      @project ||= find_project!(params[:id])
     end
 
     def available_labels
@@ -76,12 +76,15 @@ module API
     end
 
     def find_project(id)
-      project =
-        if id =~ /^\d+$/
-          Project.find_by(id: id)
-        else
-          Project.find_with_namespace(id)
-        end
+      if id =~ /^\d+$/
+        Project.find_by(id: id)
+      else
+        Project.find_with_namespace(id)
+      end
+    end
+
+    def find_project!(id)
+      project = find_project(id)
 
       if can?(current_user, :read_project, project)
         project
