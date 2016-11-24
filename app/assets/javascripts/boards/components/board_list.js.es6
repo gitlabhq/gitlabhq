@@ -94,7 +94,7 @@
           gl.issueBoards.onStart();
         },
         onAdd: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue, e.newIndex);
 
           this.$nextTick(() => {
             e.item.remove();
