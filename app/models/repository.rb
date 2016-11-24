@@ -1157,6 +1157,7 @@ class Repository
       raw_ensure_branch(
         branch,
         source_branch: source_branch,
+        source_commit: source_commit,
         source_project: source_project
       )
 
