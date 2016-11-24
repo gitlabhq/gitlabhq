@@ -97,7 +97,7 @@ module Gitlab
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
-          if token && token.accessible? && token_has_scope?(token)
+          if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
             Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities)
           end
@@ -109,10 +109,18 @@ module Gitlab
           token = PersonalAccessToken.active.find_by_token(password)
           validation = User.by_login(login)
 
-          if token && token.user == validation && token_has_scope?(token)
+          if valid_personal_access_token?(token, validation)
             Gitlab::Auth::Result.new(validation, nil, :personal_token, full_authentication_abilities)
           end
         end
+      end
+
+      def valid_oauth_token?(token)
+        token && token.accessible? && token_has_scope?(token)
+      end
+
+      def valid_personal_access_token?(token, user)
+        token && token.user == user && token_has_scope?(token)
       end
 
       def token_has_scope?(token)
