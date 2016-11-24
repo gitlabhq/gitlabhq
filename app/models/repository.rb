@@ -1291,7 +1291,7 @@ class Repository
       fetch_ref(
         source_project.repository.path_to_repo,
         "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch}",
-        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch}"
+        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}"
       )
 
       [find_branch(branch_name), true]
