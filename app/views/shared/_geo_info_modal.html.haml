@@ -1,23 +1,4 @@
-#geo_info
+#geo_clone{data: {'clone-url-secondary': h(default_url_to_repo(project)), 'clone-url-primary': h(geo_primary_default_url_to_repo(project))}}
   %geo-clone-dialog{id: 'modal_geo_info', title: 'How to work faster with Geo'}
     %span{slot: 'clipboard'}
       = clipboard_button(clipboard_target: 'pre#geo-info')
-
-:javascript
-  gl.GeoCloneDialog = new Vue({
-    el: '#geo_info',
-    data: {
-      cloneUrlSecondary: "#{h default_url_to_repo(project)}",
-      cloneUrlPrimary: "#{h geo_primary_default_url_to_repo(project)}",
-    }
-    });
-
-  $(function(){
-    var modal = $('#modal_geo_info').appendTo('body').modal({modal: true, show:false});
-    $('.btn-geo').bind("click", function(){
-      modal.show();
-    });
-    $('.modal-header .close').bind("click", function(){
-      modal.hide();
-    })
-  })

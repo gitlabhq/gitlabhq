@@ -1,11 +1,15 @@
 //= require vue
-
+/* global modal */
 (() => {
   Vue.component('geo-clone-dialog', {
     name: 'geo-clone-dialog',
     props: ['title', 'id'],
     data() {
       return this.$parent.$data;
+    },
+    mounted() {
+      $(`#${this.id}`).appendTo('body').modal({ modal: true, show: false });
+      $('.modal-header .close').bind('click', () => modal.hide());
     },
     filters: {
       emptyRepo: (value) => {
@@ -32,5 +36,12 @@ git remote set-url --push origin {{cloneUrlPrimary | emptyRepo}}</pre>
           </div>
       </div>
         `,
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    gl.GeoCloneDialog = new Vue({
+      el: '#geo_clone',
+      data: Object.assign({}, document.getElementById('geo_clone').dataset),
+    });
   });
 })(window.gl || (window.gl = {}));
