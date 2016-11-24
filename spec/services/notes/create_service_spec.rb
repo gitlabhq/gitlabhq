@@ -63,6 +63,17 @@ describe Notes::CreateService, services: true do
           expect(note.note).to eq "HELLO\nWORLD"
         end
       end
+
+      describe '/merge with sha option' do
+        let(:note_text) { %(HELLO\n/merge\nWORLD) }
+        let(:params) { opts.merge(note: note_text, merge_request_diff_head_sha: 'sha') }
+
+        it 'saves the note and exectues merge command' do
+          note = described_class.new(project, user, params).execute
+
+          expect(note.note).to eq "HELLO\nWORLD"
+        end
+      end
     end
   end
 

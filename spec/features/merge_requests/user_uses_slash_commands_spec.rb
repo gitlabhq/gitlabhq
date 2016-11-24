@@ -68,6 +68,63 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
       end
     end
 
+    describe 'merging the MR from the note' do
+      context 'when the current user can merge the MR' do
+        it 'merges the MR' do
+          write_note("/merge")
+
+          expect(page).to have_content 'Your commands have been executed!'
+
+          expect(merge_request.reload).to be_merged
+        end
+      end
+
+      context 'when the head diff changes in the meanwhile' do
+        before do
+          path = File.expand_path("#{project.repository_storage_path}/#{project.namespace.path}/#{project.path}/new_file.txt")
+
+          params = {
+            source_project: merge_request.project,
+            target_project: merge_request.project,
+            target_branch: merge_request.source_branch,
+            source_branch: merge_request.source_branch,
+            file_path: path,
+            file_content: 'some content',
+            commit_message: 'additional commit',
+          }
+
+          Files::UpdateService.new(project, user, params).execute
+          merge_request.reload_diff
+        end
+
+        it 'does not merge the MR' do
+          write_note("/merge")
+
+          expect(page).not_to have_content 'Your commands have been executed!'
+
+          expect(merge_request.reload).not_to be_merged
+        end
+      end
+
+      context 'when the current user cannot merge the MR' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          logout
+          login_with(guest)
+          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        end
+
+        it 'does not merge the MR' do
+          write_note("/merge")
+
+          expect(page).not_to have_content 'Your commands have been executed!'
+
+          expect(merge_request.reload).not_to be_merged
+        end
+      end
+    end
+
     describe 'adding a due date from note' do
       it 'does not recognize the command nor create a note' do
         write_note('/due 2016-08-28')

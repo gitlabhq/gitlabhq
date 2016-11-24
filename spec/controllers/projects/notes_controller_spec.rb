@@ -14,6 +14,54 @@ describe Projects::NotesController do
     }
   end
 
+  describe 'POST create' do
+    let(:merge_request) { create(:merge_request) }
+    let(:request_params) do
+      {
+        note: { note: 'some note', noteable_id: merge_request.id, noteable_type: 'MergeRequest' },
+        namespace_id: project.namespace,
+        project_id: project,
+        merge_request_diff_head_sha: 'sha'
+      }
+    end
+
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    it "returns status 302 for html" do
+      post :create, request_params
+
+      expect(response).to have_http_status(302)
+    end
+
+    it "returns status 200 for json" do
+      post :create, request_params.merge(format: :json)
+
+      expect(response).to have_http_status(200)
+    end
+
+    context 'when merge_request_diff_head_sha present' do
+      before do
+        service_params = {
+          note: 'some note',
+          noteable_id: merge_request.id.to_s,
+          noteable_type: 'MergeRequest',
+          merge_request_diff_head_sha: 'sha'
+        }
+
+        expect(Notes::CreateService).to receive(:new).with(project, user, service_params).and_return(double(execute: true))
+      end
+
+      it "returns status 302 for html" do
+        post :create, request_params
+
+        expect(response).to have_http_status(302)
+      end
+    end
+  end
+
   describe 'POST toggle_award_emoji' do
     before do
       sign_in(user)
