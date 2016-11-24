@@ -105,7 +105,15 @@ module API
     end
 
     def find_group(id)
-      group = Group.find_by(path: id) || Group.find_by(id: id)
+      if id =~ /^\d+$/
+        Group.find_by(id: id)
+      else
+        Group.find_by(path: id)
+      end
+    end
+
+    def find_group!(id)
+      group = find_group(id)
 
       if can?(current_user, :read_group, group)
         group
