@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.12.10
+  - Fix information disclosure in `Projects::BlobController#update`
+  - Fix missing access checks on issue lookup using IssuableFinder
+  - Replace issue access checks with use of IssuableFinder
+
 v 8.12.9
   - Fix XSS issue in Markdown autolinker.
 
