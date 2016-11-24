@@ -766,6 +766,17 @@ describe User, models: true do
     end
   end
 
+  describe '.find_by_username' do
+    it 'returns nil if not found' do
+      expect(described_class.find_by_username('JohnDoe')).to be_nil
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username('JOHNDOE')).to eq user
+    end
+  end
+
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
       expect { described_class.find_by_username!('JohnDoe') }.

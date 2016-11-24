@@ -12,7 +12,7 @@
       this.pageUrl = options.pageUrl;
       this.buildUrl = options.buildUrl;
       this.buildStatus = options.buildStatus;
-      this.state = options.state1;
+      this.state = options.logState;
       this.buildStage = options.buildStage;
       this.updateDropdown = bind(this.updateDropdown, this);
       this.$document = $(document);

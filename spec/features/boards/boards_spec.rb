@@ -158,7 +158,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'removes checkmark in new list dropdown after deleting' do
-      click_button 'Create new list'
+      click_button 'Add list'
       wait_for_ajax
 
       page.within(find('.board:nth-child(2)')) do
@@ -304,7 +304,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       context 'new list' do
         it 'shows all labels in new list dropdown' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -315,7 +315,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list for label' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -328,7 +328,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list for Backlog label' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -341,7 +341,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list for Done label' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -354,7 +354,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'keeps dropdown open after adding new list' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -369,7 +369,7 @@ describe 'Issue Boards', feature: true, js: true do
         it 'moves issues from backlog into new list' do
           wait_for_board_cards(1, 6)
 
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -382,7 +382,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list from a new label' do
-          click_button 'Create new list'
+          click_button 'Add list'
 
           wait_for_ajax
 

@@ -145,25 +145,19 @@
 
   class DueDateSelectors {
     constructor() {
-      this.initMilestoneDueDate();
+      this.initMilestoneDatePicker();
       this.initIssuableSelect();
     }
 
-    initMilestoneDueDate() {
-      const $datePicker = $('.datepicker');
+    initMilestoneDatePicker() {
+      $('.datepicker').datepicker({
+        dateFormat: 'yy-mm-dd'
+      });
 
-      if ($datePicker.length) {
-        const $dueDate = $('#milestone_due_date');
-        $datePicker.datepicker({
-          dateFormat: 'yy-mm-dd',
-          onSelect: (dateText, inst) => {
-            $dueDate.val(dateText);
-          }
-        }).datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $dueDate.val()));
-      }
-      $('.js-clear-due-date').on('click', (e) => {
+      $('.js-clear-due-date,.js-clear-start-date').on('click', (e) => {
         e.preventDefault();
-        $.datepicker._clearDate($datePicker);
+        const datepicker = $(e.target).siblings('.datepicker');
+        $.datepicker._clearDate(datepicker);
       });
     }
 

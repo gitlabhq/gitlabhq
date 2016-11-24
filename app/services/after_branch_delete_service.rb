@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 ##
 # Branch can be deleted either by DeleteBranchService
 # or by GitPushService.

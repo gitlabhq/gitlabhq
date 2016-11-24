@@ -6,9 +6,6 @@ describe Service, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe "Test Button" do
     before do
       @service = Service.new

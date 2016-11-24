@@ -67,14 +67,14 @@ module ApplicationSettingsHelper
   def import_sources_checkboxes(help_block_id)
     Gitlab::ImportSources.options.map do |name, source|
       checked = current_application_settings.import_sources.include?(source)
-      css_class = 'btn'
-      css_class += ' active' if checked
+      css_class = checked ? 'active' : ''
       checkbox_name = 'application_setting[import_sources][]'
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(name, class: css_class) do
         check_box_tag(checkbox_name, source, checked,
                       autocomplete: 'off',
-                      'aria-describedby' => help_block_id) + name
+                      'aria-describedby' => help_block_id,
+                      id: name.tr(' ', '_')) + name
       end
     end
   end

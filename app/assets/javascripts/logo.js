@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, padded-blocks */
+/* global Turbolinks */
+
 (function() {
   Turbolinks.enableProgressBar();
 

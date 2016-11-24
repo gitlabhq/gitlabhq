@@ -1738,6 +1738,7 @@ describe Project, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#find_path_lock' do
     let(:project) { create :empty_project }
     let(:path_lock) { create :path_lock, project: project }
@@ -1850,6 +1851,8 @@ describe Project, models: true do
     end
   end
 
+=======
+>>>>>>> ce/master
   describe 'change_head' do
     let(:project) { create(:project) }
 

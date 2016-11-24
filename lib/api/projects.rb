@@ -446,6 +446,19 @@ module API
         end
       end
 
+      params do
+        requires :group_id, type: Integer, desc: 'The ID of the group'
+      end
+      delete ":id/share/:group_id" do
+        authorize! :admin_project, user_project
+
+        link = user_project.project_group_links.find_by(group_id: params[:group_id])
+        not_found!('Group Link') unless link
+
+        link.destroy
+        no_content!
+      end
+
       # Upload a file
       #
       # Parameters:

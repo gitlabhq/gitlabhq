@@ -30,6 +30,7 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true, uniqueness: { scope: :project_id }
   validates :project, presence: true
+  validate :start_date_should_be_less_than_due_date, if: Proc.new { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
 
@@ -132,24 +133,6 @@ class Milestone < ActiveRecord::Base
     self.title
   end
 
-  def expired?
-    if due_date
-      due_date.past?
-    else
-      false
-    end
-  end
-
-  def expires_at
-    if due_date
-      if due_date.past?
-        "expired on #{due_date.to_s(:medium)}"
-      else
-        "expires on #{due_date.to_s(:medium)}"
-      end
-    end
-  end
-
   def can_be_closed?
     active? && issues.opened.count.zero?
   end
@@ -212,5 +195,11 @@ class Milestone < ActiveRecord::Base
 
   def sanitize_title(value)
     CGI.unescape_html(Sanitize.clean(value.to_s))
+  end
+
+  def start_date_should_be_less_than_due_date
+    if due_date <= start_date
+      errors.add(:start_date, "Can't be greater than due date")
+    end
   end
 end

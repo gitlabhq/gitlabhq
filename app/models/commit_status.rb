@@ -135,15 +135,19 @@ class CommitStatus < ActiveRecord::Base
     allow_failure? && (failed? || canceled?)
   end
 
-  def playable?
-    false
-  end
-
   def duration
     calculate_duration
   end
 
+  def playable?
+    false
+  end
+
   def stuck?
+    false
+  end
+
+  def has_trace?
     false
   end
 end

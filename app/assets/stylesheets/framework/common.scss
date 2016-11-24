@@ -303,6 +303,10 @@ table {
 
 .well {
   margin-bottom: $gl-padding;
+
+  hr {
+    border-color: $gray-darker;
+  }
 }
 
 .search_box {
