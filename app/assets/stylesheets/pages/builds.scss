@@ -40,6 +40,19 @@
       margin-bottom: 10px;
     }
   }
+
+  .environment-information {
+    background-color: $background-color;
+    border: 1px solid $border-color;
+    padding: 12px $gl-padding;
+    border-radius: $border-radius-default;
+
+    svg {
+      position: relative;
+      top: 1px;
+      margin-right: 5px;
+    }
+  }
 }
 
 .build-header {
@@ -48,10 +61,6 @@
   display: flex;
   min-height: 58px;
   align-items: center;
-
-  .btn-inverted {
-    @include btn-outline($white-light, $blue-normal, $blue-normal, $blue-light, $white-light, $blue-light);
-  }
 
   @media (max-width: $screen-sm-max) {
     padding-right: 40px;
@@ -63,14 +72,14 @@
 
   .header-content {
     flex: 1;
-  }
 
-  a {
-    color: $gl-gray;
+    a {
+      color: $gl-gray;
 
-    &:hover {
-      color: $gl-link-color;
-      text-decoration: none;
+      &:hover {
+        color: $gl-link-color;
+        text-decoration: none;
+      }
     }
   }
 

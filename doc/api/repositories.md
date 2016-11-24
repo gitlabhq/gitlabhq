@@ -13,44 +13,58 @@ Parameters:
 - `id` (required) - The ID of a project
 - `path` (optional) - The path inside repository. Used to get contend of subdirectories
 - `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
 
 ```json
 [
   {
-    "name": "assets",
+    "id": "a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba",
+    "name": "html",
     "type": "tree",
-    "mode": "040000",
-    "id": "6229c43a7e16fcc7e95f923f8ddadb8281d9c6c6"
+    "path": "files/html",
+    "mode": "040000"
   },
   {
-    "name": "contexts",
+    "id": "4535904260b1082e14f867f7a24fd8c21495bde3",
+    "name": "images",
     "type": "tree",
-    "mode": "040000",
-    "id": "faf1cdf33feadc7973118ca42d35f1e62977e91f"
+    "path": "files/images",
+    "mode": "040000"
   },
   {
-    "name": "controllers",
+    "id": "31405c5ddef582c5a9b7a85230413ff90e2fe720",
+    "name": "js",
     "type": "tree",
-    "mode": "040000",
-    "id": "95633e8d258bf3dfba3a5268fb8440d263218d74"
+    "path": "files/js",
+    "mode": "040000"
   },
   {
-    "name": "Rakefile",
-    "type": "blob",
-    "mode": "100644",
-    "id": "35b2f05cbb4566b71b34554cf184a9d0bd9d46d6"
+    "id": "cc71111cfad871212dc99572599a568bfe1e7e00",
+    "name": "lfs",
+    "type": "tree",
+    "path": "files/lfs",
+    "mode": "040000"
   },
   {
-    "name": "VERSION",
-    "type": "blob",
-    "mode": "100644",
-    "id": "803e4a4f3727286c3093c63870c2b6524d30ec4f"
+    "id": "fd581c619bf59cfdfa9c8282377bb09c2f897520",
+    "name": "markdown",
+    "type": "tree",
+    "path": "files/markdown",
+    "mode": "040000"
   },
   {
-    "name": "config.ru",
+    "id": "23ea4d11a4bdd960ee5320c5cb65b5b3fdbc60db",
+    "name": "ruby",
+    "type": "tree",
+    "path": "files/ruby",
+    "mode": "040000"
+  },
+  {
+    "id": "7d70e02340bac451f281cecf0a980907974bd8be",
+    "name": "whitespace",
     "type": "blob",
-    "mode": "100644",
-    "id": "dfd2d862237323aa599be31b473d70a8a817943b"
+    "path": "files/whitespace",
+    "mode": "100644"
   }
 ]
 ```

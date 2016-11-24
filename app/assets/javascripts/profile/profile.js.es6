@@ -35,7 +35,6 @@
     }
 
     onSubmitForm(e) {
-      e.preventDefault();
       return this.saveForm();
     }
 

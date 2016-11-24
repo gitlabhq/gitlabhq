@@ -19,6 +19,87 @@ describe Gitlab::LDAP::Config, lib: true do
     end
   end
 
+  describe '#adapter_options' do
+    it 'constructs basic options' do
+      stub_ldap_config(
+        options: {
+          'host'    => 'ldap.example.com',
+          'port'    => 386,
+          'method'  => 'plain'
+        }
+      )
+
+      expect(config.adapter_options).to eq(
+        host: 'ldap.example.com',
+        port: 386,
+        encryption: nil
+      )
+    end
+
+    it 'includes authentication options when auth is configured' do
+      stub_ldap_config(
+        options: {
+          'host'      => 'ldap.example.com',
+          'port'      => 686,
+          'method'    => 'ssl',
+          'bind_dn'   => 'uid=admin,dc=example,dc=com',
+          'password'  => 'super_secret'
+        }
+      )
+
+      expect(config.adapter_options).to eq(
+        host: 'ldap.example.com',
+        port: 686,
+        encryption: :simple_tls,
+        auth: {
+          method: :simple,
+          username: 'uid=admin,dc=example,dc=com',
+          password: 'super_secret'
+        }
+      )
+    end
+  end
+
+  describe '#omniauth_options' do
+    it 'constructs basic options' do
+      stub_ldap_config(
+        options: {
+          'host'    => 'ldap.example.com',
+          'port'    => 386,
+          'base'    => 'ou=users,dc=example,dc=com',
+          'method'  => 'plain',
+          'uid'     => 'uid'
+        }
+      )
+
+      expect(config.omniauth_options).to include(
+        host: 'ldap.example.com',
+        port: 386,
+        base: 'ou=users,dc=example,dc=com',
+        method: 'plain',
+        filter: '(uid=%{username})'
+      )
+      expect(config.omniauth_options.keys).not_to include(:bind_dn, :password)
+    end
+
+    it 'includes authentication options when auth is configured' do
+      stub_ldap_config(
+        options: {
+          'uid'         => 'sAMAccountName',
+          'user_filter' => '(memberOf=cn=group1,ou=groups,dc=example,dc=com)',
+          'bind_dn'     => 'uid=admin,dc=example,dc=com',
+          'password'    => 'super_secret'
+        }
+      )
+
+      expect(config.omniauth_options).to include(
+        filter: '(&(sAMAccountName=%{username})(memberOf=cn=group1,ou=groups,dc=example,dc=com))',
+        bind_dn: 'uid=admin,dc=example,dc=com',
+        password: 'super_secret'
+      )
+    end
+  end
+
   describe '#has_auth?' do
     it 'is true when password is set' do
       stub_ldap_config(

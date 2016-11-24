@@ -40,10 +40,9 @@ module API
       end
       post ':id/repository/tags' do
         authorize_push_project
-        create_params = declared(params)
 
         result = CreateTagService.new(user_project, current_user).
-          execute(create_params[:tag_name], create_params[:ref], create_params[:message], create_params[:release_description])
+          execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
         if result[:status] == :success
           present result[:tag],

@@ -169,6 +169,16 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq merge_request.id
     end
 
+    it 'returns merge_request by iid array' do
+      get api("/projects/#{project.id}/merge_requests", user), iid: [merge_request.iid, merge_request_closed.iid]
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['title']).to eq merge_request_closed.title
+      expect(json_response.first['id']).to eq merge_request_closed.id
+    end
+
     it "returns a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response).to have_http_status(404)
@@ -492,12 +502,6 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
       expect(response).to have_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
-    end
-
-    it "returns 400 when source_branch is specified" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
-      source_branch: "master", target_branch: "master"
-      expect(response).to have_http_status(400)
     end
 
     it "returns merge_request with renamed target_branch" do

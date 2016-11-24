@@ -14,7 +14,8 @@ module API
 
       params :optional_params do
         optional :description, type: String, desc: 'The description of the milestone'
-        optional :due_date, type: String, desc: 'The due date of the milestone'
+        optional :due_date, type: String, desc: 'The due date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
+        optional :start_date, type: String, desc: 'The start date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
       end
     end
 
@@ -28,7 +29,7 @@ module API
       params do
         optional :state, type: String, values: %w[active closed all], default: 'all',
                          desc: 'Return "active", "closed", or "all" milestones'
-        optional :iid, type: Integer, desc: 'The IID of the milestone'
+        optional :iid, type: Array[Integer], desc: 'The IID of the milestone'
       end
       get ":id/milestones" do
         authorize! :read_milestone, user_project
@@ -62,9 +63,8 @@ module API
       end
       post ":id/milestones" do
         authorize! :admin_milestone, user_project
-        milestone_params = declared(params, include_parent_namespaces: false)
 
-        milestone = ::Milestones::CreateService.new(user_project, current_user, milestone_params).execute
+        milestone = ::Milestones::CreateService.new(user_project, current_user, declared_params).execute
 
         if milestone.valid?
           present milestone, with: Entities::Milestone
@@ -86,9 +86,9 @@ module API
       end
       put ":id/milestones/:milestone_id" do
         authorize! :admin_milestone, user_project
-        milestone_params = declared(params, include_parent_namespaces: false, include_missing: false)
+        milestone = user_project.milestones.find(params.delete(:milestone_id))
 
-        milestone = user_project.milestones.find(milestone_params.delete(:milestone_id))
+        milestone_params = declared_params(include_missing: false)
         milestone = ::Milestones::UpdateService.new(user_project, current_user, milestone_params).execute(milestone)
 
         if milestone.valid?
@@ -115,7 +115,7 @@ module API
         }
 
         issues = IssuesFinder.new(current_user, finder_params).execute
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
       end
     end
   end

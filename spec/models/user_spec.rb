@@ -33,11 +33,12 @@ describe User, models: true do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
+    it { is_expected.to have_many(:chat_names).dependent(:destroy) }
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
         user = create(:user)
-        group = create(:group, :public)
+        group = create(:group, :public, :access_requestable)
         group.request_access(user)
 
         expect(user.group_members).to be_empty
@@ -47,7 +48,7 @@ describe User, models: true do
     describe '#project_members' do
       it 'does not include project memberships for which user is a requester' do
         user = create(:user)
-        project = create(:project, :public)
+        project = create(:project, :public, :access_requestable)
         project.request_access(user)
 
         expect(user.project_members).to be_empty
@@ -490,6 +491,28 @@ describe User, models: true do
     end
   end
 
+  describe '.without_projects' do
+    let!(:project) { create(:empty_project, :public, :access_requestable) }
+    let!(:user) { create(:user) }
+    let!(:user_without_project) { create(:user) }
+    let!(:user_without_project2) { create(:user) }
+
+    before do
+      # add user to project
+      project.team << [user, :master]
+
+      # create invite to projet
+      create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
+
+      # create request to join project
+      project.request_access(user_without_project2)
+    end
+
+    it { expect(User.without_projects).not_to include user }
+    it { expect(User.without_projects).to include user_without_project }
+    it { expect(User.without_projects).to include user_without_project2 }
+  end
+
   describe '.not_in_project' do
     before do
       User.delete_all
@@ -726,6 +749,17 @@ describe User, models: true do
       expect(User.by_login(username)).to eq user
       expect(User.by_login(nil)).to be_nil
       expect(User.by_login('')).to be_nil
+    end
+  end
+
+  describe '.find_by_username' do
+    it 'returns nil if not found' do
+      expect(described_class.find_by_username('JohnDoe')).to be_nil
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username('JOHNDOE')).to eq user
     end
   end
 
@@ -1050,7 +1084,7 @@ describe User, models: true do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects' do
+  describe '#authorized_projects', truncate: true do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -1069,6 +1103,80 @@ describe User, models: true do
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
       end
+    end
+
+    it "includes user's personal projects" do
+      user    = create(:user)
+      project = create(:project, :private, namespace: user.namespace)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "includes personal projects user has been given access to" do
+      user1   = create(:user)
+      user2   = create(:user)
+      project = create(:project, :private, namespace: user1.namespace)
+
+      project.team << [user2, Gitlab::Access::DEVELOPER]
+
+      expect(user2.authorized_projects).to include(project)
+    end
+
+    it "includes projects of groups user has been added to" do
+      group   = create(:group)
+      project = create(:project, group: group)
+      user    = create(:user)
+
+      group.add_developer(user)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "does not include projects of groups user has been removed from" do
+      group   = create(:group)
+      project = create(:project, group: group)
+      user    = create(:user)
+
+      member = group.add_developer(user)
+      expect(user.authorized_projects).to include(project)
+
+      member.destroy
+      expect(user.authorized_projects).not_to include(project)
+    end
+
+    it "includes projects shared with user's group" do
+      user    = create(:user)
+      project = create(:project, :private)
+      group   = create(:group)
+
+      group.add_reporter(user)
+      project.project_group_links.create(group: group)
+
+      expect(user.authorized_projects).to include(project)
+    end
+
+    it "does not include destroyed projects user had access to" do
+      user1   = create(:user)
+      user2   = create(:user)
+      project = create(:project, :private, namespace: user1.namespace)
+
+      project.team << [user2, Gitlab::Access::DEVELOPER]
+      expect(user2.authorized_projects).to include(project)
+
+      project.destroy
+      expect(user2.authorized_projects).not_to include(project)
+    end
+
+    it "does not include projects of destroyed groups user had access to" do
+      group   = create(:group)
+      project = create(:project, namespace: group)
+      user    = create(:user)
+
+      group.add_developer(user)
+      expect(user.authorized_projects).to include(project)
+
+      group.destroy
+      expect(user.authorized_projects).not_to include(project)
     end
   end
 

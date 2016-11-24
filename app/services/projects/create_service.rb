@@ -95,7 +95,7 @@ module Projects
 
       unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?
-        @project.build_missing_services
+        create_services_from_active_templates(@project)
 
         @project.create_labels
       end
@@ -106,6 +106,8 @@ module Projects
       unless @project.group || @project.gitlab_project_import?
         @project.team << [current_user, :master, current_user]
       end
+
+      @project.group.refresh_members_authorized_projects if @project.group
     end
 
     def skip_wiki?
@@ -134,6 +136,13 @@ module Projects
       end
 
       @project
+    end
+
+    def create_services_from_active_templates(project)
+      Service.where(template: true, active: true).each do |template|
+        service = Service.build_from_template(project.id, template)
+        service.save!
+      end
     end
   end
 end

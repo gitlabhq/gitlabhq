@@ -68,6 +68,46 @@ label {
   }
 }
 
+.help-form .form-group {
+  margin-left: 0;
+  margin-right: 0;
+
+  .control-label {
+    font-weight: bold;
+    padding-top: 4px;
+  }
+
+  .form-control {
+    height: 29px;
+    background: $white-light;
+    font-family: $monospace_font;
+  }
+
+  .input-group-btn .btn {
+    padding: 3px $gl-btn-padding;
+    background-color: $gray-light;
+    border: 1px solid $border-color;
+  }
+
+  .text-block {
+    line-height: 0.8;
+    padding-top: 9px;
+
+    code {
+      line-height: 1.8;
+    }
+  }
+
+  @media(max-width: $screen-sm-min) {
+    padding: 0 $gl-padding;
+
+    .control-label,
+    .text-block {
+      padding-left: 0;
+    }
+  }
+}
+
 .fieldset-form fieldset {
   margin-bottom: 20px;
 }
@@ -167,4 +207,3 @@ label {
     color: $gl-text-color;
   }
 }
-

@@ -255,26 +255,3 @@
   }
 }
 
-// For sign in pane only, to improve tab order, the following removes the submit button from
-// normal document flow and pins it to the bottom of the form. For context, see !6867 & !6928
-
-.login-box {
-  .new_user {
-    position: relative;
-    padding-bottom: 35px;
-
-    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-      .forgot-password {
-        float: none !important;
-        margin-top: 5px;
-      }
-    }
-  }
-
-  .move-submit-down {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-  }
-}
-

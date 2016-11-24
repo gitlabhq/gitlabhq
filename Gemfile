@@ -137,6 +137,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
+gem 'sidekiq-limit_fetch', '~> 3.4'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -329,12 +330,9 @@ gem 'octokit', '~> 4.3.0'
 gem 'mail_room', '~> 0.9.0'
 
 gem 'email_reply_parser', '~> 0.5.8'
+gem 'html2text'
 
 gem 'ruby-prof', '~> 0.16.2'
-
-## CI
-gem 'activerecord-session_store', '~> 1.0.0'
-gem 'nested_form', '~> 0.3.2'
 
 # OAuth
 gem 'oauth2', '~> 1.2.0'

@@ -80,7 +80,7 @@ feature 'Group', feature: true do
 
       visit path
 
-      expect(page).to have_css('.description > p > strong')
+      expect(page).to have_css('.group-home-desc > p > strong')
     end
 
     it 'passes through html-pipeline' do
@@ -88,7 +88,7 @@ feature 'Group', feature: true do
 
       visit path
 
-      expect(page).to have_css('.description > p > img')
+      expect(page).to have_css('.group-home-desc > p > img')
     end
 
     it 'sanitizes unwanted tags' do
@@ -96,7 +96,7 @@ feature 'Group', feature: true do
 
       visit path
 
-      expect(page).not_to have_css('.description h1')
+      expect(page).not_to have_css('.group-home-desc h1')
     end
 
     it 'permits `rel` attribute on links' do
@@ -104,7 +104,7 @@ feature 'Group', feature: true do
 
       visit path
 
-      expect(page).to have_css('.description a[rel]')
+      expect(page).to have_css('.group-home-desc a[rel]')
     end
   end
 end

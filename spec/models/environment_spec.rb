@@ -9,6 +9,7 @@ describe Environment, models: true do
   it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
+  it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
@@ -164,6 +165,38 @@ describe Environment, models: true do
           expect(subject.user).to eq(user)
         end
       end
+    end
+  end
+
+  describe 'recently_updated_on_branch?' do
+    subject { environment.recently_updated_on_branch?('feature') }
+
+    context 'when last deployment to environment is the most recent one' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when last deployment to environment is not the most recent' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: environment, ref: 'master')
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#actions_for' do
+    let(:deployment) { create(:deployment, environment: environment) }
+    let(:pipeline) { deployment.deployable.pipeline }
+    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_BUILD_REF_NAME' )}
+    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production' )}
+
+    it 'returns a list of actions with matching environment' do
+      expect(environment.actions_for('review/master')).to contain_exactly(review_action)
     end
   end
 end

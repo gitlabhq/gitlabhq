@@ -31,7 +31,11 @@ describe CommitEntity do
     end
   end
 
-  it 'contains commit URL' do
+  it 'contains path to commit' do
+    expect(subject).to include(:commit_path)
+  end
+
+  it 'contains URL to commit' do
     expect(subject).to include(:commit_url)
   end
 

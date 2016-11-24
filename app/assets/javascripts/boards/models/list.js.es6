@@ -42,7 +42,8 @@ class List {
   }
 
   destroy () {
-    gl.issueBoards.BoardsStore.state.lists.$remove(this);
+    const index = gl.issueBoards.BoardsStore.state.lists.indexOf(this);
+    gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
     gl.boardService.destroyList(this.id);

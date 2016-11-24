@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, indent, no-undef, no-trailing-spaces, comma-dangle, padded-blocks, max-len */
 
 /*= require lib/utils/text_utility */
 /*= require issue */

@@ -36,7 +36,7 @@
         this.loadEditor();
       }
     },
-    ready() {
+    mounted() {
       if (this.file.loadEditor) {
         this.loadEditor();
       }

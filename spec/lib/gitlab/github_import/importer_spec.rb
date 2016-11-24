@@ -101,7 +101,6 @@ describe Gitlab::GithubImport::Importer, lib: true do
           closed_at: nil,
           merged_at: nil,
           url: 'https://api.github.com/repos/octocat/Hello-World/pulls/1347',
-          labels: [double(name: 'Label #3')],
         )
       end
 
@@ -157,8 +156,6 @@ describe Gitlab::GithubImport::Importer, lib: true do
           errors: [
             { type: :label, url: "https://api.github.com/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title can't be blank, Title is invalid" },
             { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank, Title is too short (minimum is 0 characters)" },
-            { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
-            { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
             { type: :wiki, errors: "Gitlab::Shell::Error" },
             { type: :release, url: 'https://api.github.com/repos/octocat/Hello-World/releases/2', errors: "Validation failed: Description can't be blank" }
           ]

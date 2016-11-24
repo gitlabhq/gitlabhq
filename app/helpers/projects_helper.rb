@@ -49,7 +49,7 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project, name = nil, url = nil)
+  def project_title(project)
     namespace_link =
       if project.group
         link_to(simple_sanitize(project.group.name), group_path(project.group))
@@ -66,10 +66,7 @@ module ProjectsHelper
       end
     end
 
-    full_title = "#{namespace_link} / #{project_link}".html_safe
-    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
-
-    full_title
+    "#{namespace_link} / #{project_link}".html_safe
   end
 
   def remove_project_message(project)
@@ -457,5 +454,9 @@ module ProjectsHelper
 
   def project_child_container_class(view_path)
     view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
+  end
+
+  def project_issues(project)
+    IssuesFinder.new(current_user, project_id: project.id).execute
   end
 end

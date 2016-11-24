@@ -16,7 +16,7 @@
     },
     // Team Members
     Members: {
-      template: '<li>${username} <small>${title}</small></li>'
+      template: '<li>${avatarTag} ${username} <small>${title}</small></li>'
     },
     Labels: {
       template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
@@ -35,7 +35,7 @@
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
         // Highlight first item only if at least one char was typed
-        this.setting.highlightFirst = query.length > 0;
+        this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
         if ((items[0].name != null) && items[0].name === 'loading') {
           return items;
         }
@@ -135,6 +135,7 @@
         searchKey: 'search',
         data: ['loading'],
         startWithSpace: false,
+        alwaysHighlightFirst: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -142,7 +143,7 @@
           matcher: this.DefaultOptions.matcher,
           beforeSave: function(members) {
             return $.map(members, function(m) {
-              var title;
+              let title = '';
               if (m.username == null) {
                 return m;
               }
@@ -150,8 +151,14 @@
               if (m.count) {
                 title += " (" + m.count + ")";
               }
+
+              const autoCompleteAvatar = m.avatar_url || m.username.charAt(0).toUpperCase();
+              const imgAvatar = `<img src="${m.avatar_url}" alt="${m.username}" class="avatar avatar-inline center s26"/>`;
+              const txtAvatar = `<div class="avatar center avatar-inline s26">${autoCompleteAvatar}</div>`;
+
               return {
                 username: m.username,
+                avatarTag: autoCompleteAvatar.length === 1 ?  txtAvatar : imgAvatar,
                 title: gl.utils.sanitize(title),
                 search: gl.utils.sanitize(m.username + " " + m.name)
               };

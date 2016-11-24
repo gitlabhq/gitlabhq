@@ -360,6 +360,14 @@ describe API::API, api: true  do
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
 
+    it 'sets a project as allowing merge if only_allow_merge_if_all_discussions_are_resolved is nil' do
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: nil)
+
+      post api('/projects', user), project
+
+      expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
+    end
+
     it 'sets a project as allowing merge only if all discussions are resolved' do
       project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
 
@@ -897,6 +905,36 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
       expect(response.status).to eq 409
       expect(json_response['message']).to eq 'Group access is not included in the list'
+    end
+  end
+
+  describe 'DELETE /projects/:id/share/:group_id' do
+    it 'returns 204 when deleting a group share' do
+      group = create(:group, :public)
+      create(:project_group_link, group: group, project: project)
+
+      delete api("/projects/#{project.id}/share/#{group.id}", user)
+
+      expect(response).to have_http_status(204)
+      expect(project.project_group_links).to be_empty
+    end
+
+    it 'returns a 400 when group id is not an integer' do
+      delete api("/projects/#{project.id}/share/foo", user)
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'returns a 404 error when group link does not exist' do
+      delete api("/projects/#{project.id}/share/1234", user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns a 404 error when project does not exist' do
+      delete api("/projects/123/share/1234", user)
+
+      expect(response).to have_http_status(404)
     end
   end
 

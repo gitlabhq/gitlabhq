@@ -38,7 +38,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def index
     @merge_requests = merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page])
-    @merge_requests = @merge_requests.preload(:target_project)
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -61,7 +60,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_discussion_vars }
 
       format.json do
-        render json: @merge_request
+        render json: MergeRequestSerializer.new.represent(@merge_request)
       end
 
       format.patch  do
@@ -83,12 +82,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff =
       if params[:diff_id]
-        @merge_request.merge_request_diffs.find(params[:diff_id])
+        @merge_request.merge_request_diffs.viewable.find(params[:diff_id])
       else
         @merge_request.merge_request_diff
       end
 
-    @merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?
@@ -418,7 +417,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     response = {
       title: merge_request.title,
-      sha: merge_request.diff_head_commit.short_id,
+      sha: (merge_request.diff_head_commit.short_id if merge_request.diff_head_sha),
       status: status,
       coverage: coverage
     }
@@ -507,6 +506,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.close
     end
 
+    labels
     define_pipelines_vars
   end
 
@@ -563,11 +563,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_pipelines_vars
     @pipelines = @merge_request.all_pipelines
-
-    if @pipelines.present?
-      @pipeline = @pipelines.first
-      @statuses = @pipeline.statuses.relevant
-    end
+    @pipeline = @merge_request.pipeline
+    @statuses = @pipeline.statuses.relevant if @pipeline.present?
   end
 
   def define_new_vars

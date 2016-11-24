@@ -13,6 +13,7 @@ class Project < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include ProjectFeaturesCompatibility
+  include SelectForProjectAuthorization
 
   extend Gitlab::ConfigHelper
 
@@ -23,7 +24,9 @@ class Project < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
+                                                       allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -35,6 +38,7 @@ class Project < ActiveRecord::Base
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
@@ -74,9 +78,9 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
+  has_many :chat_services
 
   # Project services
-  has_many :services
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
@@ -89,6 +93,7 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
+  has_one :mattermost_slash_commands_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
@@ -121,6 +126,8 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
 
+  has_many :project_authorizations, dependent: :destroy
+  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :project_members
   has_many :users, through: :project_members
@@ -158,6 +165,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -169,6 +177,7 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
+    project_path: true,
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
@@ -748,25 +757,30 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def build_missing_services
+  def find_or_initialize_services
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.each do |service_name|
+    Service.available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
-      # If service is available but missing in db
-      if service.nil?
+      if service
+        service
+      else
         # We should check if template for the service exists
         template = find_service(services_templates, service_name)
 
         if template.nil?
-          # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          public_send("create_#{service_name}_service")
+          # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+          public_send("build_#{service_name}_service")
         else
-          Service.create_from_template(self.id, template)
+          Service.build_from_template(id, template)
         end
       end
     end
+  end
+
+  def find_or_initialize_service(name)
+    find_or_initialize_services.find { |service| service.to_param == name }
   end
 
   def create_labels
@@ -878,7 +892,7 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repository.exists? || !repository.has_visible_content?
+    repository.empty_repo?
   end
 
   def repo
@@ -1076,7 +1090,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
-    repository.expire_avatar_cache(branch)
+    repository.expire_avatar_cache
     reload_default_branch
   end
 
@@ -1282,20 +1296,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # Checks if `user` is authorized for this project, with at least the
-  # `min_access_level` (if given).
-  #
-  # If you change the logic of this method, please also update `User#authorized_projects`
-  def authorized_for_user?(user, min_access_level = nil)
-    return false unless user
-
-    return true if personal? && namespace_id == user.namespace_id
-
-    authorized_for_user_by_group?(user, min_access_level) ||
-      authorized_for_user_by_members?(user, min_access_level) ||
-      authorized_for_user_by_shared_projects?(user, min_access_level)
-  end
-
   def append_or_update_attribute(name, value)
     old_values = public_send(name.to_s)
 
@@ -1318,19 +1318,27 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
-  def environments_for(ref, commit, with_tags: false)
-    environment_ids = deployments.group(:environment_id).
-      select(:environment_id)
+  def environments_for(ref, commit: nil, with_tags: false)
+    deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
 
-    environment_ids =
-      if with_tags
-        environment_ids.where('ref=? OR tag IS TRUE', ref)
-      else
-        environment_ids.where(ref: ref)
-      end
+    environment_ids = deployments
+      .where(deployments_query, ref.to_s)
+      .group(:environment_id)
+      .select(:environment_id)
 
-    environments.available.where(id: environment_ids).select do |environment|
+    environments_found = environments.available
+      .where(id: environment_ids).to_a
+
+    return environments_found unless commit
+
+    environments_found.select do |environment|
       environment.includes_commit?(commit)
+    end
+  end
+
+  def environments_recently_updated_on_branch(branch)
+    environments_for(branch).select do |environment|
+      environment.recently_updated_on_branch?(branch)
     end
   end
 
@@ -1343,30 +1351,6 @@ class Project < ActiveRecord::Base
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
-  end
-
-  def authorized_for_user_by_group?(user, min_access_level)
-    member = user.group_members.find_by(source_id: group)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_members?(user, min_access_level)
-    member = members.find_by(user_id: user)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_shared_projects?(user, min_access_level)
-    shared_projects = user.group_members.joins(group: :shared_projects).
-      where(project_group_links: { project_id: self })
-
-    if min_access_level
-      members_scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
-      shared_projects = shared_projects.where(members: members_scope)
-    end
-
-    shared_projects.any?
   end
 
   # Similar to the normal callbacks that hook into the life cycle of an

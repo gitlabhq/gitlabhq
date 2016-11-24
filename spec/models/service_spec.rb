@@ -6,9 +6,6 @@ describe Service, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe "Test Button" do
     before do
       @service = Service.new
@@ -53,7 +50,7 @@ describe Service, models: true do
 
   describe "Template" do
     describe "for pushover service" do
-      let(:service_template) do
+      let!(:service_template) do
         PushoverService.create(
           template: true,
           properties: {
@@ -66,13 +63,9 @@ describe Service, models: true do
       let(:project) { create(:project) }
 
       describe 'is prefilled for projects pushover service' do
-        before do
-          service_template
-          project.build_missing_services
-        end
-
         it "has all fields prefilled" do
-          service = project.pushover_service
+          service = project.find_or_initialize_service('pushover')
+
           expect(service.template).to eq(false)
           expect(service.device).to eq('MyDevice')
           expect(service.sound).to eq('mic')

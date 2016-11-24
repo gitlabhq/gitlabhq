@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-return-assign, no-undef, no-param-reassign, no-var, new-cap, wrap-iife, no-unused-vars, quotes, padded-blocks, max-len */
 
 /*= require bootstrap */
 /*= require select2 */

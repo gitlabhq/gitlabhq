@@ -182,6 +182,20 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         end
       end
     end
+
+    context 'expanding a diff when symlink was converted to a regular file' do
+      let(:branch) { 'symlink-expand-diff' }
+
+      it 'shows the content of the regular file' do
+        expect(page).to have_content('This diff is collapsed')
+        expect(page).to have_no_content('No longer a symlink')
+
+        find('.click-to-expand').click
+        wait_for_ajax
+
+        expect(page).to have_content('No longer a symlink')
+      end
+    end
   end
 
   context 'visiting a commit without collapsed diffs' do

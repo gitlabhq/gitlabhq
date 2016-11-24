@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-param-reassign, no-undef, quotes, yoda, no-else-return, consistent-return, comma-dangle, semi, object-shorthand, prefer-template, one-var, one-var-declaration-per-line, no-unused-vars, max-len, vars-on-top, padded-blocks, max-len */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -12,7 +12,7 @@
       this.pageUrl = options.pageUrl;
       this.buildUrl = options.buildUrl;
       this.buildStatus = options.buildStatus;
-      this.state = options.state1;
+      this.state = options.logState;
       this.buildStage = options.buildStage;
       this.updateDropdown = bind(this.updateDropdown, this);
       this.$document = $(document);
@@ -172,7 +172,7 @@
       $date = $('.js-artifacts-remove');
       if ($date.length) {
         date = $date.text();
-        return $date.text(gl.utils.timefor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
+        return $date.text(gl.utils.timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '));
       }
     };
 

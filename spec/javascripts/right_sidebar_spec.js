@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-undef, no-return-assign, new-cap, vars-on-top, semi, padded-blocks, max-len */
 
 /*= require right_sidebar */
 /*= require jquery */

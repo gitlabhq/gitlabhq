@@ -17,6 +17,8 @@ module ServicesHelper
       "Event will be triggered when a build status changes"
     when "wiki_page"
       "Event will be triggered when a wiki page is created/updated"
+    when "commit"
+      "Event will be triggered when a commit is created/updated"
     end
   end
 

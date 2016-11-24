@@ -850,7 +850,7 @@ POST /projects/:id/archive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/archive"
 ```
 
 Example response:
@@ -939,7 +939,7 @@ POST /projects/:id/unarchive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unarchive"
 ```
 
 Example response:
@@ -1073,6 +1073,25 @@ Parameters:
 | `group_id` | integer | yes | The ID of the group to share with |
 | `group_access` | integer | yes | The permissions level to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
+
+### Delete a shared project link within a group
+
+Unshare the project from the group. Returns `204` and no content on success.
+
+```
+DELETE /projects/:id/share/:group_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `group_id` | integer | yes | The ID of the group |
+
+```bash
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/share/17
+```
 
 ## Hooks
 

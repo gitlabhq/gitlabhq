@@ -93,7 +93,7 @@ class Issue < ActiveRecord::Base
 
     # Check if we are scoped to a specific project's issues
     if owner_project
-      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
+      if owner_project.team.member?(user, Gitlab::Access::REPORTER)
         # If the project is authorized for the user, they can see all issues in the project
         return all
       else
@@ -266,7 +266,7 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user)
+      json[:subscribed] = subscribed?(options[:user], project) if options.has_key?(:user) && options[:user]
 
       if options.has_key?(:labels)
         json[:labels] = labels.as_json(

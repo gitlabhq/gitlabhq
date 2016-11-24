@@ -90,8 +90,8 @@ $table-border-color: #f0f0f0;
 $background-color: $gray-light;
 $dark-background-color: #f5f5f5;
 $table-text-gray: #8f8f8f;
-$widget-expand-item: #e8f2f7;
-$widget-inner-border: #eef0f2;
+$well-expand-item: #e8f2f7;
+$well-inner-border: #eef0f2;
 
 /*
  * Text
@@ -160,6 +160,7 @@ $settings-icon-size: 18px;
 $provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
+$active-item-blue: #4a8bee;
 $layout-link-gray: #7e7c7c;
 $todo-alert-blue: #428bca;
 $btn-side-margin: 10px;
@@ -252,7 +253,7 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
  */
 $search-input-border-color: rgba(#4688f1, .8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
-$search-input-width: 244px;
+$search-input-width: 220px;
 $location-badge-color: #aaa;
 $location-badge-bg: $gray-normal;
 $location-badge-active-bg: #4f91f8;
@@ -283,6 +284,9 @@ $calendar-unselectable-bg: $gray-light;
  */
 $cycle-analytics-box-padding: 30px;
 $cycle-analytics-box-text-color: #8c8c8c;
+$cycle-analytics-big-font: 19px;
+$cycle-analytics-dark-text: $gl-title-color;
+$cycle-analytics-light-gray: #bfbfbf;
 
 /*
  * Personal Access Tokens

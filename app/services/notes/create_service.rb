@@ -26,13 +26,16 @@ module Notes
         note.note = content
       end
 
-      if !only_commands && note.save
+      note.run_after_commit do
         # Finish the harder work in the background
-        NewNoteWorker.perform_in(2.seconds, note.id, params)
+        NewNoteWorker.perform_async(note.id)
+      end
+
+      if !only_commands && note.save
         todo_service.new_note(note, current_user)
       end
 
-      if command_params && command_params.any?
+      if command_params.present?
         slash_commands_service.execute(command_params, note)
 
         # We must add the error after we call #save because errors are reset
@@ -40,6 +43,8 @@ module Notes
         if only_commands
           note.errors.add(:commands_only, 'Your commands have been executed!')
         end
+
+        note.commands_changes = command_params.keys
       end
 
       note

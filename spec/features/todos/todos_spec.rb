@@ -44,7 +44,7 @@ describe 'Dashboard Todos', feature: true do
         end
 
         it 'shows "All done" message' do
-          expect(page).to have_content("Good job! Looks like you don't have any todos left.")
+          expect(page).to have_selector('.todos-all-done', count: 1)
         end
       end
 
@@ -64,7 +64,7 @@ describe 'Dashboard Todos', feature: true do
           end
 
           it 'shows "All done" message' do
-            expect(page).to have_content("Good job! Looks like you don't have any todos left.")
+            expect(page).to have_selector('.todos-all-done', count: 1)
           end
         end
       end
@@ -152,7 +152,7 @@ describe 'Dashboard Todos', feature: true do
         within('.todos-pending-count') { expect(page).to have_content '0' }
         expect(page).to have_content 'To do 0'
         expect(page).to have_content 'Done 0'
-        expect(page).to have_content "Good job! Looks like you don't have any todos left."
+        expect(page).to have_selector('.todos-all-done', count: 1)
       end
     end
   end

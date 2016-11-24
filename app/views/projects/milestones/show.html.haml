@@ -4,21 +4,24 @@
 = render "projects/issues/head"
 
 %div{ class: container_class }
-  .detail-page-header
+  .detail-page-header.milestone-page-header
     .status-box{ class: status_box_class(@milestone) }
       - if @milestone.closed?
         Closed
       - elsif @milestone.expired?
         Past due
+      - elsif @milestone.upcoming?
+        Upcoming
       - else
         Open
-    %span.identifier
-      Milestone ##{@milestone.iid}
-    - if @milestone.expires_at
-      %span.creator
-        &middot;
-        = @milestone.expires_at
-    .pull-right
+    .header-text-content
+      %span.identifier
+        Milestone ##{@milestone.iid}
+      - if @milestone.due_date || @milestone.start_date
+        %span.creator
+          &middot;
+        = milestone_date_range(@milestone)
+    .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
         - if @milestone.active?
           = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"

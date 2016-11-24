@@ -84,7 +84,8 @@
   font-weight: 600;
 }
 
-.commit {
+.commit,
+.generic_commit_status {
   padding: 10px 0;
   position: relative;
 
@@ -101,7 +102,6 @@
     color: $gl-dark-link-color;
     vertical-align: baseline;
   }
-
 
   .avatar {
     margin-left: -46px;

@@ -5,7 +5,7 @@ module Gitlab
     def initialize(current_user, project, query, repository_ref = nil)
       @current_user = current_user
       @project = project
-      @repository_ref = repository_ref.presence
+      @repository_ref = repository_ref.presence || project.default_branch
       @query = query
     end
 
@@ -40,10 +40,57 @@ module Gitlab
       @commits_count ||= commits.count
     end
 
+    def self.parse_search_result(result)
+      ref = nil
+      filename = nil
+      basename = nil
+      startline = 0
+
+      result.each_line.each_with_index do |line, index|
+        if line =~ /^.*:.*:\d+:/
+          ref, filename, startline = line.split(':')
+          startline = startline.to_i - index
+          extname = Regexp.escape(File.extname(filename))
+          basename = filename.sub(/#{extname}$/, '')
+          break
+        end
+      end
+
+      data = ""
+
+      result.each_line do |line|
+        data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+      end
+
+      OpenStruct.new(
+        filename: filename,
+        basename: basename,
+        ref: ref,
+        startline: startline,
+        data: data
+      )
+    end
+
     private
 
     def blobs
-      @blobs ||= project.repository.search_files(query, repository_ref)
+      @blobs ||= begin
+        blobs = project.repository.search_files_by_content(query, repository_ref).first(100)
+        found_file_names = Set.new
+
+        results = blobs.map do |blob|
+          blob = self.class.parse_search_result(blob)
+          found_file_names << blob.filename
+
+          [blob.filename, blob]
+        end
+
+        project.repository.search_files_by_name(query, repository_ref).first(100).each do |filename|
+          results << [filename, nil] unless found_file_names.include?(filename)
+        end
+
+        results.sort_by(&:first)
+      end
     end
 
     def wiki_blobs

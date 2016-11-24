@@ -6,7 +6,7 @@ class LabelsFinder < UnionFinder
 
   def execute(skip_authorization: false)
     @skip_authorization = skip_authorization
-    items = find_union(label_ids, Label)
+    items = find_union(label_ids, Label) || Label.none
     items = with_title(items)
     sort(items)
   end
@@ -18,9 +18,11 @@ class LabelsFinder < UnionFinder
   def label_ids
     label_ids = []
 
-    if project
-      label_ids << project.group.labels if project.group.present?
-      label_ids << project.labels
+    if project?
+      if project
+        label_ids << project.group.labels if project.group.present?
+        label_ids << project.labels
+      end
     else
       label_ids << Label.where(group_id: projects.group_ids)
       label_ids << Label.where(project_id: projects.select(:id))
@@ -40,16 +42,16 @@ class LabelsFinder < UnionFinder
     items.where(title: title)
   end
 
-  def group_id
-    params[:group_id].presence
+  def group?
+    params[:group_id].present?
   end
 
-  def project_id
-    params[:project_id].presence
+  def project?
+    params[:project_id].present?
   end
 
-  def projects_ids
-    params[:project_ids]
+  def projects?
+    params[:project_ids].present?
   end
 
   def title
@@ -59,8 +61,9 @@ class LabelsFinder < UnionFinder
   def project
     return @project if defined?(@project)
 
-    if project_id
-      @project = find_project
+    if project?
+      @project = Project.find(params[:project_id])
+      @project = nil unless authorized_to_read_labels?(@project)
     else
       @project = nil
     end
@@ -68,26 +71,20 @@ class LabelsFinder < UnionFinder
     @project
   end
 
-  def find_project
-    if skip_authorization
-      Project.find_by(id: project_id)
-    else
-      available_projects.find_by(id: project_id)
-    end
-  end
-
   def projects
     return @projects if defined?(@projects)
 
-    @projects = skip_authorization ? Project.all : available_projects
-    @projects = @projects.in_namespace(group_id) if group_id
-    @projects = @projects.where(id: projects_ids) if projects_ids
+    @projects = skip_authorization ? Project.all : ProjectsFinder.new.execute(current_user)
+    @projects = @projects.in_namespace(params[:group_id]) if group?
+    @projects = @projects.where(id: params[:project_ids]) if projects?
     @projects = @projects.reorder(nil)
 
     @projects
   end
 
-  def available_projects
-    @available_projects ||= ProjectsFinder.new.execute(current_user)
+  def authorized_to_read_labels?(project)
+    return true if skip_authorization
+
+    Ability.allowed?(current_user, :read_label, project)
   end
 end

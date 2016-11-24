@@ -39,7 +39,7 @@ module Gitlab
         # hashes that represent serialized diff lines.
         #
         def cache_highlight!(diff_file)
-          item_key = diff_file.cache_key
+          item_key = diff_file.file_identifier
 
           if highlight_cache[item_key]
             highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])

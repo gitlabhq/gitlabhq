@@ -91,14 +91,6 @@
       }
     }
 
-    .ci-status {
-
-      svg {
-        top: 1px;
-        margin-right: 0;
-      }
-    }
-
     a:hover {
       text-decoration: none;
     }
@@ -107,10 +99,6 @@
   .avatar {
     margin-left: 0;
     float: none;
-  }
-
-  .api {
-    color: $code-color;
   }
 
   .branch-commit {
@@ -199,7 +187,7 @@
           width: 8px;
           position: absolute;
           right: -7px;
-          bottom: 8px;
+          bottom: 9px;
           border-bottom: 2px solid $border-color;
         }
       }
@@ -304,6 +292,8 @@
 
 .pipeline-graph {
   width: 100%;
+  background-color: $background-color;
+  padding: $gl-padding;
   overflow: auto;
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
@@ -367,6 +357,7 @@
 
   .build {
     border: 1px solid $border-color;
+    background-color: $white-light;
     position: relative;
     padding: 7px 10px 8px;
     border-radius: 30px;
@@ -690,12 +681,5 @@
         height: 71px;
       }
     }
-  }
-}
-
-.ci-status-icon-created {
-
-  svg {
-    fill: $gray-darkest;
   }
 }

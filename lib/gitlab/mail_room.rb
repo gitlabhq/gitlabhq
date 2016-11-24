@@ -31,6 +31,7 @@ module Gitlab
         config[:ssl] = false if config[:ssl].nil?
         config[:start_tls] = false if config[:start_tls].nil?
         config[:mailbox] = 'inbox' if config[:mailbox].nil?
+        config[:idle_timeout] = 60 if config[:idle_timeout].nil?
 
         if config[:enabled] && config[:address]
           gitlab_redis = Gitlab::Redis.new(rails_env)

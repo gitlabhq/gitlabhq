@@ -29,6 +29,8 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
+  Gitlab::SidekiqThrottler.execute!
+
   # Database pool should be at least `sidekiq_concurrency` + 2
   # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md
   config = ActiveRecord::Base.configurations[Rails.env] ||

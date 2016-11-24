@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, no-return-assign, comma-dangle, no-undef, jasmine/no-spec-dupes, new-cap, padded-blocks, max-len */
 
 /*= require behaviors/quick_submit */
 
