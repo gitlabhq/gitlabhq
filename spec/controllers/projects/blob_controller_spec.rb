@@ -67,7 +67,7 @@ describe Projects::BlobController do
         put :update, mr_params
 
         after_edit_path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
-        file_anchor = "#file-path-#{Digest::SHA1.hexdigest('CHANGELOG')}"
+        file_anchor = "##{Digest::SHA1.hexdigest('CHANGELOG')}"
         expect(response).to redirect_to(after_edit_path + file_anchor)
       end
 
