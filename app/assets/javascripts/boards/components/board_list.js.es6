@@ -80,6 +80,7 @@
     },
     mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
+        scroll: document.querySelectorAll('.boards-list')[0],
         group: 'issues',
         sort: false,
         disabled: this.disabled,
