@@ -115,4 +115,24 @@ describe Milestone, 'Milestoneish' do
       expect(milestone.percent_complete(admin)).to eq 60
     end
   end
+
+  describe '#elapsed_days' do
+    it 'shows 0 if no start_date set' do
+      milestone = build(:milestone)
+
+      expect(milestone.elapsed_days).to eq(0)
+    end
+
+    it 'shows 0 if start_date is a future' do
+      milestone = build(:milestone, start_date: Time.now + 2.days)
+
+      expect(milestone.elapsed_days).to eq(0)
+    end
+
+    it 'shows correct amount of days' do
+      milestone = build(:milestone, start_date: Time.now - 2.days)
+
+      expect(milestone.elapsed_days).to eq(2)
+    end
+  end
 end

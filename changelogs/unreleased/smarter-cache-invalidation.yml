@@ -1,4 +1,0 @@
----
-title: Rework cache invalidation so only changed data is refreshed
-merge_request: 7360
-author: 

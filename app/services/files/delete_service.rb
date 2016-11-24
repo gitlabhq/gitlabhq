@@ -1,5 +1,3 @@
-require_relative "base_service"
-
 module Files
   class DeleteService < Files::BaseService
     def commit

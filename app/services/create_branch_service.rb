@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
     failure = validate_new_branch(branch_name)

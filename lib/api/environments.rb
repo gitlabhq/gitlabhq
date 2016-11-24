@@ -1,6 +1,8 @@
 module API
   # Environments RESTfull API endpoints
   class Environments < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
@@ -12,8 +14,7 @@ module API
         success Entities::Environment
       end
       params do
-        optional :page,     type: Integer, desc: 'Page number of the current request'
-        optional :per_page, type: Integer, desc: 'Number of items per page'
+        use :pagination
       end
       get ':id/environments' do
         authorize! :read_environment, user_project

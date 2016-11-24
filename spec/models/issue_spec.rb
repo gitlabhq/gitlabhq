@@ -331,7 +331,7 @@ describe Issue, models: true do
     end
 
     context 'with a user' do
-      let(:user) { build(:user) }
+      let(:user) { create(:user) }
       let(:issue) { build(:issue) }
 
       it 'returns true when the issue is readable' do

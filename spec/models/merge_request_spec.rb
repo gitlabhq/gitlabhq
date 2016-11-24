@@ -937,6 +937,16 @@ describe MergeRequest, models: true do
           expect(merge_request.mergeable_discussions_state?).to be_falsey
         end
       end
+
+      context 'with no discussions' do
+        before do
+          merge_request.notes.destroy_all
+        end
+
+        it 'returns true' do
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
+        end
+      end
     end
 
     context 'when project.only_allow_merge_if_all_discussions_are_resolved == false' do
@@ -1194,6 +1204,50 @@ describe MergeRequest, models: true do
 
           it "returns false" do
             expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+
+    describe "#discussions_to_be_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_to_be_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_to_be_resolved?).to be false
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_to_be_resolved?).to be true
           end
         end
       end

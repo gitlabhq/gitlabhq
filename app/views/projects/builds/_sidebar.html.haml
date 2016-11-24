@@ -128,7 +128,8 @@
         .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = icon('arrow-right')
-            = ci_icon_for_status(build.status)
+            %span{class: "ci-status-icon-#{build.status}"}
+              = ci_icon_for_status(build.status)
             %span
               - if build.name
                 = build.name

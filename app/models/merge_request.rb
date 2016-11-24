@@ -494,10 +494,14 @@ class MergeRequest < ActiveRecord::Base
     discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
   end
 
+  def discussions_to_be_resolved?
+    discussions_resolvable? && !discussions_resolved?
+  end
+
   def mergeable_discussions_state?
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 
-    discussions_resolved?
+    !discussions_to_be_resolved?
   end
 
   def hook_attrs

@@ -140,7 +140,8 @@ module API
             User.where(username: params[:username]).
                 where.not(id: user.id).count > 0
 
-        identity_attrs = params.slice(:provider, :extern_uid)
+        user_params = declared_params(include_missing: false)
+        identity_attrs = user_params.slice(:provider, :extern_uid)
 
         if identity_attrs.any?
           identity = user.identities.find_by(provider: identity_attrs[:provider])
@@ -154,10 +155,10 @@ module API
         end
 
         # Delete already handled parameters
-        params.delete(:extern_uid)
-        params.delete(:provider)
+        user_params.delete(:extern_uid)
+        user_params.delete(:provider)
 
-        if user.update_attributes(declared_params(include_missing: false))
+        if user.update_attributes(user_params)
           present user, with: Entities::UserFull
         else
           render_validation_error!(user)
