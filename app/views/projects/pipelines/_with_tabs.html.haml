@@ -52,13 +52,3 @@
             %th
         - pipeline.statuses.relevant.stages.each do |stage|
           = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.relevant.where(stage: stage)
-
-
-:javascript
-  var pipelines_tab;
-
-  pipelines_tab = new window.gl.LinkedTabs({
-    action: "#{controller.action_name}",
-    defaultAction: 'pipelines',
-    parentEl: '.pipelines-tabs'
-  });

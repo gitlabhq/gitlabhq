@@ -135,8 +135,18 @@
             new TreeView();
           }
           break;
+        case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
-          new gl.Pipelines();
+          const controllerAction = document.querySelector('.js-pipeline-container').dataset.controllerAction;
+
+          new gl.Pipelines({
+            initTabs: true,
+            tabsOptions: {
+              action: controllerAction,
+              defaultAction: 'pipelines',
+              parentEl: '.pipelines-tabs',
+            },
+          });
           break;
         case 'groups:activity':
           new gl.Activities();
