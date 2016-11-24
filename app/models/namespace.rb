@@ -104,6 +104,8 @@ class Namespace < ActiveRecord::Base
       gitlab_shell.add_namespace(repository_storage_path, path_was)
 
       unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
+        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
         raise Exception.new('namespace directory cannot be moved')
