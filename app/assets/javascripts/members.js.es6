@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 (() => {
   window.gl = window.gl || {};
 
@@ -96,7 +97,7 @@
       }
     }
 
-    static getMemberListItem(btn) {
+    getMemberListItem(btn) {
       return document.getElementById(btn.dataset.id);
     }
 
@@ -111,7 +112,7 @@
       this.overrideLdap(memberListItem, btn.dataset.endpoint, true);
     }
 
-    static overrideLdap(memberListitem, endpoint, override) {
+    overrideLdap(memberListitem, endpoint, override) {
       if (override) {
         memberListitem.classList.add('is-overriden');
       } else {
