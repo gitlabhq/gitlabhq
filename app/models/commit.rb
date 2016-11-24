@@ -234,7 +234,7 @@ class Commit
 
     return @statuses[ref] if @statuses.key?(ref)
 
-    @statuses[ref] = pipelines.latest_for(ref).status
+    @statuses[ref] = pipelines.latest(ref).status
   end
 
   def revert_branch_name

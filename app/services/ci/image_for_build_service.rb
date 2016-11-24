@@ -5,7 +5,7 @@ module Ci
       sha = opts[:sha] || ref_sha(project, ref)
       pipelines = project.pipelines.where(sha: sha)
 
-      image_name = image_for_status(pipelines.latest_for(ref).status)
+      image_name = image_for_status(pipelines.latest(ref).status)
       image_path = Rails.root.join('public/ci', image_name)
 
       OpenStruct.new(path: image_path, name: image_name)
