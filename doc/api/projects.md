@@ -592,6 +592,7 @@ Parameters:
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -657,6 +658,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 | `name` | string | yes | The name of the project |
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
