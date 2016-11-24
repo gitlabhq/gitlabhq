@@ -631,10 +631,17 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_commit_message
+    closes_issues_references = closes_issues.map do |issue|
+      issue.to_reference(target_project)
+    end
+
     message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
     message << "#{title}\n\n"
-    mr_closes_issues = closes_issues
-    message << "Closed Issues: #{mr_closes_issues.map { |issue| issue.to_reference(target_project) }.join(", ")}\n\n" if mr_closes_issues.present?
+
+    if closes_issues_references.present?
+      message << "Closed Issues: #{closes_issues_references.join(", ")}\n\n"
+    end
+
     message << "See merge request #{to_reference}"
 
     message
