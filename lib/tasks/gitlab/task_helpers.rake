@@ -1,4 +1,5 @@
 module Gitlab
+  class TaskFailedError < StandardError; end
   class TaskAbortedByUserError < StandardError; end
 end
 
@@ -81,6 +82,18 @@ namespace :gitlab do
     '' # if the command does not exist, return an empty string
   end
 
+  # Runs the given command and raise a Gitlab::TaskFailedError exception if
+  # the command does not exit with 0
+  #
+  # Returns the output of the command otherwise
+  def run_command!(command)
+    output, status = Gitlab::Popen.popen(command)
+
+    raise Gitlab::TaskFailedError unless status.zero?
+
+    output
+  end
+
   def uid_for(user_name)
     run_command(%W(id -u #{user_name})).chomp.to_i
   end
@@ -145,11 +158,11 @@ namespace :gitlab do
   def checkout_or_clone_tag(tag:, repo:, target_dir:)
     if Dir.exist?(target_dir)
       Dir.chdir(target_dir) do
-        run_command(%W[#{Gitlab.config.git.bin_path} fetch --tags --quiet])
-        run_command(%W[#{Gitlab.config.git.bin_path} checkout --quiet #{tag}])
+        run_command!(%W[#{Gitlab.config.git.bin_path} fetch --tags --quiet])
+        run_command!(%W[#{Gitlab.config.git.bin_path} checkout --quiet #{tag}])
       end
     else
-      run_command(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{target_dir}])
+      run_command!(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{target_dir}])
     end
 
     # Make sure we're on the right tag
@@ -161,13 +174,18 @@ namespace :gitlab do
   end
 
   def reset_to_tag(tag_wanted)
-    tag, status = Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} describe -- #{tag_wanted}])
+    tag =
+      begin
+        run_command!(%W[#{Gitlab.config.git.bin_path} describe -- #{tag_wanted}])
+      rescue Gitlab::TaskFailedError
+        run_command!(%W[#{Gitlab.config.git.bin_path} fetch origin])
+        run_command!(%W[#{Gitlab.config.git.bin_path} describe -- origin/#{tag_wanted}])
+      end
 
-    unless status.zero?
-      run_command(%W(#{Gitlab.config.git.bin_path} fetch origin))
-      tag = run_command(%W[#{Gitlab.config.git.bin_path} describe -- origin/#{tag_wanted}])
+    if tag
+      run_command!(%W[#{Gitlab.config.git.bin_path} reset --hard #{tag.strip}])
+    else
+      raise Gitlab::TaskFailedError
     end
-
-    run_command(%W[#{Gitlab.config.git.bin_path} reset --hard #{tag.strip}])
   end
 end

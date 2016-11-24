@@ -16,7 +16,7 @@ namespace :gitlab do
       command = status.zero? ? 'gmake' : 'make'
 
       Dir.chdir(args.dir) do
-        run_command([command])
+        run_command!([command])
       end
     end
   end

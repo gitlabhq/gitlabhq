@@ -88,12 +88,12 @@ describe 'gitlab:workhorse namespace rake task' do
       context 'gmake is available' do
         before do
           expect_any_instance_of(Object).to receive(:checkout_or_clone_tag)
-          allow_any_instance_of(Object).to receive(:run_command).with(['gmake']).and_return(true)
+          allow_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
         end
 
         it 'calls gmake in the gitlab-workhorse directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect_any_instance_of(Object).to receive(:run_command).with(['gmake']).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
 
           run_rake_task('gitlab:workhorse:install', clone_path)
         end
@@ -102,12 +102,12 @@ describe 'gitlab:workhorse namespace rake task' do
       context 'gmake is not available' do
         before do
           expect_any_instance_of(Object).to receive(:checkout_or_clone_tag)
-          allow_any_instance_of(Object).to receive(:run_command).with(['make']).and_return(true)
+          allow_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
         end
 
         it 'calls make in the gitlab-workhorse directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['', 42])
-          expect_any_instance_of(Object).to receive(:run_command).with(['make']).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
 
           run_rake_task('gitlab:workhorse:install', clone_path)
         end

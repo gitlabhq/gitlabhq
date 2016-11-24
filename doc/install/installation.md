@@ -408,7 +408,7 @@ You can specify a different Git repository by providing `GITLAB_WORKHORSE_REPO`:
 
     cd /home/git/gitlab
 
-    sudo -u git -H bundle exec rake gitlab:workhorse:install[/home/git/gitlab-workhorse] GITLAB_WORKHORSE_REPO=https://gitlab.com/gitlab-org/gitlab-ce.git RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:workhorse:install[/home/git/gitlab-workhorse] GITLAB_WORKHORSE_REPO=https://example.com/gitlab-workhorse.git RAILS_ENV=production
 
 You can specify a different version to use by providing `GITLAB_WORKHORSE_VERSION`:
 

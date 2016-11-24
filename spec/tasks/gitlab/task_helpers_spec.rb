@@ -15,7 +15,7 @@ describe 'gitlab:workhorse namespace rake task' do
     let(:tag) { 'v1.1.0' }
     before do
       FileUtils.rm_rf(clone_path)
-      allow_any_instance_of(Object).to receive(:run_command)
+      allow_any_instance_of(Object).to receive(:run_command!)
       expect_any_instance_of(Object).to receive(:reset_to_tag).with(tag)
     end
 
@@ -27,7 +27,7 @@ describe 'gitlab:workhorse namespace rake task' do
       it 'clones the repo, retrieve the tag from origin, and checkout the tag' do
         expect(Dir).to receive(:chdir).and_call_original
         expect_any_instance_of(Object).
-          to receive(:run_command).with(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{clone_path}]) { FileUtils.mkdir_p(clone_path) } # Fake the cloning
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{clone_path}]) { FileUtils.mkdir_p(clone_path) } # Fake the cloning
 
         checkout_or_clone_tag(tag: tag, repo: repo, target_dir: clone_path)
       end
@@ -41,9 +41,9 @@ describe 'gitlab:workhorse namespace rake task' do
       it 'fetch and checkout the tag' do
         expect(Dir).to receive(:chdir).twice.and_call_original
         expect_any_instance_of(Object).
-          to receive(:run_command).with(%W[#{Gitlab.config.git.bin_path} fetch --tags --quiet])
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} fetch --tags --quiet])
         expect_any_instance_of(Object).
-          to receive(:run_command).with(%W[#{Gitlab.config.git.bin_path} checkout --quiet #{tag}])
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} checkout --quiet #{tag}])
 
         checkout_or_clone_tag(tag: tag, repo: repo, target_dir: clone_path)
       end
@@ -54,20 +54,20 @@ describe 'gitlab:workhorse namespace rake task' do
     let(:tag) { 'v1.1.0' }
     before do
       expect_any_instance_of(Object).
-        to receive(:run_command).with(%W[#{Gitlab.config.git.bin_path} reset --hard #{tag}])
+        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} reset --hard #{tag}])
     end
 
     context 'when the tag is not checked out locally' do
       before do
-        expect(Gitlab::Popen).
-          to receive(:popen).with(%W[#{Gitlab.config.git.bin_path} describe -- #{tag}]).and_return(['', 42])
+        expect_any_instance_of(Object).
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} describe -- #{tag}]).and_raise(Gitlab::TaskFailedError)
       end
 
       it 'fetch origin, ensure the tag exists, and resets --hard to the given tag' do
         expect_any_instance_of(Object).
-          to receive(:run_command).with(%W[#{Gitlab.config.git.bin_path} fetch origin])
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} fetch origin])
         expect_any_instance_of(Object).
-          to receive(:run_command).with(%W[#{Gitlab.config.git.bin_path} describe -- origin/#{tag}]).and_return(tag)
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} describe -- origin/#{tag}]).and_return(tag)
 
         reset_to_tag(tag)
       end
@@ -75,8 +75,8 @@ describe 'gitlab:workhorse namespace rake task' do
 
     context 'when the tag is checked out locally' do
       before do
-        expect(Gitlab::Popen).
-          to receive(:popen).with(%W[#{Gitlab.config.git.bin_path} describe -- #{tag}]).and_return([tag, 0])
+        expect_any_instance_of(Object).
+          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} describe -- #{tag}]).and_return(tag)
       end
 
       it 'resets --hard to the given tag' do
