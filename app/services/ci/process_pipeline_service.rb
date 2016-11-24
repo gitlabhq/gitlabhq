@@ -5,11 +5,6 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      # This method will ensure that our pipeline does have all builds for all stages created
-      if created_builds.empty?
-        create_builds!
-      end
-
       new_builds =
         stage_indexes_of_created_builds.map do |index|
           process_stage(index)
@@ -21,10 +16,6 @@ module Ci
     end
 
     private
-
-    def create_builds!
-      Ci::CreatePipelineBuildsService.new(project, current_user).execute(pipeline)
-    end
 
     def process_stage(index)
       current_status = status_for_prior_stages(index)
