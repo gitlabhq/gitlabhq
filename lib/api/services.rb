@@ -65,7 +65,7 @@ module API
         detail 'Added in GitLab 8.13'
       end
       post ':id/services/:service_slug/trigger' do
-        project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
+        project = find_project(params[:id])
 
         # This is not accurate, but done to prevent leakage of the project names
         not_found!('Service') unless project
