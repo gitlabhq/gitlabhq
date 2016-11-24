@@ -33,12 +33,6 @@ module Banzai
 
         range.valid_commits? ? range : nil
       end
-
-      private
-
-      def can_read_reference?(user, ref_project)
-        can?(user, :download_code, ref_project)
-      end
     end
   end
 end

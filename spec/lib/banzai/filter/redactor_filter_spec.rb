@@ -28,39 +28,31 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         and_return(parser_class)
     end
 
-    context 'valid projects' do
-      before { allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true) }
+    it 'removes unpermitted Project references' do
+      user = create(:user)
+      project = create(:empty_project)
 
-      it 'allows permitted Project references' do
-        user = create(:user)
-        project = create(:empty_project)
-        project.team << [user, :master]
+      link = reference_link(project: project.id, reference_type: 'test')
+      doc = filter(link, current_user: user)
 
-        link = reference_link(project: project.id, reference_type: 'test')
-        doc = filter(link, current_user: user)
-
-        expect(doc.css('a').length).to eq 1
-      end
+      expect(doc.css('a').length).to eq 0
     end
 
-    context 'invalid projects' do
-      before { allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false) }
+    it 'allows permitted Project references' do
+      user = create(:user)
+      project = create(:empty_project)
+      project.team << [user, :master]
 
-      it 'removes unpermitted references' do
-        user = create(:user)
-        project = create(:empty_project)
+      link = reference_link(project: project.id, reference_type: 'test')
+      doc = filter(link, current_user: user)
 
-        link = reference_link(project: project.id, reference_type: 'test')
-        doc = filter(link, current_user: user)
+      expect(doc.css('a').length).to eq 1
+    end
 
-        expect(doc.css('a').length).to eq 0
-      end
+    it 'handles invalid Project references' do
+      link = reference_link(project: 12345, reference_type: 'test')
 
-      it 'handles invalid references' do
-        link = reference_link(project: 12345, reference_type: 'test')
-
-        expect { filter(link) }.not_to raise_error
-      end
+      expect { filter(link) }.not_to raise_error
     end
   end
 
