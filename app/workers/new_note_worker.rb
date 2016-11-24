@@ -2,7 +2,9 @@ class NewNoteWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  def perform(note_id)
+  # Keep extra parameter to preserve backwards compatibility with
+  # old `NewNoteWorker` jobs (can remove later)
+  def perform(note_id, _params = {})
     if note = Note.find_by(id: note_id)
       NotificationService.new.new_note(note)
       Notes::PostProcessService.new(note).execute

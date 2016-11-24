@@ -1,20 +1,6 @@
-require 'constraints/group_url_constrainer'
-
-constraints(GroupUrlConstrainer.new) do
-  scope(path: ':id',
-        as: :group,
-        constraints: { id: Gitlab::Regex.namespace_route_regex },
-        controller: :groups) do
-    get '/', action: :show
-    patch '/', action: :update
-    put '/', action: :update
-    delete '/', action: :destroy
-  end
-end
-
 resources :groups, only: [:index, :new, :create]
 
-scope(path: 'groups/:id',
+scope(path: 'groups/*id',
       controller: :groups,
       constraints: { id: Gitlab::Regex.namespace_route_regex }) do
   get :edit, as: :edit_group
@@ -24,7 +10,7 @@ scope(path: 'groups/:id',
   get :activity, as: :activity_group
 end
 
-scope(path: 'groups/:group_id',
+scope(path: 'groups/*group_id',
       module: :groups,
       as: :group,
       constraints: { group_id: Gitlab::Regex.namespace_route_regex }) do
@@ -42,4 +28,4 @@ scope(path: 'groups/:group_id',
 end
 
 # Must be last route in this file
-get 'groups/:id' => 'groups#show', as: :group_canonical, constraints: { id: Gitlab::Regex.namespace_route_regex }
+get 'groups/*id' => 'groups#show', as: :group_canonical, constraints: { id: Gitlab::Regex.namespace_route_regex }

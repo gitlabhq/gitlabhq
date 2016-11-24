@@ -126,6 +126,8 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
 
+  has_many :project_authorizations, dependent: :destroy
+  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :project_members
   has_many :users, through: :project_members
@@ -163,6 +165,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -174,6 +177,7 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
+    project_path: true,
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
@@ -1086,7 +1090,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
-    repository.expire_avatar_cache(branch)
+    repository.expire_avatar_cache
     reload_default_branch
   end
 
@@ -1290,14 +1294,6 @@ class Project < ActiveRecord::Base
     variables.map do |variable|
       { key: variable.key, value: variable.value, public: false }
     end
-  end
-
-  # Checks if `user` is authorized for this project, with at least the
-  # `min_access_level` (if given).
-  def authorized_for_user?(user, min_access_level = nil)
-    return false unless user
-
-    user.authorized_project?(self, min_access_level)
   end
 
   def append_or_update_attribute(name, value)

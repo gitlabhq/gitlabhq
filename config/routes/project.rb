@@ -1,28 +1,15 @@
-resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
+require 'constraints/project_url_constrainer'
 
-resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
-  resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
-            [:new, :create, :index], path: "/") do
-    member do
-      put :transfer
-      delete :remove_fork
-      post :archive
-      post :unarchive
-      post :housekeeping
-      post :toggle_star
-      post :preview_markdown
-      post :export
-      post :remove_export
-      post :generate_new_export
-      get :download_export
-      get :autocomplete_sources
-      get :activity
-      get :refs
-      put :new_issue_address
-    end
+resources :projects, only: [:index, :new, :create]
 
-    scope module: :projects do
-      draw :git_http
+draw :git_http
+
+constraints(ProjectUrlConstrainer.new) do
+  scope(path: '*namespace_id', as: :namespace) do
+    scope(path: ':project_id',
+          constraints: { project_id: Gitlab::Regex.project_route_regex },
+          module: :projects,
+          as: :project) do
 
       #
       # Templates
@@ -310,6 +297,29 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
+    end
+
+    resources(:projects,
+              path: '/',
+              constraints: { id: Gitlab::Regex.project_route_regex },
+              only: [:edit, :show, :update, :destroy]) do
+      member do
+        put :transfer
+        delete :remove_fork
+        post :archive
+        post :unarchive
+        post :housekeeping
+        post :toggle_star
+        post :preview_markdown
+        post :export
+        post :remove_export
+        post :generate_new_export
+        get :download_export
+        get :autocomplete_sources
+        get :activity
+        get :refs
+        put :new_issue_address
+      end
     end
   end
 end

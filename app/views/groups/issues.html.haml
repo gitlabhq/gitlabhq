@@ -3,24 +3,27 @@
   - if current_user
     = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@group.name} issues")
 
-.top-area
-  = render 'shared/issuable/nav', type: :issues
-  .nav-controls
+- if group_issues(@group).exists?
+  .top-area
+    = render 'shared/issuable/nav', type: :issues
+    .nav-controls
+      - if current_user
+        = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn' do
+          = icon('rss')
+          %span.icon-label
+            Subscribe
+      = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
+
+  = render 'shared/issuable/filter', type: :issues
+
+  .row-content-block.second-block
+    Only issues from the
+    %strong #{@group.name}
+    group are listed here.
     - if current_user
-      = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn' do
-        = icon('rss')
-        %span.icon-label
-          Subscribe
-    = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
+      To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
 
-= render 'shared/issuable/filter', type: :issues
-
-.row-content-block.second-block
-  Only issues from
-  %strong #{@group.name}
-  group are listed here.
-  - if current_user
-    To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
-
-.prepend-top-default
-  = render 'shared/issues'
+  .prepend-top-default
+    = render 'shared/issues'
+- else
+  = render 'shared/empty_states/issues', project_select_button: true

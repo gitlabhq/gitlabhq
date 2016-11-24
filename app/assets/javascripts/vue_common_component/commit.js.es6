@@ -138,16 +138,15 @@
 
         <a v-if="hasRef"
           class="monospace branch-name"
-          :href="ref.ref_url"
-          v-html="ref.name">
+          :href="ref.ref_url">
+          {{ref.name}}
         </a>
 
-        <div class="icon-container commit-icon commit-icon-container">
-        </div>
+        <div class="icon-container commit-icon commit-icon-container"></div>
 
         <a class="commit-id monospace"
-          :href="commit_url"
-          v-html="short_sha">
+          :href="commit_url">
+          {{short_sha}}
         </a>
 
         <p class="commit-title">
@@ -156,14 +155,15 @@
               class="avatar-image-container"
               :href="author.web_url">
               <img
-              class="avatar has-tooltip s20"
+                class="avatar has-tooltip s20"
                 :src="author.avatar_url"
                 :alt="userImageAltDescription"
                 :title="author.username" />
             </a>
 
             <a class="commit-row-message"
-              :href="commit_url" v-html="title">
+              :href="commit_url">
+              {{title}}
             </a>
           </span>
           <span v-else>

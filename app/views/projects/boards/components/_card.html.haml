@@ -1,6 +1,7 @@
 %li.card{ ":class" => '{ "user-can-drag": !disabled && issue.id, "is-disabled": disabled || !issue.id, "is-active": issueDetailVisible }',
   ":index" => "index",
   "@mousedown" => "mouseDown",
+  "@mousemove" => "mouseMove",
   "@mouseup" => "showIssue($event)" }
   %h4.card-title
     = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")

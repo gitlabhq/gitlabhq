@@ -19,7 +19,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 1. <a name="beginner"></a> GitLab Beginner
+### 1. GitLab Beginner
 
 #### 1.1. Version Control and Git
 
@@ -85,7 +85,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 2. <a name="intermediate"></a> GitLab Intermediate
+### 2. GitLab Intermediate
 
 #### 2.1 GitLab Pages
 
@@ -141,7 +141,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 3. <a name="advanced"></a> GitLab Advanced
+### 3. GitLab Advanced
 
 #### 3.1. Dev Ops
 
@@ -186,7 +186,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/solutions/cycle-analytics/)
 
-#### 3.9. <a name="integrations"></a> Integrations
+#### 3.9. Integrations
 
 1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
 1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ee/integration/jira.html)
@@ -198,7 +198,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-## 4. <a name="external"></a>  External Articles
+## 4. External Articles
 
 1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](http://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
 1. [2014 Blog post by Chris Dixon - Software eats software development](http://cdixon.org/2014/04/13/software-eats-software-development/)
@@ -206,7 +206,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-## 5. <a name="team"></a> Resources for GitLab Team Members
+## 5. Resources for GitLab Team Members
 
 *Some content can only be accessed by GitLab team members*
 

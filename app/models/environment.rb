@@ -19,7 +19,7 @@ class Environment < ActiveRecord::Base
             allow_nil: true,
             addressable_url: true
 
-  delegate :stop_action, to: :last_deployment, allow_nil: true
+  delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
@@ -98,5 +98,13 @@ class Environment < ActiveRecord::Base
 
     stop
     stop_action.play(current_user)
+  end
+
+  def actions_for(environment)
+    return [] unless manual_actions
+
+    manual_actions.select do |action|
+      action.expanded_environment_name == environment
+    end
   end
 end

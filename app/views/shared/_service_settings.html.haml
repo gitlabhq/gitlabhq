@@ -1,47 +1,50 @@
 = form_errors(@service)
 
-- if @service.help.present?
+- if lookup_context.template_exists?('help', "projects/services/#{@service.to_param}", true)
+  = render "projects/services/#{@service.to_param}/help", subject: subject
+- elsif @service.help.present?
   .well
     = preserve do
       = markdown @service.help
 
-.form-group
-  = form.label :active, "Active", class: "control-label"
-  .col-sm-10
-    = form.check_box :active
-
-- if @service.supported_events.present?
+.service-settings
   .form-group
-    = form.label :url, "Trigger", class: 'control-label'
-
+    = form.label :active, "Active", class: "control-label"
     .col-sm-10
-      - @service.supported_events.each do |event|
-        %div
-          = form.check_box service_event_field_name(event), class: 'pull-left'
-          .prepend-left-20
-            = form.label service_event_field_name(event), class: 'list-label' do
-              %strong
-                = event.humanize
+      = form.check_box :active
 
-        - field = @service.event_field(event)
+  - if @service.supported_events.present?
+    .form-group
+      = form.label :url, "Trigger", class: 'control-label'
 
-        - if field
-          %p
-            = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
+      .col-sm-10
+        - @service.supported_events.each do |event|
+          %div
+            = form.check_box service_event_field_name(event), class: 'pull-left'
+            .prepend-left-20
+              = form.label service_event_field_name(event), class: 'list-label' do
+                %strong
+                  = event.humanize
 
-        %p.light
-          = service_event_description(event)
+          - field = @service.event_field(event)
 
-- @service.global_fields.each do |field|
-  - type = field[:type]
+          - if field
+            %p
+              = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
 
-  - if type == 'fieldset'
-    - fields = field[:fields]
-    - legend = field[:legend]
+          %p.light
+            = service_event_description(event)
 
-    %fieldset
-      %legend= legend
-      - fields.each do |subfield|
-        = render 'shared/field', form: form, field: subfield
-  - else
-    = render 'shared/field', form: form, field: field
+  - @service.global_fields.each do |field|
+    - type = field[:type]
+
+    - if type == 'fieldset'
+      - fields = field[:fields]
+      - legend = field[:legend]
+
+      %fieldset
+        %legend= legend
+        - fields.each do |subfield|
+          = render 'shared/field', form: form, field: subfield
+    - else
+      = render 'shared/field', form: form, field: field

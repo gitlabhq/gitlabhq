@@ -720,6 +720,7 @@ ActiveRecord::Schema.define(version: 20161118183841) do
     t.integer "iid"
     t.text "title_html"
     t.text "description_html"
+    t.date "start_date"
   end
 
   add_index "milestones", ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}

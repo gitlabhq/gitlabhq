@@ -19,13 +19,6 @@ class MattermostSlashCommandsService < ChatService
     'mattermost_slash_commands'
   end
 
-  def help
-    "This service allows you to use slash commands with your Mattermost installation.<br/>
-    To setup this Service you need to create a new <b>Slash commands</b> in your Mattermost integration panel.<br/>
-    <br/>
-    Create integration with URL #{service_trigger_url(self)} and enter the token below."
-  end
-
   def fields
     [
       { type: 'text', name: 'token', placeholder: '' }
