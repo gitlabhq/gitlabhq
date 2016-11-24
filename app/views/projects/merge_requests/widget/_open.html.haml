@@ -33,8 +33,8 @@
   - if mr_issues_mentioned_but_not_closing.present?
     .mr-widget-footer
       %span
-        %i.fa.fa-warning
-        = mr_issues_mentioned_but_not_closing_message
+        %i.fa.fa-info-circle
+        #{"Issue".pluralize(mr_issues_mentioned_but_not_closing.size)} mentioned but not being closed:
         = succeed '.' do
           != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
         = mr_assign_issues_link

@@ -63,13 +63,6 @@ module MergeRequestsHelper
     @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing
   end
 
-  def mr_issues_mentioned_but_not_closing_message
-    verb = mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'
-    issue_text = 'issue'.pluralize(mr_issues_mentioned_but_not_closing.size)
-
-    "The following #{issue_text} #{verb} mentioned but not being closed:"
-  end
-
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,
