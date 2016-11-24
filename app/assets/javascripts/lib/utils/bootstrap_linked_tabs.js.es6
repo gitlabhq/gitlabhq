@@ -1,4 +1,3 @@
-
 /**
  * Linked Tabs
  *
@@ -61,7 +60,9 @@
       }
 
       // since this is a custom event we need jQuery :(
-      $(document).on('shown.bs.tab', `${this.options.parentEl} a[data-toggle="tab"]`, evt => this.tabShown(evt));
+      $(document)
+        .off('shown.bs.tab', `${this.options.parentEl} a[data-toggle="tab"]`)
+        .on('shown.bs.tab', `${this.options.parentEl} a[data-toggle="tab"]`, evt => this.tabShown(evt));
 
       this.activateTab(this.action);
     }
@@ -104,7 +105,7 @@
      * Note: Will trigger `shown.bs.tab`
      */
     activateTab() {
-      return $(`.pipelines-tabs a[data-action='${this.action}']`).tab('show');
+      return $(`${this.options.parentEl} a[data-action='${this.action}']`).tab('show');
     }
   };
 })();

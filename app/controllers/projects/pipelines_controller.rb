@@ -1,6 +1,6 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create]
-  before_action :commit, only: [:show]
+  before_action :commit, only: [:show, :builds]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
@@ -33,7 +33,11 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    render 'show'
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+    end
   end
 
   def retry

@@ -1,12 +1,12 @@
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom
     %li
-      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' } do
+      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
         Pipeline
     %li
-      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' } do
+      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         Builds
-        %span.badge= pipeline.statuses.count
+        %span.badge.js-builds-counter= pipeline.statuses.count
 
 
 

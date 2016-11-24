@@ -179,9 +179,13 @@ describe "Pipelines" do
     end
 
     context 'page tabs' do
-      it 'should have two tabs' do
+      it 'shows Pipeline and Builds tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Builds')
+      end
+
+      it 'shows counter in Builds tab' do
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
       end
     end
 
