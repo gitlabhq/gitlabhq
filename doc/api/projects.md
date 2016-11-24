@@ -644,7 +644,7 @@ Parameters:
 
 ### Edit project
 
-Updates an existing project
+Updates an existing project.
 
 ```
 PUT /projects/:id
@@ -674,9 +674,6 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 
-On success, method returns 200 with the updated project. If parameters are
-invalid, 400 is returned.
-
 ### Fork project
 
 Forks a project into the user namespace of the authenticated user or the one provided.
@@ -694,8 +691,7 @@ Parameters:
 
 ### Star a project
 
-Stars a given project. Returns status code `201` and the project on success and
-`304` if the project is already starred.
+Stars a given project. Returns status code `304` if the project is already starred.
 
 ```
 POST /projects/:id/star
@@ -765,8 +761,7 @@ Example response:
 
 ### Unstar a project
 
-Unstars a given project. Returns status code `200` and the project on success
-and `304` if the project is not starred.
+Unstars a given project. Returns status code `304` if the project is not starred.
 
 ```
 DELETE /projects/:id/star
@@ -836,10 +831,6 @@ Example response:
 
 Archives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus archiving an already archived project will not change the project.
-
-Status code 201 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 403 is returned. Status 404 is returned if the project
-doesn't exist, or is hidden to the user.
 
 ```
 POST /projects/:id/archive
@@ -925,10 +916,6 @@ Example response:
 
 Unarchives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus unarchiving an non-archived project will not change the project.
-
-Status code 201 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 403 is returned. Status 404 is returned if the project
-doesn't exist, or is hidden to the user.
 
 ```
 POST /projects/:id/unarchive
