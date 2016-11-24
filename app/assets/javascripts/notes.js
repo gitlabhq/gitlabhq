@@ -333,7 +333,7 @@
         gl.diffNotesCompileComponents();
       }
 
-      gl.utils.localTimeAgo($('.js-timeago', note_html), false);
+      gl.utils.localTimeAgo($('.js-timeago'), false);
       return this.updateNotesCount(1);
     };
 
