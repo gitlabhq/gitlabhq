@@ -29,6 +29,31 @@ describe 'Project variables', js: true do
     end
   end
 
+  it 'reveals and hides new variable' do
+    fill_in('variable_key', with: 'key')
+    fill_in('variable_value', with: 'key value')
+    click_button('Add new variable')
+
+    page.within('.variables-table') do
+      expect(page).to have_content('key')
+      expect(page).to have_content('******')
+    end
+
+    click_button('Reveal Values')
+
+    page.within('.variables-table') do
+      expect(page).to have_content('key')
+      expect(page).to have_content('key value')
+    end
+
+    click_button('Hide Values')
+
+    page.within('.variables-table') do
+      expect(page).to have_content('key')
+      expect(page).to have_content('******')
+    end
+  end
+
   it 'deletes variable' do
     page.within('.variables-table') do
       find('.btn-variable-delete').click

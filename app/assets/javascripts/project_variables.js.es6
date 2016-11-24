@@ -23,9 +23,9 @@
 
       $btn.attr('data-status', newStatus);
 
-      $variables = $('.variable-value');
+      let $variables = $('.variable-value');
 
-      for (let variable of $variables) {
+      $variables.each(function (_, variable) {
         let $variable = $(variable);
         let newText = HIDDEN_VALUE_TEXT;
 
@@ -34,7 +34,7 @@
         }
 
         $variable.text(newText);
-      }
+      });
 
       $btn.text(newAction);
     }
