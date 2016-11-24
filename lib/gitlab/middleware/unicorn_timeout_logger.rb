@@ -11,6 +11,14 @@ module Gitlab
       end
 
       def call(env)
+        if @timeout
+          log_timeout(env)
+        else
+          @app.call(env)
+        end
+      end
+
+      def log_timeout(env)
         thr = Thread.new do
           sleep(@timeout - 1)
 
@@ -33,6 +41,9 @@ module Gitlab
 
       def load_timeout
         unicorn_config = File.join(Rails.root, 'config/unicorn.rb')
+
+        return unless File.exist?(unicorn_config)
+
         configurator = Unicorn::Configurator.new({ config_file: unicorn_config })
         configurator.set[:timeout]
       end
