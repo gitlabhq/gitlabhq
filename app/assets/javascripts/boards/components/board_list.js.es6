@@ -88,8 +88,8 @@
           const card = this.$refs.issue[e.oldIndex];
 
           card.showDetail = false;
-          Store.moving.issue = card.issue;
           Store.moving.list = card.list;
+          Store.moving.issue = Store.moving.list.findIssue(+e.item.dataset.issueId);
 
           gl.issueBoards.onStart();
         },
