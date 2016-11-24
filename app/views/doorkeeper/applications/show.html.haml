@@ -23,16 +23,7 @@
           %div
             %span.monospace= uri
 
-    - if @application.scopes.present?
-      %tr
-        %td
-          Scopes
-        %td
-          %ul.scopes-list.append-bottom-0
-            - @application.scopes.each do |scope|
-              %li
-                %span.scope-name= scope
-                = "(#{t(scope, scope: [:doorkeeper, :scopes])})"
+    = render partial: "shared/tokens/scopes_list"
 
 .form-actions
   = link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
