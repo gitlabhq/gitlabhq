@@ -7,8 +7,13 @@ module OauthApplications
 
   def prepare_scopes
     scopes = params.dig(:doorkeeper_application, :scopes)
+
     if scopes
       params[:doorkeeper_application][:scopes] = scopes.join(' ')
     end
+  end
+
+  def load_scopes
+    @scopes = Doorkeeper.configuration.scopes
   end
 end

@@ -7,15 +7,12 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   before_action :verify_user_oauth_applications_enabled
   before_action :authenticate_user!
   before_action :add_gon_variables
+  before_action :load_scopes, only: [:index, :create, :edit]
 
   layout 'profile'
 
   def index
     set_index_vars
-  end
-
-  def edit
-    @scopes = Doorkeeper.configuration.scopes
   end
 
   def create
@@ -45,7 +42,6 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     @authorized_tokens = current_user.oauth_authorized_tokens
     @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
     @authorized_apps = @authorized_tokens.map(&:application).uniq.reject(&:nil?)
-    @scopes = Doorkeeper.configuration.scopes
 
     # Don't overwrite a value possibly set by `create`
     @application ||= Doorkeeper::Application.new
