@@ -92,7 +92,6 @@ constraints(ProjectUrlConstrainer.new) do
           get :diffs
           get :conflicts
           get :conflict_for_path
-          get :builds
           get :pipelines
           get :merge_check
           post :merge

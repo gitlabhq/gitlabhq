@@ -45,6 +45,7 @@
       $('#modal_merge_info').modal({
         show: false
       });
+
       this.clearEventListeners();
       this.addEventListeners();
       this.getCIStatus(false);
@@ -74,7 +75,7 @@
 
     MergeRequestWidget.prototype.addEventListeners = function() {
       var allowedPages;
-      allowedPages = ['show', 'commits', 'builds', 'pipelines', 'changes'];
+      allowedPages = ['show', 'commits', 'pipelines', 'changes'];
       $(document).on('page:change.merge_request', (function(_this) {
         return function() {
           var page;
@@ -173,7 +174,6 @@
               message = message.replace('{{title}}', data.title);
               notify(title, message, _this.opts.gitlab_icon, function() {
                 this.close();
-                return Turbolinks.visit(_this.opts.builds_path);
               });
             }
           }
