@@ -30,6 +30,15 @@
     - elsif @merge_request.can_be_merged? || resolved_conflicts
       = render 'projects/merge_requests/widget/open/accept'
 
+  - if mr_issues_mentioned_but_not_closing.present?
+    .mr-widget-footer
+      %span
+        %i.fa.fa-warning
+        = mr_issues_mentioned_but_not_closing_message
+        = succeed '.' do
+          != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
+        = mr_assign_issues_link
+
   - if mr_closes_issues.present?
     .mr-widget-footer
       %span
