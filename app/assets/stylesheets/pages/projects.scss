@@ -876,3 +876,11 @@ pre.light-well {
     pointer-events: none;
   }
 }
+
+.variables-table {
+  table-layout: fixed;
+
+  .variable-key {
+    width: 30%;
+  }
+}
