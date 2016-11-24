@@ -12,10 +12,7 @@ describe AutocompleteController do
       before do
         sign_in(user)
         project.add_master(user)
-<<<<<<< HEAD
         project.add_developer(user2)
-=======
->>>>>>> ce/master
       end
 
       describe 'GET #users with project ID' do

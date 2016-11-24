@@ -196,7 +196,6 @@ class ProjectTeam
   def group
     project.group
   end
-<<<<<<< HEAD
 
   def group_member_lock
     group && group.membership_lock
@@ -205,40 +204,4 @@ class ProjectTeam
   def merge_max!(first_hash, second_hash)
     first_hash.merge!(second_hash) { |_key, old, new| old > new ? old : new }
   end
-
-  def project_shared_with_group?
-    project.invited_groups.any? && project.allowed_to_share_with_group?
-  end
-
-  def fetch_invited_members(level = nil)
-    invited_members = []
-
-    return invited_members unless project_shared_with_group?
-
-    project.project_group_links.includes(group: [:group_members]).each do |link|
-      invited_group_members = link.group.members
-
-      if level
-        numeric_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
-
-        # If we're asked for a level that's higher than the group's access,
-        # there's nothing left to do
-        next if numeric_level > link.group_access
-
-        # Make sure we include everyone _above_ the requested level as well
-        invited_group_members =
-          if numeric_level == link.group_access
-            invited_group_members.where("access_level >= ?", link.group_access)
-          else
-            invited_group_members.public_send(level)
-          end
-      end
-
-      invited_members << invited_group_members
-    end
-
-    invited_members.flatten.compact
-  end
-=======
->>>>>>> ce/master
 end

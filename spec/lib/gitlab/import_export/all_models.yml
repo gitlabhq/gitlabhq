@@ -195,7 +195,8 @@ project:
 - environments
 - deployments
 - project_feature
-<<<<<<< HEAD
+- authorized_users
+- project_authorizations
 - mirror_user
 - push_rule
 - jenkins_service
@@ -207,10 +208,6 @@ project:
 - remote_mirrors
 - path_locks
 - approver_groups
-=======
-- authorized_users
-- project_authorizations
->>>>>>> ce/master
 award_emoji:
 - awardable
 - user
