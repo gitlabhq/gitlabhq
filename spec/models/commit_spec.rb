@@ -208,11 +208,11 @@ eos
   describe '#status' do
     context 'without arguments' do
       before do
-        5.times do
+        %w[success failed created pending].each do |status|
           create(:ci_empty_pipeline,
                  project: project,
                  sha: commit.sha,
-                 status: Ci::Pipeline.all_state_names.sample)
+                 status: status)
         end
       end
 
