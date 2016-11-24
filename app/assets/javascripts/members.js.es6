@@ -1,6 +1,5 @@
-/* eslint-disable */
-((w) => {
-  w.gl = w.gl || {};
+(() => {
+  window.gl = window.gl || {};
 
   class Members {
     constructor() {
@@ -26,27 +25,27 @@
       gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
     }
 
-    initGLDropdown () {
+    initGLDropdown() {
       $('.js-member-permissions-dropdown').each((i, btn) => {
         const $btn = $(btn);
 
         $btn.glDropdown({
           selectable: true,
-          isSelectable (selected, $el) {
+          isSelectable(selected, $el) {
             const $link = $($el);
 
-            return $link.data('revert') ? false : true;
+            return $link.data('revert');
           },
           fieldName: $btn.data('field-name'),
-          id (selected, $el) {
+          id(selected, $el) {
             return $el.data('id');
           },
-          toggleLabel (selected, $el) {
+          toggleLabel(selected, $el) {
             if ($el.data('revert')) {
               return $btn.text();
-            } else {
-              return $el.text();
             }
+
+            return $el.text();
           },
           clicked: (selected, $el) => {
             const $link = $($el);
@@ -58,33 +57,34 @@
               toggle.disabled = true;
               this.overrideLdap(memberListItem, $link.data('endpoint'), false);
             } else {
-              $btn.closest('form').trigger("submit.rails");
+              $btn.closest('form').trigger('submit.rails');
             }
-          }
+          },
         });
       });
     }
 
-    removeRow(e) {
+    static removeRow(e) {
       const $target = $(e.target);
 
       if ($target.hasClass('btn-remove')) {
         $target.closest('.member')
-          .fadeOut(function () {
+          .fadeOut(function fadeOutMemberRow() {
             $(this).remove();
           });
       }
     }
 
     formSubmit() {
-      $(this).closest('form').trigger("submit.rails").end().disable();
+      $(this).closest('form').trigger('submit.rails').end()
+        .disable();
     }
 
     formSuccess() {
       $(this).find('.js-member-update-control').enable();
     }
 
-    showLDAPPermissionsWarning (e) {
+    showLDAPPermissionsWarning(e) {
       const btn = e.currentTarget;
       const memberListItem = this.getMemberListItem(btn);
       const ldapPermissionsElement = memberListItem.nextElementSibling;
@@ -96,11 +96,11 @@
       }
     }
 
-    getMemberListItem (btn) {
+    static getMemberListItem(btn) {
       return document.getElementById(btn.dataset.id);
     }
 
-    toggleMemberAccessToggle (e) {
+    toggleMemberAccessToggle(e) {
       const btn = e.currentTarget;
       const memberListItem = this.getMemberListItem(btn);
       const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
@@ -111,7 +111,7 @@
       this.overrideLdap(memberListItem, btn.dataset.endpoint, true);
     }
 
-    overrideLdap (memberListitem, endpoint, override) {
+    static overrideLdap(memberListitem, endpoint, override) {
       if (override) {
         memberListitem.classList.add('is-overriden');
       } else {
@@ -123,12 +123,12 @@
         type: 'PATCH',
         data: {
           group_member: {
-            override
-          }
-        }
-      })
+            override,
+          },
+        },
+      });
     }
   }
 
   gl.Members = Members;
-})(window);
+})();
