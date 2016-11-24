@@ -43,6 +43,8 @@ module Notes
         if only_commands
           note.errors.add(:commands_only, 'Your commands have been executed!')
         end
+
+        note.commands_changes = command_params.keys
       end
 
       note
