@@ -1,0 +1,4 @@
+---
+title: Pass commit data to ProcessCommitWorker to reduce Git overhead
+merge_request: 7744
+author: 

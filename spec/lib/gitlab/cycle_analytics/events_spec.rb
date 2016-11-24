@@ -321,6 +321,6 @@ describe Gitlab::CycleAnalytics::Events do
     context.update(milestone: milestone)
     mr = create_merge_request_closing_issue(context)
 
-    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.sha)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end
 end

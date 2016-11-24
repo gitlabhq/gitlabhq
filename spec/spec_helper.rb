@@ -55,8 +55,12 @@ RSpec.configure do |config|
 
   config.around(:each, :redis) do |example|
     Gitlab::Redis.with(&:flushall)
+    Sidekiq.redis(&:flushall)
+
     example.run
+
     Gitlab::Redis.with(&:flushall)
+    Sidekiq.redis(&:flushall)
   end
 end
 
