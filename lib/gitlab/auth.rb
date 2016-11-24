@@ -112,7 +112,6 @@ module Gitlab
           if token && token.user == validation && token_has_scope?(token)
             Gitlab::Auth::Result.new(validation, nil, :personal_token, full_authentication_abilities)
           end
-
         end
       end
 

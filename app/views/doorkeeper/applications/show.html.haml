@@ -34,7 +34,6 @@
                 %span.scope-name= scope
                 = "(#{t(scope, scope: [:doorkeeper, :scopes])})"
 
-
 .form-actions
   = link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
   = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'

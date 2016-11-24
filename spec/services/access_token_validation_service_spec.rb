@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe AccessTokenValidationService, services: true do
-
   describe ".sufficient_scope?" do
     it "returns true if the required scope is present in the token's scopes" do
       token = double("token", scopes: [:api, :read_user])
