@@ -294,7 +294,7 @@ describe MergeRequest, models: true do
       end
     end
 
-    it 'detects issues mentioned but not closed' do
+    it 'detects issues mentioned in description but not closed' do
       mentioned_issue = create(:issue, project: subject.project)
 
       subject.description = "Is related to #{mentioned_issue.to_reference}"
