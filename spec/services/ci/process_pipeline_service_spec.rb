@@ -10,22 +10,6 @@ describe Ci::ProcessPipelineService, services: true do
   end
 
   describe '#execute' do
-    def all_builds
-      pipeline.builds
-    end
-
-    def builds
-      all_builds.where.not(status: [:created, :skipped])
-    end
-
-    def process_pipeline
-      described_class.new(pipeline.project, user).execute(pipeline)
-    end
-
-    def succeed_pending
-      builds.pending.update_all(status: 'success')
-    end
-
     context 'start queuing next builds' do
       before do
         create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage_idx: 0)
@@ -223,10 +207,6 @@ describe Ci::ProcessPipelineService, services: true do
           pipeline.builds.running_or_pending.each(&:success)
           expect(manual_actions).to be_many # production and clear cache
         end
-
-        def manual_actions
-          pipeline.manual_actions
-        end
       end
     end
 
@@ -281,15 +261,6 @@ describe Ci::ProcessPipelineService, services: true do
 
           expect(builds.map(&:status)).to eq(%w[success skipped pending])
         end
-      end
-
-      def create_build(name, stage_idx, when_value = nil)
-        create(:ci_build,
-               :created,
-               pipeline: pipeline,
-               name: name,
-               stage_idx: stage_idx,
-               when: when_value)
       end
     end
 
@@ -380,5 +351,34 @@ describe Ci::ProcessPipelineService, services: true do
         expect(all_builds.count).to eq(5)
       end
     end
+  end
+
+  def all_builds
+    pipeline.builds
+  end
+
+  def builds
+    all_builds.where.not(status: [:created, :skipped])
+  end
+
+  def process_pipeline
+    described_class.new(pipeline.project, user).execute(pipeline)
+  end
+
+  def succeed_pending
+    builds.pending.update_all(status: 'success')
+  end
+
+  def manual_actions
+    pipeline.manual_actions
+  end
+
+  def create_build(name, stage_idx, when_value = nil)
+    create(:ci_build,
+           :created,
+           pipeline: pipeline,
+           name: name,
+           stage_idx: stage_idx,
+           when: when_value)
   end
 end
