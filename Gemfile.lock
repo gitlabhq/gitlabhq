@@ -316,7 +316,7 @@ GEM
       rack-accept
       rack-mount
       virtus (>= 1.0.0)
-    grape-entity (0.4.8)
+    grape-entity (0.6.0)
       activesupport
       multi_json (>= 1.3.2)
     haml (4.0.7)
@@ -869,7 +869,7 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.2)
   gon (~> 6.1.0)
   grape (~> 0.15.0)
-  grape-entity (~> 0.4.2)
+  grape-entity (~> 0.6.0)
   haml_lint (~> 0.18.2)
   hamlit (~> 2.6.1)
   health_check (~> 2.2.0)

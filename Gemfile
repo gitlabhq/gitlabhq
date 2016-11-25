@@ -68,7 +68,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
 gem 'grape',        '~> 0.15.0'
-gem 'grape-entity', '~> 0.4.2'
+gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
