@@ -81,11 +81,11 @@ describe Issues::MoveService, services: true do
         end
 
         it 'adds system note to old issue at the end' do
-          expect(old_issue.notes.last.note).to match /^Moved to/
+          expect(old_issue.notes.last.note).to start_with 'moved to'
         end
 
         it 'adds system note to new issue at the end' do
-          expect(new_issue.notes.last.note).to match /^Moved from/
+          expect(new_issue.notes.last.note).to start_with 'moved from'
         end
 
         it 'closes old issue' do
@@ -151,7 +151,7 @@ describe Issues::MoveService, services: true do
           end
 
           it 'adds a system note about move after rewritten notes' do
-            expect(system_notes.last.note).to match /^Moved from/
+            expect(system_notes.last.note).to match /^moved from/
           end
 
           it 'preserves orignal author of comment' do
