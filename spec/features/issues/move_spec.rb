@@ -27,7 +27,7 @@ feature 'issue move to another project' do
     let!(:mr) { create(:merge_request, source_project: old_project) }
     let(:new_project) { create(:project) }
     let(:new_project_search) { create(:project) }
-    let(:text) { 'Text with !1' }
+    let(:text) { "Text with #{mr.to_reference}" }
     let(:cross_reference) { old_project.to_reference }
 
     background do
@@ -43,8 +43,8 @@ feature 'issue move to another project' do
 
       expect(current_url).to include project_path(new_project)
 
-      expect(page).to have_content("Text with #{cross_reference}!1")
-      expect(page).to have_content("Moved from #{cross_reference}#1")
+      expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
+      expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
       expect(page).to have_content(issue.title)
     end
 

@@ -25,7 +25,7 @@ describe API::API, api: true  do
   let!(:cross_reference_note) do
     create :note,
     noteable: ext_issue, project: ext_proj,
-    note: "Mentioned in issue #{private_issue.to_reference(ext_proj)}",
+    note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
     system: true
   end
 
