@@ -25,14 +25,14 @@ module Ci
         user: current_user,
         trigger_request: trigger_request
       )
-      build = pipeline.builds.create(build_attributes)
 
-      # Create the environment before the build starts. This sets its slug and
-      # makes it available as an environment variable
-      project.environments.find_or_create_by(name: build.expanded_environment_name) if
-        build.has_environment?
-
-      build
+      pipeline.builds.create(build_attributes).tap do |build|
+        # Create the environment before the build starts. This sets its slug and
+        # makes it available as an environment variable
+        if build.has_environment?
+          project.environments.find_or_create_by(name: build.expanded_environment_name)
+        end
+      end
     end
 
     def new_builds

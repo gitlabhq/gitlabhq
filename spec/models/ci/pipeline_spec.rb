@@ -1008,5 +1008,44 @@ describe Ci::Pipeline, :models do
         expect(described_class.unfinished.count).to eq 3
       end
     end
+
+    describe '.with_builds' do
+      context 'when pipeline has builds' do
+        before do
+          create(:ci_build, pipeline: pipeline)
+        end
+
+        it 'finds the pipeline with builds' do
+          expect(described_class.with_builds).to include pipeline
+        end
+      end
+
+      context 'when pipeline has only external statuses' do
+        before do
+          create(:generic_commit_status, pipeline: pipeline)
+        end
+
+        it 'does not find without builds' do
+          expect(described_class.with_builds).to be_empty
+        end
+      end
+
+      context 'when pipeline has builds and external statuses' do
+        before do
+          create(:ci_build, pipeline: pipeline)
+          create(:generic_commit_status, pipeline: pipeline)
+        end
+
+        it 'finds pipeline with build' do
+          expect(described_class.with_builds).to include pipeline
+        end
+      end
+
+      context 'when pipeline is empty' do
+        it 'does not find it' do
+          expect(described_class.with_builds).to be_empty
+        end
+      end
+    end
   end
 end

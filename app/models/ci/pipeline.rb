@@ -21,6 +21,10 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
+    scope :with_builds, -> do
+      joins(:builds).merge(Ci::Build.all)
+    end
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
