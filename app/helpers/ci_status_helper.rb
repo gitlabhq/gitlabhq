@@ -1,7 +1,7 @@
 module CiStatusHelper
   def ci_status_path(pipeline)
     project = pipeline.project
-    builds_namespace_project_commit_path(project.namespace, project, pipeline.sha)
+    # builds_namespace_project_commit_path(project.namespace, project, pipeline.sha)
   end
 
   # Is used by Commit and Merge Request Widget

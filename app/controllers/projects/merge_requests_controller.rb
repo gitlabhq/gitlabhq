@@ -201,17 +201,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def builds
-    respond_to do |format|
-      format.html do
-        define_discussion_vars
-
-        render 'show'
-      end
-      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_builds') } }
-    end
-  end
-
   def pipelines
     @pipelines = @merge_request.all_pipelines
 

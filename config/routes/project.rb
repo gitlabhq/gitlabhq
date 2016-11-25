@@ -32,7 +32,6 @@ constraints(ProjectUrlConstrainer.new) do
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
           get :branches
-          get :builds
           get :pipelines
           post :cancel_builds
           post :retry_builds

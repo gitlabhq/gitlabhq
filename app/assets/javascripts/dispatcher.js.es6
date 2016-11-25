@@ -138,7 +138,6 @@
           new MergedButtons();
           break;
         case 'projects:merge_requests:commits':
-        case 'projects:merge_requests:builds':
           new MergedButtons();
           break;
         case 'projects:merge_requests:pipelines':
