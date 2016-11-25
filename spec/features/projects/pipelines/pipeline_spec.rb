@@ -25,16 +25,13 @@ describe "Pipelines", feature: true, js: true do
 
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
 
-    it 'shows a list of builds' do
+    it 'shows the pipeline graph' do
+      expect(page).to have_selector('.pipeline-visualization')
+      expect(page).to have_content('Build')
       expect(page).to have_content('Test')
-      expect(page).to have_content(@success.id)
       expect(page).to have_content('Deploy')
-      expect(page).to have_content(@failed.id)
-      expect(page).to have_content(@running.id)
-      expect(page).to have_content(@external.id)
       expect(page).to have_content('Retry failed')
       expect(page).to have_content('Cancel running')
-      expect(page).to have_link('Play')
     end
 
     it 'shows Pipeline tab pane as active' do
@@ -63,7 +60,6 @@ describe "Pipelines", feature: true, js: true do
         before { click_on 'Retry failed' }
 
         it { expect(page).not_to have_content('Retry failed') }
-        it { expect(page).to have_selector('.retried') }
       end
     end
 
@@ -74,18 +70,7 @@ describe "Pipelines", feature: true, js: true do
         before { click_on 'Cancel running' }
 
         it { expect(page).not_to have_content('Cancel running') }
-        it { expect(page).to have_selector('.ci-canceled') }
       end
-    end
-
-    context 'playing manual build' do
-      before do
-        within '.pipeline-holder' do
-          click_link('Play')
-        end
-      end
-
-      it { expect(@manual.reload).to be_pending }
     end
   end
 
@@ -166,5 +151,4 @@ describe "Pipelines", feature: true, js: true do
       it { expect(@manual.reload).to be_pending }
     end
   end
-
 end
