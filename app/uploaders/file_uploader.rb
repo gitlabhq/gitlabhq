@@ -2,7 +2,7 @@ class FileUploader < CarrierWave::Uploader::Base
   include UploaderHelper
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
 
-  storage :file
+  storage :aws
 
   attr_accessor :project, :secret
 
@@ -32,7 +32,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def to_h
-    filename = image_or_video? ? self.file.basename : self.file.filename
+    filename = image_or_video? ? basename(self.file.filename) : self.file.filename
     escaped_filename = filename.gsub("]", "\\]")
 
     markdown = "[#{escaped_filename}](#{self.secure_url})"
@@ -43,6 +43,11 @@ class FileUploader < CarrierWave::Uploader::Base
       url:      self.secure_url,
       markdown: markdown
     }
+  end
+
+  def basename(filename)
+    elements = filename.split('.')
+    elements.first if elements.size > 1
   end
 
   def self.generate_secret

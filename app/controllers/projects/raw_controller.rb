@@ -31,7 +31,9 @@ class Projects::RawController < Projects::ApplicationController
     lfs_object = find_lfs_object
 
     if lfs_object && lfs_object.project_allowed_access?(@project)
-      send_file lfs_object.file.path, filename: @blob.name, disposition: 'attachment'
+      # send_file lfs_object.file.path, filename: @blob.name, disposition: 'attachment'
+      data = open(lfs_object.file.url)
+      send_data data.read, filename: @blob.name, disposition: 'attachment'
     else
       render_404
     end

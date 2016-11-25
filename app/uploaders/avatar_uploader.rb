@@ -1,7 +1,7 @@
 class AvatarUploader < CarrierWave::Uploader::Base
   include UploaderHelper
 
-  storage :file
+  storage :aws
 
   after :store, :reset_events_cache
 

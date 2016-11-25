@@ -14,7 +14,8 @@ class UploadsController < ApplicationController
     end
 
     disposition = uploader.image? ? 'inline' : 'attachment'
-    send_file uploader.file.path, disposition: disposition
+    data = open(uploader.file.url)
+    send_data data.read, disposition: disposition
   end
 
   private

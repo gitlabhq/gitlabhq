@@ -1,12 +1,16 @@
 class LfsObjectUploader < CarrierWave::Uploader::Base
-  storage :file
+  storage :aws
+
+  aws_bucket :shared
 
   def store_dir
-    "#{Gitlab.config.lfs.storage_path}/#{model.oid[0, 2]}/#{model.oid[2, 2]}"
+    #"#{Gitlab.config.lfs.storage_path}/#{model.oid[0, 2]}/#{model.oid[2, 2]}"
+    "lfs-objects/#{model.oid[0, 2]}/#{model.oid[2, 2]}"
   end
 
   def cache_dir
-    "#{Gitlab.config.lfs.storage_path}/tmp/cache"
+    # "#{Gitlab.config.lfs.storage_path}/tmp/cache"
+    'lf-objects/tmp/cache'
   end
 
   def move_to_cache

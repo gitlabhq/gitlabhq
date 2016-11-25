@@ -103,7 +103,8 @@ class Group < Namespace
 
   def avatar_url(size = nil)
     if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
+      # [gitlab_config.url, avatar.url].join
+      avatar.url
     end
   end
 

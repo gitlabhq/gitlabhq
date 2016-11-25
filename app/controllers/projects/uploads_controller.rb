@@ -25,7 +25,8 @@ class Projects::UploadsController < Projects::ApplicationController
     return render_404 if uploader.nil? || !uploader.file.exists?
 
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
-    send_file uploader.file.path, disposition: disposition
+    data = open(uploader.file.url)
+    send_data data.read, disposition: disposition
   end
 
   private
