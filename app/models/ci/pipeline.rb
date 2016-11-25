@@ -312,6 +312,12 @@ module Ci
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
+    def predefined_variables
+      [
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+      ]
+    end
+
     def update_status
       Gitlab::OptimisticLocking.retry_lock(self) do
         case latest_builds_status
@@ -325,10 +331,10 @@ module Ci
       end
     end
 
-    def predefined_variables
-      [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
-      ]
+    def update_duration
+      return unless started_at
+
+      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
     end
 
     def queued_duration
@@ -336,12 +342,6 @@ module Ci
 
       seconds = (started_at - created_at).to_i
       seconds unless seconds.zero?
-    end
-
-    def update_duration
-      return unless started_at
-
-      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
     end
 
     def execute_hooks
@@ -371,7 +371,7 @@ module Ci
     end
 
     def latest_builds_status
-      return 'failed' unless yaml_errors.blank?
+      return 'failed' if yaml_errors.present?
 
       statuses.latest.status || 'skipped'
     end
