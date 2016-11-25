@@ -42,7 +42,13 @@ describe AnalyticsBuildEntity do
         expect{ subject[:date] }.not_to raise_error
       end
 
-      it ''
+      it 'shows the right message' do
+        expect(subject[:date]).to eq('Not started')
+      end
+
+      it 'shows the right total time' do
+        expect(subject[:total_time]).to eq({})
+      end
     end
 
     context 'no started at date' do
@@ -51,6 +57,14 @@ describe AnalyticsBuildEntity do
       it 'does not blow up' do
         expect{ subject[:date] }.not_to raise_error
       end
+
+      it 'shows the right message' do
+        expect(subject[:date]).to eq('Not started')
+      end
+
+      it 'shows the right total time' do
+        expect(subject[:total_time]).to eq({})
+      end
     end
 
     context 'no finished at date' do
@@ -58,6 +72,14 @@ describe AnalyticsBuildEntity do
 
       it 'does not blow up' do
         expect{ subject[:date] }.not_to raise_error
+      end
+
+      it 'shows the right message' do
+        expect(subject[:date]).to eq('about 2 hours ago')
+      end
+
+      it 'shows the right total time' do
+        expect(subject[:total_time]).to eq({hours: 2})
       end
     end
   end

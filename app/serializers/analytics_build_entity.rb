@@ -13,7 +13,7 @@ class AnalyticsBuildEntity < Grape::Entity
   end
 
   expose :duration, as: :total_time do |build|
-    distance_of_time_as_hash(build.duration.to_f)
+    build_started?(build) ? distance_of_time_as_hash(build.duration.to_f) : {}
   end
 
   expose :branch do
@@ -36,5 +36,9 @@ class AnalyticsBuildEntity < Grape::Entity
 
   def url_to(route, build, id = nil)
     public_send("#{route}_url", build.project.namespace, build.project, id || build)
+  end
+
+  def build_started?(build)
+    build.duration && build[:started_at]
   end
 end
