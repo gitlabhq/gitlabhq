@@ -79,7 +79,7 @@ describe AnalyticsBuildEntity do
       end
 
       it 'shows the right total time' do
-        expect(subject[:total_time]).to eq({hours: 2})
+        expect(subject[:total_time]).to eq({ hours: 2 })
       end
     end
   end
