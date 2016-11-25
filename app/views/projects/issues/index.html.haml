@@ -10,8 +10,8 @@
   - if current_user
     = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
 
-%div{ class: (container_class) }
-  - if @project.issues.any?
+- if project_issues(@project).exists?
+  %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
@@ -36,21 +36,5 @@
       = render 'issues'
       - if new_issue_email
         = render 'issue_by_email', email: new_issue_email
-  - else
-    .blank-state.blank-state-welcome
-      %h2.blank-state-title.blank-state-welcome-title
-        Welcome to GitLab Issues
-      %p.blank-state-text
-        Code, test, and deploy together
-    .blank-state
-      .blank-state-icon
-        = custom_icon("issues", size: 50)
-      %h3.blank-state-title
-        You don't have any issues right now.
-      %p.blank-state-text
-        Issues are the best way to track your project progress
-      - if can? current_user, :create_issue, @project
-        = link_to new_namespace_project_issue_path(@project.namespace, @project), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
-          New Issue
-        - if new_issue_email
-          = render 'issue_by_email', email: new_issue_email
+- else
+  = render 'shared/empty_states/issues', button_path: new_namespace_project_issue_path(@project.namespace, @project)

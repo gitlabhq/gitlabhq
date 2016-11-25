@@ -93,7 +93,7 @@ class Issue < ActiveRecord::Base
 
     # Check if we are scoped to a specific project's issues
     if owner_project
-      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
+      if owner_project.team.member?(user, Gitlab::Access::REPORTER)
         # If the project is authorized for the user, they can see all issues in the project
         return all
       else

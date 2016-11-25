@@ -19,7 +19,7 @@
     = chat_name.chat_name
   %td
     - if chat_name.last_used_at
-      time_ago_with_tooltip(chat_name.last_used_at)
+      = time_ago_with_tooltip(chat_name.last_used_at)
     - else
       Never
 

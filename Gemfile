@@ -68,7 +68,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
 gem 'grape',        '~> 0.15.0'
-gem 'grape-entity', '~> 0.4.2'
+gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
@@ -85,10 +85,8 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
-gem 'fog-azure', '~> 0.0'
 gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
-gem 'fog-google', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 

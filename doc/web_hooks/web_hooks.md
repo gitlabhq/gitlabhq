@@ -922,6 +922,64 @@ X-Gitlab-Event: Pipeline Hook
 }
 ```
 
+
+## Build events
+
+Triggered on status change of a Build.
+
+**Request Header**:
+
+```
+X-Gitlab-Event: Build Hook
+```
+
+**Request Body**:
+
+```
+{
+  "object_kind": "build",
+  "ref": "gitlab-script-trigger",
+  "tag": false,
+  "before_sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
+  "sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
+  "build_id": 1977,
+  "build_name": "test",
+  "build_stage": "test",
+  "build_status": "created",
+  "build_started_at": null,
+  "build_finished_at": null,
+  "build_duration": null,
+  "build_allow_failure": false,
+  "project_id": 380,
+  "project_name": "gitlab-org/gitlab-test",
+  "user": {
+    "id": 3,
+    "name": "User",
+    "email": "user@gitlab.com"
+  },
+  "commit": {
+    "id": 2366,
+    "sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
+    "message": "test\n",
+    "author_name": "User",
+    "author_email": "user@gitlab.com",
+    "status": "created",
+    "duration": null,
+    "started_at": null,
+    "finished_at": null
+  },
+  "repository": {
+    "name": "gitlab_test",
+    "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
+    "description": "Atque in sunt eos similique dolores voluptatem.",
+    "homepage": "http://192.168.64.1:3005/gitlab-org/gitlab-test",
+    "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
+    "git_http_url": "http://192.168.64.1:3005/gitlab-org/gitlab-test.git",
+    "visibility_level": 20
+  }
+}
+```
+
 #### Example webhook receiver
 
 If you want to see GitLab's webhooks in action for testing purposes you can use

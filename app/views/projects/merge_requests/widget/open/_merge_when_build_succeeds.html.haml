@@ -21,5 +21,5 @@
           Remove Source Branch When Merged
 
       - if user_can_cancel_automatic_merge
-        = link_to cancel_merge_when_build_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request), remote: true, method: :post, class: "btn btn-grouped btn-warning btn-sm" do
+        = link_to cancel_merge_when_build_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request), remote: true, method: :post, class: "btn btn-grouped btn-sm" do
           Cancel Automatic Merge

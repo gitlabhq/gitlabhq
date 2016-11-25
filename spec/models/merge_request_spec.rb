@@ -856,11 +856,29 @@ describe MergeRequest, models: true do
     context 'when it is only allowed to merge when build is green' do
       context 'and a failed pipeline is associated' do
         before do
-          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          pipeline.update(status: 'failed')
           allow(subject).to receive(:pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_falsey }
+      end
+
+      context 'and a successful pipeline is associated' do
+        before do
+          pipeline.update(status: 'success')
+          allow(subject).to receive(:pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
+      context 'and a skipped pipeline is associated' do
+        before do
+          pipeline.update(status: 'skipped')
+          allow(subject).to receive(:pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
 
       context 'when no pipeline is associated' do
@@ -917,6 +935,16 @@ describe MergeRequest, models: true do
 
         it 'returns false' do
           expect(merge_request.mergeable_discussions_state?).to be_falsey
+        end
+      end
+
+      context 'with no discussions' do
+        before do
+          merge_request.notes.destroy_all
+        end
+
+        it 'returns true' do
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
         end
       end
     end
@@ -1176,6 +1204,50 @@ describe MergeRequest, models: true do
 
           it "returns false" do
             expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+
+    describe "#discussions_to_be_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_to_be_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_to_be_resolved?).to be false
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_to_be_resolved?).to be true
           end
         end
       end

@@ -4,16 +4,20 @@ describe GroupUrlConstrainer, lib: true do
   let!(:group) { create(:group, path: 'gitlab') }
 
   describe '#matches?' do
-    context 'root group' do
-      it { expect(subject.matches?(request '/gitlab')).to be_truthy }
-      it { expect(subject.matches?(request '/gitlab.atom')).to be_truthy }
-      it { expect(subject.matches?(request '/gitlab/edit')).to be_falsey }
-      it { expect(subject.matches?(request '/gitlab-ce')).to be_falsey }
-      it { expect(subject.matches?(request '/.gitlab')).to be_falsey }
+    context 'valid request' do
+      let(:request) { build_request(group.path) }
+
+      it { expect(subject.matches?(request)).to be_truthy }
+    end
+
+    context 'invalid request' do
+      let(:request) { build_request('foo') }
+
+      it { expect(subject.matches?(request)).to be_falsey }
     end
   end
 
-  def request(path)
-    double(:request, path: path)
+  def build_request(path)
+    double(:request, params: { id: path })
   end
 end

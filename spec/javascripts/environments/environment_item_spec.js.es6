@@ -135,7 +135,7 @@ describe('Environment item', () => {
     });
 
     it('should render environment name', () => {
-      expect(component.$el.querySelector('.environment-name').textContent).toEqual(environment.name);
+      expect(component.$el.querySelector('.environment-name').textContent).toContain(environment.name);
     });
 
     describe('With deployment', () => {

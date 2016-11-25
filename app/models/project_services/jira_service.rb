@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: services
-#
-#  id                    :integer          not null, primary key
-#  type                  :string(255)
-#  title                 :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  active                :boolean          default(FALSE), not null
-#  properties            :text
-#  template              :boolean          default(FALSE)
-#  push_events           :boolean          default(TRUE)
-#  issues_events         :boolean          default(TRUE)
-#  merge_requests_events :boolean          default(TRUE)
-#  tag_push_events       :boolean          default(TRUE)
-#  note_events           :boolean          default(TRUE), not null
-#  build_events          :boolean          default(FALSE), not null
-#
-
 class JiraService < IssueTrackerService
   include Gitlab::Routing.url_helpers
 
@@ -29,6 +8,10 @@ class JiraService < IssueTrackerService
                 :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
+
+  def supported_events
+    %w(commit merge_request)
+  end
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
   def reference_pattern
@@ -74,9 +57,9 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    'See the ' \
-    '[integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) '\
-    'for details.'
+    'You need to configure JIRA before enabling this service. For more details
+    read the
+    [JIRA service documentation](https://docs.gitlab.com/ce/project_services/jira.html).'
   end
 
   def title
@@ -137,19 +120,17 @@ class JiraService < IssueTrackerService
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
+    unless can_cross_reference?(noteable)
+      return "Events for #{noteable.model_name.plural.humanize(capitalize: false)} are disabled."
+    end
+
     jira_issue = jira_request { client.Issue.find(mentioned.id) }
 
-    return false unless jira_issue.present?
+    return unless jira_issue.present?
 
-    project = self.project
-    noteable_name = noteable.class.name.underscore.downcase
-    noteable_id = if noteable.is_a?(Commit)
-                    noteable.id
-                  else
-                    noteable.iid
-                  end
-
-    entity_url = build_entity_url(noteable_name.to_sym, noteable_id)
+    noteable_id   = noteable.respond_to?(:iid) ? noteable.iid : noteable.id
+    noteable_type = noteable_name(noteable)
+    entity_url    = build_entity_url(noteable_type, noteable_id)
 
     data = {
       user: {
@@ -157,11 +138,11 @@ class JiraService < IssueTrackerService
         url: resource_url(user_path(author)),
       },
       project: {
-        name: project.path_with_namespace,
-        url: resource_url(namespace_project_path(project.namespace, project))
+        name: self.project.path_with_namespace,
+        url: resource_url(namespace_project_path(project.namespace, self.project))
       },
       entity: {
-        name: noteable_name.humanize.downcase,
+        name: noteable_type.humanize.downcase,
         url: entity_url,
         title: noteable.title
       }
@@ -193,8 +174,16 @@ class JiraService < IssueTrackerService
 
   private
 
+  def can_cross_reference?(noteable)
+    case noteable
+    when Commit then commit_events
+    when MergeRequest then merge_requests_events
+    else true
+    end
+  end
+
   def close_issue(entity, issue)
-    return if issue.nil? || issue.resolution.present?
+    return if issue.nil? || issue.resolution.present? || !jira_issue_transition_id.present?
 
     commit_id = if entity.is_a?(Commit)
                   entity.id
@@ -290,16 +279,24 @@ class JiraService < IssueTrackerService
     "#{Settings.gitlab.base_url.chomp("/")}#{resource}"
   end
 
-  def build_entity_url(entity_name, entity_id)
+  def build_entity_url(noteable_type, entity_id)
     polymorphic_url(
       [
         self.project.namespace.becomes(Namespace),
         self.project,
-        entity_name
+        noteable_type.to_sym
       ],
       id:   entity_id,
       host: Settings.gitlab.base_url
     )
+  end
+
+  def noteable_name(noteable)
+    name = noteable.model_name.singular
+
+    # ProjectSnippet inherits from Snippet class so it causes
+    # routing error building the URL.
+    name == "project_snippet" ? "snippet" : name
   end
 
   # Handle errors when doing JIRA API calls

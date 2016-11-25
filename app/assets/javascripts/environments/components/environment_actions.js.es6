@@ -43,8 +43,7 @@
       <div class="inline">
         <div class="dropdown">
           <a class="dropdown-new btn btn-default" data-toggle="dropdown">
-            <span class="dropdown-play-icon-container">
-            </span>
+            <span class="dropdown-play-icon-container"></span>
             <i class="fa fa-caret-down"></i>
           </a>
 
@@ -54,9 +53,10 @@
                 data-method="post"
                 rel="nofollow"
                 class="js-manual-action-link">
-                <span class="action-play-icon-container">
+                <span class="action-play-icon-container"></span>
+                <span>
+                  {{action.name}}
                 </span>
-                <span v-html="action.name"></span>
               </a>
             </li>
           </ul>

@@ -402,6 +402,160 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#cancelable?' do
+    %i[created running pending].each do |status0|
+      context "when there is a build #{status0}" do
+        before do
+          create(:ci_build, status0, pipeline: pipeline)
+        end
+
+        it 'is cancelable' do
+          expect(pipeline.cancelable?).to be_truthy
+        end
+      end
+
+      context "when there is an external job #{status0}" do
+        before do
+          create(:generic_commit_status, status0, pipeline: pipeline)
+        end
+
+        it 'is cancelable' do
+          expect(pipeline.cancelable?).to be_truthy
+        end
+      end
+
+      %i[success failed canceled].each do |status1|
+        context "when there are generic_commit_status jobs for #{status0} and #{status1}" do
+          before do
+            create(:generic_commit_status, status0, pipeline: pipeline)
+            create(:generic_commit_status, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+
+        context "when there are generic_commit_status and ci_build jobs for #{status0} and #{status1}" do
+          before do
+            create(:generic_commit_status, status0, pipeline: pipeline)
+            create(:ci_build, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+
+        context "when there are ci_build jobs for #{status0} and #{status1}" do
+          before do
+            create(:ci_build, status0, pipeline: pipeline)
+            create(:ci_build, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+      end
+    end
+
+    %i[success failed canceled].each do |status|
+      context "when there is a build #{status}" do
+        before do
+          create(:ci_build, status, pipeline: pipeline)
+        end
+
+        it 'is not cancelable' do
+          expect(pipeline.cancelable?).to be_falsey
+        end
+      end
+
+      context "when there is an external job #{status}" do
+        before do
+          create(:generic_commit_status, status, pipeline: pipeline)
+        end
+
+        it 'is not cancelable' do
+          expect(pipeline.cancelable?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#cancel_running' do
+    let(:latest_status) { pipeline.statuses.pluck(:status) }
+
+    context 'when there is a running external job and created build' do
+      before do
+        create(:ci_build, :running, pipeline: pipeline)
+        create(:generic_commit_status, :running, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels both jobs' do
+        expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+
+    context 'when builds are in different stages' do
+      before do
+        create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :running, stage_idx: 1, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels both jobs' do
+        expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+  end
+
+  describe '#retry_failed' do
+    let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+
+    context 'when there is a failed build and failed external status' do
+      before do
+        create(:ci_build, :failed, name: 'build', pipeline: pipeline)
+        create(:generic_commit_status, :failed, name: 'jenkins', pipeline: pipeline)
+
+        pipeline.retry_failed(create(:user))
+      end
+
+      it 'retries only build' do
+        expect(latest_status).to contain_exactly('pending', 'failed')
+      end
+    end
+
+    context 'when builds are in different stages' do
+      before do
+        create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :failed, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
+
+        pipeline.retry_failed(create(:user))
+      end
+
+      it 'retries both builds' do
+        expect(latest_status).to contain_exactly('pending', 'pending')
+      end
+    end
+
+    context 'when there are canceled and failed' do
+      before do
+        create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :canceled, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
+
+        pipeline.retry_failed(create(:user))
+      end
+
+      it 'retries both builds' do
+        expect(latest_status).to contain_exactly('pending', 'pending')
+      end
+    end
+  end
+
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
     let!(:build_b) { create_build('b', 1) }
@@ -571,6 +725,9 @@ describe Ci::Pipeline, models: true do
     context 'with failed pipeline' do
       before do
         perform_enqueued_jobs do
+          create(:ci_build, :failed, pipeline: pipeline)
+          create(:generic_commit_status, :failed, pipeline: pipeline)
+
           pipeline.drop
         end
       end

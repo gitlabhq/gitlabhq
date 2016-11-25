@@ -40,7 +40,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
       it 'creates a system note' do
         note = merge_request.notes.last
-        expect(note.note).to match /Enabled an automatic merge when the pipeline for (\w+\/\w+@)?[0-9a-z]{8}/
+        expect(note.note).to match /enabled an automatic merge when the pipeline for (\w+\/\w+@)?\h{8}/
       end
     end
 
@@ -119,7 +119,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
     it 'Posts a system note' do
       note = mr_merge_if_green_enabled.notes.last
-      expect(note.note).to include 'Canceled the automatic merge'
+      expect(note.note).to include 'canceled the automatic merge'
     end
   end
 

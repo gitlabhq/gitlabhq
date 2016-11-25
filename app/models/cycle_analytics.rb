@@ -1,4 +1,6 @@
 class CycleAnalytics
+  STAGES = %i[issue plan code test review staging production].freeze
+
   def initialize(project, from:)
     @project = project
     @from = from
@@ -7,6 +9,10 @@ class CycleAnalytics
 
   def summary
     @summary ||= Summary.new(@project, from: @from)
+  end
+
+  def permissions(user:)
+    Gitlab::CycleAnalytics::Permissions.get(user: user, project: @project)
   end
 
   def issue

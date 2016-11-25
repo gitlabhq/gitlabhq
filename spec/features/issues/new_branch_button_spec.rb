@@ -20,12 +20,12 @@ feature 'Start new branch from an issue', feature: true do
     context "when there is a referenced merge request" do
       let!(:note) do
         create(:note, :on_issue, :system, project: project, noteable: issue,
-                                          note: "Mentioned in !#{referenced_mr.iid}")
+                                          note: "mentioned in #{referenced_mr.to_reference}")
       end
 
       let(:referenced_mr) do
         create(:merge_request, :simple, source_project: project, target_project: project,
-                                        description: "Fixes ##{issue.iid}", author: user)
+                                        description: "Fixes #{issue.to_reference}", author: user)
       end
 
       before do

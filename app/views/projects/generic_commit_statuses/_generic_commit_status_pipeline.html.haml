@@ -1,10 +1,10 @@
 %a{ data: { toggle: 'tooltip', title: "#{subject.name} - #{subject.status}", container: '.pipeline-graph', placement: 'bottom' } }
   - if subject.target_url
     = link_to subject.target_url do
-      %span.ci-status-icon
+      %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}
         = ci_icon_for_status(subject.status)
       %span.ci-status-text= subject.name
   - else
-    %span.ci-status-icon
+    %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}
       = ci_icon_for_status(subject.status)
     %span.ci-status-text= subject.name

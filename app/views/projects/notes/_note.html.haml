@@ -16,7 +16,7 @@
             commented
           - if note.system
             %span{class: 'system-note-message'}
-              = h(note.note_html.downcase.html_safe)
+              = note.redacted_note_html
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?

@@ -91,14 +91,6 @@
       }
     }
 
-    .ci-status {
-
-      svg {
-        top: 1px;
-        margin-right: 0;
-      }
-    }
-
     a:hover {
       text-decoration: none;
     }
@@ -195,7 +187,7 @@
           width: 8px;
           position: absolute;
           right: -7px;
-          bottom: 8px;
+          bottom: 9px;
           border-bottom: 2px solid $border-color;
         }
       }
@@ -689,12 +681,5 @@
         height: 71px;
       }
     }
-  }
-}
-
-.ci-status-icon-created {
-
-  svg {
-    fill: $gray-darkest;
   }
 }

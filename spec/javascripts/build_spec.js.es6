@@ -1,6 +1,7 @@
-/* global Build */
 /* eslint-disable no-new */
-//= require lib/utils/timeago
+/* global Build */
+/* global Turbolinks */
+
 //= require lib/utils/datetime_utility
 //= require build
 //= require breakpoints

@@ -149,7 +149,7 @@ module Gitlab
     end
 
     def ce_patch_name
-      @ce_patch_name ||= "#{ce_branch}.patch"
+      @ce_patch_name ||= patch_name_from_branch(ce_branch)
     end
 
     def ce_patch_full_path
@@ -161,11 +161,15 @@ module Gitlab
     end
 
     def ee_patch_name
-      @ee_patch_name ||= "#{ee_branch}.patch"
+      @ee_patch_name ||= patch_name_from_branch(ee_branch)
     end
 
     def ee_patch_full_path
       @ee_patch_full_path ||= patches_dir.join(ee_patch_name)
+    end
+
+    def patch_name_from_branch(branch_name)
+      branch_name.parameterize << '.patch'
     end
 
     def step(desc, cmd = nil)

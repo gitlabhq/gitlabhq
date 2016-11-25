@@ -3,32 +3,38 @@
 .context.prepend-top-default
   .milestone-summary
     %h4 Progress
-    %strong= milestone.issues_visible_to_user(current_user).size
-    issues:
-    %span.milestone-stat
-      %strong= milestone.issues_visible_to_user(current_user).opened.size
-      open and
-      %strong= milestone.issues_visible_to_user(current_user).closed.size
-      closed
-    %strong= milestone.merge_requests.size
-    merge requests:
-    %span.milestone-stat
-      %strong= milestone.merge_requests.opened.size
-      open and
-      %strong= milestone.merge_requests.merged.size
-      merged
-    %span.milestone-stat
-      %strong== #{milestone.percent_complete(current_user)}%
-      complete
 
-    %span.milestone-stat
-      %span.remaining-days= milestone_remaining_days(milestone)
-    %span.pull-right.tab-issues-buttons
-      - if project && can?(current_user, :create_issue, project)
-        = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
-          New Issue
-      = link_to 'Browse Issues', milestones_browse_issuables_path(milestone, type: :issues), class: "btn btn-grouped"
-    %span.pull-right.tab-merge-requests-buttons.hidden
-      = link_to 'Browse Merge Requests', milestones_browse_issuables_path(milestone, type: :merge_requests), class: "btn btn-grouped"
+    .milestone-stats-and-buttons
+      .milestone-stats
+        %span.milestone-stat.with-drilldown
+          %strong= milestone.issues_visible_to_user(current_user).size
+          issues:
+        %span.milestone-stat
+          %strong= milestone.issues_visible_to_user(current_user).opened.size
+          open and
+          %strong= milestone.issues_visible_to_user(current_user).closed.size
+          closed
+        %span.milestone-stat.with-drilldown
+          %strong= milestone.merge_requests.size
+          merge requests:
+        %span.milestone-stat
+          %strong= milestone.merge_requests.opened.size
+          open and
+          %strong= milestone.merge_requests.merged.size
+          merged
+        %span.milestone-stat
+          %strong== #{milestone.percent_complete(current_user)}%
+          complete
+        %span.milestone-stat
+          %span.remaining-days= milestone_remaining_days(milestone)
 
-  = milestone_progress_bar(milestone)
+      .milestone-progress-buttons
+        %span.tab-issues-buttons
+          - if project && can?(current_user, :create_issue, project)
+            = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn", title: "New Issue" do
+              New Issue
+          = link_to 'Browse Issues', milestones_browse_issuables_path(milestone, type: :issues), class: "btn"
+        %span.tab-merge-requests-buttons.hidden
+          = link_to 'Browse Merge Requests', milestones_browse_issuables_path(milestone, type: :merge_requests), class: "btn"
+
+    = milestone_progress_bar(milestone)

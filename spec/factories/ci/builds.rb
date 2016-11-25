@@ -38,6 +38,10 @@ FactoryGirl.define do
       status 'canceled'
     end
 
+    trait :skipped do
+      status 'skipped'
+    end
+
     trait :running do
       status 'running'
     end
@@ -53,6 +57,12 @@ FactoryGirl.define do
     trait :manual do
       status 'skipped'
       self.when 'manual'
+    end
+
+    trait :teardown_environment do
+      options do
+        { environment: { action: 'stop' } }
+      end
     end
 
     trait :allowed_to_fail do

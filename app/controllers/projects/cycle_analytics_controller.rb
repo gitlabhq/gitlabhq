@@ -8,6 +8,10 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   def show
     @cycle_analytics = ::CycleAnalytics.new(@project, from: start_date(cycle_analytics_params))
 
+    stats_values, cycle_analytics_json = generate_cycle_analytics_data
+
+    @cycle_analytics_no_data = stats_values.blank?
+
     respond_to do |format|
       format.html
       format.json { render json: cycle_analytics_json }
@@ -22,23 +26,29 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
     { start_date: params[:cycle_analytics][:start_date] }
   end
 
-  def cycle_analytics_json
-    cycle_analytics_view_data = [[:issue, "Issue", "Time before an issue gets scheduled"],
-                                 [:plan, "Plan", "Time before an issue starts implementation"],
-                                 [:code, "Code", "Time until first merge request"],
-                                 [:test, "Test", "Total test time for all commits/merges"],
-                                 [:review, "Review", "Time between merge request creation and merge/close"],
-                                 [:staging, "Staging", "From merge request merge until deploy to production"],
-                                 [:production, "Production", "From issue creation until deploy to production"]]
+  def generate_cycle_analytics_data
+    stats_values = []
 
-    stats = cycle_analytics_view_data.reduce([]) do |stats, (stage_method, stage_text, stage_description)|
+    cycle_analytics_view_data = [[:issue, "Issue", "Related Issues", "Time before an issue gets scheduled"],
+                                 [:plan, "Plan", "Related Commits", "Time before an issue starts implementation"],
+                                 [:code, "Code", "Related Merge Requests", "Time spent coding"],
+                                 [:test, "Test", "Relative Builds Trigger by Commits", "The time taken to build and test the application"],
+                                 [:review, "Review", "Relative Merged Requests", "The time taken to review the code"],
+                                 [:staging, "Staging", "Relative Deployed Builds", "The time taken in staging"],
+                                 [:production, "Production", "Related Issues", "The total time taken from idea to production"]]
+
+    stats = cycle_analytics_view_data.reduce([]) do |stats, (stage_method, stage_text, stage_legend, stage_description)|
       value = @cycle_analytics.send(stage_method).presence
+
+      stats_values << value.abs if value
 
       stats << {
         title: stage_text,
         description: stage_description,
+        legend: stage_legend,
         value: value && !value.zero? ? distance_of_time_in_words(value) : nil
       }
+
       stats
     end
 
@@ -52,9 +62,11 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
       { title: "Deploy".pluralize(deploys), value: deploys }
     ]
 
-    {
-      summary: summary,
-      stats: stats
+    cycle_analytics_hash = { summary: summary,
+                             stats: stats,
+                             permissions: @cycle_analytics.permissions(user: current_user)
     }
+
+    [stats_values, cycle_analytics_hash]
   end
 end

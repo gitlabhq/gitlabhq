@@ -179,7 +179,7 @@ module SharedIssuable
     project = Project.find_by(name: from_project_name)
 
     expect(page).to have_content(user_name)
-    expect(page).to have_content("Mentioned in #{issuable.class.to_s.titleize.downcase} #{issuable.to_reference(project)}")
+    expect(page).to have_content("mentioned in #{issuable.class.to_s.titleize.downcase} #{issuable.to_reference(project)}")
   end
 
   def expect_sidebar_content(content)

@@ -5,9 +5,9 @@
     .ci-status-text= subject.name
 - elsif can?(current_user, :read_build, @project)
   = link_to namespace_project_build_path(subject.project.namespace, subject.project, subject), data: { toggle: 'tooltip', title: "#{subject.name} - #{subject.status}", container: '.pipeline-graph', placement: 'bottom' } do
-    %span.ci-status-icon
+    %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}
       = ci_icon_for_status(subject.status)
     .ci-status-text= subject.name
 - else
-  %span.ci-status-icon
+  %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}
     = ci_icon_for_status(subject.status)
