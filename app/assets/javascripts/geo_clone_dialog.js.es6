@@ -42,9 +42,12 @@
   });
 
   document.addEventListener('DOMContentLoaded', () => {
-    gl.GeoCloneDialog = new Vue({
-      el: '#geo_clone',
-      data: Object.assign({}, document.getElementById('geo_clone').dataset),
-    });
+    const geoClone = document.getElementById('geo_clone');
+    if (geoClone) {
+      gl.GeoCloneDialog = new Vue({
+        el: '#geo_clone',
+        data: Object.assign({}, geoClone.dataset),
+      });
+    }
   });
 })(window.gl || (window.gl = {}));

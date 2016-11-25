@@ -75,10 +75,10 @@ module ButtonHelper
   end
 
   def geo_button(modal_target: nil)
-    data = { toggle: 'tooltip', placement: 'bottom', container: 'body', toggle: 'modal', target: modal_target}
+    data = { placement: 'bottom', container: 'body', toggle: 'modal', target: modal_target }
     content_tag :button,
                 icon('globe'),
-                class: 'btn btn-geo',
+                class: 'btn btn-geo has-tooltip',
                 data: data,
                 type: :button,
                 title: 'See Geo-specific instructions'
