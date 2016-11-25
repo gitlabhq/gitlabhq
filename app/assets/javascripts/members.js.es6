@@ -69,7 +69,7 @@
       });
     }
 
-    static removeRow(e) {
+    removeRow(e) {
       const $target = $(e.target);
 
       if ($target.hasClass('btn-remove')) {
