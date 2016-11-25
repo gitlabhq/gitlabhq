@@ -43,7 +43,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def update
     @group_member = @group.group_members.find(params[:id])
-    puts @group_member
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
