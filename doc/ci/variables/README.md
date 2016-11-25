@@ -1,22 +1,27 @@
-## Variables
+# Variables
 
 When receiving a build from GitLab CI, the runner prepares the build environment.
-It starts by setting a list of **predefined variables** (Environment Variables) and a list of **user-defined variables**
+It starts by setting a list of **predefined variables** (Environment variables)
+and a list of **user-defined variables**.
 
-The variables can be overwritten. They take precedence over each other in this order:
-1. Trigger variables
+The variables can be overwritten. They take precedence over each other in this
+order:
+
+1. Trigger variables (take precedence over all)
 1. Secure variables
 1. YAML-defined job-level variables
 1. YAML-defined global variables
-1. Predefined variables
+1. Predefined variables (are the lowest in the chain)
 
-For example, if you define:
-1. `API_TOKEN=SECURE` as Secure Variable
-1. `API_TOKEN=YAML` as YAML-defined variable
+For example, if you define `API_TOKEN=secure` as a secure variable and
+`API_TOKEN=yaml` as YAML-defined variable, the `API_TOKEN` will take the value
+`secure` as the secure variables are higher in the chain.
 
-The `API_TOKEN` will take the Secure Variable value: `SECURE`.
+## Predefined variables (Environment variables)
 
-### Predefined variables (Environment Variables)
+>**Note:**
+Some of the variables are available only if a minimum version of [GitLab Runner]
+is used.
 
 | Variable                | GitLab | Runner | Description |
 |-------------------------|--------|--------|-------------|
@@ -52,7 +57,6 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the build |
 | **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the build |
 
-**Some of the variables are only available when using runner with at least defined version.**
 
 Example values:
 
@@ -87,27 +91,61 @@ export GITLAB_USER_ID="42"
 export GITLAB_USER_EMAIL="alexzander@sporer.com"
 ```
 
-### YAML-defined variables
-**This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher **
+## YAML-defined variables
 
-GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build environment.
-The variables are stored in repository and are meant to store non-sensitive project configuration, ie. RAILS_ENV or DATABASE_URL.
+>**Note:**
+This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher.
+
+GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in the
+build environment. The variables are hence saved in the repository, and they
+are meant to store non-sensitive project configuration, e.g., `RAILS_ENV` or
+`DATABASE_URL`.
+
+For example, if you set the variable below globally (not inside a job), it will
+be used in all executed commands and scripts:
 
 ```yaml
 variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
-These variables can be later used in all executed commands and scripts.
+The YAML-defined variables are also set to all created
+[service containers](../docker/using_docker_images.md), thus allowing to fine
+tune them.
 
-The YAML-defined variables are also set to all created service containers, thus allowing to fine tune them.
+Variables can be defined at a global level, but also at a job level. To turn off
+global defined variables in your job, define an empty array:
 
-Variables can be defined at a global level, but also at a job level.
+```yaml
+job_name:
+  variables: []
+```
 
-More information about Docker integration can be found in [Using Docker Images](../docker/using_docker_images.md).
+## User-defined variables (secure variables)
 
-#### Debug tracing
+>**Notes:**
+- This feature requires GitLab Runner 0.4.0 or higher.
+- Be aware that secure variables are not masked, and their values can be shown
+  in the build logs if explicitly asked to do so. If your project is public or
+  internal, you can set the pipelines private from your project's Pipelines
+  settings. Follow the discussion in issue [#13784][ce-13784] for masking the
+  secure variables.
 
+GitLab CI allows you to define per-project **Secure variables** that are set in
+the build environment. The secure variables are stored out of the repository
+(`.gitlab-ci.yml`) and are securely passed to GitLab Runner making them
+available in the build environment. It's the recommended method to use for
+storing things like passwords, secret keys and credentials.
+
+Secure Variables can added by going to your project's
+**Settings ➔ Variables ➔ Add variable**.
+
+Once you set them, they will be available for all subsequent builds.
+
+## Debug tracing
+
+> Introduced in GitLab Runner 1.7.
+>
 > **WARNING:** Enabling debug tracing can have severe security implications. The
   output **will** contain the content of all your secure variables and any other
   secrets! The output **will** be uploaded to the GitLab server and made visible
@@ -131,7 +169,7 @@ before making them visible again.
 To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
 
 ```yaml
-job1:
+job_name:
   variables:
     CI_DEBUG_TRACE: "true"
 ```
@@ -139,40 +177,31 @@ job1:
 The [example project](https://gitlab.com/gitlab-examples/ci-debug-trace)
 demonstrates a working configuration, including build trace examples.
 
-### User-defined variables (Secure Variables)
-**This feature requires GitLab Runner 0.4.0 or higher**
+## Using the CI variables in your job scripts
 
-GitLab CI allows you to define per-project **Secure Variables** that are set in
-the build environment.
-The secure variables are stored out of the repository (the `.gitlab-ci.yml`).
-The variables are securely passed to GitLab Runner and are available in the
-build environment.
-It's desired method to use them for storing passwords, secret keys or whatever
-you want.
+All variables are set as environment variables in the build environment, and
+they are accessible with normal methods that are used to access such variables.
+In most cases `bash` or `sh` is used to execute the build script.
 
-**The value of the variable can be shown in build log if explicitly asked to do so.**
-If your project is public or internal you can make the builds private.
+To access the variables (predefined and user-defined) in a `bash`/`sh` environment,
+prefix the variable name with the dollar sign (`$`):
 
-Secure Variables can added by going to `Project > Variables > Add Variable`.
-
-They will be available for all subsequent builds.
-
-### Use variables
-The variables are set as environment variables in build environment and are accessible with normal methods that are used to access such variables.
-In most cases the **bash** is used to execute build script.
-To access variables (predefined and user-defined) in bash environment, prefix the variable name with `$`:
 ```
 job_name:
   script:
     - echo $CI_BUILD_ID
 ```
 
-You can also list all environment variables with `export` command,
-but be aware that this will also expose value of all **Secure Variables** in build log:
+You can also list all environment variables with the `export` command,
+but be aware that this will also expose the values of all the secure variables
+you set, in the build log:
+
 ```
 job_name:
   script:
     - export
 ```
 
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
+[gitlab runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
