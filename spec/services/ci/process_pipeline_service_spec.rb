@@ -327,62 +327,55 @@ describe Ci::ProcessPipelineService, services: true do
       end
     end
 
-    context 'creates a builds from .gitlab-ci.yml' do
-      let(:config) do
-        YAML.dump({
-          rspec: {
-            stage: 'test',
-            script: 'rspec'
-          },
-          rubocop: {
-            stage: 'test',
-            script: 'rubocop'
-          },
-          deploy: {
-            stage: 'deploy',
-            script: 'deploy'
-          }
-        })
-      end
-
-      # Using stubbed .gitlab-ci.yml created in commit factory
-      #
-
+    context 'when there are builds in multiple stages' do
       before do
-        stub_ci_pipeline_yaml_file(config)
         create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage: 'build', stage_idx: 0)
         create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage: 'build', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'rspec', stage: 'test', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 2)
       end
 
-      it 'when processing a pipeline' do
-        # Currently we have two builds with state created
+      it 'processes the pipeline' do
+        # Currently we have five builds with state created
+        #
         expect(builds.count).to eq(0)
-        expect(all_builds.count).to eq(2)
+        expect(all_builds.count).to eq(5)
 
-        # Create builds will mark the created as pending
-        expect(process_pipeline).to be_truthy
+        # Process builds will mark the created as pending
+        #
+        process_pipeline
+
         expect(builds.count).to eq(2)
-        expect(all_builds.count).to eq(2)
+        expect(all_builds.count).to eq(5)
 
-        # When we builds succeed we will create a rest of pipeline from .gitlab-ci.yml
-        # We will have 2 succeeded, 2 pending (from stage test), total 5 (one more build from deploy)
+        # When builds succeed we will enqueue remaining builds
+        # We will have 2 succeeded, 2 pending (from stage test),
+        # total 5 (one more build from deploy)
+        #
         succeed_pending
-        expect(process_pipeline).to be_truthy
+        process_pipeline
+
         expect(builds.success.count).to eq(2)
         expect(builds.pending.count).to eq(2)
         expect(all_builds.count).to eq(5)
 
         # When we succeed the 2 pending from stage test,
-        # We will queue a deploy stage, no new builds will be created
+        # We will queue a deploy stage.
+        #
         succeed_pending
-        expect(process_pipeline).to be_truthy
+        process_pipeline
+
         expect(builds.pending.count).to eq(1)
         expect(builds.success.count).to eq(4)
         expect(all_builds.count).to eq(5)
 
-        # When we succeed last pending build, we will have a total of 5 succeeded builds, no new builds will be created
+        # When we succeed last pending build, we will have
+        # a total of 5 succeeded builds
+        #
         succeed_pending
-        expect(process_pipeline).to be_falsey
+        process_pipeline
+
         expect(builds.success.count).to eq(5)
         expect(all_builds.count).to eq(5)
       end
