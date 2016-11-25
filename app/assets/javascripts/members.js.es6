@@ -10,14 +10,16 @@
 
     addListeners() {
       const ldapPermissionsChangeBtns = document.querySelectorAll('.js-ldap-permissions');
+      const changeBtnLength = ldapPermissionsChangeBtns.length;
       const ldapOverrideBtns = document.querySelectorAll('.js-ldap-override');
+      const overrideBtnLength = ldapOverrideBtns.length;
 
-      for (let i = 0, changeBtnLength = ldapPermissionsChangeBtns.length; i < changeBtnLength; i++) {
+      for (let i = 0; i < changeBtnLength; i += 1) {
         const btn = ldapPermissionsChangeBtns[i];
         btn.addEventListener('click', this.showLDAPPermissionsWarning.bind(this));
       }
 
-      for (let i = 0, overrideBtnLength = ldapOverrideBtns.length; i < overrideBtnLength; i++) {
+      for (let i = 0; i < overrideBtnLength; i += 1) {
         const btn = ldapOverrideBtns[i];
         btn.addEventListener('click', this.toggleMemberAccessToggle.bind(this));
       }
