@@ -14,3 +14,31 @@
       %p.hint
         Try to keep the first line under 52 characters
         and the others under 72.
+    - if local_assigns[:description]
+      %p.hint.use-description-hint
+        = link_to "#", class: "use-description-link" do
+          Use Merge Request description as merge commit message
+      %p.hint.use-default-message-hint.hide
+        = link_to "#", class: "use-default-message-link" do
+          Use default Gitlab merge commit message
+
+
+  :javascript
+    $('.use-description-link').on('click', function(e) {
+      e.preventDefault();
+
+      $('.use-description-hint').hide();
+      $('.use-default-message-hint').show();
+      $('.js-commit-message').val("#{escape_javascript local_assigns[:description]}");
+    });
+
+    $('.use-default-message-link').on('click', function(e) {
+      e.preventDefault();
+
+      var defaultMessage = "#{escape_javascript (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder])}";
+
+      $('.use-description-hint').show();
+      $('.use-default-message-hint').hide();
+      $('.js-commit-message').val(defaultMessage);
+    });
+
