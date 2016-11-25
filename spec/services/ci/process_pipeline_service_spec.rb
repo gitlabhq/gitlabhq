@@ -351,6 +351,33 @@ describe Ci::ProcessPipelineService, services: true do
         expect(all_builds.count).to eq(4)
       end
     end
+
+    context 'when there are no changes in the pipeline' do
+      before do
+        # We process pipeline here so that subsequent call to
+        # pipeline processing facility does not have any work to do.
+        #
+        process_pipeline
+      end
+
+      context 'when updating pipeline after some time' do
+        it 'bumps updated_at as we processed this pipeline again' do
+          travel_to(10.minute.from_now) do
+            expect { process_pipeline }
+              .to change { pipeline.reload.updated_at }
+          end
+        end
+      end
+
+      context 'when processing pipeline again shortly after' do
+        it 'does not bump update_at' do
+          travel_to(2.minute.from_now) do
+            expect { process_pipeline }
+              .not_to change { pipeline.reload.updated_at }
+          end
+        end
+      end
+    end
   end
 
   def all_builds
