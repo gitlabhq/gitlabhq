@@ -80,8 +80,6 @@ class ChangelogEntry
 
     unless options.dry_run
       write
-      %x{git add #{file_path}}
-
       amend_commit if options.amend
     end
   end
