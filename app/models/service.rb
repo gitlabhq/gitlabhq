@@ -220,6 +220,7 @@ class Service < ActiveRecord::Base
       pivotaltracker
       pushover
       redmine
+      mattermost
       slack
       teamcity
     ]
