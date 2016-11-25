@@ -101,7 +101,6 @@ class User < ActiveRecord::Base
 
   has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
-  has_one :user_activity, dependent: :destroy
 
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
@@ -159,7 +158,6 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :last_activity_at, to: :user_activity, allow_nil: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -950,6 +948,14 @@ class User < ActiveRecord::Base
       :regular
     end
   end
+
+  def record_activity
+    Gitlab::Redis.with do |redis|
+      redis.zadd('user/activities', Time.now.to_i, self.username)
+    end
+  end
+
+  private
 
   def access_level=(new_level)
     new_level = new_level.to_s

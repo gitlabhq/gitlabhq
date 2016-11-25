@@ -1230,13 +1230,6 @@ ActiveRecord::Schema.define(version: 20170408033905) do
   add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
   add_index "uploads", ["path"], name: "index_uploads_on_path", using: :btree
 
-  create_table "user_activities", force: :cascade do |t|
-    t.integer "user_id"
-    t.datetime "last_activity_at", null: false
-  end
-
-  add_index "user_activities", ["user_id"], name: "index_user_activities_on_user_id", unique: true, using: :btree
-
   create_table "user_agent_details", force: :cascade do |t|
     t.string "user_agent", null: false
     t.string "ip_address", null: false
@@ -1396,5 +1389,4 @@ ActiveRecord::Schema.define(version: 20170408033905) do
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
-  add_foreign_key "user_activities", "users", on_delete: :cascade
 end

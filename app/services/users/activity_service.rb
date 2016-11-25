@@ -14,13 +14,9 @@ module Users
     private
 
     def record_activity
-      user_activity.touch
+      @author.record_activity
 
       Rails.logger.debug("Recorded activity: #{@activity} for User ID: #{@author.id} (username: #{@author.username}")
-    end
-
-    def user_activity
-      UserActivity.find_or_initialize_by(user: @author)
     end
   end
 end

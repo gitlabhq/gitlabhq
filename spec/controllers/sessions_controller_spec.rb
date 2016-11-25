@@ -16,7 +16,9 @@ describe SessionsController do
         end
       end
 
-      context 'when using valid password' do
+      context 'when using valid password', :redis do
+        include UserActivitiesHelpers
+
         let(:user) { create(:user) }
 
         it 'authenticates user correctly' do
@@ -41,7 +43,7 @@ describe SessionsController do
         it 'updates the user activity' do
           expect do
             post(:create, user: { login: user.username, password: user.password })
-          end.to change { user.reload.last_activity_at }.from(nil)
+          end.to change { user_score }.from(0)
         end
       end
     end
