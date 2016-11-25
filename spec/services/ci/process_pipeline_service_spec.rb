@@ -362,7 +362,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when updating pipeline after some time' do
         it 'bumps updated_at as we processed this pipeline again' do
-          travel_to(10.minute.from_now) do
+          travel_to(10.minutes.from_now) do
             expect { process_pipeline }
               .to change { pipeline.reload.updated_at }
           end
@@ -371,7 +371,7 @@ describe Ci::ProcessPipelineService, services: true do
 
       context 'when processing pipeline again shortly after' do
         it 'does not bump update_at' do
-          travel_to(2.minute.from_now) do
+          travel_to(2.minutes.from_now) do
             expect { process_pipeline }
               .not_to change { pipeline.reload.updated_at }
           end
