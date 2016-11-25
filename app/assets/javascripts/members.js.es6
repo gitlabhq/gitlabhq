@@ -35,7 +35,7 @@
           isSelectable(selected, $el) {
             const $link = $($el);
 
-            return $link.data('revert') || $link.hasClass('.is-active');
+            return $link.data('revert') || !$link.hasClass('is-active');
           },
           fieldName: $btn.data('field-name'),
           id(selected, $el) {
