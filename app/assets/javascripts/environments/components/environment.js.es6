@@ -181,7 +181,7 @@
 
         <div class="environments-container">
           <div class="environments-list-loading text-center" v-if="isLoading">
-            <i class="fa fa-spinner spin"></i>
+            <i class="fa fa-spinner fa-spin"></i>
           </div>
 
           <div class="blank-state blank-state-no-icon"
