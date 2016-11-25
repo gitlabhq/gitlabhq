@@ -331,6 +331,12 @@ module Ci
       end
     end
 
+    def update_timing
+      Gitlab::OptimisticLocking.retry_lock(self) do
+        touch if updated_at < 5.minutes.ago
+      end
+    end
+
     def update_duration
       return unless started_at
 

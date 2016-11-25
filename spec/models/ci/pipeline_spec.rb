@@ -982,6 +982,30 @@ describe Ci::Pipeline, :models do
     end
   end
 
+  describe '#update_timing' do
+    before do
+      pipeline.touch
+    end
+
+    context 'pipeline updated less than 5 minutes ago' do
+      it 'does not update pipeline timing' do
+        travel_to(2.minutes.from_now) do
+          expect { pipeline.update_timing }
+            .not_to change { pipeline.updated_at }
+        end
+      end
+    end
+
+    context 'pipeline not updated less than 5 minutes ago' do
+      it 'updates pipeline timing' do
+        travel_to(8.minutes.from_now) do
+          expect { pipeline.update_timing }
+            .to change { pipeline.updated_at }
+        end
+      end
+    end
+  end
+
   describe 'scopes' do
     before do
       create(:ci_empty_pipeline, status: :created)
