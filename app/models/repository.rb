@@ -1146,8 +1146,11 @@ class Repository
     fetch_ref(path_to_repo, ref, ref_path)
   end
 
-  # Whenever `source_branch` is passed, if `branch` doesn't exist, it would
-  # be created from `source_branch`.
+  # Whenever `source_branch` or `source_commit` is passed, if `branch`
+  # doesn't exist, it would be created from `source_branch` or
+  # `source_commit`. Should only pass one of them, not both.
+  # If `source_project` is passed, and the branch doesn't exist,
+  # it would try to find the source from it instead of current repository.
   def update_branch_with_hooks(
     current_user, branch,
     source_branch: nil, source_commit: nil, source_project: project)
