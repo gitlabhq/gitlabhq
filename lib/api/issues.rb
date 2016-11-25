@@ -68,7 +68,7 @@ module API
       #   GET /groups/:id/issues?milestone=1.0.0
       #   GET /groups/:id/issues?milestone=1.0.0&state=closed
       get ":id/issues" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
 
         params[:state] ||= 'opened'
         params[:group_id] = group.id

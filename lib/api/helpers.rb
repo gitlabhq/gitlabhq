@@ -68,7 +68,7 @@ module API
     end
 
     def user_project
-      @project ||= find_project(params[:id])
+      @project ||= find_project!(params[:id])
     end
 
     def available_labels
@@ -76,7 +76,15 @@ module API
     end
 
     def find_project(id)
-      project = Project.find_with_namespace(id) || Project.find_by(id: id)
+      if id =~ /^\d+$/
+        Project.find_by(id: id)
+      else
+        Project.find_with_namespace(id)
+      end
+    end
+
+    def find_project!(id)
+      project = find_project(id)
 
       if can?(current_user, :read_project, project)
         project
@@ -97,7 +105,15 @@ module API
     end
 
     def find_group(id)
-      group = Group.find_by(path: id) || Group.find_by(id: id)
+      if id =~ /^\d+$/
+        Group.find_by(id: id)
+      else
+        Group.find_by(path: id)
+      end
+    end
+
+    def find_group!(id)
+      group = find_group(id)
 
       if can?(current_user, :read_group, group)
         group

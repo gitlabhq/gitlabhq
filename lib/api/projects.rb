@@ -379,7 +379,7 @@ module API
       #   POST /projects/:id/fork/:forked_from_id
       post ":id/fork/:forked_from_id" do
         authenticated_as_admin!
-        forked_from_project = find_project(params[:forked_from_id])
+        forked_from_project = find_project!(params[:forked_from_id])
         unless forked_from_project.nil?
           if user_project.forked_from_project.nil?
             user_project.create_forked_project_link(forked_to_project_id: user_project.id, forked_from_project_id: forked_from_project.id)
