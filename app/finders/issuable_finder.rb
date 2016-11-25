@@ -44,6 +44,32 @@ class IssuableFinder
     sort(items)
   end
 
+  # We often get counts for each state by running a query per state, and
+  # counting those results. This is typically slower than running one query
+  # (even if that query is slower than any of the individual state queries) and
+  # grouping and counting within that query.
+  #
+  def count_by_state
+    count_params = params.merge(state: nil, sort: nil)
+    labels_count = label_names.any? ? label_names.count : 1
+    finder = self.class.new(current_user, count_params)
+    counts = Hash.new(0)
+
+    # Searching by label includes a GROUP BY in the query, but ours will be last
+    # because it is added last. Searching by multiple labels also includes a row
+    # per issuable, so we have to count those in Ruby - which is bad, but still
+    # better than performing multiple queries.
+    #
+    finder.execute.reorder(nil).group(:state).count.each do |key, value|
+      counts[Array(key).last.to_sym] += value / labels_count
+    end
+
+    counts[:all] = counts.values.sum
+    counts[:opened] += counts[:reopened]
+
+    counts
+  end
+
   def group
     return @group if defined?(@group)
 
