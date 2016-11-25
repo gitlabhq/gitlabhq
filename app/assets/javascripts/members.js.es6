@@ -12,13 +12,15 @@
       const ldapPermissionsChangeBtns = document.querySelectorAll('.js-ldap-permissions');
       const ldapOverrideBtns = document.querySelectorAll('.js-ldap-override');
 
-      ldapPermissionsChangeBtns.forEach((btn) => {
+      for (let i = 0, changeBtnLength = ldapPermissionsChangeBtns.length; i < changeBtnLength; i++) {
+        const btn = ldapPermissionsChangeBtns[i];
         btn.addEventListener('click', this.showLDAPPermissionsWarning.bind(this));
-      });
+      }
 
-      ldapOverrideBtns.forEach((btn) => {
+      for (let i = 0, overrideBtnLength = ldapOverrideBtns.length; i < overrideBtnLength; i++) {
+        const btn = ldapOverrideBtns[i];
         btn.addEventListener('click', this.toggleMemberAccessToggle.bind(this));
-      });
+      }
 
       $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
       $('.js-member-update-control').off('change').on('change', this.formSubmit);
