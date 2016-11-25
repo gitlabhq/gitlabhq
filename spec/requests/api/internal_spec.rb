@@ -195,7 +195,9 @@ describe API::API, api: true  do
     end
   end
 
-  describe "POST /internal/allowed" do
+  describe "POST /internal/allowed", :redis do
+    include UserActivitiesHelpers
+
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -213,7 +215,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
-          expect(key.user.reload.last_activity_at.to_i).to eq(Time.now.to_i)
+          expect(user_score).to be_zero
         end
       end
 
@@ -224,7 +226,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
-          expect(key.user.reload.last_activity_at.to_i).to eq(Time.now.to_i)
+          expect(user_score).not_to be_zero
         end
       end
 
@@ -235,7 +237,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(key.user.reload.last_activity_at.to_i).to eq(Time.now.to_i)
+          expect(user_score).not_to be_zero
         end
       end
 
@@ -246,7 +248,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(key.user.reload.last_activity_at.to_i).to eq(Time.now.to_i)
+          expect(user_score).to be_zero
         end
 
         context 'project as /namespace/project' do
@@ -282,7 +284,7 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(key.user.reload.last_activity_at).to be_nil
+          expect(user_score).to be_zero
         end
       end
 
@@ -292,7 +294,7 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(key.user.reload.last_activity_at).to be_nil
+          expect(user_score).to be_zero
         end
       end
     end
@@ -310,7 +312,7 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(key.user.reload.last_activity_at).to be_nil
+          expect(user_score).to be_zero
         end
       end
 
@@ -320,7 +322,7 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(key.user.reload.last_activity_at).to be_nil
+          expect(user_score).to be_zero
         end
       end
     end
