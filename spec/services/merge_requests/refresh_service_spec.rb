@@ -86,11 +86,11 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request.notes.last.note).to include('merged') }
       it { expect(@merge_request).to be_merged }
       it { expect(@merge_request.approvals).not_to be_empty }
       it { expect(@fork_merge_request).to be_merged }
-      it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@fork_merge_request.notes.last.note).to include('merged') }
       it { expect(@fork_merge_request.approvals).not_to be_empty }
       it { expect(@build_failed_todo).to be_done }
       it { expect(@fork_build_failed_todo).to be_done }
@@ -107,11 +107,11 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request.notes.last.note).to include('merged') }
       it { expect(@merge_request).to be_merged }
       it { expect(@merge_request.diffs.size).to be > 0 }
       it { expect(@fork_merge_request).to be_merged }
-      it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@fork_merge_request.notes.last.note).to include('merged') }
       it { expect(@build_failed_todo).to be_done }
       it { expect(@fork_build_failed_todo).to be_done }
     end
@@ -132,7 +132,7 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request.notes).to be_empty }
       it { expect(@merge_request).to be_open }
       it { expect(@merge_request.approvals).not_to be_empty }
-      it { expect(@fork_merge_request.notes.last.note).to include('Added 28 commits') }
+      it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@build_failed_todo).to be_pending }
       it { expect(@fork_build_failed_todo).to be_pending }
@@ -162,7 +162,7 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request.notes.last.note).to include('merged') }
       it { expect(@merge_request).to be_merged }
       it { expect(@merge_request.approvals).not_to be_empty }
       it { expect(@fork_merge_request).to be_open }
@@ -244,8 +244,8 @@ describe MergeRequests::RefreshService, services: true do
         expect(@merge_request).to be_open
 
         notes = @fork_merge_request.notes.reorder(:created_at).map(&:note)
-        expect(notes[0]).to include('Restored source branch `master`')
-        expect(notes[1]).to include('Added 28 commits')
+        expect(notes[0]).to include('restored source branch `master`')
+        expect(notes[1]).to include('added 28 commits')
         expect(@fork_merge_request).to be_open
       end
     end

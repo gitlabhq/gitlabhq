@@ -141,7 +141,7 @@ describe 'Comments', feature: true do
     let(:project2) { create(:project, :private) }
     let(:issue) { create(:issue, project: project2) }
     let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'markdown') }
-    let!(:note) { create(:note_on_merge_request, :system, noteable: merge_request, project: project, note: "Mentioned in #{issue.to_reference(project)}") }
+    let!(:note) { create(:note_on_merge_request, :system, noteable: merge_request, project: project, note: "mentioned in #{issue.to_reference(project)}") }
 
     it 'shows the system note' do
       login_as :admin
