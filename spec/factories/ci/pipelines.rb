@@ -29,5 +29,16 @@ FactoryGirl.define do
         allow(commit).to receive(:ci_yaml_file) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
       end
     end
+
+    factory(:ci_pipeline_with_yaml) do
+      transient { yaml nil }
+
+      after(:build) do |pipeline, evaluator|
+        raise ArgumentError unless evaluator.yaml
+
+        allow(pipeline).to receive(:ci_yaml_file)
+          .and_return(YAML.dump(evaluator.yaml))
+      end
+    end
   end
 end
