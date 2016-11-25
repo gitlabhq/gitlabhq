@@ -26,7 +26,7 @@ more CI builds running, you can set it to be merged automatically when CI
 pipeline succeeds. This way, you don't have to wait for the pipeline to finish
 and remember to merge the request manually.
 
-[Learn more about merging when pipeline succeeds.](merge_requests/merge_when_build_succeeds.md)
+[Learn more about merging when pipeline succeeds.](merge_requests/merge_when_pipeline_succeeds.md)
 
 ## Resolve discussion comments in merge requests reviews
 
