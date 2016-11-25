@@ -3,14 +3,12 @@ class PipelineUnlockWorker
   include CronjobQueue
 
   def perform
-    Ci::Pipeline.unfinished
-      .where('updated_at < ?', 6.hours.ago)
+    Ci::Pipeline.unfinished.with_builds
+      .where('ci_commits.updated_at < ?', 6.hours.ago)
+      .where('ci_commits.created_at > ?', 1.week.ago)
+      .select(:id)
       .find_each do |pipeline|
-        PipelineProcessWorker.new.perform(pipeline.id)
-
-        Gitlab::OptimisticLocking.retry_lock(pipeline) do |pipeline|
-          pipeline.touch
-        end
+        PipelineProcessWorker.perform_async(pipeline.id)
       end
   end
 end

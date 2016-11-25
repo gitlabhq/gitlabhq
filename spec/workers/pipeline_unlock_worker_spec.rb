@@ -67,6 +67,18 @@ describe PipelineUnlockWorker do
             .to change { pipeline.reload.updated_at }
         end
       end
+
+      context 'when locked pipeline is more than week old' do
+        before do
+          create(:ci_pipeline, status: :created,
+                               updated_at: 2.weeks.ago)
+        end
+
+        it 'does not trigger update' do
+          expect_any_instance_of(PipelineProcessWorker)
+            .not_to receive(:perform)
+        end
+      end
     end
 
     context 'when locked pipelines are not present' do
