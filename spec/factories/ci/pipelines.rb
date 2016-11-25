@@ -7,20 +7,24 @@ FactoryGirl.define do
     project factory: :empty_project
 
     factory :ci_pipeline_without_jobs do
-      after(:build) do |commit|
-        allow(commit).to receive(:ci_yaml_file) { YAML.dump({}) }
+      after(:build) do |pipeline|
+        allow(pipeline).to receive(:ci_yaml_file) { YAML.dump({}) }
       end
     end
 
     factory :ci_pipeline_with_one_job do
-      after(:build) do |commit|
-        allow(commit).to receive(:ci_yaml_file) { YAML.dump({ rspec: { script: "ls" } }) }
+      after(:build) do |pipeline|
+        allow(pipeline).to receive(:ci_yaml_file) do
+          YAML.dump({ rspec: { script: "ls" } })
+        end
       end
     end
 
     factory :ci_pipeline do
-      after(:build) do |commit|
-        allow(commit).to receive(:ci_yaml_file) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
+      after(:build) do |pipeline|
+        allow(pipeline).to receive(:ci_yaml_file) do
+          File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+        end
       end
     end
 
