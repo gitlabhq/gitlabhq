@@ -52,6 +52,9 @@ knapsack:
     - mkdir -p knapsack/
     - '[[ -f knapsack/rspec_report.json ]] || echo "{}" > knapsack/rspec_report.json'
     - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
+  tags:
+    - gitlab-org
+    - 2gb
 
 update-knapsack:
   <<: *knapsack-state
@@ -65,6 +68,9 @@ update-knapsack:
     - master@gitlab-org/gitlab-ee
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
+  tags:
+    - gitlab-org
+    - 2gb
 
 .use-db: &use-db
   services:
@@ -82,7 +88,9 @@ setup-test-env:
     paths:
       - public/assets
       - tmp/tests
-
+  tags:
+    - gitlab-org
+    - 2gb
 
 .rspec-knapsack: &rspec-knapsack
   stage: test
@@ -117,6 +125,9 @@ setup-test-env:
     paths:
     - knapsack/
     - coverage/
+  tags:
+    - gitlab-org
+    - 2gb
 
 rspec 0 20: *rspec-knapsack
 rspec 1 20: *rspec-knapsack
@@ -217,6 +228,9 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   stage: test
   script:
     - bundle exec $CI_BUILD_NAME
+  tags:
+    - gitlab-org
+    - 2gb
 
 rubocop: *exec
 rake haml_lint: *exec
@@ -252,6 +266,9 @@ rake db:migrate:reset:
   <<: *use-db
   script:
     - rake db:migrate:reset
+  tags:
+    - gitlab-org
+    - 2gb
 
 rake db:seed_fu:
   stage: test
@@ -269,6 +286,9 @@ rake db:seed_fu:
     expire_in: 1d
     paths:
       - log/development.log
+  tags:
+    - gitlab-org
+    - 2gb
 
 teaspoon:
   cache:
@@ -288,6 +308,9 @@ teaspoon:
     expire_in: 31d
     paths:
     - coverage-javascript/default/
+  tags:
+    - gitlab-org
+    - 2gb
 
 lint-doc:
   stage: test
@@ -295,12 +318,18 @@ lint-doc:
   before_script: []
   script:
     - scripts/lint-doc.sh
+  tags:
+    - gitlab-org
+    - 2gb
 
 bundler:check:
  stage: test
  <<: *ruby-static-analysis
  script:
    - bundle check
+ tags:
+   - gitlab-org
+   - 2gb
 
 bundler:audit:
   stage: test
@@ -312,6 +341,9 @@ bundler:audit:
     - master@gitlab/gitlab-ee
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
+  tags:
+    - gitlab-org
+    - 2gb
 
 migration paths:
   stage: test
@@ -333,6 +365,9 @@ migration paths:
     - git checkout $CI_BUILD_REF
     - source scripts/prepare_build.sh
     - rake db:migrate
+  tags:
+    - gitlab-org
+    - 2gb
 
 coverage:
   stage: post-test
@@ -348,6 +383,9 @@ coverage:
     paths:
     - coverage/index.html
     - coverage/assets/
+  tags:
+    - gitlab-org
+    - 2gb
 
 lint:javascript:
   cache:
@@ -359,6 +397,9 @@ lint:javascript:
     - npm install
   script:
     - npm --silent run eslint
+  tags:
+    - gitlab-org
+    - 2gb
 
 lint:javascript:report:
   cache:
@@ -376,6 +417,9 @@ lint:javascript:report:
     expire_in: 31d
     paths:
     - eslint-report.html
+  tags:
+    - gitlab-org
+    - 2gb
 
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
@@ -392,6 +436,9 @@ trigger_docs:
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
   only:
     - master@gitlab-org/gitlab-ce
+  tags:
+    - gitlab-org
+    - 2gb
 
 # Notify slack in the end
 
@@ -408,6 +455,9 @@ notify:slack:
     - tags@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
     - tags@gitlab-org/gitlab-ee
+  tags:
+    - gitlab-org
+    - 2gb
 
 pages:
   before_script: []
@@ -427,6 +477,9 @@ pages:
       - public
   only:
     - master
+  tags:
+    - gitlab-org
+    - 2gb
 
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
@@ -440,3 +493,6 @@ cache gems:
   artifacts:
     paths:
       - vendor/cache
+  tags:
+    - gitlab-org
+    - 2gb
