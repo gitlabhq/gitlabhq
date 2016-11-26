@@ -115,7 +115,7 @@ class Group < Namespace
     allowed_by_projects
   end
 
-  def avatar_url(size = nil)
+  def avatar_url(size = nil, scale = nil)
     if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     end
