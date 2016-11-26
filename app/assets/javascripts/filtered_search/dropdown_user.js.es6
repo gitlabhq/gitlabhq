@@ -19,7 +19,6 @@ require('./filtered_search_dropdown');
             project_id: this.getProjectId(),
             current_user: true,
           },
-          searchValueFunction: this.getSearchInput.bind(this),
           loadingTemplate: this.loadingTemplate,
         },
       };
@@ -31,7 +30,7 @@ require('./filtered_search_dropdown');
     }
 
     renderContent(forceShowList = false) {
-      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjaxFilter], this.config);
+      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjax, droplabRemoteFilter], this.config);
       super.renderContent(forceShowList);
     }
 
@@ -39,9 +38,8 @@ require('./filtered_search_dropdown');
       return this.input.getAttribute('data-project-id');
     }
 
-    getSearchInput() {
-      const query = gl.DropdownUtils.getSearchInput(this.input);
-      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
+    getSearchInput(input) {
+      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(input);
       let value = lastToken.value || '';
 
       // Removes the first character if it is a quotation so that we can search
@@ -54,7 +52,7 @@ require('./filtered_search_dropdown');
     }
 
     init() {
-      this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
+      this.droplab.addHook(this.input, this.dropdown, [droplabAjax, droplabRemoteFilter], this.config).init();
     }
   }
 
