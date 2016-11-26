@@ -9,6 +9,8 @@ require('../window')(function(w){
       this.hook = hook;
       this.notLoading();
 
+      debugger
+
       this.debounceTriggerWrapper = this.debounceTrigger.bind(this);
       this.hook.trigger.addEventListener('keydown.dl', this.debounceTriggerWrapper);
       this.hook.trigger.addEventListener('focus', this.debounceTriggerWrapper);

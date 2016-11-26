@@ -8,73 +8,81 @@ require('../window')(function(w){
   }
 
   w.droplabAjax = {
-    _loadUrlData: function _loadUrlData(url) {
-      var self = this;
-      return new Promise(function(resolve, reject) {
+    _loadUrlData: function _loadUrlData(url, params) {
+      var paramsUrl = url + params;
+      return new Promise((function(resolve, reject) {
         var xhr = new XMLHttpRequest;
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = function () {
+        xhr.open('GET', paramsUrl, true);
+        xhr.onreadystatechange = (function () {
           if(xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
-              self.cache[url] = data;
+              this.cache[paramsUrl] = data;
               return resolve(data);
             } else {
               return reject([xhr.responseText, xhr.status]);
             }
           }
-        };
+        }).bind(this);
         xhr.send();
-      });
+      }).bind(this));
     },
 
-    _loadData: function _loadData(data, config, self) {
-      if (config.loadingTemplate) {
-        var dataLoadingTemplate = self.hook.list.list.querySelector('[data-loading-template]');
+    _loadData: function _loadData(data, methodOverride) {
+      if (this.config.loadingTemplate) {
+        var dataLoadingTemplate = this.hook.list.list.querySelector('[data-loading-template]');
 
         if (dataLoadingTemplate) {
-          dataLoadingTemplate.outerHTML = self.listTemplate;
+          dataLoadingTemplate.outerHTML = this.listTemplate;
         }
       }
 
-      self.hook.list[config.method].call(self.hook.list, data);
+      this.hook.list[methodOverride || this.config.method].call(this.hook.list, data);
     },
 
-    init: function init(hook) {
-      var self = this;
-      self.cache = self.cache || {};
-      var config = hook.config.droplabAjax;
+    init: function init(hook, methodOverride, cb) {
+      this.cache = this.cache || {};
       this.hook = hook;
+      this.config = hook.config.droplabAjax;
 
-      if (!config || !config.endpoint || !config.method) {
-        return;
-      }
+      if ((!this.config || !this.config.endpoint || !this.config.method) ||
+      (this.config.method !== 'setData' && this.config.method !== 'addData')) return;
 
-      if (config.method !== 'setData' && config.method !== 'addData') {
-        return;
-      }
+      if (this.config.loadingTemplate) this.initLoadingTemplate();
 
-      if (config.loadingTemplate) {
-        var dynamicList = hook.list.list.querySelector('[data-dynamic]');
 
-        var loadingTemplate = document.createElement('div');
-        loadingTemplate.innerHTML = config.loadingTemplate;
-        loadingTemplate.setAttribute('data-loading-template', '');
+      if (!this.config.deferRequest) this.load(methodOverride, cb);
+    },
 
-        this.listTemplate = dynamicList.outerHTML;
-        dynamicList.outerHTML = loadingTemplate.outerHTML;
-      }
+    load: function load(methodOverride, cb) {
+      var config = this.config.droplabAjax;
+      var callback = cb || this.config.callback;
+      var params = this.buildParams(this.config.params);
+      var cache = this.cache[this.config.endpoint + params];
 
-      if (self.cache[config.endpoint]) {
-        self._loadData(self.cache[config.endpoint], config, self);
+      if (cache) {
+        this._loadData.call(this, cache, methodOverride);
+        if (callback) callback();
       } else {
-        this._loadUrlData(config.endpoint)
-          .then(function(d) {
-            self._loadData(d, config, self);
-          }).catch(function(e) {
+        this._loadUrlData(this.config.endpoint, params)
+          .then((function(d) {
+            this._loadData.call(this, d, methodOverride);
+            if (callback) callback();
+          }).bind(this)).catch(function(e) {
             throw new droplabAjaxException(e.message || e);
           });
       }
+    },
+
+    initLoadingTemplate: function initLoadingTemplate() {
+      var dynamicList = this.hook.list.list.querySelector('[data-loading-template]');
+
+      var loadingTemplate = document.createElement('div');
+      loadingTemplate.innerHTML = this.config.loadingTemplate;
+      loadingTemplate.setAttribute('data-loading-template', '');
+
+      this.listTemplate = dynamicList.outerHTML;
+      dynamicList.outerHTML = loadingTemplate.outerHTML;
     },
 
     destroy: function() {
@@ -82,7 +90,15 @@ require('../window')(function(w){
         var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
         dynamicList.outerHTML = this.listTemplate;
       }
-    }
+    },
+
+    buildParams: function buildParams(params) {
+      if (!params) return '';
+      var paramsArray = Object.keys(params).map(function(param) {
+        return param + '=' + (params[param] || '');
+      });
+      return '?' + paramsArray.join('&');
+    },
   };
 });
 },{"../window":2}],2:[function(require,module,exports){

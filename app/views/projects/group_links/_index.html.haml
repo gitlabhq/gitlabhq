@@ -11,7 +11,7 @@
     = form_tag namespace_project_group_links_path(@project.namespace, @project), class: 'js-requires-input', method: :post do
       .form-group
         = label_tag :link_group_id, "Group", class: "label-light"
-        = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, required: true)
+        = render('shared/groups_droplab', input: :link_group_id, required: true, placeholder: 'Search for a group', data: { skip_groups: @skip_groups })
       .form-group
         = label_tag :link_group_access, "Max access level", class: "label-light"
         .select-wrapper
