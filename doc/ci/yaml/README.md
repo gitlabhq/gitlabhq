@@ -286,24 +286,11 @@ build outputs. Setting this up globally will make all the jobs to use this
 setting for output filtering and extracting the coverage information from your
 builds.
 
-#### coverage:output_filter
+Regular expressions are used by default. So using surrounding `/` is optional, given it'll always be read as a regular expression. Don't forget to escape special characters whenever you want to match them in the regular expression.
 
-For now, there is only the `output_filter` directive expected to be inside the
-`coverage` entry. And it is expected to be a regular expression.
-
-So, in the end, you're going to have something like the following:
-
+A simple example:
 ```yaml
-coverage:
-  output_filter: /\(\d+\.\d+\) covered\./
-```
-
-It's worth to keep in mind that the surrounding `/` is optional. So, the above
-example is the same as the following:
-
-```yaml
-coverage:
-  output_filter: \(\d+\.\d+\) covered\.
+coverage: \(\d+\.\d+\) covered\.
 ```
 
 ## Jobs
@@ -346,7 +333,6 @@ job_name:
 | cache         | no | Define list of files that should be cached between subsequent runs |
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
-| environment   | no | Defines a name of environment to which deployment is done by this build |
 | environment   | no | Defines a name of environment to which deployment is done by this build |
 | coverage      | no | Define coverage settings for a given job |
 
@@ -1032,17 +1018,15 @@ been defined in the global level. A quick example of one overwritting the
 other would be:
 
 ```yaml
-coverage:
-  output_filter: /\(\d+\.\d+\) covered\./
+coverage: \(\d+\.\d+\) covered\.
 
 job1:
-  coverage:
-    output_filter: /Code coverage: \d+\.\d+/
+  coverage: Code coverage: \d+\.\d+
 ```
 
 In the example above, considering the context of the job `job1`, the coverage
-regex that would be used is `/Code coverage: \d+\.\d+/` instead of
-`/\(\d+\.\d+\) covered\./`.
+regex that would be used is `Code coverage: \d+\.\d+` instead of
+`\(\d+\.\d+\) covered\.`.
 
 ## Git Strategy
 

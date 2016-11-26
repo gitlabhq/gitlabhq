@@ -8,26 +8,16 @@ module Gitlab
         class Coverage < Node
           include Validatable
 
-          ALLOWED_KEYS = %i[output_filter]
-
           validations do
-            validates :config, type: Hash
-            validates :config, allowed_keys: ALLOWED_KEYS
-            validates :output_filter, regexp: true
-          end
-
-          def output_filter
-            output_filter_value = @config[:output_filter].to_s
-
-            if output_filter_value.start_with?('/') && output_filter_value.end_with?('/')
-              output_filter_value[1...-1]
-            else
-              @config[:output_filter]
-            end
+            validates :config, regexp: true
           end
 
           def value
-            @config.merge(output_filter: output_filter)
+            if @config.start_with?('/') && @config.end_with?('/')
+              @config[1...-1]
+            else
+              @config
+            end
           end
         end
       end
