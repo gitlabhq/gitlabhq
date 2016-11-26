@@ -16,8 +16,6 @@
 #     label_name: string
 #     sort: string
 #
-require_relative 'projects_finder'
-
 class IssuableFinder
   NONE = '0'
 
