@@ -9,7 +9,9 @@
     "_": false,
     "gl": false,
     "gon": false,
-    "localStorage": false
+    "localStorage": false,
+    "jQuery": false,
+    "droplab": false
   },
   "plugins": [
     "filenames",

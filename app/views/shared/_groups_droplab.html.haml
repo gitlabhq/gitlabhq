@@ -1,0 +1,12 @@
+- input = local_assigns.fetch(:input, nil)
+- placeholder = local_assigns.fetch(:placeholder, nil)
+- required = local_assigns.fetch(:required, false)
+- data = local_assigns.fetch(:data, {})
+
+.dropdown.groups.droplab
+  %input.input.form-control{ id: "#{input}_trigger", required: required.to_s, type: 'text', placeholder: placeholder }
+  = hidden_field_tag input
+  %ul#groups-droplab.dropdown-menu.dropdown-menu-full-width{ data: data.merge({ dropdown: 'true', dynamic: 'true' }) }
+    %li
+      %a{ href: '#', data: { id: '{{id}}', name: '{{name}}' } } {{name}}
+    %div{ data: { 'loading-template' => 'true' } }

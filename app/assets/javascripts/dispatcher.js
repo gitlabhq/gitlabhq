@@ -228,6 +228,11 @@ const UserCallout = require('./user_callout');
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();
+
+          const trigger = document.querySelector('#link_group_id_trigger');
+          const list = document.querySelector('#groups-droplab');
+          const input = document.querySelector('#link_group_id');
+          gl.GroupsDroplab.init(trigger, list, input);
           break;
         case 'groups:new':
         case 'admin:groups:new':
