@@ -1,4 +1,6 @@
 class Projects::DeployKeysController < Projects::ApplicationController
+  include ProtectedBranchesHelper
+
   respond_to :html
 
   # Authorize
@@ -11,6 +13,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @protected_branch = @project.protected_branches.new
     @protected_branches = @project.protected_branches.order(:name).page(params[:page])
     set_index_vars
+    load_gon_index(@project)
   end
 
   def new

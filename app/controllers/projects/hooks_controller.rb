@@ -10,8 +10,7 @@ class Projects::HooksController < Projects::ApplicationController
     @hooks = @project.hooks
     @hook = ProjectHook.new
 
-    @project.build_missing_services
-    @services = @project.services.visible.reload
+    @services = @project.find_or_initialize_services
   end
 
   def create

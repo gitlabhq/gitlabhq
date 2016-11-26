@@ -41,22 +41,22 @@ Feature: Project Active Tab
 
   Scenario: On Project Settings/Hooks
     Given I visit my project's settings page
-    And I click the "Hooks" tab
-    Then the active sub nav should be Hooks
-    And no other sub navs should be active
+    And I click the "Integrations" tab
+    Then the active sub tab should be Integrations
+    And no other sub tabs should be active
     And the active main tab should be Settings
 
   Scenario: On Project Settings/Deploy Keys
     Given I visit my project's settings page
-    And I click the "Deploy Keys" tab
-    Then the active sub nav should be Deploy Keys
-    And no other sub navs should be active
+    And I click the "Repository" tab
+    Then the active sub tab should be Repository
+    And no other sub tabs should be active
     And the active main tab should be Settings
 
   Scenario: On Project Members
     Given I visit my project's members page
     Then the active sub nav should be Members
-    And no other sub navs should be active
+    And no other sub tabs should be active
     And the active main tab should be Settings
 
   # Sub Tabs: Repository

@@ -20,8 +20,8 @@ module SharedProjectTab
     ensure_active_main_tab('Issues')
   end
 
-  step 'the active main tab should be Members' do
-    ensure_active_main_tab('Members')
+  step 'the active sub nav should be Members' do
+    ensure_active_sub_tab('Members')
   end
 
   step 'the active main tab should be Merge Requests' do
@@ -37,7 +37,7 @@ module SharedProjectTab
   end
 
   step 'the active main tab should be Settings' do
-    expect(page).to have_selector('.layout-nav .nav-links > li.active', count: 0)
+    ensure_active_main_tab('Settings')
   end
 
   step 'the active main tab should be Activity' do
