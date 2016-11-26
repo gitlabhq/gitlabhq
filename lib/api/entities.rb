@@ -200,6 +200,19 @@ module API
       end
     end
 
+    class PersonalSnippet < Grape::Entity
+      expose :id, :title, :file_name
+      expose :author, using: Entities::UserBasic
+      expose :updated_at, :created_at
+
+      expose :web_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet)
+      end
+      expose :raw_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet) + "/raw"
+      end
+    end
+
     class ProjectEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity.project.id }
