@@ -7,9 +7,12 @@ require('./filtered_search_dropdown');
     constructor(droplab, dropdown, input, filter) {
       super(droplab, dropdown, input, filter);
       this.config = {
-        droplabAjaxFilter: {
+        droplabRemoteFilter: {
           endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
           searchKey: 'search',
+          formatValue: this.getSearchInput.bind(this),
+        },
+        droplabAjax: {
           params: {
             per_page: 20,
             active: true,
