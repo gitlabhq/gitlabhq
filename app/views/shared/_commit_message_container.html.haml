@@ -27,15 +27,21 @@
     $('.use-description-link').on('click', function(e) {
       e.preventDefault();
 
+      var message = "Merge branch '#{j @merge_request.source_branch}' into '#{j @merge_request.target_branch}'\n\n"
+      message = message + "#{j @merge_request.title}\n\n"
+      message = message + "#{j local_assigns[:description]}\n\n";
+      message = message + "See merge request #{j @merge_request.to_reference}"
+
+
       $('.use-description-hint').hide();
       $('.use-default-message-hint').show();
-      $('.js-commit-message').val("#{escape_javascript local_assigns[:description]}");
+      $('.js-commit-message').val(message)
     });
 
     $('.use-default-message-link').on('click', function(e) {
       e.preventDefault();
 
-      var defaultMessage = "#{escape_javascript (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder])}";
+      var defaultMessage = "#{j (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder])}";
 
       $('.use-description-hint').show();
       $('.use-default-message-hint').hide();
