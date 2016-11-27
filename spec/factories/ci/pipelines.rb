@@ -21,21 +21,16 @@ FactoryGirl.define do
     end
 
     factory :ci_pipeline do
-      after(:build) do |pipeline|
-        allow(pipeline).to receive(:ci_yaml_file) do
-          File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-        end
-      end
-    end
-
-    factory(:ci_pipeline_with_yaml) do
-      transient { yaml nil }
+      transient { config nil }
 
       after(:build) do |pipeline, evaluator|
-        raise ArgumentError unless evaluator.yaml
-
-        allow(pipeline).to receive(:ci_yaml_file)
-          .and_return(YAML.dump(evaluator.yaml))
+        allow(pipeline).to receive(:ci_yaml_file) do
+          if evaluator.config
+            YAML.dump(evaluator.config)
+          else
+            File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+          end
+        end
       end
     end
   end

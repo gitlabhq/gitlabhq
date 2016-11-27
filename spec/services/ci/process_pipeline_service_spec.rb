@@ -295,7 +295,7 @@ describe Ci::ProcessPipelineService, services: true do
 
     context 'when there are builds that are not created yet' do
       let(:pipeline) do
-        create(:ci_pipeline_with_yaml, yaml: config)
+        create(:ci_pipeline, config: config)
       end
 
       let(:config) do
