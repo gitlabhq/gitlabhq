@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::CycleAnalytics::EventsQuery do
   let(:max_events) { 3 }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user) { create(:user, :admin) }
   let(:options) { { from: 30.days.ago } }
 
@@ -19,7 +19,7 @@ describe Gitlab::CycleAnalytics::EventsQuery do
     setup_events(count: 5)
   end
 
-  it 'limits the rows the max number' do
+  it 'limits the rows to the max number' do
     expect(subject.count).to eq(max_events)
   end
 
