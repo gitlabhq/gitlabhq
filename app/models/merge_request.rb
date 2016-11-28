@@ -781,7 +781,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def all_pipelines
-    return unless source_project
+    return Ci::Pipeline.none unless source_project
 
     @all_pipelines ||= source_project.pipelines
       .where(sha: all_commits_sha, ref: source_branch)
