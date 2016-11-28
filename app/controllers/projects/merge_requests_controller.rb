@@ -564,7 +564,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_pipelines_vars
     @pipelines = @merge_request.all_pipelines
     @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses.relevant if @pipeline.present?
+    @statuses_count = @pipeline.present? ? @pipeline.statuses.relevant.count : 0
   end
 
   def define_new_vars

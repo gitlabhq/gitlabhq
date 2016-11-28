@@ -1,0 +1,4 @@
+---
+title: Prevent error when submitting a merge request and pipeline is not defined
+merge_request: 7707
+author:
