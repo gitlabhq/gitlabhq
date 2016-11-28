@@ -20,13 +20,19 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:todo_service) { TodoService.new }
 
   let(:merge_request) do
-    create(:merge_request, merge_user: user, source_branch: 'master',
-                           target_branch: 'feature', source_project: project, target_project: project,
+    create(:merge_request, merge_user: user,
+                           source_branch: 'master',
+                           target_branch: 'feature',
+                           source_project: project,
+                           target_project: project,
                            state: 'opened')
   end
 
   before do
-    allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+    allow_any_instance_of(MergeRequest)
+      .to receive(:head_pipeline)
+      .and_return(pipeline)
+
     allow(service).to receive(:todo_service).and_return(todo_service)
   end
 

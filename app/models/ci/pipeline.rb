@@ -317,7 +317,7 @@ module Ci
     def merge_requests
       @merge_requests ||= project.merge_requests
         .where(source_branch: self.ref)
-        .select { |merge_request| merge_request.pipeline.try(:id) == self.id }
+        .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
     private
