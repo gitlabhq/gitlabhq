@@ -3,23 +3,6 @@
 ((gl) => {
   const PrettyTime = gl.PrettyTime;
 
-  Vue.component('time-tracking-no-tracking-pane', {
-    name: 'time-tracking-no-tracking-pane',
-    template: '<div class="time-tracking-no-tracking-pane"><span class="no-value">No estimate or time spent</span></div>',
-  });
-
-  Vue.component('time-tracking-estimate-only-pane', {
-    name: 'time-tracking-estimate-only-pane',
-    props: ['timeEstimateHuman'],
-    template: '<div class="time-tracking-estimate-only-pane"><span class="bold">Estimated:</span> {{ timeEstimateHuman }}</div>',
-  });
-
-  Vue.component('time-tracking-spent-only-pane', {
-    name: 'time-tracking-spent-only-pane',
-    props: ['timeSpentHuman'],
-    template: '<div class="time-tracking-spend-only-pane"><span class="bold">Spent:</span> {{ timeSpentHuman }}</div>',
-  });
-
   Vue.component('time-tracking-comparison-pane', {
     name: 'time-tracking-comparison-pane',
     props: ['timeSpent', 'timeEstimate', 'timeSpentHuman', 'timeEstimateHuman'],

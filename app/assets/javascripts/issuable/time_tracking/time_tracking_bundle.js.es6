@@ -4,7 +4,7 @@
 //= require smart_interval
 //= require subbable_resource
 
-(() => {
+((gl) => {
   /* This Vue instance represents what will become the parent instance for the
     * sidebar. It will be responsible for managing `issuable` state and propagating
     * changes to sidebar components.
