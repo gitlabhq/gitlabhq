@@ -573,14 +573,12 @@ class MergeRequest < ActiveRecord::Base
     closing_issues = []
 
     if target_branch == project.default_branch
-      messages = [description]
-
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
-      ext.analyze(messages.join("\n"))
+      ext.analyze(description)
 
       issues = ext.issues
       closing_issues = Gitlab::ClosingIssueExtractor.new(project, current_user).
-        closed_by_message(messages.join("\n"))
+        closed_by_message(description)
     end
 
     issues - closing_issues
