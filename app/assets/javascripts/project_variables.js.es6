@@ -1,44 +1,43 @@
-/* eslint-disable */
-((global) => {
+(() => {
   const HIDDEN_VALUE_TEXT = '******';
 
   class ProjectVariables {
     constructor() {
-      this.$reveal = $('.js-btn-toggle-reveal-values');
-
-      this.$reveal.on('click', this.toggleRevealState.bind(this));
+      this.$revealBtn = $('.js-btn-toggle-reveal-values');
+      this.$revealBtn.on('click', this.toggleRevealState.bind(this));
     }
 
-    toggleRevealState(event) {
-      event.preventDefault();
+    toggleRevealState(e) {
+      e.preventDefault();
 
-      const $btn = $(event.currentTarget);
-      const oldStatus = $btn.attr('data-status');
+      const oldStatus = this.$revealBtn.attr('data-status');
+      let newStatus = 'hidden';
+      let newAction = 'Reveal Values';
 
-      if (oldStatus == 'hidden') {
-        [newStatus, newAction] = ['revealed', 'Hide Values'];
-      } else {
-        [newStatus, newAction] = ['hidden', 'Reveal Values'];
+      if (oldStatus === 'hidden') {
+        newStatus = 'revealed';
+        newAction = 'Hide Values';
       }
 
-      $btn.attr('data-status', newStatus);
+      this.$revealBtn.attr('data-status', newStatus);
 
-      let $variables = $('.variable-value');
+      const $variables = $('.variable-value');
 
-      $variables.each(function (_, variable) {
-        let $variable = $(variable);
+      $variables.each((_, variable) => {
+        const $variable = $(variable);
         let newText = HIDDEN_VALUE_TEXT;
 
-        if (newStatus == 'revealed') {
+        if (newStatus === 'revealed') {
           newText = $variable.attr('data-value');
         }
 
         $variable.text(newText);
       });
 
-      $btn.text(newAction);
+      this.$revealBtn.text(newAction);
     }
   }
 
-  global.ProjectVariables = ProjectVariables;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  window.gl.ProjectVariables = ProjectVariables;
+})();
