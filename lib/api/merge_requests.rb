@@ -28,6 +28,7 @@ module API
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
+          optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
         end
       end
 
@@ -75,7 +76,8 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
 
-        mr_params = declared_params
+        mr_params = declared_params(include_missing: false)
+        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
@@ -144,13 +146,15 @@ module API
                                  desc: 'Status of the merge request'
           use :optional_params
           at_least_one_of :title, :target_branch, :description, :assignee_id,
-                          :milestone_id, :labels, :state_event
+                          :milestone_id, :labels, :state_event,
+                          :remove_source_branch
         end
         put path do
           merge_request = user_project.merge_requests.find(params.delete(:merge_request_id))
           authorize! :update_merge_request, merge_request
 
           mr_params = declared_params(include_missing: false)
+          mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
 
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
