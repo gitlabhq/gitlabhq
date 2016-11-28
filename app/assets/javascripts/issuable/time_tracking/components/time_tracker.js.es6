@@ -1,4 +1,3 @@
-//= require vue
 (() => {
   gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
