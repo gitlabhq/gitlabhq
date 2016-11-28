@@ -94,12 +94,10 @@
           gl.issueBoards.onStart();
         },
         onAdd: (e) => {
-          // Add the element back to original list to allow Vue to handle DOM updates
-          e.from.appendChild(e.item);
+          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
 
           this.$nextTick(() => {
-            // Update the issues once we know the element has been moved
-            gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+            e.item.remove();
           });
         },
       });

@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require vue
 //= require lib/utils/pretty_time
 

@@ -79,6 +79,7 @@ Milestone:
 - project_id
 - description
 - due_date
+- start_date
 - created_at
 - updated_at
 - state

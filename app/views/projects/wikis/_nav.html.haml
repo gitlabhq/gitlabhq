@@ -7,7 +7,7 @@
           = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
 
         = nav_link(path: 'wikis#pages') do
-          = link_to 'Pages', namespace_project_wiki_pages_path(@project.namespace, @project)
+          = link_to 'Pages', namespace_project_wikis_pages_path(@project.namespace, @project)
 
         = nav_link(path: 'wikis#git_access') do
           = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do

@@ -72,7 +72,7 @@ the list will be created and filled with the issues that have that label.
 
 ## Creating a new list
 
-Create a new list by clicking on the **Create new list** button at the upper
+Create a new list by clicking on the **Add list** button at the upper
 right corner of the Issue Board.
 
 ![Issue Board welcome message](img/issue_board_add_list.png)

@@ -96,4 +96,6 @@ The form should be titled `Edit issue`. The submit button should be labeled `Sav
 | Add | Add a merge request | Do not use `create` or `new` |
 | View | View an open or merged merge request ||
 | Edit | Edit an open or merged merge request| Do not use `update` |
+| Approve | Approve an open merge request ||
+| Remove approval, unapproved | Remove approval of an open merge request | Do not use `unapprove` as that is not an English word|
 | Merge | Merge an open merge request ||

@@ -249,7 +249,7 @@ class Member < ActiveRecord::Base
   end
 
   def post_update_hook
-    # override in subclass
+    UserProjectAccessChangedService.new(user.id).execute if access_level_changed?
   end
 
   def post_destroy_hook

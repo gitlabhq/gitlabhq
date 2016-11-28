@@ -1,3 +1,7 @@
+/* global Vue */
+/* global Cookies */
+/* global Flash */
+
 //= require vue
 //= require_tree ./svg
 //= require_tree .
