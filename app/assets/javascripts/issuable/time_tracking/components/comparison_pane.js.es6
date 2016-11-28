@@ -5,7 +5,12 @@
 
   app.comparisonPane = {
     name: 'time-tracking-comparison-pane',
-    props: ['timeSpent', 'timeEstimate', 'timeSpentHuman', 'timeEstimateHuman'],
+    props: [
+      'timeSpent',
+      'timeEstimate',
+      'timeSpentHuman',
+      'timeEstimateHuman'
+    ],
     computed: {
       parsedRemaining() {
         const diffSeconds = this.timeEstimate - this.timeSpent;
