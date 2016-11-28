@@ -7,7 +7,7 @@ class CreateMergeRequestDiffs < ActiveRecord::Migration
       t.text :st_diffs, null: true
       t.integer :merge_request_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     if ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/

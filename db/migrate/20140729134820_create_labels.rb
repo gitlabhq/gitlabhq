@@ -6,7 +6,7 @@ class CreateLabels < ActiveRecord::Migration
       t.string :color
       t.integer :project_id
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

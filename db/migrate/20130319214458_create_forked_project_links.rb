@@ -5,7 +5,7 @@ class CreateForkedProjectLinks < ActiveRecord::Migration
       t.integer :forked_to_project_id, null: false
       t.integer :forked_from_project_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
     add_index :forked_project_links, :forked_to_project_id, unique: true
   end
