@@ -84,7 +84,7 @@ For more information please see the [architecture documentation](https://docs.gi
 
 ## UX design
 
-Please adhere to the [UX Guide](doc/development/ux_guide/readme.md) when creating designs and implementing code.
+Please adhere to the [UX Guide](doc/development/ux_guide/index.md) when creating designs and implementing code.
 
 ## Third-party applications
 
