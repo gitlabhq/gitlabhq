@@ -15,13 +15,26 @@ as much as possible.
 
 ### Code in `app/`
 
-Place EE-specific controllers, models, services, workers in the top-level
-`EE` module namespace.
+Place EE-specific controllers, finders, helpers, mailers, models, policies,
+serializers/entities, services, validators and workers in the top-level
+`EE` module namespace, and in a specific `/ee/` sub-folder:
+
+- `app/controllers/ee/foos_controller.rb`
+- `app/finders/ee/foos_finder.rb`
+- `app/helpers/ee/foos_helper.rb`
+- `app/mailers/ee/foos_mailer.rb`
+- `app/models/ee/foo.rb`
+- `app/policies/ee/foo_policy.rb`
+- `app/serializers/ee/foo_entity.rb`
+- `app/serializers/ee/foo_serializer.rb`
+- `app/services/ee/foo/create_service.rb`
+- `app/validators/ee/foo_attr_validator.rb`
+- `app/workers/ee/foo_worker.rb`
 
 If you modify an existing part of a CE controller, model, service, worker etc.
-one simple solution is to use the `prepend` strategy (presented below).
+one simple solution is to use the `prepend` strategy ([presented below](#overriding-ce-methods)).
 
-For example to override CE implementation of
+For example to override the CE implementation of
 `ApplicationController#after_sign_out_path_for`:
 
 ```ruby
@@ -120,9 +133,10 @@ fun to resolve when you add the indentation to the equation.
 ### Code in `lib/`
 
 Place EE-specific logic in the top-level `EE` module namespace. Namespace the
-class beneath the `EE` module just as you would normally. For example, if CE
-has LDAP classes in `lib/gitlab/ldap/` then you would place EE-specific LDAP
-classes in `lib/ee/gitlab/ldap`.
+class beneath the `EE` module just as you would normally.
+
+For example, if CE has LDAP classes in `lib/gitlab/ldap/` then you would place
+EE-specific LDAP classes in `lib/ee/gitlab/ldap`.
 
 ### Classes vs. Module Mixins
 
