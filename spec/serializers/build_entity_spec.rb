@@ -19,6 +19,10 @@ describe BuildEntity do
       expect(subject).not_to include(/token/)
       expect(subject).not_to include(/variables/)
     end
+
+    it 'contains field which says it is not a manual job' do
+      expect(subject.fetch(:manual)).to be false
+    end
   end
 
   context 'when build is a manual action' do
@@ -26,6 +30,10 @@ describe BuildEntity do
 
     it 'contains path to play action' do
       expect(subject).to include(:play_path)
+    end
+
+    it 'contains field which says it is manual job' do
+      expect(subject.fetch(:manual)).to be true
     end
   end
 end

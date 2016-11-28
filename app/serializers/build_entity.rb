@@ -3,6 +3,7 @@ class BuildEntity < Grape::Entity
 
   expose :id
   expose :name
+  expose :manual?, as: :manual
 
   expose :build_path do |build|
     path_to(:namespace_project_build, build)
