@@ -41,7 +41,8 @@
           Modify commit message
     .js-toggle-content.hide.prepend-top-default
       = render 'shared/commit_message_container', params: params,
-          description: @merge_request.description,
+          message_with_description: @merge_request.merge_commit_message(include_description: true),
+          message_without_description: @merge_request.merge_commit_message,
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 

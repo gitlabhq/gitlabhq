@@ -440,6 +440,20 @@ describe MergeRequest, models: true do
 
       expect(request.merge_commit_message).not_to match("Title\n\n\n\n")
     end
+
+    it 'includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message(include_description: true))
+        .to match("By removing all code\n\n")
+    end
+
+    it 'does not includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message)
+        .not_to match("By removing all code\n\n")
+    end
   end
 
   describe "#reset_merge_when_build_succeeds" do

@@ -8,42 +8,38 @@
       = text_area_tag 'commit_message',
           (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder]),
           class: 'form-control js-commit-message', placeholder: local_assigns[:placeholder],
+          data: local_assigns.slice(:message_with_description, :message_without_description),
           required: true, rows: (local_assigns[:rows] || 3),
           id: "commit_message-#{nonce}"
     - if local_assigns[:hint]
       %p.hint
         Try to keep the first line under 52 characters
         and the others under 72.
-    - if local_assigns[:description] 
-      %p.hint.use-description-hint
-        = link_to "#", class: "use-description-link" do
-          Use Merge Request description as merge commit message
-      %p.hint.use-default-message-hint.hide
-        = link_to "#", class: "use-default-message-link" do
-          Use default Gitlab merge commit message
+    -if local_assigns.slice(:message_with_description, :message_without_description).present?
+      %p.hint.with-description-hint
+        = link_to "#", class: "with-description-link" do
+          Include description in commit message
+      %p.hint.without-description-hint.hide
+        = link_to "#", class: "without-description-link" do
+          Don't include description in commit message
 
       :javascript
-        $('.use-description-link').on('click', function(e) {
+        $('.with-description-link').on('click', function(e) {
           e.preventDefault();
 
-          var message = "Merge branch '#{j @merge_request.source_branch}' into '#{j @merge_request.target_branch}'\n\n"
-          message = message + "#{j @merge_request.title}\n\n"
-          message = message + "#{j local_assigns[:description]}\n\n";
-          message = message + "See merge request #{j @merge_request.to_reference}"
+          var textarea = $('.js-commit-message')
 
-
-          $('.use-description-hint').hide();
-          $('.use-default-message-hint').show();
-          $('.js-commit-message').val(message)
+          textarea.val(textarea.data('messageWithDescription'))
+          $('.with-description-hint').hide();
+          $('.without-description-hint').show();
         });
 
-        $('.use-default-message-link').on('click', function(e) {
+        $('.without-description-link').on('click', function(e) {
           e.preventDefault();
 
-          var defaultMessage = "#{j (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder])}";
+          var textarea = $('.js-commit-message')
 
-          $('.use-description-hint').show();
-          $('.use-default-message-hint').hide();
-          $('.js-commit-message').val(defaultMessage);
+          textarea.val(textarea.data('messageWithoutDescription'))
+          $('.with-description-hint').show();
+          $('.without-description-hint').hide();
         });
-

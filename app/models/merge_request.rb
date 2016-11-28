@@ -628,7 +628,7 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.repository.branch_names.include?(self.target_branch)
   end
 
-  def merge_commit_message
+  def merge_commit_message(include_description: false)
     closes_issues_references = closes_issues.map do |issue|
       issue.to_reference(target_project)
     end
@@ -640,6 +640,7 @@ class MergeRequest < ActiveRecord::Base
       message << "Closed Issues: #{closes_issues_references.join(", ")}\n\n"
     end
 
+    message << "#{description}\n\n" if include_description && description.present?
     message << "See merge request #{to_reference}"
 
     message
