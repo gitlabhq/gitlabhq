@@ -5,7 +5,15 @@
 
   app.collapsedState = {
     name: 'time-tracking-collapsed-state',
-    props: ['showComparisonState', 'showSpentOnlyState', 'showEstimateOnlyState', 'showNoTimeTrackingState', 'timeSpentHuman', 'timeEstimateHuman', 'stopwatchSvg'],
+    props: [
+      'showComparisonState',
+      'showSpentOnlyState',
+      'showEstimateOnlyState',
+      'showNoTimeTrackingState',
+      'timeSpentHuman',
+      'timeEstimateHuman',
+      'stopwatchSvg'
+    ],
     methods: {
       abbreviateTime(timeStr) {
         return PrettyTime.abbreviateTime(timeStr);
