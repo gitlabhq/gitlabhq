@@ -442,27 +442,21 @@ class User < ActiveRecord::Base
   end
 
   def refresh_authorized_projects
-    loop do
-      begin
-        Gitlab::Database.serialized_transaction do
-          project_authorizations.delete_all
+    transaction do
+      project_authorizations.delete_all
 
-          # project_authorizations_union can return multiple records for the same project/user with
-          # different access_level so we take row with the maximum access_level
-          project_authorizations.connection.execute <<-SQL
-            INSERT INTO project_authorizations (user_id, project_id, access_level)
-            SELECT user_id, project_id, MAX(access_level) AS access_level
-            FROM (#{project_authorizations_union.to_sql}) sub
-            GROUP BY user_id, project_id
-          SQL
+      # project_authorizations_union can return multiple records for the same
+      # project/user with different access_level so we take row with the maximum
+      # access_level
+      project_authorizations.connection.execute <<-SQL
+      INSERT INTO project_authorizations (user_id, project_id, access_level)
+      SELECT user_id, project_id, MAX(access_level) AS access_level
+      FROM (#{project_authorizations_union.to_sql}) sub
+      GROUP BY user_id, project_id
+      SQL
 
-          update_column(:authorized_projects_populated, true) unless authorized_projects_populated
-        end
-
-        break
-      # In the event of a concurrent modification Rails raises StatementInvalid.
-      # In this case we want to keep retrying until the transaction succeeds
-      rescue ActiveRecord::StatementInvalid
+      unless authorized_projects_populated
+        update_column(:authorized_projects_populated, true)
       end
     end
   end

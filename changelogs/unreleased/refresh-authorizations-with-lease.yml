@@ -1,0 +1,4 @@
+---
+title: Use a Redis lease for updating authorized projects
+merge_request: 7733
+author: 
