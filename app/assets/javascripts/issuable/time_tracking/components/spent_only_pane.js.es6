@@ -1,5 +1,5 @@
-((app) => {
-  app.spentOnlyPane = {
+(() => {
+  gl.IssuableTimeTrackingApp.spentOnlyPane = {
     name: 'time-tracking-spent-only-pane',
     props: ['timeSpentHuman'],
     template: `

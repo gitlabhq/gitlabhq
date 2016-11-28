@@ -1,5 +1,5 @@
-((app) => {
-  app.noTrackingPane = {
+(() => {
+  gl.IssuableTimeTrackingApp.noTrackingPane = {
     name: 'time-tracking-no-tracking-pane',
     template: `
       <div class='time-tracking-no-tracking-pane'>

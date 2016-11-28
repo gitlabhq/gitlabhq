@@ -1,5 +1,5 @@
-((app) => {
-  app.estimateOnlyPane = {
+(() => {
+  gl.IssuableTimeTrackingApp.estimateOnlyPane = {
     name: 'time-tracking-estimate-only-pane',
     props: ['timeEstimateHuman'],
     template: `

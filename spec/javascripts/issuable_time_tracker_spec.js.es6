@@ -3,7 +3,7 @@
 //= require vue
 //= require issuable/time_tracking/time_tracking_bundle
 
-function initComponent(time_estimate = 100000, time_spent = 5000, human_time_estimate = '3d 3h 46m', human_time_spent = '1h 23m') {
+function initComponent(opts = {}) {
   fixture.set(`
     <div>
       <div id="mock-container"></div>
@@ -11,19 +11,16 @@ function initComponent(time_estimate = 100000, time_spent = 5000, human_time_est
   `);
 
   this.initialData = {
-    time_estimate,
-    time_spent,
-    human_time_estimate,
-    human_time_spent,
-    timeEstimateHuman: human_time_estimate,
-    timeSpentHuman: human_time_spent,
-    timeEstimate: time_estimate,
-    timeSpent: time_spent,
+    timeEstimate: opts.timeEstimate || 100000,
+    timeSpent: opts.timeSpent || 5000,
+    timeEstimateHuman: opts.timeEstimateHuman || '3d 3h 46m',
+    timeSpentHuman: opts.timeSpentHuman || '1h 23m',
+    docsUrl: '/help/workflow/time_tracking.md',
   };
 
   this.timeTracker = new gl.IssuableTimeTracker({
     el: '#mock-container',
-    propsData: this.initialData
+    data: this.initialData,
   });
 }
 
@@ -38,8 +35,8 @@ function initComponent(time_estimate = 100000, time_spent = 5000, human_time_est
         expect(this.timeTracker).toBeDefined();
       });
 
-      it ('should correctly set time_estimate', function() {
-        expect(this.timeTracker.time_estimate).toBe(this.initialData.time_estimate);
+      it ('should correctly set timeEstimate', function() {
+        expect(this.timeTracker.timeEstimate).toBe(this.initialData.timeEstimate);
       });
       it ('should correctly set time_spent', function() {
         expect(this.timeTracker.time_spent).toBe(this.initialData.time_spent);
@@ -53,10 +50,13 @@ function initComponent(time_estimate = 100000, time_spent = 5000, human_time_est
             initComponent.apply(this);
           });
 
-          it('should show the "Comparison" pane when time_estimate and time_spent are truthy', function() {
-            const $comparisonPane = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane');
-            expect(this.timeTracker.showComparisonState).toBe(true);
-            expect($comparisonPane).toBeVisible();
+          it('should show the "Comparison" pane when timeEstimate and time_spent are truthy', function(done) {
+            Vue.nextTick(() => {
+              const $comparisonPane = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane');
+              expect(this.timeTracker.showComparisonState).toBe(true);
+              expect($comparisonPane).toBeVisible();
+              done();
+            });
           });
 
           it('should display the human readable version of time estimated', function() {
@@ -87,7 +87,7 @@ function initComponent(time_estimate = 100000, time_spent = 5000, human_time_est
             });
 
             it('should display the remaining meter with the correct background color when over estimate', function() {
-              this.timeTracker.time_estimate = 1;
+              this.timeTracker.timeEstimate = 1;
               this.timeTracker.time_spent = 2;
               Vue.nextTick(() => {
                 const styledMeter = $(this.timeTracker.$el).find('.time-tracking-comparison-pane .over_estimate .meter-fill');
@@ -99,112 +99,115 @@ function initComponent(time_estimate = 100000, time_spent = 5000, human_time_est
 
         describe("Estimate only pane", function() {
           beforeEach(function() {
-            initComponent.apply(this, [10000, 0, '2h 46m', 0]);
+            initComponent.apply(this, { timeEstimate: 10000, timeSpent: '0', timeEstimateHuman: '2h 46m', timeSpentHuman: '0' });
           });
 
-          it('should only show the "Estimate only" pane when time_estimate is truthy and time_spent is falsey', function() {
-            const $estimateOnlyPane = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane');
+          it('should only show the "Estimate only" pane when timeEstimate is truthy and time_spent is falsey', function() {
+            Vue.nextTick(() => {
+              const $estimateOnlyPane = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane');
 
-            expect(this.timeTracker.showEstimateOnlyState).toBe(true);
-            expect($estimateOnlyPane).toBeVisible();
+              expect(this.timeTracker.showEstimateOnlyState).toBe(true);
+              expect($estimateOnlyPane).toBeVisible();
+            });
           });
 
           it('should display the human readable version of time estimated', function() {
-            const estimateText = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane').innerText;
-            const correctText = 'Estimated: 2h 46m';
+            Vue.nextTick(() => {
+              const estimateText = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane').innerText;
+              const correctText = 'Estimated: 2h 46m';
 
-            expect(estimateText).toBe(correctText);
+              expect(estimateText).toBe(correctText);
+            });
           });
         });
 
         describe('Spent only pane', function() {
           beforeEach(function() {
-            initComponent.apply(this, [0, 5000]);
+            initComponent.apply(this, { timeEstimate: 0, timeSpent: 5000 });
           });
           // Look for the value
-          it('should only show the "Spent only" pane  when time_estimate is falsey and time_spent is truthy', function() {
-            const $spentOnlyPane = this.timeTracker.$el.querySelector('.time-tracking-spend-only-pane');
+          it('should only show the "Spent only" pane  when timeEstimate is falsey and time_spent is truthy', function() {
+            Vue.nextTick(() => {
+              const $spentOnlyPane = this.timeTracker.$el.querySelector('.time-tracking-spend-only-pane');
 
-            expect(this.timeTracker.showSpentOnlyState).toBe(true);
-            expect($spentOnlyPane).toBeVisible();
+              expect(this.timeTracker.showSpentOnlyState).toBe(true);
+              expect($spentOnlyPane).toBeVisible();
+            });
           });
 
           it('should display the human readable version of time spent', function() {
-            const spentText = this.timeTracker.$el.querySelector('.time-tracking-spend-only-pane').innerText;
-            const correctText = 'Spent: 1h 23m';
+            Vue.nextTick(() => {
+              const spentText = this.timeTracker.$el.querySelector('.time-tracking-spend-only-pane').innerText;
+              const correctText = 'Spent: 1h 23m';
 
-            expect(spentText).toBe(correctText);
+              expect(spentText).toBe(correctText);
+            });
           });
         });
 
         describe('No time tracking pane', function() {
           beforeEach(function() {
-            initComponent.apply(this, [0, 0, 0, 0]);
+            initComponent.apply(this, { timeEstimate: 0, timeSpent: 0, timeEstimateHuman: 0, timeSpentHuman: 0 });
           });
 
-          it('should only show the "No time tracking" pane when both time_estimate and time_spent are falsey', function() {
-            const $noTrackingPane = this.timeTracker.$el.querySelector('.time-tracking-no-tracking-pane');
-            const noTrackingText =$noTrackingPane.innerText;
-            const correctText = 'No estimate or time spent';
+          it('should only show the "No time tracking" pane when both timeEstimate and time_spent are falsey', function() {
+            Vue.nextTick(() => {
+              const $noTrackingPane = this.timeTracker.$el.querySelector('.time-tracking-no-tracking-pane');
+              const noTrackingText =$noTrackingPane.innerText;
+              const correctText = 'No estimate or time spent';
 
-            expect(this.timeTracker.showNoTimeTrackingState).toBe(true);
-            expect($noTrackingPane).toBeVisible();
-            expect(noTrackingText).toBe(correctText);
+              expect(this.timeTracker.showNoTimeTrackingState).toBe(true);
+              expect($noTrackingPane).toBeVisible();
+              expect(noTrackingText).toBe(correctText);
+            });
           });
         });
 
         describe("Help pane", function() {
           beforeEach(function() {
-            initComponent.apply(this, [0, 0]);
+            initComponent.apply(this, { timeEstimate: 0, timeSpent: 0 });
           });
 
           it('should not show the "Help" pane by default', function() {
-            const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
-
-            expect(this.timeTracker.showHelpState).toBe(false);
-            expect($helpPane).toBeNull();
-          });
-
-          it('should link to the correct documentation', function(done) {
-            const correctUrl = '/help/workflow/time_tracking.md'
-
-            $(this.timeTracker.$el).find('.help-button').click();
-
             Vue.nextTick(() => {
-              const currentHref = $(this.timeTracker.$el).find('.learn-more-button').attr('href');
-              expect(currentHref).toBe(correctUrl);
-              done();
-            });
+              const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
 
+              expect(this.timeTracker.showHelpState).toBe(false);
+              expect($helpPane).toBeNull();
+            });
           });
 
           it('should show the "Help" pane when help button is clicked', function(done) {
-            $(this.timeTracker.$el).find('.help-button').click();
-
             Vue.nextTick(() => {
-              const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
-              expect(this.timeTracker.showHelpState).toBe(true);
-              expect($helpPane).toBeVisible();
-              done();
+              $(this.timeTracker.$el).find('.help-button').click();
+
+              setTimeout(() => {
+                const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
+                expect(this.timeTracker.showHelpState).toBe(true);
+                expect($helpPane).toBeVisible();
+                done();
+              }, 100);
             });
           });
 
           it('should not show the "Help" pane when help button is clicked and then closed', function(done) {
-            $(this.timeTracker.$el).find('.help-button').click();
-
-            setTimeout(() => {
-
-              $(this.timeTracker.$el).find('.close-help-button').click();
+            Vue.nextTick(() => {
+              $(this.timeTracker.$el).find('.help-button').click();
 
               setTimeout(() => {
-                const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
 
-                expect(this.timeTracker.showHelpState).toBe(false);
-                expect($helpPane).toBeNull();
+                $(this.timeTracker.$el).find('.close-help-button').click();
 
-                done();
+                setTimeout(() => {
+                  const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
+
+                  expect(this.timeTracker.showHelpState).toBe(false);
+                  expect($helpPane).toBeNull();
+
+                  done();
+                }, 1000);
               }, 1000);
-            }, 1000);
+            });
           });
         });
       });

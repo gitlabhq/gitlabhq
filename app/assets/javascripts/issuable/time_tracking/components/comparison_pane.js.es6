@@ -1,15 +1,15 @@
 //= require lib/utils/pretty_time
 
-((app) => {
+(() => {
   const PrettyTime = gl.PrettyTime;
 
-  app.comparisonPane = {
+  gl.IssuableTimeTrackingApp.comparisonPane = {
     name: 'time-tracking-comparison-pane',
     props: [
       'timeSpent',
       'timeEstimate',
       'timeSpentHuman',
-      'timeEstimateHuman'
+      'timeEstimateHuman',
     ],
     computed: {
       parsedRemaining() {

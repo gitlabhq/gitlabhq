@@ -65,6 +65,14 @@ shared_examples 'issuable time tracker' do
       expect(page).not_to have_content 'Learn more'
     end
   end
+
+  it 'displays the correct help url' do
+    page.within '#issuable-time-tracker' do
+      find('.help-button').click
+
+      expect(find_link('Learn more')[:href]).to eq('/help/workflow/time_tracking.md')
+    end
+  end
 end
 
 def submit_time(slash_command)

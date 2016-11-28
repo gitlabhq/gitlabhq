@@ -1,11 +1,7 @@
-((app) => {
-  app.helpState = {
+(() => {
+  gl.IssuableTimeTrackingApp.helpState = {
     name: 'time-tracking-help-state',
-    data() {
-      return {
-        docsUrl: '/help/workflow/time_tracking.md',
-      };
-    },
+    props: ['docsUrl'],
     template: `
       <div class='time-tracking-help-state'>
         <div class='time-tracking-info'>

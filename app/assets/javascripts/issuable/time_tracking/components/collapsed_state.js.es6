@@ -1,9 +1,9 @@
 //= require lib/utils/pretty_time
 
-((app) => {
+(() => {
   const PrettyTime = gl.PrettyTime;
 
-  app.collapsedState = {
+  gl.IssuableTimeTrackingApp.collapsedState = {
     name: 'time-tracking-collapsed-state',
     props: [
       'showComparisonState',
@@ -12,7 +12,7 @@
       'showNoTimeTrackingState',
       'timeSpentHuman',
       'timeEstimateHuman',
-      'stopwatchSvg'
+      'stopwatchSvg',
     ],
     methods: {
       abbreviateTime(timeStr) {
