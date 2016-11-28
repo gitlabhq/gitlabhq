@@ -202,6 +202,7 @@ module IssuablesHelper
     opts = params.with_indifferent_access
     opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
 
     hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
   end
