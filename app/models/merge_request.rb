@@ -637,7 +637,8 @@ class MergeRequest < ActiveRecord::Base
     message << "#{title}\n\n"
 
     if closes_issues_references.present?
-      message << "Closed Issues: #{closes_issues_references.join(", ")}\n\n"
+      issue_text = 'issue'.pluralize(closes_issues_references.size)
+      message << "Closes #{issue_text} #{closes_issues_references.to_sentence}\n\n"
     end
 
     message << "#{description}\n\n" if include_description && description.present?
