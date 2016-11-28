@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.1 (2016-11-28)
+
+- Fix: MergeRequestSerializer breaks on MergeRequest#rebase_dir_path when source_project doesn't exist anymore.
+
 ## 8.14.0 (2016-11-22)
 
 - Added Backfill service for Geo. !861

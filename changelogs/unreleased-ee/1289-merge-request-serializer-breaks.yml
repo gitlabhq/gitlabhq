@@ -1,5 +1,0 @@
----
-title: 'Fix: MergeRequestSerializer breaks on MergeRequest#rebase_dir_path when source_project
-  doesn''t exist anymore'
-merge_request:
-author:
