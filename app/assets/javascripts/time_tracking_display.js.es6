@@ -1,3 +1,4 @@
+/* eslint-disable */
 //= require vue
 //= require issuable_time_tracker
 //= require smart_interval
