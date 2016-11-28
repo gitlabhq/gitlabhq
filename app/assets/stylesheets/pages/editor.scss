@@ -51,8 +51,16 @@
 
   .new-file-name {
     display: inline-block;
-    width: 450px;
+    max-width: 450px;
     float: left;
+
+    @media(max-width: $screen-md-max) {
+      width: 280px;
+    }
+
+    @media(max-width: $screen-sm-max) {
+      width: 180px;
+    }
   }
 
   .file-buttons {
@@ -113,4 +121,45 @@
       width: 250px;
     }
   }
+}
+
+@media(max-width: $screen-xs-max){
+  .file-editor {
+    .file-title {
+      .pull-right {
+        height: auto;
+      }
+    }
+
+    .new-file-name {
+      margin-bottom: 0;
+      max-width: none;
+      width: 100%;
+    }
+
+    .file-buttons {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 7px;
+
+      .soft-wrap-toggle {
+        margin: 7px 0 0;
+      }
+
+      .encoding-selector,
+      .license-selector,
+      .gitignore-selector,
+      .gitlab-ci-yml-selector {
+        margin: 7px 0 0;
+
+        button {
+          width: 100%;
+        }
+      }
+
+    }
+
+  }
+
 }
