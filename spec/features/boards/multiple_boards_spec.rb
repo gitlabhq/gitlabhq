@@ -121,7 +121,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
         expect(page).to have_content(board2.name)
       end
 
-      click_button 'Create new list'
+      click_button 'Add list'
 
       wait_for_ajax
 
