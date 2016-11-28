@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::CycleAnalytics::EventsQuery do
   let(:max_events) { 3 }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user, :admin) }
   let(:options) { { from: 30.days.ago } }
 
