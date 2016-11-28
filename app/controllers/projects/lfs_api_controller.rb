@@ -1,8 +1,7 @@
 class Projects::LfsApiController < Projects::GitHttpClientController
-  include LfsHelper
+  include LfsRequest
 
-  before_action :require_lfs_enabled!
-  before_action :lfs_check_access!, except: [:deprecated]
+  skip_before_action :lfs_check_access!, only: [:deprecated]
 
   def batch
     unless objects.present?
@@ -30,6 +29,14 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   end
 
   private
+
+  def download_request?
+    params[:operation] == 'download'
+  end
+
+  def upload_request?
+    params[:operation] == 'upload'
+  end
 
   def existing_oids
     @existing_oids ||= begin
@@ -78,13 +85,5 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         }.compact
       }
     }
-  end
-
-  def download_request?
-    params[:operation] == 'download'
-  end
-
-  def upload_request?
-    params[:operation] == 'upload'
   end
 end

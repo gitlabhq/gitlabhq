@@ -1,9 +1,8 @@
 class Projects::LfsStorageController < Projects::GitHttpClientController
-  include LfsHelper
+  include LfsRequest
+  include WorkhorseRequest
 
-  before_action :require_lfs_enabled!
-  before_action :lfs_check_access!
-  before_action :verify_workhorse_api!, only: [:upload_authorize]
+  skip_before_action :verify_workhorse_api!, only: [:download, :upload_finalize]
 
   def download
     lfs_object = LfsObject.find_by_oid(oid)
