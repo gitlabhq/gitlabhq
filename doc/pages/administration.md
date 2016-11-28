@@ -246,7 +246,7 @@ Below are the four scenarios that are described in
 1. Edit `/etc/gitlab/gitlab.rb`:
 
     ```ruby
-    pages_external_url "https://example.io"
+    pages_external_url "http://example.io"
     nginx['listen_addresses'] = ['1.1.1.1']
     pages_nginx['enable'] = false
     gitlab_pages['external_http'] = '1.1.1.2:80'
