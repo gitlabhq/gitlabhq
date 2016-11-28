@@ -27,16 +27,10 @@ describe PipelineUnlockWorker do
           create_build(running_pipeline, :failed, stage: 'test')
         end
 
-        it 'updates each pipeline status' do
-          expect(created_pipeline.reload).to be_created
-          expect(pending_pipeline.reload).to be_pending
-          expect(running_pipeline.reload).to be_running
+        it 'processes each pipeline that needs update' do
+          pipelines = [created_pipeline, pending_pipeline, running_pipeline]
 
-          worker.perform
-
-          expect(created_pipeline.reload).to be_pending
-          expect(pending_pipeline.reload).to be_success
-          expect(running_pipeline.reload).to be_failed
+          expect_pipeline_update(*pipelines) { worker.perform }
         end
       end
 
@@ -53,48 +47,45 @@ describe PipelineUnlockWorker do
         end
 
         it 'retriggers pipeline processing' do
-          expect(pipeline.reload).to be_running
-
-          worker.perform
-
-          expect(pipeline.reload).to be_running
-          expect(find_build(pipeline, stage: 'test')).to be_pending
-          expect(find_build(pipeline, stage: 'deploy')).to be_created
-        end
-
-        it 'updates pipeline' do
-          expect { worker.perform }
-            .to change { pipeline.reload.updated_at }
+          expect_pipeline_update(pipeline) { worker.perform }
         end
       end
 
       context 'when locked pipeline is more than week old' do
-        before do
+        let(:pipeline) do
           create(:ci_pipeline, status: :created,
-                               updated_at: 2.weeks.ago)
+                               created_at: 2.weeks.ago)
+        end
+
+        before do
+          create_build(pipeline, :success)
         end
 
         it 'does not trigger update' do
-          expect_any_instance_of(PipelineProcessWorker)
-            .not_to receive(:perform)
+          expect_no_pipeline_update { worker.perform }
         end
       end
     end
 
     context 'when locked pipelines are not present' do
-      context 'when there are fresh running pipelines' do
-        before { create(:ci_pipeline, status: :running) }
+      context 'when there is a running pipeline' do
+        let(:pipeline) do
+          create(:ci_pipeline, status: :running,
+                               updated_at: 4.hours.ago)
+        end
+
+        before do
+          create_build(pipeline, :success)
+        end
 
         it 'does not trigger update' do
-          expect_any_instance_of(PipelineProcessWorker)
-            .not_to receive(:perform)
+          expect_no_pipeline_update { worker.perform }
         end
       end
 
       context 'when there are no pipelines at all' do
         it 'does nothing' do
-          expect_any_instance_of(PipelineProcessWorker)
-            .not_to receive(:perform)
+          expect_no_pipeline_update { worker.perform }
         end
       end
     end
@@ -104,7 +95,19 @@ describe PipelineUnlockWorker do
     create(:ci_build, opts.merge(pipeline: pipeline, status: status))
   end
 
-  def find_build(pipeline, opts)
-    pipeline.builds.find_by(opts)
+  def expect_pipeline_update(*pipelines)
+    pipeline_ids = pipelines.map(&:id).in_groups_of(1)
+
+    expect(Sidekiq::Client).to receive(:push_bulk)
+      .with(hash_including('args' => pipeline_ids))
+      .once
+
+    yield
+  end
+
+  def expect_no_pipeline_update
+    expect(Sidekiq::Client).not_to receive(:push_bulk)
+
+    yield
   end
 end
