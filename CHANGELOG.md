@@ -202,6 +202,15 @@ entry.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
 
+## 8.13.7 (2016-11-28)
+
+- fixes 500 error on project show when user is not logged in and project is still empty. !7376
+- Update grape entity to 0.6.0. !7491
+- Fix information disclosure in `Projects::BlobController#update`.
+- Fix missing access checks on issue lookup using IssuableFinder.
+- Replace issue access checks with use of IssuableFinder.
+- Non members cannot create labels through the API.
+
 ## 8.13.6 (2016-11-17)
 
 - Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
