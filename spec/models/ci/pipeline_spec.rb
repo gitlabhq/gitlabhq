@@ -1034,13 +1034,14 @@ describe Ci::Pipeline, :models do
     end
 
     describe '.with_builds' do
-      context 'when pipeline has builds' do
+      context 'when pipeline has multiple builds' do
         before do
+          create(:ci_build, pipeline: pipeline)
           create(:ci_build, pipeline: pipeline)
         end
 
         it 'finds the pipeline with builds' do
-          expect(described_class.with_builds).to include pipeline
+          expect(described_class.with_builds).to contain_exactly(pipeline)
         end
       end
 

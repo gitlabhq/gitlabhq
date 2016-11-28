@@ -22,7 +22,7 @@ module Ci
     after_create :keep_around_commits, unless: :importing?
 
     scope :with_builds, -> do
-      joins(:builds).merge(Ci::Build.all)
+      joins(:builds).merge(Ci::Build.all).distinct
     end
 
     state_machine :status, initial: :created do

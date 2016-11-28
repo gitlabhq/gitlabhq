@@ -6,7 +6,7 @@ class PipelineUnlockWorker
     Ci::Pipeline.unfinished.with_builds
       .where('ci_commits.updated_at < ?', 6.hours.ago)
       .where('ci_commits.created_at > ?', 1.week.ago)
-      .select(:id).group(:id).order(:id).pluck(:id).tap do |ids|
+      .select(:id).order(:id).pluck(:id).tap do |ids|
         break if ids.empty?
 
         Sidekiq::Client.push_bulk('class' => PipelineProcessWorker,
