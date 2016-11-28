@@ -1,5 +1,5 @@
-#geo_clone{data: {'clone-url-secondary': h(default_url_to_repo(project)), 'clone-url-primary': h(geo_primary_default_url_to_repo(project))}}
-  %geo-clone-dialog{id: 'modal_geo_info', title: 'How to work faster with Geo'}
+#geo-clone{data: {clone_url_secondary: h(default_url_to_repo(project)), clone_url_primary: h(geo_primary_default_url_to_repo(project))}}
+  %geo-clone-dialog{id: 'modal-geo-info', title: 'How to work faster with Geo'}
     %span{slot: 'clipboard-1'}
       = clipboard_button(clipboard_target: 'pre#geo-info-1')
     %span{slot: 'clipboard-2'}

@@ -13,7 +13,9 @@
     },
     filters: {
       emptyRepo: (value) => {
-        if (!value) return '<clone url for primary repository>';
+        if (!value) {
+          return '<clone url for primary repository>';
+        }
         return value;
       },
     },
@@ -30,7 +32,7 @@
                       <slot name="clipboard-1"></slot>
                       <pre class="dark" id="geo-info-1">git clone {{cloneUrlSecondary}}</pre>
                       
-                      <p><strong>Step2.</strong> In your repository's directory define <strong>primary's node</strong> repository URL as target to <strong>push</strong> code:</p>
+                      <p><strong>Step2.</strong> Go to the new directory and define <strong>primary's node</strong> repository URL as the <strong>push</strong> remote:</p>
                       <slot name="clipboard-2"></slot>
                       <pre class="dark" id="geo-info-2">git remote set-url --push origin {{cloneUrlPrimary | emptyRepo}}</pre> 
                       <p><strong>Done.</strong> You can now commit and push code as you normally do, but with increased speed.</p>
@@ -42,10 +44,10 @@
   });
 
   document.addEventListener('DOMContentLoaded', () => {
-    const geoClone = document.getElementById('geo_clone');
+    const geoClone = document.getElementById('geo-clone');
     if (geoClone) {
       gl.GeoCloneDialog = new Vue({
-        el: '#geo_clone',
+        el: '#geo-clone',
         data: Object.assign({}, geoClone.dataset),
       });
     }
