@@ -1308,6 +1308,32 @@ describe Repository, models: true do
 
         expect(tag).to be_a(Gitlab::Git::Tag)
       end
+
+      it 'passes commit SHA to pre-receive and update hooks,\
+        and tag SHA to post-receive hook' do
+        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', repository.path_to_repo)
+        update_hook = Gitlab::Git::Hook.new('update', repository.path_to_repo)
+        post_receive_hook = Gitlab::Git::Hook.new('post-receive', repository.path_to_repo)
+
+        allow(Gitlab::Git::Hook).to receive(:new).
+          and_return(pre_receive_hook, update_hook, post_receive_hook)
+
+        allow(pre_receive_hook).to receive(:trigger).and_call_original
+        allow(update_hook).to receive(:trigger).and_call_original
+        allow(post_receive_hook).to receive(:trigger).and_call_original
+
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        commit_sha = repository.commit('master').id
+        tag_sha = tag.target
+
+        expect(pre_receive_hook).to have_received(:trigger).
+          with(anything, anything, commit_sha, anything)
+        expect(update_hook).to have_received(:trigger).
+          with(anything, anything, commit_sha, anything)
+        expect(post_receive_hook).to have_received(:trigger).
+          with(anything, anything, tag_sha, anything)
+      end
     end
 
     context 'with an invalid target' do
