@@ -22,24 +22,3 @@
       %p.hint.without-description-hint.hide
         = link_to "#", class: "without-description-link" do
           Don't include description in commit message
-
-      :javascript
-        $('.with-description-link').on('click', function(e) {
-          e.preventDefault();
-
-          var textarea = $('.js-commit-message')
-
-          textarea.val(textarea.data('messageWithDescription'))
-          $('.with-description-hint').hide();
-          $('.without-description-hint').show();
-        });
-
-        $('.without-description-link').on('click', function(e) {
-          e.preventDefault();
-
-          var textarea = $('.js-commit-message')
-
-          textarea.val(textarea.data('messageWithoutDescription'))
-          $('.with-description-hint').show();
-          $('.without-description-hint').hide();
-        });
