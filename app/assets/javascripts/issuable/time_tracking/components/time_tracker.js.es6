@@ -1,4 +1,4 @@
-(() => {
+((app) => {
   gl.IssuableTimeTracker = Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
     props: ['time_estimate', 'time_spent', 'human_time_estimate', 'human_time_spent', 'stopwatchSvg'],
@@ -6,6 +6,14 @@
       return {
         showHelp: false,
       };
+    },
+    components: {
+      'time-tracking-spent-only-pane': app.spentOnlyPane,
+      'time-tracking-estimate-only-pane': app.estimateOnlyPane,
+      'time-tracking-comparison-pane': app.comparisonPane,
+      'time-tracking-no-tracking-pane': app.noTrackingPane,
+      'time-tracking-help-state': app.helpState,
+      'time-tracking-collapsed-state': app.collapsedState,
     },
     computed: {
       timeSpent() {
@@ -99,4 +107,4 @@
       </div>
     `,
   });
-})();
+})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));

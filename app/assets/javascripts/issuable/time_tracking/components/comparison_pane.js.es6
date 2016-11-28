@@ -1,9 +1,9 @@
 //= require lib/utils/pretty_time
 
-((gl) => {
+((app) => {
   const PrettyTime = gl.PrettyTime;
 
-  Vue.component('time-tracking-comparison-pane', {
+  app.comparisonPane = {
     name: 'time-tracking-comparison-pane',
     props: ['timeSpent', 'timeEstimate', 'timeSpentHuman', 'timeEstimateHuman'],
     computed: {
@@ -60,5 +60,5 @@
         </div>
       </div>
     `,
-  });
-})(window.gl || (window.gl = {}));
+  };
+})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));

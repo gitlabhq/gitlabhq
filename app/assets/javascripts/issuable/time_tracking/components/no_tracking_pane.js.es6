@@ -1,10 +1,10 @@
-((gl) => {
-  Vue.component('time-tracking-no-tracking-pane', {
+((app) => {
+  app.noTrackingPane = {
     name: 'time-tracking-no-tracking-pane',
     template: `
       <div class='time-tracking-no-tracking-pane'>
         <span class='no-value'>No estimate or time spent</span>
       </div>
     `,
-  });
-})(window.gl || (window.gl = {}));
+  };
+})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));

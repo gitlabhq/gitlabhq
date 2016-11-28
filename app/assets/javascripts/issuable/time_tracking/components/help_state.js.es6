@@ -1,5 +1,5 @@
-(() => {
-  Vue.component('time-tracking-help-state', {
+((app) => {
+  app.helpState = {
     name: 'time-tracking-help-state',
     data() {
       return {
@@ -23,5 +23,5 @@
         </div>
       </div>
     `,
-  });
-})();
+  };
+})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));

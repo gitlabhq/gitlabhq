@@ -1,9 +1,9 @@
 //= require lib/utils/pretty_time
 
-((gl) => {
+((app) => {
   const PrettyTime = gl.PrettyTime;
 
-  Vue.component('time-tracking-collapsed-state', {
+  app.collapsedState = {
     name: 'time-tracking-collapsed-state',
     props: ['showComparisonState', 'showSpentOnlyState', 'showEstimateOnlyState', 'showNoTimeTrackingState', 'timeSpentHuman', 'timeEstimateHuman', 'stopwatchSvg'],
     methods: {
@@ -30,6 +30,6 @@
         </div>
       </div>
       `,
-  });
-})(window.gl || (window.gl = {}));
+  };
+})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));
 
