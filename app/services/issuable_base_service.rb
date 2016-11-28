@@ -186,8 +186,6 @@ class IssuableBaseService < BaseService
     params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
 
     if params.present? && update_issuable(issuable, params)
-      issuable.reset_events_cache
-
       # We do not touch as it will affect a update on updated_at field
       ActiveRecord::Base.no_touching do
         handle_common_system_notes(issuable, old_labels: old_labels)

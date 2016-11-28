@@ -198,19 +198,6 @@ class Note < ActiveRecord::Base
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
   end
 
-  # Reset notes events cache
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when a note is updated
-  # * when a note is removed
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.reset_event_cache_for(self)
-  end
-
   def editable?
     !system?
   end

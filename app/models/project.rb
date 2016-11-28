@@ -972,7 +972,6 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
-        reset_events_cache
 
         @old_path_with_namespace = old_path_with_namespace
 
@@ -1037,22 +1036,6 @@ class Project < ActiveRecord::Base
     end
 
     attrs
-  end
-
-  # Reset events cache related to this project
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when project was moved
-  # * when project was renamed
-  # * when the project avatar changes
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.where(project_id: self.id).
-      order('id DESC').limit(100).
-      update_all(updated_at: Time.now)
   end
 
   def project_member(user)
