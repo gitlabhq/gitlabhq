@@ -1,4 +1,6 @@
 class CreateGitHooks < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :git_hooks do |t|
       t.string :force_push_regex
@@ -7,7 +9,7 @@ class CreateGitHooks < ActiveRecord::Migration
       t.boolean :deny_delete_tag
       t.integer :project_id
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end
