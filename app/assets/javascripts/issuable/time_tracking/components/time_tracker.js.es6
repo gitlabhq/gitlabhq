@@ -11,6 +11,10 @@
     data() {
       return {
         showHelp: false,
+        timeSpent: this.time_spent,
+        timeEstimate: this.time_estimate,
+        timeEstimateHuman: this.human_time_estimate,
+        timeSpentHuman: this.human_time_spent,
       };
     },
     components: {
@@ -22,18 +26,6 @@
       'time-tracking-collapsed-state': app.collapsedState,
     },
     computed: {
-      timeSpent() {
-        return this.time_spent;
-      },
-      timeEstimate() {
-        return this.time_estimate;
-      },
-      timeEstimateHuman() {
-        return this.human_time_estimate;
-      },
-      timeSpentHuman() {
-        return this.human_time_spent;
-      },
       hasTimeSpent() {
         return !!this.timeSpent;
       },
