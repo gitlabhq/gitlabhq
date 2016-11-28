@@ -83,5 +83,8 @@
 
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
+    updated() {
+      $('.has-tooltip', $(this.$el)).tooltip('fixTitle');
+    },
   });
 })();

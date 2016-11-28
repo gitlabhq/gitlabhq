@@ -3,7 +3,6 @@ class List {
   constructor (obj) {
     this.id = obj.id;
     this._uid = this.guid();
-    this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
     this.preset = ['backlog', 'done', 'blank'].indexOf(this.type) > -1;
@@ -13,13 +12,33 @@ class List {
     this.loadingMore = false;
     this.issues = [];
     this.issuesSize = 0;
+    this._interval = new gl.SmartInterval({
+      callback: () => {
+        this.getIssues(false);
+      },
+      startingInterval: 6 * 1000, // 6 seconds
+      maxInterval: 11 * 1000, // 11 seconds
+      incrementByFactorOf: 10,
+      lazyStart: true,
+    });
+
+    if (this.type === 'done') {
+      this.position = Infinity;
+    } else if (this.type === 'backlog') {
+      this.position = -1;
+    } else {
+      this.position = obj.position;
+    }
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
     }
 
     if (this.type !== 'blank' && this.id) {
-      this.getIssues();
+      this.getIssues()
+        .then(() => {
+          this._interval.start();
+        });
     }
   }
 
@@ -41,12 +60,16 @@ class List {
       });
   }
 
-  destroy () {
+  destroy (persist = true) {
     const index = gl.issueBoards.BoardsStore.state.lists.indexOf(this);
     gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
-    gl.boardService.destroyList(this.id);
+    this._interval.destroy();
+
+    if (persist) {
+      gl.boardService.destroyList(this.id);
+    }
   }
 
   update () {
@@ -102,7 +125,17 @@ class List {
 
   createIssues (data) {
     data.forEach((issueObj) => {
-      this.addIssue(new ListIssue(issueObj));
+      const issue = this.findIssue(issueObj.iid);
+
+      if (issue) {
+        if (issueObj.assignee) {
+          issue.assignee = new ListUser(issueObj.assignee);
+        } else {
+          issue.assignee = undefined;
+        }
+      } else {
+        this.addIssue(new ListIssue(issueObj));
+      }
     });
   }
 

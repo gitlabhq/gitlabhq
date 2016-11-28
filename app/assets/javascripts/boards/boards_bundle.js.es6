@@ -48,25 +48,69 @@ $(() => {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
     },
     mounted () {
+      const interval = new gl.SmartInterval({
+        callback: () => {
+          this.fetchAll();
+        },
+        startingInterval: 5 * 1000, // 5 seconds
+        maxInterval: 10 * 1000, // 10 seconds
+        incrementByFactorOf: 10,
+        lazyStart: true,
+      });
+
       Store.disabled = this.disabled;
-      gl.boardService.all()
-        .then((resp) => {
-          resp.json().forEach((board) => {
-            const list = Store.addList(board);
 
-            if (list.type === 'done') {
-              list.position = Infinity;
-            } else if (list.type === 'backlog') {
-              list.position = -1;
+      this.fetchAll().then(() => {
+        this.loading = false;
+        interval.start();
+      });
+    },
+    methods: {
+      fetchAll() {
+        return gl.boardService.all()
+          .then((resp) => {
+            const data = resp.json();
+
+            // Remove any old lists
+            if (this.state.lists.length) {
+              const dataListIds = data.map( list => list.id );
+
+              this.state.lists.forEach((list) => {
+                if (dataListIds.indexOf(list.id) === -1) {
+                  list.destroy(false);
+                }
+              });
             }
+
+            // Create/Update lists
+            data.forEach((board) => {
+              const list = Store.findList('id', board.id, false);
+
+              if (list) {
+                // If list already exists, update the data
+                list.title = board.title;
+
+                if (board.position !== null) {
+                  list.position = board.position;
+                }
+
+                if (list.label) {
+                  list.label.description = board.label.description;
+                  list.label.color = board.label.color;
+                  list.label.textColor = board.label.text_color;
+                }
+              } else {
+                // If list doesn't exist, create a new list
+                Store.addList(board);
+              }
+            });
+
+            this.state.lists = _.sortBy(this.state.lists, 'position');
+
+            Store.addBlankState();
           });
-
-          this.state.lists = _.sortBy(this.state.lists, 'position');
-
-          Store.addBlankState();
-          this.loading = false;
-        });
-    }
+      },
+    },
   });
 
   gl.IssueBoardsSearch = new Vue({
