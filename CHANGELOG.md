@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.1 (2016-11-28)
+
+- Fix deselecting calendar days on contribution graph. !6453 (ClemMakesApps)
+- Update grape entity to 0.6.0. !7491
+- If Build running change accept merge request when build succeeds button from orange to blue. !7577
+- Changed import sources buttons to checkboxes. !7598 (Luke "Jared" Bennett)
+- Last minute CI Style tweaks for 8.14. !7643
+- Fix exceptions when loading build trace. !7658
+- Fix wrong template rendered when CI/CD settings aren't update successfully. !7665
+- fixes last_deployment call environment is nil. !7671
+- Sort builds by name within pipeline graph. !7681
+- Correctly determine mergeability of MR with no discussions.
+- Sidekiq stats in the admin area will now show correctly on different platforms. (blackst0ne)
+- Fixed issue boards dragging card removing random issues.
+- Fix information disclosure in `Projects::BlobController#update`.
+- Fix missing access checks on issue lookup using IssuableFinder.
+- Replace issue access checks with use of IssuableFinder.
+- Non members cannot create labels through the API.
+- Fix cycle analytics plan stage when commits are missing.
+
 ## 8.14.0 (2016-11-22)
 
 - Use separate email-token for incoming email and revert back the inactive feature. !5914
