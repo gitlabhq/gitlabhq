@@ -167,8 +167,9 @@ class Repository
 
     options = { message: message, tagger: user_to_committer(user) } if message
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-      rugged.tags.create(tag_name, target, options)
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do |service|
+      raw_tag = rugged.tags.create(tag_name, target, options)
+      service.newrev = raw_tag.target_id
     end
 
     find_tag(tag_name)
