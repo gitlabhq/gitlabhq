@@ -630,6 +630,18 @@ describe API::Projects, api: true  do
         expect(json_response['name']).to eq(project.name)
       end
 
+      it 'exposes namespace fields' do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['namespace']).to eq({
+          'id' => user.namespace.id,
+          'name' => user.namespace.name,
+          'path' => user.namespace.path,
+          'kind' => user.namespace.kind,
+        })
+      end
+
       describe 'permissions' do
         context 'all projects' do
           before { project.team << [user, :master] }

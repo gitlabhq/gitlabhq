@@ -88,7 +88,7 @@ module API
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
-      expose :namespace
+      expose :namespace, using: 'API::Entities::Namespace'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
@@ -391,7 +391,7 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :path, :kind
+      expose :id, :name, :path, :kind
     end
 
     class MemberAccess < Grape::Entity
