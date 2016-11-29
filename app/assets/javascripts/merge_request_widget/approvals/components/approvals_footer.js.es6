@@ -1,50 +1,34 @@
+//= require vue_common_component/link_to_member_avatar
+
 (() => {
-
-  const PendingApprover = {
-    data() {
-      return {
-        dottedCircleUrl: '/assets/no_avatar.png'
-      };
-    },
-    template: `
-      <span>
-        <img width="24" alt="Required Approver" :src="dottedCircleUrl" class="avatar avatar-inline s24">
-      </span>
-    `
-  };
-
+  // does the user have permission to edit this thing
+  // has the user already approved this or not
+  // what are the users who have approved this already, with all their info
   gl.MergeRequestWidget.approvalsFooter = {
-    props: ['approverNames', 'canApprove', 'approvedByUsers'],
+    props: ['canUpdateMergeRequest', 'hasApprovedMergeRequest', 'approvedByUsers'],
     methods: {
       removeApproval() {
-        this.$emit('remove-approval');
+        approvalsService.unapproveMergeRequest();
       }
     },
-    components: {
-      'pending-approver': PendingApprover,
-    },
-    methods: {
-
+    beforeCreate() {
+      approvalsService.fetchApprovals();
     },
     template: `
       <div>
-        Hello Approvals Footer
-        <div>
-          <div v-for='approver in approvedByUsers'>
-            <link-to-member-avatar 
-              :avatar-url='approver.avatar.url'
-              :display-name='approver.name'
-              :username='approver.username'>
-            </link-to-member-avatar>
-          </div>
-          <span v-if='canApprove'>
-            <i class='fa fa-close'></i>
-            <button @click='removeApproval'>Remove your approval</button>
-            {{ approvedByUsers[0].name }}
-          </span>
+        <div v-for='approver in approvedByUsers'>
+          <link-to-member-avatar 
+            :avatar-url='approver.avatar.url'
+            :display-name='approver.name'
+            :username='approver.username'>
+          </link-to-member-avatar>
         </div>
+        <span>
+          <i class='fa fa-close'></i>
+          <button @click='removeApproval'>Remove your approval</button>
+          {{ approvedByUsers[0].name }}
+        </span>
       </div>
     `
   };
-
 })();

@@ -1,4 +1,9 @@
 (() => {
+  // can the user edit this MR
+  // has this user approved this MR
+  // What is the info about users who can approve this MR but have not yet?
+  // How many approvals are needed?
+  // How many approvals are had?
   gl.MergeRequestWidget.approvalsBody = {
     props: ['approverNames', 'approvalsLeft', 'canApprove'],
     computed: {
@@ -15,11 +20,14 @@
     }, 
     methods: {
       approveMergeRequest() {
-        this.$emit('user-gives-approval');
+        approvalsService.approveMergeRequest();
       },
     },
+    beforeCreate() {
+      approvalsService.fetchApprovals();
+    },
     template: `
-      <div> Hello approval body 
+      <div>
         <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
         <div class="append-bottom-10">
           <button v-if='canApprove' @click='approveMergeRequest' class="btn btn-primary approve-btn">Approve Merge Request</button>
