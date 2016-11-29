@@ -7,7 +7,7 @@
     constructor(options) {
 
       if (options.initTabs && options.tabsOptions) {
-        new window.gl.LinkedTabs(options.tabsOptions);
+        new global.LinkedTabs(options.tabsOptions);
       }
 
       this.addMarginToBuildColumns();

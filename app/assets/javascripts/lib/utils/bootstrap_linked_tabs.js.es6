@@ -53,16 +53,18 @@
       this.defaultAction = this.options.defaultAction;
       this.action = this.options.action || this.defaultAction;
 
-      this.currentLocation = window.location;
-
       if (this.action === 'show') {
         this.action = this.defaultAction;
       }
 
+      this.currentLocation = window.location;
+
+      const tabSelector = `${this.options.parentEl} a[data-toggle="tab"]`;
+
       // since this is a custom event we need jQuery :(
       $(document)
-        .off('shown.bs.tab', `${this.options.parentEl} a[data-toggle="tab"]`)
-        .on('shown.bs.tab', `${this.options.parentEl} a[data-toggle="tab"]`, evt => this.tabShown(evt));
+        .off('shown.bs.tab', tabSelector)
+        .on('shown.bs.tab', tabSelector, e => this.tabShown(e));
 
       this.activateTab(this.action);
     }
@@ -90,7 +92,7 @@
 
       copySource.replace(/\/+$/, '');
 
-      const newState = copySource + this.currentLocation.search + this.currentLocation.hash;
+      const newState = `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
 
       history.replaceState({
         turbolinks: true,

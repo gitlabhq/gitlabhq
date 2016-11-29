@@ -137,7 +137,7 @@
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
-          const controllerAction = document.querySelector('.js-pipeline-container').dataset.controllerAction;
+          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
 
           new gl.Pipelines({
             initTabs: true,
