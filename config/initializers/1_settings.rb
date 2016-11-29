@@ -403,6 +403,10 @@ Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.n
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
 
+Settings.cron_jobs['clear_shared_runner_minutes_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['clear_shared_runner_minutes_worker']['cron'] ||= '0 0 0 * *'
+Settings.cron_jobs['clear_shared_runner_minutes_worker']['job_class'] = 'ClearSharedRunnerMinutesWorker'
+
 #
 # GitLab Shell
 #

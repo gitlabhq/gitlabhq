@@ -216,6 +216,13 @@
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
     .form-group
+      = f.label :shared_runners_minutes, 'Shared runners minutes', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :shared_runners_minutes, class: 'form-control'
+        .help-block
+          Set the maximum amount of minutes that project can use shared runners in period of time
+          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-minutes")
+    .form-group
       = f.label :shared_runners_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :shared_runners_text, class: 'form-control', rows: 4

@@ -90,6 +90,20 @@
             %span.light archived:
             %strong repository is read-only
 
+        - if @project.builds_enabled?
+          %li
+            %span.light Shared Runners:
+            %strong
+              - if @project.shared_runners_enabled?
+                Enabled
+                - if @project.shared_runner_minutes_limit.nonzero?
+                  = @project.shared_runner_minutes_limit
+                  total minutes
+                - elsif current_application_settings.shared_runners_minutes
+                  Unlimited
+              - else
+                Disabled
+
         %li
           %span.light access:
           %strong

@@ -26,6 +26,19 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
+    - if @build.project.shared_runners_minutes_used?
+      .bs-callout.bs-callout-warning
+        %p
+          You did use all your allowed shared runners minutes:
+          = @build.project.shared_runners_minutes.to_i
+          of
+          = @build.project.shared_runners_minutes_limit
+          .
+          Consider looking at
+          = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
+            Runners page
+          .
+
     - if @build.starts_environment?
       .prepend-top-default
         .environment-information

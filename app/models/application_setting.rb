@@ -119,6 +119,9 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
 
+  validates :shared_runners_minutes,
+            numericality: { greater_than_or_equal_to: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|

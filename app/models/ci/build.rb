@@ -93,6 +93,12 @@ module Ci
         end
       end
 
+      after_transition any => [:success, :failed, :canceled] do |build|
+        build.run_after_commit do
+          UpdateBuildMinutesService.new(project, nil).execute(build)
+        end
+      end
+
       after_transition any => [:success] do |build|
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)

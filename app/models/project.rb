@@ -28,6 +28,8 @@ class Project < ActiveRecord::Base
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
 
+  delegate :shared_runners_minutes, to: :project_metrics, allow_nil: true
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
@@ -150,6 +152,7 @@ class Project < ActiveRecord::Base
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
+  has_one :project_metrics, dependent: :destroy
 
   has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
@@ -1232,7 +1235,9 @@ class Project < ActiveRecord::Base
       return true
     end
 
-    shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
+    shared_runners_enabled? &&
+      !shared_runners_minutes_used? &&
+      Ci::Runner.shared.active.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -1539,6 +1544,20 @@ class Project < ActiveRecord::Base
     environments_for(branch).select do |environment|
       environment.recently_updated_on_branch?(branch)
     end
+  end
+
+  def shared_runners_minutes_limit
+    read_attribute(:shared_runners_minutes_limit) || current_application_settings.shared_runners_minutes
+  end
+
+  def shared_runners_minutes_limit_enabled?
+    shared_runners_minutes_limit.nonzero?
+  end
+
+  def shared_runners_minutes_used?
+    shared_runners_enabled? &&
+      shared_runners_minutes_limit_enabled? &&
+      shared_runners_minutes.to_i < shared_runners_minutes_limit
   end
 
   private
