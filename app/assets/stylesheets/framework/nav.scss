@@ -94,6 +94,7 @@
 
       &.active a {
         border-bottom: none;
+        color: $link-underline-blue;
       }
 
       a {
@@ -103,7 +104,6 @@
         &:hover,
         &:active,
         &:focus {
-          color: $black;
           border-bottom: none;
         }
       }
