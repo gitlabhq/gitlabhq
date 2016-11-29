@@ -40,7 +40,7 @@ module ButtonHelper
         placement: placement,
         container: 'body',
         title: "Set a password on your account<br>to pull or push via #{protocol}",
-        primary_url: (project.geo_primary_http_url_to_repo if Gitlab::Geo.secondary?)
+        primary_url: (geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?)
       }
   end
 

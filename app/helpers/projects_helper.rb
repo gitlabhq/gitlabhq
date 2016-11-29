@@ -265,13 +265,6 @@ module ProjectsHelper
     "#{number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)}#{limit_text}"
   end
 
-  def geo_primary_default_url_to_repo(project = @project)
-    case default_clone_protocol
-    when 'http'
-      project.geo_primary_http_url_to_repo
-    end
-  end
-
   def default_url_to_repo(project = @project)
     case default_clone_protocol
     when 'krb5'
