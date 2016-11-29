@@ -1172,4 +1172,38 @@ describe Notify do
       is_expected.to have_body_text /#{diff_path}/
     end
   end
+
+  describe 'HTML emails setting' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:multipart_mail) { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
+
+    context 'when disabled' do
+      it 'only sends the text template' do
+        stub_application_setting(html_emails_enabled: false)
+
+        EmailTemplateInterceptor.delivering_email(multipart_mail)
+
+        expect(multipart_mail).to have_part_with('text/plain')
+        expect(multipart_mail).not_to have_part_with('text/html')
+      end
+    end
+
+    context 'when enabled' do
+      it 'sends a multipart message' do
+        stub_application_setting(html_emails_enabled: true)
+
+        EmailTemplateInterceptor.delivering_email(multipart_mail)
+
+        expect(multipart_mail).to have_part_with('text/plain')
+        expect(multipart_mail).to have_part_with('text/html')
+      end
+    end
+
+    matcher :have_part_with do |expected|
+      match do |actual|
+        actual.body.parts.any? { |part| part.content_type.try(:match, %r(#{expected})) }
+      end
+    end
+  end
 end
