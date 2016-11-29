@@ -5,7 +5,7 @@
 - can_admin_member = can?(current_user, action_member_permission(:update, member), member)
 - update_url = member.type == 'GroupMember' ? group_group_member_path(@group, member) : namespace_project_project_member_path(@project.namespace, @project, member)
 
-%li.member{ class: [dom_class(member), ("is-overriden" if member.override)], id: dom_id(member) }
+%li.member{ class: [dom_class(member), ("is-overriden" if member.override && can_admin_member)], id: dom_id(member) }
   %span.list-item-name
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
@@ -111,7 +111,7 @@
               %span.visible-xs-block
                 Delete
               = icon('trash', class: 'hidden-xs')
-        - elsif member.ldap
+        - elsif member.ldap && can_admin_member
           %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: "button",
             "aria-label" => "Edit permissions",
             data: { name: user.name, id: dom_id(member) } }
@@ -120,7 +120,7 @@
             = icon("pencil", class: "hidden-xs hidden-sm")
       - else
         %span.member-access-text= member.human_access
-- if member.ldap
+- if member.ldap && can_admin_member
   %li.alert.alert-member-ldap{ style: "display: none;" }
     %p
       = user.name

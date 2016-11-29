@@ -58,8 +58,10 @@
             if ($link.data('revert')) {
               const memberListItem = this.getMemberListItem($link.get(0));
               const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
+              const dateInput = memberListItem.querySelectorAll('.js-access-expiration-date')[0];
 
               toggle.disabled = true;
+              dateInput.disabled = true;
               this.overrideLdap(memberListItem, $link.data('endpoint'), false);
             } else {
               $btn.closest('form').trigger('submit.rails');
@@ -109,9 +111,11 @@
       const btn = e.currentTarget;
       const memberListItem = this.getMemberListItem(btn);
       const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
+      const dateInput = memberListItem.querySelectorAll('.js-access-expiration-date')[0];
 
       this.showLDAPPermissionsWarning(e);
       toggle.removeAttribute('disabled');
+      dateInput.removeAttribute('disabled');
 
       this.overrideLdap(memberListItem, btn.dataset.endpoint, true);
     }
