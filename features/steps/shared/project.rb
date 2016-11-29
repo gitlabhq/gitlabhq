@@ -9,7 +9,7 @@ module SharedProject
 
   step "project exists in some group namespace" do
     @group = create(:group, name: 'some group')
-    @project = create(:project, namespace: @group)
+    @project = create(:project, namespace: @group, public_builds: false)
   end
 
   # Create a specific project called "Shop"

@@ -12,9 +12,6 @@ class ProjectPolicy < BasePolicy
       guest_access!
       public_access!
 
-      # Allow to read builds for internal projects
-      can! :read_build if project.public_builds?
-
       if project.request_access_enabled &&
          !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
