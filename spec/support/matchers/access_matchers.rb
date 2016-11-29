@@ -7,7 +7,7 @@ module AccessMatchers
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
 
-  def emulate_user(user, project = nil)
+  def emulate_user(user, membership = nil)
     case user
     when :user
       login_as(create(:user))
@@ -19,16 +19,17 @@ module AccessMatchers
       login_as(create(:user, external: true))
     when User
       login_as(user)
-    when :owner
-      raise ArgumentError, "cannot emulate owner without project" unless project
-
-      login_as(project.owner)
-    when *Gitlab::Access.sym_options.keys
-      raise ArgumentError, "cannot emulate user #{user} without project" unless project
+    when *Gitlab::Access.sym_options_with_owner.keys
+      raise ArgumentError, "cannot emulate #{user} without membership parent" unless membership
 
       role = user
-      user = create(:user)
-      project.public_send(:"add_#{role}", user)
+
+      if role == :owner && membership.owner
+        user = membership.owner
+      else
+        user = create(:user)
+        membership.public_send(:"add_#{role}", user)
+      end
 
       login_as(user)
     else
@@ -47,14 +48,14 @@ module AccessMatchers
 
   matcher :be_allowed_for do |user|
     match do |url|
-      emulate_user(user, @project)
+      emulate_user(user, @membership)
       visit(url)
 
       status_code != 404 && current_path != new_user_session_path
     end
 
-    chain :of do |project|
-      @project = project
+    chain :of do |membership|
+      @membership = membership
     end
 
     description { description_for(user, 'allowed') }
@@ -62,14 +63,14 @@ module AccessMatchers
 
   matcher :be_denied_for do |user|
     match do |url|
-      emulate_user(user, @project)
+      emulate_user(user, @membership)
       visit(url)
 
       status_code == 404 || current_path == new_user_session_path
     end
 
-    chain :of do |project|
-      @project = project
+    chain :of do |membership|
+      @membership = membership
     end
 
     description { description_for(user, 'denied') }
