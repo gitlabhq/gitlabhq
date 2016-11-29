@@ -12,39 +12,8 @@ With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
-Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) for specific
+Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) for specific
 information, if you are using GitLab.com to host your website.
-
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Getting started with GitLab Pages](#getting-started-with-gitlab-pages)
-    - [GitLab Pages requirements](#gitlab-pages-requirements)
-    - [User or group Pages](#user-or-group-pages)
-    - [Project Pages](#project-pages)
-    - [Explore the contents of `.gitlab-ci.yml`](#explore-the-contents-of-gitlab-ciyml)
-        - [How `.gitlab-ci.yml` looks like when the static content is in your repository](#how-gitlab-ciyml-looks-like-when-the-static-content-is-in-your-repository)
-        - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
-        - [How to set up GitLab Pages in a repository where there's also actual code](#how-to-set-up-gitlab-pages-in-a-repository-where-theres-also-actual-code)
-- [Next steps](#next-steps)
-    - [Example projects](#example-projects)
-    - [Add a custom domain to your Pages website](#add-a-custom-domain-to-your-pages-website)
-    - [Secure your custom domain website with TLS](#secure-your-custom-domain-website-with-tls)
-    - [Custom error codes pages](#custom-error-codes-pages)
-    - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
-- [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom)
-- [Limitations](#limitations)
-- [Redirects in GitLab Pages](#redirects-in-gitlab-pages)
-- [Frequently Asked Questions](#frequently-asked-questions)
-    - [Can I download my generated pages?](#can-i-download-my-generated-pages)
-    - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
-    - [Do I need to create a user/group website before creating a project website?](#do-i-need-to-create-a-usergroup-website-before-creating-a-project-website)
-- [Known issues](#known-issues)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Getting started with GitLab Pages
 
@@ -335,7 +304,8 @@ Visit the GitLab Pages group for a full list of example projects:
 ### Add a custom domain to your Pages website
 
 If this setting is enabled by your GitLab administrator, you should be able to
-see the **New Domain** button when visiting your project's **Settings > Pages**.
+see the **New Domain** button when visiting your project's settings through the
+gear icon in the top right and then navigating to **Pages**.
 
 ![New domain button](img/pages_new_domain_button.png)
 
@@ -392,7 +362,9 @@ If the case of `404.html`, there are different scenarios. For example:
 ### Remove the contents of your pages
 
 If you ever feel the need to purge your Pages content, you can do so by going
-to your project's **Settings > Pages** and hit **Remove pages**. Simple as that.
+to your project's settings through the gear icon in the top right, and then
+navigating to **Pages**. Hit the **Remove pages** button and your Pages website
+will be deleted. Simple as that.
 
 ![Remove pages](img/pages_remove.png)
 
