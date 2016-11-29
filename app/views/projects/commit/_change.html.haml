@@ -11,7 +11,7 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3.page-title== #{label} this #{commit.change_type_title}
+        %h3.page-title== #{label} this #{commit.change_type_title(current_user)}
       .modal-body
         = form_tag send("#{type.underscore}_namespace_project_commit_path", @project.namespace, @project, commit.id), method: :post, remote: false, class: 'form-horizontal js-#{type}-form js-requires-input' do
           .form-group.branch

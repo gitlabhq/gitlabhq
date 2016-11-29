@@ -21,7 +21,7 @@ class Projects::CommitsController < Projects::ApplicationController
     @note_counts = project.notes.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
 
-    @merge_request = @project.merge_requests.opened.
+    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
       find_by(source_project: @project, source_branch: @ref, target_branch: @repository.root_ref)
 
     respond_to do |format|
