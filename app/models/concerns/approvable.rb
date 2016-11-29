@@ -113,12 +113,7 @@ module Approvable
     def approvers_overwritten?
       approvers.any? || approver_groups.any?
     end
-    
-    def user_is_approver(user)
-      return false unless approvers.any?
-      approvers.include?(user)
-    end
-    
+
     def can_approve?(user)
       return false unless user
       return true if approvers_left.include?(user)
