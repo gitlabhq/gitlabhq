@@ -804,7 +804,7 @@ class MergeRequest < ActiveRecord::Base
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
   end
 
-  def can_be_reverted?(current_user = nil)
+  def can_be_reverted?(current_user)
     merge_commit && !merge_commit.has_been_reverted?(current_user, self)
   end
 

@@ -253,44 +253,47 @@ class Commit
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
-  def revert_description
-    if merged_merge_request
-      "This reverts merge request #{merged_merge_request.to_reference}"
+  def revert_description(user)
+    if merged_merge_request?(user)
+      "This reverts merge request #{merged_merge_request(user).to_reference}"
     else
       "This reverts commit #{sha}"
     end
   end
 
-  def revert_message
-    %Q{Revert "#{title.strip}"\n\n#{revert_description}}
+  def revert_message(user)
+    %Q{Revert "#{title.strip}"\n\n#{revert_description(user)}}
   end
 
-  def reverts_commit?(commit)
-    description? && description.include?(commit.revert_description)
+  def reverts_commit?(commit, user)
+    description? && description.include?(commit.revert_description(user))
   end
 
   def merge_commit?
     parents.size > 1
   end
 
-  def merged_merge_request
-    return @merged_merge_request if defined?(@merged_merge_request)
-
-    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
+  def merged_merge_request(current_user)
+    # Memoize with per-user access check
+    @merged_merge_request_hash ||= Hash.new do |hash, user|
+      hash[user] = merged_merge_request_no_cache(user)
+    end
+    
+    @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user = nil, noteable = self)
+  def has_been_reverted?(current_user, noteable = self)
     ext = all_references(current_user)
 
     noteable.notes_with_associations.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self, current_user) }
   end
 
-  def change_type_title
-    merged_merge_request ? 'merge request' : 'commit'
+  def change_type_title(user)
+    merged_merge_request?(user) ? 'merge request' : 'commit'
   end
 
   # Get the URI type of the given path
@@ -347,5 +350,13 @@ class Commit
     end
 
     changes
+  end
+
+  def merged_merge_request?(user)
+    !!merged_merge_request(user)
+  end
+
+  def merged_merge_request_no_cache(user)
+    MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
   end
 end

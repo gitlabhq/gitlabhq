@@ -26,7 +26,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   private
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by!(iid: params[:merge_request_id])
+    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).find_by!(iid: params[:merge_request_id])
   end
 
   def discussion
