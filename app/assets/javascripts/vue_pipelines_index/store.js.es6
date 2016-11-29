@@ -81,17 +81,17 @@
       resourceChecker();
       goFetch();
 
-      this.intervalId = setInterval(() => {
-        if (this.updatedAt) {
-          resourceChecker();
-          if (Vue.activeResources > 1) return;
-          goUpdate();
-        }
-      }, 3000);
+      // this.intervalId = setInterval(() => {
+      //   if (this.updatedAt) {
+      //     resourceChecker();
+      //     if (Vue.activeResources > 1) return;
+      //     goUpdate();
+      //   }
+      // }, 3000);
 
-      window.onbeforeunload = function removePipelineInterval() {
-        clearInterval(this.intervalId);
-      };
+      // window.onbeforeunload = function removePipelineInterval() {
+      //   clearInterval(this.intervalId);
+      // };
     }
   };
 })(window.gl || (window.gl = {}));

@@ -55,7 +55,7 @@
         if (text === FIRST) this.pagenum = 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
-        clearInterval(this.intervalId);
+        // clearInterval(this.intervalId);
         this.pageRequest = true;
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
@@ -77,15 +77,17 @@
               <tr class="commit" v-for='pipeline in pipelines'>
                 <status-scope :pipeline='pipeline'></status-scope>
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
-                <commit
-                  :tag="pipeline.ref['tag?']"
-                  :author='pipeline.commit.author'
-                  :title='pipeline.commit.title'
-                  :ref='pipeline.ref'
-                  :short_sha='pipeline.commit.short_id'
-                  :commit_url='pipeline.commit.commit_url'
-                >
-                </commit>
+                <td>
+                  <commit
+                    :tag="pipeline.ref['tag?']"
+                    :author='pipeline.commit.author'
+                    :title='pipeline.commit.title'
+                    :ref='pipeline.ref'
+                    :short_sha='pipeline.commit.short_id'
+                    :commit_url='pipeline.commit.commit_url'
+                  >
+                  </commit>
+                </td>
                 <stages :pipeline='pipeline'></stages>
                 <time-ago :pipeline='pipeline'></time-ago>
                 <pipeline-actions :pipeline='pipeline'></pipeline-actions>
