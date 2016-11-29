@@ -220,7 +220,7 @@ $dropdown-bg: #fff;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
 $dropdown-empty-row-bg: rgba(#000, .04);
-$dropdown-border-color: rgba(#000, .1);
+$dropdown-border-color: $border-color;
 $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
@@ -229,13 +229,15 @@ $dropdown-input-color: #555;
 $dropdown-input-focus-border: $focus-border-color;
 $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
+$dropdown-chevron-size: 10px;
 
 $dropdown-toggle-bg: #fff;
-$dropdown-toggle-color: #626262;
-$dropdown-toggle-border-color: #eaeaea;
-$dropdown-toggle-hover-border-color: darken($dropdown-toggle-border-color, 15%);
+$dropdown-toggle-color: #5c5c5c;
+$dropdown-toggle-border-color: #e5e5e5;
+$dropdown-toggle-hover-border-color: darken($dropdown-toggle-border-color, 13%);
+$dropdown-toggle-active-border-color: darken($dropdown-toggle-border-color, 14%);
 $dropdown-toggle-icon-color: #c4c4c4;
-$dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
+$dropdown-toggle-hover-icon-color: darken($dropdown-toggle-icon-color, 7%);
 
 /*
 * Buttons
