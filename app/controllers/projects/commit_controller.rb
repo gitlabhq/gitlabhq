@@ -8,6 +8,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   # Authorize
   before_action :require_non_empty_project
+  before_action :authorize_download_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
   before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines]
@@ -107,7 +108,6 @@ class Projects::CommitController < Projects::ApplicationController
 
   def define_status_vars
     @ci_pipelines = project.pipelines.where(sha: commit.sha)
-    @statuses = CommitStatus.where(pipeline: @ci_pipelines).relevant
   end
 
   def assign_change_commit_vars(mr_source_branch)

@@ -33,8 +33,6 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           get :branches
           get :pipelines
-          post :cancel_builds
-          post :retry_builds
           post :revert
           post :cherry_pick
           get :diff_for_path
