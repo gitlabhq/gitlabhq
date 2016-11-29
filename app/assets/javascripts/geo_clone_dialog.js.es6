@@ -9,7 +9,6 @@
     },
     mounted() {
       $(`#${this.id}`).appendTo('body').modal({ modal: true, show: false });
-      $('.modal-header .close').bind('click', () => modal.hide());
     },
     filters: {
       emptyRepo: (value) => {
@@ -43,7 +42,7 @@
         `,
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
+  $(document).ready(() => {
     const geoClone = document.getElementById('geo-clone');
     if (geoClone) {
       gl.GeoCloneDialog = new Vue({
