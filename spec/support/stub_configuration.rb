@@ -17,10 +17,6 @@ module StubConfiguration
     allow(Gitlab.config.gravatar).to receive_messages(messages)
   end
 
-  def stub_gitlab_workhorse_setting(messages)
-    allow(Gitlab.config.gitlab_workhorse).to receive_messages(messages)
-  end
-
   def stub_incoming_email_setting(messages)
     allow(Gitlab.config.incoming_email).to receive_messages(messages)
   end

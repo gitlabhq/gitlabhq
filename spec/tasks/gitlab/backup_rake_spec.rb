@@ -5,7 +5,7 @@ describe 'gitlab:app namespace rake task' do
   let(:enable_registry) { true }
 
   before :all do
-    Rake.application.rake_require 'tasks/gitlab/task_helpers'
+    Rake.application.rake_require 'tasks/gitlab/helpers'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
     Rake.application.rake_require 'tasks/gitlab/db'

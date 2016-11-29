@@ -4,7 +4,7 @@ namespace :gitlab do
     task :install, [:dir] => :environment do |t, args|
       warn_user_is_not_gitlab
       unless args.dir.present?
-        abort "Please specify the directory where you want to install gitlab-workhorse:\n  rake gitlab:workhorse:install[/home/git/gitlab-workhorse]"
+        abort %(Please specify the directory where you want to install gitlab-workhorse:\n  rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]")
       end
 
       tag = "v#{ENV['GITLAB_WORKHORSE_VERSION'] || Gitlab::Workhorse.version}"

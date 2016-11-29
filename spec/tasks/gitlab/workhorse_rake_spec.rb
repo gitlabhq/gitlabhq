@@ -1,18 +1,8 @@
-require 'spec_helper'
-require 'rake'
+require 'rake_helper'
 
 describe 'gitlab:workhorse namespace rake task' do
   before :all do
-    Rake.application.rake_require 'tasks/gitlab/task_helpers'
     Rake.application.rake_require 'tasks/gitlab/workhorse'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
-  end
-
-  def run_rake_task(task_name, *args)
-    Rake::Task[task_name].reenable
-    Rake.application.invoke_task("#{task_name}[#{args.join(',')}]")
   end
 
   describe 'install' do
@@ -20,13 +10,13 @@ describe 'gitlab:workhorse namespace rake task' do
     let(:clone_path) { Rails.root.join('tmp/tests/gitlab-workhorse').to_s }
     let(:tag) { "v#{File.read(Rails.root.join(Gitlab::Workhorse::VERSION_FILE)).chomp}" }
     before do
-      # avoid writing task output to spec progress
-      allow($stdout).to receive :write
       allow(ENV).to receive(:[])
     end
 
     context 'no dir given' do
       it 'aborts and display a help message' do
+        # avoid writing task output to spec progress
+        allow($stderr).to receive :write
         expect { run_rake_task('gitlab:workhorse:install') }.to raise_error /Please specify the directory where you want to install gitlab-workhorse/
       end
     end

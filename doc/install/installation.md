@@ -397,24 +397,24 @@ GitLab Shell is an SSH access and repository management software developed speci
 ### Install gitlab-workhorse
 
 GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
-following command-line will install GitLab-Workhorse in `home/git/gitlab-workhorse`
+following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
 which is the recommended location.
 
     cd /home/git/gitlab
 
-    sudo -u git -H bundle exec rake gitlab:workhorse:install[/home/git/gitlab-workhorse] RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
 You can specify a different Git repository by providing `GITLAB_WORKHORSE_REPO`:
 
     cd /home/git/gitlab
 
-    sudo -u git -H bundle exec rake gitlab:workhorse:install[/home/git/gitlab-workhorse] GITLAB_WORKHORSE_REPO=https://example.com/gitlab-workhorse.git RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" GITLAB_WORKHORSE_REPO=https://example.com/gitlab-workhorse.git RAILS_ENV=production
 
 You can specify a different version to use by providing `GITLAB_WORKHORSE_VERSION`:
 
     cd /home/git/gitlab
 
-    sudo -u git -H bundle exec rake gitlab:workhorse:install[/home/git/gitlab-workhorse] GITLAB_WORKHORSE_VERSION=0.8.1 RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" GITLAB_WORKHORSE_VERSION=0.8.1 RAILS_ENV=production
 
 ### Initialize Database and Activate Advanced Features
 
