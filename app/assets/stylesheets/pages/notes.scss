@@ -97,7 +97,7 @@ ul.notes {
           ul {
             margin: 3px 0 3px 15px !important;
 
-            li {
+            .gfm-commit {
               font-family: $monospace_font;
               font-size: 12px;
             }
