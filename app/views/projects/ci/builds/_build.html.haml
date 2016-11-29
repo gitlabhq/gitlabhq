@@ -66,8 +66,6 @@
     %td
       - if build.project
         = link_to build.project.name_with_namespace, admin_namespace_project_path(build.project.namespace, build.project)
-
-  - if admin
     %td
       - if build.try(:runner)
         = runner_link(build.runner)
