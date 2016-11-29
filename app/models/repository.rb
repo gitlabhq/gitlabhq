@@ -894,7 +894,7 @@ class Repository
     update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
-        message: commit.revert_message,
+        message: commit.revert_message(user),
         author: committer,
         committer: committer,
         tree: revert_tree_id,
