@@ -38,9 +38,9 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('h1 a#user-content_gitlab-markdown')
-      expect(actual).to have_selector('h2 a#user-content_markdown')
-      expect(actual).to have_selector('h3 a#user-content_autolinkfilter')
+      expect(actual).to have_selector('h1 a#user-content-gitlab-markdown')
+      expect(actual).to have_selector('h2 a#user-content-markdown')
+      expect(actual).to have_selector('h3 a#user-content-autolinkfilter')
     end
   end
 

@@ -110,7 +110,7 @@
 
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
-        var target = document.getElementById('user-content_' + hash);
+        var target = document.getElementById('user-content-' + hash);
         if (target && target.scrollIntoView) {
           target.scrollIntoView(true);
           window.scrollBy(0, adjustment);

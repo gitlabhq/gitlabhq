@@ -36,7 +36,7 @@ module Banzai
 
           if header_content = node.children.first
             # namespace detection will be automatically handled via javascript (see issue #22781)
-            namespace = "user-content_"
+            namespace = "user-content-"
             href = "#{id}#{uniq}"
             push_toc(href, text)
             header_content.add_previous_sibling(anchor_tag("#{namespace}#{href}", href))

@@ -22,7 +22,7 @@ describe Banzai::Filter::TableOfContentsFilter, lib: true do
       html = header(i, "Header #{i}")
       doc = filter(html)
 
-      expect(doc.css("h#{i} a").first.attr('id')).to eq "user-content_header-#{i}"
+      expect(doc.css("h#{i} a").first.attr('id')).to eq "user-content-header-#{i}"
     end
   end
 
@@ -34,7 +34,7 @@ describe Banzai::Filter::TableOfContentsFilter, lib: true do
 
     it 'has a namespaced id' do
       doc = filter(header(1, 'Header'))
-      expect(doc.css('h1 a').first.attr('id')).to eq 'user-content_header'
+      expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-header'
     end
 
     it 'links to the non-namespaced id' do
@@ -67,7 +67,7 @@ describe Banzai::Filter::TableOfContentsFilter, lib: true do
 
       it 'supports Unicode' do
         doc = filter(header(1, '한글'))
-        expect(doc.css('h1 a').first.attr('id')).to eq 'user-content_한글'
+        expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-한글'
         expect(doc.css('h1 a').first.attr('href')).to eq '#한글'
       end
     end
