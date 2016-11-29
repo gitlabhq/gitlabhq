@@ -91,9 +91,8 @@
         %span #{time_ago_with_tooltip(build.finished_at)}
 
   %td.coverage
-    - if coverage
-      - if build.try(:coverage)
-        #{build.coverage}%
+    - if coverage && build.try(:coverage)
+      #{build.coverage}%
 
   %td
     .pull-right

@@ -83,9 +83,8 @@
         %span #{time_ago_with_tooltip(generic_commit_status.finished_at)}
 
   %td.coverage
-    - if coverage
-      - if generic_commit_status.try(:coverage)
-        #{generic_commit_status.coverage}%
+    - if coverage && generic_commit_status.try(:coverage)
+      #{generic_commit_status.coverage}%
 
   %td
     -# empty column to match number of columns in ci/builds/_build.html.haml
