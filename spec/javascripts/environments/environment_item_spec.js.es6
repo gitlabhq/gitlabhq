@@ -1,4 +1,5 @@
 //= require vue
+//= require timeago
 //= require environments/components/environment_item
 
 describe('Environment item', () => {
@@ -109,6 +110,8 @@ describe('Environment item', () => {
             name: 'deploy',
             build_path: '/root/ci-folders/builds/1279',
             retry_path: '/root/ci-folders/builds/1279/retry',
+            created_at: '2016-11-29T18:11:58.430Z',
+            updated_at: '2016-11-29T18:11:58.430Z',
           },
           manual_actions: [
             {
@@ -147,6 +150,17 @@ describe('Environment item', () => {
         expect(
           component.$el.querySelector('.deployment-column span').textContent,
         ).toContain('#');
+      });
+
+      it('should render last deployment date', () => {
+        const timeagoInstance = new timeago(); // eslint-disable-line
+        const formatedDate = timeagoInstance.format(
+          environment.last_deployment.deployable.created_at
+        );
+
+        expect(
+          component.$el.querySelector('.environment-created-date-timeago').textContent
+        ).toContain(formatedDate);
       });
 
       describe('With user information', () => {

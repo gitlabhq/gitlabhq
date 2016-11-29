@@ -147,6 +147,12 @@
           this.model.last_deployment.deployable;
       },
 
+      canShowDate() {
+        return this.model.last_deployment &&
+          this.model.last_deployment.deployable &&
+          this.model.last_deployment.deployable.created_at;
+      },
+
       /**
        * Human readable date.
        *
@@ -155,7 +161,7 @@
       createdDate() {
         const timeagoInstance = new timeago(); // eslint-disable-line
 
-        return timeagoInstance.format(this.model.created_at);
+        return timeagoInstance.format(this.model.last_deployment.deployable.created_at);
       },
 
       /**
@@ -453,7 +459,7 @@
 
         <td>
           <span
-            v-if="!isFolder && model.last_deployment"
+            v-if="!isFolder && canShowDate"
             class="environment-created-date-timeago">
             {{createdDate}}
           </span>
