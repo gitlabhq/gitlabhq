@@ -38,7 +38,7 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-        present paginate(groups), with: Entities::Group
+        present paginate(groups), with: Entities::Group, current_user: current_user
       end
 
       desc 'Get list of owned groups for authenticated user' do
@@ -49,7 +49,7 @@ module API
       end
       get '/owned' do
         groups = current_user.owned_groups
-        present paginate(groups), with: Entities::Group, user: current_user
+        present paginate(groups), with: Entities::Group, current_user: current_user
       end
 
       desc 'Create a group. Available only for users who can create groups.' do
@@ -66,7 +66,7 @@ module API
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
-          present group, with: Entities::Group
+          present group, with: Entities::Group, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
@@ -92,7 +92,7 @@ module API
         authorize! :admin_group, group
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
-          present group, with: Entities::GroupDetail
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)
         end
@@ -103,7 +103,7 @@ module API
       end
       get ":id" do
         group = find_group!(params[:id])
-        present group, with: Entities::GroupDetail
+        present group, with: Entities::GroupDetail, current_user: current_user
       end
 
       desc 'Remove a group.'
@@ -134,7 +134,7 @@ module API
         projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = filter_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
-        present paginate(projects), with: entity, user: current_user
+        present paginate(projects), with: entity, current_user: current_user
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do
@@ -150,7 +150,7 @@ module API
         result = ::Projects::TransferService.new(project, current_user).execute(group)
 
         if result
-          present group, with: Entities::GroupDetail
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end

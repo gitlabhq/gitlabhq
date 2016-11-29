@@ -75,7 +75,7 @@ module API
         projects = filter_projects(projects)
         entity = params[:simple] || !current_user ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
 
-        present paginate(projects), with: entity, user: current_user
+        present paginate(projects), with: entity, current_user: current_user
       end
 
       desc 'Get a projects list for authenticated user' do
@@ -94,7 +94,7 @@ module API
         projects = filter_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
 
-        present paginate(projects), with: entity, user: current_user
+        present paginate(projects), with: entity, current_user: current_user
       end
 
       desc 'Get an owned projects list for authenticated user' do
@@ -110,7 +110,7 @@ module API
         projects = current_user.owned_projects
         projects = filter_projects(projects)
 
-        present paginate(projects), with: Entities::ProjectWithAccess, user: current_user
+        present paginate(projects), with: Entities::ProjectWithAccess, current_user: current_user
       end
 
       desc 'Gets starred project for the authenticated user' do
@@ -126,7 +126,7 @@ module API
         projects = current_user.viewable_starred_projects
         projects = filter_projects(projects)
 
-        present paginate(projects), with: Entities::Project, user: current_user
+        present paginate(projects), with: Entities::Project, current_user: current_user
       end
 
       desc 'Get all projects for admin user' do
@@ -142,7 +142,7 @@ module API
         projects = Project.all
         projects = filter_projects(projects)
 
-        present paginate(projects), with: Entities::ProjectWithAccess, user: current_user
+        present paginate(projects), with: Entities::ProjectWithAccess, current_user: current_user
       end
 
       desc 'Search for projects the current user has access to' do
@@ -221,7 +221,7 @@ module API
       end
       get ":id" do
         entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present user_project, with: entity, user: current_user,
+        present user_project, with: entity, current_user: current_user,
                               user_can_admin_project: can?(current_user, :admin_project, user_project)
       end
 
