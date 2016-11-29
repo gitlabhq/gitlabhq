@@ -73,17 +73,21 @@
   %td
     = generic_commit_status.name
 
-  %td.duration
+  %td
     - if generic_commit_status.duration
-      = icon("clock-o")
-      = time_interval_in_words(generic_commit_status.duration)
+      %p.duration
+        = custom_icon("icon_timer")
+        = duration_in_numbers(generic_commit_status.duration)
 
-  %td.timestamp
     - if generic_commit_status.finished_at
-      = icon("calendar")
-      %span #{time_ago_with_tooltip(generic_commit_status.finished_at)}
+      %p.finished-at
+        = icon("calendar")
+        %span #{time_ago_with_tooltip(generic_commit_status.finished_at)}
 
-  - if coverage
-    %td.coverage
+  %td.coverage
+    - if coverage
       - if generic_commit_status.try(:coverage)
         #{generic_commit_status.coverage}%
+
+  %td
+    -# empty column to match number of columns in ci/builds/_build.html.haml
