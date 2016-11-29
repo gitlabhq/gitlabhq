@@ -67,9 +67,9 @@ Parameters:
     "public": false,
     "archived": false,
     "visibility_level": 10,
-    "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
-    "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
-    "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
+    "ssh_url_to_repo": "git@gitlab.com/html5-boilerplate.git",
+    "http_url_to_repo": "http://gitlab.com/h5bp/html5-boilerplate.git",
+    "web_url": "http://gitlab.com/h5bp/html5-boilerplate",
     "name": "Html5 Boilerplate",
     "name_with_namespace": "Experimental / Html5 Boilerplate",
     "path": "html5-boilerplate",
@@ -123,7 +123,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or path of a group |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/groups/4
 ```
 
 Example response:
@@ -136,7 +136,7 @@ Example response:
   "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
   "visibility_level": 20,
   "avatar_url": null,
-  "web_url": "https://gitlab.example.com/groups/twitter",
+  "web_url": "https://gitlab.com/groups/twitter",
   "request_access_enabled": false,
   "projects": [
     {
@@ -147,9 +147,9 @@ Example response:
       "public": true,
       "archived": false,
       "visibility_level": 20,
-      "ssh_url_to_repo": "git@gitlab.example.com:twitter/typeahead-js.git",
-      "http_url_to_repo": "https://gitlab.example.com/twitter/typeahead-js.git",
-      "web_url": "https://gitlab.example.com/twitter/typeahead-js",
+      "ssh_url_to_repo": "git@gitlab.com:twitter/typeahead-js.git",
+      "http_url_to_repo": "https://gitlab.com/twitter/typeahead-js.git",
+      "web_url": "https://gitlab.com/twitter/typeahead-js",
       "name": "Typeahead.Js",
       "name_with_namespace": "Twitter / Typeahead.Js",
       "path": "typeahead-js",
@@ -194,9 +194,9 @@ Example response:
       "public": false,
       "archived": false,
       "visibility_level": 10,
-      "ssh_url_to_repo": "git@gitlab.example.com:twitter/flight.git",
-      "http_url_to_repo": "https://gitlab.example.com/twitter/flight.git",
-      "web_url": "https://gitlab.example.com/twitter/flight",
+      "ssh_url_to_repo": "git@gitlab.com:twitter/flight.git",
+      "http_url_to_repo": "https://gitlab.com/twitter/flight.git",
+      "web_url": "https://gitlab.com/twitter/flight",
       "name": "Flight",
       "name_with_namespace": "Twitter / Flight",
       "path": "flight",
@@ -243,9 +243,9 @@ Example response:
       "public": false,
       "archived": false,
       "visibility_level": 0,
-      "ssh_url_to_repo": "git@gitlab.example.com:h5bp/html5-boilerplate.git",
-      "http_url_to_repo": "https://gitlab.example.com/h5bp/html5-boilerplate.git",
-      "web_url": "https://gitlab.example.com/h5bp/html5-boilerplate",
+      "ssh_url_to_repo": "git@gitlab.com:h5bp/html5-boilerplate.git",
+      "http_url_to_repo": "https://gitlab.com/h5bp/html5-boilerplate.git",
+      "web_url": "https://gitlab.com/h5bp/html5-boilerplate",
       "name": "Html5 Boilerplate",
       "name_with_namespace": "H5bp / Html5 Boilerplate",
       "path": "html5-boilerplate",
@@ -345,7 +345,7 @@ PUT /groups/:id
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/groups/5?name=Experimental"
 
 ```
 
@@ -359,7 +359,7 @@ Example response:
   "description": "foo",
   "visibility_level": 10,
   "avatar_url": null,
-  "web_url": "http://gitlab.example.com/groups/h5bp",
+  "web_url": "http://gitlab.com/groups/h5bp",
   "request_access_enabled": false,
   "projects": [
     {
@@ -370,9 +370,9 @@ Example response:
       "public": false,
       "archived": false,
       "visibility_level": 10,
-      "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
-      "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
-      "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
+      "ssh_url_to_repo": "git@gitlab.com/html5-boilerplate.git",
+      "http_url_to_repo": "http://gitlab.com/h5bp/html5-boilerplate.git",
+      "web_url": "http://gitlab.com/h5bp/html5-boilerplate",
       "name": "Html5 Boilerplate",
       "name_with_namespace": "Experimental / Html5 Boilerplate",
       "path": "html5-boilerplate",

@@ -124,7 +124,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/11/notes/636
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/issues/11/notes/636
 ```
 
 Example Response:
@@ -142,7 +142,7 @@ Example Response:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/pipin"
+    "web_url": "https://gitlab.com/pipin"
   },
   "created_at": "2016-04-05T22:10:44.164Z",
   "system": false,
@@ -248,7 +248,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/snippets/52/notes/1659
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/snippets/52/notes/1659
 ```
 
 Example Response:
@@ -266,7 +266,7 @@ Example Response:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/pipin"
+    "web_url": "https://gitlab.com/pipin"
   },
   "created_at": "2016-04-06T16:51:53.239Z",
   "system": false,
@@ -377,7 +377,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/7/notes/1602
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/merge_requests/7/notes/1602
 ```
 
 Example Response:
@@ -395,7 +395,7 @@ Example Response:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/pipin"
+    "web_url": "https://gitlab.com/pipin"
   },
   "created_at": "2016-04-05T22:11:59.923Z",
   "system": false,

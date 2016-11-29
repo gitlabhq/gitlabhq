@@ -27,7 +27,7 @@ Parameters:
 | `awardable_id` | integer | yes | The ID of an awardable |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/award_emoji
 ```
 
 Example Response:
@@ -43,7 +43,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/root"
+      "web_url": "http://gitlab.com/root"
     },
     "created_at": "2016-06-15T10:09:34.206Z",
     "updated_at": "2016-06-15T10:09:34.206Z",
@@ -59,7 +59,7 @@ Example Response:
       "id": 26,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/user4"
+      "web_url": "http://gitlab.com/user4"
     },
     "created_at": "2016-06-15T10:09:34.177Z",
     "updated_at": "2016-06-15T10:09:34.177Z",
@@ -88,7 +88,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/award_emoji/1
 ```
 
 Example Response:
@@ -103,7 +103,7 @@ Example Response:
     "id": 26,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/user4"
+    "web_url": "http://gitlab.com/user4"
   },
   "created_at": "2016-06-15T10:09:34.177Z",
   "updated_at": "2016-06-15T10:09:34.177Z",
@@ -131,7 +131,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
 ```
 
 Example Response:
@@ -146,7 +146,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
+    "web_url": "http://gitlab.com/root"
   },
   "created_at": "2016-06-17T17:47:29.266Z",
   "updated_at": "2016-06-17T17:47:29.266Z",
@@ -175,7 +175,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/award_emoji/344
 ```
 
 Example Response:
@@ -190,7 +190,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
+    "web_url": "http://gitlab.com/root"
   },
   "created_at": "2016-06-17T17:47:29.266Z",
   "updated_at": "2016-06-17T17:47:29.266Z",
@@ -222,7 +222,7 @@ Parameters:
 
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/notes/1/award_emoji
 ```
 
 Example Response:
@@ -238,7 +238,7 @@ Example Response:
       "id": 26,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-      "web_url": "http://gitlab.example.com/user4"
+      "web_url": "http://gitlab.com/user4"
     },
     "created_at": "2016-06-15T10:09:34.197Z",
     "updated_at": "2016-06-15T10:09:34.197Z",
@@ -264,7 +264,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
 ```
 
 Example Response:
@@ -279,7 +279,7 @@ Example Response:
     "id": 26,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/user4"
+    "web_url": "http://gitlab.com/user4"
   },
   "created_at": "2016-06-15T10:09:34.197Z",
   "updated_at": "2016-06-15T10:09:34.197Z",
@@ -304,7 +304,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
 ```
 
 Example Response:
@@ -319,7 +319,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
+    "web_url": "http://gitlab.com/root"
   },
   "created_at": "2016-06-17T19:59:55.888Z",
   "updated_at": "2016-06-17T19:59:55.888Z",
@@ -347,7 +347,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.com/api/v3/projects/1/issues/80/award_emoji/345
 ```
 
 Example Response:
@@ -362,7 +362,7 @@ Example Response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
+    "web_url": "http://gitlab.com/root"
   },
   "created_at": "2016-06-17T19:59:55.888Z",
   "updated_at": "2016-06-17T19:59:55.888Z",

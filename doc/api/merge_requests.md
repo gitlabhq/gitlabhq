@@ -426,7 +426,7 @@ DELETE /projects/:id/merge_requests/:merge_request_id
 | `merge_request_id` | integer | yes | The ID of a project's merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/4/merge_request/85
 ```
 
 ## Accept MR
@@ -598,7 +598,7 @@ GET /projects/:id/merge_requests/:merge_request_id/closes_issues
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/76/merge_requests/1/closes_issues
 ```
 
 Example response when the GitLab issue tracker is used:
@@ -611,7 +611,7 @@ Example response when the GitLab issue tracker is used:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/eileen.lowe",
+         "web_url" : "https://gitlab.com/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -632,7 +632,7 @@ Example response when the GitLab issue tracker is used:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/root",
+         "web_url" : "https://gitlab.com/root",
          "avatar_url" : null,
          "username" : "root"
       },
@@ -673,7 +673,7 @@ POST /projects/:id/merge_requests/:merge_request_id/subscription
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/merge_requests/17/subscription
 ```
 
 Example response:
@@ -698,7 +698,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/leila"
+    "web_url": "https://gitlab.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -706,7 +706,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/carli"
+    "web_url": "https://gitlab.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -747,7 +747,7 @@ DELETE /projects/:id/merge_requests/:merge_request_id/subscription
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/merge_requests/17/subscription
 ```
 
 Example response:
@@ -772,7 +772,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/leila"
+    "web_url": "https://gitlab.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -780,7 +780,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/carli"
+    "web_url": "https://gitlab.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -821,7 +821,7 @@ POST /projects/:id/merge_requests/:merge_request_id/todo
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/27/todo
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/merge_requests/27/todo
 ```
 
 Example response:
@@ -842,7 +842,7 @@ Example response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/root"
+    "web_url": "https://gitlab.com/root"
   },
   "action_name": "marked",
   "target_type": "MergeRequest",
@@ -865,7 +865,7 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/francisca"
+      "web_url": "https://gitlab.com/francisca"
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",
@@ -873,7 +873,7 @@ Example response:
       "id": 4,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/733005fcd7e6df12d2d8580171ccb966?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/barrett.krajcik"
+      "web_url": "https://gitlab.com/barrett.krajcik"
     },
     "source_project_id": 3,
     "target_project_id": 3,
@@ -900,7 +900,7 @@ Example response:
     "force_remove_source_branch": false,
     "web_url": "http://example.com/example/example/merge_requests/1"
   },
-  "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
+  "target_url": "https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",
   "state": "pending",
   "created_at": "2016-07-01T11:14:15.530Z"
@@ -921,7 +921,7 @@ GET /projects/:id/merge_requests/:merge_request_id/versions
 | `merge_request_id` | integer | yes | The ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/1/merge_requests/1/versions
 ```
 
 Example response:
@@ -963,7 +963,7 @@ GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id
 | `version_id` | integer | yes | The ID of the merge request diff version |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/1/merge_requests/1/versions/1
 ```
 
 Example response:

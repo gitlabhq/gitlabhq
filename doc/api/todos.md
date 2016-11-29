@@ -22,7 +22,7 @@ Parameters:
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/todos
 ```
 
 Example Response:
@@ -44,7 +44,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/root"
+      "web_url": "https://gitlab.com/root"
     },
     "action_name": "marked",
     "target_type": "MergeRequest",
@@ -67,7 +67,7 @@ Example Response:
         "id": 12,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/craig_rutherford"
+        "web_url": "https://gitlab.com/craig_rutherford"
       },
       "assignee": {
         "name": "Administrator",
@@ -75,7 +75,7 @@ Example Response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/root"
+        "web_url": "https://gitlab.com/root"
       },
       "source_project_id": 2,
       "target_project_id": 2,
@@ -97,7 +97,7 @@ Example Response:
       "subscribed": true,
       "user_notes_count": 7
     },
-    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ce/merge_requests/7",
+    "target_url": "https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7",
     "body": "Dolores in voluptatem tenetur praesentium omnis repellendus voluptatem quaerat.",
     "state": "pending",
     "created_at": "2016-06-17T07:52:35.225Z"
@@ -117,7 +117,7 @@ Example Response:
       "id": 12,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/craig_rutherford"
+      "web_url": "https://gitlab.com/craig_rutherford"
     },
     "action_name": "assigned",
     "target_type": "MergeRequest",
@@ -140,7 +140,7 @@ Example Response:
         "id": 12,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/craig_rutherford"
+        "web_url": "https://gitlab.com/craig_rutherford"
       },
       "assignee": {
         "name": "Administrator",
@@ -148,7 +148,7 @@ Example Response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/root"
+        "web_url": "https://gitlab.com/root"
       },
       "source_project_id": 2,
       "target_project_id": 2,
@@ -170,7 +170,7 @@ Example Response:
       "subscribed": true,
       "user_notes_count": 7
     },
-    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ce/merge_requests/7",
+    "target_url": "https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7",
     "body": "Dolores in voluptatem tenetur praesentium omnis repellendus voluptatem quaerat.",
     "state": "pending",
     "created_at": "2016-06-17T07:49:24.624Z"
@@ -194,7 +194,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/130
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/todos/130
 ```
 
 Example Response:
@@ -215,7 +215,7 @@ Example Response:
       "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/root"
+      "web_url": "https://gitlab.com/root"
     },
     "action_name": "marked",
     "target_type": "MergeRequest",
@@ -238,7 +238,7 @@ Example Response:
         "id": 12,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/craig_rutherford"
+        "web_url": "https://gitlab.com/craig_rutherford"
       },
       "assignee": {
         "name": "Administrator",
@@ -246,7 +246,7 @@ Example Response:
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/root"
+        "web_url": "https://gitlab.com/root"
       },
       "source_project_id": 2,
       "target_project_id": 2,
@@ -268,7 +268,7 @@ Example Response:
       "subscribed": true,
       "user_notes_count": 7
     },
-    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ce/merge_requests/7",
+    "target_url": "https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7",
     "body": "Dolores in voluptatem tenetur praesentium omnis repellendus voluptatem quaerat.",
     "state": "done",
     "created_at": "2016-06-17T07:52:35.225Z"
@@ -284,7 +284,7 @@ DELETE /todos
 ```
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/todos
 ```
 
 Example Response:

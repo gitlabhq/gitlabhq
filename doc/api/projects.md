@@ -706,7 +706,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -774,7 +774,7 @@ DELETE /projects/:id/star
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -843,7 +843,7 @@ POST /projects/:id/archive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/archive"
 ```
 
 Example response:
@@ -928,7 +928,7 @@ POST /projects/:id/unarchive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/unarchive"
 ```
 
 Example response:
@@ -1079,7 +1079,7 @@ Parameters:
 | `group_id` | integer | yes | The ID of the group |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/share/17
 ```
 
 ## Hooks

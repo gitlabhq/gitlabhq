@@ -13,7 +13,7 @@ GET /application/settings
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/application/settings
 ```
 
 Example response:
@@ -81,7 +81,7 @@ PUT /application/settings
 | `koding_url` | string | yes (if `koding_enabled` is `true`) |  The Koding instance URL for integration. |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
 ```
 
 Example response:

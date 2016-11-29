@@ -37,7 +37,7 @@ POST /ci/api/v1/runners/register
 Example request:
 
 ```sh
-curl --request POST "https://gitlab.example.com/ci/api/v1/runners/register" --form "token=t0k3n"
+curl --request POST "https://gitlab.com/ci/api/v1/runners/register" --form "token=t0k3n"
 ```
 
 ## Delete a Runner
@@ -55,5 +55,5 @@ DELETE /ci/api/v1/runners/delete
 Example request:
 
 ```sh
-curl --request DELETE "https://gitlab.example.com/ci/api/v1/runners/delete" --form "token=t0k3n"
+curl --request DELETE "https://gitlab.com/ci/api/v1/runners/delete" --form "token=t0k3n"
 ```

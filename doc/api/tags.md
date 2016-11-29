@@ -54,7 +54,7 @@ Parameters:
 | `tag_name` | string | yes | The name of the tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/tags/v1.0.0
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/5/repository/tags/v1.0.0
 ```
 
 Example Response:

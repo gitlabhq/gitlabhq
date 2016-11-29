@@ -32,7 +32,7 @@ Each application gets a unique App ID and App Secret parameters.
 To request the authorization code, you should redirect the user to the `/oauth/authorize` endpoint:
 
 ```
-https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=your_unique_state_hash
+https://gitlab.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=your_unique_state_hash
 ```
 
 This will ask the user to approve the applications access to their account and then redirect back to the `REDIRECT_URI` you provided.
