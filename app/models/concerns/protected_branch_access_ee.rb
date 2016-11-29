@@ -10,12 +10,10 @@ module ProtectedBranchAccessEe
     belongs_to :user
     belongs_to :group
 
-    validates_uniqueness_of :group_id, scope: :protected_branch, allow_nil: true
-    validates_uniqueness_of :user_id, scope: :protected_branch, allow_nil: true
-    validates_uniqueness_of :access_level,
-                            scope: :protected_branch,
-                            if: :role?,
-                            conditions: -> { where(user_id: nil, group_id: nil) }
+    validates :group_id, uniqueness: { scope: :protected_branch, allow_nil: true }
+    validates :user_id, uniqueness: { scope: :protected_branch, allow_nil: true }
+    validates :access_level, uniqueness: { scope: :protected_branch, if: :role?,
+                                           conditions: -> { where(user_id: nil, group_id: nil) } }
 
     scope :by_user, -> (user) { where(user: user ) }
     scope :by_group, -> (group) { where(group: group ) }
