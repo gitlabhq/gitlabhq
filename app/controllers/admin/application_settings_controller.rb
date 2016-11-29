@@ -93,6 +93,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :user_oauth_applications,
       :user_default_external,
       :shared_runners_enabled,
+      :shared_runners_minutes,
       :shared_runners_text,
       :max_artifacts_size,
       :metrics_enabled,
