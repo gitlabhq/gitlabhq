@@ -23,7 +23,7 @@ describe ProjectPolicy, models: true do
       :download_code, :fork_project, :create_project_snippet, :update_issue,
       :admin_issue, :admin_label, :admin_list, :read_commit_status, :read_build,
       :read_container_image, :read_pipeline, :read_environment, :read_deployment,
-      :read_merge_request
+      :read_merge_request, :download_wiki_code
     ]
   end
 
@@ -56,7 +56,8 @@ describe ProjectPolicy, models: true do
   let(:public_permissions) do
     [
       :download_code, :fork_project, :read_commit_status, :read_pipeline,
-      :read_container_image, :build_download_code, :build_read_container_image
+      :read_container_image, :build_download_code, :build_read_container_image,
+      :download_wiki_code
     ]
   end
 
@@ -85,6 +86,15 @@ describe ProjectPolicy, models: true do
       not_to include(:read_issue)
 
     expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
+  end
+
+  it 'does not include the wiki permissions when the feature is disabled' do
+    project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+    wiki_permissions = [:read_wiki, :create_wiki, :update_wiki, :admin_wiki, :download_wiki_code]
+
+    permissions = described_class.abilities(owner, project).to_set
+
+    expect(permissions).not_to include(*wiki_permissions)
   end
 
   context 'abilities for non-public projects' do
