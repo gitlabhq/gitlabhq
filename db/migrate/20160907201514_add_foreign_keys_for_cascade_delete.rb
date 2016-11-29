@@ -117,7 +117,7 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
 
   def down
     TABLES.each do |(source_table, target_table, column)|
-      remove_foreign_key(source_table, target_table, column: column)
+      remove_foreign_key(source_table, column: column)
     end
 
     # Re-add these without a cascading delete.
@@ -126,12 +126,6 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
     add_foreign_key :lists, :labels
     add_foreign_key :protected_branch_merge_access_levels, :protected_branches
     add_foreign_key :protected_branch_push_access_levels, :protected_branches
-  end
-
-  def remove_foreign_key(*args)
-    super(*args)
-  rescue ArgumentError
-    # Ignore if the foreign key doesn't exists
   end
 
   private
