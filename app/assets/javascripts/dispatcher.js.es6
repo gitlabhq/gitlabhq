@@ -36,7 +36,9 @@
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new gl.IssuableBulkActions();
+          new gl.IssuableBulkActions({
+            page
+          });
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':
