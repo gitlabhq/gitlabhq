@@ -1,4 +1,4 @@
-#merge-request-widget-app.mr-state-widget{ 'data-approver-names' => @merge_request.approvers_left.map(&:name),'data-approvals-left' => @merge_request.approvals_left,
+#merge-request-widget-app.mr-state-widget{ 'data-approved-by-users' => @merge_request.approved_by_users.to_json, 'data-approver-names' => @merge_request.approvers_left.map(&:name),'data-approvals-left' => @merge_request.approvals_left,
     'data-more-approvals' => (@merge_request.approvals_left - @merge_request.approvers_left.count),'data-can-edit' => @merge_request.can_approve?(current_user), 'data-endpoint'=> '/myendpoint/tho' }
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
@@ -50,7 +50,5 @@
 
   - if @merge_request.approvals.any?
     .mr-widget-footer.approved-by-users
-      %approvals-footer{ '@remove-approval' => 'unapproveMergeRequest', ':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':more-approvals' => 'approvals.moreApprovals', ':can-approve' => 'permissions.canEdit' }
-        %span{ slot: 'links-to-members'}
-          - @merge_request.approved_by_users.each do |user|
-            = link_to_member(@project, user, name: false, size: 24)
+      %approvals-footer{ '@remove-approval' => 'unapproveMergeRequest', ':approved-by-users' => 'approvals.approvedByUsers', ':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':more-approvals' => 'approvals.moreApprovals', ':can-approve' => 'permissions.canEdit' }
+
