@@ -14,7 +14,7 @@ class List {
     this.issuesSize = 0;
     this._interval = new gl.SmartInterval({
       callback: () => {
-        this.getIssues(false);
+        this.getIssues(false, true);
       },
       startingInterval: 6 * 1000, // 6 seconds
       maxInterval: 11 * 1000, // 11 seconds
@@ -84,7 +84,7 @@ class List {
     }
   }
 
-  getIssues (emptyIssues = true) {
+  getIssues (emptyIssues = true, autoRefresh = false) {
     const filters = this.filters;
     let data = { page: this.page };
 
@@ -92,6 +92,10 @@ class List {
 
     if (this.label) {
       data.label_name = data.label_name.filter( label => label !== this.label.title );
+    }
+
+    if (autoRefresh) {
+      data.per_page = data.page * data.per_page;
     }
 
     if (emptyIssues) {
@@ -108,7 +112,7 @@ class List {
           this.issues = [];
         }
 
-        this.createIssues(data.issues);
+        this.createIssues(data.issues, autoRefresh);
       });
   }
 
@@ -123,16 +127,21 @@ class List {
       });
   }
 
-  createIssues (data) {
+  createIssues (data, deleteNotFound) {
+    if (deleteNotFound) {
+      // Delete any issue not found
+      const issueIds = data.map( issue => issue.iid );
+
+      this.issues = this.issues.filter((issue) => {
+        return issueIds.indexOf(issue.id) !== -1;
+      });
+    }
+
     data.forEach((issueObj) => {
       const issue = this.findIssue(issueObj.iid);
 
       if (issue) {
-        if (issueObj.assignee) {
-          issue.assignee = new ListUser(issueObj.assignee);
-        } else {
-          issue.assignee = undefined;
-        }
+        issue.setData(issueObj);
       } else {
         this.addIssue(new ListIssue(issueObj));
       }

@@ -1,6 +1,10 @@
 /* eslint-disable */
 class ListIssue {
   constructor (obj) {
+    this.setData(obj);
+  }
+
+  setData(obj) {
     this.id = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;
@@ -8,17 +12,21 @@ class ListIssue {
     this.subscribed = obj.subscribed;
     this.labels = [];
 
+    obj.labels.forEach((label) => {
+      this.labels.push(new ListLabel(label));
+    });
+
     if (obj.assignee) {
       this.assignee = new ListUser(obj.assignee);
+    } else {
+      this.assignee = undefined;
     }
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
+    } else {
+      this.milestone = undefined;
     }
-
-    obj.labels.forEach((label) => {
-      this.labels.push(new ListLabel(label));
-    });
 
     this.priority = this.labels.reduce((max, label) => {
       return (label.priority < max) ? label.priority : max;
