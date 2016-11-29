@@ -208,6 +208,9 @@
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
+        case 'projects:variables:index':
+          new gl.ProjectVariables();
+          break;
       }
       switch (path.first()) {
         case 'admin':
