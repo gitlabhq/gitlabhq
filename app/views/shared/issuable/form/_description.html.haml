@@ -1,0 +1,15 @@
+- issuable = local_assigns.fetch(:issuable)
+- form = local_assigns.fetch(:form)
+
+.form-group.detail-page-description
+  = form.label :description, 'Description', class: 'control-label'
+  .col-sm-10
+
+    = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
+      = render 'projects/zen', f: form, attr: :description,
+                               classes: 'note-textarea',
+                               placeholder: "Write a comment or drag your files here...",
+                               supports_slash_commands: !issuable.persisted?
+      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
+      .clearfix
+      .error-alert

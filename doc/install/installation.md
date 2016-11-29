@@ -175,17 +175,17 @@ We recommend using a PostgreSQL database. For MySQL check the
     ```bash
     sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
     ```
+    
+1. Create the `pg_trgm` extension (required for GitLab 8.6+):
+
+    ```bash
+    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+    ```
 
 1. Create the GitLab production database and grant all privileges on database:
 
     ```bash
     sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
-    ```
-
-1. Create the `pg_trgm` extension (required for GitLab 8.6+):
-
-    ```bash
-    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
     ```
 
 1. Try connecting to the new database with the new user:
@@ -403,7 +403,7 @@ If you are not using Linux you may have to run `gmake` instead of
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout v1.0.0
+    sudo -u git -H git checkout v1.0.1
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features

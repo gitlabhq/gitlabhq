@@ -41,15 +41,13 @@ module API
                             desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
-        optional :iid, type: Integer, desc: 'The IID of the merge requests'
+        optional :iid, type: Array[Integer], desc: 'The IID of the merge requests'
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
-        merge_requests = user_project.merge_requests.inc_notes_with_associations
 
-        unless params[:iid].nil?
-          merge_requests = filter_by_iid(merge_requests, params[:iid])
-        end
+        merge_requests = user_project.merge_requests.inc_notes_with_associations
+        merge_requests = filter_by_iid(merge_requests, params[:iid]) if params[:iid].present?
 
         merge_requests =
           case params[:state]
@@ -59,7 +57,7 @@ module API
           else merge_requests
           end
 
-        merge_requests = merge_requests.reorder(issuable_order_by => issuable_sort)
+        merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
         present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
@@ -78,11 +76,6 @@ module API
         authorize! :create_merge_request, user_project
 
         mr_params = declared_params
-
-        # Validate label names in advance
-        if (errors = validate_label_params(mr_params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
@@ -158,11 +151,6 @@ module API
           authorize! :update_merge_request, merge_request
 
           mr_params = declared_params(include_missing: false)
-
-          # Validate label names in advance
-          if (errors = validate_label_params(mr_params)).any?
-            render_api_error!({ labels: errors }, 400)
-          end
 
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 

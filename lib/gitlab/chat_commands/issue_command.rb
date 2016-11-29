@@ -6,11 +6,7 @@ module Gitlab
       end
 
       def collection
-        project.issues
-      end
-
-      def readable?(issue)
-        self.class.can?(current_user, :read_issue, issue)
+        IssuesFinder.new(current_user, project_id: project.id).execute
       end
     end
   end

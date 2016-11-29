@@ -465,10 +465,10 @@ GET /projects/:id/services/jira
 
 Set JIRA service for a project.
 
->**Note:**
-Setting `project_url`, `issues_url` and `new_issue_url` will allow a user to
-easily navigate to the JIRA issue tracker. See the [integration doc][jira-doc]
-for details.
+>**Notes:**
+- Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
+  `project_url` are replaced by `project_key`, `url`.  If you are using an
+  older version, [follow this documentation][old-jira-api].
 
 ```
 PUT /projects/:id/services/jira
@@ -477,11 +477,8 @@ PUT /projects/:id/services/jira
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `active`        | boolean| no  | Enable/disable the JIRA service. |
-| `project_url`   | string | yes | The URL to the JIRA project which is being linked to this GitLab project. It is of the form: `https://<jira_host_url>/issues/?jql=project=<jira_project>`. |
-| `issues_url`    | string | yes | The URL to the JIRA project issues overview for the project that is linked to this GitLab project. It is of the form: `https://<jira_host_url>/browse/:id`. Leave `:id` as-is, it gets replaced by GitLab at runtime.|
-| `new_issue_url` | string | yes | This is the URL to create a new issue in JIRA for the project linked to this GitLab project, and it is of the form: `https://<jira_host_url>/secure/CreateIssue.jspa` |
-| `api_url`       | string | yes | The base URL of the JIRA API. It may be omitted, in which case GitLab will automatically use API version `2` based on the `project url`. It is of the form: `https://<jira_host_url>/rest/api/2`. |
-| `description`   | string | no  | A name for the issue tracker. |
+| `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project, e.g., `https://jira.example.com`. |
+| `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `username`      | string | no  | The username of the user created to be used with GitLab/JIRA. |
 | `password`      | string | no  | The password of the user created to be used with GitLab/JIRA. |
 | `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
@@ -670,3 +667,4 @@ GET /projects/:id/services/teamcity
 ```
 
 [jira-doc]: ../project_services/jira.md
+[old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira

@@ -12,6 +12,9 @@ devise_scope :user do
 end
 
 constraints(UserUrlConstrainer.new) do
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::Regex.namespace_route_regex }
+
   scope(path: ':username',
         as: :user,
         constraints: { username: Gitlab::Regex.namespace_route_regex },

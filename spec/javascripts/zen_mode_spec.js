@@ -6,9 +6,10 @@
   var enterZen, escapeKeydown, exitZen;
 
   describe('ZenMode', function() {
-    fixture.preload('zen_mode.html');
+    var fixtureName = 'issues/open-issue.html.raw';
+    fixture.preload(fixtureName);
     beforeEach(function() {
-      fixture.load('zen_mode.html');
+      fixture.load(fixtureName);
       spyOn(Dropzone, 'forElement').and.callFake(function() {
         return {
           enable: function() {
@@ -60,11 +61,11 @@
   });
 
   enterZen = function() {
-    return $('a.js-zen-enter').click();
+    return $('.js-zen-enter').click();
   };
 
   exitZen = function() { // Ohmmmmmmm
-    return $('a.js-zen-leave').click();
+    return $('.js-zen-leave').click();
   };
 
   escapeKeydown = function() {

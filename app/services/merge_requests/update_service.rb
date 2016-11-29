@@ -1,7 +1,3 @@
-require_relative 'base_service'
-require_relative 'reopen_service'
-require_relative 'close_service'
-
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)

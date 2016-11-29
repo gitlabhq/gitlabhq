@@ -210,6 +210,7 @@ module API
 
     class Milestone < ProjectEntity
       expose :due_date
+      expose :start_date
     end
 
     class Issue < ProjectEntity
@@ -606,6 +607,7 @@ module API
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
       expose :duration
+      expose :coverage
     end
 
     class EnvironmentBasic < Grape::Entity

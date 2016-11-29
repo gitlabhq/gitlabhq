@@ -1,12 +1,13 @@
+/* eslint-disable no-param-reassign */
+/* global Vue */
+/* global EnvironmentsService */
+
 //= require vue
 //= require vue-resource
 //= require_tree ../services/
 //= require ./environment_item
 
-/* globals Vue, EnvironmentsService */
-/* eslint-disable no-param-reassign */
-
-(() => { // eslint-disable-line
+(() => {
   window.gl = window.gl || {};
 
   /**
@@ -157,17 +158,17 @@
             <li v-bind:class="{ 'active': scope === undefined }">
               <a :href="projectEnvironmentsPath">
                 Available
-                <span
-                  class="badge js-available-environments-count"
-                  v-html="state.availableCounter"></span>
+                <span class="badge js-available-environments-count">
+                  {{state.availableCounter}}
+                </span>
               </a>
             </li>
             <li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
-                <span
-                  class="badge js-stopped-environments-count"
-                  v-html="state.stoppedCounter"></span>
+                <span class="badge js-stopped-environments-count">
+                  {{state.stoppedCounter}}
+                </span>
               </a>
             </li>
           </ul>
@@ -180,11 +181,10 @@
 
         <div class="environments-container">
           <div class="environments-list-loading text-center" v-if="isLoading">
-            <i class="fa fa-spinner spin"></i>
+            <i class="fa fa-spinner fa-spin"></i>
           </div>
 
-          <div
-            class="blank-state blank-state-no-icon"
+          <div class="blank-state blank-state-no-icon"
             v-if="!isLoading && state.environments.length === 0">
             <h2 class="blank-state-title">
               You don't have any environments right now.
@@ -205,18 +205,17 @@
             </a>
           </div>
 
-          <div
-            class="table-holder"
+          <div class="table-holder"
             v-if="!isLoading && state.environments.length > 0">
             <table class="table ci-table environments">
               <thead>
                 <tr>
-                  <th>Environment</th>
-                  <th>Last deployment</th>
-                  <th>Build</th>
-                  <th>Commit</th>
-                  <th></th>
-                  <th class="hidden-xs"></th>
+                  <th class="environments-name">Environment</th>
+                  <th class="environments-deploy">Last deployment</th>
+                  <th class="environments-build">Build</th>
+                  <th class="environments-commit">Commit</th>
+                  <th class="environments-date"></th>
+                  <th class="hidden-xs environments-actions"></th>
                 </tr>
               </thead>
               <tbody>
@@ -234,7 +233,9 @@
                     is="environment-item"
                     v-for="children in model.children"
                     :model="children"
-                    :toggleRow="toggleRow.bind(children)">
+                    :toggleRow="toggleRow.bind(children)"
+                    :can-create-deployment="canCreateDeploymentParsed"
+                    :can-read-environment="canReadEnvironmentParsed">
                     </tr>
 
                 </template>

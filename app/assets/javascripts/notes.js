@@ -113,6 +113,7 @@
       $(document).off("click", ".js-note-discard");
       $(document).off("keydown", ".js-note-text");
       $(document).off('click', '.js-comment-resolve-button');
+      $(document).off("click", '.system-note-commit-list-toggler');
       $('.note .js-task-list-container').taskList('disable');
       return $(document).off('tasklist:changed', '.note .js-task-list-container');
     };
@@ -332,7 +333,7 @@
         gl.diffNotesCompileComponents();
       }
 
-      gl.utils.localTimeAgo($('.js-timeago', note_html), false);
+      gl.utils.localTimeAgo($('.js-timeago'), false);
       return this.updateNotesCount(1);
     };
 

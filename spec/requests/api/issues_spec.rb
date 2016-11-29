@@ -365,6 +365,24 @@ describe API::API, api: true  do
     let(:base_url) { "/projects/#{project.id}" }
     let(:title) { milestone.title }
 
+    it "returns 404 on private projects for other users" do
+      private_project = create(:empty_project, :private)
+      create(:issue, project: private_project)
+
+      get api("/projects/#{private_project.id}/issues", non_member)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns no issues when user has access to project but not issues' do
+      restricted_project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      create(:issue, project: restricted_project)
+
+      get api("/projects/#{restricted_project.id}/issues", non_member)
+
+      expect(json_response).to eq([])
+    end
+
     it 'returns project issues without confidential issues for non project members' do
       get api("#{base_url}/issues", non_member)
       expect(response).to have_http_status(200)
@@ -697,6 +715,14 @@ describe API::API, api: true  do
         expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
       end
     end
+
+    context 'the user can only read the issue' do
+      it 'cannot create new labels' do
+        expect do
+          post api("/projects/#{project.id}/issues", non_member), title: 'new issue', labels: 'label, label2'
+        end.not_to change { project.labels.count }
+      end
+    end
   end
 
   describe 'POST /projects/:id/issues with spam filtering' do
@@ -839,8 +865,8 @@ describe API::API, api: true  do
     end
 
     it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user),
-          labels: ''
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), labels: ''
+
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([])
     end
@@ -892,8 +918,8 @@ describe API::API, api: true  do
         update_time = 2.weeks.ago
         put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label3', state_event: 'close', updated_at: update_time
-        expect(response).to have_http_status(200)
 
+        expect(response).to have_http_status(200)
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end

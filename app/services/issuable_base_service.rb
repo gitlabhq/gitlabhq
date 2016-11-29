@@ -85,14 +85,15 @@ class IssuableBaseService < BaseService
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
+
     return unless labels
 
-    params[:label_ids] = labels.split(',').map do |label_name|
+    params[:label_ids] = labels.split(",").map do |label_name|
       service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
       label   = service.execute
 
-      label.id
-    end
+      label.try(:id)
+    end.compact
   end
 
   def process_label_ids(attributes, existing_label_ids: nil)
@@ -140,6 +141,7 @@ class IssuableBaseService < BaseService
 
     params.delete(:state_event)
     params[:author] ||= current_user
+
     label_ids = process_label_ids(params)
 
     issuable.assign_attributes(params)
@@ -184,8 +186,6 @@ class IssuableBaseService < BaseService
     params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
 
     if params.present? && update_issuable(issuable, params)
-      issuable.reset_events_cache
-
       # We do not touch as it will affect a update on updated_at field
       ActiveRecord::Base.no_touching do
         handle_common_system_notes(issuable, old_labels: old_labels)

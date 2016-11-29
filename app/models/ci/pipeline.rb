@@ -182,23 +182,27 @@ module Ci
     end
 
     def retryable?
-      builds.latest.any? do |build|
-        (build.failed? || build.canceled?) && build.retryable?
-      end
+      builds.latest.failed_or_canceled.any?(&:retryable?)
     end
 
     def cancelable?
-      builds.running_or_pending.any?
+      statuses.cancelable.any?
     end
 
     def cancel_running
-      builds.running_or_pending.each(&:cancel)
+      Gitlab::OptimisticLocking.retry_lock(
+        statuses.cancelable) do |cancelable|
+          cancelable.each(&:cancel)
+        end
     end
 
     def retry_failed(user)
-      builds.latest.failed.select(&:retryable?).each do |build|
-        Ci::Build.retry(build, user)
-      end
+      Gitlab::OptimisticLocking.retry_lock(
+        builds.latest.failed_or_canceled) do |failed_or_canceled|
+          failed_or_canceled.select(&:retryable?).each do |build|
+            Ci::Build.retry(build, user)
+          end
+        end
     end
 
     def mark_as_processable_after_stage(stage_idx)

@@ -13,8 +13,8 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
 
   it 'creates todo when clicking button' do
     page.within '.issuable-sidebar' do
-      click_button 'Add Todo'
-      expect(page).to have_content 'Mark Done'
+      click_button 'Add todo'
+      expect(page).to have_content 'Mark done'
     end
 
     page.within '.header-content .todos-pending-count' do
@@ -30,8 +30,8 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
 
   it 'marks a todo as done' do
     page.within '.issuable-sidebar' do
-      click_button 'Add Todo'
-      click_button 'Mark Done'
+      click_button 'Add todo'
+      click_button 'Mark done'
     end
 
     expect(page).to have_selector('.todos-pending-count', visible: false)

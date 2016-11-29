@@ -4,6 +4,8 @@ module Gitlab
       COMMANDS = [
         Gitlab::ChatCommands::IssueShow,
         Gitlab::ChatCommands::IssueCreate,
+        Gitlab::ChatCommands::IssueSearch,
+        Gitlab::ChatCommands::Deploy,
       ].freeze
 
       def execute

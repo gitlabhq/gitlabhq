@@ -171,12 +171,19 @@ describe "Pipelines", feature: true, js: true do
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 
-        it 'is not cancelable' do
-          expect(page).not_to have_link('Cancel')
+        it 'is cancelable' do
+          expect(page).to have_link('Cancel')
         end
 
         it 'has pipeline running' do
           expect(page).to have_selector('.ci-running')
+        end
+
+        context 'when canceling' do
+          before { click_link('Cancel') }
+
+          it { expect(page).not_to have_link('Cancel') }
+          it { expect(page).to have_selector('.ci-canceled') }
         end
       end
 
