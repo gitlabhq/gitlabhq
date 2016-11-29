@@ -98,21 +98,21 @@ class AddForeignKeysForCascadeDelete < ActiveRecord::Migration
     end
 
     # Rebuild indexes
-    add_index :issues, [:project_id, :iid], unique: true
-    add_index :issues, :assignee_id
-    add_index :issues, :author_id
-    add_index :issues, :confidential
-    add_index :issues, :created_at
-    add_index :issues, :deleted_at
-    add_index :issues, :due_date
-    add_index :issues, :milestone_id
-    add_index :issues, :state
-    add_index :events, :action
-    add_index :events, :author_id
-    add_index :events, :created_at
-    add_index :events, :project_id
-    add_index :events, :target_id
-    add_index :events, :target_type
+    add_concurrent_index :issues, [:project_id, :iid], unique: true
+    add_concurrent_index :issues, :assignee_id
+    add_concurrent_index :issues, :author_id
+    add_concurrent_index :issues, :confidential
+    add_concurrent_index :issues, :created_at
+    add_concurrent_index :issues, :deleted_at
+    add_concurrent_index :issues, :due_date
+    add_concurrent_index :issues, :milestone_id
+    add_concurrent_index :issues, :state
+    add_concurrent_index :events, :action
+    add_concurrent_index :events, :author_id
+    add_concurrent_index :events, :created_at
+    add_concurrent_index :events, :project_id
+    add_concurrent_index :events, :target_id
+    add_concurrent_index :events, :target_type
   end
 
   def down
@@ -146,18 +146,18 @@ EOF
     # on each of them. Also notice that these queries are executed in a new
     # transaction. That should be ok, since we are removing orphan records.
     Thread.new do
-      connection = ActiveRecord::Base.connection
+      ActiveRecord::Base.connection_pool.with_connection do |connection|
+        connection.transaction do
+          disable_statement_timeout
 
-      connection.transaction do
-        disable_statement_timeout
-
-        # MySQL doesn't allow you to use the table from the DELETE in the subquery.
-        # You can however use the table in a subquery inside the subquery (see
-        # http://www.mysqlfaqs.net/mysql-errors/1093-you-can-not-specify-target-table-comments-for-update-in-from-clause),
-        # which seems to be perfectly fine. What's the point of the restriction then, you ask? Beats me.
-        loop do
-          deleted = connection.delete "DELETE FROM #{source_table} WHERE id IN (SELECT id FROM (#{select_query}) AS t)"
-          break if deleted == 0
+          # MySQL doesn't allow you to use the table from the DELETE in the subquery.
+          # You can however use the table in a subquery inside the subquery (see
+          # http://www.mysqlfaqs.net/mysql-errors/1093-you-can-not-specify-target-table-comments-for-update-in-from-clause),
+          # which seems to be perfectly fine. What's the point of the restriction then, you ask? Beats me.
+          loop do
+            deleted = connection.delete "DELETE FROM #{source_table} WHERE id IN (SELECT id FROM (#{select_query}) AS t)"
+            break if deleted == 0
+          end
         end
       end
     end
