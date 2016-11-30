@@ -6,7 +6,7 @@ class CreateReleases < ActiveRecord::Migration
       t.text :description
       t.integer :project_id
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :releases, :project_id

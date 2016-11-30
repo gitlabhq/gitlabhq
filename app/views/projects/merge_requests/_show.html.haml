@@ -59,15 +59,16 @@
                 = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
                   Commits
                   %span.badge= @commits_count
-            - if @pipeline
+            - if @pipelines.any?
               %li.pipelines-tab
                 = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
                   Pipelines
                   %span.badge= @pipelines.size
+            - if @pipeline.present?
               %li.builds-tab
                 = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#builds', action: 'builds', toggle: 'tab' } do
                   Builds
-                  %span.badge= @statuses.size
+                  %span.badge= @statuses_count
             %li.diffs-tab
               = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
                 Changes

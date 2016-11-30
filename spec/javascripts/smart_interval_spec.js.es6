@@ -37,7 +37,7 @@
           const intervalConfig = this.smartInterval.cfg;
           const iterationCount = 4;
           const maxIntervalAfterIterations = intervalConfig.startingInterval *
-            Math.pow(intervalConfig.incrementByFactorOf, (iterationCount - 1)); // 40
+            (intervalConfig.incrementByFactorOf ** (iterationCount - 1)); // 40
           const currentInterval = interval.getCurrentInterval();
 
           // Provide some flexibility for performance of testing environment

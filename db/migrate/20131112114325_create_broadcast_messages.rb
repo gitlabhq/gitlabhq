@@ -7,7 +7,7 @@ class CreateBroadcastMessages < ActiveRecord::Migration
       t.datetime :ends_at
       t.integer :alert_type
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

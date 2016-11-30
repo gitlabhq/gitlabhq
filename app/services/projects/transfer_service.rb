@@ -61,9 +61,6 @@ module Projects
         # Move missing group labels to project
         Labels::TransferService.new(current_user, old_group, project).execute
 
-        # clear project cached events
-        project.reset_events_cache
-
         # Move uploads
         Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
 

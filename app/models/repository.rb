@@ -196,18 +196,12 @@ class Repository
 
     options = { message: message, tagger: user_to_committer(user) } if message
 
-    rugged.tags.create(tag_name, target, options)
-    tag = find_tag(tag_name)
-
-    GitHooksService.new.execute(user, path_to_repo, oldrev, tag.target, ref) do
-      # we already created a tag, because we need tag SHA to pass correct
-      # values to hooks
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do |service|
+      raw_tag = rugged.tags.create(tag_name, target, options)
+      service.newrev = raw_tag.target_id
     end
 
-    tag
-  rescue GitHooksService::PreReceiveError
-    rugged.tags.delete(tag_name)
-    raise
+    find_tag(tag_name)
   end
 
   def rm_branch(user, branch_name)

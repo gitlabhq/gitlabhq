@@ -4,7 +4,7 @@ describe AutocompleteController do
   let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
-  context 'users and members' do
+  context 'GET users' do
     let!(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
 
@@ -180,7 +180,7 @@ describe AutocompleteController do
     end
   end
 
-  context 'projects' do
+  context 'GET projects' do
     let(:authorized_project) { create(:project) }
     let(:authorized_search_project) { create(:project, name: 'rugged') }
 

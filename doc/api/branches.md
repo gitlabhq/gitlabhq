@@ -212,9 +212,6 @@ Example response:
 }
 ```
 
-It returns `200` if it succeeds or `400` if failed with an error message
-explaining the reason.
-
 ## Delete repository branch
 
 ```
@@ -226,8 +223,7 @@ DELETE /projects/:id/repository/branches/:branch
 | `id`      | integer | yes | The ID of a project |
 | `branch`  | string  | yes | The name of the branch |
 
-It returns `200` if it succeeds, `404` if the branch to be deleted does not exist
-or `400` for other reasons. In case of an error, an explaining message is provided.
+In case of an error, an explaining message is provided.
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches/newbranch"
@@ -253,7 +249,6 @@ DELETE /projects/:id/repository/merged_branches
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer | yes | The ID of a project |
 
-It returns `200` to indicate deletion of all merged branches was started.
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/merged_branches"

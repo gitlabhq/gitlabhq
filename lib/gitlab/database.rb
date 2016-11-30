@@ -35,13 +35,6 @@ module Gitlab
       order
     end
 
-    def self.serialized_transaction
-      opts = {}
-      opts[:isolation] = :serializable unless Rails.env.test? && connection.transaction_open?
-
-      connection.transaction(opts) { yield }
-    end
-
     def self.random
       Gitlab::Database.postgresql? ? "RANDOM()" : "RAND()"
     end

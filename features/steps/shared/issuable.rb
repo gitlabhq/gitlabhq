@@ -110,14 +110,14 @@ module SharedIssuable
   end
 
   step 'I sort the list by "Oldest updated"' do
-    find('button.dropdown-toggle.btn').click
+    find('button.dropdown-toggle').click
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
       click_link "Oldest updated"
     end
   end
 
   step 'I sort the list by "Least popular"' do
-    find('button.dropdown-toggle.btn').click
+    find('button.dropdown-toggle').click
 
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
       click_link 'Least popular'
@@ -125,7 +125,7 @@ module SharedIssuable
   end
 
   step 'I sort the list by "Most popular"' do
-    find('button.dropdown-toggle.btn').click
+    find('button.dropdown-toggle').click
 
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
       click_link 'Most popular'

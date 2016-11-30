@@ -605,18 +605,6 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.repository.branch_names.include?(self.target_branch)
   end
 
-  # Reset merge request events cache
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when a merge request is updated
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.reset_event_cache_for(self)
-  end
-
   def merge_commit_message
     message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
     message << "#{title}\n\n"
@@ -690,7 +678,7 @@ class MergeRequest < ActiveRecord::Base
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_build_succeeds?
 
-    !pipeline || pipeline.success? || pipeline.skipped?
+    !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
   end
 
   def environments
@@ -786,14 +774,14 @@ class MergeRequest < ActiveRecord::Base
     commits.map(&:sha)
   end
 
-  def pipeline
+  def head_pipeline
     return unless diff_head_sha && source_project
 
-    @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
+    @head_pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
   def all_pipelines
-    return unless source_project
+    return Ci::Pipeline.none unless source_project
 
     @all_pipelines ||= source_project.pipelines
       .where(sha: all_commits_sha, ref: source_branch)

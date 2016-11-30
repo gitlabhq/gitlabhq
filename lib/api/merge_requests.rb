@@ -77,11 +77,6 @@ module API
 
         mr_params = declared_params
 
-        # Validate label names in advance
-        if (errors = validate_label_params(mr_params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
-
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
         if merge_request.valid?
@@ -157,11 +152,6 @@ module API
 
           mr_params = declared_params(include_missing: false)
 
-          # Validate label names in advance
-          if (errors = validate_label_params(mr_params)).any?
-            render_api_error!({ labels: errors }, 400)
-          end
-
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
           if merge_request.valid?
@@ -202,7 +192,7 @@ module API
             should_remove_source_branch: params[:should_remove_source_branch]
           }
 
-          if params[:merge_when_build_succeeds] && merge_request.pipeline && merge_request.pipeline.active?
+          if params[:merge_when_build_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
             ::MergeRequests::MergeWhenPipelineSucceedsService
               .new(merge_request.target_project, current_user, merge_params)
               .execute(merge_request)

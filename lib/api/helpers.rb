@@ -68,7 +68,7 @@ module API
     end
 
     def user_project
-      @project ||= find_project(params[:id])
+      @project ||= find_project!(params[:id])
     end
 
     def available_labels
@@ -76,7 +76,15 @@ module API
     end
 
     def find_project(id)
-      project = Project.find_with_namespace(id) || Project.find_by(id: id)
+      if id =~ /^\d+$/
+        Project.find_by(id: id)
+      else
+        Project.find_with_namespace(id)
+      end
+    end
+
+    def find_project!(id)
+      project = find_project(id)
 
       if can?(current_user, :read_project, project)
         project
@@ -97,7 +105,15 @@ module API
     end
 
     def find_group(id)
-      group = Group.find_by(path: id) || Group.find_by(id: id)
+      if id =~ /^\d+$/
+        Group.find_by(id: id)
+      else
+        Group.find_by(path: id)
+      end
+    end
+
+    def find_group!(id)
+      group = find_group(id)
 
       if can?(current_user, :read_group, group)
         group
@@ -112,9 +128,7 @@ module API
     end
 
     def find_project_issue(id)
-      issue = user_project.issues.find(id)
-      not_found! unless can?(current_user, :read_issue, issue)
-      issue
+      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
     def paginate(relation)
@@ -180,20 +194,6 @@ module API
         end
       end
       ActionController::Parameters.new(attrs).permit!
-    end
-
-    # Helper method for validating all labels against its names
-    def validate_label_params(params)
-      errors = {}
-
-      params[:labels].to_s.split(',').each do |label_name|
-        label = available_labels.find_or_initialize_by(title: label_name.strip)
-        next if label.valid?
-
-        errors[label.title] = label.errors
-      end
-
-      errors
     end
 
     # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601

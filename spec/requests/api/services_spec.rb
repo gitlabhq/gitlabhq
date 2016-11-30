@@ -128,7 +128,7 @@ describe API::API, api: true  do
           )
         end
 
-        it 'retusn status 200' do
+        it 'returns status 200' do
           post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger"), params
 
           expect(response).to have_http_status(200)

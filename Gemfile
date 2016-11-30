@@ -133,7 +133,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 4.2'
-gem 'sidekiq-cron', '~> 0.4.0'
+gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
@@ -309,6 +309,8 @@ group :development, :test do
   gem 'knapsack', '~> 1.11.0'
 
   gem 'activerecord_sane_schema_dumper', '0.2'
+
+  gem 'stackprof', '~> 0.2.10'
 end
 
 group :test do

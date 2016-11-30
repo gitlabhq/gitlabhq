@@ -123,7 +123,7 @@ To be able to access repositories on Bitbucket, GitLab will automatically
 register your public key with Bitbucket as a deploy key for the repositories to
 be imported. Your public key needs to be at `~/.ssh/bitbucket_rsa` which
 translates to `/var/opt/gitlab/.ssh/bitbucket_rsa` for Omnibus packages and to
-`/home/git/.ssh/bitbucket_rsa.pub` for installations from source.
+`/home/git/.ssh/bitbucket_rsa` for installations from source.
 
 ---
 
@@ -199,7 +199,7 @@ Your GitLab server is now able to connect to Bitbucket over SSH. You should be
 able to see the "Import projects from Bitbucket" option on the New Project page
 enabled.
 
-## Acknowledgemts
+## Acknowledgements
 
 Special thanks to the writer behind the following article:
 

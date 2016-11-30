@@ -20,7 +20,6 @@ class Projects::AvatarsController < Projects::ApplicationController
     @project.remove_avatar!
 
     @project.save
-    @project.reset_events_cache
 
     redirect_to edit_project_path(@project)
   end
