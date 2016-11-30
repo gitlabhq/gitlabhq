@@ -1,7 +1,6 @@
-/* eslint-disable no-param-reassign */
 /* global Vue */
 
-((global) => {
+(() => {
   class Subscription {
     constructor(containerSelector) {
       this.containerElm = (typeof containerSelector === 'string')
@@ -54,5 +53,6 @@
     }
   }
 
-  global.Subscription = Subscription;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  window.gl.Subscription = Subscription;
+})();
