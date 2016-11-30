@@ -229,7 +229,6 @@ rake ee_compat_check:
   <<: *exec
   only:
     - branches@gitlab-org/gitlab-ce
-    - branches@gitlab/gitlabhq
   except:
     - master
     - tags
