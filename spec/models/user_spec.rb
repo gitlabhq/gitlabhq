@@ -575,6 +575,18 @@ describe User, models: true do
         end
       end
     end
+
+    context 'when current_application_settings.enabled_git_access_protocol does not contain SSH' do
+      before do
+        stub_application_setting(enabled_git_access_protocol: 'HTTP')
+      end
+
+      it "doesn't require user to have SSH key" do
+        user = build(:user)
+
+        expect(user.require_ssh_key?).to be_falsey
+      end
+    end
   end
 
   describe '.find_by_any_email' do
