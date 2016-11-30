@@ -84,6 +84,21 @@
       loadSearchParamsFromURL();
     }
 
+    static fillInWord(word) {
+      const originalValue = document.querySelector('.filtered-search').value;
+      document.querySelector('.filtered-search').value = `${originalValue} ${word.trim()}`;
+    }
+
+    static loadDropdown(dropdownName) {
+      dropdownName = dropdownName.toLowerCase();
+
+      const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName)[0];
+
+      if (match) {
+        console.log(`🦄 load ${match.key} dropdown`);
+      }
+    }
+
     bindEvents() {
       const filteredSearchInput = document.querySelector('.filtered-search');
 
