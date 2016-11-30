@@ -170,6 +170,10 @@ ul.notes {
       &.timeline-entry {
         padding: 14px 10px;
       }
+
+      .system-note {
+        padding: 0;
+      }
     }
 
     &.is-editting {
