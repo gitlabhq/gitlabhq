@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
+  const REALTIME = false;
   const PAGINATION_LIMIT = 31;
   const SLICE_LIMIT = 29;
 
@@ -81,17 +82,19 @@
       resourceChecker();
       goFetch();
 
-      // this.intervalId = setInterval(() => {
-      //   if (this.updatedAt) {
-      //     resourceChecker();
-      //     if (Vue.activeResources > 1) return;
-      //     goUpdate();
-      //   }
-      // }, 3000);
+      if (REALTIME) {
+        this.intervalId = setInterval(() => {
+          if (this.updatedAt) {
+            resourceChecker();
+            if (Vue.activeResources > 1) return;
+            goUpdate();
+          }
+        }, 3000);
 
-      // window.onbeforeunload = function removePipelineInterval() {
-      //   clearInterval(this.intervalId);
-      // };
+        window.onbeforeunload = function removePipelineInterval() {
+          clearInterval(this.intervalId);
+        };
+      }
     }
   };
 })(window.gl || (window.gl = {}));

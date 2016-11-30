@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign, no-bitwise*/
 
 ((gl) => {
+  const REALTIME = false;
   const SPREAD = '...';
   const PREV = 'Prev';
   const NEXT = 'Next';
@@ -55,7 +56,7 @@
         if (text === FIRST) this.pagenum = 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
-        // clearInterval(this.intervalId);
+        if (REALTIME) clearInterval(this.intervalId);
         this.pageRequest = true;
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
