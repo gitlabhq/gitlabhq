@@ -35,7 +35,7 @@
           Vue.set(
             gl.issueBoards.BoardsStore.detail.issue,
             'subscribed',
-            !gl.issueBoards.BoardsStore.detail.issue.subscribed
+            !gl.issueBoards.BoardsStore.detail.issue.subscribed,
           );
         } else {
           const newToggleText = isSubscribed ? 'Subscribe' : 'Unsubscribe';
