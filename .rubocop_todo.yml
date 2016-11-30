@@ -80,10 +80,6 @@ Performance/RedundantMatch:
 Performance/RedundantMerge:
   Enabled: false
 
-# Offense count: 7
-RSpec/BeEql:
-  Enabled: false
-
 # Offense count: 15
 # Configuration parameters: CustomIncludeMethods.
 RSpec/EmptyExampleGroup:
