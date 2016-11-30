@@ -51,6 +51,12 @@
     .git-clone-holder {
       width: 480px;
     }
+
+    .nav-controls {
+      width: auto;
+      min-width: 50%;
+      white-space: nowrap;
+    }
   }
 
   @media (min-width: $screen-md-min) {
