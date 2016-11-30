@@ -166,7 +166,7 @@
        */
       createdDate() {
         return window.gl.environmentsList.timeagoInstance.format(
-          this.model.last_deployment.deployable.created_at
+          this.model.last_deployment.deployable.created_at,
         );
       },
 

@@ -155,11 +155,11 @@ describe('Environment item', () => {
       it('should render last deployment date', () => {
         const timeagoInstance = new timeago(); // eslint-disable-line
         const formatedDate = timeagoInstance.format(
-          environment.last_deployment.deployable.created_at
+          environment.last_deployment.deployable.created_at,
         );
 
         expect(
-          component.$el.querySelector('.environment-created-date-timeago').textContent
+          component.$el.querySelector('.environment-created-date-timeago').textContent,
         ).toContain(formatedDate);
       });
 
