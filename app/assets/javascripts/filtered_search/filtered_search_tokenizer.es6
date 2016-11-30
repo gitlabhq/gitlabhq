@@ -1,33 +1,20 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
   class FilteredSearchTokenizer {
-    constructor(validTokenKeys) {
-      this.validTokenKeys = validTokenKeys;
-      this.resetTokens();
-    }
-
-    getTokens() {
-      return this.tokens;
-    }
-
-    getSearchToken() {
-      return this.searchToken;
-    }
-
-    resetTokens() {
-      this.tokens = [];
-      this.searchToken = '';
-    }
-
-    printTokens() {
+    // TODO: Remove when going to pro
+    static printTokens(tokens, searchToken, lastToken) {
       console.log('tokens:');
-      this.tokens.forEach(token => console.log(token));
-      console.log(`search: ${this.searchToken}`);
+      tokens.forEach(token => console.log(token));
+      console.log(`search: ${searchToken}`);
+      console.log('last token:');
+      console.log(lastToken);
     }
 
-    processTokens(input) {
-      // Re-calculate tokens
-      this.resetTokens();
+    static processTokens(input) {
+      let tokens = [];
+      let searchToken = '';
+      let lastToken = '';
+      const validTokenKeys = gl.FilteredSearchTokenKeys.get();
 
       const inputs = input.split(' ');
       let searchTerms = '';
@@ -36,16 +23,17 @@
 
       inputs.forEach((i) => {
         if (incompleteToken) {
-          const prevToken = this.tokens.last();
+          const prevToken = tokens.last();
           prevToken.value += ` ${i}`;
 
           // Remove last quotation
           const lastQuotationRegex = new RegExp(lastQuotation, 'g');
           prevToken.value = prevToken.value.replace(lastQuotationRegex, '');
-          this.tokens[this.tokens.length - 1] = prevToken;
+          tokens[tokens.length - 1] = prevToken;
 
           // Check to see if this quotation completes the token value
           if (i.indexOf(lastQuotation)) {
+            lastToken = tokens.last();
             incompleteToken = !incompleteToken;
           }
 
@@ -59,8 +47,8 @@
           const tokenValue = i.slice(colonIndex + 1);
           const tokenSymbol = tokenValue[0];
           console.log(tokenSymbol)
-          const keyMatch = this.validTokenKeys.filter(v => v.key === tokenKey)[0];
-          const symbolMatch = this.validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
+          const keyMatch = validTokenKeys.filter(v => v.key === tokenKey)[0];
+          const symbolMatch = validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
 
           const doubleQuoteIndex = tokenValue.indexOf('"');
           const singleQuoteIndex = tokenValue.indexOf('\'');
@@ -81,11 +69,12 @@
           }
 
           if (keyMatch && tokenValue.length > 0) {
-            this.tokens.push({
+            tokens.push({
               key: keyMatch.key,
               value: tokenValue,
               wildcard: symbolMatch ? false : true,
             });
+            lastToken = tokens.last();
 
             return;
           }
@@ -93,10 +82,19 @@
 
         // Add space for next term
         searchTerms += `${i} `;
+        lastToken = i;
       }, this);
 
-      this.searchToken = searchTerms.trim();
-      this.printTokens();
+      searchToken = searchTerms.trim();
+
+      // TODO: Remove when going to PRO
+      gl.FilteredSearchTokenizer.printTokens(tokens, searchToken, lastToken);
+
+      return {
+        tokens,
+        searchToken,
+        lastToken,
+      };
     }
   }
 

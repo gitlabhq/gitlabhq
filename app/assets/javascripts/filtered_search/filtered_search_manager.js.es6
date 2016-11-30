@@ -1,42 +1,5 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
-  const validTokenKeys = [{
-    key: 'author',
-    type: 'string',
-    param: 'username',
-    symbol: '@',
-  }, {
-    key: 'assignee',
-    type: 'string',
-    param: 'username',
-    symbol: '@',
-    conditions: [{
-      keyword: 'none',
-      url: 'assignee_id=0',
-    }],
-  }, {
-    key: 'milestone',
-    type: 'string',
-    param: 'title',
-    symbol: '%',
-    conditions: [{
-      keyword: 'none',
-      url: 'milestone_title=No+Milestone',
-    }, {
-      keyword: 'upcoming',
-      url: 'milestone_title=%23upcoming',
-    }],
-  }, {
-    key: 'label',
-    type: 'array',
-    param: 'name[]',
-    symbol: '~',
-    conditions: [{
-      keyword: 'none',
-      url: 'label_name[]=No+Label',
-    }],
-  }];
-
   function clearSearch(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -66,9 +29,9 @@
       const key = decodeURIComponent(split[0]);
       const value = split[1];
 
-      // Check if it matches edge conditions listed in validTokenKeys
+      // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys.get()
       let conditionIndex = 0;
-      const validCondition = validTokenKeys
+      const validCondition = gl.FilteredSearchTokenKeys.get()
         .filter(v => v.conditions && v.conditions.filter((c, index) => {
           if (c.url === p) {
             conditionIndex = index;
@@ -82,7 +45,7 @@
         // Sanitize value since URL converts spaces into +
         // Replace before decode so that we know what was originally + versus the encoded +
         const sanitizedValue = value ? decodeURIComponent(value.replace(/[+]/g, ' ')) : value;
-        const match = validTokenKeys.filter(t => key === `${t.key}_${t.param}`)[0];
+        const match = gl.FilteredSearchTokenKeys.get().filter(t => key === `${t.key}_${t.param}`)[0];
 
         if (match) {
           const sanitizedKey = key.slice(0, key.indexOf('_'));
@@ -116,7 +79,7 @@
 
   class FilteredSearchManager {
     constructor() {
-      this.tokenizer = new gl.FilteredSearchTokenizer(validTokenKeys);
+      this.tokenizer = gl.FilteredSearchTokenizer;
       this.bindEvents();
       loadSearchParamsFromURL();
     }
@@ -131,6 +94,7 @@
       document.querySelector('.clear-search').addEventListener('click', clearSearch);
     }
 
+    // TODO: This is only used for testing, remove when going to PRO
     processInput(e) {
       const input = e.target.value;
       this.tokenizer.processTokens(input);
@@ -155,8 +119,7 @@
       const defaultState = 'opened';
       let currentState = defaultState;
 
-      const tokens = this.tokenizer.getTokens();
-      const searchToken = this.tokenizer.getSearchToken();
+      const { tokens, searchToken } = this.tokenizer.processTokens(document.querySelector('.filtered-search').value);
 
       if (stateIndex !== -1) {
         const remaining = currentPath.slice(stateIndex + 6);
@@ -167,7 +130,7 @@
 
       path += `&state=${currentState}`;
       tokens.forEach((token) => {
-        const match = validTokenKeys.filter(t => t.key === token.key)[0];
+        const match = gl.FilteredSearchTokenKeys.get().filter(t => t.key === token.key)[0];
         let tokenPath = '';
 
         if (token.wildcard && match.conditions) {
