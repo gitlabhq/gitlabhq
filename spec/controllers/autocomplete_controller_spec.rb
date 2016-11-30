@@ -144,6 +144,15 @@ describe AutocompleteController do
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 0 }
       end
+
+      describe 'GET #users with todo filter' do
+        it 'gives an array of users' do
+          get :users, todo_filter: true
+
+          expect(response.status).to eq 200
+          expect(body).to be_kind_of(Array)
+        end
+      end
     end
 
     context 'author of issuable included' do
