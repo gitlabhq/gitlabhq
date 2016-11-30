@@ -20,6 +20,12 @@ module EnvironmentHelper
     link_to "##{deployment.iid}", [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
   end
 
+  def last_deployment_link(deployment, link_text)
+    return unless deployment
+
+    link_to link_text, [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+  end
+
   def last_deployment_link_for_environment_build(project, build)
     environment = environment_for_build(project, build)
     return unless environment

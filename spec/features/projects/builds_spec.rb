@@ -227,6 +227,28 @@ feature 'Builds', :feature do
         expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
       end
     end
+
+    context "Build starts environment" do
+      context "Build is successfull and has deployment" do
+        it "shows a link for the build" do
+          -# link to environment.name
+          expect(page).to have_link()
+        end
+      end
+
+      context "Build is complete and not successfull" do
+        it "shows a link for the build" do
+          -# link to environment.name
+          expect(page).to have_link()
+        end
+      end
+
+      context "Build creates a new deployment" do
+        it "shows a link to lastest deployment" do
+          expect(page).to have_link("latest deployment")
+        end
+      end
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do
