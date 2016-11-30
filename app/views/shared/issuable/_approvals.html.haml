@@ -1,17 +1,22 @@
+- issuable = local_assigns.fetch(:issuable)
+- form = local_assigns.fetch(:form)
+
 - return unless issuable.is_a?(MergeRequest)
 - return unless issuable.requires_approve?
+
 - approvals_required = issuable.target_project.approvals_before_merge
+
 .form-group
-  = f.label :approvals_before_merge, class: 'control-label' do
+  = form.label :approvals_before_merge, class: 'control-label' do
     Approvals required
   .col-sm-10
-    = f.number_field :approvals_before_merge, class: 'form-control', value: approvals_required
+    = form.number_field :approvals_before_merge, class: 'form-control', value: approvals_required
     .help-block
       Number of users who need to approve this merge request before it can be accepted.
       If this isn't greater than the project default (#{pluralize(approvals_required, 'user')}),
       then it will be ignored and the project default will be used.
 .form-group
-  = f.label :approver_ids, class: 'control-label' do
+  = form.label :approver_ids, class: 'control-label' do
     Approvers
   .col-sm-10
     - author = issuable.author || current_user
