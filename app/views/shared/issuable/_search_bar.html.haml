@@ -14,7 +14,7 @@
         .filtered-search-input-container
           %input.form-control.filtered-search{ placeholder: 'Search or filter results...' }
           = icon('filter')
-          %button.clear-search.hidden
+          %button.clear-search.hidden{ type: 'button' }
             = icon('times')
         .pull-right
           - if boards_page
