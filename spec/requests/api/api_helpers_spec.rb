@@ -47,7 +47,7 @@ describe API::Helpers, api: true do
   end
 
   def error!(message, status)
-    raise Exception
+    raise Exception.new("#{status} - #{message}")
   end
 
   describe ".current_user" do
@@ -288,6 +288,58 @@ describe API::Helpers, api: true do
       expect(Raven).to receive(:capture_exception).with(exception)
 
       handle_api_exception(exception)
+    end
+  end
+
+  describe '.authenticate_non_get!' do
+    %w[HEAD GET].each do |method_name|
+      context "method is #{method_name}" do
+        before do
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+        end
+
+        it 'does not raise an error' do
+          expect_any_instance_of(self.class).not_to receive(:authenticate!)
+
+          expect { authenticate_non_get! }.not_to raise_error
+        end
+      end
+    end
+
+    %w[POST PUT PATCH DELETE].each do |method_name|
+      context "method is #{method_name}" do
+        before do
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+        end
+
+        it 'calls authenticate!' do
+          expect_any_instance_of(self.class).to receive(:authenticate!)
+
+          authenticate_non_get!
+        end
+      end
+    end
+  end
+
+  describe '.authenticate!' do
+    context 'current_user is nil' do
+      before do
+        expect_any_instance_of(self.class).to receive(:current_user).and_return(nil)
+      end
+
+      it 'returns a 401 response' do
+        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
+      end
+    end
+
+    context 'current_user is present' do
+      before do
+        expect_any_instance_of(self.class).to receive(:current_user).and_return(true)
+      end
+
+      it 'does not raise an error' do
+        expect { authenticate! }.not_to raise_error
+      end
     end
   end
 end
