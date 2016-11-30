@@ -25,18 +25,14 @@
       },
       timeStopped() {
         const changeTime = this.currentTime;
-
         const options = {
           weekday: 'long',
           year: 'numeric',
           month: 'short',
           day: 'numeric',
         };
-
         options.timeZoneName = 'short';
-
         const finished = this.pipeline.details.finished_at;
-
         if (!finished && changeTime) return false;
         return ({ words: gl.utils.getTimeago().format(finished) });
       },
