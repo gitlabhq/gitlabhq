@@ -55,13 +55,11 @@ describe 'Filter issues weight', js: true, feature: true do
     end
 
     it 'filters issues by invalid weight' do
-      pending('to be tested, issue #1517')
-      expect(true).to be(false)
+      skip('to be tested, issue #1517')
     end
 
     it 'filters issues by multiple weights' do
-      pending('to be tested, issue #1517')
-      expect(true).to be(false)
+      skip('to be tested, issue #1517')
     end
   end
 
