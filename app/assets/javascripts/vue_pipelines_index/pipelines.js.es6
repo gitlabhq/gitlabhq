@@ -24,6 +24,7 @@
     data() {
       return {
         pipelines: [],
+        allTimeIntervals: [],
         intervalId: '',
         updatedAt: '',
         pagenum: 1,
@@ -65,6 +66,9 @@
         if (author) return author;
         return ({});
       },
+      addTimeInterval(id, that) {
+        this.allTimeIntervals.push({ id: id, component: that });
+      },
     },
     template: `
       <div>
@@ -90,7 +94,11 @@
                   </commit>
                 </td>
                 <stages :pipeline='pipeline'></stages>
-                <time-ago :pipeline='pipeline'></time-ago>
+                <time-ago
+                  :pipeline='pipeline'
+                  :addTimeInterval='addTimeInterval'
+                >
+                </time-ago>
                 <pipeline-actions :pipeline='pipeline'></pipeline-actions>
               </tr>
             </tbody>

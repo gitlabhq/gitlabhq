@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  const REALTIME = false;
+  const REALTIME = true;
   const PAGINATION_LIMIT = 31;
   const SLICE_LIMIT = 29;
 
@@ -33,11 +33,10 @@
       const addToVueResources = () => { Vue.activeResources += 1; };
       const subtractFromVueResources = () => { Vue.activeResources -= 1; };
 
-      resetVueResources(); // set Vue.resources to 0
+      resetVueResources();
 
       const updatePipelineNums = (count) => {
         const { all } = count;
-        // cannot define non camel case, so not using destructuring for running
         const running = count.running_or_pending;
         document.querySelector('.js-totalbuilds-count').innerHTML = all;
         document.querySelector('.js-running-count').innerHTML = running;
@@ -82,7 +81,7 @@
       resourceChecker();
       goFetch();
 
-      if (REALTIME) {
+      const poller = () => {
         this.intervalId = setInterval(() => {
           if (this.updatedAt) {
             resourceChecker();
@@ -90,11 +89,31 @@
             goUpdate();
           }
         }, 3000);
+      };
 
-        window.onbeforeunload = function removePipelineInterval() {
-          clearInterval(this.intervalId);
-        };
-      }
+      if (REALTIME) poller();
+
+      const removePipelineInterval = () => {
+        this.allTimeIntervals.forEach(e => clearInterval(e.id));
+        if (REALTIME) clearInterval(this.intervalId);
+      };
+
+      const startIntervalLoops = () => {
+        this.allTimeIntervals.forEach(e => e.component.startInterval());
+        if (REALTIME) poller();
+      };
+
+      window.onbeforeunload = function onClose() {
+        removePipelineInterval();
+      };
+
+      window.onblur = function remove() {
+        removePipelineInterval();
+      };
+
+      window.onfocus = function start() {
+        startIntervalLoops();
+      };
     }
   };
 })(window.gl || (window.gl = {}));

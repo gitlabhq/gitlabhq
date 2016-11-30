@@ -1,17 +1,35 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign */
 ((gl) => {
+  const REALTIME = false;
+
   gl.VueTimeAgo = Vue.extend({
+    data() {
+      return {
+        timeInterval: '',
+        currentTime: new Date(),
+      };
+    },
     props: [
       'pipeline',
+      'addTimeInterval',
     ],
+    created() {
+      if (!REALTIME) {
+        this.timeInterval = setInterval(() => {
+          this.currentTime = new Date();
+        }, 1000);
+
+        this.addTimeInterval(this.timeInterval, this);
+      }
+    },
     computed: {
       localTimeFinished() {
         return gl.utils.formatDate(this.pipeline.details.finished_at);
       },
-    },
-    methods: {
       timeStopped() {
+        const changeTime = this.currentTime;
+
         const options = {
           weekday: 'long',
           year: 'numeric',
@@ -23,17 +41,21 @@
 
         const finished = this.pipeline.details.finished_at;
 
-        if (!finished) return false;
-
-        return {
-          words: gl.utils.getTimeago().format(finished),
-        };
+        if (!finished && changeTime) return false;
+        return ({ words: gl.utils.getTimeago().format(finished) });
       },
+    },
+    methods: {
       duration() {
         const { duration } = this.pipeline.details;
         if (duration === 0) return '00:00:00';
         if (duration !== null) return duration;
         return false;
+      },
+      startInterval() {
+        this.timeInterval = setInterval(() => {
+          this.currentTime = new Date();
+        }, 1000);
       },
     },
     template: `
@@ -51,7 +73,7 @@
           </svg>
           {{duration()}}
         </p>
-        <p class="finished-at" v-if='timeStopped()'>
+        <p class="finished-at" v-if='timeStopped'>
           <i class="fa fa-calendar"></i>
           <time
             data-toggle="tooltip"
@@ -59,7 +81,7 @@
             data-container="body"
             :data-original-title='localTimeFinished'
           >
-            {{timeStopped().words}}
+            {{timeStopped.words}}
           </time>
         </p>
       </td>
