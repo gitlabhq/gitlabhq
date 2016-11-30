@@ -56,16 +56,9 @@
 
 .md-header {
   .nav-links {
-    .active {
-      a {
-        border-bottom-color: #000;
-      }
-    }
-
     a {
       padding-top: 0;
       line-height: 19px;
-      border-bottom: 1px solid $border-color;
 
       &.btn.btn-xs {
         padding: 2px 5px;
