@@ -801,6 +801,10 @@ RSpec/ExampleWording:
     not: does not
   IgnoredWords: []
 
+# Checks for `expect(...)` calls containing literal values.
+RSpec/ExpectActual:
+  Enabled: true
+
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
   Enabled: false

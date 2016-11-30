@@ -85,10 +85,6 @@ Performance/RedundantMerge:
 RSpec/EmptyExampleGroup:
   Enabled: false
 
-# Offense count: 24
-RSpec/ExpectActual:
-  Enabled: false
-
 # Offense count: 58
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: implicit, each, example
