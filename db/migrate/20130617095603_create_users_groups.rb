@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateUsersGroups < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :users_groups do |t|
       t.integer :group_access, null: false
