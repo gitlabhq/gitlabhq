@@ -11,7 +11,6 @@
     ],
     computed: {
       user() {
-        // debugger
         if (this.pipeline.user) return true;
         return false;
       },
