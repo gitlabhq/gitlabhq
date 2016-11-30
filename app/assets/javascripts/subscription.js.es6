@@ -37,13 +37,7 @@
             !gl.issueBoards.BoardsStore.detail.issue.subscribed,
           );
         } else {
-          const newToggleText = isSubscribed ? 'Subscribe' : 'Unsubscribe';
-          buttonSpan.innerHTML = newToggleText;
-
-          if (button.getAttribute('data-original-title')) {
-            button.setAttribute('data-original-title', newToggleText);
-            $(button).tooltip('hide').tooltip('fixTitle');
-          }
+          buttonSpan.innerHTML = isSubscribed ? 'Subscribe' : 'Unsubscribe';
         }
       });
     }
