@@ -67,7 +67,7 @@
         return ({});
       },
       addTimeInterval(id, that) {
-        this.allTimeIntervals.push({ id: id, component: that });
+        this.allTimeIntervals.push({ id, component: that });
       },
     },
     template: `
