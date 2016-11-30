@@ -229,8 +229,12 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def self.weight_filter_options
+    weight_options + [WEIGHT_ALL, WEIGHT_ANY]
+  end
+
   def self.weight_options
-    [WEIGHT_ALL, WEIGHT_ANY, WEIGHT_NONE] + WEIGHT_RANGE.to_a
+    [WEIGHT_NONE] + WEIGHT_RANGE.to_a
   end
 
   def moved?

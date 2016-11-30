@@ -168,12 +168,11 @@
             - else
               .light None
           .selectbox.hide-collapsed
-            = dropdown_tag("Weight", options: { title: "Change weight", toggle_class: 'js-weight-select', dropdown_class: "dropdown-menu-selectable",
-              placeholder: "Search weight", data: { field_name: "weight", issue_update: "#{issuable_json_path(issuable)}", ability_name: "#{issuable.to_ability_name}" } }) do
+            = weight_dropdown_tag(issuable, title: 'Change weight', data: { field_name: 'weight', issue_update: "#{issuable_json_path(issuable)}", ability_name: "#{issuable.to_ability_name}" }) do
               %ul
-                - Issue.weight_options.select{|weight| weight != "Everything" && weight != "Any Weight"}.each do |weight|
+                - Issue.weight_options.each do |weight|
                   %li
-                    %a{href: "#", data: { id: weight, none: ("true" if weight == Issue::WEIGHT_NONE) }, class: ("is-active" if params[:weight] == weight.to_s)}
+                    %a{ href: "#", data: { id: weight, none: weight == Issue::WEIGHT_NONE }, class: ("is-active" if params[:weight] == weight.to_s) }
                       = weight
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
