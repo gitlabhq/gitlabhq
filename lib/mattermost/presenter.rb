@@ -1,29 +1,6 @@
 module Mattermost
   class Presenter
     class << self
-      include Gitlab::Routing.url_helpers
-
-      def authorize_chat_name(url)
-        message = if url
-                    ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
-                  else
-                    ":sweat_smile: Couldn't identify you, nor can I autorize you!"
-                  end
-
-        ephemeral_response(message)
-      end
-
-      def help(commands, trigger)
-        if commands.none?
-          ephemeral_response("No commands configured")
-        else
-          commands.map! { |command| "#{trigger} #{command}" }
-          message = header_with_list("Available commands", commands)
-
-          ephemeral_response(message)
-        end
-      end
-
       def present(subject)
         return not_found unless subject
 
@@ -42,10 +19,6 @@ module Mattermost
         end
       end
 
-      def access_denied
-        ephemeral_response("Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
-      end
-
       private
 
       def show_result(result)
@@ -55,10 +28,6 @@ module Mattermost
         else
           ephemeral_response(result.message)
         end
-      end
-
-      def not_found
-        ephemeral_response("404 not found! GitLab couldn't find what you were looking for! :boom:")
       end
 
       def single_resource(resource)
@@ -89,42 +58,6 @@ module Mattermost
         title = resource.try(:title) || resource.try(:name)
 
         "[#{reference} #{title}](#{url(resource)})"
-      end
-
-      def header_with_list(header, items)
-        message = [header]
-
-        items.each do |item|
-          message << "- #{item}"
-        end
-
-        message.join("\n")
-      end
-
-      def url(resource)
-        url_for(
-          [
-            resource.project.namespace.becomes(Namespace),
-            resource.project,
-            resource
-          ]
-        )
-      end
-
-      def ephemeral_response(message)
-        {
-          response_type: :ephemeral,
-          text: message,
-          status: 200
-        }
-      end
-
-      def in_channel_response(message)
-        {
-          response_type: :in_channel,
-          text: message,
-          status: 200
-        }
       end
     end
   end
