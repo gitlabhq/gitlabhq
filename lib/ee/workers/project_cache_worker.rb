@@ -18,7 +18,7 @@ module EE
       # Geo should only update Redis based cache, as data store in the database
       # will be updated on primary and replicated to the secondaries.
       def perform_geo_secondary(project_id, refresh = [])
-        project = Project.find_by(id: project_id)
+        project = ::Project.find_by(id: project_id)
 
         return unless project && project.repository.exists?
 

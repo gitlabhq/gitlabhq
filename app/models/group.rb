@@ -9,6 +9,7 @@ class Group < Namespace
   include AccessRequestable
   include Referable
   include SelectForProjectAuthorization
+  prepend EE::GeoAwareAvatar
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :group_members
@@ -116,7 +117,7 @@ class Group < Namespace
     allowed_by_projects
   end
 
-  def avatar_url(size = nil)
+  def avatar_url(size = nil, scale = nil)
     if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     end

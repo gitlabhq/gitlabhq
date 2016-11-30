@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   include Elastic::ProjectsSearch
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
+  prepend EE::GeoAwareAvatar
 
   extend Gitlab::ConfigHelper
 
@@ -915,7 +916,7 @@ class Project < ActiveRecord::Base
     repository.avatar
   end
 
-  def avatar_url
+  def avatar_url(size = nil, scale = nil)
     if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git

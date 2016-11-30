@@ -1,8 +1,8 @@
-# Group EE mixin
-#
-# This module is intended to encapsulate EE-specific model logic
-# and be included in the `Group` model
 module EE
+  # Group EE mixin
+  #
+  # This module is intended to encapsulate EE-specific model logic
+  # and be included in the `Group` model
   module Group
     extend ActiveSupport::Concern
 
