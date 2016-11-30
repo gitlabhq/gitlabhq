@@ -10,6 +10,7 @@ describe IssuesFinder do
   let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
   let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
   let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
+  let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
   let!(:label_link) { create(:label_link, label: label, target: issue2) }
 
   before do
@@ -25,7 +26,7 @@ describe IssuesFinder do
   describe '#execute' do
     let(:search_user) { user }
     let(:params) { {} }
-    let(:issues) { IssuesFinder.new(search_user, params.merge(scope: scope, state: 'opened')).execute }
+    let(:issues) { IssuesFinder.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     context 'scope: all' do
       let(:scope) { 'all' }
@@ -140,6 +141,40 @@ describe IssuesFinder do
 
         it 'returns issue with iid match' do
           expect(issues).to contain_exactly(issue3)
+        end
+      end
+
+      context 'filtering by state' do
+        context 'with opened' do
+          let(:params) { { state: 'opened' } }
+
+          it 'returns only opened issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3)
+          end
+        end
+
+        context 'with closed' do
+          let(:params) { { state: 'closed' } }
+
+          it 'returns only closed issues' do
+            expect(issues).to contain_exactly(closed_issue)
+          end
+        end
+
+        context 'with all' do
+          let(:params) { { state: 'all' } }
+
+          it 'returns all issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+          end
+        end
+
+        context 'with invalid state' do
+          let(:params) { { state: 'invalid_state' } }
+
+          it 'returns all issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+          end
         end
       end
 
