@@ -1,3 +1,16 @@
+.container-limited.limit-container-width {
+  .issue-details {
+    .description,
+    .note-body {
+      p,
+      ul,
+      ol,
+      .code {
+        max-width: $line-length-width;
+      }
+    }
+  }
+}
 .issuable-details {
   section {
     .issuable-discussion {

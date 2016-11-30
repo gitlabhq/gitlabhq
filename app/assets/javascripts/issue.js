@@ -11,6 +11,7 @@
     function Issue() {
       this.submitNoteForm = bind(this.submitNoteForm, this);
       // Prevent duplicate event bindings
+      this.limitContainerWidth();
       this.disableTaskList();
       if ($('a.btn-close').length) {
         this.initTaskList();
@@ -20,6 +21,11 @@
       this.initRelatedBranches();
       this.initCanCreateBranch();
     }
+
+    Issue.prototype.limitContainerWidth = function() {
+      var $wrapper = $('.content-wrapper .container-fluid');
+      $wrapper.addClass('limit-container-width')
+    };
 
     Issue.prototype.initTaskList = function() {
       $('.detail-page-description .js-task-list-container').taskList('enable');
