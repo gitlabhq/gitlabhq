@@ -1,18 +1,29 @@
+//= require ../services/approvals_api
 //= require vue_common_component/link_to_member_avatar
+//= require vue_common_component/loading_icon
 
 (() => {
-  // does the user have permission to edit this thing
-  // has the user already approved this or not
-  // what are the users who have approved this already, with all their info
-  gl.MergeRequestWidget.approvalsFooter = {
+  const app = gl.MergeRequestWidget;
+  const api = gl.MergeRequestWidget.ApprovalsApi;
+  const componentRegistry = app.Components || (app.Components = {});
+
+  componentRegistry.approvalsFooter = {
+    name: 'ApprovalsFooter',
     props: ['canUpdateMergeRequest', 'hasApprovedMergeRequest', 'approvedByUsers'],
+    data() {
+      return {
+        loading: true,
+      };
+    },
     methods: {
       removeApproval() {
-        approvalsService.unapproveMergeRequest();
-      }
+        return api.unapproveMergeRequest();
+      },
     },
     beforeCreate() {
-      approvalsService.fetchApprovals();
+      api.fetchApprovals().then(() => {
+        this.loading = false;
+      });
     },
     template: `
       <div>
@@ -26,9 +37,9 @@
         <span>
           <i class='fa fa-close'></i>
           <button @click='removeApproval'>Remove your approval</button>
-          {{ approvedByUsers[0].name }}
         </span>
+        <loading-icon v-if='loading'></loading-icon>
       </div>
-    `
+    `,
   };
 })();

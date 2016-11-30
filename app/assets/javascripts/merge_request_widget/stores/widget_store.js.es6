@@ -1,38 +1,53 @@
-(() => {
+//= require ../approvals/stores/approvals_store
+
+((MergeRequestWidget) => {
+  let singleton;
   class MergeRequestWidgetStore {
-    constructor(el) {
-      this.dataset = el.dataset;
+    constructor(rootEl) {
+      if (!singleton) {
+        singleton = MergeRequestWidget.Store = this;
+        this.init(rootEl);
+      }
+      return singleton;
+      // TODO: add the following to the root el dataset: approvedByUsers,
+      // approverNames, approvalsNeeded, canUpdateMergeRequest, endpoint
+    }
+
+    init(rootEl) {
+      this.rootEl = rootEl;
+      this.dataset = rootEl.dataset;
       this.data = {};
-      // TODO: Break each into their own store
       this.initResource();
       this.initPermissions();
       this.initApprovals();
     }
+
+    /* General Resources */
+
     initResource() {
-      Object.assign(this.data, {
-        resource: {
-          endpoint: this.dataset.endpoint
-        }
+      this.assignToData('resource', {
+        endpoint: 'my/endpoint',
       });
     }
+
     initPermissions() {
-      Object.assign(this.data, {
-        permissions: {
-          canApprove: Boolean(this.dataset.canApprove)
-        }
+      this.assignToData('permissions', {
+        canUpdateMergeRequest: Boolean(this.dataset.canUpdateMergeRequest),
       });
     }
+
+    /* Component-specific */
+
     initApprovals() {
-      const dataset = this.dataset;
-      Object.assign(this.data, {
-        approvals: {
-          approvedByUsers: JSON.parse(dataset.approvedByUsers),
-          approverNames: JSON.parse(dataset.approverNames),
-          approvalsLeft: Number(dataset.approvalsLeft),
-          moreApprovals: Number(dataset.approvalsLeft),
-        }
-      });
+      const approvalsStore = new gl.MergeRequestWidget.ApprovalsStore(this.rootEl);
+      this.assignToData('approvals', approvalsStore.data);
+    }
+
+    assignToData(key, val) {
+      this.data[key] = {};
+      Object.assign(this.data[key], val);
     }
   }
-  gl.MergeRequestWidgetStore = MergeRequestWidgetStore;
-})()
+
+  MergeRequestWidget.Store = MergeRequestWidgetStore;
+})(gl.MergeRequestWidget || (MergeRequestWidget = {}));

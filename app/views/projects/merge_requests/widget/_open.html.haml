@@ -1,4 +1,8 @@
-#merge-request-widget-app.mr-state-widget
+- approvers_names = @merge_request.approvers_left.map(&:name).to_json
+- more_approvals = @merge_request.approvals_left - @merge_request.approvers_left.count
+- approvals_left = @merge_request.approvals_left
+
+#merge-request-widget-app.mr-state-widget{'data-approved-by-users' => @merge_request.approved_by_users.to_json, 'data-approver-names' => approvers_names,'data-approvals-left' => approvals_left, 'data-more-approvals' => more_approvals, 'data-endpoint'=> '/myendpoint/tho'}
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     -# After conflicts are resolved, the user is redirected back to the MR page.
@@ -24,8 +28,7 @@
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
     - elsif @merge_request.requires_approve? && !@merge_request.approved?
-      %approvals-body{ '@give-approval' => 'approveMergeRequest', '@fetch-approvals' => 'fetchApprovals', :approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':more-approvals' => 'approvals.moreApprovals', ':can-approve' => 'permissions.canApprove', ':needs-approval' => (@merge_request.requires_approve? && !@merge_request.approved?) }
-        = icon('spinner spin', class: 'loading-icon')
+      %approvals-body{':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':canApprove' => 'approvals.canApprove'}
     - elsif @merge_request.merge_when_build_succeeds?
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
@@ -50,6 +53,6 @@
 
   - if @merge_request.approvals.any?
     .mr-widget-footer.approved-by-users
-      %approvals-footer{ '@remove-approval' => 'unapproveMergeRequest', '@fetch-approvals' => 'fetchApprovals', ':approved-by-users' => 'approvals.approvedByUsers', ':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':more-approvals' => 'approvals.moreApprovals', ':can-approve' => 'permissions.canApprove', 'has-approvals' => @merge_request.approvals.any? }
-        = icon('spinner spin', class: 'loading-icon'')
+      %approvals-footer{':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':canApprove' => 'approvals.canApprove', ':approved-by-users' => 'approvals.approvedByUsers'}
+        = icon('spinner spin', class: 'loading-icon')
 
