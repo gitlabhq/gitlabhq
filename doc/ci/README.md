@@ -21,6 +21,7 @@
 - [CI services (linked docker containers)](services/README.md)
 - [CI/CD pipelines settings](../user/project/pipelines/settings.md)
 - [Review Apps](review_apps/index.md)
+- [Git submodules](git_submodules.md) Using Git submodules in your CI jobs
 
 ## Breaking changes
 
