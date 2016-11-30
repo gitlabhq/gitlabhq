@@ -6,7 +6,7 @@ class CreateSubscriptionsTable < ActiveRecord::Migration
       t.references :subscribable, polymorphic: true
       t.boolean :subscribed
       
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :subscriptions, 

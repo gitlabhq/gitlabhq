@@ -6,7 +6,7 @@ class CreateUsersGroups < ActiveRecord::Migration
       t.integer :group_id, null: false
       t.integer :user_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

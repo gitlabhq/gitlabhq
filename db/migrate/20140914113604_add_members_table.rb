@@ -9,7 +9,7 @@ class AddMembersTable < ActiveRecord::Migration
       t.integer :notification_level, null: false
       t.string  :type
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :members, :type

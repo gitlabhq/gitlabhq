@@ -5,7 +5,7 @@ class CreateLfsObjectsProjects < ActiveRecord::Migration
       t.integer :lfs_object_id, null: false
       t.integer :project_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :lfs_objects_projects, :project_id

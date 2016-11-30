@@ -5,7 +5,7 @@ class CreateDeployKeysProjects < ActiveRecord::Migration
       t.integer :deploy_key_id, null: false
       t.integer :project_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

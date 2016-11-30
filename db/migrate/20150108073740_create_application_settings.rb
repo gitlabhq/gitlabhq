@@ -8,7 +8,7 @@ class CreateApplicationSettings < ActiveRecord::Migration
       t.boolean :gravatar_enabled
       t.text :sign_in_text
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end
