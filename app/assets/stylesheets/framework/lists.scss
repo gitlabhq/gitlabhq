@@ -11,8 +11,8 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid #eee;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid $list-border-light;
+    border-bottom: 1px solid $list-border;
 
     &::after {
       content: " ";
@@ -21,7 +21,7 @@
     }
 
     &.disabled {
-      color: #888;
+      color: $list-text-disabled-color;
     }
 
     &.unstyled {
@@ -31,9 +31,9 @@
     }
 
     &.warning-row {
-      background-color: #fcf8e3;
-      border-color: #faebcc;
-      color: #8a6d3b;
+      background-color: $list-warning-row-bg;
+      border-color: $list-warning-row-border;
+      color: $list-warning-row-color;
     }
 
     &.smoke { background-color: $background-color; }

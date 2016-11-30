@@ -41,7 +41,7 @@
   }
 
   &.white {
-    background-color: white;
+    background-color: $white-light;
   }
 
   &.top-block {
@@ -158,7 +158,7 @@
 
     p {
       padding: 0 $gl-padding;
-      color: #5c5d5e;
+      color: $gl-text-color-dark;
     }
   }
 

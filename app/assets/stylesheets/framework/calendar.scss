@@ -28,13 +28,13 @@
 .user-contrib-cell {
   &:hover {
     cursor: pointer;
-    stroke: #000;
+    stroke: $black;
   }
 }
 
 .user-contrib-text {
   font-size: 12px;
-  fill: #959494;
+  fill: $calendar-user-contrib-text;
 }
 
 .calendar-hint {

@@ -1,3 +1,5 @@
+@import "framework/variables";
+
 // NOTE: This stylesheet is for the exclusive use of the `devise_mailer` layout
 // used for Devise email templates, and _should not_ be included in any
 // application stylesheets.
@@ -46,7 +48,7 @@ table {
 
   &#body {
     background-color: $message-background-color;
-    border: 1px solid #000;
+    border: 1px solid $black;
     border-radius: 4px;
     margin: 0 auto;
     width: 600px;
