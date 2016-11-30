@@ -141,18 +141,18 @@ describe('Environment item', () => {
     describe('With deployment', () => {
       it('should render deployment internal id', () => {
         expect(
-          component.$el.querySelector('.deployment-column span').textContent
+          component.$el.querySelector('.deployment-column span').textContent,
         ).toContain(environment.last_deployment.iid);
 
         expect(
-          component.$el.querySelector('.deployment-column span').textContent
+          component.$el.querySelector('.deployment-column span').textContent,
         ).toContain('#');
       });
 
       describe('With user information', () => {
         it('should render user avatar with link to profile', () => {
           expect(
-            component.$el.querySelector('.js-deploy-user-container').getAttribute('href')
+            component.$el.querySelector('.js-deploy-user-container').getAttribute('href'),
           ).toEqual(environment.last_deployment.user.web_url);
         });
       });
@@ -160,13 +160,13 @@ describe('Environment item', () => {
       describe('With build url', () => {
         it('Should link to build url provided', () => {
           expect(
-            component.$el.querySelector('.build-link').getAttribute('href')
+            component.$el.querySelector('.build-link').getAttribute('href'),
           ).toEqual(environment.last_deployment.deployable.build_path);
         });
 
         it('Should render deployable name and id', () => {
           expect(
-            component.$el.querySelector('.build-link').getAttribute('href')
+            component.$el.querySelector('.build-link').getAttribute('href'),
           ).toEqual(environment.last_deployment.deployable.build_path);
         });
       });
@@ -174,7 +174,7 @@ describe('Environment item', () => {
       describe('With commit information', () => {
         it('should render commit component', () => {
           expect(
-            component.$el.querySelector('.js-commit-component')
+            component.$el.querySelector('.js-commit-component'),
           ).toBeDefined();
         });
       });
@@ -183,7 +183,7 @@ describe('Environment item', () => {
     describe('With manual actions', () => {
       it('Should render actions component', () => {
         expect(
-          component.$el.querySelector('.js-manual-actions-container')
+          component.$el.querySelector('.js-manual-actions-container'),
         ).toBeDefined();
       });
     });
@@ -191,7 +191,7 @@ describe('Environment item', () => {
     describe('With external URL', () => {
       it('should render external url component', () => {
         expect(
-          component.$el.querySelector('.js-external-url-container')
+          component.$el.querySelector('.js-external-url-container'),
         ).toBeDefined();
       });
     });
@@ -199,7 +199,7 @@ describe('Environment item', () => {
     describe('With stop action', () => {
       it('Should render stop action component', () => {
         expect(
-          component.$el.querySelector('.js-stop-component-container')
+          component.$el.querySelector('.js-stop-component-container'),
         ).toBeDefined();
       });
     });
@@ -207,7 +207,7 @@ describe('Environment item', () => {
     describe('With retry action', () => {
       it('Should render rollback component', () => {
         expect(
-          component.$el.querySelector('.js-rollback-component-container')
+          component.$el.querySelector('.js-rollback-component-container'),
         ).toBeDefined();
       });
     });

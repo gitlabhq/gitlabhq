@@ -6,7 +6,7 @@ class AddAwardEmoji < ActiveRecord::Migration
       t.references :user
       t.references :awardable, polymorphic: true
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :award_emoji, :user_id

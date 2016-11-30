@@ -73,7 +73,7 @@ describe 'Profile > Preferences', feature: true do
         expect(page.current_path).to eq starred_dashboard_projects_path
       end
 
-      click_link 'Your Projects'
+      click_link 'Your projects'
 
       expect(page).not_to have_content("You don't have starred projects yet")
       expect(page.current_path).to eq dashboard_projects_path

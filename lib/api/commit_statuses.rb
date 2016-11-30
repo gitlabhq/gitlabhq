@@ -77,7 +77,7 @@ module API
         )
 
         begin
-          case params[:state].to_s
+          case params[:state]
           when 'pending'
             status.enqueue!
           when 'running'

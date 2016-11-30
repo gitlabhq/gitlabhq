@@ -2,7 +2,7 @@ module Gitlab
   module ChatCommands
     class IssueShow < IssueCommand
       def self.match(text)
-        /\Aissue\s+show\s+(?<iid>\d+)/.match(text)
+        /\Aissue\s+show\s+#{Issue.reference_prefix}?(?<iid>\d+)/.match(text)
       end
 
       def self.help_message

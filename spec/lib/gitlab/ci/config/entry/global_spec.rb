@@ -13,7 +13,7 @@ describe Gitlab::Ci::Config::Entry::Global do
     end
   end
 
-  context 'when hash is valid' do
+  context 'when configuration is valid' do
     context 'when some entries defined' do
       let(:hash) do
         { before_script: ['ls', 'pwd'],
@@ -225,29 +225,44 @@ describe Gitlab::Ci::Config::Entry::Global do
     end
   end
 
-  context 'when hash is not valid' do
+  context 'when configuration is not valid' do
     before { global.compose! }
 
-    let(:hash) do
-      { before_script: 'ls' }
-    end
+    context 'when before script is not an array' do
+      let(:hash) do
+        { before_script: 'ls' }
+      end
 
-    describe '#valid?' do
-      it 'is not valid' do
-        expect(global).not_to be_valid
+      describe '#valid?' do
+        it 'is not valid' do
+          expect(global).not_to be_valid
+        end
+      end
+
+      describe '#errors' do
+        it 'reports errors from child nodes' do
+          expect(global.errors)
+            .to include 'before_script config should be an array of strings'
+        end
+      end
+
+      describe '#before_script_value' do
+        it 'returns nil' do
+          expect(global.before_script_value).to be_nil
+        end
       end
     end
 
-    describe '#errors' do
-      it 'reports errors from child nodes' do
-        expect(global.errors)
-          .to include 'before_script config should be an array of strings'
+    context 'when job does not have commands' do
+      let(:hash) do
+        { before_script: ['echo 123'], rspec: { stage: 'test' } }
       end
-    end
 
-    describe '#before_script_value' do
-      it 'returns nil' do
-        expect(global.before_script_value).to be_nil
+      describe '#errors' do
+        it 'reports errors about missing script' do
+          expect(global.errors)
+            .to include "jobs:rspec script can't be blank"
+        end
       end
     end
   end
@@ -281,7 +296,7 @@ describe Gitlab::Ci::Config::Entry::Global do
       { cache: { key: 'a' }, rspec: { script: 'ls' } }
     end
 
-    context 'when node exists' do
+    context 'when entry exists' do
       it 'returns correct entry' do
         expect(global[:cache])
           .to be_an_instance_of Gitlab::Ci::Config::Entry::Cache
@@ -289,7 +304,7 @@ describe Gitlab::Ci::Config::Entry::Global do
       end
     end
 
-    context 'when node does not exist' do
+    context 'when entry does not exist' do
       it 'always return unspecified node' do
         expect(global[:some][:unknown][:node])
           .not_to be_specified

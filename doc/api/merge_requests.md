@@ -11,6 +11,7 @@ GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
 GET /projects/:id/merge_requests?iid=42
+GET /projects/:id/merge_requests?iid[]=42&iid[]=43
 ```
 
 Parameters:
@@ -337,9 +338,6 @@ Parameters:
 }
 ```
 
-If the operation is successful, 200 and the newly created merge request is returned.
-If an error occurs, an error number and a message explaining the reason is returned.
-
 ## Update MR
 
 Updates an existing merge request. You can change the target branch, title, or even close the MR.
@@ -414,14 +412,9 @@ Parameters:
 }
 ```
 
-If the operation is successful, 200 and the updated merge request is returned.
-If an error occurs, an error number and a message explaining the reason is returned.
-
 ## Delete a merge request
 
 Only for admins and project owners. Soft deletes the merge request in question.
-If the operation is successful, a status code `200` is returned. In case you cannot
-destroy this merge request, or it is not present, code `404` is given.
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_id
@@ -440,15 +433,14 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://git
 
 Merge changes submitted with MR using this API.
 
-If the merge succeeds you'll get a `200 OK`.
 
-If it has some conflicts and can not be merged - you'll get a 405 and the error message 'Branch cannot be merged'
+If it has some conflicts and can not be merged - you'll get a `405` and the error message 'Branch cannot be merged'
 
-If merge request is already merged or closed - you'll get a 406 and the error message 'Method Not Allowed'
+If merge request is already merged or closed - you'll get a `406` and the error message 'Method Not Allowed'
 
-If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a 409 and the error message 'SHA does not match HEAD of source branch'
+If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a `409` and the error message 'SHA does not match HEAD of source branch'
 
-If you don't have permissions to accept this merge request - you'll get a 401
+If you don't have permissions to accept this merge request - you'll get a `401`
 
 ```
 PUT /projects/:id/merge_requests/:merge_request_id/merge
@@ -520,13 +512,11 @@ Parameters:
 
 ## Cancel Merge When Build Succeeds
 
-If successful you'll get `200 OK`.
+If you don't have permissions to accept this merge request - you'll get a `401`
 
-If you don't have permissions to accept this merge request - you'll get a 401
+If the merge request is already merged or closed - you get `405` and error message 'Method Not Allowed'
 
-If the merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
-
-In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
+In case the merge request is not set to be merged when the build succeeds, you'll also get a `406` error.
 ```
 PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds
 ```
@@ -670,11 +660,8 @@ Example response when an external issue tracker (e.g. JIRA) is used:
 
 ## Subscribe to a merge request
 
-Subscribes the authenticated user to a merge request to receive notification. If
-the operation is successful, status code `201` together with the updated merge
-request is returned. If the user is already subscribed to the merge request, the
-status code `304` is returned. If the project or merge request is not found,
-status code `404` is returned.
+Subscribes the authenticated user to a merge request to receive notification. If the user is already subscribed to the merge request, the
+status code `304` is returned.
 
 ```
 POST /projects/:id/merge_requests/:merge_request_id/subscription
@@ -747,10 +734,8 @@ Example response:
 ## Unsubscribe from a merge request
 
 Unsubscribes the authenticated user from a merge request to not receive
-notifications from that merge request. If the operation is successful, status
-code `200` together with the updated merge request is returned. If the user is
-not subscribed to the merge request, the status code `304` is returned. If the
-project or merge request is not found, status code `404` is returned.
+notifications from that merge request. If the user is
+not subscribed to the merge request, the status code `304` is returned.
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_id/subscription
@@ -822,9 +807,8 @@ Example response:
 
 ## Create a todo
 
-Manually creates a todo for the current user on a merge request. If the
-request is successful, status code `200` together with the created todo is
-returned. If there already exists a todo for the user on that merge request,
+Manually creates a todo for the current user on a merge request. 
+If there already exists a todo for the user on that merge request,
 status code `304` is returned.
 
 ```

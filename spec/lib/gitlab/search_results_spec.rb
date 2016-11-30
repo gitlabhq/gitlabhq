@@ -12,35 +12,48 @@ describe Gitlab::SearchResults do
   let!(:milestone) { create(:milestone, project: project, title: 'foo') }
   let(:results) { described_class.new(user, Project.all, 'foo') }
 
-  describe '#projects_count' do
-    it 'returns the total amount of projects' do
-      expect(results.projects_count).to eq(1)
+  context 'as a user with access' do
+    before do
+      project.team << [user, :developer]
+    end
+
+    describe '#projects_count' do
+      it 'returns the total amount of projects' do
+        expect(results.projects_count).to eq(1)
+      end
+    end
+
+    describe '#issues_count' do
+      it 'returns the total amount of issues' do
+        expect(results.issues_count).to eq(1)
+      end
+    end
+
+    describe '#merge_requests_count' do
+      it 'returns the total amount of merge requests' do
+        expect(results.merge_requests_count).to eq(1)
+      end
+    end
+
+    describe '#milestones_count' do
+      it 'returns the total amount of milestones' do
+        expect(results.milestones_count).to eq(1)
+      end
     end
   end
 
-  describe '#issues_count' do
-    it 'returns the total amount of issues' do
-      expect(results.issues_count).to eq(1)
-    end
-  end
+  it 'does not list issues on private projects' do
+    private_project = create(:empty_project, :private)
+    issue = create(:issue, project: private_project, title: 'foo')
 
-  describe '#merge_requests_count' do
-    it 'returns the total amount of merge requests' do
-      expect(results.merge_requests_count).to eq(1)
-    end
-  end
-
-  describe '#milestones_count' do
-    it 'returns the total amount of milestones' do
-      expect(results.milestones_count).to eq(1)
-    end
+    expect(results.objects('issues')).not_to include issue
   end
 
   describe 'confidential issues' do
-    let(:project_1) { create(:empty_project) }
-    let(:project_2) { create(:empty_project) }
-    let(:project_3) { create(:empty_project) }
-    let(:project_4) { create(:empty_project) }
+    let(:project_1) { create(:empty_project, :internal) }
+    let(:project_2) { create(:empty_project, :internal) }
+    let(:project_3) { create(:empty_project, :internal) }
+    let(:project_4) { create(:empty_project, :internal) }
     let(:query) { 'issue' }
     let(:limit_projects) { Project.where(id: [project_1.id, project_2.id, project_3.id]) }
     let(:author) { create(:user) }

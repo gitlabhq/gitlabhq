@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Labels::TransferService, services: true do
   describe '#execute' do
-    let(:user)    { create(:user) }
+    let(:user)    { create(:admin) }
     let(:group_1) { create(:group) }
     let(:group_2) { create(:group) }
     let(:group_3) { create(:group) }

@@ -13,7 +13,7 @@ class AddAuditEvent < ActiveRecord::Migration
       # Details for the event
       t.text  :details
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :audit_events, :author_id

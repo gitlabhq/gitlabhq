@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+/* global Vue */
+
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
 

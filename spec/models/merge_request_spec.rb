@@ -570,7 +570,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#pipeline' do
+  describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
         pipeline = double(:ci_pipeline, ref: 'master')
@@ -581,7 +581,7 @@ describe MergeRequest, models: true do
           with('master', '123abc').
           and_return(pipeline)
 
-        expect(subject.pipeline).to eq(pipeline)
+        expect(subject.head_pipeline).to eq(pipeline)
       end
     end
 
@@ -589,7 +589,7 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.pipeline).to be_nil
+        expect(subject.head_pipeline).to be_nil
       end
     end
   end
@@ -857,7 +857,7 @@ describe MergeRequest, models: true do
       context 'and a failed pipeline is associated' do
         before do
           pipeline.update(status: 'failed')
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_falsey }
@@ -866,7 +866,7 @@ describe MergeRequest, models: true do
       context 'and a successful pipeline is associated' do
         before do
           pipeline.update(status: 'success')
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -875,7 +875,7 @@ describe MergeRequest, models: true do
       context 'and a skipped pipeline is associated' do
         before do
           pipeline.update(status: 'skipped')
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -883,7 +883,7 @@ describe MergeRequest, models: true do
 
       context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:pipeline) { nil }
+          allow(subject).to receive(:head_pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -896,7 +896,7 @@ describe MergeRequest, models: true do
       context 'and a failed pipeline is associated' do
         before do
           pipeline.statuses << create(:commit_status, status: 'failed', project: project)
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -904,7 +904,7 @@ describe MergeRequest, models: true do
 
       context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:pipeline) { nil }
+          allow(subject).to receive(:head_pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -935,6 +935,16 @@ describe MergeRequest, models: true do
 
         it 'returns false' do
           expect(merge_request.mergeable_discussions_state?).to be_falsey
+        end
+      end
+
+      context 'with no discussions' do
+        before do
+          merge_request.notes.destroy_all
+        end
+
+        it 'returns true' do
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
         end
       end
     end
@@ -1194,6 +1204,50 @@ describe MergeRequest, models: true do
 
           it "returns false" do
             expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+
+    describe "#discussions_to_be_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_to_be_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_to_be_resolved?).to be false
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_to_be_resolved?).to be true
           end
         end
       end

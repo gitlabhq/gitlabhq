@@ -106,9 +106,13 @@ class List {
     });
   }
 
-  addIssue (issue, listFrom) {
+  addIssue (issue, listFrom, newIndex) {
     if (!this.findIssue(issue.id)) {
-      this.issues.push(issue);
+      if (newIndex !== undefined) {
+        this.issues.splice(newIndex, 0, issue);
+      } else {
+        this.issues.push(issue);
+      }
 
       if (this.label) {
         issue.addLabel(this.label);

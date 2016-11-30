@@ -1,0 +1,4 @@
+---
+title: Pass tag SHA to post-receive hook when tag is created via UI
+merge_request: 7700
+author:

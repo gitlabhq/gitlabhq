@@ -18,6 +18,31 @@
 .environments {
   table-layout: fixed;
 
+  .environments-commit,
+  .environments-actions,
+  .environments-deploy,
+  .environments-build,
+  .environments-date {
+    position: static;
+    float: none;
+    display: table-cell;
+  }
+
+  .environments-commit,
+  .environments-actions {
+    width: 20%;
+  }
+
+  .environments-deploy,
+  .environments-build,
+  .environments-date {
+    width: 10%;
+  }
+
+  .environments-name {
+    width: 30%;
+  }
+
   .deployment-column {
     .avatar {
       float: none;

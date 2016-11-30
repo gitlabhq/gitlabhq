@@ -8,11 +8,7 @@ module GroupsHelper
       group = Group.find_by(path: group)
     end
 
-    if group && group.avatar.present?
-      group.avatar.url
-    else
-      image_path('no_group_avatar.png')
-    end
+    group.try(:avatar_url) || image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)
@@ -47,5 +43,9 @@ module GroupsHelper
     content_tag(:span, class: "lfs-#{status}") do
       "#{status.humanize} #{projects_lfs_status(group)}"
     end
+  end
+
+  def group_issues(group)
+    IssuesFinder.new(current_user, group_id: group.id).execute
   end
 end

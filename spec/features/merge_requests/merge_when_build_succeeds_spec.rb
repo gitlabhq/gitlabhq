@@ -44,7 +44,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
         expect(page).to have_content "The source branch will not be removed."
 
         visit_merge_request(merge_request) # Needed to refresh the page
-        expect(page).to have_content /Enabled an automatic merge when the build for [0-9a-f]{8} succeeds/i
+        expect(page).to have_content /enabled an automatic merge when the build for \h{8} succeeds/i
       end
     end
   end

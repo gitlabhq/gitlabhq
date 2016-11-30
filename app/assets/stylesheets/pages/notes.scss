@@ -43,11 +43,24 @@ ul.notes {
     }
 
     .system-note-message {
-      text-transform: lowercase;
+      display: inline-block;
+
+      &::first-letter {
+        text-transform: lowercase;
+      }
 
       a {
         color: $gl-link-color;
         text-decoration: none;
+      }
+
+      p {
+        display: inline-block;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
       }
     }
 
@@ -62,6 +75,13 @@ ul.notes {
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
       }
 
       .note-text {
@@ -87,14 +107,24 @@ ul.notes {
             display: none;
           }
 
+          p:last-child {
+            a {
+              color: $gl-text-color;
+
+              &:hover {
+                color: $gl-link-color;
+              }
+            }
+          }
+
           &::after {
             content: '';
             width: 100%;
-            height: 20px;
+            height: 67px;
             position: absolute;
             left: 0;
-            bottom: 50px;
-            background: linear-gradient(rgba($gray-light, .3) 0, $white-light);
+            bottom: 0;
+            background: linear-gradient(rgba($gray-light, 0.1) -100px, $white-light 100%);
           }
 
           &.hide-shade {
@@ -187,11 +217,6 @@ ul.notes {
     .note-header {
       padding-bottom: 3px;
       padding-right: 20px;
-
-      p {
-        display: inline;
-        margin: 0;
-      }
 
       @media (min-width: $screen-sm-min) {
         padding-right: 0;

@@ -10,15 +10,17 @@
         Closed
       - elsif @milestone.expired?
         Past due
+      - elsif @milestone.upcoming?
+        Upcoming
       - else
         Open
     .header-text-content
       %span.identifier
         Milestone ##{@milestone.iid}
-      - if @milestone.expires_at
+      - if @milestone.due_date || @milestone.start_date
         %span.creator
           &middot;
-          = @milestone.expires_at
+        = milestone_date_range(@milestone)
     .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
         - if @milestone.active?

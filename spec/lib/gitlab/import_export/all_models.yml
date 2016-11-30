@@ -186,6 +186,8 @@ project:
 - environments
 - deployments
 - project_feature
+- authorized_users
+- project_authorizations
 award_emoji:
 - awardable
 - user

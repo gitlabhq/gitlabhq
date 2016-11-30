@@ -5,7 +5,7 @@ class CreateLfsObjects < ActiveRecord::Migration
       t.string :oid, null: false, unique: true
       t.integer :size, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

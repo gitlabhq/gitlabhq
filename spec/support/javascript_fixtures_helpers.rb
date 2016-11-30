@@ -1,3 +1,4 @@
+require 'action_dispatch/testing/test_request'
 require 'fileutils'
 require 'gitlab/popen'
 
@@ -30,13 +31,17 @@ module JavaScriptFixturesHelpers
     if response_mime_type.html?
       doc = Nokogiri::HTML::DocumentFragment.parse(fixture)
 
+      link_tags = doc.css('link')
+      link_tags.remove
+
       scripts = doc.css('script')
       scripts.remove
 
       fixture = doc.to_html
 
       # replace relative links
-      fixture.gsub!(%r{="/}, '="https://fixture.invalid/')
+      test_host = ActionDispatch::TestRequest::DEFAULT_ENV['HTTP_HOST']
+      fixture.gsub!(%r{="/}, "=\"http://#{test_host}/")
     end
 
     FileUtils.mkdir_p(File.dirname(fixture_file_name))

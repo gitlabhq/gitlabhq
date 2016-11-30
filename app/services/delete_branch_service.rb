@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class DeleteBranchService < BaseService
   def execute(branch_name)
     repository = project.repository
