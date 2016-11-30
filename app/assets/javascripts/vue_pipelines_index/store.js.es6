@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  const REALTIME = true;
+  const REALTIME = false;
   const PAGINATION_LIMIT = 31;
   const SLICE_LIMIT = 29;
 
