@@ -1,8 +1,6 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign */
 ((gl) => {
-  const REALTIME = false;
-
   gl.VueTimeAgo = Vue.extend({
     data() {
       return {
@@ -15,13 +13,11 @@
       'addTimeInterval',
     ],
     created() {
-      if (!REALTIME) {
-        this.timeInterval = setInterval(() => {
-          this.currentTime = new Date();
-        }, 1000);
+      this.timeInterval = setInterval(() => {
+        this.currentTime = new Date();
+      }, 1000);
 
-        this.addTimeInterval(this.timeInterval, this);
-      }
+      this.addTimeInterval(this.timeInterval, this);
     },
     computed: {
       localTimeFinished() {
