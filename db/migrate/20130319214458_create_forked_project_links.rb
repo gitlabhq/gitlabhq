@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateForkedProjectLinks < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :forked_project_links do |t|
       t.integer :forked_to_project_id, null: false

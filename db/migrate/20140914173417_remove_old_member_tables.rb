@@ -1,5 +1,7 @@
 # rubocop:disable all
 class RemoveOldMemberTables < ActiveRecord::Migration
+  DOWNTIME = false
+
   def up
     drop_table :users_groups
     drop_table :users_projects

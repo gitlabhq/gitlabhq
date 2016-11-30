@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateDoorkeeperTables < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :oauth_applications do |t|
       t.string  :name,         null: false

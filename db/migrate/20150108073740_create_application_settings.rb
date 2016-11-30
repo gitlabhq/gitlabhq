@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateApplicationSettings < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :application_settings do |t|
       t.integer :default_projects_limit

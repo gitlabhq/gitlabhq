@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateMergeRequestDiffs < ActiveRecord::Migration
+  DOWNTIME = false
+
   def up
     create_table :merge_request_diffs do |t|
       t.string :state, null: false, default: 'collected'

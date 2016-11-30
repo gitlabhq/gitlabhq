@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateLfsObjectsProjects < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :lfs_objects_projects do |t|
       t.integer :lfs_object_id, null: false
