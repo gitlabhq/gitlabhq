@@ -46,7 +46,9 @@
   }
 
   @media (min-width: $screen-sm-min) {
-    padding-right: 40px;
+    &.has-sidebar-toggle {
+      padding-right: 40px;
+    }
 
     .git-clone-holder {
       width: 480px;
@@ -60,7 +62,9 @@
   }
 
   @media (min-width: $screen-md-min) {
-    padding-right: 0;
+    &.has-sidebar-toggle {
+      padding-right: 0;
+    }
 
     button.sidebar-toggle {
       display: none;
