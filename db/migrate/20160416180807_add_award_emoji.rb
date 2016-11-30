@@ -1,5 +1,7 @@
 # rubocop:disable all
 class AddAwardEmoji < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :award_emoji do |t|
       t.string :name

@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateTasks < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :tasks do |t|
       t.references :user, null: false, index: true
