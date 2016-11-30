@@ -4,7 +4,7 @@ module Gitlab
       include Gitlab::Routing.url_helpers
 
       def self.match(text)
-        /\Adeploy\s+(?<from>.*)\s+to+\s+(?<to>.*)\z/.match(text)
+        /\Adeploy\s+(?<from>\S+.*)\s+to+\s+(?<to>\S+.*)\z/.match(text)
       end
 
       def self.help_message
