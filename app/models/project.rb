@@ -96,6 +96,7 @@ class Project < ActiveRecord::Base
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
   has_one :mattermost_notification_service, dependent: :destroy
+  has_one :slack_slash_commands_service, dependent: :destroy
   has_one :slack_notification_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy

@@ -1,4 +1,4 @@
-- pretty_path_with_namespace = "#{@project ? @project.namespace.name : 'namespace'} / #{@project ? @project.name : 'name'}"
+- pretty_path_with_namespace = "#{@project.namespace ? @project.namespace.name : 'namespace'} / #{@project ? @project.name : 'name'}"
 - run_actions_text = "Perform common operations on this project: #{pretty_path_with_namespace}"
 
 .well
