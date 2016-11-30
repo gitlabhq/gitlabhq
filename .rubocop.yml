@@ -339,6 +339,10 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
+# Checks for an obsolete RuntimeException argument in raise/fail.
+Style/RedundantException:
+  Enabled: true
+
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
   Enabled: true
