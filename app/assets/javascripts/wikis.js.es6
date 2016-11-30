@@ -30,7 +30,7 @@
       this.renderSidebar();
     }
 
-    handleNewWikiSubmit(event) {
+    handleNewWikiSubmit(e) {
       if (!this.newWikiForm) return;
 
       const slugInput = this.newWikiForm.querySelector('#new_wiki_path');
@@ -39,12 +39,12 @@
       if (slug.length > 0) {
         const wikisPath = slugInput.getAttribute('data-wikis-path');
         window.location.href = `${wikisPath}/${slug}`;
-        event.preventDefault();
+        e.preventDefault();
       }
     }
 
-    handleToggleSidebar(event) {
-      event.preventDefault();
+    handleToggleSidebar(e) {
+      e.preventDefault();
       this.sidebarExpanded = !this.sidebarExpanded;
       this.renderSidebar();
     }
