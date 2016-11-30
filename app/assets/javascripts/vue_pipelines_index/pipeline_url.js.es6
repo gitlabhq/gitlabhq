@@ -11,7 +11,8 @@
     ],
     computed: {
       user() {
-        if (!this.pipeline.user === null) return true;
+        // debugger
+        if (this.pipeline.user) return true;
         return false;
       },
     },
@@ -23,14 +24,14 @@
         <span>by</span>
         <a
           v-if='user'
-          :href='pipeline.user.url'
+          :href='pipeline.user.web_url'
         >
           <img
             v-if='user'
             class="avatar has-tooltip s20 "
             :title='pipeline.user.name'
             data-container="body"
-            :src='pipeline.user.avatar_url || pipeline.user.gravatar'
+            :src='pipeline.user.avatar_url'
           >
         </a>
         <span
