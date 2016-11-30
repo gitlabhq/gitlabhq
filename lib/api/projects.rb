@@ -22,6 +22,7 @@ module API
           Gitlab::VisibilityLevel::INTERNAL,
           Gitlab::VisibilityLevel::PUBLIC ], desc: 'Create a public project. The same as visibility_level = 20.'
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
+        optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'

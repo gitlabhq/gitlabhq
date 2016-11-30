@@ -604,6 +604,7 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
@@ -639,6 +640,7 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
