@@ -135,7 +135,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 4.2'
-gem 'sidekiq-cron', '~> 0.4.0'
+gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
