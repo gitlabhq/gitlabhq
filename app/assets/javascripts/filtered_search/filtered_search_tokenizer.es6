@@ -3,11 +3,30 @@
   class FilteredSearchTokenizer {
     // TODO: Remove when going to pro
     static printTokens(tokens, searchToken, lastToken) {
-      console.log('tokens:');
-      tokens.forEach(token => console.log(token));
-      console.log(`search: ${searchToken}`);
-      console.log('last token:');
-      console.log(lastToken);
+      // console.log('tokens:');
+      // tokens.forEach(token => console.log(token));
+      // console.log(`search: ${searchToken}`);
+      // console.log('last token:');
+      // console.log(lastToken);
+    }
+
+    static parseToken(input) {
+      const colonIndex = input.indexOf(':');
+      let tokenKey;
+      let tokenValue;
+      let tokenSymbol;
+
+      if (colonIndex !== -1) {
+        tokenKey = input.slice(0, colonIndex).toLowerCase();
+        tokenValue = input.slice(colonIndex + 1);
+        tokenSymbol = tokenValue[0];
+      }
+
+      return {
+        tokenKey,
+        tokenValue,
+        tokenSymbol,
+      }
     }
 
     static processTokens(input) {
@@ -43,10 +62,8 @@
         const colonIndex = i.indexOf(':');
 
         if (colonIndex !== -1) {
-          const tokenKey = i.slice(0, colonIndex).toLowerCase();
-          const tokenValue = i.slice(colonIndex + 1);
-          const tokenSymbol = tokenValue[0];
-          console.log(tokenSymbol)
+          const { tokenKey, tokenValue, tokenSymbol } = gl.FilteredSearchTokenizer.parseToken(i);
+
           const keyMatch = validTokenKeys.filter(v => v.key === tokenKey)[0];
           const symbolMatch = validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
 

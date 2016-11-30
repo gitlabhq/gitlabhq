@@ -77,42 +77,77 @@
     }
   }
 
+  let dropdownHint;
+
   class FilteredSearchManager {
     constructor() {
       this.tokenizer = gl.FilteredSearchTokenizer;
       this.bindEvents();
       loadSearchParamsFromURL();
+      this.setDropdown();
     }
 
-    static fillInWord(word) {
-      const originalValue = document.querySelector('.filtered-search').value;
-      document.querySelector('.filtered-search').value = `${originalValue} ${word.trim()}`;
+    static addWordToInput(word, addSpace) {
+      const hasExistingValue = document.querySelector('.filtered-search').value.length !== 0;
+      document.querySelector('.filtered-search').value += hasExistingValue && addSpace ? ` ${word}` : word;
     }
 
-    static loadDropdown(dropdownName) {
+    loadDropdown(dropdownName = '') {
       dropdownName = dropdownName.toLowerCase();
 
       const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName)[0];
 
-      if (match) {
+      if (match && this.currentDropdown !== match.key) {
         console.log(`🦄 load ${match.key} dropdown`);
+        this.currentDropdown = match.key;
+      } else if (!match && this.currentDropdown !== 'hint') {
+        console.log('🦄 load hint dropdown');
+        this.currentDropdown = 'hint';
+
+        if (!dropdownHint) {
+          dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), document.querySelector('.filtered-search'))
+        }
+
+        dropdownHint.render();
+      }
+    }
+
+    setDropdown() {
+      const { lastToken } = this.tokenizer.processTokens(document.querySelector('.filtered-search').value);
+
+      if (typeof lastToken === 'string') {
+        // Token is not fully initialized yet
+        // because it has no value
+        // Eg. token = 'label:'
+        const { tokenKey } = this.tokenizer.parseToken(lastToken);
+        this.loadDropdown(tokenKey);
+      } else if (lastToken.hasOwnProperty('key')) {
+        // Token has been initialized into an object
+        // because it has a value
+        this.loadDropdown(lastToken.key);
+      } else {
+        this.loadDropdown('hint');
       }
     }
 
     bindEvents() {
       const filteredSearchInput = document.querySelector('.filtered-search');
 
-      filteredSearchInput.addEventListener('input', this.processInput.bind(this));
+      filteredSearchInput.addEventListener('input', this.setDropdown.bind(this));
       filteredSearchInput.addEventListener('input', toggleClearSearchButton);
       filteredSearchInput.addEventListener('keydown', this.checkForEnter.bind(this));
-
       document.querySelector('.clear-search').addEventListener('click', clearSearch);
     }
 
-    // TODO: This is only used for testing, remove when going to PRO
-    processInput(e) {
+    checkDropdownToken(e) {
       const input = e.target.value;
-      this.tokenizer.processTokens(input);
+      const { lastToken } = this.tokenizer.processTokens(input);
+
+      // Check for dropdown token
+      if (lastToken[lastToken.length - 1] === ':') {
+        const token = lastToken.slice(0, -1);
+
+      }
     }
 
     checkForEnter(e) {
