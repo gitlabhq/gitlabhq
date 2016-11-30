@@ -50,6 +50,7 @@ class ProjectPolicy < BasePolicy
 
   def reporter_access!
     can! :download_code
+    can! :download_wiki_code
     can! :fork_project
     can! :create_project_snippet
     can! :update_issue
@@ -187,6 +188,7 @@ class ProjectPolicy < BasePolicy
 
     unless project.feature_available?(:wiki, user) || project.has_external_wiki?
       cannot!(*named_abilities(:wiki))
+      cannot!(:download_wiki_code)
     end
 
     unless project.feature_available?(:builds, user) && repository_enabled
@@ -226,6 +228,7 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_container_image
     can! :download_code
+    can! :download_wiki_code
     can! :read_cycle_analytics
 
     # NOTE: may be overridden by IssuePolicy
