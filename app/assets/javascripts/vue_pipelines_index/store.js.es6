@@ -2,30 +2,6 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  const REALTIME = false;
-  const PAGINATION_LIMIT = 31;
-  const SLICE_LIMIT = 29;
-
-  class RealtimePaginationUpdater {
-    constructor(pageData) {
-      this.pageData = pageData;
-    }
-
-    updatePageDiff(apiResponse) {
-      const diffData = this.pageData.slice(0);
-      apiResponse.pipelines.forEach((newPipe, i) => {
-        if (newPipe.commit) {
-          diffData.unshift(newPipe);
-        } else {
-          const newMerge = Object.assign({}, diffData[i], newPipe);
-          diffData[i] = newMerge;
-        }
-      });
-      if (diffData.length < PAGINATION_LIMIT) return diffData;
-      return diffData.slice(0, SLICE_LIMIT);
-    }
-  }
-
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url) {
       const setVueResources = () => { Vue.activeResources = 1; };
@@ -61,46 +37,18 @@
             this.pageRequest = false;
             subtractFromVueResources();
           }, () => new Flash(
-            'Something went wrong on our end.'
-          ));
-
-      const goUpdate = () =>
-        this.$http.get(`${url}?page=${pageNum}&updated_at=${this.updatedAt}`)
-          .then((response) => {
-            const res = JSON.parse(response.body);
-            const p = new RealtimePaginationUpdater(this.pipelines);
-            Vue.set(this, 'updatedAt', res.updated_at);
-            Vue.set(this, 'pipelines', p.updatePageDiff(res));
-            Vue.set(this, 'count', res.count);
-            updatePipelineNums(this.count);
-            subtractFromVueResources();
-          }, () => new Flash(
-            'Something went wrong on our end.'
+            'Something went wrong on our end.',
           ));
 
       resourceChecker();
       goFetch();
 
-      const poller = () => {
-        this.intervalId = setInterval(() => {
-          if (this.updatedAt) {
-            resourceChecker();
-            if (Vue.activeResources > 1) return;
-            goUpdate();
-          }
-        }, 3000);
-      };
-
-      if (REALTIME) poller();
-
       const removePipelineInterval = () => {
         this.allTimeIntervals.forEach(e => clearInterval(e.id));
-        if (REALTIME) clearInterval(this.intervalId);
       };
 
       const startIntervalLoops = () => {
         this.allTimeIntervals.forEach(e => e.component.startInterval());
-        if (REALTIME) poller();
       };
 
       window.onbeforeunload = function onClose() {

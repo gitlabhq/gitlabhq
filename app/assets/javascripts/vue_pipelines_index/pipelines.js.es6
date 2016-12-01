@@ -62,9 +62,17 @@
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
       author(pipeline) {
-        const author = pipeline.commit.author;
+        const { commit } = pipeline;
+        const author = commit.author;
         if (author) return author;
-        return ({});
+
+        const nonUser = {
+          avatar_url: commit.author_gravatar_url,
+          web_url: `mailto:${commit.author_email}`,
+          username: commit.author_name,
+        };
+
+        return nonUser;
       },
       addTimeInterval(id, that) {
         this.allTimeIntervals.push({ id, component: that });
@@ -85,7 +93,7 @@
                 <td>
                   <commit
                     :tag="pipeline.ref['tag?']"
-                    :author='pipeline.commit.author'
+                    :author='author(pipeline)'
                     :title='pipeline.commit.title'
                     :ref='pipeline.ref'
                     :short_sha='pipeline.commit.short_id'
@@ -108,7 +116,7 @@
           <i class="fa fa-spinner fa-spin"></i>
         </div>
         <gl-pagination
-          v-if='count.all > 0'
+          v-if='count.all > 30'
           :pagenum='pagenum'
           :changepage='changepage'
           :count='count.all'
