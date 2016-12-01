@@ -1,4 +1,0 @@
----
-title: Gracefully recover from Redis connection failures in Sidekiq initializer
-merge_request: 
-author: 
