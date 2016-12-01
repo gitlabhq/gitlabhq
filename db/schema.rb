@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.integer "duration"
     t.integer "user_id"
     t.integer "lock_version"
+    t.datetime "processed_at"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
