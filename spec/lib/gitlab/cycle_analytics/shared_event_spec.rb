@@ -7,7 +7,7 @@ shared_examples 'default query config' do
                                                branch: nil)
   end
 
-  let(:event) { described_class.new(fetcher: fetcher, stage: stage_name, options: {}) }
+  let(:event) { described_class.new(fetcher: fetcher, options: {}) }
 
   it 'has the start attributes' do
     expect(event.start_time_attrs).not_to be_nil

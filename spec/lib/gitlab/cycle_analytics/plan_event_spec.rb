@@ -11,7 +11,7 @@ describe Gitlab::CycleAnalytics::PlanEvent do
 
     context 'no commits' do
       it 'does not blow up if there are no commits' do
-        allow_any_instance_of(Gitlab::CycleAnalytics::EventsQuery).to receive(:execute).and_return([{}])
+        allow_any_instance_of(Gitlab::CycleAnalytics::MetricsFetcher).to receive(:events).and_return([{}])
 
         expect { event.fetch }.not_to raise_error
       end

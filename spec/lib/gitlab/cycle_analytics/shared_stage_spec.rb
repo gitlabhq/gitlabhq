@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 shared_examples 'base stage' do
-  let(:stage) { described_class.new(project: double, options: {}, stage: stage_name) }
+  let(:stage) { described_class.new(project: double, options: {}) }
 
   before do
     allow_any_instance_of(Gitlab::CycleAnalytics::MetricsFetcher).to receive(:median).and_return(1.12)
@@ -20,8 +20,8 @@ shared_examples 'base stage' do
     expect(stage.median_data[:description]).not_to be_nil
   end
 
-  it 'has the stage' do
-    expect(stage.stage).to eq(stage_name)
+  it 'has the title' do
+    expect(stage.title).to eq(stage_name.to_s.capitalize)
   end
 
   it 'has the events' do
