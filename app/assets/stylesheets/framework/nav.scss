@@ -75,9 +75,13 @@
 
     .badge {
       font-weight: normal;
-      background-color: #eee;
+      background-color: #f3f3f3;
       color: $btn-transparent-color;
       vertical-align: baseline;
+    }
+
+    .badge-dark {
+      background-color: #eee;
     }
   }
 
