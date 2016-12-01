@@ -333,4 +333,35 @@ describe 'gitlab:app namespace rake task' do
       expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
     end
   end
+
+  describe "Human Readable Backup Name" do
+    def tars_glob
+      Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
+    end
+
+    before :all do
+      @origin_cd = Dir.pwd
+
+      reenable_backup_sub_tasks
+
+      FileUtils.rm tars_glob
+
+      # Redirect STDOUT and run the rake task
+      orig_stdout = $stdout
+      $stdout = StringIO.new
+      run_rake_task('gitlab:backup:create')
+      $stdout = orig_stdout
+
+      @backup_tar = tars_glob.first
+    end
+
+    after :all do
+      FileUtils.rm(@backup_tar)
+      Dir.chdir @origin_cd
+    end
+
+    it 'name has human readable time' do
+      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_gitlab_backup.tar$/)
+    end
+  end
 end # gitlab:app namespace
