@@ -11,7 +11,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     @running_or_pending_count = PipelinesFinder.new(project).execute(scope: 'running').count
     @pipelines_count = PipelinesFinder.new(project).execute.count
-    @last_updated = params[:updated_at]
 
     respond_to do |format|
       format.html
@@ -19,7 +18,7 @@ class Projects::PipelinesController < Projects::ApplicationController
          render json: {
            pipelines: PipelineSerializer
              .new(project: @project, user: @current_user)
-             .incremental(@pipelines, @last_updated),
+             .represent(@pipelines),
            updated_at: Time.now.utc,
            count: {
              all: @pipelines_count,

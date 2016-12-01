@@ -2,7 +2,7 @@ class PipelineEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
-  expose :user, if: proc { created_exposure? }, using: UserEntity
+  expose :user, using: UserEntity
 
   expose :url do |pipeline|
     namespace_project_pipeline_path(
@@ -11,7 +11,7 @@ class PipelineEntity < Grape::Entity
       pipeline)
   end
 
-  expose :details, if: proc { updated_exposure? } do
+  expose :details do
     expose :status
     expose :duration
     expose :finished_at
@@ -20,7 +20,7 @@ class PipelineEntity < Grape::Entity
     expose :manual_actions, using: PipelineActionEntity
   end
 
-  expose :flags, if: proc { created_exposure? } do
+  expose :flags do
     expose :latest?, as: :latest
     expose :triggered?, as: :triggered
 
@@ -33,7 +33,7 @@ class PipelineEntity < Grape::Entity
     end
   end
 
-  expose :ref, if: proc { updated_exposure? } do
+  expose :ref do
     expose :name do |pipeline|
       pipeline.ref
     end
@@ -48,16 +48,16 @@ class PipelineEntity < Grape::Entity
     expose :tag?
   end
 
-  expose :commit, if: proc { created_exposure? }, using: CommitEntity
+  expose :commit, using: CommitEntity
 
-  expose :retry_url, if: proc { updated_exposure? } do |pipeline|
+  expose :retry_url do |pipeline|
     can?(request.user, :update_pipeline, pipeline.project) &&
       pipeline.retryable? &&
       retry_namespace_project_pipeline_path(pipeline.project.namespace,
                                             pipeline.project, pipeline.id)
   end
 
-  expose :cancel_url, if: proc { updated_exposure? } do |pipeline|
+  expose :cancel_url do |pipeline|
     can?(request.user, :update_pipeline, pipeline.project) &&
       pipeline.cancelable? &&
       cancel_namespace_project_pipeline_path(pipeline.project.namespace,
@@ -65,28 +65,4 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :created_at, :updated_at
-
-  def created_exposure?
-    !incremental? || created?
-  end
-
-  def updated_exposure?
-    !incremental? || updated?
-  end
-
-  def incremental?
-    options[:incremental] && last_updated
-  end
-
-  def last_updated
-    options.fetch(:last_updated)
-  end
-
-  def updated?
-    @object.updated_at > last_updated
-  end
-
-  def created?
-    @object.created_at > last_updated
-  end
 end

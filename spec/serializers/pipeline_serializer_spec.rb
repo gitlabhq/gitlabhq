@@ -11,26 +11,5 @@ describe PipelineSerializer do
 
   let(:user) { create(:user) }
 
-  context 'when using incremental serializer' do
-    let(:json) do
-      serializer.incremental(pipelines, time).as_json
-    end
-
-    context 'when pipeline has been already updated' do
-      let(:time) { Time.now }
-
-      it 'exposes only minimal information' do
-        expect(json.first.keys).to contain_exactly(:id, :url)
-        expect(json.second.keys).to contain_exactly(:id, :url)
-      end
-    end
-
-    context 'when pipeline updated in the meantime' do
-      let(:time) { Time.now - 10.minutes }
-
-      it 'exposes new data incrementally' do
-        expect(json.first.keys.count).to eq 9
-      end
-    end
-  end
+  # TODO add some tests here.
 end
