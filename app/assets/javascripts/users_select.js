@@ -16,6 +16,7 @@
           this.currentUser = JSON.parse(currentUser);
         }
       }
+
       $('.js-user-search').each((function(_this) {
         return function(i, dropdown) {
           var options = {};
@@ -64,6 +65,13 @@
               return assignTo(_this.currentUser.id);
             }
           });
+
+          $block.on('click', '.js-unassign-yourself', function(e) {
+            e.preventDefault();
+
+            return assignTo("");
+          });
+
           assignTo = function(selected) {
             var data;
             data = {};

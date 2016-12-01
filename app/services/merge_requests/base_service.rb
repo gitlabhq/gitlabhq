@@ -38,8 +38,8 @@ module MergeRequests
 
     private
 
-    def filter_params
-      super(:merge_request)
+    def filter_params(issuable_ability_name: :issue, issuable: nil)
+      super(issuable_ability_name: :merge_request)
     end
 
     def merge_requests_for(branch)

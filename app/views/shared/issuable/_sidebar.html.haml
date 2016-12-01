@@ -29,6 +29,8 @@
           = icon('spinner spin', class: 'block-loading')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
+          - elsif issuable.assignee_id == current_user.try(:id)
+            = link_to 'Unassign', '#', class: 'js-unassign-yourself pull-right'
         .value.hide-collapsed
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do

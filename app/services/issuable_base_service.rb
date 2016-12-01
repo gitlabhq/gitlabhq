@@ -36,7 +36,7 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def filter_params(issuable_ability_name = :issue)
+  def filter_params(issuable_ability_name: :issue, issuable: nil)
     filter_assignee
     filter_milestone
     filter_labels
@@ -49,8 +49,12 @@ class IssuableBaseService < BaseService
       params.delete(:add_label_ids)
       params.delete(:remove_label_ids)
       params.delete(:label_ids)
-      params.delete(:assignee_id)
       params.delete(:due_date)
+
+      # User should be able to unassign himself
+      if issuable.try(:author) != current_user && params[:assignee_id].present?
+        params.delete(:assignee_id)
+      end
     end
   end
 
@@ -137,7 +141,7 @@ class IssuableBaseService < BaseService
 
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
-    filter_params
+    filter_params(issuable_ability_name: :issue)
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -179,7 +183,7 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-    filter_params
+    filter_params(issuable: issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
 

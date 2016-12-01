@@ -9,8 +9,8 @@ module Issues
 
     private
 
-    def filter_params
-      super(:issue)
+    def filter_params(issuable_ability_name: :issue, issuable: nil)
+      super(issuable_ability_name: :issue)
     end
 
     def execute_hooks(issue, action = 'open')
