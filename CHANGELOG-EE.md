@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.2 (2016-12-01)
+
+- No changes.
+
 ## 8.14.1 (2016-11-28)
 
 - Fix: MergeRequestSerializer breaks on MergeRequest#rebase_dir_path when source_project doesn't exist anymore.
