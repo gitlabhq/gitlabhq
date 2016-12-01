@@ -50,15 +50,44 @@ describe Projects::DestroyService, services: true do
   context 'delete with pipeline' do # which has optimistic locking
     let!(:pipeline) { create(:ci_pipeline, project: project) }
 
-    before do
-      expect(project).to receive(:destroy!).and_call_original
-
-      perform_enqueued_jobs do
-        destroy_project(project, user, {})
+    context 'when pipeline stays intact' do
+      before do
+        perform_enqueued_jobs do
+          destroy_project(project, user, {})
+        end
       end
+
+      it_behaves_like 'deleting the project'
     end
 
-    it_behaves_like 'deleting the project'
+    context 'when pipeline was updated in the middle' do
+      before do
+        run_pipeline_before_destroy = Module.new do
+          def destroy!
+            flag = :@run_pipeline_before_destroy_called
+
+            unless instance_variable_defined?(flag)
+              Ci::Pipeline.find(pipelines.to_a.first.id).run
+              instance_variable_set(flag, true)
+            end
+
+            super
+          end
+        end
+
+        project.singleton_class.prepend(run_pipeline_before_destroy)
+
+        expect(project).to receive(:destroy!).and_call_original.twice
+
+        perform_enqueued_jobs do
+          destroy_project(project, user, {})
+        end
+      end
+
+      describe 'retries upon ActiveRecord::StaleObjectError' do
+        it_behaves_like 'deleting the project'
+      end
+    end
   end
 
   context 'container registry' do
