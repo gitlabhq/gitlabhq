@@ -37,7 +37,7 @@
     @include make-md-column(6);
     margin-top: 10px;
 
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }

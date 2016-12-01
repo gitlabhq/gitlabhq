@@ -253,7 +253,7 @@ ul.notes {
 }
 
 .page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-lg-min) {
+  @media (max-width: $screen-md-max) {
     .note-header {
       .note-headline-light {
         display: block;
