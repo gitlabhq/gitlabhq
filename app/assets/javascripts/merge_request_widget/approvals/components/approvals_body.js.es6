@@ -1,13 +1,15 @@
+//= require ../stores/approvals_store
 //= require ../services/approvals_api
 
 (() => {
   const app = gl.MergeRequestWidget;
-  const api = gl.MergeRequestWidget.ApprovalsApi;
+  const api = app.ApprovalsApi;
+
   const componentRegistry = app.Components || (app.Components = {});
 
   componentRegistry.approvalsBody = {
     name: 'ApprovalsBody',
-    props: ['approverNames', 'approvalsLeft', 'canApprove'],
+    props: ['approverNames', 'approvalsLeft', 'userCanApprove', 'userHasApproved'],
     data() {
       return {
         loading: true,
@@ -26,6 +28,9 @@
           return newList;
         }, '');
       },
+      showApproveButton() {
+        return this.userCanApprove && !this.userHasApproved;
+      },
     },
     methods: {
       approveMergeRequest() {
@@ -41,9 +46,8 @@
       <div>
         <div>
           <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
-          <div class='append-bottom-10'>
+          <div v-if='showApproveButton' class='append-bottom-10'>
             <button 
-              v-if='canApprove' 
               @click='approveMergeRequest' 
               class='btn btn-primary approve-btn'> 
               Approve Merge Request

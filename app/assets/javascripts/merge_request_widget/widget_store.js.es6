@@ -1,4 +1,4 @@
-//= require ../approvals/stores/approvals_store
+//= require ./approvals/stores/approvals_store
 
 ((MergeRequestWidget) => {
   let singleton;

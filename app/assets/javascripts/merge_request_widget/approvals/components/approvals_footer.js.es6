@@ -9,11 +9,19 @@
 
   componentRegistry.approvalsFooter = {
     name: 'ApprovalsFooter',
-    props: ['canUpdateMergeRequest', 'hasApprovedMergeRequest', 'approvedByUsers'],
+    props: ['userCanApprove', 'userHasApproved', 'approvedByUsers', 'approvalsLeft'],
     data() {
       return {
         loading: true,
       };
+    },
+    computed: {
+      hasApprovers() {
+        return this.approvedByUsers && this.approvedByUsers.length;
+      },
+      showUnapproveButton() {
+        return this.userCanApprove && this.userHasApproved;
+      },
     },
     methods: {
       removeApproval() {
@@ -26,7 +34,7 @@
       });
     },
     template: `
-      <div>
+      <div v-if='hasApprovers' class='mr-widget-footer approved-by-users'>
         <div v-for='approver in approvedByUsers'>
           <link-to-member-avatar 
             :avatar-url='approver.avatar.url'
@@ -34,7 +42,7 @@
             :username='approver.username'>
           </link-to-member-avatar>
         </div>
-        <span>
+        <span  v-if='showUnapproveButton'>
           <i class='fa fa-close'></i>
           <button @click='removeApproval'>Remove your approval</button>
         </span>

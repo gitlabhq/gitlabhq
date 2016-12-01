@@ -1,5 +1,5 @@
-//= require ./stores/widget_store
-//= require ./services/widget_service
+//= require ./widget_store
+//= require ./approvals/services/approvals_api
 //= require ./approvals/approvals_bundle
 
 ((MergeRequestWidget) => {
