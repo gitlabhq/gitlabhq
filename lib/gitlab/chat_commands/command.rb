@@ -1,7 +1,6 @@
 module Gitlab
   module ChatCommands
     class Command < BaseCommand
-      include Presenters::Command
 
       COMMANDS = [
         Gitlab::ChatCommands::IssueShow,
@@ -17,32 +16,33 @@ module Gitlab
           if command.allowed?(project, current_user)
             command.new(project, current_user, params).execute(match)
           else
-            access_denied
+            Gitlab::ChatCommands::Presenters::Command.new(match).access_denied
           end
         else
-          help_message
+          Gitlab::ChatCommands::Presenters::Command.
+            new(match).
+            help(available_commands, params[:command])
         end
       end
 
-      private
-
+      # Not private because of now its testable
       def match_command
         match = nil
-        service = available_commands.find do |klass|
-          match = klass.match(command)
-        end
+        service =
+          available_commands.find do |klass|
+            match = klass.match(params[:text])
+          end
 
         [service, match]
       end
 
-      def available_commands
-        COMMANDS.select do |klass|
-          klass.available?(project)
-        end
-      end
+      private
 
-      def command
-        params[:text]
+      def available_commands
+        @available_commands ||=
+          COMMANDS.select do |klass|
+            klass.available?(project)
+          end
       end
     end
   end

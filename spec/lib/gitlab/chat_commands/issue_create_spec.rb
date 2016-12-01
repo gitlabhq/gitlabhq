@@ -18,7 +18,8 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
       it 'creates the issue' do
         expect { subject }.to change { project.issues.count }.by(1)
 
-        expect(subject.title).to eq('bird is the word')
+        expect(subject[:response_type]).to be(:in_channel)
+        expect(subject).to have_key(:attachments)
       end
     end
 

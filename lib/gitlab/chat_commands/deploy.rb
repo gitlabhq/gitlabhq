@@ -1,10 +1,8 @@
 module Gitlab
   module ChatCommands
     class Deploy < BaseCommand
-      include Gitlab::Routing.url_helpers
-
       def self.match(text)
-        /\Adeploy\s+(?<from>.*)\s+to+\s+(?<to>.*)\z/.match(text)
+        /\Adeploy\s+(?<from>\S+.*)\s+to+\s+(?<to>\S+.*)\z/.match(text)
       end
 
       def self.help_message
@@ -24,21 +22,21 @@ module Gitlab
         to = match[:to]
 
         actions = find_actions(from, to)
-        return unless actions.present?
-
-        if actions.one?
-          play!(from, to, actions.first)
+        
+        if actions.none?
+          Gitlab::ChatCommands::Presenters::Deploy.new(nil).no_actions
+        elsif actions.one?
+          action = play!(from, to, actions.first)
+          Gitlab::ChatCommands::Presenters::Deploy.new(action).execute(from, to)
         else
-          Result.new(:error, 'Too many actions defined')
+          Gitlab::ChatCommands::Presenters::Deploy.new(nil).too_many_actions
         end
       end
 
       private
 
       def play!(from, to, action)
-        new_action = action.play(current_user)
-
-        Result.new(:success, "Deployment from #{from} to #{to} started. Follow the progress: #{url(new_action)}.")
+        action.play(current_user)
       end
 
       def find_actions(from, to)
@@ -46,11 +44,6 @@ module Gitlab
         return unless environment
 
         environment.actions_for(to).select(&:starts_environment?)
-      end
-
-      def url(subject)
-        polymorphic_url(
-          [ subject.project.namespace.becomes(Namespace), subject.project, subject ])
       end
     end
   end
