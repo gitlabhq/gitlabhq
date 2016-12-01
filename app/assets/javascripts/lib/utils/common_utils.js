@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, padded-blocks, max-len, prefer-template */
 (function() {
   (function(w) {
     var base;
@@ -94,10 +94,35 @@
       return $(document).off('scroll');
     };
 
-    w.gl.utils.shiftWindow = function() {
-      return w.scrollBy(0, -100);
-    };
+    // automatically adjust scroll position for hash urls taking the height of the navbar into account
+    // https://github.com/twitter/bootstrap/issues/1768
+    w.gl.utils.handleLocationHash = function() {
+      var hash = w.gl.utils.getLocationHash();
+      if (!hash) return;
 
+      var navbar = document.querySelector('.navbar-gitlab');
+      var subnav = document.querySelector('.layout-nav');
+      var fixedTabs = document.querySelector('.js-tabs-affix');
+
+      var adjustment = 0;
+      if (navbar) adjustment -= navbar.offsetHeight;
+      if (subnav) adjustment -= subnav.offsetHeight;
+
+      // scroll to user-generated markdown anchor if we cannot find a match
+      if (document.getElementById(hash) === null) {
+        var target = document.getElementById('user-content-' + hash);
+        if (target && target.scrollIntoView) {
+          target.scrollIntoView(true);
+          window.scrollBy(0, adjustment);
+        }
+      } else {
+        // only adjust for fixedTabs when not targeting user-generated content
+        if (fixedTabs) {
+          adjustment -= fixedTabs.offsetHeight;
+        }
+        window.scrollBy(0, adjustment);
+      }
+    };
 
     gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
       return $tooltipEl.tooltip('destroy').attr('title', newTitle).tooltip('fixTitle');

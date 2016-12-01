@@ -182,6 +182,7 @@
       left: -16px;
       position: absolute;
       text-decoration: none;
+      outline: none;
 
       &::after {
         content: image-url('icon_anchor.svg');
