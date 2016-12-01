@@ -6,7 +6,7 @@
 GitLab 8.12 has a completely redesigned build permissions system.
 Read all about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#build-triggers).
 
-Triggers can be used to force a rebuild of a specific branch, tag or commit,
+Triggers can be used to force a rebuild of a specific `ref` (branch or tag)
 with an API call.
 
 ## Add a trigger
@@ -29,6 +29,10 @@ irreversible.
 
 ## Trigger a build
 
+> **Note**:
+Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
+it will not trigger a build.
+
 To trigger a build you need to send a `POST` request to GitLab's API endpoint:
 
 ```
@@ -36,8 +40,8 @@ POST /projects/:id/trigger/builds
 ```
 
 The required parameters are the trigger's `token` and the Git `ref` on which
-the trigger will be performed. Valid refs are the branch, the tag or the commit
-SHA. The `:id` of a project can be found by [querying the API](../../api/projects.md)
+the trigger will be performed. Valid refs are the branch and the tag. The `:id`
+of a project can be found by [querying the API](../../api/projects.md)
 or by visiting the **Triggers** page which provides self-explanatory examples.
 
 When a rebuild is triggered, the information is exposed in GitLab's UI under
