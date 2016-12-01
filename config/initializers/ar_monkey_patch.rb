@@ -59,8 +59,7 @@ module ActiveRecord
         return super unless locking_enabled?
 
         column_name = self.class.locking_column
-        table_name =  self.class.quoted_table_name
-        super.where("#{table_name}.#{column_name}" => self[column_name])
+        super.where(self.class.arel_table[column_name].eq(self[column_name]))
       end
     end
 
