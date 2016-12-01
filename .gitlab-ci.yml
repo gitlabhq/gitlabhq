@@ -117,7 +117,8 @@ setup-test-env:
 
 .shared-runner: &shared-runner
   tags:
-    - shared
+    - docker
+    - privileged
 
 rspec 0 20 dedicated:
   <<: *rspec-knapsack
