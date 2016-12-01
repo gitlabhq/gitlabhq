@@ -41,32 +41,6 @@ describe 'gitlab:workhorse namespace rake task' do
 
         run_rake_task('gitlab:workhorse:install', clone_path)
       end
-
-      context 'given a specific repo' do
-        before do
-          expect(ENV).to receive(:[]).with('GITLAB_WORKHORSE_REPO').and_return('https://gitlab.com/user1/gitlab-workhorse.git')
-        end
-
-        it 'calls checkout_or_clone_tag with the given repo' do
-          expect_any_instance_of(Object).
-            to receive(:checkout_or_clone_tag).with(tag: tag, repo: 'https://gitlab.com/user1/gitlab-workhorse.git', target_dir: clone_path)
-
-          run_rake_task('gitlab:workhorse:install', clone_path)
-        end
-      end
-
-      context 'given a specific version' do
-        before do
-          allow(ENV).to receive(:[]).with('GITLAB_WORKHORSE_VERSION').and_return('42.42.0')
-        end
-
-        it 'calls checkout_or_clone_tag with the given repo' do
-          expect_any_instance_of(Object).
-            to receive(:checkout_or_clone_tag).with(tag: 'v42.42.0', repo: repo, target_dir: clone_path)
-
-          run_rake_task('gitlab:workhorse:install', clone_path)
-        end
-      end
     end
 
     describe 'gmake/make' do
