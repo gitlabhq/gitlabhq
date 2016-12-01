@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::UpdateService, services: true do
+  include EmailHelpers
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
