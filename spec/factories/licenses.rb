@@ -5,6 +5,9 @@ FactoryGirl.define do
     licensee do
       { "Name" => FFaker::Name.name }
     end
+    restrictions do
+      { add_ons: { 'GitLab_FileLocks' => 1 } }
+    end
     notify_users_at   { |l| l.expires_at }
     notify_admins_at  { |l| l.expires_at }
   end
