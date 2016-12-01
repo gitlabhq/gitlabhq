@@ -11,4 +11,5 @@
 #
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.uncountable %w(award_emoji)
+  inflect.acronym 'EE'
 end

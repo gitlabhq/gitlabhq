@@ -1,4 +1,6 @@
 class ProjectPolicy < BasePolicy
+  prepend EE::ProjectPolicy
+
   def rules
     team_access!(user)
 
@@ -267,19 +269,4 @@ class ProjectPolicy < BasePolicy
       :"admin_#{name}"
     ]
   end
-
-  # EE-specific
-  module EeDisabledFeaturePermissions
-    def disabled_features!
-      super
-
-      if License.block_changes?
-        cannot! :create_issue
-        cannot! :create_merge_request
-        cannot! :push_code
-        cannot! :push_code_to_protected_branches
-      end
-    end
-  end
-  prepend EeDisabledFeaturePermissions
 end
