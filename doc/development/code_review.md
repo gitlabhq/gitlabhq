@@ -76,25 +76,25 @@ experience, refactors the existing code). Then:
 
 ## The right balance
 
-One of the most difficult things during the code review is finding the right
+One of the most difficult things during code review is finding the right
 balance in how deep the reviewer can interfere with the code created by a
 reviewee.
 
-- Learning how to find the right balance takes time, that is why we have
+- Learning how to find the right balance takes time; that is why we have
   minibosses that become merge request endbosses after some time spent on
   reviewing merge requests.
 - Finding bugs and improving code style is important, but thinking about good
   design is important as well. Building abstractions and good design is what
-  makes it possible to hide complexity and is a leverage for the future work.
-- Asking reviewee to change the design sometimes means the complete rewrite of
-  the contributed code. It is usually a good idea to ask other merge request
-  endboss before doing it, but have the courage to do it when you believe it is
-  important.
+  makes it possible to hide complexity and makes future changes easier.
+- Asking the reviewee to change the design sometimes means the complete rewrite
+  of the contributed code. It's usually a good idea to ask another merge
+  request endboss before doing it, but have the courage to do it when you
+  believe it is important.
 - There is a difference in doing things right and doing things right now.
   Ideally, we should do the former, but in the real world we need the latter as
-  well. The good example is a security fix which should be released as soon as
-  possible. Asking reviewee to do the major refactoring in the merge request
-  that is an urgent fix should be avoided.
+  well. A good example is a security fix which should be released as soon as
+  possible. Asking the reviewee to do the major refactoring in the merge
+  request that is an urgent fix should be avoided.
 - Doing things well today is usually better than doing something perfectly
   tomorrow. Shipping a kludge today is usually worse than doing something well
   tomorrow. When you are not able to find the right balance, ask other people
