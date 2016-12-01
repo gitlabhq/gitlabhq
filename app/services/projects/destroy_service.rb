@@ -4,7 +4,7 @@ module Projects
 
     DELETED_FLAG = '+deleted'
 
-    class DestroyError < StandardError; end
+    DestroyError = Class.new(StandardError)
 
     Executor = Struct.new(:service, :project) do
       def execute
