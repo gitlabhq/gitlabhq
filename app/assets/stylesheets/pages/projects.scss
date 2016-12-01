@@ -189,7 +189,7 @@
   }
 
   .download-button {
-    @media (max-width: $screen-lg-min) {
+    @media (max-width: $screen-md-max) {
       margin-left: 0;
     }
   }
