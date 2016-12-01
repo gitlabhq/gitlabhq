@@ -14,7 +14,7 @@ class AddApproverGroups < ActiveRecord::Migration
       t.string :target_type, null: false
       t.integer :group_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
 
       t.index [:target_id, :target_type]
       t.index :group_id

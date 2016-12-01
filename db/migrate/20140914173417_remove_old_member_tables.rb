@@ -1,5 +1,7 @@
 # rubocop:disable all
 class RemoveOldMemberTables < ActiveRecord::Migration
+  DOWNTIME = false
+
   def up
     drop_table :users_groups
     drop_table :users_projects
@@ -12,7 +14,7 @@ class RemoveOldMemberTables < ActiveRecord::Migration
       t.integer :user_id, null: false
       t.integer :notification_level, null: false, default: 3
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     create_table :users_projects do |t|
@@ -21,7 +23,7 @@ class RemoveOldMemberTables < ActiveRecord::Migration
       t.integer :user_id, null: false
       t.integer :notification_level, null: false, default: 3
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

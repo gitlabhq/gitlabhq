@@ -1,5 +1,7 @@
 # rubocop:disable all
 class AddMembersTable < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :members do |t|
       t.integer :access_level, null: false
@@ -9,7 +11,7 @@ class AddMembersTable < ActiveRecord::Migration
       t.integer :notification_level, null: false
       t.string  :type
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :members, :type
