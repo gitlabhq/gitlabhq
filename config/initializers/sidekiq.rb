@@ -61,5 +61,5 @@ begin
       end
     end
   end
-rescue Redis::BaseError, SocketError
+rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
 end
