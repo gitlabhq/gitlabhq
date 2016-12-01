@@ -162,6 +162,8 @@ feature 'Merge request approvals', js: true, feature: true do
     end
 
     context 'when group is assigned to a project' do
+      it 'I am able to unapprove' do
+      end
       it 'I am able to approve' do
         create :approver_group, group: group, target: project
 
@@ -176,6 +178,9 @@ feature 'Merge request approvals', js: true, feature: true do
     end
 
     context 'when group is assigned to a merge request' do
+      it 'I am able to unapprove' do
+      end
+
       it 'I am able to approve' do
         create :approver_group, group: group, target: merge_request
 
