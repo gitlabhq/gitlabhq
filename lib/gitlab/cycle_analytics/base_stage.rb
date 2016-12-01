@@ -1,29 +1,36 @@
 module Gitlab
   module CycleAnalytics
     class BaseStage
-      attr_reader :stage, :description
+      include ClassNameUtil
 
-      def initialize(project:, options:, stage:)
+      def initialize(project:, options:)
         @project = project
         @options = options
         @fetcher = Gitlab::CycleAnalytics::MetricsFetcher.new(project: project,
                                                               from: options[:from],
                                                               branch: options[:branch])
-        @stage = stage
       end
 
       def events
-        event_class.new(fetcher: @fetcher, stage: @stage, options: @options).fetch
+        Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher, options: @options).fetch
       end
 
       def median_data
         AnalyticsStageSerializer.new.represent(self).as_json
       end
 
+      def title
+        stage.to_s.capitalize
+      end
+
+      def median
+        raise NotImplementedError.new("Expected #{self.name} to implement median")
+      end
+
       private
 
-      def event_class
-        "Gitlab::CycleAnalytics::#{@stage.to_s.capitalize}Event".constantize
+      def stage
+        class_name_for('Stage')
       end
     end
   end

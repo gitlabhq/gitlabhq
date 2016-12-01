@@ -1,9 +1,7 @@
 class AnalyticsStageEntity < Grape::Entity
   include EntityDateHelper
 
-  expose :stage, as: :title do |object|
-    object.stage.to_s.capitalize
-  end
+  expose :title
   expose :description
 
   expose :median, as: :value do |stage|

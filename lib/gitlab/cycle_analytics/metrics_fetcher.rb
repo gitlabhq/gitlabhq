@@ -15,7 +15,7 @@ module Gitlab
         @branch = branch
       end
 
-      def calculate_metric(name, start_time_attrs, end_time_attrs)
+      def median(name, start_time_attrs, end_time_attrs)
         cte_table = Arel::Table.new("cte_table_for_#{name}")
 
         # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).

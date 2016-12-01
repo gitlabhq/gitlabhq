@@ -1,7 +1,7 @@
 class CycleAnalytics
   STAGES = %i[issue plan code test review staging production].freeze
 
-  def initialize(project, options:)
+  def initialize(project, options)
     @project = project
     @options = options
   end
@@ -22,19 +22,15 @@ class CycleAnalytics
     Gitlab::CycleAnalytics::Permissions.get(user: user, project: @project)
   end
 
-  def events_for(stage)
-    classify_stage(stage).new(project: @project, options: @options, stage: stage).events
+  def [](stage_name)
+    Gitlab::CycleAnalytics::Stage[stage_name].new(project: @project, options: @options)
   end
 
   private
 
   def stats_per_stage
     STAGES.map do |stage_name|
-      classify_stage(stage_name).new(project: @project, options: @options, stage: stage_name).median_data
+      Gitlab::CycleAnalytics::Stage[stage_name].new(project: @project, options: @options).median_data
     end
-  end
-
-  def classify_stage(stage_name)
-    "Gitlab::CycleAnalytics::#{stage_name.to_s.capitalize}Stage".constantize
   end
 end

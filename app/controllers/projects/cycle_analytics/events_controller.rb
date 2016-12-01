@@ -9,33 +9,33 @@ module Projects
       before_action :authorize_read_merge_request!, only: [:code, :review]
 
       def issue
-        render_events(cycle_analytics.events_for(:issue))
+        render_events(cycle_analytics[:issue].events)
       end
     
       def plan
-        render_events(cycle_analytics.events_for(:plan))
+        render_events(cycle_analytics[:plan].events)
       end
     
       def code
-        render_events(cycle_analytics.events_for(:code))
+        render_events(cycle_analytics[:code].events)
       end
     
       def test
         options(events_params)[:branch] = events_params[:branch_name]
     
-        render_events(cycle_analytics.events_for(:test))
+        render_events(cycle_analytics[:test].events)
       end
     
       def review
-        render_events(cycle_analytics.events_for(:review))
+        render_events(cycle_analytics[:review].events)
       end
     
       def staging
-        render_events(cycle_analytics.events_for(:staging))
+        render_events(cycle_analytics[:staging].events)
       end
     
       def production
-        render_events(cycle_analytics.events_for(:production))
+        render_events(cycle_analytics[:production].events)
       end
     
       private
@@ -54,7 +54,7 @@ module Projects
       def events_params
         return {} unless params[:events].present?
     
-        params[:events].slice(:start_date, :branch_name)
+        params[:events].permit(:start_date, :branch_name)
       end
     end
   end

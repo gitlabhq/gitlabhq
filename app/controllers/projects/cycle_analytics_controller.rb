@@ -6,7 +6,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = ::CycleAnalytics.new(@project, options: options(cycle_analytics_params))
+    @cycle_analytics = ::CycleAnalytics.new(@project, options(cycle_analytics_params))
 
     @cycle_analytics_no_data = @cycle_analytics.no_stats?
 
@@ -21,7 +21,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   def cycle_analytics_params
     return {} unless params[:cycle_analytics].present?
 
-    params[:cycle_analytics].slice(:start_date)
+    params[:cycle_analytics].permit(:start_date)
   end
 
   def cycle_analytics_json
