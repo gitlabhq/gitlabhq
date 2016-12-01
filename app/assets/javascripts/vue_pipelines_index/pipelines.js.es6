@@ -72,7 +72,7 @@
     },
     template: `
       <div>
-        <div class="pipeline-loading-status" v-if='pipelines.length < 1'>
+        <div class="pipelines realtime-loading" v-if='pipelines.length < 1'>
           <i class="fa fa-spinner fa-spin"></i>
         </div>
         <div class="table-holder" v-if='pipelines.length > 0'>
@@ -104,7 +104,7 @@
             </tbody>
           </table>
         </div>
-        <div class="pipeline-loading-status" v-if='pageRequest'>
+        <div class="pipelines realtime-loading" v-if='pageRequest'>
           <i class="fa fa-spinner fa-spin"></i>
         </div>
         <gl-pagination
