@@ -91,13 +91,13 @@
         .off('click', '.js-show-tab', this.showTab);
     }
 
-    showTab(event) {
-      event.preventDefault();
-      this.activateTab($(event.target).data('action'));
+    showTab(e) {
+      e.preventDefault();
+      this.activateTab($(e.target).data('action'));
     }
 
-    tabShown(event) {
-      const $target = $(event.target);
+    tabShown(e) {
+      const $target = $(e.target);
       const action = $target.data('action');
 
       if (action === 'commits') {

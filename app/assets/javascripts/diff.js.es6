@@ -20,8 +20,8 @@
       this.highlighSelectedLine();
     }
 
-    handleClickUnfold(event) {
-      const $target = $(event.target);
+    handleClickUnfold(e) {
+      const $target = $(e.target);
       // current babel config relies on iterators implementation, so we cannot simply do:
       // const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
       const ref = this.lineNumbers($target.parent());
@@ -69,9 +69,9 @@
       }
     }
 
-    handleClickLineNum(event) {
-      const hash = $(event.currentTarget).attr('href');
-      event.preventDefault();
+    handleClickLineNum(e) {
+      const hash = $(e.currentTarget).attr('href');
+      e.preventDefault();
       if (window.history.pushState) {
         window.history.pushState(null, null, hash);
       } else {
