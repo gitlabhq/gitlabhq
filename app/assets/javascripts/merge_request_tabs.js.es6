@@ -1,5 +1,8 @@
 /* eslint-disable no-new, no-param-reassign, class-methods-use-this */
-/* global Breakpoints, Cookies, DiffNotesApp */
+/* global Breakpoints */
+/* global Cookies */
+/* global DiffNotesApp */
+/* global Flash */
 
 /*= require js.cookie */
 /*= require breakpoints */
@@ -294,6 +297,7 @@
     ajaxGet(options) {
       const defaults = {
         beforeSend: () => this.toggleLoading(true),
+        error: () => new Flash('An error occurred while fetching this tab.', 'alert'),
         complete: () => this.toggleLoading(false),
         dataType: 'json',
         type: 'GET',
