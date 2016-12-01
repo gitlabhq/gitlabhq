@@ -21,8 +21,6 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
-    delegate :stages, to: :statuses
-
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -98,17 +96,40 @@ module Ci
       sha[0...8]
     end
 
-    def self.stages
-      # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(pipeline: pluck(:id)).stages
-    end
-
     def self.total_duration
       where.not(duration: nil).sum(:duration)
     end
 
+    def stages_query
+      statuses.group('stage').select(:stage)
+        .order('max(stage_idx)')
+    end
+
+    def stages
+      self.stages_query.pluck(:stage)
+    end
+
+    def stages_with_statuses
+      status_sql = statuses.latest.where('stage=sg.stage').status_sql
+
+      stages_with_statuses = CommitStatus.from(self.stages_query, :sg).
+        pluck('sg.stage', status_sql)
+
+      stages_with_statuses.map do |stage|
+        OpenStruct.new(
+          name: stage.first,
+          status: stage.last,
+          pipeline: self
+        )
+      end
+    end
+
     def stages_with_latest_statuses
       statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
+    end
+
+    def artifacts
+      builds.latest.with_artifacts_not_expired
     end
 
     def project_id
