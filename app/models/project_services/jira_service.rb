@@ -9,6 +9,9 @@ class JiraService < IssueTrackerService
 
   before_update :reset_password
 
+  # This is confusing, but JiraService does not really support these events.
+  # The values here are required to display correct options in the service
+  # configuration screen.
   def supported_events
     %w(commit merge_request)
   end
@@ -105,18 +108,29 @@ class JiraService < IssueTrackerService
     "#{url}/secure/CreateIssue.jspa"
   end
 
-  def execute(push, issue = nil)
-    if issue.nil?
-      # No specific issue, that means
-      # we just want to test settings
-      test_settings
-    else
-      jira_issue = jira_request { client.Issue.find(issue.iid) }
+  def execute(push)
+    # This method is a no-op, because currently JiraService does not
+    # support any events.
+  end
 
-      return false unless jira_issue.present?
+  def close_issue(entity, external_issue)
+    issue = jira_request { client.Issue.find(external_issue.iid) }
 
-      close_issue(push, jira_issue)
-    end
+    return if issue.nil? || issue.resolution.present? || !jira_issue_transition_id.present?
+
+    commit_id = if entity.is_a?(Commit)
+                  entity.id
+                elsif entity.is_a?(MergeRequest)
+                  entity.diff_head_sha
+                end
+
+    commit_url = build_entity_url(:commit, commit_id)
+
+    # Depending on the JIRA project's workflow, a comment during transition
+    # may or may not be allowed. Refresh the issue after transition and check
+    # if it is closed, so we don't have one comment for every commit.
+    issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
+    add_issue_solved_comment(issue, commit_id, commit_url) if issue.resolution
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
@@ -156,6 +170,11 @@ class JiraService < IssueTrackerService
     "Please fill in Password and Username."
   end
 
+  def test(_)
+    result = test_settings
+    { success: result.present?, result: result }
+  end
+
   def can_test?
     username.present? && password.present?
   end
@@ -180,24 +199,6 @@ class JiraService < IssueTrackerService
     when MergeRequest then merge_requests_events
     else true
     end
-  end
-
-  def close_issue(entity, issue)
-    return if issue.nil? || issue.resolution.present? || !jira_issue_transition_id.present?
-
-    commit_id = if entity.is_a?(Commit)
-                  entity.id
-                elsif entity.is_a?(MergeRequest)
-                  entity.diff_head_sha
-                end
-
-    commit_url = build_entity_url(:commit, commit_id)
-
-    # Depending on the JIRA project's workflow, a comment during transition
-    # may or may not be allowed. Refresh the issue after transition and check
-    # if it is closed, so we don't have one comment for every commit.
-    issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
-    add_issue_solved_comment(issue, commit_id, commit_url) if issue.resolution
   end
 
   def transition_issue(issue)
