@@ -7,7 +7,7 @@ module Gitlab
       attr_reader :start_time_attrs, :end_time_attrs, :projections, :query
 
       def initialize(fetcher:, options:)
-        @query = EventsQuery.new(fetcher: fetcher)
+        @fetcher = fetcher
         @project = fetcher.project
         @options = options
       end
@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def event_result
-        @event_result ||= @query.execute(self).to_a
+        @event_result ||= @fetcher.events(self).to_a
       end
 
       def serialize(_event)

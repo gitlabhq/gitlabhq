@@ -6,7 +6,7 @@ describe 'CycleAnalytics#code', feature: true do
   let(:project) { create(:project) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
-  subject { CycleAnalyticsTest.new(project, options: { from: from_date }) }
+  subject { CycleAnalytics.new(project, from: from_date) }
 
   context 'with deployment' do
     generate_cycle_analytics_spec(
@@ -37,7 +37,7 @@ describe 'CycleAnalytics#code', feature: true do
           deploy_master
         end
 
-        expect(subject.code).to be_nil
+        expect(subject[:code].median).to be_nil
       end
     end
   end
@@ -69,7 +69,7 @@ describe 'CycleAnalytics#code', feature: true do
           merge_merge_requests_closing_issue(issue)
         end
 
-        expect(subject.code).to be_nil
+        expect(subject[:code].median).to be_nil
       end
     end
   end

@@ -29,6 +29,21 @@ module Gitlab
         median_datetime(cte_table, interval_query, name)
       end
 
+      def events(stage_class)
+        ActiveRecord::Base.connection.exec_query(events_query(stage_class).to_sql)
+      end
+
+      private
+
+      def events_query(stage_class)
+        base_query = base_query_for(stage_class.stage)
+        diff_fn = subtract_datetimes_diff(base_query, stage_class.start_time_attrs, stage_class.end_time_attrs)
+
+        stage_class.custom_query(base_query)
+
+        base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *stage_class.projections).order(stage_class.order.desc)
+      end
+
       # Join table with a row for every <issue,merge_request> pair (where the merge request
       # closes the given issue) with issue and merge request metrics included. The metrics
       # are loaded with an inner join, so issues / merge requests without metrics are

@@ -1,9 +1,3 @@
-class CycleAnalyticsTest < CycleAnalytics
-  def method_missing(method_sym, *arguments, &block)
-    classify_stage(method_sym).new(project: @project, options: @options, stage: method_sym).median
-  end
-end
-
 # rubocop:disable Metrics/AbcSize
 
 # Note: The ABC size is large here because we have a method generating test cases with
@@ -56,7 +50,7 @@ module CycleAnalyticsHelpers
               end
 
               median_time_difference = time_differences.sort[2]
-              expect(subject.public_send(phase)).to be_within(5).of(median_time_difference)
+              expect(subject[phase].median).to be_within(5).of(median_time_difference)
             end
 
             context "when the data belongs to another project" do
@@ -88,7 +82,7 @@ module CycleAnalyticsHelpers
                 # Turn off the stub before checking assertions
                 allow(self).to receive(:project).and_call_original
 
-                expect(subject.public_send(phase)).to be_nil
+                expect(subject[phase].median).to be_nil
               end
             end
 
@@ -111,7 +105,7 @@ module CycleAnalyticsHelpers
 
                 Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
 
-                expect(subject.public_send(phase)).to be_nil
+                expect(subject[phase].median).to be_nil
               end
             end
           end
@@ -131,7 +125,7 @@ module CycleAnalyticsHelpers
                 Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
               end
 
-              expect(subject.public_send(phase)).to be_nil
+              expect(subject[phase].median).to be_nil
             end
           end
         end
@@ -150,7 +144,7 @@ module CycleAnalyticsHelpers
                 post_fn[self, data] if post_fn
               end
 
-              expect(subject.public_send(phase)).to be_nil
+              expect(subject[phase].median).to be_nil
             end
           end
         end
@@ -158,7 +152,7 @@ module CycleAnalyticsHelpers
 
       context "when none of the start / end conditions are matched" do
         it "returns nil" do
-          expect(subject.public_send(phase)).to be_nil
+          expect(subject[phase].median).to be_nil
         end
       end
     end
