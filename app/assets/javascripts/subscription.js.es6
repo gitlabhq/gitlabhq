@@ -2,12 +2,10 @@
 
 (() => {
   class Subscription {
-    constructor(containerSelector) {
-      this.containerElm = (typeof containerSelector === 'string')
-        ? document.querySelector(containerSelector)
-        : containerSelector;
+    constructor(containerElm) {
+      this.containerElm = containerElm;
 
-      const subscribeButton = this.containerElm.querySelector('.js-subscribe-button');
+      const subscribeButton = containerElm.querySelector('.js-subscribe-button');
       if (subscribeButton) {
         // remove class so we don't bind twice
         subscribeButton.classList.remove('js-subscribe-button');
