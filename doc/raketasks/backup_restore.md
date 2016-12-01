@@ -353,7 +353,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
-sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
+sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186_2014_02_27
 ```
 
 Restart and check GitLab:

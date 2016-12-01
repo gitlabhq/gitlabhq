@@ -40,7 +40,7 @@ describe 'cycle analytics events' do
 
       expect(json_response['events']).not_to be_empty
 
-      first_mr_iid = MergeRequest.order(created_at: :desc).pluck(:iid).first.to_s
+      first_mr_iid = project.merge_requests.order(id: :desc).pluck(:iid).first.to_s
 
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end

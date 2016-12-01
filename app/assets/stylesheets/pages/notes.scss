@@ -90,14 +90,14 @@ ul.notes {
         }
 
         &.system-note-commit-list {
-          max-height: 63px;
+          max-height: 70px;
           overflow: hidden;
           display: block;
 
           ul {
-            margin: 3px 0 3px 15px !important;
+            margin: 3px 0 3px 16px !important;
 
-            li {
+            .gfm-commit {
               font-family: $monospace_font;
               font-size: 12px;
             }
@@ -171,6 +171,10 @@ ul.notes {
     &.note-discussion {
       &.timeline-entry {
         padding: 14px 10px;
+      }
+
+      .system-note {
+        padding: 0;
       }
     }
 

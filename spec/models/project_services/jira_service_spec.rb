@@ -68,7 +68,7 @@ describe JiraService, models: true do
     end
   end
 
-  describe "Execute" do
+  describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
@@ -101,12 +101,10 @@ describe JiraService, models: true do
       @jira_service.save
 
       project_issues_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123'
-      @project_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/project/GitLabProject'
       @transitions_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
       @comment_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
       @remote_link_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/remotelink'
 
-      WebMock.stub_request(:get, @project_url)
       WebMock.stub_request(:get, project_issues_url)
       WebMock.stub_request(:post, @transitions_url)
       WebMock.stub_request(:post, @comment_url)
@@ -114,7 +112,7 @@ describe JiraService, models: true do
     end
 
     it "calls JIRA API" do
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
@@ -124,7 +122,7 @@ describe JiraService, models: true do
     # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
     # for more information
     it "creates Remote Link reference in JIRA for comment" do
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       # Creates comment
       expect(WebMock).to have_requested(:post, @comment_url)
@@ -146,7 +144,7 @@ describe JiraService, models: true do
     it "does not send comment or remote links to issues already closed" do
       allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(true)
 
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).not_to have_requested(:post, @comment_url)
       expect(WebMock).not_to have_requested(:post, @remote_link_url)
@@ -155,7 +153,7 @@ describe JiraService, models: true do
     it "references the GitLab commit/merge request" do
       stub_config_setting(base_url: custom_base_url)
 
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /#{custom_base_url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
@@ -170,7 +168,7 @@ describe JiraService, models: true do
         { script_name: '/gitlab' }
       end
 
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /#{Gitlab.config.gitlab.url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
@@ -178,19 +176,33 @@ describe JiraService, models: true do
     end
 
     it "calls the api with jira_issue_transition_id" do
-      @jira_service.execute(merge_request, ExternalIssue.new("JIRA-123", project))
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @transitions_url).with(
         body: /custom-id/
       ).once
     end
+  end
 
-    context "when testing" do
-      it "tries to get jira project" do
-        @jira_service.execute(nil)
+  describe '#test_settings' do
+    let(:jira_service) do
+      described_class.new(
+        url: 'http://jira.example.com',
+        username: 'gitlab_jira_username',
+        password: 'gitlab_jira_password',
+        project_key: 'GitLabProject'
+      )
+    end
+    let(:project_url) { 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/project/GitLabProject' }
 
-        expect(WebMock).to have_requested(:get, @project_url)
-      end
+    before do
+      WebMock.stub_request(:get, project_url)
+    end
+
+    it 'tries to get JIRA project' do
+      jira_service.test_settings
+
+      expect(WebMock).to have_requested(:get, project_url)
     end
   end
 

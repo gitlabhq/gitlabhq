@@ -678,7 +678,7 @@ class MergeRequest < ActiveRecord::Base
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_build_succeeds?
 
-    !pipeline || pipeline.success? || pipeline.skipped?
+    !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
   end
 
   def environments
@@ -774,10 +774,10 @@ class MergeRequest < ActiveRecord::Base
     commits.map(&:sha)
   end
 
-  def pipeline
+  def head_pipeline
     return unless diff_head_sha && source_project
 
-    @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
+    @head_pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
   def all_pipelines

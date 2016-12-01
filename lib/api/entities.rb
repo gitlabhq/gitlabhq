@@ -141,8 +141,12 @@ module API
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
+      expose :merged do |repo_branch, options|
+        options[:project].repository.merged_to_root_ref?(repo_branch.name)
+      end
+
       expose :protected do |repo_branch, options|
-        options[:project].protected_branch? repo_branch.name
+        options[:project].protected_branch?(repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
