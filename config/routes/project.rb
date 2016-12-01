@@ -142,6 +142,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         member do
           post :cancel
           post :retry
+          get :builds
         end
       end
 
