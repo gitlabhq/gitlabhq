@@ -17,7 +17,7 @@ describe LabelsFinder do
     let!(:project_label_4) { create(:label, project: project_4, title: 'Label 4') }
     let!(:project_label_5) { create(:label, project: project_5, title: 'Label 5') }
 
-    let!(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1') }
+    let!(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1 (group)') }
     let!(:group_label_2) { create(:group_label, group: group_1, title: 'Group Label 2') }
     let!(:group_label_3) { create(:group_label, group: group_2, title: 'Group Label 3') }
 
