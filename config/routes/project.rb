@@ -129,6 +129,7 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :cancel
           post :retry
+          get :builds
         end
       end
 
