@@ -2,12 +2,18 @@ module Gitlab
   module CycleAnalytics
     module Summary
       class Issue < Base
+        def initialize(project:, from:, current_user:)
+          @project = project
+          @from = from
+          @current_user = current_user
+        end
+
         def title
           'New Issue'
         end
 
         def value
-          @value ||= @project.issues.created_after(@from).count
+          @value ||= IssuesFinder.new(@current_user, project_id: @project.id).execute.created_after(@from).count
         end
       end
     end

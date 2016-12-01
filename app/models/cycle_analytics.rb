@@ -7,7 +7,9 @@ class CycleAnalytics
   end
 
   def summary
-    @summary ||= ::Gitlab::CycleAnalytics::StageSummary.new(@project, from: @options[:from]).data
+    @summary ||= ::Gitlab::CycleAnalytics::StageSummary.new(@project,
+                                                            from: @options[:from],
+                                                            current_user: @options[:current_user]).data
   end
 
   def stats

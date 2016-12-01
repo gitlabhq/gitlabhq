@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::CycleAnalytics::StageSummary, models: true do
   let(:project) { create(:project) }
-  let(:from) { Time.now }
+  let(:from) { 1.day.ago }
   let(:user) { create(:user, :admin) }
-  subject { described_class.new(project, from: Time.now).data }
+  subject { described_class.new(project, from: Time.now, current_user: user).data }
 
   describe "#new_issues" do
     it "finds the number of issues created after the 'from date'" do
