@@ -204,7 +204,9 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
-            context "when the user isn't blocked" do
+            context "when the user isn't blocked", :redis do
+              include UserActivitiesHelpers
+
               it "responds with status 200" do
                 download(path, env) do |response|
                   expect(response.status).to eq(200)
@@ -212,8 +214,8 @@ describe 'Git HTTP requests', lib: true do
               end
 
               it 'updates the user last activity' do
-                download(path, env) do |response|
-                  expect(user.reload.last_activity_at).not_to be_nil
+                download(path, env) do |_response|
+                  expect(user_score).not_to be_zero
                 end
               end
             end

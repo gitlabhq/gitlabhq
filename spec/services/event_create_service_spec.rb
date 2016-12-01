@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe EventCreateService, services: true do
+  include UserActivitiesHelpers
+
   let(:service) { EventCreateService.new }
 
   describe 'Issues' do
@@ -111,7 +113,7 @@ describe EventCreateService, services: true do
     end
   end
 
-  describe '#push' do
+  describe '#push', :redis do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
 
@@ -120,7 +122,7 @@ describe EventCreateService, services: true do
     end
 
     it 'updates user last activity' do
-      expect { service.push(project, user, {}) }.to change { user.last_activity_at }
+      expect { service.push(project, user, {}) }.to change { user_score }
     end
   end
 
