@@ -127,11 +127,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits_sha
-    if @commits
-      commits.map(&:sha)
-    else
-      st_commits.map { |commit| commit[:id] }
-    end
+    st_commits.map { |commit| commit[:id] }
   end
 
   def diff_refs
@@ -174,6 +170,10 @@ class MergeRequestDiff < ActiveRecord::Base
     # so we handle cases when user does squash and rebase of the commits between versions.
     # For this reason we set straight to true by default.
     CompareService.new.execute(project, head_commit_sha, project, sha, straight: straight)
+  end
+
+  def commits_count
+    st_commits.count
   end
 
   private
