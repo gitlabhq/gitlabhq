@@ -141,7 +141,7 @@
           $('.js-tabs-affix').outerHeight()
         );
         const $el = $(`${container} ${location.hash}:not(.match)`);
-        if ($el.length > 0) {
+        if ($el.length) {
           $.scrollTo($el[0], { offset });
         }
       }
