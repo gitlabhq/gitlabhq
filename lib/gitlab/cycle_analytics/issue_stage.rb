@@ -1,15 +1,20 @@
 module Gitlab
   module CycleAnalytics
     class IssueStage < BaseStage
-      def description
-        "Time before an issue gets scheduled"
+      def initialize(*args)
+        @start_time_attrs = issue_table[:created_at]
+        @end_time_attrs = [issue_metrics_table[:first_associated_with_milestone_at],
+                           issue_metrics_table[:first_added_to_board_at]]
+
+        super(*args)
       end
 
-      def median
-        @fetcher.median(:issue,
-                        Issue.arel_table[:created_at],
-                        [Issue::Metrics.arel_table[:first_associated_with_milestone_at],
-                         Issue::Metrics.arel_table[:first_added_to_board_at]])
+      def stage
+        :issue
+      end
+
+      def description
+        "Time before an issue gets scheduled"
       end
     end
   end

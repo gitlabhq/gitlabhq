@@ -1,9 +1,7 @@
 module Gitlab
   module CycleAnalytics
-    class StagingEvent < BaseEvent
+    class StagingEventFetcher < BaseEventFetcher
       def initialize(*args)
-        @start_time_attrs = mr_metrics_table[:merged_at]
-        @end_time_attrs = mr_metrics_table[:first_deployed_to_production_at]
         @projections = [build_table[:id]]
         @order = build_table[:created_at]
 

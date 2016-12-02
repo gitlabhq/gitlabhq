@@ -1,15 +1,15 @@
 module Gitlab
   module CycleAnalytics
-    class BaseEvent
+    class BaseEventFetcher
       include MetricsTables
-      include ClassNameUtil
 
-      attr_reader :start_time_attrs, :end_time_attrs, :projections, :query
+      attr_reader :projections, :query, :stage
 
-      def initialize(fetcher:, options:)
+      def initialize(fetcher:, options:, stage:)
         @fetcher = fetcher
         @project = fetcher.project
         @options = options
+        @stage = stage
       end
 
       def fetch
@@ -24,10 +24,6 @@ module Gitlab
 
       def order
         @order || @start_time_attrs
-      end
-
-      def stage
-        class_name_for('Event')
       end
 
       private

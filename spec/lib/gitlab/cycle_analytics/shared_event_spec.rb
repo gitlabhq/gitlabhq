@@ -4,10 +4,11 @@ shared_examples 'default query config' do
   let(:fetcher) do
     Gitlab::CycleAnalytics::MetricsFetcher.new(project: create(:empty_project),
                                                from: 1.day.ago,
-                                               branch: nil)
+                                               branch: nil,
+                                               stage: stage_name)
   end
 
-  let(:event) { described_class.new(fetcher: fetcher, options: {}) }
+  let(:event) { described_class.new(fetcher: fetcher, options: {}, stage: stage_name) }
 
   it 'has the start attributes' do
     expect(event.start_time_attrs).not_to be_nil

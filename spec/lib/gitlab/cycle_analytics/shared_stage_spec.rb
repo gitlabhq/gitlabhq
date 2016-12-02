@@ -5,7 +5,7 @@ shared_examples 'base stage' do
 
   before do
     allow_any_instance_of(Gitlab::CycleAnalytics::MetricsFetcher).to receive(:median).and_return(1.12)
-    allow_any_instance_of(Gitlab::CycleAnalytics::BaseEvent).to receive(:event_result).and_return({})
+    allow_any_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher).to receive(:event_result).and_return({})
   end
 
   it 'has the median data value' do

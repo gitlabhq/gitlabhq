@@ -1,11 +1,9 @@
 module Gitlab
   module CycleAnalytics
-    class ReviewEvent < BaseEvent
+    class ReviewEventFetcher < BaseEventFetcher
       include MergeRequestAllowed
 
       def initialize(*args)
-        @start_time_attrs = mr_table[:created_at]
-        @end_time_attrs = mr_metrics_table[:merged_at]
         @projections = [mr_table[:title],
                         mr_table[:iid],
                         mr_table[:id],

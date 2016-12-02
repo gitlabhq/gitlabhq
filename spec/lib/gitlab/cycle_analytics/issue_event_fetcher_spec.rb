@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'lib/gitlab/cycle_analytics/shared_event_spec'
 
-describe Gitlab::CycleAnalytics::ReviewEvent do
-  let(:stage_name) { :review }
+describe Gitlab::CycleAnalytics::IssueEventFetcher do
+  let(:stage_name) { :issue }
 
   it_behaves_like 'default query config' do
     it 'has the default order' do

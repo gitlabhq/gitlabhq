@@ -1,18 +1,23 @@
 module Gitlab
   module CycleAnalytics
     class BaseStage
-      include ClassNameUtil
+      attr_accessor :start_time_attrs, :end_time_attrs
 
       def initialize(project:, options:)
         @project = project
         @options = options
         @fetcher = Gitlab::CycleAnalytics::MetricsFetcher.new(project: project,
                                                               from: options[:from],
-                                                              branch: options[:branch])
+                                                              branch: options[:branch],
+                                                              stage: self)
+      end
+
+      def event
+        @event ||= Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher, options: @options)
       end
 
       def events
-        Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher, options: @options).fetch
+        event.fetch
       end
 
       def median_data
@@ -24,7 +29,7 @@ module Gitlab
       end
 
       def median
-        raise NotImplementedError.new("Expected #{self.name} to implement median")
+        @fetcher.median
       end
 
       private

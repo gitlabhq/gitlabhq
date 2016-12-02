@@ -9,14 +9,15 @@ module Gitlab
 
       DEPLOYMENT_METRIC_STAGES = %i[production staging]
 
-      def initialize(project:, from:, branch:)
+      def initialize(project:, from:, branch:, stage:)
         @project = project
         @from = from
         @branch = branch
+        @stage = stage
       end
 
-      def median(name, start_time_attrs, end_time_attrs)
-        cte_table = Arel::Table.new("cte_table_for_#{name}")
+      def median
+        cte_table = Arel::Table.new("cte_table_for_#{@stage.stage}")
 
         # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
         # Next, we find the first of the start_time_attrs that isn't `NULL` (call this start_time).
@@ -24,24 +25,26 @@ module Gitlab
         # cycle analytics stage.
         interval_query = Arel::Nodes::As.new(
           cte_table,
-          subtract_datetimes(base_query_for(name), start_time_attrs, end_time_attrs, name.to_s))
+          subtract_datetimes(base_query_for(name), @stage.start_time_attrs, @stage.end_time_attrs, @stage.stage.to_s))
 
         median_datetime(cte_table, interval_query, name)
       end
 
-      def events(stage_class)
-        ActiveRecord::Base.connection.exec_query(events_query(stage_class).to_sql)
+      def events
+        ActiveRecord::Base.connection.exec_query(events_query.to_sql)
       end
 
       private
 
-      def events_query(stage_class)
-        base_query = base_query_for(stage_class.stage)
-        diff_fn = subtract_datetimes_diff(base_query, stage_class.start_time_attrs, stage_class.end_time_attrs)
+      def events_query
+        base_query = base_query_for(@stage.stage)
+        event = @stage.event
 
-        stage_class.custom_query(base_query)
+        diff_fn = subtract_datetimes_diff(base_query, @stage.start_time_attrs, @stage.end_time_attrs)
 
-        base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *stage_class.projections).order(stage_class.order.desc)
+        event_instance.custom_query(base_query)
+
+        base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *event.projections).order(event.order.desc)
       end
 
       # Join table with a row for every <issue,merge_request> pair (where the merge request

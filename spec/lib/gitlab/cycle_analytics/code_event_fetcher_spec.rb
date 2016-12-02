@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'lib/gitlab/cycle_analytics/shared_event_spec'
 
-describe Gitlab::CycleAnalytics::StagingEvent do
-  let(:stage_name) { :staging }
+describe Gitlab::CycleAnalytics::CodeEventFetcher do
+  let(:stage_name) { :code }
 
   it_behaves_like 'default query config' do
     it 'does not have the default order' do

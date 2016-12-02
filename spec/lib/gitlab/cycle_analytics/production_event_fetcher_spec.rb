@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'lib/gitlab/cycle_analytics/shared_event_spec'
 
-describe Gitlab::CycleAnalytics::IssueEvent do
-  let(:stage_name) { :issue }
+describe Gitlab::CycleAnalytics::ProductionEventFetcher do
+  let(:stage_name) { :production }
 
   it_behaves_like 'default query config' do
     it 'has the default order' do

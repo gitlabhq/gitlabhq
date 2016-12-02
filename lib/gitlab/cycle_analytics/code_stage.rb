@@ -1,14 +1,19 @@
 module Gitlab
   module CycleAnalytics
     class CodeStage < BaseStage
-      def description
-        "Time until first merge request"
+      def initialize(*args)
+        @start_time_attrs = issue_metrics_table[:first_mentioned_in_commit_at]
+        @end_time_attrs = mr_table[:created_at]
+
+        super(*args)
       end
 
-      def median
-        @fetcher.median(:code,
-                        Issue::Metrics.arel_table[:first_mentioned_in_commit_at],
-                        MergeRequest.arel_table[:created_at])
+      def stage
+        :code
+      end
+
+      def description
+        "Time until first merge request"
       end
     end
   end
