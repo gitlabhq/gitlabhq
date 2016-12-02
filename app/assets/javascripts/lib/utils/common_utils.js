@@ -33,10 +33,6 @@
       });
     };
 
-    w.gl.utils.split = function(val) {
-      return val.split(/,\s*/);
-    };
-
     w.gl.utils.extractLast = function(term) {
       return this.split(term).pop();
     };
@@ -65,33 +61,6 @@
           return closest_submit.enable();
         }
       });
-    };
-
-    w.gl.utils.disableButtonIfAnyEmptyField = function(form, form_selector, button_selector) {
-      var closest_submit, updateButtons;
-      closest_submit = form.find(button_selector);
-      updateButtons = function() {
-        var filled;
-        filled = true;
-        form.find('input').filter(form_selector).each(function() {
-          return filled = this.rstrip($(this).val()) !== "" || !$(this).attr('required');
-        });
-        if (filled) {
-          return closest_submit.enable();
-        } else {
-          return closest_submit.disable();
-        }
-      };
-      updateButtons();
-      return form.keyup(updateButtons);
-    };
-
-    w.gl.utils.sanitize = function(str) {
-      return str.replace(/<(?:.|\n)*?>/gm, '');
-    };
-
-    w.gl.utils.unbindEvents = function() {
-      return $(document).off('scroll');
     };
 
     // automatically adjust scroll position for hash urls taking the height of the navbar into account
@@ -124,31 +93,8 @@
       }
     };
 
-    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
-      return $tooltipEl.tooltip('destroy').attr('title', newTitle).tooltip('fixTitle');
-    };
-    gl.utils.preventDisabledButtons = function() {
-      return $('.btn').click(function(e) {
-        if ($(this).hasClass('disabled')) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          return false;
-        }
-      });
-    };
     gl.utils.getPagePath = function() {
       return $('body').data('page').split(':')[0];
-    };
-    gl.utils.parseUrl = function (url) {
-      var parser = document.createElement('a');
-      parser.href = url;
-      return parser;
-    };
-    gl.utils.cleanupBeforeFetch = function() {
-      // Unbind scroll events
-      $(document).off('scroll');
-      // Close any open tooltips
-      $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
     };
 
     gl.utils.isMetaKey = function(e) {
