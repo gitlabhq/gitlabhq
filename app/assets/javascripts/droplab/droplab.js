@@ -51,13 +51,15 @@ Object.assign(DropDown.prototype, {
     var self = this;
     // event delegation.
     this.list.addEventListener('click', function(e) {
-      if(e.target.tagName === 'A' || e.target.tagName === 'button') {
+      // climb up the tree to find the LI
+      var selected = utils.closest(e.target, 'LI');
+      if(selected) {
         e.preventDefault();
         self.hide();
         var listEvent = new CustomEvent('click.dl', {
           detail: {
             list: self,
-            selected: e.target,
+            selected: selected,
             data: e.target.dataset,
           },
         });
@@ -102,6 +104,15 @@ Object.assign(DropDown.prototype, {
       var html = utils.t(sampleItem.outerHTML, dat);
       var template = document.createElement('template');
       template.innerHTML = html;
+
+      // Help set the image src template
+      var imageTags = template.content.querySelectorAll('img[data-src]');
+      for(var i = 0; i < imageTags.length; i++) {
+        var imageTag = imagetags[i];
+        imageTag.src = imageTag.getAttribute('data-src');
+        imageTag.removeAttribute('data-src');
+      }
+
       if(dat.hasOwnProperty('droplab_hidden') && dat.droplab_hidden){
         template.content.firstChild.style.display = 'none'
       }else{
@@ -115,6 +126,9 @@ Object.assign(DropDown.prototype, {
     } else {
       this.list.innerHTML = newChildren.join('');  
     }
+
+    // Show dropdown if there is data
+    data !== [] ? this.show() : this.hide();
   },
 
   show: function() {
@@ -221,6 +235,7 @@ require('./window')(function(w){
             // Restore initial State
             hook.list.list.innerHTML = hook.list.initialState;
             hook.list.hide();
+
             hook.trigger.removeEventListener('mousedown', hook.events.mousedown);
             hook.trigger.removeEventListener('input', hook.events.input);
             hook.trigger.removeEventListener('keyup', hook.events.keyup);

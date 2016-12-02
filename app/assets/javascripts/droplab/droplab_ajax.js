@@ -3,6 +3,7 @@
 /* global droplab */
 droplab.plugin(function init(DropLab) {
   var _addData = DropLab.prototype.addData;
+  var _setData = DropLab.prototype.setData;
 
   var _loadUrlData = function(url) {
     return new Promise(function(resolve, reject) {
@@ -24,10 +25,16 @@ droplab.plugin(function init(DropLab) {
 
   Object.assign(DropLab.prototype, {
     addData: function(trigger, data) {
+      this.processData(trigger, data, _addData);
+    },
+    setData: function(trigger, data) {
+      this.processData(trigger, data, _setData);
+    },
+    processData: function(trigger, data, methodName) {
       var _this = this;
       if('string' === typeof data) {
         _loadUrlData(data).then(function(d) {
-          _addData.call(_this, trigger, d);
+          methodName.call(_this, trigger, d);
         }).catch(function(e) {
           if(e.message)
             console.error(e.message, e.stack); // eslint-disable-line no-console
@@ -35,7 +42,7 @@ droplab.plugin(function init(DropLab) {
             console.error(e); // eslint-disable-line no-console
         })
       } else {
-        _addData.apply(this, arguments);
+        methodName.apply(this, arguments);
       }
     },
   });
