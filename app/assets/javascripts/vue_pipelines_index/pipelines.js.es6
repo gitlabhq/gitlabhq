@@ -74,6 +74,15 @@
 
         return nonUser;
       },
+      ref(pipeline) {
+        const { ref } = pipeline;
+        const commitRef = {
+          name: ref.name,
+          tag: ref['tag?'],
+          ref_url: ref.url,
+        };
+        return commitRef;
+      },
       addTimeInterval(id, that) {
         this.allTimeIntervals.push({ id, component: that });
       },
@@ -92,10 +101,10 @@
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
                 <td>
                   <commit
-                    :tag="pipeline.ref['tag?']"
+                    :ref='ref(pipeline)'
                     :author='author(pipeline)'
+                    :tag="pipeline.ref['tag?']"
                     :title='pipeline.commit.title'
-                    :ref='pipeline.ref'
                     :short_sha='pipeline.commit.short_id'
                     :commit_url='pipeline.commit.commit_url'
                   >

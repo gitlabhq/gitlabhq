@@ -53,6 +53,8 @@
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true
       = paginate @pipelines, theme: 'gitlab'
     - else
+      .commit-icon-svg.hidden
+        = custom_icon("icon_commit")
       .vue-pipelines-index
 
 = page_specific_javascript_tag('vue_icons/index.js')
