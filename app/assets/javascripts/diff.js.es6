@@ -1,6 +1,6 @@
-/* eslint-disable class-methods-use-this, no-param-reassign */
+/* eslint-disable class-methods-use-this */
 
-((global) => {
+(() => {
   const UNFOLD_COUNT = 20;
 
   class Diff {
@@ -104,5 +104,6 @@
     }
   }
 
-  global.Diff = Diff;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  window.gl.Diff = Diff;
+})();

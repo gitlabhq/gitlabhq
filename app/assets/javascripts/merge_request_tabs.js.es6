@@ -1,4 +1,4 @@
-/* eslint-disable no-new, no-param-reassign, class-methods-use-this */
+/* eslint-disable no-new, class-methods-use-this */
 /* global Breakpoints */
 /* global Cookies */
 /* global DiffNotesApp */
@@ -53,7 +53,7 @@
 //
 /* eslint-enable max-len */
 
-((global) => {
+(() => {
   // Store the `location` object, allowing for easier stubbing in tests
   let location = window.location;
 
@@ -385,5 +385,6 @@
     }
   }
 
-  global.MergeRequestTabs = MergeRequestTabs;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  window.gl.MergeRequestTabs = MergeRequestTabs;
+})();
