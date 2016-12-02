@@ -101,10 +101,10 @@
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
                 <td>
                   <commit
-                    :ref='ref(pipeline)'
                     :author='author(pipeline)'
                     :tag="pipeline.ref['tag?']"
                     :title='pipeline.commit.title'
+                    :commit_ref='ref(pipeline)'
                     :short_sha='pipeline.commit.short_id'
                     :commit_url='pipeline.commit.commit_url'
                   >
