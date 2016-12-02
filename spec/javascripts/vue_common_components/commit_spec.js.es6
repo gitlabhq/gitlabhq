@@ -74,26 +74,26 @@ describe('Commit component', () => {
     describe('Given commit title and author props', () => {
       it('Should render a link to the author profile', () => {
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href')
+          component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href'),
         ).toEqual(props.author.web_url);
       });
 
       it('Should render the author avatar with title and alt attributes', () => {
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('title')
+          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('title'),
         ).toContain(props.author.username);
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('alt')
+          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('alt'),
         ).toContain(`${props.author.username}'s avatar`);
       });
     });
 
     it('should render the commit title', () => {
       expect(
-        component.$el.querySelector('a.commit-row-message').getAttribute('href')
+        component.$el.querySelector('a.commit-row-message').getAttribute('href'),
       ).toEqual(props.commit_url);
       expect(
-        component.$el.querySelector('a.commit-row-message').textContent
+        component.$el.querySelector('a.commit-row-message').textContent,
       ).toContain(props.title);
     });
   });
@@ -119,7 +119,7 @@ describe('Commit component', () => {
       });
 
       expect(
-        component.$el.querySelector('.commit-title span').textContent
+        component.$el.querySelector('.commit-title span').textContent,
       ).toContain('Cant find HEAD commit for this branch');
     });
   });

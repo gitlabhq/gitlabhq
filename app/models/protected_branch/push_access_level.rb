@@ -1,12 +1,15 @@
 class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
   include ProtectedBranchAccess
 
+<<<<<<< HEAD
   belongs_to :protected_branch
   belongs_to :user
   belongs_to :group
 
   delegate :project, to: :protected_branch
 
+=======
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
   validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
                                                              Gitlab::Access::DEVELOPER,
                                                              Gitlab::Access::NO_ACCESS] }
@@ -24,10 +27,13 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
 
   def check_access(user)
     return false if access_level == Gitlab::Access::NO_ACCESS
+<<<<<<< HEAD
     return true if user.is_admin?
     return user.id == self.user_id if self.user.present?
     return group.users.exists?(user.id) if self.group.present?
+=======
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
 
-    project.team.max_member_access(user.id) >= access_level
+    super
   end
 end

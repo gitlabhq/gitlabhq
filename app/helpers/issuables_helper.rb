@@ -158,8 +158,12 @@ module IssuablesHelper
       :author_id,
       :assignee_id,
       :milestone_title,
+<<<<<<< HEAD
       :label_name,
       :weight
+=======
+      :label_name
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
     ]
   end
 
@@ -190,12 +194,18 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
+<<<<<<< HEAD
     issuables_finder = public_send("#{issuable_type}_finder")
 
     params = issuables_finder.params.merge(state: state)
     finder = issuables_finder.class.new(issuables_finder.current_user, params)
 
     finder.execute.page(1).total_count
+=======
+    @counts ||= {}
+    @counts[issuable_type] ||= public_send("#{issuable_type}_finder").count_by_state
+    @counts[issuable_type][state]
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
   end
 
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
@@ -205,6 +215,7 @@ module IssuablesHelper
     opts = params.with_indifferent_access
     opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
 
     hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
   end

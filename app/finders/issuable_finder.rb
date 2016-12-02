@@ -16,14 +16,12 @@
 #     label_name: string
 #     sort: string
 #
-require_relative 'projects_finder'
-
 class IssuableFinder
   NONE = '0'
 
   attr_accessor :current_user, :params
 
-  def initialize(current_user, params)
+  def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
   end
@@ -42,6 +40,40 @@ class IssuableFinder
     items = by_weight(items)
     items = by_due_date(items)
     sort(items)
+  end
+
+  def find(*params)
+    execute.find(*params)
+  end
+
+  def find_by(*params)
+    execute.find_by(*params)
+  end
+
+  # We often get counts for each state by running a query per state, and
+  # counting those results. This is typically slower than running one query
+  # (even if that query is slower than any of the individual state queries) and
+  # grouping and counting within that query.
+  #
+  def count_by_state
+    count_params = params.merge(state: nil, sort: nil)
+    labels_count = label_names.any? ? label_names.count : 1
+    finder = self.class.new(current_user, count_params)
+    counts = Hash.new(0)
+
+    # Searching by label includes a GROUP BY in the query, but ours will be last
+    # because it is added last. Searching by multiple labels also includes a row
+    # per issuable, so we have to count those in Ruby - which is bad, but still
+    # better than performing multiple queries.
+    #
+    finder.execute.reorder(nil).group(:state).count.each do |key, value|
+      counts[Array(key).last.to_sym] += value / labels_count
+    end
+
+    counts[:all] = counts.values.sum
+    counts[:opened] += counts[:reopened]
+
+    counts
   end
 
   def group

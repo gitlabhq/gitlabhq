@@ -16,6 +16,9 @@ class BuildEntity < Grape::Entity
     path_to(:play_namespace_project_build, build)
   end
 
+  expose :created_at
+  expose :updated_at
+
   private
 
   def path_to(route, build)

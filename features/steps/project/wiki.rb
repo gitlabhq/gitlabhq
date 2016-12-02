@@ -29,7 +29,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     expect(page).to have_content "link test"
 
     click_link "link test"
-    expect(page).to have_content "Edit Page"
+    expect(page).to have_content "Create Page"
   end
 
   step 'I have an existing Wiki page' do
@@ -80,14 +80,17 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     expect(page).to have_content "Page was successfully deleted"
   end
 
+<<<<<<< HEAD
   step 'I click on the "Pages" button' do
     wiki_menu = find('.content-wrapper .nav-links')
     wiki_menu.click_on "Pages"
   end
 
+=======
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
   step 'I should see the existing page in the pages list' do
     expect(page).to have_content current_user.name
-    expect(page).to have_content @page.title
+    expect(find('.wiki-pages')).to have_content @page.title.capitalize
   end
 
   step 'I have an existing Wiki page with images linked on page' do
@@ -126,7 +129,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   step 'I should see the new wiki page form' do
     expect(current_path).to match('wikis/image.jpg')
     expect(page).to have_content('New Wiki Page')
-    expect(page).to have_content('Edit Page')
+    expect(page).to have_content('Create Page')
   end
 
   step 'I create a New page with paths' do
@@ -143,8 +146,8 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I edit the Wiki page with a path' do
-    expect(page).to have_content('three')
-    click_on 'three'
+    expect(find('.wiki-pages')).to have_content('Three')
+    click_on 'Three'
     expect(find('.nav-text')).to have_content('Three')
     click_on 'Edit'
   end
@@ -158,7 +161,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I view the page history of a Wiki page that has a path' do
-    click_on 'three'
+    click_on 'Three'
     click_on 'Page History'
   end
 

@@ -273,8 +273,8 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 
-Note, at the moment this method does only return a 404 error,
-even in cases where a 409 (Conflict) would be more appropriate,
+Note, at the moment this method does only return a `404` error,
+even in cases where a `409` (Conflict) would be more appropriate,
 e.g. when renaming the email address to some existing one.
 
 ## User deletion
@@ -451,8 +451,6 @@ Parameters:
 - `title` (required) - new SSH Key's title
 - `key` (required)   - new SSH key
 
-Will return created key with status `201 Created` on success, or `404 Not found` on fail.
-
 ## Delete SSH key for current user
 
 Deletes key owned by currently authenticated user.
@@ -582,8 +580,6 @@ Parameters:
 
 - `id` (required)    - id of specified user
 - `email` (required) - email address
-
-Will return created email with status `201 Created` on success, or `404 Not found` on fail.
 
 ## Delete email for current user
 

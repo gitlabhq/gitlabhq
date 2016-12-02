@@ -1,16 +1,29 @@
 # Webhooks
 
+<<<<<<< HEAD
 > **Note:** As of GitLab 8.5:
 >
 > - the `repository` key is deprecated in favor of the `project` key
 > - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
 > - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
+=======
+>**Note:**
+Starting from GitLab 8.5:
+- the `repository` key is deprecated in favor of the `project` key
+- the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+- the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
 
-Project webhooks allow you to trigger an URL if new code is pushed or a new issue is created.
+Project webhooks allow you to trigger a URL if for example new code is pushed or
+a new issue is created. You can configure webhooks to listen for specific events
+like pushes, issues or merge requests. GitLab will send a POST request with data
+to the webhook URL.
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
 
-You can configure webhooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the webhook URL.
+Webhooks can be used to update an external issue tracker, trigger CI builds,
+update a backup mirror, or even deploy to your production server.
 
-Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+Navigate to the webhooks page by choosing **Webhooks** from your project's
+settings which can be found under the wheel icon in the upper right corner.
 
 In GitLab Enterprise Edition you can configure web hooks globally for the whole
 group. You can add the group level web hooks on the group settings page
@@ -29,21 +42,27 @@ GitLab webhooks keep in mind the following things:
     you are writing a low-level hook this is important to remember.
 -   GitLab ignores the HTTP status code returned by your endpoint.
 
-## Secret Token
+## Secret token
 
-If you specify a secret token, it will be sent with the hook request in the `X-Gitlab-Token` HTTP header. Your webhook endpoint can check that to verify that the request is legitimate.
+If you specify a secret token, it will be sent with the hook request in the
+`X-Gitlab-Token` HTTP header. Your webhook endpoint can check that to verify
+that the request is legitimate.
 
-## SSL Verification
+## SSL verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on
-an internal list of Certificate Authorities,
-which means the certificate cannot be self-signed.
+an internal list of Certificate Authorities, which means the certificate cannot
+be self-signed.
 
 You can turn this off in the webhook settings in your GitLab projects.
 
 ![SSL Verification](ssl.png)
 
-## Push events
+## Events
+
+Below are described the supported events.
+
+### Push events
 
 Triggered when you push to the repository except when pushing tags.
 
@@ -124,7 +143,7 @@ X-Gitlab-Event: Push Hook
 }
 ```
 
-## Tag events
+### Tag events
 
 Triggered when you create (or delete) tags to the repository.
 
@@ -177,7 +196,7 @@ X-Gitlab-Event: Tag Push Hook
 }
 ```
 
-## Issues events
+### Issues events
 
 Triggered when a new issue is created or an existing issue was updated/closed/reopened.
 
@@ -243,7 +262,7 @@ X-Gitlab-Event: Issue Hook
   }
 }
 ```
-## Comment events
+### Comment events
 
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
 The note data will be stored in `object_attributes` (e.g. `note`, `noteable_type`). The
@@ -256,7 +275,7 @@ Valid target types:
 3. `issue`
 4. `snippet`
 
-### Comment on commit
+#### Comment on commit
 
 **Request header**:
 
@@ -335,7 +354,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-### Comment on merge request
+#### Comment on merge request
 
 **Request header**:
 
@@ -462,7 +481,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-### Comment on issue
+#### Comment on issue
 
 **Request header**:
 
@@ -537,7 +556,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-### Comment on code snippet
+#### Comment on code snippet
 
 **Request header**:
 
@@ -610,7 +629,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-## Merge request events
+### Merge request events
 
 Triggered when a new merge request is created, an existing merge request was
 updated/merged/closed/approved, or a commit is added in the source branch.
@@ -706,7 +725,7 @@ X-Gitlab-Event: Merge Request Hook
 }
 ```
 
-## Wiki Page events
+### Wiki Page events
 
 Triggered when a wiki page is created or edited.
 
@@ -744,9 +763,9 @@ X-Gitlab-Event: Wiki Page Hook
   },
   "wiki": {
     "web_url": "http://example.com/root/awesome-project/wikis/home",
-    "git_ssh_url": "git@example.com:root/awesome-project.wiki.git", 
-    "git_http_url": "http://example.com/root/awesome-project.wiki.git", 
-    "path_with_namespace": "root/awesome-project.wiki", 
+    "git_ssh_url": "git@example.com:root/awesome-project.wiki.git",
+    "git_http_url": "http://example.com/root/awesome-project.wiki.git",
+    "path_with_namespace": "root/awesome-project.wiki",
     "default_branch": "master"
   },
   "object_attributes": {
@@ -761,7 +780,7 @@ X-Gitlab-Event: Wiki Page Hook
 }
 ```
 
-## Pipeline events
+### Pipeline events
 
 Triggered on status change of Pipeline.
 
@@ -929,8 +948,7 @@ X-Gitlab-Event: Pipeline Hook
 }
 ```
 
-
-## Build events
+### Build events
 
 Triggered on status change of a Build.
 
@@ -942,7 +960,7 @@ X-Gitlab-Event: Build Hook
 
 **Request Body**:
 
-```
+```json
 {
   "object_kind": "build",
   "ref": "gitlab-script-trigger",
@@ -987,12 +1005,13 @@ X-Gitlab-Event: Build Hook
 }
 ```
 
-#### Example webhook receiver
+## Example webhook receiver
 
 If you want to see GitLab's webhooks in action for testing purposes you can use
-a simple echo script running in a console session.
+a simple echo script running in a console session. For the following script to
+work you need to have Ruby installed.
 
-Save the following file as `print_http_body.rb`.
+Save the following file as `print_http_body.rb`:
 
 ```ruby
 require 'webrick'
@@ -1012,7 +1031,8 @@ Pick an unused port (e.g. 8000) and start the script: `ruby print_http_body.rb
 8000`.  Then add your server as a webhook receiver in GitLab as
 `http://my.host:8000/`.
 
-When you press 'Test Hook' in GitLab, you should see something like this in the console.
+When you press 'Test Hook' in GitLab, you should see something like this in the
+console:
 
 ```
 {"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}

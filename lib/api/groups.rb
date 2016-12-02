@@ -104,7 +104,7 @@ module API
                         :lfs_enabled, :request_access_enabled
       end
       put ':id' do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         authorize! :admin_group, group
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
@@ -118,13 +118,13 @@ module API
         success Entities::GroupDetail
       end
       get ":id" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         present group, with: Entities::GroupDetail
       end
 
       desc 'Remove a group.'
       delete ":id" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         authorize! :admin_group, group
         DestroyGroupService.new(group, current_user).execute
       end
@@ -133,7 +133,7 @@ module API
         success Entities::Project
       end
       get ":id/projects" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = paginate projects
         present projects, with: Entities::Project, user: current_user

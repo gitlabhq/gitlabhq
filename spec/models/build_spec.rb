@@ -730,8 +730,8 @@ describe Ci::Build, models: true do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        commits = [double(id: pipeline.sha), double(id: pipeline2.sha)]
-        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(@merge_request).to receive(:commits_sha).
+          and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
 

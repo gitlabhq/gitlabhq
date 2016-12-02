@@ -348,6 +348,7 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
+<<<<<<< HEAD
   end
 
   context "when license blocks changes" do
@@ -376,6 +377,8 @@ describe "Private Project Access", feature: true  do
       it { is_expected.to be_denied_for(:user) }
       it { is_expected.to be_denied_for(:visitor) }
     end
+=======
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
   end
 
   describe "GET /:project_path/container_registry" do

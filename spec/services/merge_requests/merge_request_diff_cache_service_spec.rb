@@ -10,6 +10,7 @@ describe MergeRequests::MergeRequestDiffCacheService do
 
       expect(Rails.cache).to receive(:read).with(cache_key).and_return({})
       expect(Rails.cache).to receive(:write).with(cache_key, anything)
+      allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(double("text?" => true))
 
       subject.execute(merge_request)
     end

@@ -16,13 +16,7 @@ class Projects::TodosController < Projects::ApplicationController
     @issuable ||= begin
       case params[:issuable_type]
       when "issue"
-        issue = @project.issues.find(params[:issuable_id])
-
-        if can?(current_user, :read_issue, issue)
-          issue
-        else
-          render_404
-        end
+        IssuesFinder.new(current_user, project_id: @project.id).find(params[:issuable_id])
       when "merge_request"
         @project.merge_requests.find(params[:issuable_id])
       end

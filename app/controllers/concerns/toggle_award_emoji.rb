@@ -1,11 +1,8 @@
 module ToggleAwardEmoji
   extend ActiveSupport::Concern
 
-  included do
-    before_action :authenticate_user!, only: [:toggle_award_emoji]
-  end
-
   def toggle_award_emoji
+    authenticate_user!
     name = params.require(:name)
 
     if awardable.user_can_award?(current_user, name)

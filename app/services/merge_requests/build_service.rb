@@ -81,7 +81,7 @@ module MergeRequests
         commit = commits.first
         merge_request.title = commit.title
         merge_request.description ||= commit.description.try(:strip)
-      elsif iid && (issue = merge_request.target_project.get_issue(iid)) && !issue.try(:confidential?)
+      elsif iid && issue = merge_request.target_project.get_issue(iid, current_user)
         case issue
         when Issue
           merge_request.title = "Resolve \"#{issue.title}\""

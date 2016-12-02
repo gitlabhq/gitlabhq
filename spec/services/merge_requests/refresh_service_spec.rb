@@ -91,7 +91,10 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request.approvals).not_to be_empty }
       it { expect(@fork_merge_request).to be_merged }
       it { expect(@fork_merge_request.notes.last.note).to include('merged') }
+<<<<<<< HEAD
       it { expect(@fork_merge_request.approvals).not_to be_empty }
+=======
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
       it { expect(@build_failed_todo).to be_done }
       it { expect(@fork_build_failed_todo).to be_done }
     end
@@ -131,7 +134,10 @@ describe MergeRequests::RefreshService, services: true do
 
       it { expect(@merge_request.notes).to be_empty }
       it { expect(@merge_request).to be_open }
+<<<<<<< HEAD
       it { expect(@merge_request.approvals).not_to be_empty }
+=======
+>>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
       it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@build_failed_todo).to be_pending }

@@ -1,8 +1,15 @@
+//= require lib/utils/bootstrap_linked_tabs
+
 /* eslint-disable */
 ((global) => {
 
   class Pipelines {
-    constructor() {
+    constructor(options) {
+
+      if (options.initTabs && options.tabsOptions) {
+        new global.LinkedTabs(options.tabsOptions);
+      }
+
       this.addMarginToBuildColumns();
     }
 

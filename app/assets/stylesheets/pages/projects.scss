@@ -189,7 +189,7 @@
   }
 
   .download-button {
-    @media (max-width: $screen-lg-min) {
+    @media (max-width: $screen-md-max) {
       margin-left: 0;
     }
   }
@@ -907,5 +907,13 @@ a.allowed-to-push {
   &.disabled {
     opacity: 0.5;
     pointer-events: none;
+  }
+}
+
+.variables-table {
+  table-layout: fixed;
+
+  .variable-key {
+    width: 30%;
   }
 }

@@ -2,7 +2,7 @@
 - page_title "Pipeline"
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
+%div.js-pipeline-container{ class: container_class, data: { controller_action: "#{controller.action_name}" } }
   - if @commit
     = render "projects/pipelines/info"
 

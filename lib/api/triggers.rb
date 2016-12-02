@@ -13,7 +13,7 @@ module API
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
       post ":id/(ref/:ref/)trigger/builds" do
-        project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
+        project = find_project(params[:id])
         trigger = Ci::Trigger.find_by_token(params[:token].to_s)
         not_found! unless project && trigger
         unauthorized! unless trigger.project == project

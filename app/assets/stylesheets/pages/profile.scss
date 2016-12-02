@@ -180,7 +180,7 @@
   .modal-dialog {
     width: 380px;
 
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: auto;
     }
 
