@@ -105,7 +105,6 @@ module SystemNoteService
   # Returns the created Note object
   def change_milestone(noteable, project, author, milestone)
     body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project)}"
-<<<<<<< HEAD
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -157,8 +156,6 @@ module SystemNoteService
       action = time_spent > 0 ? 'Added' : 'Subtracted'
       body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
     end
-=======
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
