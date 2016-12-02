@@ -1,7 +1,7 @@
 module Gitlab::Ci
   module Status
     module Core
-      class Success
+      class Success < Core::Base
         def label
           'passed'
         end
