@@ -38,6 +38,7 @@ var DropDown = function(list, trigger) {
   this.items = [];
   this.getItems();
   this.addEvents();
+  this.initialState = list.innerHTML;
 };
 
 Object.assign(DropDown.prototype, {
@@ -50,7 +51,8 @@ Object.assign(DropDown.prototype, {
     var self = this;
     // event delegation.
     this.list.addEventListener('click', function(e) {
-      if(e.target.tagName === 'A') {
+      if(e.target.tagName === 'A' || e.target.tagName === 'button') {
+        e.preventDefault();
         self.hide();
         var listEvent = new CustomEvent('click.dl', {
           detail: {
@@ -70,6 +72,11 @@ Object.assign(DropDown.prototype, {
     } else {
       this.hide();
     }
+  },
+
+  setData: function(data) {
+    this.data = data;
+    this.render(data);
   },
 
   addData: function(data) {
@@ -155,8 +162,17 @@ require('./window')(function(w){
 
       addData: function () {
         var args = [].slice.apply(arguments);
+        this.applyArgs(args, '_addData');
+      },
+
+      setData: function() {
+        var args = [].slice.apply(arguments);
+        this.applyArgs(args, '_setData');
+      },
+
+      applyArgs: function(args, methodName) {
         if(this.ready) {
-          this._addData.apply(this, args);
+          this[methodName].apply(this, args);
         } else {
           this.queuedData = this.queuedData || [];
           this.queuedData.push(args);
@@ -164,10 +180,18 @@ require('./window')(function(w){
       },
 
       _addData: function(trigger, data) {
+        this._processData(trigger, data, 'addData');
+      },
+
+      _setData: function(trigger, data) {
+        this._processData(trigger, data, 'setData');
+      },
+
+      _processData: function(trigger, data, methodName) {
         this.hooks.forEach(function(hook) {
           if(hook.trigger.dataset.hasOwnProperty('id')) {
             if(hook.trigger.dataset.id === trigger) {
-              hook.list.addData(data);
+              hook.list[methodName](data);
             }
           }
         });
@@ -189,21 +213,48 @@ require('./window')(function(w){
         });
       },
 
-      addHook: function(hook) {
+      changeHookList: function(trigger, list) {
+        trigger = document.querySelector('[data-id="'+trigger+'"]');
+        list = document.querySelector(list);
+        this.hooks.every(function(hook, i) {
+          if(hook.trigger === trigger) {
+            // Restore initial State
+            hook.list.list.innerHTML = hook.list.initialState;
+            hook.list.hide();
+            hook.trigger.removeEventListener('mousedown', hook.events.mousedown);
+            hook.trigger.removeEventListener('input', hook.events.input);
+            hook.trigger.removeEventListener('keyup', hook.events.keyup);
+            hook.trigger.removeEventListener('keydown', hook.events.keydown);
+            this.hooks.splice(i, 1);
+            this.addHook(trigger, list);
+            return false;
+          }
+          return true
+        }.bind(this));
+      },
+
+      addHook: function(hook, list) {
         if(!(hook instanceof HTMLElement) && typeof hook === 'string'){
           hook = document.querySelector(hook);
         }
-        var list = document.querySelector(hook.dataset[utils.toDataCamelCase(DATA_TRIGGER)]);
-        if(hook.tagName === 'A' || hook.tagName === 'BUTTON') {
-          this.hooks.push(new HookButton(hook, list));
-        } else if(hook.tagName === 'INPUT') {
-          this.hooks.push(new HookInput(hook, list));
+        if(!list){
+          list = document.querySelector(hook.dataset[utils.toDataCamelCase(DATA_TRIGGER)]);
+        }
+        
+        if(hook) {
+          if(hook.tagName === 'A' || hook.tagName === 'BUTTON') {
+            this.hooks.push(new HookButton(hook, list));
+          } else if(hook.tagName === 'INPUT') {
+            this.hooks.push(new HookInput(hook, list));
+          }
         }
         return this;
       },
 
       addHooks: function(hooks) {
-        hooks.forEach(this.addHook.bind(this));
+        hooks.forEach(function(hook) {
+          this.addHook(hook, null);
+        }.bind(this));
         return this;
       },
 
@@ -302,7 +353,8 @@ var HookInput = function(trigger, list) {
 Object.assign(HookInput.prototype, {
   addEvents: function(){
     var self = this;
-    this.trigger.addEventListener('mousedown', function(e){
+
+    function mousedown(e) {
       var mouseEvent = new CustomEvent('mousedown.dl', {
         detail: {
           hook: self,
@@ -312,9 +364,9 @@ Object.assign(HookInput.prototype, {
         cancelable: true
       });
       e.target.dispatchEvent(mouseEvent);
-    });
+    }
 
-    this.trigger.addEventListener('input', function(e){
+    function input(e) {
       var inputEvent = new CustomEvent('input.dl', {
         detail: {
           hook: self,
@@ -325,15 +377,15 @@ Object.assign(HookInput.prototype, {
       });
       e.target.dispatchEvent(inputEvent);
       self.list.show();
-    });
+    }
 
-    this.trigger.addEventListener('keyup', function(e){
+    function keyup(e) {
       keyEvent(e, 'keyup.dl');
-    });
+    }
 
-    this.trigger.addEventListener('keydown', function(e){
+    function keydown(e) {
       keyEvent(e, 'keydown.dl');
-    });
+    }
 
     function keyEvent(e, keyEventName){
       var keyEvent = new CustomEvent(keyEventName, {
@@ -349,6 +401,16 @@ Object.assign(HookInput.prototype, {
       e.target.dispatchEvent(keyEvent);
       self.list.show();
     }
+
+    this.events = this.events || {};
+    this.events.mousedown = mousedown;
+    this.events.input = input;
+    this.events.keyup = keyup;
+    this.events.keydown = keydown;
+    this.trigger.addEventListener('mousedown', mousedown);
+    this.trigger.addEventListener('input', input);
+    this.trigger.addEventListener('keyup', keyup);
+    this.trigger.addEventListener('keydown', keydown);
   },
 });
 
