@@ -583,7 +583,7 @@ module API
     end
 
     class License < Grape::Entity
-      expose :starts_at, :expires_at, :licensee
+      expose :starts_at, :expires_at, :licensee, :add_ons
 
       expose :user_limit do |license, options|
         license.restricted?(:active_user_count) ? license.restrictions[:active_user_count] : 0

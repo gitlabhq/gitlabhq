@@ -19,7 +19,10 @@ GET /license
     "Email": "john@doe.com"
   },
   "user_limit": 100,
-  "active_users": 60
+  "active_users": 60,
+  "add_ons": {
+    "GitLab_FileLocks": 100
+  }
 }
 ```
 
@@ -49,7 +52,10 @@ Example response:
     "Email": "john@doe.com"
   },
   "user_limit": 100,
-  "active_users": 60
+  "active_users": 60,
+  "add_ons": {
+    "GitLab_FileLocks": 100
+  }
 }
 ```
 
