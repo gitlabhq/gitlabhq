@@ -121,7 +121,6 @@
         if (!dropdownHint) {
           dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), document.querySelector('.filtered-search'), 'hint');
         }
-
         dropdownHint.render();
       }
     }
