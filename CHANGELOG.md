@@ -251,6 +251,11 @@ entry.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
 
+## 8.13.8 (2016-12-02)
+
+- Pass tag SHA to post-receive hook when tag is created via UI. !7700
+- Validate state param when filtering issuables.
+
 ## 8.13.7 (2016-11-28)
 
 - fixes 500 error on project show when user is not logged in and project is still empty. !7376
