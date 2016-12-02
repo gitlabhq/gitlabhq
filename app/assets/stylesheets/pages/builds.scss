@@ -1,7 +1,7 @@
 .build-page {
   pre.trace {
-    background: #111;
-    color: #fff;
+    background: $builds-trace-bg;
+    color: $white-light;
     font-family: $monospace_font;
     white-space: pre-wrap;
     overflow: auto;
