@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::License, api: true  do
   include ApiHelpers
 
   let(:gl_license)  { build(:gitlab_license) }
