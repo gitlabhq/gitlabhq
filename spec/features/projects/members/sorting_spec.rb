@@ -17,6 +17,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(master.name)
     expect(second_member).to include(developer.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
   end
 
   scenario 'sorts by access level ascending' do
@@ -24,6 +25,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(master.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Access level, ascending')
   end
 
   scenario 'sorts by access level descending' do
@@ -31,6 +33,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(master.name)
     expect(second_member).to include(developer.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Access level, descending')
   end
 
   scenario 'sorts by last joined' do
@@ -38,6 +41,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(master.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Last joined')
   end
 
   scenario 'sorts by oldest joined' do
@@ -45,6 +49,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(master.name)
     expect(second_member).to include(developer.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Oldest joined')
   end
 
   scenario 'sorts by name ascending' do
@@ -52,6 +57,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(master.name)
     expect(second_member).to include(developer.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
   end
 
   scenario 'sorts by name descending' do
@@ -59,6 +65,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(master.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, descending')
   end
 
   scenario 'sorts by recent sign in' do
@@ -66,6 +73,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(master.name)
     expect(second_member).to include(developer.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Recent sign in')
   end
 
   scenario 'sorts by oldest sign in' do
@@ -73,6 +81,7 @@ feature 'Projects > Members > Sorting', feature: true do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(master.name)
+    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Oldest sign in')
   end
 
   def visit_members_list(sort:)
