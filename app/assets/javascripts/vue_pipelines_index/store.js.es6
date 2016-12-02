@@ -45,7 +45,6 @@
 
       const startTimeLoops = () => {
         this.timeLoopInterval = setInterval(() => {
-          console.log('TIME LOOP');
           this.$children
             .filter(e => e.$options._componentTag === 'time-ago')
             .forEach(e => e.changeTime());
@@ -64,10 +63,10 @@
 
       const removeAll = () => {
         removeTimeIntervals();
-        window.removeEventListener('beforeunload', removeTimeIntervals);
-        window.removeEventListener('focus', startIntervalLoops);
-        window.removeEventListener('blur', removeTimeIntervals);
-        document.removeEventListener('page:fetch', removeTimeIntervals);
+        window.removeEventListener('beforeunload', () => {});
+        window.removeEventListener('focus', () => {});
+        window.removeEventListener('blur', () => {});
+        document.removeEventListener('page:fetch', () => {});
       };
 
       window.addEventListener('beforeunload', removeTimeIntervals);
