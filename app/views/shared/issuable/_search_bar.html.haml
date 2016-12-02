@@ -24,6 +24,15 @@
                   {{hint}}
                 %span.js-filter-tag
                   {{tag}}
+          #js-dropdown-author.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dynamic' => true }
+              %li
+                %button.btn.btn-link
+                  %img.avatar.avatar-inline{ 'src': '{{avatar_url}}', width: '30' }
+                  %strong
+                    {{name}}
+                  %span
+                    {{username}}
           #js-dropdown-assignee.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dynamic' => true }
               %li
