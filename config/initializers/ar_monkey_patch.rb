@@ -65,7 +65,7 @@ module ActiveRecord
 
     # This is patched because we want `lock_version` default to `NULL`
     # rather than `0`
-    class LockingType < DelegateClass(Type::Value)
+    class LockingType
       def deserialize(value)
         super
       end
