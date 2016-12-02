@@ -12,6 +12,10 @@
         = link_to user.name, user_path(user)
       %span.cgray= user.to_reference
 
+      - if member.real_source_type == 'Group'
+        &middot;
+        %span.cblue=member.group.name
+
       - if user == current_user
         %span.label.label-success.prepend-left-5 It's you
 
@@ -45,7 +49,7 @@
         = time_ago_with_tooltip(member.created_at)
   - if show_roles
     .controls.member-controls
-      - if show_controls
+      - if show_controls && member.real_source_type == 'Project'
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
             = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can_admin_member
