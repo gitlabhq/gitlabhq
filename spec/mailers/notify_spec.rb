@@ -1232,7 +1232,6 @@ describe Notify do
     end
   end
 
-<<<<<<< HEAD
   describe 'admin notification' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
@@ -1256,7 +1255,9 @@ describe Notify do
     it 'includes unsubscribe link' do
       unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
       should have_body_text(unsubscribe_link)
-=======
+    end
+  end
+
   describe 'HTML emails setting' do
     let(:project) { create(:project) }
     let(:user) { create(:user) }
@@ -1288,7 +1289,6 @@ describe Notify do
       match do |actual|
         actual.body.parts.any? { |part| part.content_type.try(:match, %r(#{expected})) }
       end
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
     end
   end
 end
