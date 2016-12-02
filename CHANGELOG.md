@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.3 (2016-12-02)
+
+- Pass commit data to ProcessCommitWorker to reduce Git overhead. !7744
+- Speed up issuable dashboards.
+- Don't change relative URLs to absolute URLs in the Help page.
+- Fixes "ActionView::Template::Error: undefined method `text?` for nil:NilClass" on MR pages.
+- Fix branch validation for GitHub PR where repo/fork was renamed/deleted.
+- Validate state param when filtering issuables.
+
 ## 8.14.2 (2016-12-01)
 
 - Remove caching of events data. !6578
