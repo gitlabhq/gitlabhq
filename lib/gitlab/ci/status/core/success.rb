@@ -7,7 +7,7 @@ module Gitlab::Ci
         end
 
         def icon
-          'success'
+          'icon_status_success'
         end
       end
     end

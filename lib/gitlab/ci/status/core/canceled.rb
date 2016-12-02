@@ -1,7 +1,14 @@
 module Gitlab::Ci
   module Status
     module Core
-      class Canceled
+      class Canceled < Core::Base
+        def label
+          'canceled'
+        end
+
+        def icon
+          'icon_status_canceled'
+        end
       end
     end
   end

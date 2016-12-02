@@ -8,6 +8,10 @@ describe Gitlab::Ci::Status::Core::Success do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'success' }
+    it { expect(subject.icon).to eq 'icon_status_success' }
+  end
+
+  describe '#title' do
+    it { expect(subject.title).to eq 'Double: passed' }
   end
 end

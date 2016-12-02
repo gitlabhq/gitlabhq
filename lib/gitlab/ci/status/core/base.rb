@@ -16,6 +16,10 @@ module Gitlab::Ci
           raise NotImplementedError
         end
 
+        def title
+          "#{@subject.class.name.demodulize}: #{label}"
+        end
+
         def has_details?
           raise NotImplementedError
         end
