@@ -84,6 +84,24 @@ describe RemoteMirror do
     end
   end
 
+  context 'no project' do
+    it 'includes mirror with a project in pending_delete' do
+      mirror = create_mirror(url: 'http://cantbeblank',
+                             update_status: 'finished',
+                             enabled: true,
+                             last_update_at: nil,
+                             updated_at: 25.hours.ago)
+      project = mirror.project
+      project.pending_delete = true
+      project.save
+      mirror.reload
+
+      expect(mirror.sync).to be_nil
+      expect(mirror.valid?).to be_truthy
+      expect(mirror.update_status).to eq('finished')
+    end
+  end
+
   def create_mirror(params)
     project = FactoryGirl.create(:project)
     project.remote_mirrors.create!(params)

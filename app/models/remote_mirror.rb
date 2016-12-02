@@ -70,6 +70,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def sync
+    return unless project
     return if !enabled || update_in_progress?
 
     update_failed? ? update_retry : update_start
@@ -109,6 +110,8 @@ class RemoteMirror < ActiveRecord::Base
   private
 
   def url_availability
+    return unless project
+
     if project.import_url == url && project.mirror?
       errors.add(:url, 'is already in use')
     end
@@ -128,12 +131,14 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def add_update_job
-    if project.repository_exists?
+    if project && project.repository_exists?
       RepositoryUpdateRemoteMirrorWorker.perform_async(self.id)
     end
   end
 
   def refresh_remote
+    return unless project
+
     project.repository.remove_remote(ref_name)
     project.repository.add_remote(ref_name, url)
   end
