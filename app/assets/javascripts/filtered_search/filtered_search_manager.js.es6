@@ -78,6 +78,7 @@
   }
 
   let dropdownHint;
+  let dropdownAssignee;
 
   class FilteredSearchManager {
     constructor() {
@@ -99,16 +100,35 @@
 
       if (match && this.currentDropdown !== match.key) {
         console.log(`🦄 load ${match.key} dropdown`);
+        this.dismissCurrentDropdown();
         this.currentDropdown = match.key;
+
+        if (match.key === 'assignee') {
+          if (!dropdownAssignee) {
+
+            // document.querySelector('.filtered-search').setAttribute('data-dropdown-trigger', '#js-dropdown-assignee');
+            dropdownAssignee = new gl.DropdownAssignee(document.querySelector('#js-dropdown-assignee'), document.querySelector('.filtered-search'));
+          }
+
+          dropdownAssignee.render();
+        }
+
       } else if (!match && this.currentDropdown !== 'hint') {
         console.log('🦄 load hint dropdown');
+        this.dismissCurrentDropdown();
         this.currentDropdown = 'hint';
 
         if (!dropdownHint) {
-          dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), document.querySelector('.filtered-search'))
+          dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), document.querySelector('.filtered-search'), 'hint');
         }
 
         dropdownHint.render();
+      }
+    }
+
+    dismissCurrentDropdown() {
+      if (this.currentDropdown === 'hint') {
+        dropdownHint.dismissDropdown();
       }
     }
 

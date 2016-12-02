@@ -16,6 +16,23 @@
           = icon('filter')
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
+          %ul#js-dropdown-hint.dropdown-menu{ 'data-dynamic' => true }
+            %li
+              %button.btn.btn-link
+                %i.fa{ 'class': '{{icon}}'}
+                %span.js-filter-hint
+                  {{hint}}
+                %span.js-filter-tag
+                  {{tag}}
+          #js-dropdown-assignee.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dynamic' => true }
+              %li
+                %button.btn.btn-link
+                  %img.avatar.avatar-inline{ 'src': '{{avatar_url}}', width: '30' }
+                  %strong
+                    {{name}}
+                  %span
+                    {{username}}
         .pull-right
           - if boards_page
             #js-boards-seach.issue-boards-search

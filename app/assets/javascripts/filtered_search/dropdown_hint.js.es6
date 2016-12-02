@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+/*= require filtered_search/filtered_search_dropdown */
+
 ((global) => {
   const dropdownData = [{
     icon: 'fa-search',
@@ -22,34 +24,11 @@
     tag: '&lt;label&gt;',
   }];
 
-  class DropdownHint {
-    constructor(dropdown, input) {
-      this.input = input;
-      this.dropdown = dropdown;
-      this.bindEvents();
-    }
-
-    bindEvents() {
-      this.dropdown.addEventListener('click.dl', this.itemClicked.bind(this));
-    }
-
-    unbindEvents() {
-      this.dropdown.removeEventListener('click.dl', this.itemClicked.bind(this));
-    }
-
-    // cleanup() {
-    //   this.unbindEvents();
-    //   droplab.setConfig({'filtered-search': {}});
-    //   droplab.setData('filtered-search', []);
-    //   this.dropdown.style.display = 'hidden';
-    // }
-
-    getSelectedText(selectedToken) {
-      // TODO: Get last word from FilteredSearchTokenizer
-      const lastWord = this.input.value.split(' ').last();
-      const lastWordIndex = selectedToken.indexOf(lastWord);
-
-      return lastWordIndex === -1 ? selectedToken : selectedToken.slice(lastWord.length);
+  class DropdownHint extends gl.FilteredSearchDropdown {
+    constructor(dropdown, input, filterKeyword) {
+      super(dropdown, input);
+      this.listId = 'js-dropdown-hint';
+      this.filterKeyword = filterKeyword;
     }
 
     itemClicked(e) {
@@ -68,37 +47,9 @@
       this.input.dispatchEvent(new Event('input'));
     }
 
-    dismissDropdown() {
-      this.input.removeAttribute('data-dropdown-trigger');
-      droplab.setConfig({'filtered-search': {}});
-      droplab.setData('filtered-search', []);
-      this.unbindEvents();
-    }
-
-    setAsDropdown() {
-      this.input.setAttribute('data-dropdown-trigger', '#js-dropdown-hint');
-      // const hookId = 'filtered-search';
-      // const listId = 'js-dropdown-hint';
-      // const hook = droplab.hooks.filter((h) => {
-      //   return h.id === hookId;
-      // })[0];
-
-      // if (hook.list.list.id !== listId) {
-      //   droplab.changeHookList(hookId, `#${listId}`);
-      // }
-    }
-
-    render() {
-      console.log('render dropdown hint');
-      this.setAsDropdown();
-
-      droplab.setConfig({
-        'filtered-search': {
-          text: 'hint'
-        }
-      });
-
-      droplab.setData('filtered-search', dropdownData);
+    renderContent() {
+      super.renderContent();
+      droplab.setData(this.hookId, dropdownData);
     }
   }
 
