@@ -35,7 +35,6 @@ describe MergeRequests::MergeService, services: true do
       it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'merged'
-<<<<<<< HEAD
       end
     end
 
@@ -52,8 +51,6 @@ describe MergeRequests::MergeService, services: true do
 
       it 'returns the correct error message' do
         expect(merge_request.merge_error).to include('This merge request cannot be merged')
-=======
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
       end
     end
 
