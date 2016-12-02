@@ -2,6 +2,10 @@ module Gitlab::Ci
   module Status
     module Core
       class Created < Core::Base
+        def text
+          'created'
+        end
+
         def label
           'created'
         end

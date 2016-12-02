@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Gitlab::Ci::Status::Core::Canceled do
   subject { described_class.new(double('subject')) }
 
+  describe '#text' do
+    it { expect(subject.label).to eq 'canceled' }
+  end
+
   describe '#label' do
     it { expect(subject.label).to eq 'canceled' }
   end

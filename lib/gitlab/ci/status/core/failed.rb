@@ -2,6 +2,10 @@ module Gitlab::Ci
   module Status
     module Core
       class Failed < Core::Base
+        def text
+          'failed'
+        end
+
         def label
           'failed'
         end

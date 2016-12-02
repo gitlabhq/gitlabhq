@@ -2,6 +2,10 @@ module Gitlab::Ci
   module Status
     module Core
       class Skipped < Core::Base
+        def text
+          'skipped'
+        end
+
         def label
           'skipped'
         end

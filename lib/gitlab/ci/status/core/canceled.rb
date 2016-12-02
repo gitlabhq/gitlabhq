@@ -2,6 +2,10 @@ module Gitlab::Ci
   module Status
     module Core
       class Canceled < Core::Base
+        def text
+          'canceled'
+        end
+
         def label
           'canceled'
         end

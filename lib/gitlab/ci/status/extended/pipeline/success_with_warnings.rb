@@ -5,6 +5,10 @@ module Gitlab::Ci
         class SuccessWithWarnings < SimpleDelegator
           extend Status::Extended::Base
 
+          def text
+            'passed'
+          end
+
           def label
             'passed with warnings'
           end
