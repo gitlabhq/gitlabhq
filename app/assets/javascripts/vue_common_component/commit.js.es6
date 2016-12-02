@@ -23,7 +23,7 @@
        * name
        * ref_url
        */
-      commitRef: {
+      commit_ref: {
         type: Object,
         required: false,
         default: () => ({}),
@@ -80,7 +80,7 @@
        * @returns {Boolean}
        */
       hasCommitRef() {
-        return this.commitRef && this.commitRef.name && this.commitRef.ref_url;
+        return this.commit_ref && this.commit_ref.name && this.commit_ref.ref_url;
       },
 
       /**
@@ -138,8 +138,8 @@
 
         <a v-if="hasCommitRef"
           class="monospace branch-name"
-          :href="commitRef.ref_url">
-          {{commitRef.name}}
+          :href="commit_ref.ref_url">
+          {{commit_ref.name}}
         </a>
 
         <div class="icon-container commit-icon commit-icon-container"></div>

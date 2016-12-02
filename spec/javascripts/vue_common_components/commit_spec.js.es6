@@ -10,7 +10,7 @@ describe('Commit component', () => {
       el: document.querySelector('.test-commit-container'),
       propsData: {
         tag: false,
-        commitRef: {
+        commit_ref: {
           name: 'master',
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
@@ -34,7 +34,7 @@ describe('Commit component', () => {
 
       props = {
         tag: true,
-        commitRef: {
+        commit_ref: {
           name: 'master',
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
@@ -59,11 +59,11 @@ describe('Commit component', () => {
     });
 
     it('should render a link to the ref url', () => {
-      expect(component.$el.querySelector('.branch-name').getAttribute('href')).toEqual(props.commitRef.ref_url);
+      expect(component.$el.querySelector('.branch-name').getAttribute('href')).toEqual(props.commit_ref.ref_url);
     });
 
     it('should render the ref name', () => {
-      expect(component.$el.querySelector('.branch-name').textContent).toContain(props.commitRef.name);
+      expect(component.$el.querySelector('.branch-name').textContent).toContain(props.commit_ref.name);
     });
 
     it('should render the commit short sha with a link to the commit url', () => {
@@ -103,7 +103,7 @@ describe('Commit component', () => {
       fixture.set('<div class="test-commit-container"></div>');
       props = {
         tag: false,
-        commitRef: {
+        commit_ref: {
           name: 'master',
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
