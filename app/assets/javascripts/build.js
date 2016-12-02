@@ -10,6 +10,26 @@
 
     Build.state = null;
 
+    function isInViewPort(el) {
+      var elTop = el.offset().top;
+      var elBottom = elTop + el.outerHeight();
+      var vpBottom = $(window).scrollTop() + $(window).height();
+
+      return vpBottom > elTop;
+    }
+
+    function toggleAutoScroll(state) {
+      var $autoScrollBtn = $('#autoscroll-button');
+
+      if (state) {
+        $autoScrollBtn.data("state", "enabled");
+        $autoScrollBtn.text("Disable autoscroll");
+      } else {
+        $autoScrollBtn.data("state", "disabled");
+        $autoScrollBtn.text("Enable autoscroll");
+      }
+    }
+
     function Build(options) {
       options = options || $('.js-build-options').data();
       this.pageUrl = options.pageUrl;
@@ -40,18 +60,26 @@
         this.initScrollButtonAffix();
       }
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
-        // Bind autoscroll button to follow build output
-        $('#autoscroll-button').on('click', function() {
-          var state;
-          state = $(this).data("state");
-          if ("enabled" === state) {
-            $(this).data("state", "disabled");
-            return $(this).text("Enable autoscroll");
+        // Bind document scroll listener to detect if user has scrolled to page bottom
+        // and enable autoscroll of build log, disable autoscroll otherwise
+        this.$document.on('scroll', function() {
+          var $autoScrollBtn = $('#autoscroll-button');
+          if (isInViewPort($('.js-build-refresh'))) { // Check if Refresh Animation is in Viewport
+            if ($autoScrollBtn.data("state") === 'disabled') {
+              toggleAutoScroll(true); // Enable Autoscroll
+            }
           } else {
-            $(this).data("state", "enabled");
-            return $(this).text("Disable autoscroll");
+            if ($autoScrollBtn.data("state") === 'enabled') {
+              toggleAutoScroll(false); // Disable Autoscroll
+            }
           }
         });
+
+        // Bind autoscroll button to follow build output
+        $('#autoscroll-button').on('click', function() {
+          toggleAutoScroll($(this).data("state") === 'disabled');
+        });
+
         Build.interval = setInterval((function(_this) {
           // Check for new build output if user still watching build page
           // Only valid for runnig build when output changes during time
