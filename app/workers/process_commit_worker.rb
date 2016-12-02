@@ -10,9 +10,10 @@ class ProcessCommitWorker
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.
-  # commit_sha - The SHA1 of the commit to process.
+  # commit_hash - Hash containing commit details to use for constructing a
+  #               Commit object without having to use the Git repository.
   # default - The data was pushed to the default branch.
-  def perform(project_id, user_id, commit_sha, default = false)
+  def perform(project_id, user_id, commit_hash, default = false)
     project = Project.find_by(id: project_id)
 
     return unless project
@@ -21,10 +22,7 @@ class ProcessCommitWorker
 
     return unless user
 
-    commit = find_commit(project, commit_sha)
-
-    return unless commit
-
+    commit = build_commit(project, commit_hash)
     author = commit.author || user
 
     process_commit_message(project, commit, user, author, default)
@@ -59,9 +57,18 @@ class ProcessCommitWorker
       update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
 
-  private
+  def build_commit(project, hash)
+    date_suffix = '_date'
 
-  def find_commit(project, sha)
-    project.commit(sha)
+    # When processing Sidekiq payloads various timestamps are stored as Strings.
+    # Commit in turn expects Time-like instances upon input, so we have to
+    # manually parse these values.
+    hash.each do |key, value|
+      if key.to_s.end_with?(date_suffix) && value.is_a?(String)
+        hash[key] = Time.parse(value)
+      end
+    end
+
+    Commit.from_hash(hash, project)
   end
 end
