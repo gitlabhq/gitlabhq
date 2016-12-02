@@ -83,8 +83,8 @@
         };
         return commitRef;
       },
-      addTimeInterval(id, that) {
-        this.allTimeIntervals.push({ id, component: that });
+      addTimeInterval(id, start) {
+        this.allTimeIntervals.push({ id, start });
       },
     },
     template: `

@@ -17,7 +17,7 @@
         this.currentTime = new Date();
       }, 1000);
 
-      this.addTimeInterval(this.timeInterval, this);
+      this.addTimeInterval(this.timeInterval, this.startInterval);
     },
     computed: {
       localTimeFinished() {

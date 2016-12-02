@@ -48,7 +48,7 @@
       };
 
       const startIntervalLoops = () => {
-        this.allTimeIntervals.forEach(e => e.component.startInterval());
+        this.allTimeIntervals.forEach(e => e.start());
       };
 
       window.onbeforeunload = function onClose() {
