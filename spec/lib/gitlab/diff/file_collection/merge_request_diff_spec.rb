@@ -10,4 +10,12 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
 
     described_class.new(merge_request.merge_request_diff, diff_options: nil).diff_files
   end
+
+  it 'does not hightlight file if blob is not accessable' do
+    allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(nil)
+
+    expect_any_instance_of(Gitlab::Diff::File).not_to receive(:highlighted_diff_lines)
+
+    described_class.new(merge_request.merge_request_diff, diff_options: nil).diff_files
+  end
 end
