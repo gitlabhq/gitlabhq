@@ -3,9 +3,9 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: #fffff0; }
-  50% { background: #ffffd3; }
-  to { background: #fffff0; }
+  from { background: $note-targe3-outside; }
+  50% { background: $note-targe3-inside; }
+  to { background: $note-targe3-outside; }
 }
 
 ul.notes {
@@ -253,7 +253,7 @@ ul.notes {
 }
 
 .page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-lg-min) {
+  @media (max-width: $screen-md-max) {
     .note-header {
       .note-headline-light {
         display: block;
@@ -305,7 +305,7 @@ ul.notes {
     &.notes_line2 {
       text-align: center;
       padding: 10px 0;
-      border-left: 1px solid #ddd !important;
+      border-left: 1px solid $note-line2-border !important;
     }
 
     &.notes_content {
@@ -471,7 +471,7 @@ ul.notes {
   .add-diff-note {
     margin-top: -4px;
     border-radius: 40px;
-    background: #fff;
+    background: $white-light;
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
@@ -484,7 +484,7 @@ ul.notes {
 
     &:hover {
       background: $gl-info;
-      color: #fff;
+      color: $white-light;
       @include show-add-diff-note;
     }
   }

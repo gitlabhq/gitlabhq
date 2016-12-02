@@ -304,8 +304,8 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.subscription') do
         click_button 'Subscribe'
-
-        expect(page).to have_content("You're receiving notifications because you're subscribed to this thread.")
+        wait_for_ajax
+        expect(page).to have_content("Unsubscribe")
       end
     end
   end

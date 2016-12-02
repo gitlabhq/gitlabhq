@@ -115,6 +115,8 @@ class Projects::WikisController < Projects::ApplicationController
 
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
+
+    @sidebar_wiki_pages = @project_wiki.pages.first(15)
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)

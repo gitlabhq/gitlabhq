@@ -135,7 +135,7 @@ class GitPushService < BaseService
 
     @push_commits.each do |commit|
       ProcessCommitWorker.
-        perform_async(project.id, current_user.id, commit.id, default)
+        perform_async(project.id, current_user.id, commit.to_hash, default)
     end
   end
 

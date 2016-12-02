@@ -141,6 +141,10 @@ module API
       unauthorized! unless current_user
     end
 
+    def authenticate_non_get!
+      authenticate! unless %w[GET HEAD].include?(route.route_method)
+    end
+
     def authenticate_by_gitlab_shell_token!
       input = params['secret_token'].try(:chomp)
       unless Devise.secure_compare(secret_token, input)
@@ -149,6 +153,7 @@ module API
     end
 
     def authenticated_as_admin!
+      authenticate!
       forbidden! unless current_user.is_admin?
     end
 

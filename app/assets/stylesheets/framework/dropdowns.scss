@@ -376,7 +376,7 @@
     position: absolute;
     top: 10px;
     right: 20px;
-    color: #c7c7c7;
+    color: $dropdown-input-fa-color;
     font-size: 12px;
     pointer-events: none;
   }
@@ -529,7 +529,7 @@
     .ui-datepicker-calendar {
       .ui-state-hover,
       .ui-state-active {
-        color: #fff;
+        color: $white-light;
         border: 0;
       }
     }

@@ -1,0 +1,5 @@
+---
+title: 'Fixes "ActionView::Template::Error: undefined method `text?` for nil:NilClass"
+  on MR pages'
+merge_request: 
+author: 

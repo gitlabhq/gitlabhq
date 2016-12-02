@@ -49,14 +49,14 @@
   padding: 50px 100px;
   overflow: hidden;
 
-  @media (max-width: $screen-md-min) {
+  @media (max-width: $screen-sm-max) {
     padding: 50px 0;
   }
 
   svg {
     float: right;
 
-    @media (max-width: $screen-md-min) {
+    @media (max-width: $screen-sm-max) {
       float: none;
       display: block;
       width: 250px;
@@ -71,7 +71,7 @@
     width: 460px;
     margin-top: 120px;
 
-    @media (max-width: $screen-md-min) {
+    @media (max-width: $screen-sm-max) {
       float: none;
       margin-top: 60px;
       width: auto;

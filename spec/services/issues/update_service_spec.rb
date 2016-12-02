@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 describe Issues::UpdateService, services: true do
+  include EmailHelpers
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }

@@ -1,3 +1,5 @@
+@import "framework/variables";
+
 img {
   max-width: 100%;
   height: auto;
@@ -5,12 +7,12 @@ img {
 
 p.details {
   font-style: italic;
-  color: #777;
+  color: $notify-details;
 }
 
 .footer > p {
   font-size: small;
-  color: #777;
+  color: $notify-footer;
 }
 
 pre.commit-message {
@@ -21,10 +23,10 @@ pre.commit-message {
   text-decoration: none;
 
   > .new-file {
-    color: #090;
+    color: $notify-new-file;
   }
 
   > .deleted-file {
-    color: #b00;
+    color: $notify-deleted-file;
   }
 }

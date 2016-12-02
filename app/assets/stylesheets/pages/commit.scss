@@ -5,7 +5,7 @@
 .commit-author,
 .commit-committer {
   display: block;
-  color: #999;
+  color: $commit-committer-color;
   font-weight: normal;
   font-style: italic;
 }
@@ -113,17 +113,17 @@
   overflow: hidden; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
   .max-width-marker {
     width: 72ch;
-    color: rgba(0, 0, 0, 0.0);
+    color: $commit-max-width-marker-color;
     font-family: inherit;
     left: $left;
     height: 100%;
-    border-right: 1px solid mix($input-border, white);
+    border-right: 1px solid mix($input-border, $white-light);
     position: absolute;
     z-index: 1;
   }
 
   > textarea {
-    background-color: rgba(0, 0, 0, 0.0);
+    background-color: $commit-message-text-area-bg;
     font-family: inherit;
     padding-left: $left;
     position: relative;

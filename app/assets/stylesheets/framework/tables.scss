@@ -14,11 +14,11 @@ table {
     .warning,
     .danger,
     .info {
-      color: #fff;
+      color: $white-light;
 
       a:not(.btn) {
         text-decoration: underline;
-        color: #fff;
+        color: $white-light;
       }
     }
 

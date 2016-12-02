@@ -84,7 +84,7 @@ _The artifacts are stored by default in
 ## Set the maximum file size of the artifacts
 
 Provided the artifacts are enabled, you can change the maximum file size of the
-artifacts through the [Admin area settings](../user/admin_area/settings/continuous_integration#maximum-artifacts-size).
+artifacts through the [Admin area settings](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
 [reconfigure gitlab]: restart_gitlab.md "How to restart GitLab"
 [restart gitlab]: restart_gitlab.md "How to restart GitLab"

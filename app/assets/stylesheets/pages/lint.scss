@@ -1,11 +1,11 @@
 .ci-body {
   .incorrect-syntax {
     font-size: 19px;
-    color: red;
+    color: $lint-incorrect-color;
   }
 
   .correct-syntax {
     font-size: 19px;
-    color: #47a447;
+    color: $lint-correct-color;
   }
 }
