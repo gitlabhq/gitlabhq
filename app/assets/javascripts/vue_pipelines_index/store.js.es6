@@ -43,7 +43,7 @@
       resourceChecker();
       goFetch();
 
-      const removePipelineInterval = () => {
+      const removePipelineIntervals = () => {
         this.allTimeIntervals.forEach(e => clearInterval(e.id));
       };
 
@@ -51,17 +51,18 @@
         this.allTimeIntervals.forEach(e => e.start());
       };
 
-      window.onbeforeunload = function onClose() {
-        removePipelineInterval();
+      const removeAll = () => {
+        removePipelineIntervals();
+        window.removeEventListener('beforeunload', () => {});
+        window.removeEventListener('focus', () => {});
+        window.removeEventListener('blur', () => {});
+        document.removeEventListener('page:fetch', () => {});
       };
 
-      window.onblur = function remove() {
-        removePipelineInterval();
-      };
-
-      window.onfocus = function start() {
-        startIntervalLoops();
-      };
+      window.addEventListener('beforeunload', removePipelineIntervals);
+      window.addEventListener('focus', startIntervalLoops);
+      window.addEventListener('blur', removePipelineIntervals);
+      document.addEventListener('page:fetch', removeAll);
     }
   };
 })(window.gl || (window.gl = {}));
