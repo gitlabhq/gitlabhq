@@ -14,7 +14,6 @@
       // Options:
       //   action - String, current controller action
       //
-      this.limitContainerWidth();
       this.opts = opts != null ? opts : {};
       this.submitNoteForm = bind(this.submitNoteForm, this);
       this.$el = $('.merge-request');
@@ -31,11 +30,6 @@
         this.initTaskList();
       }
     }
-
-    MergeRequest.prototype.limitContainerWidth = function() {
-      var $wrapper = $('.content-wrapper .container-fluid');
-      $wrapper.addClass('limit-container-width')
-    };
 
     // Local jQuery finder
     MergeRequest.prototype.$ = function(selector) {
