@@ -40,11 +40,8 @@
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
         = icon('question-circle')
 
-<<<<<<< HEAD
 = render 'shared/issuable/approvals', issuable: issuable, form: form
 
-=======
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)

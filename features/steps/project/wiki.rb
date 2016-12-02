@@ -80,14 +80,6 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     expect(page).to have_content "Page was successfully deleted"
   end
 
-<<<<<<< HEAD
-  step 'I click on the "Pages" button' do
-    wiki_menu = find('.content-wrapper .nav-links')
-    wiki_menu.click_on "Pages"
-  end
-
-=======
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
   step 'I should see the existing page in the pages list' do
     expect(page).to have_content current_user.name
     expect(find('.wiki-pages')).to have_content @page.title.capitalize

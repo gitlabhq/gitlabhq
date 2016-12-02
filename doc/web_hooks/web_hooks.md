@@ -1,12 +1,5 @@
 # Webhooks
 
-<<<<<<< HEAD
-> **Note:** As of GitLab 8.5:
->
-> - the `repository` key is deprecated in favor of the `project` key
-> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
-> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
-=======
 >**Note:**
 Starting from GitLab 8.5:
 - the `repository` key is deprecated in favor of the `project` key
@@ -17,7 +10,6 @@ Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab will send a POST request with data
 to the webhook URL.
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
 
 Webhooks can be used to update an external issue tracker, trigger CI builds,
 update a backup mirror, or even deploy to your production server.
