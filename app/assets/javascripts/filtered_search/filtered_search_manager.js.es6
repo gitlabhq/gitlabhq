@@ -80,6 +80,8 @@
   let dropdownHint;
   let dropdownAuthor;
   let dropdownAssignee;
+  let dropdownMilestone;
+  let dropdownLabel;
 
   class FilteredSearchManager {
     constructor() {
@@ -116,6 +118,18 @@
           }
 
           dropdownAssignee.render();
+        } else if (match.key === 'milestone') {
+          if (!dropdownMilestone) {
+            dropdownMilestone = new gl.DropdownMilestone(document.querySelector('#js-dropdown-milestone'), document.querySelector('.filtered-search'));
+          }
+
+          dropdownMilestone.render();
+        } else if (match.key === 'label') {
+          if (!dropdownLabel) {
+            dropdownLabel = new gl.DropdownLabel(document.querySelector('#js-dropdown-label'), document.querySelector('.filtered-search'));
+          }
+
+          dropdownLabel.render();
         }
 
       } else if (!match && this.currentDropdown !== 'hint') {

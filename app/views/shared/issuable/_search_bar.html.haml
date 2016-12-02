@@ -42,6 +42,17 @@
                     {{name}}
                   %span
                     {{username}}
+          #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dynamic' => true }
+              %li
+                %button.btn.btn-link
+                  {{title}}
+          #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dynamic' => true }
+              %li
+                %button.btn.btn-link
+                  %span.dropdown-label-box{ 'style': 'background: {{color}}'}
+                    {{title}}
         .pull-right
           - if boards_page
             #js-boards-seach.issue-boards-search
