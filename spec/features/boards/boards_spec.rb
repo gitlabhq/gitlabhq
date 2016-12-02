@@ -93,7 +93,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     it 'shows description tooltip on list title' do
       page.within('.board:nth-child(2)') do
-        expect(find('.board-title span.has-tooltip')[:title]).to eq('Test')
+        expect(find('.board-title span.has-tooltip')["data-original-title"]).to eq('Test')
       end
     end
 
