@@ -65,8 +65,12 @@ module ActiveRecord
 
     # This is patched because we want `lock_version` default to `NULL`
     # rather than `0`
-    class LockingType < SimpleDelegator
-      def type_cast_from_database(value)
+    class LockingType < DelegateClass(Type::Value)
+      def deserialize(value)
+        super
+      end
+
+      def serialize(value)
         super
       end
     end
