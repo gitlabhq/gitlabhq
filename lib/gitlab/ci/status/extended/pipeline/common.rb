@@ -3,15 +3,14 @@ module Gitlab::Ci
     module Extended
       module Pipeline
         module Common
-          def initialize(pipeline)
-            @pipeline = pipeline
-          end
-
           def has_details?
             true
           end
 
           def details_path
+            namespace_project_pipeline_path(@subject.project.namespace,
+                                            @subject.project,
+                                            @subject)
           end
 
           def has_action?

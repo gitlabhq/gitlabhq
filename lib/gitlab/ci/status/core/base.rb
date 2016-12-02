@@ -4,6 +4,8 @@ module Gitlab::Ci
       # Base abstract class fore core status
       #
       class Base
+        include Gitlab::Routing.url_helpers
+
         def initialize(subject)
           @subject = subject
         end
