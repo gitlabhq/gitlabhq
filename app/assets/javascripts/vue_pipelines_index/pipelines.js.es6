@@ -2,7 +2,6 @@
 /* eslint-disable no-param-reassign, no-bitwise*/
 
 ((gl) => {
-  const REALTIME = false;
   const SPREAD = '...';
   const PREV = 'Prev';
   const NEXT = 'Next';
@@ -24,7 +23,7 @@
     data() {
       return {
         pipelines: [],
-        allTimeIntervals: [],
+        timeLoopInterval: '',
         intervalId: '',
         updatedAt: '',
         pagenum: 1,
@@ -57,7 +56,7 @@
         if (text === FIRST) this.pagenum = 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
-        if (REALTIME) clearInterval(this.intervalId);
+        clearInterval(this.timeLoopInterval);
         this.pageRequest = true;
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
       },
@@ -113,7 +112,6 @@
                 <stages :pipeline='pipeline'></stages>
                 <time-ago
                   :pipeline='pipeline'
-                  :addTimeInterval='addTimeInterval'
                 >
                 </time-ago>
                 <pipeline-actions :pipeline='pipeline'></pipeline-actions>

@@ -4,21 +4,12 @@
   gl.VueTimeAgo = Vue.extend({
     data() {
       return {
-        timeInterval: '',
         currentTime: new Date(),
       };
     },
     props: [
       'pipeline',
-      'addTimeInterval',
     ],
-    created() {
-      this.timeInterval = setInterval(() => {
-        this.currentTime = new Date();
-      }, 1000);
-
-      this.addTimeInterval(this.timeInterval, this.startInterval);
-    },
     computed: {
       localTimeFinished() {
         return gl.utils.formatDate(this.pipeline.details.finished_at);
@@ -44,10 +35,8 @@
         if (duration !== null) return duration;
         return false;
       },
-      startInterval() {
-        this.timeInterval = setInterval(() => {
-          this.currentTime = new Date();
-        }, 1000);
+      changeTime() {
+        this.currentTime = new Date();
       },
     },
     template: `

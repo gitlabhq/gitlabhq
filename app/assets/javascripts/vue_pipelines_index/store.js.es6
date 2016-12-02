@@ -1,5 +1,5 @@
 /* global gl, Flash */
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-underscore-dangle */
 
 ((gl) => {
   gl.PipelineStore = class {
@@ -43,25 +43,36 @@
       resourceChecker();
       goFetch();
 
-      const removePipelineIntervals = () => {
-        this.allTimeIntervals.forEach(e => clearInterval(e.id));
+      const startTimeLoops = () => {
+        this.timeLoopInterval = setInterval(() => {
+          console.log('TIME LOOP');
+          this.$children
+            .filter(e => e.$options._componentTag === 'time-ago')
+            .forEach(e => e.changeTime());
+        }, 1000);
+      };
+
+      startTimeLoops();
+
+      const removeTimeIntervals = () => {
+        clearInterval(this.timeLoopInterval);
       };
 
       const startIntervalLoops = () => {
-        this.allTimeIntervals.forEach(e => e.start());
+        startTimeLoops();
       };
 
       const removeAll = () => {
-        removePipelineIntervals();
-        window.removeEventListener('beforeunload', () => {});
-        window.removeEventListener('focus', () => {});
-        window.removeEventListener('blur', () => {});
-        document.removeEventListener('page:fetch', () => {});
+        removeTimeIntervals();
+        window.removeEventListener('beforeunload', removeTimeIntervals);
+        window.removeEventListener('focus', startIntervalLoops);
+        window.removeEventListener('blur', removeTimeIntervals);
+        document.removeEventListener('page:fetch', removeTimeIntervals);
       };
 
-      window.addEventListener('beforeunload', removePipelineIntervals);
+      window.addEventListener('beforeunload', removeTimeIntervals);
       window.addEventListener('focus', startIntervalLoops);
-      window.addEventListener('blur', removePipelineIntervals);
+      window.addEventListener('blur', removeTimeIntervals);
       document.addEventListener('page:fetch', removeAll);
     }
   };
