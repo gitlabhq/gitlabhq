@@ -10,20 +10,20 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_members = @project.project_members
     @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
-    @group = @project.group
+    group = @project.group
 
-    if @group
-      @group_members = @group.group_members
-      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
+    if group
+      group_members = group.group_members.where.not(user_id: @project_members.select(:user_id))
+      group_members = group_members.non_invite unless can?(current_user, :admin_group, @group)
     end
 
     if params[:search].present?
-      users = @project.users.search(params[:search]).to_a
-      @project_members = @project_members.where(user_id: users)
+      user_ids = @project.users.search(params[:search]).select(:id)
+      @project_members = @project_members.where(user_id: user_ids)
 
-      if @group_members
-        users = @group.users.search(params[:search]).to_a
-        @group_members = @group_members.where(user_id: users)
+      if group_members
+        user_ids = group.users.search(params[:search]).select(:id)
+        group_members = group_members.where(user_id: user_ids)
       end
 
       @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
@@ -31,8 +31,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     members_id = @project_members.pluck(:id)
 
-    if @group_members
-      members_id << @group_members.select{ |member| !@project_members.find_by(user_id: member.user_id) }.select(&:id)
+    if group_members
+      members_id << group_members.pluck(:id)
     end
 
     @project_members = Member.where(id: members_id.flatten).order(access_level: :desc).page(params[:page])
