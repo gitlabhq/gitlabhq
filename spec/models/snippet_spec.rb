@@ -23,9 +23,9 @@ describe Snippet, models: true do
     it { is_expected.to validate_presence_of(:author) }
 
     it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_length_of(:title).is_within(0..255) }
+    it { is_expected.to validate_length_of(:title).is_at_most(255) }
 
-    it { is_expected.to validate_length_of(:file_name).is_within(0..255) }
+    it { is_expected.to validate_length_of(:file_name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:content) }
 
@@ -43,6 +43,26 @@ describe Snippet, models: true do
     it 'supports a cross-project reference' do
       cross = double('project')
       expect(snippet.to_reference(cross)).to eq "#{project.to_reference}$#{snippet.id}"
+    end
+  end
+
+  describe '#file_name' do
+    let(:project) { create(:empty_project) }
+
+    context 'file_name is nil' do
+      let(:snippet) { create(:snippet, project: project, file_name: nil) }
+
+      it 'returns an empty string' do
+        expect(snippet.file_name).to eq ''
+      end
+    end
+
+    context 'file_name is not nil' do
+      let(:snippet) { create(:snippet, project: project, file_name: 'foo.txt') }
+
+      it 'returns the file_name' do
+        expect(snippet.file_name).to eq 'foo.txt'
+      end
     end
   end
 
