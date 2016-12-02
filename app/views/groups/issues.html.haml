@@ -6,13 +6,14 @@
 - if group_issues(@group).exists?
   .top-area
     = render 'shared/issuable/nav', type: :issues
-    .nav-controls
-      - if current_user
-        = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn' do
-          = icon('rss')
-          %span.icon-label
-            Subscribe
-      = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
+    - if current_user
+      .nav-controls
+        - if current_user
+          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn' do
+            = icon('rss')
+            %span.icon-label
+              Subscribe
+        = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
   = render 'shared/issuable/filter', type: :issues
 
