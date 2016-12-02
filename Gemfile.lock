@@ -766,14 +766,9 @@ GEM
       get_process_mem (~> 0)
       unicorn (>= 4, < 6)
     uniform_notifier (1.10.0)
-<<<<<<< HEAD
-    uuid (2.3.8)
-      macaddr (~> 1.0)
     validates_hostname (1.0.5)
       activerecord (>= 3.0)
       activesupport (>= 3.0)
-=======
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
     version_sorter (2.1.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
@@ -875,12 +870,8 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.2)
   gon (~> 6.1.0)
   grape (~> 0.15.0)
-<<<<<<< HEAD
-  grape-entity (~> 0.4.2)
   gssapi
-=======
   grape-entity (~> 0.6.0)
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
   haml_lint (~> 0.18.2)
   hamlit (~> 2.6.1)
   health_check (~> 2.2.0)
