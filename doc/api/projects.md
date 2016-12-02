@@ -593,6 +593,7 @@ Parameters:
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -605,11 +606,12 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Create project for user
 
@@ -626,7 +628,6 @@ Parameters:
 | `user_id` | integer | yes | The user ID of the project owner |
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
-| `default_branch` | string | no | `master` by default |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
@@ -641,11 +642,12 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Edit project
 
@@ -675,11 +677,12 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `repository_storage` | string | no | Change the storage shard for the repository. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Fork project
 

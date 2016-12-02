@@ -25,6 +25,10 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+
+        # EE-specific
+        optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
+        optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
       end
 
       def map_public_to_visibility_level(attrs)
@@ -161,68 +165,6 @@ module API
         present paginate(projects), with: Entities::Project
       end
 
-<<<<<<< HEAD
-      # Get events for a single project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/events
-      get ":id/events" do
-        events = paginate user_project.events.recent
-        present events, with: Entities::Event
-      end
-
-      # Create new project
-      #
-      # Parameters:
-      #   name (required)                   - name for new project
-      #   description (optional)            - short project description
-      #   issues_enabled (optional)
-      #   merge_requests_enabled (optional)
-      #   builds_enabled (optional)
-      #   wiki_enabled (optional)
-      #   snippets_enabled (optional)
-      #   container_registry_enabled (optional)
-      #   shared_runners_enabled (optional)
-      #   namespace_id (optional)           - defaults to user namespace
-      #   public (optional)                 - if true same as setting visibility_level = 20
-      #   visibility_level (optional)       - 0 by default
-      #   import_url (optional)
-      #   public_builds (optional)
-      #   repository_storage (optional)
-      #   lfs_enabled (optional)
-      #   request_access_enabled (optional) - Allow users to request member access
-      # Example Request
-      #   POST /projects
-      post do
-        required_attributes! [:name]
-        attrs = attributes_for_keys [:builds_enabled,
-                                     :container_registry_enabled,
-                                     :description,
-                                     :import_url,
-                                     :issues_enabled,
-                                     :lfs_enabled,
-                                     :merge_requests_enabled,
-                                     :name,
-                                     :namespace_id,
-                                     :only_allow_merge_if_build_succeeds,
-                                     :path,
-                                     :public,
-                                     :public_builds,
-                                     :repository_storage,
-                                     :request_access_enabled,
-                                     :shared_runners_enabled,
-                                     :snippets_enabled,
-                                     :visibility_level,
-                                     :wiki_enabled,
-                                     :only_allow_merge_if_all_discussions_are_resolved]
-        attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateService.new(current_user, attrs).execute
-        if @project.saved?
-          present @project, with: Entities::Project,
-                            user_can_admin_project: can?(current_user, :admin_project, @project)
-=======
       desc 'Create new project' do
         success Entities::Project
       end
@@ -239,7 +181,6 @@ module API
         if project.saved?
           present project, with: Entities::Project,
                            user_can_admin_project: can?(current_user, :admin_project, project)
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
         else
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
@@ -248,57 +189,6 @@ module API
         end
       end
 
-<<<<<<< HEAD
-      # Create new project for a specified user.  Only available to admin users.
-      #
-      # Parameters:
-      #   user_id (required)                - The ID of a user
-      #   name (required)                   - name for new project
-      #   description (optional)            - short project description
-      #   default_branch (optional)         - 'master' by default
-      #   issues_enabled (optional)
-      #   merge_requests_enabled (optional)
-      #   builds_enabled (optional)
-      #   wiki_enabled (optional)
-      #   snippets_enabled (optional)
-      #   container_registry_enabled (optional)
-      #   shared_runners_enabled (optional)
-      #   public (optional)                 - if true same as setting visibility_level = 20
-      #   visibility_level (optional)
-      #   import_url (optional)
-      #   public_builds (optional)
-      #   repository_storage (optional)
-      #   lfs_enabled (optional)
-      #   request_access_enabled (optional) - Allow users to request member access
-      # Example Request
-      #   POST /projects/user/:user_id
-      post "user/:user_id" do
-        authenticated_as_admin!
-        user = User.find(params[:user_id])
-        attrs = attributes_for_keys [:builds_enabled,
-                                     :default_branch,
-                                     :description,
-                                     :import_url,
-                                     :issues_enabled,
-                                     :lfs_enabled,
-                                     :merge_requests_enabled,
-                                     :name,
-                                     :only_allow_merge_if_build_succeeds,
-                                     :public,
-                                     :public_builds,
-                                     :repository_storage,
-                                     :request_access_enabled,
-                                     :shared_runners_enabled,
-                                     :snippets_enabled,
-                                     :visibility_level,
-                                     :wiki_enabled,
-                                     :only_allow_merge_if_all_discussions_are_resolved]
-        attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateService.new(user, attrs).execute
-        if @project.saved?
-          present @project, with: Entities::Project,
-                            user_can_admin_project: can?(current_user, :admin_project, @project)
-=======
       desc 'Create new project for a specified user. Only available to admin users.' do
         success Entities::Project
       end
@@ -320,7 +210,6 @@ module API
         if project.saved?
           present project, with: Entities::Project,
                            user_can_admin_project: can?(current_user, :admin_project, project)
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
         else
           render_validation_error!(project)
         end
@@ -382,52 +271,6 @@ module API
         end
       end
 
-<<<<<<< HEAD
-      # Update an existing project
-      #
-      # Parameters:
-      #   id (required) - the id of a project
-      #   name (optional) - name of a project
-      #   path (optional) - path of a project
-      #   description (optional) - short project description
-      #   issues_enabled (optional)
-      #   merge_requests_enabled (optional)
-      #   builds_enabled (optional)
-      #   wiki_enabled (optional)
-      #   snippets_enabled (optional)
-      #   container_registry_enabled (optional)
-      #   shared_runners_enabled (optional)
-      #   public (optional) - if true same as setting visibility_level = 20
-      #   visibility_level (optional) - visibility level of a project
-      #   public_builds (optional)
-      #   repository_storage (optional)
-      #   lfs_enabled (optional)
-      #   approvals_before_merge (optional) - how many approvers should approve merge request by default
-      # Example Request
-      #   PUT /projects/:id
-      put ':id' do
-        attrs = attributes_for_keys [:builds_enabled,
-                                     :container_registry_enabled,
-                                     :default_branch,
-                                     :description,
-                                     :issues_enabled,
-                                     :lfs_enabled,
-                                     :merge_requests_enabled,
-                                     :name,
-                                     :only_allow_merge_if_build_succeeds,
-                                     :path,
-                                     :public,
-                                     :public_builds,
-                                     :repository_storage,
-                                     :request_access_enabled,
-                                     :shared_runners_enabled,
-                                     :snippets_enabled,
-                                     :visibility_level,
-                                     :wiki_enabled,
-                                     :only_allow_merge_if_all_discussions_are_resolved,
-                                     :approvals_before_merge]
-        attrs = map_public_to_visibility_level(attrs)
-=======
       desc 'Update an existing project' do
         success Entities::Project
       end
@@ -442,10 +285,11 @@ module API
                         :lfs_enabled, :public, :visibility_level, :public_builds,
                         :request_access_enabled, :only_allow_merge_if_build_succeeds,
                         :only_allow_merge_if_all_discussions_are_resolved, :path,
-                        :default_branch
+                        :default_branch,
+                        ## EE-specific
+                        :repository_storage, :approvals_before_merge
       end
       put ':id' do
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
         authorize_admin_project
         attrs = map_public_to_visibility_level(declared_params(include_missing: false))
         authorize! :rename_project, user_project if attrs[:name].present?
