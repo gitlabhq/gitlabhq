@@ -33,59 +33,15 @@ module LfsRequest
     return if download_request? && lfs_download_access?
     return if upload_request? && lfs_upload_access?
 
-<<<<<<< HEAD:app/helpers/lfs_helper.rb
-    if project.public? || (user && user.can?(:read_project, project))
-      if project.above_size_limit? || objects_exceed_repo_limit?
-        render_size_error
-      else
-        render_lfs_forbidden
-      end
-=======
     if project.public? || can?(user, :read_project, project)
       lfs_forbidden!
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699:app/controllers/concerns/lfs_request.rb
     else
       render_lfs_not_found
     end
   end
 
-<<<<<<< HEAD:app/helpers/lfs_helper.rb
-  def lfs_download_access?
-    return false unless project.lfs_enabled?
-
-    ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code?
-  end
-
-  def objects
-    @objects ||= (params[:objects] || []).to_a
-  end
-
-  def user_can_download_code?
-    has_authentication_ability?(:download_code) && can?(user, :download_code, project)
-  end
-
-  def build_can_download_code?
-    has_authentication_ability?(:build_download_code) && can?(user, :build_download_code, project)
-  end
-
-  def lfs_upload_access?
-    return false unless project.lfs_enabled?
-    return false if project.above_size_limit? || objects_exceed_repo_limit?
-
-    has_authentication_ability?(:push_code) && can?(user, :push_code, project)
-=======
   def lfs_forbidden!
     render_lfs_forbidden
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699:app/controllers/concerns/lfs_request.rb
-  end
-
-  def objects_exceed_repo_limit?
-    return false unless project.size_limit_enabled?
-    return @limit_exceeded if defined?(@limit_exceeded)
-
-    size_of_objects = objects.sum { |o| o[:size] }
-
-    @limit_exceeded = (project.repository_and_lfs_size + size_of_objects.to_mb) > project.actual_size_limit
   end
 
   def render_lfs_forbidden
@@ -110,17 +66,6 @@ module LfsRequest
     )
   end
 
-<<<<<<< HEAD:app/helpers/lfs_helper.rb
-  def render_size_error
-    render(
-      json: {
-        message: Gitlab::RepositorySizeError.new(project).push_error,
-        documentation_url: help_url,
-      },
-      content_type: "application/vnd.git-lfs+json",
-      status: 406
-    )
-=======
   def lfs_download_access?
     return false unless project.lfs_enabled?
 
@@ -129,6 +74,7 @@ module LfsRequest
 
   def lfs_upload_access?
     return false unless project.lfs_enabled?
+    return false if project.above_size_limit? || objects_exceed_repo_limit?
 
     has_authentication_ability?(:push_code) && can?(user, :push_code, project)
   end
@@ -143,7 +89,6 @@ module LfsRequest
 
   def build_can_download_code?
     has_authentication_ability?(:build_download_code) && can?(user, :build_download_code, project)
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699:app/controllers/concerns/lfs_request.rb
   end
 
   def storage_project
@@ -162,4 +107,38 @@ module LfsRequest
   def objects
     @objects ||= (params[:objects] || []).to_a
   end
+
+  module EE
+    def lfs_forbidden!
+      raise NotImplementedError unless defined?(super)
+
+      if project.above_size_limit? || objects_exceed_repo_limit?
+        render_size_error
+      else
+        super
+      end
+    end
+
+    def render_size_error
+      render(
+        json: {
+          message: Gitlab::RepositorySizeError.new(project).push_error,
+          documentation_url: help_url,
+        },
+        content_type: "application/vnd.git-lfs+json",
+        status: 406
+      )
+    end
+
+    def objects_exceed_repo_limit?
+      return false unless project.size_limit_enabled?
+      return @limit_exceeded if defined?(@limit_exceeded)
+
+      size_of_objects = objects.sum { |o| o[:size] }
+
+      @limit_exceeded = (project.repository_and_lfs_size + size_of_objects.to_mb) > project.actual_size_limit
+    end
+  end
+
+  prepend EE
 end
