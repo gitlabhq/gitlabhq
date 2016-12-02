@@ -67,15 +67,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def render_denied
-<<<<<<< HEAD
-    if user && user.can?(:read_project, project)
-      message = project.above_size_limit? ? access_check.message : 'Access denied'
-
-      render plain: message, status: :forbidden
-=======
     if user && can?(user, :read_project, project)
       render plain: access_denied_message, status: :forbidden
->>>>>>> 14046b9c734e5e6506d63276f39f3f9d770c3699
     else
       # Do not leak information about project existence
       render_not_found
@@ -83,7 +76,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access_denied_message
-    'Access denied'
+    project.above_size_limit? ? access_check.message : 'Access denied'
   end
 
   def upload_pack_allowed?
