@@ -451,7 +451,7 @@
           <div v-if="!isFolder && hasLastDeploymentKey" class="js-commit-component">
             <commit-component
               :tag="commitTag"
-              :commitRef="commitRef"
+              :commit_ref="commitRef"
               :commit_url="commitUrl"
               :short_sha="commitShortSha"
               :title="commitTitle"
