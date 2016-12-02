@@ -3,7 +3,7 @@ module API
   class Projects < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers do
       params :optional_params do
@@ -61,23 +61,6 @@ module API
         end
       end
 
-      desc 'Get a projects list for authenticated user' do
-        success Entities::BasicProjectDetails
-      end
-      params do
-        optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
-        use :filter_params
-        use :pagination
-      end
-      get do
-        projects = current_user.authorized_projects
-        projects = filter_projects(projects)
-        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
-
-        present paginate(projects), with: entity, user: current_user
-      end
-
       desc 'Get a list of visible projects for authenticated user' do
         success Entities::BasicProjectDetails
       end
@@ -89,6 +72,25 @@ module API
       end
       get '/visible' do
         projects = ProjectsFinder.new.execute(current_user)
+        projects = filter_projects(projects)
+        entity = params[:simple] || !current_user ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
+
+        present paginate(projects), with: entity, user: current_user
+      end
+
+      desc 'Get a projects list for authenticated user' do
+        success Entities::BasicProjectDetails
+      end
+      params do
+        optional :simple, type: Boolean, default: false,
+                          desc: 'Return only the ID, URL, name, and path of each project'
+        use :filter_params
+        use :pagination
+      end
+      get do
+        authenticate!
+
+        projects = current_user.authorized_projects
         projects = filter_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
 
@@ -103,6 +105,8 @@ module API
         use :pagination
       end
       get '/owned' do
+        authenticate!
+
         projects = current_user.owned_projects
         projects = filter_projects(projects)
 
@@ -117,6 +121,8 @@ module API
         use :pagination
       end
       get '/starred' do
+        authenticate!
+
         projects = current_user.viewable_starred_projects
         projects = filter_projects(projects)
 
@@ -132,6 +138,7 @@ module API
       end
       get '/all' do
         authenticated_as_admin!
+
         projects = Project.all
         projects = filter_projects(projects)
 
@@ -213,7 +220,8 @@ module API
         success Entities::ProjectWithAccess
       end
       get ":id" do
-        present user_project, with: Entities::ProjectWithAccess, user: current_user,
+        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
+        present user_project, with: entity, user: current_user,
                               user_can_admin_project: can?(current_user, :admin_project, user_project)
       end
 
@@ -433,7 +441,7 @@ module API
         use :pagination
       end
       get ':id/users' do
-        users = User.where(id: user_project.team.users.map(&:id))
+        users = user_project.team.users
         users = users.search(params[:search]) if params[:search].present?
 
         present paginate(users), with: Entities::UserBasic
