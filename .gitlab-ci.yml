@@ -1,7 +1,7 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-git-2.7-phantomjs-2.1-node-7.1"
 
 cache:
-  key: "ruby-231"
+  key: "ruby-233"
   paths:
   - vendor/ruby
 
@@ -235,7 +235,7 @@ rake ee_compat_check:
     - /^[\d-]+-stable(-ee)?$/
   allow_failure: yes
   cache:
-    key: "ruby231-ee_compat_check_repo"
+    key: "ruby233-ee_compat_check_repo"
     paths:
       - ee_compat_check/repo/
       - vendor/ruby
@@ -277,8 +277,6 @@ teaspoon:
   stage: test
   <<: *use-db
   script:
-    - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
-    - apt-get install --assume-yes nodejs
     - npm install
     - npm link istanbul
     - rake teaspoon
