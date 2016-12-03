@@ -84,10 +84,10 @@
   }
 }
 
-$theme-charcoal: #3d454d;
-$theme-charcoal-light: #485157;
-$theme-charcoal-dark: #383f45;
-$theme-charcoal-text: #b9bbbe;
+$theme-charcoal-light: #b9bbbe;
+$theme-charcoal: #485157;
+$theme-charcoal-dark: #3d454d;
+$theme-charcoal-darker: #383f45;
 
 $theme-blue-light: #becde9;
 $theme-blue: #2980b9;
@@ -120,7 +120,7 @@ body {
   }
 
   &.ui_charcoal {
-    @include gitlab-theme($theme-charcoal-text, $theme-charcoal-light, $theme-charcoal, $theme-charcoal-dark);
+    @include gitlab-theme($theme-charcoal-light, $theme-charcoal, $theme-charcoal-dark, $theme-charcoal-darker);
   }
 
   &.ui_graphite {
