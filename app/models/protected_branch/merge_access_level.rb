@@ -16,4 +16,12 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
       Gitlab::Access::DEVELOPER => "Developers + Masters"
     }.with_indifferent_access
   end
+
+  def check_access(user)
+    return true if user.is_admin?
+    return user.id == self.user_id if self.user.present?
+    return group.users.exists?(user.id) if self.group.present?
+
+    super
+  end
 end

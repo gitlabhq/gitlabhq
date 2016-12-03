@@ -21,6 +21,7 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
 
   def check_access(user)
     return false if access_level == Gitlab::Access::NO_ACCESS
+    return true if user.is_admin?
     return user.id == self.user_id if self.user.present?
     return group.users.exists?(user.id) if self.group.present?
 
