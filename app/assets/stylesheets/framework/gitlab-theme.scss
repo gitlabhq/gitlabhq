@@ -94,10 +94,10 @@ $theme-blue: #2980b9;
 $theme-blue-dark: #1970a9;
 $theme-blue-darker: #096099;
 
-$theme-graphite-lighter: #ccc;
-$theme-graphite-light: #777;
-$theme-graphite: #666;
-$theme-graphite-dark: #555;
+$theme-graphite-light: #ccc;
+$theme-graphite: #777;
+$theme-graphite-dark: #666;
+$theme-graphite-darker: #555;
 
 $theme-gray-light: #979797;
 $theme-gray: #373737;
@@ -124,7 +124,7 @@ body {
   }
 
   &.ui_graphite {
-    @include gitlab-theme($theme-graphite-lighter, $theme-graphite-light, $theme-graphite, $theme-graphite-dark);
+    @include gitlab-theme($theme-graphite-light, $theme-graphite, $theme-graphite-dark, $theme-graphite-darker);
   }
 
   &.ui_gray {
