@@ -29,7 +29,7 @@
 
     describe('#activateTab', function () {
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function() {});
+        spyOn($, 'ajax').and.callFake(function () {});
         fixture.load('merge_request_tabs.html');
         this.subject = this.class.activateTab;
       });
@@ -53,7 +53,7 @@
 
     describe('#setCurrentAction', function () {
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function() {});
+        spyOn($, 'ajax').and.callFake(function () {});
         this.subject = this.class.setCurrentAction;
       });
       it('changes from commits', function () {
@@ -110,9 +110,9 @@
         expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
       });
     });
-    describe('#loadDiff', function() {
-      it('requires an absolute pathname', function() {
-        spyOn($, 'ajax').and.callFake(function(options) {
+    describe('#loadDiff', function () {
+      it('requires an absolute pathname', function () {
+        spyOn($, 'ajax').and.callFake(function (options) {
           expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
         });
         this.class.loadDiff('/foo/bar/merge_requests/1/diffs');

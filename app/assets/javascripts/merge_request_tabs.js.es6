@@ -225,7 +225,7 @@
 
       // We extract pathname for the current Changes tab anchor href
       // some pages like MergeRequestsController#new has query parameters on that anchor
-      var urlPathname = gl.utils.parseUrlPathname(source);
+      const urlPathname = gl.utils.parseUrlPathname(source);
 
       this.ajaxGet({
         url: `${urlPathname}.json${location.search}`,
