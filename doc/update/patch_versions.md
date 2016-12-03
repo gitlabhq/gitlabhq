@@ -44,10 +44,6 @@ sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`ca
 
 ### 4. Update gitlab-workhorse to the corresponding version
 
->**Note:**
-This new way to install GitLab workhorse was introduced with GitLab 8.15. If you
-are using an older version follow [this guide instead][oldguide].
-
 ```bash
 cd /home/git/gitlab
 
@@ -97,5 +93,3 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 If all items are green, then congratulations upgrade complete!
-
-[oldguide]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-14-stable/doc/update/patch_versions.md
