@@ -396,20 +396,6 @@ module ProjectsHelper
     [@project.path_with_namespace, sha, "readme"].join('-')
   end
 
-  def round_commit_count(project)
-    count = project.commit_count
-
-    if count > 10000
-      '10000+'
-    elsif count > 5000
-      '5000+'
-    elsif count > 1000
-      '1000+'
-    else
-      count
-    end
-  end
-
   def current_ref
     @ref || @repository.try(:root_ref)
   end
