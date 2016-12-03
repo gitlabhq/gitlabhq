@@ -557,20 +557,17 @@ describe MergeRequest, models: true do
   end
 
   describe '#commits_sha' do
-    let(:commit0) { double('commit0', sha: 'sha1') }
-    let(:commit1) { double('commit1', sha: 'sha2') }
-    let(:commit2) { double('commit2', sha: 'sha3') }
-
     before do
-      allow(subject.merge_request_diff).to receive(:commits).and_return([commit0, commit1, commit2])
+      allow(subject.merge_request_diff).to receive(:commits_sha).
+        and_return(['sha1'])
     end
 
-    it 'returns sha of commits' do
-      expect(subject.commits_sha).to contain_exactly('sha1', 'sha2', 'sha3')
+    it 'delegates to merge request diff' do
+      expect(subject.commits_sha).to eq ['sha1']
     end
   end
 
-  describe '#pipeline' do
+  describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
         pipeline = double(:ci_pipeline, ref: 'master')
@@ -581,7 +578,7 @@ describe MergeRequest, models: true do
           with('master', '123abc').
           and_return(pipeline)
 
-        expect(subject.pipeline).to eq(pipeline)
+        expect(subject.head_pipeline).to eq(pipeline)
       end
     end
 
@@ -589,7 +586,7 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.pipeline).to be_nil
+        expect(subject.head_pipeline).to be_nil
       end
     end
   end
@@ -857,7 +854,7 @@ describe MergeRequest, models: true do
       context 'and a failed pipeline is associated' do
         before do
           pipeline.update(status: 'failed')
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_falsey }
@@ -866,7 +863,7 @@ describe MergeRequest, models: true do
       context 'and a successful pipeline is associated' do
         before do
           pipeline.update(status: 'success')
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -875,7 +872,7 @@ describe MergeRequest, models: true do
       context 'and a skipped pipeline is associated' do
         before do
           pipeline.update(status: 'skipped')
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -883,7 +880,7 @@ describe MergeRequest, models: true do
 
       context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:pipeline) { nil }
+          allow(subject).to receive(:head_pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -896,7 +893,7 @@ describe MergeRequest, models: true do
       context 'and a failed pipeline is associated' do
         before do
           pipeline.statuses << create(:commit_status, status: 'failed', project: project)
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -904,7 +901,7 @@ describe MergeRequest, models: true do
 
       context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:pipeline) { nil }
+          allow(subject).to receive(:head_pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -1438,6 +1435,28 @@ describe MergeRequest, models: true do
       it 'returns false' do
         expect(subject.reopenable?).to be_falsey
       end
+    end
+  end
+
+  describe '#has_commits?' do
+    before do
+      allow(subject.merge_request_diff).to receive(:commits_count).
+        and_return(2)
+    end
+
+    it 'returns true when merge request diff has commits' do
+      expect(subject.has_commits?).to be_truthy
+    end
+  end
+
+  describe '#has_no_commits?' do
+    before do
+      allow(subject.merge_request_diff).to receive(:commits_count).
+        and_return(0)
+    end
+
+    it 'returns true when merge request diff has 0 commits' do
+      expect(subject.has_no_commits?).to be_truthy
     end
   end
 end

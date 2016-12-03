@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::API, api: true  do
+describe API::Branches, api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -31,9 +31,20 @@ describe API::API, api: true  do
 
       expect(json_response['name']).to eq(branch_name)
       expect(json_response['commit']['id']).to eq(branch_sha)
+      expect(json_response['merged']).to eq(false)
       expect(json_response['protected']).to eq(false)
       expect(json_response['developers_can_push']).to eq(false)
       expect(json_response['developers_can_merge']).to eq(false)
+    end
+
+    context 'on a merged branch' do
+      it "returns the branch information for a single branch" do
+        get api("/projects/#{project.id}/repository/branches/merge-test", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq('merge-test')
+        expect(json_response['merged']).to eq(true)
+      end
     end
 
     it "returns a 403 error if guest" do

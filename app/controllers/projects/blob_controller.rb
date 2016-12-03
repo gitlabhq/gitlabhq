@@ -13,7 +13,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :assign_blob_vars
   before_action :commit, except: [:new, :create]
   before_action :blob, except: [:new, :create]
-  before_action :from_merge_request, only: [:edit, :update]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
@@ -39,14 +38,6 @@ class Projects::BlobController < Projects::ApplicationController
 
   def update
     @path = params[:file_path] if params[:file_path].present?
-    after_edit_path =
-      if from_merge_request && @target_branch == @ref
-        diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
-          "##{hexdigest(@path)}"
-      else
-        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
-      end
-
     create_commit(Files::UpdateService, success_path: after_edit_path,
                                         failure_view: :edit,
                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
@@ -124,9 +115,14 @@ class Projects::BlobController < Projects::ApplicationController
     render_404
   end
 
-  def from_merge_request
-    # If blob edit was initiated from merge request page
-    @from_merge_request ||= MergeRequest.find_by(id: params[:from_merge_request_id])
+  def after_edit_path
+    from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.find_by(iid: params[:from_merge_request_iid])
+    if from_merge_request && @target_branch == @ref
+      diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
+        "##{hexdigest(@path)}"
+    else
+      namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
+    end
   end
 
   def editor_variables

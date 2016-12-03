@@ -1,14 +1,17 @@
 .tabs-holder
-  %ul.nav-links.no-top.no-bottom
-    %li.active
-      = link_to "Pipeline", "#js-tab-pipeline", data: { target: '#js-tab-pipeline', action: 'pipeline', toggle: 'tab' }, class: 'pipeline-tab'
-    %li
-      = link_to "#js-tab-builds", data: { target: '#js-tab-builds', action: 'build', toggle: 'tab' }, class: 'builds-tab' do
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom
+    %li.js-pipeline-tab-link
+      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
+        Pipeline
+    %li.js-builds-tab-link
+      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         Builds
-        %span.badge= pipeline.statuses.count
+        %span.badge.js-builds-counter= pipeline.statuses.count
+
+
 
 .tab-content
-  #js-tab-pipeline.tab-pane.active
+  #js-tab-pipeline.tab-pane
     .build-content.middle-block.pipeline-graph
       .pipeline-visualization
         %ul.stage-column-list

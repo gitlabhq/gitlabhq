@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PipelineNotificationWorker do
+  include EmailHelpers
+
   let(:pipeline) do
     create(:ci_pipeline,
            project: project,

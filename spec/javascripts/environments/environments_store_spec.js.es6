@@ -5,11 +5,11 @@
 //= require ./mock_data
 
 (() => {
-  beforeEach(() => {
-    gl.environmentsList.EnvironmentsStore.create();
-  });
-
   describe('Store', () => {
+    beforeEach(() => {
+      gl.environmentsList.EnvironmentsStore.create();
+    });
+
     it('should start with a blank state', () => {
       expect(gl.environmentsList.EnvironmentsStore.state.environments.length).toBe(0);
       expect(gl.environmentsList.EnvironmentsStore.state.stoppedCounter).toBe(0);

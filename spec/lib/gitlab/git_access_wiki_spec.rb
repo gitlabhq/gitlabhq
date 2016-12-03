@@ -26,4 +26,29 @@ describe Gitlab::GitAccessWiki, lib: true do
   def changes
     ['6f6d7e7ed 570e7b2ab refs/heads/master']
   end
+
+  describe '#download_access_check' do
+    subject { access.check('git-upload-pack', '_any') }
+
+    before do
+      project.team << [user, :developer]
+    end
+
+    context 'when wiki feature is enabled' do
+      it 'give access to download wiki code' do
+        project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
+
+        expect(subject.allowed?).to be_truthy
+      end
+    end
+
+    context 'when wiki feature is disabled' do
+      it 'does not give access to download wiki code' do
+        project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+
+        expect(subject.allowed?).to be_falsey
+        expect(subject.message).to match(/You are not allowed to download code/)
+      end
+    end
+  end
 end

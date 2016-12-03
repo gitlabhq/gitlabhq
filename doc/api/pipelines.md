@@ -41,7 +41,8 @@ Example of response
     "started_at": null,
     "finished_at": null,
     "committed_at": null,
-    "duration": null
+    "duration": null,
+    "coverage": "30.0"
   },
   {
     "id": 48,
@@ -64,7 +65,8 @@ Example of response
     "started_at": null,
     "finished_at": null,
     "committed_at": null,
-    "duration": null
+    "duration": null,
+    "coverage": null
   }
 ]
 ```
@@ -110,7 +112,8 @@ Example of response
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": "30.0"
 }
 ```
 
@@ -155,7 +158,8 @@ Example of response
   "started_at": null,
   "finished_at": null,
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": null
 }
 ```
 
@@ -200,7 +204,8 @@ Response:
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": null
 }
 ```
 
@@ -245,7 +250,8 @@ Response:
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": null
 }
 ```
 

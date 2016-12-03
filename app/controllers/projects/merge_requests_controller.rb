@@ -325,16 +325,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_build_succeeds].present?
-      unless @merge_request.pipeline
+      unless @merge_request.head_pipeline
         @status = :failed
         return
       end
 
-      if @merge_request.pipeline.active?
+      if @merge_request.head_pipeline.active?
         MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
                                                         .execute(@merge_request)
         @status = :merge_when_build_succeeds
-      elsif @merge_request.pipeline.success?
+      elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
         MergeWorker.perform_async(@merge_request.id, current_user.id, params)
@@ -398,7 +398,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_status
-    pipeline = @merge_request.pipeline
+    pipeline = @merge_request.head_pipeline
+
     if pipeline
       status = pipeline.status
       coverage = pipeline.try(:coverage)
@@ -491,7 +492,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def validates_merge_request
     # Show git not found page
     # if there is no saved commits between source & target branch
-    if @merge_request.commits.blank?
+    if @merge_request.has_no_commits?
       # and if target branch doesn't exist
       return invalid_mr unless @merge_request.target_branch_exists?
     end
@@ -499,7 +500,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_show_vars
     @noteable = @merge_request
-    @commits_count = @merge_request.commits.count
+    @commits_count = @merge_request.commits_count
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
@@ -534,7 +535,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_widget_vars
-    @pipeline = @merge_request.pipeline
+    @pipeline = @merge_request.head_pipeline
   end
 
   def define_commit_vars
@@ -563,8 +564,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_pipelines_vars
     @pipelines = @merge_request.all_pipelines
-    @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses.relevant if @pipeline.present?
+    @pipeline = @merge_request.head_pipeline
+    @statuses_count = @pipeline.present? ? @pipeline.statuses.relevant.count : 0
   end
 
   def define_new_vars
@@ -631,7 +632,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_when_build_succeeds_active?
     params[:merge_when_build_succeeds].present? &&
-      @merge_request.pipeline && @merge_request.pipeline.active?
+      @merge_request.head_pipeline && @merge_request.head_pipeline.active?
   end
 
   def build_merge_request

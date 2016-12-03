@@ -1,0 +1,5 @@
+---
+title: Adjusted margins for Build Status and Coverage Report rows to match those of
+  the CI/CD Pipeline row
+merge_request: 
+author: Ryan Harris

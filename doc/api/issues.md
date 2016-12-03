@@ -315,10 +315,6 @@ Example response:
 
 Creates a new project issue.
 
-If the operation is successful, a status code of `200` and the newly-created
-issue is returned. If an error occurs, an error number and a message explaining
-the reason is returned.
-
 ```
 POST /projects/:id/issues
 ```
@@ -376,10 +372,6 @@ Example response:
 
 Updates an existing project issue. This call is also used to mark an issue as
 closed.
-
-If the operation is successful, a code of `200` and the updated issue is
-returned. If an error occurs, an error number and a message explaining the
-reason is returned.
 
 ```
 PUT /projects/:id/issues/:issue_id
@@ -439,8 +431,6 @@ Example response:
 ## Delete an issue
 
 Only for admins and project owners. Soft deletes the issue in question.
-If the operation is successful, a status code `200` is returned. In case you cannot
-destroy this issue, or it is not present, code `404` is given.
 
 ```
 DELETE /projects/:id/issues/:issue_id
@@ -457,9 +447,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://git
 
 ## Move an issue
 
-Moves an issue to a different project. If the operation is successful, a status
-code `201` together with moved issue is returned. If the project, issue, or
-target project is not found, error `404` is returned. If the target project
+Moves an issue to a different project. If the target project
 equals the source project or the user has insufficient permissions to move an
 issue, error `400` together with an explaining error message is returned.
 
@@ -518,11 +506,9 @@ Example response:
 
 ## Subscribe to an issue
 
-Subscribes the authenticated user to an issue to receive notifications. If the
-operation is successful, status code `201` together with the updated issue is
-returned. If the user is already subscribed to the issue, the status code `304`
-is returned. If the project or issue is not found, status code `404` is
-returned.
+Subscribes the authenticated user to an issue to receive notifications. 
+If the user is already subscribed to the issue, the status code `304`
+is returned.
 
 ```
 POST /projects/:id/issues/:issue_id/subscription
@@ -576,10 +562,8 @@ Example response:
 ## Unsubscribe from an issue
 
 Unsubscribes the authenticated user from the issue to not receive notifications
-from it. If the operation is successful, status code `200` together with the
-updated issue is returned. If the user is not subscribed to the issue, the
-status code `304` is returned. If the project or issue is not found, status code
-`404` is returned.
+from it. If the user is not subscribed to the issue, the
+status code `304` is returned.
 
 ```
 DELETE /projects/:id/issues/:issue_id/subscription
@@ -633,8 +617,7 @@ Example response:
 
 ## Create a todo
 
-Manually creates a todo for the current user on an issue. If the request is
-successful, status code `200` together with the created todo is returned. If
+Manually creates a todo for the current user on an issue. If
 there already exists a todo for the user on that issue, status code `304` is
 returned.
 

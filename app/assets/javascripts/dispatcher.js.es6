@@ -135,8 +135,18 @@
             new TreeView();
           }
           break;
+        case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
-          new gl.Pipelines();
+          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
+
+          new gl.Pipelines({
+            initTabs: true,
+            tabsOptions: {
+              action: controllerAction,
+              defaultAction: 'pipelines',
+              parentEl: '.pipelines-tabs',
+            },
+          });
           break;
         case 'groups:activity':
           new gl.Activities();
@@ -208,6 +218,9 @@
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
+        case 'projects:variables:index':
+          new gl.ProjectVariables();
+          break;
       }
       switch (path.first()) {
         case 'admin':
@@ -259,7 +272,7 @@
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new Wikis();
+              new gl.Wikis();
               shortcut_handler = new ShortcutsNavigation();
               new ZenMode();
               new GLForm($('.wiki-form'));

@@ -23,6 +23,7 @@
 
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
+  window.gl.environmentsList.timeagoInstance = new timeago(); // eslint-disable-line
 
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 
@@ -148,14 +149,25 @@
       },
 
       /**
+       * Verifies if the date to be shown is present.
+       *
+       * @returns {Boolean|Undefined}
+       */
+      canShowDate() {
+        return this.model.last_deployment &&
+          this.model.last_deployment.deployable &&
+          this.model.last_deployment.deployable !== undefined;
+      },
+
+      /**
        * Human readable date.
        *
        * @returns {String}
        */
       createdDate() {
-        const timeagoInstance = new timeago(); // eslint-disable-line
-
-        return timeagoInstance.format(this.model.created_at);
+        return window.gl.environmentsList.timeagoInstance.format(
+          this.model.last_deployment.deployable.created_at,
+        );
       },
 
       /**
@@ -439,7 +451,7 @@
           <div v-if="!isFolder && hasLastDeploymentKey" class="js-commit-component">
             <commit-component
               :tag="commitTag"
-              :ref="commitRef"
+              :commit_ref="commitRef"
               :commit_url="commitUrl"
               :short_sha="commitShortSha"
               :title="commitTitle"
@@ -453,7 +465,7 @@
 
         <td>
           <span
-            v-if="!isFolder && model.last_deployment"
+            v-if="!isFolder && canShowDate"
             class="environment-created-date-timeago">
             {{createdDate}}
           </span>

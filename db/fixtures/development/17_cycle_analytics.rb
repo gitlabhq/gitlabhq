@@ -1,6 +1,5 @@
 require 'sidekiq/testing'
 require './spec/support/test_env'
-require './db/fixtures/support/serialized_transaction'
 
 class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)

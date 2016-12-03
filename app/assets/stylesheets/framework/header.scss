@@ -8,7 +8,7 @@ header {
 
   &.navbar-empty {
     height: $header-height;
-    background: #fff;
+    background: $white-light;
     border-bottom: 1px solid $btn-gray-hover;
 
     .center-logo {
@@ -76,7 +76,7 @@ header {
       }
 
       .navbar-toggle {
-        color: #666;
+        color: $nav-toggle-gray;
         margin: 6px 0;
         border-radius: 0;
         position: absolute;
@@ -228,7 +228,7 @@ header {
 }
 
 .page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-lg-min) {
+  @media (max-width: $screen-md-max) {
     .header-content .title {
       width: 300px;
     }

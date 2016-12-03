@@ -1,7 +1,7 @@
 module RakeHelpers
-  def run_rake_task(task_name)
+  def run_rake_task(task_name, *args)
     Rake::Task[task_name].reenable
-    Rake.application.invoke_task task_name
+    Rake.application.invoke_task("#{task_name}[#{args.join(',')}]")
   end
 
   def stub_warn_user_is_not_gitlab

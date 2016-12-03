@@ -30,7 +30,7 @@ module API
       end
       get ':id/variables/:key' do
         key = params[:key]
-        variable = user_project.variables.find_by(key: key.to_s)
+        variable = user_project.variables.find_by(key: key)
 
         return not_found!('Variable') unless variable
 

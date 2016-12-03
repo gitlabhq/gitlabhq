@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe API::Triggers do
   include ApiHelpers
 
   let(:user) { create(:user) }

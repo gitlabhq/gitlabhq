@@ -158,7 +158,7 @@ Example Response:
 ### Delete an award emoji
 
 Sometimes its just not meant to be, and you'll have to remove your award. Only available to
-admins or the author of the award. Status code 200 on success, 401 if unauthorized.
+admins or the author of the award.
 
 ```
 DELETE /projects/:id/issues/:issue_id/award_emoji/:award_id
@@ -331,7 +331,7 @@ Example Response:
 ### Delete an award emoji
 
 Sometimes its just not meant to be, and you'll have to remove your award. Only available to
-admins or the author of the award. Status code 200 on success, 401 if unauthorized.
+admins or the author of the award.
 
 ```
 DELETE /projects/:id/issues/:issue_id/notes/:note_id/award_emoji/:award_id
