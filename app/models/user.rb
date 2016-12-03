@@ -512,7 +512,7 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0
+    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
   def require_password?
