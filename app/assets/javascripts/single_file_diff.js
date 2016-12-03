@@ -14,6 +14,7 @@
     COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
 
     function SingleFileDiff(file, forceLoad, cb) {
+      var clickTarget;
       this.file = file;
       this.toggleDiff = bind(this.toggleDiff, this);
       this.content = $('.diff-content', this.file);
@@ -31,9 +32,9 @@
         this.content.after(this.collapsedContent);
         this.$toggleIcon.addClass('fa-caret-down');
       }
-      $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
+      clickTarget = $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
       if (forceLoad) {
-        this.toggleDiff(null, cb);
+        this.toggleDiff({ target: clickTarget }, cb);
       }
     }
 
