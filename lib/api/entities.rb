@@ -174,6 +174,7 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+      expose :committer_name, :committer_email
       expose :safe_message, as: :message
     end
 
