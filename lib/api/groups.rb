@@ -1,5 +1,7 @@
 module API
   class Groups < Grape::API
+    include PaginationParams
+    
     before { authenticate! }
 
     helpers do
@@ -21,6 +23,7 @@ module API
         optional :search, type: String, desc: 'Search for a specific group'
         optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        use :pagination
       end
       get do
         groups = if current_user.admin
@@ -40,6 +43,9 @@ module API
 
       desc 'Get list of owned groups for authenticated user' do
         success Entities::Group
+      end
+      params do
+        use :pagination
       end
       get '/owned' do
         groups = current_user.owned_groups
@@ -110,11 +116,13 @@ module API
       desc 'Get a list of projects in this group.' do
         success Entities::Project
       end
+      params do
+        use :pagination
+      end
       get ":id/projects" do
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
-        projects = paginate projects
-        present projects, with: Entities::Project, user: current_user
+        present paginate(projects), with: Entities::Project, user: current_user
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do
