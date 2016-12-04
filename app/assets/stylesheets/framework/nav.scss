@@ -116,7 +116,7 @@
     line-height: 28px;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }

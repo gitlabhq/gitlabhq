@@ -575,6 +575,23 @@ describe User, models: true do
         end
       end
     end
+
+    describe '#require_ssh_key?' do
+      protocol_and_expectation = {
+        'http' => false,
+        'ssh' => true,
+        '' => true,
+      }
+
+      protocol_and_expectation.each do |protocol, expected|
+        it "has correct require_ssh_key?" do
+          stub_application_setting(enabled_git_access_protocol: protocol)
+          user = build(:user)
+
+          expect(user.require_ssh_key?).to eq(expected)
+        end
+      end
+    end
   end
 
   describe '.find_by_any_email' do

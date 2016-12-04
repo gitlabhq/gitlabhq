@@ -492,7 +492,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def validates_merge_request
     # Show git not found page
     # if there is no saved commits between source & target branch
-    if @merge_request.commits.blank?
+    if @merge_request.has_no_commits?
       # and if target branch doesn't exist
       return invalid_mr unless @merge_request.target_branch_exists?
     end
@@ -500,7 +500,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_show_vars
     @noteable = @merge_request
-    @commits_count = @merge_request.commits.count
+    @commits_count = @merge_request.commits_count
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr

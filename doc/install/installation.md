@@ -404,18 +404,6 @@ which is the recommended location.
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
-You can specify a different Git repository by providing `GITLAB_WORKHORSE_REPO`:
-
-    cd /home/git/gitlab
-
-    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" GITLAB_WORKHORSE_REPO=https://example.com/gitlab-workhorse.git RAILS_ENV=production
-
-You can specify a different version to use by providing `GITLAB_WORKHORSE_VERSION`:
-
-    cd /home/git/gitlab
-
-    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" GITLAB_WORKHORSE_VERSION=0.8.1 RAILS_ENV=production
-
 ### Initialize Database and Activate Advanced Features
 
     # Go to GitLab installation folder

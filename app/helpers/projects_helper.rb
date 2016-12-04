@@ -390,21 +390,7 @@ module ProjectsHelper
       "success"
     end
   end
-
-  def new_readme_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
-  end
-
-  def new_license_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
-  end
-
+  
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')

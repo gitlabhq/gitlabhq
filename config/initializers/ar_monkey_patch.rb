@@ -52,6 +52,23 @@ module ActiveRecord
           raise
         end
       end
+
+      # This is patched because we need it to query `lock_version IS NULL`
+      # rather than `lock_version = 0` whenever lock_version is NULL.
+      def relation_for_destroy
+        return super unless locking_enabled?
+
+        column_name = self.class.locking_column
+        super.where(self.class.arel_table[column_name].eq(self[column_name]))
+      end
+    end
+
+    # This is patched because we want `lock_version` default to `NULL`
+    # rather than `0`
+    class LockingType < SimpleDelegator
+      def type_cast_from_database(value)
+        super
+      end
     end
   end
 end

@@ -35,9 +35,11 @@ module Banzai
           headers[id] += 1
 
           if header_content = node.children.first
+            # namespace detection will be automatically handled via javascript (see issue #22781)
+            namespace = "user-content-"
             href = "#{id}#{uniq}"
             push_toc(href, text)
-            header_content.add_previous_sibling(anchor_tag(href))
+            header_content.add_previous_sibling(anchor_tag("#{namespace}#{href}", href))
           end
         end
 
@@ -48,8 +50,8 @@ module Banzai
 
       private
 
-      def anchor_tag(href)
-        %Q{<a id="#{href}" class="anchor" href="##{href}" aria-hidden="true"></a>}
+      def anchor_tag(id, href)
+        %Q{<a id="#{id}" class="anchor" href="##{href}" aria-hidden="true"></a>}
       end
 
       def push_toc(href, text)

@@ -96,6 +96,8 @@ $dark-background-color: #f5f5f5;
 $table-text-gray: #8f8f8f;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
+$well-light-border: #f1f1f1;
+$well-light-text-color: #5b6169;
 
 /*
  * Text
@@ -103,11 +105,13 @@ $well-inner-border: #eef0f2;
 $gl-font-size: 15px;
 $gl-title-color: #333;
 $gl-text-color: #5c5c5c;
+$gl-text-color-dark: #5c5d5e;
 $gl-text-color-light: #8c8c8c;
 $gl-text-green: #4a2;
 $gl-text-red: #d12f19;
 $gl-text-orange: #d90;
 $gl-link-color: #3777b0;
+$gl-diff-text-color: #555;
 $gl-dark-link-color: #333;
 $gl-placeholder-color: #8f8f8f;
 $gl-icon-color: $gl-placeholder-color;
@@ -123,13 +127,20 @@ $gl-header-color: #4c4e54;
 $list-font-size: $gl-font-size;
 $list-title-color: $gl-title-color;
 $list-text-color: $gl-text-color;
+$list-text-disabled-color: #888;
+$list-border-light: #eee;
+$list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
+$list-warning-row-bg: #fcf8e3;
+$list-warning-row-border: #faebcc;
+$list-warning-row-color: #8a6d3b;
 
 /*
  * Markdown
  */
 $md-text-color: $gl-text-color;
 $md-link-color: $gl-link-color;
+$md-area-border: #ddd;
 
 /*
  * Code
@@ -153,10 +164,8 @@ $gl-sidebar-padding: 22px;
 $row-hover: #f7faff;
 $row-hover-border: #b2d7ff;
 $progress-color: #c0392b;
-$avatar_radius: 50%;
 $header-height: 50px;
 $fixed-layout-width: 1280px;
-$gl-avatar-size: 40px;
 $error-exclamation-point: #e62958;
 $border-radius-default: 2px;
 $btn-transparent-color: #8f8f8f;
@@ -166,10 +175,47 @@ $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
 $active-item-blue: #4a8bee;
 $layout-link-gray: #7e7c7c;
-$todo-alert-blue: #428bca;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
+$issue-status-expired: #cea61b;
+$issuable-sidebar-color: #999;
+$issuable-avatar-hover-border: #999;
+$issuable-clipboard-color: #999;
+$show-aside-bg: #eee;
+$show-aside-color: #777;
+$show-aside-shadow: #ddd;
+$group-path-color: #999;
+$namespace-kind-color: #aaa;
+$panel-heading-link-color: #777;
+$graph-author-email-color: #777;
+$count-arrow-border: #dce0e5;
+$save-project-loader-color: #555;
+$divergence-graph-bar-bg: #ccc;
+$divergence-graph-separator-bg: #ccc;
+$issue-box-upcoming-bg: #8f8f8f;
+
+/*
+* Common component specific colors
+*/
+$hint-color: #999;
+$well-pre-bg: #eee;
+$well-pre-color: #555;
+$loading-color: #555;
+$update-author-color: #999;
+$user-mention-color: #2fa0bb;
+$time-color: #999;
+$project-member-show-color: #aaa;
+$gl-promo-color: #aaa;
+$error-bg: #c67;
+$warning-message-bg: #ffffe6;
+$warning-message-border: #ed9;
+$warning-message-color: #b90;
+$control-group-descr-color: #666;
+$table-permission-x-bg: #d9edf7;
+$username-color: #666;
+$description-color: #666;
+$profiler-border: #eee;
 
 /* tanuki logo colors */
 $tanuki-red: #e24329;
@@ -205,12 +251,22 @@ $table-border-gray: #f0f0f0;
 $line-target-blue: #f6faff;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
+$dark-diff-match-bg: rgba(255, 255, 255, 0.3);
+$dark-diff-match-color: rgba(255, 255, 255, 0.1);
+$file-mode-changed: #777;
+$file-mode-changed: #777;
+$diff-image-bg: #ddd;
+$diff-image-info-color: grey;
+$diff-image-img-bg: #e5e5e5;
+$diff-swipe-border: #999;
+$diff-view-modes-color: grey;
+$diff-view-modes-border: #c1c1c1;
 
 /*
  * Fonts
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 
 /*
 * Dropdowns
@@ -226,6 +282,7 @@ $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-color: #555;
+$dropdown-input-fa-color: #c7c7c7;
 $dropdown-input-focus-border: $focus-border-color;
 $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
@@ -243,6 +300,7 @@ $dropdown-toggle-hover-icon-color: darken($dropdown-toggle-icon-color, 7%);
 * Buttons
 */
 $btn-active-gray: #ececec;
+$btn-active-gray-light: e4e7ed;
 $btn-placeholder-gray: #c7c7c7;
 $btn-white-active: #848484;
 $btn-gray-hover: #eee;
@@ -259,6 +317,7 @@ $badge-color: $btn-transparent-color;
  */
 $award-emoji-menu-bg: #fff;
 $award-emoji-menu-border: #f1f2f4;
+$award-emoji-menu-shadow: rgba(0,0,0,.175);
 $award-emoji-new-btn-icon-color: #dcdcdc;
 
 /*
@@ -280,17 +339,28 @@ $notes-light-color: #8e8e8e;
 $notes-action-color: #c3c3c3;
 $notes-role-color: #8e8e8e;
 $notes-role-border-color: #e4e4e4;
-
 $note-disabled-comment-color: #b2b2b2;
 $note-form-border-color: #e5e5e5;
 $note-toolbar-color: #959494;
+$note-targe3-outside: #fffff0;
+$note-targe3-inside: #ffffd3;
+$note-line2-border: #ddd;
 
+
+/*
+* Zen
+*/
+$zen-control-color: #555;
 $zen-control-hover-color: #111;
 
+/*
+* Calendar
+*/
 $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
 $calendar-unselectable-bg: $gray-light;
+$calendar-user-contrib-text: #959494;
 
 /*
  *  Cycle Analytics
@@ -300,13 +370,217 @@ $cycle-analytics-box-text-color: #8c8c8c;
 $cycle-analytics-big-font: 19px;
 $cycle-analytics-dark-text: $gl-title-color;
 $cycle-analytics-light-gray: #bfbfbf;
+$cycle-analytics-dismiss-icon-color: #b2b2b2;
 
 /*
  * Personal Access Tokens
  */
 $personal-access-tokens-disabled-label-color: #bbb;
 
+/*
+* CI
+*/
 $ci-output-bg: #1d1f21;
 $ci-text-color: #c5c8c6;
+$ci-skipped-color: #888;
 
+/*
+* Boards
+*/
 $issue-boards-font-size: 15px;
+$issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
+
+/*
+* Avatar
+*/
+$avatar_radius: 50%;
+$avatar-border: rgba(0, 0, 0, .1);
+$gl-avatar-size: 40px;
+
+/*
+* Builds
+*/
+$builds-trace-bg: #111;
+
+/*
+* Callout
+*/
+$callout-danger-bg: #fdf7f7;
+$callout-danger-border: #eed3d7;
+$callout-danger-color: #b94a48;
+$callout-warning-bg: #faf8f0;
+$callout-warning-border: #faebcc;
+$callout-warning-color: #8a6d3b;
+$callout-info-bg: #f4f8fa;
+$callout-info-border: #bce8f1;
+$callout-info-color: #34789a;
+$callout-success-bg: #dff0d8;
+$callout-success-border: #5ca64d;
+$callout-success-color: #3c763d;
+
+/*
+* Commit Page
+*/
+$commit-committer-color: #999;
+$commit-max-width-marker-color: rgba(0, 0, 0, 0.0);
+$commit-message-text-area-bg: rgba(0, 0, 0, 0.0);
+
+/*
+* Common
+*/
+$common-gray: $gl-gray;
+$common-gray-light: #bbb;
+$common-gray-dark: #444;
+$common-red: $gl-text-red;
+$common-green: $gl-text-green;
+
+
+/*
+* Dashboard
+*/
+$dashboard-project-access-icon-color: #888;
+
+/*
+* Editor
+*/
+$editor-cancel-color: #b94a48;
+
+/*
+* Events
+*/
+$events-pre-color: #777;
+$events-note-icon-color: #777;
+$events-body-border: #ddd;
+
+/*
+* Files
+*/
+$file-image-bg: #eee;
+$blob-bg: #eee;
+$blame-border: #eee;
+$blame-line-numbers-border: #ddd;
+$logs-bg: #eee;
+$logs-li-color: #888;
+$logs-p-color: #333;
+
+/*
+* Forms
+*/
+$input-danger-bg: #f2dede;
+$input-danger-border: #d66;
+$input-group-addon-bg: #f7f8fa;
+$gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
+$gl-field-focus-shadow-error: rgba(210, 40, 82, 0.6);
+
+/*
+* Help
+*/
+$document-index-color: #888;
+$help-shortcut-color: #999;
+$help-shortcut-mapping-color: #555;
+$help-shortcut-header-color: #333;
+
+/*
+* Issues
+*/
+$issues-border: #e5e5e5;
+$issues-today-bg: #f3fff2;
+$issues-today-border: #e1e8d5;
+
+/*
+* jQuery UI
+*/
+$jq-ui-border: #ddd;
+$jq-ui-default-color: #777;
+
+/*
+* Label
+*/
+$label-gray-bg: #f8fafc;
+$label-inverse-bg: #333;
+$label-remove-border: rgba(0, 0, 0, .1);
+
+/*
+* Lint
+*/
+$lint-incorrect-color: red;
+$lint-correct-color: #47a447;
+
+/*
+* Login
+*/
+$login-brand-holder-color: #888;
+$login-devise-error-color: #a00;
+
+/*
+* Nav
+*/
+$nav-link-gray: #959494;
+$nav-badge-bg: #eee;
+$nav-toggle-gray: #666;
+
+/*
+* Notify
+*/
+$notify-details: #777;
+$notify-footer: #777;
+$notify-new-file: #090;
+$notify-deleted-file: #b00;
+
+/*
+* Projects
+*/
+$project-option-descr-color: #54565b;
+$project-breadcrumb-color: #999;
+$project-private-forks-notice-odd: #2aa056;
+$project-network-controls-color: #888;
+$project-limit-message-bg: #f28d35;
+
+/*
+* Runners
+*/
+$runner-state-shared-bg: #32b186;
+$runner-state-specific-bg: #3498db;
+$runner-status-online-color: green;
+$runner-status-offline-color: gray;
+$runner-status-paused-color: red;
+
+/*
+Stat Graph
+*/
+$stat-graph-common-bg: #f3f3f3;
+$stat-graph-area-fill: #1db34f;
+$stat-graph-axis-fill: #aaa;
+$stat-graph-orange-fill: #f17f49;
+$stat-graph-selection-fill: #333;
+$stat-graph-selection-stroke: #333;
+
+/*
+* Selects
+*/
+$select2-drop-shadow1: rgba(76, 86, 103, 0.247059);
+$select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
+
+
+/*
+* Todo
+*/
+$todo-alert-blue: #428bca;
+$todo-body-pre-color: #777;
+$todo-body-border: #ddd;
+
+/*
+* Typography
+*/
+$kdb-bg: #fcfcfc;
+$kdb-color: #555;
+$kdb-border: #ccc;
+$kdb-border-bottom: #bbb;
+$kdb-shadow: #bbb;
+$body-text-shadow: rgba(255,255,255,0.01);
+
+/*
+* UI Dev Kit
+*/
+$ui-dev-kit-example-color: #bbb;
+$ui-dev-kit-example-border: #ddd;

@@ -5,6 +5,10 @@
     window.GitLab = {};
   }
 
+  function sanitize(str) {
+    return str.replace(/<(?:.|\n)*?>/gm, '');
+  }
+
   GitLab.GfmAutoComplete = {
     dataLoading: false,
     dataLoaded: false,
@@ -160,8 +164,8 @@
               return {
                 username: m.username,
                 avatarTag: autoCompleteAvatar.length === 1 ?  txtAvatar : imgAvatar,
-                title: gl.utils.sanitize(title),
-                search: gl.utils.sanitize(m.username + " " + m.name)
+                title: sanitize(title),
+                search: sanitize(m.username + " " + m.name)
               };
             });
           }
@@ -195,7 +199,7 @@
               }
               return {
                 id: i.iid,
-                title: gl.utils.sanitize(i.title),
+                title: sanitize(i.title),
                 search: i.iid + " " + i.title
               };
             });
@@ -228,7 +232,7 @@
               }
               return {
                 id: m.iid,
-                title: gl.utils.sanitize(m.title),
+                title: sanitize(m.title),
                 search: "" + m.title
               };
             });
@@ -263,7 +267,7 @@
               }
               return {
                 id: m.iid,
-                title: gl.utils.sanitize(m.title),
+                title: sanitize(m.title),
                 search: m.iid + " " + m.title
               };
             });
@@ -284,9 +288,9 @@
             var sanitizeLabelTitle;
             sanitizeLabelTitle = function(title) {
               if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
-                return "\"" + (gl.utils.sanitize(title)) + "\"";
+                return "\"" + (sanitize(title)) + "\"";
               } else {
-                return gl.utils.sanitize(title);
+                return sanitize(title);
               }
             };
             return $.map(merges, function(m) {

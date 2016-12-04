@@ -48,6 +48,10 @@ class Commit
         max_lines: DIFF_HARD_LIMIT_LINES,
       }
     end
+
+    def from_hash(hash, project)
+      new(Gitlab::Git::Commit.new(hash), project)
+    end
   end
 
   attr_accessor :raw

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Internal, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }

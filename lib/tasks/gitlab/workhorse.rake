@@ -7,8 +7,8 @@ namespace :gitlab do
         abort %(Please specify the directory where you want to install gitlab-workhorse:\n  rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]")
       end
 
-      tag = "v#{ENV['GITLAB_WORKHORSE_VERSION'] || Gitlab::Workhorse.version}"
-      repo = ENV['GITLAB_WORKHORSE_REPO'] || 'https://gitlab.com/gitlab-org/gitlab-workhorse.git'
+      tag = "v#{Gitlab::Workhorse.version}"
+      repo = 'https://gitlab.com/gitlab-org/gitlab-workhorse.git'
 
       checkout_or_clone_tag(tag: tag, repo: repo, target_dir: args.dir)
 

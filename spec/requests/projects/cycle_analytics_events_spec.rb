@@ -135,6 +135,6 @@ describe 'cycle analytics events' do
 
     merge_merge_requests_closing_issue(issue)
 
-    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.sha)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end
 end

@@ -97,13 +97,13 @@
   display: inline-block;
 
   &.label-gray {
-    background-color: #f8fafc;
+    background-color: $label-gray-bg;
     color: $gl-gray;
     text-shadow: none;
   }
 
   &.label-inverse {
-    background-color: #333;
+    background-color: $label-inverse-bg;
   }
 }
 
@@ -158,7 +158,7 @@
       font-weight: normal;
 
       a {
-        color: #777;
+        color: $panel-heading-link-color;
       }
     }
   }
@@ -172,7 +172,7 @@
 .alert {
   a:not(.btn) {
     @extend .alert-link;
-    color: #fff;
+    color: $white-light;
     text-decoration: underline;
   }
 }

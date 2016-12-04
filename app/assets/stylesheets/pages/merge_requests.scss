@@ -86,7 +86,7 @@
   }
 
   .normal {
-    color: #5c5d5e;
+    color: $gl-text-color-dark;
   }
 
   .js-deployment-link {
@@ -143,7 +143,7 @@
   }
 
   .mr-widget-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid $gray-darker;
   }
 
   .ci-coverage {
