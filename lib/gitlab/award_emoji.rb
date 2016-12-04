@@ -29,11 +29,9 @@ module Gitlab
 
           @emoji_by_category[category] << data
         end
-
-        @emoji_by_category = @emoji_by_category.sort.to_h
       end
 
-      @emoji_by_category
+      @emoji_by_category = sort_emoji_by_category
     end
 
     def self.emojis
@@ -50,6 +48,22 @@ module Gitlab
           json_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
           JSON.parse(File.read(json_path))
         end
+    end
+
+    def self.sort_emoji_by_category
+      sorted_emoji_by_category = {}
+      [
+        'people',
+        'nature',
+        'travel',
+        'activity',
+        'objects',
+        'symbols',
+        'flags'
+      ].each do |category|
+        sorted_emoji_by_category[category] = @emoji_by_category[category]
+      end
+      sorted_emoji_by_category
     end
 
     # Returns an Array of Emoji names and their asset URLs.
