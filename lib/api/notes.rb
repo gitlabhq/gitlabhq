@@ -1,6 +1,7 @@
 module API
-  # Notes API
   class Notes < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
@@ -17,6 +18,7 @@ module API
         end
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
+          use :pagination
         end
         get ":id/#{noteables_str}/:noteable_id/notes" do
           noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
