@@ -9,7 +9,10 @@
     }
 
     itemClicked(e) {
-      console.log('author clicked');
+      const username = e.detail.selected.querySelector('.dropdown-light-content').innerText.trim();
+      gl.FilteredSearchManager.addWordToInput(this.getSelectedText(username));
+
+      this.dismissDropdown();
     }
 
     renderContent() {

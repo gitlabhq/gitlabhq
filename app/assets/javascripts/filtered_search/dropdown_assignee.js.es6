@@ -12,7 +12,8 @@
       const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
 
       if (!dataValueSet) {
-        console.log('set value');
+        const username = e.detail.selected.querySelector('.dropdown-light-content').innerText.trim();
+        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(username));
       }
 
       this.dismissDropdown();
