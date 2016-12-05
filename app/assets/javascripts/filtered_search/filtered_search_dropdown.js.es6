@@ -41,11 +41,18 @@
       return config;
     }
 
-    dismissDropdown() {
+    destroy() {
       this.input.setAttribute(DATA_DROPDOWN_TRIGGER, '');
       droplab.setConfig(this.getFilterConfig());
       droplab.setData(this.hookId, []);
       this.unbindEvents();
+    }
+
+    dismissDropdown() {
+      this.input.focus();
+      // Propogate input change to FilteredSearchManager
+      // so that it can determine which dropdowns to open
+      this.input.dispatchEvent(new Event('input'));
     }
 
     setAsDropdown() {
@@ -54,6 +61,16 @@
 
     setOffset(offset = 0) {
       this.dropdown.style.left = `${offset}px`;
+    }
+
+    setDataValueIfSelected(selected) {
+      const dataValue = selected.getAttribute('data-value');
+
+      if (dataValue) {
+        gl.FilteredSearchManager.addWordToInput(dataValue);
+      }
+
+      return dataValue !== null;
     }
 
     getCurrentHook() {

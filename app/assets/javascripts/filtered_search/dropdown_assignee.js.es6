@@ -9,7 +9,13 @@
     }
 
     itemClicked(e) {
-      console.log('assignee clicked');
+      const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
+
+      if (!dataValueSet) {
+        console.log('set value');
+      }
+
+      this.dismissDropdown();
     }
 
     renderContent() {

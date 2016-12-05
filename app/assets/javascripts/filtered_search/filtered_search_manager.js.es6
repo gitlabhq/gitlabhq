@@ -160,7 +160,7 @@
 
     dismissCurrentDropdown() {
       if (this.currentDropdown === 'hint') {
-        dropdownHint.dismissDropdown();
+        dropdownHint.destroy();
       }
     }
 
