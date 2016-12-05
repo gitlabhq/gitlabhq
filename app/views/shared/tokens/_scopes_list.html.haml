@@ -1,10 +1,13 @@
-- if @application.scopes.present?
-  %tr
-    %td
-      Scopes
-    %td
-      %ul.scopes-list.append-bottom-0
-        - @application.scopes.each do |scope|
-          %li
-            %span.scope-name= scope
-            = "(#{t(scope, scope: [:doorkeeper, :scopes])})"
+- token = local_assigns.fetch(:token)
+
+- return unless token.scopes.present?
+
+%tr
+  %td
+    Scopes
+  %td
+    %ul.scopes-list.append-bottom-0
+      - token.scopes.each do |scope|
+        %li
+          %span.scope-name= scope
+          = "(#{t(scope, scope: [:doorkeeper, :scopes])})"
