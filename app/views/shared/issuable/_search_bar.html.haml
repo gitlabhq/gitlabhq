@@ -35,20 +35,36 @@
                     %span.dropdown-light-content
                       @{{username}}
           #js-dropdown-assignee.dropdown-menu{ 'data-dropdown' => true }
-            %ul{ 'data-dynamic' => true }
+            %ul
               %li.filter-dropdown
                 %button.btn.btn-link
+                  No assignee
+              %li.divider
+            %ul{ 'data-dynamic' => true }
+              %li.filter-dropdown
+                %button.btn.btn-link.dropdown-user
                   %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
-                  %strong
-                    {{name}}
-                  %span
-                    {{username}}
+                  .dropdown-user-details
+                    %span
+                      {{name}}
+                    %span.dropdown-light-content
+                      @{{username}}
           #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
+            %ul
+              %li.filter-dropdown
+                %button.btn.btn-link
+                  No milestone
+              %li.divider
             %ul{ 'data-dynamic' => true }
               %li.filter-dropdown
                 %button.btn.btn-link
                   {{title}}
           #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
+            %ul
+              %li.filter-dropdown
+                %button.btn.btn-link
+                  No label
+              %li.divider
             %ul{ 'data-dynamic' => true }
               %li.filter-dropdown
                 %button.btn.btn-link
