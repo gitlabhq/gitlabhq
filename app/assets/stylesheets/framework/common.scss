@@ -403,4 +403,8 @@ table {
   &-60 {
     @include str-truncated(60%);
   }
+
+  &-100 {
+    @include str-truncated(100%);
+  }
 }

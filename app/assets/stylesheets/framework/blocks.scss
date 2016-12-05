@@ -269,6 +269,10 @@
     }
   }
 
+  .emoji-icon {
+    display: inline-block;
+  }
+
   @media(max-width: $screen-xs-max) {
     margin-top: 50px;
     text-align: center;
