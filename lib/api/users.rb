@@ -1,6 +1,7 @@
 module API
-  # Users API
   class Users < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
@@ -33,6 +34,7 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+        use :pagination
       end
       get do
         unless can?(current_user, :read_users_list, nil)
@@ -330,6 +332,7 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
       end
       get ':id/events' do
         user = User.find_by(id: params[:id])
