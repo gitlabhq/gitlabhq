@@ -31,7 +31,7 @@ describe MergeRequest, models: true do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
 
-    context "Validation of merge user with Merge When Build succeeds" do
+    context "Validation of merge user with Merge When Pipeline Succeeds" do
       it "allows user to be nil when the feature is disabled" do
         expect(subject).to be_valid
       end
