@@ -92,7 +92,14 @@
     }
 
     static addWordToInput(word, addSpace) {
-      const hasExistingValue = document.querySelector('.filtered-search').value.length !== 0;
+      const filteredSearchValue = document.querySelector('.filtered-search').value;
+      const hasExistingValue = filteredSearchValue.length !== 0;
+
+      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(filteredSearchValue);
+      if (lastToken.hasOwnProperty('key')) {
+        document.querySelector('.filtered-search').value = filteredSearchValue.slice(0, -1 * (lastToken.value.length));
+      }
+
       document.querySelector('.filtered-search').value += hasExistingValue && addSpace ? ` ${word}` : word;
     }
 
