@@ -81,6 +81,8 @@
     padding: 8px 16px;
 
     &:hover {
+      background-color: $dropdown-hover-color;
+      color: white;
       text-decoration: none;
     }
   }
