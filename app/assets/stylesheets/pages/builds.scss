@@ -33,7 +33,7 @@
       margin-bottom: 10px;
       color: $white-light;
       border-color: $white-light;
-      background-color: transparent;
+      background-color: rgba($ci-output-bg, .5);
 
       &.sticky {
         position: fixed;
