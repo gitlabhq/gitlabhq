@@ -124,7 +124,7 @@ module Gitlab
       end
 
       def token_has_scope?(token)
-        AccessTokenValidationService.sufficient_scope?(token, ['api'])
+        AccessTokenValidationService.new(token).include_any_scope?(['api'])
       end
 
       def lfs_token_check(login, password)
