@@ -363,15 +363,22 @@
 
   .build {
     border: 1px solid $border-color;
+    border-radius: 30px;
     background-color: $white-light;
+    color: $gl-text-color;
     position: relative;
     padding: 7px 10px 8px;
-    border-radius: 30px;
     width: 186px;
     margin-bottom: 10px;
 
     &:hover {
-      background-color: $gray-lighter;
+      background-color: $stage-hover-bg;
+      border: 1px solid $stage-hover-border;
+
+      .ci-status-text,
+      .dropdown-counter-bagde {
+        color: $gl-text-color;
+      }
     }
 
     &.playable {
@@ -411,14 +418,14 @@
       }
 
       .ci-status-text {
-        width: 135px;
+        max-width: 110px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        vertical-align: middle;
+        vertical-align: bottom;
         display: inline-block;
         position: relative;
-        top: -1px;
+        font-weight: 100;
       }
 
       a {
@@ -435,7 +442,7 @@
         flex-grow: 1;
 
         .ci-status-text {
-          max-width: 112px;
+          max-width: 110px;
           width: auto;
         }
       }
@@ -480,7 +487,7 @@
         }
 
         .ci-status-text {
-          width: 112px;
+          width: 110px;
         }
 
         .arrow {
@@ -520,9 +527,18 @@
       }
     }
 
+    .dropdown-counter-bagde {
+      float: right;
+      color: $stage-bagde-text;
+      font-weight: 100;
+      font-size: 13px;
+      margin-top: 1px;
+      margin-right: 2px;
+    }
+
     svg {
       vertical-align: middle;
-      margin-right: 5px;
+      margin-right: 3px;
     }
 
     // Connect first build in each stage with right horizontal line
@@ -531,7 +547,7 @@
         content: '';
         position: absolute;
         top: 48%;
-        right: -48px;
+        right: -49px;
         border-top: 2px solid $border-color;
         width: 48px;
         height: 1px;
