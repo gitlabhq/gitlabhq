@@ -10,6 +10,8 @@
       'success-icon': gl.VueSuccessIcon,
       'created-icon': gl.VueCreatedIcon,
       'canceled-icon': gl.VueCanceledIcon,
+      'warning-icon': gl.VueWarningIcon,
+      'skipped-icon': gl.VueSkippedIcon,
     },
     props: ['stage'],
     computed: {
@@ -32,6 +34,8 @@
         <pending-icon v-if='stage.status === "pending"'></pending-icon>
         <created-icon v-if='stage.status === "created"'></created-icon>
         <canceled-icon v-if='stage.status === "canceled"'></canceled-icon>
+        <warning-icon v-if='stage.status === "warning"'></warning-icon>
+        <skipped-icon v-if='stage.status === "skipped"'></skipped-icon>
       </a>
     `,
   });
