@@ -33,7 +33,7 @@ module Banzai
     # they have access to.
     class BaseParser
       class << self
-        attr_accessor :reference_type
+        attr_accessor :reference_type, :reference_options
       end
 
       # Returns the attribute name containing the value for every object to be
@@ -182,9 +182,10 @@ module Banzai
       # the references.
       def process(documents)
         type = self.class.reference_type
+        reference_options = self.class.reference_options
 
         nodes = documents.flat_map do |document|
-          Querying.css(document, "a[data-reference-type='#{type}'].gfm").to_a
+          Querying.css(document, "a[data-reference-type='#{type}'].gfm", reference_options).to_a
         end
 
         gather_references(nodes)
