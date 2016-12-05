@@ -5,6 +5,10 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
     described_class.new(pipeline)
   end
 
+  let(:status) do
+    subject.fabricate!
+  end
+
   context 'when pipeline has a core status' do
     HasStatus::AVAILABLE_STATUSES.each do |core_status|
       context "when core status is #{core_status}" do
@@ -13,8 +17,13 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
         end
 
         it "fabricates a core status #{core_status}" do
-          expect(subject.fabricate!)
-            .to be_a Gitlab::Ci::Status.const_get(core_status.capitalize)
+          expect(status).to be_a(
+            Gitlab::Ci::Status.const_get(core_status.capitalize))
+        end
+
+        it 'extends core status with common pipeline methods' do
+          expect(status).to have_details
+          expect(status.details_path).to include "pipelines/#{pipeline.id}"
         end
       end
     end
@@ -30,8 +39,12 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
     end
 
     it 'fabricates extended "success with warnings" status' do
-      expect(subject.fabricate!)
+      expect(status)
         .to be_a Gitlab::Ci::Status::Pipeline::SuccessWithWarnings
+    end
+
+    it 'extends core status with common pipeline methods' do
+      expect(status).to have_details
     end
   end
 end
