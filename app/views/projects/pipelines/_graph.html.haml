@@ -1,0 +1,4 @@
+.pipeline-visualization
+  %ul.stage-column-list
+    - subject.stages.each do |stage|
+      = render "projects/stage/graph", subject: stage

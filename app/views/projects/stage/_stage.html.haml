@@ -1,7 +1,7 @@
 %tr
   %th{colspan: 10}
     %strong
-      %a{name: subject.name}
+      %a{ name: subject.name }
       %span{class: "ci-status-link ci-status-icon-#{subject.status}"}
         = ci_icon_for_status(subject.status)
       - if subject.name

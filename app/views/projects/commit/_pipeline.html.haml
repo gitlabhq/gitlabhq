@@ -25,18 +25,7 @@
           = time_interval_in_words pipeline.duration
 
   .row-content-block.build-content.middle-block.pipeline-graph.hidden
-    .pipeline-visualization
-      %ul.stage-column-list
-        - pipeline.stages.each do |stage|
-          %li.stage-column
-            .stage-name
-              %a{name: stage.name}
-              - if stage.name
-                = stage.name.titleize
-            .builds-container
-              %ul
-                = render "projects/commit/pipeline_stage", statuses: stage.statuses
-
+    = render "projects/pipelines/graph", subject: pipeline
 
 - if pipeline.yaml_errors.present?
   .bs-callout.bs-callout-danger
@@ -61,4 +50,5 @@
         - if pipeline.project.build_coverage_enabled?
           %th Coverage
         %th
-      = render pipeline.stages
+    - pipeline.stages.each do |stage|
+      = render "projects/stage/stage", subject: stage
