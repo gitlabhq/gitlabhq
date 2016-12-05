@@ -522,7 +522,7 @@ module Ci
     end
 
     def coverage_regex
-      read_attribute(:coverage_regex) || project.build_coverage_regex
+      super || project.build_coverage_regex
     end
 
     def when

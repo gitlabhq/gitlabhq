@@ -228,14 +228,19 @@ describe Ci::Build, :models do
     let(:build_regex) { 'Code coverage: \d+\.\d+' }
 
     context 'when project has build_coverage_regex set' do
-      before { project.build_coverage_regex = project_regex }
+      before do
+        project.build_coverage_regex = project_regex
+      end
 
       context 'and coverage_regex attribute is not set' do
         it { is_expected.to eq(project_regex) }
       end
 
       context 'but coverage_regex attribute is also set' do
-        before { build.coverage_regex = build_regex }
+        before do
+          build.coverage_regex = build_regex
+        end
+
         it { is_expected.to eq(build_regex) }
       end
     end
@@ -250,7 +255,7 @@ describe Ci::Build, :models do
       build.coverage_regex = '\(\d+.\d+\%\) covered'
       allow(build).to receive(:trace) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
       allow(build).to receive(:coverage_regex).and_call_original
-      allow(build).to receive(:update_attributes).with(coverage: 98.29) { true }
+      expect(build).to receive(:update_attributes).with(coverage: 98.29) { true }
       expect(build.update_coverage).to be true
     end
   end

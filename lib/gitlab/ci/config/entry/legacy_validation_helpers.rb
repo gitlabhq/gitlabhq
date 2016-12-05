@@ -29,8 +29,7 @@ module Gitlab
           end
 
           def validate_regexp(value)
-            Regexp.new(value)
-            true
+            !value.nil? && Regexp.new(value.to_s) && true
           rescue RegexpError, TypeError
             false
           end
@@ -39,7 +38,7 @@ module Gitlab
             return true if value.is_a?(Symbol)
             return false unless value.is_a?(String)
 
-            if value.start_with?('/') && value.end_with?('/')
+            if value.first == '/' && value.last == '/'
               validate_regexp(value[1...-1])
             else
               true

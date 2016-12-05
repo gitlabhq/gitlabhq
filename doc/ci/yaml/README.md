@@ -286,11 +286,13 @@ build outputs. Setting this up globally will make all the jobs to use this
 setting for output filtering and extracting the coverage information from your
 builds.
 
-Regular expressions are used by default. So using surrounding `/` is optional, given it'll always be read as a regular expression. Don't forget to escape special characters whenever you want to match them in the regular expression.
+Regular expressions are used by default. So using surrounding `/` is optional,
+given it'll always be read as a regular expression. Don't forget to escape
+special characters whenever you want to match them literally.
 
 A simple example:
 ```yaml
-coverage: \(\d+\.\d+\) covered\.
+coverage: /\(\d+\.\d+\) covered\./
 ```
 
 ## Jobs
@@ -1014,19 +1016,19 @@ job:
 This entry is pretty much the same as described in the global context in
 [`coverage`](#coverage). The only difference is that, by setting it inside
 the job level, whatever is set in there will take precedence over what has
-been defined in the global level. A quick example of one overwritting the
+been defined in the global level. A quick example of one overriding the
 other would be:
 
 ```yaml
-coverage: \(\d+\.\d+\) covered\.
+coverage: /\(\d+\.\d+\) covered\./
 
 job1:
-  coverage: Code coverage: \d+\.\d+
+  coverage: /Code coverage: \d+\.\d+/
 ```
 
 In the example above, considering the context of the job `job1`, the coverage
-regex that would be used is `Code coverage: \d+\.\d+` instead of
-`\(\d+\.\d+\) covered\.`.
+regex that would be used is `/Code coverage: \d+\.\d+/` instead of
+`/\(\d+\.\d+\) covered\./`.
 
 ## Git Strategy
 

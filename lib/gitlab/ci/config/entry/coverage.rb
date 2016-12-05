@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def value
-            if @config.start_with?('/') && @config.end_with?('/')
+            if @config.first == '/' && @config.last == '/'
               @config[1...-1]
             else
               @config

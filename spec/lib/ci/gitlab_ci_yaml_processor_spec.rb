@@ -12,14 +12,19 @@ module Ci
         let(:config) { YAML.dump(config_base) }
 
         context 'when config has coverage set at the global scope' do
-          before { config_base.update(coverage: '\(\d+\.\d+\) covered') }
+          before do
+            config_base.update(coverage: '\(\d+\.\d+\) covered')
+          end
 
           context "and 'rspec' job doesn't have coverage set" do
             it { is_expected.to include(coverage_regex: '\(\d+\.\d+\) covered') }
           end
 
           context 'but \'rspec\' job also has coverage set' do
-            before { config_base[:rspec][:coverage] = '/Code coverage: \d+\.\d+/' }
+            before do
+              config_base[:rspec][:coverage] = '/Code coverage: \d+\.\d+/'
+            end
+
             it { is_expected.to include(coverage_regex: 'Code coverage: \d+\.\d+') }
           end
         end
