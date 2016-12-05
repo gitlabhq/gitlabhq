@@ -38,6 +38,11 @@
       &.sticky {
         position: fixed;
       }
+
+      &:hover{
+        color: $ci-output-bg;
+        background-color: $white-light;
+      }
     }
 
     .autoscroll-container {
@@ -70,6 +75,10 @@
     }
 
     @media (max-width: $screen-sm-max) {
+      .btn {
+        padding: 6px 13px;
+      }
+
       i.fa {
         margin-right: 0;
       }
