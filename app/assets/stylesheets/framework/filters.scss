@@ -74,6 +74,11 @@
 }
 
 .filter-dropdown {
+  max-height: 215px;
+  overflow-x: scroll;
+}
+
+.filter-dropdown-item {
   .btn {
     border: none;
     width: 100%;
@@ -102,4 +107,8 @@
     display: flex;
     flex-direction: column;
   }
+}
+
+.hint-dropdown {
+  width: 250px;
 }

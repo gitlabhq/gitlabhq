@@ -16,8 +16,8 @@
           = icon('filter')
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
-          %ul#js-dropdown-hint.dropdown-menu{ 'data-dynamic' => true }
-            %li.filter-dropdown
+          %ul#js-dropdown-hint.dropdown-menu.hint-dropdown{ 'data-dynamic' => true }
+            %li.filter-dropdown-item
               %button.btn.btn-link
                 %i.fa{ 'class': '{{icon}}'}
                 %span.js-filter-hint
@@ -25,8 +25,8 @@
                 %span.js-filter-tag.dropdown-light-content
                   {{tag}}
           #js-dropdown-author.dropdown-menu{ 'data-dropdown' => true }
-            %ul{ 'data-dynamic' => true }
-              %li.filter-dropdown
+            %ul.filter-dropdown{ 'data-dynamic' => true }
+              %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
                   %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
                   .dropdown-user-details
@@ -36,12 +36,12 @@
                       @{{username}}
           #js-dropdown-assignee.dropdown-menu{ 'data-dropdown' => true }
             %ul
-              %li.filter-dropdown
+              %li.filter-dropdown-item
                 %button.btn.btn-link
                   No assignee
               %li.divider
-            %ul{ 'data-dynamic' => true }
-              %li.filter-dropdown
+            %ul.filter-dropdown{ 'data-dynamic' => true }
+              %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
                   %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
                   .dropdown-user-details
@@ -51,22 +51,22 @@
                       @{{username}}
           #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
             %ul
-              %li.filter-dropdown
+              %li.filter-dropdown-item
                 %button.btn.btn-link
                   No milestone
               %li.divider
-            %ul{ 'data-dynamic' => true }
-              %li.filter-dropdown
+            %ul.filter-dropdown{ 'data-dynamic' => true }
+              %li.filter-dropdown-item
                 %button.btn.btn-link
                   {{title}}
           #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
             %ul
-              %li.filter-dropdown
+              %li.filter-dropdown-item
                 %button.btn.btn-link
                   No label
               %li.divider
-            %ul{ 'data-dynamic' => true }
-              %li.filter-dropdown
+            %ul.filter-dropdown{ 'data-dynamic' => true }
+              %li.filter-dropdown-item
                 %button.btn.btn-link
                   %span.dropdown-label-box{ 'style': 'background: {{color}}'}
                   {{title}}
