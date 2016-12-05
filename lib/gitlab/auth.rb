@@ -116,14 +116,14 @@ module Gitlab
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && token_has_scope?(token)
+        token && token.accessible? && valid_api_token?(token)
       end
 
       def valid_personal_access_token?(token, user)
-        token && token.user == user && token_has_scope?(token)
+        token && token.user == user && valid_api_token?(token)
       end
 
-      def token_has_scope?(token)
+      def valid_api_token?(token)
         AccessTokenValidationService.new(token).include_any_scope?(['api'])
       end
 
