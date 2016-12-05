@@ -15,7 +15,9 @@ module Gitlab
       end
 
       def event
-        @event ||= Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher, options: @options, stage: stage)
+        @event ||= Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher,
+                                                            options: @options,
+                                                            stage: stage)
       end
 
       def events

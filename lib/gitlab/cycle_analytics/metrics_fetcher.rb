@@ -47,7 +47,11 @@ module Gitlab
       end
 
       def order
-        @stage.event.order || @stage.start_time_attrs.is_a?(Array) ? @stage.start_time_attrs.first : @stage.start_time_attrs
+        @stage.event.order || default_order
+      end
+
+      def default_order
+        @stage.start_time_attrs.is_a?(Array) ? @stage.start_time_attrs.first : @stage.start_time_attrs
       end
 
       # Join table with a row for every <issue,merge_request> pair (where the merge request

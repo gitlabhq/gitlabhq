@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def stage
-        :code
+        :plan
       end
 
       def description
