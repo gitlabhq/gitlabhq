@@ -31,14 +31,9 @@ class CommitStatus < ActiveRecord::Base
   end
 
   scope :exclude_ignored, -> do
-    quoted_when = connection.quote_column_name('when')
     # We want to ignore failed_but_allowed jobs
     where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled]).
-      # We want to ignore skipped manual jobs
-      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
-      # We want to ignore skipped on_failure
-      where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+      false, all_state_names - [:failed, :canceled])
   end
 
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }

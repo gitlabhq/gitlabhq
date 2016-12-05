@@ -44,7 +44,7 @@
         Cant find HEAD commit for this branch
 
   %td.stage-cell
-    - pipeline.stages_with_statuses.each do |stage|
+    - pipeline.stages.each do |stage|
       - if stage.status
         - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
         .stage-container

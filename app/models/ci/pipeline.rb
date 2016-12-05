@@ -114,7 +114,7 @@ module Ci
         pluck('sg.stage', status_sql)
 
       stages_with_statuses.map do |stage|
-        Ci::Stage.new(self, stage.first, status: stage.last)
+        Ci::Stage.new(self, name: stage.first, status: stage.last)
       end
     end
 
