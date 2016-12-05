@@ -139,6 +139,40 @@ Get Buildkite service settings for a project.
 GET /projects/:id/services/buildkite
 ```
 
+## Build-Emails
+
+Get emails for GitLab CI builds.
+
+### Create/Edit Build-Emails service
+
+Set Build-Emails service for a project.
+
+```
+PUT /projects/:id/services/builds-email
+```
+
+Parameters:
+
+- `recipients` (**required**) - Comma-separated list of recipient email addresses
+- `add_pusher` (optional) - Add pusher to recipients list
+- `notify_only_broken_builds` (optional) -Notify only broken builds
+
+### Delete Build-Emails service
+
+Delete Build-Emails service for a project.
+
+```
+DELETE /projects/:id/services/builds-email
+```
+
+### Get Build-Emails service settings
+
+Get Build-Emails service settings for a project.
+
+```
+GET /projects/:id/services/builds-email
+```
+
 ## Campfire
 
 Simple web-based real-time group chat
@@ -476,12 +510,11 @@ PUT /projects/:id/services/jira
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `active`        | boolean| no  | Enable/disable the JIRA service. |
 | `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project, e.g., `https://jira.example.com`. |
 | `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `username`      | string | no  | The username of the user created to be used with GitLab/JIRA. |
 | `password`      | string | no  | The password of the user created to be used with GitLab/JIRA. |
-| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | integer | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 
 ### Delete JIRA service
 
@@ -489,6 +522,71 @@ Remove all previously JIRA settings from a project.
 
 ```
 DELETE /projects/:id/services/jira
+```
+
+## Mattermost Slash Commands
+
+Ability to receive slash commands from a Mattermost chat instance.
+
+### Create/Edit Mattermost Slash Command service
+
+Set Mattermost Slash Command for a project.
+
+```
+PUT /projects/:id/services/mattermost-slash-commands
+```
+
+Parameters:
+
+- `token` (**required**) - The Mattermost token
+
+### Delete Mattermost Slash Command service
+
+Delete Mattermost Slash Command service for a project.
+
+```
+DELETE /projects/:id/services/mattermost-slash-commands
+```
+
+### Get Mattermost Slash Command service settings
+
+Get Mattermost Slash Command service settings for a project.
+
+```
+GET /projects/:id/services/mattermost-slash-commands
+```
+
+## Pipeline-Emails
+
+Get emails for GitLab CI pipelines.
+
+### Create/Edit Pipeline-Emails service
+
+Set Pipeline-Emails service for a project.
+
+```
+PUT /projects/:id/services/pipelines-email
+```
+
+Parameters:
+
+- `recipients` (**required**) - Comma-separated list of recipient email addresses
+- `notify_only_broken_builds` (optional) -Notify only broken pipelines
+
+### Delete Pipeline-Emails service
+
+Delete Pipeline-Emails service for a project.
+
+```
+DELETE /projects/:id/services/pipelines-email
+```
+
+### Get Pipeline-Emails service settings
+
+Get Pipeline-Emails service settings for a project.
+
+```
+GET /projects/:id/services/pipelines-email
 ```
 
 ## PivotalTracker
