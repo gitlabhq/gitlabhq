@@ -6,7 +6,8 @@ module CiStatusHelper
 
   def ci_status_with_icon(status, target = nil)
     content = ci_icon_for_status(status) + ci_label_for_status(status)
-    klass = "ci-status ci-#{status}"
+    klass = "ci-status ci-#{status}" # TODO, add support for detailed status
+
     if target
       link_to content, target, class: klass
     else
@@ -15,11 +16,13 @@ module CiStatusHelper
   end
 
   def ci_label_for_status(status)
+    if detailed_status?(status)
+      return status.label
+    end
+
     case status
     when 'success'
       'passed'
-    when 'success_with_warnings'
-      'passed with warnings'
     else
       status
     end
@@ -32,25 +35,27 @@ module CiStatusHelper
 
   def ci_icon_for_status(status)
     icon_name =
-      case status
-      when 'success'
-        'icon_status_success'
-      when 'success_with_warnings'
-        'icon_status_warning'
-      when 'failed'
-        'icon_status_failed'
-      when 'pending'
-        'icon_status_pending'
-      when 'running'
-        'icon_status_running'
-      when 'play'
-        'icon_play'
-      when 'created'
-        'icon_status_created'
-      when 'skipped'
-        'icon_status_skipped'
+      if detailed_status?(status)
+        status.icon
       else
-        'icon_status_canceled'
+        case status
+        when 'success'
+          'icon_status_success'
+        when 'failed'
+          'icon_status_failed'
+        when 'pending'
+          'icon_status_pending'
+        when 'running'
+          'icon_status_running'
+        when 'play'
+          'icon_play'
+        when 'created'
+          'icon_status_created'
+        when 'skipped'
+          'icon_status_skipped'
+        else
+          'icon_status_canceled'
+        end
       end
 
     custom_icon(icon_name)
@@ -93,5 +98,11 @@ module CiStatusHelper
       content_tag :span, ci_icon_for_status(status),
               class: klass, title: title, data: data
     end
+  end
+
+  def detailed_status?(status)
+    status.respond_to?(:text) &&
+      status.respond_to?(:label) &&
+      status.respond_to?(:icon)
   end
 end
