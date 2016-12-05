@@ -85,8 +85,17 @@
     }
   }
 
-  .dropdown-filter-tag {
+  .dropdown-light-content {
     font-size: 14px;
     font-weight: 400;
+  }
+
+  .dropdown-user {
+    display: flex;
+  }
+
+  .dropdown-user-details {
+    display: flex;
+    flex-direction: column;
   }
 }

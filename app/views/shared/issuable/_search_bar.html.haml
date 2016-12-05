@@ -20,22 +20,23 @@
             %li.filter-dropdown
               %button.btn.btn-link
                 %i.fa{ 'class': '{{icon}}'}
-                %span.dropdown-filter-hint
+                %span.js-filter-hint
                   {{hint}}
-                %span.dropdown-filter-tag
+                %span.js-filter-tag.dropdown-light-content
                   {{tag}}
           #js-dropdown-author.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dynamic' => true }
-              %li
-                %button.btn.btn-link
+              %li.filter-dropdown
+                %button.btn.btn-link.dropdown-user
                   %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
-                  %strong
-                    {{name}}
-                  %span
-                    {{username}}
+                  .dropdown-user-details
+                    %span
+                      {{name}}
+                    %span.dropdown-light-content
+                      @{{username}}
           #js-dropdown-assignee.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dynamic' => true }
-              %li
+              %li.filter-dropdown
                 %button.btn.btn-link
                   %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
                   %strong
@@ -44,12 +45,12 @@
                     {{username}}
           #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dynamic' => true }
-              %li
+              %li.filter-dropdown
                 %button.btn.btn-link
                   {{title}}
           #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dynamic' => true }
-              %li
+              %li.filter-dropdown
                 %button.btn.btn-link
                   %span.dropdown-label-box{ 'style': 'background: {{color}}'}
                     {{title}}
