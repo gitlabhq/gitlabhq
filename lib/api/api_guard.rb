@@ -47,7 +47,7 @@ module API
         access_token = find_access_token
         return nil unless access_token
 
-        case AccessTokenValidationService.validate(access_token, scopes: scopes)
+        case AccessTokenValidationService.new(access_token).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
           raise InsufficientScopeError.new(scopes)
 
@@ -96,7 +96,7 @@ module API
         access_token = PersonalAccessToken.active.find_by_token(token_string)
         return unless access_token
 
-        if AccessTokenValidationService.sufficient_scope?(access_token, scopes)
+        if AccessTokenValidationService.new(access_token).include_any_scope?(scopes)
           User.find(access_token.user_id)
         end
       end
