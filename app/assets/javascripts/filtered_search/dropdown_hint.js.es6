@@ -39,12 +39,7 @@
         gl.FilteredSearchManager.addWordToInput(this.getSelectedText(token));
       }
 
-      this.input.focus();
       this.dismissDropdown();
-
-      // Propogate input change to FilteredSearchManager
-      // so that it can determine which dropdowns to open
-      this.input.dispatchEvent(new Event('input'));
     }
 
     renderContent() {

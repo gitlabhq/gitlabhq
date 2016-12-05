@@ -9,7 +9,14 @@
     }
 
     itemClicked(e) {
-      console.log('label clicked');
+      const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
+
+      if (!dataValueSet) {
+        const labelName = `~${e.detail.selected.querySelector('.label-title').innerText.trim()}`;
+        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(labelName));
+      }
+
+      this.dismissDropdown();
     }
 
     renderContent() {

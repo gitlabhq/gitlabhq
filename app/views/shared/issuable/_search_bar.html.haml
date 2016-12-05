@@ -36,7 +36,7 @@
                       @{{username}}
           #js-dropdown-assignee.dropdown-menu{ 'data-dropdown' => true }
             %ul
-              %li.filter-dropdown-item
+              %li.filter-dropdown-item{ 'data-value': 'none' }
                 %button.btn.btn-link
                   No assignee
               %li.divider
@@ -51,7 +51,7 @@
                       @{{username}}
           #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
             %ul
-              %li.filter-dropdown-item
+              %li.filter-dropdown-item{ 'data-value': 'none' }
                 %button.btn.btn-link
                   No milestone
               %li.divider
@@ -61,7 +61,7 @@
                   {{title}}
           #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
             %ul
-              %li.filter-dropdown-item
+              %li.filter-dropdown-item{ 'data-value': 'none' }
                 %button.btn.btn-link
                   No label
               %li.divider
@@ -69,7 +69,8 @@
               %li.filter-dropdown-item
                 %button.btn.btn-link
                   %span.dropdown-label-box{ 'style': 'background: {{color}}'}
-                  {{title}}
+                  %span.label-title
+                    {{title}}
         .pull-right
           - if boards_page
             #js-boards-seach.issue-boards-search
