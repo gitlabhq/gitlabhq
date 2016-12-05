@@ -192,15 +192,8 @@
       }
 
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
-        if (isInViewport($('.js-build-refresh'))) { // Check if Refresh Animation is in Viewport
-          if ($autoScrollStatus.data("state") === 'disabled') {
-            $autoScrollStatus.data("state", 'enabled'); // Enable Autoscroll
-          }
-        } else {
-          if ($autoScrollStatus.data("state") === 'enabled') {
-            $autoScrollStatus.data("state", 'disabled'); // Disable Autoscroll
-          }
-        }
+          // Check if Refresh Animation is in Viewport and enable Autoscroll, disable otherwise.
+          $autoScrollStatus.data("state", isInViewport($('.js-build-refresh')) ? 'enabled' : 'disabled');
       }
     };
 
