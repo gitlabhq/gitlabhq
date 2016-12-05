@@ -2,9 +2,9 @@
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
-  gl.VueUnstableScope = Vue.extend({
+  gl.VueWarningScope = Vue.extend({
     components: {
-      'vue-unstable-icon': gl.VueUnstableIcon,
+      'vue-warning-icon': gl.VueWarningIcon,
     },
     props: [
       'pipeline',
@@ -12,9 +12,9 @@
     template: `
       <td class="commit-link">
         <a :href='pipeline.url'>
-          <span class="ci-status ci-unstable">
-            <vue-unstable-icon></vue-unstable-icon>
-            &nbsp;unstable
+          <span class="ci-status ci-warning">
+            <vue-warning-icon></vue-warning-icon>
+            &nbsp;warning
           </span>
         </a>
       </td>
