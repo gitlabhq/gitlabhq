@@ -10,15 +10,15 @@ The variables can be overwritten and they take precedence over each other in
 this order:
 
 1. [Trigger variables][triggers] (take precedence over all)
-1. [Secure variables](#secure-variables)
+1. [Secret variables](#secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Predefined variables](#predefined-variables-environment-variables) (are the
    lowest in the chain)
 
-For example, if you define `API_TOKEN=secure` as a secure variable and
+For example, if you define `API_TOKEN=secure` as a secret variable and
 `API_TOKEN=yaml` in your `.gitlab-ci.yml`, the `API_TOKEN` will take the value
-`secure` as the secure variables are higher in the chain.
+`secure` as the secret variables are higher in the chain.
 
 ## Predefined variables (Environment variables)
 
@@ -124,23 +124,23 @@ job_name:
   variables: []
 ```
 
-## Secure variables
+## Secret variables
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
-- Be aware that secure variables are not masked, and their values can be shown
+- Be aware that secret variables are not masked, and their values can be shown
   in the build logs if explicitly asked to do so. If your project is public or
   internal, you can set the pipelines private from your project's Pipelines
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
-  secure variables.
+  secret variables.
 
-GitLab CI allows you to define per-project **Secure variables** that are set in
-the build environment. The secure variables are stored out of the repository
+GitLab CI allows you to define per-project **secret variables** that are set in
+the build environment. The secret variables are stored out of the repository
 (`.gitlab-ci.yml`) and are securely passed to GitLab Runner making them
 available in the build environment. It's the recommended method to use for
 storing things like passwords, secret keys and credentials.
 
-Secure variables can be added by going to your project's
+Secret variables can be added by going to your project's
 **Settings ➔ Variables ➔ Add variable**.
 
 Once you set them, they will be available for all subsequent builds.
@@ -150,7 +150,7 @@ Once you set them, they will be available for all subsequent builds.
 > Introduced in GitLab Runner 1.7.
 >
 > **WARNING:** Enabling debug tracing can have severe security implications. The
-  output **will** contain the content of all your secure variables and any other
+  output **will** contain the content of all your secret variables and any other
   secrets! The output **will** be uploaded to the GitLab server and made visible
   in build traces!
 
@@ -311,7 +311,7 @@ job_name:
 ```
 
 You can also list all environment variables with the `export` command,
-but be aware that this will also expose the values of all the secure variables
+but be aware that this will also expose the values of all the secret variables
 you set, in the build log:
 
 ```
