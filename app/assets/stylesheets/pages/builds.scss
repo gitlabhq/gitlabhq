@@ -15,29 +15,69 @@
   }
 
   .scroll-controls {
+    height: 100%;
+
     .scroll-step {
       width: 31px;
       margin: 0 0 0 auto;
     }
 
-    &.affix-bottom {
-      position: absolute;
+    .btn.sticky,
+    .autoscroll-container {
       right: 25px;
-    }
-
-    &.affix {
-      right: 25px;
-      bottom: 15px;
       z-index: 1;
     }
 
-    &.sidebar-expanded {
-      right: #{$gutter_width + ($gl-padding * 2)};
-    }
-
-    a {
+    .btn {
       display: block;
       margin-bottom: 10px;
+      color: $white-light;
+      border-color: $white-light;
+      background-color: transparent;
+
+      &.sticky {
+        position: fixed;
+      }
+    }
+
+    .autoscroll-container {
+      position: absolute;
+
+      .status-message {
+        color: $white-light;
+
+        label {
+          margin-left: 5px;
+          font-weight: normal;
+        }
+      }
+    }
+
+    #scroll-top.btn.sticky {
+      top: 115px;
+    }
+
+    #scroll-bottom.btn.sticky {
+      bottom: 5px;
+    }
+
+    &.sidebar-expanded {
+
+      .btn.sticky,
+      .autoscroll-container {
+        right: #{$gutter_width + ($gl-padding * 2)};
+      }
+    }
+
+    @media (max-width: $screen-sm-max) {
+      i.fa {
+        margin-right: 0;
+      }
+
+      .scroll-step-label,
+      .status-message label {
+        display: none;
+      }
     }
   }
 
@@ -248,6 +288,12 @@
   }
 }
 
+.build-sidebar {
+  .container-fluid.container-limited {
+    max-width: 100%;
+  }
+}
+
 .build-detail-row {
   margin-bottom: 5px;
 
@@ -266,6 +312,8 @@
   right: 0;
   margin-top: -17px;
 }
+
+
 
 @media (min-width: $screen-md-min) {
   .sub-nav.build {
