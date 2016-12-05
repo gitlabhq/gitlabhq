@@ -75,9 +75,28 @@ Text should be in sentence case, where only the first word is capitalized. "Crea
 > TODO: Rationalize this. Ensure that we still believe this.
 
 ### Colors
-Follow the color guidance on the [basics](basics.md#color) page. The default color treatment is the white/grey button.
+The default color treatment is the white/grey button. Follow the guidance on the [basics](basics.md#color) page to add meaningful color to a button.
+
+### Secondary states
+
+Primary buttons darken the color of their background and border for hover, focus and active states. An inner shadow is added to the active state to denote the button being pressed.
+
+| Values | Info | Success | Warning | Danger |
+| :------ | :------: | :------: | :------: | :------: |
+| Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-info--resting.png) | ![](img/button-success--resting.png) | ![](img/button-warning--resting.png) | ![](img/button-danger--resting.png) |
+| Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-info--hover.png) | ![](img/button-success--hover.png) | ![](img/button-warning--hover.png) | ![](img/button-danger--hover.png) |
+| Background: `$color-dark` <br> Border: `$border-color-dark` | ![](img/button-info--active.png) | ![](img/button-success--active.png) | ![](img/button-warning--active.png) | ![](img/button-danger--active.png) |
+
+Since secondary buttons only have a border on their resting state, their hover and focus states add a background color, which gets darkened on active.
+
+| Values | Success Secondary | Close | Spam |
+| :------ | :------: | :------: | :------: |
+| Font: `$border-color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--resting.png) | ![](img/button-close--resting.png) | ![](img/button-spam--resting.png) |
+| Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--hover.png) | ![](img/button-close--hover.png) | ![](img/button-spam--hover.png) |
+| Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-success-secondary--active.png) | ![](img/button-close--active.png) | ![](img/button-spam--active.png) |
 
 ---
+
 
 ## Dropdowns
 
