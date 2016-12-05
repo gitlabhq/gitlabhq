@@ -10,24 +10,16 @@
 
     Build.state = null;
 
-    function isInViewPort(el) {
-      var elTop = el.offset().top;
-      var elBottom = elTop + el.outerHeight();
-      var vpBottom = $(window).scrollTop() + $(window).height();
+    function isInViewport(el) {
+      // Courtesy http://stackoverflow.com/a/7557433/414749
+      var rect = el[0].getBoundingClientRect();
 
-      return vpBottom > elTop;
-    }
-
-    function toggleAutoScroll(state) {
-      var $autoScrollBtn = $('#autoscroll-button');
-
-      if (state) {
-        $autoScrollBtn.data("state", "enabled");
-        $autoScrollBtn.text("Disable autoscroll");
-      } else {
-        $autoScrollBtn.data("state", "disabled");
-        $autoScrollBtn.text("Enable autoscroll");
-      }
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= $(window).height() &&
+        rect.right <= $(window).width()
+      );
     }
 
     function Build(options) {
@@ -52,6 +44,7 @@
 
       this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
       this.$document.off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      this.$document.on('scroll', this.initScrollMonitor.bind(this));
       $(window).off('resize.build').on('resize.build', this.sidebarOnResize.bind(this));
       $('a', this.$buildScroll).off('click.stepTrace').on('click.stepTrace', this.stepTrace);
       this.updateArtifactRemoveDate();
@@ -60,26 +53,6 @@
         this.initScrollButtonAffix();
       }
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
-        // Bind document scroll listener to detect if user has scrolled to page bottom
-        // and enable autoscroll of build log, disable autoscroll otherwise
-        this.$document.on('scroll', function() {
-          var $autoScrollBtn = $('#autoscroll-button');
-          if (isInViewPort($('.js-build-refresh'))) { // Check if Refresh Animation is in Viewport
-            if ($autoScrollBtn.data("state") === 'disabled') {
-              toggleAutoScroll(true); // Enable Autoscroll
-            }
-          } else {
-            if ($autoScrollBtn.data("state") === 'enabled') {
-              toggleAutoScroll(false); // Disable Autoscroll
-            }
-          }
-        });
-
-        // Bind autoscroll button to follow build output
-        $('#autoscroll-button').on('click', function() {
-          toggleAutoScroll($(this).data("state") === 'disabled');
-        });
-
         Build.interval = setInterval((function(_this) {
           // Check for new build output if user still watching build page
           // Only valid for runnig build when output changes during time
@@ -150,22 +123,85 @@
     };
 
     Build.prototype.checkAutoscroll = function() {
-      if ("enabled" === $("#autoscroll-button").data("state")) {
+      if ("enabled" === $("#autoscroll-status").data("state")) {
         return $("html,body").scrollTop($("#build-trace").height());
       }
     };
 
     Build.prototype.initScrollButtonAffix = function() {
-      var $body, $buildTrace;
-      $body = $('body');
-      $buildTrace = $('#build-trace');
-      return this.$buildScroll.affix({
-        offset: {
-          bottom: function() {
-            return $body.outerHeight() - ($buildTrace.outerHeight() + $buildTrace.offset().top);
+      var $body = $('body');
+      var $buildTrace = $('#build-trace');
+      var $scrollTopBtn = $('#scroll-top');
+      var $scrollBottomBtn = $('#scroll-bottom');
+      var $autoScrollContainer = $('.autoscroll-container');
+
+      $scrollTopBtn.hide().removeClass('sticky');
+      $scrollBottomBtn.show().addClass('sticky');
+
+      if ($autoScrollContainer.length) {
+        $scrollBottomBtn.hide();
+        $autoScrollContainer.show().css({ bottom: 50 });
+      }
+    }
+
+    // Page scroll listener to detect if user has scrolling page
+    // and handle following cases
+    // 1) User is at Top of Build Log;
+    //      - Hide Top Arrow button
+    //      - Show Bottom Arrow button
+    //      - Disable Autoscroll and hide indicator (when build is running)
+    // 2) User is at Bottom of Build Log;
+    //      - Show Top Arrow button
+    //      - Hide Bottom Arrow button
+    //      - Enable Autoscroll and show indicator (when build is running)
+    // 3) User is somewhere in middle of Build Log;
+    //      - Show Top Arrow button
+    //      - Show Bottom Arrow button
+    //      - Disable Autoscroll and hide indicator (when build is running)
+    Build.prototype.initScrollMonitor = function() {
+      var $body = $('body');
+      var $buildTrace = $('#build-trace');
+      var $autoScrollContainer = $('.autoscroll-container');
+      var $autoScrollStatus = $('#autoscroll-status');
+      var $upBuildTrace = $('#up-build-trace');
+      var $downBuildTrace = $('#down-build-trace');
+      var $scrollTopBtn = $('#scroll-top');
+      var $scrollBottomBtn = $('#scroll-bottom');
+
+      if (isInViewport($upBuildTrace)) { // User is at Top of Build Log
+        $scrollTopBtn.hide().removeClass('sticky');
+        $scrollBottomBtn.show().addClass('sticky');
+      }
+
+      if (isInViewport($downBuildTrace)) { // User is at Bottom of Build Log
+        $scrollTopBtn.show().addClass('sticky');
+        $scrollBottomBtn.hide().removeClass('sticky');
+
+        if ($autoScrollContainer.length) { // Show and Reposition Autoscroll Status Message
+          $autoScrollContainer.show().css({ top: $body.outerHeight() - 75 });
+        }
+      }
+
+      if (!isInViewport($upBuildTrace) && !isInViewport($downBuildTrace)) { // User is somewhere in middle of Build Log
+        $scrollTopBtn.show().addClass('sticky');
+        $scrollBottomBtn.show().addClass('sticky');
+
+        if ($autoScrollContainer.length) {
+          $autoScrollContainer.hide();
+        }
+      }
+
+      if (this.buildStatus === "running" || this.buildStatus === "pending") {
+        if (isInViewport($('.js-build-refresh'))) { // Check if Refresh Animation is in Viewport
+          if ($autoScrollStatus.data("state") === 'disabled') {
+            $autoScrollStatus.data("state", 'enabled'); // Enable Autoscroll
+          }
+        } else {
+          if ($autoScrollStatus.data("state") === 'enabled') {
+            $autoScrollStatus.data("state", 'disabled'); // Disable Autoscroll
           }
         }
-      });
+      }
     };
 
     Build.prototype.shouldHideSidebarForViewport = function() {
