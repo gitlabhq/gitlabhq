@@ -45,7 +45,7 @@
         = time_ago_with_tooltip(member.created_at)
   - if show_roles
     .controls.member-controls
-      - if show_controls && (member.respond_to?(:group) && @members) || (member.respond_to?(:project) && @project_members)
+      - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
             = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can_admin_member
