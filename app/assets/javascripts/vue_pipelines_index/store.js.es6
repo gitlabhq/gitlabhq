@@ -3,7 +3,7 @@
 
 ((gl) => {
   gl.PipelineStore = class {
-    fetchDataLoop(Vue, pageNum, url) {
+    fetchDataLoop(Vue, pageNum, url, apiScope) {
       const setVueResources = () => { Vue.activeResources = 1; };
       const resetVueResources = () => { Vue.activeResources = 0; };
       const addToVueResources = () => { Vue.activeResources += 1; };
@@ -27,10 +27,9 @@
       };
 
       const goFetch = () =>
-        this.$http.get(`${url}?page=${pageNum}`)
+        this.$http.get(`${url}?scope=${apiScope}&page=${pageNum}`)
           .then((response) => {
             const res = JSON.parse(response.body);
-            Vue.set(this, 'updatedAt', res.updated_at);
             Vue.set(this, 'pipelines', res.pipelines);
             Vue.set(this, 'count', res.count);
             updatePipelineNums(this.count);

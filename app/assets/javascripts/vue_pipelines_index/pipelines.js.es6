@@ -8,6 +8,16 @@
   const FIRST = '<< First';
   const LAST = 'Last >>';
 
+  const getParameterByName = (name) => {
+    const url = window.location.href;
+    name = name.replace(/[[\]]/g, '\\$&');
+    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  };
+
   gl.VuePipelines = Vue.extend({
     components: {
       runningPipeline: gl.VueRunningPipeline,
@@ -25,8 +35,8 @@
         pipelines: [],
         timeLoopInterval: '',
         intervalId: '',
-        updatedAt: '',
         pagenum: 1,
+        apiScope: 'all',
         count: {
           all: 0,
           running_or_pending: 0,
@@ -39,11 +49,19 @@
       'store',
     ],
     created() {
-      const url = window.location.toString();
-      if (~url.indexOf('?') && !~url.indexOf('scope=pipelines')) {
-        this.pagenum = url.split('?')[1].split('=')[1];
-      }
-      this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
+      const pagenum = getParameterByName('p');
+      const scope = getParameterByName('scope');
+
+      if (pagenum) this.pagenum = pagenum;
+      if (scope) this.apiScope = scope;
+
+      this.store.fetchDataLoop.call(
+        this,
+        Vue,
+        this.pagenum,
+        this.scope,
+        this.apiScope,
+      );
     },
     methods: {
       changepage(e, last) {

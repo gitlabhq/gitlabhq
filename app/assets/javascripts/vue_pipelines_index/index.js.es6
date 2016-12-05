@@ -17,30 +17,32 @@
 //= require ./pipelines.js.es6
 
 (() => {
-  const url = window.location.href;
-  if (~url.indexOf('scope') && !~url.indexOf('scope=pipelines')) return null;
-
   const project = document.querySelector('.pipelines');
+  const entry = document.querySelector('.vue-pipelines-index');
 
   Vue.use(VueResource);
 
-  return new Vue({
-    el: '.vue-pipelines-index',
-    data: {
-      scope: project.dataset.url,
-      store: new gl.PipelineStore(),
-    },
-    components: {
-      'vue-pipelines': gl.VuePipelines,
-    },
-    template: `
-      <div>
-        <vue-pipelines
-          :scope='scope'
-          :store='store'
-        >
-        </vue-pipelines>
-      </div>
-    `,
-  });
+  if (entry) {
+    return new Vue({
+      el: entry,
+      data: {
+        scope: project.dataset.url,
+        store: new gl.PipelineStore(),
+      },
+      components: {
+        'vue-pipelines': gl.VuePipelines,
+      },
+      template: `
+        <div>
+          <vue-pipelines
+            :scope='scope'
+            :store='store'
+          >
+          </vue-pipelines>
+        </div>
+      `,
+    });
+  }
+
+  return null;
 })();
