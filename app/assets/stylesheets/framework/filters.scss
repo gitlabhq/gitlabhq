@@ -68,3 +68,25 @@
     }
   }
 }
+
+.dropdown-menu .filter-dropdown {
+  padding: 0;
+}
+
+.filter-dropdown {
+  .btn {
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 8px 16px;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .dropdown-filter-tag {
+    font-size: 14px;
+    font-weight: 400;
+  }
+}
