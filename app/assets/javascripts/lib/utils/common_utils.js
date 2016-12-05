@@ -126,6 +126,19 @@
       $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
     };
 
+    gl.utils.parseUrl = function (url) {
+      var parser = document.createElement('a');
+      parser.href = url;
+      return parser;
+    };
+
+    gl.utils.parseUrlPathname = function (url) {
+      var parsedUrl = gl.utils.parseUrl(url);
+      // parsedUrl.pathname will return an absolute path for Firefox and a relative path for IE11
+      // We have to make sure we always have an absolute path.
+      return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : '/' + parsedUrl.pathname;
+    };
+
     gl.utils.isMetaKey = function(e) {
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
