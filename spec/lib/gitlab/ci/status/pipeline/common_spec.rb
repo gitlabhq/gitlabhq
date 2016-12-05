@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Extended::Pipeline::Common do
+describe Gitlab::Ci::Status::Pipeline::Common do
   let(:pipeline) { create(:ci_pipeline) }
 
   subject do
-    Gitlab::Ci::Status::Core::Success
+    Class.new(Gitlab::Ci::Status::Core)
       .new(pipeline).extend(described_class)
   end
 

@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Core
-      class Failed < Core::Base
+module Gitlab
+  module Ci
+    module Status
+      class Failed < Status::Core
         def text
           'failed'
         end

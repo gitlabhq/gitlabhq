@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Extended
-      module Base
+module Gitlab
+  module Ci
+    module Status
+      module Extended
         def matches?(_subject)
           raise NotImplementedError
         end

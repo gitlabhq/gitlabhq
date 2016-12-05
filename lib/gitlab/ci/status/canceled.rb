@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Core
-      class Canceled < Core::Base
+module Gitlab
+  module Ci
+    module Status
+      class Canceled < Status::Core
         def text
           'canceled'
         end

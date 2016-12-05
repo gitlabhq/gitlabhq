@@ -1,9 +1,9 @@
-module Gitlab::Ci
-  module Status
-    module Extended
+module Gitlab
+  module Ci
+    module Status
       module Pipeline
         class SuccessWithWarnings < SimpleDelegator
-          extend Status::Extended::Base
+          extend Status::Extended
 
           def text
             'passed'

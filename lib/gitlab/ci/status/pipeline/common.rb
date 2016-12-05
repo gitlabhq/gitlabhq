@@ -1,6 +1,6 @@
-module Gitlab::Ci
-  module Status
-    module Extended
+module Gitlab
+  module Ci
+    module Status
       module Pipeline
         module Common
           def has_details?

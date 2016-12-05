@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Core
-      class Created < Core::Base
+module Gitlab
+  module Ci
+    module Status
+      class Created < Status::Core
         def text
           'created'
         end

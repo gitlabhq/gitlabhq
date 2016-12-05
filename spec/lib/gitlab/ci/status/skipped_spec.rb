@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Core::Skipped do
+describe Gitlab::Ci::Status::Skipped do
   subject { described_class.new(double('subject')) }
 
   describe '#text' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Extended::Base do
+describe Gitlab::Ci::Status::Extended do
   subject do
     Class.new.extend(described_class)
   end

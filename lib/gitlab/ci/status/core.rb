@@ -1,9 +1,9 @@
-module Gitlab::Ci
-  module Status
-    module Core
+module Gitlab
+  module Ci
+    module Status
       # Base abstract class fore core status
       #
-      class Base
+      class Core
         include Gitlab::Routing.url_helpers
 
         def initialize(subject)

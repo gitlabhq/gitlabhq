@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Core
-      class Running < Core::Base
+module Gitlab
+  module Ci
+    module Status
+      class Running < Status::Core
         def text
           'running'
         end

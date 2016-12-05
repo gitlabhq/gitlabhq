@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Core
-      class Skipped < Core::Base
+module Gitlab
+  module Ci
+    module Status
+      class Skipped < Status::Core
         def text
           'skipped'
         end

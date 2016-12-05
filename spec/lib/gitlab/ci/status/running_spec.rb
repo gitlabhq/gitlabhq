@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Core::Running do
+describe Gitlab::Ci::Status::Running do
   subject { described_class.new(double('subject')) }
 
   describe '#text' do

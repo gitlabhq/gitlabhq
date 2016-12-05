@@ -1,7 +1,7 @@
-module Gitlab::Ci
-  module Status
-    module Core
-      class Success < Core::Base
+module Gitlab
+  module Ci
+    module Status
+      class Success < Status::Core
         def text
           'passed'
         end
