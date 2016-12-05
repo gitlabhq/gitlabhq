@@ -569,17 +569,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def issues_mentioned_but_not_closing(current_user = self.author)
-    issues = []
-    closing_issues = []
+    return [] unless target_branch == project.default_branch
 
-    if target_branch == project.default_branch
-      ext = Gitlab::ReferenceExtractor.new(project, current_user)
-      ext.analyze(description)
+    ext = Gitlab::ReferenceExtractor.new(project, current_user)
+    ext.analyze(description)
 
-      issues = ext.issues
-      closing_issues = Gitlab::ClosingIssueExtractor.new(project, current_user).
-        closed_by_message(description)
-    end
+    issues = ext.issues
+    closing_issues = Gitlab::ClosingIssueExtractor.new(project, current_user).
+      closed_by_message(description)
 
     issues - closing_issues
   end
