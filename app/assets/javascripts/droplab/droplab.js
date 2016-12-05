@@ -108,7 +108,7 @@ Object.assign(DropDown.prototype, {
       // Help set the image src template
       var imageTags = template.content.querySelectorAll('img[data-src]');
       for(var i = 0; i < imageTags.length; i++) {
-        var imageTag = imagetags[i];
+        var imageTag = imageTags[i];
         imageTag.src = imageTag.getAttribute('data-src');
         imageTag.removeAttribute('data-src');
       }
