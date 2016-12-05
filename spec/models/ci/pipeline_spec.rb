@@ -404,6 +404,76 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#detailed_status' do
+    context 'when pipeline is created' do
+      let(:pipeline) { create(:ci_pipeline, status: :created) }
+
+      it 'returns detailed status for created pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'created'
+      end
+    end
+
+    context 'when pipeline is pending' do
+      let(:pipeline) { create(:ci_pipeline, status: :pending) }
+
+      it 'returns detailed status for pending pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'pending'
+      end
+    end
+
+    context 'when pipeline is running' do
+      let(:pipeline) { create(:ci_pipeline, status: :running) }
+
+      it 'returns detailed status for running pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'running'
+      end
+    end
+
+    context 'when pipeline is successful' do
+      let(:pipeline) { create(:ci_pipeline, status: :success) }
+
+      it 'returns detailed status for successful pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'passed'
+      end
+    end
+
+    context 'when pipeline is failed' do
+      let(:pipeline) { create(:ci_pipeline, status: :failed) }
+
+      it 'returns detailed status for failed pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'failed'
+      end
+    end
+
+    context 'when pipeline is canceled' do
+      let(:pipeline) { create(:ci_pipeline, status: :canceled) }
+
+      it 'returns detailed status for canceled pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'canceled'
+      end
+    end
+
+    context 'when pipeline is skipped' do
+      let(:pipeline) { create(:ci_pipeline, status: :skipped) }
+
+      it 'returns detailed status for skipped pipeline' do
+        expect(pipeline.detailed_status.text).to eq 'skipped'
+      end
+    end
+
+    context 'when pipeline is successful but with warnings' do
+      let(:pipeline) { create(:ci_pipeline, status: :success) }
+
+      before do
+        create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline)
+      end
+
+      it 'retruns detailed status for successful pipeline with warnings' do
+        expect(pipeline.detailed_status.label).to eq 'passed with warnings'
+      end
+    end
+  end
+
   describe '#cancelable?' do
     %i[created running pending].each do |status0|
       context "when there is a build #{status0}" do
