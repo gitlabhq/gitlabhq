@@ -38,13 +38,16 @@ module Gitlab
 
       def events_query
         base_query = base_query_for(@stage.stage)
-        event = @stage.event
 
         diff_fn = subtract_datetimes_diff(base_query, @stage.start_time_attrs, @stage.end_time_attrs)
 
-        event_instance.custom_query(base_query)
+        @stage.event.custom_query(base_query)
 
-        base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *event.projections).order(event.order.desc)
+        base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *@stage.event.projections).order(order.desc)
+      end
+
+      def order
+        @stage.event.order || @stage.start_time_attrs.is_a?(Array) ? @stage.start_time_attrs.first : @stage.start_time_attrs
       end
 
       # Join table with a row for every <issue,merge_request> pair (where the merge request

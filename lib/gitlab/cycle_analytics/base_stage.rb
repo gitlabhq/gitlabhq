@@ -1,6 +1,8 @@
 module Gitlab
   module CycleAnalytics
     class BaseStage
+      include MetricsTables
+
       attr_accessor :start_time_attrs, :end_time_attrs
 
       def initialize(project:, options:)
@@ -13,7 +15,7 @@ module Gitlab
       end
 
       def event
-        @event ||= Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher, options: @options)
+        @event ||= Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher, options: @options, stage: stage)
       end
 
       def events

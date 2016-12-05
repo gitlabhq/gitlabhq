@@ -3,7 +3,7 @@ module Gitlab
     class BaseEventFetcher
       include MetricsTables
 
-      attr_reader :projections, :query, :stage
+      attr_reader :projections, :query, :stage, :order
 
       def initialize(fetcher:, options:, stage:)
         @fetcher = fetcher
@@ -22,10 +22,6 @@ module Gitlab
 
       def custom_query(_base_query); end
 
-      def order
-        @order || @start_time_attrs
-      end
-
       private
 
       def update_author!
@@ -35,7 +31,7 @@ module Gitlab
       end
 
       def event_result
-        @event_result ||= @fetcher.events(self).to_a
+        @event_result ||= @fetcher.events.to_a
       end
 
       def serialize(_event)

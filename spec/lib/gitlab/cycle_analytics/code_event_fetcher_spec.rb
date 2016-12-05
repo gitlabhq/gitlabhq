@@ -5,8 +5,8 @@ describe Gitlab::CycleAnalytics::CodeEventFetcher do
   let(:stage_name) { :code }
 
   it_behaves_like 'default query config' do
-    it 'does not have the default order' do
-      expect(event.order).not_to eq(event.start_time_attrs)
+    it 'has a default order' do
+      expect(event.order).not_to be_nil
     end
   end
 end

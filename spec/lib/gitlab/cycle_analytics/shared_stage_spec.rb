@@ -8,6 +8,14 @@ shared_examples 'base stage' do
     allow_any_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher).to receive(:event_result).and_return({})
   end
 
+  it 'has the start attributes' do
+    expect(stage.start_time_attrs).not_to be_nil
+  end
+
+  it 'has the end attributes' do
+    expect(stage.end_time_attrs).not_to be_nil
+  end
+
   it 'has the median data value' do
     expect(stage.median_data[:value]).not_to be_nil
   end
