@@ -91,6 +91,12 @@
       background-color: $dropdown-hover-color;
       color: white;
       text-decoration: none;
+
+      .dropdown-label-box {
+        border-color: white;
+        border-style: solid;
+        border-width: 2px;
+      }
     }
   }
 
