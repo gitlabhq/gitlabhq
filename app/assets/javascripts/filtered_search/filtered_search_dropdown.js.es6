@@ -52,6 +52,10 @@
       this.input.setAttribute(DATA_DROPDOWN_TRIGGER, `#${this.listId}`);
     }
 
+    setOffset(offset = 0) {
+      this.dropdown.style.left = `${offset}px`;
+    }
+
     getCurrentHook() {
       return droplab.hooks.filter(h => h.id === this.hookId)[0];
     }
