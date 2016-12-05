@@ -99,47 +99,61 @@
     loadDropdown(dropdownName = '') {
       dropdownName = dropdownName.toLowerCase();
 
+      const filterIconPadding = 27;
       const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName)[0];
+      const filteredSearch = document.querySelector('.filtered-search');
 
       if (match && this.currentDropdown !== match.key) {
         console.log(`🦄 load ${match.key} dropdown`);
+
+        const dynamicDropdownPadding = 12;
+        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value) + filterIconPadding + dynamicDropdownPadding;
+
         this.dismissCurrentDropdown();
         this.currentDropdown = match.key;
 
         if (match.key === 'author') {
           if (!dropdownAuthor) {
-            dropdownAuthor = new gl.DropdownAuthor(document.querySelector('#js-dropdown-author'), document.querySelector('.filtered-search'));
+            dropdownAuthor = new gl.DropdownAuthor(document.querySelector('#js-dropdown-author'), filteredSearch);
           }
 
+          dropdownAuthor.setOffset(dropdownOffset);
           dropdownAuthor.render();
         } else if (match.key === 'assignee') {
           if (!dropdownAssignee) {
-            dropdownAssignee = new gl.DropdownAssignee(document.querySelector('#js-dropdown-assignee'), document.querySelector('.filtered-search'));
+            dropdownAssignee = new gl.DropdownAssignee(document.querySelector('#js-dropdown-assignee'), filteredSearch);
           }
 
+          dropdownAssignee.setOffset(dropdownOffset);
           dropdownAssignee.render();
         } else if (match.key === 'milestone') {
           if (!dropdownMilestone) {
-            dropdownMilestone = new gl.DropdownMilestone(document.querySelector('#js-dropdown-milestone'), document.querySelector('.filtered-search'));
+            dropdownMilestone = new gl.DropdownMilestone(document.querySelector('#js-dropdown-milestone'), filteredSearch);
           }
 
+          dropdownMilestone.setOffset(dropdownOffset);
           dropdownMilestone.render();
         } else if (match.key === 'label') {
           if (!dropdownLabel) {
-            dropdownLabel = new gl.DropdownLabel(document.querySelector('#js-dropdown-label'), document.querySelector('.filtered-search'));
+            dropdownLabel = new gl.DropdownLabel(document.querySelector('#js-dropdown-label'), filteredSearch);
           }
 
+          dropdownLabel.setOffset(dropdownOffset);
           dropdownLabel.render();
         }
 
       } else if (!match && this.currentDropdown !== 'hint') {
         console.log('🦄 load hint dropdown');
+
+        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value) + filterIconPadding;
+
         this.dismissCurrentDropdown();
         this.currentDropdown = 'hint';
 
         if (!dropdownHint) {
-          dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), document.querySelector('.filtered-search'), this.currentDropdown);
+          dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), filteredSearch, this.currentDropdown);
         }
+        dropdownHint.setOffset(dropdownOffset);
         dropdownHint.render();
       }
     }
