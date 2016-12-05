@@ -19,7 +19,7 @@
 
   .form-group
     = f.label :scopes, class: 'label-light'
-    = render partial: 'shared/tokens/scopes_form', locals: { prefix: 'doorkeeper_application', token: application }
+    = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
 
   .prepend-top-default
     = f.submit 'Save application', class: "btn btn-create"

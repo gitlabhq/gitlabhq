@@ -23,7 +23,7 @@
           %div
             %span.monospace= uri
 
-    = render partial: "shared/tokens/scopes_list"
+    = render "shared/tokens/scopes_list", token: @application
 
 .form-actions
   = link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'

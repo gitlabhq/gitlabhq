@@ -1,6 +1,9 @@
-= form_for [:profile, @personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
+- personal_access_token = local_assigns.fetch(:personal_access_token)
+- scopes = local_assigns.fetch(:scopes)
 
-  = form_errors(@personal_access_token)
+= form_for [:profile, personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
+
+  = form_errors(personal_access_token)
 
   .form-group
     = f.label :name, class: 'label-light'
@@ -8,11 +11,11 @@
 
   .form-group
     = f.label :expires_at, class: 'label-light'
-    = f.text_field :expires_at, class: "datepicker form-control", required: false
+    = f.text_field :expires_at, class: "datepicker form-control"
 
   .form-group
     = f.label :scopes, class: 'label-light'
-    = render partial: 'shared/tokens/scopes_form', locals: { prefix: 'personal_access_token', token: @personal_access_token }
+    = render 'shared/tokens/scopes_form', prefix: 'personal_access_token', token: personal_access_token, scopes: scopes
 
   .prepend-top-default
     = f.submit 'Create Personal Access Token', class: "btn btn-create"
