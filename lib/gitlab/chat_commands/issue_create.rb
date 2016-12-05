@@ -20,7 +20,7 @@ module Gitlab
         description = match[:description].to_s.rstrip
 
         issue = create_issue(title: title, description: description)
-        Gitlab::ChatCommands::Presenters::NewIssue.new(issue).execute
+        Gitlab::ChatCommands::Presenters::NewIssue.new(issue).present
       end
 
       def create_issue(title:, description:)

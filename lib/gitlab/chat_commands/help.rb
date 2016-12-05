@@ -1,10 +1,10 @@
 module Gitlab
   module ChatCommands
-    class Help < IssueCommand
+    class Help < BaseCommand
       # This class has to be used last, as it always matches. It has to match
       # because other commands were not triggered and we want to show the help
       # command
-      def self.match(_)
+      def self.match(_text)
         true
       end
 
@@ -16,10 +16,12 @@ module Gitlab
         true
       end
 
-      def execute(_)
-        commands = caller.first.available_commands
+      def execute(commands)
+        Gitlab::ChatCommands::Presenters::Help.new(commands).present(trigger)
+      end
 
-        Gitlab::ChatCommands::Presenters::Help.new(commands).execute
+      def trigger
+        params[:command]
       end
     end
   end

@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Gitlab::ChatCommands::Presenters::NewIssue do
   let(:project) { create(:empty_project) }
 
-  subject { described_class.new(issue).execute }
+  subject { described_class.new(issue).present }
 
-  describe '#execute' do
+  describe '#present' do
     context 'an error occurred' do
       let(:current_user) { create(:admin) }
       let(:issue) do

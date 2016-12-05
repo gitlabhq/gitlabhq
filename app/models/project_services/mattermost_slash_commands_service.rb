@@ -31,7 +31,7 @@ class MattermostSlashCommandsService < ChatService
     user = find_chat_user(params)
     unless user
       url = authorize_chat_name_url(params)
-      return Mattermost::Presenter.authorize_chat_name(url)
+      return Gitlab::ChatCommands::Presenters::Access.new(url).authorize
     end
 
     Gitlab::ChatCommands::Command.new(project, user, params).execute

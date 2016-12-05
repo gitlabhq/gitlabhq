@@ -1,6 +1,6 @@
 module Gitlab::ChatCommands::Presenters
   class NewIssue < Gitlab::ChatCommands::Presenters::Issuable
-    def execute
+    def present
       if @resource.errors.any?
         display_errors
       else
@@ -31,7 +31,7 @@ module Gitlab::ChatCommands::Presenters
       profile_link = "[#{author.to_reference}](#{user_url(author)})"
       project_link = "[#{project.to_reference}](#{project.web_url})"
 
-      format "New issue by #{profile_link} on #{project_link}"
+      "New issue by #{profile_link} on #{project_link}"
     end
   end
 end

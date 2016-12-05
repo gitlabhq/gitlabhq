@@ -1,7 +1,6 @@
 module Gitlab
   module ChatCommands
     class Command < BaseCommand
-
       COMMANDS = [
         Gitlab::ChatCommands::IssueShow,
         Gitlab::ChatCommands::IssueCreate,
@@ -16,12 +15,10 @@ module Gitlab
           if command.allowed?(project, current_user)
             command.new(project, current_user, params).execute(match)
           else
-            Gitlab::ChatCommands::Presenters::Command.new(match).access_denied
+            Gitlab::ChatCommands::Presenters::Access.new(match).access_denied
           end
         else
-          Gitlab::ChatCommands::Presenters::Command.
-            new(match).
-            help(available_commands, params[:command])
+          Gitlab::ChatCommands::Help.new(project, current_user, params).execute(available_commands)
         end
       end
 

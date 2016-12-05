@@ -1,5 +1,5 @@
 module Gitlab::ChatCommands::Presenters
-  class BasePresenter
+  class Base
     include Gitlab::Routing.url_helpers
 
     def initialize(resource)
@@ -8,25 +8,6 @@ module Gitlab::ChatCommands::Presenters
 
     def display_errors
       message = header_with_list("The action was not successful, because:", @resource.errors.full_messages)
-
-      ephemeral_response(text: message)
-    end
-
-    def access_denied
-      ephemeral_response(text: "Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
-    end
-
-    def not_found
-      ephemeral_response(text: "404 not found! GitLab couldn't find what you were looking for! :boom:")
-    end
-
-    def authorize_chat_name(url)
-      message =
-        if url
-          ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
-        else
-          ":sweat_smile: Couldn't identify you, nor can I autorize you!"
-        end
 
       ephemeral_response(text: message)
     end
@@ -44,17 +25,34 @@ module Gitlab::ChatCommands::Presenters
     end
 
     def ephemeral_response(message)
-      {
+      response = {
         response_type: :ephemeral,
         status: 200
       }.merge(message)
+
+      format_response(response)
     end
 
     def in_channel_response(message)
-      {
+      response = {
         response_type: :in_channel,
         status: 200
       }.merge(message)
+
+      format_response(response)
+    end
+
+    def format_response(response)
+      response[:text] = format(response[:text]) if response.has_key?(:text)
+
+      if response.has_key?(:attachments)
+        response[:attachments].each do |attachment|
+          attachment[:pretext] = format(attachment[:pretext]) if attachment[:pretext]
+          attachment[:text] = format(attachment[:text]) if attachment[:text]
+        end
+      end
+
+      response
     end
 
     # Convert Markdown to slacks format
@@ -71,6 +69,5 @@ module Gitlab::ChatCommands::Presenters
         ]
       )
     end
-
   end
 end

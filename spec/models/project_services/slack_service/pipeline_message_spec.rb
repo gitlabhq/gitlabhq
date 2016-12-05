@@ -14,7 +14,7 @@ describe SlackService::PipelineMessage do
         duration: duration
       },
       project: { path_with_namespace: 'project_name',
-                 web_url: 'example.gitlab.com' },
+                 web_url: 'http://example.gitlab.com' },
       user: { name: 'hacker' }
     }
   end
@@ -47,9 +47,9 @@ describe SlackService::PipelineMessage do
   end
 
   def build_message(status_text = status)
-    "<example.gitlab.com|project_name>:" \
-    " Pipeline <example.gitlab.com/pipelines/123|#123>" \
-    " of <example.gitlab.com/commits/develop|develop> branch" \
+    "<http://example.gitlab.com|project_name>:" \
+    " Pipeline <http://example.gitlab.com/pipelines/123|#123>" \
+    " of <http://example.gitlab.com/commits/develop|develop> branch" \
     " by hacker #{status_text} in #{duration} #{'second'.pluralize(duration)}"
   end
 end

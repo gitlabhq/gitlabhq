@@ -1,5 +1,5 @@
 module Gitlab::ChatCommands::Presenters
-  class Issuable < BasePresenter
+  class Issuable < Gitlab::ChatCommands::Presenters::Base
     private
 
     def project

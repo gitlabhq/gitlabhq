@@ -31,10 +31,6 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def presenter
-        raise NotImplementedError
-      end
-
       attr_accessor :project, :current_user, :params
 
       def initialize(project, user, params = {})

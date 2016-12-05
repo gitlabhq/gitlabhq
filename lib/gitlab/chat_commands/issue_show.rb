@@ -11,7 +11,7 @@ module Gitlab
 
       def execute(match)
         issue = find_by_iid(match[:iid])
-        Gitlab::ChatCommands::Presenters::ShowIssue.new(issue).execute
+        Gitlab::ChatCommands::Presenters::ShowIssue.new(issue).present
       end
     end
   end

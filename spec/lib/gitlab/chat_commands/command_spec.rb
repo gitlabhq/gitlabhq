@@ -22,7 +22,7 @@ describe Gitlab::ChatCommands::Command, service: true do
 
       it 'rejects the actions' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('Whoops! That action is not allowed')
+        expect(subject[:text]).to start_with('Whoops! This action is not allowed')
       end
     end
 
@@ -38,7 +38,7 @@ describe Gitlab::ChatCommands::Command, service: true do
       context 'and user can not create deployment' do
         it 'returns action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to start_with('Whoops! That action is not allowed')
+          expect(subject[:text]).to start_with('Whoops! This action is not allowed')
         end
       end
 
@@ -48,7 +48,7 @@ describe Gitlab::ChatCommands::Command, service: true do
         end
 
         it 'returns action' do
-          expect(subject[:text]).to include('Deployment from staging to production started')
+          expect(subject[:text]).to include('Deployment started from staging to production')
           expect(subject[:response_type]).to be(:in_channel)
         end
 
@@ -84,7 +84,7 @@ describe Gitlab::ChatCommands::Command, service: true do
     context 'IssueSearch is triggered' do
       let(:params) { { text: 'issue search my query' } }
 
-      it { is_expected.to eq(Gitlab::ChatCommands::IssueSearch) } 
+      it { is_expected.to eq(Gitlab::ChatCommands::IssueSearch) }
     end
   end
 end

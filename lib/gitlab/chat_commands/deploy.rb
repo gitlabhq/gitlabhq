@@ -22,14 +22,14 @@ module Gitlab
         to = match[:to]
 
         actions = find_actions(from, to)
-        
+
         if actions.none?
           Gitlab::ChatCommands::Presenters::Deploy.new(nil).no_actions
         elsif actions.one?
           action = play!(from, to, actions.first)
-          Gitlab::ChatCommands::Presenters::Deploy.new(action).execute(from, to)
+          Gitlab::ChatCommands::Presenters::Deploy.new(action).present(from, to)
         else
-          Gitlab::ChatCommands::Presenters::Deploy.new(nil).too_many_actions
+          Gitlab::ChatCommands::Presenters::Deploy.new(actions).too_many_actions
         end
       end
 
@@ -41,7 +41,7 @@ module Gitlab
 
       def find_actions(from, to)
         environment = project.environments.find_by(name: from)
-        return unless environment
+        return [] unless environment
 
         environment.actions_for(to).select(&:starts_environment?)
       end

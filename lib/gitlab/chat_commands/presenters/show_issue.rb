@@ -1,10 +1,10 @@
 module Gitlab::ChatCommands::Presenters
   class ShowIssue < Gitlab::ChatCommands::Presenters::Issuable
-    def execute
+    def present
       if @resource
         in_channel_response(show_issue)
       else
-        not_found
+        Gitlab::ChatCommands::Presenters::Access.new(@resource).not_found
       end
     end
 
