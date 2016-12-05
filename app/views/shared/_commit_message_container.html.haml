@@ -17,9 +17,9 @@
         Try to keep the first line under 52 characters
         and the others under 72.
     - if descriptions.present?
-      %p.hint.with-description-hint
-        = link_to "#", class: "with-description-link" do
+      %p.hint.js-with-description-hint
+        = link_to "#", class: "js-with-description-link" do
           Include description in commit message
-      %p.hint.without-description-hint.hide
-        = link_to "#", class: "without-description-link" do
+      %p.hint.js-without-description-hint.hide
+        = link_to "#", class: "js-without-description-link" do
           Don't include description in commit message

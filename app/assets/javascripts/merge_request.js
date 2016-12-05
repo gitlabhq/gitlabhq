@@ -112,20 +112,20 @@
     MergeRequest.prototype.initCommitMessageListeners = function() {
       var textarea = $('textarea.js-commit-message');
 
-      $('a.with-description-link').on('click', function(e) {
+      $('a.js-with-description-link').on('click', function(e) {
         e.preventDefault();
 
         textarea.val(textarea.data('messageWithDescription'));
-        $('p.with-description-hint').hide();
-        $('p.without-description-hint').show();
+        $('p.js-with-description-hint').hide();
+        $('p.js-without-description-hint').show();
       });
 
-      $('a.without-description-link').on('click', function(e) {
+      $('a.js-without-description-link').on('click', function(e) {
         e.preventDefault();
 
         textarea.val(textarea.data('messageWithoutDescription'));
-        $('p.with-description-hint').show();
-        $('p.without-description-hint').hide();
+        $('p.js-with-description-hint').show();
+        $('p.js-without-description-hint').hide();
       });
     };
 
