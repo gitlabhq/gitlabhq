@@ -264,7 +264,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug', '~> 8.2.1', platform: :mri
+  gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
