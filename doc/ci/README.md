@@ -11,7 +11,8 @@
 - [Configure a Runner, the application that runs your builds](runners/README.md)
 - [Use Docker images with GitLab Runner](docker/using_docker_images.md)
 - [Use CI to build Docker images](docker/using_docker_build.md)
-- [Learn how to use variables in your build scripts](variables/README.md)
+- [CI Variables](variables/README.md) - Learn how to use variables defined in
+  your `.gitlab-ci.yml` or secured ones defined in your project's settings
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger builds through the API](triggers/README.md)
 - [Build artifacts](../user/project/builds/artifacts.md)

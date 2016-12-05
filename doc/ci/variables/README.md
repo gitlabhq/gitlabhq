@@ -1,27 +1,30 @@
 # Variables
 
-When receiving a build from GitLab CI, the runner prepares the build environment.
-It starts by setting a list of **predefined variables** (Environment variables)
+When receiving a build from GitLab CI, the [Runner] prepares the build environment.
+It starts by setting a list of **predefined variables** (environment variables)
 and a list of **user-defined variables**.
 
-The variables can be overwritten. They take precedence over each other in this
-order:
+## Priority of variables
 
-1. Trigger variables (take precedence over all)
-1. Secure variables
-1. YAML-defined job-level variables
-1. YAML-defined global variables
-1. Predefined variables (are the lowest in the chain)
+The variables can be overwritten and they take precedence over each other in
+this order:
+
+1. [Trigger variables][triggers] (take precedence over all)
+1. [Secure variables](#secure-variables)
+1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
+1. YAML-defined [global variables](../yaml/README.md#variables)
+1. [Predefined variables](#predefined-variables-environment-variables) (are the
+   lowest in the chain)
 
 For example, if you define `API_TOKEN=secure` as a secure variable and
-`API_TOKEN=yaml` as YAML-defined variable, the `API_TOKEN` will take the value
+`API_TOKEN=yaml` in your `.gitlab-ci.yml`, the `API_TOKEN` will take the value
 `secure` as the secure variables are higher in the chain.
 
 ## Predefined variables (Environment variables)
 
->**Note:**
-Some of the variables are available only if a minimum version of [GitLab Runner]
-is used.
+Some of the predefined environment variables are available only if a minimum
+version of [GitLab Runner][runner] is used. Consult the table below to find the
+version of Runner required.
 
 | Variable                | GitLab | Runner | Description |
 |-------------------------|--------|--------|-------------|
@@ -64,7 +67,7 @@ Example values:
 export CI_BUILD_ID="50"
 export CI_BUILD_REF="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_BUILD_REF_NAME="master"
-export CI_BUILD_REPO="https://gitab-ci-token:abcde-1234ABCD5678ef@gitlab.com/gitlab-org/gitlab-ce.git"
+export CI_BUILD_REPO="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
 export CI_BUILD_TAG="1.0.0"
 export CI_BUILD_NAME="spec:other"
 export CI_BUILD_STAGE="test"
@@ -77,9 +80,9 @@ export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_NAME="gitlab-ce"
 export CI_PROJECT_NAMESPACE="gitlab-org"
 export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
-export CI_PROJECT_URL="https://gitlab.com/gitlab-org/gitlab-ce"
-export CI_REGISTRY="registry.gitlab.com"
-export CI_REGISTRY_IMAGE="registry.gitlab.com/gitlab-org/gitlab-ce"
+export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
+export CI_REGISTRY="registry.example.com"
+export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
 export CI_RUNNER_ID="10"
 export CI_RUNNER_DESCRIPTION="my runner"
 export CI_RUNNER_TAGS="docker, linux"
@@ -88,10 +91,10 @@ export CI_SERVER_NAME="GitLab"
 export CI_SERVER_REVISION="70606bf"
 export CI_SERVER_VERSION="8.9.0"
 export GITLAB_USER_ID="42"
-export GITLAB_USER_EMAIL="alexzander@sporer.com"
+export GITLAB_USER_EMAIL="user@example.com"
 ```
 
-## YAML-defined variables
+## `.gitlab-ci.yaml` defined variables
 
 >**Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher.
@@ -121,7 +124,7 @@ job_name:
   variables: []
 ```
 
-## User-defined variables (secure variables)
+## Secure variables
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
@@ -137,7 +140,7 @@ the build environment. The secure variables are stored out of the repository
 available in the build environment. It's the recommended method to use for
 storing things like passwords, secret keys and credentials.
 
-Secure Variables can added by going to your project's
+Secure variables can be added by going to your project's
 **Settings ➔ Variables ➔ Add variable**.
 
 Once you set them, they will be available for all subsequent builds.
@@ -162,8 +165,8 @@ trace, resulting in a verbose build trace listing all commands that were run,
 variables that were set, etc.
 
 Before enabling this, you should ensure builds are visible to
-[team members only](../../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#seeing-build-traces) all generated build traces
+[team members only](../../user/permissions.md#project-features). You should
+also [erase](../pipelines.md#seeing-build-status) all generated build traces
 before making them visible again.
 
 To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
@@ -174,8 +177,123 @@ job_name:
     CI_DEBUG_TRACE: "true"
 ```
 
-The [example project](https://gitlab.com/gitlab-examples/ci-debug-trace)
-demonstrates a working configuration, including build trace examples.
+Example truncated output with debug trace set to true:
+
+```bash
+...
+
+export CI_SERVER_TLS_CA_FILE="/builds/gitlab-examples/ci-debug-trace.tmp/CI_SERVER_TLS_CA_FILE"
+if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
+  echo $'\''\x1b[32;1mFetching changes...\x1b[0;m'\''
+  $'\''cd'\'' "/builds/gitlab-examples/ci-debug-trace"
+  $'\''git'\'' "config" "fetch.recurseSubmodules" "false"
+  $'\''rm'\'' "-f" ".git/index.lock"
+  $'\''git'\'' "clean" "-ffdx"
+  $'\''git'\'' "reset" "--hard"
+  $'\''git'\'' "remote" "set-url" "origin" "https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git"
+  $'\''git'\'' "fetch" "origin" "--prune" "+refs/heads/*:refs/remotes/origin/*" "+refs/tags/*:refs/tags/*"
+else
+  $'\''mkdir'\'' "-p" "/builds/gitlab-examples/ci-debug-trace.tmp/git-template"
+  $'\''rm'\'' "-r" "-f" "/builds/gitlab-examples/ci-debug-trace"
+  $'\''git'\'' "config" "-f" "/builds/gitlab-examples/ci-debug-trace.tmp/git-template/config" "fetch.recurseSubmodules" "false"
+  echo $'\''\x1b[32;1mCloning repository...\x1b[0;m'\''
+  $'\''git'\'' "clone" "--no-checkout" "https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git" "/builds/gitlab-examples/ci-debug-trace" "--template" "/builds/gitlab-examples/ci-debug-trace.tmp/git-template"
+  $'\''cd'\'' "/builds/gitlab-examples/ci-debug-trace"
+fi
+echo $'\''\x1b[32;1mChecking out dd648b2e as master...\x1b[0;m'\''
+$'\''git'\'' "checkout" "-f" "-q" "dd648b2e48ce6518303b0bb580b2ee32fadaf045"
+'
++++ hostname
+++ echo 'Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-machine-1480971377-317a7d0f-digital-ocean-4gb...'
+Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-machine-1480971377-317a7d0f-digital-ocean-4gb...
+++ export CI=true
+++ CI=true
+++ export CI_DEBUG_TRACE=false
+++ CI_DEBUG_TRACE=false
+++ export CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_BUILD_REF_NAME=master
+++ CI_BUILD_REF_NAME=master
+++ export CI_BUILD_ID=7046507
+++ CI_BUILD_ID=7046507
+++ export CI_BUILD_REPO=https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git
+++ CI_BUILD_REPO=https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git
+++ export CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ export CI_PROJECT_ID=1796893
+++ CI_PROJECT_ID=1796893
+++ export CI_PROJECT_DIR=/builds/gitlab-examples/ci-debug-trace
+++ CI_PROJECT_DIR=/builds/gitlab-examples/ci-debug-trace
+++ export CI_SERVER=yes
+++ CI_SERVER=yes
+++ export 'CI_SERVER_NAME=GitLab CI'
+++ CI_SERVER_NAME='GitLab CI'
+++ export CI_SERVER_VERSION=
+++ CI_SERVER_VERSION=
+++ export CI_SERVER_REVISION=
+++ CI_SERVER_REVISION=
+++ export GITLAB_CI=true
+++ GITLAB_CI=true
+++ export CI=true
+++ CI=true
+++ export GITLAB_CI=true
+++ GITLAB_CI=true
+++ export CI_BUILD_ID=7046507
+++ CI_BUILD_ID=7046507
+++ export CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ export CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_BUILD_REF_NAME=master
+++ CI_BUILD_REF_NAME=master
+++ export CI_BUILD_NAME=debug_trace
+++ CI_BUILD_NAME=debug_trace
+++ export CI_BUILD_STAGE=test
+++ CI_BUILD_STAGE=test
+++ export CI_SERVER_NAME=GitLab
+++ CI_SERVER_NAME=GitLab
+++ export CI_SERVER_VERSION=8.14.3-ee
+++ CI_SERVER_VERSION=8.14.3-ee
+++ export CI_SERVER_REVISION=82823
+++ CI_SERVER_REVISION=82823
+++ export CI_PROJECT_ID=17893
+++ CI_PROJECT_ID=17893
+++ export CI_PROJECT_NAME=ci-debug-trace
+++ CI_PROJECT_NAME=ci-debug-trace
+++ export CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
+++ CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
+++ export CI_PROJECT_NAMESPACE=gitlab-examples
+++ CI_PROJECT_NAMESPACE=gitlab-examples
+++ export CI_PROJECT_URL=https://example.com/gitlab-examples/ci-debug-trace
+++ CI_PROJECT_URL=https://example.com/gitlab-examples/ci-debug-trace
+++ export CI_PIPELINE_ID=52666
+++ CI_PIPELINE_ID=52666
+++ export CI_RUNNER_ID=1337
+++ CI_RUNNER_ID=1337
+++ export CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
+++ CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
+++ export 'CI_RUNNER_TAGS=shared, docker, linux, ruby, mysql, postgres, mongo, git-annex'
+++ CI_RUNNER_TAGS='shared, docker, linux, ruby, mysql, postgres, mongo, git-annex'
+++ export CI_REGISTRY=registry.example.com
+++ CI_REGISTRY=registry.example.com
+++ export CI_DEBUG_TRACE=true
+++ CI_DEBUG_TRACE=true
+++ export GITLAB_USER_ID=42
+++ GITLAB_USER_ID=42
+++ export GITLAB_USER_EMAIL=user@example.com
+++ GITLAB_USER_EMAIL=axilleas@axilleas.me
+++ export VERY_SECURE_VARIABLE=imaverysecurevariable
+++ VERY_SECURE_VARIABLE=imaverysecurevariable
+++ mkdir -p /builds/gitlab-examples/ci-debug-trace.tmp
+++ echo -n '-----BEGIN CERTIFICATE-----
+MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
+
+...
+```
 
 ## Using the CI variables in your job scripts
 
@@ -203,5 +321,6 @@ job_name:
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
-[gitlab runner]: https://docs.gitlab.com/runner/
+[runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
+[triggers]: ../triggers/README.md#pass-build-variables-to-a-trigger
