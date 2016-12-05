@@ -1,6 +1,6 @@
 module Gitlab
   module CycleAnalytics
-    class ProductionEventFetcher < BaseEventFetcher
+    class ProductionEventFetcher < IssueEventFetcher
       include IssueAllowed
 
       def initialize(*args)

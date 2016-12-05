@@ -32,7 +32,7 @@ class CycleAnalytics
 
   def stats_per_stage
     STAGES.map do |stage_name|
-      self[stage_name].new(project: @project, options: @options).median_data
+      self[stage_name].median_data
     end
   end
 end
