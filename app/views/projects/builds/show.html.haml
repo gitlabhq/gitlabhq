@@ -56,14 +56,18 @@
       - else
         #js-build-scroll.scroll-controls
           .scroll-step
-            = link_to '#build-trace', class: 'btn' do
-              %i.fa.fa-angle-up
-            = link_to '#down-build-trace', class: 'btn' do
-              %i.fa.fa-angle-down
+            = link_to '#up-build-trace', id: 'scroll-top', class: 'btn', title: 'Scroll to top' do
+              %i.fa.fa-long-arrow-up
+              %span.scroll-step-label Scroll to top
+            = link_to '#down-build-trace', id: 'scroll-bottom', class: 'btn', title: 'Scroll to bottom' do
+              %i.fa.fa-long-arrow-down
+              %span.scroll-step-label Scroll to bottom
           - if @build.active?
             .autoscroll-container
-              %button.btn.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}}
-                Enable autoscroll
+              %span.status-message#autoscroll-status{:data => {:state => 'enabled'}}
+                %i.fa.fa-toggle-on
+                %label Autoscroll active
+        #up-build-trace
         %pre.build-trace#build-trace
           %code.bash.js-build-output
           = icon("refresh spin", class: "js-build-refresh")
