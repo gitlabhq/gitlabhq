@@ -30,7 +30,7 @@
     - elsif @merge_request.can_be_merged? || resolved_conflicts
       = render 'projects/merge_requests/widget/open/accept'
 
-  - if mr_closes_issues.present? || mr_issues_mentioned_but_not_closing
+  - if mr_closes_issues.present? || mr_issues_mentioned_but_not_closing.present?
     .mr-widget-footer
       %span
         = icon('check')
@@ -41,9 +41,7 @@
           = mr_assign_issues_link
         - if mr_issues_mentioned_but_not_closing.present?
           #{"Issue".pluralize(mr_issues_mentioned_but_not_closing.size)}
-          = succeed '' do
-            != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
-          = succeed '' do
-            mentioned but will not closed.
+          != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
+          #{mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'} mentioned but will not closed.
          
 

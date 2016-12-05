@@ -425,7 +425,7 @@ describe MergeRequest, models: true do
         and_return(subject.target_branch)
 
       expect(subject.merge_commit_message)
-        .to match("Closed Issues: #{issue.to_reference}")
+        .to match("Closes issue #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do

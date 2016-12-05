@@ -633,18 +633,20 @@ class MergeRequest < ActiveRecord::Base
       issue.to_reference(target_project)
     end
 
-    message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
-    message << "#{title}\n\n"
+    message = [
+      "Merge branch '#{source_branch}' into '#{target_branch}'",
+      title
+    ]
 
-    if closes_issues_references.present?
+    if !include_description && closes_issues_references.present?
       issue_text = 'issue'.pluralize(closes_issues_references.size)
-      message << "Closes #{issue_text} #{closes_issues_references.to_sentence}\n\n"
+      message << "Closes #{issue_text} #{closes_issues_references.to_sentence}"
     end
 
-    message << "#{description}\n\n" if include_description && description.present?
+    message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference}"
 
-    message
+    message.join("\n\n")
   end
 
   def reset_merge_when_build_succeeds
