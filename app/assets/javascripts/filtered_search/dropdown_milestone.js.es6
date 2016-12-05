@@ -12,7 +12,8 @@
       const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
 
       if (!dataValueSet) {
-        console.log('set value');
+        const milestoneName = `%${e.detail.selected.querySelector('.btn-link').innerText.trim()}`;
+        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(milestoneName));
       }
 
       this.dismissDropdown();
