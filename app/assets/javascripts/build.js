@@ -179,6 +179,7 @@
 
         if ($autoScrollContainer.length) { // Show and Reposition Autoscroll Status Message
           $autoScrollContainer.show().css({ top: $body.outerHeight() - 75 });
+<<<<<<< fbd5f4507b310d6dc1305696851e9860b48fa0ba
         }
       }
 
@@ -195,6 +196,31 @@
         // Check if Refresh Animation is in Viewport and enable Autoscroll, disable otherwise.
         $autoScrollStatus.data("state", isInViewport($('.js-build-refresh')) ? 'enabled' : 'disabled');
       }
+=======
+        }
+      }
+
+      if (!isInViewport($upBuildTrace) && !isInViewport($downBuildTrace)) { // User is somewhere in middle of Build Log
+        $scrollTopBtn.show().addClass('sticky');
+        $scrollBottomBtn.show().addClass('sticky');
+
+        if ($autoScrollContainer.length) {
+          $autoScrollContainer.hide();
+        }
+      }
+
+      if (this.buildStatus === "running" || this.buildStatus === "pending") {
+        if (isInViewport($('.js-build-refresh'))) { // Check if Refresh Animation is in Viewport
+          if ($autoScrollStatus.data("state") === 'disabled') {
+            $autoScrollStatus.data("state", 'enabled'); // Enable Autoscroll
+          }
+        } else {
+          if ($autoScrollStatus.data("state") === 'enabled') {
+            $autoScrollStatus.data("state", 'disabled'); // Disable Autoscroll
+          }
+        }
+      }
+>>>>>>> Improve isInViewport impl, autoscroll behavior
     };
 
     Build.prototype.shouldHideSidebarForViewport = function() {
