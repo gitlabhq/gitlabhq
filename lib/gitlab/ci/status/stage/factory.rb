@@ -24,7 +24,7 @@ module Gitlab
             Gitlab::Ci::Status
               .const_get(@status.capitalize)
               .new(@stage)
-              .extend(Status::Pipeline::Common)
+              .extend(Status::Stage::Common)
           end
 
           def extended_status

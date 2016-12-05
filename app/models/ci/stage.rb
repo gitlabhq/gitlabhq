@@ -20,6 +20,10 @@ module Ci
       @status ||= statuses.latest.status
     end
 
+    def detailed_status
+      Gitlab::Ci::Status::Stage::Factory.new(self).fabricate!
+    end
+
     def statuses
       @statuses ||= pipeline.statuses.where(stage: stage)
     end
